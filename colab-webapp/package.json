@@ -1,0 +1,13 @@
+{
+  "name": "colab",
+  "version": "0.0.1",
+  "description": "",
+  "repository": "git@github.com:heigvd/colab.git",
+  "author": "AlbaSim <albasim@heig-vd.ch>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {},
+  "workspaces": [
+    "src/main/webapp/app"
+  ]
+}

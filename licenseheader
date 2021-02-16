@@ -1,0 +1,10 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}The coLAB project
+${licensePrefix}Copyright (C) ${date?date?string("yyyy")} ${project.organization!user}
+${licensePrefix?replace(" +$", "", "r")}
+${licensePrefix}Licensed under the MIT License
+<#if licenseLast??>
+${licenseLast}
+</#if>

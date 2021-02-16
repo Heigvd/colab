@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "esnext",
+    "target": "es2020",
+    "jsx": "react",
+    "allowJs": false,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "strict": true,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "src",
+    "types"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
