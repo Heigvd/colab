@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ColabDeserializer.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.utils</a> &gt; <span class="el_source">ColabDeserializer.java</span></div><h1>ColabDeserializer.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.utils;
+
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import javax.json.JsonObject;
+import javax.json.bind.JsonbBuilder;
+import javax.json.bind.serializer.DeserializationContext;
+import javax.json.bind.serializer.JsonbDeserializer;
+import javax.json.stream.JsonParser;
+import org.reflections.Reflections;
+
+/**
+ * Custom deserializer which can handle polymorphic JSONable object
+ *
+ * @author Maxence
+ */
+<span class="nc" id="L25">public class ColabDeserializer implements JsonbDeserializer&lt;Jsonable&gt; {</span>
+
+    /**
+     * Store class references
+     */
+<span class="nc" id="L30">    private static final Map&lt;String, Class&lt;? extends Jsonable&gt;&gt; CLASSES_MAP = new HashMap&lt;&gt;();</span>
+
+    /**
+     * Reflections allow to find, for instance, all implementations of an interface
+     */
+    private static final Reflections REFLECTIONS;
+
+    static {
+        // analyse classes in the model package
+<span class="nc" id="L39">        REFLECTIONS = new Reflections(&quot;ch.colabproject.model&quot;);</span>
+<span class="nc" id="L40">    }</span>
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public Jsonable deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
+
+        // find @class discriminant from object to deserialize
+<span class="nc" id="L49">        JsonObject value = parser.getObject();</span>
+<span class="nc" id="L50">        String atClass = value.getString(&quot;@class&quot;, null);</span>
+
+        // is this @class already known?
+<span class="nc" id="L53">        Class&lt;? extends Jsonable&gt; theClass = CLASSES_MAP.get(atClass);</span>
+
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (theClass == null) {</span>
+            // nope -&gt; let's resolve it with the help of reflections
+<span class="nc" id="L57">            Optional&lt;Class&lt;? extends Jsonable&gt;&gt; eClass = REFLECTIONS.getSubTypesOf(Jsonable.class).stream().filter(cl -&gt; cl.getSimpleName().equals(atClass)).findFirst();</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">            if (eClass.isPresent()) {</span>
+<span class="nc" id="L59">                theClass = eClass.get();</span>
+<span class="nc" id="L60">                CLASSES_MAP.put(atClass, theClass);</span>
+            }
+        }
+        // parse JSON against exact class
+<span class="nc" id="L64">        return JsonbBuilder.create().fromJson(value.toString(), theClass);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
