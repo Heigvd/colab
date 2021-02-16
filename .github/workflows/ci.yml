@@ -56,10 +56,8 @@ jobs:
       run: mvn -B clean package
     - name: Build Site
       run: mvn -B site site:stage
-    - name: Deploy site to github pages
-      run: git push origin `git subtree split --prefix target/staging main`:github-pages --force
     - name: push GitHub Pages 
-      uses: crazy-max/ghaction-github-pages@v2.2.0
+      uses: peaceiris/actions-gh-pages@v3.7.3
       with:
-        target_branch: github-pages
-        build_dir: target/staging
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: target/staging
