@@ -8,11 +8,11 @@ A Digital Lab for the co-Design, co-Development and co-Evaluation of Digital Lea
 #### Install
 Install fresh postgresql in docker
 ```shell
-docker ru-d -p 5432:5432 -e POSTGRES_DB=colab -e POSTGRES_USER=colab -e POSTGRES_PASSWORD=<YOUR_SECRET_PASSWORD> --name colab_postgres -d postgres:13-alpine
+docker run -d -p 5432:5432 -e POSTGRES_DB=colab -e POSTGRES_USER=colab -e POSTGRES_PASSWORD=<YOUR_SECRET_PASSWORD> --name colab_postgres -d postgres:13-alpine
 ```
 You may want to add `--restart always` to the `docker run` command.
 
-Edit ./colab-webapp/src/main/resource/colab.properties to match
+Edit ./colab-webapp/src/default_colab.properties to match
 ```
 #
 # coLAB properties
@@ -41,7 +41,7 @@ CREATE DATABASE \"colab_test\" OWNER \"colab_test\";" |  docker exec -it colab_p
 
 
 ### command line
-Rebuid everything with :
+Rebuild everything with :
 ```bash
 mvn clean install
 ```
