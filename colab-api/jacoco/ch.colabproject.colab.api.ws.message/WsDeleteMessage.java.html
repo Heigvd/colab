@@ -27,9 +27,9 @@ public class WsDeleteMessage extends WsMessage {
      *
      * @param objects list of objet which have been deleted
      */
-<span class="nc" id="L30">    public WsDeleteMessage(Collection&lt;IndexEntry&gt; objects) {</span>
-<span class="nc" id="L31">        this.items = objects;</span>
-<span class="nc" id="L32">    }</span>
+<span class="fc" id="L30">    public WsDeleteMessage(Collection&lt;IndexEntry&gt; objects) {</span>
+<span class="fc" id="L31">        this.items = objects;</span>
+<span class="fc" id="L32">    }</span>
 
     /**
      * @return get the list of deleted object
@@ -67,10 +67,10 @@ public class WsDeleteMessage extends WsMessage {
          *
          * @param object object to index
          */
-<span class="nc" id="L70">        public IndexEntry(WithId object) {</span>
-<span class="nc" id="L71">            this.type = object.getJsonBType();</span>
-<span class="nc" id="L72">            this.id = object.getId();</span>
-<span class="nc" id="L73">        }</span>
+<span class="fc" id="L70">        public IndexEntry(WithId object) {</span>
+<span class="fc" id="L71">            this.type = object.getJsonBType();</span>
+<span class="fc" id="L72">            this.id = object.getId();</span>
+<span class="fc" id="L73">        }</span>
 
         /**
          * @return index entry type

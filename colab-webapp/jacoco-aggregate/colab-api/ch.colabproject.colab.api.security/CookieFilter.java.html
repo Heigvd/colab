@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CookieFilter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.security</a> &gt; <span class="el_source">CookieFilter.java</span></div><h1>CookieFilter.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.security;
+
+import ch.colabproject.colab.api.ejb.RequestManager;
+import java.io.IOException;
+import javax.inject.Inject;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.ext.Provider;
+
+/**
+ * Intercept all request to the API. Make sure COLAB_SESSION_ID exists
+ *
+ * @author maxence
+ */
+@Provider
+<span class="fc" id="L27">public class CookieFilter implements ContainerRequestFilter, ContainerResponseFilter {</span>
+
+    /**
+     * Cluster-wide session cache.
+     */
+    @Inject
+    private SessionManager sessionManager;
+
+    /**
+     * Request related logic
+     */
+    @Inject
+    private RequestManager requestManager;
+
+    /**
+     * Name of the cookie
+     */
+    private static final String COOKIE_NAME = &quot;COLAB_SESSION_ID&quot;;
+
+    /**
+     * Intercept request and make sure a httpSession is bound to the request
+     *
+     * @param requestContext request context
+     *
+     * @throws IOException if an I/O exception occurs.
+     */
+    @Override
+    public void filter(ContainerRequestContext requestContext) throws IOException {
+<span class="nc" id="L55">        Cookie cookie = requestContext.getCookies().get(COOKIE_NAME);</span>
+<span class="nc" id="L56">        String sessionId = null;</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        if (cookie != null) {</span>
+<span class="nc" id="L58">            sessionId = cookie.getValue();</span>
+        }
+<span class="nc" id="L60">        HttpSession httpSession = sessionManager.getOrCreate(sessionId);</span>
+<span class="nc" id="L61">        requestManager.setHttpSession(httpSession);</span>
+<span class="nc" id="L62">    }</span>
+
+    /**
+     * Intercept response, save httpSession in sessions cache and make sure set-cookie header is set
+     *
+     * @param requestContext the request context
+     * @param responseContext the response context
+     *
+     * @throws IOException if an I/O exception occurs.
+     */
+    @Override
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+<span class="nc" id="L74">        HttpSession session = requestManager.getHttpSession();</span>
+
+<span class="nc" id="L76">        session.keepAlive();</span>
+<span class="nc" id="L77">        sessionManager.save(session);</span>
+
+<span class="nc" id="L79">        NewCookie sessionCookie = new NewCookie(COOKIE_NAME, session.getSessionId(),</span>
+            null, null, null, -1, true, true);
+
+<span class="nc" id="L82">        responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);</span>
+<span class="nc" id="L83">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

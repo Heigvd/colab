@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.Project;
+import ch.colabproject.colab.api.model.project.Project;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -88,9 +88,9 @@ import javax.persistence.TypedQuery;
      */
     public Project deleteProject(Long id) {
         // TODO: move to recycle bin first
-<span class="nc" id="L91">        Project project = this.getProject(id);</span>
-<span class="nc" id="L92">        em.remove(project);</span>
-<span class="nc" id="L93">        return project;</span>
+<span class="fc" id="L91">        Project project = this.getProject(id);</span>
+<span class="fc" id="L92">        em.remove(project);</span>
+<span class="fc" id="L93">        return project;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

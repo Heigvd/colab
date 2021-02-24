@@ -27,7 +27,7 @@ import javax.transaction.Synchronization;
 <span class="fc" id="L27">    private Set&lt;WithId&gt; updated = new HashSet&lt;&gt;();</span>
 
     /**
-     * set of entites which have been deleted during the transaction
+     * set of entities which have been deleted during the transaction
      */
 <span class="fc" id="L32">    private Set&lt;IndexEntry&gt; deleted = new HashSet&lt;&gt;();</span>
 
@@ -49,11 +49,11 @@ import javax.transaction.Synchronization;
     public void afterCompletion(int status) {
 <span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (status == Status.STATUS_COMMITTED) {</span>
 <span class="fc" id="L51">            updated.removeAll(deleted);</span>
-<span class="pc bpc" id="L52" title="1 of 2 branches missed.">            if (!updated.isEmpty()) {</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            if (!updated.isEmpty()) {</span>
 <span class="fc" id="L53">                WebsocketEndpoint.propagate(updated);</span>
             }
-<span class="pc bpc" id="L55" title="1 of 2 branches missed.">            if (!deleted.isEmpty()) {</span>
-<span class="nc" id="L56">                WebsocketEndpoint.propagateDeletion(deleted);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">            if (!deleted.isEmpty()) {</span>
+<span class="fc" id="L56">                WebsocketEndpoint.propagateDeletion(deleted);</span>
             }
         }
 <span class="fc" id="L59">    }</span>
@@ -73,7 +73,7 @@ import javax.transaction.Synchronization;
      * @param o object which has been deleted
      */
     public void registerDelete(WithId o) {
-<span class="nc" id="L76">        deleted.add(new IndexEntry(o));</span>
-<span class="nc" id="L77">    }</span>
+<span class="fc" id="L76">        deleted.add(new IndexEntry(o));</span>
+<span class="fc" id="L77">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

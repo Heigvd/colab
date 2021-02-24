@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>HttpSession.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.security</a> &gt; <span class="el_source">HttpSession.java</span></div><h1>HttpSession.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.security;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+/**
+ * Simple bean to store session related information
+ *
+ * @author maxence
+ */
+<span class="fc" id="L17">public class HttpSession implements Serializable {</span>
+
+    /**
+     * Last activity time
+     */
+    private LocalDateTime time;
+
+    /**
+     * Session id
+     */
+    private String sessionId;
+
+    /**
+     * id of the account used for authentication
+     */
+    private Long accountId;
+
+    /**
+     * @return Get last activity time
+     */
+    public LocalDateTime getTime() {
+<span class="nc" id="L38">        return time;</span>
+    }
+
+    /**
+     * Set last activity time
+     *
+     * @param time time
+     */
+    public void setTime(LocalDateTime time) {
+<span class="nc" id="L47">        this.time = time;</span>
+<span class="nc" id="L48">    }</span>
+
+    /**
+     * @return Get the session id
+     */
+    public String getSessionId() {
+<span class="nc" id="L54">        return sessionId;</span>
+    }
+
+    /**
+     * Set session id
+     *
+     * @param sessionId id of the session
+     */
+    public void setSessionId(String sessionId) {
+<span class="fc" id="L63">        this.sessionId = sessionId;</span>
+<span class="fc" id="L64">    }</span>
+
+    /**
+     * @return authenticated account, null if not authenticated
+     */
+    public Long getAccountId() {
+<span class="fc" id="L70">        return accountId;</span>
+    }
+
+    /**
+     * Set authenticated account id
+     *
+     * @param accountId id of the account account
+     */
+    public void setAccountId(Long accountId) {
+<span class="fc" id="L79">        this.accountId = accountId;</span>
+<span class="fc" id="L80">    }</span>
+
+    /**
+     * set last activity time to now
+     */
+    public void keepAlive() {
+<span class="nc" id="L86">        this.time = LocalDateTime.now();</span>
+<span class="nc" id="L87">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

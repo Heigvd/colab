@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.ProjectFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.Project;
+import ch.colabproject.colab.api.model.project.Project;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -31,12 +31,12 @@ import org.slf4j.LoggerFactory;
 @Path(&quot;projects&quot;)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-<span class="nc" id="L34">public class ProjectController {</span>
+<span class="fc" id="L34">public class ProjectController {</span>
 
     /**
      * Project controller SLF4J logger
      */
-<span class="nc" id="L39">    private static final Logger log = LoggerFactory.getLogger(ProjectController.class);</span>
+<span class="fc" id="L39">    private static final Logger log = LoggerFactory.getLogger(ProjectController.class);</span>
 
     /**
      * The Project business logic
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
      * @return all known project
      */
     @GET
-    public List&lt;Project&gt; getAllProject() {
+    public List&lt;Project&gt; getAllProjects() {
         // TOOD: once user managemenet implemeneted, restrict to admin only
 <span class="nc" id="L55">        return projectFacade.getAllProject();</span>
     }
@@ -65,8 +65,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;/{id}&quot;)
     public Project getProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L68">        log.info(&quot;Post /{}&quot;, &quot;TODO&quot;);</span>
-<span class="nc" id="L69">        return projectFacade.getProject(id);</span>
+<span class="fc" id="L68">        log.info(&quot;Post /{}&quot;, &quot;TODO&quot;);</span>
+<span class="fc" id="L69">        return projectFacade.getProject(id);</span>
     }
 
     /**
@@ -78,8 +78,8 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createProject(Project project) {
-<span class="nc" id="L81">        log.info(&quot;Post /{}&quot;, project);</span>
-<span class="nc" id="L82">        return projectFacade.createProject(project).getId();</span>
+<span class="fc" id="L81">        log.info(&quot;Post /{}&quot;, project);</span>
+<span class="fc" id="L82">        return projectFacade.createProject(project).getId();</span>
     }
 
     /**
@@ -102,7 +102,7 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;/{id}&quot;)
     public void deleteProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L105">        projectFacade.deleteProject(id);</span>
-<span class="nc" id="L106">    }</span>
+<span class="fc" id="L105">        projectFacade.deleteProject(id);</span>
+<span class="fc" id="L106">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

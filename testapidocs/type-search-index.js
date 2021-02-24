@@ -1,1 +1,1 @@
-typeSearchIndex = [{"p":"ch.colabproject.colab.api.tests","l":"AbstractArquillianTest"},{"l":"All Classes","url":"allclasses-index.html"},{"p":"ch.colabproject.colab.api.ejb","l":"ProjectFacadeTest"}]
+typeSearchIndex = [{"p":"ch.colabproject.colab.api.tests","l":"AbstractArquillianTest"},{"l":"All Classes","url":"allclasses-index.html"},{"p":"ch.colabproject.colab.api","l":"HelperTest"},{"p":"ch.colabproject.colab.api.rest","l":"ProjectControllerTest"},{"p":"ch.colabproject.colab.api","l":"RequestManagerMock"},{"p":"ch.colabproject.colab.api.rest","l":"UserControllerTest"}]

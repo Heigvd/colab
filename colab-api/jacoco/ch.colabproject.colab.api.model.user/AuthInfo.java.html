@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthInfo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.user</a> &gt; <span class="el_source">AuthInfo.java</span></div><h1>AuthInfo.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.user;
+
+/**
+ * Contains information sent by the user to authenticate with a password
+ *
+ * @author maxence
+ */
+<span class="fc" id="L14">public class AuthInfo {</span>
+
+    /**
+     * user email
+     */
+    private String email;
+
+    /**
+     * hash of user password computed with the mandatory method
+     */
+    private String mandatoryHash;
+
+    /**
+     * Optional hash computed by the optional second method
+     */
+    private String optionalHash;
+
+    /**
+     * @return email that should match a LocalAccount one
+     */
+    public String getEmail() {
+<span class="fc" id="L35">        return email;</span>
+    }
+
+    /**
+     * Set email
+     *
+     * @param email email
+     */
+    public void setEmail(String email) {
+<span class="fc" id="L44">        this.email = email;</span>
+<span class="fc" id="L45">    }</span>
+
+    /**
+     * @return the hash
+     */
+    public String getMandatoryHash() {
+<span class="fc" id="L51">        return mandatoryHash;</span>
+    }
+
+    /**
+     * set hash of current salt+plain_password, hashed with currentMethod
+     *
+     * @param mandatoryHash hash
+     */
+    public void setMandatoryHash(String mandatoryHash) {
+<span class="fc" id="L60">        this.mandatoryHash = mandatoryHash;</span>
+<span class="fc" id="L61">    }</span>
+
+    /**
+     * @return optional hash
+     */
+    public String getOptionalHash() {
+<span class="nc" id="L67">        return optionalHash;</span>
+    }
+
+    /**
+     * set optional hash (hasehd with nextClientMethod and nextHash)
+     *
+     * @param optionalHash hash
+     */
+    public void setOptionalHash(String optionalHash) {
+<span class="nc" id="L76">        this.optionalHash = optionalHash;</span>
+<span class="nc" id="L77">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LocalAccount.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.user</a> &gt; <span class="el_source">LocalAccount.java</span></div><h1>LocalAccount.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.user;
+
+import ch.colabproject.colab.api.Helper;
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Index;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+/**
+ * Password based authentication.
+ *
+ * @author maxence
+ */
+@Entity
+@NamedQuery(name = &quot;LocalAccount.findByEmail&quot;, query = &quot;SELECT a from LocalAccount a where a.email = :email&quot;)
+@Table(
+    indexes = {
+        @Index(columnList = &quot;email&quot;, unique = true)
+    })
+<span class="fc" id="L33">public class LocalAccount extends Account {</span>
+
+    /**
+     * username-like email address
+     */
+    @NotNull
+    private String email;
+
+    /**
+     * salt+password hash. Hashed with currentDbHashMethod and dbSalt.
+     */
+    @JsonbTransient
+    @NotNull
+    private byte[] hashedPassword;
+
+    /**
+     * Has the email address been verified with a VerificationToken ?
+     */
+    private boolean verified;
+
+    /**
+     * Salt to used before hashing the password
+     */
+    @JsonbTransient
+    @NotNull
+    private byte[] dbSalt;
+
+    /**
+     * Hash method to use to hashedPassword the salt+password
+     */
+    @Column(length = 100)
+    @Enumerated(value = EnumType.STRING)
+    @JsonbTransient
+    @NotNull
+    private HashMethod currentDbHashMethod;
+
+    /**
+     * New hash method to use to hash the salt+password. If not null, rotate hash method on next
+     * successful authentication
+     */
+    @Column(length = 100)
+    @Enumerated(value = EnumType.STRING)
+    @JsonbTransient
+    private HashMethod nextDbHashMethod;
+
+    /**
+     * Salt the client shall use to before hashing its password. Salt is hex-encoded byte array
+     */
+    @NotNull
+    private String clientSalt;
+
+    /**
+     * New salt the client shall use to prefix its password before hashing it.
+     * &lt;p&gt;
+     * In case this is not null, client shall send two hashes. First one is the plain_password
+     * prefixed with clientSalt and hashed with currentClientHashMethod (to authenticate), second is
+     * its password prefixed with this new salt and hashed with nextClientHashMethod if set, current
+     * otherwise. successful authentication (to rotate salt and/or method)
+     */
+    private String newClientSalt;
+
+    /**
+     * Hash method the client shall use to hashedPassword the clientSalt+plain_password
+     */
+    @Column(length = 100)
+    @Enumerated(value = EnumType.STRING)
+    @NotNull
+    private HashMethod currentClientHashMethod;
+
+    /**
+     * New hash method the client shall use to hash its clientSalt+plain_password.
+     * &lt;p&gt;
+     * In case this is not null, client shall send two hashes. First one is its plain_password
+     * prefixed clientSalt and hashed with currentClientHashMethod (to authenticate), second is its
+     * password prefixed with the new_salt (if set)or the current salt and hashed with this method
+     */
+    @Column(length = 100)
+    @Enumerated(value = EnumType.STRING)
+    private HashMethod nextClientHashMethod;
+
+    /**
+     *
+     * @return email associated with this account
+     */
+    public String getEmail() {
+<span class="nc" id="L118">        return email;</span>
+    }
+
+    /**
+     * update email. If the email is not the same, this account will not be verified any longer
+     *
+     * @param email new email to use.
+     */
+    public void setEmail(String email) {
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (Helper.isEmailAddress(email)) {</span>
+
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">            if (!email.equals(this.email)) {</span>
+<span class="fc" id="L130">                this.verified = false;</span>
+            }
+<span class="fc" id="L132">            this.email = email;</span>
+        }
+<span class="fc" id="L134">    }</span>
+
+    /**
+     * get the stored hashedPassword to challenge authentication against
+     *
+     * @return hashedPassword hashedPassword to challenge authentication against
+     */
+    public byte[] getHashedPassword() {
+<span class="fc" id="L142">        return hashedPassword;</span>
+    }
+
+    /**
+     * Update hashedPassword
+     *
+     * @param hashedPassword new hashedPassword
+     */
+    public void setHashedPassword(byte[] hashedPassword) {
+<span class="fc" id="L151">        this.hashedPassword = hashedPassword;</span>
+<span class="fc" id="L152">    }</span>
+
+    /**
+     * has the email address been verified ?
+     *
+     * @return true if the account is verified
+     */
+    public boolean isVerified() {
+<span class="nc" id="L160">        return verified;</span>
+    }
+
+    /**
+     * Set if the account has been verified or not
+     *
+     * @param verified yes or no ?
+     */
+    public void setVerified(boolean verified) {
+<span class="fc" id="L169">        this.verified = verified;</span>
+<span class="fc" id="L170">    }</span>
+
+    /**
+     * @return the salt to used server-side
+     */
+    public byte[] getDbSalt() {
+<span class="fc" id="L176">        return dbSalt;</span>
+    }
+
+    /**
+     * Update the server-side hashedPassword
+     *
+     * @param dbSalt new server-side salt
+     */
+    public void setDbSalt(byte[] dbSalt) {
+<span class="fc" id="L185">        this.dbSalt = dbSalt;</span>
+<span class="fc" id="L186">    }</span>
+
+    /**
+     *
+     * @return the current hashedPassword method to used to hashedPassword provided password
+     */
+    public HashMethod getCurrentDbHashMethod() {
+<span class="fc" id="L193">        return currentDbHashMethod;</span>
+    }
+
+    /**
+     * Set the method to use to hashedPassword provided password
+     *
+     * @param currentDbHashMethod hashedPassword method
+     */
+    public void setCurrentDbHashMethod(HashMethod currentDbHashMethod) {
+<span class="fc" id="L202">        this.currentDbHashMethod = currentDbHashMethod;</span>
+<span class="fc" id="L203">    }</span>
+
+    /**
+     * @return the next hashedPassword method to use. If not null, hashedPassword methods will be
+     *         rotated on next authentication
+     */
+    public HashMethod getNextDbHashMethod() {
+<span class="fc" id="L210">        return nextDbHashMethod;</span>
+    }
+
+    /**
+     * change the next hashedPassword method to used
+     *
+     * @param nextDbHashMethod next hashedPassword method
+     */
+    public void setNextDbHashMethod(HashMethod nextDbHashMethod) {
+<span class="nc" id="L219">        this.nextDbHashMethod = nextDbHashMethod;</span>
+<span class="nc" id="L220">    }</span>
+
+    /**
+     * @return the salt the user shall use before client-side plain_password hashedPassword
+     */
+    public String getClientSalt() {
+<span class="nc" id="L226">        return clientSalt;</span>
+    }
+
+    /**
+     * Update the salt the client shall use
+     *
+     * @param clientSalt client salt
+     */
+    public void setClientSalt(String clientSalt) {
+<span class="fc" id="L235">        this.clientSalt = clientSalt;</span>
+<span class="fc" id="L236">    }</span>
+
+    /**
+     * @return the salt to use to rotate authentication
+     */
+    public String getNewClientSalt() {
+<span class="nc" id="L242">        return newClientSalt;</span>
+    }
+
+    /**
+     * set a next client-side salt
+     *
+     * @param newClientSalt new salt we want the client to use
+     */
+    public void setNewClientSalt(String newClientSalt) {
+<span class="nc" id="L251">        this.newClientSalt = newClientSalt;</span>
+<span class="nc" id="L252">    }</span>
+
+    /**
+     * @return the hashedPassword method the client shall use to hashedPassword its
+     *         salt+plain_password
+     */
+    public HashMethod getCurrentClientHashMethod() {
+<span class="nc" id="L259">        return currentClientHashMethod;</span>
+    }
+
+    /**
+     * CHange hashedPassword method the client shall use
+     *
+     * @param currentClientHashMethod hashedPassword method the client shall use
+     */
+    public void setCurrentClientHashMethod(HashMethod currentClientHashMethod) {
+<span class="fc" id="L268">        this.currentClientHashMethod = currentClientHashMethod;</span>
+<span class="fc" id="L269">    }</span>
+
+    /**
+     * @return the next hashedPassword method the client shall use
+     */
+    public HashMethod getNextClientHashMethod() {
+<span class="fc" id="L275">        return nextClientHashMethod;</span>
+    }
+
+    /**
+     * Update the next client-side hashedPassword method
+     *
+     * @param nextClientHashMethod new next client hashedPassword method
+     */
+    public void setNextClientHashMethod(HashMethod nextClientHashMethod) {
+<span class="nc" id="L284">        this.nextClientHashMethod = nextClientHashMethod;</span>
+<span class="nc" id="L285">    }</span>
+
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+        // TODO
+<span class="nc" id="L290">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

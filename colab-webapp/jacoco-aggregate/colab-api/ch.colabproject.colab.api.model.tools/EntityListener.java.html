@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model.tools;
 
-import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.ejb.TransactionManager;
 import ch.colabproject.colab.api.model.WithId;
 import javax.inject.Inject;
 import javax.persistence.PostPersist;
@@ -24,7 +24,7 @@ import javax.persistence.PostUpdate;
      * RequestManager
      */
     @Inject
-    private RequestManager requestManager;
+    private TransactionManager transactionManager;
 
     /**
      * Track all updates and insert
@@ -35,7 +35,7 @@ import javax.persistence.PostUpdate;
     @PostUpdate
     public void onUpdate(Object o) {
 <span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (o instanceof WithId) {</span>
-<span class="fc" id="L38">            requestManager.registerUpdate((WithId) o);</span>
+<span class="fc" id="L38">            transactionManager.registerUpdate((WithId) o);</span>
         }
 <span class="fc" id="L40">    }</span>
 
@@ -46,9 +46,9 @@ import javax.persistence.PostUpdate;
      */
     @PreRemove
     public void onDestroy(Object o) {
-<span class="nc bnc" id="L49" title="All 2 branches missed.">        if (o instanceof WithId) {</span>
-<span class="nc" id="L50">            requestManager.registerDelete((WithId) o);</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (o instanceof WithId) {</span>
+<span class="fc" id="L50">            transactionManager.registerDelete((WithId) o);</span>
         }
-<span class="nc" id="L52">    }</span>
+<span class="fc" id="L52">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

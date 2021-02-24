@@ -16,7 +16,7 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.ProjectFacade;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.exceptions.ColabMergeException;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.Project;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.project.Project;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.util.List;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> javax.inject.Inject;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> javax.ws.rs.Consumes;
@@ -58,7 +58,7 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  <em class="jxr_javadoccomment">     * @return all known project</em>
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      @GET
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">public</strong> List&lt;Project&gt; getAllProject() {
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">public</strong> List&lt;Project&gt; getAllProjects() {
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          <em class="jxr_comment">// TOOD: once user managemenet implemeneted, restrict to admin only</em>
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>          <strong class="jxr_keyword">return</strong> projectFacade.getAllProject();
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>      }
@@ -72,7 +72,7 @@
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      @GET
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      @Path(<span class="jxr_string">"/{id}"</span>)
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> <a name="Project" href="../../../../../ch/colabproject/colab/api/model/Project.html#Project">Project</a> getProject(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> getProject(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          log.info(<span class="jxr_string">"Post /{}"</span>, <span class="jxr_string">"TODO"</span>);
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          <strong class="jxr_keyword">return</strong> projectFacade.getProject(id);
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      }
@@ -85,7 +85,7 @@
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  <em class="jxr_javadoccomment">     * @return id of the persisted new project</em>
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      @POST
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">public</strong> Long createProject(<a name="Project" href="../../../../../ch/colabproject/colab/api/model/Project.html#Project">Project</a> project) {
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">public</strong> Long createProject(<a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project) {
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          log.info(<span class="jxr_string">"Post /{}"</span>, project);
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>          <strong class="jxr_keyword">return</strong> projectFacade.createProject(project).getId();
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      }
@@ -98,7 +98,7 @@
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">     * @throws ColabMergeException if the merge is not possible</em>
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      @PUT
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> updateProject(<a name="Project" href="../../../../../ch/colabproject/colab/api/model/Project.html#Project">Project</a> project) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> updateProject(<a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>          projectFacade.updateProject(project);
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      }
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>  
