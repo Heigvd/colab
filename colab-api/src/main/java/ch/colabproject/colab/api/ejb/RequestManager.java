@@ -6,12 +6,12 @@
  */
 package ch.colabproject.colab.api.ejb;
 
-import ch.colabproject.colab.api.model.WithId;
+import ch.colabproject.colab.api.model.user.Account;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.security.HttpSession;
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.enterprise.context.RequestScoped;
-import javax.transaction.TransactionSynchronizationRegistry;
+import javax.inject.Inject;
 
 /**
  * Request sidekick.
@@ -22,42 +22,45 @@ import javax.transaction.TransactionSynchronizationRegistry;
 public class RequestManager implements Serializable {
 
     /**
-     * JTA registry used to attach websocket synchronizer
+     * User-related business logic
      */
-    @Resource
-    private transient TransactionSynchronizationRegistry jtaSyncRegistry;
+    @Inject
+    private UserManagement userManagement;
 
     /**
-     * Websocket synchronizer
+     * HTTP session associated to current request
      */
-    private WebsocketSynchronizer sync;
+    private HttpSession httpSession;
 
     /**
-     * Some postConstruct logic. Attach a WS synchronizer to each request
+     *
+     * @return the current http session
      */
-    @PostConstruct
-    public void construct() {
-        if (jtaSyncRegistry != null && sync == null) {
-            sync = new WebsocketSynchronizer();
-            jtaSyncRegistry.registerInterposedSynchronization(sync);
+    public HttpSession getHttpSession() {
+        return this.httpSession;
+    }
+
+    /**
+     * Attach httpSession to this request
+     *
+     * @param httpSession http session
+     */
+    public void setHttpSession(HttpSession httpSession) {
+        this.httpSession = httpSession;
+    }
+
+    /**
+     * Get the current authenticated user
+     *
+     * @return the current user
+     */
+    public User getCurrentUser() {
+        if (this.httpSession != null) {
+            Account account = userManagement.findAccount(this.httpSession.getAccountId());
+            if (account != null) {
+                return account.getUser();
+            }
         }
-    }
-
-    /**
-     * Register updated object within the WS JTA synchronizer.
-     *
-     * @param o object to register
-     */
-    public void registerUpdate(WithId o) {
-        sync.registerUpdate(o);
-    }
-
-    /**
-     * Register deleted object within the WS JTA synchronizer
-     *
-     * @param o just deleted object
-     */
-    public void registerDelete(WithId o) {
-        sync.registerDelete(o);
+        return null;
     }
 }

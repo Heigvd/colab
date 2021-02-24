@@ -62,7 +62,7 @@
 
         <eclipselink.version>2.7.7</eclipselink.version>
         <payara.version>5.2021.1</payara.version>
-        <arquillian.version>1.7.0.Alpha5</arquillian.version>
+        <arquillian.version>1.7.0.Alpha7</arquillian.version>
 
         <jacoco.surefireArgLine></jacoco.surefireArgLine>
     </properties>
@@ -77,6 +77,13 @@
                 <version>${payara.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.cache</groupId>
+                <artifactId>cache-api</artifactId>
+                <version>1.1.1</version>
+                <type>jar</type>
             </dependency>
 
             <!--*****************************************************************-->
@@ -265,7 +272,7 @@
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
-                    <version>4.0.0</version>
+                    <version>4.2.0</version>
                     <configuration>
                         <effort>Max</effort>
                         <threshold>Low</threshold>

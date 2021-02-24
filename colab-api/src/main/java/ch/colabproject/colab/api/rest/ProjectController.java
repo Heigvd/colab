@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.ProjectFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.Project;
+import ch.colabproject.colab.api.model.project.Project;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;

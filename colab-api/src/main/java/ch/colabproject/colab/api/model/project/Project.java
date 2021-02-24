@@ -4,9 +4,10 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.model;
+package ch.colabproject.colab.api.model.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -42,6 +43,10 @@ public class Project implements ColabEntity {
         return id;
     }
 
+    /**
+     * Set id
+     * @param id id
+     */
     public void setId(Long id) {
         this.id = id;
     }

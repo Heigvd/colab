@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.Project;
+import ch.colabproject.colab.api.model.project.Project;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;

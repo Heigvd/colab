@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model.tools;
 
-import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.ejb.TransactionManager;
 import ch.colabproject.colab.api.model.WithId;
 import javax.inject.Inject;
 import javax.persistence.PostPersist;
@@ -24,7 +24,7 @@ public class EntityListener {
      * RequestManager
      */
     @Inject
-    private RequestManager requestManager;
+    private TransactionManager transactionManager;
 
     /**
      * Track all updates and insert
@@ -35,7 +35,7 @@ public class EntityListener {
     @PostUpdate
     public void onUpdate(Object o) {
         if (o instanceof WithId) {
-            requestManager.registerUpdate((WithId) o);
+            transactionManager.registerUpdate((WithId) o);
         }
     }
 
@@ -47,7 +47,7 @@ public class EntityListener {
     @PreRemove
     public void onDestroy(Object o) {
         if (o instanceof WithId) {
-            requestManager.registerDelete((WithId) o);
+            transactionManager.registerDelete((WithId) o);
         }
     }
 }
