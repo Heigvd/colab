@@ -50,7 +50,7 @@ public class ProjectController {
      * @return all known project
      */
     @GET
-    public List<Project> getAllProject() {
+    public List<Project> getAllProjects() {
         // TOOD: once user managemenet implemeneted, restrict to admin only
         return projectFacade.getAllProject();
     }

@@ -27,7 +27,7 @@ public class WebsocketSynchronizer implements Synchronization {
     private Set<WithId> updated = new HashSet<>();
 
     /**
-     * set of entites which have been deleted during the transaction
+     * set of entities which have been deleted during the transaction
      */
     private Set<IndexEntry> deleted = new HashSet<>();
 

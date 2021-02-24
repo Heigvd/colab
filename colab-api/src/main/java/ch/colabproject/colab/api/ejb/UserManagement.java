@@ -143,7 +143,7 @@ public class UserManagement {
      *
      * @return brand new user embedding an LocalAccount
      *
-     * @throws ColabErrorMessage
+     * @throws ColabErrorMessage if username is already taken
      */
     public User signup(SignUpInfo signup) throws ColabErrorMessage {
         // username already taken ?

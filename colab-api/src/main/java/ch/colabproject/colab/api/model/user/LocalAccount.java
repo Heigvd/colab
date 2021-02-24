@@ -104,7 +104,7 @@ public class LocalAccount extends Account {
      * <p>
      * In case this is not null, client shall send two hashes. First one is its plain_password
      * prefixed clientSalt and hashed with currentClientHashMethod (to authenticate), second is its
-     * password prefixed with the new_salt (if set)or the curentsalt and hashed with this method
+     * password prefixed with the new_salt (if set)or the current salt and hashed with this method
      */
     @Column(length = 100)
     @Enumerated(value = EnumType.STRING)
@@ -245,7 +245,7 @@ public class LocalAccount extends Account {
     /**
      * set a next client-side salt
      *
-     * @param newClientSalt
+     * @param newClientSalt new salt we want the client to use
      */
     public void setNewClientSalt(String newClientSalt) {
         this.newClientSalt = newClientSalt;
