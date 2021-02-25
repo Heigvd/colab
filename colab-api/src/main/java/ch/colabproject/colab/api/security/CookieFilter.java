@@ -14,6 +14,7 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.ext.Provider;
 
@@ -40,14 +41,14 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
     /**
      * Name of the cookie
      */
-    private static final String COOKIE_NAME = "COLAB_COOKIE_ID";
+    private static final String COOKIE_NAME = "COLAB_SESSION_ID";
 
     /**
      * Intercept request and make sure a httpSession is bound to the request
      *
-     * @param requestContext
+     * @param requestContext request context
      *
-     * @throws IOException
+     * @throws IOException if an I/O exception occurs.
      */
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -61,12 +62,12 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
     }
 
     /**
-     * Intercept response, save httpSession in sessions cache and make sure set-cookie is set
+     * Intercept response, save httpSession in sessions cache and make sure set-cookie header is set
      *
-     * @param requestContext
-     * @param responseContext
+     * @param requestContext the request context
+     * @param responseContext the response context
      *
-     * @throws IOException
+     * @throws IOException if an I/O exception occurs.
      */
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
@@ -78,7 +79,7 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
         NewCookie sessionCookie = new NewCookie(COOKIE_NAME, session.getSessionId(),
             null, null, null, -1, true, true);
 
-        responseContext.getCookies().put(COOKIE_NAME, sessionCookie);
+        responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);
     }
 
 }

@@ -25,7 +25,7 @@ public class UserControllerTest extends AbstractArquillianTest {
     /**
      * Create a user, login and logout
      *
-     * @throws ColabErrorMessage
+     * @throws ColabErrorMessage not expected in this test case
      */
     @Test
     public void testCreateUser() throws ColabErrorMessage {

@@ -46,7 +46,7 @@ public class SessionManager {
     public HttpSession getOrCreate(String sessionId) {
         // no session id or sessionId not in cache: generate new sessionId
         if (sessionId == null || !sessions.containsKey(sessionId)) {
-            sessionId = Helper.generateHexSalt(64) + "-" + System.currentTimeMillis();
+            sessionId = Helper.generateHexSalt(32) + "-" + System.currentTimeMillis();
         }
 
         HttpSession session = sessions.get(sessionId);
