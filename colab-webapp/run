@@ -106,7 +106,7 @@ ${JAVA_EXECUTABLE} ${DEBUG_OPTS} ${JDK_EXTRA_OPTS} ${SSL_OPTS} ${GC} ${HTTP2_OPT
     -jar ${PAYARA_MICRO} --deploy ${THE_WAR} --clusterName ${HZ_CLUSTER_NAME} \
     --contextroot "" \
     --interfaces 127.0.0.1 \
-    --systemproperties colab.properties
+    --systemproperties default_colab.properties
     --autobindhttp --autobindssl &
 PID=$!
 
