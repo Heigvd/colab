@@ -1,6 +1,8 @@
 # colab
 A Digital Lab for the co-Design, co-Development and co-Evaluation of Digital Learning Games
 
+[![CI](https://github.com/Heigvd/colab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Heigvd/colab/actions/workflows/ci.yml) [reports](https://heigvd.github.io/colab/)
+
 ## setup
 
 ### postgresql
