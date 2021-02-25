@@ -6,12 +6,17 @@
  */
 package ch.colabproject.colab.api.exceptions;
 
+import javax.ejb.ApplicationException;
+
 /**
  * Throw an error message.
  *
  * @author maxence
  */
-public class ColabErrorMessage extends Exception {
+@ApplicationException(rollback = true)
+public class ColabErrorMessage extends RuntimeException {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * List of message type

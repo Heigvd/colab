@@ -145,7 +145,7 @@ public class UserManagement {
      *
      * @throws ColabErrorMessage if username is already taken
      */
-    public User signup(SignUpInfo signup) throws ColabErrorMessage {
+    public User signup(SignUpInfo signup) {
         // username already taken ?
         User user = this.findUserByUsername(signup.getUsername());
         if (user == null) {
@@ -189,7 +189,7 @@ public class UserManagement {
      *
      * @throws ColabErrorMessage if authentication failed
      */
-    public User authenticate(AuthInfo authInfo) throws ColabErrorMessage {
+    public User authenticate(AuthInfo authInfo) {
         String email = authInfo.getEmail();
         LocalAccount account = this.findLocalAccountByEmail(email);
 

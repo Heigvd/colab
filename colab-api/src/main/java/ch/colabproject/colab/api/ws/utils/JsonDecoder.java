@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.ws.utils;
 
-import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.api.rest.config.JsonbProvider;
+import ch.colabproject.colab.api.ws.message.WsMessage;
 import java.io.StringReader;
 import javax.json.Json;
 import javax.json.JsonException;

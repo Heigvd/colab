@@ -9,7 +9,6 @@ package ch.colabproject.colab.api.ejb;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.HttpSession;
-import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -19,7 +18,7 @@ import javax.inject.Inject;
  * @author maxence
  */
 @RequestScoped
-public class RequestManager implements Serializable {
+public class RequestManager {
 
     /**
      * User-related business logic
@@ -31,6 +30,11 @@ public class RequestManager implements Serializable {
      * HTTP session associated to current request
      */
     private HttpSession httpSession;
+
+    /**
+     * Timestamp as return by {@link System#currentTimeMillis() } the request starts at
+     */
+    private long startTime;
 
     /**
      *
@@ -52,7 +56,7 @@ public class RequestManager implements Serializable {
     /**
      * Get the current authenticated user
      *
-     * @return the current user
+     * @return the current user or null if none
      */
     public User getCurrentUser() {
         if (this.httpSession != null) {
@@ -62,5 +66,24 @@ public class RequestManager implements Serializable {
             }
         }
         return null;
+    }
+
+    /**
+     * set time the current request started
+     *
+     * @param timestamp start timestamp
+     *
+     */
+    public void setStartTime(long timestamp) {
+        this.startTime = timestamp;
+    }
+
+    /**
+     * Return the time the request started
+     *
+     * @return start time timestamp in ms
+     */
+    public long getStartTime() {
+        return startTime;
     }
 }

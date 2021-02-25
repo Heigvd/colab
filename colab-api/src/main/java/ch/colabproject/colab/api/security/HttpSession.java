@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
  */
 public class HttpSession implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Last activity time
      */

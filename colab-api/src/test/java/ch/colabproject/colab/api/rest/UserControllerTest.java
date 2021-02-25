@@ -6,13 +6,10 @@
  */
 package ch.colabproject.colab.api.rest;
 
-import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
-import ch.colabproject.colab.api.model.user.AuthInfo;
-import ch.colabproject.colab.api.model.user.AuthMethod;
-import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.tests.AbstractArquillianTest;
+import ch.colabproject.colab.api.tests.TestUser;
+import javax.ws.rs.ClientErrorException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -24,42 +21,36 @@ public class UserControllerTest extends AbstractArquillianTest {
 
     /**
      * Create a user, login and logout
-     *
-     * @throws ColabErrorMessage not expected in this test case
      */
     @Test
-    public void testCreateUser() throws ColabErrorMessage {
-        // Create a brand new user with a local account
-        AuthMethod authMethod = userController.getAuthMethod("user@test.local");
-        String password = "SoSecuredPassword";
+    public void testCreateUser() {
+        TestUser myUser = this.signup("GoulashSensei", "user@test.local", "SoSecuredPassword");
 
-        authMethod.getMandatoryMethod();
+        this.signIn(myUser);
 
-        SignUpInfo signup = new SignUpInfo();
-        signup.setUsername("GoulashSensei");
-        signup.setEmail("user@test.local");
-        signup.setSalt(authMethod.getSalt());
-        signup.setHashMethod(authMethod.getMandatoryMethod());
-
-        String hash = Helper.bytesToHex(
-            authMethod.getMandatoryMethod().hash(password, signup.getSalt()));
-
-        signup.setHash(hash);
-
-        userController.signUp(signup);
-
-        // Log in
-        AuthInfo authInfo = new AuthInfo();
-        authInfo.setEmail("user@test.local");
-        authInfo.setMandatoryHash(hash);
-
-        userController.signIn(authInfo);
-
-        User user = requestManager.getCurrentUser();
+        User user = client.getCurrentUser();
         Assertions.assertNotNull(user);
 
-        // Log out
-        userController.signOut();
-        Assertions.assertNull(requestManager.getCurrentUser());
+        this.signOut();
+        Assertions.assertNull(client.getCurrentUser());
     }
+
+    /**
+     * Assert authenticate with wrong password fails
+     */
+    @Test
+    public void testAuthenticationFailure() {
+        TestUser myUser = this.signup("GoulashSensei", "user@test.local", "SoSecuredPassword");
+
+        myUser.setPassword("WrongPassword");
+
+        Assertions.assertThrows(ClientErrorException.class, () -> {
+            this.signIn(myUser);
+        });
+
+        User user = client.getCurrentUser();
+
+        Assertions.assertNull(user);
+    }
+
 }

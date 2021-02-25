@@ -21,6 +21,8 @@ import javax.transaction.TransactionSynchronizationRegistry;
 @TransactionScoped
 public class TransactionManager implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * JTA registry used to attach websocket synchronizer
      */
@@ -49,7 +51,9 @@ public class TransactionManager implements Serializable {
      * @param o object to register
      */
     public void registerUpdate(WithId o) {
-        sync.registerUpdate(o);
+        if (sync != null) {
+            sync.registerUpdate(o);
+        }
     }
 
     /**
@@ -58,6 +62,8 @@ public class TransactionManager implements Serializable {
      * @param o just deleted object
      */
     public void registerDelete(WithId o) {
-        sync.registerDelete(o);
+        if (sync != null) {
+            sync.registerDelete(o);
+        }
     }
 }

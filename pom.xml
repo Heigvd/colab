@@ -118,11 +118,6 @@
                 <artifactId>liquibase-core</artifactId>
                 <version>4.2.0</version>
             </dependency>
-            <dependency>
-                <groupId>javax.cache</groupId>
-                <artifactId>cache-api</artifactId>
-                <type>jar</type>
-            </dependency>
 
             <dependency>
                 <groupId>org.postgresql</groupId>

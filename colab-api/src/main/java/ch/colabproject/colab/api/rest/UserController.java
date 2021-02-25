@@ -6,11 +6,13 @@
  */
 package ch.colabproject.colab.api.rest;
 
+import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.ejb.UserManagement;
 import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
+import ch.colabproject.colab.api.model.user.User;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -37,6 +39,12 @@ public class UserController {
     private UserManagement userManagement;
 
     /**
+     * Request related logic
+     */
+    @Inject
+    private RequestManager requestManager;
+
+    /**
      * Get the authentication method and its parameters a user shall use to authenticate with the
      * given email address
      *
@@ -46,8 +54,19 @@ public class UserController {
      */
     @GET
     @Path("/AuthMethod/{email}")
-    public AuthMethod getAuthMethod(@PathParam("username") String email) {
+    public AuthMethod getAuthMethod(@PathParam("email") String email) {
         return userManagement.getAuthenticationMethod(email);
+    }
+
+    /**
+     * Return the current authenticated user
+     *
+     * @return current user or null
+     */
+    @GET
+    @Path("/CurrentUser")
+    public User getCurrentUser() {
+        return requestManager.getCurrentUser();
     }
 
     /**
@@ -59,7 +78,7 @@ public class UserController {
      */
     @POST
     @Path("SignUp")
-    public void signUp(SignUpInfo signup) throws ColabErrorMessage {
+    public void signUp(SignUpInfo signup) {
         userManagement.signup(signup);
     }
 
@@ -72,7 +91,7 @@ public class UserController {
      */
     @POST
     @Path("/SignIn")
-    public void signIn(AuthInfo authInfo) throws ColabErrorMessage {
+    public void signIn(AuthInfo authInfo) {
         userManagement.authenticate(authInfo);
     }
 
@@ -80,6 +99,7 @@ public class UserController {
      * Sign out
      */
     @POST
+    @Path("/SignOut")
     public void signOut() {
         userManagement.logout();
     }

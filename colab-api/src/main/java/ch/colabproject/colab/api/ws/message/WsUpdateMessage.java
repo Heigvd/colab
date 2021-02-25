@@ -16,6 +16,8 @@ import java.util.Collection;
  */
 public class WsUpdateMessage extends WsMessage {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * List of new or updated objects
      */

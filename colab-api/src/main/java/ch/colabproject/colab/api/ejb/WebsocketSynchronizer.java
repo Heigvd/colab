@@ -9,8 +9,11 @@ package ch.colabproject.colab.api.ejb;
 import ch.colabproject.colab.api.model.WithId;
 import ch.colabproject.colab.api.ws.WebsocketEndpoint;
 import ch.colabproject.colab.api.ws.message.WsDeleteMessage.IndexEntry;
+import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
 
@@ -19,7 +22,9 @@ import javax.transaction.Synchronization;
  *
  * @author maxence
  */
-public class WebsocketSynchronizer implements Synchronization {
+public class WebsocketSynchronizer implements Synchronization, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * set of updated entities to be propagated
@@ -48,9 +53,21 @@ public class WebsocketSynchronizer implements Synchronization {
     @Override
     public void afterCompletion(int status) {
         if (status == Status.STATUS_COMMITTED) {
-            updated.removeAll(deleted);
-            if (!updated.isEmpty()) {
-                WebsocketEndpoint.propagate(updated);
+
+            /**
+             * Ignore updated entities which have been deleted
+             */
+            List<WithId> filtered = updated.stream()
+                .filter(
+                    (u) -> !deleted.stream()
+                        .anyMatch(
+                            (d) -> d.getId().equals(u.getId())
+                            && d.getType().equals(u.getJsonBType())
+                        )
+                ).collect(Collectors.toList());
+
+            if (!filtered.isEmpty()) {
+                WebsocketEndpoint.propagate(filtered);
             }
             if (!deleted.isEmpty()) {
                 WebsocketEndpoint.propagateDeletion(deleted);

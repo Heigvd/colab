@@ -18,22 +18,29 @@ public class AuthMethod {
     /**
      * Hash method used to authenticate
      */
-    private final HashMethod mandatoryMethod;
+    private HashMethod mandatoryMethod;
 
     /**
      * Salt used to prefix the password before hashing it with mandatory method
      */
-    private final String salt;
+    private String salt;
 
     /**
      * optional method. Use to migrate to a new method or to change the salt
      */
-    private final HashMethod optionalMethod;
+    private HashMethod optionalMethod;
 
     /**
      * Salt used to prefix the password before hashing it with optional method
      */
-    private final String newSalt;
+    private String newSalt;
+
+    /**
+     * Default constructor
+     */
+    public AuthMethod() {
+        // no-op
+    }
 
     /**
      * Build payload to send to client
@@ -43,7 +50,8 @@ public class AuthMethod {
      * @param optionalMethod  optional hash method
      * @param newSalt         salt to use with optional hash method
      */
-    public AuthMethod(HashMethod mandatoryMethod, String salt, HashMethod optionalMethod, String newSalt) {
+    public AuthMethod(HashMethod mandatoryMethod, String salt,
+        HashMethod optionalMethod, String newSalt) {
         this.mandatoryMethod = mandatoryMethod;
         this.salt = salt;
         this.optionalMethod = optionalMethod;
@@ -58,11 +66,29 @@ public class AuthMethod {
     }
 
     /**
+     * set Mandatory hash method
+     *
+     * @param mandatoryMethod hash method
+     */
+    public void setMandatoryMethod(HashMethod mandatoryMethod) {
+        this.mandatoryMethod = mandatoryMethod;
+    }
+
+    /**
      *
      * @return the salt to use with mandatory method
      */
     public String getSalt() {
         return salt;
+    }
+
+    /**
+     * Set the salt to use
+     *
+     * @param salt the salt
+     */
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     /**
@@ -74,10 +100,30 @@ public class AuthMethod {
     }
 
     /**
+     * Set optional method. New salt must be set too
+     *
+     * @param optionalMethod next hash method to use
+     */
+    public void setOptionalMethod(HashMethod optionalMethod) {
+        this.optionalMethod = optionalMethod;
+    }
+
+    /**
      *
      * @return the salt to use with optional method
      */
     public String getNewSalt() {
         return newSalt;
     }
+
+    /**
+     * set new salt. Should be set only if optionalMethod is set
+     *
+     * @param newSalt new salt
+     */
+    public void setNewSalt(String newSalt) {
+
+        this.newSalt = newSalt;
+    }
+
 }

@@ -7,10 +7,10 @@
 package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.api.Helper;
+import javax.cache.Cache;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.cache.Cache;
 
 /**
  *

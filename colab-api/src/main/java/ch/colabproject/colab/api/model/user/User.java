@@ -31,8 +31,11 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "users")
-@NamedQuery(name = "User.findByUsername", query = "SELECT u from User u where u.username = :username")
+@NamedQuery(name = "User.findByUsername",
+    query = "SELECT u from User u where u.username = :username")
 public class User implements ColabEntity {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * User unique id

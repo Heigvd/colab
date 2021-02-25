@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.WithId;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,6 +17,8 @@ import java.util.List;
  * @author maxence
  */
 public class WsDeleteMessage extends WsMessage {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * List of object to send through websocket
@@ -50,7 +53,9 @@ public class WsDeleteMessage extends WsMessage {
     /**
      * No need to send full object details, @class + id is way sufficient
      */
-    public static class IndexEntry {
+    public static class IndexEntry implements Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         /**
          * object @class

@@ -54,7 +54,8 @@ public class ColabDeserializer implements JsonbDeserializer<Jsonable> {
 
         if (theClass == null) {
             // nope -> let's resolve it with the help of reflections
-            Optional<Class<? extends Jsonable>> eClass = REFLECTIONS.getSubTypesOf(Jsonable.class).stream().filter(cl -> cl.getSimpleName().equals(atClass)).findFirst();
+            Optional<Class<? extends Jsonable>> eClass = REFLECTIONS.getSubTypesOf(Jsonable.class)
+                .stream().filter(cl -> cl.getSimpleName().equals(atClass)).findFirst();
             if (eClass.isPresent()) {
                 theClass = eClass.get();
                 CLASSES_MAP.put(atClass, theClass);

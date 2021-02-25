@@ -26,6 +26,8 @@ public class DateDeserializer implements JsonbDeserializer<LocalDateTime> {
      */
     @Override
     public LocalDateTime deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
-        return LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(parser.getString())), ZoneId.systemDefault());
+        return LocalDateTime
+            .ofInstant(Instant.ofEpochSecond(Long.parseLong(parser.getString())), ZoneId
+                .systemDefault());
     }
 }

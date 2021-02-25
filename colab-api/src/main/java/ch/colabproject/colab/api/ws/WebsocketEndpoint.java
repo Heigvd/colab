@@ -7,13 +7,13 @@
 package ch.colabproject.colab.api.ws;
 
 import ch.colabproject.colab.api.model.WithId;
-import ch.colabproject.colab.api.ws.utils.JsonDecoder;
-import ch.colabproject.colab.api.ws.utils.JsonEncoder;
 import ch.colabproject.colab.api.ws.message.WsDeleteMessage;
 import ch.colabproject.colab.api.ws.message.WsDeleteMessage.IndexEntry;
 import ch.colabproject.colab.api.ws.message.WsInitMessage;
 import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
+import ch.colabproject.colab.api.ws.utils.JsonDecoder;
+import ch.colabproject.colab.api.ws.utils.JsonEncoder;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -108,7 +108,8 @@ public class WebsocketEndpoint {
      */
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-        LOG.info("WebSocket closed for {} with reason {}", session.getId(), closeReason.getCloseCode());
+        LOG.info("WebSocket closed for {} with reason {}",
+            session.getId(), closeReason.getCloseCode());
         sessions.remove(session);
     }
 

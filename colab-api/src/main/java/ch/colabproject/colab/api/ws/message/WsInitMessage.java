@@ -15,6 +15,8 @@ import javax.websocket.Session;
  */
 public class WsInitMessage extends WsMessage {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Unique session ID TODO: check uniqueness through the cluster
      */

@@ -25,12 +25,15 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @Entity
-@NamedQuery(name = "LocalAccount.findByEmail", query = "SELECT a from LocalAccount a where a.email = :email")
+@NamedQuery(name = "LocalAccount.findByEmail",
+    query = "SELECT a from LocalAccount a where a.email = :email")
 @Table(
     indexes = {
         @Index(columnList = "email", unique = true)
     })
 public class LocalAccount extends Account {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * username-like email address

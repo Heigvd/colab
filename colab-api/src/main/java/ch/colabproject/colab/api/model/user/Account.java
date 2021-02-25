@@ -22,6 +22,8 @@ import javax.persistence.ManyToOne;
 @Entity
 public abstract class Account implements ColabEntity {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Account unique ID IDs are unique within all account class hierarchy
      */
@@ -32,7 +34,15 @@ public abstract class Account implements ColabEntity {
     /**
      * An account belongs to an user
      */
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, optional = false)
+    @ManyToOne(
+        cascade = {
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH
+        },
+        optional = false
+    )
     private User user;
 
     /**

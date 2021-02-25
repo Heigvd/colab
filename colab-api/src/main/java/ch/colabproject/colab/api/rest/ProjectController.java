@@ -20,8 +20,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * REST Project controller
@@ -32,11 +30,6 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ProjectController {
-
-    /**
-     * Project controller SLF4J logger
-     */
-    private static final Logger log = LoggerFactory.getLogger(ProjectController.class);
 
     /**
      * The Project business logic
@@ -65,7 +58,6 @@ public class ProjectController {
     @GET
     @Path("/{id}")
     public Project getProject(@PathParam("id") Long id) {
-        log.info("Post /{}", "TODO");
         return projectFacade.getProject(id);
     }
 
@@ -78,7 +70,6 @@ public class ProjectController {
      */
     @POST
     public Long createProject(Project project) {
-        log.info("Post /{}", project);
         return projectFacade.createProject(project).getId();
     }
 

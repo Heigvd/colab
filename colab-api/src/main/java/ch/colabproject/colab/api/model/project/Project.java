@@ -23,6 +23,8 @@ import javax.persistence.NamedQuery;
 @NamedQuery(name = "Project.findAll", query = "SELECT p from Project p")
 public class Project implements ColabEntity {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Project ID.
      */
@@ -45,6 +47,7 @@ public class Project implements ColabEntity {
 
     /**
      * Set id
+     *
      * @param id id
      */
     public void setId(Long id) {
