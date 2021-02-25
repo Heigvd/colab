@@ -10,8 +10,8 @@ import ch.colabproject.colab.api.ejb.TransactionManager;
 import ch.colabproject.colab.api.model.WithId;
 import javax.inject.Inject;
 import javax.persistence.PostPersist;
-import javax.persistence.PreRemove;
 import javax.persistence.PostUpdate;
+import javax.persistence.PreRemove;
 
 /**
  * JPA Entity listener defined in orm.xml

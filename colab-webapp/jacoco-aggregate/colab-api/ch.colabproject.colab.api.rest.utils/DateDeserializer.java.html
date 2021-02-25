@@ -19,14 +19,16 @@ import javax.json.stream.JsonParser;
  *
  * @author maxence
  */
-<span class="nc" id="L22">public class DateDeserializer implements JsonbDeserializer&lt;LocalDateTime&gt; {</span>
+<span class="fc" id="L22">public class DateDeserializer implements JsonbDeserializer&lt;LocalDateTime&gt; {</span>
 
     /**
      * {@inheritDoc }
      */
     @Override
     public LocalDateTime deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
-<span class="nc" id="L29">        return LocalDateTime.ofInstant(Instant.ofEpochSecond(Long.parseLong(parser.getString())), ZoneId.systemDefault());</span>
+<span class="nc" id="L29">        return LocalDateTime</span>
+<span class="nc" id="L30">            .ofInstant(Instant.ofEpochSecond(Long.parseLong(parser.getString())), ZoneId</span>
+<span class="nc" id="L31">                .systemDefault());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

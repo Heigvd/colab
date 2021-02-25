@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.WithId;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,6 +17,8 @@ import java.util.List;
  * @author maxence
  */
 public class WsDeleteMessage extends WsMessage {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * List of object to send through websocket
@@ -27,15 +30,15 @@ public class WsDeleteMessage extends WsMessage {
      *
      * @param objects list of objet which have been deleted
      */
-<span class="fc" id="L30">    public WsDeleteMessage(Collection&lt;IndexEntry&gt; objects) {</span>
-<span class="fc" id="L31">        this.items = objects;</span>
-<span class="fc" id="L32">    }</span>
+<span class="fc" id="L33">    public WsDeleteMessage(Collection&lt;IndexEntry&gt; objects) {</span>
+<span class="fc" id="L34">        this.items = objects;</span>
+<span class="fc" id="L35">    }</span>
 
     /**
      * @return get the list of deleted object
      */
     public Collection&lt;IndexEntry&gt; getItems() {
-<span class="nc" id="L38">        return items;</span>
+<span class="nc" id="L41">        return items;</span>
     }
 
     /**
@@ -44,13 +47,15 @@ public class WsDeleteMessage extends WsMessage {
      * @param items new list
      */
     public void setItems(List&lt;IndexEntry&gt; items) {
-<span class="nc" id="L47">        this.items = items;</span>
-<span class="nc" id="L48">    }</span>
+<span class="nc" id="L50">        this.items = items;</span>
+<span class="nc" id="L51">    }</span>
 
     /**
      * No need to send full object details, @class + id is way sufficient
      */
-    public static class IndexEntry {
+    public static class IndexEntry implements Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         /**
          * object @class
@@ -67,23 +72,23 @@ public class WsDeleteMessage extends WsMessage {
          *
          * @param object object to index
          */
-<span class="fc" id="L70">        public IndexEntry(WithId object) {</span>
-<span class="fc" id="L71">            this.type = object.getJsonBType();</span>
-<span class="fc" id="L72">            this.id = object.getId();</span>
-<span class="fc" id="L73">        }</span>
+<span class="fc" id="L75">        public IndexEntry(WithId object) {</span>
+<span class="fc" id="L76">            this.type = object.getJsonBType();</span>
+<span class="fc" id="L77">            this.id = object.getId();</span>
+<span class="fc" id="L78">        }</span>
 
         /**
          * @return index entry type
          */
         public String getType() {
-<span class="nc" id="L79">            return type;</span>
+<span class="nc" id="L84">            return type;</span>
         }
 
         /**
          * @return object id
          */
         public Long getId() {
-<span class="nc" id="L86">            return id;</span>
+<span class="nc" id="L91">            return id;</span>
         }
 
     }

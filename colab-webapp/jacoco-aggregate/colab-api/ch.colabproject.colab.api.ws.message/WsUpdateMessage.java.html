@@ -16,6 +16,8 @@ import java.util.Collection;
  */
 public class WsUpdateMessage extends WsMessage {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * List of new or updated objects
      */
@@ -26,15 +28,15 @@ public class WsUpdateMessage extends WsMessage {
      *
      * @param payload list of objects
      */
-<span class="fc" id="L29">    public WsUpdateMessage(Collection&lt;WithId&gt; payload) {</span>
-<span class="fc" id="L30">        this.payload = payload;</span>
-<span class="fc" id="L31">    }</span>
+<span class="fc" id="L31">    public WsUpdateMessage(Collection&lt;WithId&gt; payload) {</span>
+<span class="fc" id="L32">        this.payload = payload;</span>
+<span class="fc" id="L33">    }</span>
 
     /**
      * @return the list of new or updated objects to send to clients
      */
     public Collection&lt;WithId&gt; getPayload() {
-<span class="nc" id="L37">        return payload;</span>
+<span class="nc" id="L39">        return payload;</span>
     }
 
 }

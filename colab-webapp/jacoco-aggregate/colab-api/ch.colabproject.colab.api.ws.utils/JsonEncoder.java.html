@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.ws.utils;
 
-import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.api.rest.config.JsonbProvider;
+import ch.colabproject.colab.api.ws.message.WsMessage;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbException;
 import javax.websocket.EncodeException;
@@ -33,9 +33,9 @@ import javax.websocket.EndpointConfig;
     @Override
     public String encode(WsMessage object) throws EncodeException {
         try {
-<span class="nc" id="L36">        Jsonb jsonb = JsonbProvider.getJsonb();</span>
-<span class="nc" id="L37">        return jsonb.toJson(object);</span>
-<span class="nc" id="L38">        } catch (JsonbException ex){</span>
+<span class="nc" id="L36">            Jsonb jsonb = JsonbProvider.getJsonb();</span>
+<span class="nc" id="L37">            return jsonb.toJson(object);</span>
+<span class="nc" id="L38">        } catch (JsonbException ex) {</span>
 <span class="nc" id="L39">            throw new EncodeException(object, ex.getMessage());</span>
         }
     }

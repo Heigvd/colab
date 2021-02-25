@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
  */
 <span class="fc" id="L17">public class HttpSession implements Serializable {</span>
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Last activity time
      */
@@ -35,7 +37,7 @@ import java.time.LocalDateTime;
      * @return Get last activity time
      */
     public LocalDateTime getTime() {
-<span class="nc" id="L38">        return time;</span>
+<span class="nc" id="L40">        return time;</span>
     }
 
     /**
@@ -44,14 +46,14 @@ import java.time.LocalDateTime;
      * @param time time
      */
     public void setTime(LocalDateTime time) {
-<span class="nc" id="L47">        this.time = time;</span>
-<span class="nc" id="L48">    }</span>
+<span class="nc" id="L49">        this.time = time;</span>
+<span class="nc" id="L50">    }</span>
 
     /**
      * @return Get the session id
      */
     public String getSessionId() {
-<span class="nc" id="L54">        return sessionId;</span>
+<span class="fc" id="L56">        return sessionId;</span>
     }
 
     /**
@@ -60,14 +62,14 @@ import java.time.LocalDateTime;
      * @param sessionId id of the session
      */
     public void setSessionId(String sessionId) {
-<span class="fc" id="L63">        this.sessionId = sessionId;</span>
-<span class="fc" id="L64">    }</span>
+<span class="fc" id="L65">        this.sessionId = sessionId;</span>
+<span class="fc" id="L66">    }</span>
 
     /**
      * @return authenticated account, null if not authenticated
      */
     public Long getAccountId() {
-<span class="fc" id="L70">        return accountId;</span>
+<span class="fc" id="L72">        return accountId;</span>
     }
 
     /**
@@ -76,14 +78,14 @@ import java.time.LocalDateTime;
      * @param accountId id of the account account
      */
     public void setAccountId(Long accountId) {
-<span class="fc" id="L79">        this.accountId = accountId;</span>
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L81">        this.accountId = accountId;</span>
+<span class="fc" id="L82">    }</span>
 
     /**
      * set last activity time to now
      */
     public void keepAlive() {
-<span class="nc" id="L86">        this.time = LocalDateTime.now();</span>
-<span class="nc" id="L87">    }</span>
+<span class="fc" id="L88">        this.time = LocalDateTime.now();</span>
+<span class="fc" id="L89">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

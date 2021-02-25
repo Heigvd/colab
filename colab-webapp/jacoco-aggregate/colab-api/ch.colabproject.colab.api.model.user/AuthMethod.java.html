@@ -18,22 +18,29 @@ public class AuthMethod {
     /**
      * Hash method used to authenticate
      */
-    private final HashMethod mandatoryMethod;
+    private HashMethod mandatoryMethod;
 
     /**
      * Salt used to prefix the password before hashing it with mandatory method
      */
-    private final String salt;
+    private String salt;
 
     /**
      * optional method. Use to migrate to a new method or to change the salt
      */
-    private final HashMethod optionalMethod;
+    private HashMethod optionalMethod;
 
     /**
      * Salt used to prefix the password before hashing it with optional method
      */
-    private final String newSalt;
+    private String newSalt;
+
+    /**
+     * Default constructor
+     */
+<span class="fc" id="L41">    public AuthMethod() {</span>
+        // no-op
+<span class="fc" id="L43">    }</span>
 
     /**
      * Build payload to send to client
@@ -43,42 +50,81 @@ public class AuthMethod {
      * @param optionalMethod  optional hash method
      * @param newSalt         salt to use with optional hash method
      */
-<span class="fc" id="L46">    public AuthMethod(HashMethod mandatoryMethod, String salt, HashMethod optionalMethod, String newSalt) {</span>
-<span class="fc" id="L47">        this.mandatoryMethod = mandatoryMethod;</span>
-<span class="fc" id="L48">        this.salt = salt;</span>
-<span class="fc" id="L49">        this.optionalMethod = optionalMethod;</span>
-<span class="fc" id="L50">        this.newSalt = newSalt;</span>
-<span class="fc" id="L51">    }</span>
+    public AuthMethod(HashMethod mandatoryMethod, String salt,
+<span class="fc" id="L54">        HashMethod optionalMethod, String newSalt) {</span>
+<span class="fc" id="L55">        this.mandatoryMethod = mandatoryMethod;</span>
+<span class="fc" id="L56">        this.salt = salt;</span>
+<span class="fc" id="L57">        this.optionalMethod = optionalMethod;</span>
+<span class="fc" id="L58">        this.newSalt = newSalt;</span>
+<span class="fc" id="L59">    }</span>
 
     /**
      * @return the method to use to hash the salt+plain_password
      */
     public HashMethod getMandatoryMethod() {
-<span class="fc" id="L57">        return mandatoryMethod;</span>
+<span class="fc" id="L65">        return mandatoryMethod;</span>
     }
+
+    /**
+     * set Mandatory hash method
+     *
+     * @param mandatoryMethod hash method
+     */
+    public void setMandatoryMethod(HashMethod mandatoryMethod) {
+<span class="fc" id="L74">        this.mandatoryMethod = mandatoryMethod;</span>
+<span class="fc" id="L75">    }</span>
 
     /**
      *
      * @return the salt to use with mandatory method
      */
     public String getSalt() {
-<span class="fc" id="L65">        return salt;</span>
+<span class="fc" id="L82">        return salt;</span>
     }
+
+    /**
+     * Set the salt to use
+     *
+     * @param salt the salt
+     */
+    public void setSalt(String salt) {
+<span class="fc" id="L91">        this.salt = salt;</span>
+<span class="fc" id="L92">    }</span>
 
     /**
      *
      * @return an optional method
      */
     public HashMethod getOptionalMethod() {
-<span class="nc" id="L73">        return optionalMethod;</span>
+<span class="fc" id="L99">        return optionalMethod;</span>
     }
+
+    /**
+     * Set optional method. New salt must be set too
+     *
+     * @param optionalMethod next hash method to use
+     */
+    public void setOptionalMethod(HashMethod optionalMethod) {
+<span class="nc" id="L108">        this.optionalMethod = optionalMethod;</span>
+<span class="nc" id="L109">    }</span>
 
     /**
      *
      * @return the salt to use with optional method
      */
     public String getNewSalt() {
-<span class="nc" id="L81">        return newSalt;</span>
+<span class="fc" id="L116">        return newSalt;</span>
     }
+
+    /**
+     * set new salt. Should be set only if optionalMethod is set
+     *
+     * @param newSalt new salt
+     */
+    public void setNewSalt(String newSalt) {
+
+<span class="nc" id="L126">        this.newSalt = newSalt;</span>
+<span class="nc" id="L127">    }</span>
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

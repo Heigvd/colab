@@ -20,8 +20,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * REST Project controller
@@ -31,12 +29,7 @@ import org.slf4j.LoggerFactory;
 @Path(&quot;projects&quot;)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-<span class="fc" id="L34">public class ProjectController {</span>
-
-    /**
-     * Project controller SLF4J logger
-     */
-<span class="fc" id="L39">    private static final Logger log = LoggerFactory.getLogger(ProjectController.class);</span>
+<span class="fc" id="L32">public class ProjectController {</span>
 
     /**
      * The Project business logic
@@ -52,7 +45,7 @@ import org.slf4j.LoggerFactory;
     @GET
     public List&lt;Project&gt; getAllProjects() {
         // TOOD: once user managemenet implemeneted, restrict to admin only
-<span class="nc" id="L55">        return projectFacade.getAllProject();</span>
+<span class="fc" id="L48">        return projectFacade.getAllProject();</span>
     }
 
     /**
@@ -65,8 +58,7 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;/{id}&quot;)
     public Project getProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L68">        log.info(&quot;Post /{}&quot;, &quot;TODO&quot;);</span>
-<span class="fc" id="L69">        return projectFacade.getProject(id);</span>
+<span class="fc" id="L61">        return projectFacade.getProject(id);</span>
     }
 
     /**
@@ -78,8 +70,7 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createProject(Project project) {
-<span class="fc" id="L81">        log.info(&quot;Post /{}&quot;, project);</span>
-<span class="fc" id="L82">        return projectFacade.createProject(project).getId();</span>
+<span class="fc" id="L73">        return projectFacade.createProject(project).getId();</span>
     }
 
     /**
@@ -91,8 +82,8 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateProject(Project project) throws ColabMergeException {
-<span class="nc" id="L94">        projectFacade.updateProject(project);</span>
-<span class="nc" id="L95">    }</span>
+<span class="fc" id="L85">        projectFacade.updateProject(project);</span>
+<span class="fc" id="L86">    }</span>
 
     /**
      * Permanently delete a project
@@ -102,7 +93,7 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;/{id}&quot;)
     public void deleteProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L105">        projectFacade.deleteProject(id);</span>
-<span class="fc" id="L106">    }</span>
+<span class="fc" id="L96">        projectFacade.deleteProject(id);</span>
+<span class="fc" id="L97">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -84,8 +84,8 @@
 <th>Errors</th>
 <th>Missing Classes</th></tr>
 <tr class="b">
-<td>44</td>
-<td>29</td>
+<td>46</td>
+<td>16</td>
 <td>0</td>
 <td>2</td></tr></table></section><section>
 <h2><a name="Files"></a>Files</h2>
@@ -97,212 +97,77 @@
 <td><a href="#ch.colabproject.colab.api.Helper">ch.colabproject.colab.api.Helper</a></td>
 <td>1</td></tr>
 <tr class="a">
-<td><a href="#ch.colabproject.colab.api.ejb.RequestManager">ch.colabproject.colab.api.ejb.RequestManager</a></td>
-<td>2</td></tr>
-<tr class="b">
-<td><a href="#ch.colabproject.colab.api.ejb.TransactionManager">ch.colabproject.colab.api.ejb.TransactionManager</a></td>
-<td>4</td></tr>
-<tr class="a">
 <td><a href="#ch.colabproject.colab.api.ejb.UserManagement">ch.colabproject.colab.api.ejb.UserManagement</a></td>
 <td>1</td></tr>
 <tr class="b">
-<td><a href="#ch.colabproject.colab.api.ejb.WebsocketSynchronizer">ch.colabproject.colab.api.ejb.WebsocketSynchronizer</a></td>
-<td>1</td></tr>
-<tr class="a">
-<td><a href="#ch.colabproject.colab.api.model.project.Project">ch.colabproject.colab.api.model.project.Project</a></td>
-<td>1</td></tr>
-<tr class="b">
 <td><a href="#ch.colabproject.colab.api.model.user.HashMethod$1">ch.colabproject.colab.api.model.user.HashMethod$1</a></td>
-<td>1</td></tr>
-<tr class="a">
-<td><a href="#ch.colabproject.colab.api.model.user.LocalAccount">ch.colabproject.colab.api.model.user.LocalAccount</a></td>
-<td>1</td></tr>
-<tr class="b">
-<td><a href="#ch.colabproject.colab.api.model.user.User">ch.colabproject.colab.api.model.user.User</a></td>
 <td>1</td></tr>
 <tr class="a">
 <td><a href="#ch.colabproject.colab.api.rest.MonitoringController">ch.colabproject.colab.api.rest.MonitoringController</a></td>
 <td>1</td></tr>
 <tr class="b">
 <td><a href="#ch.colabproject.colab.api.rest.ProjectController">ch.colabproject.colab.api.rest.ProjectController</a></td>
-<td>3</td></tr>
+<td>2</td></tr>
 <tr class="a">
 <td><a href="#ch.colabproject.colab.api.rest.UserController">ch.colabproject.colab.api.rest.UserController</a></td>
-<td>3</td></tr>
+<td>5</td></tr>
 <tr class="b">
-<td><a href="#ch.colabproject.colab.api.security.HttpSession">ch.colabproject.colab.api.security.HttpSession</a></td>
+<td><a href="#ch.colabproject.colab.api.rest.utils.LogRequestFilter">ch.colabproject.colab.api.rest.utils.LogRequestFilter</a></td>
 <td>1</td></tr>
 <tr class="a">
 <td><a href="#ch.colabproject.colab.api.ws.WebsocketEndpoint">ch.colabproject.colab.api.ws.WebsocketEndpoint</a></td>
-<td>4</td></tr>
-<tr class="b">
-<td><a href="#ch.colabproject.colab.api.ws.message.WsDeleteMessage">ch.colabproject.colab.api.ws.message.WsDeleteMessage</a></td>
-<td>2</td></tr>
-<tr class="a">
-<td><a href="#ch.colabproject.colab.api.ws.message.WsInitMessage">ch.colabproject.colab.api.ws.message.WsInitMessage</a></td>
-<td>1</td></tr>
-<tr class="b">
-<td><a href="#ch.colabproject.colab.api.ws.message.WsUpdateMessage">ch.colabproject.colab.api.ws.message.WsUpdateMessage</a></td>
-<td>1</td></tr></table></section><a name="ch.colabproject.colab.api.Helper"></a><section>
+<td>4</td></tr></table></section><a name="ch.colabproject.colab.api.Helper"></a><section>
 <h3><a name="ch.colabproject.colab.api.Helper"></a>ch.colabproject.colab.api.Helper</h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>The regular expression &quot;(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|&quot;(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*&quot;)@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])&quot; is vulnerable to a denial of service attack (ReDOS)</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#REDOS">REDOS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/Helper.html#L23">23</a></td>
-<td>Medium</td></tr></table></section><a name="ch.colabproject.colab.api.ejb.RequestManager"></a><section>
-<h3><a name="ch.colabproject.colab.api.ejb.RequestManager"></a>ch.colabproject.colab.api.ejb.RequestManager</h3>
-<table border="0" class="table table-striped">
-<tr class="a">
-<th>Bug</th>
-<th>Category</th>
-<th>Details</th>
-<th>Line</th>
-<th>Priority</th></tr>
-<tr class="b">
-<td>Class ch.colabproject.colab.api.ejb.RequestManager defines non-transient non-serializable instance field userManagement</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td>Not available</td>
-<td>High</td></tr>
-<tr class="a">
-<td>ch.colabproject.colab.api.ejb.RequestManager is Serializable; consider declaring a serialVersionUID</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_NO_SERIALVERSIONID">SE_NO_SERIALVERSIONID</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ejb/RequestManager.html#L22">22-64</a></td>
-<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.ejb.TransactionManager"></a><section>
-<h3><a name="ch.colabproject.colab.api.ejb.TransactionManager"></a>ch.colabproject.colab.api.ejb.TransactionManager</h3>
-<table border="0" class="table table-striped">
-<tr class="b">
-<th>Bug</th>
-<th>Category</th>
-<th>Details</th>
-<th>Line</th>
-<th>Priority</th></tr>
-<tr class="a">
-<td>Class ch.colabproject.colab.api.ejb.TransactionManager defines non-transient non-serializable instance field sync</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td>Not available</td>
-<td>High</td></tr>
-<tr class="b">
-<td>ch.colabproject.colab.api.ejb.TransactionManager is Serializable; consider declaring a serialVersionUID</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_NO_SERIALVERSIONID">SE_NO_SERIALVERSIONID</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ejb/TransactionManager.html#L22">22-62</a></td>
-<td>Medium</td></tr>
-<tr class="a">
-<td>TransactionManager.sync not initialized in constructor and dereferenced in ch.colabproject.colab.api.ejb.TransactionManager.registerDelete(WithId)</td>
-<td>STYLE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ejb/TransactionManager.html#L61">61</a></td>
-<td>Low</td></tr>
-<tr class="b">
-<td>TransactionManager.sync not initialized in constructor and dereferenced in ch.colabproject.colab.api.ejb.TransactionManager.registerUpdate(WithId)</td>
-<td>STYLE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR">UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ejb/TransactionManager.html#L52">52</a></td>
-<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.ejb.UserManagement"></a><section>
+<td><a href="./xref/ch/colabproject/colab/api/Helper.html#L24">24</a></td>
+<td>Medium</td></tr></table></section><a name="ch.colabproject.colab.api.ejb.UserManagement"></a><section>
 <h3><a name="ch.colabproject.colab.api.ejb.UserManagement"></a>ch.colabproject.colab.api.ejb.UserManagement</h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>Unsafe comparison of hash that are susceptible to timing attack</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#UNSAFE_HASH_EQUALS">UNSAFE_HASH_EQUALS</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L203">203</a></td>
-<td>Medium</td></tr></table></section><a name="ch.colabproject.colab.api.ejb.WebsocketSynchronizer"></a><section>
-<h3><a name="ch.colabproject.colab.api.ejb.WebsocketSynchronizer"></a>ch.colabproject.colab.api.ejb.WebsocketSynchronizer</h3>
-<table border="0" class="table table-striped">
-<tr class="a">
-<th>Bug</th>
-<th>Category</th>
-<th>Details</th>
-<th>Line</th>
-<th>Priority</th></tr>
-<tr class="b">
-<td>java.util.HashSet&lt;ch.colabproject.colab.api.ws.message.WsDeleteMessage$IndexEntry&gt; is incompatible with expected argument type java.util.HashSet&lt;ch.colabproject.colab.api.model.WithId&gt; in ch.colabproject.colab.api.ejb.WebsocketSynchronizer.afterCompletion(int)</td>
-<td>CORRECTNESS</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#GC_UNRELATED_TYPES">GC_UNRELATED_TYPES</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ejb/WebsocketSynchronizer.html#L51">51</a></td>
-<td>Medium</td></tr></table></section><a name="ch.colabproject.colab.api.model.project.Project"></a><section>
-<h3><a name="ch.colabproject.colab.api.model.project.Project"></a>ch.colabproject.colab.api.model.project.Project</h3>
-<table border="0" class="table table-striped">
-<tr class="a">
-<th>Bug</th>
-<th>Category</th>
-<th>Details</th>
-<th>Line</th>
-<th>Priority</th></tr>
-<tr class="b">
-<td>ch.colabproject.colab.api.model.project.Project is Serializable; consider declaring a serialVersionUID</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_NO_SERIALVERSIONID">SE_NO_SERIALVERSIONID</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/model/project/Project.html#L24">24-82</a></td>
-<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.model.user.HashMethod1"></a><section>
+<td>Medium</td></tr></table></section><a name="ch.colabproject.colab.api.model.user.HashMethod1"></a><section>
 <h3><a name="ch.colabproject.colab.api.model.user.HashMethod.241"></a>ch.colabproject.colab.api.model.user.HashMethod$1</h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>Should ch.colabproject.colab.api.model.user.HashMethod$1.hash(String, byte[]) return a zero length array rather than null?</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#PZLA_PREFER_ZERO_LENGTH_ARRAYS">PZLA_PREFER_ZERO_LENGTH_ARRAYS</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/model/user/HashMethod.html#L36">36</a></td>
-<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.model.user.LocalAccount"></a><section>
-<h3><a name="ch.colabproject.colab.api.model.user.LocalAccount"></a>ch.colabproject.colab.api.model.user.LocalAccount</h3>
-<table border="0" class="table table-striped">
-<tr class="a">
-<th>Bug</th>
-<th>Category</th>
-<th>Details</th>
-<th>Line</th>
-<th>Priority</th></tr>
-<tr class="b">
-<td>ch.colabproject.colab.api.model.user.LocalAccount is Serializable; consider declaring a serialVersionUID</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_NO_SERIALVERSIONID">SE_NO_SERIALVERSIONID</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/model/user/LocalAccount.html#L33">33-290</a></td>
-<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.model.user.User"></a><section>
-<h3><a name="ch.colabproject.colab.api.model.user.User"></a>ch.colabproject.colab.api.model.user.User</h3>
-<table border="0" class="table table-striped">
-<tr class="a">
-<th>Bug</th>
-<th>Category</th>
-<th>Details</th>
-<th>Line</th>
-<th>Priority</th></tr>
-<tr class="b">
-<td>ch.colabproject.colab.api.model.user.User is Serializable; consider declaring a serialVersionUID</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_NO_SERIALVERSIONID">SE_NO_SERIALVERSIONID</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/model/user/User.html#L35">35-202</a></td>
 <td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.rest.MonitoringController"></a><section>
 <h3><a name="ch.colabproject.colab.api.rest.MonitoringController"></a>ch.colabproject.colab.api.rest.MonitoringController</h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>ch.colabproject.colab.api.rest.MonitoringController.ch.colabproject.colab.api.rest.MonitoringController.getStatus() is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
@@ -310,29 +175,23 @@
 <td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.rest.ProjectController"></a><section>
 <h3><a name="ch.colabproject.colab.api.rest.ProjectController"></a>ch.colabproject.colab.api.rest.ProjectController</h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
-<td>This use of org/slf4j/Logger.info(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
-<td>SECURITY</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L81">81</a></td>
-<td>Low</td></tr>
 <tr class="a">
 <td>ch.colabproject.colab.api.rest.ProjectController.ch.colabproject.colab.api.rest.ProjectController.deleteProject(Long) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L105">105-106</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L96">96-97</a></td>
 <td>Low</td></tr>
 <tr class="b">
 <td>ch.colabproject.colab.api.rest.ProjectController.ch.colabproject.colab.api.rest.ProjectController.getProject(Long) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L68">68-69</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L61">61</a></td>
 <td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.rest.UserController"></a><section>
 <h3><a name="ch.colabproject.colab.api.rest.UserController"></a>ch.colabproject.colab.api.rest.UserController</h3>
 <table border="0" class="table table-striped">
@@ -346,21 +205,33 @@
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.getAuthMethod(String) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L50">50</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L58">58</a></td>
 <td>Low</td></tr>
 <tr class="a">
+<td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.getCurrentUser() is a REST Web Service endpoint</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L69">69</a></td>
+<td>Low</td></tr>
+<tr class="b">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.signIn(AuthInfo) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L76">76-77</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L95">95-96</a></td>
+<td>Low</td></tr>
+<tr class="a">
+<td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.signOut() is a REST Web Service endpoint</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L104">104-105</a></td>
 <td>Low</td></tr>
 <tr class="b">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.signUp(SignUpInfo) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L63">63-64</a></td>
-<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.security.HttpSession"></a><section>
-<h3><a name="ch.colabproject.colab.api.security.HttpSession"></a>ch.colabproject.colab.api.security.HttpSession</h3>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L82">82-83</a></td>
+<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.rest.utils.LogRequestFilter"></a><section>
+<h3><a name="ch.colabproject.colab.api.rest.utils.LogRequestFilter"></a>ch.colabproject.colab.api.rest.utils.LogRequestFilter</h3>
 <table border="0" class="table table-striped">
 <tr class="a">
 <th>Bug</th>
@@ -369,10 +240,10 @@
 <th>Line</th>
 <th>Priority</th></tr>
 <tr class="b">
-<td>ch.colabproject.colab.api.security.HttpSession is Serializable; consider declaring a serialVersionUID</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_NO_SERIALVERSIONID">SE_NO_SERIALVERSIONID</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/security/HttpSession.html#L17">17-87</a></td>
+<td>This use of org/slf4j/Logger.info(Ljava/lang/String;[Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/utils/LogRequestFilter.html#L68">68</a></td>
 <td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.ws.WebsocketEndpoint"></a><section>
 <h3><a name="ch.colabproject.colab.api.ws.WebsocketEndpoint"></a>ch.colabproject.colab.api.ws.WebsocketEndpoint</h3>
 <table border="0" class="table table-striped">
@@ -405,54 +276,6 @@
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/ws/WebsocketEndpoint.html#L76">76</a></td>
-<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.ws.message.WsDeleteMessage"></a><section>
-<h3><a name="ch.colabproject.colab.api.ws.message.WsDeleteMessage"></a>ch.colabproject.colab.api.ws.message.WsDeleteMessage</h3>
-<table border="0" class="table table-striped">
-<tr class="b">
-<th>Bug</th>
-<th>Category</th>
-<th>Details</th>
-<th>Line</th>
-<th>Priority</th></tr>
-<tr class="a">
-<td>Class ch.colabproject.colab.api.ws.message.WsDeleteMessage defines non-transient non-serializable instance field items</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td>Not available</td>
-<td>Medium</td></tr>
-<tr class="b">
-<td>ch.colabproject.colab.api.ws.message.WsDeleteMessage is Serializable; consider declaring a serialVersionUID</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_NO_SERIALVERSIONID">SE_NO_SERIALVERSIONID</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ws/message/WsDeleteMessage.html#L30">30-48</a></td>
-<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.ws.message.WsInitMessage"></a><section>
-<h3><a name="ch.colabproject.colab.api.ws.message.WsInitMessage"></a>ch.colabproject.colab.api.ws.message.WsInitMessage</h3>
-<table border="0" class="table table-striped">
-<tr class="a">
-<th>Bug</th>
-<th>Category</th>
-<th>Details</th>
-<th>Line</th>
-<th>Priority</th></tr>
-<tr class="b">
-<td>ch.colabproject.colab.api.ws.message.WsInitMessage is Serializable; consider declaring a serialVersionUID</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_NO_SERIALVERSIONID">SE_NO_SERIALVERSIONID</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ws/message/WsInitMessage.html#L28">28-36</a></td>
-<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.ws.message.WsUpdateMessage"></a><section>
-<h3><a name="ch.colabproject.colab.api.ws.message.WsUpdateMessage"></a>ch.colabproject.colab.api.ws.message.WsUpdateMessage</h3>
-<table border="0" class="table table-striped">
-<tr class="a">
-<th>Bug</th>
-<th>Category</th>
-<th>Details</th>
-<th>Line</th>
-<th>Priority</th></tr>
-<tr class="b">
-<td>ch.colabproject.colab.api.ws.message.WsUpdateMessage is Serializable; consider declaring a serialVersionUID</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_NO_SERIALVERSIONID">SE_NO_SERIALVERSIONID</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ws/message/WsUpdateMessage.html#L29">29-37</a></td>
 <td>Low</td></tr></table></section>
         </div>
       </div>

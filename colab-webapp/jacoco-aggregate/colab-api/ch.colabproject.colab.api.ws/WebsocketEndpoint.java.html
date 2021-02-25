@@ -7,13 +7,13 @@
 package ch.colabproject.colab.api.ws;
 
 import ch.colabproject.colab.api.model.WithId;
-import ch.colabproject.colab.api.ws.utils.JsonDecoder;
-import ch.colabproject.colab.api.ws.utils.JsonEncoder;
 import ch.colabproject.colab.api.ws.message.WsDeleteMessage;
 import ch.colabproject.colab.api.ws.message.WsDeleteMessage.IndexEntry;
 import ch.colabproject.colab.api.ws.message.WsInitMessage;
 import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
+import ch.colabproject.colab.api.ws.utils.JsonDecoder;
+import ch.colabproject.colab.api.ws.utils.JsonEncoder;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -108,9 +108,10 @@ import org.slf4j.LoggerFactory;
      */
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-<span class="nc" id="L111">        LOG.info(&quot;WebSocket closed for {} with reason {}&quot;, session.getId(), closeReason.getCloseCode());</span>
-<span class="nc" id="L112">        sessions.remove(session);</span>
-<span class="nc" id="L113">    }</span>
+<span class="nc" id="L111">        LOG.info(&quot;WebSocket closed for {} with reason {}&quot;,</span>
+<span class="nc" id="L112">            session.getId(), closeReason.getCloseCode());</span>
+<span class="nc" id="L113">        sessions.remove(session);</span>
+<span class="nc" id="L114">    }</span>
 
     /**
      * Send update to all clients
@@ -118,8 +119,8 @@ import org.slf4j.LoggerFactory;
      * @param o list of new or updated object to send
      */
     public static void propagate(Collection&lt;WithId&gt; o) {
-<span class="fc" id="L121">        broadcastMessage(new WsUpdateMessage(o));</span>
-<span class="fc" id="L122">    }</span>
+<span class="fc" id="L122">        broadcastMessage(new WsUpdateMessage(o));</span>
+<span class="fc" id="L123">    }</span>
 
     /**
      * Send deleted info to client
@@ -127,7 +128,7 @@ import org.slf4j.LoggerFactory;
      * @param o list of deleted object
      */
     public static void propagateDeletion(Collection&lt;IndexEntry&gt; o) {
-<span class="fc" id="L130">        broadcastMessage(new WsDeleteMessage(o));</span>
-<span class="fc" id="L131">    }</span>
+<span class="fc" id="L131">        broadcastMessage(new WsDeleteMessage(o));</span>
+<span class="fc" id="L132">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

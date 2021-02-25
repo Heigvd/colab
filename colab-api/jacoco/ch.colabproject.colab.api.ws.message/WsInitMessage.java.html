@@ -15,6 +15,8 @@ import javax.websocket.Session;
  */
 public class WsInitMessage extends WsMessage {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Unique session ID TODO: check uniqueness through the cluster
      */
@@ -25,15 +27,15 @@ public class WsInitMessage extends WsMessage {
      *
      * @param session client session
      */
-<span class="nc" id="L28">    public WsInitMessage(Session session) {</span>
-<span class="nc" id="L29">        this.sessionId = session.getId();</span>
-<span class="nc" id="L30">    }</span>
+<span class="nc" id="L30">    public WsInitMessage(Session session) {</span>
+<span class="nc" id="L31">        this.sessionId = session.getId();</span>
+<span class="nc" id="L32">    }</span>
 
     /**
      * @return the socket ID to send to the client
      */
     public String getSessionId() {
-<span class="nc" id="L36">        return sessionId;</span>
+<span class="nc" id="L38">        return sessionId;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -9,8 +9,11 @@ package ch.colabproject.colab.api.ejb;
 import ch.colabproject.colab.api.model.WithId;
 import ch.colabproject.colab.api.ws.WebsocketEndpoint;
 import ch.colabproject.colab.api.ws.message.WsDeleteMessage.IndexEntry;
+import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
 
@@ -19,17 +22,19 @@ import javax.transaction.Synchronization;
  *
  * @author maxence
  */
-<span class="fc" id="L22">public class WebsocketSynchronizer implements Synchronization {</span>
+<span class="fc" id="L25">public class WebsocketSynchronizer implements Synchronization, Serializable {</span>
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * set of updated entities to be propagated
      */
-<span class="fc" id="L27">    private Set&lt;WithId&gt; updated = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L32">    private Set&lt;WithId&gt; updated = new HashSet&lt;&gt;();</span>
 
     /**
      * set of entities which have been deleted during the transaction
      */
-<span class="fc" id="L32">    private Set&lt;IndexEntry&gt; deleted = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L37">    private Set&lt;IndexEntry&gt; deleted = new HashSet&lt;&gt;();</span>
 
     /**
      * TODO should assert everything is propagatable
@@ -37,7 +42,7 @@ import javax.transaction.Synchronization;
     @Override
     public void beforeCompletion() {
         // maybe nothing to do
-<span class="fc" id="L40">    }</span>
+<span class="fc" id="L45">    }</span>
 
     /**
      * Called once the transaction has been fully validated. Send pending messages to their
@@ -47,16 +52,28 @@ import javax.transaction.Synchronization;
      */
     @Override
     public void afterCompletion(int status) {
-<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (status == Status.STATUS_COMMITTED) {</span>
-<span class="fc" id="L51">            updated.removeAll(deleted);</span>
-<span class="fc bfc" id="L52" title="All 2 branches covered.">            if (!updated.isEmpty()) {</span>
-<span class="fc" id="L53">                WebsocketEndpoint.propagate(updated);</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (status == Status.STATUS_COMMITTED) {</span>
+
+            /**
+             * Ignore updated entities which have been deleted
+             */
+<span class="fc" id="L60">            List&lt;WithId&gt; filtered = updated.stream()</span>
+<span class="fc" id="L61">                .filter(</span>
+<span class="fc" id="L62">                    (u) -&gt; !deleted.stream()</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">                        .anyMatch(</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">                            (d) -&gt; d.getId().equals(u.getId())</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">                            &amp;&amp; d.getType().equals(u.getJsonBType())</span>
+                        )
+<span class="fc" id="L67">                ).collect(Collectors.toList());</span>
+
+<span class="fc bfc" id="L69" title="All 2 branches covered.">            if (!filtered.isEmpty()) {</span>
+<span class="fc" id="L70">                WebsocketEndpoint.propagate(filtered);</span>
             }
-<span class="fc bfc" id="L55" title="All 2 branches covered.">            if (!deleted.isEmpty()) {</span>
-<span class="fc" id="L56">                WebsocketEndpoint.propagateDeletion(deleted);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">            if (!deleted.isEmpty()) {</span>
+<span class="fc" id="L73">                WebsocketEndpoint.propagateDeletion(deleted);</span>
             }
         }
-<span class="fc" id="L59">    }</span>
+<span class="fc" id="L76">    }</span>
 
     /**
      * Register the given object within the updated set
@@ -64,8 +81,8 @@ import javax.transaction.Synchronization;
      * @param o object to register
      */
     public void registerUpdate(WithId o) {
-<span class="fc" id="L67">        updated.add(o);</span>
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L84">        updated.add(o);</span>
+<span class="fc" id="L85">    }</span>
 
     /**
      * register just deleted object
@@ -73,7 +90,7 @@ import javax.transaction.Synchronization;
      * @param o object which has been deleted
      */
     public void registerDelete(WithId o) {
-<span class="fc" id="L76">        deleted.add(new IndexEntry(o));</span>
-<span class="fc" id="L77">    }</span>
+<span class="fc" id="L93">        deleted.add(new IndexEntry(o));</span>
+<span class="fc" id="L94">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

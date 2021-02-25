@@ -21,6 +21,8 @@ import javax.transaction.TransactionSynchronizationRegistry;
 @TransactionScoped
 <span class="fc" id="L22">public class TransactionManager implements Serializable {</span>
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * JTA registry used to attach websocket synchronizer
      */
@@ -37,11 +39,11 @@ import javax.transaction.TransactionSynchronizationRegistry;
      */
     @PostConstruct
     public void construct() {
-<span class="pc bpc" id="L40" title="2 of 4 branches missed.">        if (jtaSyncRegistry != null &amp;&amp; sync == null) {</span>
-<span class="fc" id="L41">            sync = new WebsocketSynchronizer();</span>
-<span class="fc" id="L42">            jtaSyncRegistry.registerInterposedSynchronization(sync);</span>
+<span class="pc bpc" id="L42" title="2 of 4 branches missed.">        if (jtaSyncRegistry != null &amp;&amp; sync == null) {</span>
+<span class="fc" id="L43">            sync = new WebsocketSynchronizer();</span>
+<span class="fc" id="L44">            jtaSyncRegistry.registerInterposedSynchronization(sync);</span>
         }
-<span class="fc" id="L44">    }</span>
+<span class="fc" id="L46">    }</span>
 
     /**
      * Register updated object within the WS JTA synchronizer.
@@ -49,8 +51,10 @@ import javax.transaction.TransactionSynchronizationRegistry;
      * @param o object to register
      */
     public void registerUpdate(WithId o) {
-<span class="fc" id="L52">        sync.registerUpdate(o);</span>
-<span class="fc" id="L53">    }</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        if (sync != null) {</span>
+<span class="fc" id="L55">            sync.registerUpdate(o);</span>
+        }
+<span class="fc" id="L57">    }</span>
 
     /**
      * Register deleted object within the WS JTA synchronizer
@@ -58,7 +62,9 @@ import javax.transaction.TransactionSynchronizationRegistry;
      * @param o just deleted object
      */
     public void registerDelete(WithId o) {
-<span class="fc" id="L61">        sync.registerDelete(o);</span>
-<span class="fc" id="L62">    }</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (sync != null) {</span>
+<span class="fc" id="L66">            sync.registerDelete(o);</span>
+        }
+<span class="fc" id="L68">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

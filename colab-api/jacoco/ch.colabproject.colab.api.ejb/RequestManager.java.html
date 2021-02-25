@@ -9,7 +9,6 @@ package ch.colabproject.colab.api.ejb;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.HttpSession;
-import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -19,7 +18,7 @@ import javax.inject.Inject;
  * @author maxence
  */
 @RequestScoped
-<span class="fc" id="L22">public class RequestManager implements Serializable {</span>
+<span class="fc" id="L21">public class RequestManager {</span>
 
     /**
      * User-related business logic
@@ -33,11 +32,16 @@ import javax.inject.Inject;
     private HttpSession httpSession;
 
     /**
+     * Timestamp as return by {@link System#currentTimeMillis() } the request starts at
+     */
+    private long startTime;
+
+    /**
      *
      * @return the current http session
      */
     public HttpSession getHttpSession() {
-<span class="fc" id="L40">        return this.httpSession;</span>
+<span class="fc" id="L44">        return this.httpSession;</span>
     }
 
     /**
@@ -46,22 +50,41 @@ import javax.inject.Inject;
      * @param httpSession http session
      */
     public void setHttpSession(HttpSession httpSession) {
-<span class="fc" id="L49">        this.httpSession = httpSession;</span>
-<span class="fc" id="L50">    }</span>
+<span class="fc" id="L53">        this.httpSession = httpSession;</span>
+<span class="fc" id="L54">    }</span>
 
     /**
      * Get the current authenticated user
      *
-     * @return the current user
+     * @return the current user or null if none
      */
     public User getCurrentUser() {
-<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (this.httpSession != null) {</span>
-<span class="fc" id="L59">            Account account = userManagement.findAccount(this.httpSession.getAccountId());</span>
-<span class="fc bfc" id="L60" title="All 2 branches covered.">            if (account != null) {</span>
-<span class="fc" id="L61">                return account.getUser();</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        if (this.httpSession != null) {</span>
+<span class="fc" id="L63">            Account account = userManagement.findAccount(this.httpSession.getAccountId());</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">            if (account != null) {</span>
+<span class="fc" id="L65">                return account.getUser();</span>
             }
         }
-<span class="fc" id="L64">        return null;</span>
+<span class="fc" id="L68">        return null;</span>
+    }
+
+    /**
+     * set time the current request started
+     *
+     * @param timestamp start timestamp
+     *
+     */
+    public void setStartTime(long timestamp) {
+<span class="fc" id="L78">        this.startTime = timestamp;</span>
+<span class="fc" id="L79">    }</span>
+
+    /**
+     * Return the time the request started
+     *
+     * @return start time timestamp in ms
+     */
+    public long getStartTime() {
+<span class="fc" id="L87">        return startTime;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

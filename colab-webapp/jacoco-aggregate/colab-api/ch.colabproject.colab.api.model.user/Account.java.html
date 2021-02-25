@@ -22,6 +22,8 @@ import javax.persistence.ManyToOne;
 @Entity
 <span class="fc" id="L23">public abstract class Account implements ColabEntity {</span>
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Account unique ID IDs are unique within all account class hierarchy
      */
@@ -32,7 +34,15 @@ import javax.persistence.ManyToOne;
     /**
      * An account belongs to an user
      */
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, optional = false)
+    @ManyToOne(
+        cascade = {
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH
+        },
+        optional = false
+    )
     private User user;
 
     /**
@@ -40,7 +50,7 @@ import javax.persistence.ManyToOne;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L43">        return id;</span>
+<span class="fc" id="L53">        return id;</span>
     }
 
     /**
@@ -49,14 +59,14 @@ import javax.persistence.ManyToOne;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L52">        this.id = id;</span>
-<span class="nc" id="L53">    }</span>
+<span class="nc" id="L62">        this.id = id;</span>
+<span class="nc" id="L63">    }</span>
 
     /**
      * @return the user
      */
     public User getUser() {
-<span class="fc" id="L59">        return user;</span>
+<span class="fc" id="L69">        return user;</span>
     }
 
     /**
@@ -65,7 +75,7 @@ import javax.persistence.ManyToOne;
      * @param user user who owns this account
      */
     public void setUser(User user) {
-<span class="fc" id="L68">        this.user = user;</span>
-<span class="fc" id="L69">    }</span>
+<span class="fc" id="L78">        this.user = user;</span>
+<span class="fc" id="L79">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
