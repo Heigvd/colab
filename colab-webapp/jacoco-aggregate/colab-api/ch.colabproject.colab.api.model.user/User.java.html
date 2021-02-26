@@ -32,7 +32,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = &quot;users&quot;)
 @NamedQuery(name = &quot;User.findByUsername&quot;,
-    query = &quot;SELECT u from User u where u.username = :username&quot;)
+        query = &quot;SELECT u from User u where u.username = :username&quot;)
 <span class="fc" id="L36">public class User implements ColabEntity {</span>
 
     private static final long serialVersionUID = 1L;
@@ -45,16 +45,21 @@ import javax.persistence.TemporalType;
     private Long id;
 
     /**
+     * is the user administrator ?
+     */
+    private boolean isAdmin;
+
+    /**
      * List of accounts the user can authenticate with
      */
-<span class="fc" id="L50">    @OneToMany(mappedBy = &quot;user&quot;, cascade = {CascadeType.ALL})</span>
+<span class="fc" id="L55">    @OneToMany(mappedBy = &quot;user&quot;, cascade = {CascadeType.ALL})</span>
     @JsonbTransient
     private List&lt;Account&gt; accounts = new ArrayList&lt;&gt;();
 
     /**
      * last activity date
      */
-<span class="fc" id="L57">    @Temporal(TemporalType.TIMESTAMP)</span>
+<span class="fc" id="L62">    @Temporal(TemporalType.TIMESTAMP)</span>
     @Column(columnDefinition = &quot;timestamp with time zone&quot;)
     @JsonbTransient
     private Date lastSeenAt = null;
@@ -67,7 +72,7 @@ import javax.persistence.TemporalType;
     /**
      * lastname
      */
-    private String lasttname;
+    private String lastname;
 
     /**
      * short name to be displayed
@@ -84,7 +89,7 @@ import javax.persistence.TemporalType;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L87">        return id;</span>
+<span class="fc" id="L92">        return id;</span>
     }
 
     /**
@@ -93,14 +98,14 @@ import javax.persistence.TemporalType;
      * @param id id of the user
      */
     public void setId(Long id) {
-<span class="fc" id="L96">        this.id = id;</span>
-<span class="fc" id="L97">    }</span>
+<span class="fc" id="L101">        this.id = id;</span>
+<span class="fc" id="L102">    }</span>
 
     /**
      * @return user first name, may be null or empty
      */
     public String getFirstname() {
-<span class="fc" id="L103">        return firstname;</span>
+<span class="fc" id="L108">        return firstname;</span>
     }
 
     /**
@@ -109,24 +114,24 @@ import javax.persistence.TemporalType;
      * @param firstname user first name, may be null or empty
      */
     public void setFirstname(String firstname) {
-<span class="nc" id="L112">        this.firstname = firstname;</span>
-<span class="nc" id="L113">    }</span>
+<span class="fc" id="L117">        this.firstname = firstname;</span>
+<span class="fc" id="L118">    }</span>
 
     /**
      *
      * @return user last name, may be null or empty
      */
-    public String getLasttname() {
-<span class="fc" id="L120">        return lasttname;</span>
+    public String getLastname() {
+<span class="fc" id="L125">        return lastname;</span>
     }
 
     /**
      *
-     * @param lasttname user last name, may be null or empty
+     * @param lastname user last name, may be null or empty
      */
-    public void setLasttname(String lasttname) {
-<span class="nc" id="L128">        this.lasttname = lasttname;</span>
-<span class="nc" id="L129">    }</span>
+    public void setLastname(String lastname) {
+<span class="fc" id="L133">        this.lastname = lastname;</span>
+<span class="fc" id="L134">    }</span>
 
     /**
      * Short display name to use
@@ -134,7 +139,7 @@ import javax.persistence.TemporalType;
      * @return user common name
      */
     public String getCommonname() {
-<span class="fc" id="L137">        return commonname;</span>
+<span class="fc" id="L142">        return commonname;</span>
     }
 
     /**
@@ -142,8 +147,8 @@ import javax.persistence.TemporalType;
      * @param commonname user common name
      */
     public void setCommonname(String commonname) {
-<span class="nc" id="L145">        this.commonname = commonname;</span>
-<span class="nc" id="L146">    }</span>
+<span class="fc" id="L150">        this.commonname = commonname;</span>
+<span class="fc" id="L151">    }</span>
 
     /**
      * Get user's username. This name is unique system-wide
@@ -151,7 +156,7 @@ import javax.persistence.TemporalType;
      * @return username
      */
     public String getUsername() {
-<span class="fc" id="L154">        return username;</span>
+<span class="fc" id="L159">        return username;</span>
     }
 
     /**
@@ -161,14 +166,28 @@ import javax.persistence.TemporalType;
      * @param username new username
      */
     public void setUsername(String username) {
-<span class="fc" id="L164">        this.username = username;</span>
-<span class="fc" id="L165">    }</span>
+<span class="fc" id="L169">        this.username = username;</span>
+<span class="fc" id="L170">    }</span>
+
+    /**
+     * @return the isAdmin
+     */
+    public boolean isAdmin() {
+<span class="fc" id="L176">        return isAdmin;</span>
+    }
+
+    /**
+     * @param isAdmin the isAdmin to set
+     */
+    public void setAdmin(boolean isAdmin) {
+<span class="fc" id="L183">        this.isAdmin = isAdmin;</span>
+<span class="fc" id="L184">    }</span>
 
     /**
      * @return user accounts
      */
     public List&lt;Account&gt; getAccounts() {
-<span class="fc" id="L171">        return accounts;</span>
+<span class="fc" id="L190">        return accounts;</span>
     }
 
     /**
@@ -177,14 +196,14 @@ import javax.persistence.TemporalType;
      * @param accounts account list
      */
     public void setAccounts(List&lt;Account&gt; accounts) {
-<span class="nc" id="L180">        this.accounts = accounts;</span>
-<span class="nc" id="L181">    }</span>
+<span class="nc" id="L199">        this.accounts = accounts;</span>
+<span class="nc" id="L200">    }</span>
 
     /**
      * @return last seen at
      */
     public Date getLastSeenAt() {
-<span class="nc" id="L187">        return new Date(lastSeenAt.getTime());</span>
+<span class="nc" id="L206">        return new Date(lastSeenAt.getTime());</span>
     }
 
     /**
@@ -193,16 +212,29 @@ import javax.persistence.TemporalType;
      * @param lastSeenAt the lastSeenAt date
      */
     public void setLastSeenAt(Date lastSeenAt) {
-<span class="nc" id="L196">        this.lastSeenAt = new Date(lastSeenAt.getTime());</span>
-<span class="nc" id="L197">    }</span>
+<span class="fc" id="L215">        this.lastSeenAt = new Date(lastSeenAt.getTime());</span>
+<span class="fc" id="L216">    }</span>
+
+    /**
+     * Set lastSeenAt to now
+     */
+    public void touchLastSeenAt() {
+<span class="fc" id="L222">        this.setLastSeenAt(new Date());</span>
+<span class="fc" id="L223">    }</span>
 
     /**
      * {@inheritDoc }
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        // nothing to do
-<span class="nc" id="L205">    }</span>
-
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">        if (other instanceof User){</span>
+<span class="fc" id="L231">            User o = (User) other;</span>
+<span class="fc" id="L232">            this.setFirstname(o.getFirstname());</span>
+<span class="fc" id="L233">            this.setLastname(o.getLastname());</span>
+<span class="fc" id="L234">            this.setCommonname(o.getCommonname());</span>
+<span class="fc" id="L235">        } else {</span>
+<span class="nc" id="L236">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="fc" id="L238">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

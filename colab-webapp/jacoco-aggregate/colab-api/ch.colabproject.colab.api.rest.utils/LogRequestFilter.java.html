@@ -21,17 +21,20 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Log request
+ * &lt;p&gt;
+ * With a priority of 2, this filter is executed right after
+ * {@link ch.colabproject.colab.api.security.CookieFilter CookieFilter} one.
  *
  * @author maxence
  */
 @Provider
-@Priority(100)
-<span class="fc" id="L29">public class LogRequestFilter implements ContainerRequestFilter, ContainerResponseFilter {</span>
+@Priority(2)
+<span class="fc" id="L32">public class LogRequestFilter implements ContainerRequestFilter, ContainerResponseFilter {</span>
 
     /**
      * Logger
      */
-<span class="fc" id="L34">    private static final Logger log = LoggerFactory.getLogger(LogRequestFilter.class);</span>
+<span class="fc" id="L37">    private static final Logger log = LoggerFactory.getLogger(LogRequestFilter.class);</span>
 
     /**
      * Request related logic
@@ -48,8 +51,8 @@ import org.slf4j.LoggerFactory;
      */
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-<span class="fc" id="L51">        requestManager.setStartTime(System.currentTimeMillis());</span>
-<span class="fc" id="L52">    }</span>
+<span class="fc" id="L54">        requestManager.setStartTime(System.currentTimeMillis());</span>
+<span class="fc" id="L55">    }</span>
 
     /**
      * Intercept response, save httpSession in sessions cache and make sure set-cookie header is set
@@ -62,16 +65,16 @@ import org.slf4j.LoggerFactory;
     @Override
     public void filter(ContainerRequestContext requestContext,
         ContainerResponseContext responseContext) throws IOException {
-<span class="fc" id="L65">        long startTime = requestManager.getStartTime();</span>
-<span class="fc" id="L66">        User user = requestManager.getCurrentUser();</span>
+<span class="fc" id="L68">        long startTime = requestManager.getStartTime();</span>
+<span class="fc" id="L69">        User user = requestManager.getCurrentUser();</span>
 
-<span class="fc" id="L68">        log.info(&quot;{} {} {} ({}) completed in {} ms&quot;,</span>
-<span class="fc" id="L69">            responseContext.getStatus(),</span>
-<span class="fc" id="L70">            requestContext.getRequest().getMethod(),</span>
-<span class="fc" id="L71">            requestContext.getUriInfo().getPath(),</span>
-<span class="fc bfc" id="L72" title="All 2 branches covered.">            user != null ? user.getUsername() : &quot;anonymous&quot;,</span>
-<span class="fc" id="L73">            System.currentTimeMillis() - startTime);</span>
-<span class="fc" id="L74">    }</span>
+<span class="fc" id="L71">        log.info(&quot;{} {} {} ({}) completed in {} ms&quot;,</span>
+<span class="fc" id="L72">            responseContext.getStatus(),</span>
+<span class="fc" id="L73">            requestContext.getRequest().getMethod(),</span>
+<span class="fc" id="L74">            requestContext.getUriInfo().getPath(),</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">            user != null ? user.getUsername() : &quot;anonymous&quot;,</span>
+<span class="fc" id="L76">            System.currentTimeMillis() - startTime);</span>
+<span class="fc" id="L77">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

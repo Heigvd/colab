@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2021 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 10,
+      <title>File: 14,
              Errors: 0,
-             Warnings: 17,
+             Warnings: 25,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -46,27 +46,13 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.WebsocketSynchronizer.java">ch/colabproject/colab/api/ejb/WebsocketSynchronizer.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.security.AuthenticationFilter.java">ch/colabproject/colab/api/security/AuthenticationFilter.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.setup.LiquibaseProducer.java">ch/colabproject/colab/api/setup/LiquibaseProducer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  4
+                  2
                 </td>
                 <td>
                   0
@@ -88,7 +74,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.ProjectFacade.java">ch/colabproject/colab/api/ejb/ProjectFacade.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.user.User.java">ch/colabproject/colab/api/model/user/User.java</a>
                 </td>
                 <td>
                   0
@@ -108,7 +94,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  2
                 </td>
                 <td>
                   0
@@ -130,6 +116,62 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.security.annotations.AuthenticationRequired.java">ch/colabproject/colab/api/security/annotations/AuthenticationRequired.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.setup.LiquibaseProducer.java">ch/colabproject/colab/api/setup/LiquibaseProducer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.ProjectFacade.java">ch/colabproject/colab/api/ejb/ProjectFacade.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.security.CookieFilter.java">ch/colabproject/colab/api/security/CookieFilter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.config.JsonbProvider.java">ch/colabproject/colab/api/rest/config/JsonbProvider.java</a>
                 </td>
                 <td>
@@ -137,6 +179,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.utils.LogRequestFilter.java">ch/colabproject/colab/api/rest/utils/LogRequestFilter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
                 </td>
                 <td>
                   0

@@ -22,12 +22,12 @@ import org.reflections.Reflections;
  *
  * @author Maxence
  */
-<span class="nc" id="L25">public class ColabDeserializer implements JsonbDeserializer&lt;Jsonable&gt; {</span>
+<span class="fc" id="L25">public class ColabDeserializer implements JsonbDeserializer&lt;Jsonable&gt; {</span>
 
     /**
      * Store class references
      */
-<span class="nc" id="L30">    private static final Map&lt;String, Class&lt;? extends Jsonable&gt;&gt; CLASSES_MAP = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L30">    private static final Map&lt;String, Class&lt;? extends Jsonable&gt;&gt; CLASSES_MAP = new HashMap&lt;&gt;();</span>
 
     /**
      * Reflections allow to find, for instance, all implementations of an interface
@@ -36,8 +36,8 @@ import org.reflections.Reflections;
 
     static {
         // analyse classes in the model package
-<span class="nc" id="L39">        REFLECTIONS = new Reflections(&quot;ch.colabproject.model&quot;);</span>
-<span class="nc" id="L40">    }</span>
+<span class="fc" id="L39">        REFLECTIONS = new Reflections( &quot;ch.colabproject.colab.api.model&quot;);</span>
+<span class="fc" id="L40">    }</span>
 
     /**
      * {@inheritDoc }
@@ -46,23 +46,23 @@ import org.reflections.Reflections;
     public Jsonable deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
 
         // find @class discriminant from object to deserialize
-<span class="nc" id="L49">        JsonObject value = parser.getObject();</span>
-<span class="nc" id="L50">        String atClass = value.getString(&quot;@class&quot;, null);</span>
+<span class="fc" id="L49">        JsonObject value = parser.getObject();</span>
+<span class="fc" id="L50">        String atClass = value.getString(&quot;@class&quot;, null);</span>
 
         // is this @class already known?
-<span class="nc" id="L53">        Class&lt;? extends Jsonable&gt; theClass = CLASSES_MAP.get(atClass);</span>
+<span class="fc" id="L53">        Class&lt;? extends Jsonable&gt; theClass = CLASSES_MAP.get(atClass);</span>
 
-<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (theClass == null) {</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (theClass == null) {</span>
             // nope -&gt; let's resolve it with the help of reflections
-<span class="nc" id="L57">            Optional&lt;Class&lt;? extends Jsonable&gt;&gt; eClass = REFLECTIONS.getSubTypesOf(Jsonable.class)</span>
-<span class="nc" id="L58">                .stream().filter(cl -&gt; cl.getSimpleName().equals(atClass)).findFirst();</span>
-<span class="nc bnc" id="L59" title="All 2 branches missed.">            if (eClass.isPresent()) {</span>
-<span class="nc" id="L60">                theClass = eClass.get();</span>
-<span class="nc" id="L61">                CLASSES_MAP.put(atClass, theClass);</span>
+<span class="fc" id="L57">            Optional&lt;Class&lt;? extends Jsonable&gt;&gt; eClass = REFLECTIONS.getSubTypesOf(Jsonable.class)</span>
+<span class="fc" id="L58">                .stream().filter(cl -&gt; cl.getSimpleName().equals(atClass)).findFirst();</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">            if (eClass.isPresent()) {</span>
+<span class="fc" id="L60">                theClass = eClass.get();</span>
+<span class="fc" id="L61">                CLASSES_MAP.put(atClass, theClass);</span>
             }
         }
         // parse JSON against exact class
-<span class="nc" id="L65">        return JsonbBuilder.create().fromJson(value.toString(), theClass);</span>
+<span class="fc" id="L65">        return JsonbBuilder.create().fromJson(value.toString(), theClass);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
