@@ -51,6 +51,22 @@ public class RequestManager {
      */
     public void setHttpSession(HttpSession httpSession) {
         this.httpSession = httpSession;
+        User currentUser = getCurrentUser();
+        if (currentUser != null) {
+            currentUser.touchLastSeenAt();
+        }
+    }
+
+    /**
+     * Get the current authenticated account
+     *
+     * @return the current account or null if none
+     */
+    public Account getCurrentAccount() {
+        if (this.httpSession != null) {
+            return userManagement.findAccount(this.httpSession.getAccountId());
+        }
+        return null;
     }
 
     /**
@@ -59,13 +75,13 @@ public class RequestManager {
      * @return the current user or null if none
      */
     public User getCurrentUser() {
-        if (this.httpSession != null) {
-            Account account = userManagement.findAccount(this.httpSession.getAccountId());
-            if (account != null) {
-                return account.getUser();
-            }
+        Account account = this.getCurrentAccount();
+
+        if (account != null) {
+            return account.getUser();
+        } else {
+            return null;
         }
-        return null;
     }
 
     /**

@@ -54,9 +54,7 @@ public class WebsocketSynchronizer implements Synchronization, Serializable {
     public void afterCompletion(int status) {
         if (status == Status.STATUS_COMMITTED) {
 
-            /**
-             * Ignore updated entities which have been deleted
-             */
+            /* Ignore updated entities which have been deleted */
             List<WithId> filtered = updated.stream()
                 .filter(
                     (u) -> !deleted.stream()

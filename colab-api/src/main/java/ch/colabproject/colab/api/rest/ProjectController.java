@@ -9,6 +9,8 @@ package ch.colabproject.colab.api.rest;
 import ch.colabproject.colab.api.ejb.ProjectFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.security.annotations.AdminResource;
+import ch.colabproject.colab.api.security.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -29,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 @Path("projects")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@AuthenticationRequired
 public class ProjectController {
 
     /**
@@ -38,13 +41,13 @@ public class ProjectController {
     private ProjectFacade projectFacade;
 
     /**
-     * Retrieve the list of all project
+     * Retrieve the list of all projects. This is available to admin only
      *
      * @return all known project
      */
     @GET
+    @AdminResource
     public List<Project> getAllProjects() {
-        // TOOD: once user managemenet implemeneted, restrict to admin only
         return projectFacade.getAllProject();
     }
 

@@ -32,7 +32,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "users")
 @NamedQuery(name = "User.findByUsername",
-    query = "SELECT u from User u where u.username = :username")
+        query = "SELECT u from User u where u.username = :username")
 public class User implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
@@ -43,6 +43,11 @@ public class User implements ColabEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * is the user administrator ?
+     */
+    private boolean isAdmin;
 
     /**
      * List of accounts the user can authenticate with
@@ -67,7 +72,7 @@ public class User implements ColabEntity {
     /**
      * lastname
      */
-    private String lasttname;
+    private String lastname;
 
     /**
      * short name to be displayed
@@ -116,16 +121,16 @@ public class User implements ColabEntity {
      *
      * @return user last name, may be null or empty
      */
-    public String getLasttname() {
-        return lasttname;
+    public String getLastname() {
+        return lastname;
     }
 
     /**
      *
-     * @param lasttname user last name, may be null or empty
+     * @param lastname user last name, may be null or empty
      */
-    public void setLasttname(String lasttname) {
-        this.lasttname = lasttname;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     /**
@@ -165,6 +170,20 @@ public class User implements ColabEntity {
     }
 
     /**
+     * @return the isAdmin
+     */
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    /**
+     * @param isAdmin the isAdmin to set
+     */
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+    /**
      * @return user accounts
      */
     public List<Account> getAccounts() {
@@ -197,11 +216,24 @@ public class User implements ColabEntity {
     }
 
     /**
+     * Set lastSeenAt to now
+     */
+    public void touchLastSeenAt() {
+        this.setLastSeenAt(new Date());
+    }
+
+    /**
      * {@inheritDoc }
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        // nothing to do
+        if (other instanceof User){
+            User o = (User) other;
+            this.setFirstname(o.getFirstname());
+            this.setLastname(o.getLastname());
+            this.setCommonname(o.getCommonname());
+        } else {
+            throw new ColabMergeException(this, other);
+        }
     }
-
 }

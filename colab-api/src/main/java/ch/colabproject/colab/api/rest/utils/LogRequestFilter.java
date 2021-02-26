@@ -21,11 +21,14 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Log request
+ * <p>
+ * With a priority of 2, this filter is executed right after
+ * {@link ch.colabproject.colab.api.security.CookieFilter CookieFilter} one.
  *
  * @author maxence
  */
 @Provider
-@Priority(100)
+@Priority(2)
 public class LogRequestFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     /**

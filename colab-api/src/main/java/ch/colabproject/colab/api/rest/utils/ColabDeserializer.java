@@ -36,7 +36,7 @@ public class ColabDeserializer implements JsonbDeserializer<Jsonable> {
 
     static {
         // analyse classes in the model package
-        REFLECTIONS = new Reflections("ch.colabproject.model");
+        REFLECTIONS = new Reflections( "ch.colabproject.colab.api.model");
     }
 
     /**

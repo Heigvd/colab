@@ -61,3 +61,4 @@ jobs:
         publish_dir: target/staging
     - name: Build with Maven
       run: mvn -Dpmd.failurePriority=5 -B clean package
+

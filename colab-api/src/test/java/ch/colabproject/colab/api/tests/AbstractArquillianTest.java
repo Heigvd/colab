@@ -7,11 +7,12 @@
 package ch.colabproject.colab.api.tests;
 
 import ch.colabproject.colab.api.Helper;
+import ch.colabproject.colab.api.ejb.UserManagement;
 import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
-import ch.colabproject.colab.api.rest.ProjectController;
+import ch.colabproject.colab.api.model.user.User;
 import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
@@ -51,10 +52,10 @@ public abstract class AbstractArquillianTest {
     protected static final Logger logger = LoggerFactory.getLogger(AbstractArquillianTest.class);
 
     /**
-     * Provide project logic
+     * Provide user management internal logic
      */
     @Inject
-    private ProjectController projectController;
+    private UserManagement userManagement;
 
     //@Inject
     //protected UserController userController;
@@ -81,13 +82,18 @@ public abstract class AbstractArquillianTest {
      */
     private long initTime;
 
+    /**
+     * Admin user available to each test
+     */
+    protected TestUser admin;
+
     @Deployment
     public static JavaArchive createDeployement() {
         JavaArchive war = ShrinkWrap.create(JavaArchive.class)
-            .as(ExplodedImporter.class)
-            .importDirectory(new File("target/classes/"))
-            .importDirectory(new File("target/test-classes/"))
-            .as(JavaArchive.class);
+                .as(ExplodedImporter.class)
+                .importDirectory(new File("target/classes/"))
+                .importDirectory(new File("target/test-classes/"))
+                .as(JavaArchive.class);
         //.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
         //war.addPackages(true, "com.wegas");
@@ -97,7 +103,7 @@ public abstract class AbstractArquillianTest {
 
         /* Log Levels */
         java.util.logging.Logger.getLogger("javax.enterprise.system.tools.deployment")
-            .setLevel(Level.WARNING);
+                .setLevel(Level.WARNING);
         java.util.logging.Logger.getLogger("javax.enterprise.system").setLevel(Level.FINE);
         //java.util.logging.Logger.getLogger("javax.enterprise.system.core").setLevel(Level.FINE);
         java.util.logging.Logger.getLogger("fish.payara.nucleus.healthcheck").setLevel(Level.SEVERE);
@@ -119,21 +125,21 @@ public abstract class AbstractArquillianTest {
      */
     protected void clearDatabase() {
         String sql = "DO\n"
-            + "$func$\n"
-            + "BEGIN \n"
-            + "EXECUTE (\n"
-            + "  SELECT 'TRUNCATE TABLE '\n"
-            + "    || string_agg(quote_ident(schemaname) || '.' || quote_ident(tablename), ', ')\n"
-            + "    || ' CASCADE'\n"
-            + "  FROM   pg_tables\n"
-            + "  WHERE  (schemaname = 'public'\n"
-            + "          AND tablename <> 'sequence')\n"
-            + ");\n"
-            + "END\n"
-            + "$func$;";
+                + "$func$\n"
+                + "BEGIN \n"
+                + "EXECUTE (\n"
+                + "  SELECT 'TRUNCATE TABLE '\n"
+                + "    || string_agg(quote_ident(schemaname) || '.' || quote_ident(tablename), ', ')\n"
+                + "    || ' CASCADE'\n"
+                + "  FROM   pg_tables\n"
+                + "  WHERE  (schemaname = 'public'\n"
+                + "          AND tablename <> 'sequence')\n"
+                + ");\n"
+                + "END\n"
+                + "$func$;";
 
         try (Connection connection = colabDataSource.getConnection();
-             Statement st = connection.createStatement()) {
+                Statement st = connection.createStatement()) {
             st.execute(sql);
         } catch (SQLException ex) {
             logger.error("Table reset (SQL: " + sql + ")", ex);
@@ -152,7 +158,7 @@ public abstract class AbstractArquillianTest {
      * @throws ColabErrorMessage if something went wrong
      */
     protected TestUser signup(String username, String email, String password)
-        throws ClientErrorException {
+            throws ClientErrorException {
         // Create a brand new user with a local account
         AuthMethod authMethod = client.getAuthMethod(email);
 
@@ -163,9 +169,9 @@ public abstract class AbstractArquillianTest {
         signup.setHashMethod(authMethod.getMandatoryMethod());
 
         String hash = Helper.bytesToHex(
-            authMethod.getMandatoryMethod().hash(
-                password, signup.getSalt()
-            )
+                authMethod.getMandatoryMethod().hash(
+                        password, signup.getSalt()
+                )
         );
 
         signup.setHash(hash);
@@ -190,22 +196,22 @@ public abstract class AbstractArquillianTest {
 
         // compute mandatory hash
         String hash = Helper.bytesToHex(
-            authMethod.getMandatoryMethod().hash(
-                user.getPassword(),
-                authMethod.getSalt()
-            )
+                authMethod.getMandatoryMethod().hash(
+                        user.getPassword(),
+                        authMethod.getSalt()
+                )
         );
         authInfo.setMandatoryHash(hash);
 
         if (authMethod.getOptionalMethod() != null) {
             // method rotation is requested : computes hash with new method too
             authInfo.setOptionalHash(
-                Helper.bytesToHex(
-                    authMethod.getOptionalMethod().hash(
-                        user.getPassword(),
-                        authMethod.getNewSalt()
+                    Helper.bytesToHex(
+                            authMethod.getOptionalMethod().hash(
+                                    user.getPassword(),
+                                    authMethod.getNewSalt()
+                            )
                     )
-                )
             );
         }
 
@@ -241,17 +247,22 @@ public abstract class AbstractArquillianTest {
      */
     @BeforeEach
     public void init(TestInfo info) {
-        if (projectController != null) {
+        if (userManagement != null) {
             this.client = new ColabRestClient(deploymentURL.toString());
             logger.info("Start TEST {}", info.getDisplayName());
             this.startTime = System.currentTimeMillis();
 
-            // mock http session
-            //HttpSession httpSession = new HttpSession();
-            //httpSession.setSessionId("MOCK-HTTP-SESSION");
-            //requestManager.setHttpSession(httpSession);
             // start each test with a clean database
             resetDatabase();
+
+            // create one admin
+            this.admin = this.signup("admin", "admin@colab.local", "MyPasswordIsSoSafe");
+            User adminUser = userManagement.findUserByUsername("admin");
+            adminUser.isAdmin();
+            userManagement.grantAdminRight(adminUser.getId());
+
+            signIn(admin);
+
             this.initTime = System.currentTimeMillis();
         }
     }
@@ -264,13 +275,13 @@ public abstract class AbstractArquillianTest {
      */
     @AfterEach
     public void clean(TestInfo info) {
-        if (projectController != null) {
+        if (userManagement != null) {
             long now = System.currentTimeMillis();
             logger.info("TEST {} DURATION: total: {} ms; init: {} ms; test: {} ms",
-                info.getDisplayName(),
-                now - this.startTime,
-                this.initTime - this.startTime,
-                now - this.initTime);
+                    info.getDisplayName(),
+                    now - this.startTime,
+                    this.initTime - this.startTime,
+                    now - this.initTime);
         }
     }
 

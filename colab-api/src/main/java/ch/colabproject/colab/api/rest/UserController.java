@@ -9,14 +9,19 @@ package ch.colabproject.colab.api.rest;
 import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.ejb.UserManagement;
 import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.security.annotations.AdminResource;
+import ch.colabproject.colab.api.security.annotations.AuthenticationRequired;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -53,7 +58,7 @@ public class UserController {
      * @return Auth method to user
      */
     @GET
-    @Path("/AuthMethod/{email}")
+    @Path("AuthMethod/{email}")
     public AuthMethod getAuthMethod(@PathParam("email") String email) {
         return userManagement.getAuthenticationMethod(email);
     }
@@ -64,9 +69,20 @@ public class UserController {
      * @return current user or null
      */
     @GET
-    @Path("/CurrentUser")
+    @Path("CurrentUser")
     public User getCurrentUser() {
         return requestManager.getCurrentUser();
+    }
+
+    /**
+     * Return the current authenticated account
+     *
+     * @return current account or null
+     */
+    @GET
+    @Path("CurrentAccount")
+    public Account getCurrentAccount() {
+        return requestManager.getCurrentAccount();
     }
 
     /**
@@ -90,7 +106,7 @@ public class UserController {
      * @throws ColabErrorMessage if authentication fails for any reason
      */
     @POST
-    @Path("/SignIn")
+    @Path("SignIn")
     public void signIn(AuthInfo authInfo) {
         userManagement.authenticate(authInfo);
     }
@@ -99,8 +115,47 @@ public class UserController {
      * Sign out
      */
     @POST
-    @Path("/SignOut")
+    @Path("SignOut")
     public void signOut() {
         userManagement.logout();
     }
+
+    /**
+     * Update user names.
+     *
+     * @param user user to update
+     *
+     * @throws ColabMergeException if update fails
+     */
+    @PUT
+    @AuthenticationRequired
+    public void updateUser(User user) throws ColabMergeException {
+        // TODO: assert permission (admin || currentUser == user)
+        userManagement.updateUser(user);
+    }
+
+    /**
+     * Grant admin right to user identified by given id
+     *
+     * @param id id of the user
+     */
+    @PUT
+    @Path("{id : [1-9][0-9]*}/GrantAdminRight")
+    @AdminResource
+    public void grantAdminRight(@PathParam("id") Long id) {
+        userManagement.grantAdminRight(id);
+    }
+
+    /**
+     * ask the user to switch to new hash method on next sign-in
+     *
+     * @param id id of the local account
+     */
+    @PUT
+    @Path("{id : [1-9][0-9]*}/SwitchClientHashMethod")
+    @AdminResource
+    public void switchClientHashMethod(@PathParam("id") Long id) {
+        userManagement.switchClientHashMethod(id);
+    }
+
 }

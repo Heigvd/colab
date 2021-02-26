@@ -7,10 +7,12 @@
 package ch.colabproject.colab.api.tests;
 
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.rest.config.JsonbProvider;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ public class ColabRestClient {
 
     public ColabRestClient(String baseUri) {
         client = ClientBuilder.newBuilder()
+            .register(new JsonbProvider())
             .register(new CookieFilter(this))
             .build();
         webTarget = client.target(baseUri);
@@ -78,16 +81,16 @@ public class ColabRestClient {
             .delete(klass);
     }
 
-    private <T> T put(String path, Object body, Class<T> klass) {
-        return webTarget.path(path).request()
-            .accept(MediaType.APPLICATION_JSON)
-            .put(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE), klass);
-    }
-
     private <T> T post(String path, Object body, Class<T> klass) {
         return webTarget.path(path).request()
             .accept(MediaType.APPLICATION_JSON)
             .post(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE), klass);
+    }
+
+    private <T> T put(String path, Object body, Class<T> klass) {
+        return webTarget.path(path).request()
+            .accept(MediaType.APPLICATION_JSON)
+            .put(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE), klass);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -101,6 +104,10 @@ public class ColabRestClient {
         return get("api/users/CurrentUser", User.class);
     }
 
+    public Account getCurrentAccount() throws ClientErrorException {
+        return get("api/users/CurrentAccount", Account.class);
+    }
+
     public void signUp(SignUpInfo signup) throws ClientErrorException {
         this.post("api/users/SignUp", signup, void.class);
     }
@@ -111,6 +118,20 @@ public class ColabRestClient {
 
     public void signOut() throws ClientErrorException {
         this.post("api/users/SignOut", null, void.class);
+    }
+
+    public void updateUser(User user) {
+        this.put("api/users", user, void.class);
+    }
+
+    public void grantAdminRight(Long id) {
+        String path = MessageFormat.format("api/users/{0}/GrantAdminRight", id);
+        this.put(path, "", void.class);
+    }
+
+    public void switchClientHashMethod(Long id) {
+        String path = MessageFormat.format("api/users/{0}/SwitchClientHashMethod", id);
+        this.put(path, "", void.class);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

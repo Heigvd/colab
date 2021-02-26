@@ -82,6 +82,7 @@ public class LocalAccount extends Account {
      * Salt the client shall use to before hashing its password. Salt is hex-encoded byte array
      */
     @NotNull
+    @JsonbTransient
     private String clientSalt;
 
     /**
@@ -92,6 +93,7 @@ public class LocalAccount extends Account {
      * its password prefixed with this new salt and hashed with nextClientHashMethod if set, current
      * otherwise. successful authentication (to rotate salt and/or method)
      */
+    @JsonbTransient
     private String newClientSalt;
 
     /**
@@ -100,6 +102,7 @@ public class LocalAccount extends Account {
     @Column(length = 100)
     @Enumerated(value = EnumType.STRING)
     @NotNull
+    @JsonbTransient
     private HashMethod currentClientHashMethod;
 
     /**
@@ -111,6 +114,7 @@ public class LocalAccount extends Account {
      */
     @Column(length = 100)
     @Enumerated(value = EnumType.STRING)
+    @JsonbTransient
     private HashMethod nextClientHashMethod;
 
     /**

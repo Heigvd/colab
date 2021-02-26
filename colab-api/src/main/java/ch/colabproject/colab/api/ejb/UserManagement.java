@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.ejb;
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
 import ch.colabproject.colab.api.exceptions.ColabErrorMessage.MessageCode;
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
@@ -85,6 +86,21 @@ public class UserManagement {
     }
 
     /**
+     * Find a user by id
+     *
+     * @param userId is of the user to search
+     *
+     * @return the user or null
+     */
+    public User findUser(Long userId) {
+        try {
+            return em.find(User.class, userId);
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
+    }
+
+    /**
      * Find a user by username
      *
      * @param username needle
@@ -129,11 +145,20 @@ public class UserManagement {
             return new AuthMethod(account.getCurrentClientHashMethod(), account.getClientSalt(),
                 account.getNextClientHashMethod(), account.getNewClientSalt());
         } else {
-            AuthMethod authMethod = new AuthMethod(this.getDefaultHashMethod(), Helper
-                .generateHexSalt(SALT_LENGTH), null, null);
+            AuthMethod authMethod = this.getDefaultRandomAuthenticationMethod();
             // TODO: store it in a tmp cache
             return authMethod;
         }
+    }
+
+    /**
+     * Get default hash method with random salt
+     *
+     * @return a hash method and its parameters
+     */
+    public AuthMethod getDefaultRandomAuthenticationMethod() {
+        return new AuthMethod(this.getDefaultHashMethod(), Helper
+            .generateHexSalt(SALT_LENGTH), null, null);
     }
 
     /**
@@ -207,20 +232,25 @@ public class UserManagement {
                     boolean forceShadow = false;
 
                     // should rotate client method ?
-                    // case 1: new client-side hash method
                     if (account.getNextClientHashMethod() != null
                         && authInfo.getOptionalHash() != null) {
+                        // rotate method
                         account.setClientSalt(account.getNewClientSalt());
                         account.setNewClientSalt(null);
                         account.setCurrentClientHashMethod(account.getNextClientHashMethod());
+                        account.setNextClientHashMethod(null);
+
+                        // rotate provided hash and force to compute and save db hash
                         mandatoryHash = authInfo.getOptionalHash();
                         forceShadow = true;
                     }
 
                     // should rotate server method ?
                     if (account.getNextDbHashMethod() != null) {
+                        // rotate method
                         account.setCurrentDbHashMethod(account.getNextDbHashMethod());
                         account.setNextDbHashMethod(null);
+                        // force to compute and save db hash
                         forceShadow = true;
                     }
 
@@ -263,4 +293,42 @@ public class UserManagement {
         this.requestManager.getHttpSession().setAccountId(null);
     }
 
+    /**
+     * Grant admin right to a user.
+     *
+     * @param id id of user whom will became an admin
+     */
+    public void grantAdminRight(Long id) {
+        User user = this.findUser(id);
+        user.setAdmin(true);
+    }
+
+    /**
+     * Update the user with values provided in given user. Only field which are editable by users
+     * will be impacted.
+     *
+     * @param user object which contains id and new values
+     *
+     * @throws ColabMergeException if something went wrong
+     */
+    public void updateUser(User user) throws ColabMergeException {
+        User managedUser = this.findUser(user.getId());
+
+        managedUser.merge(user);
+    }
+
+    /**
+     * Setup set client hash method to use for the given local account
+     *
+     * @param id id of the LocalAccount
+     */
+    public void switchClientHashMethod(Long id) {
+        Account account = this.findAccount(id);
+        if (account instanceof LocalAccount) {
+            LocalAccount localAccount = (LocalAccount) account;
+            AuthMethod authMethod = getDefaultRandomAuthenticationMethod();
+            localAccount.setNextClientHashMethod(authMethod.getMandatoryMethod());
+            localAccount.setNewClientSalt(authMethod.getSalt());
+        }
+    }
 }

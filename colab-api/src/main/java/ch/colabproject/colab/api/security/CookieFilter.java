@@ -22,6 +22,8 @@ import javax.ws.rs.ext.Provider;
 /**
  * Intercept all request to the API. Make sure COLAB_SESSION_ID exists
  *
+ * With a priority of 1, this filter is the very first to be executed
+ *
  * @author maxence
  */
 @Provider
