@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.model.user;
 
 import ch.colabproject.colab.api.model.ColabEntity;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,6 +44,7 @@ public abstract class Account implements ColabEntity {
         },
         optional = false
     )
+    @JsonbTransient
     private User user;
 
     /**

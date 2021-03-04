@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.tests;
+package ch.colabproject.colab.client.tests;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.ejb.UserManagement;
@@ -13,6 +13,8 @@ import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.rest.config.JsonbProvider;
+import ch.colabproject.colab.client.ColabClient;
 import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
@@ -35,6 +37,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +53,15 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractArquillianTest {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractArquillianTest.class);
+
+    /**
+     * Provide one-stop-shop reflections object
+     */
+    protected static final Reflections reflections;
+
+    static {
+        reflections = new Reflections("ch.colabproject.colab");
+    }
 
     /**
      * Provide user management internal logic
@@ -70,7 +82,7 @@ public abstract class AbstractArquillianTest {
     /**
      * REST client to use to call REST method
      */
-    protected ColabRestClient client;
+    protected ColabClient client;
 
     /**
      * Timestamp: start of beforeEach int method
@@ -90,10 +102,10 @@ public abstract class AbstractArquillianTest {
     @Deployment
     public static JavaArchive createDeployement() {
         JavaArchive war = ShrinkWrap.create(JavaArchive.class)
-                .as(ExplodedImporter.class)
-                .importDirectory(new File("target/classes/"))
-                .importDirectory(new File("target/test-classes/"))
-                .as(JavaArchive.class);
+            .as(ExplodedImporter.class)
+            .importDirectory(new File("../colab-api/target/classes/"))
+            .importDirectory(new File("target/test-classes/"))
+            .as(JavaArchive.class);
         //.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
         //war.addPackages(true, "com.wegas");
@@ -103,7 +115,7 @@ public abstract class AbstractArquillianTest {
 
         /* Log Levels */
         java.util.logging.Logger.getLogger("javax.enterprise.system.tools.deployment")
-                .setLevel(Level.WARNING);
+            .setLevel(Level.WARNING);
         java.util.logging.Logger.getLogger("javax.enterprise.system").setLevel(Level.FINE);
         //java.util.logging.Logger.getLogger("javax.enterprise.system.core").setLevel(Level.FINE);
         java.util.logging.Logger.getLogger("fish.payara.nucleus.healthcheck").setLevel(Level.SEVERE);
@@ -125,21 +137,21 @@ public abstract class AbstractArquillianTest {
      */
     protected void clearDatabase() {
         String sql = "DO\n"
-                + "$func$\n"
-                + "BEGIN \n"
-                + "EXECUTE (\n"
-                + "  SELECT 'TRUNCATE TABLE '\n"
-                + "    || string_agg(quote_ident(schemaname) || '.' || quote_ident(tablename), ', ')\n"
-                + "    || ' CASCADE'\n"
-                + "  FROM   pg_tables\n"
-                + "  WHERE  (schemaname = 'public'\n"
-                + "          AND tablename <> 'sequence')\n"
-                + ");\n"
-                + "END\n"
-                + "$func$;";
+            + "$func$\n"
+            + "BEGIN \n"
+            + "EXECUTE (\n"
+            + "  SELECT 'TRUNCATE TABLE '\n"
+            + "    || string_agg(quote_ident(schemaname) || '.' || quote_ident(tablename), ', ')\n"
+            + "    || ' CASCADE'\n"
+            + "  FROM   pg_tables\n"
+            + "  WHERE  (schemaname = 'public'\n"
+            + "          AND tablename <> 'sequence')\n"
+            + ");\n"
+            + "END\n"
+            + "$func$;";
 
         try (Connection connection = colabDataSource.getConnection();
-                Statement st = connection.createStatement()) {
+             Statement st = connection.createStatement()) {
             st.execute(sql);
         } catch (SQLException ex) {
             logger.error("Table reset (SQL: " + sql + ")", ex);
@@ -158,9 +170,9 @@ public abstract class AbstractArquillianTest {
      * @throws ColabErrorMessage if something went wrong
      */
     protected TestUser signup(String username, String email, String password)
-            throws ClientErrorException {
+        throws ClientErrorException {
         // Create a brand new user with a local account
-        AuthMethod authMethod = client.getAuthMethod(email);
+        AuthMethod authMethod = client.userController.getAuthMethod(email);
 
         SignUpInfo signup = new SignUpInfo();
         signup.setUsername(username);
@@ -169,14 +181,14 @@ public abstract class AbstractArquillianTest {
         signup.setHashMethod(authMethod.getMandatoryMethod());
 
         String hash = Helper.bytesToHex(
-                authMethod.getMandatoryMethod().hash(
-                        password, signup.getSalt()
-                )
+            authMethod.getMandatoryMethod().hash(
+                password, signup.getSalt()
+            )
         );
 
         signup.setHash(hash);
 
-        client.signUp(signup);
+        client.userController.signUp(signup);
 
         return new TestUser(username, email, password);
     }
@@ -192,37 +204,37 @@ public abstract class AbstractArquillianTest {
         AuthInfo authInfo = new AuthInfo();
         authInfo.setEmail(user.getEmail());
 
-        AuthMethod authMethod = client.getAuthMethod(user.getEmail());
+        AuthMethod authMethod = client.userController.getAuthMethod(user.getEmail());
 
         // compute mandatory hash
         String hash = Helper.bytesToHex(
-                authMethod.getMandatoryMethod().hash(
-                        user.getPassword(),
-                        authMethod.getSalt()
-                )
+            authMethod.getMandatoryMethod().hash(
+                user.getPassword(),
+                authMethod.getSalt()
+            )
         );
         authInfo.setMandatoryHash(hash);
 
         if (authMethod.getOptionalMethod() != null) {
             // method rotation is requested : computes hash with new method too
             authInfo.setOptionalHash(
-                    Helper.bytesToHex(
-                            authMethod.getOptionalMethod().hash(
-                                    user.getPassword(),
-                                    authMethod.getNewSalt()
-                            )
+                Helper.bytesToHex(
+                    authMethod.getOptionalMethod().hash(
+                        user.getPassword(),
+                        authMethod.getNewSalt()
                     )
+                )
             );
         }
 
-        client.signIn(authInfo);
+        client.userController.signIn(authInfo);
     }
 
     /**
      * Sign the current user out
      */
     protected void signOut() {
-        client.signOut();
+        client.userController.signOut();
     }
 
     /**
@@ -248,7 +260,11 @@ public abstract class AbstractArquillianTest {
     @BeforeEach
     public void init(TestInfo info) {
         if (userManagement != null) {
-            this.client = new ColabRestClient(deploymentURL.toString());
+            this.client = new ColabClient(
+                deploymentURL.toString(),
+                "COLAB_SESSION_ID",
+                new JsonbProvider()
+            );
             logger.info("Start TEST {}", info.getDisplayName());
             this.startTime = System.currentTimeMillis();
 
@@ -278,10 +294,10 @@ public abstract class AbstractArquillianTest {
         if (userManagement != null) {
             long now = System.currentTimeMillis();
             logger.info("TEST {} DURATION: total: {} ms; init: {} ms; test: {} ms",
-                    info.getDisplayName(),
-                    now - this.startTime,
-                    this.initTime - this.startTime,
-                    now - this.initTime);
+                info.getDisplayName(),
+                now - this.startTime,
+                this.initTime - this.startTime,
+                now - this.initTime);
         }
     }
 

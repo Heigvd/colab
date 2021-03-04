@@ -51,7 +51,7 @@ public class UserController {
 
     /**
      * Get the authentication method and its parameters a user shall use to authenticate with the
-     * given email address
+     * given email address.
      *
      * @param email email address user want to sign in with
      *
@@ -64,7 +64,7 @@ public class UserController {
     }
 
     /**
-     * Return the current authenticated user
+     * Return the current authenticated user.
      *
      * @return current user or null
      */
@@ -75,7 +75,7 @@ public class UserController {
     }
 
     /**
-     * Return the current authenticated account
+     * Return the current authenticated account.
      *
      * @return current account or null
      */
@@ -86,7 +86,7 @@ public class UserController {
     }
 
     /**
-     * Create a new local account
+     * Create a new local account.
      *
      * @param signup all data required to create a local account
      *
@@ -99,7 +99,7 @@ public class UserController {
     }
 
     /**
-     * Authenticate with local-account credentials
+     * Authenticate with local-account credentials.
      *
      * @param authInfo credentials
      *
@@ -112,7 +112,7 @@ public class UserController {
     }
 
     /**
-     * Sign out
+     * Sign out.
      */
     @POST
     @Path("SignOut")
@@ -135,7 +135,7 @@ public class UserController {
     }
 
     /**
-     * Grant admin right to user identified by given id
+     * Grant admin right to user identified by given id.
      *
      * @param id id of the user
      */
@@ -147,7 +147,7 @@ public class UserController {
     }
 
     /**
-     * ask the user to switch to new hash method on next sign-in
+     * ask the user to switch to new hash method on next sign-in.
      *
      * @param id id of the local account
      */
@@ -156,6 +156,18 @@ public class UserController {
     @AdminResource
     public void switchClientHashMethod(@PathParam("id") Long id) {
         userManagement.switchClientHashMethod(id);
+    }
+
+    /**
+     * stage new server hash method.
+     *
+     * @param id id of the local account
+     */
+    @PUT
+    @Path("{id : [1-9][0-9]*}/SwitchServerHashMethod")
+    @AdminResource
+    public void switchServerHashMethod(@PathParam("id") Long id) {
+        userManagement.switchServerHashMethod(id);
     }
 
 }

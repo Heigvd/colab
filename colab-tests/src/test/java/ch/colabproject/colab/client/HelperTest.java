@@ -4,8 +4,9 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api;
+package ch.colabproject.colab.client;
 
+import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.model.user.HashMethod;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Assertions;

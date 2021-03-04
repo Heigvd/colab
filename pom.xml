@@ -48,6 +48,9 @@
     <modules>
         <module>build-tools</module>
         <module>colab-api</module>
+        <module>client-generator-plugin</module>
+        <module>colab-client</module>
+        <module>colab-tests</module>
         <module>colab-webapp</module>
     </modules>
 
@@ -522,8 +525,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>

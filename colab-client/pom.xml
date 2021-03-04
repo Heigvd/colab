@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>colab-client</artifactId>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>ch.colab-project.colab</groupId>
+        <artifactId>colab</artifactId>
+        <version>0.1</version>
+    </parent>
+
+    <organization>
+        <name>AlbaSim, MEI, HEIG-VD, HES-SO</name>
+        <url>https://www.colab-project.ch</url>
+    </organization>
+
+    <dependencies>
+        <!-- PROVIDED DEPENDENCIES -->
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fish.payara.extras</groupId>
+            <artifactId>payara-embedded-all</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--*****************************************************************-->
+        <!-- DEPENDENCIES -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>colab-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>colab-client-generator-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>colab-client-generator-plugin</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <restPackages>
+                                <param>ch.colabproject.colab.api</param>
+                            </restPackages>
+                            <packageName>ch.colabproject.colab.client</packageName>
+                            <clientName>ColabClient</clientName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>yarn install</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>install</argument>
+                                <argument>--frozen-lockfile</argument>
+                            </arguments>
+                            <workingDirectory>${project.basedir}/target/generated-sources/tsClient/</workingDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn run build</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>build</argument>
+                            </arguments>
+                            <workingDirectory>${project.basedir}/target/generated-sources/tsClient/</workingDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

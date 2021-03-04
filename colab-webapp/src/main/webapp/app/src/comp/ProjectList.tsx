@@ -15,7 +15,7 @@ import {Destroyer} from "./Destroyer";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
-import {Project} from "..";
+import {Project} from 'colab-rest-client';
 import {iconStyle} from "./style";
 import {css} from "@emotion/css";
 import {AutoSaveTextEditor} from "./AutoSaveTextEditor";
@@ -55,7 +55,7 @@ const ProjectDisplayInternal = ({project, saveProject, deleteProject}: Props) =>
         margin: "10px"
       })}>
         <AutoSaveTextEditor
-          value={project.name}
+          value={project.name || ""}
           onChange={(newValue) =>
             saveProject({...project, name: newValue})
           }

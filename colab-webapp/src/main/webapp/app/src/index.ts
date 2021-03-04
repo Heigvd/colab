@@ -4,4 +4,3 @@
  *
  * Licensed under the MIT License
  */
-export * from "./API/client";

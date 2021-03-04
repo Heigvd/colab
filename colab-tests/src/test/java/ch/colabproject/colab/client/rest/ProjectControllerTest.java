@@ -4,10 +4,10 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.rest;
+package ch.colabproject.colab.client.rest;
 
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.tests.AbstractArquillianTest;
+import ch.colabproject.colab.client.tests.AbstractArquillianTest;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,8 +22,8 @@ public class ProjectControllerTest extends AbstractArquillianTest {
     public void testCreateProject() {
         Project project = new Project();
 
-        Long projectId = client.createProject(project);
-        Project persistedProject = client.getProject(projectId);
+        Long projectId = client.projectController.createProject(project);
+        Project persistedProject = client.projectController.getProject(projectId);
 
         Assertions.assertNotNull(persistedProject);
         Assertions.assertNotNull(persistedProject.getId());
@@ -35,13 +35,13 @@ public class ProjectControllerTest extends AbstractArquillianTest {
     public void testUpdateProject() {
         Project project = new Project();
 
-        Long projectId = client.createProject(project);
-        project = client.getProject(projectId);
+        Long projectId = client.projectController.createProject(project);
+        project = client.projectController.getProject(projectId);
         project.setName("The Hitchhiker's Guide to the Serious-Game");
 
-        client.updateProject(project);
+        client.projectController.updateProject(project);
 
-        Project project2 = client.getProject(projectId);
+        Project project2 = client.projectController.getProject(projectId);
         Assertions.assertEquals(project.getName(), project2.getName());
     }
 
@@ -49,26 +49,26 @@ public class ProjectControllerTest extends AbstractArquillianTest {
     public void testGetAllProjects() {
         Project project = new Project();
         project.setName("The Hitchhiker's Guide to the Serious-Game");
-        client.createProject(project);
+        client.projectController.createProject(project);
 
         project = new Project();
         project.setName("Don't Panic");
-        client.createProject(project);
+        client.projectController.createProject(project);
 
-        List<Project> projects = client.getAllProject();
+        List<Project> projects = client.projectController.getAllProjects();
         Assertions.assertEquals(2, projects.size());
     }
 
     @Test
     public void testDeleteProject() {
         Project project = new Project();
-        Long projectId = client.createProject(project);
-        Project persistedProject = client.getProject(projectId);
+        Long projectId = client.projectController.createProject(project);
+        Project persistedProject = client.projectController.getProject(projectId);
 
         Assertions.assertNotNull(persistedProject);
 
-        client.deleteProject(projectId);
-        persistedProject = client.getProject(projectId);
+        client.projectController.deleteProject(projectId);
+        persistedProject = client.projectController.getProject(projectId);
 
         Assertions.assertNull(persistedProject);
     }

@@ -163,59 +163,13 @@
                 <configuration>
                     <source>11</source>
                     <target>11</target>
-                    <!-- Using nashorn internal -->
-                    <!--<parameters>true</parameters>-->
+                    <!-- generate metadata for reflection on method parameters.
+                         It's used to generate REST client with correct parameter names -->
+                    <parameters>true</parameters>
                     <!--<compilerArgument>-XDignore.symbol.file</compilerArgument>-->
                     <!--<annotationProcessors>
                         <proc>ch.albasim.wegas.annotations.processor.JavaDocExtractor</proc>
                     </annotationProcessors>-->
-                </configuration>
-            </plugin>
-
-            <!-- combine main classes and tests classes within embed-classes
-            it allows arquillian to acces tests resources -->
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-classes-to-embedded</id>
-                        <phase>process-test-classes</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>target/embed-classes</outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>target/classes</directory>
-                                </resource>
-                                <resource>
-                                    <directory>target/test-classes/</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Tests -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <systemProperties>
-                        <java.util.logging.config.file>${project.basedir}/src/test/resources/logging.properties</java.util.logging.config.file>
-                        <arquillian.launch>payara-embedded</arquillian.launch>
-                        <!-- do not run liquibase as the databes is dropped and created by JPA -->
-                        <liquibase.config.shouldRun>false</liquibase.config.shouldRun>
-                        <colab.database.host>localhost</colab.database.host>
-                        <!-- one would be able to set the port too...
-                        <colab.database.host>localhost</colab.database.host> -->
-                        <colab.database.name>colab_test</colab.database.name>
-                        <colab.database.user>colab_test</colab.database.user>
-                        <colab.database.password>1234</colab.database.password>
-                    </systemProperties>
                 </configuration>
             </plugin>
 

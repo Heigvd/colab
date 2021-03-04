@@ -23,6 +23,8 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Intercept all request to the API and check user has required permission.
@@ -35,6 +37,11 @@ import javax.ws.rs.ext.Provider;
 @Provider
 @Priority(10)
 public class AuthenticationFilter implements ContainerRequestFilter {
+
+    /**
+     * Logger
+     */
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
 
     /**
      * Request related logic
@@ -59,7 +66,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
      * @return the list of all matching annotations found on class and method
      */
     private <T extends Annotation> List<T> getAnnotations(Class<T> annotation,
-            Class<?> klass, Method method) {
+        Class<?> klass, Method method) {
 
         List<T> list = new ArrayList<>();
 
@@ -93,26 +100,29 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             // curenr user not authenticated: make sure the targeted method is accessible to
             // unauthenticated user
             List<AuthenticationRequired> annotations = getAnnotations(
-                    AuthenticationRequired.class,
-                    targetClass, targetMethod);
+                AuthenticationRequired.class,
+                targetClass, targetMethod);
 
             if (!annotations.isEmpty()) {
                 // No current user but annotation required to be authenticated
                 // abort with 401 code
+                logger.trace("Request aborted:user is not authenticated");
                 abortWith = Response.Status.UNAUTHORIZED;
             }
         }
 
         List<AdminResource> annotations = getAnnotations(
-                AdminResource.class,
-                targetClass, targetMethod);
+            AdminResource.class,
+            targetClass, targetMethod);
         if (!annotations.isEmpty()) {
             if (currentUser == null) {
                 // no current user : unauthorized asks for user to authenticate
+                logger.trace("Request aborted:user is not authenticated");
                 abortWith = Response.Status.UNAUTHORIZED;
             } else {
                 if (!currentUser.isAdmin()) {
                     // current user is authenticaed but lack admin right: forbidden
+                    logger.trace("Request aborted:user tries to access admin resource");
                     abortWith = Response.Status.FORBIDDEN;
                 }
             }

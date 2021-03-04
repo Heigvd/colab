@@ -6,6 +6,8 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * This method request the client to send a password using the mandatoryMethod. If an optionalMethod
  * is provided, the client should also send its password using this very method. It will cause the
@@ -18,11 +20,13 @@ public class AuthMethod {
     /**
      * Hash method used to authenticate
      */
+    @NotNull
     private HashMethod mandatoryMethod;
 
     /**
      * Salt used to prefix the password before hashing it with mandatory method
      */
+    @NotNull
     private String salt;
 
     /**

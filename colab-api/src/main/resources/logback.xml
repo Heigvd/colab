@@ -17,6 +17,7 @@
 
     <logger name="ch.colabproject" level="INFO"/>
 
+    <logger name="ch.colabproject.colab.api.setup.ApplicationLifecycle" level="INFO"/>
 
     <root level="WARN">
         <appender-ref ref="STDOUT" />

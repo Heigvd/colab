@@ -51,7 +51,8 @@ public class LocalAccount extends Account {
     /**
      * Has the email address been verified with a VerificationToken ?
      */
-    private boolean verified;
+    @NotNull
+    private Boolean verified;
 
     /**
      * Salt to used before hashing the password
@@ -163,7 +164,7 @@ public class LocalAccount extends Account {
      *
      * @return true if the account is verified
      */
-    public boolean isVerified() {
+    public Boolean isVerified() {
         return verified;
     }
 
@@ -172,7 +173,7 @@ public class LocalAccount extends Account {
      *
      * @param verified yes or no ?
      */
-    public void setVerified(boolean verified) {
+    public void setVerified(Boolean verified) {
         this.verified = verified;
     }
 

@@ -6,6 +6,8 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Contains information sent by a user to create a new local account
  *
@@ -16,26 +18,31 @@ public class SignUpInfo {
     /**
      * user email
      */
+    @NotNull
     private String email;
 
     /**
      * username
      */
+    @NotNull
     private String username;
 
     /**
      * Hash method used to generate hash
      */
+    @NotNull
     private HashMethod hashMethod;
 
     /**
      * salt used to prefix plain password
      */
+    @NotNull
     private String salt;
 
     /**
      * hashMethod(salt+password) result
      */
+    @NotNull
     private String hash;
 
     /**

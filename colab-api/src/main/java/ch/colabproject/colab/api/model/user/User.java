@@ -23,6 +23,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 /**
  * Represents a registered user. A user may authenticate by several means (accounts).
@@ -33,6 +35,8 @@ import javax.persistence.TemporalType;
 @Table(name = "users")
 @NamedQuery(name = "User.findByUsername",
         query = "SELECT u from User u where u.username = :username")
+@NamedQuery(name="User.findAllAdmin",
+        query = "SELECT u from User u where u.isAdmin = TRUE")
 public class User implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
@@ -80,8 +84,10 @@ public class User implements ColabEntity {
     private String commonname;
 
     /**
-     * System-wide unique name
+     * System-wide unique name. Alphanumeric only
      */
+    @Pattern(regexp = "[a-zA-Z0-9]+")
+    @NotNull
     private String username;
 
     /**

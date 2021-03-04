@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-import {Project} from "..";
+import {Project} from 'colab-rest-client';
 import {dispatch, ACTIONS} from "../store";
 
 /**

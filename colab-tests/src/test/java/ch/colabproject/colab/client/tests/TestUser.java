@@ -4,11 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.tests;
-
-import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.model.user.AuthMethod;
-import ch.colabproject.colab.api.model.user.SignUpInfo;
+package ch.colabproject.colab.client.tests;
 
 /**
  * Simple bean to store plain credentials

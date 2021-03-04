@@ -28,7 +28,7 @@ public enum HashMethod {
         @Override
         public byte[] hash(String value, byte[] salt) {
             try {
-                KeySpec spec = new PBEKeySpec(value.toCharArray(), salt, 65536, 256);
+                KeySpec spec = new PBEKeySpec(value.toCharArray(), salt, 65536, 512);
                 SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
 
                 return factory.generateSecret(spec).getEncoded();

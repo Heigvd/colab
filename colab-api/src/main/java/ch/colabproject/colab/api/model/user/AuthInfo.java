@@ -6,6 +6,8 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Contains information sent by the user to authenticate with a password
  *
@@ -16,11 +18,13 @@ public class AuthInfo {
     /**
      * user email
      */
+    @NotNull
     private String email;
 
     /**
      * hash of user password computed with the mandatory method
      */
+    @NotNull
     private String mandatoryHash;
 
     /**

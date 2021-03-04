@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
 import java.util.Arrays;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -38,7 +39,7 @@ public class UserManagement {
     /**
      * Default size of salt in bytes
      */
-    private static final int SALT_LENGTH = 64;
+    private static final int SALT_LENGTH = 32;
 
     /**
      * Request related logic
@@ -120,6 +121,16 @@ public class UserManagement {
     }
 
     /**
+     * Retrieve the list of all admin user from database
+     *
+     * @return list of all administrator
+     */
+    public List<User> findAllAdmin() {
+        TypedQuery<User> query = em.createNamedQuery("User.findAllAdmin", User.class);
+        return query.getResultList();
+    }
+
+    /**
      * @return the hash method to use for new accounts
      */
     public HashMethod getDefaultHashMethod() {
@@ -159,6 +170,36 @@ public class UserManagement {
     public AuthMethod getDefaultRandomAuthenticationMethod() {
         return new AuthMethod(this.getDefaultHashMethod(), Helper
             .generateHexSalt(SALT_LENGTH), null, null);
+    }
+
+    /**
+     * Create a brand new user, which can authenticate with a {@link LocalAccount}. First,
+     * plainPassword will be hashed as any client should do. Then the
+     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo) signup} method is called.
+     *
+     * @param username      username
+     * @param email         email address
+     * @param plainPassword plain text password
+     *
+     * @return a brand new user
+     *
+     * @throws ColabErrorMessage if username is already taken
+     */
+    public User createUser(String username, String email, String plainPassword) {
+        AuthMethod method = getDefaultRandomAuthenticationMethod();
+        SignUpInfo signUpinfo = new SignUpInfo();
+
+        signUpinfo.setUsername(username);
+        signUpinfo.setEmail(email);
+        signUpinfo.setHashMethod(method.getMandatoryMethod());
+
+        signUpinfo.setSalt(method.getSalt());
+
+        byte[] hash = method.getMandatoryMethod().hash(plainPassword, method.getSalt());
+
+        signUpinfo.setHash(Helper.bytesToHex(hash));
+
+        return this.signup(signUpinfo);
     }
 
     /**
@@ -296,11 +337,19 @@ public class UserManagement {
     /**
      * Grant admin right to a user.
      *
-     * @param id id of user whom will became an admin
+     * @param user user who will became an admin
+     */
+    public void grantAdminRight(User user) {
+        user.setAdmin(true);
+    }
+
+    /**
+     * Grant admin right to a user.
+     *
+     * @param id id of user who will became an admin
      */
     public void grantAdminRight(Long id) {
-        User user = this.findUser(id);
-        user.setAdmin(true);
+        this.grantAdminRight(this.findUser(id));
     }
 
     /**
@@ -318,7 +367,7 @@ public class UserManagement {
     }
 
     /**
-     * Setup set client hash method to use for the given local account
+     * Setup new client hash method to use for the given local account
      *
      * @param id id of the LocalAccount
      */
@@ -329,6 +378,20 @@ public class UserManagement {
             AuthMethod authMethod = getDefaultRandomAuthenticationMethod();
             localAccount.setNextClientHashMethod(authMethod.getMandatoryMethod());
             localAccount.setNewClientSalt(authMethod.getSalt());
+        }
+    }
+
+    /**
+     * Setup new server hash method to use for the given local account
+     *
+     * @param id id of the LocalAccount
+     */
+    public void switchServerHashMethod(Long id) {
+        Account account = this.findAccount(id);
+        if (account instanceof LocalAccount) {
+            LocalAccount localAccount = (LocalAccount) account;
+            AuthMethod authMethod = getDefaultRandomAuthenticationMethod();
+            localAccount.setNextDbHashMethod(authMethod.getMandatoryMethod());
         }
     }
 }

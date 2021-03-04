@@ -18,6 +18,8 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.ext.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Intercept all request to the API. Make sure COLAB_SESSION_ID exists
@@ -29,6 +31,11 @@ import javax.ws.rs.ext.Provider;
 @Provider
 @Priority(1)
 public class CookieFilter implements ContainerRequestFilter, ContainerResponseFilter {
+
+    /**
+     * Logger
+     */
+    private static final Logger logger = LoggerFactory.getLogger(CookieFilter.class);
 
     /**
      * Cluster-wide session cache.
@@ -60,6 +67,7 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
         String sessionId = null;
         if (cookie != null) {
             sessionId = cookie.getValue();
+            logger.trace("Request received with session id {}", sessionId);
         }
         HttpSession httpSession = sessionManager.getOrCreate(sessionId);
         requestManager.setHttpSession(httpSession);
@@ -82,8 +90,10 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
         sessionManager.save(session);
 
         NewCookie sessionCookie = new NewCookie(COOKIE_NAME, session.getSessionId(),
-            null, null, null, -1, true, true);
+            "/", null, null, -1, true, true);
 
+
+        logger.trace("Request completed with session id {}", sessionCookie);
         responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);
     }
 

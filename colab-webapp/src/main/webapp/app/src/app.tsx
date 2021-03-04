@@ -23,6 +23,5 @@ function mount() {
         document.getElementById("root")
     );
 }
-
 init();
 mount();
