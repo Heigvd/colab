@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.utils;
 
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.api.exceptions.ColabHttpException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -27,8 +27,8 @@ public class InternalExceptionMapper implements ExceptionMapper<Exception> {
      */
     @Override
     public Response toResponse(Exception exception) {
-        if (exception instanceof ColabErrorMessage) {
-            return Response.status(Response.Status.BAD_REQUEST)
+        if (exception instanceof ColabHttpException) {
+            return Response.status(((ColabHttpException) exception).getHttpStatus())
                 .entity(exception)
                 .build();
         } else {

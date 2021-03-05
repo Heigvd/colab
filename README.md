@@ -64,25 +64,76 @@ Edit './colab-webapp/src/colab.properties' to match
 colab.database.user=colab
 colab.database.password=<YOUR_SECRET_PASSWORD>
 colab.database.name=colab
+
+colab.default.admin.username=
+colab.default.admin.email=
+colab.default.admin.password=
 ```
 
 The './colab-webapp/src/colab.properties' is your own configuration file and will never be committed.
 So you can safely put secrets in it.
 
-start server with
+## Dev tooltips
+One would not `mvn clean install` each time a small change is made.
+Here is some hints to rebuild relevant modules only.
+
+### Deploy the way
+Simplest way to deploy the web app is to use the provided run script:
 ```bash
 cd colab-webapp
 ./run
 ```
-
 You way have a look on run options:
 ```bash
 ./run -h
 ```
 
-### Webpack dev server
-Start a webpack dev server on localhost:3004
+### Hot re-deploy
+Some command listed delow require to re-deploy the app.
+You can do a full, complete relaod by killing the ./run script and running it again.
+Or you can do it the quick way: `touch colab-webapp/target/colab-webapp-0.1/.reload'
+
+### Changes in the data model
+Database refactoring is not enabled yet.
+Database must be cleared so JPA will generate it again from scratch.
+DB refactoring will be enabled once the model is quite stable.
+```sql
+DROP SCHEMA IF EXISTS public CASCADE;
+CREATE SCHEMA public AUTHORIZATION "<YOUR_PSQL_USER>";
+```
+
+As changing the data model is quite a big change, server, clients and webapp must be compiled:
+```
+mvn -DskipTests -pl colab-api,colab-client,colab-webapp install
+```
+re-deploy is required
+
+### REST API
+REST API changes requires to compile server, clients and webapp:
+```
+mvn -DskipTests -pl colab-api,colab-client,colab-webapp install
+```
+re-deploy is required
+
+### Server internal changes
+Since the API will not change,no need to recompile clients. Moreover, there is no need to rebuild
+the webapp. This can be skipped by setting the skipWebappYarn property.
+```
+mvn -DskipTests -DskipWebappYarn -pl colab-api,colab-webapp install
+```
+re-deploy is required
+
+
+### Webapp
+The `mvn -pl colab-webapp install` command will compile a production version of the webapp.
+This is not required for lcoal developemnt.
+
+In this case, one would run the webpack dev-server with
 ```bash
 cd colab-webapp/src/main/webapp/app
 yarn start
 ```
+
+The webapp will be available on http://localhost:3004
+
+When using webpack-dev-server, one could add `-DskipWebappYarn` to each maven command

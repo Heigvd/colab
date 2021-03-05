@@ -7,18 +7,20 @@
 import * as React from "react";
 import {css, cx} from "@emotion/css";
 
-import Logo from "./images/logo_bw.svg";
+import Logo from "./images/logo.svg";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSignInAlt} from "@fortawesome/free-solid-svg-icons";
 import {TDispatch, ColabState, signInWithLocalAccount, ACTIONS} from "./store";
 import {connect} from "react-redux";
+import FormContainer from "./FormContainer";
+import {darkMode} from "./comp/style";
 
 
 interface StateProps {
 };
 
 interface DispatchProps {
-  signIn: (email: string, password: string) => void;
+  signIn: (identifier: string, password: string) => void;
   gotoSignUp: () => void;
 }
 
@@ -33,94 +35,56 @@ type Props = StateProps & DispatchProps & OwnProps;
 function SignInForm({signIn, gotoSignUp, redirectTo}: Props) {
 
   const [credentials, setCredentials] = React.useState({
-    email: '',
+    identifier: '',
     password: '',
   })
 
   return (
-    <div id="main">
-      <div>
-        <div
-          className={cx(
-            css({
-              margin: "100px auto"
-            })
-          )}
-        >
-          <div
-            className={cx(
-              css({
-                display: "flex",
-                backgroundColor: 'grey'
-              })
-            )}
-          >
-            <Logo
-              className={css({
-                height: "110px",
-                width: "200px",
-                padding: "10px"
-              })}
-            />
-            <h1
-              className={css({
-                padding: "10px",
-                color: "white"
-              })}
-            >
-              co.LAB
-            </h1>
-          </div>
-          <div
-            className={css({
-              textAlign: "center",
-              padding: "10px"
-            })}
-          >
-            <div>
-              <label>email address
-                <input type='text' onChange={(e) => setCredentials({...credentials, email: e.target.value})} />
-              </label>
-              <label>password
+    <FormContainer>
+      <div className={css({
+        display: 'flex',
+        flexDirection: 'column'
+      })}>
+        <label>username or email address
+                <input type='text' onChange={(e) => setCredentials({...credentials, identifier: e.target.value})} />
+        </label>
+        <label>password
                 <input type='password' onChange={(e) => setCredentials({...credentials, password: e.target.value})} />
-              </label>
-            </div>
-            <button
-              className={css({
-                background: "#666",
-                fontSize: "1.2em",
-                cursor: "pointer",
-                padding: "15px",
-                width: "max-content",
-                color: "white",
-                margin: "auto",
-                ":hover": {
-                  backgroundColor: "#404040"
-                }
-              })}
-              onClick={() =>
-                signIn(credentials.email, credentials.password)
-              }
-            >
-              <span
-                className={css({
-                  padding: "0 5px"
-                })}
-              >
-                Login
-              </span>
-              <FontAwesomeIcon
-                className={css({
-                  padding: "0 5px"
-                })}
-                icon={faSignInAlt}
-              />
-            </button>
-            <span onClick={gotoSignUp}>sign up</span>
-          </div>
-        </div>
+        </label>
       </div>
-    </div>
+
+      <button
+        className={cx(
+          darkMode,
+          css({
+            cursor: "pointer",
+            padding: "5px",
+            width: "max-content",
+            margin: "auto",
+            ":hover": {
+              backgroundColor: "var(--hoverColor)"
+            }
+          }))}
+        onClick={() =>
+          signIn(credentials.identifier, credentials.password)
+        }
+      >
+        <span
+          className={css({
+            padding: "0 5px"
+          })}
+        >
+          Login
+              </span>
+        <FontAwesomeIcon
+          className={css({
+            padding: "0 5px"
+          })}
+          icon={faSignInAlt}
+        />
+      </button>
+      <span onClick={gotoSignUp}>sign up</span>
+    </FormContainer>
   );
 }
 
@@ -128,11 +92,11 @@ export default connect<StateProps, DispatchProps, OwnProps, ColabState>(
   _state => ({
   }),
   (dispatch: TDispatch) => ({
-    signIn: (email: string, password: string) => {
-      dispatch(signInWithLocalAccount(email, password));
+    signIn: (identifier: string, password: string) => {
+      dispatch(signInWithLocalAccount(identifier, password));
     },
     gotoSignUp: () => {
-      dispatch(ACTIONS.changeStatus('SIGNING_UP'));
+      dispatch(ACTIONS.changeAuthStatus('SIGNING_UP'));
     }
   })
 )(SignInForm);

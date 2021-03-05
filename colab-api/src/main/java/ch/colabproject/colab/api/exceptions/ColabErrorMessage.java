@@ -6,15 +6,14 @@
  */
 package ch.colabproject.colab.api.exceptions;
 
-import javax.ejb.ApplicationException;
+import javax.ws.rs.core.Response;
 
 /**
  * Throw an error message.
  *
  * @author maxence
  */
-@ApplicationException(rollback = true)
-public class ColabErrorMessage extends RuntimeException {
+public class ColabErrorMessage extends ColabHttpException {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,6 +21,7 @@ public class ColabErrorMessage extends RuntimeException {
      * List of message type
      */
     public enum MessageCode {
+        INVALID_REQUEST,
         AUTHENTICATION_FAILED,
         USERNAME_ALREADY_TAKEN,
     }
@@ -32,11 +32,22 @@ public class ColabErrorMessage extends RuntimeException {
     private final MessageCode messageCode;
 
     /**
-     * Create a new error message
+     * Create a new error message with a HTTP 400 bad request status
      *
      * @param messageCode error message code
      */
     public ColabErrorMessage(MessageCode messageCode) {
+        this(Response.Status.BAD_REQUEST, messageCode);
+    }
+
+    /**
+     * Create a new error message
+     *
+     * @param status      custom HTTP status
+     * @param messageCode error message code
+     */
+    public ColabErrorMessage(Response.Status status, MessageCode messageCode) {
+        super(status);
         this.messageCode = messageCode;
     }
 

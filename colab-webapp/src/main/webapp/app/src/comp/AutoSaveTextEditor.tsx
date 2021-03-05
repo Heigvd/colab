@@ -8,7 +8,7 @@
 import * as React from "react";
 import {debounce} from 'lodash';
 import {faPen, faCheck} from "@fortawesome/free-solid-svg-icons";
-import {iconStyle} from "./style";
+import {iconButton} from "./style";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 type State = {
@@ -46,7 +46,7 @@ export const AutoSaveTextEditor = ({value, onChange}: {value: string, onChange: 
       />
 
       <FontAwesomeIcon
-        className={iconStyle}
+        className={iconButton}
         icon={faCheck}
         onClick={() => {
           setState({
@@ -61,7 +61,7 @@ export const AutoSaveTextEditor = ({value, onChange}: {value: string, onChange: 
       {state.currentValue}
 
       <FontAwesomeIcon
-        className={iconStyle}
+        className={iconButton}
         icon={faPen}
         onClick={() => {
           setState({

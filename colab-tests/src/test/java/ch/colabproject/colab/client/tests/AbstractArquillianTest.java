@@ -202,7 +202,7 @@ public abstract class AbstractArquillianTest {
      */
     protected void signIn(TestUser user) throws ClientErrorException {
         AuthInfo authInfo = new AuthInfo();
-        authInfo.setEmail(user.getEmail());
+        authInfo.setIdentifier(user.getEmail());
 
         AuthMethod authMethod = client.userController.getAuthMethod(user.getEmail());
 

@@ -16,10 +16,10 @@ import javax.validation.constraints.NotNull;
 public class AuthInfo {
 
     /**
-     * user email
+     * user identifier. email address or username
      */
     @NotNull
-    private String email;
+    private String identifier;
 
     /**
      * hash of user password computed with the mandatory method
@@ -33,19 +33,19 @@ public class AuthInfo {
     private String optionalHash;
 
     /**
-     * @return email that should match a LocalAccount one
+     * @return identifier that should match a LocalAccount email or user username
      */
-    public String getEmail() {
-        return email;
+    public String getIdentifier() {
+        return identifier;
     }
 
     /**
-     * Set email
+     * Set identifier
      *
-     * @param email email
+     * @param identifier email address or username
      */
-    public void setEmail(String email) {
-        this.email = email;
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
     /**

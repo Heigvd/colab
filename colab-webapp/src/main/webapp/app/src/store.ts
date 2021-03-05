@@ -13,7 +13,8 @@ import {hashPassword} from "./SecurityHelper";
 
 export interface ColabState {
   wsSession?: string;
-  status: "UNAUTHENTICATED" | 'SIGNING_UP' | "UNINITIALIZED" | "SYNC" | "READY";
+  authenticationStatus: undefined | "UNAUTHENTICATED" | 'SIGNING_UP' | 'AUTHENTICATED';
+  status: "UNINITIALIZED" | "SYNCING" | "READY";
   currentUser?: API.User,
   currentAccount?: API.Account,
   projects: {
@@ -23,7 +24,8 @@ export interface ColabState {
 }
 
 const initialState: ColabState = {
-  status: "UNAUTHENTICATED",
+  authenticationStatus: undefined,
+  status: 'UNINITIALIZED',
   projects: {}
 };
 
@@ -42,6 +44,10 @@ export const ACTIONS = {
   }),
   signOut: () => ({
     type: "SIGN_OUT" as "SIGN_OUT",
+  }),
+  changeAuthStatus: (status: ColabState['authenticationStatus']) => ({
+    type: "CHANGE_AUTH_STATUS" as "CHANGE_AUTH_STATUS",
+    status: status
   }),
   changeStatus: (status: ColabState['status']) => ({
     type: "CHANGE_STATUS" as "CHANGE_STATUS",
@@ -84,21 +90,25 @@ function reducer(state = initialState, action: ACTIONS_TYPES): ColabState {
       const signedIn = action.currentUser != null && action.currentAccount != null;
       return {
         ...state,
-        status: signedIn ? 'UNINITIALIZED' : 'UNAUTHENTICATED',
+        authenticationStatus: signedIn ? 'AUTHENTICATED' : 'UNAUTHENTICATED',
         currentUser: action.currentUser,
         currentAccount: action.currentAccount,
       }
     case 'SIGN_OUT':
       return {
         ...state,
-        status: 'UNAUTHENTICATED',
+        authenticationStatus: 'UNAUTHENTICATED',
+        status: 'UNINITIALIZED',
+        projects: {},
         currentUser: undefined,
         currentAccount: undefined,
       }
     case 'CHANGE_STATUS':
       return {...state, status: action.status}
+    case 'CHANGE_AUTH_STATUS':
+      return {...state, authenticationStatus: action.status}
     case "START_INIT":
-      return {...state, status: "SYNC"};
+      return {...state, status: "SYNCING"};
     case "INIT_DONE":
       return {...state, status: "READY"};
     case "INIT_WS_SESSION_ID":
@@ -206,15 +216,15 @@ export function deleteProject(project: API.Project): AppThunk {
 }
 
 export function signInWithLocalAccount(
-  email: string,
+  identifier: string,
   password: string
 ): AppThunk {
   return async dispatch => {
     // first, fetch a
-    const authMethod = await restClient.UserController.getAuthMethod(email);
+    const authMethod = await restClient.UserController.getAuthMethod(identifier);
     const authInfo: API.AuthInfo = {
       "@class": 'AuthInfo',
-      email: email,
+      identifier: identifier,
       mandatoryHash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, password)
     };
 
@@ -223,6 +233,12 @@ export function signInWithLocalAccount(
   };
 }
 
+export function signOut(): AppThunk {
+  return async dispatch => {
+    await restClient.UserController.signOut();
+    dispatch(ACTIONS.signOut());
+  };
+}
 
 export function signUp(
   username: string,

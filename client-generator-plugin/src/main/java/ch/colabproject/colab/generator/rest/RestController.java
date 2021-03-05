@@ -481,7 +481,6 @@ public class RestController {
                 .append("', path")
                 .append(", ")
                 .append(method.getBodyParam() != null ? method.getBodyParam().getName() : "undefined")
-                .append(", ").append(method.getReturnType().equals(void.class))
                 .append(");");
             indent--;
             newLine(sb);

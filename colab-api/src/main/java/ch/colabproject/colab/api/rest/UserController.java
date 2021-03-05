@@ -53,14 +53,14 @@ public class UserController {
      * Get the authentication method and its parameters a user shall use to authenticate with the
      * given email address.
      *
-     * @param email email address user want to sign in with
+     * @param identifier email address or username the user want to sign in with
      *
      * @return Auth method to user
      */
     @GET
-    @Path("AuthMethod/{email}")
-    public AuthMethod getAuthMethod(@PathParam("email") String email) {
-        return userManagement.getAuthenticationMethod(email);
+    @Path("AuthMethod/{identifier : [^/]*}")
+    public AuthMethod getAuthMethod(@PathParam("identifier") String identifier) {
+        return userManagement.getAuthenticationMethod(identifier);
     }
 
     /**

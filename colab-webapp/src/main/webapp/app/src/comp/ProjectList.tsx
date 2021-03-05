@@ -16,9 +16,9 @@ import {Destroyer} from "./Destroyer";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {Project} from 'colab-rest-client';
-import {iconStyle} from "./style";
 import {css} from "@emotion/css";
 import {AutoSaveTextEditor} from "./AutoSaveTextEditor";
+import {iconButton} from "./style";
 
 interface StateProps {
 };
@@ -113,7 +113,7 @@ function InternalProjectListDisplay({projects, createProject}: ListProps) {
         }}
       >
         <FontAwesomeIcon
-          className={iconStyle}
+          className={iconButton}
           icon={faPlus}
 
         />

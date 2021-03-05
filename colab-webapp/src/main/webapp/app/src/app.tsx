@@ -11,7 +11,7 @@ import {init} from "./ws";
 import {Provider} from "react-redux";
 import {getStore} from "./store";
 import ErrorBoundary from "./ErrorBoundary";
-import {MainApp} from "./comp/MainApp";
+import MainApp from "./comp/MainApp";
 
 function mount() {
     return render(

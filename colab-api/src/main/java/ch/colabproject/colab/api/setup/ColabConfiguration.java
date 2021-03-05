@@ -29,7 +29,7 @@ public class ColabConfiguration {
     /**
      * Value to use if the system property is not set
      */
-    public static final String DEFAULT_ADMIN_EMAIL_VALUE = "admin@colab.local";
+    public static final String DEFAULT_ADMIN_EMAIL_VALUE = "admin@colab.localhost";
 
     /**
      * System property name which contains default admin password

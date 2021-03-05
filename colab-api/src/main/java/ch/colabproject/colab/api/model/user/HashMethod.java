@@ -20,6 +20,9 @@ import javax.crypto.spec.PBEKeySpec;
  * @author maxence
  */
 public enum HashMethod {
+    /**
+     * PBKDF2 with HMAC SHA-512, 65536 iterations generates 64 bytes (ie. 512 bits as SHA-512 does)
+     */
     PBKDF2WithHmacSHA512_65536_64 {
 
         /**

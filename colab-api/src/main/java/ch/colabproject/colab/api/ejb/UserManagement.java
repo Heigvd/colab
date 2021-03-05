@@ -19,6 +19,7 @@ import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,6 +27,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import liquibase.pro.packaged.ch;
 
 /**
  * Everything related to user management
@@ -138,27 +140,62 @@ public class UserManagement {
     }
 
     /**
-     * Which authentication method and parameters should a user use to authenticate with the
-     * localAccount that match the given email address.
-     * <p>
-     * In case email address is not linked to any account, authentication method with random
-     * parameters is returned. Such parameters may be used by clients to create brand new account.
-     * This behavior prevents to easy account existence leaks.
+     * Find local account by identifier.
      *
-     * @param email account identifier
+     * @param identifier email address or username
+     *
+     * @return LocalAccount
+     */
+    private LocalAccount findLocalAccountByIdentifier(String identifier) {
+        LocalAccount account = this.findLocalAccountByEmail(identifier);
+
+        if (account == null) {
+            // no localAccount with such an email addres
+            // try to find a user by username
+            User user = this.findUserByUsername(identifier);
+            if (user != null) {
+                // User found, as authenticationMethod is only available for LocalAccount,
+                // try to find one
+                Optional<Account> optAccount = user.getAccounts().stream()
+                    .filter(a -> a instanceof LocalAccount)
+                    .findFirst();
+                if (optAccount.isPresent()) {
+                    account = (LocalAccount) optAccount.get();
+                }
+            }
+        }
+        return account;
+    }
+
+    /**
+     * Which authentication method and parameters should a user use to authenticate. If the
+     * identifier is an email address, it will return authMethod which match the localAccount linked
+     * with the email address. Otherwise, identifier is used as a username and the first
+     * LocalAccount of the user is used.
+     * <p>
+     * In case no LocalAccount has been found, authentication method with random parameters is
+     * returned. Such parameters may be used by clients to create brand new account. This behavior
+     * prevents to easy account existence leaks.
+     *
+     * @param identifier {@link LocalAccount } email address or {@link User} username
      *
      * @return authentication method to use to authentication as email owner or new random one which
      *         can be use to create a brand new localAccount
      */
-    public AuthMethod getAuthenticationMethod(String email) {
-        LocalAccount account = this.findLocalAccountByEmail(email);
-        if (account != null) {
-            return new AuthMethod(account.getCurrentClientHashMethod(), account.getClientSalt(),
-                account.getNextClientHashMethod(), account.getNewClientSalt());
+    public AuthMethod getAuthenticationMethod(String identifier) {
+        if (identifier == null || identifier.isBlank()) {
+            throw new ColabErrorMessage(ColabErrorMessage.MessageCode.INVALID_REQUEST);
         } else {
-            AuthMethod authMethod = this.getDefaultRandomAuthenticationMethod();
-            // TODO: store it in a tmp cache
-            return authMethod;
+            LocalAccount account = this.findLocalAccountByIdentifier(identifier);
+
+            if (account != null) {
+                return new AuthMethod(account.getCurrentClientHashMethod(), account.getClientSalt(),
+                    account.getNextClientHashMethod(), account.getNewClientSalt());
+            } else {
+                // no account found, reeturn random method
+                // TODO: store it in a tmp cache
+                return this.getDefaultRandomAuthenticationMethod();
+            }
         }
     }
 
@@ -256,8 +293,7 @@ public class UserManagement {
      * @throws ColabErrorMessage if authentication failed
      */
     public User authenticate(AuthInfo authInfo) {
-        String email = authInfo.getEmail();
-        LocalAccount account = this.findLocalAccountByEmail(email);
+        LocalAccount account = this.findLocalAccountByIdentifier(authInfo.getIdentifier());
 
         if (account != null) {
             HashMethod m = account.getCurrentDbHashMethod();
