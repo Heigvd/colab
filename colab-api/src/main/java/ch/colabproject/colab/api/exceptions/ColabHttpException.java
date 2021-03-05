@@ -32,6 +32,11 @@ public abstract class ColabHttpException extends RuntimeException {
         this(Response.Status.BAD_REQUEST);
     }
 
+    /**
+     * Create error with custom HTTP status
+     *
+     * @param httpStatus HTTP status code
+     */
     public ColabHttpException(Response.Status httpStatus) {
         this.httpStatus = httpStatus;
     }
