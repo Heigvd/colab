@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AuthMethod.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.user</a> &gt; <span class="el_source">AuthMethod.java</span></div><h1>AuthMethod.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.user;
+
+import javax.validation.constraints.NotNull;
+
+/**
+ * This method request the client to send a password using the mandatoryMethod. If an optionalMethod
+ * is provided, the client should also send its password using this very method. It will cause the
+ * rotation of the methods. *
+ *
+ * @author maxence
+ */
+public class AuthMethod {
+
+    /**
+     * Hash method used to authenticate
+     */
+    @NotNull
+    private HashMethod mandatoryMethod;
+
+    /**
+     * Salt used to prefix the password before hashing it with mandatory method
+     */
+    @NotNull
+    private String salt;
+
+    /**
+     * optional method. Use to migrate to a new method or to change the salt
+     */
+    private HashMethod optionalMethod;
+
+    /**
+     * Salt used to prefix the password before hashing it with optional method
+     */
+    private String newSalt;
+
+    /**
+     * Default constructor
+     */
+<span class="fc" id="L45">    public AuthMethod() {</span>
+        // no-op
+<span class="fc" id="L47">    }</span>
+
+    /**
+     * Build payload to send to client
+     *
+     * @param mandatoryMethod non null hash method
+     * @param salt            non null hex-encoded salt
+     * @param optionalMethod  optional hash method
+     * @param newSalt         salt to use with optional hash method
+     */
+    public AuthMethod(HashMethod mandatoryMethod, String salt,
+<span class="fc" id="L58">        HashMethod optionalMethod, String newSalt) {</span>
+<span class="fc" id="L59">        this.mandatoryMethod = mandatoryMethod;</span>
+<span class="fc" id="L60">        this.salt = salt;</span>
+<span class="fc" id="L61">        this.optionalMethod = optionalMethod;</span>
+<span class="fc" id="L62">        this.newSalt = newSalt;</span>
+<span class="fc" id="L63">    }</span>
+
+    /**
+     * @return the method to use to hash the salt+plain_password
+     */
+    public HashMethod getMandatoryMethod() {
+<span class="fc" id="L69">        return mandatoryMethod;</span>
+    }
+
+    /**
+     * set Mandatory hash method
+     *
+     * @param mandatoryMethod hash method
+     */
+    public void setMandatoryMethod(HashMethod mandatoryMethod) {
+<span class="fc" id="L78">        this.mandatoryMethod = mandatoryMethod;</span>
+<span class="fc" id="L79">    }</span>
+
+    /**
+     *
+     * @return the salt to use with mandatory method
+     */
+    public String getSalt() {
+<span class="fc" id="L86">        return salt;</span>
+    }
+
+    /**
+     * Set the salt to use
+     *
+     * @param salt the salt
+     */
+    public void setSalt(String salt) {
+<span class="fc" id="L95">        this.salt = salt;</span>
+<span class="fc" id="L96">    }</span>
+
+    /**
+     *
+     * @return an optional method
+     */
+    public HashMethod getOptionalMethod() {
+<span class="fc" id="L103">        return optionalMethod;</span>
+    }
+
+    /**
+     * Set optional method. New salt must be set too
+     *
+     * @param optionalMethod next hash method to use
+     */
+    public void setOptionalMethod(HashMethod optionalMethod) {
+<span class="fc" id="L112">        this.optionalMethod = optionalMethod;</span>
+<span class="fc" id="L113">    }</span>
+
+    /**
+     *
+     * @return the salt to use with optional method
+     */
+    public String getNewSalt() {
+<span class="fc" id="L120">        return newSalt;</span>
+    }
+
+    /**
+     * set new salt. Should be set only if optionalMethod is set
+     *
+     * @param newSalt new salt
+     */
+    public void setNewSalt(String newSalt) {
+
+<span class="fc" id="L130">        this.newSalt = newSalt;</span>
+<span class="fc" id="L131">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SignUpInfo.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.user</a> &gt; <span class="el_source">SignUpInfo.java</span></div><h1>SignUpInfo.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.user;
+
+import javax.validation.constraints.NotNull;
+
+/**
+ * Contains information sent by a user to create a new local account
+ *
+ * @author maxence
+ */
+<span class="fc" id="L16">public class SignUpInfo {</span>
+
+    /**
+     * user email
+     */
+    @NotNull
+    private String email;
+
+    /**
+     * username
+     */
+    @NotNull
+    private String username;
+
+    /**
+     * Hash method used to generate hash
+     */
+    @NotNull
+    private HashMethod hashMethod;
+
+    /**
+     * salt used to prefix plain password
+     */
+    @NotNull
+    private String salt;
+
+    /**
+     * hashMethod(salt+password) result
+     */
+    @NotNull
+    private String hash;
+
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+<span class="fc" id="L52">        return email;</span>
+    }
+
+    /**
+     * set email
+     *
+     * @param email email
+     */
+    public void setEmail(String email) {
+<span class="fc" id="L61">        this.email = email;</span>
+<span class="fc" id="L62">    }</span>
+
+    /**
+     * @return username
+     */
+    public String getUsername() {
+<span class="fc" id="L68">        return username;</span>
+    }
+
+    /**
+     * username
+     *
+     * @param username username
+     */
+    public void setUsername(String username) {
+<span class="fc" id="L77">        this.username = username;</span>
+<span class="fc" id="L78">    }</span>
+
+    /**
+     * @return hash method
+     */
+    public HashMethod getHashMethod() {
+<span class="fc" id="L84">        return hashMethod;</span>
+    }
+
+    /**
+     * set hash method
+     *
+     * @param hashMethod hashMethod
+     */
+    public void setHashMethod(HashMethod hashMethod) {
+<span class="fc" id="L93">        this.hashMethod = hashMethod;</span>
+<span class="fc" id="L94">    }</span>
+
+    /**
+     *
+     * @return the salt the user use to salt its plain password
+     */
+    public String getSalt() {
+<span class="fc" id="L101">        return salt;</span>
+    }
+
+    /**
+     * set the salt
+     *
+     * @param salt the salt
+     */
+    public void setSalt(String salt) {
+<span class="fc" id="L110">        this.salt = salt;</span>
+<span class="fc" id="L111">    }</span>
+
+    /**
+     * @return the hash
+     */
+    public String getHash() {
+<span class="fc" id="L117">        return hash;</span>
+    }
+
+    /**
+     * @param hash the hash
+     */
+    public void setHash(String hash) {
+<span class="fc" id="L124">        this.hash = hash;</span>
+<span class="fc" id="L125">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

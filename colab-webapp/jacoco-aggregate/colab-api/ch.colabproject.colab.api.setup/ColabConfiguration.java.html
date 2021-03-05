@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ColabConfiguration.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.setup</a> &gt; <span class="el_source">ColabConfiguration.java</span></div><h1>ColabConfiguration.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.setup;
+
+/**
+ * Some configuration parameters
+ *
+ * @author maxence
+ */
+public class ColabConfiguration {
+
+    /**
+     * System property name which contains default admin username
+     */
+    public static final String DEFAULT_ADMIN_USERNAME_PROPERTY = &quot;colab.default.admin.username&quot;;
+    /**
+     * Value to use if the system property is not set
+     */
+    public static final String DEFAULT_ADMIN_USERNAME_VALUE = &quot;admin&quot;;
+
+    /**
+     * System property name which contains default admin email address
+     */
+    public static final String DEFAULT_ADMIN_EMAIL_PROPERTY = &quot;colab.default.admin.email&quot;;
+    /**
+     * Value to use if the system property is not set
+     */
+    public static final String DEFAULT_ADMIN_EMAIL_VALUE = &quot;admin@colab.local&quot;;
+
+    /**
+     * System property name which contains default admin password
+     */
+    public static final String DEFAULT_ADMIN_PASSWORD_PROPERTY = &quot;colab.default.admin.password&quot;;
+    /**
+     * Value to use if the system property is not set
+     */
+    public static final String DEFAULT_ADMIN_PASSWORD_VALUE = &quot;admin&quot;;
+
+    /**
+     * never-called private constructor
+     */
+<span class="nc" id="L46">    private ColabConfiguration() {</span>
+<span class="nc" id="L47">        throw new UnsupportedOperationException(&quot;This is a utility class and cannot be instantiated&quot;);</span>
+    }
+
+    /**
+     * Get default admin username.
+     *
+     * @return default admin username
+     */
+    public static String getDefaultAdminUsername() {
+<span class="nc" id="L56">        return System.getProperty(DEFAULT_ADMIN_USERNAME_PROPERTY, DEFAULT_ADMIN_USERNAME_VALUE);</span>
+    }
+
+    /**
+     * get the default admin email address
+     *
+     * @return defautl admin email address
+     */
+    public static String getDefaultAdminEmail() {
+<span class="nc" id="L65">        return System.getProperty(DEFAULT_ADMIN_EMAIL_PROPERTY, DEFAULT_ADMIN_EMAIL_VALUE);</span>
+    }
+
+    /**
+     * Get the default admin password
+     *
+     * @return default admin password
+     */
+    public static String getDefaultAdminPassword() {
+<span class="nc" id="L74">        return System.getProperty(DEFAULT_ADMIN_PASSWORD_PROPERTY, DEFAULT_ADMIN_PASSWORD_VALUE);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

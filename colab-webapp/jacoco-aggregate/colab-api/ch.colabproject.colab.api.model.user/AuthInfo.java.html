@@ -6,21 +6,25 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Contains information sent by the user to authenticate with a password
  *
  * @author maxence
  */
-<span class="fc" id="L14">public class AuthInfo {</span>
+<span class="nc" id="L16">public class AuthInfo {</span>
 
     /**
      * user email
      */
+    @NotNull
     private String email;
 
     /**
      * hash of user password computed with the mandatory method
      */
+    @NotNull
     private String mandatoryHash;
 
     /**
@@ -32,7 +36,7 @@ package ch.colabproject.colab.api.model.user;
      * @return email that should match a LocalAccount one
      */
     public String getEmail() {
-<span class="fc" id="L35">        return email;</span>
+<span class="nc" id="L39">        return email;</span>
     }
 
     /**
@@ -41,14 +45,14 @@ package ch.colabproject.colab.api.model.user;
      * @param email email
      */
     public void setEmail(String email) {
-<span class="fc" id="L44">        this.email = email;</span>
-<span class="fc" id="L45">    }</span>
+<span class="nc" id="L48">        this.email = email;</span>
+<span class="nc" id="L49">    }</span>
 
     /**
      * @return the hash
      */
     public String getMandatoryHash() {
-<span class="fc" id="L51">        return mandatoryHash;</span>
+<span class="nc" id="L55">        return mandatoryHash;</span>
     }
 
     /**
@@ -57,14 +61,14 @@ package ch.colabproject.colab.api.model.user;
      * @param mandatoryHash hash
      */
     public void setMandatoryHash(String mandatoryHash) {
-<span class="fc" id="L60">        this.mandatoryHash = mandatoryHash;</span>
-<span class="fc" id="L61">    }</span>
+<span class="nc" id="L64">        this.mandatoryHash = mandatoryHash;</span>
+<span class="nc" id="L65">    }</span>
 
     /**
      * @return optional hash
      */
     public String getOptionalHash() {
-<span class="fc" id="L67">        return optionalHash;</span>
+<span class="nc" id="L71">        return optionalHash;</span>
     }
 
     /**
@@ -73,7 +77,7 @@ package ch.colabproject.colab.api.model.user;
      * @param optionalHash hash
      */
     public void setOptionalHash(String optionalHash) {
-<span class="fc" id="L76">        this.optionalHash = optionalHash;</span>
-<span class="fc" id="L77">    }</span>
+<span class="nc" id="L80">        this.optionalHash = optionalHash;</span>
+<span class="nc" id="L81">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

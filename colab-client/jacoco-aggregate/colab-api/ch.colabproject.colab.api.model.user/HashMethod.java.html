@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>HashMethod.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.user</a> &gt; <span class="el_source">HashMethod.java</span></div><h1>HashMethod.java</h1><pre class="source lang-java linenums">/**
+ * Wegas
+ * http://wegas.albasim.ch
+ *
+ * Copyright (c) 2013-2021 School of Management and Engineering Vaud, Comem, MEI
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.user;
+
+import ch.colabproject.colab.api.Helper;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+
+/**
+ * Hash method supported by the coLAB platform
+ *
+ * @author maxence
+ */
+<span class="nc" id="L22">public enum HashMethod {</span>
+<span class="nc" id="L23">    PBKDF2WithHmacSHA512_65536_64 {</span>
+
+        /**
+         * {@inheritDoc }
+         */
+        @Override
+        public byte[] hash(String value, byte[] salt) {
+            try {
+<span class="nc" id="L31">                KeySpec spec = new PBEKeySpec(value.toCharArray(), salt, 65536, 512);</span>
+<span class="nc" id="L32">                SecretKeyFactory factory = SecretKeyFactory.getInstance(&quot;PBKDF2WithHmacSHA512&quot;);</span>
+
+<span class="nc" id="L34">                return factory.generateSecret(spec).getEncoded();</span>
+<span class="nc" id="L35">            } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {</span>
+<span class="nc" id="L36">                return null;</span>
+            }
+        }
+    };
+
+    /**
+     * compute digest from value.If given, the value is prefixed with the salt.
+     *
+     * @param value the value to hash
+     * @param salt  optional salt
+     *
+     * @return digested salted value
+     *
+     */
+    public abstract byte[] hash(String value, byte[] salt);
+
+    /**
+     * @see #hash(java.lang.String, byte[])
+     * @param value   value to hash
+     * @param hexSalt hexEncoded salt
+     *
+     * @return digested salted value
+     */
+    public byte[] hash(String value, String hexSalt) {
+<span class="nc" id="L60">        return this.hash(value, Helper.hextToBytes(hexSalt));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

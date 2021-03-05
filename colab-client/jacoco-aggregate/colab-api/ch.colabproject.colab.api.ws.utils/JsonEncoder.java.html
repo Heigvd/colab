@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JsonEncoder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.ws.utils</a> &gt; <span class="el_source">JsonEncoder.java</span></div><h1>JsonEncoder.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.ws.utils;
+
+import ch.colabproject.colab.api.rest.config.JsonbProvider;
+import ch.colabproject.colab.api.ws.message.WsMessage;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbException;
+import javax.websocket.EncodeException;
+import javax.websocket.Encoder;
+import javax.websocket.EndpointConfig;
+
+/**
+ * Serialize object as JSON using JSONb
+ *
+ * @author maxence
+ */
+<span class="nc" id="L22">public class JsonEncoder implements Encoder.Text&lt;WsMessage&gt; {</span>
+
+    /**
+     * Serialize object using {@link JsonbProvider#getJsonb() }
+     *
+     * @param object object to serialize
+     *
+     * @return JSON-serialized object
+     *
+     * @throws EncodeException if error
+     */
+    @Override
+    public String encode(WsMessage object) throws EncodeException {
+        try {
+<span class="nc" id="L36">            Jsonb jsonb = JsonbProvider.getJsonb();</span>
+<span class="nc" id="L37">            return jsonb.toJson(object);</span>
+<span class="nc" id="L38">        } catch (JsonbException ex) {</span>
+<span class="nc" id="L39">            throw new EncodeException(object, ex.getMessage());</span>
+        }
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void init(EndpointConfig config) {
+        /* no-op */
+<span class="nc" id="L49">    }</span>
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void destroy() {
+        /* no-op */
+<span class="nc" id="L57">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

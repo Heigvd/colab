@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AuthenticationFilter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.security</a> &gt; <span class="el_source">AuthenticationFilter.java</span></div><h1>AuthenticationFilter.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.security;
+
+import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.security.annotations.AdminResource;
+import ch.colabproject.colab.api.security.annotations.AuthenticationRequired;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Priority;
+import javax.inject.Inject;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Intercept all request to the API and check user has required permission.
+ * &lt;p&gt;
+ * This filter has a priority of 10, which means it is executed after {@link CookieFilter } and
+ * {@link  ch.colabproject.colab.api.rest.utils.LogRequestFilter LogRequestFilter}
+ *
+ * @author maxence
+ */
+@Provider
+@Priority(10)
+<span class="nc" id="L39">public class AuthenticationFilter implements ContainerRequestFilter {</span>
+
+    /**
+     * Logger
+     */
+<span class="nc" id="L44">    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);</span>
+
+    /**
+     * Request related logic
+     */
+    @Inject
+    private RequestManager requestManager;
+
+    /**
+     * Post-matching filter knows the targeted resource by injecting such a ResourceInfo
+     */
+    @Context
+    private ResourceInfo resourceInfo;
+
+    /**
+     * Get all method or class annotations matching the given type.
+     *
+     * @param &lt;T&gt;        type of annotation to search
+     * @param annotation type of annotation to search
+     * @param klass      targeted class
+     * @param method     targeted method
+     *
+     * @return the list of all matching annotations found on class and method
+     */
+    private &lt;T extends Annotation&gt; List&lt;T&gt; getAnnotations(Class&lt;T&gt; annotation,
+        Class&lt;?&gt; klass, Method method) {
+
+<span class="nc" id="L71">        List&lt;T&gt; list = new ArrayList&lt;&gt;();</span>
+
+<span class="nc" id="L73">        T a = method.getAnnotation(annotation);</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (a != null) {</span>
+<span class="nc" id="L75">            list.add(a);</span>
+        }
+<span class="nc" id="L77">        a = klass.getAnnotation(annotation);</span>
+
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (a != null) {</span>
+<span class="nc" id="L80">            list.add(a);</span>
+        }
+
+<span class="nc" id="L83">        return list;</span>
+    }
+
+    /**
+     * Intercept request and make sure current user has access to targeted class and method
+     * {@inheritDoc }
+     */
+    @Override
+    public void filter(ContainerRequestContext requestContext) throws IOException {
+        // Targeted Class &amp; method
+<span class="nc" id="L93">        final Class&lt;?&gt; targetClass = resourceInfo.getResourceClass();</span>
+<span class="nc" id="L94">        Method targetMethod = resourceInfo.getResourceMethod();</span>
+
+<span class="nc" id="L96">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc" id="L97">        Response.Status abortWith = null;</span>
+
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (currentUser == null) {</span>
+            // curenr user not authenticated: make sure the targeted method is accessible to
+            // unauthenticated user
+<span class="nc" id="L102">            List&lt;AuthenticationRequired&gt; annotations = getAnnotations(</span>
+                AuthenticationRequired.class,
+                targetClass, targetMethod);
+
+<span class="nc bnc" id="L106" title="All 2 branches missed.">            if (!annotations.isEmpty()) {</span>
+                // No current user but annotation required to be authenticated
+                // abort with 401 code
+<span class="nc" id="L109">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
+<span class="nc" id="L110">                abortWith = Response.Status.UNAUTHORIZED;</span>
+            }
+        }
+
+<span class="nc" id="L114">        List&lt;AdminResource&gt; annotations = getAnnotations(</span>
+            AdminResource.class,
+            targetClass, targetMethod);
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (!annotations.isEmpty()) {</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (currentUser == null) {</span>
+                // no current user : unauthorized asks for user to authenticate
+<span class="nc" id="L120">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
+<span class="nc" id="L121">                abortWith = Response.Status.UNAUTHORIZED;</span>
+            } else {
+<span class="nc bnc" id="L123" title="All 2 branches missed.">                if (!currentUser.isAdmin()) {</span>
+                    // current user is authenticaed but lack admin right: forbidden
+<span class="nc" id="L125">                    logger.trace(&quot;Request aborted:user tries to access admin resource&quot;);</span>
+<span class="nc" id="L126">                    abortWith = Response.Status.FORBIDDEN;</span>
+                }
+            }
+        }
+
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        if (abortWith != null) {</span>
+<span class="nc" id="L132">            requestContext.abortWith(Response.status(abortWith).build());</span>
+        }
+<span class="nc" id="L134">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

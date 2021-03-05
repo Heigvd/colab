@@ -22,19 +22,19 @@ import javax.transaction.Synchronization;
  *
  * @author maxence
  */
-<span class="fc" id="L25">public class WebsocketSynchronizer implements Synchronization, Serializable {</span>
+<span class="nc" id="L25">public class WebsocketSynchronizer implements Synchronization, Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
     /**
      * set of updated entities to be propagated
      */
-<span class="fc" id="L32">    private Set&lt;WithId&gt; updated = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L32">    private Set&lt;WithId&gt; updated = new HashSet&lt;&gt;();</span>
 
     /**
      * set of entities which have been deleted during the transaction
      */
-<span class="fc" id="L37">    private Set&lt;IndexEntry&gt; deleted = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L37">    private Set&lt;IndexEntry&gt; deleted = new HashSet&lt;&gt;();</span>
 
     /**
      * TODO should assert everything is propagatable
@@ -42,7 +42,7 @@ import javax.transaction.Synchronization;
     @Override
     public void beforeCompletion() {
         // maybe nothing to do
-<span class="fc" id="L45">    }</span>
+<span class="nc" id="L45">    }</span>
 
     /**
      * Called once the transaction has been fully validated. Send pending messages to their
@@ -52,26 +52,26 @@ import javax.transaction.Synchronization;
      */
     @Override
     public void afterCompletion(int status) {
-<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (status == Status.STATUS_COMMITTED) {</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (status == Status.STATUS_COMMITTED) {</span>
 
             /* Ignore updated entities which have been deleted */
-<span class="fc" id="L58">            List&lt;WithId&gt; filtered = updated.stream()</span>
-<span class="fc" id="L59">                .filter(</span>
-<span class="fc" id="L60">                    (u) -&gt; !deleted.stream()</span>
-<span class="pc bpc" id="L61" title="1 of 2 branches missed.">                        .anyMatch(</span>
+<span class="nc" id="L58">            List&lt;WithId&gt; filtered = updated.stream()</span>
+<span class="nc" id="L59">                .filter(</span>
+<span class="nc" id="L60">                    (u) -&gt; !deleted.stream()</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">                        .anyMatch(</span>
 <span class="nc bnc" id="L62" title="All 2 branches missed.">                            (d) -&gt; d.getId().equals(u.getId())</span>
 <span class="nc bnc" id="L63" title="All 2 branches missed.">                            &amp;&amp; d.getType().equals(u.getJsonBType())</span>
                         )
-<span class="fc" id="L65">                ).collect(Collectors.toList());</span>
+<span class="nc" id="L65">                ).collect(Collectors.toList());</span>
 
-<span class="fc bfc" id="L67" title="All 2 branches covered.">            if (!filtered.isEmpty()) {</span>
-<span class="fc" id="L68">                WebsocketEndpoint.propagate(filtered);</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">            if (!filtered.isEmpty()) {</span>
+<span class="nc" id="L68">                WebsocketEndpoint.propagate(filtered);</span>
             }
-<span class="fc bfc" id="L70" title="All 2 branches covered.">            if (!deleted.isEmpty()) {</span>
-<span class="fc" id="L71">                WebsocketEndpoint.propagateDeletion(deleted);</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">            if (!deleted.isEmpty()) {</span>
+<span class="nc" id="L71">                WebsocketEndpoint.propagateDeletion(deleted);</span>
             }
         }
-<span class="fc" id="L74">    }</span>
+<span class="nc" id="L74">    }</span>
 
     /**
      * Register the given object within the updated set
@@ -79,8 +79,8 @@ import javax.transaction.Synchronization;
      * @param o object to register
      */
     public void registerUpdate(WithId o) {
-<span class="fc" id="L82">        updated.add(o);</span>
-<span class="fc" id="L83">    }</span>
+<span class="nc" id="L82">        updated.add(o);</span>
+<span class="nc" id="L83">    }</span>
 
     /**
      * register just deleted object
@@ -88,7 +88,7 @@ import javax.transaction.Synchronization;
      * @param o object which has been deleted
      */
     public void registerDelete(WithId o) {
-<span class="fc" id="L91">        deleted.add(new IndexEntry(o));</span>
-<span class="fc" id="L92">    }</span>
+<span class="nc" id="L91">        deleted.add(new IndexEntry(o));</span>
+<span class="nc" id="L92">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

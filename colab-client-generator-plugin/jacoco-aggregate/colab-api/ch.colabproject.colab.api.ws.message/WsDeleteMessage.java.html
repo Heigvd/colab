@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>WsDeleteMessage.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client-generator-plugin</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.ws.message</a> &gt; <span class="el_source">WsDeleteMessage.java</span></div><h1>WsDeleteMessage.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.ws.message;
+
+import ch.colabproject.colab.api.model.WithId;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * WebSocker Message which indicates some objects have been deleted
+ *
+ * @author maxence
+ */
+public class WsDeleteMessage extends WsMessage {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * List of object to send through websocket
+     */
+    private Collection&lt;IndexEntry&gt; items;
+
+    /**
+     * Create a new message which contains all provided objects
+     *
+     * @param objects list of objet which have been deleted
+     */
+<span class="nc" id="L33">    public WsDeleteMessage(Collection&lt;IndexEntry&gt; objects) {</span>
+<span class="nc" id="L34">        this.items = objects;</span>
+<span class="nc" id="L35">    }</span>
+
+    /**
+     * @return get the list of deleted object
+     */
+    public Collection&lt;IndexEntry&gt; getItems() {
+<span class="nc" id="L41">        return items;</span>
+    }
+
+    /**
+     * Set the list of deleted object
+     *
+     * @param items new list
+     */
+    public void setItems(List&lt;IndexEntry&gt; items) {
+<span class="nc" id="L50">        this.items = items;</span>
+<span class="nc" id="L51">    }</span>
+
+    /**
+     * No need to send full object details, @class + id is way sufficient
+     */
+    public static class IndexEntry implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * object @class
+         */
+        private final String type;
+
+        /**
+         * Object id
+         */
+        private final Long id;
+
+        /**
+         * Create an new index entry based on the given wihId object
+         *
+         * @param object object to index
+         */
+<span class="nc" id="L75">        public IndexEntry(WithId object) {</span>
+<span class="nc" id="L76">            this.type = object.getJsonBType();</span>
+<span class="nc" id="L77">            this.id = object.getId();</span>
+<span class="nc" id="L78">        }</span>
+
+        /**
+         * @return index entry type
+         */
+        public String getType() {
+<span class="nc" id="L84">            return type;</span>
+        }
+
+        /**
+         * @return object id
+         */
+        public Long getId() {
+<span class="nc" id="L91">            return id;</span>
+        }
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

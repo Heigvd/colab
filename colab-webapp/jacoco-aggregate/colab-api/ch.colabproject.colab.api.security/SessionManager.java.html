@@ -18,7 +18,7 @@ import javax.inject.Inject;
  */
 @Stateless
 @LocalBean
-<span class="fc" id="L21">public class SessionManager {</span>
+<span class="nc" id="L21">public class SessionManager {</span>
 
     /**
      * Cluster wide cache for HTTP sessions
@@ -32,9 +32,9 @@ import javax.inject.Inject;
      * @param session session to cache
      */
     public void save(HttpSession session) {
-<span class="fc" id="L35">        String sessionId = session.getSessionId();</span>
-<span class="fc" id="L36">        sessions.put(sessionId, session);</span>
-<span class="fc" id="L37">    }</span>
+<span class="nc" id="L35">        String sessionId = session.getSessionId();</span>
+<span class="nc" id="L36">        sessions.put(sessionId, session);</span>
+<span class="nc" id="L37">    }</span>
 
     /**
      * Get a session from the cache. Try to reuse given sessionId.
@@ -45,18 +45,18 @@ import javax.inject.Inject;
      */
     public HttpSession getOrCreate(String sessionId) {
         // no session id or sessionId not in cache: generate new sessionId
-<span class="pc bpc" id="L48" title="1 of 4 branches missed.">        if (sessionId == null || !sessions.containsKey(sessionId)) {</span>
-<span class="fc" id="L49">            sessionId = Helper.generateHexSalt(32) + &quot;-&quot; + System.currentTimeMillis();</span>
+<span class="nc bnc" id="L48" title="All 4 branches missed.">        if (sessionId == null || !sessions.containsKey(sessionId)) {</span>
+<span class="nc" id="L49">            sessionId = Helper.generateHexSalt(32) + &quot;-&quot; + System.currentTimeMillis();</span>
         }
 
-<span class="fc" id="L52">        HttpSession session = sessions.get(sessionId);</span>
-<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (session == null) {</span>
+<span class="nc" id="L52">        HttpSession session = sessions.get(sessionId);</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (session == null) {</span>
             // if no cached session, create on
-<span class="fc" id="L55">            session = new HttpSession();</span>
-<span class="fc" id="L56">            session.setSessionId(sessionId);</span>
-<span class="fc" id="L57">            sessions.put(sessionId, session);</span>
+<span class="nc" id="L55">            session = new HttpSession();</span>
+<span class="nc" id="L56">            session.setSessionId(sessionId);</span>
+<span class="nc" id="L57">            sessions.put(sessionId, session);</span>
         }
-<span class="fc" id="L59">        return session;</span>
+<span class="nc" id="L59">        return session;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

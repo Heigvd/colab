@@ -21,9 +21,9 @@ public class ColabErrorMessage extends RuntimeException {
     /**
      * List of message type
      */
-<span class="fc" id="L24">    public enum MessageCode {</span>
-<span class="fc" id="L25">        AUTHENTICATION_FAILED,</span>
-<span class="fc" id="L26">        USERNAME_ALREADY_TAKEN,</span>
+<span class="nc" id="L24">    public enum MessageCode {</span>
+<span class="nc" id="L25">        AUTHENTICATION_FAILED,</span>
+<span class="nc" id="L26">        USERNAME_ALREADY_TAKEN,</span>
     }
 
     /**
@@ -36,15 +36,15 @@ public class ColabErrorMessage extends RuntimeException {
      *
      * @param messageCode error message code
      */
-<span class="fc" id="L39">    public ColabErrorMessage(MessageCode messageCode) {</span>
-<span class="fc" id="L40">        this.messageCode = messageCode;</span>
-<span class="fc" id="L41">    }</span>
+<span class="nc" id="L39">    public ColabErrorMessage(MessageCode messageCode) {</span>
+<span class="nc" id="L40">        this.messageCode = messageCode;</span>
+<span class="nc" id="L41">    }</span>
 
     /**
      * @return message code
      */
     public MessageCode getMessageCode() {
-<span class="fc" id="L47">        return messageCode;</span>
+<span class="nc" id="L47">        return messageCode;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

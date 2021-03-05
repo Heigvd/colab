@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RestClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-client-generator-plugin</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.generator.rest</a> &gt; <span class="el_source">RestClient.java</span></div><h1>RestClient.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.generator.rest;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientRequestFilter;
+import javax.ws.rs.client.ClientResponseContext;
+import javax.ws.rs.client.ClientResponseFilter;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
+
+/**
+ * Jakarta EE based rest client.
+ *
+ * @author maxence
+ */
+public class RestClient {
+
+    /**
+     * Base URL.
+     */
+    private WebTarget webTarget;
+
+    /**
+     * internal HTTP client.
+     */
+    private Client client;
+
+    /**
+     * Create a REST client.
+     *
+     * @param baseUri        base URL
+     * @param cookieName     session cookie name
+     * @param clientFeatures REST client feature
+     */
+<span class="nc" id="L49">    public RestClient(String baseUri, String cookieName, Object... clientFeatures) {</span>
+<span class="nc" id="L50">        ClientBuilder builder = ClientBuilder.newBuilder();</span>
+
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        for (Object feature : clientFeatures) {</span>
+<span class="nc" id="L53">            builder.register(feature);</span>
+        }
+
+<span class="nc bnc" id="L56" title="All 4 branches missed.">        if (cookieName != null &amp;&amp; !cookieName.isBlank()) {</span>
+<span class="nc" id="L57">            builder.register(new CookieFilter(cookieName));</span>
+        }
+
+<span class="nc" id="L60">        client = builder.build();</span>
+<span class="nc" id="L61">        webTarget = client.target(baseUri);</span>
+<span class="nc" id="L62">    }</span>
+
+    /**
+     * Close the client.
+     */
+    public void close() {
+<span class="nc" id="L68">        client.close();</span>
+<span class="nc" id="L69">    }</span>
+
+    /**
+     * send GET request.
+     *
+     * @param &lt;T&gt;   expected return type
+     * @param path  rest path
+     * @param klass expected return type
+     *
+     * @return instance of T
+     */
+    public &lt;T&gt; T get(String path, Class&lt;T&gt; klass) {
+<span class="nc" id="L81">        return webTarget.path(path).request()</span>
+<span class="nc" id="L82">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L83">            .get(klass);</span>
+    }
+
+    /**
+     * send GET request.
+     *
+     * @param &lt;T&gt;  expected return type
+     * @param path rest path
+     * @param type expected return generic type
+     *
+     * @return instance of T
+     */
+    public &lt;T&gt; T get(String path, GenericType&lt;T&gt; type) {
+<span class="nc" id="L96">        return webTarget.path(path).request()</span>
+<span class="nc" id="L97">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L98">            .get(type);</span>
+    }
+
+    /**
+     * send DELETE request.
+     *
+     * @param &lt;T&gt;   expected return type
+     * @param path  rest path
+     * @param klass expected return type
+     *
+     * @return instance of T
+     */
+    public &lt;T&gt; T delete(String path, Class&lt;T&gt; klass) {
+<span class="nc" id="L111">        return webTarget.path(path).request()</span>
+<span class="nc" id="L112">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L113">            .delete(klass);</span>
+    }
+
+    /**
+     * send POST request.
+     *
+     * @param &lt;T&gt;   expected return type
+     * @param path  rest path
+     * @param body  POST body
+     * @param klass expected return type
+     *
+     * @return instance of T
+     */
+    public &lt;T&gt; T post(String path, Object body, Class&lt;T&gt; klass) {
+<span class="nc" id="L127">        return webTarget.path(path).request()</span>
+<span class="nc" id="L128">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L129">            .post(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE), klass);</span>
+    }
+
+    /**
+     * send POST request with an empty body.
+     *
+     * @param &lt;T&gt;   expected return type
+     * @param path  rest path
+     * @param klass expected return type
+     *
+     * @return instance of T
+     */
+    public &lt;T&gt; T post(String path, Class&lt;T&gt; klass) {
+<span class="nc" id="L142">        return this.post(path, &quot;&quot;, klass);</span>
+    }
+
+    /**
+     * send PUT request.
+     *
+     * @param &lt;T&gt;   expected return type
+     * @param path  rest path
+     * @param body  POST body
+     * @param klass expected return type
+     *
+     * @return instance of T
+     */
+    public &lt;T&gt; T put(String path, Object body, Class&lt;T&gt; klass) {
+<span class="nc" id="L156">        return webTarget.path(path).request()</span>
+<span class="nc" id="L157">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L158">            .put(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE), klass);</span>
+    }
+
+    /**
+     * send PUT request with an empty body.
+     *
+     * @param &lt;T&gt;   expected return type
+     * @param path  rest path
+     * @param klass expected return type
+     *
+     * @return instance of T
+     */
+    public &lt;T&gt; T put(String path, Class&lt;T&gt; klass) {
+<span class="nc" id="L171">        return this.put(path, &quot;&quot;, klass);</span>
+    }
+
+    /**
+     * Cookie filter make sure the session cookie is set. The sessionId is set by server response.
+     * After the first request, the previously saved sessionId is injected in all requests.
+     */
+    public static class CookieFilter implements ClientRequestFilter, ClientResponseFilter {
+
+        /**
+         * sessionId
+         */
+        private String sessionId;
+
+        /**
+         * Name of the cookie
+         */
+        private final String cookieName;
+
+        /**
+         * New filter
+         *
+         * @param cookieName name of the cookie to manage
+         */
+<span class="nc" id="L195">        public CookieFilter(String cookieName) {</span>
+<span class="nc" id="L196">            this.cookieName = cookieName;</span>
+<span class="nc" id="L197">            this.sessionId = null;</span>
+<span class="nc" id="L198">        }</span>
+
+        /**
+         * If set, add Cookie header to the request.
+         * &lt;p&gt;
+         * {@inheritDoc }
+         */
+        @Override
+        public void filter(ClientRequestContext requestContext) throws IOException {
+<span class="nc bnc" id="L207" title="All 2 branches missed.">            if (this.sessionId != null) {</span>
+<span class="nc" id="L208">                List&lt;Object&gt; cookies = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L209">                Cookie cookie = new Cookie(cookieName, sessionId);</span>
+<span class="nc" id="L210">                cookies.add(cookie);</span>
+<span class="nc" id="L211">                requestContext.getHeaders().put(&quot;Cookie&quot;, cookies);</span>
+            }
+<span class="nc" id="L213">        }</span>
+
+        /**
+         * On request response, fetch set-cookie value
+         * &lt;p&gt;
+         * {@inheritDoc }
+         */
+        @Override
+        public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
+<span class="nc" id="L222">            NewCookie get = responseContext.getCookies().get(cookieName);</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">            if (get != null) {</span>
+<span class="nc" id="L224">                this.sessionId = get.getValue();</span>
+            }
+<span class="nc" id="L226">        }</span>
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

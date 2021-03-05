@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>EntityListener.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.tools</a> &gt; <span class="el_source">EntityListener.java</span></div><h1>EntityListener.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.tools;
+
+import ch.colabproject.colab.api.ejb.TransactionManager;
+import ch.colabproject.colab.api.model.WithId;
+import javax.inject.Inject;
+import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
+import javax.persistence.PreRemove;
+
+/**
+ * JPA Entity listener defined in orm.xml
+ *
+ * @author maxence
+ */
+<span class="nc" id="L21">public class EntityListener {</span>
+
+    /**
+     * RequestManager
+     */
+    @Inject
+    private TransactionManager transactionManager;
+
+    /**
+     * Track all updates and insert
+     *
+     * @param o updated or just persisted object
+     */
+    @PostPersist
+    @PostUpdate
+    public void onUpdate(Object o) {
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        if (o instanceof WithId) {</span>
+<span class="nc" id="L38">            transactionManager.registerUpdate((WithId) o);</span>
+        }
+<span class="nc" id="L40">    }</span>
+
+    /**
+     * Intercept object just before their deletion
+     *
+     * @param o just deleted object
+     */
+    @PreRemove
+    public void onDestroy(Object o) {
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        if (o instanceof WithId) {</span>
+<span class="nc" id="L50">            transactionManager.registerDelete((WithId) o);</span>
+        }
+<span class="nc" id="L52">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

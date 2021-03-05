@@ -18,7 +18,7 @@ import javax.inject.Inject;
  * @author maxence
  */
 @RequestScoped
-<span class="fc" id="L21">public class RequestManager {</span>
+<span class="nc" id="L21">public class RequestManager {</span>
 
     /**
      * User-related business logic
@@ -41,7 +41,7 @@ import javax.inject.Inject;
      * @return the current http session
      */
     public HttpSession getHttpSession() {
-<span class="fc" id="L44">        return this.httpSession;</span>
+<span class="nc" id="L44">        return this.httpSession;</span>
     }
 
     /**
@@ -50,12 +50,12 @@ import javax.inject.Inject;
      * @param httpSession http session
      */
     public void setHttpSession(HttpSession httpSession) {
-<span class="fc" id="L53">        this.httpSession = httpSession;</span>
-<span class="fc" id="L54">        User currentUser = getCurrentUser();</span>
-<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (currentUser != null) {</span>
-<span class="fc" id="L56">            currentUser.touchLastSeenAt();</span>
+<span class="nc" id="L53">        this.httpSession = httpSession;</span>
+<span class="nc" id="L54">        User currentUser = getCurrentUser();</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (currentUser != null) {</span>
+<span class="nc" id="L56">            currentUser.touchLastSeenAt();</span>
         }
-<span class="fc" id="L58">    }</span>
+<span class="nc" id="L58">    }</span>
 
     /**
      * Get the current authenticated account
@@ -63,8 +63,8 @@ import javax.inject.Inject;
      * @return the current account or null if none
      */
     public Account getCurrentAccount() {
-<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if (this.httpSession != null) {</span>
-<span class="fc" id="L67">            return userManagement.findAccount(this.httpSession.getAccountId());</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (this.httpSession != null) {</span>
+<span class="nc" id="L67">            return userManagement.findAccount(this.httpSession.getAccountId());</span>
         }
 <span class="nc" id="L69">        return null;</span>
     }
@@ -75,12 +75,12 @@ import javax.inject.Inject;
      * @return the current user or null if none
      */
     public User getCurrentUser() {
-<span class="fc" id="L78">        Account account = this.getCurrentAccount();</span>
+<span class="nc" id="L78">        Account account = this.getCurrentAccount();</span>
 
-<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (account != null) {</span>
-<span class="fc" id="L81">            return account.getUser();</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (account != null) {</span>
+<span class="nc" id="L81">            return account.getUser();</span>
         } else {
-<span class="fc" id="L83">            return null;</span>
+<span class="nc" id="L83">            return null;</span>
         }
     }
 
@@ -91,8 +91,8 @@ import javax.inject.Inject;
      *
      */
     public void setStartTime(long timestamp) {
-<span class="fc" id="L94">        this.startTime = timestamp;</span>
-<span class="fc" id="L95">    }</span>
+<span class="nc" id="L94">        this.startTime = timestamp;</span>
+<span class="nc" id="L95">    }</span>
 
     /**
      * Return the time the request started
@@ -100,7 +100,7 @@ import javax.inject.Inject;
      * @return start time timestamp in ms
      */
     public long getStartTime() {
-<span class="fc" id="L103">        return startTime;</span>
+<span class="nc" id="L103">        return startTime;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

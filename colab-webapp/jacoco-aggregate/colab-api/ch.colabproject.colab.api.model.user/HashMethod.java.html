@@ -19,8 +19,8 @@ import javax.crypto.spec.PBEKeySpec;
  *
  * @author maxence
  */
-<span class="fc" id="L22">public enum HashMethod {</span>
-<span class="fc" id="L23">    PBKDF2WithHmacSHA512_65536_64 {</span>
+<span class="nc" id="L22">public enum HashMethod {</span>
+<span class="nc" id="L23">    PBKDF2WithHmacSHA512_65536_64 {</span>
 
         /**
          * {@inheritDoc }
@@ -28,10 +28,10 @@ import javax.crypto.spec.PBEKeySpec;
         @Override
         public byte[] hash(String value, byte[] salt) {
             try {
-<span class="fc" id="L31">                KeySpec spec = new PBEKeySpec(value.toCharArray(), salt, 65536, 256);</span>
-<span class="fc" id="L32">                SecretKeyFactory factory = SecretKeyFactory.getInstance(&quot;PBKDF2WithHmacSHA512&quot;);</span>
+<span class="nc" id="L31">                KeySpec spec = new PBEKeySpec(value.toCharArray(), salt, 65536, 512);</span>
+<span class="nc" id="L32">                SecretKeyFactory factory = SecretKeyFactory.getInstance(&quot;PBKDF2WithHmacSHA512&quot;);</span>
 
-<span class="fc" id="L34">                return factory.generateSecret(spec).getEncoded();</span>
+<span class="nc" id="L34">                return factory.generateSecret(spec).getEncoded();</span>
 <span class="nc" id="L35">            } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {</span>
 <span class="nc" id="L36">                return null;</span>
             }
@@ -57,7 +57,7 @@ import javax.crypto.spec.PBEKeySpec;
      * @return digested salted value
      */
     public byte[] hash(String value, String hexSalt) {
-<span class="fc" id="L60">        return this.hash(value, Helper.hextToBytes(hexSalt));</span>
+<span class="nc" id="L60">        return this.hash(value, Helper.hextToBytes(hexSalt));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,3 +1,4 @@
-ch.colabproject.colab.api
-ch.colabproject.colab.api.rest
-ch.colabproject.colab.api.tests
+ch.colabproject.colab.client
+ch.colabproject.colab.client.rest
+ch.colabproject.colab.client.tests
+ch.colabproject.colab.generator

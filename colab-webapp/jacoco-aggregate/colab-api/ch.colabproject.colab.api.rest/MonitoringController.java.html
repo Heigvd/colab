@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -19,16 +20,17 @@ import javax.ws.rs.core.MediaType;
 @Path(&quot;monitoring&quot;)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-<span class="nc" id="L22">public class MonitoringController {</span>
+<span class="nc" id="L23">public class MonitoringController {</span>
 
     /**
      * Simple dummy method which return 200 OK
      *
      * @return &quot;Running&quot;
      */
+    @GET
     @Path(&quot;status&quot;)
     public String getStatus() {
-<span class="nc" id="L31">        return &quot;Running&quot;;</span>
+<span class="nc" id="L33">        return &quot;Running&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RequestManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.ejb</a> &gt; <span class="el_source">RequestManager.java</span></div><h1>RequestManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.ejb;
+
+import ch.colabproject.colab.api.model.user.Account;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.security.HttpSession;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+/**
+ * Request sidekick.
+ *
+ * @author maxence
+ */
+@RequestScoped
+<span class="fc" id="L21">public class RequestManager {</span>
+
+    /**
+     * User-related business logic
+     */
+    @Inject
+    private UserManagement userManagement;
+
+    /**
+     * HTTP session associated to current request
+     */
+    private HttpSession httpSession;
+
+    /**
+     * Timestamp as return by {@link System#currentTimeMillis() } the request starts at
+     */
+    private long startTime;
+
+    /**
+     *
+     * @return the current http session
+     */
+    public HttpSession getHttpSession() {
+<span class="fc" id="L44">        return this.httpSession;</span>
+    }
+
+    /**
+     * Attach httpSession to this request
+     *
+     * @param httpSession http session
+     */
+    public void setHttpSession(HttpSession httpSession) {
+<span class="fc" id="L53">        this.httpSession = httpSession;</span>
+<span class="fc" id="L54">        User currentUser = getCurrentUser();</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (currentUser != null) {</span>
+<span class="fc" id="L56">            currentUser.touchLastSeenAt();</span>
+        }
+<span class="fc" id="L58">    }</span>
+
+    /**
+     * Get the current authenticated account
+     *
+     * @return the current account or null if none
+     */
+    public Account getCurrentAccount() {
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if (this.httpSession != null) {</span>
+<span class="fc" id="L67">            return userManagement.findAccount(this.httpSession.getAccountId());</span>
+        }
+<span class="nc" id="L69">        return null;</span>
+    }
+
+    /**
+     * Get the current authenticated user
+     *
+     * @return the current user or null if none
+     */
+    public User getCurrentUser() {
+<span class="fc" id="L78">        Account account = this.getCurrentAccount();</span>
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (account != null) {</span>
+<span class="fc" id="L81">            return account.getUser();</span>
+        } else {
+<span class="fc" id="L83">            return null;</span>
+        }
+    }
+
+    /**
+     * set time the current request started
+     *
+     * @param timestamp start timestamp
+     *
+     */
+    public void setStartTime(long timestamp) {
+<span class="fc" id="L94">        this.startTime = timestamp;</span>
+<span class="fc" id="L95">    }</span>
+
+    /**
+     * Return the time the request started
+     *
+     * @return start time timestamp in ms
+     */
+    public long getStartTime() {
+<span class="fc" id="L103">        return startTime;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

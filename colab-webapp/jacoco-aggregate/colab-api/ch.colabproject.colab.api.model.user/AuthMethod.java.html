@@ -6,6 +6,8 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * This method request the client to send a password using the mandatoryMethod. If an optionalMethod
  * is provided, the client should also send its password using this very method. It will cause the
@@ -18,11 +20,13 @@ public class AuthMethod {
     /**
      * Hash method used to authenticate
      */
+    @NotNull
     private HashMethod mandatoryMethod;
 
     /**
      * Salt used to prefix the password before hashing it with mandatory method
      */
+    @NotNull
     private String salt;
 
     /**
@@ -38,9 +42,9 @@ public class AuthMethod {
     /**
      * Default constructor
      */
-<span class="fc" id="L41">    public AuthMethod() {</span>
+<span class="nc" id="L45">    public AuthMethod() {</span>
         // no-op
-<span class="fc" id="L43">    }</span>
+<span class="nc" id="L47">    }</span>
 
     /**
      * Build payload to send to client
@@ -51,18 +55,18 @@ public class AuthMethod {
      * @param newSalt         salt to use with optional hash method
      */
     public AuthMethod(HashMethod mandatoryMethod, String salt,
-<span class="fc" id="L54">        HashMethod optionalMethod, String newSalt) {</span>
-<span class="fc" id="L55">        this.mandatoryMethod = mandatoryMethod;</span>
-<span class="fc" id="L56">        this.salt = salt;</span>
-<span class="fc" id="L57">        this.optionalMethod = optionalMethod;</span>
-<span class="fc" id="L58">        this.newSalt = newSalt;</span>
-<span class="fc" id="L59">    }</span>
+<span class="nc" id="L58">        HashMethod optionalMethod, String newSalt) {</span>
+<span class="nc" id="L59">        this.mandatoryMethod = mandatoryMethod;</span>
+<span class="nc" id="L60">        this.salt = salt;</span>
+<span class="nc" id="L61">        this.optionalMethod = optionalMethod;</span>
+<span class="nc" id="L62">        this.newSalt = newSalt;</span>
+<span class="nc" id="L63">    }</span>
 
     /**
      * @return the method to use to hash the salt+plain_password
      */
     public HashMethod getMandatoryMethod() {
-<span class="fc" id="L65">        return mandatoryMethod;</span>
+<span class="nc" id="L69">        return mandatoryMethod;</span>
     }
 
     /**
@@ -71,15 +75,15 @@ public class AuthMethod {
      * @param mandatoryMethod hash method
      */
     public void setMandatoryMethod(HashMethod mandatoryMethod) {
-<span class="fc" id="L74">        this.mandatoryMethod = mandatoryMethod;</span>
-<span class="fc" id="L75">    }</span>
+<span class="nc" id="L78">        this.mandatoryMethod = mandatoryMethod;</span>
+<span class="nc" id="L79">    }</span>
 
     /**
      *
      * @return the salt to use with mandatory method
      */
     public String getSalt() {
-<span class="fc" id="L82">        return salt;</span>
+<span class="nc" id="L86">        return salt;</span>
     }
 
     /**
@@ -88,15 +92,15 @@ public class AuthMethod {
      * @param salt the salt
      */
     public void setSalt(String salt) {
-<span class="fc" id="L91">        this.salt = salt;</span>
-<span class="fc" id="L92">    }</span>
+<span class="nc" id="L95">        this.salt = salt;</span>
+<span class="nc" id="L96">    }</span>
 
     /**
      *
      * @return an optional method
      */
     public HashMethod getOptionalMethod() {
-<span class="fc" id="L99">        return optionalMethod;</span>
+<span class="nc" id="L103">        return optionalMethod;</span>
     }
 
     /**
@@ -105,15 +109,15 @@ public class AuthMethod {
      * @param optionalMethod next hash method to use
      */
     public void setOptionalMethod(HashMethod optionalMethod) {
-<span class="fc" id="L108">        this.optionalMethod = optionalMethod;</span>
-<span class="fc" id="L109">    }</span>
+<span class="nc" id="L112">        this.optionalMethod = optionalMethod;</span>
+<span class="nc" id="L113">    }</span>
 
     /**
      *
      * @return the salt to use with optional method
      */
     public String getNewSalt() {
-<span class="fc" id="L116">        return newSalt;</span>
+<span class="nc" id="L120">        return newSalt;</span>
     }
 
     /**
@@ -123,8 +127,8 @@ public class AuthMethod {
      */
     public void setNewSalt(String newSalt) {
 
-<span class="fc" id="L126">        this.newSalt = newSalt;</span>
-<span class="fc" id="L127">    }</span>
+<span class="nc" id="L130">        this.newSalt = newSalt;</span>
+<span class="nc" id="L131">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.user</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.user;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
+/**
+ * Represents a registered user. A user may authenticate by several means (accounts).
+ *
+ * @author maxence
+ */
+@Entity
+@Table(name = &quot;users&quot;)
+@NamedQuery(name = &quot;User.findByUsername&quot;,
+        query = &quot;SELECT u from User u where u.username = :username&quot;)
+@NamedQuery(name=&quot;User.findAllAdmin&quot;,
+        query = &quot;SELECT u from User u where u.isAdmin = TRUE&quot;)
+<span class="nc" id="L40">public class User implements ColabEntity {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * User unique id
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /**
+     * is the user administrator ?
+     */
+    private boolean isAdmin;
+
+    /**
+     * List of accounts the user can authenticate with
+     */
+<span class="nc" id="L59">    @OneToMany(mappedBy = &quot;user&quot;, cascade = {CascadeType.ALL})</span>
+    @JsonbTransient
+    private List&lt;Account&gt; accounts = new ArrayList&lt;&gt;();
+
+    /**
+     * last activity date
+     */
+<span class="nc" id="L66">    @Temporal(TemporalType.TIMESTAMP)</span>
+    @Column(columnDefinition = &quot;timestamp with time zone&quot;)
+    @JsonbTransient
+    private Date lastSeenAt = null;
+
+    /**
+     * Firstname
+     */
+    private String firstname;
+
+    /**
+     * lastname
+     */
+    private String lastname;
+
+    /**
+     * short name to be displayed
+     */
+    private String commonname;
+
+    /**
+     * System-wide unique name. Alphanumeric only
+     */
+    @Pattern(regexp = &quot;[a-zA-Z0-9]+&quot;)
+    @NotNull
+    private String username;
+
+    /**
+     * @return Id of the user
+     */
+    @Override
+    public Long getId() {
+<span class="nc" id="L98">        return id;</span>
+    }
+
+    /**
+     * Set user id
+     *
+     * @param id id of the user
+     */
+    public void setId(Long id) {
+<span class="nc" id="L107">        this.id = id;</span>
+<span class="nc" id="L108">    }</span>
+
+    /**
+     * @return user first name, may be null or empty
+     */
+    public String getFirstname() {
+<span class="nc" id="L114">        return firstname;</span>
+    }
+
+    /**
+     * Set user first name
+     *
+     * @param firstname user first name, may be null or empty
+     */
+    public void setFirstname(String firstname) {
+<span class="nc" id="L123">        this.firstname = firstname;</span>
+<span class="nc" id="L124">    }</span>
+
+    /**
+     *
+     * @return user last name, may be null or empty
+     */
+    public String getLastname() {
+<span class="nc" id="L131">        return lastname;</span>
+    }
+
+    /**
+     *
+     * @param lastname user last name, may be null or empty
+     */
+    public void setLastname(String lastname) {
+<span class="nc" id="L139">        this.lastname = lastname;</span>
+<span class="nc" id="L140">    }</span>
+
+    /**
+     * Short display name to use
+     *
+     * @return user common name
+     */
+    public String getCommonname() {
+<span class="nc" id="L148">        return commonname;</span>
+    }
+
+    /**
+     *
+     * @param commonname user common name
+     */
+    public void setCommonname(String commonname) {
+<span class="nc" id="L156">        this.commonname = commonname;</span>
+<span class="nc" id="L157">    }</span>
+
+    /**
+     * Get user's username. This name is unique system-wide
+     *
+     * @return username
+     */
+    public String getUsername() {
+<span class="nc" id="L165">        return username;</span>
+    }
+
+    /**
+     * Change the user username. This is sensitive operation as this username is used to reference
+     * the user within blocks and so on. Final user shouldn't be able to update its name itself.
+     *
+     * @param username new username
+     */
+    public void setUsername(String username) {
+<span class="nc" id="L175">        this.username = username;</span>
+<span class="nc" id="L176">    }</span>
+
+    /**
+     * @return the isAdmin
+     */
+    public boolean isAdmin() {
+<span class="nc" id="L182">        return isAdmin;</span>
+    }
+
+    /**
+     * @param isAdmin the isAdmin to set
+     */
+    public void setAdmin(boolean isAdmin) {
+<span class="nc" id="L189">        this.isAdmin = isAdmin;</span>
+<span class="nc" id="L190">    }</span>
+
+    /**
+     * @return user accounts
+     */
+    public List&lt;Account&gt; getAccounts() {
+<span class="nc" id="L196">        return accounts;</span>
+    }
+
+    /**
+     * Set user accounts
+     *
+     * @param accounts account list
+     */
+    public void setAccounts(List&lt;Account&gt; accounts) {
+<span class="nc" id="L205">        this.accounts = accounts;</span>
+<span class="nc" id="L206">    }</span>
+
+    /**
+     * @return last seen at
+     */
+    public Date getLastSeenAt() {
+<span class="nc" id="L212">        return new Date(lastSeenAt.getTime());</span>
+    }
+
+    /**
+     * update most recent activity date of the user
+     *
+     * @param lastSeenAt the lastSeenAt date
+     */
+    public void setLastSeenAt(Date lastSeenAt) {
+<span class="nc" id="L221">        this.lastSeenAt = new Date(lastSeenAt.getTime());</span>
+<span class="nc" id="L222">    }</span>
+
+    /**
+     * Set lastSeenAt to now
+     */
+    public void touchLastSeenAt() {
+<span class="nc" id="L228">        this.setLastSeenAt(new Date());</span>
+<span class="nc" id="L229">    }</span>
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L236" title="All 2 branches missed.">        if (other instanceof User){</span>
+<span class="nc" id="L237">            User o = (User) other;</span>
+<span class="nc" id="L238">            this.setFirstname(o.getFirstname());</span>
+<span class="nc" id="L239">            this.setLastname(o.getLastname());</span>
+<span class="nc" id="L240">            this.setCommonname(o.getCommonname());</span>
+<span class="nc" id="L241">        } else {</span>
+<span class="nc" id="L242">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L244">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

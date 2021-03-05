@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.model.user;
 
 import ch.colabproject.colab.api.model.ColabEntity;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,7 +21,7 @@ import javax.persistence.ManyToOne;
  * @author maxence
  */
 @Entity
-<span class="fc" id="L23">public abstract class Account implements ColabEntity {</span>
+<span class="nc" id="L24">public abstract class Account implements ColabEntity {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -43,6 +44,7 @@ import javax.persistence.ManyToOne;
         },
         optional = false
     )
+    @JsonbTransient
     private User user;
 
     /**
@@ -50,7 +52,7 @@ import javax.persistence.ManyToOne;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L53">        return id;</span>
+<span class="nc" id="L55">        return id;</span>
     }
 
     /**
@@ -59,14 +61,14 @@ import javax.persistence.ManyToOne;
      * @param id id
      */
     public void setId(Long id) {
-<span class="fc" id="L62">        this.id = id;</span>
-<span class="fc" id="L63">    }</span>
+<span class="nc" id="L64">        this.id = id;</span>
+<span class="nc" id="L65">    }</span>
 
     /**
      * @return the user
      */
     public User getUser() {
-<span class="fc" id="L69">        return user;</span>
+<span class="nc" id="L71">        return user;</span>
     }
 
     /**
@@ -75,7 +77,7 @@ import javax.persistence.ManyToOne;
      * @param user user who owns this account
      */
     public void setUser(User user) {
-<span class="fc" id="L78">        this.user = user;</span>
-<span class="fc" id="L79">    }</span>
+<span class="nc" id="L80">        this.user = user;</span>
+<span class="nc" id="L81">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

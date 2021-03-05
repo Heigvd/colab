@@ -32,7 +32,7 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="fc" id="L35">public class ProjectController {</span>
+<span class="nc" id="L35">public class ProjectController {</span>
 
     /**
      * The Project business logic
@@ -48,7 +48,7 @@ import javax.ws.rs.core.MediaType;
     @GET
     @AdminResource
     public List&lt;Project&gt; getAllProjects() {
-<span class="fc" id="L51">        return projectFacade.getAllProject();</span>
+<span class="nc" id="L51">        return projectFacade.getAllProject();</span>
     }
 
     /**
@@ -61,7 +61,7 @@ import javax.ws.rs.core.MediaType;
     @GET
     @Path(&quot;/{id}&quot;)
     public Project getProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L64">        return projectFacade.getProject(id);</span>
+<span class="nc" id="L64">        return projectFacade.getProject(id);</span>
     }
 
     /**
@@ -73,7 +73,7 @@ import javax.ws.rs.core.MediaType;
      */
     @POST
     public Long createProject(Project project) {
-<span class="fc" id="L76">        return projectFacade.createProject(project).getId();</span>
+<span class="nc" id="L76">        return projectFacade.createProject(project).getId();</span>
     }
 
     /**
@@ -85,8 +85,8 @@ import javax.ws.rs.core.MediaType;
      */
     @PUT
     public void updateProject(Project project) throws ColabMergeException {
-<span class="fc" id="L88">        projectFacade.updateProject(project);</span>
-<span class="fc" id="L89">    }</span>
+<span class="nc" id="L88">        projectFacade.updateProject(project);</span>
+<span class="nc" id="L89">    }</span>
 
     /**
      * Permanently delete a project
@@ -96,7 +96,7 @@ import javax.ws.rs.core.MediaType;
     @DELETE
     @Path(&quot;/{id}&quot;)
     public void deleteProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L99">        projectFacade.deleteProject(id);</span>
-<span class="fc" id="L100">    }</span>
+<span class="nc" id="L99">        projectFacade.deleteProject(id);</span>
+<span class="nc" id="L100">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

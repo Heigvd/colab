@@ -17,7 +17,7 @@ import javax.ws.rs.ext.Provider;
  * @author maxence
  */
 @Provider
-<span class="fc" id="L20">public class InternalExceptionMapper implements ExceptionMapper&lt;Exception&gt; {</span>
+<span class="nc" id="L20">public class InternalExceptionMapper implements ExceptionMapper&lt;Exception&gt; {</span>
 
     /**
      *
@@ -27,10 +27,10 @@ import javax.ws.rs.ext.Provider;
      */
     @Override
     public Response toResponse(Exception exception) {
-<span class="pc bpc" id="L30" title="1 of 2 branches missed.">        if (exception instanceof ColabErrorMessage) {</span>
-<span class="fc" id="L31">            return Response.status(Response.Status.BAD_REQUEST)</span>
-<span class="fc" id="L32">                .entity(exception)</span>
-<span class="fc" id="L33">                .build();</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        if (exception instanceof ColabErrorMessage) {</span>
+<span class="nc" id="L31">            return Response.status(Response.Status.BAD_REQUEST)</span>
+<span class="nc" id="L32">                .entity(exception)</span>
+<span class="nc" id="L33">                .build();</span>
         } else {
 <span class="nc" id="L35">            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)</span>
 <span class="nc" id="L36">                .entity(exception)</span>

@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
 import java.util.Arrays;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,12 +34,12 @@ import javax.persistence.TypedQuery;
  */
 @LocalBean
 @Stateless
-<span class="fc" id="L36">public class UserManagement {</span>
+<span class="nc" id="L37">public class UserManagement {</span>
 
     /**
      * Default size of salt in bytes
      */
-    private static final int SALT_LENGTH = 64;
+    private static final int SALT_LENGTH = 32;
 
     /**
      * Request related logic
@@ -61,9 +62,9 @@ import javax.persistence.TypedQuery;
      */
     public Account findAccount(Long accountId) {
         try {
-<span class="fc" id="L64">            return em.find(Account.class, accountId);</span>
-<span class="fc" id="L65">        } catch (IllegalArgumentException ex) {</span>
-<span class="fc" id="L66">            return null;</span>
+<span class="nc" id="L65">            return em.find(Account.class, accountId);</span>
+<span class="nc" id="L66">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L67">            return null;</span>
         }
     }
 
@@ -76,12 +77,12 @@ import javax.persistence.TypedQuery;
      */
     public LocalAccount findLocalAccountByEmail(String email) {
         try {
-<span class="fc" id="L79">            TypedQuery&lt;LocalAccount&gt; query</span>
-<span class="fc" id="L80">                = em.createNamedQuery(&quot;LocalAccount.findByEmail&quot;, LocalAccount.class);</span>
-<span class="fc" id="L81">            query.setParameter(&quot;email&quot;, email);</span>
-<span class="fc" id="L82">            return query.getSingleResult();</span>
-<span class="fc" id="L83">        } catch (NoResultException ex) {</span>
-<span class="fc" id="L84">            return null;</span>
+<span class="nc" id="L80">            TypedQuery&lt;LocalAccount&gt; query</span>
+<span class="nc" id="L81">                = em.createNamedQuery(&quot;LocalAccount.findByEmail&quot;, LocalAccount.class);</span>
+<span class="nc" id="L82">            query.setParameter(&quot;email&quot;, email);</span>
+<span class="nc" id="L83">            return query.getSingleResult();</span>
+<span class="nc" id="L84">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L85">            return null;</span>
         }
     }
 
@@ -94,9 +95,9 @@ import javax.persistence.TypedQuery;
      */
     public User findUser(Long userId) {
         try {
-<span class="fc" id="L97">            return em.find(User.class, userId);</span>
-<span class="nc" id="L98">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L99">            return null;</span>
+<span class="nc" id="L98">            return em.find(User.class, userId);</span>
+<span class="nc" id="L99">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L100">            return null;</span>
         }
     }
 
@@ -109,21 +110,31 @@ import javax.persistence.TypedQuery;
      */
     public User findUserByUsername(String username) {
         try {
-<span class="fc" id="L112">            TypedQuery&lt;User&gt; query</span>
-<span class="fc" id="L113">                = em.createNamedQuery(&quot;User.findByUsername&quot;, User.class);</span>
-<span class="fc" id="L114">            query.setParameter(&quot;username&quot;, username);</span>
+<span class="nc" id="L113">            TypedQuery&lt;User&gt; query</span>
+<span class="nc" id="L114">                = em.createNamedQuery(&quot;User.findByUsername&quot;, User.class);</span>
+<span class="nc" id="L115">            query.setParameter(&quot;username&quot;, username);</span>
 
-<span class="fc" id="L116">            return query.getSingleResult();</span>
-<span class="fc" id="L117">        } catch (NoResultException ex) {</span>
-<span class="fc" id="L118">            return null;</span>
+<span class="nc" id="L117">            return query.getSingleResult();</span>
+<span class="nc" id="L118">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L119">            return null;</span>
         }
+    }
+
+    /**
+     * Retrieve the list of all admin user from database
+     *
+     * @return list of all administrator
+     */
+    public List&lt;User&gt; findAllAdmin() {
+<span class="nc" id="L129">        TypedQuery&lt;User&gt; query = em.createNamedQuery(&quot;User.findAllAdmin&quot;, User.class);</span>
+<span class="nc" id="L130">        return query.getResultList();</span>
     }
 
     /**
      * @return the hash method to use for new accounts
      */
     public HashMethod getDefaultHashMethod() {
-<span class="fc" id="L126">        return HashMethod.PBKDF2WithHmacSHA512_65536_64;</span>
+<span class="nc" id="L137">        return HashMethod.PBKDF2WithHmacSHA512_65536_64;</span>
     }
 
     /**
@@ -140,14 +151,14 @@ import javax.persistence.TypedQuery;
      *         can be use to create a brand new localAccount
      */
     public AuthMethod getAuthenticationMethod(String email) {
-<span class="fc" id="L143">        LocalAccount account = this.findLocalAccountByEmail(email);</span>
-<span class="fc bfc" id="L144" title="All 2 branches covered.">        if (account != null) {</span>
-<span class="fc" id="L145">            return new AuthMethod(account.getCurrentClientHashMethod(), account.getClientSalt(),</span>
-<span class="fc" id="L146">                account.getNextClientHashMethod(), account.getNewClientSalt());</span>
+<span class="nc" id="L154">        LocalAccount account = this.findLocalAccountByEmail(email);</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">        if (account != null) {</span>
+<span class="nc" id="L156">            return new AuthMethod(account.getCurrentClientHashMethod(), account.getClientSalt(),</span>
+<span class="nc" id="L157">                account.getNextClientHashMethod(), account.getNewClientSalt());</span>
         } else {
-<span class="fc" id="L148">            AuthMethod authMethod = this.getDefaultRandomAuthenticationMethod();</span>
+<span class="nc" id="L159">            AuthMethod authMethod = this.getDefaultRandomAuthenticationMethod();</span>
             // TODO: store it in a tmp cache
-<span class="fc" id="L150">            return authMethod;</span>
+<span class="nc" id="L161">            return authMethod;</span>
         }
     }
 
@@ -157,8 +168,38 @@ import javax.persistence.TypedQuery;
      * @return a hash method and its parameters
      */
     public AuthMethod getDefaultRandomAuthenticationMethod() {
-<span class="fc" id="L160">        return new AuthMethod(this.getDefaultHashMethod(), Helper</span>
-<span class="fc" id="L161">            .generateHexSalt(SALT_LENGTH), null, null);</span>
+<span class="nc" id="L171">        return new AuthMethod(this.getDefaultHashMethod(), Helper</span>
+<span class="nc" id="L172">            .generateHexSalt(SALT_LENGTH), null, null);</span>
+    }
+
+    /**
+     * Create a brand new user, which can authenticate with a {@link LocalAccount}. First,
+     * plainPassword will be hashed as any client should do. Then the
+     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo) signup} method is called.
+     *
+     * @param username      username
+     * @param email         email address
+     * @param plainPassword plain text password
+     *
+     * @return a brand new user
+     *
+     * @throws ColabErrorMessage if username is already taken
+     */
+    public User createUser(String username, String email, String plainPassword) {
+<span class="nc" id="L189">        AuthMethod method = getDefaultRandomAuthenticationMethod();</span>
+<span class="nc" id="L190">        SignUpInfo signUpinfo = new SignUpInfo();</span>
+
+<span class="nc" id="L192">        signUpinfo.setUsername(username);</span>
+<span class="nc" id="L193">        signUpinfo.setEmail(email);</span>
+<span class="nc" id="L194">        signUpinfo.setHashMethod(method.getMandatoryMethod());</span>
+
+<span class="nc" id="L196">        signUpinfo.setSalt(method.getSalt());</span>
+
+<span class="nc" id="L198">        byte[] hash = method.getMandatoryMethod().hash(plainPassword, method.getSalt());</span>
+
+<span class="nc" id="L200">        signUpinfo.setHash(Helper.bytesToHex(hash));</span>
+
+<span class="nc" id="L202">        return this.signup(signUpinfo);</span>
     }
 
     /**
@@ -172,36 +213,36 @@ import javax.persistence.TypedQuery;
      */
     public User signup(SignUpInfo signup) {
         // username already taken ?
-<span class="fc" id="L175">        User user = this.findUserByUsername(signup.getUsername());</span>
-<span class="pc bpc" id="L176" title="1 of 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L216">        User user = this.findUserByUsername(signup.getUsername());</span>
+<span class="nc bnc" id="L217" title="All 2 branches missed.">        if (user == null) {</span>
             // username not yet taken
-<span class="fc" id="L178">            LocalAccount account = this.findLocalAccountByEmail(signup.getEmail());</span>
+<span class="nc" id="L219">            LocalAccount account = this.findLocalAccountByEmail(signup.getEmail());</span>
             // no local account with the given email address
 
-<span class="pc bpc" id="L181" title="1 of 2 branches missed.">            if (account == null) {</span>
-<span class="fc" id="L182">                account = new LocalAccount();</span>
-<span class="fc" id="L183">                account.setClientSalt(signup.getSalt());</span>
-<span class="fc" id="L184">                account.setCurrentClientHashMethod(signup.getHashMethod());</span>
-<span class="fc" id="L185">                account.setEmail(signup.getEmail());</span>
-<span class="fc" id="L186">                account.setVerified(false);</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">            if (account == null) {</span>
+<span class="nc" id="L223">                account = new LocalAccount();</span>
+<span class="nc" id="L224">                account.setClientSalt(signup.getSalt());</span>
+<span class="nc" id="L225">                account.setCurrentClientHashMethod(signup.getHashMethod());</span>
+<span class="nc" id="L226">                account.setEmail(signup.getEmail());</span>
+<span class="nc" id="L227">                account.setVerified(false);</span>
 
-<span class="fc" id="L188">                account.setCurrentDbHashMethod(getDefaultHashMethod());</span>
-<span class="fc" id="L189">                this.shadowHash(account, signup.getHash());</span>
+<span class="nc" id="L229">                account.setCurrentDbHashMethod(getDefaultHashMethod());</span>
+<span class="nc" id="L230">                this.shadowHash(account, signup.getHash());</span>
 
-<span class="fc" id="L191">                user = new User();</span>
-<span class="fc" id="L192">                user.getAccounts().add((account));</span>
-<span class="fc" id="L193">                account.setUser(user);</span>
+<span class="nc" id="L232">                user = new User();</span>
+<span class="nc" id="L233">                user.getAccounts().add((account));</span>
+<span class="nc" id="L234">                account.setUser(user);</span>
 
-<span class="fc" id="L195">                user.setUsername(signup.getUsername());</span>
-<span class="fc" id="L196">                em.persist(user);</span>
-<span class="fc" id="L197">                return user;</span>
+<span class="nc" id="L236">                user.setUsername(signup.getUsername());</span>
+<span class="nc" id="L237">                em.persist(user);</span>
+<span class="nc" id="L238">                return user;</span>
             } else {
                 // wait.... throwing something else here leaks account existence...
-<span class="nc" id="L200">                throw new ColabErrorMessage(MessageCode.USERNAME_ALREADY_TAKEN);</span>
+<span class="nc" id="L241">                throw new ColabErrorMessage(MessageCode.USERNAME_ALREADY_TAKEN);</span>
             }
 
         } else {
-<span class="nc" id="L204">            throw new ColabErrorMessage(MessageCode.USERNAME_ALREADY_TAKEN);</span>
+<span class="nc" id="L245">            throw new ColabErrorMessage(MessageCode.USERNAME_ALREADY_TAKEN);</span>
         }
     }
 
@@ -215,52 +256,52 @@ import javax.persistence.TypedQuery;
      * @throws ColabErrorMessage if authentication failed
      */
     public User authenticate(AuthInfo authInfo) {
-<span class="fc" id="L218">        String email = authInfo.getEmail();</span>
-<span class="fc" id="L219">        LocalAccount account = this.findLocalAccountByEmail(email);</span>
+<span class="nc" id="L259">        String email = authInfo.getEmail();</span>
+<span class="nc" id="L260">        LocalAccount account = this.findLocalAccountByEmail(email);</span>
 
-<span class="pc bpc" id="L221" title="1 of 2 branches missed.">        if (account != null) {</span>
-<span class="fc" id="L222">            HashMethod m = account.getCurrentDbHashMethod();</span>
-<span class="fc" id="L223">            String mandatoryHash = authInfo.getMandatoryHash();</span>
+<span class="nc bnc" id="L262" title="All 2 branches missed.">        if (account != null) {</span>
+<span class="nc" id="L263">            HashMethod m = account.getCurrentDbHashMethod();</span>
+<span class="nc" id="L264">            String mandatoryHash = authInfo.getMandatoryHash();</span>
 
-<span class="pc bpc" id="L225" title="1 of 2 branches missed.">            if (mandatoryHash != null) {</span>
-<span class="fc" id="L226">                byte[] hash = m.hash(mandatoryHash, account.getDbSalt());</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">            if (mandatoryHash != null) {</span>
+<span class="nc" id="L267">                byte[] hash = m.hash(mandatoryHash, account.getDbSalt());</span>
 
-<span class="fc bfc" id="L228" title="All 2 branches covered.">                if (Arrays.equals(hash, account.getHashedPassword())) {</span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">                if (Arrays.equals(hash, account.getHashedPassword())) {</span>
                     // authentication succeed
                     /////////////////////////////////
 
-<span class="fc" id="L232">                    boolean forceShadow = false;</span>
+<span class="nc" id="L273">                    boolean forceShadow = false;</span>
 
                     // should rotate client method ?
-<span class="fc bfc" id="L235" title="All 2 branches covered.">                    if (account.getNextClientHashMethod() != null</span>
-<span class="pc bpc" id="L236" title="1 of 2 branches missed.">                        &amp;&amp; authInfo.getOptionalHash() != null) {</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">                    if (account.getNextClientHashMethod() != null</span>
+<span class="nc bnc" id="L277" title="All 2 branches missed.">                        &amp;&amp; authInfo.getOptionalHash() != null) {</span>
                         // rotate method
-<span class="fc" id="L238">                        account.setClientSalt(account.getNewClientSalt());</span>
-<span class="fc" id="L239">                        account.setNewClientSalt(null);</span>
-<span class="fc" id="L240">                        account.setCurrentClientHashMethod(account.getNextClientHashMethod());</span>
-<span class="fc" id="L241">                        account.setNextClientHashMethod(null);</span>
+<span class="nc" id="L279">                        account.setClientSalt(account.getNewClientSalt());</span>
+<span class="nc" id="L280">                        account.setNewClientSalt(null);</span>
+<span class="nc" id="L281">                        account.setCurrentClientHashMethod(account.getNextClientHashMethod());</span>
+<span class="nc" id="L282">                        account.setNextClientHashMethod(null);</span>
 
                         // rotate provided hash and force to compute and save db hash
-<span class="fc" id="L244">                        mandatoryHash = authInfo.getOptionalHash();</span>
-<span class="fc" id="L245">                        forceShadow = true;</span>
+<span class="nc" id="L285">                        mandatoryHash = authInfo.getOptionalHash();</span>
+<span class="nc" id="L286">                        forceShadow = true;</span>
                     }
 
                     // should rotate server method ?
-<span class="pc bpc" id="L249" title="1 of 2 branches missed.">                    if (account.getNextDbHashMethod() != null) {</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">                    if (account.getNextDbHashMethod() != null) {</span>
                         // rotate method
-<span class="nc" id="L251">                        account.setCurrentDbHashMethod(account.getNextDbHashMethod());</span>
-<span class="nc" id="L252">                        account.setNextDbHashMethod(null);</span>
+<span class="nc" id="L292">                        account.setCurrentDbHashMethod(account.getNextDbHashMethod());</span>
+<span class="nc" id="L293">                        account.setNextDbHashMethod(null);</span>
                         // force to compute and save db hash
-<span class="nc" id="L254">                        forceShadow = true;</span>
+<span class="nc" id="L295">                        forceShadow = true;</span>
                     }
 
-<span class="fc bfc" id="L257" title="All 2 branches covered.">                    if (forceShadow) {</span>
-<span class="fc" id="L258">                        this.shadowHash(account, mandatoryHash);</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">                    if (forceShadow) {</span>
+<span class="nc" id="L299">                        this.shadowHash(account, mandatoryHash);</span>
                     }
 
-<span class="fc" id="L261">                    requestManager.getHttpSession().setAccountId(account.getId());</span>
+<span class="nc" id="L302">                    requestManager.getHttpSession().setAccountId(account.getId());</span>
 
-<span class="fc" id="L263">                    return account.getUser();</span>
+<span class="nc" id="L304">                    return account.getUser();</span>
                 }
             }
         }
@@ -268,7 +309,7 @@ import javax.persistence.TypedQuery;
         // authentication fails
         // OR client did not provide required hash
         // OR account not found
-<span class="fc" id="L271">        throw new ColabErrorMessage(MessageCode.AUTHENTICATION_FAILED);</span>
+<span class="nc" id="L312">        throw new ColabErrorMessage(MessageCode.AUTHENTICATION_FAILED);</span>
     }
 
     /**
@@ -279,29 +320,37 @@ import javax.persistence.TypedQuery;
      */
     private void shadowHash(LocalAccount account, String hash) {
         // use a new salt
-<span class="fc" id="L282">        account.setDbSalt(Helper.generateSalt(SALT_LENGTH));</span>
+<span class="nc" id="L323">        account.setDbSalt(Helper.generateSalt(SALT_LENGTH));</span>
         // compute new hash and save it
-<span class="fc" id="L284">        byte[] newHash = account.getCurrentDbHashMethod().hash(hash, account.getDbSalt());</span>
-<span class="fc" id="L285">        account.setHashedPassword(newHash);</span>
-<span class="fc" id="L286">    }</span>
+<span class="nc" id="L325">        byte[] newHash = account.getCurrentDbHashMethod().hash(hash, account.getDbSalt());</span>
+<span class="nc" id="L326">        account.setHashedPassword(newHash);</span>
+<span class="nc" id="L327">    }</span>
 
     /**
      * Log current user out
      */
     public void logout() {
         // clear account from http session
-<span class="fc" id="L293">        this.requestManager.getHttpSession().setAccountId(null);</span>
-<span class="fc" id="L294">    }</span>
+<span class="nc" id="L334">        this.requestManager.getHttpSession().setAccountId(null);</span>
+<span class="nc" id="L335">    }</span>
 
     /**
      * Grant admin right to a user.
      *
-     * @param id id of user whom will became an admin
+     * @param user user who will became an admin
+     */
+    public void grantAdminRight(User user) {
+<span class="nc" id="L343">        user.setAdmin(true);</span>
+<span class="nc" id="L344">    }</span>
+
+    /**
+     * Grant admin right to a user.
+     *
+     * @param id id of user who will became an admin
      */
     public void grantAdminRight(Long id) {
-<span class="fc" id="L302">        User user = this.findUser(id);</span>
-<span class="fc" id="L303">        user.setAdmin(true);</span>
-<span class="fc" id="L304">    }</span>
+<span class="nc" id="L352">        this.grantAdminRight(this.findUser(id));</span>
+<span class="nc" id="L353">    }</span>
 
     /**
      * Update the user with values provided in given user. Only field which are editable by users
@@ -312,24 +361,38 @@ import javax.persistence.TypedQuery;
      * @throws ColabMergeException if something went wrong
      */
     public void updateUser(User user) throws ColabMergeException {
-<span class="fc" id="L315">        User managedUser = this.findUser(user.getId());</span>
+<span class="nc" id="L364">        User managedUser = this.findUser(user.getId());</span>
 
-<span class="fc" id="L317">        managedUser.merge(user);</span>
-<span class="fc" id="L318">    }</span>
+<span class="nc" id="L366">        managedUser.merge(user);</span>
+<span class="nc" id="L367">    }</span>
 
     /**
-     * Setup set client hash method to use for the given local account
+     * Setup new client hash method to use for the given local account
      *
      * @param id id of the LocalAccount
      */
     public void switchClientHashMethod(Long id) {
-<span class="fc" id="L326">        Account account = this.findAccount(id);</span>
-<span class="pc bpc" id="L327" title="1 of 2 branches missed.">        if (account instanceof LocalAccount) {</span>
-<span class="fc" id="L328">            LocalAccount localAccount = (LocalAccount) account;</span>
-<span class="fc" id="L329">            AuthMethod authMethod = getDefaultRandomAuthenticationMethod();</span>
-<span class="fc" id="L330">            localAccount.setNextClientHashMethod(authMethod.getMandatoryMethod());</span>
-<span class="fc" id="L331">            localAccount.setNewClientSalt(authMethod.getSalt());</span>
+<span class="nc" id="L375">        Account account = this.findAccount(id);</span>
+<span class="nc bnc" id="L376" title="All 2 branches missed.">        if (account instanceof LocalAccount) {</span>
+<span class="nc" id="L377">            LocalAccount localAccount = (LocalAccount) account;</span>
+<span class="nc" id="L378">            AuthMethod authMethod = getDefaultRandomAuthenticationMethod();</span>
+<span class="nc" id="L379">            localAccount.setNextClientHashMethod(authMethod.getMandatoryMethod());</span>
+<span class="nc" id="L380">            localAccount.setNewClientSalt(authMethod.getSalt());</span>
         }
-<span class="fc" id="L333">    }</span>
+<span class="nc" id="L382">    }</span>
+
+    /**
+     * Setup new server hash method to use for the given local account
+     *
+     * @param id id of the LocalAccount
+     */
+    public void switchServerHashMethod(Long id) {
+<span class="nc" id="L390">        Account account = this.findAccount(id);</span>
+<span class="nc bnc" id="L391" title="All 2 branches missed.">        if (account instanceof LocalAccount) {</span>
+<span class="nc" id="L392">            LocalAccount localAccount = (LocalAccount) account;</span>
+<span class="nc" id="L393">            AuthMethod authMethod = getDefaultRandomAuthenticationMethod();</span>
+<span class="nc" id="L394">            localAccount.setNextDbHashMethod(authMethod.getMandatoryMethod());</span>
+        }
+<span class="nc" id="L396">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

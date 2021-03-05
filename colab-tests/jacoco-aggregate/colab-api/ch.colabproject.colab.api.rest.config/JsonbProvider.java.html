@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JsonbProvider.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.config</a> &gt; <span class="el_source">JsonbProvider.java</span></div><h1>JsonbProvider.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.config;
+
+import ch.colabproject.colab.api.rest.utils.ColabDeserializer;
+import ch.colabproject.colab.api.rest.utils.DateDeserializer;
+import ch.colabproject.colab.api.rest.utils.DateSerializer;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
+import javax.json.bind.JsonbConfig;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
+
+/**
+ * convenient way to customize the JSON-B mapper
+ *
+ * @author Maxence
+ */
+@Provider
+<span class="fc" id="L24">public class JsonbProvider implements ContextResolver&lt;Jsonb&gt; {</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Jsonb getContext(Class&lt;?&gt; aClass) {
+<span class="fc" id="L31">        return JsonbProvider.getJsonb();</span>
+    }
+
+    /**
+     * Get a customized mapper
+     *
+     * @return an Jsonb object
+     */
+    public static Jsonb getJsonb() {
+<span class="fc" id="L40">        JsonbConfig config = new JsonbConfig()</span>
+<span class="fc" id="L41">            .withFormatting(false)</span>
+<span class="fc" id="L42">            .withSerializers(new DateSerializer())</span>
+<span class="fc" id="L43">            .withDeserializers(new DateDeserializer())</span>
+<span class="fc" id="L44">            .withDeserializers(new ColabDeserializer());</span>
+
+<span class="fc" id="L46">        return JsonbBuilder.create(config);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

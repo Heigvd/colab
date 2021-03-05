@@ -18,7 +18,7 @@ import javax.persistence.PreRemove;
  *
  * @author maxence
  */
-<span class="fc" id="L21">public class EntityListener {</span>
+<span class="nc" id="L21">public class EntityListener {</span>
 
     /**
      * RequestManager
@@ -34,10 +34,10 @@ import javax.persistence.PreRemove;
     @PostPersist
     @PostUpdate
     public void onUpdate(Object o) {
-<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (o instanceof WithId) {</span>
-<span class="fc" id="L38">            transactionManager.registerUpdate((WithId) o);</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        if (o instanceof WithId) {</span>
+<span class="nc" id="L38">            transactionManager.registerUpdate((WithId) o);</span>
         }
-<span class="fc" id="L40">    }</span>
+<span class="nc" id="L40">    }</span>
 
     /**
      * Intercept object just before their deletion
@@ -46,9 +46,9 @@ import javax.persistence.PreRemove;
      */
     @PreRemove
     public void onDestroy(Object o) {
-<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (o instanceof WithId) {</span>
-<span class="fc" id="L50">            transactionManager.registerDelete((WithId) o);</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        if (o instanceof WithId) {</span>
+<span class="nc" id="L50">            transactionManager.registerDelete((WithId) o);</span>
         }
-<span class="fc" id="L52">    }</span>
+<span class="nc" id="L52">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

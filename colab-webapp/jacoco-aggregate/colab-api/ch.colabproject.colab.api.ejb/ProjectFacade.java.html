@@ -22,7 +22,7 @@ import javax.persistence.TypedQuery;
  */
 @Stateless
 @LocalBean
-<span class="fc" id="L25">public class ProjectFacade {</span>
+<span class="nc" id="L25">public class ProjectFacade {</span>
 
     /**
      * Access to the persistence unit
@@ -36,8 +36,8 @@ import javax.persistence.TypedQuery;
      * @return list of all projects
      */
     public List&lt;Project&gt; getAllProject() {
-<span class="fc" id="L39">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findAll&quot;, Project.class);</span>
-<span class="fc" id="L40">        return query.getResultList();</span>
+<span class="nc" id="L39">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findAll&quot;, Project.class);</span>
+<span class="nc" id="L40">        return query.getResultList();</span>
     }
 
     /**
@@ -47,7 +47,7 @@ import javax.persistence.TypedQuery;
      * @return the project with the given id or null is such a project does not exists
      */
     public Project getProject(Long id) {
-<span class="fc" id="L50">        return em.find(Project.class, id);</span>
+<span class="nc" id="L50">        return em.find(Project.class, id);</span>
     }
 
     /**
@@ -60,11 +60,11 @@ import javax.persistence.TypedQuery;
      * @throws ColabMergeException if updating the project failed
      */
     public Project updateProject(Project project) throws ColabMergeException {
-<span class="fc" id="L63">        Project mProject = this.getProject(project.getId());</span>
+<span class="nc" id="L63">        Project mProject = this.getProject(project.getId());</span>
 
-<span class="fc" id="L65">        mProject.merge(project);</span>
+<span class="nc" id="L65">        mProject.merge(project);</span>
 
-<span class="fc" id="L67">        return mProject;</span>
+<span class="nc" id="L67">        return mProject;</span>
     }
 
     /**
@@ -75,8 +75,8 @@ import javax.persistence.TypedQuery;
      * @return the new persisted project
      */
     public Project createProject(Project project) {
-<span class="fc" id="L78">        em.persist(project);</span>
-<span class="fc" id="L79">        return project;</span>
+<span class="nc" id="L78">        em.persist(project);</span>
+<span class="nc" id="L79">        return project;</span>
     }
 
     /**
@@ -88,9 +88,9 @@ import javax.persistence.TypedQuery;
      */
     public Project deleteProject(Long id) {
         // TODO: move to recycle bin first
-<span class="fc" id="L91">        Project project = this.getProject(id);</span>
-<span class="fc" id="L92">        em.remove(project);</span>
-<span class="fc" id="L93">        return project;</span>
+<span class="nc" id="L91">        Project project = this.getProject(id);</span>
+<span class="nc" id="L92">        em.remove(project);</span>
+<span class="nc" id="L93">        return project;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

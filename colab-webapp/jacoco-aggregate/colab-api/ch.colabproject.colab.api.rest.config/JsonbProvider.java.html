@@ -21,14 +21,14 @@ import javax.ws.rs.ext.Provider;
  * @author Maxence
  */
 @Provider
-<span class="fc" id="L24">public class JsonbProvider implements ContextResolver&lt;Jsonb&gt; {</span>
+<span class="nc" id="L24">public class JsonbProvider implements ContextResolver&lt;Jsonb&gt; {</span>
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Jsonb getContext(Class&lt;?&gt; aClass) {
-<span class="fc" id="L31">        return JsonbProvider.getJsonb();</span>
+<span class="nc" id="L31">        return JsonbProvider.getJsonb();</span>
     }
 
     /**
@@ -37,13 +37,13 @@ import javax.ws.rs.ext.Provider;
      * @return an Jsonb object
      */
     public static Jsonb getJsonb() {
-<span class="fc" id="L40">        JsonbConfig config = new JsonbConfig()</span>
-<span class="fc" id="L41">            .withFormatting(false)</span>
-<span class="fc" id="L42">            .withSerializers(new DateSerializer())</span>
-<span class="fc" id="L43">            .withDeserializers(new DateDeserializer())</span>
-<span class="fc" id="L44">            .withDeserializers(new ColabDeserializer());</span>
+<span class="nc" id="L40">        JsonbConfig config = new JsonbConfig()</span>
+<span class="nc" id="L41">            .withFormatting(false)</span>
+<span class="nc" id="L42">            .withSerializers(new DateSerializer())</span>
+<span class="nc" id="L43">            .withDeserializers(new DateDeserializer())</span>
+<span class="nc" id="L44">            .withDeserializers(new ColabDeserializer());</span>
 
-<span class="fc" id="L46">        return JsonbBuilder.create(config);</span>
+<span class="nc" id="L46">        return JsonbBuilder.create(config);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -19,7 +19,7 @@ import javax.transaction.TransactionSynchronizationRegistry;
  * @author maxence
  */
 @TransactionScoped
-<span class="fc" id="L22">public class TransactionManager implements Serializable {</span>
+<span class="nc" id="L22">public class TransactionManager implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -39,11 +39,11 @@ import javax.transaction.TransactionSynchronizationRegistry;
      */
     @PostConstruct
     public void construct() {
-<span class="pc bpc" id="L42" title="2 of 4 branches missed.">        if (jtaSyncRegistry != null &amp;&amp; sync == null) {</span>
-<span class="fc" id="L43">            sync = new WebsocketSynchronizer();</span>
-<span class="fc" id="L44">            jtaSyncRegistry.registerInterposedSynchronization(sync);</span>
+<span class="nc bnc" id="L42" title="All 4 branches missed.">        if (jtaSyncRegistry != null &amp;&amp; sync == null) {</span>
+<span class="nc" id="L43">            sync = new WebsocketSynchronizer();</span>
+<span class="nc" id="L44">            jtaSyncRegistry.registerInterposedSynchronization(sync);</span>
         }
-<span class="fc" id="L46">    }</span>
+<span class="nc" id="L46">    }</span>
 
     /**
      * Register updated object within the WS JTA synchronizer.
@@ -51,10 +51,10 @@ import javax.transaction.TransactionSynchronizationRegistry;
      * @param o object to register
      */
     public void registerUpdate(WithId o) {
-<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        if (sync != null) {</span>
-<span class="fc" id="L55">            sync.registerUpdate(o);</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (sync != null) {</span>
+<span class="nc" id="L55">            sync.registerUpdate(o);</span>
         }
-<span class="fc" id="L57">    }</span>
+<span class="nc" id="L57">    }</span>
 
     /**
      * Register deleted object within the WS JTA synchronizer
@@ -62,9 +62,9 @@ import javax.transaction.TransactionSynchronizationRegistry;
      * @param o just deleted object
      */
     public void registerDelete(WithId o) {
-<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (sync != null) {</span>
-<span class="fc" id="L66">            sync.registerDelete(o);</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (sync != null) {</span>
+<span class="nc" id="L66">            sync.registerDelete(o);</span>
         }
-<span class="fc" id="L68">    }</span>
+<span class="nc" id="L68">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

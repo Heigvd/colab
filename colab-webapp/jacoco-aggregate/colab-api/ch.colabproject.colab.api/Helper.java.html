@@ -20,14 +20,14 @@ public class Helper {
     /**
      * pattern to check if a string looks like an email address
      */
-<span class="fc" id="L23">    private static final Pattern EMAIL_PATTERN = Pattern</span>
-<span class="fc" id="L24">        .compile(&quot;(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|\&quot;(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\&quot;)@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])&quot;);</span>
+<span class="nc" id="L23">    private static final Pattern EMAIL_PATTERN = Pattern</span>
+<span class="nc" id="L24">        .compile(&quot;(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|\&quot;(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\&quot;)@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])&quot;);</span>
 
     /**
      * never-called private constructor
      */
-    private Helper() {
-        /* empty private constructor prevents instantiation */
+<span class="nc" id="L29">    private Helper() {</span>
+<span class="nc" id="L30">        throw new UnsupportedOperationException(&quot;This is a utility class and cannot be instantiated&quot;);</span>
     }
 
     /**
@@ -38,15 +38,15 @@ public class Helper {
      * @return hex string representation of the byte array
      */
     public static String bytesToHex(byte[] hash) {
-<span class="fc" id="L41">        StringBuilder hexString = new StringBuilder(2 * hash.length);</span>
-<span class="fc bfc" id="L42" title="All 2 branches covered.">        for (int i = 0; i &lt; hash.length; i++) {</span>
-<span class="fc" id="L43">            String hex = Integer.toHexString(0xff &amp; hash[i]);</span>
-<span class="fc bfc" id="L44" title="All 2 branches covered.">            if (hex.length() == 1) {</span>
-<span class="fc" id="L45">                hexString.append('0');</span>
+<span class="nc" id="L41">        StringBuilder hexString = new StringBuilder(2 * hash.length);</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        for (int i = 0; i &lt; hash.length; i++) {</span>
+<span class="nc" id="L43">            String hex = Integer.toHexString(0xff &amp; hash[i]);</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">            if (hex.length() == 1) {</span>
+<span class="nc" id="L45">                hexString.append('0');</span>
             }
-<span class="fc" id="L47">            hexString.append(hex);</span>
+<span class="nc" id="L47">            hexString.append(hex);</span>
         }
-<span class="fc" id="L49">        return hexString.toString();</span>
+<span class="nc" id="L49">        return hexString.toString();</span>
     }
 
     /**
@@ -57,15 +57,15 @@ public class Helper {
      * @return byte array
      */
     public static byte[] hextToBytes(String hex) {
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (hex != null) {</span>
-<span class="fc" id="L61">            byte[] bytes = new byte[hex.length() / 2];</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        if (hex != null) {</span>
+<span class="nc" id="L61">            byte[] bytes = new byte[hex.length() / 2];</span>
 
-<span class="fc" id="L63">            int j = 0;</span>
-<span class="fc bfc" id="L64" title="All 2 branches covered.">            for (int i = 0; i &lt; hex.length(); i += 2) {</span>
-<span class="fc" id="L65">                bytes[j] = (byte) Integer.parseInt(hex.substring(i, i + 2), 16);</span>
-<span class="fc" id="L66">                j++;</span>
+<span class="nc" id="L63">            int j = 0;</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">            for (int i = 0; i &lt; hex.length(); i += 2) {</span>
+<span class="nc" id="L65">                bytes[j] = (byte) Integer.parseInt(hex.substring(i, i + 2), 16);</span>
+<span class="nc" id="L66">                j++;</span>
             }
-<span class="fc" id="L68">            return bytes;</span>
+<span class="nc" id="L68">            return bytes;</span>
         } else {
 <span class="nc" id="L70">            return new byte[0];</span>
         }
@@ -96,9 +96,9 @@ public class Helper {
      * @return true if address looks like an email address
      */
     public static boolean isEmailAddress(String address) {
-<span class="pc bpc" id="L99" title="1 of 2 branches missed.">        if (address != null) {</span>
-<span class="fc" id="L100">            Matcher matcher = EMAIL_PATTERN.matcher(address);</span>
-<span class="fc" id="L101">            return matcher.matches();</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (address != null) {</span>
+<span class="nc" id="L100">            Matcher matcher = EMAIL_PATTERN.matcher(address);</span>
+<span class="nc" id="L101">            return matcher.matches();</span>
         } else {
 <span class="nc" id="L103">            return false;</span>
         }
@@ -112,10 +112,10 @@ public class Helper {
      * @return byte array of request length filled with secured-random data
      */
     public static byte[] generateSalt(int length) {
-<span class="fc" id="L115">        SecureRandom random = new SecureRandom();</span>
-<span class="fc" id="L116">        byte[] salt = new byte[length];</span>
-<span class="fc" id="L117">        random.nextBytes(salt);</span>
-<span class="fc" id="L118">        return salt;</span>
+<span class="nc" id="L115">        SecureRandom random = new SecureRandom();</span>
+<span class="nc" id="L116">        byte[] salt = new byte[length];</span>
+<span class="nc" id="L117">        random.nextBytes(salt);</span>
+<span class="nc" id="L118">        return salt;</span>
     }
 
     /**
@@ -126,7 +126,7 @@ public class Helper {
      * @return hex-encoded byte array
      */
     public static String generateHexSalt(int length) {
-<span class="fc" id="L129">        return Helper.bytesToHex(Helper.generateSalt(length));</span>
+<span class="nc" id="L129">        return Helper.bytesToHex(Helper.generateSalt(length));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
