@@ -1,9 +1,7 @@
-name: CI
+name: Build gh-pages
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
 jobs:
@@ -52,9 +50,12 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Build with Maven
-      run: mvn -Dpmd.failurePriority=5 -B clean install
+    - name: Install no tests
+      run: mvn -Dreporting -B -DskipTests install
     - name: Build Site
-      # build site but do not upload it
-      run: mvn -Dreporting -B clean site site:stage
-
+      run: mvn -Dreporting -B site site:stage
+    - name: push GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3.7.3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: target/staging
