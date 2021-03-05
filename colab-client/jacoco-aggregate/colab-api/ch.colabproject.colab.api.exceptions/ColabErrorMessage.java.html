@@ -6,22 +6,22 @@
  */
 package ch.colabproject.colab.api.exceptions;
 
-import javax.ejb.ApplicationException;
+import javax.ws.rs.core.Response;
 
 /**
  * Throw an error message.
  *
  * @author maxence
  */
-@ApplicationException(rollback = true)
-public class ColabErrorMessage extends RuntimeException {
+public class ColabErrorMessage extends ColabHttpException {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * List of message type
      */
-<span class="nc" id="L24">    public enum MessageCode {</span>
+<span class="nc" id="L23">    public enum MessageCode {</span>
+<span class="nc" id="L24">        INVALID_REQUEST,</span>
 <span class="nc" id="L25">        AUTHENTICATION_FAILED,</span>
 <span class="nc" id="L26">        USERNAME_ALREADY_TAKEN,</span>
     }
@@ -32,19 +32,30 @@ public class ColabErrorMessage extends RuntimeException {
     private final MessageCode messageCode;
 
     /**
-     * Create a new error message
+     * Create a new error message with a HTTP 400 bad request status
      *
      * @param messageCode error message code
      */
-<span class="nc" id="L39">    public ColabErrorMessage(MessageCode messageCode) {</span>
-<span class="nc" id="L40">        this.messageCode = messageCode;</span>
+    public ColabErrorMessage(MessageCode messageCode) {
+<span class="nc" id="L40">        this(Response.Status.BAD_REQUEST, messageCode);</span>
 <span class="nc" id="L41">    }</span>
+
+    /**
+     * Create a new error message
+     *
+     * @param status      custom HTTP status
+     * @param messageCode error message code
+     */
+    public ColabErrorMessage(Response.Status status, MessageCode messageCode) {
+<span class="nc" id="L50">        super(status);</span>
+<span class="nc" id="L51">        this.messageCode = messageCode;</span>
+<span class="nc" id="L52">    }</span>
 
     /**
      * @return message code
      */
     public MessageCode getMessageCode() {
-<span class="nc" id="L47">        return messageCode;</span>
+<span class="nc" id="L58">        return messageCode;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

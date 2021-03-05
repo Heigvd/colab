@@ -248,74 +248,80 @@ public class Generator {
             + &quot;  method: string,\n&quot;
             + &quot;  path: string,\n&quot;
             + &quot;  body: string | {} | undefined,\n&quot;
-            + &quot;  isVoid: boolean\n&quot;
-            + &quot;): Promise&lt;T&gt; =&gt;\n&quot;
-            + &quot;  fetch(\n&quot;
+            + &quot;): Promise&lt;T&gt; =&gt; {\n&quot;
+            + &quot;  const res = await fetch(\n&quot;
             + &quot;    path,\n&quot;
             + &quot;    getOptions({\n&quot;
             + &quot;      method: method,\n&quot;
             + &quot;      body: body\n&quot;
             + &quot;    })\n&quot;
-            + &quot;  ).then(res =&gt; {\n&quot;
-            + &quot;    if (res.ok) {\n&quot;
-            + &quot;      if (!isVoid) {\n&quot;
-            + &quot;        return res.json() as Promise&lt;T&gt;;\n&quot;
-            + &quot;      } else {\n&quot;
-            + &quot;        return new Promise&lt;void&gt;((resolve) =&gt; resolve()) as unknown as Promise&lt;T&gt;;\n&quot;
-            + &quot;      }\n&quot;
+            + &quot;  );\n&quot;
+            + &quot;\n&quot;
+            + &quot;  if (res.ok) {\n&quot;
+            + &quot;    if (res.status != 204) {\n&quot;
+            + &quot;      return res.json();\n&quot;
             + &quot;    } else {\n&quot;
+            + &quot;      return new Promise&lt;void&gt;((resolve) =&gt; resolve()) as unknown as Promise&lt;T&gt;;\n&quot;
+            + &quot;    }\n&quot;
+            + &quot;  } else {\n&quot;
+            + &quot;    let error;&quot;
+            + &quot;    try {\n&quot;
+            + &quot;      error = await res.json();\n&quot;
+            + &quot;    } catch (e) {\n&quot;
             + &quot;      throw new Error(\&quot;Failure\&quot;);\n&quot;
             + &quot;    }\n&quot;
-            + &quot;    });\n\n&quot;);
+            + &quot;    throw error;\n&quot;
+            + &quot;  }\n&quot;
+            + &quot;}\n\n&quot;);
 
-<span class="nc" id="L271">        String modules = this.restControllers.stream().map(controller</span>
-<span class="nc" id="L272">            -&gt; controller.generateTypescriptClient(extraTypes)</span>
-<span class="nc" id="L273">        ).collect(Collectors.joining(System.lineSeparator()));</span>
+<span class="nc" id="L277">        String modules = this.restControllers.stream().map(controller</span>
+<span class="nc" id="L278">            -&gt; controller.generateTypescriptClient(extraTypes)</span>
+<span class="nc" id="L279">        ).collect(Collectors.joining(System.lineSeparator()));</span>
 
-<span class="nc" id="L275">        List&lt;Entry&lt;String, Type&gt;&gt; queue = new ArrayList&lt;&gt;(extraTypes.entrySet());</span>
-<span class="nc bnc" id="L276" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
-<span class="nc" id="L277">            Map&lt;String, Type&gt; snowballedTypes = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L281">        List&lt;Entry&lt;String, Type&gt;&gt; queue = new ArrayList&lt;&gt;(extraTypes.entrySet());</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
+<span class="nc" id="L283">            Map&lt;String, Type&gt; snowballedTypes = new HashMap&lt;&gt;();</span>
 
-<span class="nc" id="L279">            Entry&lt;String, Type&gt; entry = queue.remove(0);</span>
+<span class="nc" id="L285">            Entry&lt;String, Type&gt; entry = queue.remove(0);</span>
 
-<span class="nc" id="L281">            String tsInterface = TypeScriptHelper.generateInterface(</span>
-<span class="nc" id="L282">                entry.getValue(),</span>
+<span class="nc" id="L287">            String tsInterface = TypeScriptHelper.generateInterface(</span>
+<span class="nc" id="L288">                entry.getValue(),</span>
                 snowballedTypes,
                 reflections
             );
-<span class="nc" id="L286">            sb.append(tsInterface);</span>
+<span class="nc" id="L292">            sb.append(tsInterface);</span>
 
-<span class="nc" id="L288">            snowballedTypes.forEach((name, type) -&gt; {</span>
-<span class="nc bnc" id="L289" title="All 2 branches missed.">                if (!extraTypes.containsKey(name)) {</span>
-<span class="nc" id="L290">                    extraTypes.put(name, type);</span>
-<span class="nc" id="L291">                    queue.add(0, new SimpleEntry(name, type));</span>
+<span class="nc" id="L294">            snowballedTypes.forEach((name, type) -&gt; {</span>
+<span class="nc bnc" id="L295" title="All 2 branches missed.">                if (!extraTypes.containsKey(name)) {</span>
+<span class="nc" id="L296">                    extraTypes.put(name, type);</span>
+<span class="nc" id="L297">                    queue.add(0, new SimpleEntry(name, type));</span>
                 }
-<span class="nc" id="L293">            });</span>
-<span class="nc" id="L294">        }</span>
+<span class="nc" id="L299">            });</span>
+<span class="nc" id="L300">        }</span>
 
-<span class="nc" id="L296">        sb.append(&quot;/**\n&quot;</span>
-<span class="nc" id="L297">            + &quot;* The &quot;).append(clientName).append(&quot; REST client\n&quot;</span>
+<span class="nc" id="L302">        sb.append(&quot;/**\n&quot;</span>
+<span class="nc" id="L303">            + &quot;* The &quot;).append(clientName).append(&quot; REST client\n&quot;</span>
             + &quot; */\n&quot;
-<span class="nc" id="L299">            + &quot;export const &quot;).append(clientName)</span>
-<span class="nc" id="L300">            .append(&quot; = function (baseUrl: string) {&quot;)</span>
-<span class="nc" id="L301">            .append(&quot;\n    return {&quot;)</span>
-<span class="nc" id="L302">            .append(modules)</span>
-<span class="nc" id="L303">            .append(&quot;    }\n&quot;)</span>
-<span class="nc" id="L304">            .append(&quot;}&quot;);</span>
+<span class="nc" id="L305">            + &quot;export const &quot;).append(clientName)</span>
+<span class="nc" id="L306">            .append(&quot; = function (baseUrl: string) {&quot;)</span>
+<span class="nc" id="L307">            .append(&quot;\n    return {&quot;)</span>
+<span class="nc" id="L308">            .append(modules)</span>
+<span class="nc" id="L309">            .append(&quot;    }\n&quot;)</span>
+<span class="nc" id="L310">            .append(&quot;}&quot;);</span>
 
-<span class="nc bnc" id="L306" title="All 2 branches missed.">        if (dryRun) {</span>
-<span class="nc bnc" id="L307" title="All 2 branches missed.">            if (log != null) {</span>
-<span class="nc" id="L308">                log.debug(sb.toString());</span>
+<span class="nc bnc" id="L312" title="All 2 branches missed.">        if (dryRun) {</span>
+<span class="nc bnc" id="L313" title="All 2 branches missed.">            if (log != null) {</span>
+<span class="nc" id="L314">                log.debug(sb.toString());</span>
             }
         } else {
-<span class="nc" id="L311">            String srcPath = targetDir + &quot;/src&quot;;</span>
-<span class="nc" id="L312">            writeFile(sb.toString(), srcPath, clientName + &quot;.ts&quot;);</span>
+<span class="nc" id="L317">            String srcPath = targetDir + &quot;/src&quot;;</span>
+<span class="nc" id="L318">            writeFile(sb.toString(), srcPath, clientName + &quot;.ts&quot;);</span>
 
-<span class="nc" id="L314">            writeFile(&quot;export * from './dist/&quot; + clientName + &quot;';&quot;, targetDir, &quot;index.ts&quot;);</span>
-<span class="nc" id="L315">            writeFile(generatePackageDotJson(), targetDir, &quot;package.json&quot;);</span>
-<span class="nc" id="L316">            writeFile(generateTsconfigDotJson(), targetDir, &quot;tsconfig.json&quot;);</span>
+<span class="nc" id="L320">            writeFile(&quot;export * from './dist/&quot; + clientName + &quot;';&quot;, targetDir, &quot;index.ts&quot;);</span>
+<span class="nc" id="L321">            writeFile(generatePackageDotJson(), targetDir, &quot;package.json&quot;);</span>
+<span class="nc" id="L322">            writeFile(generateTsconfigDotJson(), targetDir, &quot;tsconfig.json&quot;);</span>
         }
-<span class="nc" id="L318">    }</span>
+<span class="nc" id="L324">    }</span>
 
     /**
      * Write file to disk.
@@ -326,23 +332,23 @@ public class Generator {
      */
     private void writeFile(String content, String directory, String filename) throws MojoFailureException {
         try {
-<span class="nc" id="L329">            Files.createDirectories(java.nio.file.Path.of(directory));</span>
+<span class="nc" id="L335">            Files.createDirectories(java.nio.file.Path.of(directory));</span>
 
-<span class="nc" id="L331">            try (BufferedWriter writer = Files.newBufferedWriter(</span>
-<span class="nc" id="L332">                java.nio.file.Path.of(directory, filename))) {</span>
-<span class="nc" id="L333">                writer.write(content);</span>
-<span class="nc" id="L334">            } catch (IOException ex) {</span>
-<span class="nc bnc" id="L335" title="All 2 branches missed.">                if (log != null) {</span>
-<span class="nc" id="L336">                    throw new MojoFailureException(&quot;Failed to write '&quot; + filename + &quot;' in '&quot; + directory + &quot;'&quot;, ex);</span>
+<span class="nc" id="L337">            try (BufferedWriter writer = Files.newBufferedWriter(</span>
+<span class="nc" id="L338">                java.nio.file.Path.of(directory, filename))) {</span>
+<span class="nc" id="L339">                writer.write(content);</span>
+<span class="nc" id="L340">            } catch (IOException ex) {</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">                if (log != null) {</span>
+<span class="nc" id="L342">                    throw new MojoFailureException(&quot;Failed to write '&quot; + filename + &quot;' in '&quot; + directory + &quot;'&quot;, ex);</span>
                 }
-<span class="nc" id="L338">            }</span>
+<span class="nc" id="L344">            }</span>
 
-<span class="nc" id="L340">        } catch (IOException ex) {</span>
-<span class="nc bnc" id="L341" title="All 2 branches missed.">            if (log != null) {</span>
-<span class="nc" id="L342">                throw new MojoFailureException(&quot;Failed to create package directory &quot; + directory, ex);</span>
+<span class="nc" id="L346">        } catch (IOException ex) {</span>
+<span class="nc bnc" id="L347" title="All 2 branches missed.">            if (log != null) {</span>
+<span class="nc" id="L348">                throw new MojoFailureException(&quot;Failed to create package directory &quot; + directory, ex);</span>
             }
-<span class="nc" id="L344">        }</span>
-<span class="nc" id="L345">    }</span>
+<span class="nc" id="L350">        }</span>
+<span class="nc" id="L351">    }</span>
 
     /**
      * Convert Java className-like to dash-separated-lower-case version.
@@ -352,18 +358,18 @@ public class Generator {
      * @return eg. my-awesome-rest-client
      */
     private String generateModuleName(String name) {
-<span class="nc" id="L355">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L361">        StringBuilder sb = new StringBuilder();</span>
 
-<span class="nc bnc" id="L357" title="All 2 branches missed.">        for (int i = 0; i &lt; name.length(); i++) {</span>
-<span class="nc" id="L358">            char c = name.charAt(i);</span>
-<span class="nc bnc" id="L359" title="All 2 branches missed.">            if (Character.isUpperCase(c)) {</span>
-<span class="nc" id="L360">                sb.append('-').append(Character.toLowerCase(c));</span>
+<span class="nc bnc" id="L363" title="All 2 branches missed.">        for (int i = 0; i &lt; name.length(); i++) {</span>
+<span class="nc" id="L364">            char c = name.charAt(i);</span>
+<span class="nc bnc" id="L365" title="All 2 branches missed.">            if (Character.isUpperCase(c)) {</span>
+<span class="nc" id="L366">                sb.append('-').append(Character.toLowerCase(c));</span>
             } else {
-<span class="nc" id="L362">                sb.append(c);</span>
+<span class="nc" id="L368">                sb.append(c);</span>
             }
         }
 
-<span class="nc" id="L366">        return sb.toString();</span>
+<span class="nc" id="L372">        return sb.toString();</span>
     }
 
     /**
@@ -372,9 +378,9 @@ public class Generator {
      * @return content of package.json
      */
     private String generatePackageDotJson() {
-<span class="nc" id="L375">        StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L376">        sb.append(&quot;{\n&quot;</span>
-<span class="nc" id="L377">            + &quot;    \&quot;name\&quot;: \&quot;&quot; + generateModuleName(this.clientName) + &quot;\&quot;,\n&quot;</span>
+<span class="nc" id="L381">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L382">        sb.append(&quot;{\n&quot;</span>
+<span class="nc" id="L383">            + &quot;    \&quot;name\&quot;: \&quot;&quot; + generateModuleName(this.clientName) + &quot;\&quot;,\n&quot;</span>
             + &quot;    \&quot;version\&quot;: \&quot;1.0.0\&quot;,\n&quot;
             + &quot;    \&quot;keywords\&quot;: [\&quot;restClient\&quot;],\n&quot;
             + &quot;    \&quot;author\&quot;: \&quot;albabot\&quot;,\n&quot;
@@ -393,7 +399,7 @@ public class Generator {
             + &quot;        \&quot;copyfiles\&quot;: \&quot;^2.3.0\&quot;\n&quot;
             + &quot;  }\n&quot;
             + &quot;}&quot;);
-<span class="nc" id="L396">        return sb.toString();</span>
+<span class="nc" id="L402">        return sb.toString();</span>
     }
 
     /**
@@ -402,8 +408,8 @@ public class Generator {
      * @return content of package.json
      */
     private String generateTsconfigDotJson() {
-<span class="nc" id="L405">        StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L406">        sb.append(&quot;{\n&quot;</span>
+<span class="nc" id="L411">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L412">        sb.append(&quot;{\n&quot;</span>
             + &quot;    \&quot;compilerOptions\&quot;: {\n&quot;
             + &quot;        \&quot;target\&quot;: \&quot;esnext\&quot;,\n&quot;
             + &quot;        \&quot;allowJs\&quot;: false,\n&quot;
@@ -423,7 +429,7 @@ public class Generator {
             + &quot;        \&quot;node_modules\&quot;\n&quot;
             + &quot;    ]\n&quot;
             + &quot;}&quot;);
-<span class="nc" id="L426">        return sb.toString();</span>
+<span class="nc" id="L432">        return sb.toString();</span>
     }
 
 }

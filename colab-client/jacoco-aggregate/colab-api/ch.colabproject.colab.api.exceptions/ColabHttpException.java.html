@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ColabHttpException.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.exceptions</a> &gt; <span class="el_source">ColabHttpException.java</span></div><h1>ColabHttpException.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.exceptions;
+
+import javax.ejb.ApplicationException;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.ws.rs.core.Response;
+
+/**
+ * run-time exception which may be sent back to client.
+ *
+ * @author maxence
+ */
+@ApplicationException(rollback = true)
+public abstract class ColabHttpException extends RuntimeException {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * HTTP status
+     */
+    private final Response.Status httpStatus;
+
+    /**
+     * Create a default error with HTTP 400 bad request status
+     */
+    public ColabHttpException() {
+<span class="nc" id="L32">        this(Response.Status.BAD_REQUEST);</span>
+<span class="nc" id="L33">    }</span>
+
+<span class="nc" id="L35">    public ColabHttpException(Response.Status httpStatus) {</span>
+<span class="nc" id="L36">        this.httpStatus = httpStatus;</span>
+<span class="nc" id="L37">    }</span>
+
+    @JsonbTransient
+    @Override
+    public synchronized Throwable getCause() {
+<span class="nc" id="L42">        return super.getCause();</span>
+    }
+
+    @JsonbTransient
+    @Override
+    public StackTraceElement[] getStackTrace() {
+<span class="nc" id="L48">        return super.getStackTrace();</span>
+    }
+
+    /**
+     * Get the code to use to send HTTP response
+     *
+     * @return HTTP code, should be 400+
+     */
+    @JsonbTransient
+    public Response.Status getHttpStatus() {
+<span class="nc" id="L58">        this.getSuppressed();</span>
+<span class="nc" id="L59">        return this.httpStatus;</span>
+    }
+
+    /*
+     * want to ignore getSuppressed() as well, but the method is final.
+     * Setting custom JsonbVisibility stategry on this class is useles as super properties are
+     * not filter by this strategy...
+     */
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

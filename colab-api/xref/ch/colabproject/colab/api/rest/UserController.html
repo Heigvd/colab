@@ -61,14 +61,14 @@
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">     * Get the authentication method and its parameters a user shall use to authenticate with the</em>
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">     * given email address.</em>
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">     * @param email email address user want to sign in with</em>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">     * @param identifier email address or username the user want to sign in with</em>
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">     * @return Auth method to user</em>
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>      @GET
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      @Path(<span class="jxr_string">"AuthMethod/{email}"</span>)
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">public</strong> <a name="AuthMethod" href="../../../../../ch/colabproject/colab/api/model/user/AuthMethod.html#AuthMethod">AuthMethod</a> getAuthMethod(@PathParam(<span class="jxr_string">"email"</span>) String email) {
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>          <strong class="jxr_keyword">return</strong> userManagement.getAuthenticationMethod(email);
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>      @Path(<span class="jxr_string">"AuthMethod/{identifier : [^/]*}"</span>)
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">public</strong> <a name="AuthMethod" href="../../../../../ch/colabproject/colab/api/model/user/AuthMethod.html#AuthMethod">AuthMethod</a> getAuthMethod(@PathParam(<span class="jxr_string">"identifier"</span>) String identifier) {
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          <strong class="jxr_keyword">return</strong> userManagement.getAuthenticationMethod(identifier);
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      }
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>  
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      <em class="jxr_javadoccomment">/**</em>

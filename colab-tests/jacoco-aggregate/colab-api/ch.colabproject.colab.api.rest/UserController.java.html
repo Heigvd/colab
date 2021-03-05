@@ -53,14 +53,14 @@ import javax.ws.rs.core.MediaType;
      * Get the authentication method and its parameters a user shall use to authenticate with the
      * given email address.
      *
-     * @param email email address user want to sign in with
+     * @param identifier email address or username the user want to sign in with
      *
      * @return Auth method to user
      */
     @GET
-    @Path(&quot;AuthMethod/{email}&quot;)
-    public AuthMethod getAuthMethod(@PathParam(&quot;email&quot;) String email) {
-<span class="fc" id="L63">        return userManagement.getAuthenticationMethod(email);</span>
+    @Path(&quot;AuthMethod/{identifier : [^/]*}&quot;)
+    public AuthMethod getAuthMethod(@PathParam(&quot;identifier&quot;) String identifier) {
+<span class="fc" id="L63">        return userManagement.getAuthenticationMethod(identifier);</span>
     }
 
     /**

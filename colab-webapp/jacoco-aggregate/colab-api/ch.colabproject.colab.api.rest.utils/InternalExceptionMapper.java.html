@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.utils;
 
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.api.exceptions.ColabHttpException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -27,8 +27,8 @@ import javax.ws.rs.ext.Provider;
      */
     @Override
     public Response toResponse(Exception exception) {
-<span class="nc bnc" id="L30" title="All 2 branches missed.">        if (exception instanceof ColabErrorMessage) {</span>
-<span class="nc" id="L31">            return Response.status(Response.Status.BAD_REQUEST)</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        if (exception instanceof ColabHttpException) {</span>
+<span class="nc" id="L31">            return Response.status(((ColabHttpException) exception).getHttpStatus())</span>
 <span class="nc" id="L32">                .entity(exception)</span>
 <span class="nc" id="L33">                .build();</span>
         } else {

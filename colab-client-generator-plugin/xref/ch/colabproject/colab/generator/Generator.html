@@ -256,185 +256,191 @@
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>             + <span class="jxr_string">"  method: string,\n"</span>
 <a class="jxr_linenumber" name="L249" href="#L249">249</a>             + <span class="jxr_string">"  path: string,\n"</span>
 <a class="jxr_linenumber" name="L250" href="#L250">250</a>             + <span class="jxr_string">"  body: string | {} | undefined,\n"</span>
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>             + <span class="jxr_string">"  isVoid: boolean\n"</span>
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>             + <span class="jxr_string">"): Promise&lt;T&gt; =&gt;\n"</span>
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>             + <span class="jxr_string">"  fetch(\n"</span>
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>             + <span class="jxr_string">"    path,\n"</span>
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>             + <span class="jxr_string">"    getOptions({\n"</span>
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>             + <span class="jxr_string">"      method: method,\n"</span>
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>             + <span class="jxr_string">"      body: body\n"</span>
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>             + <span class="jxr_string">"    })\n"</span>
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>             + <span class="jxr_string">"  ).then(res =&gt; {\n"</span>
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>             + <span class="jxr_string">"    if (res.ok) {\n"</span>
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>             + <span class="jxr_string">"      if (!isVoid) {\n"</span>
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>             + <span class="jxr_string">"        return res.json() as Promise&lt;T&gt;;\n"</span>
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>             + <span class="jxr_string">"      } else {\n"</span>
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>             + <span class="jxr_string">"        return new Promise&lt;void&gt;((resolve) =&gt; resolve()) as unknown as Promise&lt;T&gt;;\n"</span>
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>             + <span class="jxr_string">"      }\n"</span>
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>             + <span class="jxr_string">"    } else {\n"</span>
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>             + <span class="jxr_string">"      throw new Error(\&quot;Failure\&quot;);\n"</span>
-<a class="jxr_linenumber" name="L268" href="#L268">268</a>             + <span class="jxr_string">"    }\n"</span>
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>             + <span class="jxr_string">"    });\n\n"</span>);
-<a class="jxr_linenumber" name="L270" href="#L270">270</a> 
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>         String modules = <strong class="jxr_keyword">this</strong>.restControllers.stream().map(controller
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>             -&gt; controller.generateTypescriptClient(extraTypes)
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>         ).collect(Collectors.joining(System.lineSeparator()));
-<a class="jxr_linenumber" name="L274" href="#L274">274</a> 
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>         List&lt;Entry&lt;String, Type&gt;&gt; queue = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(extraTypes.entrySet());
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>         <strong class="jxr_keyword">while</strong> (!queue.isEmpty()) {
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>             Map&lt;String, Type&gt; snowballedTypes = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
-<a class="jxr_linenumber" name="L278" href="#L278">278</a> 
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>             Entry&lt;String, Type&gt; entry = queue.remove(0);
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>             + <span class="jxr_string">"): Promise&lt;T&gt; =&gt; {\n"</span>
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>             + <span class="jxr_string">"  const res = await fetch(\n"</span>
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>             + <span class="jxr_string">"    path,\n"</span>
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>             + <span class="jxr_string">"    getOptions({\n"</span>
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>             + <span class="jxr_string">"      method: method,\n"</span>
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>             + <span class="jxr_string">"      body: body\n"</span>
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>             + <span class="jxr_string">"    })\n"</span>
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>             + <span class="jxr_string">"  );\n"</span>
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>             + <span class="jxr_string">"\n"</span>
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>             + <span class="jxr_string">"  if (res.ok) {\n"</span>
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>             + <span class="jxr_string">"    if (res.status != 204) {\n"</span>
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>             + <span class="jxr_string">"      return res.json();\n"</span>
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>             + <span class="jxr_string">"    } else {\n"</span>
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>             + <span class="jxr_string">"      return new Promise&lt;void&gt;((resolve) =&gt; resolve()) as unknown as Promise&lt;T&gt;;\n"</span>
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>             + <span class="jxr_string">"    }\n"</span>
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>             + <span class="jxr_string">"  } else {\n"</span>
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>             + <span class="jxr_string">"    let error;"</span>
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>             + <span class="jxr_string">"    try {\n"</span>
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>             + <span class="jxr_string">"      error = await res.json();\n"</span>
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>             + <span class="jxr_string">"    } catch (e) {\n"</span>
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>             + <span class="jxr_string">"      throw new Error(\&quot;Failure\&quot;);\n"</span>
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>             + <span class="jxr_string">"    }\n"</span>
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>             + <span class="jxr_string">"    throw error;\n"</span>
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>             + <span class="jxr_string">"  }\n"</span>
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>             + <span class="jxr_string">"}\n\n"</span>);
+<a class="jxr_linenumber" name="L276" href="#L276">276</a> 
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>         String modules = <strong class="jxr_keyword">this</strong>.restControllers.stream().map(controller
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>             -&gt; controller.generateTypescriptClient(extraTypes)
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>         ).collect(Collectors.joining(System.lineSeparator()));
 <a class="jxr_linenumber" name="L280" href="#L280">280</a> 
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>             String tsInterface = TypeScriptHelper.generateInterface(
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>                 entry.getValue(),
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>                 snowballedTypes,
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>                 reflections
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>             );
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>             sb.append(tsInterface);
-<a class="jxr_linenumber" name="L287" href="#L287">287</a> 
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>             snowballedTypes.forEach((name, type) -&gt; {
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>                 <strong class="jxr_keyword">if</strong> (!extraTypes.containsKey(name)) {
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>                     extraTypes.put(name, type);
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>                     queue.add(0, <strong class="jxr_keyword">new</strong> SimpleEntry(name, type));
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>                 }
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>             });
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>         }
-<a class="jxr_linenumber" name="L295" href="#L295">295</a> 
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>         sb.append(<span class="jxr_string">"/**\n"</span>
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>             + <span class="jxr_string">"* The "</span>).append(clientName).append(<span class="jxr_string">" REST client\n"</span>
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>             + <span class="jxr_string">" */\n"</span>
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>             + <span class="jxr_string">"export const "</span>).append(clientName)
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>             .append(<span class="jxr_string">" = function (baseUrl: string) {"</span>)
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>             .append(<span class="jxr_string">"\n    return {"</span>)
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>             .append(modules)
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>             .append(<span class="jxr_string">"    }\n"</span>)
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>             .append(<span class="jxr_string">"}"</span>);
-<a class="jxr_linenumber" name="L305" href="#L305">305</a> 
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>         <strong class="jxr_keyword">if</strong> (dryRun) {
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>             <strong class="jxr_keyword">if</strong> (log != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>                 log.debug(sb.toString());
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>             }
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>             String srcPath = targetDir + <span class="jxr_string">"/src"</span>;
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>             writeFile(sb.toString(), srcPath, clientName + <span class="jxr_string">".ts"</span>);
-<a class="jxr_linenumber" name="L313" href="#L313">313</a> 
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>             writeFile(<span class="jxr_string">"export * from './dist/"</span> + clientName + <span class="jxr_string">"';"</span>, targetDir, <span class="jxr_string">"index.ts"</span>);
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>             writeFile(generatePackageDotJson(), targetDir, <span class="jxr_string">"package.json"</span>);
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>             writeFile(generateTsconfigDotJson(), targetDir, <span class="jxr_string">"tsconfig.json"</span>);
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>         }
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>     }
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>         List&lt;Entry&lt;String, Type&gt;&gt; queue = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(extraTypes.entrySet());
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>         <strong class="jxr_keyword">while</strong> (!queue.isEmpty()) {
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>             Map&lt;String, Type&gt; snowballedTypes = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
+<a class="jxr_linenumber" name="L284" href="#L284">284</a> 
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>             Entry&lt;String, Type&gt; entry = queue.remove(0);
+<a class="jxr_linenumber" name="L286" href="#L286">286</a> 
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>             String tsInterface = TypeScriptHelper.generateInterface(
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>                 entry.getValue(),
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>                 snowballedTypes,
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>                 reflections
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>             );
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>             sb.append(tsInterface);
+<a class="jxr_linenumber" name="L293" href="#L293">293</a> 
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>             snowballedTypes.forEach((name, type) -&gt; {
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>                 <strong class="jxr_keyword">if</strong> (!extraTypes.containsKey(name)) {
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>                     extraTypes.put(name, type);
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>                     queue.add(0, <strong class="jxr_keyword">new</strong> SimpleEntry(name, type));
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>                 }
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>             });
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>         }
+<a class="jxr_linenumber" name="L301" href="#L301">301</a> 
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>         sb.append(<span class="jxr_string">"/**\n"</span>
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>             + <span class="jxr_string">"* The "</span>).append(clientName).append(<span class="jxr_string">" REST client\n"</span>
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>             + <span class="jxr_string">" */\n"</span>
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>             + <span class="jxr_string">"export const "</span>).append(clientName)
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>             .append(<span class="jxr_string">" = function (baseUrl: string) {"</span>)
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>             .append(<span class="jxr_string">"\n    return {"</span>)
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>             .append(modules)
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>             .append(<span class="jxr_string">"    }\n"</span>)
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>             .append(<span class="jxr_string">"}"</span>);
+<a class="jxr_linenumber" name="L311" href="#L311">311</a> 
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>         <strong class="jxr_keyword">if</strong> (dryRun) {
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>             <strong class="jxr_keyword">if</strong> (log != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>                 log.debug(sb.toString());
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>             }
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>             String srcPath = targetDir + <span class="jxr_string">"/src"</span>;
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>             writeFile(sb.toString(), srcPath, clientName + <span class="jxr_string">".ts"</span>);
 <a class="jxr_linenumber" name="L319" href="#L319">319</a> 
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L321" href="#L321">321</a> <em class="jxr_javadoccomment">     * Write file to disk.</em>
-<a class="jxr_linenumber" name="L322" href="#L322">322</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L323" href="#L323">323</a> <em class="jxr_javadoccomment">     * @param content   file content</em>
-<a class="jxr_linenumber" name="L324" href="#L324">324</a> <em class="jxr_javadoccomment">     * @param directory directory, will be created if missing</em>
-<a class="jxr_linenumber" name="L325" href="#L325">325</a> <em class="jxr_javadoccomment">     * @param filename  filename</em>
-<a class="jxr_linenumber" name="L326" href="#L326">326</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> writeFile(String content, String directory, String filename) <strong class="jxr_keyword">throws</strong> MojoFailureException {
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>             Files.createDirectories(java.nio.file.Path.of(directory));
-<a class="jxr_linenumber" name="L330" href="#L330">330</a> 
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>             <strong class="jxr_keyword">try</strong> (BufferedWriter writer = Files.newBufferedWriter(
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>                 java.nio.file.Path.of(directory, filename))) {
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>                 writer.write(content);
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>             } <strong class="jxr_keyword">catch</strong> (IOException ex) {
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>                 <strong class="jxr_keyword">if</strong> (log != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(<span class="jxr_string">"Failed to write '"</span> + filename + <span class="jxr_string">"' in '"</span> + directory + <span class="jxr_string">"'"</span>, ex);
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>                 }
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>             }
-<a class="jxr_linenumber" name="L339" href="#L339">339</a> 
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>         } <strong class="jxr_keyword">catch</strong> (IOException ex) {
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>             <strong class="jxr_keyword">if</strong> (log != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(<span class="jxr_string">"Failed to create package directory "</span> + directory, ex);
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>             }
-<a class="jxr_linenumber" name="L344" href="#L344">344</a>         }
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>     }
-<a class="jxr_linenumber" name="L346" href="#L346">346</a> 
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L348" href="#L348">348</a> <em class="jxr_javadoccomment">     * Convert Java className-like to dash-separated-lower-case version.</em>
-<a class="jxr_linenumber" name="L349" href="#L349">349</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L350" href="#L350">350</a> <em class="jxr_javadoccomment">     * @param name eg. MyAwesomeRestClient</em>
-<a class="jxr_linenumber" name="L351" href="#L351">351</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L352" href="#L352">352</a> <em class="jxr_javadoccomment">     * @return eg. my-awesome-rest-client</em>
-<a class="jxr_linenumber" name="L353" href="#L353">353</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>     <strong class="jxr_keyword">private</strong> String generateModuleName(String name) {
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>         StringBuilder sb = <strong class="jxr_keyword">new</strong> StringBuilder();
-<a class="jxr_linenumber" name="L356" href="#L356">356</a> 
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; name.length(); i++) {
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>             <strong class="jxr_keyword">char</strong> c = name.charAt(i);
-<a class="jxr_linenumber" name="L359" href="#L359">359</a>             <strong class="jxr_keyword">if</strong> (Character.isUpperCase(c)) {
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>                 sb.append('-').append(Character.toLowerCase(c));
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>                 sb.append(c);
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>             }
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>         }
-<a class="jxr_linenumber" name="L365" href="#L365">365</a> 
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>         <strong class="jxr_keyword">return</strong> sb.toString();
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>     }
-<a class="jxr_linenumber" name="L368" href="#L368">368</a> 
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L370" href="#L370">370</a> <em class="jxr_javadoccomment">     * generate package.json</em>
-<a class="jxr_linenumber" name="L371" href="#L371">371</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L372" href="#L372">372</a> <em class="jxr_javadoccomment">     * @return content of package.json</em>
-<a class="jxr_linenumber" name="L373" href="#L373">373</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>     <strong class="jxr_keyword">private</strong> String generatePackageDotJson() {
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>         StringBuilder sb = <strong class="jxr_keyword">new</strong> StringBuilder();
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>         sb.append(<span class="jxr_string">"{\n"</span>
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>             + <span class="jxr_string">"    \&quot;name\&quot;: \&quot;"</span> + generateModuleName(<strong class="jxr_keyword">this</strong>.clientName) + <span class="jxr_string">"\&quot;,\n"</span>
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>             + <span class="jxr_string">"    \&quot;version\&quot;: \&quot;1.0.0\&quot;,\n"</span>
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>             + <span class="jxr_string">"    \&quot;keywords\&quot;: [\&quot;restClient\&quot;],\n"</span>
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>             + <span class="jxr_string">"    \&quot;author\&quot;: \&quot;albabot\&quot;,\n"</span>
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>             + <span class="jxr_string">"    \&quot;main\&quot;: \&quot;dist/index.js\&quot;,\n"</span>
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>             + <span class="jxr_string">"    \&quot;private\&quot;: true,\n"</span>
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>             + <span class="jxr_string">"    \&quot;scripts\&quot;: {\n"</span>
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>             + <span class="jxr_string">"      \&quot;build\&quot;: \&quot;rimraf dist &amp;&amp; tsc\&quot;,\n"</span>
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>             + <span class="jxr_string">"      \&quot;lint\&quot;: \&quot;eslint 'src' --ext '.js,.ts,.tsx'\&quot;\n"</span>
-<a class="jxr_linenumber" name="L386" href="#L386">386</a>             + <span class="jxr_string">"    },\n"</span>
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>             + <span class="jxr_string">"    \&quot;contributors\&quot;: [],\n"</span>
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>             + <span class="jxr_string">"    \&quot;dependencies\&quot;: {},\n"</span>
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>             + <span class="jxr_string">"      \&quot;devDependencies\&quot;: {\n"</span>
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>             + <span class="jxr_string">"        \&quot;rimraf\&quot;: \&quot;^3.0.0\&quot;,\n"</span>
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>             + <span class="jxr_string">"        \&quot;typescript\&quot;: \&quot;^3.7.5\&quot;,\n"</span>
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>             + <span class="jxr_string">"        \&quot;tslint\&quot; : \&quot;^5.1.0\&quot;,\n"</span>
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>             + <span class="jxr_string">"        \&quot;copyfiles\&quot;: \&quot;^2.3.0\&quot;\n"</span>
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>             + <span class="jxr_string">"  }\n"</span>
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>             + <span class="jxr_string">"}"</span>);
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>         <strong class="jxr_keyword">return</strong> sb.toString();
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>     }
-<a class="jxr_linenumber" name="L398" href="#L398">398</a> 
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L400" href="#L400">400</a> <em class="jxr_javadoccomment">     * generate tsconfig.json</em>
-<a class="jxr_linenumber" name="L401" href="#L401">401</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L402" href="#L402">402</a> <em class="jxr_javadoccomment">     * @return content of package.json</em>
-<a class="jxr_linenumber" name="L403" href="#L403">403</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>     <strong class="jxr_keyword">private</strong> String generateTsconfigDotJson() {
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>         StringBuilder sb = <strong class="jxr_keyword">new</strong> StringBuilder();
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>         sb.append(<span class="jxr_string">"{\n"</span>
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>             + <span class="jxr_string">"    \&quot;compilerOptions\&quot;: {\n"</span>
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>             + <span class="jxr_string">"        \&quot;target\&quot;: \&quot;esnext\&quot;,\n"</span>
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>             + <span class="jxr_string">"        \&quot;allowJs\&quot;: false,\n"</span>
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>             + <span class="jxr_string">"        \&quot;module\&quot;: \&quot;esnext\&quot;,\n"</span>
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>             + <span class="jxr_string">"        \&quot;outDir\&quot;: \&quot;dist\&quot;,\n"</span>
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>             + <span class="jxr_string">"        \&quot;sourceMap\&quot;:true,\n"</span>
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>             + <span class="jxr_string">"        \&quot;strict\&quot;: true,\n"</span>
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>             + <span class="jxr_string">"        \&quot;moduleResolution\&quot;: \&quot;node\&quot;,\n"</span>
-<a class="jxr_linenumber" name="L415" href="#L415">415</a>             + <span class="jxr_string">"        \&quot;allowSyntheticDefaultImports\&quot;: true,\n"</span>
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>             + <span class="jxr_string">"        \&quot;suppressImplicitAnyIndexErrors\&quot;: true,\n"</span>
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>             + <span class="jxr_string">"        \&quot;declaration\&quot;: true\n"</span>
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>             + <span class="jxr_string">"    },\n"</span>
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>             + <span class="jxr_string">"    \&quot;files\&quot;: [\n"</span>
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>             + <span class="jxr_string">"        \&quot;src/"</span> + <strong class="jxr_keyword">this</strong>.clientName + <span class="jxr_string">".ts\&quot;\n"</span>
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>             + <span class="jxr_string">"    ],\n"</span>
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>             + <span class="jxr_string">"    \&quot;exclude\&quot;: [\n"</span>
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>             + <span class="jxr_string">"        \&quot;node_modules\&quot;\n"</span>
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>             + <span class="jxr_string">"    ]\n"</span>
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>             + <span class="jxr_string">"}"</span>);
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>         <strong class="jxr_keyword">return</strong> sb.toString();
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>     }
-<a class="jxr_linenumber" name="L428" href="#L428">428</a> 
-<a class="jxr_linenumber" name="L429" href="#L429">429</a> }
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>             writeFile(<span class="jxr_string">"export * from './dist/"</span> + clientName + <span class="jxr_string">"';"</span>, targetDir, <span class="jxr_string">"index.ts"</span>);
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>             writeFile(generatePackageDotJson(), targetDir, <span class="jxr_string">"package.json"</span>);
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>             writeFile(generateTsconfigDotJson(), targetDir, <span class="jxr_string">"tsconfig.json"</span>);
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>         }
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>     }
+<a class="jxr_linenumber" name="L325" href="#L325">325</a> 
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L327" href="#L327">327</a> <em class="jxr_javadoccomment">     * Write file to disk.</em>
+<a class="jxr_linenumber" name="L328" href="#L328">328</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L329" href="#L329">329</a> <em class="jxr_javadoccomment">     * @param content   file content</em>
+<a class="jxr_linenumber" name="L330" href="#L330">330</a> <em class="jxr_javadoccomment">     * @param directory directory, will be created if missing</em>
+<a class="jxr_linenumber" name="L331" href="#L331">331</a> <em class="jxr_javadoccomment">     * @param filename  filename</em>
+<a class="jxr_linenumber" name="L332" href="#L332">332</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> writeFile(String content, String directory, String filename) <strong class="jxr_keyword">throws</strong> MojoFailureException {
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>             Files.createDirectories(java.nio.file.Path.of(directory));
+<a class="jxr_linenumber" name="L336" href="#L336">336</a> 
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>             <strong class="jxr_keyword">try</strong> (BufferedWriter writer = Files.newBufferedWriter(
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>                 java.nio.file.Path.of(directory, filename))) {
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>                 writer.write(content);
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>             } <strong class="jxr_keyword">catch</strong> (IOException ex) {
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>                 <strong class="jxr_keyword">if</strong> (log != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(<span class="jxr_string">"Failed to write '"</span> + filename + <span class="jxr_string">"' in '"</span> + directory + <span class="jxr_string">"'"</span>, ex);
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>                 }
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>             }
+<a class="jxr_linenumber" name="L345" href="#L345">345</a> 
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>         } <strong class="jxr_keyword">catch</strong> (IOException ex) {
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>             <strong class="jxr_keyword">if</strong> (log != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(<span class="jxr_string">"Failed to create package directory "</span> + directory, ex);
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>             }
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>         }
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>     }
+<a class="jxr_linenumber" name="L352" href="#L352">352</a> 
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L354" href="#L354">354</a> <em class="jxr_javadoccomment">     * Convert Java className-like to dash-separated-lower-case version.</em>
+<a class="jxr_linenumber" name="L355" href="#L355">355</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L356" href="#L356">356</a> <em class="jxr_javadoccomment">     * @param name eg. MyAwesomeRestClient</em>
+<a class="jxr_linenumber" name="L357" href="#L357">357</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L358" href="#L358">358</a> <em class="jxr_javadoccomment">     * @return eg. my-awesome-rest-client</em>
+<a class="jxr_linenumber" name="L359" href="#L359">359</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>     <strong class="jxr_keyword">private</strong> String generateModuleName(String name) {
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>         StringBuilder sb = <strong class="jxr_keyword">new</strong> StringBuilder();
+<a class="jxr_linenumber" name="L362" href="#L362">362</a> 
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; name.length(); i++) {
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>             <strong class="jxr_keyword">char</strong> c = name.charAt(i);
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>             <strong class="jxr_keyword">if</strong> (Character.isUpperCase(c)) {
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>                 sb.append('-').append(Character.toLowerCase(c));
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>                 sb.append(c);
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>             }
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>         }
+<a class="jxr_linenumber" name="L371" href="#L371">371</a> 
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>         <strong class="jxr_keyword">return</strong> sb.toString();
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>     }
+<a class="jxr_linenumber" name="L374" href="#L374">374</a> 
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L376" href="#L376">376</a> <em class="jxr_javadoccomment">     * generate package.json</em>
+<a class="jxr_linenumber" name="L377" href="#L377">377</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L378" href="#L378">378</a> <em class="jxr_javadoccomment">     * @return content of package.json</em>
+<a class="jxr_linenumber" name="L379" href="#L379">379</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>     <strong class="jxr_keyword">private</strong> String generatePackageDotJson() {
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>         StringBuilder sb = <strong class="jxr_keyword">new</strong> StringBuilder();
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>         sb.append(<span class="jxr_string">"{\n"</span>
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>             + <span class="jxr_string">"    \&quot;name\&quot;: \&quot;"</span> + generateModuleName(<strong class="jxr_keyword">this</strong>.clientName) + <span class="jxr_string">"\&quot;,\n"</span>
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>             + <span class="jxr_string">"    \&quot;version\&quot;: \&quot;1.0.0\&quot;,\n"</span>
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>             + <span class="jxr_string">"    \&quot;keywords\&quot;: [\&quot;restClient\&quot;],\n"</span>
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>             + <span class="jxr_string">"    \&quot;author\&quot;: \&quot;albabot\&quot;,\n"</span>
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>             + <span class="jxr_string">"    \&quot;main\&quot;: \&quot;dist/index.js\&quot;,\n"</span>
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>             + <span class="jxr_string">"    \&quot;private\&quot;: true,\n"</span>
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>             + <span class="jxr_string">"    \&quot;scripts\&quot;: {\n"</span>
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>             + <span class="jxr_string">"      \&quot;build\&quot;: \&quot;rimraf dist &amp;&amp; tsc\&quot;,\n"</span>
+<a class="jxr_linenumber" name="L391" href="#L391">391</a>             + <span class="jxr_string">"      \&quot;lint\&quot;: \&quot;eslint 'src' --ext '.js,.ts,.tsx'\&quot;\n"</span>
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>             + <span class="jxr_string">"    },\n"</span>
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>             + <span class="jxr_string">"    \&quot;contributors\&quot;: [],\n"</span>
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>             + <span class="jxr_string">"    \&quot;dependencies\&quot;: {},\n"</span>
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>             + <span class="jxr_string">"      \&quot;devDependencies\&quot;: {\n"</span>
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>             + <span class="jxr_string">"        \&quot;rimraf\&quot;: \&quot;^3.0.0\&quot;,\n"</span>
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>             + <span class="jxr_string">"        \&quot;typescript\&quot;: \&quot;^3.7.5\&quot;,\n"</span>
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>             + <span class="jxr_string">"        \&quot;tslint\&quot; : \&quot;^5.1.0\&quot;,\n"</span>
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>             + <span class="jxr_string">"        \&quot;copyfiles\&quot;: \&quot;^2.3.0\&quot;\n"</span>
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>             + <span class="jxr_string">"  }\n"</span>
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>             + <span class="jxr_string">"}"</span>);
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>         <strong class="jxr_keyword">return</strong> sb.toString();
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>     }
+<a class="jxr_linenumber" name="L404" href="#L404">404</a> 
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L406" href="#L406">406</a> <em class="jxr_javadoccomment">     * generate tsconfig.json</em>
+<a class="jxr_linenumber" name="L407" href="#L407">407</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L408" href="#L408">408</a> <em class="jxr_javadoccomment">     * @return content of package.json</em>
+<a class="jxr_linenumber" name="L409" href="#L409">409</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>     <strong class="jxr_keyword">private</strong> String generateTsconfigDotJson() {
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>         StringBuilder sb = <strong class="jxr_keyword">new</strong> StringBuilder();
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>         sb.append(<span class="jxr_string">"{\n"</span>
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>             + <span class="jxr_string">"    \&quot;compilerOptions\&quot;: {\n"</span>
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>             + <span class="jxr_string">"        \&quot;target\&quot;: \&quot;esnext\&quot;,\n"</span>
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>             + <span class="jxr_string">"        \&quot;allowJs\&quot;: false,\n"</span>
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>             + <span class="jxr_string">"        \&quot;module\&quot;: \&quot;esnext\&quot;,\n"</span>
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>             + <span class="jxr_string">"        \&quot;outDir\&quot;: \&quot;dist\&quot;,\n"</span>
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>             + <span class="jxr_string">"        \&quot;sourceMap\&quot;:true,\n"</span>
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>             + <span class="jxr_string">"        \&quot;strict\&quot;: true,\n"</span>
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>             + <span class="jxr_string">"        \&quot;moduleResolution\&quot;: \&quot;node\&quot;,\n"</span>
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>             + <span class="jxr_string">"        \&quot;allowSyntheticDefaultImports\&quot;: true,\n"</span>
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>             + <span class="jxr_string">"        \&quot;suppressImplicitAnyIndexErrors\&quot;: true,\n"</span>
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>             + <span class="jxr_string">"        \&quot;declaration\&quot;: true\n"</span>
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>             + <span class="jxr_string">"    },\n"</span>
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>             + <span class="jxr_string">"    \&quot;files\&quot;: [\n"</span>
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>             + <span class="jxr_string">"        \&quot;src/"</span> + <strong class="jxr_keyword">this</strong>.clientName + <span class="jxr_string">".ts\&quot;\n"</span>
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>             + <span class="jxr_string">"    ],\n"</span>
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>             + <span class="jxr_string">"    \&quot;exclude\&quot;: [\n"</span>
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>             + <span class="jxr_string">"        \&quot;node_modules\&quot;\n"</span>
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>             + <span class="jxr_string">"    ]\n"</span>
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>             + <span class="jxr_string">"}"</span>);
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>         <strong class="jxr_keyword">return</strong> sb.toString();
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>     }
+<a class="jxr_linenumber" name="L434" href="#L434">434</a> 
+<a class="jxr_linenumber" name="L435" href="#L435">435</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>
