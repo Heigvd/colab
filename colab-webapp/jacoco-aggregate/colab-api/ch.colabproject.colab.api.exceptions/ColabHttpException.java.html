@@ -32,20 +32,25 @@ public abstract class ColabHttpException extends RuntimeException {
 <span class="nc" id="L32">        this(Response.Status.BAD_REQUEST);</span>
 <span class="nc" id="L33">    }</span>
 
-<span class="nc" id="L35">    public ColabHttpException(Response.Status httpStatus) {</span>
-<span class="nc" id="L36">        this.httpStatus = httpStatus;</span>
-<span class="nc" id="L37">    }</span>
+    /**
+     * Create error with custom HTTP status
+     *
+     * @param httpStatus HTTP status code
+     */
+<span class="nc" id="L40">    public ColabHttpException(Response.Status httpStatus) {</span>
+<span class="nc" id="L41">        this.httpStatus = httpStatus;</span>
+<span class="nc" id="L42">    }</span>
 
     @JsonbTransient
     @Override
     public synchronized Throwable getCause() {
-<span class="nc" id="L42">        return super.getCause();</span>
+<span class="nc" id="L47">        return super.getCause();</span>
     }
 
     @JsonbTransient
     @Override
     public StackTraceElement[] getStackTrace() {
-<span class="nc" id="L48">        return super.getStackTrace();</span>
+<span class="nc" id="L53">        return super.getStackTrace();</span>
     }
 
     /**
@@ -55,8 +60,8 @@ public abstract class ColabHttpException extends RuntimeException {
      */
     @JsonbTransient
     public Response.Status getHttpStatus() {
-<span class="nc" id="L58">        this.getSuppressed();</span>
-<span class="nc" id="L59">        return this.httpStatus;</span>
+<span class="nc" id="L63">        this.getSuppressed();</span>
+<span class="nc" id="L64">        return this.httpStatus;</span>
     }
 
     /*
