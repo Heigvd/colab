@@ -7,6 +7,7 @@
     <shared-cache-mode>ALL</shared-cache-mode>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
+      <property name="eclipselink.session.customizer" value="ch.colabproject.colab.api.model.tools.JpaNameMappingCustomizer"/>
       <!--<property name="eclipselink.target-database" value="H2"/>-->
     </properties>
   </persistence-unit>

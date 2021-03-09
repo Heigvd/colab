@@ -89,8 +89,9 @@ You way have a look on run options:
 ```
 
 ### Hot re-deploy
-Some command listed delow require to re-deploy the app.
-You can do a full, complete relaod by killing the ./run script and running it again.
+Some commands listed below require to re-deploy the app.
+You can do a full, complete reload by killing the ./run script and running it again.
+
 Or you can do it the quick way: `touch colab-webapp/target/colab-webapp-0.1/.reload'
 
 ### Changes in the data model

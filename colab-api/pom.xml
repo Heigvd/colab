@@ -23,6 +23,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.core</artifactId>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
             <groupId>javax.cache</groupId>
             <artifactId>cache-api</artifactId>
             <type>jar</type>
@@ -164,7 +170,7 @@
                     <source>11</source>
                     <target>11</target>
                     <!-- generate metadata for reflection on method parameters.
-                         It's used to generate REST client with correct parameter names -->
+                    It's used to generate REST client with correct parameter names -->
                     <parameters>true</parameters>
                     <!--<compilerArgument>-XDignore.symbol.file</compilerArgument>-->
                     <!--<annotationProcessors>

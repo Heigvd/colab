@@ -8,6 +8,7 @@
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
       <!--<property name="eclipselink.target-database" value="H2"/>-->
+      <property name="eclipselink.session.customizer" value="ch.colabproject.colab.api.model.tools.JpaNameMappingCustomizer"/>
     </properties>
   </persistence-unit>
 </persistence>

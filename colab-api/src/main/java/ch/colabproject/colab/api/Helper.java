@@ -128,4 +128,19 @@ public class Helper {
     public static String generateHexSalt(int length) {
         return Helper.bytesToHex(Helper.generateSalt(length));
     }
+
+    /**
+     * Convert camel-case string to userscrore-separated-lower-case-string
+     *
+     * @param camelCase eg myAsewomeIdentifier
+     *
+     * @return  eg my_aswesome_identifier
+     */
+    public static String camelCaseToUnderscore(String camelCase) {
+        return camelCase
+            .trim()
+            // prefix all uppercase char preceded by something with an underscore
+            .replaceAll("(?<!^)[A-Z](?!$)", "_$0")
+            .toLowerCase();
+    }
 }
