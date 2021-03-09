@@ -128,5 +128,20 @@ public class Helper {
     public static String generateHexSalt(int length) {
 <span class="fc" id="L129">        return Helper.bytesToHex(Helper.generateSalt(length));</span>
     }
+
+    /**
+     * Convert camel-case string to userscrore-separated-lower-case-string
+     *
+     * @param camelCase eg myAsewomeIdentifier
+     *
+     * @return  eg my_aswesome_identifier
+     */
+    public static String camelCaseToUnderscore(String camelCase) {
+<span class="fc" id="L140">        return camelCase</span>
+<span class="fc" id="L141">            .trim()</span>
+            // prefix all uppercase char preceded by something with an underscore
+<span class="fc" id="L143">            .replaceAll(&quot;(?&lt;!^)[A-Z](?!$)&quot;, &quot;_$0&quot;)</span>
+<span class="fc" id="L144">            .toLowerCase();</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

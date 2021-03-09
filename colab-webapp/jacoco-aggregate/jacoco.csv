@@ -1,5 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-colab-webapp/colab-api,ch.colabproject.colab.api,Helper,141,0,14,0,33,0,15,0,8,0
+colab-webapp/colab-api,ch.colabproject.colab.api,Helper,148,0,14,0,37,0,16,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.utils,DateDeserializer,10,0,0,0,4,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.utils,InternalExceptionMapper,20,0,2,0,8,0,3,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.utils,ColabDeserializer,63,0,4,0,14,0,6,0,4,0
@@ -40,6 +40,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.rest,UserController,52,0,0,0,18
 colab-webapp/colab-api,ch.colabproject.colab.api.rest,MonitoringController,5,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest,ProjectController,30,0,0,0,8,0,6,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,EntityListener,21,0,4,0,7,0,5,0,3,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,JpaNameMappingCustomizer,44,0,2,0,13,0,7,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.project,Project,35,0,2,0,13,0,7,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsDeleteMessage,13,0,0,0,6,0,3,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsUpdateMessage,9,0,0,0,4,0,2,0,2,0
