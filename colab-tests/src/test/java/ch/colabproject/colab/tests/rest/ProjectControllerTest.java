@@ -4,10 +4,10 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.client.rest;
+package ch.colabproject.colab.tests.rest;
 
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.client.tests.AbstractArquillianTest;
+import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

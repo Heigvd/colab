@@ -8,7 +8,6 @@ package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage.MessageCode;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.AuthInfo;
@@ -48,6 +47,12 @@ public class UserManagement {
      */
     @Inject
     private RequestManager requestManager;
+
+    /**
+     * some operation on users will create and send tokens
+     */
+    @Inject
+    private TokenDao tokenDao;
 
     /**
      * Access to the persistence unit
@@ -181,10 +186,12 @@ public class UserManagement {
      *
      * @return authentication method to use to authentication as email owner or new random one which
      *         can be use to create a brand new localAccount
+     *
+     * @throws ColabErrorMessage invalidRequest if there is no identifier
      */
     public AuthMethod getAuthenticationMethod(String identifier) {
         if (identifier == null || identifier.isBlank()) {
-            throw new ColabErrorMessage(ColabErrorMessage.MessageCode.INVALID_REQUEST);
+            throw ColabErrorMessage.invalidRequest();
         } else {
             LocalAccount account = this.findLocalAccountByIdentifier(identifier);
 
@@ -212,7 +219,7 @@ public class UserManagement {
     /**
      * Create a brand new user, which can authenticate with a {@link LocalAccount}. First,
      * plainPassword will be hashed as any client should do. Then the
-     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo) signup} method is called.
+     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo)  signup} method is called.
      *
      * @param username      username
      * @param email         email address
@@ -240,7 +247,7 @@ public class UserManagement {
     }
 
     /**
-     * Create a new user with local account
+     * Create a new user with local account. An e-mail will be sent to user to verify its account
      *
      * @param signup all info to create a new account
      *
@@ -272,14 +279,16 @@ public class UserManagement {
 
                 user.setUsername(signup.getUsername());
                 em.persist(user);
+                // new user with a localaccount should verify their e-mail address
+                tokenDao.requestEmailAddressVerification(account, false);
                 return user;
             } else {
                 // wait.... throwing something else here leaks account existence...
-                throw new ColabErrorMessage(MessageCode.USERNAME_ALREADY_TAKEN);
+                throw ColabErrorMessage.userNameAlreadyTaken();
             }
 
         } else {
-            throw new ColabErrorMessage(MessageCode.USERNAME_ALREADY_TAKEN);
+            throw ColabErrorMessage.userNameAlreadyTaken();
         }
     }
 
@@ -345,7 +354,7 @@ public class UserManagement {
         // authentication fails
         // OR client did not provide required hash
         // OR account not found
-        throw new ColabErrorMessage(MessageCode.AUTHENTICATION_FAILED);
+        throw ColabErrorMessage.authenticationFailed();
     }
 
     /**

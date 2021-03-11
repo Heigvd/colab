@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.client;
+package ch.colabproject.colab.tests;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.model.user.HashMethod;

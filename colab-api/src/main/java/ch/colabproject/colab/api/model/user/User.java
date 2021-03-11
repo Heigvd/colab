@@ -34,9 +34,9 @@ import javax.validation.constraints.Pattern;
 @Entity
 @Table(name = "users")
 @NamedQuery(name = "User.findByUsername",
-        query = "SELECT u from User u where u.username = :username")
-@NamedQuery(name="User.findAllAdmin",
-        query = "SELECT u from User u where u.isAdmin = TRUE")
+    query = "SELECT u from User u where u.username = :username")
+@NamedQuery(name = "User.findAllAdmin",
+    query = "SELECT u from User u where u.isAdmin = TRUE")
 public class User implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
@@ -233,7 +233,7 @@ public class User implements ColabEntity {
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof User){
+        if (other instanceof User) {
             User o = (User) other;
             this.setFirstname(o.getFirstname());
             this.setLastname(o.getLastname());

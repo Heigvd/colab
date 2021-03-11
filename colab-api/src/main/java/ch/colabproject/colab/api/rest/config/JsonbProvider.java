@@ -7,8 +7,6 @@
 package ch.colabproject.colab.api.rest.config;
 
 import ch.colabproject.colab.api.rest.utils.ColabDeserializer;
-import ch.colabproject.colab.api.rest.utils.DateDeserializer;
-import ch.colabproject.colab.api.rest.utils.DateSerializer;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
@@ -27,7 +25,7 @@ public class JsonbProvider implements ContextResolver<Jsonb> {
      * {@inheritDoc}
      */
     @Override
-    public Jsonb getContext(Class<?> aClass) {
+    public Jsonb getContext(Class<?> theClass) {
         return JsonbProvider.getJsonb();
     }
 
@@ -39,8 +37,8 @@ public class JsonbProvider implements ContextResolver<Jsonb> {
     public static Jsonb getJsonb() {
         JsonbConfig config = new JsonbConfig()
             .withFormatting(false)
-            .withSerializers(new DateSerializer())
-            .withDeserializers(new DateDeserializer())
+            //.withSerializers(new DateSerializer())
+            //.withDeserializers(new DateDeserializer())
             .withDeserializers(new ColabDeserializer());
 
         return JsonbBuilder.create(config);

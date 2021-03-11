@@ -18,7 +18,9 @@ import javax.json.stream.JsonParser;
  * Give JSONb ability to deserialize timestamps to LocalDateTime
  *
  * @author maxence
+ * @deprecated use @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
  */
+@Deprecated
 public class DateDeserializer implements JsonbDeserializer<LocalDateTime> {
 
     /**

@@ -203,7 +203,8 @@ public class Generator {
      *
      * @throws org.apache.maven.plugin.MojoFailureException if generation fails
      */
-    public void generateTypescriptClient(String targetDir, boolean dryRun) throws MojoFailureException {
+    public void generateTypescriptClient(String targetDir, boolean dryRun)
+        throws MojoFailureException {
         Map<String, Type> extraTypes = new HashMap<>();
         StringBuilder sb = new StringBuilder();
         sb.append("/**\n"
@@ -330,7 +331,8 @@ public class Generator {
      * @param directory directory, will be created if missing
      * @param filename  filename
      */
-    private void writeFile(String content, String directory, String filename) throws MojoFailureException {
+    private void writeFile(String content, String directory, String filename)
+        throws MojoFailureException {
         try {
             Files.createDirectories(java.nio.file.Path.of(directory));
 
@@ -339,13 +341,15 @@ public class Generator {
                 writer.write(content);
             } catch (IOException ex) {
                 if (log != null) {
-                    throw new MojoFailureException("Failed to write '" + filename + "' in '" + directory + "'", ex);
+                    throw new MojoFailureException("Failed to write '"
+                        + filename + "' in '" + directory + "'", ex);
                 }
             }
 
         } catch (IOException ex) {
             if (log != null) {
-                throw new MojoFailureException("Failed to create package directory " + directory, ex);
+                throw new MojoFailureException("Failed to create package directory "
+                    + directory, ex);
             }
         }
     }

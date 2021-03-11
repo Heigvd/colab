@@ -4,13 +4,15 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.client.rest;
+package ch.colabproject.colab.tests.rest;
 
-import ch.colabproject.colab.client.tests.AbstractArquillianTest;
-import ch.colabproject.colab.client.tests.TestUser;
+import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
+import ch.colabproject.colab.tests.tests.TestUser;
 import ch.colabproject.colab.generator.Generator;
 import ch.colabproject.colab.generator.rest.RestController;
 import ch.colabproject.colab.generator.rest.RestMethod;
+import ch.colabproject.colab.tests.tests.TestHelper;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -24,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-import javax.ws.rs.ClientErrorException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -35,37 +36,34 @@ import org.junit.jupiter.api.Test;
  */
 public class SecurityTest extends AbstractArquillianTest {
 
+    /**
+     * All assertion grouped in one methods
+     */
     public void assertAccessDenied() {
-        try {
+        TestHelper.assertThrows(ColabErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.projectController.getAllProjects();
-            Assertions.fail("");
-        } catch (ClientErrorException ex) {
-            Assertions.assertEquals(403, ex.getResponse().getStatus());
-        }
-        try {
+        });
+        TestHelper.assertThrows(ColabErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.userController.grantAdminRight(1l);
-            Assertions.fail("");
-        } catch (ClientErrorException ex) {
-            Assertions.assertEquals(403, ex.getResponse().getStatus());
-        }
-        try {
+        });
+        TestHelper.assertThrows(ColabErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.userController.switchClientHashMethod(1l);
-            Assertions.fail("");
-        } catch (ClientErrorException ex) {
-            Assertions.assertEquals(403, ex.getResponse().getStatus());
-        }
-        try {
+        });
+        TestHelper.assertThrows(ColabErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.userController.switchServerHashMethod(1l);
-            Assertions.fail("");
-        } catch (ClientErrorException ex) {
-            Assertions.assertEquals(403, ex.getResponse().getStatus());
-        }
+        });
     }
 
+    /**
+     * Analyze {@link #assertAccessDenied() } method source-code and check all resource are tested.
+     *
+     * @throws NoSuchMethodException not expected
+     * @throws IOException           not expected
+     */
     @Test
     public void assertAllExistingAdminResourceAreTested() throws NoSuchMethodException, IOException {
         // First, parse this file to analyse sourceCode
-        Path file = Path.of("src/test/java/ch/colabproject/colab/client/rest/SecurityTest.java");
+        Path file = Path.of("src/test/java/ch/colabproject/colab/tests/rest/SecurityTest.java");
         CompilationUnit compilationUnit = StaticJavaParser.parse(file);
         Optional<ClassOrInterfaceDeclaration> classByName = compilationUnit
             .getClassByName("SecurityTest");
@@ -74,7 +72,6 @@ public class SecurityTest extends AbstractArquillianTest {
         BlockStmt body = methodsByName.get(0).getBody().get();
         // and keep only assertAccessDenied source code
         String sourceCode = body.toString();
-
 
         // Then, use client generator to find all annotated class/methods
         List<String> missings = new ArrayList<>();
@@ -92,9 +89,10 @@ public class SecurityTest extends AbstractArquillianTest {
 
             controller.getRestMethods().forEach((RestMethod method) -> {
                 if (isAdminResource || method.isAdminResource()) {
-                    String check = MessageFormat
-                        .format(".*client.{0}.{1}\\(.*\\);\\s*Assertions.fail\\(\".*",
-                            fieldName, method.getName());
+                    String check = ".*TestHelper.assertThrows\\(\\s*"
+                        + "ColabErrorMessage.MessageCode.ACCESS_DENIED, \\(\\) -> "
+                        + "\\{\\s*client." + fieldName + "."
+                        + method.getName() + "\\(.*?\\);\\s*\\}\\);.*";
                     Pattern regex = Pattern.compile(check, Pattern.DOTALL);
                     if (!regex.matcher(sourceCode).matches()) {
                         missings.add("Missing check for client." + fieldName + "." + method
@@ -106,6 +104,9 @@ public class SecurityTest extends AbstractArquillianTest {
         Assertions.assertEquals(0, missings.size(), missings.toString());
     }
 
+    /**
+     * Make sure non-admin user cannot access admin resources
+     */
     @Test
     public void assertAdminResourceAccesIsDeniedToStandardUsers() {
         TestUser lambdaUser = this.signup("lamba", "henri@croivet-batton.xvi", "Louis 16 soupapes");

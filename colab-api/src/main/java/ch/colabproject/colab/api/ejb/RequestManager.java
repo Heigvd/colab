@@ -102,4 +102,13 @@ public class RequestManager {
     public long getStartTime() {
         return startTime;
     }
+
+    /**
+     * Is the request ran by an authenticated user ?
+     *
+     * @return true if the current user is fully authenticated
+     */
+    public Boolean isAuthenticated() {
+        return this.getCurrentAccount() != null;
+    }
 }

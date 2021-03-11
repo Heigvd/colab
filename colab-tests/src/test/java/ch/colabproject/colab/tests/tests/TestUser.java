@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.client.tests;
+package ch.colabproject.colab.tests.tests;
 
 /**
  * Simple bean to store plain credentials
@@ -23,6 +23,9 @@ public class TestUser {
      */
     private String password;
 
+    /**
+     * Username
+     */
     private String username;
 
     /**

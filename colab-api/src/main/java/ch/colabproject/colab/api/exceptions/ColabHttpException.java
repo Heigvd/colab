@@ -60,7 +60,6 @@ public abstract class ColabHttpException extends RuntimeException {
      */
     @JsonbTransient
     public Response.Status getHttpStatus() {
-        this.getSuppressed();
         return this.httpStatus;
     }
 

@@ -51,9 +51,11 @@ public class ApplicationLifecycle extends HttpServlet {
                 );
                 userManagement.grantAdminRight(admin.getId());
             } catch (ColabErrorMessage ex) {
-                logger.error("Fails to create default amdin user. Does non-admin user exists with same username or email address");
+                logger.error("Fails to create default amdin user. "
+                    + "Does non-admin user exists with same username or email address");
             } catch (RuntimeException ex) {
-                logger.error("Fails to create default amdin user for some unknown reason. Please check config");
+                logger.error("Fails to create default amdin user for some unknown reason."
+                    + " Please check config");
             }
         }
     }

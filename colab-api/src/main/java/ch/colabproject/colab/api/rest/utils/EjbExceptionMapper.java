@@ -6,18 +6,19 @@
  */
 package ch.colabproject.colab.api.rest.utils;
 
+import javax.ejb.EJBException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 /**
- * Intercept exception and send them back to client with correct HTTP status
+ * Intercept exception and send them back to client with correct HTTP status.
  *
  * @author maxence
  */
 @Provider
-public class InternalExceptionMapper extends AbstractExceptionMapper
-    implements ExceptionMapper<Exception> {
+public class EjbExceptionMapper extends AbstractExceptionMapper
+    implements ExceptionMapper<EJBException> {
 
     /**
      *
@@ -26,7 +27,8 @@ public class InternalExceptionMapper extends AbstractExceptionMapper
      * @return a HTTP response which wrap the exception
      */
     @Override
-    public Response toResponse(Exception exception) {
+    public Response toResponse(EJBException exception) {
         return processException(exception);
     }
+
 }

@@ -390,7 +390,7 @@ public class RestController {
             if (method.isReturnTypeGeneric()) {
                 sb.append("new GenericType<").append(resolvedReturnType).append(">(){}");
             } else {
-                sb.append(resolvedReturnType).append(".class");
+                sb.append("new GenericType<>(").append(resolvedReturnType).append(".class)");
             }
             sb.append(");");
             indent--;
@@ -414,7 +414,6 @@ public class RestController {
      * @return Typscript REST client
      */
     public String generateTypescriptClient(Map<String, Type> types) {
-        StringBuilder sb = new StringBuilder();
         tabSize = 2;
         if (log != null) {
             log.debug("Generate typescript class " + this);
@@ -422,6 +421,7 @@ public class RestController {
 
         indent++;
         // TODO jsDoc
+        StringBuilder sb = new StringBuilder();
         newLine(sb);
         sb.append(this.simpleClassName).append(" : {");
         indent++;
@@ -450,11 +450,11 @@ public class RestController {
             /////////////////////////////
             indent++;
             UriTemplate pathTemplate = new PathPattern(method.getFullPath()).getTemplate();
-            Map<String, String> pathParams = new HashMap<>();
-            method.getPathParameters().forEach(param
-                -> pathParams.put(param.getName(), "${" + param.getName() + "}")
-            );
-            String tsPath = pathTemplate.createURI(pathParams);
+            Map<String, String> pathParams = method.getPathParameters().stream()
+                .collect(Collectors.toMap(
+                    p -> p.getName(),
+                    p -> "${" + p.getName() + "}")
+                );
             newLine(sb);
             sb.append("const queryString : string[] = [];");
             newLine(sb);
@@ -471,6 +471,7 @@ public class RestController {
                 sb.append("}");
             });
             newLine(sb);
+            String tsPath = pathTemplate.createURI(pathParams);
             sb.append("const path = `").append(tsPath)
                 .append("` + (queryString.length > 0 ? '?' + queryString.join('&') : '');");
             newLine(sb);
@@ -480,7 +481,9 @@ public class RestController {
                 .append(">('").append(method.getHttpMethod())
                 .append("', path")
                 .append(", ")
-                .append(method.getBodyParam() != null ? method.getBodyParam().getName() : "undefined")
+                .append(method.getBodyParam() != null
+                    ? method.getBodyParam().getName()
+                    : "undefined")
                 .append(");");
             indent--;
             newLine(sb);
@@ -575,7 +578,6 @@ public class RestController {
     public static RestController build(Class<?> klass, String applicationPath, Log log) {
         RestController restController = new RestController();
         restController.log = log;
-        Path classPath = klass.getAnnotation(Path.class);
 
         restController.setAdminResource(klass.getAnnotation(AdminResource.class) != null);
         restController.setAuthenticationRequired(
@@ -584,6 +586,7 @@ public class RestController {
         restController.simpleClassName = klass.getSimpleName();
         restController.className = klass.getName();
 
+        Path classPath = klass.getAnnotation(Path.class);
         // eg @Path("project/{pId: [regex]}/card/{}")   or "project"
         Map<String, Class<?>> mainPathParam = splitPath(classPath);
 

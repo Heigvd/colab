@@ -1,0 +1,201 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.token;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.user.HashMethod;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import javax.json.bind.annotation.JsonbDateFormat;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+
+/**
+ *
+ * @author maxence
+ */
+@Entity
+public abstract class Token implements ColabEntity {
+
+    /**
+     * a token does not need a salt but, as some HashMethods require one, let's use an hard-coded
+     * one
+     */
+    public static final String SALT = "CAFEBEEF";
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Project ID.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /**
+     * token hashed with the hashMethod
+     */
+    @JsonbTransient
+    @NotNull
+    private byte[] hashedToken;
+
+    /**
+     * Hash method used to hash the plainText token
+     */
+    @Column(length = 100)
+    @Enumerated(value = EnumType.STRING)
+    @JsonbTransient
+    @NotNull
+    private HashMethod hashMethod;
+
+    /**
+     * Indicate whether a token must be consumed by an unauthenticated user
+     */
+    @NotNull
+    private Boolean authenticationRequired;
+    /**
+     * token expiration date. TODO: schedule deletion of outdated tokens
+     */
+    @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
+    private LocalDateTime expirationDate;
+
+    /**
+     * Get the value of authenticationRequired
+     *
+     * @return the value of authenticationRequired
+     */
+    public Boolean isAuthenticationRequired() {
+        return authenticationRequired;
+    }
+
+    /**
+     * Set the value of authenticationRequired
+     *
+     * @param authenticationRequired new value of authenticationRequired
+     */
+    public void setAuthenticationRequired(Boolean authenticationRequired) {
+        this.authenticationRequired = authenticationRequired;
+    }
+
+
+    /**
+     * Get the value of hashMethod
+     *
+     * @return the value of hashMethod
+     */
+    public HashMethod getHashMethod() {
+        return hashMethod;
+    }
+
+    /**
+     * Set the value of hashMethod
+     *
+     * @param hashMethod new value of hashMethod
+     */
+    public void setHashMethod(HashMethod hashMethod) {
+        this.hashMethod = hashMethod;
+    }
+
+    /**
+     * Get the value of hashedToken
+     *
+     * @return the value of hashedToken
+     */
+    public byte[] getHashedToken() {
+        return hashedToken;
+    }
+
+    /**
+     * Set the value of hashedToken
+     *
+     * @param hashedToken new value of hashedToken
+     */
+    public void setHashedToken(byte[] hashedToken) {
+        this.hashedToken = hashedToken;
+    }
+
+    /**
+     * @return the project ID
+     */
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Set id
+     *
+     * @param id id
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * Get the value of expirationDate
+     *
+     * @return the value of expirationDate
+     */
+    public LocalDateTime getExpirationDate() {
+        return expirationDate;
+    }
+
+    /**
+     * Set the value of expirationDate
+     *
+     * @param expirationDate new value of expirationDate
+     */
+    public void setExpirationDate(LocalDateTime expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+        // nothing to do
+    }
+
+    /**
+     * URL to redirect the user to once the token has been consumed.
+     *
+     * @return redirect to URL
+     */
+    public abstract String getRedirectTo();
+
+    /**
+     * token effect
+     */
+    public abstract void consume();
+
+    /**
+     * Generate email body
+     *
+     * @param link link to embed in the body
+     *
+     * @return email body html text
+     */
+    public abstract String getEmailBody(String link);
+
+    /**
+     * Check plain token against hashed persisted one
+     *
+     * @param plainToken the plain token to check
+     *
+     * @return true if there is a match
+     */
+    public boolean checkHash(String plainToken) {
+        byte[] submited = this.getHashMethod().hash(plainToken, SALT);
+        return Arrays.equals(submited, this.getHashedToken());
+    }
+}

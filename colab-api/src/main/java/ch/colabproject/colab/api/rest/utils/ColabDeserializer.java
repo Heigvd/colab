@@ -36,7 +36,7 @@ public class ColabDeserializer implements JsonbDeserializer<Jsonable> {
 
     static {
         // analyse classes in the model package
-        REFLECTIONS = new Reflections( "ch.colabproject.colab.api.model");
+        REFLECTIONS = new Reflections("ch.colabproject.colab.api.model");
     }
 
     /**
@@ -54,10 +54,13 @@ public class ColabDeserializer implements JsonbDeserializer<Jsonable> {
 
         if (theClass == null) {
             // nope -> let's resolve it with the help of reflections
-            Optional<Class<? extends Jsonable>> eClass = REFLECTIONS.getSubTypesOf(Jsonable.class)
-                .stream().filter(cl -> cl.getSimpleName().equals(atClass)).findFirst();
-            if (eClass.isPresent()) {
-                theClass = eClass.get();
+            Optional<Class<? extends Jsonable>> concreteClass
+                = REFLECTIONS.getSubTypesOf(Jsonable.class)
+                    .stream()
+                    .filter(cl -> cl.getSimpleName().equals(atClass))
+                    .findFirst();
+            if (concreteClass.isPresent()) {
+                theClass = concreteClass.get();
                 CLASSES_MAP.put(atClass, theClass);
             }
         }

@@ -21,6 +21,11 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+      mailhog:
+        image: mailhog/mailhog
+        ports:
+          - 1025:1025
+          - 8025:8025
     steps:
     - uses: actions/checkout@v2
     - name: Cache local Maven repository

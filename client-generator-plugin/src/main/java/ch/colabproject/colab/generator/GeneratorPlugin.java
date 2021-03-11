@@ -21,7 +21,11 @@ import org.apache.maven.project.MavenProject;
  *
  * @author maxence
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.PROCESS_CLASSES, requiresDependencyResolution = ResolutionScope.COMPILE)
+@Mojo(
+    name = "generate",
+    defaultPhase = LifecyclePhase.PROCESS_CLASSES,
+    requiresDependencyResolution = ResolutionScope.COMPILE
+)
 public class GeneratorPlugin extends AbstractMojo {
 
     /**
@@ -51,13 +55,19 @@ public class GeneratorPlugin extends AbstractMojo {
     /**
      * path of generated java client
      */
-    @Parameter(property = "generate.javaOutputDir", defaultValue = "${project.build.directory}/generated-sources/javaClient")
+    @Parameter(
+        property = "generate.javaOutputDir",
+        defaultValue = "${project.build.directory}/generated-sources/javaClient"
+    )
     private String javaOutputDir;
 
     /**
      * path of generated typescript client
      */
-    @Parameter(property = "generate.tsOutputDir", defaultValue = "${project.build.directory}/generated-sources/tsClient")
+    @Parameter(
+        property = "generate.tsOutputDir",
+        defaultValue = "${project.build.directory}/generated-sources/tsClient"
+    )
     private String tsOutputDir;
 
     /**
@@ -96,7 +106,8 @@ public class GeneratorPlugin extends AbstractMojo {
         generator.generateTypescriptClient(tsOutputDir, this.dryRun);
 
         if (!dryRun) {
-            // and add it to the current project to make sure the client can be use during this very run
+            // and add it to the current project to make sure the client
+            // can be use during this very run
             this.project.addCompileSourceRoot(javaOutputDir);
         }
 

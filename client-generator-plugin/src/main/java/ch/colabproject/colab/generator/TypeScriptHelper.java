@@ -41,12 +41,13 @@ public class TypeScriptHelper {
      * never-called private constructor
      */
     private TypeScriptHelper() {
-        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+        throw new UnsupportedOperationException(
+            "This is a utility class and cannot be instantiated");
     }
 
     private static String getTsTypeName(Class<?> javaClass) {
         if (Jsonable.class.isAssignableFrom(javaClass)) {
-            return Jsonable.getJSONClassName(javaClass);
+            return Jsonable.getJsonClassName(javaClass);
         } else {
             return javaClass.getSimpleName();
         }
@@ -226,8 +227,7 @@ public class TypeScriptHelper {
                 || long.class.isAssignableFrom(javaClass)
                 || float.class.isAssignableFrom(javaClass)
                 || double.class.isAssignableFrom(javaClass)
-                || LocalDateTime.class.isAssignableFrom(javaClass)
-                ) {
+                || LocalDateTime.class.isAssignableFrom(javaClass)) {
                 return "number";
             } else if (String.class.isAssignableFrom(javaClass)) {
                 return "string";

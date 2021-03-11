@@ -4,23 +4,29 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.client.tests;
+package ch.colabproject.colab.tests.tests;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.ejb.UserManagement;
 import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.api.model.token.Token;
+import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.rest.config.JsonbProvider;
 import ch.colabproject.colab.client.ColabClient;
+import ch.colabproject.colab.tests.mailhog.MailhogClient;
 import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -52,7 +58,16 @@ import org.slf4j.LoggerFactory;
 @ArquillianSuiteDeployment
 public abstract class AbstractArquillianTest {
 
+    /**
+     * Logger
+     */
     protected static final Logger logger = LoggerFactory.getLogger(AbstractArquillianTest.class);
+
+    /**
+     * Regex which extract token id and plain Token from an email body. It search the values within
+     * a href attribute
+     */
+    protected static final Pattern TOKEN_EXTRACTOR = Pattern.compile(".*href=\".*#token/(\\d+):(.*)\".*");
 
     /**
      * Provide one-stop-shop reflections object
@@ -69,20 +84,27 @@ public abstract class AbstractArquillianTest {
     @Inject
     private UserManagement userManagement;
 
-    //@Inject
-    //protected UserController userController;
-    //@Inject
-    //protected RequestManager requestManager;
+    /**
+     * Direct db access allows to clear data before each test
+     */
     @Resource(lookup = "java:global/colabDS")
     private DataSource colabDataSource;
 
+    /**
+     * URL to reach application
+     */
     @ArquillianResource
     private URL deploymentURL;
 
     /**
-     * REST client to use to call REST method
+     * REST client to use to call co.LAB REST methods
      */
     protected ColabClient client;
+
+    /**
+     * REST client to use to call REST methods
+     */
+    protected MailhogClient mailClient;
 
     /**
      * Timestamp: start of beforeEach int method
@@ -99,6 +121,11 @@ public abstract class AbstractArquillianTest {
      */
     protected TestUser admin;
 
+    /**
+     * Create deployment
+     *
+     * @return the war
+     */
     @Deployment
     public static JavaArchive createDeployement() {
         JavaArchive war = ShrinkWrap.create(JavaArchive.class)
@@ -231,6 +258,32 @@ public abstract class AbstractArquillianTest {
     }
 
     /**
+     * Connect to mailhog and process all pending "Please verify your account" messages. Once
+     * process, messages are deletes from mailhog.
+     */
+    protected void verifyAccounts() {
+        mailClient.getMessages().forEach(message -> {
+            List<String> headers = message.getContent().getHeaders().get("Subject");
+
+            if (!headers.isEmpty()
+                && VerifyLocalAccountToken.EMAIL_SUBJECT.equals(headers.get(0))) {
+                String body = message.getContent().getBody();
+                Matcher matcher = TOKEN_EXTRACTOR.matcher(body);
+                if (matcher.matches()) {
+                    Long tokenId = Long.parseLong(matcher.group(1));
+                    String plainToken = matcher.group(2);
+
+                    Token token = client.tokenController.getToken(tokenId);
+                    if (token instanceof VerifyLocalAccountToken) {
+                        client.tokenController.consumeToken(tokenId, plainToken);
+                        this.mailClient.deleteMessage(message.getId());
+                    }
+                }
+            }
+        });
+    }
+
+    /**
      * Sign the current user out
      */
     protected void signOut() {
@@ -260,6 +313,9 @@ public abstract class AbstractArquillianTest {
     @BeforeEach
     public void init(TestInfo info) {
         if (userManagement != null) {
+            this.mailClient = new MailhogClient();
+            mailClient.deleteAllMessages();
+
             this.client = new ColabClient(
                 deploymentURL.toString(),
                 "COLAB_SESSION_ID",
@@ -273,6 +329,9 @@ public abstract class AbstractArquillianTest {
 
             // create one admin
             this.admin = this.signup("admin", "admin@colab.local", "MyPasswordIsSoSafe");
+
+            verifyAccounts();
+
             User adminUser = userManagement.findUserByUsername("admin");
             adminUser.isAdmin();
             userManagement.grantAdminRight(adminUser.getId());

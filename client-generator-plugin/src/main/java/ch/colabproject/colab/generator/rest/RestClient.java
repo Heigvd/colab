@@ -6,9 +6,14 @@
  */
 package ch.colabproject.colab.generator.rest;
 
+import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.api.rest.config.JsonbProvider;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.ClientRequestContext;
@@ -21,9 +26,11 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 /**
- * Jakarta EE based rest client.
+ * JakartaEE-based rest client.
  *
  * @author maxence
  */
@@ -69,18 +76,52 @@ public class RestClient {
     }
 
     /**
-     * send GET request.
+     * Try to read enttiy
      *
-     * @param <T>   expected return type
-     * @param path  rest path
-     * @param klass expected return type
+     * @param <T>    entity type
+     * @param stream input stream to read from
+     * @param type   entity type
      *
-     * @return instance of T
+     * @return instance of T or null
      */
-    public <T> T get(String path, Class<T> klass) {
-        return webTarget.path(path).request()
-            .accept(MediaType.APPLICATION_JSON)
-            .get(klass);
+    private <T> T readEntity(InputStream stream, GenericType<T> type) {
+        if (stream != null) {
+            try {
+                Jsonb jsonb = JsonbProvider.getJsonb();
+                return jsonb.fromJson(stream, type.getType());
+            } catch (JsonbException ex) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private <T> T processResponse(Response response, GenericType<T> type) {
+        Status.Family family = Status.Family.familyOf(response.getStatus());
+        if (family == Status.Family.SUCCESSFUL) {
+            if (response.getLength() > 0) {
+                Object entity = response.getEntity();
+                if (entity instanceof InputStream) {
+                    return readEntity((InputStream) entity, type);
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } else if (family == Status.Family.CLIENT_ERROR) {
+            ColabErrorMessage error = readEntity((InputStream) response.getEntity(),
+                new GenericType<>(ColabErrorMessage.class));
+            if (error != null) {
+                throw error;
+            } else {
+                throw new ClientException(Status.fromStatusCode(response.getStatus()));
+            }
+        } else if (family == Status.Family.SERVER_ERROR) {
+            throw new ServerException(Status.fromStatusCode(response.getStatus()));
+        } else {
+            throw new ServerException(Status.fromStatusCode(response.getStatus()));
+        }
     }
 
     /**
@@ -93,82 +134,84 @@ public class RestClient {
      * @return instance of T
      */
     public <T> T get(String path, GenericType<T> type) {
-        return webTarget.path(path).request()
-            .accept(MediaType.APPLICATION_JSON)
-            .get(type);
+        return processResponse(webTarget.path(path).request()
+            .accept(MediaType.APPLICATION_JSON).get(),
+            type);
     }
 
     /**
      * send DELETE request.
      *
-     * @param <T>   expected return type
-     * @param path  rest path
-     * @param klass expected return type
+     * @param <T>  expected return type
+     * @param path rest path
+     * @param type expected return type
      *
      * @return instance of T
      */
-    public <T> T delete(String path, Class<T> klass) {
-        return webTarget.path(path).request()
-            .accept(MediaType.APPLICATION_JSON)
-            .delete(klass);
+    public <T> T delete(String path, GenericType<T> type) {
+        return processResponse(webTarget.path(path).request()
+            .accept(MediaType.APPLICATION_JSON).delete(),
+            type);
     }
 
     /**
      * send POST request.
      *
-     * @param <T>   expected return type
-     * @param path  rest path
-     * @param body  POST body
-     * @param klass expected return type
+     * @param <T>  expected return type
+     * @param path rest path
+     * @param body POST body
+     * @param type expected return type
      *
      * @return instance of T
      */
-    public <T> T post(String path, Object body, Class<T> klass) {
-        return webTarget.path(path).request()
+    public <T> T post(String path, Object body, GenericType<T> type) {
+        return processResponse(webTarget.path(path).request()
             .accept(MediaType.APPLICATION_JSON)
-            .post(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE), klass);
+            .post(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),
+            type);
     }
 
     /**
      * send POST request with an empty body.
      *
-     * @param <T>   expected return type
-     * @param path  rest path
-     * @param klass expected return type
+     * @param <T>  expected return type
+     * @param path rest path
+     * @param type expected return type
      *
      * @return instance of T
      */
-    public <T> T post(String path, Class<T> klass) {
-        return this.post(path, "", klass);
+    public <T> T post(String path, GenericType<T> type) {
+        return this.post(path, "", type);
     }
 
     /**
      * send PUT request.
      *
-     * @param <T>   expected return type
-     * @param path  rest path
-     * @param body  POST body
-     * @param klass expected return type
+     * @param <T>  expected return type
+     * @param path rest path
+     * @param body POST body
+     * @param type expected return type
      *
      * @return instance of T
      */
-    public <T> T put(String path, Object body, Class<T> klass) {
-        return webTarget.path(path).request()
+    public <T> T put(String path, Object body, GenericType<T> type) {
+        return processResponse(webTarget.path(path).request()
             .accept(MediaType.APPLICATION_JSON)
-            .put(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE), klass);
+            .put(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),
+            type);
     }
 
     /**
      * send PUT request with an empty body.
      *
-     * @param <T>   expected return type
-     * @param path  rest path
-     * @param klass expected return type
+     * @param <T>  expected return type
+     * @param path rest path
+     * @param type expected return type
      *
      * @return instance of T
      */
-    public <T> T put(String path, Class<T> klass) {
-        return this.put(path, "", klass);
+    public <T> T put(String path, GenericType<T> type) {
+        return this.put(path, "", type);
     }
 
     /**
@@ -218,7 +261,8 @@ public class RestClient {
          * {@inheritDoc }
          */
         @Override
-        public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
+        public void filter(ClientRequestContext requestContext,
+            ClientResponseContext responseContext) throws IOException {
             NewCookie get = responseContext.getCookies().get(cookieName);
             if (get != null) {
                 this.sessionId = get.getValue();

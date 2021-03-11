@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.annotations.AdminResource;
 import ch.colabproject.colab.api.security.annotations.AuthenticationRequired;
@@ -21,8 +22,9 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+import liquibase.pro.packaged.ch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +57,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     @Context
     private ResourceInfo resourceInfo;
 
+    /**
+     * To re-use exception to response mapper
+     */
+    @Inject
+    private ExceptionMapper<Exception> exceptionMapper;
     /**
      * Get all method or class annotations matching the given type.
      *
@@ -94,7 +101,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         Method targetMethod = resourceInfo.getResourceMethod();
 
         User currentUser = requestManager.getCurrentUser();
-        Response.Status abortWith = null;
+        ColabErrorMessage abortWith = null;
 
         if (currentUser == null) {
             // curenr user not authenticated: make sure the targeted method is accessible to
@@ -107,7 +114,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 // No current user but annotation required to be authenticated
                 // abort with 401 code
                 logger.trace("Request aborted:user is not authenticated");
-                abortWith = Response.Status.UNAUTHORIZED;
+                abortWith = ColabErrorMessage.authenticationRequired();
             }
         }
 
@@ -118,18 +125,18 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             if (currentUser == null) {
                 // no current user : unauthorized asks for user to authenticate
                 logger.trace("Request aborted:user is not authenticated");
-                abortWith = Response.Status.UNAUTHORIZED;
+                abortWith = ColabErrorMessage.authenticationRequired();
             } else {
                 if (!currentUser.isAdmin()) {
                     // current user is authenticaed but lack admin right: forbidden
                     logger.trace("Request aborted:user tries to access admin resource");
-                    abortWith = Response.Status.FORBIDDEN;
+                    abortWith = ColabErrorMessage.forbidden();
                 }
             }
         }
 
         if (abortWith != null) {
-            requestContext.abortWith(Response.status(abortWith).build());
+            requestContext.abortWith(exceptionMapper.toResponse(abortWith));
         }
     }
 }

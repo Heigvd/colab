@@ -36,13 +36,13 @@
 
         <!--*****************************************************************-->
         <!-- DEPENDENCIES -->
-        <!--  reflections used for JSON deserialization -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>colab-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 
+        <!--  reflections used for JSON deserialization -->
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>

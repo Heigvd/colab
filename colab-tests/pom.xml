@@ -137,6 +137,9 @@
                         <colab.database.name>colab_test</colab.database.name>
                         <colab.database.user>colab_test</colab.database.user>
                         <colab.database.password>1234</colab.database.password>
+
+                        <!-- mailhog smtp config -->
+                        <colab.smtp.port>1025</colab.smtp.port>
                     </systemProperties>
                 </configuration>
             </plugin>

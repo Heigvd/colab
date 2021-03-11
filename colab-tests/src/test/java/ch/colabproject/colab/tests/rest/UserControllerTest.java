@@ -4,14 +4,16 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.client.rest;
+package ch.colabproject.colab.tests.rest;
 
 import ch.colabproject.colab.api.ejb.UserManagement;
+import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.client.tests.AbstractArquillianTest;
-import ch.colabproject.colab.client.tests.TestUser;
+import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
+import ch.colabproject.colab.tests.tests.TestHelper;
+import ch.colabproject.colab.tests.tests.TestUser;
 import java.util.Arrays;
 import java.util.Date;
 import javax.inject.Inject;
@@ -36,8 +38,10 @@ public class UserControllerTest extends AbstractArquillianTest {
      */
     @Test
     public void testCreateUser() {
-        TestUser myUser = this
-            .signup("GoulashSensei", "goulashsensei@test.local", "SoSecuredPassword");
+        TestUser myUser = this.signup(
+            "GoulashSensei",
+            "goulashsensei@test.local",
+            "SoSecuredPassword");
 
         this.signIn(myUser);
 
@@ -68,8 +72,11 @@ public class UserControllerTest extends AbstractArquillianTest {
      */
     @Test
     public void testUpdateUserInternalFields() {
-        TestUser myUser = this
-            .signup("GoulashSensei", "goulashsensei@test.local", "SoSecuredPassword");
+        TestUser myUser = this.signup(
+            "GoulashSensei",
+            "goulashsensei@test.local",
+            "SoSecuredPassword"
+        );
 
         this.signIn(myUser);
 
@@ -108,12 +115,15 @@ public class UserControllerTest extends AbstractArquillianTest {
     @Test
     public void testAuthenticationFailure() {
         this.signOut();
-        TestUser myUser = this
-            .signup("GoulashSensei", "goulashsensei@test.local", "SoSecuredPassword");
+        TestUser myUser = this.signup(
+            "GoulashSensei",
+            "goulashsensei@test.local",
+            "SoSecuredPassword"
+        );
 
         myUser.setPassword("WrongPassword");
 
-        Assertions.assertThrows(ClientErrorException.class, () -> {
+        TestHelper.assertThrows(ColabErrorMessage.MessageCode.AUTHENTICATION_FAILED, () -> {
             this.signIn(myUser);
         });
 
@@ -122,10 +132,16 @@ public class UserControllerTest extends AbstractArquillianTest {
         Assertions.assertNull(user);
     }
 
+    /**
+     * Assert one admin can give admin rights to some other user
+     */
     @Test
     public void testGrantAdminRight() {
-        TestUser myUser = this
-            .signup("GoulashSensei", "goulashsensei@test.local", "SoSecuredPassword");
+        TestUser myUser = this.signup(
+            "GoulashSensei",
+            "goulashsensei@test.local",
+            "SoSecuredPassword"
+        );
 
         this.signIn(myUser);
         User sensei = client.userController.getCurrentUser();
@@ -145,8 +161,12 @@ public class UserControllerTest extends AbstractArquillianTest {
         Assertions.assertTrue(sensei.isAdmin());
     }
 
+
+    /**
+     * Assert a non-admin can not give admin rights to some other user
+     */
     @Test
-    public void testUnauthorizedGrandAdminRight() {
+    public void testUnauthorizedGrantAdminRight() {
         TestUser myUser = this
             .signup("GoulashSensei", "goulashsensei@test.local", "SoSecuredPassword");
 
@@ -155,7 +175,7 @@ public class UserControllerTest extends AbstractArquillianTest {
         Assertions.assertFalse(sensei.isAdmin());
         Long senseiId = sensei.getId();
 
-        Assertions.assertThrows(ClientErrorException.class, () -> {
+        TestHelper.assertThrows(ColabErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.userController.grantAdminRight(senseiId);
         });
 
@@ -163,6 +183,9 @@ public class UserControllerTest extends AbstractArquillianTest {
         Assertions.assertFalse(sensei.isAdmin());
     }
 
+    /**
+     * Test switch to new client hash method
+     */
     @Test
     public void testRotateClientHashMethod() {
         TestUser myUser = this
@@ -212,6 +235,9 @@ public class UserControllerTest extends AbstractArquillianTest {
         Assertions.assertNotNull(user);
     }
 
+    /**
+     * Test switch to new server hash method
+     */
     @Test
     public void testRotateServerHashMethod() {
         TestUser myUser = this.signup("GoulashSensei",
@@ -251,5 +277,25 @@ public class UserControllerTest extends AbstractArquillianTest {
         this.signIn(myUser);
         user = client.userController.getCurrentUser();
         Assertions.assertNotNull(user);
+    }
+
+    /**
+     * Test verifiy account process
+     */
+    @Test
+    public void testVerify() {
+        TestUser myUser = this.signup(
+            "GoulashSensei",
+            "goulashsensei@test.local",
+            "SoSecuredPassword");
+
+        this.signIn(myUser);
+        LocalAccount account = (LocalAccount) this.client.userController.getCurrentAccount();
+        Assertions.assertFalse(account.isVerified());
+
+        this.verifyAccounts();
+
+        account = (LocalAccount) this.client.userController.getCurrentAccount();
+        Assertions.assertTrue(account.isVerified());
     }
 }

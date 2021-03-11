@@ -23,7 +23,7 @@ public interface Jsonable extends Serializable {
      *
      * @return name to be used as discriminant
      */
-    static String getJSONClassName(Class<?> klass) {
+    static String getJsonClassName(Class<?> klass) {
         JsonClassName annotation = klass.getAnnotation(JsonClassName.class);
 
         if (annotation != null) {
@@ -38,6 +38,6 @@ public interface Jsonable extends Serializable {
      */
     @JsonbProperty("@class")
     default String getJsonBType() {
-        return Jsonable.getJSONClassName(this.getClass());
+        return Jsonable.getJsonClassName(this.getClass());
     }
 }

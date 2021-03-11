@@ -60,11 +60,11 @@ public class ProjectFacade {
      * @throws ColabMergeException if updating the project failed
      */
     public Project updateProject(Project project) throws ColabMergeException {
-        Project mProject = this.getProject(project.getId());
+        Project managedProject = this.getProject(project.getId());
 
-        mProject.merge(project);
+        managedProject.merge(project);
 
-        return mProject;
+        return managedProject;
     }
 
     /**

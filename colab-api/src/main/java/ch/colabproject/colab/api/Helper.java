@@ -27,7 +27,8 @@ public class Helper {
      * never-called private constructor
      */
     private Helper() {
-        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+        throw new UnsupportedOperationException(
+            "This is a utility class and cannot be instantiated");
     }
 
     /**

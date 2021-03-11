@@ -16,7 +16,9 @@ import javax.json.stream.JsonGenerator;
  * Let jsonb serialize localDateTime as timestamp
  *
  * @author maxence
+ * @deprecated use @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
  */
+@Deprecated
 public class DateSerializer implements JsonbSerializer<LocalDateTime> {
 
     /**
