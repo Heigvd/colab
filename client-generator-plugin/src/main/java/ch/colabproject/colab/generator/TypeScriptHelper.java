@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -205,7 +206,7 @@ public class TypeScriptHelper {
     }
 
     /**
-     * Convert java type to typescript type. this method will populate the curtomTypes map with java
+     * Convert java type to typescript type. this method will populate the customTypes map with java
      * type which requires a dedicates TS interface.
      *
      * @param javaType    the java type to convert
@@ -224,7 +225,9 @@ public class TypeScriptHelper {
                 || int.class.isAssignableFrom(javaClass)
                 || long.class.isAssignableFrom(javaClass)
                 || float.class.isAssignableFrom(javaClass)
-                || double.class.isAssignableFrom(javaClass)) {
+                || double.class.isAssignableFrom(javaClass)
+                || LocalDateTime.class.isAssignableFrom(javaClass)
+                ) {
                 return "number";
             } else if (String.class.isAssignableFrom(javaClass)) {
                 return "string";
