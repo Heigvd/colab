@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Param.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">client-generator-plugin</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.generator.rest</a> &gt; <span class="el_source">Param.java</span></div><h1>Param.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.generator.rest;
+
+import java.lang.reflect.Type;
+
+/**
+ * represent a REST method parameter
+ *
+ * @author maxence
+ */
+<span class="nc" id="L16">public class Param {</span>
+
+    /**
+     * Name of the parameter
+     */
+    private String name;
+
+    /**
+     * Some documentation
+     */
+    private String javadoc;
+
+    /**
+     * Parameter type
+     */
+    private Type type;
+
+    /**
+     * Get the value of type
+     *
+     * @return the value of type
+     */
+    public Type getType() {
+<span class="nc" id="L39">        return type;</span>
+    }
+
+    /**
+     * Set the value of type
+     *
+     * @param type new value of type
+     */
+    public void setType(Type type) {
+<span class="nc" id="L48">        this.type = type;</span>
+<span class="nc" id="L49">    }</span>
+
+    /**
+     * Get the value of name
+     *
+     * @return the value of name
+     */
+    public String getName() {
+<span class="nc" id="L57">        return name;</span>
+    }
+
+    /**
+     * Set the value of name
+     *
+     * @param name new value of name
+     */
+    public void setName(String name) {
+<span class="nc" id="L66">        this.name = name;</span>
+<span class="nc" id="L67">    }</span>
+
+    /**
+     * Get the value of javadoc
+     *
+     * @return the value of javadoc
+     */
+    public String getJavadoc() {
+<span class="nc" id="L75">        return javadoc;</span>
+    }
+
+    /**
+     * Set the value of javadoc
+     *
+     * @param javadoc new value of javadoc
+     */
+    public void setJavadoc(String javadoc) {
+<span class="nc" id="L84">        this.javadoc = javadoc;</span>
+<span class="nc" id="L85">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

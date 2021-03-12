@@ -68,7 +68,7 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>                      (u) -&gt; !deleted.stream()
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>                          .anyMatch(
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>                              (d) -&gt; d.getId().equals(u.getId())
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>                              &amp;&amp; d.getType().equals(u.getJsonBType())
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>                              &amp;&amp; d.getType().equals(u.getJsonDiscriminator())
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>                          )
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>                  ).collect(Collectors.toList());
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  

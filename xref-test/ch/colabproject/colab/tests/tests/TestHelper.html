@@ -14,7 +14,7 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.tests.tests;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Assertions;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.function.Executable;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  
@@ -25,22 +25,22 @@
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="TestHelper" href="../../../../../ch/colabproject/colab/tests/tests/TestHelper.html#TestHelper">TestHelper</a> {
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment">     * Assert ColabErrorMessage is thrown with expected error code</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment">     * Assert HttpErrorMessage is thrown with expected error code</em>
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment">     * @param code       expected error code</em>
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment">     * @param executable code to check</em>
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> assertThrows(ColabErrorMessage.MessageCode code, Executable executable) {
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> assertThrows(HttpErrorMessage.MessageCode code, Executable executable) {
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>          <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>              executable.execute();
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>          } <strong class="jxr_keyword">catch</strong> (ColabErrorMessage ex) {
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>          } <strong class="jxr_keyword">catch</strong> (HttpErrorMessage ex) {
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>              <strong class="jxr_keyword">if</strong> (ex.getMessageCode().equals(code)) {
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>                  <strong class="jxr_keyword">return</strong>;
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>              } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>                  Assertions.fail(<span class="jxr_string">"Expect "</span> + code + <span class="jxr_string">" error but got "</span> + ex.getMessageCode());
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>              }
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>          } <strong class="jxr_keyword">catch</strong> (Throwable ex) {
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>              Assertions.fail(<span class="jxr_string">"Expect ColabErrorMessage Exception but got "</span> + ex);
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>              Assertions.fail(<span class="jxr_string">"Expect HttpErrorMessage Exception but got "</span> + ex);
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>          }
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>          Assertions.fail(<span class="jxr_string">"Did not thown anything"</span>);
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      }

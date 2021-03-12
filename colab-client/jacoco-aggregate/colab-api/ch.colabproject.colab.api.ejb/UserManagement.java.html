@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.AuthInfo;
@@ -187,11 +187,11 @@ import liquibase.pro.packaged.ch;
      * @return authentication method to use to authentication as email owner or new random one which
      *         can be use to create a brand new localAccount
      *
-     * @throws ColabErrorMessage invalidRequest if there is no identifier
+     * @throws HttpErrorMessage invalidRequest if there is no identifier
      */
     public AuthMethod getAuthenticationMethod(String identifier) {
 <span class="nc bnc" id="L193" title="All 4 branches missed.">        if (identifier == null || identifier.isBlank()) {</span>
-<span class="nc" id="L194">            throw ColabErrorMessage.invalidRequest();</span>
+<span class="nc" id="L194">            throw HttpErrorMessage.invalidRequest();</span>
         } else {
 <span class="nc" id="L196">            LocalAccount account = this.findLocalAccountByIdentifier(identifier);</span>
 
@@ -227,7 +227,7 @@ import liquibase.pro.packaged.ch;
      *
      * @return a brand new user
      *
-     * @throws ColabErrorMessage if username is already taken
+     * @throws HttpErrorMessage if username is already taken
      */
     public User createUser(String username, String email, String plainPassword) {
 <span class="nc" id="L233">        AuthMethod method = getDefaultRandomAuthenticationMethod();</span>
@@ -253,7 +253,7 @@ import liquibase.pro.packaged.ch;
      *
      * @return brand new user embedding an LocalAccount
      *
-     * @throws ColabErrorMessage if username is already taken
+     * @throws HttpErrorMessage if username is already taken
      */
     public User signup(SignUpInfo signup) {
         // username already taken ?
@@ -284,11 +284,11 @@ import liquibase.pro.packaged.ch;
 <span class="nc" id="L284">                return user;</span>
             } else {
                 // wait.... throwing something else here leaks account existence...
-<span class="nc" id="L287">                throw ColabErrorMessage.userNameAlreadyTaken();</span>
+<span class="nc" id="L287">                throw HttpErrorMessage.userNameAlreadyTaken();</span>
             }
 
         } else {
-<span class="nc" id="L291">            throw ColabErrorMessage.userNameAlreadyTaken();</span>
+<span class="nc" id="L291">            throw HttpErrorMessage.userNameAlreadyTaken();</span>
         }
     }
 
@@ -299,7 +299,7 @@ import liquibase.pro.packaged.ch;
      *
      * @return just authenticated user of null is authentication did not succeed
      *
-     * @throws ColabErrorMessage if authentication failed
+     * @throws HttpErrorMessage if authentication failed
      */
     public User authenticate(AuthInfo authInfo) {
 <span class="nc" id="L305">        LocalAccount account = this.findLocalAccountByIdentifier(authInfo.getIdentifier());</span>
@@ -354,7 +354,7 @@ import liquibase.pro.packaged.ch;
         // authentication fails
         // OR client did not provide required hash
         // OR account not found
-<span class="nc" id="L357">        throw ColabErrorMessage.authenticationFailed();</span>
+<span class="nc" id="L357">        throw HttpErrorMessage.authenticationFailed();</span>
     }
 
     /**

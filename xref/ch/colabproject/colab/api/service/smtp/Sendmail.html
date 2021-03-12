@@ -14,7 +14,7 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.service.smtp;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.setup.ColabConfiguration;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.util.ArrayList;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.util.Arrays;
@@ -52,7 +52,7 @@
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment">     * @param message the message to sent</em>
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">     * @throws ColabErrorMessage             malformedMessage if supplied values are erroneous</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">     * @throws HttpErrorMessage             malformedMessage if supplied values are erroneous</em>
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">     * @throws javax.mail.MessagingException when something went wrong</em>
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> send(<a name="Message" href="../../../../../../ch/colabproject/colab/api/service/smtp/Message.html#Message">Message</a> message) <strong class="jxr_keyword">throws</strong> MessagingException {
@@ -107,7 +107,7 @@
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>              msg.setContent(message.getBody(), message.getMimeType());
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>             msg.setSentDate(<strong class="jxr_keyword">new</strong> Date());
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>         } <strong class="jxr_keyword">catch</strong> (AddressException ex) {
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>             <strong class="jxr_keyword">throw</strong> ColabErrorMessage.emailMessageError();
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.emailMessageError();
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         }
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>         Transport.send(msg);
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>     }

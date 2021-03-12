@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.HashMethod;
@@ -147,7 +147,7 @@ import org.slf4j.LoggerFactory;
      * @param account      account to verify
      * @param failsOnError if false, silent SMTP error
      *
-     * @throws ColabErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
+     * @throws HttpErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
      *                           messageError if the message contains errors (eg. malformed
      *                           addresses)
      */
@@ -158,7 +158,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L158">        } catch (MessagingException ex) {</span>
 <span class="nc" id="L159">            logger.error(&quot;Fails to send email address verification email&quot;, ex);</span>
 <span class="nc bnc" id="L160" title="All 2 branches missed.">            if (failsOnError) {</span>
-<span class="nc" id="L161">                throw ColabErrorMessage.smtpError();</span>
+<span class="nc" id="L161">                throw HttpErrorMessage.smtpError();</span>
             }
 <span class="nc" id="L163">        }</span>
 <span class="nc" id="L164">    }</span>
@@ -171,7 +171,7 @@ import org.slf4j.LoggerFactory;
      *
      * @return the consumed token
      *
-     * @throws ColabErrorMessage notFound if the token does not exists; bad request if token does
+     * @throws HttpErrorMessage notFound if the token does not exists; bad request if token does
      *                           not match; authenticationRequired if token requires authentication
      *                           but current user id not
      */
@@ -179,18 +179,18 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L179">        Token token = this.getToken(id);</span>
 <span class="nc bnc" id="L180" title="All 2 branches missed.">        if (token != null) {</span>
 <span class="nc bnc" id="L181" title="All 4 branches missed.">            if (token.isAuthenticationRequired() &amp;&amp; !requestManager.isAuthenticated()) {</span>
-<span class="nc" id="L182">                throw ColabErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L182">                throw HttpErrorMessage.authenticationRequired();</span>
             } else {
 <span class="nc bnc" id="L184" title="All 2 branches missed.">                if (token.checkHash(plainToken)) {</span>
 <span class="nc" id="L185">                    token.consume();</span>
 <span class="nc" id="L186">                    em.remove(token);</span>
 <span class="nc" id="L187">                    return token;</span>
                 } else {
-<span class="nc" id="L189">                    throw ColabErrorMessage.invalidRequest();</span>
+<span class="nc" id="L189">                    throw HttpErrorMessage.invalidRequest();</span>
                 }
             }
         } else {
-<span class="nc" id="L193">            throw ColabErrorMessage.notFound();</span>
+<span class="nc" id="L193">            throw HttpErrorMessage.notFound();</span>
         }
     }
 }

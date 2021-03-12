@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Generator.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">client-generator-plugin</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.generator</a> &gt; <span class="el_source">Generator.java</span></div><h1>Generator.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.generator;
+
+import ch.colabproject.colab.generator.model.annotations.JsonbMapperProvider;
+import ch.colabproject.colab.generator.rest.RestController;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.json.bind.Jsonb;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.Path;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
+import org.reflections.Reflections;
+
+/**
+ *
+ * @author maxence
+ */
+public class Generator {
+
+    /**
+     * Reflections one-stop-shop object.
+     */
+    private final Reflections reflections;
+
+    /**
+     * All rest controller found.
+     */
+    private Set&lt;RestController&gt; restControllers;
+
+    /**
+     * Maven process logger
+     */
+    private final Log log;
+
+    /**
+     * Client will be generated in this package
+     */
+    private final String packageName;
+
+    /**
+     * Generated client name
+     */
+    private final String clientName;
+
+    /**
+     * Main REST application path
+     */
+<span class="nc" id="L65">    private String applicationPath = null;</span>
+
+    /**
+     * Initialize the client generator.
+     *
+     * @param restPackages packages to analyze
+     * @param packageName  package in which generate the client
+     * @param clientName   client class name
+     * @param log          maven logger
+     */
+    public Generator(String[] restPackages,
+        String packageName, String clientName,
+        Log log
+<span class="nc" id="L78">    ) {</span>
+<span class="nc" id="L79">        this.log = log;</span>
+<span class="nc" id="L80">        this.packageName = packageName;</span>
+<span class="nc" id="L81">        this.clientName = clientName;</span>
+
+<span class="nc" id="L83">        this.reflections = new Reflections((Object[]) restPackages);</span>
+<span class="nc" id="L84">    }</span>
+
+    /**
+     *
+     * Initialize the client generator.
+     *
+     * @param pkgs packages to analyze
+     */
+    public Generator(String[] pkgs) {
+<span class="nc" id="L93">        this(pkgs, null, null, null);</span>
+<span class="nc" id="L94">    }</span>
+
+    /**
+     * Try to find a jsonb mapper from a {@link JsonbMapperProvider} implementation.
+     *
+     * @return jsbonb mapper
+     */
+    public Jsonb getJsonBMapper() {
+<span class="nc" id="L102">        Set&lt;Class&lt;? extends JsonbMapperProvider&gt;&gt; mapperProviders</span>
+<span class="nc" id="L103">            = reflections.getSubTypesOf(JsonbMapperProvider.class);</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (!mapperProviders.isEmpty()) {</span>
+<span class="nc" id="L105">            Class&lt;? extends JsonbMapperProvider&gt; provider = mapperProviders.iterator().next();</span>
+            try {
+<span class="nc" id="L107">                return provider.getConstructor().newInstance().getJsonbMapper();</span>
+<span class="nc" id="L108">            } catch (NoSuchMethodException | SecurityException | InstantiationException</span>
+                | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+<span class="nc bnc" id="L110" title="All 2 branches missed.">                if (log != null) {</span>
+<span class="nc" id="L111">                    log.error(&quot;Fails to instantiate JsonbMapperProvider&quot;);</span>
+                }
+            }
+        }
+
+<span class="nc" id="L116">        return null;</span>
+    }
+
+    /**
+     * Process all classes annotated with {@link Path}. Generate a {@link RestController} instance
+     * for each class and store them in {@link #restControllers}
+     */
+    public void processPackages() {
+<span class="nc" id="L124">        Set&lt;Class&lt;?&gt;&gt; appConfig = reflections.getTypesAnnotatedWith(ApplicationPath.class);</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (!appConfig.isEmpty()) {</span>
+<span class="nc bnc" id="L126" title="All 4 branches missed.">            if (appConfig.size() &gt; 1 &amp;&amp; log != null) {</span>
+<span class="nc" id="L127">                log.warn(&quot;Several ApplicationPath found&quot;);</span>
+            }
+<span class="nc" id="L129">            Class&lt;?&gt; applicationConfig = appConfig.iterator().next();</span>
+<span class="nc" id="L130">            ApplicationPath annotation = applicationConfig.getAnnotation(ApplicationPath.class);</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">            if (annotation != null) {</span>
+<span class="nc" id="L132">                this.applicationPath = annotation.value();</span>
+            }
+        }
+
+<span class="nc" id="L136">        Set&lt;Class&lt;?&gt;&gt; restClasses = reflections.getTypesAnnotatedWith(Path.class);</span>
+
+<span class="nc" id="L138">        this.restControllers = restClasses.stream()</span>
+<span class="nc" id="L139">            .map(klass -&gt; RestController.build(klass, applicationPath, log))</span>
+<span class="nc" id="L140">            .collect(Collectors.toSet());</span>
+        /* .map(p -&gt; p.generateJavaClient()) .innerClasses(Collectors.toList());
+         */
+<span class="nc" id="L143">    }</span>
+
+    /**
+     * One all classes have been processed with {@link #processPackages() }, this method will create
+     * subdirectories that match the &lt;code&gt;packageName&lt;/code&gt;.Then the client will be generated in
+     * the &lt;code&gt;clientName&lt;/code&gt;.java file.
+     *
+     * @param targetDir target directory
+     * @param dryRun    if true, do not generate files but print output to console
+     *
+     * @throws org.apache.maven.plugin.MojoFailureException if generation fails
+     */
+    public void generateJavaClient(String targetDir, boolean dryRun) throws MojoFailureException {
+<span class="nc" id="L156">        Map&lt;String, String&gt; imports = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L157">        imports.put(&quot;RestClient&quot;, &quot;ch.colabproject.colab.generator.rest.RestClient&quot;);</span>
+<span class="nc" id="L158">        imports.put(&quot;Jsonb&quot;, &quot;javax.json.bind.Jsonb&quot;);</span>
+<span class="nc" id="L159">        imports.put(&quot;GenericType&quot;, &quot;javax.ws.rs.core.GenericType&quot;);</span>
+<span class="nc" id="L160">        imports.put(&quot;PathPattern&quot;, &quot;org.glassfish.jersey.uri.PathPattern&quot;);</span>
+<span class="nc" id="L161">        imports.put(&quot;UriTemplate&quot;, &quot;org.glassfish.jersey.uri.UriTemplate&quot;);</span>
+<span class="nc" id="L162">        imports.put(&quot;void&quot;, null); // null means no import statement</span>
+
+<span class="nc" id="L164">        String innerClasses = this.restControllers.stream().map(controller -&gt; {</span>
+<span class="nc" id="L165">            String javaCode = controller.generateJavaClient(imports, clientName);</span>
+<span class="nc" id="L166">            return javaCode;</span>
+<span class="nc" id="L167">        }).collect(Collectors.joining(System.lineSeparator()));</span>
+
+<span class="nc" id="L169">        StringBuilder sb = new StringBuilder();</span>
+
+<span class="nc" id="L171">        sb.append(&quot;package &quot;).append(packageName).append(&quot;;\n\n&quot;)</span>
+<span class="nc" id="L172">            .append(</span>
+<span class="nc" id="L173">                imports.values().stream()</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">                    .filter(pkg -&gt; pkg != null)</span>
+<span class="nc" id="L175">                    .sorted()</span>
+<span class="nc" id="L176">                    .map(pkg -&gt; &quot;import &quot; + pkg + &quot;;&quot;)</span>
+<span class="nc" id="L177">                    .collect(Collectors.joining(System.lineSeparator()))</span>
+            )
+<span class="nc" id="L179">            .append(&quot;\n&quot;</span>
+                + &quot;/**\n&quot;
+                + &quot; * The &quot;)
+<span class="nc" id="L182">            .append(clientName)</span>
+<span class="nc" id="L183">            .append(&quot; REST client&quot;</span>
+                + &quot; */\n&quot;
+                + &quot;@SuppressWarnings(\&quot;PMD.FieldDeclarationsShouldBeAtStartOfClass\&quot;)\n&quot;
+                + &quot;public class &quot;)
+<span class="nc" id="L187">            .append(clientName)</span>
+<span class="nc" id="L188">            .append(&quot; extends RestClient {&quot;</span>
+                + &quot;\n&quot;
+                + &quot;\n&quot;
+                + &quot;    /**\n&quot;
+                + &quot;     * Get a REST client\n&quot;
+                + &quot;     *\n&quot;
+                + &quot;     * @param baseUri        base URI\n&quot;
+                + &quot;     * @param cookieName     session cookie name\n&quot;
+                + &quot;     * @param jsonb          jsonb\n&quot;
+                + &quot;     * @param clientFeatures addition http client feature\n&quot;
+                + &quot;     */\n&quot;
+                + &quot;    public &quot;)
+<span class="nc" id="L200">            .append(clientName)</span>
+<span class="nc" id="L201">            .append(&quot;(String baseUri, String cookieName, Jsonb jsonb, Object... clientFeatures) {\n&quot;</span>
+                + &quot;        super(baseUri, cookieName, jsonb, clientFeatures);\n&quot;
+                + &quot;    }&quot;)
+<span class="nc" id="L204">            .append(innerClasses)</span>
+<span class="nc" id="L205">            .append(&quot;}&quot;);</span>
+
+<span class="nc bnc" id="L207" title="All 2 branches missed.">        if (dryRun) {</span>
+<span class="nc bnc" id="L208" title="All 2 branches missed.">            if (log != null) {</span>
+<span class="nc" id="L209">                log.debug(sb.toString());</span>
+            }
+        } else {
+<span class="nc" id="L212">            String packagePath = targetDir + &quot;/&quot; + packageName.replaceAll(&quot;\\.&quot;, &quot;/&quot;);</span>
+<span class="nc" id="L213">            writeFile(sb.toString(), packagePath, clientName + &quot;.java&quot;);</span>
+        }
+<span class="nc" id="L215">    }</span>
+
+    /**
+     * Get rest service description
+     *
+     * @return all rest resource
+     */
+    public Set&lt;RestController&gt; getRestControllers() {
+<span class="nc" id="L223">        return restControllers;</span>
+    }
+
+    /**
+     * Generate typescript client in targetDir
+     *
+     * @param targetDir generate TS module in this directory
+     * @param dryRun    if true, do not generate any file but print output to console
+     *
+     * @throws org.apache.maven.plugin.MojoFailureException if generation fails
+     */
+    public void generateTypescriptClient(String targetDir, boolean dryRun)
+        throws MojoFailureException {
+<span class="nc" id="L236">        Map&lt;String, Type&gt; extraTypes = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L237">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L238">        sb.append(&quot;/**\n&quot;</span>
+            + &quot; * build fetch options\n&quot;
+            + &quot; */\n&quot;
+            + &quot;function getOptions({\n&quot;
+            + &quot;    method,\n&quot;
+            + &quot;    body,\n&quot;
+            + &quot;    contentType\n&quot;
+            + &quot;}: {\n&quot;
+            + &quot;    method?: string;\n&quot;
+            + &quot;    body?: {} | string | FormData;\n&quot;
+            + &quot;    contentType?: string;\n&quot;
+            + &quot;}): RequestInit {\n&quot;
+            + &quot;    let headers;\n&quot;
+            + &quot;    if (contentType) {\n&quot;
+            + &quot;        // do not set multipart/form-data by hand but let the\n&quot;
+            + &quot;        // browser do it\n&quot;
+            + &quot;        if (contentType != \&quot;multipart/form-data\&quot;) {\n&quot;
+            + &quot;            headers = new Headers({\n&quot;
+            + &quot;                \&quot;content-type\&quot;: contentType\n&quot;
+            + &quot;            });\n&quot;
+            + &quot;        }\n&quot;
+            + &quot;    } else {\n&quot;
+            + &quot;        headers = new Headers({\n&quot;
+            + &quot;            \&quot;content-type\&quot;: \&quot;application/json\&quot;\n&quot;
+            + &quot;        });\n&quot;
+            + &quot;    }\n&quot;
+            + &quot;\n&quot;
+            + &quot;    return {\n&quot;
+            + &quot;        headers: headers,\n&quot;
+            + &quot;        method: method || \&quot;GET\&quot;,\n&quot;
+            + &quot;        body: body\n&quot;
+            + &quot;            ? body instanceof FormData\n&quot;
+            + &quot;                ? (body as FormData)\n&quot;
+            + &quot;                : JSON.stringify(body)\n&quot;
+            + &quot;            : undefined\n&quot;
+            + &quot;    };\n&quot;
+            + &quot;}\n&quot;
+            + &quot;\n&quot;
+            + &quot;const sendRequest = async &lt;T&gt;(\n&quot;
+            + &quot;  method: string,\n&quot;
+            + &quot;  path: string,\n&quot;
+            + &quot;  body: string | {} | undefined,\n&quot;
+            + &quot;): Promise&lt;T&gt; =&gt; {\n&quot;
+            + &quot;  const res = await fetch(\n&quot;
+            + &quot;    path,\n&quot;
+            + &quot;    getOptions({\n&quot;
+            + &quot;      method: method,\n&quot;
+            + &quot;      body: body\n&quot;
+            + &quot;    })\n&quot;
+            + &quot;  );\n&quot;
+            + &quot;\n&quot;
+            + &quot;  if (res.ok) {\n&quot;
+            + &quot;    if (res.status != 204) {\n&quot;
+            + &quot;      return res.json();\n&quot;
+            + &quot;    } else {\n&quot;
+            + &quot;      return new Promise&lt;void&gt;((resolve) =&gt; resolve()) as unknown as Promise&lt;T&gt;;\n&quot;
+            + &quot;    }\n&quot;
+            + &quot;  } else {\n&quot;
+            + &quot;    let error;&quot;
+            + &quot;    try {\n&quot;
+            + &quot;      error = await res.json();\n&quot;
+            + &quot;    } catch (e) {\n&quot;
+            + &quot;      throw new Error(\&quot;Failure\&quot;);\n&quot;
+            + &quot;    }\n&quot;
+            + &quot;    throw error;\n&quot;
+            + &quot;  }\n&quot;
+            + &quot;}\n\n&quot;);
+
+<span class="nc" id="L306">        String modules = this.restControllers.stream().map(controller</span>
+<span class="nc" id="L307">            -&gt; controller.generateTypescriptClient(extraTypes)</span>
+<span class="nc" id="L308">        ).collect(Collectors.joining(System.lineSeparator()));</span>
+
+<span class="nc" id="L310">        List&lt;Entry&lt;String, Type&gt;&gt; queue = new ArrayList&lt;&gt;(extraTypes.entrySet());</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
+<span class="nc" id="L312">            Map&lt;String, Type&gt; snowballedTypes = new HashMap&lt;&gt;();</span>
+
+<span class="nc" id="L314">            Entry&lt;String, Type&gt; entry = queue.remove(0);</span>
+
+<span class="nc" id="L316">            String tsInterface = TypeScriptHelper.generateInterface(</span>
+<span class="nc" id="L317">                entry.getValue(),</span>
+                snowballedTypes,
+                reflections
+            );
+<span class="nc" id="L321">            sb.append(tsInterface);</span>
+
+<span class="nc" id="L323">            snowballedTypes.forEach((name, type) -&gt; {</span>
+<span class="nc bnc" id="L324" title="All 2 branches missed.">                if (!extraTypes.containsKey(name)) {</span>
+<span class="nc" id="L325">                    extraTypes.put(name, type);</span>
+<span class="nc" id="L326">                    queue.add(0, new SimpleEntry(name, type));</span>
+                }
+<span class="nc" id="L328">            });</span>
+<span class="nc" id="L329">        }</span>
+
+<span class="nc" id="L331">        sb.append(&quot;/**\n&quot;</span>
+<span class="nc" id="L332">            + &quot;* The &quot;).append(clientName).append(&quot; REST client\n&quot;</span>
+            + &quot; */\n&quot;
+<span class="nc" id="L334">            + &quot;export const &quot;).append(clientName)</span>
+<span class="nc" id="L335">            .append(&quot; = function (baseUrl: string) {&quot;)</span>
+<span class="nc" id="L336">            .append(&quot;\n    return {&quot;)</span>
+<span class="nc" id="L337">            .append(modules)</span>
+<span class="nc" id="L338">            .append(&quot;    }\n&quot;)</span>
+<span class="nc" id="L339">            .append(&quot;}&quot;);</span>
+
+<span class="nc bnc" id="L341" title="All 2 branches missed.">        if (dryRun) {</span>
+<span class="nc bnc" id="L342" title="All 2 branches missed.">            if (log != null) {</span>
+<span class="nc" id="L343">                log.debug(sb.toString());</span>
+            }
+        } else {
+<span class="nc" id="L346">            String srcPath = targetDir + &quot;/src&quot;;</span>
+<span class="nc" id="L347">            writeFile(sb.toString(), srcPath, clientName + &quot;.ts&quot;);</span>
+
+<span class="nc" id="L349">            writeFile(&quot;export * from './dist/&quot; + clientName + &quot;';&quot;, targetDir, &quot;index.ts&quot;);</span>
+<span class="nc" id="L350">            writeFile(generatePackageDotJson(), targetDir, &quot;package.json&quot;);</span>
+<span class="nc" id="L351">            writeFile(generateTsconfigDotJson(), targetDir, &quot;tsconfig.json&quot;);</span>
+        }
+<span class="nc" id="L353">    }</span>
+
+    /**
+     * Write file to disk.
+     *
+     * @param content   file content
+     * @param directory directory, will be created if missing
+     * @param filename  filename
+     */
+    private void writeFile(String content, String directory, String filename)
+        throws MojoFailureException {
+        try {
+<span class="nc" id="L365">            Files.createDirectories(java.nio.file.Path.of(directory));</span>
+
+<span class="nc" id="L367">            try (BufferedWriter writer = Files.newBufferedWriter(</span>
+<span class="nc" id="L368">                java.nio.file.Path.of(directory, filename))) {</span>
+<span class="nc" id="L369">                writer.write(content);</span>
+<span class="nc" id="L370">            } catch (IOException ex) {</span>
+<span class="nc bnc" id="L371" title="All 2 branches missed.">                if (log != null) {</span>
+<span class="nc" id="L372">                    throw new MojoFailureException(&quot;Failed to write '&quot;</span>
+                        + filename + &quot;' in '&quot; + directory + &quot;'&quot;, ex);
+                }
+<span class="nc" id="L375">            }</span>
+
+<span class="nc" id="L377">        } catch (IOException ex) {</span>
+<span class="nc bnc" id="L378" title="All 2 branches missed.">            if (log != null) {</span>
+<span class="nc" id="L379">                throw new MojoFailureException(&quot;Failed to create package directory &quot;</span>
+                    + directory, ex);
+            }
+<span class="nc" id="L382">        }</span>
+<span class="nc" id="L383">    }</span>
+
+    /**
+     * Convert Java className-like to dash-separated-lower-case version.
+     *
+     * @param name eg. MyAwesomeRestClient
+     *
+     * @return eg. my-awesome-rest-client
+     */
+    private String generateModuleName(String name) {
+<span class="nc" id="L393">        StringBuilder sb = new StringBuilder();</span>
+
+<span class="nc bnc" id="L395" title="All 2 branches missed.">        for (int i = 0; i &lt; name.length(); i++) {</span>
+<span class="nc" id="L396">            char c = name.charAt(i);</span>
+<span class="nc bnc" id="L397" title="All 2 branches missed.">            if (Character.isUpperCase(c)) {</span>
+<span class="nc" id="L398">                sb.append('-').append(Character.toLowerCase(c));</span>
+            } else {
+<span class="nc" id="L400">                sb.append(c);</span>
+            }
+        }
+
+<span class="nc" id="L404">        return sb.toString();</span>
+    }
+
+    /**
+     * generate package.json
+     *
+     * @return content of package.json
+     */
+    private String generatePackageDotJson() {
+<span class="nc" id="L413">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L414">        sb.append(&quot;{\n&quot;</span>
+<span class="nc" id="L415">            + &quot;    \&quot;name\&quot;: \&quot;&quot; + generateModuleName(this.clientName) + &quot;\&quot;,\n&quot;</span>
+            + &quot;    \&quot;version\&quot;: \&quot;1.0.0\&quot;,\n&quot;
+            + &quot;    \&quot;keywords\&quot;: [\&quot;restClient\&quot;],\n&quot;
+            + &quot;    \&quot;author\&quot;: \&quot;albabot\&quot;,\n&quot;
+            + &quot;    \&quot;main\&quot;: \&quot;dist/index.js\&quot;,\n&quot;
+            + &quot;    \&quot;private\&quot;: true,\n&quot;
+            + &quot;    \&quot;scripts\&quot;: {\n&quot;
+            + &quot;      \&quot;build\&quot;: \&quot;rimraf dist &amp;&amp; tsc\&quot;,\n&quot;
+            + &quot;      \&quot;lint\&quot;: \&quot;eslint 'src' --ext '.js,.ts,.tsx'\&quot;\n&quot;
+            + &quot;    },\n&quot;
+            + &quot;    \&quot;contributors\&quot;: [],\n&quot;
+            + &quot;    \&quot;dependencies\&quot;: {},\n&quot;
+            + &quot;      \&quot;devDependencies\&quot;: {\n&quot;
+            + &quot;        \&quot;rimraf\&quot;: \&quot;^3.0.0\&quot;,\n&quot;
+            + &quot;        \&quot;typescript\&quot;: \&quot;^3.7.5\&quot;,\n&quot;
+            + &quot;        \&quot;tslint\&quot; : \&quot;^5.1.0\&quot;,\n&quot;
+            + &quot;        \&quot;copyfiles\&quot;: \&quot;^2.3.0\&quot;\n&quot;
+            + &quot;  }\n&quot;
+            + &quot;}&quot;);
+<span class="nc" id="L434">        return sb.toString();</span>
+    }
+
+    /**
+     * generate tsconfig.json
+     *
+     * @return content of package.json
+     */
+    private String generateTsconfigDotJson() {
+<span class="nc" id="L443">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L444">        sb.append(&quot;{\n&quot;</span>
+            + &quot;    \&quot;compilerOptions\&quot;: {\n&quot;
+            + &quot;        \&quot;target\&quot;: \&quot;esnext\&quot;,\n&quot;
+            + &quot;        \&quot;allowJs\&quot;: false,\n&quot;
+            + &quot;        \&quot;module\&quot;: \&quot;esnext\&quot;,\n&quot;
+            + &quot;        \&quot;outDir\&quot;: \&quot;dist\&quot;,\n&quot;
+            + &quot;        \&quot;sourceMap\&quot;:true,\n&quot;
+            + &quot;        \&quot;strict\&quot;: true,\n&quot;
+            + &quot;        \&quot;moduleResolution\&quot;: \&quot;node\&quot;,\n&quot;
+            + &quot;        \&quot;allowSyntheticDefaultImports\&quot;: true,\n&quot;
+            + &quot;        \&quot;suppressImplicitAnyIndexErrors\&quot;: true,\n&quot;
+            + &quot;        \&quot;declaration\&quot;: true\n&quot;
+            + &quot;    },\n&quot;
+            + &quot;    \&quot;files\&quot;: [\n&quot;
+            + &quot;        \&quot;src/&quot; + this.clientName + &quot;.ts\&quot;\n&quot;
+            + &quot;    ],\n&quot;
+            + &quot;    \&quot;exclude\&quot;: [\n&quot;
+            + &quot;        \&quot;node_modules\&quot;\n&quot;
+            + &quot;    ]\n&quot;
+            + &quot;}&quot;);
+<span class="nc" id="L464">        return sb.toString();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

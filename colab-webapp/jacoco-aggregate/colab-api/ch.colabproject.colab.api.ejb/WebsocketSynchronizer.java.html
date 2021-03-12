@@ -60,7 +60,7 @@ import javax.transaction.Synchronization;
 <span class="nc" id="L60">                    (u) -&gt; !deleted.stream()</span>
 <span class="nc bnc" id="L61" title="All 2 branches missed.">                        .anyMatch(</span>
 <span class="nc bnc" id="L62" title="All 2 branches missed.">                            (d) -&gt; d.getId().equals(u.getId())</span>
-<span class="nc bnc" id="L63" title="All 2 branches missed.">                            &amp;&amp; d.getType().equals(u.getJsonBType())</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">                            &amp;&amp; d.getType().equals(u.getJsonDiscriminator())</span>
                         )
 <span class="nc" id="L65">                ).collect(Collectors.toList());</span>
 

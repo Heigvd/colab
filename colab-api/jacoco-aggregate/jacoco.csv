@@ -1,1 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+colab-api/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpException,19,0,0,0,8,0,5,0,5,0
+colab-api/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage,67,0,0,0,18,0,13,0,13,0
+colab-api/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage.MessageCode,94,0,0,0,10,0,1,0,1,0
+colab-api/client-generator-model,ch.colabproject.colab.generator.model.interfaces,WithJsonDiscriminator,17,0,2,0,5,0,3,0,2,0

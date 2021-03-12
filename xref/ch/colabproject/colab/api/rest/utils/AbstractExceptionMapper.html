@@ -14,7 +14,7 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.utils;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.exceptions.ColabHttpException;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.exceptions.HttpException;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> javax.ejb.EJBException;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> javax.validation.ConstraintViolationException;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> javax.ws.rs.core.Response;
@@ -42,8 +42,8 @@
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>              <strong class="jxr_keyword">return</strong> Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>          } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (exception instanceof EJBException) {
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>              <strong class="jxr_keyword">return</strong> processException(((EJBException) exception).getCausedByException());
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>          } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (exception instanceof <a name="ColabHttpException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabHttpException.html#ColabHttpException">ColabHttpException</a>) {
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>              <strong class="jxr_keyword">return</strong> Response.status(((<a name="ColabHttpException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabHttpException.html#ColabHttpException">ColabHttpException</a>) exception).getHttpStatus())
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>          } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (exception instanceof <a name="HttpException" href="../../../../../../ch/colabproject/colab/generator/model/exceptions/HttpException.html#HttpException">HttpException</a>) {
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>              <strong class="jxr_keyword">return</strong> Response.status(((<a name="HttpException" href="../../../../../../ch/colabproject/colab/generator/model/exceptions/HttpException.html#HttpException">HttpException</a>) exception).getHttpStatus())
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>                  .entity(exception)
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>                  .build();
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>          } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (exception instanceof ConstraintViolationException) {

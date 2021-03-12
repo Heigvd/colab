@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.service.smtp;
 
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +44,7 @@ public class Sendmail {
      *
      * @param message the message to sent
      *
-     * @throws ColabErrorMessage             malformedMessage if supplied values are erroneous
+     * @throws HttpErrorMessage             malformedMessage if supplied values are erroneous
      * @throws javax.mail.MessagingException when something went wrong
      */
     public static void send(Message message) throws MessagingException {
@@ -99,7 +99,7 @@ public class Sendmail {
 <span class="nc" id="L99">            msg.setContent(message.getBody(), message.getMimeType());</span>
 <span class="nc" id="L100">            msg.setSentDate(new Date());</span>
 <span class="nc" id="L101">        } catch (AddressException ex) {</span>
-<span class="nc" id="L102">            throw ColabErrorMessage.emailMessageError();</span>
+<span class="nc" id="L102">            throw HttpErrorMessage.emailMessageError();</span>
 <span class="nc" id="L103">        }</span>
 <span class="nc" id="L104">        Transport.send(msg);</span>
 <span class="nc" id="L105">    }</span>

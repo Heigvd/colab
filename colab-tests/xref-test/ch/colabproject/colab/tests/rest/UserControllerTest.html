@@ -15,7 +15,7 @@
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.tests.<strong class="jxr_keyword">rest</strong>;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.UserManagement;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.AuthMethod;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.LocalAccount;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.User;
@@ -130,7 +130,7 @@
 <a class="jxr_linenumber" name="L122" href="#L122">122</a> 
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>         myUser.setPassword(<span class="jxr_string">"WrongPassword"</span>);
 <a class="jxr_linenumber" name="L124" href="#L124">124</a> 
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>         TestHelper.assertThrows(ColabErrorMessage.MessageCode.AUTHENTICATION_FAILED, () -&gt; {
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>         TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED, () -&gt; {
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>             <strong class="jxr_keyword">this</strong>.signIn(myUser);
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>         });
 <a class="jxr_linenumber" name="L128" href="#L128">128</a> 
@@ -182,7 +182,7 @@
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>         Assertions.assertFalse(sensei.isAdmin());
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>         Long senseiId = sensei.getId();
 <a class="jxr_linenumber" name="L176" href="#L176">176</a> 
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>         TestHelper.assertThrows(ColabErrorMessage.MessageCode.ACCESS_DENIED, () -&gt; {
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -&gt; {
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>             client.userController.grantAdminRight(senseiId);
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>         });
 <a class="jxr_linenumber" name="L180" href="#L180">180</a> 

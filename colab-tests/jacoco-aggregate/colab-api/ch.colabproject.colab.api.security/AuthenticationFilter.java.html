@@ -7,10 +7,10 @@
 package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.security.annotations.AdminResource;
-import ch.colabproject.colab.api.security.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.annotations.AdminResource;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -101,7 +101,7 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L101">        Method targetMethod = resourceInfo.getResourceMethod();</span>
 
 <span class="fc" id="L103">        User currentUser = requestManager.getCurrentUser();</span>
-<span class="fc" id="L104">        ColabErrorMessage abortWith = null;</span>
+<span class="fc" id="L104">        HttpErrorMessage abortWith = null;</span>
 
 <span class="fc bfc" id="L106" title="All 2 branches covered.">        if (currentUser == null) {</span>
             // curenr user not authenticated: make sure the targeted method is accessible to
@@ -114,7 +114,7 @@ import org.slf4j.LoggerFactory;
                 // No current user but annotation required to be authenticated
                 // abort with 401 code
 <span class="nc" id="L116">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
-<span class="nc" id="L117">                abortWith = ColabErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L117">                abortWith = HttpErrorMessage.authenticationRequired();</span>
             }
         }
 
@@ -125,12 +125,12 @@ import org.slf4j.LoggerFactory;
 <span class="pc bpc" id="L125" title="1 of 2 branches missed.">            if (currentUser == null) {</span>
                 // no current user : unauthorized asks for user to authenticate
 <span class="nc" id="L127">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
-<span class="nc" id="L128">                abortWith = ColabErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L128">                abortWith = HttpErrorMessage.authenticationRequired();</span>
             } else {
 <span class="fc bfc" id="L130" title="All 2 branches covered.">                if (!currentUser.isAdmin()) {</span>
                     // current user is authenticaed but lack admin right: forbidden
 <span class="fc" id="L132">                    logger.trace(&quot;Request aborted:user tries to access admin resource&quot;);</span>
-<span class="fc" id="L133">                    abortWith = ColabErrorMessage.forbidden();</span>
+<span class="fc" id="L133">                    abortWith = HttpErrorMessage.forbidden();</span>
                 }
             }
         }

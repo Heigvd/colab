@@ -1,13 +1,12 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 colab-tests/colab-api,ch.colabproject.colab.api,Helper,41,107,6,8,9,28,6,10,2,7
 colab-tests/colab-api,ch.colabproject.colab.api.rest.utils,DateDeserializer,10,0,0,0,4,0,2,0,2,0
-colab-tests/colab-api,ch.colabproject.colab.api.rest.utils,AbstractExceptionMapper,46,23,5,3,15,8,5,3,1,3
+colab-tests/colab-api,ch.colabproject.colab.api.rest.utils,AbstractExceptionMapper,40,29,4,4,14,9,4,4,1,3
 colab-tests/colab-api,ch.colabproject.colab.api.rest.utils,InternalExceptionMapper,0,7,0,0,0,2,0,2,0,2
 colab-tests/colab-api,ch.colabproject.colab.api.rest.utils,ColabDeserializer,0,63,1,3,0,17,1,5,0,4
-colab-tests/colab-api,ch.colabproject.colab.api.rest.utils,Jsonable,3,14,1,1,1,4,1,2,0,2
 colab-tests/colab-api,ch.colabproject.colab.api.rest.utils,LogRequestFilter,0,60,0,2,0,13,0,5,0,4
 colab-tests/colab-api,ch.colabproject.colab.api.rest.utils,DateSerializer,10,0,0,0,3,0,2,0,2,0
-colab-tests/colab-api,ch.colabproject.colab.api.rest.utils,EjbExceptionMapper,4,3,0,0,1,1,1,1,1,1
+colab-tests/colab-api,ch.colabproject.colab.api.rest.utils,EjbExceptionMapper,0,7,0,0,0,2,0,2,0,2
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,ProjectFacade,0,45,0,0,0,12,0,6,0,6
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,TokenDao,24,151,8,4,9,43,6,7,0,7
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,TransactionManager,0,36,4,4,0,11,4,4,0,4
@@ -28,12 +27,9 @@ colab-tests/colab-api,ch.colabproject.colab.api.model.user,HashMethod,0,20,0,0,0
 colab-tests/colab-api,ch.colabproject.colab.api.model.user,SignUpInfo,0,38,0,0,0,16,0,11,0,11
 colab-tests/colab-api,ch.colabproject.colab.api.model.user,AuthMethod,0,46,0,0,0,20,0,10,0,10
 colab-tests/colab-api,ch.colabproject.colab.api.model.user,User,17,90,1,1,4,33,3,17,2,17
-colab-tests/colab-api,ch.colabproject.colab.api.rest.config,JsonbProvider,0,24,0,0,0,6,0,3,0,3
+colab-tests/colab-api,ch.colabproject.colab.api.rest.config,JsonbProvider,0,26,0,0,0,7,0,4,0,4
 colab-tests/colab-api,ch.colabproject.colab.api.ws,WebsocketEndpoint,62,28,1,1,18,8,6,4,5,4
 colab-tests/colab-api,ch.colabproject.colab.api.exceptions,ColabMergeException,15,0,0,0,5,0,2,0,2,0
-colab-tests/colab-api,ch.colabproject.colab.api.exceptions,ColabErrorMessage.MessageCode,0,94,0,0,0,10,0,1,0,1
-colab-tests/colab-api,ch.colabproject.colab.api.exceptions,ColabHttpException,10,9,0,0,4,4,3,2,3,2
-colab-tests/colab-api,ch.colabproject.colab.api.exceptions,ColabErrorMessage,32,35,0,0,6,12,6,7,6,7
 colab-tests/colab-api,ch.colabproject.colab.api.security,SessionManager,0,46,1,5,0,12,1,5,0,3
 colab-tests/colab-api,ch.colabproject.colab.api.security,HttpSession,7,21,0,0,3,9,2,6,2,6
 colab-tests/colab-api,ch.colabproject.colab.api.security,CookieFilter,0,67,0,2,0,17,0,5,0,4
@@ -62,4 +58,8 @@ colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.MonitoringCont
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.TokenControllerClientImpl,0,63,0,0,0,8,0,3,0,3
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserControllerClientImpl,0,239,0,0,0,38,0,11,0,11
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient,0,30,0,0,0,6,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient,0,31,0,0,0,6,0,1,0,1
+colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpException,10,9,0,0,4,4,3,2,3,2
+colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage,32,35,0,0,6,12,6,7,6,7
+colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage.MessageCode,0,94,0,0,0,10,0,1,0,1
+colab-tests/client-generator-model,ch.colabproject.colab.generator.model.interfaces,WithJsonDiscriminator,3,14,1,1,1,4,1,2,0,2

@@ -42,10 +42,11 @@
           <li class="nav-header">Modules</li>
     <li><a href="index.html" title="Colab Build Tools"><span class="none"></span>Colab Build Tools</a>  </li>
     <li><a href="colab-api/index.html" title="colab-api"><span class="none"></span>colab-api</a>  </li>
-    <li><a href="colab-client-generator-plugin/index.html" title="colab-client-generator-plugin"><span class="none"></span>colab-client-generator-plugin</a>  </li>
     <li><a href="colab-client/index.html" title="colab-client"><span class="none"></span>colab-client</a>  </li>
     <li><a href="colab-tests/index.html" title="colab-tests"><span class="none"></span>colab-tests</a>  </li>
     <li><a href="colab-webapp/index.html" title="colab-webapp"><span class="none"></span>colab-webapp</a>  </li>
+    <li><a href="client-generator-model/index.html" title="client-generator-model"><span class="none"></span>client-generator-model</a>  </li>
+    <li><a href="client-generator-plugin/index.html" title="client-generator-plugin"><span class="none"></span>client-generator-plugin</a>  </li>
           <li class="nav-header">Project Documentation</li>
     <li><a href="project-info.html" title="Project Information"><span class="icon-chevron-right"></span>Project Information</a>  </li>
     <li><a href="project-reports.html" title="Project Reports"><span class="icon-chevron-down"></span>Project Reports</a>
@@ -83,9 +84,9 @@
 <th><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warnings</th>
 <th><figure><img src="images/icon_error_sml.gif" alt="" /></figure>&#160;Errors</th></tr>
 <tr class="b">
-<td>4</td>
+<td>12</td>
 <td>0</td>
-<td>5</td>
+<td>38</td>
 <td>0</td></tr></table></section><section>
 <h2><a name="Files"></a>Files</h2>
 <table border="0" class="table table-striped">
@@ -100,12 +101,52 @@
 <td>1</td>
 <td>0</td></tr>
 <tr class="a">
+<td><a href="#ch.colabproject.colab.api.ejb.TokenDao.java">ch/colabproject/colab/api/ejb/TokenDao.java</a></td>
+<td>0</td>
+<td>7</td>
+<td>0</td></tr>
+<tr class="b">
+<td><a href="#ch.colabproject.colab.api.ejb.UserManagement.java">ch/colabproject/colab/api/ejb/UserManagement.java</a></td>
+<td>0</td>
+<td>8</td>
+<td>0</td></tr>
+<tr class="a">
+<td><a href="#ch.colabproject.colab.api.rest.UserController.java">ch/colabproject/colab/api/rest/UserController.java</a></td>
+<td>0</td>
+<td>8</td>
+<td>0</td></tr>
+<tr class="b">
+<td><a href="#ch.colabproject.colab.api.rest.utils.ColabDeserializer.java">ch/colabproject/colab/api/rest/utils/ColabDeserializer.java</a></td>
+<td>0</td>
+<td>3</td>
+<td>0</td></tr>
+<tr class="a">
 <td><a href="#ch.colabproject.colab.api.security.AuthenticationFilter.java">ch/colabproject/colab/api/security/AuthenticationFilter.java</a></td>
+<td>0</td>
+<td>4</td>
+<td>0</td></tr>
+<tr class="b">
+<td><a href="#ch.colabproject.colab.api.service.smtp.Sendmail.java">ch/colabproject/colab/api/service/smtp/Sendmail.java</a></td>
+<td>0</td>
+<td>1</td>
+<td>0</td></tr>
+<tr class="a">
+<td><a href="#ch.colabproject.colab.api.setup.ApplicationLifecycle.java">ch/colabproject/colab/api/setup/ApplicationLifecycle.java</a></td>
 <td>0</td>
 <td>1</td>
 <td>0</td></tr>
 <tr class="b">
 <td><a href="#ch.colabproject.colab.api.setup.LiquibaseProducer.java">ch/colabproject/colab/api/setup/LiquibaseProducer.java</a></td>
+<td>0</td>
+<td>1</td>
+<td>0</td></tr>
+<tr class="a">
+<td><a href="#ch.colabproject.colab.generator.Generator.java">ch/colabproject/colab/generator/Generator.java</a></td>
+<td>0</td>
+<td>1</td>
+<td>0</td></tr>
+<tr class="b">
+<td><a href="#ch.colabproject.colab.generator.TypeScriptHelper.java">ch/colabproject/colab/generator/TypeScriptHelper.java</a></td>
 <td>0</td>
 <td>1</td>
 <td>0</td></tr>
@@ -127,20 +168,30 @@
 <td>2</td>
 <td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td></tr>
 <tr class="b">
+<td>imports</td>
+<td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_imports.html#CustomImportOrder">CustomImportOrder</a>
+<ul>
+<li>separateLineBetweenGroups: <code>&quot;true&quot;</code></li>
+<li>sortImportsInGroupAlphabetically: <code>&quot;true&quot;</code></li>
+<li>customImportOrderRules: <code>&quot;STATIC###THIRD_PARTY_PACKAGE&quot;</code></li>
+<li>tokens: <code>&quot;IMPORT, STATIC_IMPORT, PACKAGE_DEF&quot;</code></li></ul></td>
+<td>30</td>
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td></tr>
+<tr class="a">
 <td>javadoc</td>
 <td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_javadoc.html#InvalidJavadocPosition">InvalidJavadocPosition</a></td>
 <td>1</td>
 <td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td></tr>
-<tr class="a">
+<tr class="b">
 <td>sizes</td>
 <td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_sizes.html#LineLength">LineLength</a>
 <ul>
 <li>fileExtensions: <code>&quot;java&quot;</code></li>
 <li>max: <code>&quot;100&quot;</code></li>
 <li>ignorePattern: <code>&quot;^package.*|^import.*|a href|href|http://|https://|ftp://&quot;</code></li></ul></td>
-<td>1</td>
+<td>4</td>
 <td><figure><img src="images/icon_error_sml.gif" alt="" /></figure>&#160;Error</td></tr>
-<tr class="b">
+<tr class="a">
 <td>whitespace</td>
 <td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_whitespace.html#EmptyLineSeparator">EmptyLineSeparator</a>
 <ul>
@@ -151,19 +202,125 @@
 <h2><a name="Details"></a>Details</h2><section>
 <h3 id="ch.colabproject.colab.api.Helper.java">ch/colabproject/colab/api/Helper.java</h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Severity</th>
 <th>Category</th>
 <th>Rule</th>
 <th>Message</th>
 <th>Line</th></tr>
-<tr class="b">
+<tr class="a">
 <td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
 <td>sizes</td>
 <td>LineLength</td>
 <td>Line is longer than 100 characters (found 491).</td>
 <td><a href="./xref/ch/colabproject/colab/api/Helper.html#L24">24</a></td></tr></table></section><section>
-<h3 id="ch.colabproject.colab.api.security.AuthenticationFilter.java">ch/colabproject/colab/api/security/AuthenticationFilter.java</h3>
+<h3 id="ch.colabproject.colab.api.ejb.TokenDao.java">ch/colabproject/colab/api/ejb/TokenDao.java</h3>
+<table border="0" class="table table-striped">
+<tr class="b">
+<th>Severity</th>
+<th>Category</th>
+<th>Rule</th>
+<th>Message</th>
+<th>Line</th></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.token.Token' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/TokenDao.html#L11">11</a></td></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.token.VerifyLocalAccountToken' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/TokenDao.html#L12">12</a></td></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.HashMethod' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/TokenDao.html#L13">13</a></td></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.LocalAccount' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/TokenDao.html#L14">14</a></td></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.service.smtp.Message' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/TokenDao.html#L15">15</a></td></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.service.smtp.Sendmail' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/TokenDao.html#L16">16</a></td></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.setup.ColabConfiguration' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/TokenDao.html#L17">17</a></td></tr></table></section><section>
+<h3 id="ch.colabproject.colab.api.ejb.UserManagement.java">ch/colabproject/colab/api/ejb/UserManagement.java</h3>
+<table border="0" class="table table-striped">
+<tr class="b">
+<th>Severity</th>
+<th>Category</th>
+<th>Rule</th>
+<th>Message</th>
+<th>Line</th></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.exceptions.ColabMergeException' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L11">11</a></td></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.Account' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L12">12</a></td></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.AuthInfo' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L13">13</a></td></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.AuthMethod' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L14">14</a></td></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.HashMethod' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L15">15</a></td></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.LocalAccount' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L16">16</a></td></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.SignUpInfo' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L17">17</a></td></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.User' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L18">18</a></td></tr></table></section><section>
+<h3 id="ch.colabproject.colab.api.rest.UserController.java">ch/colabproject/colab/api/rest/UserController.java</h3>
 <table border="0" class="table table-striped">
 <tr class="a">
 <th>Severity</th>
@@ -173,10 +330,138 @@
 <th>Line</th></tr>
 <tr class="b">
 <td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.exceptions.ColabMergeException' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L12">12</a></td></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.Account' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L13">13</a></td></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.AuthInfo' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L14">14</a></td></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.AuthMethod' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L15">15</a></td></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.SignUpInfo' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L16">16</a></td></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.User' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L17">17</a></td></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.generator.model.annotations.AdminResource' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L18">18</a></td></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.generator.model.annotations.AuthenticationRequired' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L19">19</a></td></tr></table></section><section>
+<h3 id="ch.colabproject.colab.api.rest.utils.ColabDeserializer.java">ch/colabproject/colab/api/rest/utils/ColabDeserializer.java</h3>
+<table border="0" class="table table-striped">
+<tr class="b">
+<th>Severity</th>
+<th>Category</th>
+<th>Rule</th>
+<th>Message</th>
+<th>Line</th></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator' import. Should be before 'org.reflections.Reflections'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/utils/ColabDeserializer.html#L19">19</a></td></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>sizes</td>
+<td>LineLength</td>
+<td>Line is longer than 100 characters (found 107).</td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/utils/ColabDeserializer.html#L31">31</a></td></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>sizes</td>
+<td>LineLength</td>
+<td>Line is longer than 100 characters (found 106).</td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/utils/ColabDeserializer.html#L47">47</a></td></tr></table></section><section>
+<h3 id="ch.colabproject.colab.api.security.AuthenticationFilter.java">ch/colabproject/colab/api/security/AuthenticationFilter.java</h3>
+<table border="0" class="table table-striped">
+<tr class="b">
+<th>Severity</th>
+<th>Category</th>
+<th>Rule</th>
+<th>Message</th>
+<th>Line</th></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.User' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/security/AuthenticationFilter.html#L11">11</a></td></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.generator.model.annotations.AdminResource' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/security/AuthenticationFilter.html#L12">12</a></td></tr>
+<tr class="a">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.generator.model.annotations.AuthenticationRequired' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/security/AuthenticationFilter.html#L13">13</a></td></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
 <td>whitespace</td>
 <td>EmptyLineSeparator</td>
 <td>'METHOD_DEF' should be separated from previous statement.</td>
 <td><a href="./xref/ch/colabproject/colab/api/security/AuthenticationFilter.html#L75">75</a></td></tr></table></section><section>
+<h3 id="ch.colabproject.colab.api.service.smtp.Sendmail.java">ch/colabproject/colab/api/service/smtp/Sendmail.java</h3>
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>Severity</th>
+<th>Category</th>
+<th>Rule</th>
+<th>Message</th>
+<th>Line</th></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.setup.ColabConfiguration' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/service/smtp/Sendmail.html#L10">10</a></td></tr></table></section><section>
+<h3 id="ch.colabproject.colab.api.setup.ApplicationLifecycle.java">ch/colabproject/colab/api/setup/ApplicationLifecycle.java</h3>
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>Severity</th>
+<th>Category</th>
+<th>Rule</th>
+<th>Message</th>
+<th>Line</th></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.api.model.user.User' import. Should be before 'ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage'.</td>
+<td><a href="./xref/ch/colabproject/colab/api/setup/ApplicationLifecycle.html#L11">11</a></td></tr></table></section><section>
 <h3 id="ch.colabproject.colab.api.setup.LiquibaseProducer.java">ch/colabproject/colab/api/setup/LiquibaseProducer.java</h3>
 <table border="0" class="table table-striped">
 <tr class="a">
@@ -191,6 +476,34 @@
 <td>InvalidJavadocPosition</td>
 <td>Javadoc comment is placed in the wrong location.</td>
 <td><a href="./xref/ch/colabproject/colab/api/setup/LiquibaseProducer.html#L39">39</a></td></tr></table></section><section>
+<h3 id="ch.colabproject.colab.generator.Generator.java">ch/colabproject/colab/generator/Generator.java</h3>
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>Severity</th>
+<th>Category</th>
+<th>Rule</th>
+<th>Message</th>
+<th>Line</th></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>sizes</td>
+<td>LineLength</td>
+<td>Line is longer than 100 characters (found 101).</td>
+<td><a href="./xref/ch/colabproject/colab/generator/Generator.html#L109">109</a></td></tr></table></section><section>
+<h3 id="ch.colabproject.colab.generator.TypeScriptHelper.java">ch/colabproject/colab/generator/TypeScriptHelper.java</h3>
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>Severity</th>
+<th>Category</th>
+<th>Rule</th>
+<th>Message</th>
+<th>Line</th></tr>
+<tr class="b">
+<td><figure><img src="images/icon_warning_sml.gif" alt="" /></figure>&#160;Warning</td>
+<td>imports</td>
+<td>CustomImportOrder</td>
+<td>Wrong lexicographical order for 'ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator' import. Should be before 'org.reflections.Reflections'.</td>
+<td><a href="./xref/ch/colabproject/colab/generator/TypeScriptHelper.html#L31">31</a></td></tr></table></section><section>
 <h3 id="ch.colabproject.colab.generator.rest.RestController.java">ch/colabproject/colab/generator/rest/RestController.java</h3>
 <table border="0" class="table table-striped">
 <tr class="a">

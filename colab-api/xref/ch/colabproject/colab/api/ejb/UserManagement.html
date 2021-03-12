@@ -15,7 +15,7 @@
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.ejb;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.Helper;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.exceptions.ColabMergeException;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.Account;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.AuthInfo;
@@ -195,11 +195,11 @@
 <a class="jxr_linenumber" name="L187" href="#L187">187</a> <em class="jxr_javadoccomment">     * @return authentication method to use to authentication as email owner or new random one which</em>
 <a class="jxr_linenumber" name="L188" href="#L188">188</a> <em class="jxr_javadoccomment">     *         can be use to create a brand new localAccount</em>
 <a class="jxr_linenumber" name="L189" href="#L189">189</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L190" href="#L190">190</a> <em class="jxr_javadoccomment">     * @throws ColabErrorMessage invalidRequest if there is no identifier</em>
+<a class="jxr_linenumber" name="L190" href="#L190">190</a> <em class="jxr_javadoccomment">     * @throws HttpErrorMessage invalidRequest if there is no identifier</em>
 <a class="jxr_linenumber" name="L191" href="#L191">191</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>     <strong class="jxr_keyword">public</strong> <a name="AuthMethod" href="../../../../../ch/colabproject/colab/api/model/user/AuthMethod.html#AuthMethod">AuthMethod</a> getAuthenticationMethod(String identifier) {
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>         <strong class="jxr_keyword">if</strong> (identifier == <strong class="jxr_keyword">null</strong> || identifier.isBlank()) {
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>             <strong class="jxr_keyword">throw</strong> ColabErrorMessage.invalidRequest();
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.invalidRequest();
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>         } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>             LocalAccount account = <strong class="jxr_keyword">this</strong>.findLocalAccountByIdentifier(identifier);
 <a class="jxr_linenumber" name="L197" href="#L197">197</a> 
@@ -235,7 +235,7 @@
 <a class="jxr_linenumber" name="L227" href="#L227">227</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L228" href="#L228">228</a> <em class="jxr_javadoccomment">     * @return a brand new user</em>
 <a class="jxr_linenumber" name="L229" href="#L229">229</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L230" href="#L230">230</a> <em class="jxr_javadoccomment">     * @throws ColabErrorMessage if username is already taken</em>
+<a class="jxr_linenumber" name="L230" href="#L230">230</a> <em class="jxr_javadoccomment">     * @throws HttpErrorMessage if username is already taken</em>
 <a class="jxr_linenumber" name="L231" href="#L231">231</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>     <strong class="jxr_keyword">public</strong> <a name="User" href="../../../../../ch/colabproject/colab/api/model/user/User.html#User">User</a> createUser(String username, String email, String plainPassword) {
 <a class="jxr_linenumber" name="L233" href="#L233">233</a>         <a name="AuthMethod" href="../../../../../ch/colabproject/colab/api/model/user/AuthMethod.html#AuthMethod">AuthMethod</a> method = getDefaultRandomAuthenticationMethod();
@@ -261,7 +261,7 @@
 <a class="jxr_linenumber" name="L253" href="#L253">253</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L254" href="#L254">254</a> <em class="jxr_javadoccomment">     * @return brand new user embedding an LocalAccount</em>
 <a class="jxr_linenumber" name="L255" href="#L255">255</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L256" href="#L256">256</a> <em class="jxr_javadoccomment">     * @throws ColabErrorMessage if username is already taken</em>
+<a class="jxr_linenumber" name="L256" href="#L256">256</a> <em class="jxr_javadoccomment">     * @throws HttpErrorMessage if username is already taken</em>
 <a class="jxr_linenumber" name="L257" href="#L257">257</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>     <strong class="jxr_keyword">public</strong> <a name="User" href="../../../../../ch/colabproject/colab/api/model/user/User.html#User">User</a> signup(<a name="SignUpInfo" href="../../../../../ch/colabproject/colab/api/model/user/SignUpInfo.html#SignUpInfo">SignUpInfo</a> signup) {
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>         <em class="jxr_comment">// username already taken ?</em>
@@ -292,11 +292,11 @@
 <a class="jxr_linenumber" name="L284" href="#L284">284</a>                 <strong class="jxr_keyword">return</strong> user;
 <a class="jxr_linenumber" name="L285" href="#L285">285</a>             } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L286" href="#L286">286</a>                 <em class="jxr_comment">// wait.... throwing something else here leaks account existence...</em>
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>                 <strong class="jxr_keyword">throw</strong> ColabErrorMessage.userNameAlreadyTaken();
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.userNameAlreadyTaken();
 <a class="jxr_linenumber" name="L288" href="#L288">288</a>             }
 <a class="jxr_linenumber" name="L289" href="#L289">289</a> 
 <a class="jxr_linenumber" name="L290" href="#L290">290</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>             <strong class="jxr_keyword">throw</strong> ColabErrorMessage.userNameAlreadyTaken();
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.userNameAlreadyTaken();
 <a class="jxr_linenumber" name="L292" href="#L292">292</a>         }
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>     }
 <a class="jxr_linenumber" name="L294" href="#L294">294</a> 
@@ -307,7 +307,7 @@
 <a class="jxr_linenumber" name="L299" href="#L299">299</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L300" href="#L300">300</a> <em class="jxr_javadoccomment">     * @return just authenticated user of null is authentication did not succeed</em>
 <a class="jxr_linenumber" name="L301" href="#L301">301</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L302" href="#L302">302</a> <em class="jxr_javadoccomment">     * @throws ColabErrorMessage if authentication failed</em>
+<a class="jxr_linenumber" name="L302" href="#L302">302</a> <em class="jxr_javadoccomment">     * @throws HttpErrorMessage if authentication failed</em>
 <a class="jxr_linenumber" name="L303" href="#L303">303</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L304" href="#L304">304</a>     <strong class="jxr_keyword">public</strong> <a name="User" href="../../../../../ch/colabproject/colab/api/model/user/User.html#User">User</a> authenticate(<a name="AuthInfo" href="../../../../../ch/colabproject/colab/api/model/user/AuthInfo.html#AuthInfo">AuthInfo</a> authInfo) {
 <a class="jxr_linenumber" name="L305" href="#L305">305</a>         LocalAccount account = <strong class="jxr_keyword">this</strong>.findLocalAccountByIdentifier(authInfo.getIdentifier());
@@ -362,7 +362,7 @@
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>         <em class="jxr_comment">// authentication fails</em>
 <a class="jxr_linenumber" name="L355" href="#L355">355</a>         <em class="jxr_comment">// OR client did not provide required hash</em>
 <a class="jxr_linenumber" name="L356" href="#L356">356</a>         <em class="jxr_comment">// OR account not found</em>
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>         <strong class="jxr_keyword">throw</strong> ColabErrorMessage.authenticationFailed();
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>         <strong class="jxr_keyword">throw</strong> HttpErrorMessage.authenticationFailed();
 <a class="jxr_linenumber" name="L358" href="#L358">358</a>     }
 <a class="jxr_linenumber" name="L359" href="#L359">359</a> 
 <a class="jxr_linenumber" name="L360" href="#L360">360</a>     <em class="jxr_javadoccomment">/**</em>

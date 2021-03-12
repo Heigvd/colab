@@ -16,18 +16,19 @@ import javax.json.bind.serializer.DeserializationContext;
 import javax.json.bind.serializer.JsonbDeserializer;
 import javax.json.stream.JsonParser;
 import org.reflections.Reflections;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 
 /**
  * Custom deserializer which can handle polymorphic JSONable object
  *
  * @author Maxence
  */
-<span class="nc" id="L25">public class ColabDeserializer implements JsonbDeserializer&lt;Jsonable&gt; {</span>
+<span class="nc" id="L26">public class ColabDeserializer implements JsonbDeserializer&lt;WithJsonDiscriminator&gt; {</span>
 
     /**
      * Store class references
      */
-<span class="nc" id="L30">    private static final Map&lt;String, Class&lt;? extends Jsonable&gt;&gt; CLASSES_MAP = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L31">    private static final Map&lt;String, Class&lt;? extends WithJsonDiscriminator&gt;&gt; CLASSES_MAP = new HashMap&lt;&gt;();</span>
 
     /**
      * Reflections allow to find, for instance, all implementations of an interface
@@ -36,36 +37,36 @@ import org.reflections.Reflections;
 
     static {
         // analyse classes in the model package
-<span class="nc" id="L39">        REFLECTIONS = new Reflections(&quot;ch.colabproject.colab.api.model&quot;);</span>
-<span class="nc" id="L40">    }</span>
+<span class="nc" id="L40">        REFLECTIONS = new Reflections(&quot;ch.colabproject.colab.api.model&quot;);</span>
+<span class="nc" id="L41">    }</span>
 
     /**
      * {@inheritDoc }
      */
     @Override
-    public Jsonable deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
+    public WithJsonDiscriminator deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
 
         // find @class discriminant from object to deserialize
-<span class="nc" id="L49">        JsonObject value = parser.getObject();</span>
-<span class="nc" id="L50">        String atClass = value.getString(&quot;@class&quot;, null);</span>
+<span class="nc" id="L50">        JsonObject value = parser.getObject();</span>
+<span class="nc" id="L51">        String atClass = value.getString(&quot;@class&quot;, null);</span>
 
         // is this @class already known?
-<span class="nc" id="L53">        Class&lt;? extends Jsonable&gt; theClass = CLASSES_MAP.get(atClass);</span>
+<span class="nc" id="L54">        Class&lt;? extends WithJsonDiscriminator&gt; theClass = CLASSES_MAP.get(atClass);</span>
 
-<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (theClass == null) {</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        if (theClass == null) {</span>
             // nope -&gt; let's resolve it with the help of reflections
-<span class="nc" id="L57">            Optional&lt;Class&lt;? extends Jsonable&gt;&gt; concreteClass</span>
-<span class="nc" id="L58">                = REFLECTIONS.getSubTypesOf(Jsonable.class)</span>
-<span class="nc" id="L59">                    .stream()</span>
-<span class="nc" id="L60">                    .filter(cl -&gt; cl.getSimpleName().equals(atClass))</span>
-<span class="nc" id="L61">                    .findFirst();</span>
-<span class="nc bnc" id="L62" title="All 2 branches missed.">            if (concreteClass.isPresent()) {</span>
-<span class="nc" id="L63">                theClass = concreteClass.get();</span>
-<span class="nc" id="L64">                CLASSES_MAP.put(atClass, theClass);</span>
+<span class="nc" id="L58">            Optional&lt;Class&lt;? extends WithJsonDiscriminator&gt;&gt; concreteClass</span>
+<span class="nc" id="L59">                = REFLECTIONS.getSubTypesOf(WithJsonDiscriminator.class)</span>
+<span class="nc" id="L60">                    .stream()</span>
+<span class="nc" id="L61">                    .filter(cl -&gt; cl.getSimpleName().equals(atClass))</span>
+<span class="nc" id="L62">                    .findFirst();</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">            if (concreteClass.isPresent()) {</span>
+<span class="nc" id="L64">                theClass = concreteClass.get();</span>
+<span class="nc" id="L65">                CLASSES_MAP.put(atClass, theClass);</span>
             }
         }
         // parse JSON against exact class
-<span class="nc" id="L68">        return JsonbBuilder.create().fromJson(value.toString(), theClass);</span>
+<span class="nc" id="L69">        return JsonbBuilder.create().fromJson(value.toString(), theClass);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
