@@ -21,7 +21,11 @@ import org.apache.maven.project.MavenProject;
  *
  * @author maxence
  */
-@Mojo(name = &quot;generate&quot;, defaultPhase = LifecyclePhase.PROCESS_CLASSES, requiresDependencyResolution = ResolutionScope.COMPILE)
+@Mojo(
+    name = &quot;generate&quot;,
+    defaultPhase = LifecyclePhase.PROCESS_CLASSES,
+    requiresDependencyResolution = ResolutionScope.COMPILE
+)
 public class GeneratorPlugin extends AbstractMojo {
 
     /**
@@ -51,13 +55,19 @@ public class GeneratorPlugin extends AbstractMojo {
     /**
      * path of generated java client
      */
-    @Parameter(property = &quot;generate.javaOutputDir&quot;, defaultValue = &quot;${project.build.directory}/generated-sources/javaClient&quot;)
+    @Parameter(
+        property = &quot;generate.javaOutputDir&quot;,
+        defaultValue = &quot;${project.build.directory}/generated-sources/javaClient&quot;
+    )
     private String javaOutputDir;
 
     /**
      * path of generated typescript client
      */
-    @Parameter(property = &quot;generate.tsOutputDir&quot;, defaultValue = &quot;${project.build.directory}/generated-sources/tsClient&quot;)
+    @Parameter(
+        property = &quot;generate.tsOutputDir&quot;,
+        defaultValue = &quot;${project.build.directory}/generated-sources/tsClient&quot;
+    )
     private String tsOutputDir;
 
     /**
@@ -69,40 +79,41 @@ public class GeneratorPlugin extends AbstractMojo {
      * Default constructor.
      */
     public GeneratorPlugin() {
-<span class="nc" id="L72">        this(false);</span>
-<span class="nc" id="L73">    }</span>
+<span class="nc" id="L82">        this(false);</span>
+<span class="nc" id="L83">    }</span>
 
     /**
      * DryRun constructor
      *
      * @param dryRun set dryRun value
      */
-<span class="nc" id="L80">    private GeneratorPlugin(boolean dryRun) {</span>
-<span class="nc" id="L81">        this.dryRun = dryRun;</span>
-<span class="nc" id="L82">    }</span>
+<span class="nc" id="L90">    private GeneratorPlugin(boolean dryRun) {</span>
+<span class="nc" id="L91">        this.dryRun = dryRun;</span>
+<span class="nc" id="L92">    }</span>
 
     /**
      * {@inheritDoc }
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-<span class="nc" id="L89">        Generator generator = new Generator(restPackages, packageName, clientName, getLog());</span>
+<span class="nc" id="L99">        Generator generator = new Generator(restPackages, packageName, clientName, getLog());</span>
 
-<span class="nc" id="L91">        generator.processPackages();</span>
+<span class="nc" id="L101">        generator.processPackages();</span>
 
         // generate package in the output dir
-<span class="nc" id="L94">        generator.generateJavaClient(javaOutputDir, this.dryRun);</span>
+<span class="nc" id="L104">        generator.generateJavaClient(javaOutputDir, this.dryRun);</span>
 
-<span class="nc" id="L96">        generator.generateTypescriptClient(tsOutputDir, this.dryRun);</span>
+<span class="nc" id="L106">        generator.generateTypescriptClient(tsOutputDir, this.dryRun);</span>
 
-<span class="nc bnc" id="L98" title="All 2 branches missed.">        if (!dryRun) {</span>
-            // and add it to the current project to make sure the client can be use during this very run
-<span class="nc" id="L100">            this.project.addCompileSourceRoot(javaOutputDir);</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (!dryRun) {</span>
+            // and add it to the current project to make sure the client
+            // can be use during this very run
+<span class="nc" id="L111">            this.project.addCompileSourceRoot(javaOutputDir);</span>
         }
 
         // @TODO generate typescript client
         //generator.generateTypescriptClient();
-<span class="nc" id="L105">    }</span>
+<span class="nc" id="L116">    }</span>
 
     /**
      * Simple app to test the generator.it will not generate any files but will print output
@@ -113,14 +124,14 @@ public class GeneratorPlugin extends AbstractMojo {
      * @throws org.apache.maven.plugin.MojoFailureException   if ...
      */
     public static void main(String... args) throws MojoExecutionException, MojoFailureException {
-<span class="nc" id="L116">        GeneratorPlugin generator = new GeneratorPlugin(true);</span>
-<span class="nc" id="L117">        generator.packageName = &quot;ch.colabproject.colab.generator&quot;;</span>
-<span class="nc" id="L118">        generator.clientName = &quot;TestClient&quot;;</span>
-<span class="nc" id="L119">        String[] p = {&quot;ch.colabproject.colab.api&quot;};</span>
+<span class="nc" id="L127">        GeneratorPlugin generator = new GeneratorPlugin(true);</span>
+<span class="nc" id="L128">        generator.packageName = &quot;ch.colabproject.colab.generator&quot;;</span>
+<span class="nc" id="L129">        generator.clientName = &quot;TestClient&quot;;</span>
+<span class="nc" id="L130">        String[] p = {&quot;ch.colabproject.colab.api&quot;};</span>
 
-<span class="nc" id="L121">        generator.restPackages = p;</span>
+<span class="nc" id="L132">        generator.restPackages = p;</span>
 
-<span class="nc" id="L123">        generator.execute();</span>
-<span class="nc" id="L124">    }</span>
+<span class="nc" id="L134">        generator.execute();</span>
+<span class="nc" id="L135">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

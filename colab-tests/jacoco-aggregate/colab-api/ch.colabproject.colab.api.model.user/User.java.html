@@ -34,9 +34,9 @@ import javax.validation.constraints.Pattern;
 @Entity
 @Table(name = &quot;users&quot;)
 @NamedQuery(name = &quot;User.findByUsername&quot;,
-        query = &quot;SELECT u from User u where u.username = :username&quot;)
-@NamedQuery(name=&quot;User.findAllAdmin&quot;,
-        query = &quot;SELECT u from User u where u.isAdmin = TRUE&quot;)
+    query = &quot;SELECT u from User u where u.username = :username&quot;)
+@NamedQuery(name = &quot;User.findAllAdmin&quot;,
+    query = &quot;SELECT u from User u where u.isAdmin = TRUE&quot;)
 <span class="fc" id="L40">public class User implements ColabEntity {</span>
 
     private static final long serialVersionUID = 1L;
@@ -233,7 +233,7 @@ import javax.validation.constraints.Pattern;
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L236" title="1 of 2 branches missed.">        if (other instanceof User){</span>
+<span class="pc bpc" id="L236" title="1 of 2 branches missed.">        if (other instanceof User) {</span>
 <span class="fc" id="L237">            User o = (User) other;</span>
 <span class="fc" id="L238">            this.setFirstname(o.getFirstname());</span>
 <span class="fc" id="L239">            this.setLastname(o.getLastname());</span>

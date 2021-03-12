@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"ch.colabproject.colab.client"},{"l":"ch.colabproject.colab.client.rest"},{"l":"ch.colabproject.colab.client.tests"},{"l":"ch.colabproject.colab.generator"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"ch.colabproject.colab.generator"},{"l":"ch.colabproject.colab.tests"},{"l":"ch.colabproject.colab.tests.mailhog"},{"l":"ch.colabproject.colab.tests.mailhog.model"},{"l":"ch.colabproject.colab.tests.rest"},{"l":"ch.colabproject.colab.tests.tests"}]

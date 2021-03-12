@@ -51,24 +51,26 @@ import org.slf4j.LoggerFactory;
                 );
 <span class="fc" id="L52">                userManagement.grantAdminRight(admin.getId());</span>
 <span class="nc" id="L53">            } catch (ColabErrorMessage ex) {</span>
-<span class="nc" id="L54">                logger.error(&quot;Fails to create default amdin user. Does non-admin user exists with same username or email address&quot;);</span>
-<span class="nc" id="L55">            } catch (RuntimeException ex) {</span>
-<span class="nc" id="L56">                logger.error(&quot;Fails to create default amdin user for some unknown reason. Please check config&quot;);</span>
-<span class="pc" id="L57">            }</span>
+<span class="nc" id="L54">                logger.error(&quot;Fails to create default amdin user. &quot;</span>
+                    + &quot;Does non-admin user exists with same username or email address&quot;);
+<span class="nc" id="L56">            } catch (RuntimeException ex) {</span>
+<span class="nc" id="L57">                logger.error(&quot;Fails to create default amdin user for some unknown reason.&quot;</span>
+                    + &quot; Please check config&quot;);
+<span class="pc" id="L59">            }</span>
         }
-<span class="fc" id="L59">    }</span>
+<span class="fc" id="L61">    }</span>
 
     @Override
     public void init(ServletConfig config) throws ServletException {
-<span class="fc" id="L63">        super.init(config);</span>
-<span class="fc" id="L64">        logger.trace(&quot;LIFE CYCLE : init&quot;);</span>
-<span class="fc" id="L65">        createDefaultAdminIfNone();</span>
-<span class="fc" id="L66">    }</span>
+<span class="fc" id="L65">        super.init(config);</span>
+<span class="fc" id="L66">        logger.trace(&quot;LIFE CYCLE : init&quot;);</span>
+<span class="fc" id="L67">        createDefaultAdminIfNone();</span>
+<span class="fc" id="L68">    }</span>
 
     @Override
     public void destroy() {
-<span class="fc" id="L70">        super.destroy();</span>
-<span class="fc" id="L71">        logger.trace(&quot;LIFE CYCLE : destroy&quot;);</span>
-<span class="fc" id="L72">    }</span>
+<span class="fc" id="L72">        super.destroy();</span>
+<span class="fc" id="L73">        logger.trace(&quot;LIFE CYCLE : destroy&quot;);</span>
+<span class="fc" id="L74">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

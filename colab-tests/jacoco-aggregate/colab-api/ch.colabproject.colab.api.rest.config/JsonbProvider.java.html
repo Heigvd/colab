@@ -7,8 +7,6 @@
 package ch.colabproject.colab.api.rest.config;
 
 import ch.colabproject.colab.api.rest.utils.ColabDeserializer;
-import ch.colabproject.colab.api.rest.utils.DateDeserializer;
-import ch.colabproject.colab.api.rest.utils.DateSerializer;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
@@ -21,14 +19,14 @@ import javax.ws.rs.ext.Provider;
  * @author Maxence
  */
 @Provider
-<span class="fc" id="L24">public class JsonbProvider implements ContextResolver&lt;Jsonb&gt; {</span>
+<span class="fc" id="L22">public class JsonbProvider implements ContextResolver&lt;Jsonb&gt; {</span>
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Jsonb getContext(Class&lt;?&gt; aClass) {
-<span class="fc" id="L31">        return JsonbProvider.getJsonb();</span>
+    public Jsonb getContext(Class&lt;?&gt; theClass) {
+<span class="fc" id="L29">        return JsonbProvider.getJsonb();</span>
     }
 
     /**
@@ -37,13 +35,13 @@ import javax.ws.rs.ext.Provider;
      * @return an Jsonb object
      */
     public static Jsonb getJsonb() {
-<span class="fc" id="L40">        JsonbConfig config = new JsonbConfig()</span>
-<span class="fc" id="L41">            .withFormatting(false)</span>
-<span class="fc" id="L42">            .withSerializers(new DateSerializer())</span>
-<span class="fc" id="L43">            .withDeserializers(new DateDeserializer())</span>
-<span class="fc" id="L44">            .withDeserializers(new ColabDeserializer());</span>
+<span class="fc" id="L38">        JsonbConfig config = new JsonbConfig()</span>
+<span class="fc" id="L39">            .withFormatting(false)</span>
+            //.withSerializers(new DateSerializer())
+            //.withDeserializers(new DateDeserializer())
+<span class="fc" id="L42">            .withDeserializers(new ColabDeserializer());</span>
 
-<span class="fc" id="L46">        return JsonbBuilder.create(config);</span>
+<span class="fc" id="L44">        return JsonbBuilder.create(config);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,4 +1,6 @@
-ch.colabproject.colab.client
-ch.colabproject.colab.client.rest
-ch.colabproject.colab.client.tests
 ch.colabproject.colab.generator
+ch.colabproject.colab.tests
+ch.colabproject.colab.tests.mailhog
+ch.colabproject.colab.tests.mailhog.model
+ch.colabproject.colab.tests.rest
+ch.colabproject.colab.tests.tests

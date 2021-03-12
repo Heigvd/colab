@@ -102,5 +102,14 @@ import javax.inject.Inject;
     public long getStartTime() {
 <span class="nc" id="L103">        return startTime;</span>
     }
+
+    /**
+     * Is the request ran by an authenticated user ?
+     *
+     * @return true if the current user is fully authenticated
+     */
+    public Boolean isAuthenticated() {
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        return this.getCurrentAccount() != null;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>MessageBuilder.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.service.smtp</a> &gt; <span class="el_source">MessageBuilder.java</span></div><h1>MessageBuilder.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.service.smtp;
+
+/**
+ * To build {@link Message} instances.
+ *
+ * @author maxence
+ */
+public class MessageBuilder {
+
+    /**
+     * The message to build
+     */
+    private final Message message;
+
+    /**
+     * Private constructor. Please use {@link #build()}
+     */
+<span class="nc" id="L24">    private MessageBuilder() {</span>
+<span class="nc" id="L25">        this.message = new Message();</span>
+<span class="nc" id="L26">    }</span>
+
+    /**
+     * Set sender address
+     *
+     * @param from sender address
+     *
+     * @return this builder
+     */
+    public MessageBuilder from(String from) {
+<span class="nc" id="L36">        message.setFrom(from);</span>
+<span class="nc" id="L37">        return this;</span>
+    }
+
+    /**
+     * set reply-to address
+     *
+     * @param replyTo reply-to address
+     *
+     * @return this builder
+     */
+    public MessageBuilder replyTo(String replyTo) {
+<span class="nc" id="L48">        message.setFrom(replyTo);</span>
+<span class="nc" id="L49">        return this;</span>
+    }
+
+    /**
+     * Add a recipient
+     *
+     * @param to address of the recipient
+     *
+     * @return this builder
+     */
+    public MessageBuilder to(String to) {
+<span class="nc" id="L60">        message.getTo().add(to);</span>
+<span class="nc" id="L61">        return this;</span>
+    }
+
+    /**
+     * Add a CC recipient
+     *
+     * @param cc address of the recipient
+     *
+     * @return this builder
+     */
+    public MessageBuilder cc(String cc) {
+<span class="nc" id="L72">        message.getCc().add(cc);</span>
+<span class="nc" id="L73">        return this;</span>
+    }
+
+    /**
+     * Add a BBC recipient
+     *
+     * @param bcc address of the recipient
+     *
+     * @return this builder
+     */
+    public MessageBuilder bcc(String bcc) {
+<span class="nc" id="L84">        message.getBcc().add(bcc);</span>
+<span class="nc" id="L85">        return this;</span>
+    }
+
+    /**
+     * Set the message subject
+     *
+     * @param subject the subject
+     *
+     * @return this builder
+     */
+    public MessageBuilder subject(String subject) {
+<span class="nc" id="L96">        message.setSubject(subject);</span>
+<span class="nc" id="L97">        return this;</span>
+    }
+
+    /**
+     * Set the message body. This will override previously set body.
+     *
+     * @param mimetype body mime-type
+     * @param body     body content
+     *
+     * @return this builder
+     */
+    public MessageBuilder body(String mimetype, String body) {
+<span class="nc" id="L109">        message.setBody(body);</span>
+<span class="nc" id="L110">        message.setMimeType(mimetype);</span>
+<span class="nc" id="L111">        return this;</span>
+    }
+
+    /**
+     * Set the body with a text/plain MIME-type
+     *
+     * @param body plain text body
+     *
+     * @return this builder
+     */
+    public MessageBuilder body(String body) {
+<span class="nc" id="L122">        return this.body(&quot;text/plain&quot;, body);</span>
+    }
+
+    /**
+     * Set the message body with a text/html MIME-type
+     *
+     * @param body the html body
+     *
+     * @return this builder
+     */
+    public MessageBuilder htmlBody(String body) {
+<span class="nc" id="L133">        return this.body(&quot;text/html&quot;, body);</span>
+    }
+
+    /**
+     * Build the message.
+     *
+     * @return the message
+     */
+    public Message build() {
+<span class="nc" id="L142">        return message;</span>
+    }
+
+    /**
+     * Create a new builder.
+     *
+     * @return the builder
+     */
+    public static MessageBuilder create() {
+<span class="nc" id="L151">        return new MessageBuilder();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

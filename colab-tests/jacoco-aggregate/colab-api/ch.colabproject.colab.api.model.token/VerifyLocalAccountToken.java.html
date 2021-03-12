@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>VerifyLocalAccountToken.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.token</a> &gt; <span class="el_source">VerifyLocalAccountToken.java</span></div><h1>VerifyLocalAccountToken.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.token;
+
+import ch.colabproject.colab.api.model.user.LocalAccount;
+import java.text.MessageFormat;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
+
+/**
+ * A token to validate the email address of a local account
+ *
+ * @author maxence
+ */
+@Entity
+@NamedQuery(
+    name = &quot;VerifyLocalAccountToken.findByAccountId&quot;,
+    query = &quot;SELECT t from VerifyLocalAccountToken t where t.localAccount.id =:id&quot;)
+<span class="fc" id="L26">public class VerifyLocalAccountToken extends Token {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Email subject
+     */
+    public static final String EMAIL_SUBJECT = &quot;Please validate your co.LAB account&quot;;
+
+    /**
+     * The local account the token shall validate
+     */
+    @NotNull
+    @OneToOne
+    @JsonbTransient
+    private LocalAccount localAccount;
+
+    /**
+     * Get the value of localAccount
+     *
+     * @return the value of localAccount
+     */
+    public LocalAccount getLocalAccount() {
+<span class="nc" id="L49">        return localAccount;</span>
+    }
+
+    /**
+     * Set the value of localAccount
+     *
+     * @param localAccount new value of localAccount
+     */
+    public void setLocalAccount(LocalAccount localAccount) {
+<span class="fc" id="L58">        this.localAccount = localAccount;</span>
+<span class="fc" id="L59">    }</span>
+
+    @Override
+    public String getRedirectTo() {
+<span class="fc" id="L63">        return &quot;/&quot;;</span>
+    }
+
+    /**
+     * Mark the localAccount as verified
+     */
+    @Override
+    public void consume() {
+<span class="fc" id="L71">        this.localAccount.setVerified(Boolean.TRUE);</span>
+<span class="fc" id="L72">    }</span>
+
+    @Override
+    public String getEmailBody(String link) {
+<span class="fc" id="L76">        return MessageFormat.format(&quot;Please verify your email address: &lt;a href=\&quot;{0}\&quot;&gt;verify&lt;/a&gt;&quot;, link);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

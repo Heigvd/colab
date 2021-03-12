@@ -21,24 +21,37 @@ public class ColabErrorMessage extends ColabHttpException {
      * List of message type
      */
 <span class="fc" id="L23">    public enum MessageCode {</span>
-<span class="fc" id="L24">        INVALID_REQUEST,</span>
-<span class="fc" id="L25">        AUTHENTICATION_FAILED,</span>
-<span class="fc" id="L26">        USERNAME_ALREADY_TAKEN,</span>
+<span class="fc" id="L24">        AUTHENTICATION_FAILED,</span>
+<span class="fc" id="L25">        AUTHENTICATION_REQUIRED,</span>
+<span class="fc" id="L26">        ACCESS_DENIED,</span>
+<span class="fc" id="L27">        BAD_REQUEST,</span>
+<span class="fc" id="L28">        INVALID_REQUEST,</span>
+<span class="fc" id="L29">        NOT_FOUND,</span>
+<span class="fc" id="L30">        USERNAME_ALREADY_TAKEN,</span>
+<span class="fc" id="L31">        SMTP_ERROR,</span>
+<span class="fc" id="L32">        EMAIL_MESSAGE_ERROR,</span>
     }
 
     /**
      * Error message
      */
-    private final MessageCode messageCode;
+    private MessageCode messageCode;
+
+    /**
+     * Default bad request error
+     */
+    public ColabErrorMessage() {
+<span class="fc" id="L44">        this(Response.Status.BAD_REQUEST, MessageCode.BAD_REQUEST);</span>
+<span class="fc" id="L45">    }</span>
 
     /**
      * Create a new error message with a HTTP 400 bad request status
      *
      * @param messageCode error message code
      */
-    public ColabErrorMessage(MessageCode messageCode) {
-<span class="fc" id="L40">        this(Response.Status.BAD_REQUEST, messageCode);</span>
-<span class="fc" id="L41">    }</span>
+    private ColabErrorMessage(MessageCode messageCode) {
+<span class="fc" id="L53">        this(Response.Status.BAD_REQUEST, messageCode);</span>
+<span class="fc" id="L54">    }</span>
 
     /**
      * Create a new error message
@@ -46,16 +59,85 @@ public class ColabErrorMessage extends ColabHttpException {
      * @param status      custom HTTP status
      * @param messageCode error message code
      */
-    public ColabErrorMessage(Response.Status status, MessageCode messageCode) {
-<span class="fc" id="L50">        super(status);</span>
-<span class="fc" id="L51">        this.messageCode = messageCode;</span>
-<span class="fc" id="L52">    }</span>
+    private ColabErrorMessage(Response.Status status, MessageCode messageCode) {
+<span class="fc" id="L63">        super(status);</span>
+<span class="fc" id="L64">        this.messageCode = messageCode;</span>
+<span class="fc" id="L65">    }</span>
 
     /**
      * @return message code
      */
     public MessageCode getMessageCode() {
-<span class="fc" id="L58">        return messageCode;</span>
+<span class="fc" id="L71">        return messageCode;</span>
     }
+
+    /**
+     * Set message code
+     *
+     * @param messageCode message code
+     */
+    public void setMessageCode(MessageCode messageCode) {
+<span class="fc" id="L80">        this.messageCode = messageCode;</span>
+<span class="fc" id="L81">    }</span>
+
+    /**
+     * @return 400 invalid request error
+     */
+    public static ColabErrorMessage invalidRequest() {
+<span class="nc" id="L87">        return new ColabErrorMessage(ColabErrorMessage.MessageCode.INVALID_REQUEST);</span>
+    }
+
+    /**
+     * @return 404 not found
+     */
+    public static ColabErrorMessage notFound() {
+<span class="nc" id="L94">        return new ColabErrorMessage(Response.Status.NOT_FOUND,</span>
+            ColabErrorMessage.MessageCode.NOT_FOUND);
+    }
+
+    /**
+     * @return 403 Forbidden
+     */
+    public static ColabErrorMessage forbidden() {
+<span class="fc" id="L102">        return new ColabErrorMessage(Response.Status.FORBIDDEN,</span>
+            ColabErrorMessage.MessageCode.ACCESS_DENIED);
+    }
+
+    /**
+     * @return 401 Unauthorized
+     */
+    public static ColabErrorMessage authenticationRequired() {
+<span class="nc" id="L110">        return new ColabErrorMessage(Response.Status.UNAUTHORIZED,</span>
+            ColabErrorMessage.MessageCode.AUTHENTICATION_REQUIRED);
+    }
+
+    /**
+     * @return 400 username already taken
+     */
+    public static ColabErrorMessage userNameAlreadyTaken() {
+<span class="nc" id="L118">        return new ColabErrorMessage(ColabErrorMessage.MessageCode.USERNAME_ALREADY_TAKEN);</span>
+    }
+
+    /**
+     * @return 400 authentication failed
+     */
+    public static ColabErrorMessage authenticationFailed() {
+<span class="fc" id="L125">        return new ColabErrorMessage(ColabErrorMessage.MessageCode.AUTHENTICATION_FAILED);</span>
+    }
+
+    /**
+     * @return 400 SMTP error
+     */
+    public static ColabErrorMessage smtpError() {
+<span class="nc" id="L132">        return new ColabErrorMessage(ColabErrorMessage.MessageCode.SMTP_ERROR);</span>
+    }
+
+    /**
+     * @return 400 Malformed Email Message
+     */
+    public static ColabErrorMessage emailMessageError() {
+<span class="nc" id="L139">        return new ColabErrorMessage(ColabErrorMessage.MessageCode.EMAIL_MESSAGE_ERROR);</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

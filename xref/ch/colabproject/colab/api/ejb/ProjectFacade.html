@@ -68,11 +68,11 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">     * @throws ColabMergeException if updating the project failed</em>
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">public</strong> <a name="Project" href<a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a>/../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> updateProject(<a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>          <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> mProject = <strong class="jxr_keyword">this</strong>.getProject(project.getId());
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> managedProject = <strong class="jxr_keyword">this</strong>.getProject(project.getId());
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          mProject.merge(project);
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          managedProject.merge(project);
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>          <strong class="jxr_keyword">return</strong> mProject;
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          <strong class="jxr_keyword">return</strong> managedProject;
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      }
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      <em class="jxr_javadoccomment">/**</em>

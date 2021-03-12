@@ -16,15 +16,17 @@ import javax.json.stream.JsonGenerator;
  * Let jsonb serialize localDateTime as timestamp
  *
  * @author maxence
+ * @deprecated use @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
  */
-<span class="nc" id="L20">public class DateSerializer implements JsonbSerializer&lt;LocalDateTime&gt; {</span>
+@Deprecated
+<span class="nc" id="L22">public class DateSerializer implements JsonbSerializer&lt;LocalDateTime&gt; {</span>
 
     /**
      * {@inheritDoc }
      */
     @Override
     public void serialize(LocalDateTime date, JsonGenerator generator, SerializationContext ctx) {
-<span class="nc" id="L27">        generator.write(date.toEpochSecond(ZoneOffset.UTC));</span>
-<span class="nc" id="L28">    }</span>
+<span class="nc" id="L29">        generator.write(date.toEpochSecond(ZoneOffset.UTC));</span>
+<span class="nc" id="L30">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

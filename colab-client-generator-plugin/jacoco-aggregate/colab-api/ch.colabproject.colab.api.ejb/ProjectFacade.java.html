@@ -60,11 +60,11 @@ import javax.persistence.TypedQuery;
      * @throws ColabMergeException if updating the project failed
      */
     public Project updateProject(Project project) throws ColabMergeException {
-<span class="nc" id="L63">        Project mProject = this.getProject(project.getId());</span>
+<span class="nc" id="L63">        Project managedProject = this.getProject(project.getId());</span>
 
-<span class="nc" id="L65">        mProject.merge(project);</span>
+<span class="nc" id="L65">        managedProject.merge(project);</span>
 
-<span class="nc" id="L67">        return mProject;</span>
+<span class="nc" id="L67">        return managedProject;</span>
     }
 
     /**
