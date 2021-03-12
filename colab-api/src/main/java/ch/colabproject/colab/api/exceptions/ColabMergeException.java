@@ -15,6 +15,8 @@ import ch.colabproject.colab.api.model.ColabEntity;
  */
 public class ColabMergeException extends Exception {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * The entity to update
      */

@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.exceptions;
+package ch.colabproject.colab.generator.model.exceptions;
 
 import javax.ws.rs.core.Response;
 
@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
  *
  * @author maxence
  */
-public class ColabErrorMessage extends ColabHttpException {
+public class HttpErrorMessage extends HttpException {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,7 +40,7 @@ public class ColabErrorMessage extends ColabHttpException {
     /**
      * Default bad request error
      */
-    public ColabErrorMessage() {
+    public HttpErrorMessage() {
         this(Response.Status.BAD_REQUEST, MessageCode.BAD_REQUEST);
     }
 
@@ -49,7 +49,7 @@ public class ColabErrorMessage extends ColabHttpException {
      *
      * @param messageCode error message code
      */
-    private ColabErrorMessage(MessageCode messageCode) {
+    private HttpErrorMessage(MessageCode messageCode) {
         this(Response.Status.BAD_REQUEST, messageCode);
     }
 
@@ -59,7 +59,7 @@ public class ColabErrorMessage extends ColabHttpException {
      * @param status      custom HTTP status
      * @param messageCode error message code
      */
-    private ColabErrorMessage(Response.Status status, MessageCode messageCode) {
+    private HttpErrorMessage(Response.Status status, MessageCode messageCode) {
         super(status);
         this.messageCode = messageCode;
     }
@@ -83,60 +83,60 @@ public class ColabErrorMessage extends ColabHttpException {
     /**
      * @return 400 invalid request error
      */
-    public static ColabErrorMessage invalidRequest() {
-        return new ColabErrorMessage(ColabErrorMessage.MessageCode.INVALID_REQUEST);
+    public static HttpErrorMessage invalidRequest() {
+        return new HttpErrorMessage(HttpErrorMessage.MessageCode.INVALID_REQUEST);
     }
 
     /**
      * @return 404 not found
      */
-    public static ColabErrorMessage notFound() {
-        return new ColabErrorMessage(Response.Status.NOT_FOUND,
-            ColabErrorMessage.MessageCode.NOT_FOUND);
+    public static HttpErrorMessage notFound() {
+        return new HttpErrorMessage(Response.Status.NOT_FOUND,
+            HttpErrorMessage.MessageCode.NOT_FOUND);
     }
 
     /**
      * @return 403 Forbidden
      */
-    public static ColabErrorMessage forbidden() {
-        return new ColabErrorMessage(Response.Status.FORBIDDEN,
-            ColabErrorMessage.MessageCode.ACCESS_DENIED);
+    public static HttpErrorMessage forbidden() {
+        return new HttpErrorMessage(Response.Status.FORBIDDEN,
+            HttpErrorMessage.MessageCode.ACCESS_DENIED);
     }
 
     /**
      * @return 401 Unauthorized
      */
-    public static ColabErrorMessage authenticationRequired() {
-        return new ColabErrorMessage(Response.Status.UNAUTHORIZED,
-            ColabErrorMessage.MessageCode.AUTHENTICATION_REQUIRED);
+    public static HttpErrorMessage authenticationRequired() {
+        return new HttpErrorMessage(Response.Status.UNAUTHORIZED,
+            HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED);
     }
 
     /**
      * @return 400 username already taken
      */
-    public static ColabErrorMessage userNameAlreadyTaken() {
-        return new ColabErrorMessage(ColabErrorMessage.MessageCode.USERNAME_ALREADY_TAKEN);
+    public static HttpErrorMessage userNameAlreadyTaken() {
+        return new HttpErrorMessage(HttpErrorMessage.MessageCode.USERNAME_ALREADY_TAKEN);
     }
 
     /**
      * @return 400 authentication failed
      */
-    public static ColabErrorMessage authenticationFailed() {
-        return new ColabErrorMessage(ColabErrorMessage.MessageCode.AUTHENTICATION_FAILED);
+    public static HttpErrorMessage authenticationFailed() {
+        return new HttpErrorMessage(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED);
     }
 
     /**
      * @return 400 SMTP error
      */
-    public static ColabErrorMessage smtpError() {
-        return new ColabErrorMessage(ColabErrorMessage.MessageCode.SMTP_ERROR);
+    public static HttpErrorMessage smtpError() {
+        return new HttpErrorMessage(HttpErrorMessage.MessageCode.SMTP_ERROR);
     }
 
     /**
      * @return 400 Malformed Email Message
      */
-    public static ColabErrorMessage emailMessageError() {
-        return new ColabErrorMessage(ColabErrorMessage.MessageCode.EMAIL_MESSAGE_ERROR);
+    public static HttpErrorMessage emailMessageError() {
+        return new HttpErrorMessage(HttpErrorMessage.MessageCode.EMAIL_MESSAGE_ERROR);
     }
 
 }

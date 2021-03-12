@@ -6,9 +6,9 @@
  */
 package ch.colabproject.colab.generator.rest;
 
-import ch.colabproject.colab.api.security.annotations.AdminResource;
-import ch.colabproject.colab.api.security.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.TypeScriptHelper;
+import ch.colabproject.colab.generator.model.annotations.AdminResource;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;

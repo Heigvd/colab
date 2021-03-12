@@ -7,7 +7,7 @@
 package ch.colabproject.colab.tests.rest;
 
 import ch.colabproject.colab.api.ejb.UserManagement;
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
@@ -122,7 +122,7 @@ public class UserControllerTest extends AbstractArquillianTest {
 
         myUser.setPassword("WrongPassword");
 
-        TestHelper.assertThrows(ColabErrorMessage.MessageCode.AUTHENTICATION_FAILED, () -> {
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED, () -> {
             this.signIn(myUser);
         });
 
@@ -174,7 +174,7 @@ public class UserControllerTest extends AbstractArquillianTest {
         Assertions.assertFalse(sensei.isAdmin());
         Long senseiId = sensei.getId();
 
-        TestHelper.assertThrows(ColabErrorMessage.MessageCode.ACCESS_DENIED, () -> {
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.userController.grantAdminRight(senseiId);
         });
 

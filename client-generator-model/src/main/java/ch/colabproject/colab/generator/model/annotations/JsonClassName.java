@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.rest.utils;
+package ch.colabproject.colab.generator.model.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

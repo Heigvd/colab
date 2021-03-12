@@ -8,7 +8,7 @@ package ch.colabproject.colab.tests.tests;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.ejb.UserManagement;
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.AuthInfo;
@@ -195,7 +195,7 @@ public abstract class AbstractArquillianTest {
      *
      * @return a user who can login with {@link #signIn(TestUser) signIn}
      *
-     * @throws ColabErrorMessage if something went wrong
+     * @throws HttpErrorMessage if something went wrong
      */
     protected TestUser signup(String username, String email, String password)
         throws ClientErrorException {
@@ -322,9 +322,11 @@ public abstract class AbstractArquillianTest {
                 Assertions.fail("No Mailhog ! did you \"docker run -d --restart always -p 8025:8025 -p 1025:1025 mailhog/mailhog\"?");
             }
 
+            JsonbProvider jsonbProvider = new JsonbProvider();
             this.client = new ColabClient(
                 deploymentURL.toString(),
                 "COLAB_SESSION_ID",
+                jsonbProvider.getJsonbMapper(),
                 new JsonbProvider()
             );
             logger.info("Start TEST {}", info.getDisplayName());
@@ -339,7 +341,7 @@ public abstract class AbstractArquillianTest {
             verifyAccounts();
 
             User adminUser = userManagement.findUserByUsername("admin");
-            adminUser.isAdmin();
+
             userManagement.grantAdminRight(adminUser.getId());
 
             signIn(admin);

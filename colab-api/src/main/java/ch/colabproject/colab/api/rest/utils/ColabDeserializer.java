@@ -16,18 +16,19 @@ import javax.json.bind.serializer.DeserializationContext;
 import javax.json.bind.serializer.JsonbDeserializer;
 import javax.json.stream.JsonParser;
 import org.reflections.Reflections;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 
 /**
  * Custom deserializer which can handle polymorphic JSONable object
  *
  * @author Maxence
  */
-public class ColabDeserializer implements JsonbDeserializer<Jsonable> {
+public class ColabDeserializer implements JsonbDeserializer<WithJsonDiscriminator> {
 
     /**
      * Store class references
      */
-    private static final Map<String, Class<? extends Jsonable>> CLASSES_MAP = new HashMap<>();
+    private static final Map<String, Class<? extends WithJsonDiscriminator>> CLASSES_MAP = new HashMap<>();
 
     /**
      * Reflections allow to find, for instance, all implementations of an interface
@@ -43,19 +44,19 @@ public class ColabDeserializer implements JsonbDeserializer<Jsonable> {
      * {@inheritDoc }
      */
     @Override
-    public Jsonable deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
+    public WithJsonDiscriminator deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
 
         // find @class discriminant from object to deserialize
         JsonObject value = parser.getObject();
         String atClass = value.getString("@class", null);
 
         // is this @class already known?
-        Class<? extends Jsonable> theClass = CLASSES_MAP.get(atClass);
+        Class<? extends WithJsonDiscriminator> theClass = CLASSES_MAP.get(atClass);
 
         if (theClass == null) {
             // nope -> let's resolve it with the help of reflections
-            Optional<Class<? extends Jsonable>> concreteClass
-                = REFLECTIONS.getSubTypesOf(Jsonable.class)
+            Optional<Class<? extends WithJsonDiscriminator>> concreteClass
+                = REFLECTIONS.getSubTypesOf(WithJsonDiscriminator.class)
                     .stream()
                     .filter(cl -> cl.getSimpleName().equals(atClass))
                     .findFirst();

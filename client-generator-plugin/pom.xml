@@ -6,7 +6,7 @@
         <artifactId>colab</artifactId>
         <version>0.1</version>
     </parent>
-    <artifactId>colab-client-generator-plugin</artifactId>
+    <artifactId>client-generator-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <description>Analyse classes and generate java + typescript REST clients.</description>
 
@@ -38,7 +38,7 @@
         <!-- DEPENDENCIES -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>colab-api</artifactId>
+            <artifactId>client-generator-model</artifactId>
             <version>${project.version}</version>
         </dependency>
 

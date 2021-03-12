@@ -55,7 +55,7 @@ public class TokenController {
      * @param id         if of the token to consume
      * @param plainToken plain token as receive by e-mail
      *
-     * @throws ch.colabproject.colab.api.exceptions.ColabErrorMessage <ul>
+     * @throws ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage <ul>
      * <li>notFound if the token does not exists;
      * <li>bad request if token does not match;
      * <li>authenticationRequired if token requires authentication but current user id not

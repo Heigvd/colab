@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.setup;
 
 import ch.colabproject.colab.api.ejb.UserManagement;
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.user.User;
 import javax.inject.Inject;
 import javax.servlet.ServletConfig;
@@ -50,7 +50,7 @@ public class ApplicationLifecycle extends HttpServlet {
                     ColabConfiguration.getDefaultAdminPassword()
                 );
                 userManagement.grantAdminRight(admin.getId());
-            } catch (ColabErrorMessage ex) {
+            } catch (HttpErrorMessage ex) {
                 logger.error("Fails to create default amdin user. "
                     + "Does non-admin user exists with same username or email address");
             } catch (RuntimeException ex) {

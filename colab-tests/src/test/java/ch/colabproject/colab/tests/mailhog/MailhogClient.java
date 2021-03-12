@@ -23,7 +23,7 @@ public class MailhogClient extends RestClient {
      * Create a localhost:8025 mailhog client
      */
     public MailhogClient() {
-        super("http://localhost:8025", null);
+        super("http://localhost:8025", null, null);
     }
 
     /*

@@ -48,10 +48,11 @@
     <modules>
         <module>build-tools</module>
         <module>colab-api</module>
-        <module>client-generator-plugin</module>
         <module>colab-client</module>
         <module>colab-tests</module>
         <module>colab-webapp</module>
+        <module>client-generator-model</module>
+        <module>client-generator-plugin</module>
     </modules>
 
     <properties>

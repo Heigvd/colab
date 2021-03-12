@@ -6,14 +6,14 @@
  */
 package ch.colabproject.colab.api.model;
 
-import ch.colabproject.colab.api.rest.utils.Jsonable;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 
 /**
  * Simple interface which depict objects having a Long id
  *
  * @author maxence
  */
-public interface WithId extends Jsonable {
+public interface WithId extends WithJsonDiscriminator {
 
     /**
      *

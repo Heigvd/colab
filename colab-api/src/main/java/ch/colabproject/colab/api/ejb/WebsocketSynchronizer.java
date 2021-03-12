@@ -60,7 +60,7 @@ public class WebsocketSynchronizer implements Synchronization, Serializable {
                     (u) -> !deleted.stream()
                         .anyMatch(
                             (d) -> d.getId().equals(u.getId())
-                            && d.getType().equals(u.getJsonBType())
+                            && d.getType().equals(u.getJsonDiscriminator())
                         )
                 ).collect(Collectors.toList());
 

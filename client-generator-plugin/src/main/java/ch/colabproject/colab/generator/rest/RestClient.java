@@ -6,13 +6,13 @@
  */
 package ch.colabproject.colab.generator.rest;
 
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
-import ch.colabproject.colab.api.rest.config.JsonbProvider;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -47,13 +47,19 @@ public class RestClient {
     private Client client;
 
     /**
+     * Jsonb mapper
+     */
+    private final Jsonb jsonb;
+
+    /**
      * Create a REST client.
      *
      * @param baseUri        base URL
      * @param cookieName     session cookie name
+     * @param jsonb          jsonb mapper to use, if null a default mapper will be used
      * @param clientFeatures REST client feature
      */
-    public RestClient(String baseUri, String cookieName, Object... clientFeatures) {
+    public RestClient(String baseUri, String cookieName, Jsonb jsonb, Object... clientFeatures) {
         ClientBuilder builder = ClientBuilder.newBuilder();
 
         for (Object feature : clientFeatures) {
@@ -64,8 +70,14 @@ public class RestClient {
             builder.register(new CookieFilter(cookieName));
         }
 
-        client = builder.build();
-        webTarget = client.target(baseUri);
+        this.client = builder.build();
+        this.webTarget = client.target(baseUri);
+
+        if (jsonb != null) {
+            this.jsonb = jsonb;
+        } else {
+            this.jsonb = JsonbBuilder.create();
+        }
     }
 
     /**
@@ -76,7 +88,7 @@ public class RestClient {
     }
 
     /**
-     * Try to read enttiy
+     * Try to read entity
      *
      * @param <T>    entity type
      * @param stream input stream to read from
@@ -87,7 +99,6 @@ public class RestClient {
     private <T> T readEntity(InputStream stream, GenericType<T> type) {
         if (stream != null) {
             try {
-                Jsonb jsonb = JsonbProvider.getJsonb();
                 return jsonb.fromJson(stream, type.getType());
             } catch (JsonbException ex) {
                 return null;
@@ -110,8 +121,8 @@ public class RestClient {
                 return null;
             }
         } else if (family == Status.Family.CLIENT_ERROR) {
-            ColabErrorMessage error = readEntity((InputStream) response.getEntity(),
-                new GenericType<>(ColabErrorMessage.class));
+            HttpErrorMessage error = readEntity((InputStream) response.getEntity(),
+                new GenericType<>(HttpErrorMessage.class));
             if (error != null) {
                 throw error;
             } else {

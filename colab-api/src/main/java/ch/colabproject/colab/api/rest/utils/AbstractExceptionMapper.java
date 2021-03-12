@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.utils;
 
-import ch.colabproject.colab.api.exceptions.ColabHttpException;
+import ch.colabproject.colab.generator.model.exceptions.HttpException;
 import javax.ejb.EJBException;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.core.Response;
@@ -34,8 +34,8 @@ public class AbstractExceptionMapper {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         } else if (exception instanceof EJBException) {
             return processException(((EJBException) exception).getCausedByException());
-        } else if (exception instanceof ColabHttpException) {
-            return Response.status(((ColabHttpException) exception).getHttpStatus())
+        } else if (exception instanceof HttpException) {
+            return Response.status(((HttpException) exception).getHttpStatus())
                 .entity(exception)
                 .build();
         } else if (exception instanceof ConstraintViolationException) {

@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.AuthInfo;
@@ -187,11 +187,11 @@ public class UserManagement {
      * @return authentication method to use to authentication as email owner or new random one which
      *         can be use to create a brand new localAccount
      *
-     * @throws ColabErrorMessage invalidRequest if there is no identifier
+     * @throws HttpErrorMessage invalidRequest if there is no identifier
      */
     public AuthMethod getAuthenticationMethod(String identifier) {
         if (identifier == null || identifier.isBlank()) {
-            throw ColabErrorMessage.invalidRequest();
+            throw HttpErrorMessage.invalidRequest();
         } else {
             LocalAccount account = this.findLocalAccountByIdentifier(identifier);
 
@@ -227,7 +227,7 @@ public class UserManagement {
      *
      * @return a brand new user
      *
-     * @throws ColabErrorMessage if username is already taken
+     * @throws HttpErrorMessage if username is already taken
      */
     public User createUser(String username, String email, String plainPassword) {
         AuthMethod method = getDefaultRandomAuthenticationMethod();
@@ -253,7 +253,7 @@ public class UserManagement {
      *
      * @return brand new user embedding an LocalAccount
      *
-     * @throws ColabErrorMessage if username is already taken
+     * @throws HttpErrorMessage if username is already taken
      */
     public User signup(SignUpInfo signup) {
         // username already taken ?
@@ -284,11 +284,11 @@ public class UserManagement {
                 return user;
             } else {
                 // wait.... throwing something else here leaks account existence...
-                throw ColabErrorMessage.userNameAlreadyTaken();
+                throw HttpErrorMessage.userNameAlreadyTaken();
             }
 
         } else {
-            throw ColabErrorMessage.userNameAlreadyTaken();
+            throw HttpErrorMessage.userNameAlreadyTaken();
         }
     }
 
@@ -299,7 +299,7 @@ public class UserManagement {
      *
      * @return just authenticated user of null is authentication did not succeed
      *
-     * @throws ColabErrorMessage if authentication failed
+     * @throws HttpErrorMessage if authentication failed
      */
     public User authenticate(AuthInfo authInfo) {
         LocalAccount account = this.findLocalAccountByIdentifier(authInfo.getIdentifier());
@@ -354,7 +354,7 @@ public class UserManagement {
         // authentication fails
         // OR client did not provide required hash
         // OR account not found
-        throw ColabErrorMessage.authenticationFailed();
+        throw HttpErrorMessage.authenticationFailed();
     }
 
     /**

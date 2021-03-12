@@ -4,17 +4,15 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.security.annotations;
+package ch.colabproject.colab.generator.model.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import liquibase.pro.packaged.ch;
 
 /**
  * Depict REST classes or methods which are available to administrator only
- * Test is done by {@link  ch.colabproject.colab.api.security.AuthenticationFilter }
  *
  * @author maxence
  */

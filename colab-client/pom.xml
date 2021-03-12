@@ -38,7 +38,7 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>colab-client-generator-plugin</artifactId>
+            <artifactId>client-generator-plugin</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
@@ -56,8 +56,15 @@
 
             <plugin>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>colab-client-generator-plugin</artifactId>
+                <artifactId>client-generator-plugin</artifactId>
                 <version>${project.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>colab-api</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>

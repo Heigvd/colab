@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.HashMethod;
@@ -147,7 +147,7 @@ public class TokenDao {
      * @param account      account to verify
      * @param failsOnError if false, silent SMTP error
      *
-     * @throws ColabErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
+     * @throws HttpErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
      *                           messageError if the message contains errors (eg. malformed
      *                           addresses)
      */
@@ -158,7 +158,7 @@ public class TokenDao {
         } catch (MessagingException ex) {
             logger.error("Fails to send email address verification email", ex);
             if (failsOnError) {
-                throw ColabErrorMessage.smtpError();
+                throw HttpErrorMessage.smtpError();
             }
         }
     }
@@ -171,7 +171,7 @@ public class TokenDao {
      *
      * @return the consumed token
      *
-     * @throws ColabErrorMessage notFound if the token does not exists; bad request if token does
+     * @throws HttpErrorMessage notFound if the token does not exists; bad request if token does
      *                           not match; authenticationRequired if token requires authentication
      *                           but current user id not
      */
@@ -179,18 +179,18 @@ public class TokenDao {
         Token token = this.getToken(id);
         if (token != null) {
             if (token.isAuthenticationRequired() && !requestManager.isAuthenticated()) {
-                throw ColabErrorMessage.authenticationRequired();
+                throw HttpErrorMessage.authenticationRequired();
             } else {
                 if (token.checkHash(plainToken)) {
                     token.consume();
                     em.remove(token);
                     return token;
                 } else {
-                    throw ColabErrorMessage.invalidRequest();
+                    throw HttpErrorMessage.invalidRequest();
                 }
             }
         } else {
-            throw ColabErrorMessage.notFound();
+            throw HttpErrorMessage.notFound();
         }
     }
 }

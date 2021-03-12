@@ -6,12 +6,12 @@
  */
 package ch.colabproject.colab.api.ws.message;
 
-import ch.colabproject.colab.api.rest.utils.Jsonable;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 
 /**
  * Abstract class for all websocket messages
  *
  * @author maxence
  */
-public abstract class WsMessage implements Jsonable {
+public abstract class WsMessage implements WithJsonDiscriminator {
 }

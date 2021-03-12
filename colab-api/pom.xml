@@ -36,6 +36,12 @@
 
         <!--*****************************************************************-->
         <!-- DEPENDENCIES -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>client-generator-model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!--  reflections used for JSON deserialization -->
         <dependency>
             <groupId>org.reflections</groupId>

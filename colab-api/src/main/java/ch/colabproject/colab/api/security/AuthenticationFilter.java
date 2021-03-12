@@ -7,10 +7,10 @@
 package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.security.annotations.AdminResource;
-import ch.colabproject.colab.api.security.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.annotations.AdminResource;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -101,7 +101,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         Method targetMethod = resourceInfo.getResourceMethod();
 
         User currentUser = requestManager.getCurrentUser();
-        ColabErrorMessage abortWith = null;
+        HttpErrorMessage abortWith = null;
 
         if (currentUser == null) {
             // curenr user not authenticated: make sure the targeted method is accessible to
@@ -114,7 +114,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 // No current user but annotation required to be authenticated
                 // abort with 401 code
                 logger.trace("Request aborted:user is not authenticated");
-                abortWith = ColabErrorMessage.authenticationRequired();
+                abortWith = HttpErrorMessage.authenticationRequired();
             }
         }
 
@@ -125,12 +125,12 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             if (currentUser == null) {
                 // no current user : unauthorized asks for user to authenticate
                 logger.trace("Request aborted:user is not authenticated");
-                abortWith = ColabErrorMessage.authenticationRequired();
+                abortWith = HttpErrorMessage.authenticationRequired();
             } else {
                 if (!currentUser.isAdmin()) {
                     // current user is authenticaed but lack admin right: forbidden
                     logger.trace("Request aborted:user tries to access admin resource");
-                    abortWith = ColabErrorMessage.forbidden();
+                    abortWith = HttpErrorMessage.forbidden();
                 }
             }
         }

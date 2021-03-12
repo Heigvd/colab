@@ -8,15 +8,15 @@ package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.ejb.UserManagement;
-import ch.colabproject.colab.api.exceptions.ColabErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.security.annotations.AdminResource;
-import ch.colabproject.colab.api.security.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.annotations.AdminResource;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -90,7 +90,7 @@ public class UserController {
      *
      * @param signup all data required to create a local account
      *
-     * @throws ColabErrorMessage if creation fails for any reason
+     * @throws HttpErrorMessage if creation fails for any reason
      */
     @POST
     @Path("SignUp")
@@ -103,7 +103,7 @@ public class UserController {
      *
      * @param authInfo credentials
      *
-     * @throws ColabErrorMessage if authentication fails for any reason
+     * @throws HttpErrorMessage if authentication fails for any reason
      */
     @POST
     @Path("SignIn")

@@ -6,9 +6,11 @@
  */
 package ch.colabproject.colab.generator;
 
+import ch.colabproject.colab.generator.model.annotations.JsonbMapperProvider;
 import ch.colabproject.colab.generator.rest.RestController;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.util.AbstractMap.SimpleEntry;
@@ -19,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.json.bind.Jsonb;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Path;
 import org.apache.maven.plugin.MojoFailureException;
@@ -91,6 +94,29 @@ public class Generator {
     }
 
     /**
+     * Try to find a jsonb mapper from a {@link JsonbMapperProvider} implementation.
+     *
+     * @return jsbonb mapper
+     */
+    public Jsonb getJsonBMapper() {
+        Set<Class<? extends JsonbMapperProvider>> mapperProviders
+            = reflections.getSubTypesOf(JsonbMapperProvider.class);
+        if (!mapperProviders.isEmpty()) {
+            Class<? extends JsonbMapperProvider> provider = mapperProviders.iterator().next();
+            try {
+                return provider.getConstructor().newInstance().getJsonbMapper();
+            } catch (NoSuchMethodException | SecurityException | InstantiationException
+                | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                if (log != null) {
+                    log.error("Fails to instantiate JsonbMapperProvider");
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Process all classes annotated with {@link Path}. Generate a {@link RestController} instance
      * for each class and store them in {@link #restControllers}
      */
@@ -129,6 +155,7 @@ public class Generator {
     public void generateJavaClient(String targetDir, boolean dryRun) throws MojoFailureException {
         Map<String, String> imports = new HashMap<>();
         imports.put("RestClient", "ch.colabproject.colab.generator.rest.RestClient");
+        imports.put("Jsonb", "javax.json.bind.Jsonb");
         imports.put("GenericType", "javax.ws.rs.core.GenericType");
         imports.put("PathPattern", "org.glassfish.jersey.uri.PathPattern");
         imports.put("UriTemplate", "org.glassfish.jersey.uri.UriTemplate");
@@ -155,7 +182,7 @@ public class Generator {
             .append(clientName)
             .append(" REST client"
                 + " */\n"
-                + "@SuppressWarnings(\"PMD.FieldDeclarationsShouldBeAtStartOfClass\")"
+                + "@SuppressWarnings(\"PMD.FieldDeclarationsShouldBeAtStartOfClass\")\n"
                 + "public class ")
             .append(clientName)
             .append(" extends RestClient {"
@@ -166,12 +193,13 @@ public class Generator {
                 + "     *\n"
                 + "     * @param baseUri        base URI\n"
                 + "     * @param cookieName     session cookie name\n"
+                + "     * @param jsonb          jsonb\n"
                 + "     * @param clientFeatures addition http client feature\n"
                 + "     */\n"
                 + "    public ")
             .append(clientName)
-            .append("(String baseUri, String cookieName, Object... clientFeatures) {\n"
-                + "        super(baseUri, cookieName, clientFeatures);\n"
+            .append("(String baseUri, String cookieName, Jsonb jsonb, Object... clientFeatures) {\n"
+                + "        super(baseUri, cookieName, jsonb, clientFeatures);\n"
                 + "    }")
             .append(innerClasses)
             .append("}");

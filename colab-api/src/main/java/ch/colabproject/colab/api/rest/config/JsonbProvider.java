@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest.config;
 
 import ch.colabproject.colab.api.rest.utils.ColabDeserializer;
+import ch.colabproject.colab.generator.model.annotations.JsonbMapperProvider;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
@@ -19,7 +20,7 @@ import javax.ws.rs.ext.Provider;
  * @author Maxence
  */
 @Provider
-public class JsonbProvider implements ContextResolver<Jsonb> {
+public class JsonbProvider implements JsonbMapperProvider, ContextResolver<Jsonb> {
 
     /**
      * {@inheritDoc}
@@ -42,5 +43,10 @@ public class JsonbProvider implements ContextResolver<Jsonb> {
             .withDeserializers(new ColabDeserializer());
 
         return JsonbBuilder.create(config);
+    }
+
+    @Override
+    public Jsonb getJsonbMapper() {
+        return JsonbProvider.getJsonb();
     }
 }

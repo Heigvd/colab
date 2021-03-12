@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.exceptions;
+package ch.colabproject.colab.generator.model.exceptions;
 
 import javax.ejb.ApplicationException;
 import javax.json.bind.annotation.JsonbTransient;
@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
  * @author maxence
  */
 @ApplicationException(rollback = true)
-public abstract class ColabHttpException extends RuntimeException {
+public abstract class HttpException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,7 +28,7 @@ public abstract class ColabHttpException extends RuntimeException {
     /**
      * Create a default error with HTTP 400 bad request status
      */
-    public ColabHttpException() {
+    public HttpException() {
         this(Response.Status.BAD_REQUEST);
     }
 
@@ -37,7 +37,7 @@ public abstract class ColabHttpException extends RuntimeException {
      *
      * @param httpStatus HTTP status code
      */
-    public ColabHttpException(Response.Status httpStatus) {
+    public HttpException(Response.Status httpStatus) {
         this.httpStatus = httpStatus;
     }
 

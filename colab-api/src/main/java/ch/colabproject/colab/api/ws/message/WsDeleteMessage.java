@@ -73,7 +73,7 @@ public class WsDeleteMessage extends WsMessage {
          * @param object object to index
          */
         public IndexEntry(WithId object) {
-            this.type = object.getJsonBType();
+            this.type = object.getJsonDiscriminator();
             this.id = object.getId();
         }
 
