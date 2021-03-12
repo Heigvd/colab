@@ -39,6 +39,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
@@ -314,7 +315,12 @@ public abstract class AbstractArquillianTest {
     public void init(TestInfo info) {
         if (userManagement != null) {
             this.mailClient = new MailhogClient();
-            mailClient.deleteAllMessages();
+            try {
+                mailClient.deleteAllMessages();
+            } catch (Throwable ex) {
+                logger.error("NO MAILHOG");
+                Assertions.fail("No Mailhog ! did you \"docker run -d --restart always -p 8025:8025 -p 1025:1025 mailhog/mailhog\"?");
+            }
 
             this.client = new ColabClient(
                 deploymentURL.toString(),

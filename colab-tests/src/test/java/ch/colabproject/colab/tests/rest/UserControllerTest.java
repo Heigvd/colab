@@ -17,7 +17,6 @@ import ch.colabproject.colab.tests.tests.TestUser;
 import java.util.Arrays;
 import java.util.Date;
 import javax.inject.Inject;
-import javax.ws.rs.ClientErrorException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
