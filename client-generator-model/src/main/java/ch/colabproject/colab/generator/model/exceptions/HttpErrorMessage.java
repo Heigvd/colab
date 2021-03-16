@@ -25,7 +25,6 @@ public class HttpErrorMessage extends HttpException {
         AUTHENTICATION_REQUIRED,
         ACCESS_DENIED,
         BAD_REQUEST,
-        INVALID_REQUEST,
         NOT_FOUND,
         USERNAME_ALREADY_TAKEN,
         SMTP_ERROR,
@@ -81,10 +80,10 @@ public class HttpErrorMessage extends HttpException {
     }
 
     /**
-     * @return 400 invalid request error
+     * @return 400 invalid bad request
      */
-    public static HttpErrorMessage invalidRequest() {
-        return new HttpErrorMessage(HttpErrorMessage.MessageCode.INVALID_REQUEST);
+    public static HttpErrorMessage badRequest() {
+        return new HttpErrorMessage(HttpErrorMessage.MessageCode.BAD_REQUEST);
     }
 
     /**

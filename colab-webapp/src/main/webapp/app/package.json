@@ -41,14 +41,15 @@
         "@fortawesome/free-regular-svg-icons": "^5.14.0",
         "@fortawesome/free-solid-svg-icons": "^5.14.0",
         "@fortawesome/react-fontawesome": "^0.1.11",
+        "colab-rest-client": "link:../../../../../colab-client/target/generated-sources/tsClient",
         "diff": "^5.0.0",
         "emotion": "^11.0.0",
         "lodash": "^4.17.19",
         "react": "^17.0.1",
         "react-dom": "^17.0.1",
+        "react-password-strength-bar": "^0.3.3",
         "react-redux": "^7.2.1",
         "redux": "^4.0.5",
-        "redux-thunk": "^2.3.0",
-        "colab-rest-client": "link:../../../../../colab-client/target/generated-sources/tsClient"
+        "redux-thunk": "^2.3.0"
     }
 }

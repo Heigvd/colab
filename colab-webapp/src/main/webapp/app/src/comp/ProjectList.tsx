@@ -5,23 +5,22 @@
  * Licensed under the MIT License
  */
 
-import * as React from "react";
-import {ColabState, TDispatch} from "../store";
-import * as Store from "../store";
+import * as React from 'react';
+import { ColabState, TDispatch } from '../store';
+import * as Store from '../store';
 
-import {connect, useSelector} from "react-redux";
+import { connect } from 'react-redux';
 
-import {Destroyer} from "./Destroyer";
+import { Destroyer } from './Destroyer';
 
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPlus} from "@fortawesome/free-solid-svg-icons";
-import {Project} from 'colab-rest-client';
-import {css} from "@emotion/css";
-import {AutoSaveTextEditor} from "./AutoSaveTextEditor";
-import {iconButton} from "./style";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Project } from 'colab-rest-client';
+import { css } from '@emotion/css';
+import { AutoSaveTextEditor } from './AutoSaveTextEditor';
+import { iconButton } from './style';
 
-interface StateProps {
-};
+interface StateProps {}
 
 interface DispatchProps {
   saveProject: (project: Project) => void;
@@ -34,33 +33,40 @@ interface OwnProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-
 // Display one project and allow to edit its name
-const ProjectDisplayInternal = ({project, saveProject, deleteProject}: Props) => {
+const ProjectDisplayInternal = ({ project, saveProject, deleteProject }: Props) => {
   return (
-    <div className={css({
-      margin: "20px",
-      width: "max-content",
-      border: "1px solid grey"
-    })}>
-      <div className={css({
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        borderBottom: "1px solid grey"
-      })}>
-        <span className={css({})} >Project #{project.id}</span>
+    <div
+      className={css({
+        margin: '20px',
+        width: 'max-content',
+        border: '1px solid grey',
+      })}
+    >
+      <div
+        className={css({
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          borderBottom: '1px solid grey',
+        })}
+      >
+        <span className={css({})}>Project #{project.id}</span>
       </div>
-      <div className={css({
-        margin: "10px"
-      })}>
+      <div
+        className={css({
+          margin: '10px',
+        })}
+      >
         <AutoSaveTextEditor
-          value={project.name || ""}
-          onChange={(newValue) =>
-            saveProject({...project, name: newValue})
-          }
+          value={project.name || ''}
+          onChange={newValue => saveProject({ ...project, name: newValue })}
         />
-        <Destroyer onDelete={() => {deleteProject(project)}} />
+        <Destroyer
+          onDelete={() => {
+            deleteProject(project);
+          }}
+        />
       </div>
     </div>
   );
@@ -68,8 +74,7 @@ const ProjectDisplayInternal = ({project, saveProject, deleteProject}: Props) =>
 
 // Link props to state & store
 export const ProjectDisplay = connect<StateProps, DispatchProps, OwnProps, ColabState>(
-  state => ({
-  }),
+  _state => ({}),
   (dispatch: TDispatch) => ({
     saveProject: (project: Project) => {
       dispatch(Store.updateProject(project));
@@ -77,50 +82,47 @@ export const ProjectDisplay = connect<StateProps, DispatchProps, OwnProps, Colab
     deleteProject: (project: Project) => {
       dispatch(Store.updateProject(project));
     },
-  })
+  }),
 )(ProjectDisplayInternal);
-
 
 interface ListStateProps {
   projects: Project[];
-};
+}
 
 interface ListDispatchProps {
   createProject: (project: Project) => void;
 }
 
-interface ListOwnProps {
-}
+interface ListOwnProps {}
 
 type ListProps = ListStateProps & ListDispatchProps & ListOwnProps;
 
-
-function InternalProjectListDisplay({projects, createProject}: ListProps) {
-  return <div>
+function InternalProjectListDisplay({ projects, createProject }: ListProps) {
+  return (
     <div>
-      {projects.sort((a, b) => (a.id || 0) - (b.id || 0)).map(project => (
-        <ProjectDisplay key={project.id} project={project} />
-      ))}
+      <div>
+        {projects
+          .sort((a, b) => (a.id || 0) - (b.id || 0))
+          .map(project => (
+            <ProjectDisplay key={project.id} project={project} />
+          ))}
+      </div>
+      <div>
+        <span
+          className={css({ cursor: 'Pointer' })}
+          onClick={() => {
+            createProject({
+              '@class': 'Project',
+              name: '',
+            });
+          }}
+        >
+          <FontAwesomeIcon className={iconButton} icon={faPlus} />
+          New project
+        </span>
+      </div>
     </div>
-    <div>
-      <span
-        className={css({cursor: 'Pointer'})}
-        onClick={() => {
-          createProject({
-            "@class": "Project",
-            name: "",
-          });
-        }}
-      >
-        <FontAwesomeIcon
-          className={iconButton}
-          icon={faPlus}
-
-        />
-        New project
-    </span>
-    </div>
-  </div>
+  );
 }
 
 /**
@@ -128,11 +130,11 @@ function InternalProjectListDisplay({projects, createProject}: ListProps) {
  */
 export const ProjectList = connect<ListStateProps, ListDispatchProps, ListOwnProps, ColabState>(
   state => ({
-    projects: Object.values(state.projects)
+    projects: Object.values(state.projects),
   }),
   (dispatch: TDispatch) => ({
     createProject: (project: Project) => {
       dispatch(Store.createProject(project));
-    }
-  })
+    },
+  }),
 )(InternalProjectListDisplay);

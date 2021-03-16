@@ -4,10 +4,11 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.generator;
+package ch.colabproject.colab.generator.plugin;
 
 import ch.colabproject.colab.generator.model.annotations.JsonbMapperProvider;
-import ch.colabproject.colab.generator.rest.RestController;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import ch.colabproject.colab.generator.plugin.rest.RestController;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -15,6 +16,7 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +82,11 @@ public class Generator {
         this.packageName = packageName;
         this.clientName = clientName;
 
-        this.reflections = new Reflections((Object[]) restPackages);
+        List<Object> pkgs = new ArrayList<>();
+        pkgs.add("ch.colabproject.colab.generator.model");
+        pkgs.addAll(Arrays.asList(restPackages));
+
+        this.reflections = new Reflections(pkgs.toArray());
     }
 
     /**
@@ -154,7 +160,7 @@ public class Generator {
      */
     public void generateJavaClient(String targetDir, boolean dryRun) throws MojoFailureException {
         Map<String, String> imports = new HashMap<>();
-        imports.put("RestClient", "ch.colabproject.colab.generator.rest.RestClient");
+        imports.put("RestClient", "ch.colabproject.colab.generator.plugin.rest.RestClient");
         imports.put("Jsonb", "javax.json.bind.Jsonb");
         imports.put("GenericType", "javax.ws.rs.core.GenericType");
         imports.put("PathPattern", "org.glassfish.jersey.uri.PathPattern");
@@ -235,77 +241,15 @@ public class Generator {
         throws MojoFailureException {
         Map<String, Type> extraTypes = new HashMap<>();
         StringBuilder sb = new StringBuilder();
-        sb.append("/**\n"
-            + " * build fetch options\n"
-            + " */\n"
-            + "function getOptions({\n"
-            + "    method,\n"
-            + "    body,\n"
-            + "    contentType\n"
-            + "}: {\n"
-            + "    method?: string;\n"
-            + "    body?: {} | string | FormData;\n"
-            + "    contentType?: string;\n"
-            + "}): RequestInit {\n"
-            + "    let headers;\n"
-            + "    if (contentType) {\n"
-            + "        // do not set multipart/form-data by hand but let the\n"
-            + "        // browser do it\n"
-            + "        if (contentType != \"multipart/form-data\") {\n"
-            + "            headers = new Headers({\n"
-            + "                \"content-type\": contentType\n"
-            + "            });\n"
-            + "        }\n"
-            + "    } else {\n"
-            + "        headers = new Headers({\n"
-            + "            \"content-type\": \"application/json\"\n"
-            + "        });\n"
-            + "    }\n"
-            + "\n"
-            + "    return {\n"
-            + "        headers: headers,\n"
-            + "        method: method || \"GET\",\n"
-            + "        body: body\n"
-            + "            ? body instanceof FormData\n"
-            + "                ? (body as FormData)\n"
-            + "                : JSON.stringify(body)\n"
-            + "            : undefined\n"
-            + "    };\n"
-            + "}\n"
-            + "\n"
-            + "const sendRequest = async <T>(\n"
-            + "  method: string,\n"
-            + "  path: string,\n"
-            + "  body: string | {} | undefined,\n"
-            + "): Promise<T> => {\n"
-            + "  const res = await fetch(\n"
-            + "    path,\n"
-            + "    getOptions({\n"
-            + "      method: method,\n"
-            + "      body: body\n"
-            + "    })\n"
-            + "  );\n"
-            + "\n"
-            + "  if (res.ok) {\n"
-            + "    if (res.status != 204) {\n"
-            + "      return res.json();\n"
-            + "    } else {\n"
-            + "      return new Promise<void>((resolve) => resolve()) as unknown as Promise<T>;\n"
-            + "    }\n"
-            + "  } else {\n"
-            + "    let error;"
-            + "    try {\n"
-            + "      error = await res.json();\n"
-            + "    } catch (e) {\n"
-            + "      throw new Error(\"Failure\");\n"
-            + "    }\n"
-            + "    throw error;\n"
-            + "  }\n"
-            + "}\n\n");
+        sb.append(this.getTsClientTemplate());
+        extraTypes.put("WithJsonDiscriminator", WithJsonDiscriminator.class);
 
         String modules = this.restControllers.stream().map(controller
             -> controller.generateTypescriptClient(extraTypes)
         ).collect(Collectors.joining(System.lineSeparator()));
+
+        // TS interface name => list of @class values
+        Map<String, List<String>> inheritance = new HashMap<>();
 
         List<Entry<String, Type>> queue = new ArrayList<>(extraTypes.entrySet());
         while (!queue.isEmpty()) {
@@ -316,6 +260,7 @@ public class Generator {
             String tsInterface = TypeScriptHelper.generateInterface(
                 entry.getValue(),
                 snowballedTypes,
+                inheritance,
                 reflections
             );
             sb.append(tsInterface);
@@ -328,11 +273,42 @@ public class Generator {
             });
         }
 
-        sb.append("/**\n"
-            + "* The ").append(clientName).append(" REST client\n"
+        sb.append("/**"
+            + " * Some orthopedic tools"
+            + " */"
+            + "interface TypeMap {\n  ")
+            .append(
+                inheritance.keySet().stream().map((key)
+                    -> key + ": " + key + ";")
+                    .collect(Collectors.joining("\n  "))
+            )
+            .append("\n}\n\n")
+            .append("const inheritance : {[key: string]: string[]} = {\n")
+            .append(
+                inheritance.entrySet().stream().map((entry)
+                    -> entry.getKey() + ": [" + entry.getValue().stream()
+                .map(v -> "'" + v + "'")
+                .collect(Collectors.joining(", ")) + "]"
+                ).collect(Collectors.joining(",\n  ")))
+            .append("\n}\n\n")
+            .append("export const entityIs = <T extends keyof TypeMap>(entity: unknown, klass: T)\n"
+                + "    : entity is TypeMap[T] => {\n"
+                + "\n"
+                + "    if (typeof entity === 'object' && entity != null) {\n"
+                + "        if (\"@class\" in entity) {\n"
+                + "            const dis = entity[\"@class\"];\n"
+                + "            if (typeof dis === 'string') {\n"
+                + "                return inheritance[klass].includes(dis);\n"
+                + "            }\n"
+                + "        }\n"
+                + "    }\n"
+                + "    return false;\n"
+                + "}")
+            .append("\n\n\n/**\n"
+                + "* The ").append(clientName).append(" REST client\n"
             + " */\n"
             + "export const ").append(clientName)
-            .append(" = function (baseUrl: string) {")
+            .append(" = function (baseUrl: string, errorHandler: (error: unknown) => void) {")
             .append("\n    return {")
             .append(modules)
             .append("    }\n")
@@ -364,7 +340,7 @@ public class Generator {
         try {
             Files.createDirectories(java.nio.file.Path.of(directory));
 
-            try (BufferedWriter writer = Files.newBufferedWriter(
+            try ( BufferedWriter writer = Files.newBufferedWriter(
                 java.nio.file.Path.of(directory, filename))) {
                 writer.write(content);
             } catch (IOException ex) {
@@ -390,18 +366,24 @@ public class Generator {
      * @return eg. my-awesome-rest-client
      */
     private String generateModuleName(String name) {
-        StringBuilder sb = new StringBuilder();
+        return name
+            .trim()
+            // prefix all uppercase char preceded by something with an dash
+            .replaceAll("(?<!^)[A-Z](?!$)", "-$0")
+            .toLowerCase();
+    }
 
-        for (int i = 0; i < name.length(); i++) {
-            char c = name.charAt(i);
-            if (Character.isUpperCase(c)) {
-                sb.append('-').append(Character.toLowerCase(c));
-            } else {
-                sb.append(c);
-            }
-        }
-
-        return sb.toString();
+    /**
+     * get TS client tempalte
+     *
+     * @return intial content of the TS client
+     */
+    private String getTsClientTemplate() {
+        String tsConfig = FileHelper.readFile("templates/client.ts");
+        return tsConfig.replaceAll(
+            "\\{\\{MODULE_NAME\\}\\}",
+            generateModuleName(clientName)
+        );
     }
 
     /**
@@ -410,28 +392,11 @@ public class Generator {
      * @return content of package.json
      */
     private String generatePackageDotJson() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\n"
-            + "    \"name\": \"" + generateModuleName(this.clientName) + "\",\n"
-            + "    \"version\": \"1.0.0\",\n"
-            + "    \"keywords\": [\"restClient\"],\n"
-            + "    \"author\": \"albabot\",\n"
-            + "    \"main\": \"dist/index.js\",\n"
-            + "    \"private\": true,\n"
-            + "    \"scripts\": {\n"
-            + "      \"build\": \"rimraf dist && tsc\",\n"
-            + "      \"lint\": \"eslint 'src' --ext '.js,.ts,.tsx'\"\n"
-            + "    },\n"
-            + "    \"contributors\": [],\n"
-            + "    \"dependencies\": {},\n"
-            + "      \"devDependencies\": {\n"
-            + "        \"rimraf\": \"^3.0.0\",\n"
-            + "        \"typescript\": \"^3.7.5\",\n"
-            + "        \"tslint\" : \"^5.1.0\",\n"
-            + "        \"copyfiles\": \"^2.3.0\"\n"
-            + "  }\n"
-            + "}");
-        return sb.toString();
+        String tsConfig = FileHelper.readFile("templates/package.json");
+        return tsConfig.replaceAll(
+            "\\{\\{MODULE_NAME\\}\\}",
+            generateModuleName(clientName)
+        );
     }
 
     /**
@@ -440,28 +405,7 @@ public class Generator {
      * @return content of package.json
      */
     private String generateTsconfigDotJson() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\n"
-            + "    \"compilerOptions\": {\n"
-            + "        \"target\": \"esnext\",\n"
-            + "        \"allowJs\": false,\n"
-            + "        \"module\": \"esnext\",\n"
-            + "        \"outDir\": \"dist\",\n"
-            + "        \"sourceMap\":true,\n"
-            + "        \"strict\": true,\n"
-            + "        \"moduleResolution\": \"node\",\n"
-            + "        \"allowSyntheticDefaultImports\": true,\n"
-            + "        \"suppressImplicitAnyIndexErrors\": true,\n"
-            + "        \"declaration\": true\n"
-            + "    },\n"
-            + "    \"files\": [\n"
-            + "        \"src/" + this.clientName + ".ts\"\n"
-            + "    ],\n"
-            + "    \"exclude\": [\n"
-            + "        \"node_modules\"\n"
-            + "    ]\n"
-            + "}");
-        return sb.toString();
+        String tsConfig = FileHelper.readFile("templates/tsconfig.json");
+        return tsConfig.replaceAll("\\{\\{CLIENT_NAME\\}\\}", this.clientName);
     }
-
 }

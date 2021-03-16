@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.generator;
 
+import ch.colabproject.colab.generator.plugin.TypeScriptHelper;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;

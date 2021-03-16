@@ -4,20 +4,17 @@
  *
  * Licensed under the MIT License
  */
-import * as React from "react";
-import {css, cx} from "@emotion/css";
+import * as React from 'react';
+import { css, cx } from '@emotion/css';
 
-import Logo from "./images/logo.svg";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSignInAlt} from "@fortawesome/free-solid-svg-icons";
-import {TDispatch, ColabState, signInWithLocalAccount, ACTIONS} from "./store";
-import {connect} from "react-redux";
-import FormContainer from "./FormContainer";
-import {darkMode} from "./comp/style";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+import { TDispatch, ColabState, signInWithLocalAccount, ACTIONS } from './store';
+import { connect } from 'react-redux';
+import FormContainer from './FormContainer';
+import { darkMode } from './comp/style';
 
-
-interface StateProps {
-};
+interface StateProps {}
 
 interface DispatchProps {
   signIn: (identifier: string, password: string) => void;
@@ -30,26 +27,33 @@ interface OwnProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-
-
-function SignInForm({signIn, gotoSignUp, redirectTo}: Props) {
-
+function SignInForm({ signIn, gotoSignUp }: Props) {
   const [credentials, setCredentials] = React.useState({
     identifier: '',
     password: '',
-  })
+  });
 
   return (
     <FormContainer>
-      <div className={css({
-        display: 'flex',
-        flexDirection: 'column'
-      })}>
-        <label>username or email address
-                <input type='text' onChange={(e) => setCredentials({...credentials, identifier: e.target.value})} />
+      <div
+        className={css({
+          display: 'flex',
+          flexDirection: 'column',
+        })}
+      >
+        <label>
+          username or email address
+          <input
+            type="text"
+            onChange={e => setCredentials({ ...credentials, identifier: e.target.value })}
+          />
         </label>
-        <label>password
-                <input type='password' onChange={(e) => setCredentials({...credentials, password: e.target.value})} />
+        <label>
+          password
+          <input
+            type="password"
+            onChange={e => setCredentials({ ...credentials, password: e.target.value })}
+          />
         </label>
       </div>
 
@@ -57,28 +61,27 @@ function SignInForm({signIn, gotoSignUp, redirectTo}: Props) {
         className={cx(
           darkMode,
           css({
-            cursor: "pointer",
-            padding: "5px",
-            width: "max-content",
-            margin: "auto",
-            ":hover": {
-              backgroundColor: "var(--hoverColor)"
-            }
-          }))}
-        onClick={() =>
-          signIn(credentials.identifier, credentials.password)
-        }
+            cursor: 'pointer',
+            padding: '5px',
+            width: 'max-content',
+            margin: 'auto',
+            ':hover': {
+              backgroundColor: 'var(--hoverColor)',
+            },
+          }),
+        )}
+        onClick={() => signIn(credentials.identifier, credentials.password)}
       >
         <span
           className={css({
-            padding: "0 5px"
+            padding: '0 5px',
           })}
         >
           Login
-              </span>
+        </span>
         <FontAwesomeIcon
           className={css({
-            padding: "0 5px"
+            padding: '0 5px',
           })}
           icon={faSignInAlt}
         />
@@ -89,14 +92,13 @@ function SignInForm({signIn, gotoSignUp, redirectTo}: Props) {
 }
 
 export default connect<StateProps, DispatchProps, OwnProps, ColabState>(
-  _state => ({
-  }),
+  _state => ({}),
   (dispatch: TDispatch) => ({
     signIn: (identifier: string, password: string) => {
       dispatch(signInWithLocalAccount(identifier, password));
     },
     gotoSignUp: () => {
       dispatch(ACTIONS.changeAuthStatus('SIGNING_UP'));
-    }
-  })
+    },
+  }),
 )(SignInForm);

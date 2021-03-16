@@ -7,7 +7,9 @@
 package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.WithId;
+import java.util.ArrayList;
 import java.util.Collection;
+import javax.validation.constraints.NotNull;
 
 /**
  * Websocket update message. Contains list of new or updated object
@@ -21,7 +23,15 @@ public class WsUpdateMessage extends WsMessage {
     /**
      * List of new or updated objects
      */
-    private final Collection<WithId> payload;
+    @NotNull
+    private Collection<WithId> payload;
+
+    /**
+     * Default constructor
+     */
+    public WsUpdateMessage() {
+        this.payload = new ArrayList<>();
+    }
 
     /**
      * Create a message based on a list of new or updated objects
@@ -39,4 +49,12 @@ public class WsUpdateMessage extends WsMessage {
         return payload;
     }
 
+    /**
+     * Set paylosd
+     *
+     * @param payload list of updated elements
+     */
+    public void setPayload(Collection<WithId> payload) {
+        this.payload = payload;
+    }
 }

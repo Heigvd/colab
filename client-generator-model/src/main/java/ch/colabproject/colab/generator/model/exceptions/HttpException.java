@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.generator.model.exceptions;
 
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import javax.ejb.ApplicationException;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.ws.rs.core.Response;
@@ -16,7 +17,7 @@ import javax.ws.rs.core.Response;
  * @author maxence
  */
 @ApplicationException(rollback = true)
-public abstract class HttpException extends RuntimeException {
+public abstract class HttpException extends RuntimeException implements WithJsonDiscriminator{
 
     private static final long serialVersionUID = 1L;
 

@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.WithId;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import javax.validation.constraints.NotNull;
 
 /**
  * WebSocker Message which indicates some objects have been deleted
@@ -23,7 +24,14 @@ public class WsDeleteMessage extends WsMessage {
     /**
      * List of object to send through websocket
      */
+    @NotNull
     private Collection<IndexEntry> items;
+
+    /**
+     * Default constructor
+     */
+    public WsDeleteMessage() {
+    }
 
     /**
      * Create a new message which contains all provided objects
@@ -60,12 +68,20 @@ public class WsDeleteMessage extends WsMessage {
         /**
          * object @class
          */
-        private final String type;
+        @NotNull
+        private String type;
 
         /**
          * Object id
          */
-        private final Long id;
+        @NotNull
+        private Long id;
+
+        /**
+         * Default constructor
+         */
+        public IndexEntry() {
+        }
 
         /**
          * Create an new index entry based on the given wihId object
@@ -85,12 +101,28 @@ public class WsDeleteMessage extends WsMessage {
         }
 
         /**
+         * Set type, aka @class
+         *
+         * @param type type of the indexed object
+         */
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        /**
          * @return object id
          */
         public Long getId() {
             return id;
         }
 
+        /**
+         * Set id of indexed object
+         *
+         * @param id id of object
+         */
+        public void setId(Long id) {
+            this.id = id;
+        }
     }
-
 }

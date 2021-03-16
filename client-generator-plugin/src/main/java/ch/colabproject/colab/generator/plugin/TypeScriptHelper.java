@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.generator;
+package ch.colabproject.colab.generator.plugin;
 
 import java.io.StringReader;
 import java.lang.reflect.Field;
@@ -29,6 +29,8 @@ import javax.validation.constraints.NotNull;
 import org.apache.maven.plugin.MojoFailureException;
 import org.reflections.Reflections;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Some methods to convert java things to typescript ones
@@ -91,7 +93,7 @@ public class TypeScriptHelper {
      *
      * @param javaType    the java type to generate bindings for
      * @param types       list of type this interface required to be generated too
-     * @param reflections reflection store to fetch abstract classes /interfaces subtypes
+     * @param reflections reflection store to fetch abstract classes /interfaces directSubtypes
      *
      * @return ts interface or type
      *
@@ -100,37 +102,56 @@ public class TypeScriptHelper {
     public static String generateInterface(
         Type javaType,
         Map<String, Type> types,
+        Map<String, List<String>> inheritance,
         Reflections reflections
     ) throws MojoFailureException {
         if (javaType instanceof Class<?>) {
             Class<?> javaClass = (Class<?>) javaType;
             String name = getTsTypeName(javaClass);
+            if (javaClass.isArray()) {
+                // hack: remove []
+                name = name.replace("[]", "");
+            }
             StringBuilder sb = new StringBuilder("export ");
 
             int modifiers = javaClass.getModifiers();
             if (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers)) {
                 // abstract class
                 // Type X = directSubCLass | otherdirectsubclass
+
+                List<String> allConcreteSubtypes = reflections.getSubTypesOf(javaClass).stream()
+                    .filter(subType
+                        -> !Modifier.isAbstract(subType.getModifiers())
+                    && !Modifier.isInterface(subType.getModifiers())
+                    )
+                    .map(subType -> getTsTypeName(subType))
+                    .collect(Collectors.toList());
+                inheritance.put(name, allConcreteSubtypes);
+
+                String directSubtypes = reflections.getSubTypesOf(javaClass).stream()
+                    // Only keep direct directSubtypes
+                    .filter(subType -> {
+                        return (Modifier.isAbstract(modifiers)
+                            && javaClass.equals(subType.getSuperclass()))
+                            || (Modifier.isInterface(modifiers)
+                            && Arrays.stream(subType.getInterfaces())
+                                .anyMatch(iface -> iface.equals(javaClass)));
+                    })
+                    .map(subType -> {
+                        String subTypeTsName = getTsTypeName(subType);
+                        // make sure to generate interface
+                        types.put(subTypeTsName, subType);
+                        return subTypeTsName;
+                    })
+                    .collect(Collectors.joining(" | "));
+
                 sb.append("type ").append(name).append(" = ")
-                    .append(reflections.getSubTypesOf(javaClass).stream()
-                        // Only keep direct subtypes
-                        .filter(subType -> {
-                            return (Modifier.isAbstract(modifiers)
-                                && javaClass.equals(subType.getSuperclass()))
-                                || (Modifier.isInterface(modifiers)
-                                && Arrays.stream(subType.getInterfaces())
-                                    .anyMatch(iface -> iface.equals(javaClass)));
-                        }
-                        )
-                        .map(subType -> {
-                            String subTypeTsName = getTsTypeName(subType);
-                            // make sure to generate interface
-                            types.put(subTypeTsName, subType);
-                            return subTypeTsName;
-                        })
-                        .collect(Collectors.joining(" | ")))
+                    .append(directSubtypes == null || directSubtypes.isBlank() ? " never" : directSubtypes)
                     .append(";\n");
             } else {
+                inheritance.put(name, new ArrayList<>());
+                inheritance.get(name).add(name);
+
                 // concrete class
                 sb.append("interface ").append(name).append("{\n").append("  '@class': '")
                     .append(name).append("';\n");

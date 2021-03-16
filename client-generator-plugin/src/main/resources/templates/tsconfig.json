@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "allowJs": false,
+        "module": "esnext",
+        "outDir": "dist",
+        "sourceMap":true,
+        "strict": true,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "declaration": true
+    },
+    "files": [
+        "src/{{CLIENT_NAME}}.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

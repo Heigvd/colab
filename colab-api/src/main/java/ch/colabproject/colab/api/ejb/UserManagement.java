@@ -187,11 +187,11 @@ public class UserManagement {
      * @return authentication method to use to authentication as email owner or new random one which
      *         can be use to create a brand new localAccount
      *
-     * @throws HttpErrorMessage invalidRequest if there is no identifier
+     * @throws HttpErrorMessage badRequest if there is no identifier
      */
     public AuthMethod getAuthenticationMethod(String identifier) {
         if (identifier == null || identifier.isBlank()) {
-            throw HttpErrorMessage.invalidRequest();
+            throw HttpErrorMessage.badRequest();
         } else {
             LocalAccount account = this.findLocalAccountByIdentifier(identifier);
 

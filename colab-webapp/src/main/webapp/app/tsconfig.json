@@ -10,7 +10,10 @@
     "resolveJsonModule": true,
     "declaration": true,
     "strict": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src",

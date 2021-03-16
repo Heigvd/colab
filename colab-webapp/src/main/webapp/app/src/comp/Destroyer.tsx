@@ -5,12 +5,12 @@
  * Licensed under the MIT License
  */
 
-import * as React from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faTimes, faCheck, faTrashAlt} from "@fortawesome/free-solid-svg-icons";
-import {iconButton} from "./style";
+import * as React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes, faCheck, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { iconButton } from './style';
 
-export function Destroyer({onDelete}: {onDelete: () => void}) {
+export function Destroyer({ onDelete }: { onDelete: () => void }) {
   const [waitDeleteConfirm, setConfirm] = React.useState(false);
 
   return (
@@ -22,21 +22,17 @@ export function Destroyer({onDelete}: {onDelete: () => void}) {
             icon={faTimes}
             onClick={() => setConfirm(false)}
           />
-          <FontAwesomeIcon
-            className={iconButton}
-            icon={faCheck}
-            onClick={() => onDelete}
-          />
+          <FontAwesomeIcon className={iconButton} icon={faCheck} onClick={() => onDelete} />
         </div>
       ) : (
-          <div>
-            <FontAwesomeIcon
-              className={iconButton}
-              icon={faTrashAlt}
-              onClick={() => setConfirm(true)}
-            />
-          </div>
-        )}
+        <div>
+          <FontAwesomeIcon
+            className={iconButton}
+            icon={faTrashAlt}
+            onClick={() => setConfirm(true)}
+          />
+        </div>
+      )}
     </div>
   );
 }

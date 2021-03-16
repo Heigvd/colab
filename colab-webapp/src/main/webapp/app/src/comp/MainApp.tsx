@@ -4,26 +4,25 @@
  *
  * Licensed under the MIT License
  */
-import * as React from "react";
+import * as React from 'react';
 
-import Logo from "../images/logo.svg";
+import Logo from '../images/logo.svg';
 
-import LogoBw from "../images/logo_bw.svg";
-import {ColabState, TDispatch, initData, reloadCurrentUser, signOut} from "../store";
-import {connect} from "react-redux";
-import {css, cx} from "@emotion/css";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSync, faSignOutAlt} from "@fortawesome/free-solid-svg-icons";
-import {ProjectList} from "./ProjectList";
-import LoginForm from "../SignIn";
-import SignUpForm from "../SignUp";
-import {fullPageStyle, pulseEase, iconButton} from "./style";
-
+import { ColabState, TDispatch, initData, reloadCurrentUser, signOut } from '../store';
+import { connect } from 'react-redux';
+import { css } from '@emotion/css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSync, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { ProjectList } from './ProjectList';
+import LoginForm from '../SignIn';
+import SignUpForm from '../SignUp';
+import { fullPageStyle, iconButton } from './style';
+import Loading from '../Loading';
 
 interface StateProps {
   authenticationStatus: ColabState['authenticationStatus'];
-  status: ColabState["status"];
-};
+  status: ColabState['status'];
+}
 
 interface DispatchProps {
   reloadCurrentUser: () => void;
@@ -31,9 +30,7 @@ interface DispatchProps {
   signOut: () => void;
 }
 
-interface OwnProps {
-
-}
+interface OwnProps {}
 
 type Props = StateProps & DispatchProps & OwnProps;
 
@@ -42,10 +39,8 @@ const MainAppInternal = ({
   signOut,
   reloadCurrentUser,
   authenticationStatus,
-  status
+  status,
 }: Props) => {
-
-
   if (authenticationStatus === undefined) {
     reloadCurrentUser();
   }
@@ -54,53 +49,43 @@ const MainAppInternal = ({
     init();
   }
 
-  if (authenticationStatus === "UNAUTHENTICATED") {
-    return <LoginForm />
-  } else if (authenticationStatus === "SIGNING_UP") {
-    return <SignUpForm />
-  } else if (authenticationStatus === undefined || status === "UNINITIALIZED") {
-    return (
-      <div className={fullPageStyle}>
-        <div
-          className={css({
-            margin: "auto"
-          })}
-        >
-          <LogoBw className={cx(pulseEase, css({
-            width: "200px",
-            maxWidth: "10wv",
-          }))} />
-        </div>
-      </div>
-    );
+  if (authenticationStatus === 'UNAUTHENTICATED') {
+    return <LoginForm />;
+  } else if (authenticationStatus === 'SIGNING_UP') {
+    return <SignUpForm />;
+  } else if (authenticationStatus === undefined || status === 'UNINITIALIZED') {
+    return <Loading />;
   } else {
     // authenticationStatus := AUTHENTICATED
     // status := SYNCING || READY
     return (
       <div className={fullPageStyle}>
-        <div className={css({
-          borderBottom: "1px solid grey",
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-        })}>
+        <div
+          className={css({
+            borderBottom: '1px solid grey',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          })}
+        >
           <Logo
             className={css({
-              width: "36px",
-              height: "auto",
-              padding: '5px'
+              width: '36px',
+              height: 'auto',
+              padding: '5px',
             })}
           />
-          <div className={css({
-            flexGrow: 1,
-          })}
+          <div
+            className={css({
+              flexGrow: 1,
+            })}
           >
             coLAB
           </div>
 
           <FontAwesomeIcon
             className={iconButton}
-            pulse={status === "SYNCING"}
+            pulse={status === 'SYNCING'}
             onClick={() => {
               init();
             }}
@@ -114,12 +99,12 @@ const MainAppInternal = ({
             }}
             icon={faSignOutAlt}
           />
-
         </div>
 
-        <div className={css({
-          flexGrow: 1
-        })}
+        <div
+          className={css({
+            flexGrow: 1,
+          })}
         >
           <ProjectList />
         </div>
@@ -141,7 +126,7 @@ export default connect<StateProps, DispatchProps, OwnProps, ColabState>(
       dispatch(reloadCurrentUser());
     },
     signOut: () => {
-      dispatch(signOut())
-    }
-  })
+      dispatch(signOut());
+    },
+  }),
 )(MainAppInternal);

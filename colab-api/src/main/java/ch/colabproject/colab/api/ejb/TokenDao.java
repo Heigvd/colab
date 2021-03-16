@@ -171,7 +171,7 @@ public class TokenDao {
      *
      * @return the consumed token
      *
-     * @throws HttpErrorMessage notFound if the token does not exists; bad request if token does
+     * @throws HttpErrorMessage notFound if the token does not exists; badRequest if token does
      *                           not match; authenticationRequired if token requires authentication
      *                           but current user id not
      */
@@ -186,7 +186,7 @@ public class TokenDao {
                     em.remove(token);
                     return token;
                 } else {
-                    throw HttpErrorMessage.invalidRequest();
+                    throw HttpErrorMessage.badRequest();
                 }
             }
         } else {

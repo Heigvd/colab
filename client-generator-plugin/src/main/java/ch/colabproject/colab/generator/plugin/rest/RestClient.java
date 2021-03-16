@@ -4,9 +4,9 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.generator.rest;
+package ch.colabproject.colab.generator.plugin.rest;
 
-import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -121,8 +121,8 @@ public class RestClient {
                 return null;
             }
         } else if (family == Status.Family.CLIENT_ERROR) {
-            HttpErrorMessage error = readEntity((InputStream) response.getEntity(),
-                new GenericType<>(HttpErrorMessage.class));
+            HttpException error = readEntity((InputStream) response.getEntity(),
+                new GenericType<>(HttpException.class));
             if (error != null) {
                 throw error;
             } else {

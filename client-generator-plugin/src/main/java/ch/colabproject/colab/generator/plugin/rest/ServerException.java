@@ -4,8 +4,9 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.generator.rest;
+package ch.colabproject.colab.generator.plugin.rest;
 
+import ch.colabproject.colab.generator.model.exceptions.HttpException;
 import javax.ws.rs.core.Response;
 
 /**
@@ -16,6 +17,13 @@ import javax.ws.rs.core.Response;
 public class ServerException extends HttpException {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Default 500 error
+     */
+    public ServerException() {
+        this(Response.Status.INTERNAL_SERVER_ERROR);
+    }
 
     /**
      * Create a server error exception

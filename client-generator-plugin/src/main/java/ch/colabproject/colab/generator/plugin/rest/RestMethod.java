@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.generator.rest;
+package ch.colabproject.colab.generator.plugin.rest;
 
 import java.lang.reflect.Type;
 import java.text.MessageFormat;

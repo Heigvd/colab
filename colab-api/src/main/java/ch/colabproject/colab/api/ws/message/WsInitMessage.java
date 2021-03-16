@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.message;
 
+import javax.validation.constraints.NotNull;
 import javax.websocket.Session;
 
 /**
@@ -20,7 +21,14 @@ public class WsInitMessage extends WsMessage {
     /**
      * Unique session ID TODO: check uniqueness through the cluster
      */
-    private final String sessionId;
+    @NotNull
+    private String sessionId;
+
+    /**
+     * Default constructor
+     */
+    public WsInitMessage() {
+    }
 
     /**
      * create a message based on a websocket session
@@ -37,4 +45,14 @@ public class WsInitMessage extends WsMessage {
     public String getSessionId() {
         return sessionId;
     }
+
+    /**
+     * Set session id
+     *
+     * @param sessionId session id
+     */
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
 }

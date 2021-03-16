@@ -4,8 +4,9 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.generator.rest;
+package ch.colabproject.colab.generator.plugin.rest;
 
+import ch.colabproject.colab.generator.model.exceptions.HttpException;
 import javax.ws.rs.core.Response;
 
 /**
@@ -17,6 +18,12 @@ public class ClientException extends HttpException {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     *
+     */
+    public ClientException() {
+        this(Response.Status.BAD_REQUEST);
+    }
     /**
      * Create a client error exception
      *

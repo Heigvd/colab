@@ -4,9 +4,9 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.generator.rest;
+package ch.colabproject.colab.generator.plugin.rest;
 
-import ch.colabproject.colab.generator.TypeScriptHelper;
+import ch.colabproject.colab.generator.plugin.TypeScriptHelper;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.lang.annotation.Annotation;
@@ -472,7 +472,7 @@ public class RestController {
             });
             newLine(sb);
             String tsPath = pathTemplate.createURI(pathParams);
-            sb.append("const path = `").append(tsPath)
+            sb.append("const path = `${baseUrl}").append(tsPath)
                 .append("` + (queryString.length > 0 ? '?' + queryString.join('&') : '');");
             newLine(sb);
             sb.append("return sendRequest")
@@ -484,7 +484,7 @@ public class RestController {
                 .append(method.getBodyParam() != null
                     ? method.getBodyParam().getName()
                     : "undefined")
-                .append(");");
+                .append(", errorHandler);");
             indent--;
             newLine(sb);
             sb.append("},");
