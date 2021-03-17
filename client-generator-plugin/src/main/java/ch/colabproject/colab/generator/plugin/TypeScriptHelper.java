@@ -93,6 +93,7 @@ public class TypeScriptHelper {
      *
      * @param javaType    the java type to generate bindings for
      * @param types       list of type this interface required to be generated too
+     * @param inheritance this method will populate this map will known implementation
      * @param reflections reflection store to fetch abstract classes /interfaces directSubtypes
      *
      * @return ts interface or type
