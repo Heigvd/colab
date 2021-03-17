@@ -16,8 +16,8 @@ ch.colabproject.colab.api.ws
 ch.colabproject.colab.api.ws.message
 ch.colabproject.colab.api.ws.utils
 ch.colabproject.colab.client
-ch.colabproject.colab.generator
 ch.colabproject.colab.generator.model.annotations
 ch.colabproject.colab.generator.model.exceptions
 ch.colabproject.colab.generator.model.interfaces
-ch.colabproject.colab.generator.rest
+ch.colabproject.colab.generator.plugin
+ch.colabproject.colab.generator.plugin.rest

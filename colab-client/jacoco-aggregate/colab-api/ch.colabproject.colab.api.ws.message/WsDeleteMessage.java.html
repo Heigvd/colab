@@ -8,8 +8,10 @@ package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.WithId;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.validation.constraints.NotNull;
 
 /**
  * WebSocker Message which indicates some objects have been deleted
@@ -23,22 +25,30 @@ public class WsDeleteMessage extends WsMessage {
     /**
      * List of object to send through websocket
      */
+    @NotNull
     private Collection&lt;IndexEntry&gt; items;
+
+    /**
+     * Default constructor
+     */
+<span class="nc" id="L34">    public WsDeleteMessage() {</span>
+<span class="nc" id="L35">        this.items = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L36">    }</span>
 
     /**
      * Create a new message which contains all provided objects
      *
      * @param objects list of objet which have been deleted
      */
-<span class="nc" id="L33">    public WsDeleteMessage(Collection&lt;IndexEntry&gt; objects) {</span>
-<span class="nc" id="L34">        this.items = objects;</span>
-<span class="nc" id="L35">    }</span>
+<span class="nc" id="L43">    public WsDeleteMessage(Collection&lt;IndexEntry&gt; objects) {</span>
+<span class="nc" id="L44">        this.items = objects;</span>
+<span class="nc" id="L45">    }</span>
 
     /**
      * @return get the list of deleted object
      */
     public Collection&lt;IndexEntry&gt; getItems() {
-<span class="nc" id="L41">        return items;</span>
+<span class="nc" id="L51">        return items;</span>
     }
 
     /**
@@ -47,8 +57,8 @@ public class WsDeleteMessage extends WsMessage {
      * @param items new list
      */
     public void setItems(List&lt;IndexEntry&gt; items) {
-<span class="nc" id="L50">        this.items = items;</span>
-<span class="nc" id="L51">    }</span>
+<span class="nc" id="L60">        this.items = items;</span>
+<span class="nc" id="L61">    }</span>
 
     /**
      * No need to send full object details, @class + id is way sufficient
@@ -60,38 +70,63 @@ public class WsDeleteMessage extends WsMessage {
         /**
          * object @class
          */
-        private final String type;
+        @NotNull
+        private String type;
 
         /**
          * Object id
          */
-        private final Long id;
+        @NotNull
+        private Long id;
+
+        /**
+         * Default constructor
+         */
+<span class="nc" id="L85">        public IndexEntry() {</span>
+            /* no-op */
+<span class="nc" id="L87">        }</span>
 
         /**
          * Create an new index entry based on the given wihId object
          *
          * @param object object to index
          */
-<span class="nc" id="L75">        public IndexEntry(WithId object) {</span>
-<span class="nc" id="L76">            this.type = object.getJsonDiscriminator();</span>
-<span class="nc" id="L77">            this.id = object.getId();</span>
-<span class="nc" id="L78">        }</span>
+<span class="nc" id="L94">        public IndexEntry(WithId object) {</span>
+<span class="nc" id="L95">            this.type = object.getJsonDiscriminator();</span>
+<span class="nc" id="L96">            this.id = object.getId();</span>
+<span class="nc" id="L97">        }</span>
 
         /**
          * @return index entry type
          */
         public String getType() {
-<span class="nc" id="L84">            return type;</span>
+<span class="nc" id="L103">            return type;</span>
         }
+
+        /**
+         * Set type, aka @class
+         *
+         * @param type type of the indexed object
+         */
+        public void setType(String type) {
+<span class="nc" id="L112">            this.type = type;</span>
+<span class="nc" id="L113">        }</span>
 
         /**
          * @return object id
          */
         public Long getId() {
-<span class="nc" id="L91">            return id;</span>
+<span class="nc" id="L119">            return id;</span>
         }
 
+        /**
+         * Set id of indexed object
+         *
+         * @param id id of object
+         */
+        public void setId(Long id) {
+<span class="nc" id="L128">            this.id = id;</span>
+<span class="nc" id="L129">        }</span>
     }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -171,7 +171,7 @@ import org.slf4j.LoggerFactory;
      *
      * @return the consumed token
      *
-     * @throws HttpErrorMessage notFound if the token does not exists; bad request if token does
+     * @throws HttpErrorMessage notFound if the token does not exists; badRequest if token does
      *                           not match; authenticationRequired if token requires authentication
      *                           but current user id not
      */
@@ -186,7 +186,7 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L186">                    em.remove(token);</span>
 <span class="fc" id="L187">                    return token;</span>
                 } else {
-<span class="nc" id="L189">                    throw HttpErrorMessage.invalidRequest();</span>
+<span class="nc" id="L189">                    throw HttpErrorMessage.badRequest();</span>
                 }
             }
         } else {

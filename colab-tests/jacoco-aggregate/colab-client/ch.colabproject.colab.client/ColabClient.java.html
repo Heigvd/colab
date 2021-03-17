@@ -7,7 +7,7 @@ import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.generator.rest.RestClient;
+import ch.colabproject.colab.generator.plugin.rest.RestClient;
 import java.util.List;
 import javax.json.bind.Jsonb;
 import javax.ws.rs.core.GenericType;
@@ -31,51 +31,20 @@ public class ColabClient extends RestClient {
 <span class="nc" id="L31">    }</span>
     
     /**
-     * {@link ch.colabproject.colab.api.rest.TokenController } client
-<span class="nc" id="L35">     */public TokenControllerClientImpl tokenController = new TokenControllerClientImpl();</span>
-    /**
-     * {@link ch.colabproject.colab.api.rest.TokenController} client implementation
-<span class="nc" id="L38">     */public class TokenControllerClientImpl {</span>
-        
-        /**
-        * PUT api/tokens/{id}/{token: [a-fA-F0-9]+} calls {@link ch.colabproject.colab.api.rest.TokenController#consumeToken}
-        * @param id path param
-        * @param token path param
-        */
-        public void consumeToken(Long id, String token) {
-<span class="nc" id="L46">            UriTemplate pathTemplate = new PathPattern(&quot;api/tokens/{id}/{token: [a-fA-F0-9]+}&quot;).getTemplate();</span>
-<span class="nc" id="L47">            String path = pathTemplate.createURI(id.toString(),token.toString());</span>
-<span class="nc" id="L48">            ColabClient.this.put(path, new GenericType&lt;&gt;(void.class));</span>
-<span class="nc" id="L49">        }</span>
-        
-        /**
-        * GET api/tokens/{id} calls {@link ch.colabproject.colab.api.rest.TokenController#getToken}
-        * @param id path param
-        * @return an instance of {@link Token}
-        */
-        public Token getToken(Long id) {
-<span class="nc" id="L57">            UriTemplate pathTemplate = new PathPattern(&quot;api/tokens/{id}&quot;).getTemplate();</span>
-<span class="nc" id="L58">            String path = pathTemplate.createURI(id.toString());</span>
-<span class="nc" id="L59">            return ColabClient.this.get(path, new GenericType&lt;&gt;(Token.class));</span>
-        }
-    }
-
-    
-    /**
      * {@link ch.colabproject.colab.api.rest.UserController } client
-<span class="nc" id="L66">     */public UserControllerClientImpl userController = new UserControllerClientImpl();</span>
+<span class="nc" id="L35">     */public UserControllerClientImpl userController = new UserControllerClientImpl();</span>
     /**
      * {@link ch.colabproject.colab.api.rest.UserController} client implementation
-<span class="nc" id="L69">     */public class UserControllerClientImpl {</span>
+<span class="nc" id="L38">     */public class UserControllerClientImpl {</span>
         
         /**
         * GET api/users/CurrentAccount calls {@link ch.colabproject.colab.api.rest.UserController#getCurrentAccount}
         * @return an instance of {@link Account}
         */
         public Account getCurrentAccount() {
-<span class="nc" id="L76">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/CurrentAccount&quot;).getTemplate();</span>
-<span class="nc" id="L77">            String path = pathTemplate.createURI();</span>
-<span class="nc" id="L78">            return ColabClient.this.get(path, new GenericType&lt;&gt;(Account.class));</span>
+<span class="nc" id="L45">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/CurrentAccount&quot;).getTemplate();</span>
+<span class="nc" id="L46">            String path = pathTemplate.createURI();</span>
+<span class="nc" id="L47">            return ColabClient.this.get(path, new GenericType&lt;&gt;(Account.class));</span>
         }
         
         /**
@@ -83,9 +52,9 @@ public class ColabClient extends RestClient {
         * @return an instance of {@link User}
         */
         public User getCurrentUser() {
-<span class="nc" id="L86">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/CurrentUser&quot;).getTemplate();</span>
-<span class="nc" id="L87">            String path = pathTemplate.createURI();</span>
-<span class="nc" id="L88">            return ColabClient.this.get(path, new GenericType&lt;&gt;(User.class));</span>
+<span class="nc" id="L55">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/CurrentUser&quot;).getTemplate();</span>
+<span class="nc" id="L56">            String path = pathTemplate.createURI();</span>
+<span class="nc" id="L57">            return ColabClient.this.get(path, new GenericType&lt;&gt;(User.class));</span>
         }
         
         /**
@@ -93,40 +62,40 @@ public class ColabClient extends RestClient {
         * @param id path param
         */
         public void grantAdminRight(Long id) {
-<span class="nc" id="L96">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/{id : [1-9][0-9]*}/GrantAdminRight&quot;).getTemplate();</span>
-<span class="nc" id="L97">            String path = pathTemplate.createURI(id.toString());</span>
-<span class="nc" id="L98">            ColabClient.this.put(path, new GenericType&lt;&gt;(void.class));</span>
-<span class="nc" id="L99">        }</span>
+<span class="nc" id="L65">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/{id : [1-9][0-9]*}/GrantAdminRight&quot;).getTemplate();</span>
+<span class="nc" id="L66">            String path = pathTemplate.createURI(id.toString());</span>
+<span class="nc" id="L67">            ColabClient.this.put(path, new GenericType&lt;&gt;(void.class));</span>
+<span class="nc" id="L68">        }</span>
         
         /**
         * PUT api/users calls {@link ch.colabproject.colab.api.rest.UserController#updateUser}
         * @param user body payload
         */
         public void updateUser(User user) {
-<span class="nc" id="L106">            UriTemplate pathTemplate = new PathPattern(&quot;api/users&quot;).getTemplate();</span>
-<span class="nc" id="L107">            String path = pathTemplate.createURI();</span>
-<span class="nc" id="L108">            ColabClient.this.put(path, user, new GenericType&lt;&gt;(void.class));</span>
-<span class="nc" id="L109">        }</span>
+<span class="nc" id="L75">            UriTemplate pathTemplate = new PathPattern(&quot;api/users&quot;).getTemplate();</span>
+<span class="nc" id="L76">            String path = pathTemplate.createURI();</span>
+<span class="nc" id="L77">            ColabClient.this.put(path, user, new GenericType&lt;&gt;(void.class));</span>
+<span class="nc" id="L78">        }</span>
         
         /**
         * PUT api/users/{id : [1-9][0-9]*}/SwitchClientHashMethod calls {@link ch.colabproject.colab.api.rest.UserController#switchClientHashMethod}
         * @param id path param
         */
         public void switchClientHashMethod(Long id) {
-<span class="nc" id="L116">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/{id : [1-9][0-9]*}/SwitchClientHashMethod&quot;).getTemplate();</span>
-<span class="nc" id="L117">            String path = pathTemplate.createURI(id.toString());</span>
-<span class="nc" id="L118">            ColabClient.this.put(path, new GenericType&lt;&gt;(void.class));</span>
-<span class="nc" id="L119">        }</span>
+<span class="nc" id="L85">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/{id : [1-9][0-9]*}/SwitchClientHashMethod&quot;).getTemplate();</span>
+<span class="nc" id="L86">            String path = pathTemplate.createURI(id.toString());</span>
+<span class="nc" id="L87">            ColabClient.this.put(path, new GenericType&lt;&gt;(void.class));</span>
+<span class="nc" id="L88">        }</span>
         
         /**
         * PUT api/users/{id : [1-9][0-9]*}/SwitchServerHashMethod calls {@link ch.colabproject.colab.api.rest.UserController#switchServerHashMethod}
         * @param id path param
         */
         public void switchServerHashMethod(Long id) {
-<span class="nc" id="L126">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/{id : [1-9][0-9]*}/SwitchServerHashMethod&quot;).getTemplate();</span>
-<span class="nc" id="L127">            String path = pathTemplate.createURI(id.toString());</span>
-<span class="nc" id="L128">            ColabClient.this.put(path, new GenericType&lt;&gt;(void.class));</span>
-<span class="nc" id="L129">        }</span>
+<span class="nc" id="L95">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/{id : [1-9][0-9]*}/SwitchServerHashMethod&quot;).getTemplate();</span>
+<span class="nc" id="L96">            String path = pathTemplate.createURI(id.toString());</span>
+<span class="nc" id="L97">            ColabClient.this.put(path, new GenericType&lt;&gt;(void.class));</span>
+<span class="nc" id="L98">        }</span>
         
         /**
         * GET api/users/AuthMethod/{identifier : [^/]*} calls {@link ch.colabproject.colab.api.rest.UserController#getAuthMethod}
@@ -134,9 +103,9 @@ public class ColabClient extends RestClient {
         * @return an instance of {@link AuthMethod}
         */
         public AuthMethod getAuthMethod(String identifier) {
-<span class="nc" id="L137">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/AuthMethod/{identifier : [^/]*}&quot;).getTemplate();</span>
-<span class="nc" id="L138">            String path = pathTemplate.createURI(identifier.toString());</span>
-<span class="nc" id="L139">            return ColabClient.this.get(path, new GenericType&lt;&gt;(AuthMethod.class));</span>
+<span class="nc" id="L106">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/AuthMethod/{identifier : [^/]*}&quot;).getTemplate();</span>
+<span class="nc" id="L107">            String path = pathTemplate.createURI(identifier.toString());</span>
+<span class="nc" id="L108">            return ColabClient.this.get(path, new GenericType&lt;&gt;(AuthMethod.class));</span>
         }
         
         /**
@@ -144,48 +113,48 @@ public class ColabClient extends RestClient {
         * @param signup body payload
         */
         public void signUp(SignUpInfo signup) {
-<span class="nc" id="L147">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/SignUp&quot;).getTemplate();</span>
-<span class="nc" id="L148">            String path = pathTemplate.createURI();</span>
-<span class="nc" id="L149">            ColabClient.this.post(path, signup, new GenericType&lt;&gt;(void.class));</span>
-<span class="nc" id="L150">        }</span>
+<span class="nc" id="L116">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/SignUp&quot;).getTemplate();</span>
+<span class="nc" id="L117">            String path = pathTemplate.createURI();</span>
+<span class="nc" id="L118">            ColabClient.this.post(path, signup, new GenericType&lt;&gt;(void.class));</span>
+<span class="nc" id="L119">        }</span>
         
         /**
         * POST api/users/SignIn calls {@link ch.colabproject.colab.api.rest.UserController#signIn}
         * @param authInfo body payload
         */
         public void signIn(AuthInfo authInfo) {
-<span class="nc" id="L157">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/SignIn&quot;).getTemplate();</span>
-<span class="nc" id="L158">            String path = pathTemplate.createURI();</span>
-<span class="nc" id="L159">            ColabClient.this.post(path, authInfo, new GenericType&lt;&gt;(void.class));</span>
-<span class="nc" id="L160">        }</span>
+<span class="nc" id="L126">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/SignIn&quot;).getTemplate();</span>
+<span class="nc" id="L127">            String path = pathTemplate.createURI();</span>
+<span class="nc" id="L128">            ColabClient.this.post(path, authInfo, new GenericType&lt;&gt;(void.class));</span>
+<span class="nc" id="L129">        }</span>
         
         /**
         * POST api/users/SignOut calls {@link ch.colabproject.colab.api.rest.UserController#signOut}
         */
         public void signOut() {
-<span class="nc" id="L166">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/SignOut&quot;).getTemplate();</span>
-<span class="nc" id="L167">            String path = pathTemplate.createURI();</span>
-<span class="nc" id="L168">            ColabClient.this.post(path, new GenericType&lt;&gt;(void.class));</span>
-<span class="nc" id="L169">        }</span>
+<span class="nc" id="L135">            UriTemplate pathTemplate = new PathPattern(&quot;api/users/SignOut&quot;).getTemplate();</span>
+<span class="nc" id="L136">            String path = pathTemplate.createURI();</span>
+<span class="nc" id="L137">            ColabClient.this.post(path, new GenericType&lt;&gt;(void.class));</span>
+<span class="nc" id="L138">        }</span>
     }
 
     
     /**
      * {@link ch.colabproject.colab.api.rest.ProjectController } client
-<span class="nc" id="L175">     */public ProjectControllerClientImpl projectController = new ProjectControllerClientImpl();</span>
+<span class="nc" id="L144">     */public ProjectControllerClientImpl projectController = new ProjectControllerClientImpl();</span>
     /**
      * {@link ch.colabproject.colab.api.rest.ProjectController} client implementation
-<span class="nc" id="L178">     */public class ProjectControllerClientImpl {</span>
+<span class="nc" id="L147">     */public class ProjectControllerClientImpl {</span>
         
         /**
         * PUT api/projects calls {@link ch.colabproject.colab.api.rest.ProjectController#updateProject}
         * @param project body payload
         */
         public void updateProject(Project project) {
-<span class="nc" id="L185">            UriTemplate pathTemplate = new PathPattern(&quot;api/projects&quot;).getTemplate();</span>
-<span class="nc" id="L186">            String path = pathTemplate.createURI();</span>
-<span class="nc" id="L187">            ColabClient.this.put(path, project, new GenericType&lt;&gt;(void.class));</span>
-<span class="nc" id="L188">        }</span>
+<span class="nc" id="L154">            UriTemplate pathTemplate = new PathPattern(&quot;api/projects&quot;).getTemplate();</span>
+<span class="nc" id="L155">            String path = pathTemplate.createURI();</span>
+<span class="nc" id="L156">            ColabClient.this.put(path, project, new GenericType&lt;&gt;(void.class));</span>
+<span class="nc" id="L157">        }</span>
         
         /**
         * POST api/projects calls {@link ch.colabproject.colab.api.rest.ProjectController#createProject}
@@ -193,9 +162,9 @@ public class ColabClient extends RestClient {
         * @return an instance of {@link Long}
         */
         public Long createProject(Project project) {
-<span class="nc" id="L196">            UriTemplate pathTemplate = new PathPattern(&quot;api/projects&quot;).getTemplate();</span>
-<span class="nc" id="L197">            String path = pathTemplate.createURI();</span>
-<span class="nc" id="L198">            return ColabClient.this.post(path, project, new GenericType&lt;&gt;(Long.class));</span>
+<span class="nc" id="L165">            UriTemplate pathTemplate = new PathPattern(&quot;api/projects&quot;).getTemplate();</span>
+<span class="nc" id="L166">            String path = pathTemplate.createURI();</span>
+<span class="nc" id="L167">            return ColabClient.this.post(path, project, new GenericType&lt;&gt;(Long.class));</span>
         }
         
         /**
@@ -203,10 +172,10 @@ public class ColabClient extends RestClient {
         * @param id path param
         */
         public void deleteProject(Long id) {
-<span class="nc" id="L206">            UriTemplate pathTemplate = new PathPattern(&quot;api/projects/{id}&quot;).getTemplate();</span>
-<span class="nc" id="L207">            String path = pathTemplate.createURI(id.toString());</span>
-<span class="nc" id="L208">            ColabClient.this.delete(path, new GenericType&lt;&gt;(void.class));</span>
-<span class="nc" id="L209">        }</span>
+<span class="nc" id="L175">            UriTemplate pathTemplate = new PathPattern(&quot;api/projects/{id}&quot;).getTemplate();</span>
+<span class="nc" id="L176">            String path = pathTemplate.createURI(id.toString());</span>
+<span class="nc" id="L177">            ColabClient.this.delete(path, new GenericType&lt;&gt;(void.class));</span>
+<span class="nc" id="L178">        }</span>
         
         /**
         * GET api/projects/{id} calls {@link ch.colabproject.colab.api.rest.ProjectController#getProject}
@@ -214,9 +183,9 @@ public class ColabClient extends RestClient {
         * @return an instance of {@link Project}
         */
         public Project getProject(Long id) {
-<span class="nc" id="L217">            UriTemplate pathTemplate = new PathPattern(&quot;api/projects/{id}&quot;).getTemplate();</span>
-<span class="nc" id="L218">            String path = pathTemplate.createURI(id.toString());</span>
-<span class="nc" id="L219">            return ColabClient.this.get(path, new GenericType&lt;&gt;(Project.class));</span>
+<span class="nc" id="L186">            UriTemplate pathTemplate = new PathPattern(&quot;api/projects/{id}&quot;).getTemplate();</span>
+<span class="nc" id="L187">            String path = pathTemplate.createURI(id.toString());</span>
+<span class="nc" id="L188">            return ColabClient.this.get(path, new GenericType&lt;&gt;(Project.class));</span>
         }
         
         /**
@@ -224,28 +193,59 @@ public class ColabClient extends RestClient {
         * @return an instance of List&amp;lt;Project&amp;gt;
         */
         public List&lt;Project&gt; getAllProjects() {
-<span class="nc" id="L227">            UriTemplate pathTemplate = new PathPattern(&quot;api/projects&quot;).getTemplate();</span>
-<span class="nc" id="L228">            String path = pathTemplate.createURI();</span>
-<span class="nc" id="L229">            return ColabClient.this.get(path, new GenericType&lt;List&lt;Project&gt;&gt;(){});</span>
+<span class="nc" id="L196">            UriTemplate pathTemplate = new PathPattern(&quot;api/projects&quot;).getTemplate();</span>
+<span class="nc" id="L197">            String path = pathTemplate.createURI();</span>
+<span class="nc" id="L198">            return ColabClient.this.get(path, new GenericType&lt;List&lt;Project&gt;&gt;(){});</span>
         }
     }
 
     
     /**
      * {@link ch.colabproject.colab.api.rest.MonitoringController } client
-<span class="nc" id="L236">     */public MonitoringControllerClientImpl monitoringController = new MonitoringControllerClientImpl();</span>
+<span class="nc" id="L205">     */public MonitoringControllerClientImpl monitoringController = new MonitoringControllerClientImpl();</span>
     /**
      * {@link ch.colabproject.colab.api.rest.MonitoringController} client implementation
-<span class="nc" id="L239">     */public class MonitoringControllerClientImpl {</span>
+<span class="nc" id="L208">     */public class MonitoringControllerClientImpl {</span>
         
         /**
         * GET api/monitoring/status calls {@link ch.colabproject.colab.api.rest.MonitoringController#getStatus}
         * @return an instance of {@link String}
         */
         public String getStatus() {
-<span class="nc" id="L246">            UriTemplate pathTemplate = new PathPattern(&quot;api/monitoring/status&quot;).getTemplate();</span>
-<span class="nc" id="L247">            String path = pathTemplate.createURI();</span>
-<span class="nc" id="L248">            return ColabClient.this.get(path, new GenericType&lt;&gt;(String.class));</span>
+<span class="nc" id="L215">            UriTemplate pathTemplate = new PathPattern(&quot;api/monitoring/status&quot;).getTemplate();</span>
+<span class="nc" id="L216">            String path = pathTemplate.createURI();</span>
+<span class="nc" id="L217">            return ColabClient.this.get(path, new GenericType&lt;&gt;(String.class));</span>
+        }
+    }
+
+    
+    /**
+     * {@link ch.colabproject.colab.api.rest.TokenController } client
+<span class="nc" id="L224">     */public TokenControllerClientImpl tokenController = new TokenControllerClientImpl();</span>
+    /**
+     * {@link ch.colabproject.colab.api.rest.TokenController} client implementation
+<span class="nc" id="L227">     */public class TokenControllerClientImpl {</span>
+        
+        /**
+        * PUT api/tokens/{id}/{token: [a-fA-F0-9]+} calls {@link ch.colabproject.colab.api.rest.TokenController#consumeToken}
+        * @param id path param
+        * @param token path param
+        */
+        public void consumeToken(Long id, String token) {
+<span class="nc" id="L235">            UriTemplate pathTemplate = new PathPattern(&quot;api/tokens/{id}/{token: [a-fA-F0-9]+}&quot;).getTemplate();</span>
+<span class="nc" id="L236">            String path = pathTemplate.createURI(id.toString(),token.toString());</span>
+<span class="nc" id="L237">            ColabClient.this.put(path, new GenericType&lt;&gt;(void.class));</span>
+<span class="nc" id="L238">        }</span>
+        
+        /**
+        * GET api/tokens/{id} calls {@link ch.colabproject.colab.api.rest.TokenController#getToken}
+        * @param id path param
+        * @return an instance of {@link Token}
+        */
+        public Token getToken(Long id) {
+<span class="nc" id="L246">            UriTemplate pathTemplate = new PathPattern(&quot;api/tokens/{id}&quot;).getTemplate();</span>
+<span class="nc" id="L247">            String path = pathTemplate.createURI(id.toString());</span>
+<span class="nc" id="L248">            return ColabClient.this.get(path, new GenericType&lt;&gt;(Token.class));</span>
         }
     }}
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

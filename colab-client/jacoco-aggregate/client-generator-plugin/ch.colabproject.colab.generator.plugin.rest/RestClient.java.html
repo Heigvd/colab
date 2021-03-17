@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RestClient.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">client-generator-plugin</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.generator.plugin.rest</a> &gt; <span class="el_source">RestClient.java</span></div><h1>RestClient.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.generator.plugin.rest;
+
+import ch.colabproject.colab.generator.model.exceptions.HttpException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
+import javax.json.bind.JsonbException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientRequestFilter;
+import javax.ws.rs.client.ClientResponseContext;
+import javax.ws.rs.client.ClientResponseFilter;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+/**
+ * JakartaEE-based rest client.
+ *
+ * @author maxence
+ */
+public class RestClient {
+
+    /**
+     * Base URL.
+     */
+    private WebTarget webTarget;
+
+    /**
+     * internal HTTP client.
+     */
+    private Client client;
+
+    /**
+     * Jsonb mapper
+     */
+    private final Jsonb jsonb;
+
+    /**
+     * Create a REST client.
+     *
+     * @param baseUri        base URL
+     * @param cookieName     session cookie name
+     * @param jsonb          jsonb mapper to use, if null a default mapper will be used
+     * @param clientFeatures REST client feature
+     */
+<span class="nc" id="L62">    public RestClient(String baseUri, String cookieName, Jsonb jsonb, Object... clientFeatures) {</span>
+<span class="nc" id="L63">        ClientBuilder builder = ClientBuilder.newBuilder();</span>
+
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        for (Object feature : clientFeatures) {</span>
+<span class="nc" id="L66">            builder.register(feature);</span>
+        }
+
+<span class="nc bnc" id="L69" title="All 4 branches missed.">        if (cookieName != null &amp;&amp; !cookieName.isBlank()) {</span>
+<span class="nc" id="L70">            builder.register(new CookieFilter(cookieName));</span>
+        }
+
+<span class="nc" id="L73">        this.client = builder.build();</span>
+<span class="nc" id="L74">        this.webTarget = client.target(baseUri);</span>
+
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (jsonb != null) {</span>
+<span class="nc" id="L77">            this.jsonb = jsonb;</span>
+        } else {
+<span class="nc" id="L79">            this.jsonb = JsonbBuilder.create();</span>
+        }
+<span class="nc" id="L81">    }</span>
+
+    /**
+     * Close the client.
+     */
+    public void close() {
+<span class="nc" id="L87">        client.close();</span>
+<span class="nc" id="L88">    }</span>
+
+    /**
+     * Try to read entity
+     *
+     * @param &lt;T&gt;    entity type
+     * @param stream input stream to read from
+     * @param type   entity type
+     *
+     * @return instance of T or null
+     */
+    private &lt;T&gt; T readEntity(InputStream stream, GenericType&lt;T&gt; type) {
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (stream != null) {</span>
+            try {
+<span class="nc" id="L102">                return jsonb.fromJson(stream, type.getType());</span>
+<span class="nc" id="L103">            } catch (JsonbException ex) {</span>
+<span class="nc" id="L104">                return null;</span>
+            }
+        }
+<span class="nc" id="L107">        return null;</span>
+    }
+
+    private &lt;T&gt; T processResponse(Response response, GenericType&lt;T&gt; type) {
+<span class="nc" id="L111">        Status.Family family = Status.Family.familyOf(response.getStatus());</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (family == Status.Family.SUCCESSFUL) {</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">            if (response.getLength() &gt; 0) {</span>
+<span class="nc" id="L114">                Object entity = response.getEntity();</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">                if (entity instanceof InputStream) {</span>
+<span class="nc" id="L116">                    return readEntity((InputStream) entity, type);</span>
+                } else {
+<span class="nc" id="L118">                    return null;</span>
+                }
+            } else {
+<span class="nc" id="L121">                return null;</span>
+            }
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        } else if (family == Status.Family.CLIENT_ERROR) {</span>
+<span class="nc" id="L124">            HttpException error = readEntity((InputStream) response.getEntity(),</span>
+                new GenericType&lt;&gt;(HttpException.class));
+<span class="nc bnc" id="L126" title="All 2 branches missed.">            if (error != null) {</span>
+<span class="nc" id="L127">                throw error;</span>
+            } else {
+<span class="nc" id="L129">                throw new ClientException(Status.fromStatusCode(response.getStatus()));</span>
+            }
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        } else if (family == Status.Family.SERVER_ERROR) {</span>
+<span class="nc" id="L132">            throw new ServerException(Status.fromStatusCode(response.getStatus()));</span>
+        } else {
+<span class="nc" id="L134">            throw new ServerException(Status.fromStatusCode(response.getStatus()));</span>
+        }
+    }
+
+    /**
+     * send GET request.
+     *
+     * @param &lt;T&gt;  expected return type
+     * @param path rest path
+     * @param type expected return generic type
+     *
+     * @return instance of T
+     */
+    public &lt;T&gt; T get(String path, GenericType&lt;T&gt; type) {
+<span class="nc" id="L148">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L149">            .accept(MediaType.APPLICATION_JSON).get(),</span>
+            type);
+    }
+
+    /**
+     * send DELETE request.
+     *
+     * @param &lt;T&gt;  expected return type
+     * @param path rest path
+     * @param type expected return type
+     *
+     * @return instance of T
+     */
+    public &lt;T&gt; T delete(String path, GenericType&lt;T&gt; type) {
+<span class="nc" id="L163">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L164">            .accept(MediaType.APPLICATION_JSON).delete(),</span>
+            type);
+    }
+
+    /**
+     * send POST request.
+     *
+     * @param &lt;T&gt;  expected return type
+     * @param path rest path
+     * @param body POST body
+     * @param type expected return type
+     *
+     * @return instance of T
+     */
+    public &lt;T&gt; T post(String path, Object body, GenericType&lt;T&gt; type) {
+<span class="nc" id="L179">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L180">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L181">            .post(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),</span>
+            type);
+    }
+
+    /**
+     * send POST request with an empty body.
+     *
+     * @param &lt;T&gt;  expected return type
+     * @param path rest path
+     * @param type expected return type
+     *
+     * @return instance of T
+     */
+    public &lt;T&gt; T post(String path, GenericType&lt;T&gt; type) {
+<span class="nc" id="L195">        return this.post(path, &quot;&quot;, type);</span>
+    }
+
+    /**
+     * send PUT request.
+     *
+     * @param &lt;T&gt;  expected return type
+     * @param path rest path
+     * @param body POST body
+     * @param type expected return type
+     *
+     * @return instance of T
+     */
+    public &lt;T&gt; T put(String path, Object body, GenericType&lt;T&gt; type) {
+<span class="nc" id="L209">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L210">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L211">            .put(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),</span>
+            type);
+    }
+
+    /**
+     * send PUT request with an empty body.
+     *
+     * @param &lt;T&gt;  expected return type
+     * @param path rest path
+     * @param type expected return type
+     *
+     * @return instance of T
+     */
+    public &lt;T&gt; T put(String path, GenericType&lt;T&gt; type) {
+<span class="nc" id="L225">        return this.put(path, &quot;&quot;, type);</span>
+    }
+
+    /**
+     * Cookie filter make sure the session cookie is set. The sessionId is set by server response.
+     * After the first request, the previously saved sessionId is injected in all requests.
+     */
+    public static class CookieFilter implements ClientRequestFilter, ClientResponseFilter {
+
+        /**
+         * sessionId
+         */
+        private String sessionId;
+
+        /**
+         * Name of the cookie
+         */
+        private final String cookieName;
+
+        /**
+         * New filter
+         *
+         * @param cookieName name of the cookie to manage
+         */
+<span class="nc" id="L249">        public CookieFilter(String cookieName) {</span>
+<span class="nc" id="L250">            this.cookieName = cookieName;</span>
+<span class="nc" id="L251">            this.sessionId = null;</span>
+<span class="nc" id="L252">        }</span>
+
+        /**
+         * If set, add Cookie header to the request.
+         * &lt;p&gt;
+         * {@inheritDoc }
+         */
+        @Override
+        public void filter(ClientRequestContext requestContext) throws IOException {
+<span class="nc bnc" id="L261" title="All 2 branches missed.">            if (this.sessionId != null) {</span>
+<span class="nc" id="L262">                List&lt;Object&gt; cookies = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L263">                Cookie cookie = new Cookie(cookieName, sessionId);</span>
+<span class="nc" id="L264">                cookies.add(cookie);</span>
+<span class="nc" id="L265">                requestContext.getHeaders().put(&quot;Cookie&quot;, cookies);</span>
+            }
+<span class="nc" id="L267">        }</span>
+
+        /**
+         * On request response, fetch set-cookie value
+         * &lt;p&gt;
+         * {@inheritDoc }
+         */
+        @Override
+        public void filter(ClientRequestContext requestContext,
+            ClientResponseContext responseContext) throws IOException {
+<span class="nc" id="L277">            NewCookie get = responseContext.getCookies().get(cookieName);</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">            if (get != null) {</span>
+<span class="nc" id="L279">                this.sessionId = get.getValue();</span>
+            }
+<span class="nc" id="L281">        }</span>
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

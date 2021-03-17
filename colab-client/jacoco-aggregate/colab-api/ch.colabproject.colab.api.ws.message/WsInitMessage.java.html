@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.message;
 
+import javax.validation.constraints.NotNull;
 import javax.websocket.Session;
 
 /**
@@ -20,22 +21,40 @@ public class WsInitMessage extends WsMessage {
     /**
      * Unique session ID TODO: check uniqueness through the cluster
      */
-    private final String sessionId;
+    @NotNull
+    private String sessionId;
+
+    /**
+     * Default constructor
+     */
+<span class="nc" id="L30">    public WsInitMessage() {</span>
+        /* no-op */
+<span class="nc" id="L32">    }</span>
 
     /**
      * create a message based on a websocket session
      *
      * @param session client session
      */
-<span class="nc" id="L30">    public WsInitMessage(Session session) {</span>
-<span class="nc" id="L31">        this.sessionId = session.getId();</span>
-<span class="nc" id="L32">    }</span>
+<span class="nc" id="L39">    public WsInitMessage(Session session) {</span>
+<span class="nc" id="L40">        this.sessionId = session.getId();</span>
+<span class="nc" id="L41">    }</span>
 
     /**
      * @return the socket ID to send to the client
      */
     public String getSessionId() {
-<span class="nc" id="L38">        return sessionId;</span>
+<span class="nc" id="L47">        return sessionId;</span>
     }
+
+    /**
+     * Set session id
+     *
+     * @param sessionId session id
+     */
+    public void setSessionId(String sessionId) {
+<span class="nc" id="L56">        this.sessionId = sessionId;</span>
+<span class="nc" id="L57">    }</span>
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

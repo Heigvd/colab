@@ -7,7 +7,9 @@
 package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.WithId;
+import java.util.ArrayList;
 import java.util.Collection;
+import javax.validation.constraints.NotNull;
 
 /**
  * Websocket update message. Contains list of new or updated object
@@ -21,23 +23,39 @@ public class WsUpdateMessage extends WsMessage {
     /**
      * List of new or updated objects
      */
-    private final Collection&lt;WithId&gt; payload;
+    @NotNull
+    private Collection&lt;WithId&gt; payload;
+
+    /**
+     * Default constructor
+     */
+<span class="nc" id="L32">    public WsUpdateMessage() {</span>
+<span class="nc" id="L33">        this.payload = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L34">    }</span>
 
     /**
      * Create a message based on a list of new or updated objects
      *
      * @param payload list of objects
      */
-<span class="fc" id="L31">    public WsUpdateMessage(Collection&lt;WithId&gt; payload) {</span>
-<span class="fc" id="L32">        this.payload = payload;</span>
-<span class="fc" id="L33">    }</span>
+<span class="fc" id="L41">    public WsUpdateMessage(Collection&lt;WithId&gt; payload) {</span>
+<span class="fc" id="L42">        this.payload = payload;</span>
+<span class="fc" id="L43">    }</span>
 
     /**
      * @return the list of new or updated objects to send to clients
      */
     public Collection&lt;WithId&gt; getPayload() {
-<span class="nc" id="L39">        return payload;</span>
+<span class="nc" id="L49">        return payload;</span>
     }
 
+    /**
+     * Set paylosd
+     *
+     * @param payload list of updated elements
+     */
+    public void setPayload(Collection&lt;WithId&gt; payload) {
+<span class="nc" id="L58">        this.payload = payload;</span>
+<span class="nc" id="L59">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

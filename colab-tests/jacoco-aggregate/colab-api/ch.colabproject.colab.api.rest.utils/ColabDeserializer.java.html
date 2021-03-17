@@ -37,8 +37,11 @@ import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 
     static {
         // analyse classes in the model package
-<span class="fc" id="L40">        REFLECTIONS = new Reflections(&quot;ch.colabproject.colab.api.model&quot;);</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L40">        REFLECTIONS = new Reflections(</span>
+            &quot;ch.colabproject.colab.generator.model&quot;,
+            &quot;ch.colabproject.colab.api.model&quot;
+        );
+<span class="fc" id="L44">    }</span>
 
     /**
      * {@inheritDoc }
@@ -47,26 +50,26 @@ import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
     public WithJsonDiscriminator deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
 
         // find @class discriminant from object to deserialize
-<span class="fc" id="L50">        JsonObject value = parser.getObject();</span>
-<span class="fc" id="L51">        String atClass = value.getString(&quot;@class&quot;, null);</span>
+<span class="fc" id="L53">        JsonObject value = parser.getObject();</span>
+<span class="fc" id="L54">        String atClass = value.getString(&quot;@class&quot;, null);</span>
 
         // is this @class already known?
-<span class="fc" id="L54">        Class&lt;? extends WithJsonDiscriminator&gt; theClass = CLASSES_MAP.get(atClass);</span>
+<span class="fc" id="L57">        Class&lt;? extends WithJsonDiscriminator&gt; theClass = CLASSES_MAP.get(atClass);</span>
 
-<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (theClass == null) {</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (theClass == null) {</span>
             // nope -&gt; let's resolve it with the help of reflections
-<span class="fc" id="L58">            Optional&lt;Class&lt;? extends WithJsonDiscriminator&gt;&gt; concreteClass</span>
-<span class="fc" id="L59">                = REFLECTIONS.getSubTypesOf(WithJsonDiscriminator.class)</span>
-<span class="fc" id="L60">                    .stream()</span>
-<span class="fc" id="L61">                    .filter(cl -&gt; cl.getSimpleName().equals(atClass))</span>
-<span class="fc" id="L62">                    .findFirst();</span>
-<span class="pc bpc" id="L63" title="1 of 2 branches missed.">            if (concreteClass.isPresent()) {</span>
-<span class="fc" id="L64">                theClass = concreteClass.get();</span>
-<span class="fc" id="L65">                CLASSES_MAP.put(atClass, theClass);</span>
+<span class="fc" id="L61">            Optional&lt;Class&lt;? extends WithJsonDiscriminator&gt;&gt; concreteClass</span>
+<span class="fc" id="L62">                = REFLECTIONS.getSubTypesOf(WithJsonDiscriminator.class)</span>
+<span class="fc" id="L63">                    .stream()</span>
+<span class="fc" id="L64">                    .filter(cl -&gt; cl.getSimpleName().equals(atClass))</span>
+<span class="fc" id="L65">                    .findFirst();</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">            if (concreteClass.isPresent()) {</span>
+<span class="fc" id="L67">                theClass = concreteClass.get();</span>
+<span class="fc" id="L68">                CLASSES_MAP.put(atClass, theClass);</span>
             }
         }
         // parse JSON against exact class
-<span class="fc" id="L69">        return JsonbBuilder.create().fromJson(value.toString(), theClass);</span>
+<span class="fc" id="L72">        return JsonbBuilder.create().fromJson(value.toString(), theClass);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

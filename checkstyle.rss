@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2021 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 12,
+      <title>File: 14,
              Errors: 0,
-             Warnings: 38,
+             Warnings: 46,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -53,6 +53,104 @@ under the License.
                 </td>
                 <td>
                   4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.exceptions.HttpException.java">ch/colabproject/colab/generator/model/exceptions/HttpException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.utils.ColabDeserializer.java">ch/colabproject/colab/api/rest/utils/ColabDeserializer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.RestController.java">ch/colabproject/colab/generator/plugin/rest/RestController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.ClientException.java">ch/colabproject/colab/generator/plugin/rest/ClientException.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.Generator.java">ch/colabproject/colab/generator/plugin/Generator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.TokenDao.java">ch/colabproject/colab/api/ejb/TokenDao.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.UserController.java">ch/colabproject/colab/api/rest/UserController.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
                 </td>
                 <td>
                   0
@@ -88,27 +186,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.rest.RestController.java">ch/colabproject/colab/generator/rest/RestController.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.TypeScriptHelper.java">ch/colabproject/colab/generator/plugin/TypeScriptHelper.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.utils.ColabDeserializer.java">ch/colabproject/colab/api/rest/utils/ColabDeserializer.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  3
+                  4
                 </td>
                 <td>
                   0
@@ -144,34 +228,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.TokenDao.java">ch/colabproject/colab/api/ejb/TokenDao.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  7
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.TypeScriptHelper.java">ch/colabproject/colab/generator/TypeScriptHelper.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.setup.ApplicationLifecycle.java">ch/colabproject/colab/api/setup/ApplicationLifecycle.java</a>
                 </td>
                 <td>
@@ -179,34 +235,6 @@ under the License.
                 </td>
                 <td>
                   1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.Generator.java">ch/colabproject/colab/generator/Generator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.UserController.java">ch/colabproject/colab/api/rest/UserController.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  8
                 </td>
                 <td>
                   0

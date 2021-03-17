@@ -187,11 +187,11 @@ import liquibase.pro.packaged.ch;
      * @return authentication method to use to authentication as email owner or new random one which
      *         can be use to create a brand new localAccount
      *
-     * @throws HttpErrorMessage invalidRequest if there is no identifier
+     * @throws HttpErrorMessage badRequest if there is no identifier
      */
     public AuthMethod getAuthenticationMethod(String identifier) {
 <span class="nc bnc" id="L193" title="All 4 branches missed.">        if (identifier == null || identifier.isBlank()) {</span>
-<span class="nc" id="L194">            throw HttpErrorMessage.invalidRequest();</span>
+<span class="nc" id="L194">            throw HttpErrorMessage.badRequest();</span>
         } else {
 <span class="nc" id="L196">            LocalAccount account = this.findLocalAccountByIdentifier(identifier);</span>
 
