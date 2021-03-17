@@ -28,6 +28,7 @@ public class WsInitMessage extends WsMessage {
      * Default constructor
      */
     public WsInitMessage() {
+        /* no-op */
     }
 
     /**
