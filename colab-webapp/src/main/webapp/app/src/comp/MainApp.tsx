@@ -8,7 +8,8 @@ import * as React from 'react';
 
 import Logo from '../images/logo.svg';
 
-import { ColabState, TDispatch, initData, reloadCurrentUser, signOut } from '../store';
+import { ColabState, TDispatch } from '../store';
+import * as API from '../API';
 import { connect } from 'react-redux';
 import { css } from '@emotion/css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,8 +21,8 @@ import { fullPageStyle, iconButton } from './style';
 import Loading from '../Loading';
 
 interface StateProps {
-  authenticationStatus: ColabState['authenticationStatus'];
-  status: ColabState['status'];
+  authenticationStatus: ColabState['auth']['authenticationStatus'];
+  status: ColabState['navigation']['status'];
 }
 
 interface DispatchProps {
@@ -70,8 +71,8 @@ const MainAppInternal = ({
         >
           <Logo
             className={css({
-              width: '36px',
-              height: 'auto',
+              height: '36px',
+              width: 'auto',
               padding: '5px',
             })}
           />
@@ -79,9 +80,7 @@ const MainAppInternal = ({
             className={css({
               flexGrow: 1,
             })}
-          >
-            coLAB
-          </div>
+          ></div>
 
           <FontAwesomeIcon
             className={iconButton}
@@ -115,18 +114,18 @@ const MainAppInternal = ({
 
 export default connect<StateProps, DispatchProps, OwnProps, ColabState>(
   (state: ColabState) => ({
-    status: state.status,
-    authenticationStatus: state.authenticationStatus,
+    status: state.navigation.status,
+    authenticationStatus: state.auth.authenticationStatus,
   }),
   (dispatch: TDispatch) => ({
     init: () => {
-      dispatch(initData());
+      dispatch(API.initData());
     },
     reloadCurrentUser: () => {
-      dispatch(reloadCurrentUser());
+      dispatch(API.reloadCurrentUser());
     },
     signOut: () => {
-      dispatch(signOut());
+      dispatch(API.signOut());
     },
   }),
 )(MainAppInternal);

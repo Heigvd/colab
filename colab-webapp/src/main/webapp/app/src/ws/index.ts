@@ -4,16 +4,16 @@
  *
  * Licensed under the MIT License
  */
-import { Project, WsUpdateMessage, WsDeleteMessage, WsInitMessage } from 'colab-rest-client';
-import { dispatch, ACTIONS } from '../store';
+import { WsUpdateMessage, WsDeleteMessage, WsInitMessage, entityIs } from 'colab-rest-client';
+import { dispatch } from '../store';
+import * as ProjectActions from '../store/project';
+import * as WsActions from '../store/websocket';
 
 const onUpdate = (event: WsUpdateMessage) => {
   console.log('Update: ', event);
   for (const item of event.payload) {
-    switch (item['@class']) {
-      case 'Project':
-        dispatch(ACTIONS.updateProject((item as unknown) as Project));
-        break;
+    if (entityIs<'Project'>(item, 'Project')) {
+      dispatch(ProjectActions.updateProject(item));
     }
   }
 };
@@ -24,7 +24,7 @@ const onDelete = (event: WsDeleteMessage) => {
   for (const item of event.items) {
     switch (item['type']) {
       case 'Project':
-        dispatch(ACTIONS.removeProject(item.id));
+        dispatch(ProjectActions.removeProject(item.id));
         break;
     }
   }
@@ -65,7 +65,7 @@ function createConnection(onCloseCb: () => void) {
           onUpdate(message);
           break;
         case 'WsInitMessage':
-          dispatch(ACTIONS.initWsSessionId((message as WsInitMessage).sessionId));
+          dispatch(WsActions.setSessionId((message as WsInitMessage).sessionId));
           resolveSessionId((message as WsInitMessage).sessionId);
           break;
       }

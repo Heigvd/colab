@@ -9,10 +9,12 @@ import { css, cx } from '@emotion/css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
-import { TDispatch, ColabState, signInWithLocalAccount, ACTIONS } from './store';
+import { TDispatch, ColabState } from './store';
 import { connect } from 'react-redux';
 import FormContainer from './FormContainer';
 import { darkMode } from './comp/style';
+import { signInWithLocalAccount } from './API';
+import { changeAuthenticationStatus } from './store/auth';
 
 interface StateProps {}
 
@@ -98,7 +100,7 @@ export default connect<StateProps, DispatchProps, OwnProps, ColabState>(
       dispatch(signInWithLocalAccount(identifier, password));
     },
     gotoSignUp: () => {
-      dispatch(ACTIONS.changeAuthStatus('SIGNING_UP'));
+      dispatch(changeAuthenticationStatus('SIGNING_UP'));
     },
   }),
 )(SignInForm);

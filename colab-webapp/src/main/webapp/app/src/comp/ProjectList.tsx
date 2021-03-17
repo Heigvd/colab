@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { ColabState, TDispatch } from '../store';
-import * as Store from '../store';
+import * as API from '../API';
 
 import { connect } from 'react-redux';
 
@@ -77,10 +77,10 @@ export const ProjectDisplay = connect<StateProps, DispatchProps, OwnProps, Colab
   _state => ({}),
   (dispatch: TDispatch) => ({
     saveProject: (project: Project) => {
-      dispatch(Store.updateProject(project));
+      dispatch(API.updateProject(project));
     },
     deleteProject: (project: Project) => {
-      dispatch(Store.updateProject(project));
+      dispatch(API.updateProject(project));
     },
   }),
 )(ProjectDisplayInternal);
@@ -134,7 +134,7 @@ export const ProjectList = connect<ListStateProps, ListDispatchProps, ListOwnPro
   }),
   (dispatch: TDispatch) => ({
     createProject: (project: Project) => {
-      dispatch(Store.createProject(project));
+      dispatch(API.createProject(project));
     },
   }),
 )(InternalProjectListDisplay);

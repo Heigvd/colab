@@ -7,9 +7,10 @@
 import * as React from 'react';
 import { css } from '@emotion/css';
 
-import { TDispatch, ColabState, ACTIONS, ColabError } from './store';
+import { TDispatch, ColabState } from './store';
 import { connect } from 'react-redux';
 import { HttpErrorMessage, HttpException, entityIs } from 'colab-rest-client';
+import { ColabError, closeError } from './store/error';
 
 interface StateProps {
   errors: ColabError[];
@@ -90,7 +91,7 @@ export default connect<StateProps, DispatchProps, OwnProps, ColabState>(
   }),
   (dispatch: TDispatch) => ({
     closeError: (index: number) => {
-      dispatch(ACTIONS.closeError(index));
+      dispatch(closeError(index));
     },
   }),
 )(ErrorNotifier);
