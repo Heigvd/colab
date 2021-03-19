@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.token;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.HashMethod;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -197,5 +198,16 @@ public abstract class Token implements ColabEntity {
     public boolean checkHash(String plainToken) {
         byte[] submited = this.getHashMethod().hash(plainToken, SALT);
         return Arrays.equals(submited, this.getHashedToken());
+    }
+
+    @Override
+    public int hashCode() {
+        return EntityHelper.hashCode(this);
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object obj) {
+        return EntityHelper.equals(this, obj);
     }
 }

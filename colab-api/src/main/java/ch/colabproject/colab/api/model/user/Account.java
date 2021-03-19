@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.model.user;
 
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -78,5 +79,15 @@ public abstract class Account implements ColabEntity {
      */
     public void setUser(User user) {
         this.user = user;
+    }
+    @Override
+    public int hashCode() {
+        return EntityHelper.hashCode(this);
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object obj) {
+        return EntityHelper.equals(this, obj);
     }
 }

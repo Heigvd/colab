@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -82,5 +83,21 @@ public class Project implements ColabEntity {
         } else {
             throw new ColabMergeException(this, other);
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return EntityHelper.hashCode(this);
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object obj) {
+        return EntityHelper.equals(this, obj);
+    }
+
+    @Override
+    public String toString() {
+        return "Project{" + "id=" + id + ", name=" + name + '}';
     }
 }

@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.user;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -241,5 +242,21 @@ public class User implements ColabEntity {
         } else {
             throw new ColabMergeException(this, other);
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return EntityHelper.hashCode(this);
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object obj) {
+        return EntityHelper.equals(this, obj);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", isAdmin=" + isAdmin + ", username=" + username + '}';
     }
 }

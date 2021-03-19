@@ -296,4 +296,10 @@ public class LocalAccount extends Account {
     public void merge(ColabEntity other) throws ColabMergeException {
         // TODO
     }
+
+    @Override
+    public String toString() {
+        return "LocalAccount{" + "id=" + this.getId() + ", email=" + email + ", verified=" + verified + '}';
+    }
+
 }
