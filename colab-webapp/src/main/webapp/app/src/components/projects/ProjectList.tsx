@@ -8,16 +8,16 @@
 import * as React from 'react';
 import * as API from '../../API/api';
 
-import { Destroyer } from '../Destroyer';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Project } from 'colab-rest-client';
 import { css } from '@emotion/css';
-import { AutoSaveTextEditor } from '../AutoSaveTextEditor';
 import { iconButton } from '../style';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import InlineLoading from '../../InlineLoading';
+import InlineLoading from '../common/InlineLoading';
+import { AutoSaveTextEditor } from '../common/AutoSaveTextEditor';
+import { Destroyer } from '../common/Destroyer';
 
 interface Props {
   project: Project;

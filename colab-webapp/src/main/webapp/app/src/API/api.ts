@@ -7,7 +7,7 @@
 
 import { ColabClient, AuthInfo, SignUpInfo, Project, entityIs } from 'colab-rest-client';
 
-import { getStore } from '../store';
+import { getStore } from '../store/store';
 
 import { addError } from '../store/error';
 import { hashPassword } from '../SecurityHelper';

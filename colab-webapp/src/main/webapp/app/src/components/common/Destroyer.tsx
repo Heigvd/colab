@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faCheck, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { iconButton } from './style';
+import { iconButton } from '../style';
 
 export function Destroyer({ onDelete }: { onDelete: () => void }) {
   const [waitDeleteConfirm, setConfirm] = React.useState(false);

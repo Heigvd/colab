@@ -9,11 +9,11 @@ import { css } from '@emotion/css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
-import FormContainer from './FormContainer';
-import InlineLoading from './InlineLoading';
-import { signUp } from './API/api';
-import { changeAuthenticationStatus } from './store/auth';
-import { useAppDispatch } from './store/hooks';
+import FormContainer from '../common/FormContainer';
+import InlineLoading from '../common/InlineLoading';
+import { signUp } from '../../API/api';
+import { changeAuthenticationStatus } from '../../store/auth';
+import { useAppDispatch } from '../../store/hooks';
 
 interface Props {
   redirectTo?: string;

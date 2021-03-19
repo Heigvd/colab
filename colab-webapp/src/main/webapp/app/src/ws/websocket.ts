@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import { WsUpdateMessage, WsDeleteMessage, WsInitMessage, entityIs } from 'colab-rest-client';
-import { dispatch } from '../store';
+import { dispatch } from '../store/store';
 import * as ProjectActions from '../store/project';
 import * as WsActions from '../store/websocket';
 

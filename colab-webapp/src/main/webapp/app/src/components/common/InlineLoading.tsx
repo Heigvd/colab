@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 import * as React from 'react';
-import Logo from './images/picto_bw.svg';
+import Logo from '../../images/picto_bw.svg';
 import { css, cx } from '@emotion/css';
-import { pulseEase } from './comp/style';
+import { pulseEase } from '../style';
 
 interface Props {
   size?: string;

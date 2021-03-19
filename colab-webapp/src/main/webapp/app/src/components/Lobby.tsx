@@ -13,10 +13,10 @@ import { css } from '@emotion/css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { ProjectList } from './projects/ProjectList';
-import SignInForm from '../SignIn';
-import SignUpForm from '../SignUp';
+import SignInForm from './public/SignIn';
+import SignUpForm from './public/SignUp';
 import { fullPageStyle, iconButton } from './style';
-import Loading from '../Loading';
+import Loading from './common/Loading';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 
 export default () => {

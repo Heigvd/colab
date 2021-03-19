@@ -8,8 +8,8 @@ import * as React from 'react';
 import { css } from '@emotion/css';
 
 import { HttpErrorMessage, HttpException, entityIs } from 'colab-rest-client';
-import { closeError } from './store/error';
-import { useAppDispatch, useAppSelector } from './store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { closeError } from '../../store/error';
 
 function prettyPrintError(error: HttpException | Error): string {
   if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage')) {
