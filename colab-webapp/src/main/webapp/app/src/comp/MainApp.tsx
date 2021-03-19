@@ -8,53 +8,31 @@ import * as React from 'react';
 
 import Logo from '../images/logo.svg';
 
-import { ColabState, TDispatch } from '../store';
-import * as API from '../API';
-import { connect } from 'react-redux';
+import * as API from '../API/api';
 import { css } from '@emotion/css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSync, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import { ProjectList } from './ProjectList';
-import LoginForm from '../SignIn';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { ProjectList } from './projects/ProjectList';
+import SignInForm from '../SignIn';
 import SignUpForm from '../SignUp';
 import { fullPageStyle, iconButton } from './style';
 import Loading from '../Loading';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
 
-interface StateProps {
-  authenticationStatus: ColabState['auth']['authenticationStatus'];
-  status: ColabState['navigation']['status'];
-}
+export default () => {
+  //const status = useAppSelector((state) => state.navigation.status);
+  const authenticationStatus = useAppSelector(state => state.auth.authenticationStatus);
+  const dispatch = useAppDispatch();
 
-interface DispatchProps {
-  reloadCurrentUser: () => void;
-  init: () => void;
-  signOut: () => void;
-}
-
-interface OwnProps {}
-
-type Props = StateProps & DispatchProps & OwnProps;
-
-const MainAppInternal = ({
-  init,
-  signOut,
-  reloadCurrentUser,
-  authenticationStatus,
-  status,
-}: Props) => {
   if (authenticationStatus === undefined) {
-    reloadCurrentUser();
-  }
-
-  if (authenticationStatus === 'AUTHENTICATED' && status == 'UNINITIALIZED') {
-    init();
+    dispatch(API.reloadCurrentUser());
   }
 
   if (authenticationStatus === 'UNAUTHENTICATED') {
-    return <LoginForm />;
+    return <SignInForm />;
   } else if (authenticationStatus === 'SIGNING_UP') {
     return <SignUpForm />;
-  } else if (authenticationStatus === undefined || status === 'UNINITIALIZED') {
+  } else if (authenticationStatus === undefined) {
     return <Loading />;
   } else {
     // authenticationStatus := AUTHENTICATED
@@ -84,18 +62,7 @@ const MainAppInternal = ({
 
           <FontAwesomeIcon
             className={iconButton}
-            pulse={status === 'SYNCING'}
-            onClick={() => {
-              init();
-            }}
-            icon={faSync}
-          />
-
-          <FontAwesomeIcon
-            className={iconButton}
-            onClick={() => {
-              signOut();
-            }}
+            onClick={() => dispatch(API.signOut())}
             icon={faSignOutAlt}
           />
         </div>
@@ -111,21 +78,3 @@ const MainAppInternal = ({
     );
   }
 };
-
-export default connect<StateProps, DispatchProps, OwnProps, ColabState>(
-  (state: ColabState) => ({
-    status: state.navigation.status,
-    authenticationStatus: state.auth.authenticationStatus,
-  }),
-  (dispatch: TDispatch) => ({
-    init: () => {
-      dispatch(API.initData());
-    },
-    reloadCurrentUser: () => {
-      dispatch(API.reloadCurrentUser());
-    },
-    signOut: () => {
-      dispatch(API.signOut());
-    },
-  }),
-)(MainAppInternal);

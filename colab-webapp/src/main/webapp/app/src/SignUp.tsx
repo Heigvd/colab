@@ -9,29 +9,21 @@ import { css } from '@emotion/css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
-import { TDispatch, ColabState } from './store';
-import { connect } from 'react-redux';
 import FormContainer from './FormContainer';
 import InlineLoading from './InlineLoading';
-import { signUp } from './API';
+import { signUp } from './API/api';
 import { changeAuthenticationStatus } from './store/auth';
+import { useAppDispatch } from './store/hooks';
 
-interface StateProps {}
-
-interface DispatchProps {
-  signUp: (username: string, email: string, password: string) => void;
-  goToSignIn: () => void;
-}
-
-interface OwnProps {
+interface Props {
   redirectTo?: string;
 }
 
-type Props = StateProps & DispatchProps & OwnProps;
-
 const PasswordStrengthBar = React.lazy(() => import('react-password-strength-bar'));
 
-function SignUpForm({ signUp, goToSignIn }: Props) {
+export default (_props: Props) => {
+  const dispatch = useAppDispatch();
+
   const [credentials, setCredentials] = React.useState({
     passwordScore: 0,
     username: '',
@@ -95,14 +87,14 @@ function SignUpForm({ signUp, goToSignIn }: Props) {
                 backgroundColor: '#404040',
               },
             })}
-            onClick={() => signUp(credentials.username, credentials.email, credentials.password)}
+            onClick={() => dispatch(signUp(credentials))}
           >
             <span
               className={css({
                 padding: '0 5px',
               })}
             >
-              Login
+              Sign in
             </span>
             <FontAwesomeIcon
               className={css({
@@ -111,21 +103,11 @@ function SignUpForm({ signUp, goToSignIn }: Props) {
               icon={faSignInAlt}
             />
           </button>
-          <span onClick={goToSignIn}>cancel</span>
+          <span onClick={() => dispatch(changeAuthenticationStatus('UNAUTHENTICATED'))}>
+            cancel
+          </span>
         </div>
       </div>
     </FormContainer>
   );
-}
-
-export default connect<StateProps, DispatchProps, OwnProps, ColabState>(
-  _state => ({}),
-  (dispatch: TDispatch) => ({
-    signUp: (username: string, email: string, password: string) => {
-      dispatch(signUp(username, email, password));
-    },
-    goToSignIn: () => {
-      dispatch(changeAuthenticationStatus('UNAUTHENTICATED'));
-    },
-  }),
-)(SignUpForm);
+};

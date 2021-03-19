@@ -9,31 +9,32 @@ import { css, cx } from '@emotion/css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
-import { TDispatch, ColabState } from './store';
-import { connect } from 'react-redux';
 import FormContainer from './FormContainer';
 import { darkMode } from './comp/style';
-import { signInWithLocalAccount } from './API';
+import { signInWithLocalAccount } from './API/api';
 import { changeAuthenticationStatus } from './store/auth';
+import { useAppDispatch } from './store/hooks';
 
-interface StateProps {}
-
-interface DispatchProps {
-  signIn: (identifier: string, password: string) => void;
-  gotoSignUp: () => void;
-}
-
-interface OwnProps {
+interface Props {
   redirectTo?: string;
 }
 
-type Props = StateProps & DispatchProps & OwnProps;
+export default function SignInForm(_props: Props) {
+  const dispatch = useAppDispatch();
 
-function SignInForm({ signIn, gotoSignUp }: Props) {
   const [credentials, setCredentials] = React.useState({
     identifier: '',
     password: '',
   });
+
+  const dis = {
+    signIn: (identifier: string, password: string) => {
+      dispatch(signInWithLocalAccount({ identifier, password }));
+    },
+    gotoSignUp: () => {
+      dispatch(changeAuthenticationStatus('SIGNING_UP'));
+    },
+  };
 
   return (
     <FormContainer>
@@ -72,7 +73,7 @@ function SignInForm({ signIn, gotoSignUp }: Props) {
             },
           }),
         )}
-        onClick={() => signIn(credentials.identifier, credentials.password)}
+        onClick={() => dis.signIn(credentials.identifier, credentials.password)}
       >
         <span
           className={css({
@@ -88,19 +89,7 @@ function SignInForm({ signIn, gotoSignUp }: Props) {
           icon={faSignInAlt}
         />
       </button>
-      <span onClick={gotoSignUp}>sign up</span>
+      <span onClick={dis.gotoSignUp}>sign up</span>
     </FormContainer>
   );
 }
-
-export default connect<StateProps, DispatchProps, OwnProps, ColabState>(
-  _state => ({}),
-  (dispatch: TDispatch) => ({
-    signIn: (identifier: string, password: string) => {
-      dispatch(signInWithLocalAccount(identifier, password));
-    },
-    gotoSignUp: () => {
-      dispatch(changeAuthenticationStatus('SIGNING_UP'));
-    },
-  }),
-)(SignInForm);

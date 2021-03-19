@@ -6,6 +6,7 @@
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Account, User } from 'colab-rest-client';
+import * as API from '../API/api';
 
 export interface AuthState {
   authenticationStatus: undefined | 'UNAUTHENTICATED' | 'SIGNING_UP' | 'AUTHENTICATED';
@@ -17,21 +18,10 @@ const initialState: AuthState = {
   authenticationStatus: undefined,
 };
 
-const errorsSlice = createSlice({
+const authSlice = createSlice({
   name: 'errors',
   initialState,
   reducers: {
-    signIn: (state, action: PayloadAction<{ currentUser?: User; currentAccount?: Account }>) => {
-      const signedIn = action.payload.currentUser != null && action.payload.currentAccount != null;
-      state.authenticationStatus = signedIn ? 'AUTHENTICATED' : 'UNAUTHENTICATED';
-      state.currentUser = action.payload.currentUser;
-      state.currentAccount = action.payload.currentAccount;
-    },
-    signOut: state => {
-      state.authenticationStatus = 'UNAUTHENTICATED';
-      state.currentUser = undefined;
-      state.currentAccount = undefined;
-    },
     changeAuthenticationStatus: (
       state,
       action: PayloadAction<AuthState['authenticationStatus']>,
@@ -39,8 +29,22 @@ const errorsSlice = createSlice({
       state.authenticationStatus = action.payload;
     },
   },
+  extraReducers: builder =>
+    builder
+      .addCase(API.reloadCurrentUser.fulfilled, (state, action) => {
+        const signedIn =
+          action.payload.currentUser != null && action.payload.currentAccount != null;
+        state.authenticationStatus = signedIn ? 'AUTHENTICATED' : 'UNAUTHENTICATED';
+        state.currentUser = action.payload.currentUser;
+        state.currentAccount = action.payload.currentAccount;
+      })
+      .addCase(API.signOut.fulfilled, state => {
+        state.authenticationStatus = 'UNAUTHENTICATED';
+        state.currentUser = undefined;
+        state.currentAccount = undefined;
+      }),
 });
 
-export const { signIn, signOut, changeAuthenticationStatus } = errorsSlice.actions;
+export const { changeAuthenticationStatus } = authSlice.actions;
 
-export default errorsSlice.reducer;
+export default authSlice.reducer;

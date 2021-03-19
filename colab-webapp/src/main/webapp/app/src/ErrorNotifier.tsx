@@ -7,22 +7,9 @@
 import * as React from 'react';
 import { css } from '@emotion/css';
 
-import { TDispatch, ColabState } from './store';
-import { connect } from 'react-redux';
 import { HttpErrorMessage, HttpException, entityIs } from 'colab-rest-client';
-import { ColabError, closeError } from './store/error';
-
-interface StateProps {
-  errors: ColabError[];
-}
-
-interface DispatchProps {
-  closeError: (index: number) => void;
-}
-
-interface OwnProps {}
-
-type Props = StateProps & DispatchProps & OwnProps;
+import { closeError } from './store/error';
+import { useAppDispatch, useAppSelector } from './store/hooks';
 
 function prettyPrintError(error: HttpException | Error): string {
   if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage')) {
@@ -54,7 +41,14 @@ function translateErrorCode(code: HttpErrorMessage['messageCode']): string {
   }
 }
 
-function ErrorNotifier({ errors, closeError }: Props) {
+export default function ErrorNotifier() {
+  const dispatch = useAppDispatch();
+
+  const closeErrorCb = (index: number) => {
+    dispatch(closeError(index));
+  };
+  const errors = useAppSelector(state => state.errors);
+
   return (
     <div
       className={css({
@@ -75,7 +69,7 @@ function ErrorNotifier({ errors, closeError }: Props) {
               padding: '10px',
               margin: '10px',
             })}
-            onClick={() => closeError(index)}
+            onClick={() => closeErrorCb(index)}
           >
             {prettyPrintError(error.error)}
           </div>
@@ -84,14 +78,3 @@ function ErrorNotifier({ errors, closeError }: Props) {
     </div>
   );
 }
-
-export default connect<StateProps, DispatchProps, OwnProps, ColabState>(
-  state => ({
-    errors: state.errors,
-  }),
-  (dispatch: TDispatch) => ({
-    closeError: (index: number) => {
-      dispatch(closeError(index));
-    },
-  }),
-)(ErrorNotifier);

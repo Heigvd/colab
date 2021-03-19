@@ -4,15 +4,15 @@
  *
  * Licensed under the MIT License
  */
-import { createStore, applyMiddleware, Action, AnyAction, combineReducers } from 'redux';
+import { combineReducers } from 'redux';
 import thunk from 'redux-thunk';
-import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 import authReducer from './auth';
 import errorReducer from './error';
 import projectReducer from './project';
 import navigationReducer from './navigation';
 import websocketReducer from './websocket';
+import { configureStore } from '@reduxjs/toolkit';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -22,7 +22,11 @@ const rootReducer = combineReducers({
   websockets: websocketReducer,
 });
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
+//const storeX = createStore(rootReducer, applyMiddleware(thunk));
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(thunk),
+});
 
 export const getStore = () => store;
 
@@ -30,12 +34,3 @@ export const dispatch = store.dispatch;
 
 export type ColabState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  ColabState,
-  unknown,
-  Action<string>
->;
-
-export type TDispatch = ThunkDispatch<ColabState, void, AnyAction>;

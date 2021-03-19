@@ -4,26 +4,21 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 export interface NavState {
-  status: 'UNINITIALIZED' | 'SYNCING' | 'READY';
+  status: 'READY';
 }
 
 const initialState: NavState = {
-  status: 'UNINITIALIZED',
+  status: 'READY',
 };
 
 const navSlice = createSlice({
   name: 'navigation',
   initialState,
-  reducers: {
-    goto: (state, action: PayloadAction<NavState['status']>) => {
-      state.status = action.payload;
-    },
-  },
+  reducers: {},
+  extraReducers: builder => builder,
 });
-
-export const { goto } = navSlice.actions;
 
 export default navSlice.reducer;

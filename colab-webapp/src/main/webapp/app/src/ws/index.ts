@@ -56,19 +56,13 @@ function createConnection(onCloseCb: () => void) {
 
   connection.onmessage = messageEvent => {
     const message = JSON.parse(messageEvent.data);
-    if ('@class' in message) {
-      switch (message['@class']) {
-        case 'WsDeleteMessage':
-          onDelete(message);
-          break;
-        case 'WsUpdateMessage':
-          onUpdate(message);
-          break;
-        case 'WsInitMessage':
-          dispatch(WsActions.setSessionId((message as WsInitMessage).sessionId));
-          resolveSessionId((message as WsInitMessage).sessionId);
-          break;
-      }
+    if (entityIs(message, 'WsInitMessage')) {
+      dispatch(WsActions.setSessionId((message as WsInitMessage).sessionId));
+      resolveSessionId((message as WsInitMessage).sessionId);
+    } else if (entityIs(message, 'WsUpdateMessage')) {
+      onUpdate(message);
+    } else if (entityIs(message, 'WsDeleteMessage')) {
+      onDelete(message);
     }
   };
 
