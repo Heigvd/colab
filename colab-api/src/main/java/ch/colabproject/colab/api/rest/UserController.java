@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.ejb.SecurityFacade;
 import ch.colabproject.colab.api.ejb.UserManagement;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
@@ -48,6 +49,12 @@ public class UserController {
      */
     @Inject
     private RequestManager requestManager;
+
+    /**
+     * to control access
+     */
+    @Inject
+    private SecurityFacade securityFacade;
 
     /**
      * Get the authentication method and its parameters a user shall use to authenticate with the
@@ -130,7 +137,7 @@ public class UserController {
     @PUT
     @AuthenticationRequired
     public void updateUser(User user) throws ColabMergeException {
-        // TODO: assert permission (admin || currentUser == user)
+        securityFacade.assertCanWrite(user);
         userManagement.updateUser(user);
     }
 
