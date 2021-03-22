@@ -24,14 +24,15 @@ public class ClientException extends HttpException {
     public ClientException() {
 <span class="nc" id="L25">        this(Response.Status.BAD_REQUEST);</span>
 <span class="nc" id="L26">    }</span>
+
     /**
      * Create a client error exception
      *
      * @param status HTTP status
      */
     public ClientException(Response.Status status) {
-<span class="nc" id="L33">        super(status);</span>
-<span class="nc" id="L34">    }</span>
+<span class="nc" id="L34">        super(status);</span>
+<span class="nc" id="L35">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -56,7 +56,7 @@ colab-client/colab-api,ch.colabproject.colab.api.model.token,Token,50,0,0,0,19,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,HelpMojo,802,0,110,0,159,0,71,0,16,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,GeneratorPlugin,69,0,2,0,19,0,5,0,4,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,Generator,569,0,30,0,147,0,36,0,21,0
-colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,TypeScriptHelper,506,0,84,0,134,0,55,0,13,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,TypeScriptHelper,506,0,84,0,135,0,55,0,13,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,FileHelper,24,0,0,0,7,0,2,0,2,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestClient.CookieFilter,49,0,4,0,14,0,5,0,3,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,ServerException,8,0,0,0,4,0,2,0,2,0

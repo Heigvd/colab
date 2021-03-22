@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.service.smtp;
 
-import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;

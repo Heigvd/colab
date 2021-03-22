@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
  * @author maxence
  */
 @ApplicationException(rollback = true)
-public abstract class HttpException extends RuntimeException implements WithJsonDiscriminator{
+public abstract class HttpException extends RuntimeException implements WithJsonDiscriminator {
 
     private static final long serialVersionUID = 1L;
 

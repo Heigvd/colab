@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.HashMethod;
@@ -15,6 +14,7 @@ import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.service.smtp.Message;
 import ch.colabproject.colab.api.service.smtp.Sendmail;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import javax.ejb.LocalBean;
