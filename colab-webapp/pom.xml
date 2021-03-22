@@ -27,7 +27,7 @@
             <id>default</id>
             <activation>
                 <property>
-                    <!-- Do not build production app if skipWebappYarn is set (mvn -DskipYarn) -->
+                    <!-- Do not build production app if skipWebappYarn is set (mvn -DskipWebappYarn) -->
                     <name>!skipWebappYarn</name>
                 </property>
             </activation>
