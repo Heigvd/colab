@@ -136,7 +136,7 @@
                     <systemProperties>
                         <java.util.logging.config.file>${project.basedir}/src/test/resources/logging.properties</java.util.logging.config.file>
                         <arquillian.launch>payara-embedded</arquillian.launch>
-                        <!-- do not run liquibase as the databes is dropped and created by JPA -->
+                        <!-- do not run liquibase as the database is dropped and created by JPA -->
                         <liquibase.config.shouldRun>false</liquibase.config.shouldRun>
                         <colab.database.host>localhost</colab.database.host>
                         <!-- one would be able to set the port too...
