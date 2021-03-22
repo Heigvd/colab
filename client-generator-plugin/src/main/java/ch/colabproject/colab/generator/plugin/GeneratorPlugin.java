@@ -23,7 +23,7 @@ import org.apache.maven.project.MavenProject;
  */
 @Mojo(
     name = "generate",
-    defaultPhase = LifecyclePhase.PROCESS_CLASSES,
+    defaultPhase = LifecyclePhase.GENERATE_SOURCES,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
 public class GeneratorPlugin extends AbstractMojo {
