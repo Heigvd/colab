@@ -7,10 +7,10 @@
 package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -62,6 +62,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
      */
     @Inject
     private ExceptionMapper<Exception> exceptionMapper;
+
     /**
      * Get all method or class annotations matching the given type.
      *

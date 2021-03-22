@@ -36,7 +36,7 @@ public class LiquibaseProducer {
     @Resource(lookup = "java:global/colabDS")
     private DataSource myDataSource;
 
-    /**
+    /*/**
      * Liquibase configuration
      *
      * @return the config

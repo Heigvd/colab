@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.generator.plugin;
 
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -14,8 +15,10 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,9 +31,6 @@ import javax.json.stream.JsonParser;
 import javax.validation.constraints.NotNull;
 import org.apache.maven.plugin.MojoFailureException;
 import org.reflections.Reflections;
-import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Some methods to convert java things to typescript ones
@@ -147,8 +147,9 @@ public class TypeScriptHelper {
                     .collect(Collectors.joining(" | "));
 
                 sb.append("type ").append(name).append(" = ")
-                    .append(directSubtypes == null || directSubtypes.isBlank() ? " never" : directSubtypes)
-                    .append(";\n");
+                        .append(directSubtypes == null || directSubtypes.isBlank() ? " never"
+                                : directSubtypes)
+                        .append(";\n");
             } else {
                 inheritance.put(name, new ArrayList<>());
                 inheritance.get(name).add(name);

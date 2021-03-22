@@ -24,6 +24,7 @@ public class ClientException extends HttpException {
     public ClientException() {
         this(Response.Status.BAD_REQUEST);
     }
+
     /**
      * Create a client error exception
      *
