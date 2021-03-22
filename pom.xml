@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
     <groupId>ch.colab-project.colab</groupId>
     <artifactId>colab</artifactId>
     <version>0.1</version>
@@ -46,13 +47,13 @@
     </licenses>
 
     <modules>
+        <module>client-generator-model</module>
+        <module>client-generator-plugin</module>
         <module>build-tools</module>
         <module>colab-api</module>
         <module>colab-client</module>
         <module>colab-tests</module>
         <module>colab-webapp</module>
-        <module>client-generator-model</module>
-        <module>client-generator-plugin</module>
     </modules>
 
     <properties>
@@ -352,7 +353,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.2.3</version>
+                    <version>3.3.1</version>
                     <configuration>
                         <failOnMissingWebXml>false</failOnMissingWebXml>
                     </configuration>
@@ -387,7 +388,7 @@
                     <version>3.0.0-M5</version>
                     <configuration>
                         <!-- Add options to start payara with java 11-->
-                        <!--<argLine>-Xms800m -Xmx800m @{jacoco.surefireArgLine}</argLine>-->A
+                        <!--<argLine>-Xms800m -Xmx800m @{jacoco.surefireArgLine}</argLine>-->
                         <argLine>-Xms800m -Xmx800m @{jacoco.surefireArgLine} --add-modules java.se --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.jar=ALL-UNNAMED --add-opens=java.naming/javax.naming.spi=ALL-UNNAMED --add-opens=java.logging/java.util.logging=ALL-UNNAMED --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=java.base/sun.net.www.protocol.jrt=ALL-UNNAMED</argLine>
                         <forkCount>1</forkCount>
                         <reuseForks>true</reuseForks>
