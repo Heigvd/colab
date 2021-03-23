@@ -112,7 +112,8 @@ public class Generator {
             try {
                 return provider.getConstructor().newInstance().getJsonbMapper();
             } catch (NoSuchMethodException | SecurityException | InstantiationException
-                | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException ex) {
                 if (log != null) {
                     log.error("Fails to instantiate JsonbMapperProvider");
                 }
@@ -268,7 +269,7 @@ public class Generator {
             snowballedTypes.forEach((name, type) -> {
                 if (!extraTypes.containsKey(name)) {
                     extraTypes.put(name, type);
-                    queue.add(0, new SimpleEntry(name, type));
+                    queue.add(0, new SimpleEntry<String, Type>(name, type));
                 }
             });
         }
@@ -340,7 +341,7 @@ public class Generator {
         try {
             Files.createDirectories(java.nio.file.Path.of(directory));
 
-            try ( BufferedWriter writer = Files.newBufferedWriter(
+            try (BufferedWriter writer = Files.newBufferedWriter(
                 java.nio.file.Path.of(directory, filename))) {
                 writer.write(content);
             } catch (IOException ex) {

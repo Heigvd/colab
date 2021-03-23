@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
     <groupId>ch.colab-project.colab</groupId>
     <artifactId>colab</artifactId>
     <version>0.1</version>
@@ -46,13 +47,13 @@
     </licenses>
 
     <modules>
+        <module>client-generator-model</module>
+        <module>client-generator-plugin</module>
         <module>build-tools</module>
         <module>colab-api</module>
         <module>colab-client</module>
         <module>colab-tests</module>
         <module>colab-webapp</module>
-        <module>client-generator-model</module>
-        <module>client-generator-plugin</module>
     </modules>
 
     <properties>
@@ -352,7 +353,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.2.3</version>
+                    <version>3.3.1</version>
                     <configuration>
                         <failOnMissingWebXml>false</failOnMissingWebXml>
                     </configuration>
@@ -498,6 +499,11 @@
                             <groupId>ch.colab-project.colab</groupId>
                             <artifactId>build-tools</artifactId>
                             <version>1.0</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>8.40</version>
                         </dependency>
                     </dependencies>
                 </plugin>

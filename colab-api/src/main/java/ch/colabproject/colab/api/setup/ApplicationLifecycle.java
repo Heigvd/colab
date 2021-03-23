@@ -7,8 +7,8 @@
 package ch.colabproject.colab.api.setup;
 
 import ch.colabproject.colab.api.ejb.UserManagement;
-import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.inject.Inject;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;

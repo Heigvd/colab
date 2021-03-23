@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.utils;
 
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,6 @@ import javax.json.bind.serializer.DeserializationContext;
 import javax.json.bind.serializer.JsonbDeserializer;
 import javax.json.stream.JsonParser;
 import org.reflections.Reflections;
-import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 
 /**
  * Custom deserializer which can handle polymorphic JSONable object
@@ -28,7 +28,8 @@ public class ColabDeserializer implements JsonbDeserializer<WithJsonDiscriminato
     /**
      * Store class references
      */
-    private static final Map<String, Class<? extends WithJsonDiscriminator>> CLASSES_MAP = new HashMap<>();
+    private static final Map<String, Class<? extends WithJsonDiscriminator>> CLASSES_MAP 
+        = new HashMap<>();
 
     /**
      * Reflections allow to find, for instance, all implementations of an interface
@@ -47,7 +48,8 @@ public class ColabDeserializer implements JsonbDeserializer<WithJsonDiscriminato
      * {@inheritDoc }
      */
     @Override
-    public WithJsonDiscriminator deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
+    public WithJsonDiscriminator deserialize(JsonParser parser, DeserializationContext ctx,
+            Type rtType) {
 
         // find @class discriminant from object to deserialize
         JsonObject value = parser.getObject();

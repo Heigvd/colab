@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>colab-tests</artifactId>
-    <packaging>jar</packaging>
 
     <parent>
         <groupId>ch.colab-project.colab</groupId>
         <artifactId>colab</artifactId>
         <version>0.1</version>
     </parent>
+    
+    <artifactId>colab-tests</artifactId>
+    <packaging>jar</packaging>
 
     <organization>
         <name>AlbaSim, MEI, HEIG-VD, HES-SO</name>
@@ -135,7 +136,7 @@
                     <systemProperties>
                         <java.util.logging.config.file>${project.basedir}/src/test/resources/logging.properties</java.util.logging.config.file>
                         <arquillian.launch>payara-embedded</arquillian.launch>
-                        <!-- do not run liquibase as the databes is dropped and created by JPA -->
+                        <!-- do not run liquibase as the database is dropped and created by JPA -->
                         <liquibase.config.shouldRun>false</liquibase.config.shouldRun>
                         <colab.database.host>localhost</colab.database.host>
                         <!-- one would be able to set the port too...
