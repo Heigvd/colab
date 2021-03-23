@@ -75,5 +75,11 @@ import javax.validation.constraints.NotNull;
     public String getEmailBody(String link) {
 <span class="fc" id="L76">        return MessageFormat.format(&quot;Please verify your email address: &lt;a href=\&quot;{0}\&quot;&gt;verify&lt;/a&gt;&quot;, link);</span>
     }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L81">        return &quot;VerifyLocalAccountToken{&quot;+ &quot;id=&quot; + getId() + &quot;, localAccount=&quot; + localAccount + '}';</span>
+
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

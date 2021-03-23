@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.token;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.HashMethod;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @Entity
-<span class="nc" id="L30">public abstract class Token implements ColabEntity {</span>
+<span class="nc" id="L31">public abstract class Token implements ColabEntity {</span>
 
     /**
      * a token does not need a salt but, as some HashMethods require one, let's use an hard-coded
@@ -77,7 +78,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of authenticationRequired
      */
     public Boolean isAuthenticationRequired() {
-<span class="nc" id="L80">        return authenticationRequired;</span>
+<span class="nc" id="L81">        return authenticationRequired;</span>
     }
 
     /**
@@ -86,8 +87,8 @@ import javax.validation.constraints.NotNull;
      * @param authenticationRequired new value of authenticationRequired
      */
     public void setAuthenticationRequired(Boolean authenticationRequired) {
-<span class="nc" id="L89">        this.authenticationRequired = authenticationRequired;</span>
-<span class="nc" id="L90">    }</span>
+<span class="nc" id="L90">        this.authenticationRequired = authenticationRequired;</span>
+<span class="nc" id="L91">    }</span>
 
 
     /**
@@ -96,7 +97,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of hashMethod
      */
     public HashMethod getHashMethod() {
-<span class="nc" id="L99">        return hashMethod;</span>
+<span class="nc" id="L100">        return hashMethod;</span>
     }
 
     /**
@@ -105,8 +106,8 @@ import javax.validation.constraints.NotNull;
      * @param hashMethod new value of hashMethod
      */
     public void setHashMethod(HashMethod hashMethod) {
-<span class="nc" id="L108">        this.hashMethod = hashMethod;</span>
-<span class="nc" id="L109">    }</span>
+<span class="nc" id="L109">        this.hashMethod = hashMethod;</span>
+<span class="nc" id="L110">    }</span>
 
     /**
      * Get the value of hashedToken
@@ -114,7 +115,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of hashedToken
      */
     public byte[] getHashedToken() {
-<span class="nc" id="L117">        return hashedToken;</span>
+<span class="nc" id="L118">        return hashedToken;</span>
     }
 
     /**
@@ -123,15 +124,15 @@ import javax.validation.constraints.NotNull;
      * @param hashedToken new value of hashedToken
      */
     public void setHashedToken(byte[] hashedToken) {
-<span class="nc" id="L126">        this.hashedToken = hashedToken;</span>
-<span class="nc" id="L127">    }</span>
+<span class="nc" id="L127">        this.hashedToken = hashedToken;</span>
+<span class="nc" id="L128">    }</span>
 
     /**
      * @return the project ID
      */
     @Override
     public Long getId() {
-<span class="nc" id="L134">        return id;</span>
+<span class="nc" id="L135">        return id;</span>
     }
 
     /**
@@ -140,8 +141,8 @@ import javax.validation.constraints.NotNull;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L143">        this.id = id;</span>
-<span class="nc" id="L144">    }</span>
+<span class="nc" id="L144">        this.id = id;</span>
+<span class="nc" id="L145">    }</span>
 
     /**
      * Get the value of expirationDate
@@ -149,7 +150,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of expirationDate
      */
     public LocalDateTime getExpirationDate() {
-<span class="nc" id="L152">        return expirationDate;</span>
+<span class="nc" id="L153">        return expirationDate;</span>
     }
 
     /**
@@ -158,13 +159,13 @@ import javax.validation.constraints.NotNull;
      * @param expirationDate new value of expirationDate
      */
     public void setExpirationDate(LocalDateTime expirationDate) {
-<span class="nc" id="L161">        this.expirationDate = expirationDate;</span>
-<span class="nc" id="L162">    }</span>
+<span class="nc" id="L162">        this.expirationDate = expirationDate;</span>
+<span class="nc" id="L163">    }</span>
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         // nothing to do
-<span class="nc" id="L167">    }</span>
+<span class="nc" id="L168">    }</span>
 
     /**
      * URL to redirect the user to once the token has been consumed.
@@ -195,8 +196,19 @@ import javax.validation.constraints.NotNull;
      * @return true if there is a match
      */
     public boolean checkHash(String plainToken) {
-<span class="nc" id="L198">        byte[] submited = this.getHashMethod().hash(plainToken, SALT);</span>
-<span class="nc" id="L199">        return Arrays.equals(submited, this.getHashedToken());</span>
+<span class="nc" id="L199">        byte[] submited = this.getHashMethod().hash(plainToken, SALT);</span>
+<span class="nc" id="L200">        return Arrays.equals(submited, this.getHashedToken());</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L205">        return EntityHelper.hashCode(this);</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
+    public boolean equals(Object obj) {
+<span class="nc" id="L211">        return EntityHelper.equals(this, obj);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

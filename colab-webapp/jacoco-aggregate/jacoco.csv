@@ -13,20 +13,21 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ejb,TransactionManager,36,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,RequestManager,54,0,8,0,18,0,12,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,WebsocketSynchronizer,82,0,12,0,21,0,13,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,UserManagement,411,0,34,0,121,0,38,0,21,0
+colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,52,0,14,0,15,0,11,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,JsonDecoder,29,0,0,0,10,0,5,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,JsonEncoder,19,0,0,0,7,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,MessageBuilder,77,0,0,0,22,0,12,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail.new Authenticator() {...},17,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Message,76,0,0,0,29,0,18,0,18,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail,173,0,6,0,42,0,6,0,3,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.user,Account,17,0,0,0,7,0,5,0,5,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.user,Account,24,0,0,0,9,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HashMethod.new HashMethod() {...},25,0,0,0,6,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,AuthInfo,24,0,0,0,10,0,7,0,7,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.user,LocalAccount,86,0,4,0,35,0,24,0,22,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.user,LocalAccount,94,0,4,0,36,0,25,0,23,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HashMethod,20,0,0,0,3,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,SignUpInfo,38,0,0,0,16,0,11,0,11,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,AuthMethod,46,0,0,0,20,0,10,0,10,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.user,User,107,0,2,0,37,0,20,0,19,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.user,User,122,0,2,0,40,0,23,0,22,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.config,JsonbProvider,26,0,0,0,7,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws,WebsocketEndpoint,90,0,2,0,26,0,10,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.exceptions,ColabMergeException,15,0,0,0,5,0,2,0,2,0
@@ -39,17 +40,18 @@ colab-webapp/colab-api,ch.colabproject.colab.api.setup,ColabConfiguration,47,0,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,LiquibaseProducer,13,0,0,0,3,0,3,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,53,0,2,0,22,0,6,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvider,5,0,0,0,2,0,2,0,2,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest,UserController,52,0,0,0,18,0,11,0,11,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest,UserController,56,0,0,0,19,0,11,0,11,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest,MonitoringController,5,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest,TokenController,15,0,0,0,4,0,3,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest,ProjectController,30,0,0,0,8,0,6,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,EntityListener,21,0,4,0,7,0,5,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,JpaNameMappingCustomizer,44,0,2,0,13,0,7,0,6,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.project,Project,35,0,2,0,13,0,7,0,6,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,EntityHelper,54,0,12,0,15,0,9,0,3,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.project,Project,48,0,2,0,16,0,10,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsDeleteMessage,21,0,0,0,9,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsUpdateMessage,21,0,0,0,9,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsDeleteMessage.IndexEntry,28,0,0,0,12,0,6,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsInitMessage,17,0,0,0,8,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsMessage,3,0,0,0,1,0,1,0,1,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.token,VerifyLocalAccountToken,26,0,0,0,8,0,6,0,6,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.token,Token,50,0,0,0,19,0,13,0,13,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.token,VerifyLocalAccountToken,32,0,0,0,9,0,7,0,7,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.token,Token,57,0,0,0,21,0,15,0,15,0

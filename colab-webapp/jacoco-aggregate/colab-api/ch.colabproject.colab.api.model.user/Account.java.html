@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.model.user;
 
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -21,7 +22,7 @@ import javax.persistence.ManyToOne;
  * @author maxence
  */
 @Entity
-<span class="nc" id="L24">public abstract class Account implements ColabEntity {</span>
+<span class="nc" id="L25">public abstract class Account implements ColabEntity {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -52,7 +53,7 @@ import javax.persistence.ManyToOne;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L55">        return id;</span>
+<span class="nc" id="L56">        return id;</span>
     }
 
     /**
@@ -61,14 +62,14 @@ import javax.persistence.ManyToOne;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L64">        this.id = id;</span>
-<span class="nc" id="L65">    }</span>
+<span class="nc" id="L65">        this.id = id;</span>
+<span class="nc" id="L66">    }</span>
 
     /**
      * @return the user
      */
     public User getUser() {
-<span class="nc" id="L71">        return user;</span>
+<span class="nc" id="L72">        return user;</span>
     }
 
     /**
@@ -77,7 +78,17 @@ import javax.persistence.ManyToOne;
      * @param user user who owns this account
      */
     public void setUser(User user) {
-<span class="nc" id="L80">        this.user = user;</span>
-<span class="nc" id="L81">    }</span>
+<span class="nc" id="L81">        this.user = user;</span>
+<span class="nc" id="L82">    }</span>
+    @Override
+    public int hashCode() {
+<span class="nc" id="L85">        return EntityHelper.hashCode(this);</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
+    public boolean equals(Object obj) {
+<span class="nc" id="L91">        return EntityHelper.equals(this, obj);</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

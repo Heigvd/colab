@@ -296,5 +296,11 @@ import javax.validation.constraints.NotNull;
     public void merge(ColabEntity other) throws ColabMergeException {
         // TODO
 <span class="nc" id="L298">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L302">        return &quot;LocalAccount{&quot; + &quot;id=&quot; + this.getId() + &quot;, email=&quot; + email + &quot;, verified=&quot; + verified + '}';</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

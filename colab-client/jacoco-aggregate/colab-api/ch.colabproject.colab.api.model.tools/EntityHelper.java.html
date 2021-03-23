@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>EntityHelper.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.tools</a> &gt; <span class="el_source">EntityHelper.java</span></div><h1>EntityHelper.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.tools;
+
+import ch.colabproject.colab.api.model.WithId;
+import java.util.Objects;
+
+/**
+ *
+ * @author maxence
+ */
+public class EntityHelper {
+
+    /**
+     * never-called private constructor
+     */
+<span class="nc" id="L21">    private EntityHelper() {</span>
+<span class="nc" id="L22">        throw new UnsupportedOperationException(</span>
+            &quot;This is a utility class and cannot be instantiated&quot;);
+    }
+
+    /**
+     * {@link Object#hashCode} implementation for all WithId implementation
+     *
+     * @param object object to hash
+     *
+     * @return a hash code value for the given object.
+     */
+    public static int hashCode(WithId object) {
+<span class="nc" id="L34">        int hash = 7;</span>
+<span class="nc" id="L35">        hash = 31 * hash + Objects.hashCode(object.getId());</span>
+<span class="nc" id="L36">        return hash;</span>
+    }
+
+    /**
+     * {@link Object#equals} implementation for all WithId implementation. Objects equal if
+     * &lt;ul&gt;
+     * &lt;li&gt;it's the same reference (strict == equality)
+     * &lt;li&gt;both are null
+     * &lt;li&gt;they are instance of the same class and have the same id
+     * &lt;/ul&gt;
+     *
+     * @param a first object
+     * @param b second object
+     *
+     * @return {@code true} if both objects represent the same persisted entity
+     */
+    public static boolean equals(WithId a, Object b) {
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (a == b) {</span>
+            // same object or both are null
+<span class="nc" id="L55">            return true;</span>
+        }
+<span class="nc bnc" id="L57" title="All 4 branches missed.">        if (a == null || b == null) {</span>
+            // onely one is null
+<span class="nc" id="L59">            return false;</span>
+        }
+
+        // at this point, both are not null
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (a.getClass() != b.getClass()) {</span>
+            // class mismatch
+<span class="nc" id="L65">            return false;</span>
+        } else {
+            // same class
+<span class="nc" id="L68">            WithId otherB = (WithId) b;</span>
+<span class="nc bnc" id="L69" title="All 4 branches missed.">            if (a.getId() == null || otherB.getId() == null) {</span>
+                // if at least one object has no id, object are not equals
+                // if both id are null, objects may equal, but this case is handled by the strict
+                // (a == b) equality check
+<span class="nc" id="L73">                return false;</span>
+            }
+            // same class, ids must equals
+<span class="nc" id="L76">            return Objects.equals(a.getId(), otherB.getId());</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
