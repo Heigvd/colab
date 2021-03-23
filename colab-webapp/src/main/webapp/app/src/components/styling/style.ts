@@ -7,17 +7,19 @@
 import { css, keyframes, cx } from '@emotion/css';
 
 export const darkMode = css({
-  '--bgColor': 'grey',
+  '--bgColor': '#444',
   '--fgColor': 'white',
-  '--hoverColor': 'hotpink',
+  '--hoverBgColor': '#555',
+  '--hoverFgColor': 'white',
   backgroundColor: 'var(--bgColor)',
   color: 'var(--fgColor)',
 });
 
 export const lightMode = css({
   '--bgColor': 'white',
-  '--fgColor': '#2c2c2c',
-  '--hoverColor': 'pink',
+  '--fgColor': '#333333',
+  '--hoverBgColor': 'white',
+  '--hoverFgColor': '#999',
   backgroundColor: 'var(--bgColor)',
   color: 'var(--fgColor)',
 });
@@ -52,28 +54,20 @@ export const pulseEase = css`
   animation: ${pulseKeyframes} 1s ease infinite;
 `;
 
-export const button = css({
+export const buttonStyle = css({
   cursor: 'pointer',
   ':hover': {
-    backgroundColor: 'var(--hoverColor)',
+    color: 'var(--hoverFgColor)',
+    backgroundColor: 'var(--hoverBgColor)',
   },
 });
 
-export const iconButton = css({
-  cursor: 'pointer',
+const icon = css({
   paddingLeft: '5px',
   paddingRight: '5px',
-  ':hover': {
-    color: 'var(--hoverColor)',
-  },
 });
 
-export const disabledIconStyle = cx(
-  iconButton,
-  css({
-    cursor: 'default',
-    ':hover': {
-      color: 'var(--fgColor)',
-    },
-  }),
-);
+export const iconButton = cx(buttonStyle, icon);
+
+export const disabledIconStyle = icon;
+

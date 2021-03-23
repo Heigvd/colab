@@ -6,7 +6,7 @@
  */
 import * as React from 'react';
 import { css } from '@emotion/css';
-import { fullPageStyle } from '../style';
+import { fullPageStyle } from '../styling/style';
 import InlineLoading from './InlineLoading';
 
 export default function Loading() {

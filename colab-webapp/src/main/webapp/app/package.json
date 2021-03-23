@@ -26,6 +26,7 @@
         "@types/react": "^17.0.2",
         "@types/react-dom": "^17.0.1",
         "@types/react-redux": "^7.1.9",
+        "@types/react-router-dom": "^5.1.7",
         "babel-loader": "^8.1.0",
         "css-loader": "^5.0.1",
         "redux-devtools": "^3.6.0",
@@ -49,6 +50,7 @@
         "react": "^17.0.1",
         "react-dom": "^17.0.1",
         "react-password-strength-bar": "^0.3.3",
-        "react-redux": "^7.2.1"
+        "react-redux": "^7.2.1",
+        "react-router-dom": "^5.2.0"
     }
 }

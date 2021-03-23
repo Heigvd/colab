@@ -8,8 +8,9 @@
 import * as React from 'react';
 import { css, cx } from '@emotion/css';
 
-import Logo from '../../images/logo.svg';
-import { fullPageStyle, darkMode } from '../style';
+import Logo from '../styling/WhiteLogo';
+
+import { fullPageStyle, darkMode } from '../styling/style';
 
 interface Props {
   children: React.ReactNode;

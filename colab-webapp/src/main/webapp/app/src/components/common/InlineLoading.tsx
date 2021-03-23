@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 import * as React from 'react';
-import Logo from '../../images/picto_bw.svg';
+import Picto from '../styling/PictoBw';
 import { css, cx } from '@emotion/css';
-import { pulseEase } from '../style';
+import { pulseEase } from '../styling/style';
 
 interface Props {
   size?: string;
@@ -22,7 +22,7 @@ export default function InlineLoading({ size = '24px', maxWidth = '', margin = '
         margin: margin,
       })}
     >
-      <Logo
+      <Picto
         className={cx(
           pulseEase,
           css({

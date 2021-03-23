@@ -8,12 +8,11 @@
 import * as React from 'react';
 import * as API from '../../API/api';
 
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Project } from 'colab-rest-client';
 import { css } from '@emotion/css';
-import { iconButton } from '../style';
+import { iconButton, buttonStyle } from '../styling/style';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import { AutoSaveTextEditor } from '../common/AutoSaveTextEditor';
@@ -85,7 +84,7 @@ export function ProjectList() {
         </div>
         <div>
           <span
-            className={css({ cursor: 'Pointer' })}
+            className={buttonStyle}
             onClick={() => {
               dispatch(
                 API.createProject({

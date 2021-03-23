@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import * as React from 'react';
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +14,7 @@ import InlineLoading from '../common/InlineLoading';
 import { signUp } from '../../API/api';
 import { changeAuthenticationStatus } from '../../store/auth';
 import { useAppDispatch } from '../../store/hooks';
+import { darkMode, buttonStyle } from '../styling/style';
 
 interface Props {
   redirectTo?: string;
@@ -74,19 +75,16 @@ export default (_props: Props) => {
           </React.Suspense>
         </div>
         <div>
-          <button
-            className={css({
-              background: '#666',
-              fontSize: '1.2em',
-              cursor: 'pointer',
-              padding: '15px',
-              width: 'max-content',
-              color: 'white',
-              margin: 'auto',
-              ':hover': {
-                backgroundColor: '#404040',
-              },
-            })}
+          <span
+            className={cx(
+              darkMode,
+              buttonStyle,
+              css({
+                padding: '5px',
+                width: 'max-content',
+                margin: 'auto',
+              }),
+            )}
             onClick={() => dispatch(signUp(credentials))}
           >
             <span
@@ -102,8 +100,11 @@ export default (_props: Props) => {
               })}
               icon={faSignInAlt}
             />
-          </button>
-          <span onClick={() => dispatch(changeAuthenticationStatus('UNAUTHENTICATED'))}>
+          </span>
+          <span
+            className={buttonStyle}
+            onClick={() => dispatch(changeAuthenticationStatus('UNAUTHENTICATED'))}
+          >
             cancel
           </span>
         </div>

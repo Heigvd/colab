@@ -12,7 +12,7 @@ import { init } from '../ws/websocket';
 import { Provider } from 'react-redux';
 import { getStore } from '../store/store';
 import ErrorBoundary from './common/ErrorBoundary';
-import MainApp from './Lobby';
+import MainApp from './MainApp';
 import Loading from './common/Loading';
 import ErrorNotifier from './common/ErrorNotifier';
 

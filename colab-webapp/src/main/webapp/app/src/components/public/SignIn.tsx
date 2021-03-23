@@ -10,7 +10,7 @@ import { css, cx } from '@emotion/css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import FormContainer from '../common/FormContainer';
-import { darkMode } from '../style';
+import { darkMode, buttonStyle } from '../styling/style';
 import { signInWithLocalAccount } from '../../API/api';
 import { changeAuthenticationStatus } from '../../store/auth';
 import { useAppDispatch } from '../../store/hooks';
@@ -26,15 +26,6 @@ export default function SignInForm(_props: Props) {
     identifier: '',
     password: '',
   });
-
-  const dis = {
-    signIn: (identifier: string, password: string) => {
-      dispatch(signInWithLocalAccount({ identifier, password }));
-    },
-    gotoSignUp: () => {
-      dispatch(changeAuthenticationStatus('SIGNING_UP'));
-    },
-  };
 
   return (
     <FormContainer>
@@ -60,20 +51,17 @@ export default function SignInForm(_props: Props) {
         </label>
       </div>
 
-      <button
+      <span
         className={cx(
           darkMode,
+          buttonStyle,
           css({
-            cursor: 'pointer',
             padding: '5px',
             width: 'max-content',
             margin: 'auto',
-            ':hover': {
-              backgroundColor: 'var(--hoverColor)',
-            },
           }),
         )}
-        onClick={() => dis.signIn(credentials.identifier, credentials.password)}
+        onClick={() => dispatch(signInWithLocalAccount(credentials))}
       >
         <span
           className={css({
@@ -88,8 +76,13 @@ export default function SignInForm(_props: Props) {
           })}
           icon={faSignInAlt}
         />
-      </button>
-      <span onClick={dis.gotoSignUp}>sign up</span>
+      </span>
+      <span
+        className={buttonStyle}
+        onClick={() => dispatch(changeAuthenticationStatus('SIGNING_UP'))}
+      >
+        sign up
+      </span>
     </FormContainer>
   );
 }

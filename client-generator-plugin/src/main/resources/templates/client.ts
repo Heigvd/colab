@@ -40,7 +40,7 @@ const sendRequest = async <T>(
   method: string,
   path: string,
   body: string | {} | undefined,
-  errorHandler: (error: WithJsonDiscriminator| Error) => void
+  errorHandler: (error: WithJsonDiscriminator | Error) => void
 ): Promise<T> => {
   const res = await fetch(
     path,

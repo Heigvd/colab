@@ -9,7 +9,7 @@ import * as React from 'react';
 import { debounce } from 'lodash';
 import { faPen, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { iconButton } from '../style';
+import { iconButton } from '../styling/style';
 
 type State = {
   status: 'EDIT' | 'DISPLAY';

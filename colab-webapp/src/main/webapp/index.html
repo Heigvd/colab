@@ -1,12 +1,23 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
- <head>
-     <title>co.LAB</title>
-     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-     <link rel="icon" type="image/png" href="/favicon_128.png">
- </head>
- <body>
+  <head>
+    <title>co.LAB</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon_128.png" />
+    <style>
+      @import url("https://rsms.me/inter/inter.css");
+      html {
+        font-family: "Inter", sans-serif;
+      }
+      @supports (font-variation-settings: normal) {
+        html {
+          font-family: "Inter var", sans-serif;
+        }
+      }
+    </style>
+  </head>
+  <body>
    <div id='root' />
-   <script src="app/dist/bundle.js"></script>
- </body>
+    <script src="app/dist/bundle.js"></script>
+  </body>
 </html>
