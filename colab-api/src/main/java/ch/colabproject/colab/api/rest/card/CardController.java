@@ -55,7 +55,7 @@ public class CardController {
     @GET
     @AdminResource
     public List<Card> getAllCards() {
-        logger.info("get all cards");
+        logger.debug("get all cards");
         return dao.getAllCard();
     }
 
@@ -69,7 +69,7 @@ public class CardController {
     @GET
     @Path("/{id}")
     public Card getCard(@PathParam("id") Long id) {
-        logger.info("get card " + id);
+        logger.debug("get card #" + id);
         return dao.getCard(id);
     }
 
@@ -82,7 +82,7 @@ public class CardController {
      */
     @POST
     public Long createCard(Card card) {
-        logger.info("create card");
+        logger.debug("create card");
         return dao.createCard(card).getId();
     }
 
@@ -95,7 +95,7 @@ public class CardController {
      */
     @PUT
     public void updateCard(Card card) throws ColabMergeException {
-        logger.info("update card");
+        logger.debug("update card #" + card.getId());
         dao.updateCard(card);
     }
 
@@ -107,7 +107,7 @@ public class CardController {
     @DELETE
     @Path("/{id}")
     public void deleteCard(@PathParam("id") Long id) {
-        logger.info("delete card " + id);
+        logger.debug("delete card #" + id);
         dao.deleteCard(id);
     }
 }

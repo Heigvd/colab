@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- *
+ * Unit testing of card controller
  *
  * @author sandra
  */
@@ -22,6 +22,8 @@ public class CardControllerTest extends AbstractArquillianTest {
     @Test
     public void testCreateCard() {
         Card card = new Card();
+        card.setColor("purple");
+        card.setIndex(6);
 
         Long cardId = client.cardController.createCard(card);
         Card persistedCard = client.cardController.getCard(cardId);
@@ -29,21 +31,24 @@ public class CardControllerTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedCard);
         Assertions.assertNotNull(persistedCard.getId());
 
-        Assertions.assertEquals(persistedCard.getId(), cardId);
+        Assertions.assertEquals(cardId, persistedCard.getId());
+        Assertions.assertEquals("purple", persistedCard.getColor());
+        Assertions.assertEquals(6, persistedCard.getIndex());
     }
 
     @Test
     public void testUpdateCard() {
         Card card = new Card();
-
         Long cardId = client.cardController.createCard(card);
-        card = client.cardController.getCard(cardId);
-        card.setIndex(3);
 
+        card = client.cardController.getCard(cardId);
+        card.setColor("blue");
+        card.setIndex(3);
         client.cardController.updateCard(card);
 
         Card card2 = client.cardController.getCard(cardId);
-        Assertions.assertEquals(card.getIndex(), card2.getIndex());
+        Assertions.assertEquals("blue", card2.getColor());
+        Assertions.assertEquals(3, card2.getIndex());
     }
 
     @Test
@@ -55,7 +60,7 @@ public class CardControllerTest extends AbstractArquillianTest {
 
         card = new Card();
         card.setIndex(42);
-        card.setColor("purple");
+        card.setColor("yellow");
         client.cardController.createCard(card);
 
         List<Card> cards = client.cardController.getAllCards();
@@ -66,13 +71,13 @@ public class CardControllerTest extends AbstractArquillianTest {
     public void testDeleteCard() {
         Card card = new Card();
         Long cardId = client.cardController.createCard(card);
-        Card persistedCard = client.cardController.getCard(cardId);
 
+        Card persistedCard = client.cardController.getCard(cardId);
         Assertions.assertNotNull(persistedCard);
 
         client.cardController.deleteCard(cardId);
-        persistedCard = client.cardController.getCard(cardId);
 
+        persistedCard = client.cardController.getCard(cardId);
         Assertions.assertNull(persistedCard);
     }
 }

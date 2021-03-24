@@ -46,6 +46,9 @@ public class SecurityTest extends AbstractArquillianTest {
             client.cardController.getAllCards();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
+            client.cardContentController.getAllCardContents();
+        });
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.userController.grantAdminRight(1l);
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {

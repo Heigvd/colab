@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Card related logic
+ * Card persistence
  *
  * @author sandra
  */
@@ -42,7 +42,7 @@ public class CardDao {
      */
     // FIXME sandra - See if really needed
     public List<Card> getAllCard() {
-        logger.info("get all cards");
+        logger.debug("get all cards");
         TypedQuery<Card> query = em.createNamedQuery("Card.findAll", Card.class);
         return query.getResultList();
     }
@@ -54,7 +54,7 @@ public class CardDao {
      * @return the card with the given id or null if such a card does not exists
      */
     public Card getCard(Long id) {
-        logger.info("get card " + id);
+        logger.debug("get card #" + id);
         return em.find(Card.class, id);
     }
 
@@ -68,7 +68,7 @@ public class CardDao {
      * @throws ColabMergeException if updating the card failed
      */
     public Card updateCard(Card card) throws ColabMergeException {
-        logger.info("update card");
+        logger.debug("update card #" + card.getId());
         Card mCard = this.getCard(card.getId());
 
         mCard.merge(card);
@@ -84,7 +84,7 @@ public class CardDao {
      * @return the new persisted card
      */
     public Card createCard(Card card) {
-        logger.info("create card");
+        logger.debug("create card");
         em.persist(card);
         return card;
     }
@@ -97,7 +97,7 @@ public class CardDao {
      * @return just deleted card
      */
     public Card deleteCard(Long id) {
-        logger.info("delete card " + id);
+        logger.debug("delete card #" + id);
         // TODO: move to recycle bin first
         Card card = this.getCard(id);
         em.remove(card);

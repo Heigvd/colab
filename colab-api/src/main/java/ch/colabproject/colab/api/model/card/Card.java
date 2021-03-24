@@ -125,6 +125,7 @@ public class Card implements ColabEntity {
             throw new ColabMergeException(this, other);
         }
     }
+
     @Override
     public int hashCode() {
         return EntityHelper.hashCode(this);
