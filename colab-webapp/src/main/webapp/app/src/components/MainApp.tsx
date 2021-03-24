@@ -12,6 +12,7 @@ import * as API from '../API/api';
 import { css, cx } from '@emotion/css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { CardList } from './cards/CardList';
 import { ProjectList } from './projects/ProjectList';
 import SignInForm from './public/SignIn';
 import SignUpForm from './public/SignUp';
@@ -104,6 +105,9 @@ export default () => {
               <ColabLink exact to="/">
                 Projects
               </ColabLink>
+              <ColabLink exact to="/cards">
+                Cards
+              </ColabLink>
               <ColabLink to="/settings">Settings</ColabLink>
               {user != null && user.admin ? <ColabLink to="/admin">Admin</ColabLink> : null}
             </nav>
@@ -128,6 +132,9 @@ export default () => {
             <Switch>
               <Route exact path="/">
                 <ProjectList />
+              </Route>
+              <Route exact path="/cards">
+                <CardList />
               </Route>
               <Route path="/settings">
                 <Settings />

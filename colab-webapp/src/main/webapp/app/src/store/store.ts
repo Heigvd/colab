@@ -8,6 +8,7 @@ import { combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 
 import authReducer from './auth';
+import cardReducer from './card';
 import errorReducer from './error';
 import projectReducer from './project';
 import navigationReducer from './navigation';
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   errors: errorReducer,
   navigation: navigationReducer,
   projects: projectReducer,
+  cards: cardReducer, // TODO remove ! non sense
   websockets: websocketReducer,
 });
 

@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { ColabClient, AuthInfo, SignUpInfo, Project, entityIs } from 'colab-rest-client';
+import { ColabClient, AuthInfo, SignUpInfo, Project, Card, entityIs } from 'colab-rest-client';
 
 import { getStore } from '../store/store';
 
@@ -96,6 +96,10 @@ export const reloadCurrentUser = createAsyncThunk('auth/reload', async () => {
   return { currentUser: currentUser, currentAccount: currentAccount };
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Projects
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export const initProjects = createAsyncThunk('project/init', async () => {
   return await restClient.ProjectController.getAllProjects();
 });
@@ -114,5 +118,30 @@ export const updateProject = createAsyncThunk('project/update', async (project: 
 export const deleteProject = createAsyncThunk('project/delete', async (project: Project) => {
   if (project.id) {
     await restClient.ProjectController.deleteProject(project.id);
+  }
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Cards
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const initCards = createAsyncThunk('card/init', async () => {
+  return await restClient.CardController.getAllCards();
+});
+
+export const createCard = createAsyncThunk('card/create', async (card: Card) => {
+  return await restClient.CardController.createCard({
+    ...card,
+    id: undefined,
+  });
+});
+
+export const updateCard = createAsyncThunk('card/update', async (card: Card) => {
+  await restClient.CardController.updateCard(card);
+});
+
+export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => {
+  if (card.id) {
+    await restClient.CardController.deleteCard(card.id);
   }
 });
