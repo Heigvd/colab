@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CardContent.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.card</a> &gt; <span class="el_source">CardContent.java</span></div><h1>CardContent.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.card;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
+/**
+ * Card content
+ *
+ * @author sandra
+ */
+@Entity
+@NamedQuery(name = &quot;CardContent.findAll&quot;, query = &quot;SELECT c from CardContent c&quot;)
+<span class="nc" id="L30">public class CardContent implements ColabEntity {</span>
+
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Card content ID
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /**
+     * Card content title
+     */
+    private String title;
+
+    /**
+     * Card status
+     */
+    @Enumerated(value = EnumType.STRING)
+    private CardContentStatus status;
+
+    /**
+     * Card completion level
+     */
+    @Min(value = 0)
+    @Max(value = 100)
+    private int completionLevel; // TODO sandra : voir où bloquer entre 0 et 100
+
+    /**
+     * Card content completion mode
+     */
+    @Enumerated(value = EnumType.STRING)
+    private CardContentCompletionMode completionMode;
+
+    /**
+     * Card
+     */
+    @ManyToOne
+    private Card card;
+
+    /**
+     * @return the id
+     */
+    @Override
+    public Long getId() {
+<span class="nc" id="L79">        return id;</span>
+    }
+
+    /**
+     * @param id the new id
+     */
+    public void setId(Long id) {
+<span class="nc" id="L86">        this.id = id;</span>
+<span class="nc" id="L87">    }</span>
+
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+<span class="nc" id="L93">        return title;</span>
+    }
+
+    /**
+     * @param title the new title
+     */
+    public void setTitle(String title) {
+<span class="nc" id="L100">        this.title = title;</span>
+<span class="nc" id="L101">    }</span>
+
+    /**
+     * @return the status
+     */
+    public CardContentStatus getStatus() {
+<span class="nc" id="L107">        return status;</span>
+    }
+
+    /**
+     * @param status the new status
+     */
+    public void setStatus(CardContentStatus status) {
+<span class="nc" id="L114">        this.status = status;</span>
+<span class="nc" id="L115">    }</span>
+
+    /**
+     * @return the completionLevel
+     */
+    public int getCompletionLevel() {
+<span class="nc" id="L121">        return completionLevel;</span>
+    }
+
+    /**
+     * @param completionLevel the new completionLevel
+     */
+    public void setCompletionLevel(int completionLevel) {
+<span class="nc" id="L128">        this.completionLevel = completionLevel;</span>
+<span class="nc" id="L129">    }</span>
+
+    /**
+     * @return the completionMode
+     */
+    public CardContentCompletionMode getCompletionMode() {
+<span class="nc" id="L135">        return completionMode;</span>
+    }
+
+    /**
+     * @param completionMode the new completionMode
+     */
+    public void setCompletionMode(CardContentCompletionMode completionMode) {
+<span class="nc" id="L142">        this.completionMode = completionMode;</span>
+<span class="nc" id="L143">    }</span>
+
+    /**
+     * @return the card
+     */
+    public Card getCard() {
+<span class="nc" id="L149">        return card;</span>
+    }
+
+    /**
+     * @param card the new card
+     */
+    public void setCard(Card card) {
+<span class="nc" id="L156">        this.card = card;</span>
+<span class="nc" id="L157">    }</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (other instanceof CardContent) {</span>
+<span class="nc" id="L165">            CardContent o = (CardContent) other;</span>
+<span class="nc" id="L166">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L167">            this.setStatus(o.getStatus());</span>
+<span class="nc" id="L168">            this.setCompletionLevel(o.getCompletionLevel());</span>
+<span class="nc" id="L169">            this.setCompletionMode(o.getCompletionMode());</span>
+<span class="nc" id="L170">        } else {</span>
+<span class="nc" id="L171">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L173">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L177">        return EntityHelper.hashCode(this);</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
+    public boolean equals(Object obj) {
+<span class="nc" id="L183">        return EntityHelper.equals(this, obj);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L188">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title= &quot; + title + &quot;, status= &quot; + status</span>
+                + &quot;, completion= &quot; + completionLevel + &quot;, completionMode= &quot; + completionMode + &quot;}&quot;;
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

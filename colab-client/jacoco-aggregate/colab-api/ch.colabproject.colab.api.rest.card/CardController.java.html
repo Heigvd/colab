@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CardController.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.card</a> &gt; <span class="el_source">CardController.java</span></div><h1>CardController.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.card;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.persistence.card.CardDao;
+import ch.colabproject.colab.generator.model.annotations.AdminResource;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import java.util.List;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * REST card controller
+ *
+ * @author sandra
+ */
+@Path(&quot;cards&quot;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@AuthenticationRequired
+<span class="nc" id="L37">public class CardController {</span>
+
+    /** logger */
+<span class="nc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(CardController.class);</span>
+
+    /**
+     * The Card business logic
+     */
+    @Inject
+    private CardDao dao;
+
+    /**
+     * Retrieve the list of all cards. This is available to admin only
+     *
+     * @return all known cards
+     */
+    // FIXME sandra - It certainly has no reason to be called so (except for preliminary tests)
+    // To remove or change at the right moment
+    @GET
+    @AdminResource
+    public List&lt;Card&gt; getAllCards() {
+<span class="nc" id="L58">        logger.debug(&quot;get all cards&quot;);</span>
+<span class="nc" id="L59">        return dao.getAllCard();</span>
+    }
+
+    /**
+     * Get card identified by the given id
+     *
+     * @param id id of the card to fetch
+     *
+     * @return the card or null
+     */
+    @GET
+    @Path(&quot;/{id}&quot;)
+    public Card getCard(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L72">        logger.debug(&quot;get card #&quot; + id);</span>
+<span class="nc" id="L73">        return dao.getCard(id);</span>
+    }
+
+    /**
+     * Persist the card
+     *
+     * @param card the card to persist
+     *
+     * @return id of the persisted new card
+     */
+    @POST
+    public Long createCard(Card card) {
+<span class="nc" id="L85">        logger.debug(&quot;create card&quot;);</span>
+<span class="nc" id="L86">        return dao.createCard(card).getId();</span>
+    }
+
+    /**
+     * Save changes to database
+     *
+     * @param card card to update
+     *
+     * @throws ColabMergeException if the merge is not possible
+     */
+    @PUT
+    public void updateCard(Card card) throws ColabMergeException {
+<span class="nc" id="L98">        logger.debug(&quot;update card #&quot; + card.getId());</span>
+<span class="nc" id="L99">        dao.updateCard(card);</span>
+<span class="nc" id="L100">    }</span>
+
+    /**
+     * Permanently delete a card
+     *
+     * @param id id of the card to delete
+     */
+    @DELETE
+    @Path(&quot;/{id}&quot;)
+    public void deleteCard(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L110">        logger.debug(&quot;delete card #&quot; + id);</span>
+<span class="nc" id="L111">        dao.deleteCard(id);</span>
+<span class="nc" id="L112">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

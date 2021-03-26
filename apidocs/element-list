@@ -2,11 +2,14 @@ ch.colabproject.colab.api
 ch.colabproject.colab.api.ejb
 ch.colabproject.colab.api.exceptions
 ch.colabproject.colab.api.model
+ch.colabproject.colab.api.model.card
 ch.colabproject.colab.api.model.project
 ch.colabproject.colab.api.model.token
 ch.colabproject.colab.api.model.tools
 ch.colabproject.colab.api.model.user
+ch.colabproject.colab.api.persistence.card
 ch.colabproject.colab.api.rest
+ch.colabproject.colab.api.rest.card
 ch.colabproject.colab.api.rest.config
 ch.colabproject.colab.api.rest.utils
 ch.colabproject.colab.api.security

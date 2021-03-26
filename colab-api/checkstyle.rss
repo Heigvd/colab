@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2021 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 4,
+      <title>File: 7,
              Errors: 0,
-             Warnings: 4,
+             Warnings: 27,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -46,6 +46,34 @@ under the License.
           <tbody>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.card.CardContentDao.java">ch/colabproject/colab/api/persistence/card/CardContentDao.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.card.CardDao.java">ch/colabproject/colab/api/persistence/card/CardDao.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.token.VerifyLocalAccountToken.java">ch/colabproject/colab/api/model/token/VerifyLocalAccountToken.java</a>
                 </td>
                 <td>
@@ -53,6 +81,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.card.Card.java">ch/colabproject/colab/api/model/card/Card.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  21
                 </td>
                 <td>
                   0

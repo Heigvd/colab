@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Card.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.card</a> &gt; <span class="el_source">Card.java</span></div><h1>Card.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.card;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+
+/**
+ * Card
+ *
+ * @author sandra
+ */
+@Entity
+@NamedQuery(name = &quot;Card.findAll&quot;, query = &quot;SELECT c from Card c&quot;)
+<span class="nc" id="L25">public class Card implements ColabEntity {</span>
+
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Card ID
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /**
+     * The index of the card in its parent
+     */
+    private int index;
+
+    /**
+     * The color of the card
+     */
+    private String color;
+
+//	/**
+//	 * card def
+//	 */
+//	@ManyToOne
+//	private CardDef cardDef;
+
+//	@OneToMany
+//	private List&lt;CardContent&gt; variantList;
+
+    /**
+     * @return the id
+     */
+    @Override
+    public Long getId() {
+<span class="nc" id="L63">        return id;</span>
+    }
+
+    /**
+     * @param id the new id
+     */
+    public void setId(Long id) {
+<span class="nc" id="L70">        this.id = id;</span>
+<span class="nc" id="L71">    }</span>
+
+    /**
+     * @return the index of the card in its parent
+     */
+    public int getIndex() {
+<span class="nc" id="L77">        return index;</span>
+    }
+
+    /**
+     * @param index the new index of the card in its parent
+     */
+    public void setIndex(int index) {
+<span class="nc" id="L84">        this.index = index;</span>
+<span class="nc" id="L85">    }</span>
+
+    /**
+     * @return the color of the card
+     */
+    public String getColor() {
+<span class="nc" id="L91">        return color;</span>
+    }
+
+    /**
+     * @param color the new color of the card
+     */
+    public void setColor(String color) {
+<span class="nc" id="L98">        this.color = color;</span>
+<span class="nc" id="L99">    }</span>
+
+//	/**
+//	 * @return the cardDef
+//	 */
+//	public CardDef getCardDef() {
+//		return cardDef;
+//	}
+//
+//	/**
+//	 * @param cardDef the new cardDef
+//	 */
+//	public void setCardDef(CardDef cardDef) {
+//		this.cardDef = cardDef;
+//	}
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (other instanceof Card) {</span>
+<span class="nc" id="L121">            Card o = (Card) other;</span>
+<span class="nc" id="L122">            this.setIndex(o.getIndex());</span>
+<span class="nc" id="L123">            this.setColor(o.getColor());</span>
+<span class="nc" id="L124">        } else {</span>
+<span class="nc" id="L125">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L127">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L131">        return EntityHelper.hashCode(this);</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
+    public boolean equals(Object obj) {
+<span class="nc" id="L137">        return EntityHelper.equals(this, obj);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L142">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;}&quot;;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

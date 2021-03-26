@@ -2,4 +2,5 @@ ch.colabproject.colab.tests
 ch.colabproject.colab.tests.mailhog
 ch.colabproject.colab.tests.mailhog.model
 ch.colabproject.colab.tests.rest
+ch.colabproject.colab.tests.rest.card
 ch.colabproject.colab.tests.tests
