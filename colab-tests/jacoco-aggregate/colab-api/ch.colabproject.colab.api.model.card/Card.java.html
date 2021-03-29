@@ -9,11 +9,16 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 /**
  * Card
@@ -22,7 +27,7 @@ import javax.persistence.NamedQuery;
  */
 @Entity
 @NamedQuery(name = &quot;Card.findAll&quot;, query = &quot;SELECT c from Card c&quot;)
-<span class="fc" id="L25">public class Card implements ColabEntity {</span>
+<span class="fc" id="L30">public class Card implements ColabEntity {</span>
 
     /**
      * Serial version UID
@@ -46,100 +51,131 @@ import javax.persistence.NamedQuery;
      */
     private String color;
 
-//	/**
-//	 * card def
-//	 */
-//	@ManyToOne
-//	private CardDef cardDef;
+//    /**
+//     * card def
+//     */
+//    @ManyToOne
+//    private CardDef cardDef;
 
-//	@OneToMany
-//	private List&lt;CardContent&gt; variantList;
+    /**
+     * The list of variants of card content
+     */
+    // TODO sandra - see where it is suitable to order it
+    // TODO sandra - challenge cascade
+    // TODO sandra - challenge ArrayList
+    // TODO sandra - challenge JsonTransient
+<span class="fc" id="L67">    @OneToMany(mappedBy = &quot;card&quot;, cascade=CascadeType.ALL, fetch=FetchType.LAZY)</span>
+    private ArrayList&lt;CardContent&gt; cardContentVariantList = new ArrayList&lt;CardContent&gt;();
 
     /**
      * @return the id
      */
     @Override
     public Long getId() {
-<span class="fc" id="L63">        return id;</span>
+<span class="fc" id="L75">        return id;</span>
     }
 
     /**
      * @param id the new id
      */
     public void setId(Long id) {
-<span class="fc" id="L70">        this.id = id;</span>
-<span class="fc" id="L71">    }</span>
+<span class="fc" id="L82">        this.id = id;</span>
+<span class="fc" id="L83">    }</span>
 
     /**
      * @return the index of the card in its parent
      */
     public int getIndex() {
-<span class="fc" id="L77">        return index;</span>
+<span class="fc" id="L89">        return index;</span>
     }
 
     /**
      * @param index the new index of the card in its parent
      */
     public void setIndex(int index) {
-<span class="fc" id="L84">        this.index = index;</span>
-<span class="fc" id="L85">    }</span>
+<span class="fc" id="L96">        this.index = index;</span>
+<span class="fc" id="L97">    }</span>
 
     /**
      * @return the color of the card
      */
     public String getColor() {
-<span class="fc" id="L91">        return color;</span>
+<span class="fc" id="L103">        return color;</span>
     }
 
     /**
      * @param color the new color of the card
      */
     public void setColor(String color) {
-<span class="fc" id="L98">        this.color = color;</span>
-<span class="fc" id="L99">    }</span>
+<span class="fc" id="L110">        this.color = color;</span>
+<span class="fc" id="L111">    }</span>
 
-//	/**
-//	 * @return the cardDef
-//	 */
-//	public CardDef getCardDef() {
-//		return cardDef;
-//	}
+//    /**
+//     * @return the cardDef
+//     */
+//    public CardDef getCardDef() {
+//        return cardDef;
+//    }
 //
-//	/**
-//	 * @param cardDef the new cardDef
-//	 */
-//	public void setCardDef(CardDef cardDef) {
-//		this.cardDef = cardDef;
-//	}
+//    /**
+//     * @param cardDef the new cardDef
+//     */
+//    public void setCardDef(CardDef cardDef) {
+//        this.cardDef = cardDef;
+//    }
+
+    /**
+     * @return the list of variants of card content
+     */
+    public List&lt;CardContent&gt; getCardContentVariantList() {
+<span class="fc" id="L131">        return cardContentVariantList;</span>
+    }
+
+    /**
+     * @param variantList the list of variants of card content
+     */
+    public void setCardContentVariantList(ArrayList&lt;CardContent&gt; variantList) {
+<span class="fc" id="L138">        this.cardContentVariantList = variantList;</span>
+<span class="fc" id="L139">    }</span>
+
+    public void addCardContent(CardContent cardContent) {
+<span class="fc" id="L142">        cardContentVariantList.add(cardContent);</span>
+<span class="fc" id="L143">        cardContent.setCard(this);</span>
+<span class="fc" id="L144">    }</span>
+
+    public void removeCardContent(CardContent cardContent) {
+<span class="nc" id="L147">        cardContentVariantList.remove(cardContent);</span>
+<span class="nc" id="L148">        cardContent.setCard(null);</span>
+<span class="nc" id="L149">    }</span>
 
     /**
      * {@inheritDoc }
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        if (other instanceof Card) {</span>
-<span class="fc" id="L121">            Card o = (Card) other;</span>
-<span class="fc" id="L122">            this.setIndex(o.getIndex());</span>
-<span class="fc" id="L123">            this.setColor(o.getColor());</span>
-<span class="fc" id="L124">        } else {</span>
-<span class="nc" id="L125">            throw new ColabMergeException(this, other);</span>
+<span class="pc bpc" id="L156" title="1 of 2 branches missed.">        if (other instanceof Card) {</span>
+<span class="fc" id="L157">            Card o = (Card) other;</span>
+<span class="fc" id="L158">            this.setIndex(o.getIndex());</span>
+<span class="fc" id="L159">            this.setColor(o.getColor());</span>
+<span class="fc" id="L160">        } else {</span>
+<span class="nc" id="L161">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L127">    }</span>
+<span class="fc" id="L163">    }</span>
 
     @Override
     public int hashCode() {
-<span class="fc" id="L131">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L167">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L137">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L173">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L142">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;}&quot;;</span>
+<span class="nc" id="L178">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;}&quot;;</span>
     }
 
 }
