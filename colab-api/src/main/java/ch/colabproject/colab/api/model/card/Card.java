@@ -64,8 +64,8 @@ public class Card implements ColabEntity {
     // TODO sandra - challenge cascade
     // TODO sandra - challenge ArrayList
     // TODO sandra - challenge JsonTransient
-    @OneToMany(mappedBy = "card", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-    private ArrayList<CardContent> cardContentVariantList = new ArrayList<CardContent>();
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private ArrayList<CardContent> cardContentVariantList = new ArrayList<>();
 
     /**
      * @return the id
@@ -138,11 +138,19 @@ public class Card implements ColabEntity {
         this.cardContentVariantList = variantList;
     }
 
+    /**
+     * Add a card content to the list of variants of card content
+     * @param cardContent the card content to add
+     */
     public void addCardContent(CardContent cardContent) {
         cardContentVariantList.add(cardContent);
         cardContent.setCard(this);
     }
 
+    /**
+     * Remove a card content from the list of variants of card content
+     * @param cardContent the card content to remove
+     */
     public void removeCardContent(CardContent cardContent) {
         cardContentVariantList.remove(cardContent);
         cardContent.setCard(null);

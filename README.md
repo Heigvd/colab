@@ -46,7 +46,7 @@ PMD and other tools may fails the build. You may want to consult human-readable 
 
 Regenerate maven site:
 ```bash
-mvn -Dreporting clean site ste:stage
+mvn -Dreporting clean site site:stage
 ```
 And open ./target/staging/index.html
 
