@@ -9,11 +9,16 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 /**
  * Card
@@ -46,14 +51,21 @@ public class Card implements ColabEntity {
      */
     private String color;
 
-//	/**
-//	 * card def
-//	 */
-//	@ManyToOne
-//	private CardDef cardDef;
+//    /**
+//     * card def
+//     */
+//    @ManyToOne
+//    private CardDef cardDef;
 
-//	@OneToMany
-//	private List<CardContent> variantList;
+    /**
+     * The list of variants of card content
+     */
+    // TODO sandra - see where it is suitable to order it
+    // TODO sandra - challenge cascade
+    // TODO sandra - challenge ArrayList
+    // TODO sandra - challenge JsonTransient
+    @OneToMany(mappedBy = "card", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    private ArrayList<CardContent> cardContentVariantList = new ArrayList<CardContent>();
 
     /**
      * @return the id
@@ -98,19 +110,43 @@ public class Card implements ColabEntity {
         this.color = color;
     }
 
-//	/**
-//	 * @return the cardDef
-//	 */
-//	public CardDef getCardDef() {
-//		return cardDef;
-//	}
+//    /**
+//     * @return the cardDef
+//     */
+//    public CardDef getCardDef() {
+//        return cardDef;
+//    }
 //
-//	/**
-//	 * @param cardDef the new cardDef
-//	 */
-//	public void setCardDef(CardDef cardDef) {
-//		this.cardDef = cardDef;
-//	}
+//    /**
+//     * @param cardDef the new cardDef
+//     */
+//    public void setCardDef(CardDef cardDef) {
+//        this.cardDef = cardDef;
+//    }
+
+    /**
+     * @return the list of variants of card content
+     */
+    public List<CardContent> getCardContentVariantList() {
+        return cardContentVariantList;
+    }
+
+    /**
+     * @param variantList the list of variants of card content
+     */
+    public void setCardContentVariantList(ArrayList<CardContent> variantList) {
+        this.cardContentVariantList = variantList;
+    }
+
+    public void addCardContent(CardContent cardContent) {
+        cardContentVariantList.add(cardContent);
+        cardContent.setCard(this);
+    }
+
+    public void removeCardContent(CardContent cardContent) {
+        cardContentVariantList.remove(cardContent);
+        cardContent.setCard(null);
+    }
 
     /**
      * {@inheritDoc }

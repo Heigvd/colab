@@ -9,9 +9,11 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -68,7 +70,10 @@ public class CardContent implements ColabEntity {
     /**
      * Card
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonbTransient
+    // TODO sandra - challenge JsonTransient
+    // FIXME sandra - see if there is a need to get the card from the cardcontent
     private Card card;
 
     /**
