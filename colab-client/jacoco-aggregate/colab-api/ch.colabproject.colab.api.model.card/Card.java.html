@@ -64,8 +64,8 @@ import javax.persistence.OneToMany;
     // TODO sandra - challenge cascade
     // TODO sandra - challenge ArrayList
     // TODO sandra - challenge JsonTransient
-<span class="nc" id="L67">    @OneToMany(mappedBy = &quot;card&quot;, cascade=CascadeType.ALL, fetch=FetchType.LAZY)</span>
-    private ArrayList&lt;CardContent&gt; cardContentVariantList = new ArrayList&lt;CardContent&gt;();
+<span class="nc" id="L67">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL, fetch = FetchType.LAZY)</span>
+    private ArrayList&lt;CardContent&gt; cardContentVariantList = new ArrayList&lt;&gt;();
 
     /**
      * @return the id
@@ -138,44 +138,52 @@ import javax.persistence.OneToMany;
 <span class="nc" id="L138">        this.cardContentVariantList = variantList;</span>
 <span class="nc" id="L139">    }</span>
 
+    /**
+     * Add a card content to the list of variants of card content
+     * @param cardContent the card content to add
+     */
     public void addCardContent(CardContent cardContent) {
-<span class="nc" id="L142">        cardContentVariantList.add(cardContent);</span>
-<span class="nc" id="L143">        cardContent.setCard(this);</span>
-<span class="nc" id="L144">    }</span>
+<span class="nc" id="L146">        cardContentVariantList.add(cardContent);</span>
+<span class="nc" id="L147">        cardContent.setCard(this);</span>
+<span class="nc" id="L148">    }</span>
 
+    /**
+     * Remove a card content from the list of variants of card content
+     * @param cardContent the card content to remove
+     */
     public void removeCardContent(CardContent cardContent) {
-<span class="nc" id="L147">        cardContentVariantList.remove(cardContent);</span>
-<span class="nc" id="L148">        cardContent.setCard(null);</span>
-<span class="nc" id="L149">    }</span>
+<span class="nc" id="L155">        cardContentVariantList.remove(cardContent);</span>
+<span class="nc" id="L156">        cardContent.setCard(null);</span>
+<span class="nc" id="L157">    }</span>
 
     /**
      * {@inheritDoc }
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L156" title="All 2 branches missed.">        if (other instanceof Card) {</span>
-<span class="nc" id="L157">            Card o = (Card) other;</span>
-<span class="nc" id="L158">            this.setIndex(o.getIndex());</span>
-<span class="nc" id="L159">            this.setColor(o.getColor());</span>
-<span class="nc" id="L160">        } else {</span>
-<span class="nc" id="L161">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (other instanceof Card) {</span>
+<span class="nc" id="L165">            Card o = (Card) other;</span>
+<span class="nc" id="L166">            this.setIndex(o.getIndex());</span>
+<span class="nc" id="L167">            this.setColor(o.getColor());</span>
+<span class="nc" id="L168">        } else {</span>
+<span class="nc" id="L169">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L163">    }</span>
+<span class="nc" id="L171">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L167">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L175">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L173">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L181">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L178">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;}&quot;;</span>
+<span class="nc" id="L186">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;}&quot;;</span>
     }
 
 }
