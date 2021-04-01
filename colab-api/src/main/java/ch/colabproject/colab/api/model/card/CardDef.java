@@ -11,7 +11,6 @@ import ch.colabproject.colab.api.model.AuthorityHolderType;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
-import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -69,8 +68,8 @@ public class CardDef implements ColabEntity {
      * Project
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonbTransient
-    // TODO sandra - challenge JsonTransient
+    //@JsonbTransient
+    // TODO sandra - challenge JsonbTransient
     private Project project;
 
     /**

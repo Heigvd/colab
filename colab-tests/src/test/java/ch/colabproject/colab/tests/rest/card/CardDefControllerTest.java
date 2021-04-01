@@ -8,6 +8,7 @@ package ch.colabproject.colab.tests.rest.card;
 
 import ch.colabproject.colab.api.model.AuthorityHolderType;
 import ch.colabproject.colab.api.model.card.CardDef;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +24,7 @@ public class CardDefControllerTest extends AbstractArquillianTest {
 
     @Test
     public void testCreateCardDef() {
-        String uniqueId = String.valueOf(new Date().getTime() + ((long)(Math.random() * 1000)));
+        String uniqueId = String.valueOf(new Date().getTime() + ((long) (Math.random() * 1000)));
         String title = " " + ((int) (Math.random() * 1000));
         String purpose = " " + ((int) (Math.random() * 1000));
         AuthorityHolderType authorityHolder = AuthorityHolderType.PROJECT;
@@ -49,9 +50,11 @@ public class CardDefControllerTest extends AbstractArquillianTest {
 
     @Test
     public void testUpdateCardDef() {
-        //String uniqueId = String.valueOf(new Date().getTime() + ((long)(Math.random() * 1000)));
+        // String uniqueId = String.valueOf(new Date().getTime() + ((long)(Math.random()
+        // * 1000)));
         String title = "Dissemination " + ((int) (Math.random() * 1000));
-        String purpose = "Define how the project will be promoted " + ((int) (Math.random() * 1000));
+        String purpose = "Define how the project will be promoted "
+                + ((int) (Math.random() * 1000));
         AuthorityHolderType authorityHolder = AuthorityHolderType.PROJECT;
 
         CardDef cardDef = new CardDef();
@@ -64,17 +67,18 @@ public class CardDefControllerTest extends AbstractArquillianTest {
         Assertions.assertNull(cardDef.getAuthorityHolderType());
         Assertions.assertNull(cardDef.getProject());
 
-        //cardDef.setUniqueId(uniqueId);
+        // cardDef.setUniqueId(uniqueId);
         cardDef.setTitle(title);
         cardDef.setPurpose(purpose);
         cardDef.setAuthorityHolderType(authorityHolder);
         client.cardDefController.updateCardDef(cardDef);
 
         CardDef persistedCardDef2 = client.cardDefController.getCardDef(cardDefId);
-        //Assertions.assertEquals(uniqueId, persistedCardDef2.getUniqueId());
+        // Assertions.assertEquals(uniqueId, persistedCardDef2.getUniqueId());
         Assertions.assertEquals(title, persistedCardDef2.getTitle());
         Assertions.assertEquals(purpose, persistedCardDef2.getPurpose());
-        //Assertions.assertEquals(authorityHolder, persistedCardDef2.getAuthorityHolderType());
+        // Assertions.assertEquals(authorityHolder,
+        // persistedCardDef2.getAuthorityHolderType());
     }
 
     @Test
@@ -105,5 +109,27 @@ public class CardDefControllerTest extends AbstractArquillianTest {
 
         persistedCardDef = client.cardDefController.getCardDef(cardDefId);
         Assertions.assertNull(persistedCardDef);
+    }
+
+    @Test
+    public void testProjectAccess() {
+        String projectName = "Easy learn german " + ((int) (Math.random() * 1000));
+        String cardDefTitle = "design " + ((int) (Math.random() * 1000));
+
+        Project project = new Project();
+        project.setName(projectName);
+        Long projectId = client.projectController.createProject(project);
+
+        Project persistedProject = client.projectController.getProject(projectId);
+
+        CardDef cardDef = new CardDef();
+        cardDef.setTitle(cardDefTitle);
+        cardDef.setProject(persistedProject);
+        Long cardDefId = client.cardDefController.createCardDef(cardDef);
+
+        CardDef persistedCardDef = client.cardDefController.getCardDef(cardDefId);
+        Assertions.assertNotNull(persistedCardDef);
+        Assertions.assertNotNull(persistedCardDef.getProject());
+        Assertions.assertEquals(projectName, persistedCardDef.getProject().getName());
     }
 }

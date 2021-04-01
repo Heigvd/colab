@@ -17,6 +17,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
@@ -52,11 +53,12 @@ public class Card implements ColabEntity {
      */
     private String color;
 
-//    /**
-//     * card def
-//     */
-//    @ManyToOne
-//    private CardDef cardDef;
+    /**
+     * card def
+     */
+    // TODO sandra - challenge the fetch type
+    @ManyToOne
+    private CardDef cardDef;
 
     /**
      * The list of variants of card content
@@ -111,19 +113,19 @@ public class Card implements ColabEntity {
         this.color = color;
     }
 
-//    /**
-//     * @return the cardDef
-//     */
-//    public CardDef getCardDef() {
-//        return cardDef;
-//    }
-//
-//    /**
-//     * @param cardDef the new cardDef
-//     */
-//    public void setCardDef(CardDef cardDef) {
-//        this.cardDef = cardDef;
-//    }
+    /**
+     * @return the cardDef
+     */
+    public CardDef getCardDef() {
+        return cardDef;
+    }
+
+    /**
+     * @param cardDef the new cardDef
+     */
+    public void setCardDef(CardDef cardDef) {
+        this.cardDef = cardDef;
+    }
 
     /**
      * @return the list of variants of card content

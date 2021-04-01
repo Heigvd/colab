@@ -8,6 +8,7 @@ package ch.colabproject.colab.tests.rest.card;
 
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -20,7 +21,7 @@ import org.junit.jupiter.api.Test;
  */
 public class CardControllerTest extends AbstractArquillianTest {
 
-    /// ** logger */
+    // ** logger */
     // private static final Logger logger = LoggerFactory.getLogger(CardControllerTest.class);
 
     @Test
@@ -129,5 +130,27 @@ public class CardControllerTest extends AbstractArquillianTest {
         // for the moment, the card is not retrieved from a card content, so technically
         // we have
         Assertions.assertNull(persistedCardContent.getCard());
+    }
+
+    @Test
+    public void testCardDefAccess() {
+        String cardDefTitle = "communication " + ((int) (Math.random() * 1000));
+        String color = "violet " + ((int) (Math.random() * 1000));
+
+        CardDef cardDef = new CardDef();
+        cardDef.setTitle(cardDefTitle);
+        Long cardDefId = client.cardDefController.createCardDef(cardDef);
+
+        CardDef persistedCardDef = client.cardDefController.getCardDef(cardDefId);
+
+        Card card = new Card();
+        card.setColor(color);
+        card.setCardDef(persistedCardDef);
+        Long cardId = client.cardController.createCard(card);
+
+        Card persistedCard = client.cardController.getCard(cardId);
+        Assertions.assertNotNull(persistedCard);
+        Assertions.assertNotNull(persistedCard.getCardDef());
+        Assertions.assertEquals(cardDefTitle, persistedCard.getCardDef().getTitle());
     }
 }
