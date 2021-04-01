@@ -27,6 +27,7 @@ import javax.validation.constraints.Min;
  *
  * @author sandra
  */
+//TODO review accurate constraints when stabilised
 @Entity
 @NamedQuery(name = "CardContent.findAll", query = "SELECT c from CardContent c")
 public class CardContent implements ColabEntity {

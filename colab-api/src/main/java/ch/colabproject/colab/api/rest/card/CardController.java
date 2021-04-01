@@ -50,7 +50,8 @@ public class CardController {
      *
      * @return all known cards
      */
-    // FIXME sandra - It certainly has no reason to be called so (except for preliminary tests)
+    // FIXME sandra - It certainly has no reason to be called so (except for
+    // preliminary tests)
     // To remove or change at the right moment
     @GET
     @AdminResource

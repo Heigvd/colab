@@ -25,6 +25,7 @@ import javax.persistence.OneToMany;
  *
  * @author sandra
  */
+// TODO review accurate constraints when stabilised
 @Entity
 @NamedQuery(name = "Card.findAll", query = "SELECT c from Card c")
 public class Card implements ColabEntity {
@@ -140,6 +141,7 @@ public class Card implements ColabEntity {
 
     /**
      * Add a card content to the list of variants of card content
+     *
      * @param cardContent the card content to add
      */
     public void addCardContent(CardContent cardContent) {
@@ -149,6 +151,7 @@ public class Card implements ColabEntity {
 
     /**
      * Remove a card content from the list of variants of card content
+     *
      * @param cardContent the card content to remove
      */
     public void removeCardContent(CardContent cardContent) {

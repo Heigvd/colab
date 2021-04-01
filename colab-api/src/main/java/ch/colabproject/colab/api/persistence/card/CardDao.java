@@ -59,6 +59,19 @@ public class CardDao {
     }
 
     /**
+     * Persist a brand new card to database
+     *
+     * @param card new card to persist
+     *
+     * @return the new persisted card
+     */
+    public Card createCard(Card card) {
+        logger.debug("create card");
+        em.persist(card);
+        return card;
+    }
+
+    /**
      * Update card
      *
      * @param card card as supply by clients (ie not managed)
@@ -74,19 +87,6 @@ public class CardDao {
         mCard.merge(card);
 
         return mCard;
-    }
-
-    /**
-     * Persist a brand new card to database
-     *
-     * @param card new card to persist
-     *
-     * @return the new persisted card
-     */
-    public Card createCard(Card card) {
-        logger.debug("create card");
-        em.persist(card);
-        return card;
     }
 
     /**

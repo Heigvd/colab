@@ -61,6 +61,19 @@ public class CardContentDao {
     }
 
     /**
+     * Persist a brand new card content to database
+     *
+     * @param cardContent new card content to persist
+     *
+     * @return the new persisted card content
+     */
+    public CardContent createCardContent(CardContent cardContent) {
+        logger.debug("create card content");
+        em.persist(cardContent);
+        return cardContent;
+    }
+
+    /**
      * Update card content
      *
      * @param cardContent card content as supply by clients (ie not managed)
@@ -76,19 +89,6 @@ public class CardContentDao {
         mCardContent.merge(cardContent);
 
         return mCardContent;
-    }
-
-    /**
-     * Persist a brand new card content to database
-     *
-     * @param cardContent new card content to persist
-     *
-     * @return the new persisted card content
-     */
-    public CardContent createCardContent(CardContent cardContent) {
-        logger.debug("create card content");
-        em.persist(cardContent);
-        return cardContent;
     }
 
     /**
