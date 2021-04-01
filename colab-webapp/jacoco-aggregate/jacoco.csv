@@ -1,7 +1,8 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContentStatus,44,0,0,0,5,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContent,94,0,2,0,31,0,18,0,17,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.card,Card,91,0,2,0,30,0,16,0,15,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.card,Card,98,0,2,0,33,0,18,0,17,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardDef,84,0,2,0,29,0,18,0,17,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContentCompletionMode,34,0,0,0,4,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api,Helper,148,0,14,0,37,0,16,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.utils,DateDeserializer,10,0,0,0,4,0,2,0,2,0
@@ -26,6 +27,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Message,76,0,0,0,2
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail,173,0,6,0,42,0,6,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardContentController,53,0,0,0,14,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardController,53,0,0,0,14,0,7,0,7,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardDefController,53,0,0,0,14,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,Account,24,0,0,0,9,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HashMethod.new HashMethod() {...},25,0,0,0,6,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,AuthInfo,24,0,0,0,10,0,7,0,7,0
@@ -37,6 +39,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.user,User,122,0,2,0,40,0,
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.config,JsonbProvider,26,0,0,0,7,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws,WebsocketEndpoint,90,0,2,0,26,0,10,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.exceptions,ColabMergeException,15,0,0,0,5,0,2,0,2,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model,AuthorityHolderType,24,0,0,0,3,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,SessionManager,46,0,6,0,12,0,6,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,HttpSession,28,0,0,0,12,0,8,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,CookieFilter,67,0,2,0,17,0,5,0,4,0
@@ -44,8 +47,11 @@ colab-webapp/colab-api,ch.colabproject.colab.api.security,AuthenticationFilter,9
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationConfig,3,0,0,0,1,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ColabConfiguration,47,0,0,0,12,0,11,0,11,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,LiquibaseProducer,13,0,0,0,3,0,3,0,3,0
-colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,53,0,2,0,22,0,6,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvider,5,0,0,0,2,0,2,0,2,0
+colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,53,0,2,0,22,0,6,0,5,0
+colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardDefDao,68,0,0,0,18,0,7,0,7,0
+colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardDao,68,0,0,0,18,0,7,0,7,0
+colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardContentDao,68,0,0,0,18,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest,UserController,56,0,0,0,19,0,11,0,11,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest,MonitoringController,5,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest,TokenController,15,0,0,0,4,0,3,0,3,0
@@ -54,8 +60,6 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,EntityListener,21,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,JpaNameMappingCustomizer,44,0,2,0,13,0,7,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,EntityHelper,54,0,12,0,15,0,9,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.project,Project,48,0,2,0,16,0,10,0,9,0
-colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardDao,68,0,0,0,18,0,7,0,7,0
-colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardContentDao,68,0,0,0,18,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsDeleteMessage,21,0,0,0,9,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsUpdateMessage,21,0,0,0,9,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsDeleteMessage.IndexEntry,28,0,0,0,12,0,6,0,6,0

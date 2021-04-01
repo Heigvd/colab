@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CardDef.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.card</a> &gt; <span class="el_source">CardDef.java</span></div><h1>CardDef.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.card;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.AuthorityHolderType;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+
+/**
+ * Card definition
+ *
+ * @author sandra
+ */
+//TODO review accurate constraints when stabilised
+@Entity
+@NamedQuery(name = &quot;CardDef.findAll&quot;, query = &quot;SELECT c from CardDef c&quot;)
+<span class="nc" id="L32">public class CardDef implements ColabEntity {</span>
+
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * CardDef ID
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /**
+     * Unique identifier
+     */
+    private String uniqueId;
+
+    /**
+     * Title
+     */
+    private String title;
+
+    /**
+     * Purpose
+     */
+    private String purpose;
+
+    /**
+     * Authority holder
+     */
+    @Enumerated(value = EnumType.STRING)
+    private AuthorityHolderType authorityHolderType;
+
+    /**
+     * Project
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    //@JsonbTransient
+    // TODO sandra - challenge JsonbTransient
+    private Project project;
+
+    /**
+     * @return the id
+     */
+    @Override
+    public Long getId() {
+<span class="nc" id="L80">        return id;</span>
+    }
+
+    /**
+     * @param id the new id
+     */
+    public void setId(Long id) {
+<span class="nc" id="L87">        this.id = id;</span>
+<span class="nc" id="L88">    }</span>
+
+    /**
+     * @return the uniqueId
+     */
+    public String getUniqueId() {
+<span class="nc" id="L94">        return uniqueId;</span>
+    }
+
+    /**
+     * @param uniqueId the new uniqueId
+     */
+    public void setUniqueId(String uniqueId) {
+<span class="nc" id="L101">        this.uniqueId = uniqueId;</span>
+<span class="nc" id="L102">    }</span>
+
+    /**
+     * @return the title
+     */
+    public String getTitle() {
+<span class="nc" id="L108">        return title;</span>
+    }
+
+    /**
+     * @param title the new title
+     */
+    public void setTitle(String title) {
+<span class="nc" id="L115">        this.title = title;</span>
+<span class="nc" id="L116">    }</span>
+
+    /**
+     * @return the purpose
+     */
+    public String getPurpose() {
+<span class="nc" id="L122">        return purpose;</span>
+    }
+
+    /**
+     * @param purpose the new purpose
+     */
+    public void setPurpose(String purpose) {
+<span class="nc" id="L129">        this.purpose = purpose;</span>
+<span class="nc" id="L130">    }</span>
+
+    /**
+     * @return the authorityHolderType
+     */
+    public AuthorityHolderType getAuthorityHolderType() {
+<span class="nc" id="L136">        return authorityHolderType;</span>
+    }
+
+    /**
+     * @param authorityHolderType the new authorityHolderType
+     */
+    public void setAuthorityHolderType(AuthorityHolderType authorityHolderType) {
+<span class="nc" id="L143">        this.authorityHolderType = authorityHolderType;</span>
+<span class="nc" id="L144">    }</span>
+
+    /**
+     * @return the project
+     */
+    public Project getProject() {
+<span class="nc" id="L150">        return project;</span>
+    }
+
+    /**
+     * @param project the new project
+     */
+    public void setProject(Project project) {
+<span class="nc" id="L157">        this.project = project;</span>
+<span class="nc" id="L158">    }</span>
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        if (other instanceof CardDef) {</span>
+<span class="nc" id="L166">            CardDef o = (CardDef) other;</span>
+            // this.setUniqueId(o.getUniqueId());
+<span class="nc" id="L168">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L169">            this.setPurpose(o.getPurpose());</span>
+            // this.setAuthorityHolderType(o.getAuthorityHolderType());
+<span class="nc" id="L171">        } else {</span>
+<span class="nc" id="L172">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L174">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L178">        return EntityHelper.hashCode(this);</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
+    public boolean equals(Object obj) {
+<span class="nc" id="L184">        return EntityHelper.equals(this, obj);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L189">        return &quot;CardDef{&quot; + &quot;id=&quot; + id + &quot;uniqueId=&quot; + uniqueId + &quot;title=&quot; + title + &quot;purpose=&quot;</span>
+                + purpose + &quot;}&quot;;
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

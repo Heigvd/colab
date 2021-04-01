@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CardDefDao.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.persistence.card</a> &gt; <span class="el_source">CardDefDao.java</span></div><h1>CardDefDao.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.persistence.card;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.card.CardDef;
+import java.util.List;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Card def persistence
+ *
+ * @author sandra
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L27">public class CardDefDao {</span>
+
+    /** logger */
+<span class="nc" id="L30">    private static final Logger logger = LoggerFactory.getLogger(CardDefDao.class);</span>
+
+    /**
+     * Access to the persistence unit
+     */
+    @PersistenceContext(unitName = &quot;COLAB_PU&quot;)
+    private EntityManager em;
+
+    /**
+     * Get the list of all card defs
+     *
+     * @return list of all card defs
+     */
+    public List&lt;CardDef&gt; getAllCardDef() {
+<span class="nc" id="L44">        logger.debug(&quot;get all card defs&quot;);</span>
+<span class="nc" id="L45">        TypedQuery&lt;CardDef&gt; query = em.createNamedQuery(&quot;CardDef.findAll&quot;, CardDef.class);</span>
+<span class="nc" id="L46">        return query.getResultList();</span>
+    }
+
+    /**
+     *
+     * @param id id of the card def to fetch
+     *
+     * @return the card def with the given id or null if such a card def does not
+     *         exists
+     */
+    public CardDef getCardDef(Long id) {
+<span class="nc" id="L57">        logger.debug(&quot;get card def #&quot; + id);</span>
+<span class="nc" id="L58">        return em.find(CardDef.class, id);</span>
+    }
+
+    /**
+     * Persist a brand new card def to database
+     *
+     * @param cardDef new card def to persist
+     *
+     * @return the new persisted card def
+     */
+    public CardDef createCardDef(CardDef cardDef) {
+<span class="nc" id="L69">        logger.debug(&quot;create card def&quot;);</span>
+<span class="nc" id="L70">        em.persist(cardDef);</span>
+<span class="nc" id="L71">        return cardDef;</span>
+    }
+
+    /**
+     * Update card def
+     *
+     * @param cardDef card def as supply by clients (ie not managed)
+     *
+     * @return return updated managed card def
+     *
+     * @throws ColabMergeException if updating the card def failed
+     */
+    public CardDef updateCardDef(CardDef cardDef) throws ColabMergeException {
+<span class="nc" id="L84">        logger.debug(&quot;update card def #&quot; + cardDef.getId());</span>
+<span class="nc" id="L85">        CardDef mCardDef = this.getCardDef(cardDef.getId());</span>
+
+<span class="nc" id="L87">        mCardDef.merge(cardDef);</span>
+
+<span class="nc" id="L89">        return mCardDef;</span>
+    }
+
+    /**
+     * Delete card def from database. This can't be undone
+     *
+     * @param id id of the card def to delete
+     *
+     * @return just deleted card def
+     */
+    public CardDef deleteCardDef(Long id) {
+<span class="nc" id="L100">        logger.debug(&quot;delete card def #&quot; + id);</span>
+        // TODO: move to recycle bin first
+<span class="nc" id="L102">        CardDef cardDef = this.getCardDef(id);</span>
+<span class="nc" id="L103">        em.remove(cardDef);</span>
+<span class="nc" id="L104">        return cardDef;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

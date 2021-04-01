@@ -27,9 +27,10 @@ import javax.validation.constraints.Min;
  *
  * @author sandra
  */
+//TODO review accurate constraints when stabilised
 @Entity
 @NamedQuery(name = &quot;CardContent.findAll&quot;, query = &quot;SELECT c from CardContent c&quot;)
-<span class="fc" id="L32">public class CardContent implements ColabEntity {</span>
+<span class="fc" id="L33">public class CardContent implements ColabEntity {</span>
 
     /**
      * Serial version UID
@@ -81,116 +82,116 @@ import javax.validation.constraints.Min;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L84">        return id;</span>
+<span class="fc" id="L85">        return id;</span>
     }
 
     /**
      * @param id the new id
      */
     public void setId(Long id) {
-<span class="fc" id="L91">        this.id = id;</span>
-<span class="fc" id="L92">    }</span>
+<span class="fc" id="L92">        this.id = id;</span>
+<span class="fc" id="L93">    }</span>
 
     /**
      * @return the title
      */
     public String getTitle() {
-<span class="fc" id="L98">        return title;</span>
+<span class="fc" id="L99">        return title;</span>
     }
 
     /**
      * @param title the new title
      */
     public void setTitle(String title) {
-<span class="fc" id="L105">        this.title = title;</span>
-<span class="fc" id="L106">    }</span>
+<span class="fc" id="L106">        this.title = title;</span>
+<span class="fc" id="L107">    }</span>
 
     /**
      * @return the status
      */
     public CardContentStatus getStatus() {
-<span class="fc" id="L112">        return status;</span>
+<span class="fc" id="L113">        return status;</span>
     }
 
     /**
      * @param status the new status
      */
     public void setStatus(CardContentStatus status) {
-<span class="fc" id="L119">        this.status = status;</span>
-<span class="fc" id="L120">    }</span>
+<span class="fc" id="L120">        this.status = status;</span>
+<span class="fc" id="L121">    }</span>
 
     /**
      * @return the completionLevel
      */
     public int getCompletionLevel() {
-<span class="fc" id="L126">        return completionLevel;</span>
+<span class="fc" id="L127">        return completionLevel;</span>
     }
 
     /**
      * @param completionLevel the new completionLevel
      */
     public void setCompletionLevel(int completionLevel) {
-<span class="fc" id="L133">        this.completionLevel = completionLevel;</span>
-<span class="fc" id="L134">    }</span>
+<span class="fc" id="L134">        this.completionLevel = completionLevel;</span>
+<span class="fc" id="L135">    }</span>
 
     /**
      * @return the completionMode
      */
     public CardContentCompletionMode getCompletionMode() {
-<span class="fc" id="L140">        return completionMode;</span>
+<span class="fc" id="L141">        return completionMode;</span>
     }
 
     /**
      * @param completionMode the new completionMode
      */
     public void setCompletionMode(CardContentCompletionMode completionMode) {
-<span class="fc" id="L147">        this.completionMode = completionMode;</span>
-<span class="fc" id="L148">    }</span>
+<span class="fc" id="L148">        this.completionMode = completionMode;</span>
+<span class="fc" id="L149">    }</span>
 
     /**
      * @return the card
      */
     public Card getCard() {
-<span class="fc" id="L154">        return card;</span>
+<span class="fc" id="L155">        return card;</span>
     }
 
     /**
      * @param card the new card
      */
     public void setCard(Card card) {
-<span class="fc" id="L161">        this.card = card;</span>
-<span class="fc" id="L162">    }</span>
+<span class="fc" id="L162">        this.card = card;</span>
+<span class="fc" id="L163">    }</span>
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L169" title="1 of 2 branches missed.">        if (other instanceof CardContent) {</span>
-<span class="fc" id="L170">            CardContent o = (CardContent) other;</span>
-<span class="fc" id="L171">            this.setTitle(o.getTitle());</span>
-<span class="fc" id="L172">            this.setStatus(o.getStatus());</span>
-<span class="fc" id="L173">            this.setCompletionLevel(o.getCompletionLevel());</span>
-<span class="fc" id="L174">            this.setCompletionMode(o.getCompletionMode());</span>
-<span class="fc" id="L175">        } else {</span>
-<span class="nc" id="L176">            throw new ColabMergeException(this, other);</span>
+<span class="pc bpc" id="L170" title="1 of 2 branches missed.">        if (other instanceof CardContent) {</span>
+<span class="fc" id="L171">            CardContent o = (CardContent) other;</span>
+<span class="fc" id="L172">            this.setTitle(o.getTitle());</span>
+<span class="fc" id="L173">            this.setStatus(o.getStatus());</span>
+<span class="fc" id="L174">            this.setCompletionLevel(o.getCompletionLevel());</span>
+<span class="fc" id="L175">            this.setCompletionMode(o.getCompletionMode());</span>
+<span class="fc" id="L176">        } else {</span>
+<span class="nc" id="L177">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L178">    }</span>
+<span class="fc" id="L179">    }</span>
 
     @Override
     public int hashCode() {
-<span class="fc" id="L182">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L183">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L188">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L189">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L193">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title= &quot; + title + &quot;, status= &quot; + status</span>
+<span class="nc" id="L194">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title= &quot; + title + &quot;, status= &quot; + status</span>
                 + &quot;, completion= &quot; + completionLevel + &quot;, completionMode= &quot; + completionMode + &quot;}&quot;;
     }
 

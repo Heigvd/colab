@@ -61,6 +61,19 @@ import org.slf4j.LoggerFactory;
     }
 
     /**
+     * Persist a brand new card content to database
+     *
+     * @param cardContent new card content to persist
+     *
+     * @return the new persisted card content
+     */
+    public CardContent createCardContent(CardContent cardContent) {
+<span class="nc" id="L71">        logger.debug(&quot;create card content&quot;);</span>
+<span class="nc" id="L72">        em.persist(cardContent);</span>
+<span class="nc" id="L73">        return cardContent;</span>
+    }
+
+    /**
      * Update card content
      *
      * @param cardContent card content as supply by clients (ie not managed)
@@ -70,25 +83,12 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the card content failed
      */
     public CardContent updateCardContent(CardContent cardContent) throws ColabMergeException {
-<span class="nc" id="L73">        logger.debug(&quot;update card content #&quot; + cardContent.getId());</span>
-<span class="nc" id="L74">        CardContent mCardContent = this.getCardContent(cardContent.getId());</span>
+<span class="nc" id="L86">        logger.debug(&quot;update card content #&quot; + cardContent.getId());</span>
+<span class="nc" id="L87">        CardContent mCardContent = this.getCardContent(cardContent.getId());</span>
 
-<span class="nc" id="L76">        mCardContent.merge(cardContent);</span>
+<span class="nc" id="L89">        mCardContent.merge(cardContent);</span>
 
-<span class="nc" id="L78">        return mCardContent;</span>
-    }
-
-    /**
-     * Persist a brand new card content to database
-     *
-     * @param cardContent new card content to persist
-     *
-     * @return the new persisted card content
-     */
-    public CardContent createCardContent(CardContent cardContent) {
-<span class="nc" id="L89">        logger.debug(&quot;create card content&quot;);</span>
-<span class="nc" id="L90">        em.persist(cardContent);</span>
-<span class="nc" id="L91">        return cardContent;</span>
+<span class="nc" id="L91">        return mCardContent;</span>
     }
 
     /**

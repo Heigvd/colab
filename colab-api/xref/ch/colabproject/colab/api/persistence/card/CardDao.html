@@ -67,34 +67,34 @@
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>      }
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">     * Update card</em>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">     * Persist a brand new card to database</em>
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">     * @param card card as supply by clients (ie not managed)</em>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">     * @param card new card to persist</em>
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">     * @return return updated managed card</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">     * @throws ColabMergeException if updating the card failed</em>
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <strong class="jxr_keyword">public</strong> <a name="Card" h<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a>"../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> updateCard(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          logger.debug(<span class="jxr_string">"update card #"</span> + card.getId());
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> mCard = <strong class="jxr_keyword">this</strong>.getCard(card.getId());
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">     * @return the new persisted card</em>
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">public</strong> <a name="Card" h<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a>"../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> createCard(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card) {
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          logger.debug(<span class="jxr_string">"create card"</span>);
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          em.persist(card);
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          <strong class="jxr_keyword">return</strong> card;
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>      }
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          mCard.merge(card);
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>  
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>          <strong class="jxr_keyword">return</strong> mCard;
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>      }
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>  
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">     * Persist a brand new card to database</em>
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>  <em class="jxr_javadoccomment">     * @param card new card to persist</em>
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">     * @return the new persisted card</em>
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">public</strong> <a name="Card" h<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a>"../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> createCard(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card) {
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          logger.debug(<span class="jxr_string">"create card"</span>);
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>          em.persist(card);
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          <strong class="jxr_keyword">return</strong> card;
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">     * Update card</em>
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>  <em class="jxr_javadoccomment">     * @param card card as supply by clients (ie not managed)</em>
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>  <em class="jxr_javadoccomment">     * @return return updated managed card</em>
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>  <em class="jxr_javadoccomment">     * @throws ColabMergeException if updating the card failed</em>
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">public</strong> <a name="Card" h<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a>"../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> updateCard(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>          logger.debug(<span class="jxr_string">"update card #"</span> + card.getId());
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> mCard = <strong class="jxr_keyword">this</strong>.getCard(card.getId());
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>  
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          mCard.merge(card);
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>  
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          <strong class="jxr_keyword">return</strong> mCard;
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>      }
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      <em class="jxr_javadoccomment">/**</em>
