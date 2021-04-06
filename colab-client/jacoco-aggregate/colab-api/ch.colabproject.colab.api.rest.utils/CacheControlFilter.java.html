@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CacheControlFilter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.utils</a> &gt; <span class="el_source">CacheControlFilter.java</span></div><h1>CacheControlFilter.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.utils;
+
+import java.io.IOException;
+import java.util.List;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.ext.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Make sure Cache-Control header is set:
+ *
+ * @author maxence
+ */
+@Provider
+<span class="nc" id="L25">public class CacheControlFilter implements ContainerResponseFilter {</span>
+
+    /**
+     * Cache-Control value
+     */
+    public static final String NO_CACHE_NO_STORE = &quot;no-cache, no-store, must-revalidate&quot;;
+
+    /**
+     * Logger
+     */
+<span class="nc" id="L35">    private static final Logger logger = LoggerFactory.getLogger(CacheControlFilter.class);</span>
+
+    /**
+     * Intercept response and make sure Cache-Control header is set. If none, set Cache-Control:
+     * no-cache
+     *
+     * @param requestContext  the request context
+     * @param responseContext the response context
+     *
+     * @throws IOException if an I/O exception occurs.
+     */
+    @Override
+    public void filter(ContainerRequestContext requestContext,
+        ContainerResponseContext responseContext) throws IOException {
+<span class="nc" id="L49">        List&lt;Object&gt; cc = responseContext.getHeaders().get(HttpHeaders.CACHE_CONTROL);</span>
+
+<span class="nc bnc" id="L51" title="All 4 branches missed.">        if (cc == null || cc.isEmpty()) {</span>
+<span class="nc" id="L52">            logger.trace(&quot;Set CacheControl to {}&quot;, NO_CACHE_NO_STORE);</span>
+<span class="nc" id="L53">            responseContext.getHeaders().putSingle(HttpHeaders.CACHE_CONTROL, NO_CACHE_NO_STORE);</span>
+        }
+
+<span class="nc" id="L56">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
