@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.security.HttpSession;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -24,7 +25,7 @@ public class RequestManager {
      * User-related business logic
      */
     @Inject
-    private UserManagement userManagement;
+    private UserDao userDao;
 
     /**
      * HTTP session associated to current request
@@ -64,7 +65,7 @@ public class RequestManager {
      */
     public Account getCurrentAccount() {
         if (this.httpSession != null) {
-            return userManagement.findAccount(this.httpSession.getAccountId());
+            return userDao.findAccount(this.httpSession.getAccountId());
         }
         return null;
     }

@@ -6,11 +6,11 @@
  */
 package ch.colabproject.colab.tests.rest;
 
-import ch.colabproject.colab.api.ejb.UserManagement;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.TestHelper;
 import ch.colabproject.colab.tests.tests.TestUser;
@@ -30,7 +30,7 @@ public class UserControllerTest extends AbstractArquillianTest {
      * Internal userManagement logic. Required to inspect properties not exposed through REST API.
      */
     @Inject
-    private UserManagement userManagement;
+    private UserDao userDao;
 
     /**
      * Create a user, login, update user and account, and logout
@@ -246,7 +246,7 @@ public class UserControllerTest extends AbstractArquillianTest {
         this.signIn(myUser);
         LocalAccount senseiAccount = (LocalAccount) client.userController.getCurrentAccount();
 
-        User internalUser = userManagement.findUserByUsername(myUser.getUsername());
+        User internalUser = userDao.findUserByUsername(myUser.getUsername());
         LocalAccount internalAccount = (LocalAccount) internalUser.getAccounts().get(0);
         byte[] dbSalt = internalAccount.getDbSalt();
 
@@ -256,7 +256,7 @@ public class UserControllerTest extends AbstractArquillianTest {
         client.userController.switchServerHashMethod(senseiAccount.getId());
 
         // assert next db method is staged
-        internalUser = userManagement.findUserByUsername(myUser.getUsername());
+        internalUser = userDao.findUserByUsername(myUser.getUsername());
         internalAccount = (LocalAccount) internalUser.getAccounts().get(0);
         Assertions.assertNotNull(internalAccount.getNextDbHashMethod());
 
@@ -264,7 +264,7 @@ public class UserControllerTest extends AbstractArquillianTest {
         this.signOut();
         this.signIn(myUser);
 
-        internalUser = userManagement.findUserByUsername(myUser.getUsername());
+        internalUser = userDao.findUserByUsername(myUser.getUsername());
         internalAccount = (LocalAccount) internalUser.getAccounts().get(0);
         Assertions.assertNull(internalAccount.getNextDbHashMethod());
         Assertions.assertFalse(Arrays.equals(dbSalt, internalAccount.getDbSalt()));

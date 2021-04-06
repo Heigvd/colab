@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
@@ -15,17 +14,15 @@ import ch.colabproject.colab.api.model.user.HashMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import liquibase.pro.packaged.ch;
 
 /**
  * Everything related to user management
@@ -51,7 +48,13 @@ public class UserManagement {
      * some operation on users will create and send tokens
      */
     @Inject
-    private TokenDao tokenDao;
+    private TokenFacade tokenDao;
+
+    /**
+     * User persistence
+     */
+    @Inject
+    private UserDao userDao;
 
     /**
      * Access to the persistence unit
@@ -60,115 +63,10 @@ public class UserManagement {
     private EntityManager em;
 
     /**
-     * Find an account by Id.
-     *
-     * @param accountId id of the account to look for
-     *
-     * @return the account if it exsits; null otherwise
-     */
-    public Account findAccount(Long accountId) {
-        try {
-            return em.find(Account.class, accountId);
-        } catch (IllegalArgumentException ex) {
-            return null;
-        }
-    }
-
-    /**
-     * Return the LocalAccount which match the given email address.
-     *
-     * @param email email address to search
-     *
-     * @return the matching LocalAccount or null
-     */
-    public LocalAccount findLocalAccountByEmail(String email) {
-        try {
-            TypedQuery<LocalAccount> query
-                = em.createNamedQuery("LocalAccount.findByEmail", LocalAccount.class);
-            query.setParameter("email", email);
-            return query.getSingleResult();
-        } catch (NoResultException ex) {
-            return null;
-        }
-    }
-
-    /**
-     * Find a user by id
-     *
-     * @param userId is of the user to search
-     *
-     * @return the user or null
-     */
-    public User findUser(Long userId) {
-        try {
-            return em.find(User.class, userId);
-        } catch (IllegalArgumentException ex) {
-            return null;
-        }
-    }
-
-    /**
-     * Find a user by username
-     *
-     * @param username needle
-     *
-     * @return the user which matching username or null if it not exists
-     */
-    public User findUserByUsername(String username) {
-        try {
-            TypedQuery<User> query
-                = em.createNamedQuery("User.findByUsername", User.class);
-            query.setParameter("username", username);
-
-            return query.getSingleResult();
-        } catch (NoResultException ex) {
-            return null;
-        }
-    }
-
-    /**
-     * Retrieve the list of all admin user from database
-     *
-     * @return list of all administrator
-     */
-    public List<User> findAllAdmin() {
-        TypedQuery<User> query = em.createNamedQuery("User.findAllAdmin", User.class);
-        return query.getResultList();
-    }
-
-    /**
      * @return the hash method to use for new accounts
      */
     public HashMethod getDefaultHashMethod() {
         return HashMethod.PBKDF2WithHmacSHA512_65536_64;
-    }
-
-    /**
-     * Find local account by identifier.
-     *
-     * @param identifier email address or username
-     *
-     * @return LocalAccount
-     */
-    private LocalAccount findLocalAccountByIdentifier(String identifier) {
-        LocalAccount account = this.findLocalAccountByEmail(identifier);
-
-        if (account == null) {
-            // no localAccount with such an email addres
-            // try to find a user by username
-            User user = this.findUserByUsername(identifier);
-            if (user != null) {
-                // User found, as authenticationMethod is only available for LocalAccount,
-                // try to find one
-                Optional<Account> optAccount = user.getAccounts().stream()
-                    .filter(a -> a instanceof LocalAccount)
-                    .findFirst();
-                if (optAccount.isPresent()) {
-                    account = (LocalAccount) optAccount.get();
-                }
-            }
-        }
-        return account;
     }
 
     /**
@@ -192,7 +90,7 @@ public class UserManagement {
         if (identifier == null || identifier.isBlank()) {
             throw HttpErrorMessage.badRequest();
         } else {
-            LocalAccount account = this.findLocalAccountByIdentifier(identifier);
+            LocalAccount account = userDao.findLocalAccountByIdentifier(identifier);
 
             if (account != null) {
                 return new AuthMethod(account.getCurrentClientHashMethod(), account.getClientSalt(),
@@ -256,10 +154,10 @@ public class UserManagement {
      */
     public User signup(SignUpInfo signup) {
         // username already taken ?
-        User user = this.findUserByUsername(signup.getUsername());
+        User user = userDao.findUserByUsername(signup.getUsername());
         if (user == null) {
             // username not yet taken
-            LocalAccount account = this.findLocalAccountByEmail(signup.getEmail());
+            LocalAccount account = userDao.findLocalAccountByEmail(signup.getEmail());
             // no local account with the given email address
 
             if (account == null) {
@@ -301,7 +199,7 @@ public class UserManagement {
      * @throws HttpErrorMessage if authentication failed
      */
     public User authenticate(AuthInfo authInfo) {
-        LocalAccount account = this.findLocalAccountByIdentifier(authInfo.getIdentifier());
+        LocalAccount account = userDao.findLocalAccountByIdentifier(authInfo.getIdentifier());
 
         if (account != null) {
             HashMethod m = account.getCurrentDbHashMethod();
@@ -393,21 +291,7 @@ public class UserManagement {
      * @param id id of user who will became an admin
      */
     public void grantAdminRight(Long id) {
-        this.grantAdminRight(this.findUser(id));
-    }
-
-    /**
-     * Update the user with values provided in given user. Only field which are editable by users
-     * will be impacted.
-     *
-     * @param user object which contains id and new values
-     *
-     * @throws ColabMergeException if something went wrong
-     */
-    public void updateUser(User user) throws ColabMergeException {
-        User managedUser = this.findUser(user.getId());
-
-        managedUser.merge(user);
+        this.grantAdminRight(userDao.findUser(id));
     }
 
     /**
@@ -416,7 +300,7 @@ public class UserManagement {
      * @param id id of the LocalAccount
      */
     public void switchClientHashMethod(Long id) {
-        Account account = this.findAccount(id);
+        Account account = userDao.findAccount(id);
         if (account instanceof LocalAccount) {
             LocalAccount localAccount = (LocalAccount) account;
             AuthMethod authMethod = getDefaultRandomAuthenticationMethod();
@@ -431,7 +315,7 @@ public class UserManagement {
      * @param id id of the LocalAccount
      */
     public void switchServerHashMethod(Long id) {
-        Account account = this.findAccount(id);
+        Account account = userDao.findAccount(id);
         if (account instanceof LocalAccount) {
             LocalAccount localAccount = (LocalAccount) account;
             AuthMethod authMethod = getDefaultRandomAuthenticationMethod();

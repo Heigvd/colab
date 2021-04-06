@@ -15,6 +15,7 @@ import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.rest.config.JsonbProvider;
 import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
@@ -84,6 +85,12 @@ public abstract class AbstractArquillianTest {
      */
     @Inject
     private UserManagement userManagement;
+
+    /**
+     * User persistence
+     */
+    @Inject
+    private UserDao userDao;
 
     /**
      * Direct db access allows to clear data before each test
@@ -340,7 +347,7 @@ public abstract class AbstractArquillianTest {
 
             verifyAccounts();
 
-            User adminUser = userManagement.findUserByUsername("admin");
+            User adminUser = userDao.findUserByUsername("admin");
 
             userManagement.grantAdminRight(adminUser.getId());
 

@@ -15,6 +15,7 @@ import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -43,6 +44,12 @@ public class UserController {
      */
     @Inject
     private UserManagement userManagement;
+
+    /**
+     * User persistence
+     */
+    @Inject
+    private UserDao userDao;
 
     /**
      * Request related logic
@@ -138,7 +145,7 @@ public class UserController {
     @AuthenticationRequired
     public void updateUser(User user) throws ColabMergeException {
         securityFacade.assertCanWrite(user);
-        userManagement.updateUser(user);
+        userDao.updateUser(user);
     }
 
     /**

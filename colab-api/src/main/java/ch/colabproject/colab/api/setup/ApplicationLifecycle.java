@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.setup;
 
 import ch.colabproject.colab.api.ejb.UserManagement;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.inject.Inject;
 import javax.servlet.ServletConfig;
@@ -38,10 +39,16 @@ public class ApplicationLifecycle extends HttpServlet {
     private UserManagement userManagement;
 
     /**
+     * User persistence
+     */
+    @Inject
+    private UserDao userDao;
+
+    /**
      * Create a default admin user if there is no admin at all
      */
     private void createDefaultAdminIfNone() {
-        if (userManagement.findAllAdmin().isEmpty()) {
+        if (userDao.findAllAdmin().isEmpty()) {
             try {
                 logger.info("Create default admin user");
                 User admin = userManagement.createUser(

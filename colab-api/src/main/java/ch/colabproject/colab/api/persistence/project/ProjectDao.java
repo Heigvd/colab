@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.ejb;
+package ch.colabproject.colab.api.persistence.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
@@ -22,7 +22,7 @@ import javax.persistence.TypedQuery;
  */
 @Stateless
 @LocalBean
-public class ProjectFacade {
+public class ProjectDao {
 
     /**
      * Access to the persistence unit

@@ -6,8 +6,9 @@
  */
 package ch.colabproject.colab.api.rest;
 
-import ch.colabproject.colab.api.ejb.TokenDao;
+import ch.colabproject.colab.api.ejb.TokenFacade;
 import ch.colabproject.colab.api.model.token.Token;
+import ch.colabproject.colab.api.persistence.token.TokenDao;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -28,7 +29,13 @@ import javax.ws.rs.core.MediaType;
 public class TokenController {
 
     /**
-     * token data access
+     * token facade
+     */
+    @Inject
+    private TokenFacade tokenFacade;
+
+    /**
+     * token persistence
      */
     @Inject
     private TokenDao tokenDao;
@@ -67,6 +74,6 @@ public class TokenController {
         @PathParam("id") Long id,
         @PathParam("token") String plainToken
     ) {
-        tokenDao.consume(id, plainToken);
+        tokenFacade.consume(id, plainToken);
     }
 }

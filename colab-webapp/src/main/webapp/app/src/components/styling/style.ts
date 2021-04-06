@@ -41,17 +41,23 @@ const pulseKeyframes = keyframes`
   0% {
    transform: rotate(0deg);
   }
+  33% {
+    transform: rotate(240deg);
+  }
+  66% {
+    transform: rotate(480deg);
+  }
   100% {
-    transform: rotate(360deg);
+    transform: rotate(720deg);
   }
 `;
 
 export const pulseLinear = css`
-  animation: ${pulseKeyframes} 1s linear infinite;
+  animation: ${pulseKeyframes} 3s linear infinite;
 `;
 
 export const pulseEase = css`
-  animation: ${pulseKeyframes} 1s ease infinite;
+  animation: ${pulseKeyframes} 2s ease infinite;
 `;
 
 export const buttonStyle = css({

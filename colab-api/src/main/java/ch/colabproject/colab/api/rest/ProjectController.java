@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest;
 
-import ch.colabproject.colab.api.ejb.ProjectFacade;
+import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
@@ -38,7 +38,7 @@ public class ProjectController {
      * The Project business logic
      */
     @Inject
-    private ProjectFacade projectFacade;
+    private ProjectDao projectFacade;
 
     /**
      * Retrieve the list of all projects. This is available to admin only
