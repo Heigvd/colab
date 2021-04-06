@@ -7,13 +7,16 @@
 import { WsUpdateMessage, WsDeleteMessage, WsInitMessage, entityIs } from 'colab-rest-client';
 import { dispatch } from '../store/store';
 import * as ProjectActions from '../store/project';
+import * as CardActions from '../store/card';
 import * as WsActions from '../store/websocket';
 
 const onUpdate = (event: WsUpdateMessage) => {
   console.log('Update: ', event);
   for (const item of event.payload) {
-    if (entityIs<'Project'>(item, 'Project')) {
+    if (entityIs(item, 'Project')) {
       dispatch(ProjectActions.updateProject(item));
+    }  else if (entityIs(item, 'Card')) {
+      dispatch(CardActions.updateCard(item));
     }
   }
 };
@@ -25,6 +28,9 @@ const onDelete = (event: WsDeleteMessage) => {
     switch (item['type']) {
       case 'Project':
         dispatch(ProjectActions.removeProject(item.id));
+        break;
+      case 'Card':
+        dispatch(CardActions.removeCard(item.id));
         break;
     }
   }
