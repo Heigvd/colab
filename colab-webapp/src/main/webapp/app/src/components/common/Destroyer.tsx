@@ -22,7 +22,7 @@ export function Destroyer({ onDelete }: { onDelete: () => void }) {
             icon={faTimes}
             onClick={() => setConfirm(false)}
           />
-          <FontAwesomeIcon className={iconButton} icon={faCheck} onClick={() => onDelete} />
+          <FontAwesomeIcon className={iconButton} icon={faCheck} onClick={() => onDelete()} />
         </div>
       ) : (
         <div>
