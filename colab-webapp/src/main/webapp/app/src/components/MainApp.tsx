@@ -9,59 +9,27 @@ import * as React from 'react';
 import Logo from './styling//WhiteLogo';
 
 import * as API from '../API/api';
-import { css, cx } from '@emotion/css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import { CardList } from './cards/CardList';
-import { ProjectList } from './projects/ProjectList';
+import {css, cx} from '@emotion/css';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
+import {CardList} from './cards/CardList';
+import {ProjectList} from './projects/ProjectList';
 import SignInForm from './public/SignIn';
 import SignUpForm from './public/SignUp';
-import { fullPageStyle, iconButton, darkMode } from './styling/style';
+import {fullPageStyle, iconButton, darkMode} from './styling/style';
 import Loading from './common/Loading';
-import { useAppSelector, useAppDispatch } from '../store/hooks';
+import {useAppSelector, useAppDispatch, useCurrentUser} from '../store/hooks';
 
-import { HashRouter as Router, Switch, Route, NavLink } from 'react-router-dom';
+import {HashRouter as Router, Switch, Route} from 'react-router-dom';
 import Settings from './settings/Settings';
 import Admin from './admin/Admin';
+import {MainMenuLink} from './common/Link';
 
-const navLink = css({
-  textDecoration: 'none',
-  lineHeight: '44px',
-  display: 'inline-block',
-  color: 'var(--fgColor)',
-  paddingTop: '8px',
-  paddingLeft: '10px',
-  ':hover': {
-    backgroundColor: 'var(--hoverBgColor)',
-    color: 'var(--hoverFgColor)',
-  },
-});
-
-const activeClass = cx(
-  darkMode,
-  css({
-    borderBottom: '6px solid #8BE8FB',
-  }),
-);
-
-interface LinkProps {
-  to: string;
-  exact?: boolean;
-  children: React.ReactNode;
-}
-
-export const ColabLink = ({ to, exact = false, children }: LinkProps) => {
-  return (
-    <NavLink exact={exact} to={to} activeClassName={activeClass} className={navLink}>
-      {children}
-    </NavLink>
-  );
-};
 
 export default () => {
   //const status = useAppSelector((state) => state.navigation.status);
   const authenticationStatus = useAppSelector(state => state.auth.authenticationStatus);
-  const user = useAppSelector(state => state.auth.currentUser);
+  const user = useCurrentUser();
 
   const dispatch = useAppDispatch();
 
@@ -75,9 +43,10 @@ export default () => {
     return <SignUpForm />;
   } else if (authenticationStatus === undefined) {
     return <Loading />;
-  } else {
+  } else if (user != null) {
     // authenticationStatus := AUTHENTICATED
     // status := SYNCING || READY
+    const displayName = user.commonname || `${user.firstname} ${user.lastname}`.trim() || user.username;
     return (
       <div className={fullPageStyle}>
         <Router>
@@ -102,14 +71,16 @@ export default () => {
               })}
             />
             <nav>
-              <ColabLink exact to="/">
+              <MainMenuLink exact to="/">
                 Projects
-              </ColabLink>
-              <ColabLink exact to="/cards">
+              </MainMenuLink>
+              <MainMenuLink exact to="/cards">
                 Cards
-              </ColabLink>
-              <ColabLink to="/settings">Settings</ColabLink>
-              {user != null && user.admin ? <ColabLink to="/admin">Admin</ColabLink> : null}
+              </MainMenuLink>
+              <MainMenuLink to="/settings">
+                Settings
+              </MainMenuLink>
+              {user.admin ? <MainMenuLink to="/admin">Admin</MainMenuLink> : null}
             </nav>
             <div
               className={css({
@@ -117,6 +88,7 @@ export default () => {
               })}
             ></div>
 
+            {displayName}
             <FontAwesomeIcon
               className={iconButton}
               onClick={() => dispatch(API.signOut())}
@@ -147,5 +119,8 @@ export default () => {
         </Router>
       </div>
     );
+  } else {
+    // unreachable...
+    return null;
   }
 };

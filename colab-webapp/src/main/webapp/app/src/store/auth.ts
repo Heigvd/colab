@@ -4,14 +4,13 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Account, User } from 'colab-rest-client';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import * as API from '../API/api';
 
 export interface AuthState {
   authenticationStatus: undefined | 'UNAUTHENTICATED' | 'SIGNING_UP' | 'AUTHENTICATED';
-  currentUser?: User;
-  currentAccount?: Account;
+  currentUserId?: number;
+  currentAccountId?: number;
 }
 
 const initialState: AuthState = {
@@ -19,7 +18,7 @@ const initialState: AuthState = {
 };
 
 const authSlice = createSlice({
-  name: 'errors',
+  name: 'auth',
   initialState,
   reducers: {
     changeAuthenticationStatus: (
@@ -35,16 +34,16 @@ const authSlice = createSlice({
         const signedIn =
           action.payload.currentUser != null && action.payload.currentAccount != null;
         state.authenticationStatus = signedIn ? 'AUTHENTICATED' : 'UNAUTHENTICATED';
-        state.currentUser = action.payload.currentUser;
-        state.currentAccount = action.payload.currentAccount;
+        state.currentUserId = action.payload.currentUser?.id || undefined;
+        state.currentAccountId = action.payload.currentAccount?.id || undefined;
       })
       .addCase(API.signOut.fulfilled, state => {
         state.authenticationStatus = 'UNAUTHENTICATED';
-        state.currentUser = undefined;
-        state.currentAccount = undefined;
+        state.currentUserId = undefined;
+        state.currentAccountId = undefined;
       }),
 });
 
-export const { changeAuthenticationStatus } = authSlice.actions;
+export const {changeAuthenticationStatus} = authSlice.actions;
 
 export default authSlice.reducer;

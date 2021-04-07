@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -15,7 +16,9 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
-public class AuthMethod {
+public class AuthMethod implements  WithJsonDiscriminator {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Hash method used to authenticate

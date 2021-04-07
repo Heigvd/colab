@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.tests.rest;
 
+import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
@@ -160,7 +161,6 @@ public class UserControllerTest extends AbstractArquillianTest {
         Assertions.assertTrue(sensei.isAdmin());
     }
 
-
     /**
      * Assert a non-admin can not give admin rights to some other user
      */
@@ -296,5 +296,83 @@ public class UserControllerTest extends AbstractArquillianTest {
 
         account = (LocalAccount) this.client.userController.getCurrentAccount();
         Assertions.assertTrue(account.isVerified());
+    }
+
+    @Test
+    public void testUpdateSelfPassword() {
+        TestUser myUser = this.signup(
+            "GoulashSensei",
+            "goulashsensei@test.local",
+            "SoSecuredPassword");
+
+        this.signIn(myUser);
+        LocalAccount account = (LocalAccount) this.client.userController.getCurrentAccount();
+        Assertions.assertEquals(account.getEmail(), myUser.getEmail());
+
+        String newPassword = "N3kronom;c0n";
+        AuthInfo authInfo = getAuthInfo(myUser.getEmail(), newPassword);
+
+        this.client.userController.updateLocalAccountPassword(authInfo);
+        this.signOut();
+
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED, () -> {
+            this.signIn(myUser);
+        });
+
+        myUser.setPassword(newPassword);
+        this.signIn(myUser);
+        account = (LocalAccount) this.client.userController.getCurrentAccount();
+        Assertions.assertEquals(account.getEmail(), myUser.getEmail());
+    }
+
+    @Test
+    public void testUpdateOtherPassword() {
+        TestUser myUser = this.signup(
+            "GoulashSensei",
+            "goulashsensei@test.local",
+            "SoSecuredPassword");
+
+        TestUser otherUser = this.signup(
+            "BorschSensei",
+            "borschsensei@test.local",
+            "SoSecuredPassword");
+
+        this.signIn(myUser);
+        LocalAccount account = (LocalAccount) this.client.userController.getCurrentAccount();
+        Assertions.assertEquals(account.getEmail(), myUser.getEmail());
+
+        String newPassword = "N3kronom;c0n";
+        AuthInfo authInfo = getAuthInfo(otherUser.getEmail(), newPassword);
+
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
+            this.client.userController.updateLocalAccountPassword(authInfo);
+        });
+    }
+
+    @Test
+    public void testAdminUpdateOtherPassword() {
+        TestUser otherUser = this.signup(
+            "GoulashSensei",
+            "goulashsensei@test.local",
+            "SoSecuredPassword");
+
+
+        this.signIn(otherUser);
+        LocalAccount account = (LocalAccount) this.client.userController.getCurrentAccount();
+        Assertions.assertEquals(account.getEmail(), otherUser.getEmail());
+
+        this.signOut();
+        this.signIn(admin);
+
+        String newPassword = "N3kronom;c0n";
+        AuthInfo authInfo = getAuthInfo(otherUser.getEmail(), newPassword);
+        otherUser.setPassword(newPassword);
+        this.client.userController.updateLocalAccountPassword(authInfo);
+
+        this.signOut();
+
+        this.signIn(otherUser);
+        account = (LocalAccount) this.client.userController.getCurrentAccount();
+        Assertions.assertEquals(account.getEmail(), otherUser.getEmail());
     }
 }

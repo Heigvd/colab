@@ -19,6 +19,7 @@ import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -100,6 +101,22 @@ public class UserController {
     }
 
     /**
+     * Get all accounts owned by the current user
+     *
+     * @return list of accounts
+     */
+    @GET
+    @Path("AllCurrentUserAccount")
+    public List<Account> getAllCurrentUserAccounts() {
+        User user = requestManager.getCurrentUser();
+        if (user != null) {
+            return user.getAccounts();
+        } else {
+            return List.of();
+        }
+    }
+
+    /**
      * Create a new local account.
      *
      * @param signup all data required to create a local account
@@ -158,6 +175,19 @@ public class UserController {
     @AdminResource
     public void grantAdminRight(@PathParam("id") Long id) {
         userManagement.grantAdminRight(id);
+    }
+
+    /**
+     * Update password of a localAccount. The password MUST be hasehd a first time by the client.
+     * <p>
+     * @param authInfo identifier and new password
+     *
+     * @throws HttpErrorMessage if currentUser is not allowed to update the given account
+     */
+    @PUT
+    @Path("/UpdatePassword")
+    public void updateLocalAccountPassword(AuthInfo authInfo) {
+        userManagement.updatePassword(authInfo);
     }
 
     /**

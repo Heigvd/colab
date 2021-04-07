@@ -4,47 +4,60 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Account, User } from 'colab-rest-client';
+import {createSlice} from '@reduxjs/toolkit';
+import {Account, User} from 'colab-rest-client';
 import * as API from '../API/api';
 
-export interface AuthState {
-  authenticationStatus: undefined | 'UNAUTHENTICATED' | 'SIGNING_UP' | 'AUTHENTICATED';
-  currentUser?: User;
-  currentAccount?: Account;
-}
-
-const initialState: AuthState = {
-  authenticationStatus: undefined,
+export interface UserState {
+  users: {
+    [id: number]: User;
+  },
+  accounts: {
+    [id: number]: Account
+  }
 };
 
-const authSlice = createSlice({
-  name: 'errors',
+const initialState: UserState = {
+  users: {},
+  accounts: {}
+};
+
+const userSlice = createSlice({
+  name: 'user',
   initialState,
   reducers: {
-    changeAuthenticationStatus: (
-      state,
-      action: PayloadAction<AuthState['authenticationStatus']>,
-    ) => {
-      state.authenticationStatus = action.payload;
-    },
   },
   extraReducers: builder =>
     builder
       .addCase(API.reloadCurrentUser.fulfilled, (state, action) => {
-        const signedIn =
-          action.payload.currentUser != null && action.payload.currentAccount != null;
-        state.authenticationStatus = signedIn ? 'AUTHENTICATED' : 'UNAUTHENTICATED';
-        state.currentUser = action.payload.currentUser;
-        state.currentAccount = action.payload.currentAccount;
+        const user = action.payload.currentUser;
+        const account = action.payload.currentAccount;
+        const accounts = action.payload.accounts;
+
+        if (user && user.id != null) {
+          state.users[user.id] = user;
+        }
+        if (accounts != null) {
+          const map: {[id: number]: Account} = {};
+          accounts.forEach(a => {
+            if (a && a.id) {
+              map[a.id] = a;
+            }
+          })
+          state.accounts = {...state.accounts, ...map};
+        }
+        if (account && account.id != null) {
+          state.accounts[account.id] = account;
+        }
       })
-      .addCase(API.signOut.fulfilled, state => {
-        state.authenticationStatus = 'UNAUTHENTICATED';
-        state.currentUser = undefined;
-        state.currentAccount = undefined;
+      .addCase(API.updateUser.fulfilled, (state, action) => {
+        const user = action.payload;
+        if (user.id != null) {
+          state.users[user.id] = user;
+        }
       }),
 });
 
-export const { changeAuthenticationStatus } = authSlice.actions;
+export const {} = userSlice.actions;
 
-export default authSlice.reducer;
+export default userSlice.reducer;

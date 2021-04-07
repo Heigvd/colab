@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
-public class SignUpInfo {
+public class SignUpInfo implements WithJsonDiscriminator {
 
     /**
      * user email

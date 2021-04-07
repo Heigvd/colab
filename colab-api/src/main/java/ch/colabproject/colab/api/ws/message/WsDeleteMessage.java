@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.WithId;
-import java.io.Serializable;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -63,7 +63,7 @@ public class WsDeleteMessage extends WsMessage {
     /**
      * No need to send full object details, @class + id is way sufficient
      */
-    public static class IndexEntry implements Serializable {
+    public static class IndexEntry implements WithJsonDiscriminator {
 
         private static final long serialVersionUID = 1L;
 

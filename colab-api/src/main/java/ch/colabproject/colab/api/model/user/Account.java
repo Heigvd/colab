@@ -80,6 +80,20 @@ public abstract class Account implements ColabEntity {
     public void setUser(User user) {
         this.user = user;
     }
+
+    /**
+     * Return the id of the account owner
+     *
+     * @return id of the user
+     */
+    public Long getUserId() {
+        if (this.getUser() != null) {
+            return getUser().getId();
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public int hashCode() {
         return EntityHelper.hashCode(this);

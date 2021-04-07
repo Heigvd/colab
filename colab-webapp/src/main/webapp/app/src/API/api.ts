@@ -5,13 +5,13 @@
  * Licensed under the MIT License
  */
 
-import { ColabClient, AuthInfo, SignUpInfo, Project, Card, entityIs } from 'colab-rest-client';
+import {ColabClient, AuthInfo, SignUpInfo, Project, Card, entityIs, User} from 'colab-rest-client';
 
-import { getStore } from '../store/store';
+import {getStore} from '../store/store';
 
-import { addError } from '../store/error';
-import { hashPassword } from '../SecurityHelper';
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import {addError} from '../store/error';
+import {hashPassword} from '../SecurityHelper';
+import {createAsyncThunk} from '@reduxjs/toolkit';
 
 const restClient = ColabClient('', error => {
   if (entityIs(error, 'HttpException') || error instanceof Error) {
@@ -40,7 +40,7 @@ export const signInWithLocalAccount = createAsyncThunk(
     },
     thunkApi,
   ) => {
-    // first, fetch a
+    // first, fetch an authenatication method
     const authMethod = await restClient.UserController.getAuthMethod(a.identifier);
     const authInfo: AuthInfo = {
       '@class': 'AuthInfo',
@@ -51,6 +51,29 @@ export const signInWithLocalAccount = createAsyncThunk(
     await restClient.UserController.signIn(authInfo);
 
     thunkApi.dispatch(reloadCurrentUser());
+  },
+);
+
+export const updateLocalAccountPassword = createAsyncThunk(
+  'user/updatePassword',
+  async (
+    a: {
+      email: string;
+      password: string;
+    },
+  ) => {
+    // first, fetch the authenatication method fot the account
+    const authMethod = await restClient.UserController.getAuthMethod(a.email);
+
+    if (entityIs(authMethod, 'AuthMethod')) {
+      const authInfo: AuthInfo = {
+        '@class': 'AuthInfo',
+        identifier: a.email,
+        mandatoryHash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, a.password),
+      };
+
+      await restClient.UserController.updateLocalAccountPassword(authInfo);
+    }
   },
 );
 
@@ -82,7 +105,7 @@ export const signUp = createAsyncThunk(
     await restClient.UserController.signUp(signUpInfo);
 
     // go back to login page
-    thunkApi.dispatch(signInWithLocalAccount({ identifier: a.email, password: a.password }));
+    thunkApi.dispatch(signInWithLocalAccount({identifier: a.email, password: a.password}));
   },
 );
 
@@ -93,7 +116,14 @@ export const reloadCurrentUser = createAsyncThunk('auth/reload', async () => {
   const currentAccount = await restClient.UserController.getCurrentAccount();
   const currentUser = await restClient.UserController.getCurrentUser();
 
-  return { currentUser: currentUser, currentAccount: currentAccount };
+  const allAccounts = await restClient.UserController.getAllCurrentUserAccounts();
+
+  return {currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts};
+});
+
+export const updateUser = createAsyncThunk('user/update', async (user: User) => {
+  await restClient.UserController.updateUser(user);
+  return user;
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

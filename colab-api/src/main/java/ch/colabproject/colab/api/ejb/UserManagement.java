@@ -57,6 +57,12 @@ public class UserManagement {
     private UserDao userDao;
 
     /**
+     * To check permission
+     */
+    @Inject
+    private SecurityFacade securityFacade;
+
+    /**
      * Access to the persistence unit
      */
     @PersistenceContext(unitName = "COLAB_PU")
@@ -252,6 +258,38 @@ public class UserManagement {
         // OR client did not provide required hash
         // OR account not found
         throw HttpErrorMessage.authenticationFailed();
+    }
+
+    /**
+     * Update password of the given account. The given password should be hashed by the client
+     *
+     * @param authInfo contains account identifier and new password
+     *
+     * @throws HttpErrorMessage if currentUser is not allowed to update the given account
+     */
+    public void updatePassword(AuthInfo authInfo) {
+        LocalAccount account = userDao.findLocalAccountByIdentifier(authInfo.getIdentifier());
+
+        if (account != null) {
+            securityFacade.assertCanWrite(account.getUser());
+            String mandatoryHash = authInfo.getMandatoryHash();
+
+            if (mandatoryHash != null) {
+
+                // should rotate server method ?
+                if (account.getNextDbHashMethod() != null) {
+                    // rotate method
+                    account.setCurrentDbHashMethod(account.getNextDbHashMethod());
+                    account.setNextDbHashMethod(null);
+                    // force to compute and save db hash
+                }
+
+                this.shadowHash(account, mandatoryHash);
+                return;
+            }
+        }
+
+        throw HttpErrorMessage.forbidden();
     }
 
     /**

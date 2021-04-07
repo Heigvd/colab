@@ -12,6 +12,7 @@ import cardReducer from './card';
 import errorReducer from './error';
 import projectReducer from './project';
 import navigationReducer from './navigation';
+import userReducer from './user';
 import websocketReducer from './websocket';
 import { configureStore } from '@reduxjs/toolkit';
 
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   navigation: navigationReducer,
   projects: projectReducer,
   cards: cardReducer, // TODO remove ! non sense
+  users: userReducer,
   websockets: websocketReducer,
 });
 

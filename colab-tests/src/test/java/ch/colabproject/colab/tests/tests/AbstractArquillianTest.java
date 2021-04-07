@@ -236,15 +236,27 @@ public abstract class AbstractArquillianTest {
      * @throws ClientErrorException if authentication fails
      */
     protected void signIn(TestUser user) throws ClientErrorException {
-        AuthInfo authInfo = new AuthInfo();
-        authInfo.setIdentifier(user.getEmail());
+        AuthInfo authInfo = getAuthInfo(user.getEmail(), user.getPassword());
+        client.userController.signIn(authInfo);
+    }
 
-        AuthMethod authMethod = client.userController.getAuthMethod(user.getEmail());
+    /**
+     * hash password
+     *
+     * @param identifier    email address or username
+     * @param plainPassword plain-text password
+     *
+     * @return authinfo with hashed password
+     */
+    protected AuthInfo getAuthInfo(String identifier, String plainPassword) {
+        AuthMethod authMethod = client.userController.getAuthMethod(identifier);
+        AuthInfo authInfo = new AuthInfo();
+        authInfo.setIdentifier(identifier);
 
         // compute mandatory hash
         String hash = Helper.bytesToHex(
             authMethod.getMandatoryMethod().hash(
-                user.getPassword(),
+                plainPassword,
                 authMethod.getSalt()
             )
         );
@@ -255,14 +267,14 @@ public abstract class AbstractArquillianTest {
             authInfo.setOptionalHash(
                 Helper.bytesToHex(
                     authMethod.getOptionalMethod().hash(
-                        user.getPassword(),
+                        plainPassword,
                         authMethod.getNewSalt()
                     )
                 )
             );
         }
 
-        client.userController.signIn(authInfo);
+        return authInfo;
     }
 
     /**
