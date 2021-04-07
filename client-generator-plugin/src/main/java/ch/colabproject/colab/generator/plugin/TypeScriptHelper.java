@@ -51,6 +51,7 @@ public class TypeScriptHelper {
         if (WithJsonDiscriminator.class.isAssignableFrom(javaClass)) {
             return WithJsonDiscriminator.getJsonDiscriminator(javaClass);
         } else {
+            Logger.warn("Consider to implement WithJsonDiscriminator: " + javaClass.getSimpleName());
             return javaClass.getSimpleName();
         }
     }
@@ -147,9 +148,9 @@ public class TypeScriptHelper {
                     .collect(Collectors.joining(" | "));
 
                 sb.append("type ").append(name).append(" = ")
-                        .append(directSubtypes == null || directSubtypes.isBlank() ? " never"
-                                : directSubtypes)
-                        .append(";\n");
+                    .append(directSubtypes == null || directSubtypes.isBlank() ? " never"
+                        : directSubtypes)
+                    .append(";\n");
             } else {
                 inheritance.put(name, new ArrayList<>());
                 inheritance.get(name).add(name);

@@ -96,7 +96,8 @@ public class GeneratorPlugin extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        Generator generator = new Generator(restPackages, packageName, clientName, getLog());
+        Logger.initLogger(getLog());
+        Generator generator = new Generator(restPackages, packageName, clientName);
 
         generator.processPackages();
 
@@ -118,7 +119,7 @@ public class GeneratorPlugin extends AbstractMojo {
     /**
      * Simple app to test the generator.it will not generate any files but will print output
      *
-     * @param args unsed yet
+     * @param args unused yet
      *
      * @throws org.apache.maven.plugin.MojoExecutionException if ...
      * @throws org.apache.maven.plugin.MojoFailureException   if ...

@@ -27,7 +27,6 @@ import javax.json.bind.Jsonb;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Path;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.reflections.Reflections;
 
 /**
@@ -45,11 +44,6 @@ public class Generator {
      * All rest controller found.
      */
     private Set<RestController> restControllers;
-
-    /**
-     * Maven process logger
-     */
-    private final Log log;
 
     /**
      * Client will be generated in this package
@@ -72,13 +66,10 @@ public class Generator {
      * @param restPackages packages to analyze
      * @param packageName  package in which generate the client
      * @param clientName   client class name
-     * @param log          maven logger
      */
     public Generator(String[] restPackages,
-        String packageName, String clientName,
-        Log log
+        String packageName, String clientName
     ) {
-        this.log = log;
         this.packageName = packageName;
         this.clientName = clientName;
 
@@ -96,7 +87,7 @@ public class Generator {
      * @param pkgs packages to analyze
      */
     public Generator(String[] pkgs) {
-        this(pkgs, null, null, null);
+        this(pkgs, null, null);
     }
 
     /**
@@ -112,11 +103,9 @@ public class Generator {
             try {
                 return provider.getConstructor().newInstance().getJsonbMapper();
             } catch (NoSuchMethodException | SecurityException | InstantiationException
-                    | IllegalAccessException | IllegalArgumentException
-                    | InvocationTargetException ex) {
-                if (log != null) {
-                    log.error("Fails to instantiate JsonbMapperProvider");
-                }
+                | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException ex) {
+                Logger.error("Fails to instantiate JsonbMapperProvider");
             }
         }
 
@@ -130,8 +119,8 @@ public class Generator {
     public void processPackages() {
         Set<Class<?>> appConfig = reflections.getTypesAnnotatedWith(ApplicationPath.class);
         if (!appConfig.isEmpty()) {
-            if (appConfig.size() > 1 && log != null) {
-                log.warn("Several ApplicationPath found");
+            if (appConfig.size() > 1) {
+                Logger.warn("Several ApplicationPath found");
             }
             Class<?> applicationConfig = appConfig.iterator().next();
             ApplicationPath annotation = applicationConfig.getAnnotation(ApplicationPath.class);
@@ -143,7 +132,7 @@ public class Generator {
         Set<Class<?>> restClasses = reflections.getTypesAnnotatedWith(Path.class);
 
         this.restControllers = restClasses.stream()
-            .map(klass -> RestController.build(klass, applicationPath, log))
+            .map(klass -> RestController.build(klass, applicationPath))
             .collect(Collectors.toSet());
         /* .map(p -> p.generateJavaClient()) .innerClasses(Collectors.toList());
          */
@@ -212,9 +201,7 @@ public class Generator {
             .append("}");
 
         if (dryRun) {
-            if (log != null) {
-                log.debug(sb.toString());
-            }
+            Logger.debug(sb.toString());
         } else {
             String packagePath = targetDir + "/" + packageName.replaceAll("\\.", "/");
             writeFile(sb.toString(), packagePath, clientName + ".java");
@@ -269,7 +256,7 @@ public class Generator {
             snowballedTypes.forEach((name, type) -> {
                 if (!extraTypes.containsKey(name)) {
                     extraTypes.put(name, type);
-                    queue.add(0, new SimpleEntry<String, Type>(name, type));
+                    queue.add(0, new SimpleEntry<>(name, type));
                 }
             });
         }
@@ -316,9 +303,7 @@ public class Generator {
             .append("}");
 
         if (dryRun) {
-            if (log != null) {
-                log.debug(sb.toString());
-            }
+            Logger.debug(sb.toString());
         } else {
             String srcPath = targetDir + "/src";
             writeFile(sb.toString(), srcPath, clientName + ".ts");
@@ -345,14 +330,14 @@ public class Generator {
                 java.nio.file.Path.of(directory, filename))) {
                 writer.write(content);
             } catch (IOException ex) {
-                if (log != null) {
+                if (Logger.isInit()) {
                     throw new MojoFailureException("Failed to write '"
                         + filename + "' in '" + directory + "'", ex);
                 }
             }
 
         } catch (IOException ex) {
-            if (log != null) {
+            if (Logger.isInit()) {
                 throw new MojoFailureException("Failed to create package directory "
                     + directory, ex);
             }

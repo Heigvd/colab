@@ -8,6 +8,7 @@ package ch.colabproject.colab.generator.plugin.rest;
 
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.plugin.Logger;
 import ch.colabproject.colab.generator.plugin.TypeScriptHelper;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -23,7 +24,6 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import org.apache.maven.plugin.logging.Log;
 import org.glassfish.jersey.uri.PathPattern;
 import org.glassfish.jersey.uri.UriTemplate;
 
@@ -58,11 +58,6 @@ public class RestController {
      * Class path params.
      */
     private List<Param> pathParameters = new ArrayList<>();
-
-    /**
-     * Maven log
-     */
-    private Log log;
 
     /**
      * current indentation level. Used for code generation.
@@ -185,9 +180,7 @@ public class RestController {
                 // very complex template
                 // eg <java.lang.Long, java.lang.List<java.lang.String>>
                 // @TODO  not yet implemented
-                if (log != null) {
-                    log.warn("Very Complex generic type " + template);
-                }
+                Logger.warn("Very Complex generic type " + template);
                 return leftPart + "<" + template + ">";
             } else if (template.contains(",")) {
                 // multiple simple parameters
@@ -230,9 +223,7 @@ public class RestController {
     public String generateJavaClient(Map<String, String> imports, String clientName) {
         tabSize = 4;
         StringBuilder sb = new StringBuilder();
-        if (log != null) {
-            log.debug("Generate client class " + this);
-        }
+        Logger.debug("Generate client class " + this);
 
         newLine(sb);
         newLine(sb);
@@ -256,9 +247,7 @@ public class RestController {
         indent++;
 
         for (RestMethod method : this.restMethods) {
-            if (log != null) {
-                log.debug(" * generate " + method);
-            }
+            Logger.debug(" * generate " + method);
             ////////////////////////////////////////////////////////////////////////////////////////
             // JAVADOC
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -415,9 +404,7 @@ public class RestController {
      */
     public String generateTypescriptClient(Map<String, Type> types) {
         tabSize = 2;
-        if (log != null) {
-            log.debug("Generate typescript class " + this);
-        }
+        Logger.debug("Generate typescript class " + this);
 
         indent++;
         // TODO jsDoc
@@ -428,9 +415,7 @@ public class RestController {
         newLine(sb);
 
         restMethods.forEach(method -> {
-            if (log != null) {
-                log.debug(" * generate " + method);
-            }
+            Logger.debug(" * generate " + method);
 
             // JSDOC (todo: extract javadoc)
             ////////////////////////
@@ -571,13 +556,11 @@ public class RestController {
      *
      * @param klass           the class must be annotated with {@link Path}
      * @param applicationPath main application path
-     * @param log             maven log
      *
      * @return RestControlle instance, ready for code generation
      */
-    public static RestController build(Class<?> klass, String applicationPath, Log log) {
+    public static RestController build(Class<?> klass, String applicationPath) {
         RestController restController = new RestController();
-        restController.log = log;
 
         restController.setAdminResource(klass.getAnnotation(AdminResource.class) != null);
         restController.setAuthenticationRequired(
@@ -590,9 +573,7 @@ public class RestController {
         // eg @Path("project/{pId: [regex]}/card/{}")   or "project"
         Map<String, Class<?>> mainPathParam = splitPath(classPath);
 
-        if (log != null) {
-            log.debug("Build RestController for class " + klass);
-        }
+        Logger.debug("Build RestController for class " + klass);
         // Go through each class methods but only cares about ones annotated with
         // a HttpMethod-like annotation
         for (Method method : klass.getMethods()) {
@@ -653,11 +634,9 @@ public class RestController {
                                     "path param",
                                     p.getType());
                             } else {
-                                if (log != null) {
-                                    log.error("@PathParam "
-                                        + pathParam.value() + " not found in @Path");
-                                    // error !
-                                }
+                                Logger.error("@PathParam "
+                                    + pathParam.value() + " not found in @Path");
+                                // error !
                             }
                         } else if (queryParam != null) {
                             restMethod.addQueryParameter(
@@ -666,9 +645,9 @@ public class RestController {
                                 p.getType());
                         } else if (p.getAnnotations().length == 0) {
                             // request body
-                            if (restMethod.getBodyParam() != null && log != null) {
+                            if (restMethod.getBodyParam() != null) {
                                 // several body param ????
-                                log.warn("Several body parameters ???");
+                                Logger.warn("Several body parameters ???");
                             }
                             Param bodyParam = new Param();
                             bodyParam.setName(p.getName());
