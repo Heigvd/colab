@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Log request
+ * Extract baseUrl & print log statement for all REST requests.
  * <p>
  * With a priority of 2, this filter is executed right after
  * {@link ch.colabproject.colab.api.security.CookieFilter CookieFilter} one.
