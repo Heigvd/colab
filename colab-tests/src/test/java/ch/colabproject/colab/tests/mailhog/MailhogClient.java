@@ -12,7 +12,7 @@ import java.util.List;
 import javax.ws.rs.core.GenericType;
 
 /**
- * Mailhog is a SMTP mock which accept all incoming message. Messages are available through a REST
+ * Mailhog is a SMTP mock which accept all incoming messages. Messages are available through a REST
  * api. This is the client of this API.
  *
  * @author maxence
@@ -79,9 +79,7 @@ public class MailhogClient extends RestClient {
     }
 
     /*
-     * GET /api/v1/messages/{ message_id }/download
-     * <p>
-     * Download the complete message
+     * GET /api/v1/messages/{ message_id }/download <p> Download the complete message
      *
      * @param id id of the message to download
      *

@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -251,7 +251,7 @@ public class TypeScriptHelper {
                 || long.class.isAssignableFrom(javaClass)
                 || float.class.isAssignableFrom(javaClass)
                 || double.class.isAssignableFrom(javaClass)
-                || LocalDateTime.class.isAssignableFrom(javaClass)) {
+                || Temporal.class.isAssignableFrom(javaClass)) {
                 return "number";
             } else if (String.class.isAssignableFrom(javaClass)) {
                 return "string";

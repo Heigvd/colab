@@ -15,4 +15,3 @@ export interface LogoProps {
 export default ({ className }: LogoProps) => {
   return <Logo className={className} />;
 };
-

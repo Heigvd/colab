@@ -32,7 +32,7 @@ const CardDisplay = ({ card }: Props) => {
         width: 'max-content',
         border: `2px solid ${card.color}`,
         borderRadius: '20px',
-        padding: '10px'
+        padding: '10px',
       })}
     >
       <div

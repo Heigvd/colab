@@ -299,7 +299,8 @@ public class LocalAccount extends Account {
 
     @Override
     public String toString() {
-        return "LocalAccount{" + "id=" + this.getId() + ", email=" + email + ", verified=" + verified + '}';
+        return "LocalAccount{" + "id=" + this.getId() + ", email=" + email
+            + ", verified=" + verified + '}';
     }
 
 }

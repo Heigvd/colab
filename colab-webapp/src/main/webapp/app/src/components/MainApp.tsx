@@ -9,47 +9,64 @@ import * as React from 'react';
 import Logo from './styling//WhiteLogo';
 
 import * as API from '../API/api';
-import {css, cx} from '@emotion/css';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
-import {CardList} from './cards/CardList';
-import {ProjectList} from './projects/ProjectList';
+import { css, cx } from '@emotion/css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { CardList } from './cards/CardList';
+import { ProjectList } from './projects/ProjectList';
 import SignInForm from './public/SignIn';
 import SignUpForm from './public/SignUp';
-import {fullPageStyle, iconButton, darkMode} from './styling/style';
+import { fullPageStyle, iconButton, darkMode } from './styling/style';
 import Loading from './common/Loading';
-import {useAppSelector, useAppDispatch, useCurrentUser} from '../store/hooks';
+import { useAppDispatch, useCurrentUser } from '../store/hooks';
 
-import {HashRouter as Router, Switch, Route} from 'react-router-dom';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import Settings from './settings/Settings';
 import Admin from './admin/Admin';
-import {MainMenuLink} from './common/Link';
+import { MainMenuLink } from './common/Link';
+import ForgotPassword from './public/ForgotPassword';
+import { User } from 'colab-rest-client';
 
+const getDisplayName = (user: User) => {
+  return user.commonname || `${user.firstname} ${user.lastname}`.trim() || user.username;
+};
 
 export default () => {
   //const status = useAppSelector((state) => state.navigation.status);
-  const authenticationStatus = useAppSelector(state => state.auth.authenticationStatus);
+  //const authenticationStatus = useAppSelector(state => state.auth.authenticationStatus);
   const user = useCurrentUser();
 
   const dispatch = useAppDispatch();
 
-  if (authenticationStatus === undefined) {
+  if (user === undefined) {
+    // user is not known. Reload state from API
     dispatch(API.reloadCurrentUser());
-  }
-
-  if (authenticationStatus === 'UNAUTHENTICATED') {
-    return <SignInForm />;
-  } else if (authenticationStatus === 'SIGNING_UP') {
-    return <SignUpForm />;
-  } else if (authenticationStatus === undefined) {
     return <Loading />;
-  } else if (user != null) {
-    // authenticationStatus := AUTHENTICATED
-    // status := SYNCING || READY
-    const displayName = user.commonname || `${user.firstname} ${user.lastname}`.trim() || user.username;
+  } else if (user === null) {
+    // null means the client is not authenticated yet
     return (
-      <div className={fullPageStyle}>
-        <Router>
+      <Router>
+        <Switch>
+          <Route exact path="/SignUp">
+            <SignUpForm />
+          </Route>
+          <Route exact path="/ForgotPassword">
+            <ForgotPassword />
+          </Route>
+          <Route exact path="/SignIn">
+            <SignInForm />
+          </Route>
+          <Route>
+            <SignInForm />
+          </Route>
+        </Switch>
+      </Router>
+    );
+  } else {
+    // user is authenticated
+    return (
+      <Router>
+        <div className={fullPageStyle}>
           <div
             className={cx(
               darkMode,
@@ -77,9 +94,7 @@ export default () => {
               <MainMenuLink exact to="/cards">
                 Cards
               </MainMenuLink>
-              <MainMenuLink to="/settings">
-                Settings
-              </MainMenuLink>
+              <MainMenuLink to="/settings">Settings</MainMenuLink>
               {user.admin ? <MainMenuLink to="/admin">Admin</MainMenuLink> : null}
             </nav>
             <div
@@ -88,7 +103,7 @@ export default () => {
               })}
             ></div>
 
-            {displayName}
+            {getDisplayName(user)}
             <FontAwesomeIcon
               className={iconButton}
               onClick={() => dispatch(API.signOut())}
@@ -116,11 +131,8 @@ export default () => {
               </Route>
             </Switch>
           </div>
-        </Router>
-      </div>
+        </div>
+      </Router>
     );
-  } else {
-    // unreachable...
-    return null;
   }
 };

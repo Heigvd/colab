@@ -15,6 +15,17 @@ import ErrorBoundary from './common/ErrorBoundary';
 import MainApp from './MainApp';
 import Loading from './common/Loading';
 import ErrorNotifier from './common/ErrorNotifier';
+import { HashRouter as Router, Switch, Route, useParams } from 'react-router-dom';
+import Token from './token/Token';
+
+/**
+ * To read parameters from hash
+ */
+function TokenWrapper() {
+  const { id, token } = useParams<{ id: string; token: string }>();
+
+  return <Token tokenId={id} token={token} />;
+}
 
 function mount() {
   return render(
@@ -22,7 +33,16 @@ function mount() {
       <Suspense fallback={<Loading />}>
         <Provider store={getStore()}>
           <ErrorNotifier />
-          <MainApp />
+          <Router>
+            <Switch>
+              <Route path="/token/:id/:token">
+                <TokenWrapper />
+              </Route>
+              <Route>
+                <MainApp />
+              </Route>
+            </Switch>
+          </Router>
         </Provider>
       </Suspense>
     </ErrorBoundary>,

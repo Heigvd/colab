@@ -5,10 +5,9 @@
  * Licensed under the MIT License
  */
 
-import * as React from "react";
-import {css, cx} from "@emotion/css";
-import {NavLink} from "react-router-dom";
-
+import * as React from 'react';
+import { css, cx } from '@emotion/css';
+import { NavLink } from 'react-router-dom';
 
 const linkStyle = css({
   textDecoration: 'none',
@@ -16,7 +15,7 @@ const linkStyle = css({
   ':hover': {
     backgroundColor: 'var(--hoverBgColor)',
     color: 'var(--hoverFgColor)',
-  }
+  },
 });
 
 const mainMenuLink = cx(
@@ -26,22 +25,34 @@ const mainMenuLink = cx(
     display: 'inline-block',
     paddingTop: '8px',
     paddingLeft: '10px',
-  }));
+  }),
+);
 
 const mainLinkActiveClass = cx(
   css({
     borderBottom: '6px solid #8BE8FB',
-  }));
+  }),
+);
 
 const secondLevelLinkActiveClass = cx(
   css({
     borderBottom: '2px solid #8BE8FB',
-  }));
+  }),
+);
 
 const secondLevelLink = cx(
-  linkStyle, css({
+  linkStyle,
+  css({
     textDecoration: 'none',
-  }));
+  }),
+);
+
+const inlineLink = cx(
+  linkStyle,
+  css({
+    textDecoration: 'none',
+  }),
+);
 
 interface LinkProps {
   to: string;
@@ -49,7 +60,7 @@ interface LinkProps {
   children: React.ReactNode;
 }
 
-export const MainMenuLink = ({to, exact = false, children}: LinkProps) => {
+export const MainMenuLink = ({ to, exact = false, children }: LinkProps) => {
   return (
     <NavLink exact={exact} to={to} activeClassName={mainLinkActiveClass} className={mainMenuLink}>
       {children}
@@ -57,9 +68,22 @@ export const MainMenuLink = ({to, exact = false, children}: LinkProps) => {
   );
 };
 
-export const SecondLevelLink = ({to, exact = false, children}: LinkProps) => {
+export const SecondLevelLink = ({ to, exact = false, children }: LinkProps) => {
   return (
-    <NavLink exact={exact} to={to} activeClassName={secondLevelLinkActiveClass} className={secondLevelLink}>
+    <NavLink
+      exact={exact}
+      to={to}
+      activeClassName={secondLevelLinkActiveClass}
+      className={secondLevelLink}
+    >
+      {children}
+    </NavLink>
+  );
+};
+
+export const InlineLink = ({ to, exact = false, children }: LinkProps) => {
+  return (
+    <NavLink exact={exact} to={to} className={inlineLink}>
       {children}
     </NavLink>
   );

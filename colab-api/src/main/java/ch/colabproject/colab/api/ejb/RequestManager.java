@@ -38,6 +38,29 @@ public class RequestManager {
     private long startTime;
 
     /**
+     * Base url request URL
+     */
+    private String baseUrl;
+
+    /**
+     * Get request base url
+     *
+     * @return url
+     */
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    /**
+     * Set the request base url
+     *
+     * @param baseUrl request base url
+     */
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    /**
      *
      * @return the current http session
      */
@@ -111,5 +134,21 @@ public class RequestManager {
      */
     public Boolean isAuthenticated() {
         return this.getCurrentAccount() != null;
+    }
+
+    /**
+     * Set the current account.
+     *
+     * @param account new current account
+     */
+    public void login(Account account) {
+        this.getHttpSession().setAccountId(account.getId());
+    }
+
+    /**
+     * Clear current account.
+     */
+    public void logout() {
+        this.getHttpSession().setAccountId(null);
     }
 }

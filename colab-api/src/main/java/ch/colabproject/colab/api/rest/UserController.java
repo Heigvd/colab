@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
+import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
@@ -29,6 +30,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * User controller
@@ -39,6 +42,9 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class UserController {
+
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     /**
      * Users related business logic
@@ -75,6 +81,7 @@ public class UserController {
     @GET
     @Path("AuthMethod/{identifier : [^/]*}")
     public AuthMethod getAuthMethod(@PathParam("identifier") String identifier) {
+        logger.debug("get auth method for {}", identifier);
         return userManagement.getAuthenticationMethod(identifier);
     }
 
@@ -86,6 +93,7 @@ public class UserController {
     @GET
     @Path("CurrentUser")
     public User getCurrentUser() {
+        logger.debug("get current user");
         return requestManager.getCurrentUser();
     }
 
@@ -97,6 +105,7 @@ public class UserController {
     @GET
     @Path("CurrentAccount")
     public Account getCurrentAccount() {
+        logger.debug("get current account");
         return requestManager.getCurrentAccount();
     }
 
@@ -108,6 +117,7 @@ public class UserController {
     @GET
     @Path("AllCurrentUserAccount")
     public List<Account> getAllCurrentUserAccounts() {
+        logger.debug("get all accounts of current user");
         User user = requestManager.getCurrentUser();
         if (user != null) {
             return user.getAccounts();
@@ -126,6 +136,7 @@ public class UserController {
     @POST
     @Path("SignUp")
     public void signUp(SignUpInfo signup) {
+        logger.debug("sign-up {}", signup);
         userManagement.signup(signup);
     }
 
@@ -139,6 +150,7 @@ public class UserController {
     @POST
     @Path("SignIn")
     public void signIn(AuthInfo authInfo) {
+        logger.debug("sign-in {}", authInfo);
         userManagement.authenticate(authInfo);
     }
 
@@ -148,6 +160,7 @@ public class UserController {
     @POST
     @Path("SignOut")
     public void signOut() {
+        logger.debug("sign-out");
         userManagement.logout();
     }
 
@@ -161,6 +174,7 @@ public class UserController {
     @PUT
     @AuthenticationRequired
     public void updateUser(User user) throws ColabMergeException {
+        logger.debug("update user profile: {}", user);
         securityFacade.assertCanWrite(user);
         userDao.updateUser(user);
     }
@@ -174,6 +188,7 @@ public class UserController {
     @Path("{id : [1-9][0-9]*}/GrantAdminRight")
     @AdminResource
     public void grantAdminRight(@PathParam("id") Long id) {
+        logger.debug("Grant admin right to user #{}", id);
         userManagement.grantAdminRight(id);
     }
 
@@ -187,7 +202,36 @@ public class UserController {
     @PUT
     @Path("/UpdatePassword")
     public void updateLocalAccountPassword(AuthInfo authInfo) {
+        logger.debug("Update local acocunt \"{}\" password", authInfo.getIdentifier());
         userManagement.updatePassword(authInfo);
+    }
+
+    /**
+     * Request a local account password reset. This method always returns 204 no content
+     * <p>
+     * @param email email address of account
+     *
+     */
+    @PUT
+    @Path("/RequestPasswordReset/{email}")
+    public void requestPasswordReset(@PathParam("email") String email) {
+        logger.debug("Request password reset token {}", email);
+        userManagement.requestPasswordReset(email);
+    }
+
+    /**
+     * Update local account
+     *
+     * @param account local account with new email address inside
+     *
+     * @throws ColabMergeException if update fails
+     */
+    @PUT
+    @Path("/ChangeEmail")
+    @AuthenticationRequired
+    public void updateLocalAccountEmailAddress(LocalAccount account) throws ColabMergeException {
+        logger.debug("Update local account email address: {}", account);
+        userManagement.updateLocalAccountEmailAddress(account);
     }
 
     /**
@@ -199,6 +243,7 @@ public class UserController {
     @Path("{id : [1-9][0-9]*}/SwitchClientHashMethod")
     @AdminResource
     public void switchClientHashMethod(@PathParam("id") Long id) {
+        logger.debug("Switch client hash method for account #{}", id);
         userManagement.switchClientHashMethod(id);
     }
 
@@ -211,6 +256,7 @@ public class UserController {
     @Path("{id : [1-9][0-9]*}/SwitchServerHashMethod")
     @AdminResource
     public void switchServerHashMethod(@PathParam("id") Long id) {
+        logger.debug("Switch server hash method for account #{}", id);
         userManagement.switchServerHashMethod(id);
     }
 

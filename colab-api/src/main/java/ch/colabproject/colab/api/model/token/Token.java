@@ -6,11 +6,13 @@
  */
 package ch.colabproject.colab.api.model.token;
 
+import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.HashMethod;
-import java.time.LocalDateTime;
+import ch.colabproject.colab.generator.model.exceptions.HttpException;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbTransient;
@@ -70,7 +72,7 @@ public abstract class Token implements ColabEntity {
      * token expiration date. TODO: schedule deletion of outdated tokens
      */
     @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
-    private LocalDateTime expirationDate;
+    private OffsetDateTime expirationDate;
 
     /**
      * Get the value of authenticationRequired
@@ -89,7 +91,6 @@ public abstract class Token implements ColabEntity {
     public void setAuthenticationRequired(Boolean authenticationRequired) {
         this.authenticationRequired = authenticationRequired;
     }
-
 
     /**
      * Get the value of hashMethod
@@ -149,7 +150,7 @@ public abstract class Token implements ColabEntity {
      *
      * @return the value of expirationDate
      */
-    public LocalDateTime getExpirationDate() {
+    public OffsetDateTime getExpirationDate() {
         return expirationDate;
     }
 
@@ -158,7 +159,7 @@ public abstract class Token implements ColabEntity {
      *
      * @param expirationDate new value of expirationDate
      */
-    public void setExpirationDate(LocalDateTime expirationDate) {
+    public void setExpirationDate(OffsetDateTime expirationDate) {
         this.expirationDate = expirationDate;
     }
 
@@ -175,9 +176,13 @@ public abstract class Token implements ColabEntity {
     public abstract String getRedirectTo();
 
     /**
-     * token effect
+     * token effect. As some token may requires the resquestManager, give it to them.
+     *
+     * @param requestManager requestManager
+     *
+     * @throws HttpException if consumption fails
      */
-    public abstract void consume();
+    public abstract void consume(RequestManager requestManager);
 
     /**
      * Generate email body
@@ -209,5 +214,18 @@ public abstract class Token implements ColabEntity {
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object obj) {
         return EntityHelper.equals(this, obj);
+    }
+
+    /**
+     * Check is the token is outdate. A token without exipirationDate is never outdated.
+     *
+     * @return true if the token is outdated.
+     */
+    @JsonbTransient
+    public boolean isOutdated() {
+        if (this.expirationDate != null) {
+            return this.expirationDate.isBefore(OffsetDateTime.now());
+        }
+        return false;
     }
 }

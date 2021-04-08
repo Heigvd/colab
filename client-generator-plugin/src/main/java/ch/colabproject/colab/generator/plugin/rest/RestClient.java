@@ -97,28 +97,30 @@ public class RestClient {
      * @return instance of T or null
      */
     private <T> T readEntity(InputStream stream, GenericType<T> type) {
-        if (stream != null) {
-            try {
+        try {
+            if (stream != null && stream.available() > 0) {
                 return jsonb.fromJson(stream, type.getType());
-            } catch (JsonbException ex) {
+            } else {
                 return null;
             }
+        } catch (JsonbException | IOException ex) {
+            // silent ex
+            return null;
         }
-        return null;
     }
 
     private <T> T processResponse(Response response, GenericType<T> type) {
         Status.Family family = Status.Family.familyOf(response.getStatus());
         if (family == Status.Family.SUCCESSFUL) {
-            if (response.getLength() > 0) {
+            if (response.getStatus() == 204) {
+                return null;
+            } else {
                 Object entity = response.getEntity();
                 if (entity instanceof InputStream) {
                     return readEntity((InputStream) entity, type);
                 } else {
                     return null;
                 }
-            } else {
-                return null;
             }
         } else if (family == Status.Family.CLIENT_ERROR) {
             HttpException error = readEntity((InputStream) response.getEntity(),

@@ -8,7 +8,6 @@ package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.TokenFacade;
 import ch.colabproject.colab.api.model.token.Token;
-import ch.colabproject.colab.api.persistence.token.TokenDao;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -17,6 +16,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import liquibase.pro.packaged.ch;
 
 /**
  * API to fetch an consume tokens sent by e-mail
@@ -35,12 +35,6 @@ public class TokenController {
     private TokenFacade tokenFacade;
 
     /**
-     * token persistence
-     */
-    @Inject
-    private TokenDao tokenDao;
-
-    /**
      * Fetch a token by id. Once fetched, the client should decide what to do. If the token does not
      * require authentication, client may consume the token directly. If the token require
      * authentication, the client should ask the user to sing in/up and consume the token
@@ -53,7 +47,7 @@ public class TokenController {
     @GET
     @Path("{id}")
     public Token getToken(@PathParam("id") Long id) {
-        return tokenDao.getToken(id);
+        return tokenFacade.getNotExpiredToken(id);
     }
 
     /**

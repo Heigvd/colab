@@ -4,29 +4,28 @@
  *
  * Licensed under the MIT License
  */
-import {createSlice} from '@reduxjs/toolkit';
-import {Account, User} from 'colab-rest-client';
+import { createSlice } from '@reduxjs/toolkit';
+import { Account, User } from 'colab-rest-client';
 import * as API from '../API/api';
 
 export interface UserState {
   users: {
     [id: number]: User;
-  },
+  };
   accounts: {
-    [id: number]: Account
-  }
-};
+    [id: number]: Account;
+  };
+}
 
 const initialState: UserState = {
   users: {},
-  accounts: {}
+  accounts: {},
 };
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: builder =>
     builder
       .addCase(API.reloadCurrentUser.fulfilled, (state, action) => {
@@ -38,13 +37,13 @@ const userSlice = createSlice({
           state.users[user.id] = user;
         }
         if (accounts != null) {
-          const map: {[id: number]: Account} = {};
+          const map: { [id: number]: Account } = {};
           accounts.forEach(a => {
             if (a && a.id) {
               map[a.id] = a;
             }
-          })
-          state.accounts = {...state.accounts, ...map};
+          });
+          state.accounts = { ...state.accounts, ...map };
         }
         if (account && account.id != null) {
           state.accounts[account.id] = account;

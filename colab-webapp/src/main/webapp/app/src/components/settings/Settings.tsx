@@ -7,40 +7,36 @@
 
 import * as React from 'react';
 
-import {HashRouter as Router, Switch, Route, useParams} from 'react-router-dom';
+import { HashRouter as Router, Switch, Route, useParams } from 'react-router-dom';
 import UserProfile from './UserProfile';
-import {SecondLevelLink} from '../common/Link';
-import {useAppSelector, useCurrentUser} from '../../store/hooks';
-import {entityIs, Account} from 'colab-rest-client';
+import { SecondLevelLink } from '../common/Link';
+import { useAppSelector, useCurrentUser } from '../../store/hooks';
+import { entityIs, Account } from 'colab-rest-client';
 import LocalAccount from './LocalAccount';
 
 function accountTitle(account: Account) {
   if (entityIs(account, 'LocalAccount')) {
-    return `Email Account (${account.email}`;
+    return `Edit email Account (${account.email})`;
   }
-  return "";
+  return '';
 }
 
 /**
  * useParams does not work inline...
  */
 function WrapLocalAccountEditor() {
-  const id = useParams<{id?: string}>().id;
+  const { id } = useParams<{ id?: string }>();
 
   if (id != null && +id >= 0) {
-    return (
-      <LocalAccount accountId={+id} />
-    );
+    return <LocalAccount accountId={+id} />;
   } else {
     return null;
   }
 }
 
 export default () => {
-  const accounts = useAppSelector((state) =>
-    Object.values(state.users.accounts).filter(a =>
-      a.userId == state.auth.currentUserId
-    )
+  const accounts = useAppSelector(state =>
+    Object.values(state.users.accounts).filter(a => a.userId == state.auth.currentUserId),
   );
   const user = useCurrentUser();
 
@@ -55,9 +51,13 @@ export default () => {
                 <SecondLevelLink to="/user">User Profile</SecondLevelLink>
               </li>
               {accounts.map(account => {
-                return <li>
-                  <SecondLevelLink to={`/account/${account.id}`}>{accountTitle(account)}</SecondLevelLink>
-                </li>;
+                return (
+                  <li>
+                    <SecondLevelLink to={`/account/${account.id}`}>
+                      {accountTitle(account)}
+                    </SecondLevelLink>
+                  </li>
+                );
               })}
               <li>add account</li>
               <li>...</li>
@@ -77,11 +77,13 @@ export default () => {
             </div>
           </div>
         </Router>
-      </div >
+      </div>
     );
   } else {
-    return <div>
-      <i>You must be authenticated</i>
-    </div>
+    return (
+      <div>
+        <i>You must be authenticated</i>
+      </div>
+    );
   }
 };

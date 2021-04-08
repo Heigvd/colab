@@ -15,7 +15,7 @@ const onUpdate = (event: WsUpdateMessage) => {
   for (const item of event.payload) {
     if (entityIs(item, 'Project')) {
       dispatch(ProjectActions.updateProject(item));
-    }  else if (entityIs(item, 'Card')) {
+    } else if (entityIs(item, 'Card')) {
       dispatch(CardActions.updateCard(item));
     }
   }

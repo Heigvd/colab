@@ -7,11 +7,9 @@
 import * as React from 'react';
 import { css, cx } from '@emotion/css';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import FormContainer from '../common/FormContainer';
 import { darkMode, buttonStyle } from '../styling/style';
-import { signInWithLocalAccount } from '../../API/api';
+import { requestPasswordReset } from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { InlineLink } from '../common/Link';
 
@@ -19,12 +17,11 @@ interface Props {
   redirectTo?: string;
 }
 
-export default function SignInForm(_props: Props) {
+export default (_props: Props) => {
   const dispatch = useAppDispatch();
 
   const [credentials, setCredentials] = React.useState({
-    identifier: '',
-    password: '',
+    email: '',
   });
 
   return (
@@ -36,18 +33,8 @@ export default function SignInForm(_props: Props) {
         })}
       >
         <label>
-          username or email address
-          <input
-            type="text"
-            onChange={e => setCredentials({ ...credentials, identifier: e.target.value })}
-          />
-        </label>
-        <label>
-          password
-          <input
-            type="password"
-            onChange={e => setCredentials({ ...credentials, password: e.target.value })}
-          />
+          email address
+          <input type="text" onChange={e => setCredentials({ email: e.target.value })} />
         </label>
       </div>
 
@@ -61,25 +48,17 @@ export default function SignInForm(_props: Props) {
             margin: 'auto',
           }),
         )}
-        onClick={() => dispatch(signInWithLocalAccount(credentials))}
+        onClick={() => dispatch(requestPasswordReset(credentials))}
       >
         <span
           className={css({
             padding: '0 5px',
           })}
         >
-          Login
+          Submit
         </span>
-        <FontAwesomeIcon
-          className={css({
-            padding: '0 5px',
-          })}
-          icon={faSignInAlt}
-        />
       </span>
-
-      <InlineLink to="/SignUp">create a account</InlineLink>
-      <InlineLink to="/ForgotPassword">forgot your password ?</InlineLink>
+      <InlineLink to="/SignIn">cancel</InlineLink>
     </FormContainer>
   );
-}
+};

@@ -4,46 +4,48 @@
  *
  * Licensed under the MIT License
  */
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import * as API from '../API/api';
 
 export interface AuthState {
-  authenticationStatus: undefined | 'UNAUTHENTICATED' | 'SIGNING_UP' | 'AUTHENTICATED';
-  currentUserId?: number;
-  currentAccountId?: number;
+  //authenticationStatus: 'UNKNOWN' | 'UNAUTHENTICATED' | 'AUTHENTICATED';
+  currentUserId: number | null | undefined;
+  currentAccountId?: number | null | undefined;
 }
 
 const initialState: AuthState = {
-  authenticationStatus: undefined,
+  //authenticationStatus: 'UNKNOWN',
+  currentUserId: undefined,
+  currentAccountId: undefined,
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    changeAuthenticationStatus: (
-      state,
-      action: PayloadAction<AuthState['authenticationStatus']>,
-    ) => {
-      state.authenticationStatus = action.payload;
-    },
+    //    changeAuthenticationStatus: (
+    //      state,
+    //      action: PayloadAction<AuthState['authenticationStatus']>,
+    //    ) => {
+    //      state.authenticationStatus = action.payload;
+    //    },
   },
   extraReducers: builder =>
     builder
       .addCase(API.reloadCurrentUser.fulfilled, (state, action) => {
-        const signedIn =
-          action.payload.currentUser != null && action.payload.currentAccount != null;
-        state.authenticationStatus = signedIn ? 'AUTHENTICATED' : 'UNAUTHENTICATED';
-        state.currentUserId = action.payload.currentUser?.id || undefined;
-        state.currentAccountId = action.payload.currentAccount?.id || undefined;
+        //const signedIn =
+        //  action.payload.currentUser != null && action.payload.currentAccount != null;
+        //state.authenticationStatus = signedIn ? 'AUTHENTICATED' : 'UNAUTHENTICATED';
+        state.currentUserId = action.payload.currentUser?.id || null;
+        state.currentAccountId = action.payload.currentAccount?.id || null;
       })
       .addCase(API.signOut.fulfilled, state => {
-        state.authenticationStatus = 'UNAUTHENTICATED';
-        state.currentUserId = undefined;
-        state.currentAccountId = undefined;
+        //state.authenticationStatus = 'UNAUTHENTICATED';
+        state.currentUserId = null;
+        state.currentAccountId = null;
       }),
 });
 
-export const {changeAuthenticationStatus} = authSlice.actions;
+//export const {changeAuthenticationStatus} = authSlice.actions;
 
 export default authSlice.reducer;

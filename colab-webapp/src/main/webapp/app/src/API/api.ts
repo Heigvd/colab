@@ -5,13 +5,21 @@
  * Licensed under the MIT License
  */
 
-import {ColabClient, AuthInfo, SignUpInfo, Project, Card, entityIs, User} from 'colab-rest-client';
+import {
+  ColabClient,
+  AuthInfo,
+  SignUpInfo,
+  Project,
+  Card,
+  entityIs,
+  User,
+} from 'colab-rest-client';
 
-import {getStore} from '../store/store';
+import { getStore } from '../store/store';
 
-import {addError} from '../store/error';
-import {hashPassword} from '../SecurityHelper';
-import {createAsyncThunk} from '@reduxjs/toolkit';
+import { addError } from '../store/error';
+import { hashPassword } from '../SecurityHelper';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
 const restClient = ColabClient('', error => {
   if (entityIs(error, 'HttpException') || error instanceof Error) {
@@ -30,6 +38,21 @@ const restClient = ColabClient('', error => {
     );
   }
 });
+
+/**
+ * First access to the API client.
+ * Such direct allows direct calls to the API, bypassing thunk/redux action. It's not that normal.
+ * to do such calls but may be usefull in some edge-cades whene using the redux state is useless.
+ * EG. token processing
+ */
+export const getRestClient = () => restClient;
+
+export const requestPasswordReset = createAsyncThunk(
+  'auth/restPassword',
+  async (a: { email: string }) => {
+    await restClient.UserController.requestPasswordReset(a.email);
+  },
+);
 
 export const signInWithLocalAccount = createAsyncThunk(
   'auth/signInLocalAccount',
@@ -56,12 +79,7 @@ export const signInWithLocalAccount = createAsyncThunk(
 
 export const updateLocalAccountPassword = createAsyncThunk(
   'user/updatePassword',
-  async (
-    a: {
-      email: string;
-      password: string;
-    },
-  ) => {
+  async (a: { email: string; password: string }) => {
     // first, fetch the authenatication method fot the account
     const authMethod = await restClient.UserController.getAuthMethod(a.email);
 
@@ -105,7 +123,7 @@ export const signUp = createAsyncThunk(
     await restClient.UserController.signUp(signUpInfo);
 
     // go back to login page
-    thunkApi.dispatch(signInWithLocalAccount({identifier: a.email, password: a.password}));
+    thunkApi.dispatch(signInWithLocalAccount({ identifier: a.email, password: a.password }));
   },
 );
 
@@ -118,7 +136,7 @@ export const reloadCurrentUser = createAsyncThunk('auth/reload', async () => {
 
   const allAccounts = await restClient.UserController.getAllCurrentUserAccounts();
 
-  return {currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts};
+  return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
 });
 
 export const updateUser = createAsyncThunk('user/update', async (user: User) => {

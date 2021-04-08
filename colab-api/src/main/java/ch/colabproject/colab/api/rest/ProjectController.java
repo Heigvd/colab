@@ -6,9 +6,9 @@
  */
 package ch.colabproject.colab.api.rest;
 
-import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;

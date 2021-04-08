@@ -255,6 +255,32 @@ public class User implements ColabEntity {
         return EntityHelper.equals(this, obj);
     }
 
+    /**
+     * get most preferred name to display.
+     *
+     * @return name to display
+     */
+    @JsonbTransient
+    public String getDisplayName() {
+        if (this.commonname != null && !this.commonname.isBlank()) {
+            return this.commonname;
+        } else {
+            StringBuilder sb = new StringBuilder();
+
+            if (this.firstname != null) {
+                sb.append(this.firstname).append(" ");
+            }
+            if (this.firstname != null) {
+                sb.append(this.firstname);
+            }
+            String toString = sb.toString();
+            if (!toString.isBlank()) {
+                return toString;
+            }
+        }
+        return this.username;
+    }
+
     @Override
     public String toString() {
         return "User{" + "id=" + id + ", isAdmin=" + isAdmin + ", username=" + username + '}';

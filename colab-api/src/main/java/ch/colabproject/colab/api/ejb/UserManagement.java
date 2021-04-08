@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.Helper;
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
@@ -23,6 +24,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import liquibase.pro.packaged.ch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Everything related to user management
@@ -38,6 +41,9 @@ public class UserManagement {
      */
     private static final int SALT_LENGTH = 32;
 
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(UserManagement.class);
+
     /**
      * Request related logic
      */
@@ -48,7 +54,7 @@ public class UserManagement {
      * some operation on users will create and send tokens
      */
     @Inject
-    private TokenFacade tokenDao;
+    private TokenFacade tokenFacade;
 
     /**
      * User persistence
@@ -183,7 +189,7 @@ public class UserManagement {
                 user.setUsername(signup.getUsername());
                 em.persist(user);
                 // new user with a localaccount should verify their e-mail address
-                tokenDao.requestEmailAddressVerification(account, false);
+                tokenFacade.requestEmailAddressVerification(account, false);
                 return user;
             } else {
                 // wait.... throwing something else here leaks account existence...
@@ -247,7 +253,7 @@ public class UserManagement {
                         this.shadowHash(account, mandatoryHash);
                     }
 
-                    requestManager.getHttpSession().setAccountId(account.getId());
+                    requestManager.login(account);
 
                     return account.getUser();
                 }
@@ -311,7 +317,7 @@ public class UserManagement {
      */
     public void logout() {
         // clear account from http session
-        this.requestManager.getHttpSession().setAccountId(null);
+        this.requestManager.logout();
     }
 
     /**
@@ -359,5 +365,55 @@ public class UserManagement {
             AuthMethod authMethod = getDefaultRandomAuthenticationMethod();
             localAccount.setNextDbHashMethod(authMethod.getMandatoryMethod());
         }
+    }
+
+    /**
+     * If the given email address is linked to a localaccount, sent a link to this mailbox to reset
+     * the account password.
+     *
+     * @param email email address used as account identifier
+     */
+    public void requestPasswordReset(String email) {
+        logger.debug("Request reset password: {}", email);
+        LocalAccount account = userDao.findLocalAccountByEmail(email);
+        if (account != null) {
+            // account exists, send the message
+            tokenFacade.sendResetPasswordToken(account, true);
+        }
+    }
+
+    /**
+     * Update the account with values provided in given account.Only field which are editable by
+     * users will be impacted.
+     *
+     * @param account account new values
+     *
+     * @return updated account
+     *
+     * @throws ColabMergeException if something went wrong
+     */
+    public LocalAccount updateLocalAccountEmailAddress(LocalAccount account)
+        throws ColabMergeException {
+        logger.debug("Update LocalAccount email address: {}", account);
+        LocalAccount managedAccount = (LocalAccount) userDao.findAccount(account.getId());
+        securityFacade.assertCanWrite(managedAccount.getUser());
+
+        String currentEmail = managedAccount.getEmail();
+        String newEmail = account.getEmail();
+
+        if (newEmail != null && !newEmail.equals(currentEmail)) {
+            try {
+                managedAccount.setVerified(false);
+                managedAccount.setEmail(newEmail);
+                // make sure to flush changes to database. It will check index uniqueness
+                em.flush();
+                tokenFacade.requestEmailAddressVerification(account, false);
+            } catch (Exception e) {
+                // address already used, do not send any email to this address
+                logger.error("Execption", e);
+            }
+        }
+
+        return managedAccount;
     }
 }

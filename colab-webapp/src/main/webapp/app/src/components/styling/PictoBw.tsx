@@ -15,4 +15,3 @@ export interface PictoProps {
 export default ({ className }: PictoProps) => {
   return <Picto className={className} />;
 };
-

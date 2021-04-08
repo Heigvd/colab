@@ -6,22 +6,21 @@
  */
 
 import * as React from 'react';
-import {useAppDispatch} from '../../store/hooks';
-import {User} from 'colab-rest-client';
-import {faSave} from '@fortawesome/free-regular-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {updateUser} from '../../API/api';
+import { useAppDispatch } from '../../store/hooks';
+import { User } from 'colab-rest-client';
+import { faSave } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { updateUser } from '../../API/api';
 
 interface UserProfileProps {
   user: User;
 }
 
-export default ({user}: UserProfileProps) => {
+export default ({ user }: UserProfileProps) => {
   const dispatch = useAppDispatch();
 
-
   if (user) {
-    const [uUser, setUpdatedUser] = React.useState<User>({...user});
+    const [uUser, setUpdatedUser] = React.useState<User>({ ...user });
 
     return (
       <div>
@@ -35,40 +34,43 @@ export default ({user}: UserProfileProps) => {
           <div>
             <label>
               Common name:
-          <input
-                onChange={e => setUpdatedUser({...uUser, commonname: e.target.value})}
+              <input
+                onChange={e => setUpdatedUser({ ...uUser, commonname: e.target.value })}
                 value={uUser.commonname || ''}
               />
             </label>
           </div>
 
           <div>
-            <label> First name:
-          <input
-                onChange={e => setUpdatedUser({...uUser, firstname: e.target.value})}
+            <label>
+              {' '}
+              First name:
+              <input
+                onChange={e => setUpdatedUser({ ...uUser, firstname: e.target.value })}
                 value={uUser.firstname || ''}
               />
             </label>
           </div>
 
           <div>
-            <label>Last name:
-          <input
-                onChange={e => setUpdatedUser({...uUser, lastname: e.target.value})}
+            <label>
+              Last name:
+              <input
+                onChange={e => setUpdatedUser({ ...uUser, lastname: e.target.value })}
                 value={uUser.lastname || ''}
               />
             </label>
           </div>
-        </div >
+        </div>
 
         <FontAwesomeIcon
           size="2x"
           icon={faSave}
           onClick={() => {
-            dispatch(updateUser(uUser))
+            dispatch(updateUser(uUser));
           }}
         />
-      </div >
+      </div>
     );
   } else {
     return (
@@ -78,4 +80,3 @@ export default ({user}: UserProfileProps) => {
     );
   }
 };
-

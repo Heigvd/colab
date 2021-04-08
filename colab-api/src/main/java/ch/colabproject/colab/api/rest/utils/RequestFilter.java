@@ -29,12 +29,12 @@ import org.slf4j.LoggerFactory;
  */
 @Provider
 @Priority(2)
-public class LogRequestFilter implements ContainerRequestFilter, ContainerResponseFilter {
+public class RequestFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
     /**
      * Logger
      */
-    private static final Logger log = LoggerFactory.getLogger(LogRequestFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(RequestFilter.class);
 
     /**
      * Request related logic
@@ -52,6 +52,12 @@ public class LogRequestFilter implements ContainerRequestFilter, ContainerRespon
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         requestManager.setStartTime(System.currentTimeMillis());
+
+        // request base url starts with REST @ApplicationPath = "api", remove such suffix
+        requestManager.setBaseUrl(
+            requestContext.getUriInfo().getBaseUri().toString()
+                .replaceFirst("/api/$", "")
+        );
     }
 
     /**

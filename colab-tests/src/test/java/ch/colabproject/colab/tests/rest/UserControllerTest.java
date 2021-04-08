@@ -279,7 +279,7 @@ public class UserControllerTest extends AbstractArquillianTest {
     }
 
     /**
-     * Test verifiy account process
+     * Test verify account process.
      */
     @Test
     public void testVerify() {

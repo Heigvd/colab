@@ -22,16 +22,16 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @NamedQuery(
-    name = "VerifyLocalAccountToken.findByAccountId",
-    query = "SELECT t from VerifyLocalAccountToken t where t.localAccount.id =:id")
-public class VerifyLocalAccountToken extends Token {
+    name = "ResetLocalAccountPasswordToken.findByAccountId",
+    query = "SELECT t from ResetLocalAccountPasswordToken t where t.localAccount.id =:id")
+public class ResetLocalAccountPasswordToken extends Token {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Email subject
      */
-    public static final String EMAIL_SUBJECT = "Please validate your co.LAB account";
+    public static final String EMAIL_SUBJECT = "co.LAB account password reset request";
 
     /**
      * The local account the token shall validate
@@ -61,29 +61,31 @@ public class VerifyLocalAccountToken extends Token {
 
     @Override
     public String getRedirectTo() {
-        return "/";
+        if (localAccount != null) {
+            return "/settings/account/" + localAccount.getId();
+        } else {
+            return "";
+        }
     }
 
     /**
-     * Mark the localAccount as verified.
-     *
-     * @param reqMan the request manager
+     * auto-login
      */
     @Override
-    public void consume(RequestManager reqMan) {
-        this.localAccount.setVerified(Boolean.TRUE);
+    public void consume(RequestManager requestManager) {
+        requestManager.login(localAccount);
     }
 
     @Override
     public String getEmailBody(String link) {
         return MessageFormat.format("Hi {0},<br /><br />"
-            + "Please verify your email address: <a href=\"{1}\">verify</a><br /><br />",
+            + "Click <a href=\"{1}\">here</a> to reset your password.<br /><br />",
             localAccount.getUser().getDisplayName(), link);
     }
 
     @Override
     public String toString() {
-        return "VerifyLocalAccountToken{" + "id=" + getId()
-            + ", localAccount=" + localAccount + '}';
+        return "ResetLocalAccountPasswordToken{" + "id=" + getId() + ", localAccount="
+            + localAccount + '}';
     }
 }

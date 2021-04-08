@@ -16,6 +16,8 @@ import javax.validation.constraints.NotNull;
  */
 public class SignUpInfo implements WithJsonDiscriminator {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * user email
      */

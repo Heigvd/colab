@@ -12,9 +12,9 @@ import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import FormContainer from '../common/FormContainer';
 import InlineLoading from '../common/InlineLoading';
 import { signUp } from '../../API/api';
-import { changeAuthenticationStatus } from '../../store/auth';
 import { useAppDispatch } from '../../store/hooks';
 import { darkMode, buttonStyle } from '../styling/style';
+import { InlineLink } from '../common/Link';
 
 interface Props {
   redirectTo?: string;
@@ -101,12 +101,7 @@ export default (_props: Props) => {
               icon={faSignInAlt}
             />
           </span>
-          <span
-            className={buttonStyle}
-            onClick={() => dispatch(changeAuthenticationStatus('UNAUTHENTICATED'))}
-          >
-            cancel
-          </span>
+          <InlineLink to="/SignIn">cancel</InlineLink>
         </div>
       </div>
     </FormContainer>

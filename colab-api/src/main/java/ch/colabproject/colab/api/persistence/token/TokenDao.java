@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.persistence.token;
 
+import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.LocalAccount;
@@ -51,6 +52,24 @@ public class TokenDao {
         try {
             return em.createNamedQuery("VerifyLocalAccountToken.findByAccountId",
                 VerifyLocalAccountToken.class)
+                .setParameter("id", account.getId())
+                .getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+
+    /**
+     * Find any ResetLocalAccountPasswordToken linked to the given account.
+     *
+     * @param account owner of the token
+     *
+     * @return the token if found. Null otherwise
+     */
+    public ResetLocalAccountPasswordToken findResetTokenByAccount(LocalAccount account) {
+        try {
+            return em.createNamedQuery("ResetLocalAccountPasswordToken.findByAccountId",
+                ResetLocalAccountPasswordToken.class)
                 .setParameter("id", account.getId())
                 .getSingleResult();
         } catch (NoResultException ex) {

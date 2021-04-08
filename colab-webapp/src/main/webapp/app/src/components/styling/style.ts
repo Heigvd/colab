@@ -76,4 +76,3 @@ const icon = css({
 export const iconButton = cx(buttonStyle, icon);
 
 export const disabledIconStyle = icon;
-

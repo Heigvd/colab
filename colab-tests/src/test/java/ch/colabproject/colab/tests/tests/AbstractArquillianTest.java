@@ -69,7 +69,7 @@ public abstract class AbstractArquillianTest {
      * Regex which extract token id and plain Token from an email body. It search the values within
      * a href attribute
      */
-    protected static final Pattern TOKEN_EXTRACTOR = Pattern.compile(".*href=\".*#token/(\\d+):(.*)\".*");
+    protected static final Pattern TOKEN_EXTRACTOR = Pattern.compile(".*href=\".*#/token/(\\d+)/(.*)\".*");
 
     /**
      * Provide one-stop-shop reflections object

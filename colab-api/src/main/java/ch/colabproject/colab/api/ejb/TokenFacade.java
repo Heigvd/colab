@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.Helper;
+import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.HashMethod;
@@ -16,7 +17,8 @@ import ch.colabproject.colab.api.service.smtp.Message;
 import ch.colabproject.colab.api.service.smtp.Sendmail;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -35,7 +37,7 @@ import org.slf4j.LoggerFactory;
 public class TokenFacade {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(TokenFacade.class);
+    private static final Logger logger = LoggerFactory.getLogger(TokenDao.class);
     /**
      * User management provides defaultHashMethod. TODO: move such method to a SecurityHelper
      */
@@ -46,46 +48,12 @@ public class TokenFacade {
      */
     @Inject
     private TokenDao tokenDao;
-    /**
-     * Token logic
-     */
-    @Inject
-    private TokenFacade tokenFacade;
 
     /**
      * request context
      */
     @Inject
     private RequestManager requestManager;
-
-    /**
-     * Create or update a validation token.
-     * <p>
-     * If a validate token already exists for the given account, it will be update so there is never
-     * more than one validation token per localAccount.
-     *
-     * @param account token owner
-     *
-     * @return a brand new token or a refresh
-     */
-    public VerifyLocalAccountToken getOrCreateValidateAccountToken(LocalAccount account) {
-        VerifyLocalAccountToken token = tokenDao.findVerifyTokenByAccount(account);
-
-        if (token == null) {
-            token = new VerifyLocalAccountToken();
-            token.setAuthenticationRequired(false);
-            token.setLocalAccount(account);
-            // set something to respect notNull contraints
-            // otherwise persist will fail
-            // These values will be reset when the e-mail is sent.
-            token.setHashMethod(userManagement.getDefaultHashMethod());
-            token.setHashedToken(new byte[0]);
-            tokenDao.persistToken(token);
-        }
-        token.setExpirationDate(LocalDateTime.now().plus(1, ChronoUnit.WEEKS));
-
-        return token;
-    }
 
     /**
      * Finalize initialization of the token and send it to the recipient.
@@ -98,7 +66,7 @@ public class TokenFacade {
      * @throws javax.mail.MessagingException if sending the message fails
      */
     public void sendTokenByEmail(Token token, String recipient) throws MessagingException {
-
+        logger.debug("Send token {} to {}", token, recipient);
         String plainToken = Helper.generateHexSalt(64);
         HashMethod hashMethod = userManagement.getDefaultHashMethod();
         byte[] hashedToken = hashMethod.hash(plainToken, Token.SALT);
@@ -106,40 +74,29 @@ public class TokenFacade {
         token.setHashMethod(hashMethod);
         token.setHashedToken(hashedToken);
 
-        // todo generate URL
-        String body = token.getEmailBody("http://localhost:8080/#token/" + token.getId() + ":" + plainToken);
+        String baseUrl = requestManager.getBaseUrl();
 
+        // todo generate URL
+        String body = token.getEmailBody(baseUrl + "/#/token/" + token.getId()
+            + "/" + plainToken);
+
+        String footer = "";
+        if (token.getExpirationDate() != null) {
+            footer = "<br /><br /><i>This link can be used until "
+                + token.getExpirationDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)
+                + " GMT</i>";
+        }
+
+        // this log message contains sensitive information (body contains the plain-text token)
         logger.trace("Send token {} to {} with body {}", token, recipient, body);
         Sendmail.send(
             Message.create()
                 .from("noreply@" + ColabConfiguration.getSmtpDomain())
                 .to(recipient)
                 .subject(VerifyLocalAccountToken.EMAIL_SUBJECT)
-                .htmlBody(body)
+                .htmlBody(body + footer)
                 .build()
         );
-    }
-
-    /**
-     * Send a "Please verify your email address" message
-     *
-     * @param account      account to verify
-     * @param failsOnError if false, silent SMTP error
-     *
-     * @throws HttpErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
-     *                          messageError if the message contains errors (eg. malformed
-     *                          addresses)
-     */
-    public void requestEmailAddressVerification(LocalAccount account, boolean failsOnError) {
-        try {
-            VerifyLocalAccountToken token = tokenFacade.getOrCreateValidateAccountToken(account);
-            sendTokenByEmail(token, account.getEmail());
-        } catch (MessagingException ex) {
-            logger.error("Fails to send email address verification email", ex);
-            if (failsOnError) {
-                throw HttpErrorMessage.smtpError();
-            }
-        }
     }
 
     /**
@@ -155,21 +112,153 @@ public class TokenFacade {
      *                          current user id not
      */
     public Token consume(Long id, String plainToken) {
+        logger.debug("Consume token #{}", id);
         Token token = tokenDao.getToken(id);
         if (token != null) {
             if (token.isAuthenticationRequired() && !requestManager.isAuthenticated()) {
+                logger.debug("Token requires an authenticated user");
                 throw HttpErrorMessage.authenticationRequired();
             } else {
                 if (token.checkHash(plainToken)) {
-                    token.consume();
+                    token.consume(requestManager);
                     tokenDao.deleteToken(token);
                     return token;
                 } else {
+                    logger.debug("Provided plain-token does not match");
                     throw HttpErrorMessage.badRequest();
                 }
             }
         } else {
+            logger.debug("There is no token #{}", id);
             throw HttpErrorMessage.notFound();
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Verify email address
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Create or update a validation token.
+     * <p>
+     * If a validate token already exists for the given account, it will be update so there is never
+     * more than one validation token per localAccount.
+     *
+     * @param account token owner
+     *
+     * @return a brand new token or a refresh
+     */
+    public VerifyLocalAccountToken getOrCreateVerifyAccountToken(LocalAccount account) {
+        logger.debug("getOrCreate VerifyToken for {}", account);
+        VerifyLocalAccountToken token = tokenDao.findVerifyTokenByAccount(account);
+
+        if (token == null) {
+            logger.debug("no token, create one");
+            token = new VerifyLocalAccountToken();
+            token.setAuthenticationRequired(false);
+            token.setLocalAccount(account);
+            // set something to respect notNull contraints
+            // otherwise persist will fail
+            // These values will be reset when the e-mail is sent.
+            token.setHashMethod(userManagement.getDefaultHashMethod());
+            token.setHashedToken(new byte[0]);
+            tokenDao.persistToken(token);
+        }
+        token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.WEEKS));
+
+        return token;
+    }
+
+    /**
+     * Send a "Please verify your email address" message.
+     *
+     * @param account      account to verify
+     * @param failsOnError if false, silent SMTP error
+     *
+     * @throws HttpErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
+     *                          messageError if the message contains errors (eg. malformed
+     *                          addresses)
+     */
+    public void requestEmailAddressVerification(LocalAccount account, boolean failsOnError) {
+        try {
+            VerifyLocalAccountToken token = this.getOrCreateVerifyAccountToken(account);
+            sendTokenByEmail(token, account.getEmail());
+        } catch (MessagingException ex) {
+            logger.error("Fails to send email address verification email", ex);
+            if (failsOnError) {
+                throw HttpErrorMessage.smtpError();
+            }
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // RESET PASSWORD
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * get existing reset password token if it exists or create new one otherwise.
+     *
+     * @param account token owner
+     *
+     * @return the token to user
+     */
+    private ResetLocalAccountPasswordToken getOrCreateResetToken(LocalAccount account) {
+        logger.debug("getOrCreate Reset for {}", account);
+        ResetLocalAccountPasswordToken token = tokenDao.findResetTokenByAccount(account);
+
+        if (token == null) {
+            token = new ResetLocalAccountPasswordToken();
+            logger.debug("no token, create one");
+            token.setAuthenticationRequired(false);
+            token.setLocalAccount(account);
+            // set something to respect notNull contraints
+            // otherwise persist will fail
+            // These values will be reset when the e-mail is sent.
+            token.setHashMethod(userManagement.getDefaultHashMethod());
+            token.setHashedToken(new byte[0]);
+            tokenDao.persistToken(token);
+        }
+        token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.HOURS));
+
+        return token;
+    }
+
+    /**
+     * Send a "Click here the reset your password" message.
+     *
+     * @param account      The account whose password is to be reset
+     * @param failsOnError if false, silent SMTP error
+     *
+     * @throws HttpErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
+     *                          messageError if the message contains errors (eg. malformed
+     *                          addresses)
+     */
+    public void sendResetPasswordToken(LocalAccount account, boolean failsOnError) {
+        try {
+            logger.debug("Send reset password token to {}", account);
+            ResetLocalAccountPasswordToken token = this.getOrCreateResetToken(account);
+            sendTokenByEmail(token, account.getEmail());
+        } catch (MessagingException ex) {
+            logger.error("Failed to send pssword reset email", ex);
+            if (failsOnError) {
+                throw HttpErrorMessage.smtpError();
+            }
+        }
+    }
+
+    /**
+     * Fetch token with given id from DAO. If it's outdated, it will be destroyed and null will be
+     * returned
+     *
+     * @param id id of the token
+     *
+     * @return token if it exists and is not outdated, null otherwise
+     */
+    public Token getNotExpiredToken(Long id) {
+        Token token = tokenDao.getToken(id);
+        if (token != null && token.isOutdated()){
+            tokenDao.deleteToken(token);
+            return null;
+        } else {
+            return token;
         }
     }
 }
