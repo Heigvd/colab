@@ -255,9 +255,35 @@ import javax.validation.constraints.Pattern;
 <span class="fc" id="L255">        return EntityHelper.equals(this, obj);</span>
     }
 
+    /**
+     * get most preferred name to display.
+     *
+     * @return name to display
+     */
+    @JsonbTransient
+    public String getDisplayName() {
+<span class="pc bpc" id="L265" title="3 of 4 branches missed.">        if (this.commonname != null &amp;&amp; !this.commonname.isBlank()) {</span>
+<span class="nc" id="L266">            return this.commonname;</span>
+        } else {
+<span class="fc" id="L268">            StringBuilder sb = new StringBuilder();</span>
+
+<span class="pc bpc" id="L270" title="1 of 2 branches missed.">            if (this.firstname != null) {</span>
+<span class="nc" id="L271">                sb.append(this.firstname).append(&quot; &quot;);</span>
+            }
+<span class="pc bpc" id="L273" title="1 of 2 branches missed.">            if (this.firstname != null) {</span>
+<span class="nc" id="L274">                sb.append(this.firstname);</span>
+            }
+<span class="fc" id="L276">            String toString = sb.toString();</span>
+<span class="pc bpc" id="L277" title="1 of 2 branches missed.">            if (!toString.isBlank()) {</span>
+<span class="nc" id="L278">                return toString;</span>
+            }
+        }
+<span class="fc" id="L281">        return this.username;</span>
+    }
+
     @Override
     public String toString() {
-<span class="nc" id="L260">        return &quot;User{&quot; + &quot;id=&quot; + id + &quot;, isAdmin=&quot; + isAdmin + &quot;, username=&quot; + username + '}';</span>
+<span class="nc" id="L286">        return &quot;User{&quot; + &quot;id=&quot; + id + &quot;, isAdmin=&quot; + isAdmin + &quot;, username=&quot; + username + '}';</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

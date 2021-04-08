@@ -8,6 +8,9 @@ ch.colabproject.colab.api.model.token
 ch.colabproject.colab.api.model.tools
 ch.colabproject.colab.api.model.user
 ch.colabproject.colab.api.persistence.card
+ch.colabproject.colab.api.persistence.project
+ch.colabproject.colab.api.persistence.token
+ch.colabproject.colab.api.persistence.user
 ch.colabproject.colab.api.rest
 ch.colabproject.colab.api.rest.card
 ch.colabproject.colab.api.rest.config

@@ -80,15 +80,29 @@ import javax.persistence.ManyToOne;
     public void setUser(User user) {
 <span class="nc" id="L81">        this.user = user;</span>
 <span class="nc" id="L82">    }</span>
+
+    /**
+     * Return the id of the account owner
+     *
+     * @return id of the user
+     */
+    public Long getUserId() {
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (this.getUser() != null) {</span>
+<span class="nc" id="L91">            return getUser().getId();</span>
+        } else {
+<span class="nc" id="L93">            return null;</span>
+        }
+    }
+
     @Override
     public int hashCode() {
-<span class="nc" id="L85">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L99">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L91">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L105">        return EntityHelper.equals(this, obj);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest;
 
-import ch.colabproject.colab.api.ejb.TokenDao;
+import ch.colabproject.colab.api.ejb.TokenFacade;
 import ch.colabproject.colab.api.model.token.Token;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -16,6 +16,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import liquibase.pro.packaged.ch;
 
 /**
  * API to fetch an consume tokens sent by e-mail
@@ -25,13 +26,13 @@ import javax.ws.rs.core.MediaType;
 @Path(&quot;tokens&quot;)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-<span class="nc" id="L28">public class TokenController {</span>
+<span class="nc" id="L29">public class TokenController {</span>
 
     /**
-     * token data access
+     * token facade
      */
     @Inject
-    private TokenDao tokenDao;
+    private TokenFacade tokenFacade;
 
     /**
      * Fetch a token by id. Once fetched, the client should decide what to do. If the token does not
@@ -46,7 +47,7 @@ import javax.ws.rs.core.MediaType;
     @GET
     @Path(&quot;{id}&quot;)
     public Token getToken(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L49">        return tokenDao.getToken(id);</span>
+<span class="nc" id="L50">        return tokenFacade.getNotExpiredToken(id);</span>
     }
 
     /**
@@ -67,7 +68,7 @@ import javax.ws.rs.core.MediaType;
         @PathParam(&quot;id&quot;) Long id,
         @PathParam(&quot;token&quot;) String plainToken
     ) {
-<span class="nc" id="L70">        tokenDao.consume(id, plainToken);</span>
-<span class="nc" id="L71">    }</span>
+<span class="nc" id="L71">        tokenFacade.consume(id, plainToken);</span>
+<span class="nc" id="L72">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

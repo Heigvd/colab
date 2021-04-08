@@ -96,42 +96,43 @@ public class GeneratorPlugin extends AbstractMojo {
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-<span class="nc" id="L99">        Generator generator = new Generator(restPackages, packageName, clientName, getLog());</span>
+<span class="nc" id="L99">        Logger.initLogger(getLog());</span>
+<span class="nc" id="L100">        Generator generator = new Generator(restPackages, packageName, clientName);</span>
 
-<span class="nc" id="L101">        generator.processPackages();</span>
+<span class="nc" id="L102">        generator.processPackages();</span>
 
         // generate package in the output dir
-<span class="nc" id="L104">        generator.generateJavaClient(javaOutputDir, this.dryRun);</span>
+<span class="nc" id="L105">        generator.generateJavaClient(javaOutputDir, this.dryRun);</span>
 
-<span class="nc" id="L106">        generator.generateTypescriptClient(tsOutputDir, this.dryRun);</span>
+<span class="nc" id="L107">        generator.generateTypescriptClient(tsOutputDir, this.dryRun);</span>
 
-<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (!dryRun) {</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (!dryRun) {</span>
             // and add it to the current project to make sure the client
             // can be use during this very run
-<span class="nc" id="L111">            this.project.addCompileSourceRoot(javaOutputDir);</span>
+<span class="nc" id="L112">            this.project.addCompileSourceRoot(javaOutputDir);</span>
         }
 
         // @TODO generate typescript client
         //generator.generateTypescriptClient();
-<span class="nc" id="L116">    }</span>
+<span class="nc" id="L117">    }</span>
 
     /**
      * Simple app to test the generator.it will not generate any files but will print output
      *
-     * @param args unsed yet
+     * @param args unused yet
      *
      * @throws org.apache.maven.plugin.MojoExecutionException if ...
      * @throws org.apache.maven.plugin.MojoFailureException   if ...
      */
     public static void main(String... args) throws MojoExecutionException, MojoFailureException {
-<span class="nc" id="L127">        GeneratorPlugin generator = new GeneratorPlugin(true);</span>
-<span class="nc" id="L128">        generator.packageName = &quot;ch.colabproject.colab.generator&quot;;</span>
-<span class="nc" id="L129">        generator.clientName = &quot;TestClient&quot;;</span>
-<span class="nc" id="L130">        String[] p = {&quot;ch.colabproject.colab.api&quot;};</span>
+<span class="nc" id="L128">        GeneratorPlugin generator = new GeneratorPlugin(true);</span>
+<span class="nc" id="L129">        generator.packageName = &quot;ch.colabproject.colab.generator&quot;;</span>
+<span class="nc" id="L130">        generator.clientName = &quot;TestClient&quot;;</span>
+<span class="nc" id="L131">        String[] p = {&quot;ch.colabproject.colab.api&quot;};</span>
 
-<span class="nc" id="L132">        generator.restPackages = p;</span>
+<span class="nc" id="L133">        generator.restPackages = p;</span>
 
-<span class="nc" id="L134">        generator.execute();</span>
-<span class="nc" id="L135">    }</span>
+<span class="nc" id="L135">        generator.execute();</span>
+<span class="nc" id="L136">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

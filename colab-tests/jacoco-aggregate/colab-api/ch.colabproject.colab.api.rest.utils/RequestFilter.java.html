@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RequestFilter.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.utils</a> &gt; <span class="el_source">RequestFilter.java</span></div><h1>RequestFilter.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.utils;
+
+import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.model.user.User;
+import java.io.IOException;
+import javax.annotation.Priority;
+import javax.inject.Inject;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ContainerResponseContext;
+import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.ext.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Extract baseUrl and print log statement for all REST requests.
+ * &lt;p&gt;
+ * With a priority of 2, this filter is executed right after
+ * {@link ch.colabproject.colab.api.security.CookieFilter CookieFilter} one.
+ *
+ * @author maxence
+ */
+@Provider
+@Priority(2)
+<span class="fc" id="L32">public class RequestFilter implements ContainerRequestFilter, ContainerResponseFilter {</span>
+
+    /**
+     * Logger
+     */
+<span class="fc" id="L37">    private static final Logger log = LoggerFactory.getLogger(RequestFilter.class);</span>
+
+    /**
+     * Request related logic
+     */
+    @Inject
+    private RequestManager requestManager;
+
+    /**
+     * Intercept request and make sure a httpSession is bound to the request
+     *
+     * @param requestContext request context
+     *
+     * @throws IOException if an I/O exception occurs.
+     */
+    @Override
+    public void filter(ContainerRequestContext requestContext) throws IOException {
+<span class="fc" id="L54">        requestManager.setStartTime(System.currentTimeMillis());</span>
+
+        // request base url starts with REST @ApplicationPath = &quot;api&quot;, remove such suffix
+<span class="fc" id="L57">        requestManager.setBaseUrl(</span>
+<span class="fc" id="L58">            requestContext.getUriInfo().getBaseUri().toString()</span>
+<span class="fc" id="L59">                .replaceFirst(&quot;/api/$&quot;, &quot;&quot;)</span>
+        );
+<span class="fc" id="L61">    }</span>
+
+    /**
+     * Intercept response, save httpSession in sessions cache and make sure set-cookie header is set
+     *
+     * @param requestContext  the request context
+     * @param responseContext the response context
+     *
+     * @throws IOException if an I/O exception occurs.
+     */
+    @Override
+    public void filter(ContainerRequestContext requestContext,
+        ContainerResponseContext responseContext) throws IOException {
+<span class="fc" id="L74">        long startTime = requestManager.getStartTime();</span>
+<span class="fc" id="L75">        User user = requestManager.getCurrentUser();</span>
+
+<span class="fc" id="L77">        log.info(&quot;{} {} {} ({}) completed in {} ms&quot;,</span>
+<span class="fc" id="L78">            responseContext.getStatus(),</span>
+<span class="fc" id="L79">            requestContext.getRequest().getMethod(),</span>
+<span class="fc" id="L80">            requestContext.getUriInfo().getPath(),</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            user != null ? user.getUsername() : &quot;anonymous&quot;,</span>
+<span class="fc" id="L82">            System.currentTimeMillis() - startTime);</span>
+<span class="fc" id="L83">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

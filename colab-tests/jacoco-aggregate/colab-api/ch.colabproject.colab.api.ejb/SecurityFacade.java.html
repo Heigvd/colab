@@ -71,8 +71,8 @@ import javax.inject.Inject;
 <span class="pc bpc" id="L71" title="1 of 2 branches missed.">            if (currentUser == null) {</span>
 <span class="nc" id="L72">                throw HttpErrorMessage.authenticationRequired();</span>
             } else {
-<span class="pc bpc" id="L74" title="2 of 4 branches missed.">                if (!currentUser.isAdmin() &amp;&amp; !currentUser.equals(user)) {</span>
-<span class="nc" id="L75">                    throw HttpErrorMessage.forbidden();</span>
+<span class="fc bfc" id="L74" title="All 4 branches covered.">                if (!currentUser.isAdmin() &amp;&amp; !currentUser.equals(user)) {</span>
+<span class="fc" id="L75">                    throw HttpErrorMessage.forbidden();</span>
                 }
             }
         }

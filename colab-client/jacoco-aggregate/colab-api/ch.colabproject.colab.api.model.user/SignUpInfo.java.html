@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.model.user;
 
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -13,7 +14,9 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
-<span class="nc" id="L16">public class SignUpInfo {</span>
+<span class="nc" id="L17">public class SignUpInfo implements WithJsonDiscriminator {</span>
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * user email
@@ -49,7 +52,7 @@ import javax.validation.constraints.NotNull;
      * @return the email
      */
     public String getEmail() {
-<span class="nc" id="L52">        return email;</span>
+<span class="nc" id="L55">        return email;</span>
     }
 
     /**
@@ -58,14 +61,14 @@ import javax.validation.constraints.NotNull;
      * @param email email
      */
     public void setEmail(String email) {
-<span class="nc" id="L61">        this.email = email;</span>
-<span class="nc" id="L62">    }</span>
+<span class="nc" id="L64">        this.email = email;</span>
+<span class="nc" id="L65">    }</span>
 
     /**
      * @return username
      */
     public String getUsername() {
-<span class="nc" id="L68">        return username;</span>
+<span class="nc" id="L71">        return username;</span>
     }
 
     /**
@@ -74,14 +77,14 @@ import javax.validation.constraints.NotNull;
      * @param username username
      */
     public void setUsername(String username) {
-<span class="nc" id="L77">        this.username = username;</span>
-<span class="nc" id="L78">    }</span>
+<span class="nc" id="L80">        this.username = username;</span>
+<span class="nc" id="L81">    }</span>
 
     /**
      * @return hash method
      */
     public HashMethod getHashMethod() {
-<span class="nc" id="L84">        return hashMethod;</span>
+<span class="nc" id="L87">        return hashMethod;</span>
     }
 
     /**
@@ -90,15 +93,15 @@ import javax.validation.constraints.NotNull;
      * @param hashMethod hashMethod
      */
     public void setHashMethod(HashMethod hashMethod) {
-<span class="nc" id="L93">        this.hashMethod = hashMethod;</span>
-<span class="nc" id="L94">    }</span>
+<span class="nc" id="L96">        this.hashMethod = hashMethod;</span>
+<span class="nc" id="L97">    }</span>
 
     /**
      *
      * @return the salt the user use to salt its plain password
      */
     public String getSalt() {
-<span class="nc" id="L101">        return salt;</span>
+<span class="nc" id="L104">        return salt;</span>
     }
 
     /**
@@ -107,21 +110,21 @@ import javax.validation.constraints.NotNull;
      * @param salt the salt
      */
     public void setSalt(String salt) {
-<span class="nc" id="L110">        this.salt = salt;</span>
-<span class="nc" id="L111">    }</span>
+<span class="nc" id="L113">        this.salt = salt;</span>
+<span class="nc" id="L114">    }</span>
 
     /**
      * @return the hash
      */
     public String getHash() {
-<span class="nc" id="L117">        return hash;</span>
+<span class="nc" id="L120">        return hash;</span>
     }
 
     /**
      * @param hash the hash
      */
     public void setHash(String hash) {
-<span class="nc" id="L124">        this.hash = hash;</span>
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L127">        this.hash = hash;</span>
+<span class="nc" id="L128">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

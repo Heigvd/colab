@@ -97,41 +97,43 @@ public class RestClient {
      * @return instance of T or null
      */
     private &lt;T&gt; T readEntity(InputStream stream, GenericType&lt;T&gt; type) {
-<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (stream != null) {</span>
-            try {
+        try {
+<span class="nc bnc" id="L101" title="All 4 branches missed.">            if (stream != null &amp;&amp; stream.available() &gt; 0) {</span>
 <span class="nc" id="L102">                return jsonb.fromJson(stream, type.getType());</span>
-<span class="nc" id="L103">            } catch (JsonbException ex) {</span>
+            } else {
 <span class="nc" id="L104">                return null;</span>
             }
+<span class="nc" id="L106">        } catch (JsonbException | IOException ex) {</span>
+            // silent ex
+<span class="nc" id="L108">            return null;</span>
         }
-<span class="nc" id="L107">        return null;</span>
     }
 
     private &lt;T&gt; T processResponse(Response response, GenericType&lt;T&gt; type) {
-<span class="nc" id="L111">        Status.Family family = Status.Family.familyOf(response.getStatus());</span>
-<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (family == Status.Family.SUCCESSFUL) {</span>
-<span class="nc bnc" id="L113" title="All 2 branches missed.">            if (response.getLength() &gt; 0) {</span>
-<span class="nc" id="L114">                Object entity = response.getEntity();</span>
-<span class="nc bnc" id="L115" title="All 2 branches missed.">                if (entity instanceof InputStream) {</span>
-<span class="nc" id="L116">                    return readEntity((InputStream) entity, type);</span>
+<span class="nc" id="L113">        Status.Family family = Status.Family.familyOf(response.getStatus());</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (family == Status.Family.SUCCESSFUL) {</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">            if (response.getStatus() == 204) {</span>
+<span class="nc" id="L116">                return null;</span>
+            } else {
+<span class="nc" id="L118">                Object entity = response.getEntity();</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">                if (entity instanceof InputStream) {</span>
+<span class="nc" id="L120">                    return readEntity((InputStream) entity, type);</span>
                 } else {
-<span class="nc" id="L118">                    return null;</span>
+<span class="nc" id="L122">                    return null;</span>
                 }
-            } else {
-<span class="nc" id="L121">                return null;</span>
             }
-<span class="nc bnc" id="L123" title="All 2 branches missed.">        } else if (family == Status.Family.CLIENT_ERROR) {</span>
-<span class="nc" id="L124">            HttpException error = readEntity((InputStream) response.getEntity(),</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        } else if (family == Status.Family.CLIENT_ERROR) {</span>
+<span class="nc" id="L126">            HttpException error = readEntity((InputStream) response.getEntity(),</span>
                 new GenericType&lt;&gt;(HttpException.class));
-<span class="nc bnc" id="L126" title="All 2 branches missed.">            if (error != null) {</span>
-<span class="nc" id="L127">                throw error;</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">            if (error != null) {</span>
+<span class="nc" id="L129">                throw error;</span>
             } else {
-<span class="nc" id="L129">                throw new ClientException(Status.fromStatusCode(response.getStatus()));</span>
+<span class="nc" id="L131">                throw new ClientException(Status.fromStatusCode(response.getStatus()));</span>
             }
-<span class="nc bnc" id="L131" title="All 2 branches missed.">        } else if (family == Status.Family.SERVER_ERROR) {</span>
-<span class="nc" id="L132">            throw new ServerException(Status.fromStatusCode(response.getStatus()));</span>
-        } else {
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        } else if (family == Status.Family.SERVER_ERROR) {</span>
 <span class="nc" id="L134">            throw new ServerException(Status.fromStatusCode(response.getStatus()));</span>
+        } else {
+<span class="nc" id="L136">            throw new ServerException(Status.fromStatusCode(response.getStatus()));</span>
         }
     }
 
@@ -145,8 +147,8 @@ public class RestClient {
      * @return instance of T
      */
     public &lt;T&gt; T get(String path, GenericType&lt;T&gt; type) {
-<span class="nc" id="L148">        return processResponse(webTarget.path(path).request()</span>
-<span class="nc" id="L149">            .accept(MediaType.APPLICATION_JSON).get(),</span>
+<span class="nc" id="L150">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L151">            .accept(MediaType.APPLICATION_JSON).get(),</span>
             type);
     }
 
@@ -160,8 +162,8 @@ public class RestClient {
      * @return instance of T
      */
     public &lt;T&gt; T delete(String path, GenericType&lt;T&gt; type) {
-<span class="nc" id="L163">        return processResponse(webTarget.path(path).request()</span>
-<span class="nc" id="L164">            .accept(MediaType.APPLICATION_JSON).delete(),</span>
+<span class="nc" id="L165">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L166">            .accept(MediaType.APPLICATION_JSON).delete(),</span>
             type);
     }
 
@@ -176,9 +178,9 @@ public class RestClient {
      * @return instance of T
      */
     public &lt;T&gt; T post(String path, Object body, GenericType&lt;T&gt; type) {
-<span class="nc" id="L179">        return processResponse(webTarget.path(path).request()</span>
-<span class="nc" id="L180">            .accept(MediaType.APPLICATION_JSON)</span>
-<span class="nc" id="L181">            .post(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),</span>
+<span class="nc" id="L181">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L182">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L183">            .post(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),</span>
             type);
     }
 
@@ -192,7 +194,7 @@ public class RestClient {
      * @return instance of T
      */
     public &lt;T&gt; T post(String path, GenericType&lt;T&gt; type) {
-<span class="nc" id="L195">        return this.post(path, &quot;&quot;, type);</span>
+<span class="nc" id="L197">        return this.post(path, &quot;&quot;, type);</span>
     }
 
     /**
@@ -206,9 +208,9 @@ public class RestClient {
      * @return instance of T
      */
     public &lt;T&gt; T put(String path, Object body, GenericType&lt;T&gt; type) {
-<span class="nc" id="L209">        return processResponse(webTarget.path(path).request()</span>
-<span class="nc" id="L210">            .accept(MediaType.APPLICATION_JSON)</span>
-<span class="nc" id="L211">            .put(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),</span>
+<span class="nc" id="L211">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L212">            .accept(MediaType.APPLICATION_JSON)</span>
+<span class="nc" id="L213">            .put(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),</span>
             type);
     }
 
@@ -222,7 +224,7 @@ public class RestClient {
      * @return instance of T
      */
     public &lt;T&gt; T put(String path, GenericType&lt;T&gt; type) {
-<span class="nc" id="L225">        return this.put(path, &quot;&quot;, type);</span>
+<span class="nc" id="L227">        return this.put(path, &quot;&quot;, type);</span>
     }
 
     /**
@@ -246,10 +248,10 @@ public class RestClient {
          *
          * @param cookieName name of the cookie to manage
          */
-<span class="nc" id="L249">        public CookieFilter(String cookieName) {</span>
-<span class="nc" id="L250">            this.cookieName = cookieName;</span>
-<span class="nc" id="L251">            this.sessionId = null;</span>
-<span class="nc" id="L252">        }</span>
+<span class="nc" id="L251">        public CookieFilter(String cookieName) {</span>
+<span class="nc" id="L252">            this.cookieName = cookieName;</span>
+<span class="nc" id="L253">            this.sessionId = null;</span>
+<span class="nc" id="L254">        }</span>
 
         /**
          * If set, add Cookie header to the request.
@@ -258,13 +260,13 @@ public class RestClient {
          */
         @Override
         public void filter(ClientRequestContext requestContext) throws IOException {
-<span class="nc bnc" id="L261" title="All 2 branches missed.">            if (this.sessionId != null) {</span>
-<span class="nc" id="L262">                List&lt;Object&gt; cookies = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L263">                Cookie cookie = new Cookie(cookieName, sessionId);</span>
-<span class="nc" id="L264">                cookies.add(cookie);</span>
-<span class="nc" id="L265">                requestContext.getHeaders().put(&quot;Cookie&quot;, cookies);</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">            if (this.sessionId != null) {</span>
+<span class="nc" id="L264">                List&lt;Object&gt; cookies = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L265">                Cookie cookie = new Cookie(cookieName, sessionId);</span>
+<span class="nc" id="L266">                cookies.add(cookie);</span>
+<span class="nc" id="L267">                requestContext.getHeaders().put(&quot;Cookie&quot;, cookies);</span>
             }
-<span class="nc" id="L267">        }</span>
+<span class="nc" id="L269">        }</span>
 
         /**
          * On request response, fetch set-cookie value
@@ -274,11 +276,11 @@ public class RestClient {
         @Override
         public void filter(ClientRequestContext requestContext,
             ClientResponseContext responseContext) throws IOException {
-<span class="nc" id="L277">            NewCookie get = responseContext.getCookies().get(cookieName);</span>
-<span class="nc bnc" id="L278" title="All 2 branches missed.">            if (get != null) {</span>
-<span class="nc" id="L279">                this.sessionId = get.getValue();</span>
+<span class="nc" id="L279">            NewCookie get = responseContext.getCookies().get(cookieName);</span>
+<span class="nc bnc" id="L280" title="All 2 branches missed.">            if (get != null) {</span>
+<span class="nc" id="L281">                this.sessionId = get.getValue();</span>
             }
-<span class="nc" id="L281">        }</span>
+<span class="nc" id="L283">        }</span>
 
     }
 }
