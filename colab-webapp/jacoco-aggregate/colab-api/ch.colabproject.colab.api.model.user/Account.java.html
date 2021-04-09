@@ -9,12 +9,12 @@ package ch.colabproject.colab.api.model.user;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 /**
  * Accounts are used by users to authenticate.
@@ -36,24 +36,22 @@ import javax.persistence.ManyToOne;
     /**
      * An account belongs to an user
      */
-    @ManyToOne(
-        cascade = {
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST,
-            CascadeType.REFRESH
-        },
-        optional = false
-    )
+    @ManyToOne(optional = false)
     @JsonbTransient
     private User user;
+
+    /**
+     * serialization sugar
+     */
+    @Transient
+    private Long userId;
 
     /**
      * @return account id
      */
     @Override
     public Long getId() {
-<span class="nc" id="L56">        return id;</span>
+<span class="nc" id="L54">        return id;</span>
     }
 
     /**
@@ -62,14 +60,14 @@ import javax.persistence.ManyToOne;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L65">        this.id = id;</span>
-<span class="nc" id="L66">    }</span>
+<span class="nc" id="L63">        this.id = id;</span>
+<span class="nc" id="L64">    }</span>
 
     /**
      * @return the user
      */
     public User getUser() {
-<span class="nc" id="L72">        return user;</span>
+<span class="nc" id="L70">        return user;</span>
     }
 
     /**
@@ -78,8 +76,8 @@ import javax.persistence.ManyToOne;
      * @param user user who owns this account
      */
     public void setUser(User user) {
-<span class="nc" id="L81">        this.user = user;</span>
-<span class="nc" id="L82">    }</span>
+<span class="nc" id="L79">        this.user = user;</span>
+<span class="nc" id="L80">    }</span>
 
     /**
      * Return the id of the account owner
@@ -87,22 +85,31 @@ import javax.persistence.ManyToOne;
      * @return id of the user
      */
     public Long getUserId() {
-<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (this.getUser() != null) {</span>
-<span class="nc" id="L91">            return getUser().getId();</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (this.getUser() != null) {</span>
+<span class="nc" id="L89">            return getUser().getId();</span>
         } else {
-<span class="nc" id="L93">            return null;</span>
+<span class="nc" id="L91">            return userId;</span>
         }
     }
 
+    /**
+     * For serialization only
+     *
+     * @param id if of the user
+     */
+    public void setUserId(Long id) {
+<span class="nc" id="L101">        this.userId = id;</span>
+<span class="nc" id="L102">    }</span>
+
     @Override
     public int hashCode() {
-<span class="nc" id="L99">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L106">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L105">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L112">        return EntityHelper.equals(this, obj);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -6,8 +6,10 @@
  */
 package ch.colabproject.colab.api.rest;
 
+import ch.colabproject.colab.api.ejb.ProjectFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -32,13 +34,19 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="fc" id="L35">public class ProjectController {</span>
+<span class="fc" id="L37">public class ProjectController {</span>
 
     /**
      * The Project business logic
      */
     @Inject
-    private ProjectDao projectFacade;
+    private ProjectFacade projectFacade;
+
+    /**
+     * The Project DAO
+     */
+    @Inject
+    private ProjectDao projectDao;
 
     /**
      * Retrieve the list of all projects. This is available to admin only
@@ -48,11 +56,22 @@ import javax.ws.rs.core.MediaType;
     @GET
     @AdminResource
     public List&lt;Project&gt; getAllProjects() {
-<span class="fc" id="L51">        return projectFacade.getAllProject();</span>
+<span class="fc" id="L59">        return projectDao.getAllProject();</span>
     }
 
     /**
-     * Get project identified by the given id
+     * Get all projects the current user is member of
+     *
+     * @return list of projects
+     */
+    @GET
+    @Path(&quot;MyOwn&quot;)
+    public List&lt;Project&gt; getUserProjects() {
+<span class="nc" id="L70">        return projectDao.getCurrentUserProject();</span>
+    }
+
+    /**
+     * Get project identified by the given id.
      *
      * @param id id of the project to fetch
      *
@@ -61,11 +80,11 @@ import javax.ws.rs.core.MediaType;
     @GET
     @Path(&quot;/{id}&quot;)
     public Project getProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L64">        return projectFacade.getProject(id);</span>
+<span class="fc" id="L83">        return projectDao.getProject(id);</span>
     }
 
     /**
-     * Persist the project
+     * Create a new project and register current user as a member.
      *
      * @param project the project to persist
      *
@@ -73,11 +92,11 @@ import javax.ws.rs.core.MediaType;
      */
     @POST
     public Long createProject(Project project) {
-<span class="fc" id="L76">        return projectFacade.createProject(project).getId();</span>
+<span class="fc" id="L95">        return projectFacade.createNewProject(project).getId();</span>
     }
 
     /**
-     * Save changes to database
+     * Save changes to database.
      *
      * @param project project to update
      *
@@ -85,18 +104,44 @@ import javax.ws.rs.core.MediaType;
      */
     @PUT
     public void updateProject(Project project) throws ColabMergeException {
-<span class="fc" id="L88">        projectFacade.updateProject(project);</span>
-<span class="fc" id="L89">    }</span>
+<span class="fc" id="L107">        projectDao.updateProject(project);</span>
+<span class="fc" id="L108">    }</span>
 
     /**
-     * Permanently delete a project
+     * Permanently delete a project.
      *
      * @param id id of the project to delete
      */
     @DELETE
     @Path(&quot;/{id}&quot;)
     public void deleteProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L99">        projectFacade.deleteProject(id);</span>
-<span class="fc" id="L100">    }</span>
+<span class="fc" id="L118">        projectDao.deleteProject(id);</span>
+<span class="fc" id="L119">    }</span>
+
+    /**
+     * Get all members of the project teams.
+     *
+     * @param id id of the project
+     *
+     * @return list of members
+     */
+    @GET
+    @Path(&quot;{id}/Members&quot;)
+    public List&lt;TeamMember&gt; getMembers(@PathParam(&quot;id&quot;) Long id) {
+<span class="fc" id="L131">        return projectFacade.getTeamMembers(id);</span>
+    }
+
+    /**
+     * Send invitation to someone.
+     *
+     * @param projectId id of the project
+     * @param email     recipient address
+     */
+    @POST
+    @Path(&quot;Invite/{projectId: [0-9]}/{email}&quot;)
+    public void inviteSomeone(@PathParam(&quot;projectId&quot;) Long projectId,
+        @PathParam(&quot;email&quot;) String email) {
+<span class="fc" id="L144">        projectFacade.invite(projectId, email);</span>
+<span class="fc" id="L145">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

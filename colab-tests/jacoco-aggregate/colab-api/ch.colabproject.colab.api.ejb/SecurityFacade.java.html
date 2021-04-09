@@ -6,11 +6,15 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  * To check access rights.
@@ -19,7 +23,13 @@ import javax.inject.Inject;
  */
 @Stateless
 @LocalBean
-<span class="fc" id="L22">public class SecurityFacade {</span>
+<span class="fc" id="L26">public class SecurityFacade {</span>
+
+    /**
+     * Access to the persistence unit
+     */
+    @PersistenceContext(unitName = &quot;COLAB_PU&quot;)
+    private EntityManager em;
 
     /**
      * As check are done against current authenticated user, we need access to the requestManager:
@@ -33,10 +43,10 @@ import javax.inject.Inject;
      * @return true if the current authenticate is an admin, false otherwise
      */
     public boolean isAdmin() {
-<span class="nc bnc" id="L36" title="All 2 branches missed.">        if (requestManager.isAuthenticated()) {</span>
-<span class="nc" id="L37">            return requestManager.getCurrentUser().isAdmin();</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        if (requestManager.isAuthenticated()) {</span>
+<span class="nc" id="L47">            return requestManager.getCurrentUser().isAdmin();</span>
         }
-<span class="nc" id="L39">        return false;</span>
+<span class="nc" id="L49">        return false;</span>
     }
 
     /**
@@ -47,10 +57,10 @@ import javax.inject.Inject;
      * @return true if the current user equals given one
      */
     public boolean isUser(User user) {
-<span class="nc bnc" id="L50" title="All 4 branches missed.">        if (user != null &amp;&amp; requestManager.isAuthenticated()) {</span>
-<span class="nc" id="L51">            return user.equals(requestManager.getCurrentUser());</span>
+<span class="nc bnc" id="L60" title="All 4 branches missed.">        if (user != null &amp;&amp; requestManager.isAuthenticated()) {</span>
+<span class="nc" id="L61">            return user.equals(requestManager.getCurrentUser());</span>
         }
-<span class="nc" id="L53">        return false;</span>
+<span class="nc" id="L63">        return false;</span>
     }
 
     /**
@@ -64,18 +74,122 @@ import javax.inject.Inject;
      *
      */
     public void assertCanWrite(User user) {
-<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        if (user == null) {</span>
-<span class="nc" id="L68">            throw HttpErrorMessage.badRequest();</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L78">            throw HttpErrorMessage.badRequest();</span>
         } else {
-<span class="fc" id="L70">            User currentUser = requestManager.getCurrentUser();</span>
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">            if (currentUser == null) {</span>
-<span class="nc" id="L72">                throw HttpErrorMessage.authenticationRequired();</span>
+<span class="fc" id="L80">            User currentUser = requestManager.getCurrentUser();</span>
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">            if (currentUser == null) {</span>
+<span class="nc" id="L82">                throw HttpErrorMessage.authenticationRequired();</span>
             } else {
-<span class="fc bfc" id="L74" title="All 4 branches covered.">                if (!currentUser.isAdmin() &amp;&amp; !currentUser.equals(user)) {</span>
-<span class="fc" id="L75">                    throw HttpErrorMessage.forbidden();</span>
+<span class="fc bfc" id="L84" title="All 4 branches covered.">                if (!currentUser.isAdmin() &amp;&amp; !currentUser.equals(user)) {</span>
+<span class="fc" id="L85">                    throw HttpErrorMessage.forbidden();</span>
                 }
             }
         }
-<span class="fc" id="L79">    }</span>
+<span class="fc" id="L89">    }</span>
+
+    /**
+     * Assert the current user has read access to the given user
+     *
+     * @param user user the currentUser want to read
+     *
+     * @throws HttpErrorMessage bad request if user id null; authRequired if currentUser is not
+     *                          authenticated; forbidden if current user is authenticated but has
+     *                          not right to read given user
+     *
+     */
+    public void assertCanRead(User user) {
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L103">            throw HttpErrorMessage.badRequest();</span>
+        } else {
+<span class="nc" id="L105">            User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">            if (currentUser == null) {</span>
+<span class="nc" id="L107">                throw HttpErrorMessage.authenticationRequired();</span>
+            } else {
+
+<span class="nc bnc" id="L110" title="All 2 branches missed.">                if (this.areUserTeammate(currentUser, user)) {</span>
+<span class="nc" id="L111">                    throw HttpErrorMessage.forbidden();</span>
+                }
+            }
+        }
+<span class="nc" id="L115">    }</span>
+
+    /**
+     * Get the current user if it exists.
+     *
+     * @return the current user
+     *
+     * @throws HttpErrorMessage authRequired if currentUser is not authenticated
+     */
+    public User assertAndGetCurrentUser() {
+<span class="fc" id="L125">        User user = requestManager.getCurrentUser();</span>
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">        if (user != null) {</span>
+<span class="fc" id="L127">            return user;</span>
+        } else {
+<span class="nc" id="L129">            throw HttpErrorMessage.authenticationRequired();</span>
+        }
+    }
+
+    /**
+     * Check if the user is member of the team of the project.
+     *
+     * @param user    a user
+     * @param project a project
+     *
+     * @return true if the user is member of the project
+     */
+    public boolean isUserMemebrOfProject(User user, Project project) {
+<span class="pc bpc" id="L142" title="2 of 4 branches missed.">        if (user != null &amp;&amp; project != null) {</span>
+<span class="fc" id="L143">            return project.getTeamMembers().stream()</span>
+<span class="fc" id="L144">                .filter(member -&gt; user.equals(member.getUser()))</span>
+<span class="fc" id="L145">                .findFirst().isPresent();</span>
+        }
+<span class="nc" id="L147">        return false;</span>
+    }
+
+    /**
+     * Check is user have at least one common team
+     *
+     * @param a a user
+     * @param b other user
+     *
+     * @return true if both users are member of the same team
+     */
+    public boolean areUserTeammate(User a, User b) {
+<span class="nc" id="L159">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(&quot;TeamMember.areUserTeammate&quot;, Boolean.class);</span>
+<span class="nc" id="L160">        query.setParameter(&quot;aId&quot;, a.getId());</span>
+<span class="nc" id="L161">        query.setParameter(&quot;bId&quot;, b.getId());</span>
+
+        // if the query returns something, users are teammates
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        return !query.getResultList().isEmpty();</span>
+    }
+
+    /**
+     * Make sure the current user has right to edit the project
+     *
+     * @param project project to edit
+     *
+     * @throws HttpErrorMessage forbidden
+     */
+    public void assertProjectWriteRight(Project project) {
+<span class="fc" id="L175">        User currentUser = assertAndGetCurrentUser();</span>
+<span class="pc bpc" id="L176" title="2 of 4 branches missed.">        if (!currentUser.isAdmin() &amp;&amp; !this.isUserMemebrOfProject(currentUser, project)) {</span>
+<span class="nc" id="L177">            throw HttpErrorMessage.forbidden();</span>
+        }
+<span class="fc" id="L179">    }</span>
+
+    /**
+     * Make sure the current user has right to edit the project
+     *
+     * @param project project to edit
+     *
+     * @throws HttpErrorMessage forbidden
+     */
+    public void assertIsMember(Project project) {
+<span class="fc" id="L189">        User currentUser = assertAndGetCurrentUser();</span>
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">        if (!this.isUserMemebrOfProject(currentUser, project)) {</span>
+<span class="nc" id="L191">            throw HttpErrorMessage.forbidden();</span>
+        }
+<span class="fc" id="L193">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

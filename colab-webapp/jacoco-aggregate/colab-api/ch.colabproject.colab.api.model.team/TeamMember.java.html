@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TeamMember.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.team</a> &gt; <span class="el_source">TeamMember.java</span></div><h1>TeamMember.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.team;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.user.User;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
+
+/**
+ * A member is a {@link User user} which work on a {@link Project project}
+ *
+ * @author maxence
+ */
+@Entity
+@NamedQuery(
+    name = &quot;TeamMember.areUserTeammate&quot;,
+    query = &quot;SELECT true FROM TeamMember a &quot;
+    + &quot;JOIN TeamMember b ON a.project_id = b.project_id &quot;
+    + &quot;WHERE a.id = :aId AND b.id = :bId&quot;
+)
+<span class="nc" id="L34">public class TeamMember implements ColabEntity {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Member ID.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /**
+     * The user
+     */
+    @ManyToOne
+    @JsonbTransient
+    private User user;
+
+    /**
+     * serialization sugar
+     */
+    @Transient
+    private Long userId;
+
+    /**
+     * The project
+     */
+    @ManyToOne
+    @JsonbTransient
+    private Project project;
+
+    /**
+     * serialization sugar
+     */
+    @Transient
+    private Long projectId;
+
+    /**
+     * @return the ID
+     */
+    @Override
+    public Long getId() {
+<span class="nc" id="L76">        return id;</span>
+    }
+
+    /**
+     * Set id
+     *
+     * @param id id
+     */
+    public void setId(Long id) {
+<span class="nc" id="L85">        this.id = id;</span>
+<span class="nc" id="L86">    }</span>
+
+    /**
+     * Get the user
+     *
+     * @return the user
+     */
+    public User getUser() {
+<span class="nc" id="L94">        return user;</span>
+    }
+
+    /**
+     * set the user
+     *
+     * @param user user
+     */
+    public void setUser(User user) {
+<span class="nc" id="L103">        this.user = user;</span>
+<span class="nc" id="L104">    }</span>
+
+    /**
+     * get the user id. To be sent to client
+     *
+     * @return id of the user or null
+     */
+    public Long getUserId() {
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (this.user != null) {</span>
+<span class="nc" id="L113">            return this.user.getId();</span>
+        } else {
+<span class="nc" id="L115">            return userId;</span>
+        }
+    }
+
+    /**
+     * For serialization only
+     *
+     * @param id if of the user
+     */
+    public void setUserId(Long id) {
+<span class="nc" id="L125">        this.userId = id;</span>
+<span class="nc" id="L126">    }</span>
+
+    /**
+     * get project
+     *
+     * @return the project
+     */
+    public Project getProject() {
+<span class="nc" id="L134">        return project;</span>
+    }
+
+    /**
+     * get the project id. To be sent to client
+     *
+     * @return id of the project or null
+     */
+    public Long getProjectId() {
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L144">            return this.project.getId();</span>
+        } else {
+<span class="nc" id="L146">            return projectId;</span>
+        }
+    }
+
+    /**
+     * For serialization only
+     *
+     * @param id if of the project
+     */
+    public void setProjectId(Long id) {
+<span class="nc" id="L156">        this.projectId = id;</span>
+<span class="nc" id="L157">    }</span>
+
+    /**
+     * set project
+     *
+     * @param project the project
+     */
+    public void setProject(Project project) {
+<span class="nc" id="L165">        this.project = project;</span>
+<span class="nc" id="L166">    }</span>
+
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+        /* no-op */
+<span class="nc" id="L171">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

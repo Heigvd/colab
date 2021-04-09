@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api;
 
+import ch.colabproject.colab.api.model.user.HashMethod;
 import java.security.SecureRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,14 +21,14 @@ public class Helper {
     /**
      * pattern to check if a string looks like an email address
      */
-<span class="fc" id="L23">    private static final Pattern EMAIL_PATTERN = Pattern</span>
-<span class="fc" id="L24">        .compile(&quot;(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|\&quot;(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\&quot;)@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])&quot;);</span>
+<span class="fc" id="L24">    private static final Pattern EMAIL_PATTERN = Pattern</span>
+<span class="fc" id="L25">        .compile(&quot;(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|\&quot;(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\&quot;)@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])&quot;);</span>
 
     /**
      * never-called private constructor
      */
-<span class="nc" id="L29">    private Helper() {</span>
-<span class="nc" id="L30">        throw new UnsupportedOperationException(</span>
+<span class="nc" id="L30">    private Helper() {</span>
+<span class="nc" id="L31">        throw new UnsupportedOperationException(</span>
             &quot;This is a utility class and cannot be instantiated&quot;);
     }
 
@@ -39,15 +40,15 @@ public class Helper {
      * @return hex string representation of the byte array
      */
     public static String bytesToHex(byte[] hash) {
-<span class="fc" id="L42">        StringBuilder hexString = new StringBuilder(2 * hash.length);</span>
-<span class="fc bfc" id="L43" title="All 2 branches covered.">        for (int i = 0; i &lt; hash.length; i++) {</span>
-<span class="fc" id="L44">            String hex = Integer.toHexString(0xff &amp; hash[i]);</span>
-<span class="fc bfc" id="L45" title="All 2 branches covered.">            if (hex.length() == 1) {</span>
-<span class="fc" id="L46">                hexString.append('0');</span>
+<span class="fc" id="L43">        StringBuilder hexString = new StringBuilder(2 * hash.length);</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        for (int i = 0; i &lt; hash.length; i++) {</span>
+<span class="fc" id="L45">            String hex = Integer.toHexString(0xff &amp; hash[i]);</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            if (hex.length() == 1) {</span>
+<span class="fc" id="L47">                hexString.append('0');</span>
             }
-<span class="fc" id="L48">            hexString.append(hex);</span>
+<span class="fc" id="L49">            hexString.append(hex);</span>
         }
-<span class="fc" id="L50">        return hexString.toString();</span>
+<span class="fc" id="L51">        return hexString.toString();</span>
     }
 
     /**
@@ -58,17 +59,17 @@ public class Helper {
      * @return byte array
      */
     public static byte[] hextToBytes(String hex) {
-<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        if (hex != null) {</span>
-<span class="fc" id="L62">            byte[] bytes = new byte[hex.length() / 2];</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        if (hex != null) {</span>
+<span class="fc" id="L63">            byte[] bytes = new byte[hex.length() / 2];</span>
 
-<span class="fc" id="L64">            int j = 0;</span>
-<span class="fc bfc" id="L65" title="All 2 branches covered.">            for (int i = 0; i &lt; hex.length(); i += 2) {</span>
-<span class="fc" id="L66">                bytes[j] = (byte) Integer.parseInt(hex.substring(i, i + 2), 16);</span>
-<span class="fc" id="L67">                j++;</span>
+<span class="fc" id="L65">            int j = 0;</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            for (int i = 0; i &lt; hex.length(); i += 2) {</span>
+<span class="fc" id="L67">                bytes[j] = (byte) Integer.parseInt(hex.substring(i, i + 2), 16);</span>
+<span class="fc" id="L68">                j++;</span>
             }
-<span class="fc" id="L69">            return bytes;</span>
+<span class="fc" id="L70">            return bytes;</span>
         } else {
-<span class="nc" id="L71">            return new byte[0];</span>
+<span class="nc" id="L72">            return new byte[0];</span>
         }
     }
 
@@ -80,13 +81,13 @@ public class Helper {
      * @return the one string
      */
     public static String concat(String... args) {
-<span class="nc" id="L83">        StringBuilder sb = new StringBuilder();</span>
-<span class="nc bnc" id="L84" title="All 2 branches missed.">        for (String s : args) {</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (s != null) {</span>
-<span class="nc" id="L86">                sb.append(s);</span>
+<span class="nc" id="L84">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        for (String s : args) {</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">            if (s != null) {</span>
+<span class="nc" id="L87">                sb.append(s);</span>
             }
         }
-<span class="nc" id="L89">        return sb.toString();</span>
+<span class="nc" id="L90">        return sb.toString();</span>
     }
 
     /**
@@ -97,11 +98,11 @@ public class Helper {
      * @return true if address looks like an email address
      */
     public static boolean isEmailAddress(String address) {
-<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if (address != null) {</span>
-<span class="fc" id="L101">            Matcher matcher = EMAIL_PATTERN.matcher(address);</span>
-<span class="fc" id="L102">            return matcher.matches();</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">        if (address != null) {</span>
+<span class="fc" id="L102">            Matcher matcher = EMAIL_PATTERN.matcher(address);</span>
+<span class="fc" id="L103">            return matcher.matches();</span>
         } else {
-<span class="nc" id="L104">            return false;</span>
+<span class="nc" id="L105">            return false;</span>
         }
     }
 
@@ -113,10 +114,10 @@ public class Helper {
      * @return byte array of request length filled with secured-random data
      */
     public static byte[] generateSalt(int length) {
-<span class="fc" id="L116">        SecureRandom random = new SecureRandom();</span>
-<span class="fc" id="L117">        byte[] salt = new byte[length];</span>
-<span class="fc" id="L118">        random.nextBytes(salt);</span>
-<span class="fc" id="L119">        return salt;</span>
+<span class="fc" id="L117">        SecureRandom random = new SecureRandom();</span>
+<span class="fc" id="L118">        byte[] salt = new byte[length];</span>
+<span class="fc" id="L119">        random.nextBytes(salt);</span>
+<span class="fc" id="L120">        return salt;</span>
     }
 
     /**
@@ -127,7 +128,14 @@ public class Helper {
      * @return hex-encoded byte array
      */
     public static String generateHexSalt(int length) {
-<span class="fc" id="L130">        return Helper.bytesToHex(Helper.generateSalt(length));</span>
+<span class="fc" id="L131">        return Helper.bytesToHex(Helper.generateSalt(length));</span>
+    }
+
+    /**
+     * @return the hash method to use for new accounts
+     */
+    public static HashMethod getDefaultHashMethod() {
+<span class="fc" id="L138">        return HashMethod.PBKDF2WithHmacSHA512_65536_64;</span>
     }
 
     /**
@@ -135,14 +143,14 @@ public class Helper {
      *
      * @param camelCase eg myAsewomeIdentifier
      *
-     * @return  eg my_aswesome_identifier
+     * @return eg my_aswesome_identifier
      */
     public static String camelCaseToUnderscore(String camelCase) {
-<span class="fc" id="L141">        return camelCase</span>
-<span class="fc" id="L142">            .trim()</span>
+<span class="fc" id="L149">        return camelCase</span>
+<span class="fc" id="L150">            .trim()</span>
             // prefix all uppercase char preceded by something with an underscore
-<span class="fc" id="L144">            .replaceAll(&quot;(?&lt;!^)[A-Z](?!$)&quot;, &quot;_$0&quot;)</span>
-<span class="fc" id="L145">            .toLowerCase();</span>
+<span class="fc" id="L152">            .replaceAll(&quot;(?&lt;!^)[A-Z](?!$)&quot;, &quot;_$0&quot;)</span>
+<span class="fc" id="L153">            .toLowerCase();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -155,7 +155,7 @@ import javax.validation.constraints.NotNull;
     }
 
     /**
-     * Set the value of expirationDate
+     * Set the value of expirationDate. Null never expires.
      *
      * @param expirationDate new value of expirationDate
      */
@@ -194,6 +194,13 @@ import javax.validation.constraints.NotNull;
     public abstract String getEmailBody(String link);
 
     /**
+     * Get message subject
+     *
+     * @return the message subject
+     */
+    public abstract String getSubject();
+
+    /**
      * Check plain token against hashed persisted one
      *
      * @param plainToken the plain token to check
@@ -201,19 +208,19 @@ import javax.validation.constraints.NotNull;
      * @return true if there is a match
      */
     public boolean checkHash(String plainToken) {
-<span class="fc" id="L204">        byte[] submited = this.getHashMethod().hash(plainToken, SALT);</span>
-<span class="fc" id="L205">        return Arrays.equals(submited, this.getHashedToken());</span>
+<span class="fc" id="L211">        byte[] submited = this.getHashMethod().hash(plainToken, SALT);</span>
+<span class="fc" id="L212">        return Arrays.equals(submited, this.getHashedToken());</span>
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L210">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L217">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L216">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L223">        return EntityHelper.equals(this, obj);</span>
     }
 
     /**
@@ -223,10 +230,10 @@ import javax.validation.constraints.NotNull;
      */
     @JsonbTransient
     public boolean isOutdated() {
-<span class="pc bpc" id="L226" title="1 of 2 branches missed.">        if (this.expirationDate != null) {</span>
-<span class="fc" id="L227">            return this.expirationDate.isBefore(OffsetDateTime.now());</span>
+<span class="pc bpc" id="L233" title="1 of 2 branches missed.">        if (this.expirationDate != null) {</span>
+<span class="nc" id="L234">            return this.expirationDate.isBefore(OffsetDateTime.now());</span>
         }
-<span class="nc" id="L229">        return false;</span>
+<span class="fc" id="L236">        return false;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>InvitationToken.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.token</a> &gt; <span class="el_source">InvitationToken.java</span></div><h1>InvitationToken.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.token;
+
+import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.text.MessageFormat;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
+
+/**
+ * A token to validate the email address of a local account
+ *
+ * @author maxence
+ */
+@Entity
+
+@NamedQuery(
+    name = &quot;InvitationToken.findByProjectAndRecipient&quot;,
+    query = &quot;SELECT t from InvitationToken t WHERE t.teamMember.project.id = :projectId AND t.recipient =:recipient&quot;
+)
+<span class="nc" id="L32">public class InvitationToken extends Token {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Email subject
+     */
+    public static final String EMAIL_SUBJECT = &quot;Invitation to collaborate on a co.LAB project&quot;;
+
+    /**
+     * The member of the project
+     */
+    @NotNull
+    @OneToOne
+    @JsonbTransient
+    private TeamMember teamMember;
+
+    /**
+     * Invitation sender
+     */
+    private String sender;
+
+    /**
+     * email address to send the invitation to
+     */
+    private String recipient;
+
+    /**
+     * Get the teamMemebr for which the invitation is pending.
+     *
+     * @return team member
+     */
+    public TeamMember getTeamMember() {
+<span class="nc" id="L65">        return teamMember;</span>
+    }
+
+    /**
+     * set the team member this invitation is for
+     *
+     * @param teamMember the team member for which this invitation is pending
+     */
+    public void setTeamMember(TeamMember teamMember) {
+<span class="nc" id="L74">        this.teamMember = teamMember;</span>
+<span class="nc" id="L75">    }</span>
+
+    /**
+     * Get sender name
+     *
+     * @return name of sender
+     */
+    public String getSender() {
+<span class="nc" id="L83">        return sender;</span>
+    }
+
+    /**
+     * Set the sender name
+     *
+     * @param sender name of the sender
+     */
+    public void setSender(String sender) {
+<span class="nc" id="L92">        this.sender = sender;</span>
+<span class="nc" id="L93">    }</span>
+
+    /**
+     * Email address to send the invitation to
+     *
+     * @return email address
+     */
+    public String getRecipient() {
+<span class="nc" id="L101">        return recipient;</span>
+    }
+
+    /**
+     * Set the email address to send this invitation to
+     *
+     * @param recipient recipient email address
+     */
+    public void setRecipient(String recipient) {
+<span class="nc" id="L110">        this.recipient = recipient;</span>
+<span class="nc" id="L111">    }</span>
+
+    @Override
+    public String getRedirectTo() {
+<span class="nc" id="L115">        Project project = getProject();</span>
+<span class="nc bnc" id="L116" title="All 4 branches missed.">        if (project != null &amp;&amp; project.getId() != null) {</span>
+<span class="nc" id="L117">            return &quot;/project/&quot; + getId();</span>
+        }
+<span class="nc" id="L119">        return &quot;&quot;;</span>
+    }
+
+    /**
+     * Register currentUser in teamMember
+     */
+    @Override
+    public void consume(RequestManager requestManager) {
+<span class="nc" id="L127">        User user = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        if (user != null) {</span>
+<span class="nc" id="L129">            teamMember.setUser(user);</span>
+<span class="nc" id="L130">            user.getTeamMembers().add(teamMember);</span>
+        } else {
+<span class="nc" id="L132">            throw HttpErrorMessage.authenticationRequired();</span>
+        }
+<span class="nc" id="L134">    }</span>
+
+    /**
+     * If team member is set, return the associated project.
+     *
+     * @return the project
+     */
+    private Project getProject() {
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (teamMember != null) {</span>
+<span class="nc" id="L143">            return teamMember.getProject();</span>
+        }
+<span class="nc" id="L145">        return null;</span>
+    }
+
+    @Override
+    public String getSubject() {
+<span class="nc" id="L150">        return EMAIL_SUBJECT;</span>
+    }
+
+    @Override
+    public String getEmailBody(String link) {
+<span class="nc" id="L155">        Project project = getProject();</span>
+
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        String theProject = project != null</span>
+<span class="nc" id="L158">            ? &quot;the \&quot;&quot; + project.getName() + &quot;\&quot; project&quot;</span>
+<span class="nc" id="L159">            : &quot;a co.LAB project&quot;;</span>
+
+<span class="nc" id="L161">        return MessageFormat.format(&quot;Hi,&lt;br /&gt;&lt;br /&gt;&quot;</span>
+            + &quot;{0} invites you to collaborate on {1}.&lt;br /&gt;&lt;br /&gt;&quot;
+            + &quot;Click &lt;a href=\&quot;{2}\&quot;&gt;here&lt;/a&gt; to join the team.&lt;br /&gt;&lt;br /&gt;&quot;,
+<span class="nc bnc" id="L164" title="All 2 branches missed.">            sender != null ? sender : &quot;Someone&quot;, theProject, link);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L169">        return &quot;InvitationToken{&quot; + &quot;id=&quot; + getId() + &quot;, teamMember&quot;</span>
+            + teamMember + '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

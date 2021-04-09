@@ -6,6 +6,9 @@
  */
 package ch.colabproject.colab.api.persistence.token;
 
+import ch.colabproject.colab.api.Helper;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
@@ -22,7 +25,7 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 @LocalBean
-<span class="fc" id="L25">public class TokenDao {</span>
+<span class="fc" id="L28">public class TokenDao {</span>
 
     /**
      * Access to the persistence unit
@@ -38,7 +41,7 @@ import javax.persistence.PersistenceContext;
      * @return the token if found or null
      */
     public Token getToken(Long id) {
-<span class="fc" id="L41">        return em.find(Token.class, id);</span>
+<span class="fc" id="L44">        return em.find(Token.class, id);</span>
     }
 
     /**
@@ -50,12 +53,12 @@ import javax.persistence.PersistenceContext;
      */
     public VerifyLocalAccountToken findVerifyTokenByAccount(LocalAccount account) {
         try {
-<span class="pc" id="L53">            return em.createNamedQuery(&quot;VerifyLocalAccountToken.findByAccountId&quot;,</span>
+<span class="pc" id="L56">            return em.createNamedQuery(&quot;VerifyLocalAccountToken.findByAccountId&quot;,</span>
                 VerifyLocalAccountToken.class)
-<span class="fc" id="L55">                .setParameter(&quot;id&quot;, account.getId())</span>
-<span class="nc" id="L56">                .getSingleResult();</span>
-<span class="fc" id="L57">        } catch (NoResultException ex) {</span>
-<span class="fc" id="L58">            return null;</span>
+<span class="fc" id="L58">                .setParameter(&quot;id&quot;, account.getId())</span>
+<span class="nc" id="L59">                .getSingleResult();</span>
+<span class="fc" id="L60">        } catch (NoResultException ex) {</span>
+<span class="fc" id="L61">            return null;</span>
         }
     }
 
@@ -68,12 +71,32 @@ import javax.persistence.PersistenceContext;
      */
     public ResetLocalAccountPasswordToken findResetTokenByAccount(LocalAccount account) {
         try {
-<span class="nc" id="L71">            return em.createNamedQuery(&quot;ResetLocalAccountPasswordToken.findByAccountId&quot;,</span>
+<span class="nc" id="L74">            return em.createNamedQuery(&quot;ResetLocalAccountPasswordToken.findByAccountId&quot;,</span>
                 ResetLocalAccountPasswordToken.class)
-<span class="nc" id="L73">                .setParameter(&quot;id&quot;, account.getId())</span>
-<span class="nc" id="L74">                .getSingleResult();</span>
-<span class="nc" id="L75">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L76">            return null;</span>
+<span class="nc" id="L76">                .setParameter(&quot;id&quot;, account.getId())</span>
+<span class="nc" id="L77">                .getSingleResult();</span>
+<span class="nc" id="L78">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L79">            return null;</span>
+        }
+    }
+
+    /**
+     * Find if an pending invitation has already be sent to recipient to join the project
+     *
+     * @param project   the project
+     * @param recipient recipient
+     *
+     * @return invitation if there is a pending one, null otherwise
+     */
+    public InvitationToken findInvitationByProjectAndRecipient(Project project, String recipient) {
+        try {
+<span class="pc" id="L93">            return em.createNamedQuery(&quot;InvitationToken.findByProjectAndRecipient&quot;,</span>
+                InvitationToken.class)
+<span class="fc" id="L95">                .setParameter(&quot;projectId&quot;, project.getId())</span>
+<span class="fc" id="L96">                .setParameter(&quot;recipient&quot;, recipient)</span>
+<span class="nc" id="L97">                .getSingleResult();</span>
+<span class="fc" id="L98">        } catch (NoResultException ex) {</span>
+<span class="fc" id="L99">            return null;</span>
         }
     }
 
@@ -83,10 +106,20 @@ import javax.persistence.PersistenceContext;
      * @param token token to persist
      */
     public void persistToken(Token token) {
-<span class="fc" id="L86">        em.persist(token);</span>
+        // set something to respect notNull contraints
+        // otherwise persist will fail
+        // These values will be reset when the e-mail is sent.
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">        if (token.getHashMethod() == null) {</span>
+<span class="fc" id="L113">            token.setHashMethod(Helper.getDefaultHashMethod());</span>
+        }
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        if (token.getHashedToken() == null) {</span>
+<span class="fc" id="L116">            token.setHashedToken(new byte[0]);</span>
+        }
+
+<span class="fc" id="L119">        em.persist(token);</span>
         // flush to make sure token got an id
-<span class="fc" id="L88">        em.flush();</span>
-<span class="fc" id="L89">    }</span>
+<span class="fc" id="L121">        em.flush();</span>
+<span class="fc" id="L122">    }</span>
 
     /**
      * Delete the given token
@@ -94,7 +127,7 @@ import javax.persistence.PersistenceContext;
      * @param token token to remove
      */
     public void deleteToken(Token token) {
-<span class="fc" id="L97">        em.remove(token);</span>
-<span class="fc" id="L98">    }</span>
+<span class="fc" id="L130">        em.remove(token);</span>
+<span class="fc" id="L131">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

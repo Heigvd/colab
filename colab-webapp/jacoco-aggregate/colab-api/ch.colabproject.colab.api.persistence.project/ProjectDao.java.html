@@ -6,11 +6,14 @@
  */
 package ch.colabproject.colab.api.persistence.project;
 
+import ch.colabproject.colab.api.ejb.SecurityFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -22,7 +25,7 @@ import javax.persistence.TypedQuery;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L25">public class ProjectDao {</span>
+<span class="nc" id="L28">public class ProjectDao {</span>
 
     /**
      * Access to the persistence unit
@@ -31,13 +34,32 @@ import javax.persistence.TypedQuery;
     private EntityManager em;
 
     /**
+     * Access control
+     */
+    @Inject
+    private SecurityFacade securityFacade;
+
+    /**
      * Get the list of all project
      *
      * @return list of all projects
      */
     public List&lt;Project&gt; getAllProject() {
-<span class="nc" id="L39">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findAll&quot;, Project.class);</span>
-<span class="nc" id="L40">        return query.getResultList();</span>
+<span class="nc" id="L48">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findAll&quot;, Project.class);</span>
+<span class="nc" id="L49">        return query.getResultList();</span>
+    }
+
+    /**
+     * Get all projects the current user is member of
+     *
+     * @return list of project
+     */
+    public List&lt;Project&gt; getCurrentUserProject() {
+<span class="nc" id="L58">        User user = securityFacade.assertAndGetCurrentUser();</span>
+<span class="nc" id="L59">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findProjectByUser&quot;, Project.class);</span>
+<span class="nc" id="L60">        query.setParameter(&quot;userId&quot;, user.getId());</span>
+
+<span class="nc" id="L62">        return query.getResultList();</span>
     }
 
     /**
@@ -47,7 +69,7 @@ import javax.persistence.TypedQuery;
      * @return the project with the given id or null is such a project does not exists
      */
     public Project getProject(Long id) {
-<span class="nc" id="L50">        return em.find(Project.class, id);</span>
+<span class="nc" id="L72">        return em.find(Project.class, id);</span>
     }
 
     /**
@@ -60,11 +82,11 @@ import javax.persistence.TypedQuery;
      * @throws ColabMergeException if updating the project failed
      */
     public Project updateProject(Project project) throws ColabMergeException {
-<span class="nc" id="L63">        Project managedProject = this.getProject(project.getId());</span>
+<span class="nc" id="L85">        Project managedProject = this.getProject(project.getId());</span>
 
-<span class="nc" id="L65">        managedProject.merge(project);</span>
+<span class="nc" id="L87">        managedProject.merge(project);</span>
 
-<span class="nc" id="L67">        return managedProject;</span>
+<span class="nc" id="L89">        return managedProject;</span>
     }
 
     /**
@@ -75,8 +97,8 @@ import javax.persistence.TypedQuery;
      * @return the new persisted project
      */
     public Project createProject(Project project) {
-<span class="nc" id="L78">        em.persist(project);</span>
-<span class="nc" id="L79">        return project;</span>
+<span class="nc" id="L100">        em.persist(project);</span>
+<span class="nc" id="L101">        return project;</span>
     }
 
     /**
@@ -88,9 +110,9 @@ import javax.persistence.TypedQuery;
      */
     public Project deleteProject(Long id) {
         // TODO: move to recycle bin first
-<span class="nc" id="L91">        Project project = this.getProject(id);</span>
-<span class="nc" id="L92">        em.remove(project);</span>
-<span class="nc" id="L93">        return project;</span>
+<span class="nc" id="L113">        Project project = this.getProject(id);</span>
+<span class="nc" id="L114">        em.remove(project);</span>
+<span class="nc" id="L115">        return project;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -4,6 +4,7 @@ ch.colabproject.colab.api.exceptions
 ch.colabproject.colab.api.model
 ch.colabproject.colab.api.model.card
 ch.colabproject.colab.api.model.project
+ch.colabproject.colab.api.model.team
 ch.colabproject.colab.api.model.token
 ch.colabproject.colab.api.model.tools
 ch.colabproject.colab.api.model.user

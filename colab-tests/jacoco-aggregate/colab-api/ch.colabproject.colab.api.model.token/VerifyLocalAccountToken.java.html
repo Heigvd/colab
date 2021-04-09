@@ -75,15 +75,20 @@ import javax.validation.constraints.NotNull;
 <span class="fc" id="L75">    }</span>
 
     @Override
+    public String getSubject() {
+<span class="fc" id="L79">        return EMAIL_SUBJECT;</span>
+    }
+
+    @Override
     public String getEmailBody(String link) {
-<span class="fc" id="L79">        return MessageFormat.format(&quot;Hi {0},&lt;br /&gt;&lt;br /&gt;&quot;</span>
+<span class="fc" id="L84">        return MessageFormat.format(&quot;Hi {0},&lt;br /&gt;&lt;br /&gt;&quot;</span>
             + &quot;Please verify your email address: &lt;a href=\&quot;{1}\&quot;&gt;verify&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;&quot;,
-<span class="fc" id="L81">            localAccount.getUser().getDisplayName(), link);</span>
+<span class="fc" id="L86">            localAccount.getUser().getDisplayName(), link);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L86">        return &quot;VerifyLocalAccountToken{&quot; + &quot;id=&quot; + getId()</span>
+<span class="nc" id="L91">        return &quot;VerifyLocalAccountToken{&quot; + &quot;id=&quot; + getId()</span>
             + &quot;, localAccount=&quot; + localAccount + '}';
     }
 }
