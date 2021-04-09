@@ -85,7 +85,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Arquilian Framework -->
+        <!-- Arquillian Framework -->
         <dependency>
             <groupId>org.jboss.arquillian.junit5</groupId>
             <artifactId>arquillian-junit5-container</artifactId>

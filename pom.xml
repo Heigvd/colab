@@ -92,12 +92,14 @@
                 <version>0.9.11</version>
                 <type>jar</type>
             </dependency>
+            <!-- Logging API -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>1.7.30</version>
                 <type>jar</type>
             </dependency>
+            <!-- Logging framework implementing SLF4j API -->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
@@ -111,12 +113,14 @@
                 <artifactId>liquibase-cdi</artifactId>
                 <version>4.2.0</version>
             </dependency> -->
+            <!-- Tool for managing and executing database changes -->
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
                 <version>4.2.0</version>
             </dependency>
 
+            <!-- PostgreSQL JDBC Driver Postgresq -->
             <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
@@ -170,7 +174,7 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- Arquilian Framework -->
+            <!-- Arquillian Framework -->
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
@@ -408,16 +412,19 @@
                     <artifactId>maven-surefire-report-plugin</artifactId>
                     <version>3.0.0-M5</version>
                 </plugin>
+                <!-- generates standard reports for the specified project -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>3.1.1</version>
                 </plugin>
+                <!-- generates a site for the current project -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>3.9.1</version>
                 </plugin>
+                <!-- java code coverage check and reporting -->
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
@@ -552,11 +559,13 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- generates standard reports for the specified project -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
             </plugin>
             <!-- Site  -->
+            <!-- generates a site for the current project -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
@@ -626,6 +635,7 @@
 
     <reporting>
         <plugins>
+            <!-- generates standard reports for the specified project -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -650,6 +660,7 @@
                     </reportSet>
                 </reportSets>
             </plugin>
+            <!-- generates a site for the current project -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
@@ -705,6 +716,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
             </plugin>
+            <!-- java code coverage check and reporting -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>

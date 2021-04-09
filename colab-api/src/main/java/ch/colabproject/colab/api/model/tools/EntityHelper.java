@@ -55,7 +55,7 @@ public class EntityHelper {
             return true;
         }
         if (a == null || b == null) {
-            // onely one is null
+            // only one is null
             return false;
         }
 
