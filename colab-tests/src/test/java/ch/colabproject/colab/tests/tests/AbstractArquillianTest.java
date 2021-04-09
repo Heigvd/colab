@@ -19,6 +19,8 @@ import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.rest.config.JsonbProvider;
 import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
+import ch.colabproject.colab.tests.mailhog.model.Address;
+import ch.colabproject.colab.tests.mailhog.model.Message;
 import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -301,6 +304,24 @@ public abstract class AbstractArquillianTest {
                 }
             }
         });
+    }
+
+    /**
+     * Get all mailhog messages sent to given recipient:
+     *
+     * @param recipient to addres
+     *
+     * @return list of message received by the recipient
+     */
+    protected List<Message> getMessageByRecipient(String recipient) {
+        if (recipient != null) {
+            return mailClient.getMessages().stream().filter(message -> {
+                return message.getRaw().getTo().stream()
+                    .anyMatch(to -> recipient.equals(to));
+            }).collect(Collectors.toList());
+        } else {
+            return List.of();
+        }
     }
 
     /**

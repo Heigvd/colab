@@ -8,12 +8,17 @@ package ch.colabproject.colab.api.model.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 /**
  * A project as persisted in database
@@ -22,6 +27,7 @@ import javax.persistence.NamedQuery;
  */
 @Entity
 @NamedQuery(name = "Project.findAll", query = "SELECT p from Project p")
+@NamedQuery(name = "Project.findProjectByUser", query = "SELECT p from Project p JOIN p.teamMembers members WHERE  members.user.id = :userId")
 public class Project implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
@@ -39,6 +45,12 @@ public class Project implements ColabEntity {
     private String name;
 
     /**
+     * List of team members.
+     */
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.ALL})
+    private List<TeamMember> teamMembers = new ArrayList<>();
+
+    /**
      * @return the project ID
      */
     @Override
@@ -53,6 +65,24 @@ public class Project implements ColabEntity {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * get team members
+     *
+     * @return members
+     */
+    public List<TeamMember> getTeamMembers() {
+        return teamMembers;
+    }
+
+    /**
+     * Set team members
+     *
+     * @param teamMembers list of members
+     */
+    public void setTeamMembers(List<TeamMember> teamMembers) {
+        this.teamMembers = teamMembers;
     }
 
     /**

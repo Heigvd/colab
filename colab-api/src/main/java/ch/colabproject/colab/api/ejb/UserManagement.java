@@ -75,10 +75,16 @@ public class UserManagement {
     private EntityManager em;
 
     /**
-     * @return the hash method to use for new accounts
+     * Find a user by id
+     *
+     * @param id id of the user
+     *
+     * @return the user or null if user not exist or current user has not right to read the user
      */
-    public HashMethod getDefaultHashMethod() {
-        return HashMethod.PBKDF2WithHmacSHA512_65536_64;
+    public User getUserById(Long id) {
+        User user = userDao.findUser(id);
+        securityFacade.assertCanRead(user);
+        return user;
     }
 
     /**
@@ -121,7 +127,7 @@ public class UserManagement {
      * @return a hash method and its parameters
      */
     public AuthMethod getDefaultRandomAuthenticationMethod() {
-        return new AuthMethod(this.getDefaultHashMethod(), Helper
+        return new AuthMethod(Helper.getDefaultHashMethod(), Helper
             .generateHexSalt(SALT_LENGTH), null, null);
     }
 
@@ -179,7 +185,7 @@ public class UserManagement {
                 account.setEmail(signup.getEmail());
                 account.setVerified(false);
 
-                account.setCurrentDbHashMethod(getDefaultHashMethod());
+                account.setCurrentDbHashMethod(Helper.getDefaultHashMethod());
                 this.shadowHash(account, signup.getHash());
 
                 user = new User();

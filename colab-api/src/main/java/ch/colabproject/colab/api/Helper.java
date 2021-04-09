@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api;
 
+import ch.colabproject.colab.api.model.user.HashMethod;
 import java.security.SecureRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -131,11 +132,18 @@ public class Helper {
     }
 
     /**
+     * @return the hash method to use for new accounts
+     */
+    public static HashMethod getDefaultHashMethod() {
+        return HashMethod.PBKDF2WithHmacSHA512_65536_64;
+    }
+
+    /**
      * Convert camel-case string to userscrore-separated-lower-case-string
      *
      * @param camelCase eg myAsewomeIdentifier
      *
-     * @return  eg my_aswesome_identifier
+     * @return eg my_aswesome_identifier
      */
     public static String camelCaseToUnderscore(String camelCase) {
         return camelCase

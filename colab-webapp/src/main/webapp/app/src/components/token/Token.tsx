@@ -7,9 +7,9 @@
 
 import * as React from 'react';
 import Loading from '../common/Loading';
-import { getRestClient, reloadCurrentUser } from '../../API/api';
-import { useAppDispatch, useCurrentUser } from '../../store/hooks';
-import { Redirect } from 'react-router-dom';
+import {getRestClient, reloadCurrentUser} from '../../API/api';
+import {useAppDispatch, useCurrentUser} from '../../store/hooks';
+import {Redirect} from 'react-router-dom';
 
 interface TokenProps {
   tokenId: string;
@@ -38,13 +38,17 @@ export default (props: TokenProps) => {
         const token = await getRestClient().TokenController.getToken(+props.tokenId);
         if (token != null) {
           setRedirectTo(token.redirectTo || '');
-          try {
-            await getRestClient().TokenController.consumeToken(+props.tokenId, props.token);
-            // some token may change authentication status: force to reload current user/account
-            dispatch(reloadCurrentUser());
-            setState('DONE');
-          } catch (e) {
-            setState('ERROR');
+          if (user === null && token.authenticationRequired) {
+            setState('AUTH_REQUIRED');
+          } else {
+            try {
+              await getRestClient().TokenController.consumeToken(+props.tokenId, props.token);
+              // some token may change authentication status: force to reload current user/account
+              dispatch(reloadCurrentUser());
+              setState('DONE');
+            } catch (e) {
+              setState('ERROR');
+            }
           }
         } else {
           // token not found

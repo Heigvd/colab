@@ -6,6 +6,9 @@
  */
 package ch.colabproject.colab.api.persistence.token;
 
+import ch.colabproject.colab.api.Helper;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
@@ -78,11 +81,41 @@ public class TokenDao {
     }
 
     /**
+     * Find if an pending invitation has already be sent to recipient to join the project
+     *
+     * @param project   the project
+     * @param recipient recipient
+     *
+     * @return invitation if there is a pending one, null otherwise
+     */
+    public InvitationToken findInvitationByProjectAndRecipient(Project project, String recipient) {
+        try {
+            return em.createNamedQuery("InvitationToken.findByProjectAndRecipient",
+                InvitationToken.class)
+                .setParameter("projectId", project.getId())
+                .setParameter("recipient", recipient)
+                .getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+
+    /**
      * Persist the token
      *
      * @param token token to persist
      */
     public void persistToken(Token token) {
+        // set something to respect notNull contraints
+        // otherwise persist will fail
+        // These values will be reset when the e-mail is sent.
+        if (token.getHashMethod() == null) {
+            token.setHashMethod(Helper.getDefaultHashMethod());
+        }
+        if (token.getHashedToken() == null) {
+            token.setHashedToken(new byte[0]);
+        }
+
         em.persist(token);
         // flush to make sure token got an id
         em.flush();

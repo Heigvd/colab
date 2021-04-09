@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.user;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,9 +58,16 @@ public class User implements ColabEntity {
     /**
      * List of accounts the user can authenticate with
      */
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JsonbTransient
     private List<Account> accounts = new ArrayList<>();
+
+    /**
+     * List of teams the user is part of
+     */
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JsonbTransient
+    private List<TeamMember> teamMembers = new ArrayList<>();
 
     /**
      * last activity date
@@ -113,6 +121,24 @@ public class User implements ColabEntity {
      */
     public String getFirstname() {
         return firstname;
+    }
+
+    /**
+     * get team members
+     *
+     * @return members
+     */
+    public List<TeamMember> getTeamMembers() {
+        return teamMembers;
+    }
+
+    /**
+     * Set team members
+     *
+     * @param teamMembers list of members
+     */
+    public void setTeamMembers(List<TeamMember> teamMembers) {
+        this.teamMembers = teamMembers;
     }
 
     /**

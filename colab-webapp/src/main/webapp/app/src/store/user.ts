@@ -4,13 +4,14 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice } from '@reduxjs/toolkit';
-import { Account, User } from 'colab-rest-client';
+import {createSlice} from '@reduxjs/toolkit';
+import {Account, User} from 'colab-rest-client';
 import * as API from '../API/api';
 
 export interface UserState {
   users: {
-    [id: number]: User;
+    // null user means loading
+    [id: number]: User | null;
   };
   accounts: {
     [id: number]: Account;
@@ -37,13 +38,13 @@ const userSlice = createSlice({
           state.users[user.id] = user;
         }
         if (accounts != null) {
-          const map: { [id: number]: Account } = {};
+          const map: {[id: number]: Account} = {};
           accounts.forEach(a => {
             if (a && a.id) {
               map[a.id] = a;
             }
           });
-          state.accounts = { ...state.accounts, ...map };
+          state.accounts = {...state.accounts, ...map};
         }
         if (account && account.id != null) {
           state.accounts[account.id] = account;
@@ -54,7 +55,19 @@ const userSlice = createSlice({
         if (user.id != null) {
           state.users[user.id] = user;
         }
-      }),
+      })
+      .addCase(API.getUser.pending, (state, action) => {
+        const userId = action.meta.arg;
+        if (userId != null) {
+          state.users[userId] = null
+        }
+      })
+      .addCase(API.getUser.fulfilled, (state, action) => {
+        const userId = action.payload.id;
+        if (userId != null) {
+          state.users[userId] = action.payload;
+        }
+      })
 });
 
 export const {} = userSlice.actions;

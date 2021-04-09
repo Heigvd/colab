@@ -155,7 +155,7 @@ public abstract class Token implements ColabEntity {
     }
 
     /**
-     * Set the value of expirationDate
+     * Set the value of expirationDate. Null never expires.
      *
      * @param expirationDate new value of expirationDate
      */
@@ -192,6 +192,13 @@ public abstract class Token implements ColabEntity {
      * @return email body html text
      */
     public abstract String getEmailBody(String link);
+
+    /**
+     * Get message subject
+     *
+     * @return the message subject
+     */
+    public abstract String getSubject();
 
     /**
      * Check plain token against hashed persisted one

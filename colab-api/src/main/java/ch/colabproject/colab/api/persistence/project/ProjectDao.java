@@ -6,11 +6,14 @@
  */
 package ch.colabproject.colab.api.persistence.project;
 
+import ch.colabproject.colab.api.ejb.SecurityFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -31,12 +34,31 @@ public class ProjectDao {
     private EntityManager em;
 
     /**
+     * Access control
+     */
+    @Inject
+    private SecurityFacade securityFacade;
+
+    /**
      * Get the list of all project
      *
      * @return list of all projects
      */
     public List<Project> getAllProject() {
         TypedQuery<Project> query = em.createNamedQuery("Project.findAll", Project.class);
+        return query.getResultList();
+    }
+
+    /**
+     * Get all projects the current user is member of
+     *
+     * @return list of project
+     */
+    public List<Project> getCurrentUserProject() {
+        User user = securityFacade.assertAndGetCurrentUser();
+        TypedQuery<Project> query = em.createNamedQuery("Project.findProjectByUser", Project.class);
+        query.setParameter("userId", user.getId());
+
         return query.getResultList();
     }
 

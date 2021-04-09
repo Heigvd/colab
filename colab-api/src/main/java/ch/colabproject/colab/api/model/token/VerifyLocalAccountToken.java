@@ -75,6 +75,11 @@ public class VerifyLocalAccountToken extends Token {
     }
 
     @Override
+    public String getSubject() {
+        return EMAIL_SUBJECT;
+    }
+
+    @Override
     public String getEmailBody(String link) {
         return MessageFormat.format("Hi {0},<br /><br />"
             + "Please verify your email address: <a href=\"{1}\">verify</a><br /><br />",

@@ -8,22 +8,23 @@
 import * as React from 'react';
 import * as API from '../../API/api';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Project } from 'colab-rest-client';
-import { css } from '@emotion/css';
-import { iconButton, buttonStyle } from '../styling/style';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faPlus, faUsers} from '@fortawesome/free-solid-svg-icons';
+import {Project} from 'colab-rest-client';
+import {css} from '@emotion/css';
+import {iconButton, buttonStyle} from '../styling/style';
+import {useAppDispatch, useAppSelector} from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
-import { AutoSaveTextEditor } from '../common/AutoSaveTextEditor';
-import { Destroyer } from '../common/Destroyer';
+import {AutoSaveTextEditor} from '../common/AutoSaveTextEditor';
+import {Destroyer} from '../common/Destroyer';
+import {InlineLink} from '../common/Link';
 
 interface Props {
   project: Project;
 }
 
 // Display one project and allow to edit its name
-const ProjectDisplay = ({ project }: Props) => {
+const ProjectDisplay = ({project}: Props) => {
   const dispatch = useAppDispatch();
   return (
     <div
@@ -50,8 +51,11 @@ const ProjectDisplay = ({ project }: Props) => {
       >
         <AutoSaveTextEditor
           value={project.name || ''}
-          onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+          onChange={newValue => dispatch(API.updateProject({...project, name: newValue}))}
         />
+        <InlineLink to={`/team/${project.id}`}>
+          <FontAwesomeIcon icon={faUsers} />
+        </InlineLink>
         <Destroyer
           onDelete={() => {
             dispatch(API.deleteProject(project));
@@ -67,7 +71,7 @@ export function ProjectList() {
   const projects = useAppSelector(state => Object.values(state.projects.projects));
   const dispatch = useAppDispatch();
 
-  if (status === 'UNSET') {
+  if (status === 'NOT_SET') {
     dispatch(API.initProjects());
     return <InlineLoading />;
   } else if (status === 'LOADING') {

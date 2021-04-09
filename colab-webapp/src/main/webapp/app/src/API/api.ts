@@ -15,11 +15,11 @@ import {
   User,
 } from 'colab-rest-client';
 
-import { getStore } from '../store/store';
+import {getStore} from '../store/store';
 
-import { addError } from '../store/error';
-import { hashPassword } from '../SecurityHelper';
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import {addError} from '../store/error';
+import {hashPassword} from '../SecurityHelper';
+import {createAsyncThunk} from '@reduxjs/toolkit';
 
 const restClient = ColabClient('', error => {
   if (entityIs(error, 'HttpException') || error instanceof Error) {
@@ -49,7 +49,7 @@ export const getRestClient = () => restClient;
 
 export const requestPasswordReset = createAsyncThunk(
   'auth/restPassword',
-  async (a: { email: string }) => {
+  async (a: {email: string}) => {
     await restClient.UserController.requestPasswordReset(a.email);
   },
 );
@@ -79,7 +79,7 @@ export const signInWithLocalAccount = createAsyncThunk(
 
 export const updateLocalAccountPassword = createAsyncThunk(
   'user/updatePassword',
-  async (a: { email: string; password: string }) => {
+  async (a: {email: string; password: string}) => {
     // first, fetch the authenatication method fot the account
     const authMethod = await restClient.UserController.getAuthMethod(a.email);
 
@@ -123,7 +123,7 @@ export const signUp = createAsyncThunk(
     await restClient.UserController.signUp(signUpInfo);
 
     // go back to login page
-    thunkApi.dispatch(signInWithLocalAccount({ identifier: a.email, password: a.password }));
+    thunkApi.dispatch(signInWithLocalAccount({identifier: a.email, password: a.password}));
   },
 );
 
@@ -136,7 +136,7 @@ export const reloadCurrentUser = createAsyncThunk('auth/reload', async () => {
 
   const allAccounts = await restClient.UserController.getAllCurrentUserAccounts();
 
-  return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
+  return {currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts};
 });
 
 export const updateUser = createAsyncThunk('user/update', async (user: User) => {
@@ -144,12 +144,18 @@ export const updateUser = createAsyncThunk('user/update', async (user: User) => 
   return user;
 });
 
+export const getUser = createAsyncThunk('user/get', async (id: number) => {
+  return await restClient.UserController.getUserById(id);
+});
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Projects
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const initProjects = createAsyncThunk('project/init', async () => {
-  return await restClient.ProjectController.getAllProjects();
+  return await restClient.ProjectController.getUserProjects();
 });
 
 export const createProject = createAsyncThunk('project/create', async (project: Project) => {
@@ -166,6 +172,22 @@ export const updateProject = createAsyncThunk('project/update', async (project: 
 export const deleteProject = createAsyncThunk('project/delete', async (project: Project) => {
   if (project.id) {
     await restClient.ProjectController.deleteProject(project.id);
+  }
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Project team
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getProjectTeam = createAsyncThunk('project/team/get', async (projectId: number) => {
+  return await restClient.ProjectController.getMembers(projectId);
+});
+
+
+export const sendInvitation = createAsyncThunk('project/team/invite', async (payload: {projectId: number, recipient: string}, thunkApi) => {
+  if (payload.recipient) {
+    await restClient.ProjectController.inviteSomeone(payload.projectId, payload.recipient);
+    thunkApi.dispatch(getProjectTeam(payload.projectId));
   }
 });
 

@@ -7,11 +7,15 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.Helper;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.HashMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
+import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.token.TokenDao;
 import ch.colabproject.colab.api.service.smtp.Message;
 import ch.colabproject.colab.api.service.smtp.Sendmail;
@@ -39,10 +43,17 @@ public class TokenFacade {
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(TokenDao.class);
     /**
-     * User management provides defaultHashMethod. TODO: move such method to a SecurityHelper
+     * to create team member
      */
     @Inject
-    private UserManagement userManagement;
+    private ProjectFacade projectFacade;
+
+    /**
+     * To check access rights
+     */
+    @Inject
+    private SecurityFacade securityFacade;
+
     /**
      * Token persistence
      */
@@ -68,7 +79,7 @@ public class TokenFacade {
     public void sendTokenByEmail(Token token, String recipient) throws MessagingException {
         logger.debug("Send token {} to {}", token, recipient);
         String plainToken = Helper.generateHexSalt(64);
-        HashMethod hashMethod = userManagement.getDefaultHashMethod();
+        HashMethod hashMethod = Helper.getDefaultHashMethod();
         byte[] hashedToken = hashMethod.hash(plainToken, Token.SALT);
 
         token.setHashMethod(hashMethod);
@@ -93,7 +104,7 @@ public class TokenFacade {
             Message.create()
                 .from("noreply@" + ColabConfiguration.getSmtpDomain())
                 .to(recipient)
-                .subject(VerifyLocalAccountToken.EMAIL_SUBJECT)
+                .subject(token.getSubject())
                 .htmlBody(body + footer)
                 .build()
         );
@@ -156,14 +167,10 @@ public class TokenFacade {
             token = new VerifyLocalAccountToken();
             token.setAuthenticationRequired(false);
             token.setLocalAccount(account);
-            // set something to respect notNull contraints
-            // otherwise persist will fail
-            // These values will be reset when the e-mail is sent.
-            token.setHashMethod(userManagement.getDefaultHashMethod());
-            token.setHashedToken(new byte[0]);
             tokenDao.persistToken(token);
         }
-        token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.WEEKS));
+        //token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.WEEKS));
+        token.setExpirationDate(null);
 
         return token;
     }
@@ -209,11 +216,6 @@ public class TokenFacade {
             logger.debug("no token, create one");
             token.setAuthenticationRequired(false);
             token.setLocalAccount(account);
-            // set something to respect notNull contraints
-            // otherwise persist will fail
-            // These values will be reset when the e-mail is sent.
-            token.setHashMethod(userManagement.getDefaultHashMethod());
-            token.setHashedToken(new byte[0]);
             tokenDao.persistToken(token);
         }
         token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.HOURS));
@@ -244,6 +246,45 @@ public class TokenFacade {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Invite a new team member
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Send invitation to join the project team to the recipient.
+     *
+     * @param project   the project to join
+     * @param recipient email address to send invitation to
+     */
+    public void sendMembershipInvitation(Project project, String recipient) {
+        User currentUser = securityFacade.assertAndGetCurrentUser();
+        // user must have write right on the project
+        securityFacade.assertProjectWriteRight(project);
+
+        InvitationToken token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);
+        if (token == null) {
+            // create a member and link it to the project, but do not link it to any user
+            // this link will be set during token consumtion
+            TeamMember newMember = projectFacade.addMember(project, null);
+            token = new InvitationToken();
+
+            token.setTeamMember(newMember);
+            // never expire
+            token.setExpirationDate(null);
+            token.setAuthenticationRequired(Boolean.TRUE);
+            token.setRecipient(recipient);
+
+            tokenDao.persistToken(token);
+        }
+
+        token.setSender(currentUser.getDisplayName());
+        try {
+            sendTokenByEmail(token, recipient);
+        } catch (MessagingException ex) {
+            logger.error("Failed to send pssword reset email", ex);
+            throw HttpErrorMessage.smtpError();
+        }
+    }
+
     /**
      * Fetch token with given id from DAO. If it's outdated, it will be destroyed and null will be
      * returned
@@ -254,7 +295,7 @@ public class TokenFacade {
      */
     public Token getNotExpiredToken(Long id) {
         Token token = tokenDao.getToken(id);
-        if (token != null && token.isOutdated()){
+        if (token != null && token.isOutdated()) {
             tokenDao.deleteToken(token);
             return null;
         } else {

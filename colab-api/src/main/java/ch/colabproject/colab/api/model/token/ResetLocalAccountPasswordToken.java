@@ -34,7 +34,7 @@ public class ResetLocalAccountPasswordToken extends Token {
     public static final String EMAIL_SUBJECT = "co.LAB account password reset request";
 
     /**
-     * The local account the token shall validate
+     * The local account the token is linked to
      */
     @NotNull
     @OneToOne
@@ -74,6 +74,11 @@ public class ResetLocalAccountPasswordToken extends Token {
     @Override
     public void consume(RequestManager requestManager) {
         requestManager.login(localAccount);
+    }
+
+    @Override
+    public String getSubject() {
+        return EMAIL_SUBJECT;
     }
 
     @Override

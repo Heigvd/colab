@@ -4,19 +4,34 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Project } from 'colab-rest-client';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {Project, TeamMember} from 'colab-rest-client';
 import * as API from '../API/api';
 
+/**
+ * NOT_SET: the state is not fully set. It may contain some data (received by websocket) but there is
+ *          not guarantee it containrs all data
+ * LOADING: request to load all data is pending
+ * SET:     all data are known
+ */
+export type StateStatus = 'NOT_SET' | 'LOADING' | 'SET';
+
 export interface ProjectState {
-  status: 'UNSET' | 'LOADING' | 'READY';
+  status: StateStatus;
   projects: {
     [id: number]: Project;
   };
+  teams: {
+    [id: number]: {
+      status: StateStatus;
+      members: TeamMember[]
+    }
+  }
 }
 const initialState: ProjectState = {
-  status: 'UNSET',
+  status: 'NOT_SET',
   projects: {},
+  teams: {},
 };
 
 const projectsSlice = createSlice({
@@ -37,9 +52,10 @@ const projectsSlice = createSlice({
       .addCase(API.initProjects.pending, state => {
         state.status = 'LOADING';
       })
-      .addCase(API.initProjects.fulfilled, (_state, action) => {
+      .addCase(API.initProjects.fulfilled, (state, action) => {
         return {
-          status: 'READY',
+          ...state,
+          status: 'SET',
           projects: action.payload.reduce<ProjectState['projects']>((acc, current) => {
             if (current.id) {
               acc[current.id] = current;
@@ -47,9 +63,25 @@ const projectsSlice = createSlice({
             return acc;
           }, {}),
         };
+      })
+      .addCase(API.getProjectTeam.pending, (state, action) => {
+        const projectId = action.meta.arg;
+        if (projectId) {
+          state.teams[projectId] = state.teams[projectId] || {status: 'NOT_SET', members: []};
+          state.teams[projectId].status = 'LOADING'
+        }
+      })
+      .addCase(API.getProjectTeam.fulfilled, (state, action) => {
+        const projectId = action.meta.arg;
+        if (projectId) {
+          state.teams[projectId].status = 'SET';
+          if (action.payload) {
+            state.teams[projectId].members = [...action.payload];
+          }
+        }
       }),
 });
 
-export const { updateProject, removeProject } = projectsSlice.actions;
+export const {updateProject, removeProject} = projectsSlice.actions;
 
 export default projectsSlice.reducer;

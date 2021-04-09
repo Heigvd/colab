@@ -6,8 +6,10 @@
  */
 package ch.colabproject.colab.api.rest;
 
+import ch.colabproject.colab.api.ejb.ProjectFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -38,7 +40,13 @@ public class ProjectController {
      * The Project business logic
      */
     @Inject
-    private ProjectDao projectFacade;
+    private ProjectFacade projectFacade;
+
+    /**
+     * The Project DAO
+     */
+    @Inject
+    private ProjectDao projectDao;
 
     /**
      * Retrieve the list of all projects. This is available to admin only
@@ -48,11 +56,22 @@ public class ProjectController {
     @GET
     @AdminResource
     public List<Project> getAllProjects() {
-        return projectFacade.getAllProject();
+        return projectDao.getAllProject();
     }
 
     /**
-     * Get project identified by the given id
+     * Get all projects the current user is member of
+     *
+     * @return list of projects
+     */
+    @GET
+    @Path("MyOwn")
+    public List<Project> getUserProjects() {
+        return projectDao.getCurrentUserProject();
+    }
+
+    /**
+     * Get project identified by the given id.
      *
      * @param id id of the project to fetch
      *
@@ -61,11 +80,11 @@ public class ProjectController {
     @GET
     @Path("/{id}")
     public Project getProject(@PathParam("id") Long id) {
-        return projectFacade.getProject(id);
+        return projectDao.getProject(id);
     }
 
     /**
-     * Persist the project
+     * Create a new project and register current user as a member.
      *
      * @param project the project to persist
      *
@@ -73,11 +92,11 @@ public class ProjectController {
      */
     @POST
     public Long createProject(Project project) {
-        return projectFacade.createProject(project).getId();
+        return projectFacade.createNewProject(project).getId();
     }
 
     /**
-     * Save changes to database
+     * Save changes to database.
      *
      * @param project project to update
      *
@@ -85,17 +104,43 @@ public class ProjectController {
      */
     @PUT
     public void updateProject(Project project) throws ColabMergeException {
-        projectFacade.updateProject(project);
+        projectDao.updateProject(project);
     }
 
     /**
-     * Permanently delete a project
+     * Permanently delete a project.
      *
      * @param id id of the project to delete
      */
     @DELETE
     @Path("/{id}")
     public void deleteProject(@PathParam("id") Long id) {
-        projectFacade.deleteProject(id);
+        projectDao.deleteProject(id);
+    }
+
+    /**
+     * Get all members of the project teams.
+     *
+     * @param id id of the project
+     *
+     * @return list of members
+     */
+    @GET
+    @Path("{id}/Members")
+    public List<TeamMember> getMembers(@PathParam("id") Long id) {
+        return projectFacade.getTeamMembers(id);
+    }
+
+    /**
+     * Send invitation to someone.
+     *
+     * @param projectId id of the project
+     * @param email     recipient address
+     */
+    @POST
+    @Path("Invite/{projectId: [0-9]}/{email}")
+    public void inviteSomeone(@PathParam("projectId") Long projectId,
+        @PathParam("email") String email) {
+        projectFacade.invite(projectId, email);
     }
 }

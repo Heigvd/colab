@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 import * as API from '../API/api';
 
 export interface AuthState {

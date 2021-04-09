@@ -9,12 +9,12 @@ package ch.colabproject.colab.api.model.user;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 /**
  * Accounts are used by users to authenticate.
@@ -36,17 +36,15 @@ public abstract class Account implements ColabEntity {
     /**
      * An account belongs to an user
      */
-    @ManyToOne(
-        cascade = {
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST,
-            CascadeType.REFRESH
-        },
-        optional = false
-    )
+    @ManyToOne(optional = false)
     @JsonbTransient
     private User user;
+
+    /**
+     * serialization sugar
+     */
+    @Transient
+    private Long userId;
 
     /**
      * @return account id
@@ -90,8 +88,17 @@ public abstract class Account implements ColabEntity {
         if (this.getUser() != null) {
             return getUser().getId();
         } else {
-            return null;
+            return userId;
         }
+    }
+
+    /**
+     * For serialization only
+     *
+     * @param id if of the user
+     */
+    public void setUserId(Long id) {
+        this.userId = id;
     }
 
     @Override

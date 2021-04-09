@@ -88,6 +88,20 @@ public class UserController {
     /**
      * Return the current authenticated user.
      *
+     * @param id id of the user
+     *
+     * @return user which match the given id or null
+     */
+    @GET
+    @Path("{id : [0-9]*}")
+    public User getUserById(@PathParam("id") Long id) {
+        logger.debug("get user #{}", id);
+        return userManagement.getUserById(id);
+    }
+
+    /**
+     * Return the current authenticated user.
+     *
      * @return current user or null
      */
     @GET
