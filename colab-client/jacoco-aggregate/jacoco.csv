@@ -19,7 +19,7 @@ colab-client/colab-api,ch.colabproject.colab.api.ejb,TransactionManager,36,0,8,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,RequestManager,72,0,8,0,25,0,16,0,12,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,WebsocketSynchronizer,82,0,12,0,21,0,13,0,7,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,UserManagement,423,0,40,0,121,0,37,0,17,0
-colab-client/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,153,0,34,0,44,0,28,0,11,0
+colab-client/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,156,0,36,0,44,0,29,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.project,ProjectDao,64,0,0,0,16,0,7,0,7,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.utils,JsonDecoder,29,0,0,0,10,0,5,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.utils,JsonEncoder,19,0,0,0,7,0,4,0,4,0

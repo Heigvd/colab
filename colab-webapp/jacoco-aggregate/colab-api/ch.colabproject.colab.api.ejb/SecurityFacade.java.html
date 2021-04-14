@@ -106,13 +106,12 @@ import javax.persistence.TypedQuery;
 <span class="nc bnc" id="L106" title="All 2 branches missed.">            if (currentUser == null) {</span>
 <span class="nc" id="L107">                throw HttpErrorMessage.authenticationRequired();</span>
             } else {
-
-<span class="nc bnc" id="L110" title="All 2 branches missed.">                if (this.areUserTeammate(currentUser, user)) {</span>
-<span class="nc" id="L111">                    throw HttpErrorMessage.forbidden();</span>
+<span class="nc bnc" id="L109" title="All 4 branches missed.">                if (!currentUser.isAdmin() &amp;&amp; !this.areUserTeammate(currentUser, user)) {</span>
+<span class="nc" id="L110">                    throw HttpErrorMessage.forbidden();</span>
                 }
             }
         }
-<span class="nc" id="L115">    }</span>
+<span class="nc" id="L114">    }</span>
 
     /**
      * Get the current user if it exists.
@@ -122,11 +121,11 @@ import javax.persistence.TypedQuery;
      * @throws HttpErrorMessage authRequired if currentUser is not authenticated
      */
     public User assertAndGetCurrentUser() {
-<span class="nc" id="L125">        User user = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">        if (user != null) {</span>
-<span class="nc" id="L127">            return user;</span>
+<span class="nc" id="L124">        User user = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (user != null) {</span>
+<span class="nc" id="L126">            return user;</span>
         } else {
-<span class="nc" id="L129">            throw HttpErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L128">            throw HttpErrorMessage.authenticationRequired();</span>
         }
     }
 
@@ -139,12 +138,12 @@ import javax.persistence.TypedQuery;
      * @return true if the user is member of the project
      */
     public boolean isUserMemebrOfProject(User user, Project project) {
-<span class="nc bnc" id="L142" title="All 4 branches missed.">        if (user != null &amp;&amp; project != null) {</span>
-<span class="nc" id="L143">            return project.getTeamMembers().stream()</span>
-<span class="nc" id="L144">                .filter(member -&gt; user.equals(member.getUser()))</span>
-<span class="nc" id="L145">                .findFirst().isPresent();</span>
+<span class="nc bnc" id="L141" title="All 4 branches missed.">        if (user != null &amp;&amp; project != null) {</span>
+<span class="nc" id="L142">            return project.getTeamMembers().stream()</span>
+<span class="nc" id="L143">                .filter(member -&gt; user.equals(member.getUser()))</span>
+<span class="nc" id="L144">                .findFirst().isPresent();</span>
         }
-<span class="nc" id="L147">        return false;</span>
+<span class="nc" id="L146">        return false;</span>
     }
 
     /**
@@ -156,12 +155,12 @@ import javax.persistence.TypedQuery;
      * @return true if both users are member of the same team
      */
     public boolean areUserTeammate(User a, User b) {
-<span class="nc" id="L159">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(&quot;TeamMember.areUserTeammate&quot;, Boolean.class);</span>
-<span class="nc" id="L160">        query.setParameter(&quot;aId&quot;, a.getId());</span>
-<span class="nc" id="L161">        query.setParameter(&quot;bId&quot;, b.getId());</span>
+<span class="nc" id="L158">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(&quot;TeamMember.areUserTeammate&quot;, Boolean.class);</span>
+<span class="nc" id="L159">        query.setParameter(&quot;aUserId&quot;, a.getId());</span>
+<span class="nc" id="L160">        query.setParameter(&quot;bUserId&quot;, b.getId());</span>
 
         // if the query returns something, users are teammates
-<span class="nc bnc" id="L164" title="All 2 branches missed.">        return !query.getResultList().isEmpty();</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        return !query.getResultList().isEmpty();</span>
     }
 
     /**
@@ -172,11 +171,11 @@ import javax.persistence.TypedQuery;
      * @throws HttpErrorMessage forbidden
      */
     public void assertProjectWriteRight(Project project) {
-<span class="nc" id="L175">        User currentUser = assertAndGetCurrentUser();</span>
-<span class="nc bnc" id="L176" title="All 4 branches missed.">        if (!currentUser.isAdmin() &amp;&amp; !this.isUserMemebrOfProject(currentUser, project)) {</span>
-<span class="nc" id="L177">            throw HttpErrorMessage.forbidden();</span>
+<span class="nc" id="L174">        User currentUser = assertAndGetCurrentUser();</span>
+<span class="nc bnc" id="L175" title="All 4 branches missed.">        if (!currentUser.isAdmin() &amp;&amp; !this.isUserMemebrOfProject(currentUser, project)) {</span>
+<span class="nc" id="L176">            throw HttpErrorMessage.forbidden();</span>
         }
-<span class="nc" id="L179">    }</span>
+<span class="nc" id="L178">    }</span>
 
     /**
      * Make sure the current user has right to edit the project
@@ -186,10 +185,10 @@ import javax.persistence.TypedQuery;
      * @throws HttpErrorMessage forbidden
      */
     public void assertIsMember(Project project) {
-<span class="nc" id="L189">        User currentUser = assertAndGetCurrentUser();</span>
-<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (!this.isUserMemebrOfProject(currentUser, project)) {</span>
-<span class="nc" id="L191">            throw HttpErrorMessage.forbidden();</span>
+<span class="nc" id="L188">        User currentUser = assertAndGetCurrentUser();</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (!this.isUserMemebrOfProject(currentUser, project)) {</span>
+<span class="nc" id="L190">            throw HttpErrorMessage.forbidden();</span>
         }
-<span class="nc" id="L193">    }</span>
+<span class="nc" id="L192">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

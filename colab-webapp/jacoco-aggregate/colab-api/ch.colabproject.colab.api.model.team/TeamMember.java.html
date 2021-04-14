@@ -27,11 +27,12 @@ import javax.persistence.Transient;
 @Entity
 @NamedQuery(
     name = &quot;TeamMember.areUserTeammate&quot;,
+    // SELECT true FROM TeamMember a, TeamMember b WHERE ...
     query = &quot;SELECT true FROM TeamMember a &quot;
-    + &quot;JOIN TeamMember b ON a.project_id = b.project_id &quot;
-    + &quot;WHERE a.id = :aId AND b.id = :bId&quot;
-)
-<span class="nc" id="L34">public class TeamMember implements ColabEntity {</span>
+    + &quot;JOIN TeamMember b ON a.project.id = b.project.id &quot;
+    + &quot;WHERE a.user.id = :aUserId AND b.user.id = :bUserId&quot;)
+
+<span class="nc" id="L35">public class TeamMember implements ColabEntity {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -73,7 +74,7 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L76">        return id;</span>
+<span class="nc" id="L77">        return id;</span>
     }
 
     /**
@@ -82,8 +83,8 @@ import javax.persistence.Transient;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L85">        this.id = id;</span>
-<span class="nc" id="L86">    }</span>
+<span class="nc" id="L86">        this.id = id;</span>
+<span class="nc" id="L87">    }</span>
 
     /**
      * Get the user
@@ -91,7 +92,7 @@ import javax.persistence.Transient;
      * @return the user
      */
     public User getUser() {
-<span class="nc" id="L94">        return user;</span>
+<span class="nc" id="L95">        return user;</span>
     }
 
     /**
@@ -100,8 +101,8 @@ import javax.persistence.Transient;
      * @param user user
      */
     public void setUser(User user) {
-<span class="nc" id="L103">        this.user = user;</span>
-<span class="nc" id="L104">    }</span>
+<span class="nc" id="L104">        this.user = user;</span>
+<span class="nc" id="L105">    }</span>
 
     /**
      * get the user id. To be sent to client
@@ -109,10 +110,10 @@ import javax.persistence.Transient;
      * @return id of the user or null
      */
     public Long getUserId() {
-<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (this.user != null) {</span>
-<span class="nc" id="L113">            return this.user.getId();</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (this.user != null) {</span>
+<span class="nc" id="L114">            return this.user.getId();</span>
         } else {
-<span class="nc" id="L115">            return userId;</span>
+<span class="nc" id="L116">            return userId;</span>
         }
     }
 
@@ -122,8 +123,8 @@ import javax.persistence.Transient;
      * @param id if of the user
      */
     public void setUserId(Long id) {
-<span class="nc" id="L125">        this.userId = id;</span>
-<span class="nc" id="L126">    }</span>
+<span class="nc" id="L126">        this.userId = id;</span>
+<span class="nc" id="L127">    }</span>
 
     /**
      * get project
@@ -131,7 +132,7 @@ import javax.persistence.Transient;
      * @return the project
      */
     public Project getProject() {
-<span class="nc" id="L134">        return project;</span>
+<span class="nc" id="L135">        return project;</span>
     }
 
     /**
@@ -140,10 +141,10 @@ import javax.persistence.Transient;
      * @return id of the project or null
      */
     public Long getProjectId() {
-<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L144">            return this.project.getId();</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L145">            return this.project.getId();</span>
         } else {
-<span class="nc" id="L146">            return projectId;</span>
+<span class="nc" id="L147">            return projectId;</span>
         }
     }
 
@@ -153,8 +154,8 @@ import javax.persistence.Transient;
      * @param id if of the project
      */
     public void setProjectId(Long id) {
-<span class="nc" id="L156">        this.projectId = id;</span>
-<span class="nc" id="L157">    }</span>
+<span class="nc" id="L157">        this.projectId = id;</span>
+<span class="nc" id="L158">    }</span>
 
     /**
      * set project
@@ -162,12 +163,12 @@ import javax.persistence.Transient;
      * @param project the project
      */
     public void setProject(Project project) {
-<span class="nc" id="L165">        this.project = project;</span>
-<span class="nc" id="L166">    }</span>
+<span class="nc" id="L166">        this.project = project;</span>
+<span class="nc" id="L167">    }</span>
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         /* no-op */
-<span class="nc" id="L171">    }</span>
+<span class="nc" id="L172">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
