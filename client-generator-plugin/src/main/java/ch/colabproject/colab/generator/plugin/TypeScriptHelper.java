@@ -230,6 +230,13 @@ public class TypeScriptHelper {
         return false;
     }
 
+    private static boolean isMap(Type javaType) {
+        if (javaType instanceof Class) {
+            return Map.class.isAssignableFrom((Class<?>) javaType);
+        }
+        return false;
+    }
+
     /**
      * Convert java type to typescript type. this method will populate the customTypes map with java
      * type which requires a dedicates TS interface.
@@ -280,6 +287,8 @@ public class TypeScriptHelper {
             Type[] args = genericType.getActualTypeArguments();
             if (isArrayLike(rawType)) {
                 return convertType(args[0], customTypes) + "[]";
+            } else if (isMap(rawType)) {
+                return "{[key: " + convertType(args[0], customTypes) + "]: " + convertType(args[1], customTypes) + "}";
             } else {
                 return "unknown";
             }

@@ -31,10 +31,20 @@ public class TypeScriptHelperTest {
 
     /**
      * used to fetch a GenericReturnType
+     *
      * @return empty list
      */
-    public List<String> getList(){
+    public List<String> getList() {
         return new ArrayList<>();
+    }
+
+    /**
+     * used to fetch a GenericReturnType
+     *
+     * @return
+     */
+    public Map<String, Double> getMap() {
+        return new HashMap<>();
     }
 
     @Test
@@ -62,8 +72,12 @@ public class TypeScriptHelperTest {
         Assertions.assertEquals("unknown[]",
             TypeScriptHelper.convertType(ArrayList.class, customTypes));
 
-        Type genericType = this.getClass().getDeclaredMethod("getList").getGenericReturnType();
+        Type genericList = this.getClass().getDeclaredMethod("getList").getGenericReturnType();
         Assertions.assertEquals("string[]",
-            TypeScriptHelper.convertType(genericType, customTypes));
+            TypeScriptHelper.convertType(genericList, customTypes));
+
+        Type genericMap = this.getClass().getDeclaredMethod("getMap").getGenericReturnType();
+        Assertions.assertEquals("{[key: string]: number}",
+            TypeScriptHelper.convertType(genericMap, customTypes));
     }
 }

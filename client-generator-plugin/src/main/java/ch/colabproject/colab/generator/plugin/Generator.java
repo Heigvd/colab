@@ -261,10 +261,10 @@ public class Generator {
             });
         }
 
-        sb.append("/**"
-            + " * Some orthopedic tools"
-            + " */"
-            + "interface TypeMap {\n  ")
+        sb.append("/**\n"
+            + " * Some orthopedic tools\n"
+            + " */\n\n"
+            + "export interface TypeMap {\n  ")
             .append(
                 inheritance.keySet().stream().map((key)
                     -> key + ": " + key + ";")
