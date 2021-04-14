@@ -106,8 +106,7 @@ public class SecurityFacade {
             if (currentUser == null) {
                 throw HttpErrorMessage.authenticationRequired();
             } else {
-
-                if (this.areUserTeammate(currentUser, user)) {
+                if (!currentUser.isAdmin() && !this.areUserTeammate(currentUser, user)) {
                     throw HttpErrorMessage.forbidden();
                 }
             }
@@ -157,8 +156,8 @@ public class SecurityFacade {
      */
     public boolean areUserTeammate(User a, User b) {
         TypedQuery<Boolean> query = em.createNamedQuery("TeamMember.areUserTeammate", Boolean.class);
-        query.setParameter("aId", a.getId());
-        query.setParameter("bId", b.getId());
+        query.setParameter("aUserId", a.getId());
+        query.setParameter("bUserId", b.getId());
 
         // if the query returns something, users are teammates
         return !query.getResultList().isEmpty();

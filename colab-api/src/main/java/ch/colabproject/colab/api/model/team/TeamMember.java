@@ -27,10 +27,11 @@ import javax.persistence.Transient;
 @Entity
 @NamedQuery(
     name = "TeamMember.areUserTeammate",
+    // SELECT true FROM TeamMember a, TeamMember b WHERE ...
     query = "SELECT true FROM TeamMember a "
-    + "JOIN TeamMember b ON a.project_id = b.project_id "
-    + "WHERE a.id = :aId AND b.id = :bId"
-)
+    + "JOIN TeamMember b ON a.project.id = b.project.id "
+    + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
+
 public class TeamMember implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
