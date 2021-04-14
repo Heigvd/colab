@@ -26,6 +26,13 @@
             <artifactId>jakarta.jakartaee-api</artifactId>
         </dependency>
 
+        <!-- Payara API -->
+        <dependency>
+            <groupId>fish.payara.api</groupId>
+            <artifactId>payara-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- persistence - EclipseLink -->
         <dependency>
             <groupId>org.eclipse.persistence</groupId>

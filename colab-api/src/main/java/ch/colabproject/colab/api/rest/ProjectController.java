@@ -24,6 +24,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * REST Project controller
@@ -35,6 +37,9 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
 public class ProjectController {
+
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);
 
     /**
      * The Project business logic
@@ -56,6 +61,7 @@ public class ProjectController {
     @GET
     @AdminResource
     public List<Project> getAllProjects() {
+        logger.debug("Get all projects");
         return projectDao.getAllProject();
     }
 
@@ -67,6 +73,7 @@ public class ProjectController {
     @GET
     @Path("MyOwn")
     public List<Project> getUserProjects() {
+        logger.debug("Get user projects");
         return projectFacade.getCurrentUserProject();
     }
 
@@ -80,6 +87,7 @@ public class ProjectController {
     @GET
     @Path("/{id}")
     public Project getProject(@PathParam("id") Long id) {
+        logger.debug("Get project #{}", id);
         return projectDao.getProject(id);
     }
 
@@ -92,6 +100,7 @@ public class ProjectController {
      */
     @POST
     public Long createProject(Project project) {
+        logger.debug("Create project {}", project);
         return projectFacade.createNewProject(project).getId();
     }
 
@@ -104,6 +113,7 @@ public class ProjectController {
      */
     @PUT
     public void updateProject(Project project) throws ColabMergeException {
+        logger.debug("Update project {}", project);
         projectDao.updateProject(project);
     }
 
@@ -115,6 +125,7 @@ public class ProjectController {
     @DELETE
     @Path("/{id}")
     public void deleteProject(@PathParam("id") Long id) {
+        logger.debug("Delete project #{}", id);
         projectDao.deleteProject(id);
     }
 
@@ -128,6 +139,7 @@ public class ProjectController {
     @GET
     @Path("{id}/Members")
     public List<TeamMember> getMembers(@PathParam("id") Long id) {
+        logger.debug("Get project #{} members", id);
         return projectFacade.getTeamMembers(id);
     }
 
@@ -141,6 +153,7 @@ public class ProjectController {
     @Path("Invite/{projectId: [0-9]}/{email}")
     public void inviteSomeone(@PathParam("projectId") Long projectId,
             @PathParam("email") String email) {
+        logger.debug("Invite {} to joint project #{}", email, projectId);
         projectFacade.invite(projectId, email);
     }
 }

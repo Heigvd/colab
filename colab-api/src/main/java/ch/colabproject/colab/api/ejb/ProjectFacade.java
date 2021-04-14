@@ -15,6 +15,8 @@ import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Some project logic
@@ -24,6 +26,9 @@ import javax.inject.Inject;
 @Stateless
 @LocalBean
 public class ProjectFacade {
+
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(ProjectFacade.class);
 
     /**
      * To control access
@@ -67,6 +72,7 @@ public class ProjectFacade {
      * @return the new persisted project
      */
     public Project createNewProject(Project project) {
+        logger.debug("Create new project: {}", project);
         Card rootCard = cardFacade.createRootCard();
         project.setRootCard(rootCard);
 
@@ -85,6 +91,7 @@ public class ProjectFacade {
      * @return the brand new member
      */
     public TeamMember addMember(Project project, User user) {
+        logger.debug("Add member {} in {}", user, project);
         TeamMember teamMember = new TeamMember();
 
         // todo check if user is already member of the team
@@ -106,6 +113,7 @@ public class ProjectFacade {
      */
     public List<TeamMember> getTeamMembers(Long id) {
         Project project = projectDao.getProject(id);
+        logger.debug("Get team members: {}", project);
         securityFacade.assertIsMember(project);
         return project.getTeamMembers();
     }
@@ -118,6 +126,8 @@ public class ProjectFacade {
      */
     public void invite(Long projectId, String email) {
         Project project = projectDao.getProject(projectId);
+        logger.debug("Invite {} to join {}", email, project);
+        securityFacade.assertProjectWriteRight(project);
         tokenFacade.sendMembershipInvitation(project, email);
     }
 }

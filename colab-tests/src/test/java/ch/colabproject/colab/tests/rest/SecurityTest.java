@@ -60,6 +60,12 @@ public class SecurityTest extends AbstractArquillianTest {
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.userController.switchServerHashMethod(1l);
         });
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
+            client.monitoringController.changeLoggerLevel("abcd", "DEBUG");
+        });
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
+            client.monitoringController.getLoggerLevels();
+        });
     }
 
     /**
