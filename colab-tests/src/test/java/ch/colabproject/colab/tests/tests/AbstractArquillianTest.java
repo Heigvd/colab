@@ -19,7 +19,6 @@ import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.rest.config.JsonbProvider;
 import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
-import ch.colabproject.colab.tests.mailhog.model.Address;
 import ch.colabproject.colab.tests.mailhog.model.Message;
 import java.io.File;
 import java.net.URL;
@@ -33,6 +32,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 import javax.ws.rs.ClientErrorException;
 import org.eu.ingwar.tools.arquillian.extension.suite.annotations.ArquillianSuiteDeployment;
@@ -84,6 +85,12 @@ public abstract class AbstractArquillianTest {
     }
 
     /**
+     * Access to the persistence unit
+     */
+    @PersistenceContext(unitName = "COLAB_PU")
+    private EntityManager em;
+
+    /**
      * Provide user management internal logic
      */
     @Inject
@@ -133,6 +140,11 @@ public abstract class AbstractArquillianTest {
     protected TestUser admin;
 
     /**
+     * Id of the admin user
+     */
+    protected Long adminUserId;
+
+    /**
      * Create deployment
      *
      * @return the war
@@ -166,6 +178,9 @@ public abstract class AbstractArquillianTest {
      * Clear and init database
      */
     protected void resetDatabase() {
+        em.flush();
+        em.clear();
+        em.getEntityManagerFactory().getCache().evictAll();
         clearDatabase();
         initDatabase();
     }
@@ -381,6 +396,7 @@ public abstract class AbstractArquillianTest {
             verifyAccounts();
 
             User adminUser = userDao.findUserByUsername("admin");
+            this.adminUserId = adminUser.getId();
 
             userManagement.grantAdminRight(adminUser.getId());
 

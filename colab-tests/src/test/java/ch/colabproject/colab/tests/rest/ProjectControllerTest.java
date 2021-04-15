@@ -150,5 +150,16 @@ public class ProjectControllerTest extends AbstractArquillianTest {
         // not lonely anylonger
         members = client.projectController.getMembers(project.getId());
         Assertions.assertEquals(2, members.size());
+
+        //assert currentUser can user of teammate
+        members.forEach((TeamMember member) -> {
+            User u = client.userController.getUserById(member.getUserId());
+            Assertions.assertNotNull(u);
+        });
+
+        // assert currentuser can not read other users
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
+            client.userController.getUserById(this.adminUserId);
+        });
     }
 }
