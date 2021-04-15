@@ -44,6 +44,9 @@ public class ProjectControllerTest extends AbstractArquillianTest {
 
         Assertions.assertEquals(persistedProject.getId(), projectId);
 
+        Assertions.assertNotNull(persistedProject.getRootCard());
+        Assertions.assertNotNull(persistedProject.getRootCard().getId());
+
         List<TeamMember> members = client.projectController.getMembers(projectId);
         Assertions.assertEquals(1, members.size());
 
@@ -59,11 +62,13 @@ public class ProjectControllerTest extends AbstractArquillianTest {
         Long projectId = client.projectController.createProject(project);
         project = client.projectController.getProject(projectId);
         project.setName("The Hitchhiker's Guide to the Serious-Game");
+        project.setDescription("So Long, and Thanks for All the Games");
 
         client.projectController.updateProject(project);
 
         Project project2 = client.projectController.getProject(projectId);
         Assertions.assertEquals(project.getName(), project2.getName());
+        Assertions.assertEquals(project.getDescription(), project2.getDescription());
     }
 
     @Test

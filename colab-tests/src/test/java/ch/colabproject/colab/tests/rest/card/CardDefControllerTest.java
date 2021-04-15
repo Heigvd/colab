@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.tests.rest.card;
 
-import ch.colabproject.colab.api.model.AuthorityHolderType;
+import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
@@ -27,13 +27,13 @@ public class CardDefControllerTest extends AbstractArquillianTest {
         String uniqueId = String.valueOf(new Date().getTime() + ((long) (Math.random() * 1000)));
         String title = " " + ((int) (Math.random() * 1000));
         String purpose = " " + ((int) (Math.random() * 1000));
-        AuthorityHolderType authorityHolder = AuthorityHolderType.PROJECT;
+        ConcretizationCategory authorityHolder = ConcretizationCategory.PROJECT;
 
         CardDef cardDef = new CardDef();
         cardDef.setUniqueId(uniqueId);
         cardDef.setTitle(title);
         cardDef.setPurpose(purpose);
-        cardDef.setAuthorityHolderType(authorityHolder);
+        cardDef.setAuthorityHolder(authorityHolder);
         Long cardDefId = client.cardDefController.createCardDef(cardDef);
 
         CardDef persistedCardDef = client.cardDefController.getCardDef(cardDefId);
@@ -45,7 +45,7 @@ public class CardDefControllerTest extends AbstractArquillianTest {
         Assertions.assertEquals(persistedCardDef.getUniqueId(), uniqueId);
         Assertions.assertEquals(persistedCardDef.getTitle(), title);
         Assertions.assertEquals(persistedCardDef.getPurpose(), purpose);
-        Assertions.assertEquals(persistedCardDef.getAuthorityHolderType(), authorityHolder);
+        Assertions.assertEquals(persistedCardDef.getAuthorityHolder(), authorityHolder);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class CardDefControllerTest extends AbstractArquillianTest {
         String title = "Dissemination " + ((int) (Math.random() * 1000));
         String purpose = "Define how the project will be promoted "
                 + ((int) (Math.random() * 1000));
-        AuthorityHolderType authorityHolder = AuthorityHolderType.PROJECT;
+        ConcretizationCategory authorityHolder = ConcretizationCategory.PROJECT;
 
         CardDef cardDef = new CardDef();
         Long cardDefId = client.cardDefController.createCardDef(cardDef);
@@ -64,13 +64,13 @@ public class CardDefControllerTest extends AbstractArquillianTest {
         Assertions.assertNull(cardDef.getUniqueId());
         Assertions.assertNull(cardDef.getTitle());
         Assertions.assertNull(cardDef.getPurpose());
-        Assertions.assertNull(cardDef.getAuthorityHolderType());
+        Assertions.assertNull(cardDef.getAuthorityHolder());
         Assertions.assertNull(cardDef.getProject());
 
         // cardDef.setUniqueId(uniqueId);
         cardDef.setTitle(title);
         cardDef.setPurpose(purpose);
-        cardDef.setAuthorityHolderType(authorityHolder);
+        cardDef.setAuthorityHolder(authorityHolder);
         client.cardDefController.updateCardDef(cardDef);
 
         CardDef persistedCardDef2 = client.cardDefController.getCardDef(cardDefId);

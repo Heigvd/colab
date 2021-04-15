@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;
@@ -31,16 +32,32 @@ public class ProjectFacade {
     private SecurityFacade securityFacade;
 
     /**
-     * Project DAO
+     * Project persistence
      */
     @Inject
     private ProjectDao projectDao;
+
+    /**
+     * Cards-related logic
+     */
+    @Inject
+    private CardFacade cardFacade;
 
     /**
      * Token Facade
      */
     @Inject
     private TokenFacade tokenFacade;
+
+    /**
+     * Get all projects the current user is member of
+     *
+     * @return list of projects
+     */
+    public List<Project> getCurrentUserProject() {
+        User user = securityFacade.assertAndGetCurrentUser();
+        return projectDao.getUserProject(user);
+    }
 
     /**
      * Persist the given project and add the current user to the project team
@@ -50,8 +67,12 @@ public class ProjectFacade {
      * @return the new persisted project
      */
     public Project createNewProject(Project project) {
+        Card rootCard = cardFacade.createRootCard();
+        project.setRootCard(rootCard);
+
         User user = securityFacade.assertAndGetCurrentUser();
         this.addMember(project, user);
+
         return projectDao.createProject(project);
     }
 

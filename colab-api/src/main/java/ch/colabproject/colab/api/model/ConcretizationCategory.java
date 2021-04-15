@@ -7,19 +7,20 @@
 package ch.colabproject.colab.api.model;
 
 /**
- * Describes what has the authority
+ * Concretization category : is it a concrete project or an abstract model that
+ * can be used as a basis for a concrete project
  *
  * @author sandra
  */
 //WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
-public enum AuthorityHolderType {
+public enum ConcretizationCategory {
     /**
-     * The model has the authority, each project using it will behave the same way
+     * Concrete project
      */
-    MODEL,
+    PROJECT,
     /**
-     * The project has the authority, independently
+     * Abstract model that can be used as a basis for a concrete project
      */
-    PROJECT;
+    MODEL;
     // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 }

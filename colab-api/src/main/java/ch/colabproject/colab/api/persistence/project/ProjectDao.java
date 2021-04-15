@@ -6,20 +6,18 @@
  */
 package ch.colabproject.colab.api.persistence.project;
 
-import ch.colabproject.colab.api.ejb.SecurityFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 /**
- * Project related logic
+ * Project persistence
  *
  * @author maxence
  */
@@ -32,12 +30,6 @@ public class ProjectDao {
      */
     @PersistenceContext(unitName = "COLAB_PU")
     private EntityManager em;
-
-    /**
-     * Access control
-     */
-    @Inject
-    private SecurityFacade securityFacade;
 
     /**
      * Get the list of all project
@@ -54,8 +46,7 @@ public class ProjectDao {
      *
      * @return list of project
      */
-    public List<Project> getCurrentUserProject() {
-        User user = securityFacade.assertAndGetCurrentUser();
+    public List<Project> getUserProject(User user) {
         TypedQuery<Project> query = em.createNamedQuery("Project.findProjectByUser", Project.class);
         query.setParameter("userId", user.getId());
 

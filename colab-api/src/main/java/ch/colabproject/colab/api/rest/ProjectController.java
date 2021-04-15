@@ -67,7 +67,7 @@ public class ProjectController {
     @GET
     @Path("MyOwn")
     public List<Project> getUserProjects() {
-        return projectDao.getCurrentUserProject();
+        return projectFacade.getCurrentUserProject();
     }
 
     /**
@@ -140,7 +140,7 @@ public class ProjectController {
     @POST
     @Path("Invite/{projectId: [0-9]}/{email}")
     public void inviteSomeone(@PathParam("projectId") Long projectId,
-        @PathParam("email") String email) {
+            @PathParam("email") String email) {
         projectFacade.invite(projectId, email);
     }
 }

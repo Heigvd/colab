@@ -7,14 +7,13 @@
 package ch.colabproject.colab.api.model.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.AuthorityHolderType;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -59,16 +58,20 @@ public class CardDef implements ColabEntity {
     private String purpose;
 
     /**
-     * Authority holder
+     * Authority holder : is it belonging to
+     * <ul>
+     * <li>a concrete project and behave for itself</li>
+     * <li>a shared abstract model</li>
+     * </ul>
      */
     @Enumerated(value = EnumType.STRING)
-    private AuthorityHolderType authorityHolderType;
+    private ConcretizationCategory authorityHolder;
 
     /**
      * Project
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    //@JsonbTransient
+    @ManyToOne
+    // @JsonbTransient
     // TODO sandra - challenge JsonbTransient
     private Project project;
 
@@ -130,17 +133,21 @@ public class CardDef implements ColabEntity {
     }
 
     /**
-     * @return the authorityHolderType
+     * @return Authority holder : is it belonging to
+     * <ul>
+     * <li>a concrete project and behave for itself</li>
+     * <li>a shared abstract model</li>
+     * </ul>
      */
-    public AuthorityHolderType getAuthorityHolderType() {
-        return authorityHolderType;
+    public ConcretizationCategory getAuthorityHolder() {
+        return authorityHolder;
     }
 
     /**
-     * @param authorityHolderType the new authorityHolderType
+     * @param authorityHolder new authority holder
      */
-    public void setAuthorityHolderType(AuthorityHolderType authorityHolderType) {
-        this.authorityHolderType = authorityHolderType;
+    public void setAuthorityHolder(ConcretizationCategory authorityHolder) {
+        this.authorityHolder = authorityHolder;
     }
 
     /**
@@ -167,7 +174,7 @@ public class CardDef implements ColabEntity {
             // this.setUniqueId(o.getUniqueId());
             this.setTitle(o.getTitle());
             this.setPurpose(o.getPurpose());
-            // this.setAuthorityHolderType(o.getAuthorityHolderType());
+            // this.setAuthorityHolder(o.getAuthorityHolder());
         } else {
             throw new ColabMergeException(this, other);
         }

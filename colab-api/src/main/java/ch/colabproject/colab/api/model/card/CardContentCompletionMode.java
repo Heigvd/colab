@@ -13,11 +13,17 @@ package ch.colabproject.colab.api.model.card;
  */
 // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 public enum CardContentCompletionMode {
-    /** manually */
+    /**
+     * manually
+     */
     MANUAL,
-    /** automatically */
+    /**
+     * automatically
+     */
     AUTO,
-    /** no completion at all (nop) */
+    /**
+     * no completion at all (nop)
+     */
     NO_OP;
 
     // WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
