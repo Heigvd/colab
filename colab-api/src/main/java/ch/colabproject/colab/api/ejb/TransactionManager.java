@@ -113,8 +113,8 @@ public class TransactionManager implements Serializable {
      */
     @BeforeCompletion
     public void beforeCompletion() {
-        logger.error("Before transactionCompletion: This method is never called! WHY ??");
-        logger.error("It this line printed ever ? ");
+        logger.warn("Before transactionCompletion: "
+            + "This method is not called for each transaction, why ???");
         try {
             this.precomputeMessage();
         } catch (EncodeException ex) {
@@ -133,6 +133,7 @@ public class TransactionManager implements Serializable {
         logger.debug("After transaction completion : {}; messages: {}", successful, message);
         if (successful) {
             if (!precomputed) {
+                logger.warn("Messages were not precomputed @BeforeCompletion!!!");
                 // ,essage shall be precomputed during the "before completion" phase, but the
                 // dedicated method is never called, and I do not understand the reason...
                 try {
@@ -141,7 +142,8 @@ public class TransactionManager implements Serializable {
                     logger.error("Failed to precompute websocket messages");
                 }
             }
-            if (message != null) {
+            if (message != null && !message.getMessages().isEmpty()) {
+                logger.warn("Send messages");
                 websocketFacade.propagate(message);
             }
         }

@@ -20,6 +20,8 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.Arrays;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -159,6 +161,41 @@ public class UserManagement {
         signUpinfo.setHash(Helper.bytesToHex(hash));
 
         return this.signup(signUpinfo);
+    }
+
+    /**
+     * {@link #createAdminUser(java.lang.String, java.lang.String, java.lang.String) createAdminUser}
+     * within a brand new transation.
+     *
+     * @param username      username
+     * @param email         email address
+     * @param plainPassword plain text password
+     *
+     * @return a brand new user
+     *
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public User createAdminUserTx(String username, String email, String plainPassword) {
+        return this.createAdminUser(username, email, plainPassword);
+    }
+
+    /**
+     * Create a brand new admin user, which can authenticate with a {@link LocalAccount}. First,
+     * plainPassword will be hashed as any client should do. Then the
+     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo)  signup} method is called.
+     *
+     * @param username      username
+     * @param email         email address
+     * @param plainPassword plain text password
+     *
+     * @return a brand new user
+     *
+     * @throws HttpErrorMessage if username is already taken
+     */
+    public User createAdminUser(String username, String email, String plainPassword) {
+        User admin = this.createUser(username, email, plainPassword);
+        this.grantAdminRight(admin.getId());
+        return admin;
     }
 
     /**
@@ -345,6 +382,32 @@ public class UserManagement {
      */
     public void grantAdminRight(Long id) {
         this.grantAdminRight(userDao.findUser(id));
+    }
+
+    /**
+     * Revoke admin right to a user.
+     *
+     * @param id id of user who will not be an admin any longer
+     */
+    public void revokeAdminRight(Long id) {
+        this.revokeAdminRight(userDao.findUser(id));
+    }
+
+    /**
+     * revoke admin right to a user.
+     *
+     * @param user user who will not be an admin any longer
+     */
+    public void revokeAdminRight(User user) {
+        if (user != null) {
+            User currentUser = requestManager.getCurrentUser();
+            if (user.equals(currentUser)) {
+                // user shall not remvoe admin right to itself
+                throw HttpErrorMessage.badRequest();
+            } else {
+                user.setAdmin(false);
+            }
+        }
     }
 
     /**
