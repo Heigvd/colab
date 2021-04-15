@@ -68,6 +68,16 @@ public class UserDao {
     }
 
     /**
+     * Get the list of all users
+     *
+     * @return list of all users
+     */
+    public List<User> getAllUsers() {
+        TypedQuery<User> query = em.createNamedQuery("User.findAll", User.class);
+        return query.getResultList();
+    }
+
+    /**
      * Find a user by id
      *
      * @param userId is of the user to search

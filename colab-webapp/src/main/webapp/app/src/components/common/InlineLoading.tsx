@@ -5,7 +5,8 @@
  * Licensed under the MIT License
  */
 import * as React from 'react';
-import Picto from '../styling/PictoBw';
+import PictoBw from '../styling/PictoBw';
+import Picto from '../styling/Picto';
 import { css, cx } from '@emotion/css';
 import { pulseEase } from '../styling/style';
 
@@ -13,16 +14,24 @@ interface Props {
   size?: string;
   maxWidth?: string;
   margin?: string;
+  colour?: boolean;
 }
 
-export default function InlineLoading({ size = '24px', maxWidth = '', margin = '' }: Props) {
+export default function InlineLoading({
+  size = '24px',
+  maxWidth = '',
+  margin = '',
+  colour = false,
+}: Props) {
+  const EffectivePicto = colour ? Picto : PictoBw;
   return (
     <div
       className={css({
+        display: 'inline-block',
         margin: margin,
       })}
     >
-      <Picto
+      <EffectivePicto
         className={cx(
           pulseEase,
           css({

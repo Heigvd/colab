@@ -4,18 +4,20 @@
  *
  * Licensed under the MIT License
  */
-import {WsUpdateMessage, entityIs, IndexEntry, TypeMap} from 'colab-rest-client';
-import {dispatch} from '../store/store';
+import { WsUpdateMessage, entityIs, IndexEntry, TypeMap } from 'colab-rest-client';
+import { dispatch } from '../store/store';
+import * as ErrorActions from '../store/error';
 import * as ProjectActions from '../store/project';
 import * as CardActions from '../store/card';
-import {initSocketId} from '../API/api';
+import * as UserActions from '../store/user';
+import { initSocketId } from '../API/api';
 
 /**
  * Does the given index entry represent the given type ?
  */
 const indexEntryIs = <T extends keyof TypeMap>(entry: IndexEntry, klass: T) => {
-  return entityIs({'@class': entry.type, id: entry.id}, klass);
-}
+  return entityIs({ '@class': entry.type, id: entry.id }, klass);
+};
 
 const onUpdate = (event: WsUpdateMessage) => {
   console.log('Delete: ', event.deleted);
@@ -24,6 +26,17 @@ const onUpdate = (event: WsUpdateMessage) => {
       dispatch(ProjectActions.removeProject(item.id));
     } else if (indexEntryIs(item, 'Card')) {
       dispatch(CardActions.removeCard(item.id));
+    } else if (indexEntryIs(item, 'User')) {
+      dispatch(UserActions.removeUser(item.id));
+    } else if (indexEntryIs(item, 'TeamMember')) {
+      dispatch(ProjectActions.removeTeamMember(item.id));
+    } else {
+      dispatch(
+        ErrorActions.addError({
+          status: 'OPEN',
+          error: new Error(`Unhandled deleted entity: ${item.type}#${item.id}`),
+        }),
+      );
     }
   }
 
@@ -33,6 +46,17 @@ const onUpdate = (event: WsUpdateMessage) => {
       dispatch(ProjectActions.updateProject(item));
     } else if (entityIs(item, 'Card')) {
       dispatch(CardActions.updateCard(item));
+    } else if (entityIs(item, 'User')) {
+      dispatch(UserActions.updateUser(item));
+    } else if (entityIs(item, 'TeamMember')) {
+      dispatch(ProjectActions.updateTeamMember(item));
+    } else {
+      dispatch(
+        ErrorActions.addError({
+          status: 'OPEN',
+          error: new Error(`Unhandled udpated entity: ${item['@class']}#${item.id}`),
+        }),
+      );
     }
   }
 };
@@ -46,7 +70,8 @@ const onUpdate = (event: WsUpdateMessage) => {
 
 function createConnection(onCloseCb: () => void) {
   console.log('Init Websocket Connection');
-  const connection = new WebSocket('ws:///' + window.location.host + '/ws');
+  const protocol = window.location.protocol === 'https' ? 'wss' : 'ws';
+  const connection = new WebSocket(`${protocol}:///${window.location.host}/ws`);
   console.log('Init Ws Done');
 
   connection.onclose = () => {
@@ -72,6 +97,7 @@ export function init() {
   // re-init connection to server if the current connection closed
   // it occurs when server is restarting
   const reinit = () => {
+    dispatch(initSocketId(null));
     setTimeout(() => {
       createConnection(reinit);
     }, 500);

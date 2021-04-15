@@ -16,11 +16,11 @@ import {
   WsSessionIdentifier,
 } from 'colab-rest-client';
 
-import {getStore, ColabState} from '../store/store';
+import { getStore, ColabState } from '../store/store';
 
-import {addError} from '../store/error';
-import {hashPassword} from '../SecurityHelper';
-import {createAsyncThunk} from '@reduxjs/toolkit';
+import { addError } from '../store/error';
+import { hashPassword } from '../SecurityHelper';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
 const restClient = ColabClient('', error => {
   if (entityIs(error, 'HttpException') || error instanceof Error) {
@@ -53,34 +53,35 @@ export const getRestClient = () => restClient;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 export const initSocketId = createAsyncThunk(
   'websocket/initSessionId',
-  async (payload: WsSessionIdentifier, thunkApi) => {
+  async (payload: WsSessionIdentifier | null, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
 
-    // when initializing / setting a new socket id
-    // an authenticated user shall reconnect to its own channel ASAP
-    if (state.auth.currentUserId != null) {
-      restClient.WebsocketController.subscribeToUserChannel(payload);
+    if (payload != null) {
+      // when initializing / setting a new socket id
+      // an authenticated user shall reconnect to its own channel ASAP
+      if (state.auth.currentUserId != null) {
+        restClient.WebsocketController.subscribeToUserChannel(payload);
+      }
     }
     return payload;
   },
 );
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Admin & Monitoring
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getLoggerLevels = createAsyncThunk(
-  'admin/getLoggerLevels',
-  async () => {
-    return await restClient.MonitoringController.getLoggerLevels()
-  },
-);
+export const getLoggerLevels = createAsyncThunk('admin/getLoggerLevels', async () => {
+  return await restClient.MonitoringController.getLoggerLevels();
+});
 
 export const changeLoggerLevel = createAsyncThunk(
   'admin/setLoggerLevel',
-  async (payload: {loggerName: string, loggerLevel: string}, thunkApi) => {
-    await restClient.MonitoringController.changeLoggerLevel(payload.loggerName, payload.loggerLevel);
+  async (payload: { loggerName: string; loggerLevel: string }, thunkApi) => {
+    await restClient.MonitoringController.changeLoggerLevel(
+      payload.loggerName,
+      payload.loggerLevel,
+    );
     thunkApi.dispatch(getLoggerLevels());
     return payload;
   },
@@ -88,7 +89,7 @@ export const changeLoggerLevel = createAsyncThunk(
 
 export const requestPasswordReset = createAsyncThunk(
   'auth/restPassword',
-  async (a: {email: string}) => {
+  async (a: { email: string }) => {
     await restClient.UserController.requestPasswordReset(a.email);
   },
 );
@@ -118,7 +119,7 @@ export const signInWithLocalAccount = createAsyncThunk(
 
 export const updateLocalAccountPassword = createAsyncThunk(
   'user/updatePassword',
-  async (a: {email: string; password: string}) => {
+  async (a: { email: string; password: string }) => {
     // first, fetch the authenatication method fot the account
     const authMethod = await restClient.UserController.getAuthMethod(a.email);
 
@@ -162,34 +163,36 @@ export const signUp = createAsyncThunk(
     await restClient.UserController.signUp(signUpInfo);
 
     // go back to login page
-    thunkApi.dispatch(signInWithLocalAccount({identifier: a.email, password: a.password}));
+    thunkApi.dispatch(signInWithLocalAccount({ identifier: a.email, password: a.password }));
   },
 );
 
-export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noPayload: void, thunkApi) => {
-  // one would like to await both query result later, but as those requests are most likely
-  // the very firsts to be sent to the server, it shoudl be avoided to prevent creatiing two
-  // colab_session_id
-  const currentAccount = await restClient.UserController.getCurrentAccount();
-  const currentUser = await restClient.UserController.getCurrentUser();
+export const reloadCurrentUser = createAsyncThunk(
+  'auth/reload',
+  async (_noPayload: void, thunkApi) => {
+    // one would like to await both query result later, but as those requests are most likely
+    // the very firsts to be sent to the server, it shoudl be avoided to prevent creatiing two
+    // colab_session_id
+    const currentAccount = await restClient.UserController.getCurrentAccount();
+    const currentUser = await restClient.UserController.getCurrentUser();
 
-  const allAccounts = await restClient.UserController.getAllCurrentUserAccounts();
+    const allAccounts = await restClient.UserController.getAllCurrentUserAccounts();
 
-  if (currentUser != null) {
-    // current user is authenticated
-    const state = thunkApi.getState() as ColabState;
-    if (state.websockets.sessionId != null
-      && state.auth.currentUserId != currentUser.id) {
-      // Websocket session is ready AND currentUser just changed
-      // subscribe to the new current user channel ASAP
-      await restClient.WebsocketController.subscribeToUserChannel({
-        "@class": 'WsSessionIdentifier',
-        sessionId: state.websockets.sessionId
-      });
+    if (currentUser != null) {
+      // current user is authenticated
+      const state = thunkApi.getState() as ColabState;
+      if (state.websockets.sessionId != null && state.auth.currentUserId != currentUser.id) {
+        // Websocket session is ready AND currentUser just changed
+        // subscribe to the new current user channel ASAP
+        await restClient.WebsocketController.subscribeToUserChannel({
+          '@class': 'WsSessionIdentifier',
+          sessionId: state.websockets.sessionId,
+        });
+      }
     }
-  }
-  return {currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts};
-});
+    return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
+  },
+);
 
 export const updateUser = createAsyncThunk('user/update', async (user: User) => {
   await restClient.UserController.updateUser(user);
@@ -200,14 +203,32 @@ export const getUser = createAsyncThunk('user/get', async (id: number) => {
   return await restClient.UserController.getUserById(id);
 });
 
+export const getAllUsers = createAsyncThunk('user/getAll', async () => {
+  return await restClient.UserController.getAllUsers();
+});
 
+export const grantAdminRight = createAsyncThunk('user/grantAdminRight', async (user: User) => {
+  if (user.id != null) {
+    return await restClient.UserController.grantAdminRight(user.id);
+  }
+});
+
+export const revokeAdminRight = createAsyncThunk('user/revokeAdminRight', async (user: User) => {
+  if (user.id != null) {
+    return await restClient.UserController.revokeAdminRight(user.id);
+  }
+});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Projects
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const initProjects = createAsyncThunk('project/init', async () => {
+export const getUserProjects = createAsyncThunk('project/users', async () => {
   return await restClient.ProjectController.getUserProjects();
+});
+
+export const getAllProjects = createAsyncThunk('project/all', async () => {
+  return await restClient.ProjectController.getAllProjects();
 });
 
 export const createProject = createAsyncThunk('project/create', async (project: Project) => {
@@ -235,13 +256,15 @@ export const getProjectTeam = createAsyncThunk('project/team/get', async (projec
   return await restClient.ProjectController.getMembers(projectId);
 });
 
-
-export const sendInvitation = createAsyncThunk('project/team/invite', async (payload: {projectId: number, recipient: string}, thunkApi) => {
-  if (payload.recipient) {
-    await restClient.ProjectController.inviteSomeone(payload.projectId, payload.recipient);
-    thunkApi.dispatch(getProjectTeam(payload.projectId));
-  }
-});
+export const sendInvitation = createAsyncThunk(
+  'project/team/invite',
+  async (payload: { projectId: number; recipient: string }, thunkApi) => {
+    if (payload.recipient) {
+      await restClient.ProjectController.inviteSomeone(payload.projectId, payload.recipient);
+      thunkApi.dispatch(getProjectTeam(payload.projectId));
+    }
+  },
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cards

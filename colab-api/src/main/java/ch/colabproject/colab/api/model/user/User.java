@@ -42,6 +42,7 @@ import javax.validation.constraints.Pattern;
 @Table(name = "users", indexes = {
     @Index(columnList = "username", unique = true)
 })
+@NamedQuery(name = "User.findAll", query = "SELECT u from User u")
 @NamedQuery(name = "User.findByUsername",
     query = "SELECT u from User u where u.username = :username")
 @NamedQuery(name = "User.findAllAdmin",

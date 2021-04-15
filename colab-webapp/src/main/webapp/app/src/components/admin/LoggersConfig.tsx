@@ -6,26 +6,31 @@
  */
 
 import * as React from 'react';
-import {useAppSelector, useAppDispatch} from '../../store/hooks';
-import {getLoggerLevels, changeLoggerLevel} from '../../API/api';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { getLoggerLevels, changeLoggerLevel } from '../../API/api';
 import InlineLoading from '../common/InlineLoading';
-import {css, cx} from '@emotion/css';
-import {buttonStyle} from '../styling/style';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faSync} from '@fortawesome/free-solid-svg-icons';
+import { css, cx } from '@emotion/css';
+import { buttonStyle } from '../styling/style';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSync } from '@fortawesome/free-solid-svg-icons';
 
 const LEVELS = ['OFF', 'ERROR', 'WARN', 'INFO', 'DEBUG', 'TRACE'];
 
-const levelStyle = css({
-})
+const levelStyle = css({});
 
-const effectiveStyle = cx(levelStyle, css({
-  fontWeight: 'bold'
-}))
+const effectiveStyle = cx(
+  levelStyle,
+  css({
+    fontWeight: 'bold',
+  }),
+);
 
-const selectedStyle = cx(effectiveStyle, css({
-  textDecoration: "underline"
-}))
+const selectedStyle = cx(
+  effectiveStyle,
+  css({
+    textDecoration: 'underline',
+  }),
+);
 
 export default () => {
   const levels = useAppSelector(state => state.admin.loggers);
@@ -60,10 +65,12 @@ export default () => {
         >
           <FontAwesomeIcon icon={faSync} />
         </span>
-        <div className={css({
-          display: 'grid',
-          gridTemplateColumns: 'repeat(7, auto)'
-        })}>
+        <div
+          className={css({
+            display: 'grid',
+            gridTemplateColumns: 'repeat(7, auto)',
+          })}
+        >
           {keys.map(loggerName => {
             const level = levels[loggerName];
             return (
@@ -72,36 +79,52 @@ export default () => {
                 className={css({
                   display: 'contents',
                   ':hover > div:first-child': {
-                    textDecoration: 'underline'
-                  }
-                })}>
-                <div>
-                  {loggerName}
-                </div>
+                    textDecoration: 'underline',
+                  },
+                })}
+              >
+                <div>{loggerName}</div>
                 {LEVELS.map(lvl => {
                   const item = (
                     <span
                       onClick={() => {
-                        dispatch(changeLoggerLevel({
-                          loggerName: loggerName,
-                          loggerLevel: lvl
-                        }))
+                        dispatch(
+                          changeLoggerLevel({
+                            loggerName: loggerName,
+                            loggerLevel: lvl,
+                          }),
+                        );
                       }}
-                      className={cx(buttonStyle, css({marginLeft: '5px'}))}>{lvl}</span>
+                      className={cx(buttonStyle, css({ marginLeft: '5px' }))}
+                    >
+                      {lvl}
+                    </span>
                   );
                   if (level.effectiveLevel !== lvl) {
-                    return <div key={lvl} className={levelStyle}>{item}</div>;
+                    return (
+                      <div key={lvl} className={levelStyle}>
+                        {item}
+                      </div>
+                    );
                   } else if (level.effectiveLevel === level.level) {
-                    return <div key={lvl} className={selectedStyle}>{item}</div>;
+                    return (
+                      <div key={lvl} className={selectedStyle}>
+                        {item}
+                      </div>
+                    );
                   } else {
-                    return <div key={lvl} className={effectiveStyle}>{item}</div>;
+                    return (
+                      <div key={lvl} className={effectiveStyle}>
+                        {item}
+                      </div>
+                    );
                   }
                 })}
               </div>
             );
           })}
         </div>
-      </div >
+      </div>
     );
   }
 };

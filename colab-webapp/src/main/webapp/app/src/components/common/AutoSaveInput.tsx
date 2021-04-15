@@ -33,14 +33,14 @@ export default ({ value, onChange }: { value: string; onChange: (newValue: strin
     [],
   );
 
-  const onInternalChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onInternalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     debouncedOnChange(e.target.value);
     setState({ ...state, currentValue: e.target.value });
   };
   if (state.status === 'EDIT') {
     return (
       <div>
-        <textarea value={state.currentValue} onChange={onInternalChange} />
+        <input value={state.currentValue} onChange={onInternalChange} />
 
         <FontAwesomeIcon
           className={iconButton}

@@ -15,7 +15,7 @@ import { css } from '@emotion/css';
 import { iconButton, buttonStyle } from '../styling/style';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
-import { AutoSaveTextEditor } from '../common/AutoSaveTextEditor';
+import AutoSaveTextEditor from '../common/AutoSaveTextEditor';
 import { Destroyer } from '../common/Destroyer';
 
 interface Props {

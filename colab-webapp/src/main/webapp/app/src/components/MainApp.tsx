@@ -9,56 +9,68 @@ import * as React from 'react';
 import Logo from './styling//WhiteLogo';
 
 import * as API from '../API/api';
-import {css, cx} from '@emotion/css';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
-import {CardList} from './cards/CardList';
-import {ProjectList} from './projects/ProjectList';
+import { css, cx } from '@emotion/css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { CardList } from './cards/CardList';
+import { UserProjects } from './projects/ProjectList';
 import SignInForm from './public/SignIn';
 import SignUpForm from './public/SignUp';
-import {fullPageStyle, iconButton, darkMode} from './styling/style';
+import { fullPageStyle, iconButton, darkMode } from './styling/style';
 import Loading from './common/Loading';
-import {useAppDispatch, useCurrentUser, useProject} from '../store/hooks';
+import { useAppDispatch, useCurrentUser, useProject, useAppSelector } from '../store/hooks';
 
-import {HashRouter as Router, Switch, Route, useParams, Redirect} from 'react-router-dom';
+import { HashRouter as Router, Switch, Route, useParams, Redirect } from 'react-router-dom';
 import Settings from './settings/Settings';
 import Admin from './admin/Admin';
-import {MainMenuLink} from './common/Link';
+import { MainMenuLink, InlineLink } from './common/Link';
 import ForgotPassword from './public/ForgotPassword';
-import {getDisplayName} from '../helper';
+import { getDisplayName } from '../helper';
 import Team from './projects/Team';
 import InlineLoading from './common/InlineLoading';
-
+import Overlay from './common/Overlay';
 
 /**
  * To read parameters from hash
  */
 function TeamWrapper() {
-  const {id} = useParams<{id: string;}>();
+  const { id } = useParams<{ id: string }>();
 
   const dispatch = useAppDispatch();
-  const {project, status} = useProject(+id);
+  const { project, status } = useProject(+id);
 
   if (project === undefined) {
     if (status === 'NOT_SET') {
-      dispatch(API.initProjects());
+      dispatch(API.getUserProjects());
     }
-    return <InlineLoading />
+    return <InlineLoading />;
   } else if (project == null) {
-    return <div>The project does not exists</div>
+    return <div>The project does not exists</div>;
   } else {
     return <Team project={project} />;
   }
 }
 
-
-
 export default () => {
-  //const status = useAppSelector((state) => state.navigation.status);
-  //const authenticationStatus = useAppSelector(state => state.auth.authenticationStatus);
+  const dispatch = useAppDispatch();
+
   const user = useCurrentUser();
 
-  const dispatch = useAppDispatch();
+  const socketId = useAppSelector(state => state.websockets.sessionId);
+
+  const reconnecting =
+    socketId == null ? (
+      <Overlay>
+        <div
+          className={css({
+            display: 'flex',
+            alignItems: 'center',
+          })}
+        >
+          <InlineLoading colour={true} /> <span>reconnecting...</span>
+        </div>
+      </Overlay>
+    ) : null;
 
   if (user === undefined) {
     // user is not known. Reload state from API
@@ -82,6 +94,7 @@ export default () => {
             <SignInForm />
           </Route>
         </Switch>
+        {reconnecting}
       </Router>
     );
   } else {
@@ -125,7 +138,7 @@ export default () => {
               })}
             ></div>
 
-            {getDisplayName(user)}
+            <InlineLink to="/settings/user">{getDisplayName(user)}</InlineLink>
             <FontAwesomeIcon
               className={iconButton}
               onClick={() => dispatch(API.signOut())}
@@ -140,7 +153,7 @@ export default () => {
           >
             <Switch>
               <Route exact path="/">
-                <ProjectList />
+                <UserProjects />
               </Route>
               <Route exact path="/cards">
                 <CardList />
@@ -155,11 +168,13 @@ export default () => {
                 <TeamWrapper />
               </Route>
               <Route>
-                <Redirect to='/' />
+                // no matching route, redirect to projects
+                <Redirect to="/" />
               </Route>
             </Switch>
           </div>
         </div>
+        {reconnecting}
       </Router>
     );
   }

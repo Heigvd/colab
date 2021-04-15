@@ -8,23 +8,26 @@
 import * as React from 'react';
 import * as API from '../../API/api';
 
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faPlus, faUsers} from '@fortawesome/free-solid-svg-icons';
-import {Project} from 'colab-rest-client';
-import {css} from '@emotion/css';
-import {iconButton, buttonStyle} from '../styling/style';
-import {useAppDispatch, useAppSelector} from '../../store/hooks';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { Project } from 'colab-rest-client';
+import { css } from '@emotion/css';
+import { iconButton, buttonStyle } from '../styling/style';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
-import {AutoSaveTextEditor} from '../common/AutoSaveTextEditor';
-import {Destroyer} from '../common/Destroyer';
-import {InlineLink} from '../common/Link';
+import { Destroyer } from '../common/Destroyer';
+import { InlineLink } from '../common/Link';
+import { AsyncThunk } from '@reduxjs/toolkit';
+import { StateStatus } from '../../store/project';
+import AutoSaveInput from '../common/AutoSaveInput';
+import AutoSaveTextEditor from '../common/AutoSaveTextEditor';
 
 interface Props {
   project: Project;
 }
 
 // Display one project and allow to edit its name
-const ProjectDisplay = ({project}: Props) => {
+const ProjectDisplay = ({ project }: Props) => {
   const dispatch = useAppDispatch();
   return (
     <div
@@ -42,7 +45,13 @@ const ProjectDisplay = ({project}: Props) => {
           borderBottom: '1px solid grey',
         })}
       >
-        <span className={css({})}>Project #{project.id}</span>
+        <span className={css({})}>
+          Project #{project.id}
+          <AutoSaveInput
+            value={project.name || ''}
+            onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+          />
+        </span>
       </div>
       <div
         className={css({
@@ -50,8 +59,8 @@ const ProjectDisplay = ({project}: Props) => {
         })}
       >
         <AutoSaveTextEditor
-          value={project.name || ''}
-          onChange={newValue => dispatch(API.updateProject({...project, name: newValue}))}
+          value={project.description || ''}
+          onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
         />
         <InlineLink to={`/team/${project.id}`}>
           <FontAwesomeIcon icon={faUsers} />
@@ -66,13 +75,17 @@ const ProjectDisplay = ({project}: Props) => {
   );
 };
 
-export function ProjectList() {
-  const status = useAppSelector(state => state.projects.status);
-  const projects = useAppSelector(state => Object.values(state.projects.projects));
+interface ProjectListProps {
+  projects: Project[];
+  status: StateStatus;
+  reload: AsyncThunk<Project[], void, {}>;
+}
+
+function ProjectList({ projects, status, reload }: ProjectListProps) {
   const dispatch = useAppDispatch();
 
   if (status === 'NOT_SET') {
-    dispatch(API.initProjects());
+    dispatch(reload());
     return <InlineLoading />;
   } else if (status === 'LOADING') {
     return <InlineLoading />;
@@ -106,3 +119,20 @@ export function ProjectList() {
     );
   }
 }
+
+export const UserProjects = () => {
+  const projects = useAppSelector(state =>
+    state.projects.mine.map(projectId => state.projects.projects[projectId]),
+  );
+
+  const status = useAppSelector(state => state.projects.status);
+
+  return <ProjectList projects={projects} status={status} reload={API.getUserProjects} />;
+};
+
+export const AllProjects = () => {
+  const projects = useAppSelector(state => Object.values(state.projects.projects));
+  const status = useAppSelector(state => state.projects.allStatus);
+
+  return <ProjectList projects={projects} status={status} reload={API.getAllProjects} />;
+};

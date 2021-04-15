@@ -4,26 +4,33 @@
  *
  * Licensed under the MIT License
  */
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import * as API from '../API/api';
-import {LevelDescriptor} from 'colab-rest-client';
+import { LevelDescriptor } from 'colab-rest-client';
 
 export interface AdminState {
-  loggers: {[key: string]: LevelDescriptor} | undefined | null;
+  loggers: { [key: string]: LevelDescriptor } | undefined | null;
+  userStatus: 'NOT_INITIALIZED' | 'LOADING' | 'INITIALIZED';
 }
 
 const initialState: AdminState = {
   loggers: undefined,
+  userStatus: 'NOT_INITIALIZED',
 };
 
 const adminSlice = createSlice({
   name: 'admin',
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: builder =>
     builder
-      .addCase(API.getLoggerLevels.pending, (state) => {
+      .addCase(API.getAllUsers.pending, state => {
+        state.userStatus = 'LOADING';
+      })
+      .addCase(API.getAllUsers.fulfilled, state => {
+        state.userStatus = 'INITIALIZED';
+      })
+      .addCase(API.getLoggerLevels.pending, state => {
         // undefined means not-loaded
         if (state.loggers === undefined) {
           // null means loading

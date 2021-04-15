@@ -6,15 +6,15 @@
  */
 import { css, keyframes, cx } from '@emotion/css';
 
-export const pictoColours =css({
+export const pictoColours = css({
   '--pictoBlue': '#50BFD5', // main blue
   '--pictoOrange': '#E36D28', // main orange
   '--pictoYellow': '#FFE527', // main yellow
   '--pictoLightBlue': '#8CE9FB', // blue-yellow intersection
   '--pictoPeach': '#FCC08B', // yellow-orange intersection
   '--pictoSteelBlue': '#68A8C3', // blue-orange intersection
-  '--pictoGrey': '#9AA4B1' // center colour
-})
+  '--pictoGrey': '#9AA4B1', // center colour
+});
 
 export const darkMode = css({
   '--bgColor': '#444',
@@ -48,8 +48,15 @@ export const fullPageStyle = cx(
     bottom: 0,
     left: 0,
     '& :focus': {
-      outline: 'var(--focusColor) auto 1px'
-    }
+      outline: 'var(--focusColor) auto 1px',
+    },
+  }),
+);
+
+export const fullPageOverlayStyle = cx(
+  fullPageStyle,
+  css({
+    backgroundColor: '#dfdfdfdf',
   }),
 );
 
@@ -69,11 +76,11 @@ const pulseKeyframes = keyframes`
 `;
 
 export const pulseLinear = css`
-  animation: ${pulseKeyframes} 3s linear infinite;
+  animation: ${pulseKeyframes} 3s linear 10;
 `;
 
 export const pulseEase = css`
-  animation: ${pulseKeyframes} 2s ease infinite;
+  animation: ${pulseKeyframes} 2s ease 10;
 `;
 
 export const buttonStyle = css({

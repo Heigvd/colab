@@ -40,6 +40,9 @@ public class SecurityTest extends AbstractArquillianTest {
      */
     public void assertAccessDenied() {
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
+            client.userController.getAllUsers();
+        });
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.projectController.getAllProjects();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
@@ -53,6 +56,9 @@ public class SecurityTest extends AbstractArquillianTest {
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.userController.grantAdminRight(1l);
+        });
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
+            client.userController.revokeAdminRight(1l);
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.userController.switchClientHashMethod(1l);

@@ -7,9 +7,9 @@
 
 import * as React from 'react';
 import Loading from '../common/Loading';
-import {getRestClient, reloadCurrentUser} from '../../API/api';
-import {useAppDispatch, useCurrentUser} from '../../store/hooks';
-import {Redirect} from 'react-router-dom';
+import { getRestClient, reloadCurrentUser } from '../../API/api';
+import { useAppDispatch, useCurrentUser } from '../../store/hooks';
+import { Redirect } from 'react-router-dom';
 
 interface TokenProps {
   tokenId: string;

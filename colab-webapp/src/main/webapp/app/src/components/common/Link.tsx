@@ -43,6 +43,7 @@ const secondLevelLinkActiveClass = cx(
 const secondLevelLink = cx(
   linkStyle,
   css({
+    marginLeft: '10px',
     textDecoration: 'none',
   }),
 );

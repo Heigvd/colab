@@ -5,8 +5,8 @@
  * Licensed under the MIT License
  */
 
-import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
-import {ColabState, AppDispatch} from './store';
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { ColabState, AppDispatch } from './store';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>();
@@ -23,30 +23,29 @@ export const useCurrentUser = () => {
   });
 };
 
-
 export const useProject = (id: number) => {
-  return useAppSelector((state) => {
+  return useAppSelector(state => {
     if (state.projects.projects[id]) {
       // project is known
       return {
         project: state.projects.projects[id],
-        status: 'SET' as 'SET'
-      }
+        status: 'SET' as 'SET',
+      };
     } else {
       // project is not knwon
       if (state.projects.status === 'SET') {
         // state is up to date, such project just does not exist
         return {
           project: null,
-          status: 'SET' as 'SET'
-        }
+          status: 'SET' as 'SET',
+        };
       } else {
         // this project may or may not exist...
         return {
           project: undefined,
-          status: state.projects.status
-        }
+          status: state.projects.status,
+        };
       }
     }
-  })
-}
+  });
+};

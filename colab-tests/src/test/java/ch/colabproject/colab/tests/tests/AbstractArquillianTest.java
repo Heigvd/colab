@@ -178,8 +178,8 @@ public abstract class AbstractArquillianTest {
      * Clear and init database
      */
     protected void resetDatabase() {
-        em.flush();
-        em.clear();
+//        em.flush();
+//        em.clear();
         em.getEntityManagerFactory().getCache().evictAll();
         clearDatabase();
         initDatabase();

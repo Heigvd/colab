@@ -23,6 +23,7 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -83,6 +84,18 @@ public class UserController {
     public AuthMethod getAuthMethod(@PathParam("identifier") String identifier) {
         logger.debug("get auth method for {}", identifier);
         return userManagement.getAuthenticationMethod(identifier);
+    }
+
+    /**
+     * Get all users
+     *
+     * @return list of all users
+     */
+    @GET
+    @AdminResource
+    public List<User> getAllUsers() {
+        logger.debug("get all users");
+        return userDao.getAllUsers();
     }
 
     /**
@@ -204,6 +217,19 @@ public class UserController {
     public void grantAdminRight(@PathParam("id") Long id) {
         logger.debug("Grant admin right to user #{}", id);
         userManagement.grantAdminRight(id);
+    }
+
+    /**
+     *  remove admin right to user identified by given id.
+     *
+     * @param id id of the user
+     */
+    @DELETE
+    @Path("{id : [1-9][0-9]*}/GrantAdminRight")
+    @AdminResource
+    public void revokeAdminRight(@PathParam("id") Long id) {
+        logger.debug("Grant admin right to user #{}", id);
+        userManagement.revokeAdminRight(id);
     }
 
     /**

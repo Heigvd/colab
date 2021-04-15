@@ -6,9 +6,11 @@
  */
 
 import * as React from 'react';
-import {HashRouter as Router, Switch, Route} from 'react-router-dom';
-import {SecondLevelLink} from '../common/Link';
+import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { SecondLevelLink } from '../common/Link';
 import LoggersConfig from './LoggersConfig';
+import UserList from './UserList';
+import { AllProjects } from '../projects/ProjectList';
 
 export default () => {
   return (
@@ -16,11 +18,13 @@ export default () => {
       <h2>Admin Page</h2>
       <Router basename="/admin">
         <div>
-          <ul>
-            <li>Users</li>
-            <li>Projects</li>
-            <li>Models</li>
+          <nav>
+            <SecondLevelLink to="/users">Users</SecondLevelLink>
+            <SecondLevelLink to="/projects">Projects</SecondLevelLink>
             <SecondLevelLink to="/loggers">Loggers</SecondLevelLink>
+          </nav>
+          <ul>
+            <li>Models</li>
             <li>co.LAB Version</li>
             <li>...</li>
           </ul>
@@ -30,7 +34,16 @@ export default () => {
                 <span>select something...</span>
               </Route>
               <Route exact path="/loggers">
-                <LoggersConfig  />
+                <LoggersConfig />
+              </Route>
+              <Route exact path="/projects">
+                <AllProjects />
+              </Route>
+              <Route exact path="/users">
+                <UserList />
+              </Route>
+              <Route>
+                <Redirect to="/" />
               </Route>
             </Switch>
           </div>

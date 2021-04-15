@@ -46,22 +46,18 @@ export default () => {
         <h2>Settings</h2>
         <Router basename="/settings">
           <div>
-            <ul>
-              <li>
-                <SecondLevelLink to="/user">User Profile</SecondLevelLink>
-              </li>
+            <nav>
+              <SecondLevelLink to="/user">User Profile</SecondLevelLink>
               {accounts.map(account => {
                 return (
-                  <li>
-                    <SecondLevelLink to={`/account/${account.id}`}>
-                      {accountTitle(account)}
-                    </SecondLevelLink>
-                  </li>
+                  <SecondLevelLink to={`/account/${account.id}`}>
+                    {accountTitle(account)}
+                  </SecondLevelLink>
                 );
               })}
-              <li>add account</li>
-              <li>...</li>
-            </ul>
+              <span>add account</span>
+              <span>...</span>
+            </nav>
             <div>
               <Switch>
                 <Route exact path="/">
