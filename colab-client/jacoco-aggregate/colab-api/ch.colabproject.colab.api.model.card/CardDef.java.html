@@ -7,14 +7,13 @@
 package ch.colabproject.colab.api.model.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.AuthorityHolderType;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,7 +28,7 @@ import javax.persistence.NamedQuery;
 //TODO review accurate constraints when stabilised
 @Entity
 @NamedQuery(name = &quot;CardDef.findAll&quot;, query = &quot;SELECT c from CardDef c&quot;)
-<span class="nc" id="L32">public class CardDef implements ColabEntity {</span>
+<span class="nc" id="L31">public class CardDef implements ColabEntity {</span>
 
     /**
      * Serial version UID
@@ -59,16 +58,20 @@ import javax.persistence.NamedQuery;
     private String purpose;
 
     /**
-     * Authority holder
+     * Authority holder : is it belonging to
+     * &lt;ul&gt;
+     * &lt;li&gt;a concrete project and behave for itself&lt;/li&gt;
+     * &lt;li&gt;a shared abstract model&lt;/li&gt;
+     * &lt;/ul&gt;
      */
     @Enumerated(value = EnumType.STRING)
-    private AuthorityHolderType authorityHolderType;
+    private ConcretizationCategory authorityHolder;
 
     /**
      * Project
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    //@JsonbTransient
+    @ManyToOne
+    // @JsonbTransient
     // TODO sandra - challenge JsonbTransient
     private Project project;
 
@@ -77,116 +80,120 @@ import javax.persistence.NamedQuery;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L80">        return id;</span>
+<span class="nc" id="L83">        return id;</span>
     }
 
     /**
      * @param id the new id
      */
     public void setId(Long id) {
-<span class="nc" id="L87">        this.id = id;</span>
-<span class="nc" id="L88">    }</span>
+<span class="nc" id="L90">        this.id = id;</span>
+<span class="nc" id="L91">    }</span>
 
     /**
      * @return the uniqueId
      */
     public String getUniqueId() {
-<span class="nc" id="L94">        return uniqueId;</span>
+<span class="nc" id="L97">        return uniqueId;</span>
     }
 
     /**
      * @param uniqueId the new uniqueId
      */
     public void setUniqueId(String uniqueId) {
-<span class="nc" id="L101">        this.uniqueId = uniqueId;</span>
-<span class="nc" id="L102">    }</span>
+<span class="nc" id="L104">        this.uniqueId = uniqueId;</span>
+<span class="nc" id="L105">    }</span>
 
     /**
      * @return the title
      */
     public String getTitle() {
-<span class="nc" id="L108">        return title;</span>
+<span class="nc" id="L111">        return title;</span>
     }
 
     /**
      * @param title the new title
      */
     public void setTitle(String title) {
-<span class="nc" id="L115">        this.title = title;</span>
-<span class="nc" id="L116">    }</span>
+<span class="nc" id="L118">        this.title = title;</span>
+<span class="nc" id="L119">    }</span>
 
     /**
      * @return the purpose
      */
     public String getPurpose() {
-<span class="nc" id="L122">        return purpose;</span>
+<span class="nc" id="L125">        return purpose;</span>
     }
 
     /**
      * @param purpose the new purpose
      */
     public void setPurpose(String purpose) {
-<span class="nc" id="L129">        this.purpose = purpose;</span>
-<span class="nc" id="L130">    }</span>
+<span class="nc" id="L132">        this.purpose = purpose;</span>
+<span class="nc" id="L133">    }</span>
 
     /**
-     * @return the authorityHolderType
+     * @return Authority holder : is it belonging to
+     * &lt;ul&gt;
+     * &lt;li&gt;a concrete project and behave for itself&lt;/li&gt;
+     * &lt;li&gt;a shared abstract model&lt;/li&gt;
+     * &lt;/ul&gt;
      */
-    public AuthorityHolderType getAuthorityHolderType() {
-<span class="nc" id="L136">        return authorityHolderType;</span>
+    public ConcretizationCategory getAuthorityHolder() {
+<span class="nc" id="L143">        return authorityHolder;</span>
     }
 
     /**
-     * @param authorityHolderType the new authorityHolderType
+     * @param authorityHolder new authority holder
      */
-    public void setAuthorityHolderType(AuthorityHolderType authorityHolderType) {
-<span class="nc" id="L143">        this.authorityHolderType = authorityHolderType;</span>
-<span class="nc" id="L144">    }</span>
+    public void setAuthorityHolder(ConcretizationCategory authorityHolder) {
+<span class="nc" id="L150">        this.authorityHolder = authorityHolder;</span>
+<span class="nc" id="L151">    }</span>
 
     /**
      * @return the project
      */
     public Project getProject() {
-<span class="nc" id="L150">        return project;</span>
+<span class="nc" id="L157">        return project;</span>
     }
 
     /**
      * @param project the new project
      */
     public void setProject(Project project) {
-<span class="nc" id="L157">        this.project = project;</span>
-<span class="nc" id="L158">    }</span>
+<span class="nc" id="L164">        this.project = project;</span>
+<span class="nc" id="L165">    }</span>
 
     /**
      * {@inheritDoc }
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L165" title="All 2 branches missed.">        if (other instanceof CardDef) {</span>
-<span class="nc" id="L166">            CardDef o = (CardDef) other;</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (other instanceof CardDef) {</span>
+<span class="nc" id="L173">            CardDef o = (CardDef) other;</span>
             // this.setUniqueId(o.getUniqueId());
-<span class="nc" id="L168">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L169">            this.setPurpose(o.getPurpose());</span>
-            // this.setAuthorityHolderType(o.getAuthorityHolderType());
-<span class="nc" id="L171">        } else {</span>
-<span class="nc" id="L172">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L175">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L176">            this.setPurpose(o.getPurpose());</span>
+            // this.setAuthorityHolder(o.getAuthorityHolder());
+<span class="nc" id="L178">        } else {</span>
+<span class="nc" id="L179">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L174">    }</span>
+<span class="nc" id="L181">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L178">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L185">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L184">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L191">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L189">        return &quot;CardDef{&quot; + &quot;id=&quot; + id + &quot;uniqueId=&quot; + uniqueId + &quot;title=&quot; + title + &quot;purpose=&quot;</span>
+<span class="nc" id="L196">        return &quot;CardDef{&quot; + &quot;id=&quot; + id + &quot;uniqueId=&quot; + uniqueId + &quot;title=&quot; + title + &quot;purpose=&quot;</span>
                 + purpose + &quot;}&quot;;
     }
 

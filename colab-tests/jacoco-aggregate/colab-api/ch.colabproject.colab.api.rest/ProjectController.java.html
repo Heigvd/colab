@@ -67,7 +67,7 @@ import javax.ws.rs.core.MediaType;
     @GET
     @Path(&quot;MyOwn&quot;)
     public List&lt;Project&gt; getUserProjects() {
-<span class="nc" id="L70">        return projectDao.getCurrentUserProject();</span>
+<span class="nc" id="L70">        return projectFacade.getCurrentUserProject();</span>
     }
 
     /**
@@ -140,7 +140,7 @@ import javax.ws.rs.core.MediaType;
     @POST
     @Path(&quot;Invite/{projectId: [0-9]}/{email}&quot;)
     public void inviteSomeone(@PathParam(&quot;projectId&quot;) Long projectId,
-        @PathParam(&quot;email&quot;) String email) {
+            @PathParam(&quot;email&quot;) String email) {
 <span class="fc" id="L144">        projectFacade.invite(projectId, email);</span>
 <span class="fc" id="L145">    }</span>
 }

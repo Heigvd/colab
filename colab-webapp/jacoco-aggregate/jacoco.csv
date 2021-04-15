@@ -14,13 +14,14 @@ colab-webapp/colab-api,ch.colabproject.colab.api.rest.utils,DateSerializer,10,0,
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.utils,RequestFilter,70,0,2,0,16,0,5,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.utils,EjbExceptionMapper,7,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,TokenFacade,326,0,24,0,97,0,22,0,10,0
-colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ProjectFacade,64,0,2,0,17,0,6,0,5,0
+colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ProjectFacade,81,0,2,0,21,0,7,0,6,0
+colab-webapp/colab-api,ch.colabproject.colab.api.ejb,CardFacade,9,0,0,0,3,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,TransactionManager,36,0,8,0,11,0,8,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,RequestManager,72,0,8,0,25,0,16,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,WebsocketSynchronizer,82,0,12,0,21,0,13,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,UserManagement,423,0,40,0,121,0,37,0,17,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,156,0,36,0,44,0,29,0,11,0
-colab-webapp/colab-api,ch.colabproject.colab.api.persistence.project,ProjectDao,64,0,0,0,16,0,7,0,7,0
+colab-webapp/colab-api,ch.colabproject.colab.api.persistence.project,ProjectDao,59,0,0,0,15,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,JsonDecoder,29,0,0,0,10,0,5,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,JsonEncoder,19,0,0,0,7,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,MessageBuilder,77,0,0,0,22,0,12,0,12,0
@@ -41,7 +42,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.user,User,177,0,12,0,55,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.config,JsonbProvider,26,0,0,0,7,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws,WebsocketEndpoint,90,0,2,0,26,0,10,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.exceptions,ColabMergeException,15,0,0,0,5,0,2,0,2,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model,AuthorityHolderType,24,0,0,0,3,0,1,0,1,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model,ConcretizationCategory,24,0,0,0,3,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,SessionManager,46,0,6,0,12,0,6,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,HttpSession,28,0,0,0,12,0,8,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,CookieFilter,67,0,2,0,17,0,5,0,4,0
@@ -61,7 +62,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.rest,ProjectController,45,0,0,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,EntityListener,21,0,4,0,7,0,5,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,JpaNameMappingCustomizer,44,0,2,0,13,0,7,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,EntityHelper,54,0,12,0,15,0,9,0,3,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.project,Project,60,0,2,0,20,0,12,0,11,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.project,Project,101,0,2,0,34,0,20,0,19,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.token,TokenDao,84,0,4,0,27,0,9,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.user,UserDao,108,0,6,0,34,0,12,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsDeleteMessage,21,0,0,0,9,0,4,0,4,0
