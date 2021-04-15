@@ -4,7 +4,8 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import * as API from '../API/api';
 
 export interface WebsocketState {
   sessionId?: string;
@@ -20,8 +21,10 @@ const wsSlice = createSlice({
       state.sessionId = action.payload;
     },
   },
+  extraReducers: builder => builder
+    .addCase(API.initSocketId.fulfilled, (state, action) => {
+      state.sessionId = action.payload.sessionId;
+    })
 });
-
-export const { setSessionId } = wsSlice.actions;
 
 export default wsSlice.reducer;

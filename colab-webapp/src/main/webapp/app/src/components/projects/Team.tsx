@@ -32,7 +32,7 @@ const Member = (props: MemberProps) => {
     }
   });
 
-  if (props.member.userId === null) {
+  if (props.member.userId == null) {
     return (
       <li>Invitation is pending...</li>
     );
@@ -102,7 +102,7 @@ export default (props: Props) => {
           </label>
           <span
             onClick={() => dispatch(sendInvitation({
-              projectId: 1,
+              projectId: props.project.id!,
               recipient: invite
             }))}
           >

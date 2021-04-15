@@ -13,9 +13,10 @@ import {
   Card,
   entityIs,
   User,
+  WsSessionIdentifier,
 } from 'colab-rest-client';
 
-import {getStore} from '../store/store';
+import {getStore, ColabState} from '../store/store';
 
 import {addError} from '../store/error';
 import {hashPassword} from '../SecurityHelper';
@@ -46,6 +47,44 @@ const restClient = ColabClient('', error => {
  * EG. token processing
  */
 export const getRestClient = () => restClient;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Websocket Management
+////////////////////////////////////////////////////////////////////////////////////////////////////
+export const initSocketId = createAsyncThunk(
+  'websocket/initSessionId',
+  async (payload: WsSessionIdentifier, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+
+    // when initializing / setting a new socket id
+    // an authenticated user shall reconnect to its own channel ASAP
+    if (state.auth.currentUserId != null) {
+      restClient.WebsocketController.subscribeToUserChannel(payload);
+    }
+    return payload;
+  },
+);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Admin & Monitoring
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getLoggerLevels = createAsyncThunk(
+  'admin/getLoggerLevels',
+  async () => {
+    return await restClient.MonitoringController.getLoggerLevels()
+  },
+);
+
+export const changeLoggerLevel = createAsyncThunk(
+  'admin/setLoggerLevel',
+  async (payload: {loggerName: string, loggerLevel: string}, thunkApi) => {
+    await restClient.MonitoringController.changeLoggerLevel(payload.loggerName, payload.loggerLevel);
+    thunkApi.dispatch(getLoggerLevels());
+    return payload;
+  },
+);
 
 export const requestPasswordReset = createAsyncThunk(
   'auth/restPassword',
@@ -127,7 +166,7 @@ export const signUp = createAsyncThunk(
   },
 );
 
-export const reloadCurrentUser = createAsyncThunk('auth/reload', async () => {
+export const reloadCurrentUser = createAsyncThunk('auth/reload', async (_noPayload: void, thunkApi) => {
   // one would like to await both query result later, but as those requests are most likely
   // the very firsts to be sent to the server, it shoudl be avoided to prevent creatiing two
   // colab_session_id
@@ -136,6 +175,19 @@ export const reloadCurrentUser = createAsyncThunk('auth/reload', async () => {
 
   const allAccounts = await restClient.UserController.getAllCurrentUserAccounts();
 
+  if (currentUser != null) {
+    // current user is authenticated
+    const state = thunkApi.getState() as ColabState;
+    if (state.websockets.sessionId != null
+      && state.auth.currentUserId != currentUser.id) {
+      // Websocket session is ready AND currentUser just changed
+      // subscribe to the new current user channel ASAP
+      await restClient.WebsocketController.subscribeToUserChannel({
+        "@class": 'WsSessionIdentifier',
+        sessionId: state.websockets.sessionId
+      });
+    }
+  }
   return {currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts};
 });
 

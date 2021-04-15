@@ -8,6 +8,7 @@ import { combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 
 import authReducer from './auth';
+import adminReducer from './admin';
 import cardReducer from './card';
 import errorReducer from './error';
 import projectReducer from './project';
@@ -18,6 +19,7 @@ import { configureStore } from '@reduxjs/toolkit';
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  admin: adminReducer,
   errors: errorReducer,
   navigation: navigationReducer,
   projects: projectReducer,

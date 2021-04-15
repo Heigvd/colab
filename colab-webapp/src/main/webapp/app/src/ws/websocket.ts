@@ -4,34 +4,35 @@
  *
  * Licensed under the MIT License
  */
-import { WsUpdateMessage, WsDeleteMessage, WsInitMessage, entityIs } from 'colab-rest-client';
-import { dispatch } from '../store/store';
+import {WsUpdateMessage, entityIs, IndexEntry, TypeMap} from 'colab-rest-client';
+import {dispatch} from '../store/store';
 import * as ProjectActions from '../store/project';
 import * as CardActions from '../store/card';
-import * as WsActions from '../store/websocket';
+import {initSocketId} from '../API/api';
+
+/**
+ * Does the given index entry represent the given type ?
+ */
+const indexEntryIs = <T extends keyof TypeMap>(entry: IndexEntry, klass: T) => {
+  return entityIs({'@class': entry.type, id: entry.id}, klass);
+}
 
 const onUpdate = (event: WsUpdateMessage) => {
-  console.log('Update: ', event);
-  for (const item of event.payload) {
+  console.log('Delete: ', event.deleted);
+  for (const item of event.deleted) {
+    if (indexEntryIs(item, 'Project')) {
+      dispatch(ProjectActions.removeProject(item.id));
+    } else if (indexEntryIs(item, 'Card')) {
+      dispatch(CardActions.removeCard(item.id));
+    }
+  }
+
+  console.log('Update: ', event.updated);
+  for (const item of event.updated) {
     if (entityIs(item, 'Project')) {
       dispatch(ProjectActions.updateProject(item));
     } else if (entityIs(item, 'Card')) {
       dispatch(CardActions.updateCard(item));
-    }
-  }
-};
-
-const onDelete = (event: WsDeleteMessage) => {
-  console.log('Delete: ', event);
-
-  for (const item of event.items) {
-    switch (item['type']) {
-      case 'Project':
-        dispatch(ProjectActions.removeProject(item.id));
-        break;
-      case 'Card':
-        dispatch(CardActions.removeCard(item.id));
-        break;
     }
   }
 };
@@ -54,26 +55,13 @@ function createConnection(onCloseCb: () => void) {
     onCloseCb();
   };
 
-  let resolveSessionId: (value: string | PromiseLike<string>) => void;
-
-  const p = new Promise<string>(resolve => {
-    resolveSessionId = resolve;
-  });
-
   connection.onmessage = messageEvent => {
     const message = JSON.parse(messageEvent.data);
-    if (entityIs(message, 'WsInitMessage')) {
-      dispatch(WsActions.setSessionId((message as WsInitMessage).sessionId));
-      resolveSessionId((message as WsInitMessage).sessionId);
+    if (entityIs(message, 'WsSessionIdentifier')) {
+      dispatch(initSocketId(message));
     } else if (entityIs(message, 'WsUpdateMessage')) {
       onUpdate(message);
-    } else if (entityIs(message, 'WsDeleteMessage')) {
-      onDelete(message);
     }
-  };
-
-  return {
-    getSessionId: p,
   };
 }
 
