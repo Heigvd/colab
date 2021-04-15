@@ -155,7 +155,9 @@ public class SecurityFacade {
      * @return true if both users are member of the same team
      */
     public boolean areUserTeammate(User a, User b) {
-        TypedQuery<Boolean> query = em.createNamedQuery("TeamMember.areUserTeammate", Boolean.class);
+        TypedQuery<Boolean> query = em.createNamedQuery(
+            "TeamMember.areUserTeammate",
+            Boolean.class);
         query.setParameter("aUserId", a.getId());
         query.setParameter("bUserId", b.getId());
 

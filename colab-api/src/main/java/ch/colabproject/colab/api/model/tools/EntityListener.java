@@ -7,11 +7,13 @@
 package ch.colabproject.colab.api.model.tools;
 
 import ch.colabproject.colab.api.ejb.TransactionManager;
-import ch.colabproject.colab.api.model.WithId;
+import ch.colabproject.colab.api.model.ColabEntity;
 import javax.inject.Inject;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
 import javax.persistence.PreRemove;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JPA Entity listener defined in orm.xml
@@ -19,6 +21,9 @@ import javax.persistence.PreRemove;
  * @author maxence
  */
 public class EntityListener {
+
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(EntityListener.class);
 
     /**
      * RequestManager
@@ -34,8 +39,9 @@ public class EntityListener {
     @PostPersist
     @PostUpdate
     public void onUpdate(Object o) {
-        if (o instanceof WithId) {
-            transactionManager.registerUpdate((WithId) o);
+        if (o instanceof ColabEntity) {
+            logger.trace("Update {}", o);
+            transactionManager.registerUpdate((ColabEntity) o);
         }
     }
 
@@ -46,8 +52,9 @@ public class EntityListener {
      */
     @PreRemove
     public void onDestroy(Object o) {
-        if (o instanceof WithId) {
-            transactionManager.registerDelete((WithId) o);
+        if (o instanceof ColabEntity) {
+            logger.trace("Destroy {}", o);
+            transactionManager.registerDelete((ColabEntity) o);
         }
     }
 }

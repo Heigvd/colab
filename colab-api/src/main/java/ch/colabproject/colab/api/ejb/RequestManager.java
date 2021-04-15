@@ -28,6 +28,12 @@ public class RequestManager {
     private UserDao userDao;
 
     /**
+     * Websocket business logic
+     */
+    @Inject
+    private WebsocketFacade websocketFacade;
+
+    /**
      * HTTP session associated to current request
      */
     private HttpSession httpSession;
@@ -146,9 +152,10 @@ public class RequestManager {
     }
 
     /**
-     * Clear current account.
+     * Clear current account and unsubscribe from all websocket channels.
      */
     public void logout() {
         this.getHttpSession().setAccountId(null);
+        websocketFacade.signoutAndUnsubscribeFromAll(this.getHttpSession().getSessionId());
     }
 }

@@ -27,7 +27,8 @@ import javax.validation.constraints.NotNull;
 
 @NamedQuery(
     name = "InvitationToken.findByProjectAndRecipient",
-    query = "SELECT t from InvitationToken t WHERE t.teamMember.project.id = :projectId AND t.recipient =:recipient"
+    query = "SELECT t from InvitationToken t "
+    + "WHERE t.teamMember.project.id = :projectId AND t.recipient =:recipient"
 )
 public class InvitationToken extends Token {
 

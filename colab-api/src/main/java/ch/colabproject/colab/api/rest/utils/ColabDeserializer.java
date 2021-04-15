@@ -28,7 +28,7 @@ public class ColabDeserializer implements JsonbDeserializer<WithJsonDiscriminato
     /**
      * Store class references
      */
-    private static final Map<String, Class<? extends WithJsonDiscriminator>> CLASSES_MAP 
+    private static final Map<String, Class<? extends WithJsonDiscriminator>> CLASSES_MAP
         = new HashMap<>();
 
     /**
@@ -40,7 +40,7 @@ public class ColabDeserializer implements JsonbDeserializer<WithJsonDiscriminato
         // analyse classes in the model package
         REFLECTIONS = new Reflections(
             "ch.colabproject.colab.generator.model",
-            "ch.colabproject.colab.api.model"
+            "ch.colabproject.colab.api"
         );
     }
 
@@ -49,7 +49,7 @@ public class ColabDeserializer implements JsonbDeserializer<WithJsonDiscriminato
      */
     @Override
     public WithJsonDiscriminator deserialize(JsonParser parser, DeserializationContext ctx,
-            Type rtType) {
+        Type rtType) {
 
         // find @class discriminant from object to deserialize
         JsonObject value = parser.getObject();

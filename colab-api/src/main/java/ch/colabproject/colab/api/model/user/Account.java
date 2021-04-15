@@ -8,6 +8,9 @@ package ch.colabproject.colab.api.model.user;
 
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.AdminChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -99,6 +102,15 @@ public abstract class Account implements ColabEntity {
      */
     public void setUserId(Long id) {
         this.userId = id;
+    }
+
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.user != null) {
+            return Set.of(this.user.getEffectiveChannel(), new AdminChannel());
+        } else {
+            return Set.of(new AdminChannel());
+        }
     }
 
     @Override

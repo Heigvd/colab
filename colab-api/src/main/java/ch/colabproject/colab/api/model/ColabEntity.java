@@ -7,6 +7,9 @@
 package ch.colabproject.colab.api.model;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.Set;
+import javax.json.bind.annotation.JsonbTransient;
 
 /**
  * Simple interface which depict persisted object that may be exchanged with clients
@@ -16,9 +19,18 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 public interface ColabEntity extends WithId {
 
     /**
+     * Get the channels this entity shall be sent through.
+     *
+     * @return list of channels
+     */
+    @JsonbTransient
+    Set<WebsocketChannel> getChannels();
+
+    /**
      * Update this object according to values provided by other
      *
      * @param other object to take new values from
+     *
      * @throws ColabMergeException if merging is not possible
      */
     void merge(ColabEntity other) throws ColabMergeException;

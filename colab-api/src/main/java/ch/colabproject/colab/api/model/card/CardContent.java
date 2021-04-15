@@ -9,6 +9,8 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -179,6 +181,15 @@ public class CardContent implements ColabEntity {
     }
 
     @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.card != null) {
+            return this.card.getChannels();
+        } else {
+            return Set.of();
+        }
+    }
+
+    @Override
     public int hashCode() {
         return EntityHelper.hashCode(this);
     }
@@ -192,7 +203,7 @@ public class CardContent implements ColabEntity {
     @Override
     public String toString() {
         return "CardContent{" + "id=" + id + ", title= " + title + ", status= " + status
-                + ", completion= " + completionLevel + ", completionMode= " + completionMode + "}";
+            + ", completion= " + completionLevel + ", completionMode= " + completionMode + "}";
     }
 
 }

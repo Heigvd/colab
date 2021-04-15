@@ -41,7 +41,7 @@ public class TypeScriptHelperTest {
     /**
      * used to fetch a GenericReturnType
      *
-     * @return
+     * @return empty map
      */
     public Map<String, Double> getMap() {
         return new HashMap<>();

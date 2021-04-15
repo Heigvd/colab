@@ -10,9 +10,13 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.AdminChannel;
+import ch.colabproject.colab.api.ws.channel.UserChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,6 +24,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -34,7 +39,9 @@ import javax.validation.constraints.Pattern;
  * @author maxence
  */
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = {
+    @Index(columnList = "username", unique = true)
+})
 @NamedQuery(name = "User.findByUsername",
     query = "SELECT u from User u where u.username = :username")
 @NamedQuery(name = "User.findAllAdmin",
@@ -305,6 +312,21 @@ public class User implements ColabEntity {
             }
         }
         return this.username;
+    }
+
+    /**
+     * Get the websocket channel relative to this user.
+     *
+     * @return the websocket channel
+     */
+    @JsonbTransient
+    public UserChannel getEffectiveChannel() {
+        return UserChannel.build(this);
+    }
+
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        return Set.of(this.getEffectiveChannel(), new AdminChannel());
     }
 
     @Override

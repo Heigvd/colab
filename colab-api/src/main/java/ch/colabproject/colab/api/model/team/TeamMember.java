@@ -9,7 +9,10 @@ package ch.colabproject.colab.api.model.team;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,7 +34,6 @@ import javax.persistence.Transient;
     query = "SELECT true FROM TeamMember a "
     + "JOIN TeamMember b ON a.project.id = b.project.id "
     + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
-
 public class TeamMember implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
@@ -169,5 +171,30 @@ public class TeamMember implements ColabEntity {
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         /* no-op */
+    }
+
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.project != null) {
+            return this.project.getChannels();
+        } else {
+            return Set.of();
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return EntityHelper.hashCode(this);
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object obj) {
+        return EntityHelper.equals(this, obj);
+    }
+
+    @Override
+    public String toString() {
+        return "TeamMember{" + "id=" + id + ", user=" + user + ", project=" + project + '}';
     }
 }

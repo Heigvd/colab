@@ -22,7 +22,8 @@ import javax.websocket.EndpointConfig;
 public class JsonEncoder implements Encoder.Text<WsMessage> {
 
     /**
-     * Serialize object using {@link JsonbProvider#getJsonb() }
+     *
+     * Serialize object using {@link #toJson(ch.colabproject.colab.api.ws.message.WsMessage) toJson}
      *
      * @param object object to serialize
      *
@@ -32,12 +33,7 @@ public class JsonEncoder implements Encoder.Text<WsMessage> {
      */
     @Override
     public String encode(WsMessage object) throws EncodeException {
-        try {
-            Jsonb jsonb = JsonbProvider.getJsonb();
-            return jsonb.toJson(object);
-        } catch (JsonbException ex) {
-            throw new EncodeException(object, ex.getMessage());
-        }
+        return toJson(object);
     }
 
     /**
@@ -56,4 +52,21 @@ public class JsonEncoder implements Encoder.Text<WsMessage> {
         /* no-op */
     }
 
+    /**
+     * Serialize object using {@link JsonbProvider#getJsonb() }
+     *
+     * @param object object to serialize
+     *
+     * @return JSON-serialized object
+     *
+     * @throws EncodeException if error
+     */
+    public static String toJson(WsMessage object) throws EncodeException {
+        try {
+            Jsonb jsonb = JsonbProvider.getJsonb();
+            return jsonb.toJson(object);
+        } catch (JsonbException ex) {
+            throw new EncodeException(object, ex.getMessage());
+        }
+    }
 }

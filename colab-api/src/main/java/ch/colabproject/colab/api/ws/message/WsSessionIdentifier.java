@@ -14,7 +14,7 @@ import javax.websocket.Session;
  *
  * @author maxence
  */
-public class WsInitMessage extends WsMessage {
+public class WsSessionIdentifier extends WsMessage {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,7 +27,7 @@ public class WsInitMessage extends WsMessage {
     /**
      * Default constructor
      */
-    public WsInitMessage() {
+    public WsSessionIdentifier() {
         /* no-op */
     }
 
@@ -36,7 +36,7 @@ public class WsInitMessage extends WsMessage {
      *
      * @param session client session
      */
-    public WsInitMessage(Session session) {
+    public WsSessionIdentifier(Session session) {
         this.sessionId = session.getId();
     }
 

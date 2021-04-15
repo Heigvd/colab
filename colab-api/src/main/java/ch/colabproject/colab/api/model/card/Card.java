@@ -9,8 +9,10 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -172,6 +174,15 @@ public class Card implements ColabEntity {
             this.setColor(o.getColor());
         } else {
             throw new ColabMergeException(this, other);
+        }
+    }
+
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.cardDef != null) {
+            return this.cardDef.getChannels();
+        } else {
+            return Set.of();
         }
     }
 

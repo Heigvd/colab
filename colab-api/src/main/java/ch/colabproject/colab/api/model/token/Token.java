@@ -11,9 +11,11 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.HashMethod;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Column;
@@ -212,17 +214,6 @@ public abstract class Token implements ColabEntity {
         return Arrays.equals(submited, this.getHashedToken());
     }
 
-    @Override
-    public int hashCode() {
-        return EntityHelper.hashCode(this);
-    }
-
-    @Override
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-    public boolean equals(Object obj) {
-        return EntityHelper.equals(this, obj);
-    }
-
     /**
      * Check is the token is outdate. A token without exipirationDate is never outdated.
      *
@@ -234,5 +225,22 @@ public abstract class Token implements ColabEntity {
             return this.expirationDate.isBefore(OffsetDateTime.now());
         }
         return false;
+    }
+
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        // never send tokens by websocket
+        return Set.of();
+    }
+
+    @Override
+    public int hashCode() {
+        return EntityHelper.hashCode(this);
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object obj) {
+        return EntityHelper.equals(this, obj);
     }
 }

@@ -11,6 +11,9 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -181,6 +184,15 @@ public class CardDef implements ColabEntity {
     }
 
     @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.project != null) {
+            return Set.of(ProjectContentChannel.build(project));
+        } else {
+            return Set.of();
+        }
+    }
+
+    @Override
     public int hashCode() {
         return EntityHelper.hashCode(this);
     }
@@ -194,7 +206,7 @@ public class CardDef implements ColabEntity {
     @Override
     public String toString() {
         return "CardDef{" + "id=" + id + "uniqueId=" + uniqueId + "title=" + title + "purpose="
-                + purpose + "}";
+            + purpose + "}";
     }
 
 }

@@ -194,6 +194,9 @@ public class UserManagement {
 
                 user.setUsername(signup.getUsername());
                 em.persist(user);
+                // flush changes to DB to check DB constraint
+                // TODO: build some AfterTXCommit executor
+                em.flush();
                 // new user with a localaccount should verify their e-mail address
                 tokenFacade.requestEmailAddressVerification(account, false);
                 return user;

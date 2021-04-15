@@ -6,54 +6,79 @@
  */
 package ch.colabproject.colab.api.ejb;
 
-import ch.colabproject.colab.api.model.WithId;
+import ch.colabproject.colab.api.exceptions.ColabRollbackException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.ws.WebsocketHelper;
+import ch.colabproject.colab.api.ws.message.IndexEntry;
+import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import java.io.Serializable;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.transaction.TransactionScoped;
-import javax.transaction.TransactionSynchronizationRegistry;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.ejb.AfterCompletion;
+import javax.ejb.BeforeCompletion;
+import javax.ejb.Stateful;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.websocket.EncodeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Transaction sidekick.
  *
  * @author maxence
  */
-@TransactionScoped
+@RequestScoped // one would use a TransactionScoped bean but such a scope is not compatible with
+//                the @AfterCompletion annotation
+@Stateful // Stateful beans allows to use Before and AfterCompletion annotations
 public class TransactionManager implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * JTA registry used to attach websocket synchronizer
-     */
-    @Resource
-    private transient TransactionSynchronizationRegistry jtaSyncRegistry;
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(TransactionManager.class);
 
     /**
-     * Websocket synchronizer
+     * To send message to clients
      */
-    private WebsocketSynchronizer sync;
+    @Inject
+    private WebsocketFacade websocketFacade;
 
     /**
-     * Some postConstruct logic. Attach a WS synchronizer to each request
+     * To resolve meta channels
      */
-    @PostConstruct
-    public void construct() {
-        if (jtaSyncRegistry != null && sync == null) {
-            sync = new WebsocketSynchronizer();
-            jtaSyncRegistry.registerInterposedSynchronization(sync);
-        }
-    }
+    @Inject
+    private UserDao userDao;
+
+    /**
+     * set of updated entities to be propagated
+     */
+    private Set<ColabEntity> updated = new HashSet<>();
+
+    /**
+     * set of entities which have been deleted during the transaction
+     */
+    private Set<IndexEntry> deleted = new HashSet<>();
+
+    /**
+     * store the prepared messages
+     */
+    private PrecomputedWsMessages message;
+
+    /**
+     * Is the message has been precomputed ?
+     */
+    private boolean precomputed = false;
 
     /**
      * Register updated object within the WS JTA synchronizer.
      *
      * @param o object to register
      */
-    public void registerUpdate(WithId o) {
-        if (sync != null) {
-            sync.registerUpdate(o);
-        }
+    public void registerUpdate(ColabEntity o) {
+        updated.add(o);
     }
 
     /**
@@ -61,9 +86,64 @@ public class TransactionManager implements Serializable {
      *
      * @param o just deleted object
      */
-    public void registerDelete(WithId o) {
-        if (sync != null) {
-            sync.registerDelete(o);
+    public void registerDelete(ColabEntity o) {
+        deleted.add(IndexEntry.build(o));
+    }
+
+    /**
+     * Pre compute the message.
+     */
+    private void precomputeMessage() throws EncodeException {
+        logger.debug("Pecompute messages");
+        Set<ColabEntity> filtered = updated.stream()
+            .filter(
+                (u) -> !deleted.stream()
+                    .anyMatch(
+                        (d) -> d.getId().equals(u.getId())
+                        && d.getType().equals(u.getJsonDiscriminator())
+                    )
+            ).collect(Collectors.toSet());
+
+        this.precomputed = true;
+        this.message = WebsocketHelper.prepareWsMessage(userDao, filtered, deleted);
+    }
+
+    /**
+     * Prepare websocket messages
+     */
+    @BeforeCompletion
+    public void beforeCompletion() {
+        logger.error("Before transactionCompletion: This method is never called! WHY ??");
+        logger.error("It this line printed ever ? ");
+        try {
+            this.precomputeMessage();
+        } catch (EncodeException ex) {
+            //throw runtime error to rollback
+            throw new ColabRollbackException(ex);
+        }
+    }
+
+    /**
+     * After commit, if the transaction was successful, send pre-computed messages.
+     *
+     * @param successful true of the transaction was successfully committed
+     */
+    @AfterCompletion
+    public void afterCompletion(boolean successful) {
+        logger.debug("After transaction completion : {}; messages: {}", successful, message);
+        if (successful) {
+            if (!precomputed) {
+                // ,essage shall be precomputed during the "before completion" phase, but the
+                // dedicated method is never called, and I do not understand the reason...
+                try {
+                    this.precomputeMessage();
+                } catch (EncodeException ex) {
+                    logger.error("Failed to precompute websocket messages");
+                }
+            }
+            if (message != null) {
+                websocketFacade.propagate(message);
+            }
         }
     }
 }

@@ -13,8 +13,11 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -34,7 +37,9 @@ import javax.persistence.OneToOne;
  */
 @Entity
 @NamedQuery(name = "Project.findAll", query = "SELECT p from Project p")
-@NamedQuery(name = "Project.findProjectByUser", query = "SELECT p from Project p JOIN p.teamMembers members WHERE members.user.id = :userId")
+@NamedQuery(
+    name = "Project.findProjectByUser",
+    query = "SELECT p from Project p JOIN p.teamMembers members WHERE  members.user.id = :userId")
 public class Project implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
@@ -211,6 +216,16 @@ public class Project implements ColabEntity {
         } else {
             throw new ColabMergeException(this, other);
         }
+    }
+
+    /**
+     * Project if propagated through its own overview channel.
+     *
+     * @return the channel
+     */
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        return Set.of(ProjectOverviewChannel.build(this));
     }
 
     @Override
