@@ -56,7 +56,7 @@ public class ProjectFacade {
      */
     public List<Project> getCurrentUserProject() {
         User user = securityFacade.assertAndGetCurrentUser();
-        return projectDao.getUserProject(user);
+        return projectDao.getUserProject(user.getId());
     }
 
     /**

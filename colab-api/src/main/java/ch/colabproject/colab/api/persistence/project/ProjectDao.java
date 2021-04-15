@@ -8,7 +8,6 @@ package ch.colabproject.colab.api.persistence.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -44,11 +43,12 @@ public class ProjectDao {
     /**
      * Get all projects the current user is member of
      *
+     * @param userId userId
      * @return list of project
      */
-    public List<Project> getUserProject(User user) {
+    public List<Project> getUserProject(Long userId) {
         TypedQuery<Project> query = em.createNamedQuery("Project.findProjectByUser", Project.class);
-        query.setParameter("userId", user.getId());
+        query.setParameter("userId", userId);
 
         return query.getResultList();
     }
