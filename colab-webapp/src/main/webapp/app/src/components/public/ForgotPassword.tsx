@@ -38,7 +38,7 @@ export default (_props: Props) => {
         </label>
       </div>
 
-      <span
+      <button
         className={cx(
           darkMode,
           buttonStyle,
@@ -57,7 +57,7 @@ export default (_props: Props) => {
         >
           Submit
         </span>
-      </span>
+      </button>
       <InlineLink to="/SignIn">cancel</InlineLink>
     </FormContainer>
   );

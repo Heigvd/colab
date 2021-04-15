@@ -20,7 +20,7 @@ import {fullPageStyle, iconButton, darkMode} from './styling/style';
 import Loading from './common/Loading';
 import {useAppDispatch, useCurrentUser, useProject} from '../store/hooks';
 
-import {HashRouter as Router, Switch, Route, useParams} from 'react-router-dom';
+import {HashRouter as Router, Switch, Route, useParams, Redirect} from 'react-router-dom';
 import Settings from './settings/Settings';
 import Admin from './admin/Admin';
 import {MainMenuLink} from './common/Link';
@@ -153,6 +153,9 @@ export default () => {
               </Route>
               <Route path="/team/:id">
                 <TeamWrapper />
+              </Route>
+              <Route>
+                <Redirect to='/' />
               </Route>
             </Switch>
           </div>

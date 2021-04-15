@@ -75,7 +75,7 @@ export default (_props: Props) => {
           </React.Suspense>
         </div>
         <div>
-          <span
+          <button
             className={cx(
               darkMode,
               buttonStyle,
@@ -92,7 +92,7 @@ export default (_props: Props) => {
                 padding: '0 5px',
               })}
             >
-              Sign in
+              Sign up
             </span>
             <FontAwesomeIcon
               className={css({
@@ -100,7 +100,7 @@ export default (_props: Props) => {
               })}
               icon={faSignInAlt}
             />
-          </span>
+          </button>
           <InlineLink to="/SignIn">cancel</InlineLink>
         </div>
       </div>

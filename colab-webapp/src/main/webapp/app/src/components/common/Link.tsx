@@ -30,13 +30,13 @@ const mainMenuLink = cx(
 
 const mainLinkActiveClass = cx(
   css({
-    borderBottom: '6px solid #8BE8FB',
+    borderBottom: '6px solid var(--pictoLightBlue)',
   }),
 );
 
 const secondLevelLinkActiveClass = cx(
   css({
-    borderBottom: '2px solid #8BE8FB',
+    borderBottom: '2px solid var(--pictoLightBlue)',
   }),
 );
 

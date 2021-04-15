@@ -51,7 +51,7 @@ export default function SignInForm(_props: Props) {
         </label>
       </div>
 
-      <span
+      <button
         className={cx(
           darkMode,
           buttonStyle,
@@ -76,7 +76,7 @@ export default function SignInForm(_props: Props) {
           })}
           icon={faSignInAlt}
         />
-      </span>
+      </button>
 
       <InlineLink to="/SignUp">create a account</InlineLink>
       <InlineLink to="/ForgotPassword">forgot your password ?</InlineLink>
