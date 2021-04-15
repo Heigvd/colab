@@ -261,10 +261,10 @@ public class Generator {
 <span class="nc" id="L261">            });</span>
 <span class="nc" id="L262">        }</span>
 
-<span class="nc" id="L264">        sb.append(&quot;/**&quot;</span>
-            + &quot; * Some orthopedic tools&quot;
-            + &quot; */&quot;
-            + &quot;interface TypeMap {\n  &quot;)
+<span class="nc" id="L264">        sb.append(&quot;/**\n&quot;</span>
+            + &quot; * Some orthopedic tools\n&quot;
+            + &quot; */\n\n&quot;
+            + &quot;export interface TypeMap {\n  &quot;)
 <span class="nc" id="L268">            .append(</span>
 <span class="nc" id="L269">                inheritance.keySet().stream().map((key)</span>
 <span class="nc" id="L270">                    -&gt; key + &quot;: &quot; + key + &quot;;&quot;)</span>

@@ -22,7 +22,8 @@ import javax.websocket.EndpointConfig;
 <span class="nc" id="L22">public class JsonEncoder implements Encoder.Text&lt;WsMessage&gt; {</span>
 
     /**
-     * Serialize object using {@link JsonbProvider#getJsonb() }
+     *
+     * Serialize object using {@link #toJson(ch.colabproject.colab.api.ws.message.WsMessage) toJson}
      *
      * @param object object to serialize
      *
@@ -32,12 +33,7 @@ import javax.websocket.EndpointConfig;
      */
     @Override
     public String encode(WsMessage object) throws EncodeException {
-        try {
-<span class="nc" id="L36">            Jsonb jsonb = JsonbProvider.getJsonb();</span>
-<span class="nc" id="L37">            return jsonb.toJson(object);</span>
-<span class="nc" id="L38">        } catch (JsonbException ex) {</span>
-<span class="nc" id="L39">            throw new EncodeException(object, ex.getMessage());</span>
-        }
+<span class="nc" id="L36">        return toJson(object);</span>
     }
 
     /**
@@ -46,7 +42,7 @@ import javax.websocket.EndpointConfig;
     @Override
     public void init(EndpointConfig config) {
         /* no-op */
-<span class="nc" id="L49">    }</span>
+<span class="nc" id="L45">    }</span>
 
     /**
      * {@inheritDoc }
@@ -54,7 +50,24 @@ import javax.websocket.EndpointConfig;
     @Override
     public void destroy() {
         /* no-op */
-<span class="nc" id="L57">    }</span>
+<span class="nc" id="L53">    }</span>
 
+    /**
+     * Serialize object using {@link JsonbProvider#getJsonb() }
+     *
+     * @param object object to serialize
+     *
+     * @return JSON-serialized object
+     *
+     * @throws EncodeException if error
+     */
+    public static String toJson(WsMessage object) throws EncodeException {
+        try {
+<span class="nc" id="L66">            Jsonb jsonb = JsonbProvider.getJsonb();</span>
+<span class="nc" id="L67">            return jsonb.toJson(object);</span>
+<span class="nc" id="L68">        } catch (JsonbException ex) {</span>
+<span class="nc" id="L69">            throw new EncodeException(object, ex.getMessage());</span>
+        }
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

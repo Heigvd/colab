@@ -68,6 +68,16 @@ import javax.persistence.TypedQuery;
     }
 
     /**
+     * Get the list of all users
+     *
+     * @return list of all users
+     */
+    public List&lt;User&gt; getAllUsers() {
+<span class="nc" id="L76">        TypedQuery&lt;User&gt; query = em.createNamedQuery(&quot;User.findAll&quot;, User.class);</span>
+<span class="nc" id="L77">        return query.getResultList();</span>
+    }
+
+    /**
      * Find a user by id
      *
      * @param userId is of the user to search
@@ -76,9 +86,9 @@ import javax.persistence.TypedQuery;
      */
     public User findUser(Long userId) {
         try {
-<span class="fc" id="L79">            return em.find(User.class, userId);</span>
-<span class="nc" id="L80">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L81">            return null;</span>
+<span class="fc" id="L89">            return em.find(User.class, userId);</span>
+<span class="nc" id="L90">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L91">            return null;</span>
         }
     }
 
@@ -91,13 +101,13 @@ import javax.persistence.TypedQuery;
      */
     public User findUserByUsername(String username) {
         try {
-<span class="fc" id="L94">            TypedQuery&lt;User&gt; query</span>
-<span class="fc" id="L95">                = em.createNamedQuery(&quot;User.findByUsername&quot;, User.class);</span>
-<span class="fc" id="L96">            query.setParameter(&quot;username&quot;, username);</span>
+<span class="fc" id="L104">            TypedQuery&lt;User&gt; query</span>
+<span class="fc" id="L105">                = em.createNamedQuery(&quot;User.findByUsername&quot;, User.class);</span>
+<span class="fc" id="L106">            query.setParameter(&quot;username&quot;, username);</span>
 
-<span class="fc" id="L98">            return query.getSingleResult();</span>
-<span class="fc" id="L99">        } catch (NoResultException ex) {</span>
-<span class="fc" id="L100">            return null;</span>
+<span class="fc" id="L108">            return query.getSingleResult();</span>
+<span class="fc" id="L109">        } catch (NoResultException ex) {</span>
+<span class="fc" id="L110">            return null;</span>
         }
     }
 
@@ -107,8 +117,8 @@ import javax.persistence.TypedQuery;
      * @return list of all administrator
      */
     public List&lt;User&gt; findAllAdmin() {
-<span class="fc" id="L110">        TypedQuery&lt;User&gt; query = em.createNamedQuery(&quot;User.findAllAdmin&quot;, User.class);</span>
-<span class="fc" id="L111">        return query.getResultList();</span>
+<span class="fc" id="L120">        TypedQuery&lt;User&gt; query = em.createNamedQuery(&quot;User.findAllAdmin&quot;, User.class);</span>
+<span class="fc" id="L121">        return query.getResultList();</span>
     }
 
     /**
@@ -119,24 +129,24 @@ import javax.persistence.TypedQuery;
      * @return LocalAccount
      */
     public LocalAccount findLocalAccountByIdentifier(String identifier) {
-<span class="fc" id="L122">        LocalAccount account = this.findLocalAccountByEmail(identifier);</span>
+<span class="fc" id="L132">        LocalAccount account = this.findLocalAccountByEmail(identifier);</span>
 
-<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (account == null) {</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">        if (account == null) {</span>
             // no localAccount with such an email addres
             // try to find a user by username
-<span class="fc" id="L127">            User user = this.findUserByUsername(identifier);</span>
-<span class="pc bpc" id="L128" title="1 of 2 branches missed.">            if (user != null) {</span>
+<span class="fc" id="L137">            User user = this.findUserByUsername(identifier);</span>
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">            if (user != null) {</span>
                 // User found, as authenticationMethod is only available for LocalAccount,
                 // try to find one
-<span class="nc" id="L131">                Optional&lt;Account&gt; optAccount = user.getAccounts().stream()</span>
-<span class="nc" id="L132">                    .filter(a -&gt; a instanceof LocalAccount)</span>
-<span class="nc" id="L133">                    .findFirst();</span>
-<span class="nc bnc" id="L134" title="All 2 branches missed.">                if (optAccount.isPresent()) {</span>
-<span class="nc" id="L135">                    account = (LocalAccount) optAccount.get();</span>
+<span class="nc" id="L141">                Optional&lt;Account&gt; optAccount = user.getAccounts().stream()</span>
+<span class="nc" id="L142">                    .filter(a -&gt; a instanceof LocalAccount)</span>
+<span class="nc" id="L143">                    .findFirst();</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">                if (optAccount.isPresent()) {</span>
+<span class="nc" id="L145">                    account = (LocalAccount) optAccount.get();</span>
                 }
             }
         }
-<span class="fc" id="L139">        return account;</span>
+<span class="fc" id="L149">        return account;</span>
     }
 
     /**
@@ -148,10 +158,10 @@ import javax.persistence.TypedQuery;
      * @throws ColabMergeException if something went wrong
      */
     public void updateUser(User user) throws ColabMergeException {
-<span class="fc" id="L151">        User managedUser = this.findUser(user.getId());</span>
+<span class="fc" id="L161">        User managedUser = this.findUser(user.getId());</span>
 
-<span class="fc" id="L153">        managedUser.merge(user);</span>
-<span class="fc" id="L154">    }</span>
+<span class="fc" id="L163">        managedUser.merge(user);</span>
+<span class="fc" id="L164">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

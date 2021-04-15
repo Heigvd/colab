@@ -28,6 +28,12 @@ import javax.inject.Inject;
     private UserDao userDao;
 
     /**
+     * Websocket business logic
+     */
+    @Inject
+    private WebsocketFacade websocketFacade;
+
+    /**
      * HTTP session associated to current request
      */
     private HttpSession httpSession;
@@ -48,7 +54,7 @@ import javax.inject.Inject;
      * @return url
      */
     public String getBaseUrl() {
-<span class="nc" id="L51">        return baseUrl;</span>
+<span class="nc" id="L57">        return baseUrl;</span>
     }
 
     /**
@@ -57,15 +63,15 @@ import javax.inject.Inject;
      * @param baseUrl request base url
      */
     public void setBaseUrl(String baseUrl) {
-<span class="nc" id="L60">        this.baseUrl = baseUrl;</span>
-<span class="nc" id="L61">    }</span>
+<span class="nc" id="L66">        this.baseUrl = baseUrl;</span>
+<span class="nc" id="L67">    }</span>
 
     /**
      *
      * @return the current http session
      */
     public HttpSession getHttpSession() {
-<span class="nc" id="L68">        return this.httpSession;</span>
+<span class="nc" id="L74">        return this.httpSession;</span>
     }
 
     /**
@@ -74,12 +80,12 @@ import javax.inject.Inject;
      * @param httpSession http session
      */
     public void setHttpSession(HttpSession httpSession) {
-<span class="nc" id="L77">        this.httpSession = httpSession;</span>
-<span class="nc" id="L78">        User currentUser = getCurrentUser();</span>
-<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (currentUser != null) {</span>
-<span class="nc" id="L80">            currentUser.touchLastSeenAt();</span>
+<span class="nc" id="L83">        this.httpSession = httpSession;</span>
+<span class="nc" id="L84">        User currentUser = getCurrentUser();</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (currentUser != null) {</span>
+<span class="nc" id="L86">            currentUser.touchLastSeenAt();</span>
         }
-<span class="nc" id="L82">    }</span>
+<span class="nc" id="L88">    }</span>
 
     /**
      * Get the current authenticated account
@@ -87,10 +93,10 @@ import javax.inject.Inject;
      * @return the current account or null if none
      */
     public Account getCurrentAccount() {
-<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (this.httpSession != null) {</span>
-<span class="nc" id="L91">            return userDao.findAccount(this.httpSession.getAccountId());</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        if (this.httpSession != null) {</span>
+<span class="nc" id="L97">            return userDao.findAccount(this.httpSession.getAccountId());</span>
         }
-<span class="nc" id="L93">        return null;</span>
+<span class="nc" id="L99">        return null;</span>
     }
 
     /**
@@ -99,12 +105,12 @@ import javax.inject.Inject;
      * @return the current user or null if none
      */
     public User getCurrentUser() {
-<span class="nc" id="L102">        Account account = this.getCurrentAccount();</span>
+<span class="nc" id="L108">        Account account = this.getCurrentAccount();</span>
 
-<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (account != null) {</span>
-<span class="nc" id="L105">            return account.getUser();</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (account != null) {</span>
+<span class="nc" id="L111">            return account.getUser();</span>
         } else {
-<span class="nc" id="L107">            return null;</span>
+<span class="nc" id="L113">            return null;</span>
         }
     }
 
@@ -115,8 +121,8 @@ import javax.inject.Inject;
      *
      */
     public void setStartTime(long timestamp) {
-<span class="nc" id="L118">        this.startTime = timestamp;</span>
-<span class="nc" id="L119">    }</span>
+<span class="nc" id="L124">        this.startTime = timestamp;</span>
+<span class="nc" id="L125">    }</span>
 
     /**
      * Return the time the request started
@@ -124,7 +130,7 @@ import javax.inject.Inject;
      * @return start time timestamp in ms
      */
     public long getStartTime() {
-<span class="nc" id="L127">        return startTime;</span>
+<span class="nc" id="L133">        return startTime;</span>
     }
 
     /**
@@ -133,7 +139,7 @@ import javax.inject.Inject;
      * @return true if the current user is fully authenticated
      */
     public Boolean isAuthenticated() {
-<span class="nc bnc" id="L136" title="All 2 branches missed.">        return this.getCurrentAccount() != null;</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        return this.getCurrentAccount() != null;</span>
     }
 
     /**
@@ -142,14 +148,15 @@ import javax.inject.Inject;
      * @param account new current account
      */
     public void login(Account account) {
-<span class="nc" id="L145">        this.getHttpSession().setAccountId(account.getId());</span>
-<span class="nc" id="L146">    }</span>
+<span class="nc" id="L151">        this.getHttpSession().setAccountId(account.getId());</span>
+<span class="nc" id="L152">    }</span>
 
     /**
-     * Clear current account.
+     * Clear current account and unsubscribe from all websocket channels.
      */
     public void logout() {
-<span class="nc" id="L152">        this.getHttpSession().setAccountId(null);</span>
-<span class="nc" id="L153">    }</span>
+<span class="nc" id="L158">        this.getHttpSession().setAccountId(null);</span>
+<span class="nc" id="L159">        websocketFacade.signoutAndUnsubscribeFromAll(this.getHttpSession().getSessionId());</span>
+<span class="nc" id="L160">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

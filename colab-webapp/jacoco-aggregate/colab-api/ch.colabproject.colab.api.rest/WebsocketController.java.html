@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>WebsocketController.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest</a> &gt; <span class="el_source">WebsocketController.java</span></div><h1>WebsocketController.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest;
+
+import ch.colabproject.colab.api.ejb.WebsocketFacade;
+import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
+import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+/**
+ * API to manage subscription to {@link WebsocketEffectiveChannel}.
+ * &lt;p&gt;
+ * &lt;u&gt;Note about un/subcriptions protocol:&lt;/u&gt; The link between HttpSessionId (cookie) and websocket
+ * session id must be known. As the client has no access to its cookie (httpOnly cookie, for
+ * security concerns), the subscription is made through the REST methods defined here. Thus, both
+ * htto session id and websocket session id are known at the same time.
+ *
+ * @author maxence
+ */
+@Path(&quot;websockets&quot;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@AuthenticationRequired
+<span class="nc" id="L35">public class WebsocketController {</span>
+
+    /**
+     * Websocket business logic
+     */
+    @Inject
+    private WebsocketFacade wsFacade;
+
+    /**
+     * Subscribe to the currentUser channel
+     *
+     * @param sessionId websocket session id
+     *
+     */
+    @PUT
+    @Path(&quot;SubscribeToUserChannel&quot;)
+    public void subscribeToUserChannel(WsSessionIdentifier sessionId) {
+<span class="nc" id="L52">        wsFacade.subscribeToUserChannel(sessionId);</span>
+<span class="nc" id="L53">    }</span>
+
+    /**
+     * Unsubscribe from the currentUser channel
+     *
+     * @param sessionId websocket session id
+     *
+     */
+    @PUT
+    @Path(&quot;UnsubscribeFromUserChannel&quot;)
+    public void unsubscribeFromUserChannel(WsSessionIdentifier sessionId) {
+<span class="nc" id="L64">        wsFacade.unsubscribeFromUserChannel(sessionId);</span>
+<span class="nc" id="L65">    }</span>
+
+    /**
+     * Subscribe to a ProjectContent channel.
+     *
+     * @param projectId id of the project
+     * @param sessionId websocket session id
+     */
+    @PUT
+    @Path(&quot;SubscribeToProjectChannel/{projectId: [0-9]*}&quot;)
+    public void subscribeToProjectChannel(
+        @PathParam(&quot;projectId&quot;) Long projectId,
+        WsSessionIdentifier sessionId
+    ) {
+<span class="nc" id="L79">        wsFacade.subscribeToProjectChannel(sessionId, projectId);</span>
+<span class="nc" id="L80">    }</span>
+
+    /**
+     * Unsubscribe from a ProjectContent channel.
+     *
+     * @param projectId id of the project
+     * @param sessionId websocket session id
+     */
+    @PUT
+    @Path(&quot;UnSubscribeFromProjectChannel/{projectId: [0-9]*}&quot;)
+    public void unsubscribeFromProjectChannel(
+        @PathParam(&quot;projectId&quot;) Long projectId,
+        WsSessionIdentifier sessionId
+    ) {
+<span class="nc" id="L94">        wsFacade.unsubscribeFromProjectChannel(sessionId, projectId);</span>
+<span class="nc" id="L95">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

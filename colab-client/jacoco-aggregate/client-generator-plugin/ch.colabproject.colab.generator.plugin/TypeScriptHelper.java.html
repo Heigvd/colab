@@ -230,6 +230,13 @@ public class TypeScriptHelper {
 <span class="nc" id="L230">        return false;</span>
     }
 
+    private static boolean isMap(Type javaType) {
+<span class="nc bnc" id="L234" title="All 2 branches missed.">        if (javaType instanceof Class) {</span>
+<span class="nc" id="L235">            return Map.class.isAssignableFrom((Class&lt;?&gt;) javaType);</span>
+        }
+<span class="nc" id="L237">        return false;</span>
+    }
+
     /**
      * Convert java type to typescript type. this method will populate the customTypes map with java
      * type which requires a dedicates TS interface.
@@ -240,51 +247,53 @@ public class TypeScriptHelper {
      * @return the typescript type name to use
      */
     public static String convertType(Type javaType, Map&lt;String, Type&gt; customTypes) {
-<span class="nc bnc" id="L243" title="All 2 branches missed.">        if (javaType == null) {</span>
-<span class="nc" id="L244">            return &quot;undefined&quot;;</span>
-<span class="nc bnc" id="L245" title="All 2 branches missed.">        } else if (javaType instanceof Class) {</span>
-<span class="nc" id="L246">            Class&lt;?&gt; javaClass = (Class&lt;?&gt;) javaType;</span>
-<span class="nc bnc" id="L247" title="All 2 branches missed.">            if (Number.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L248" title="All 2 branches missed.">                || byte.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L249" title="All 2 branches missed.">                || short.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L250" title="All 2 branches missed.">                || int.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L251" title="All 2 branches missed.">                || long.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L252" title="All 2 branches missed.">                || float.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L253" title="All 2 branches missed.">                || double.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L254" title="All 2 branches missed.">                || Temporal.class.isAssignableFrom(javaClass)) {</span>
-<span class="nc" id="L255">                return &quot;number&quot;;</span>
-<span class="nc bnc" id="L256" title="All 2 branches missed.">            } else if (String.class.isAssignableFrom(javaClass)) {</span>
-<span class="nc" id="L257">                return &quot;string&quot;;</span>
-<span class="nc bnc" id="L258" title="All 2 branches missed.">            } else if (boolean.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L259" title="All 2 branches missed.">                || Boolean.class.isAssignableFrom(javaClass)) {</span>
-<span class="nc" id="L260">                return &quot;boolean&quot;;</span>
-<span class="nc bnc" id="L261" title="All 2 branches missed.">            } else if (void.class.isAssignableFrom(javaClass)) {</span>
-<span class="nc" id="L262">                return &quot;void&quot;;</span>
-<span class="nc bnc" id="L263" title="All 2 branches missed.">            } else if (isArrayLike(javaClass)) {</span>
-<span class="nc" id="L264">                return &quot;unknown[]&quot;;</span>
-<span class="nc bnc" id="L265" title="All 2 branches missed.">            } else if (javaClass.isEnum()) {</span>
-<span class="nc" id="L266">                return Arrays.stream(javaClass.getEnumConstants())</span>
-<span class="nc" id="L267">                    .map(item -&gt; &quot;'&quot; + item.toString() + &quot;'&quot;)</span>
-<span class="nc" id="L268">                    .collect(Collectors.joining(&quot; | &quot;));</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">        if (javaType == null) {</span>
+<span class="nc" id="L251">            return &quot;undefined&quot;;</span>
+<span class="nc bnc" id="L252" title="All 2 branches missed.">        } else if (javaType instanceof Class) {</span>
+<span class="nc" id="L253">            Class&lt;?&gt; javaClass = (Class&lt;?&gt;) javaType;</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">            if (Number.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L255" title="All 2 branches missed.">                || byte.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L256" title="All 2 branches missed.">                || short.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L257" title="All 2 branches missed.">                || int.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">                || long.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L259" title="All 2 branches missed.">                || float.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">                || double.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L261" title="All 2 branches missed.">                || Temporal.class.isAssignableFrom(javaClass)) {</span>
+<span class="nc" id="L262">                return &quot;number&quot;;</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">            } else if (String.class.isAssignableFrom(javaClass)) {</span>
+<span class="nc" id="L264">                return &quot;string&quot;;</span>
+<span class="nc bnc" id="L265" title="All 2 branches missed.">            } else if (boolean.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">                || Boolean.class.isAssignableFrom(javaClass)) {</span>
+<span class="nc" id="L267">                return &quot;boolean&quot;;</span>
+<span class="nc bnc" id="L268" title="All 2 branches missed.">            } else if (void.class.isAssignableFrom(javaClass)) {</span>
+<span class="nc" id="L269">                return &quot;void&quot;;</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">            } else if (isArrayLike(javaClass)) {</span>
+<span class="nc" id="L271">                return &quot;unknown[]&quot;;</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">            } else if (javaClass.isEnum()) {</span>
+<span class="nc" id="L273">                return Arrays.stream(javaClass.getEnumConstants())</span>
+<span class="nc" id="L274">                    .map(item -&gt; &quot;'&quot; + item.toString() + &quot;'&quot;)</span>
+<span class="nc" id="L275">                    .collect(Collectors.joining(&quot; | &quot;));</span>
             } else {
-<span class="nc" id="L270">                String name = getTsTypeName(javaClass);</span>
-<span class="nc bnc" id="L271" title="All 2 branches missed.">                if (!customTypes.containsKey(name)) {</span>
-<span class="nc" id="L272">                    customTypes.put(name, javaType);</span>
+<span class="nc" id="L277">                String name = getTsTypeName(javaClass);</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">                if (!customTypes.containsKey(name)) {</span>
+<span class="nc" id="L279">                    customTypes.put(name, javaType);</span>
                     /* } else { // TODO check collision */
                 }
-<span class="nc" id="L275">                return name;</span>
+<span class="nc" id="L282">                return name;</span>
             }
-<span class="nc bnc" id="L277" title="All 2 branches missed.">        } else if (javaType instanceof ParameterizedType) {</span>
-<span class="nc" id="L278">            ParameterizedType genericType = (ParameterizedType) javaType;</span>
-<span class="nc" id="L279">            Type rawType = genericType.getRawType();</span>
-<span class="nc" id="L280">            Type[] args = genericType.getActualTypeArguments();</span>
-<span class="nc bnc" id="L281" title="All 2 branches missed.">            if (isArrayLike(rawType)) {</span>
-<span class="nc" id="L282">                return convertType(args[0], customTypes) + &quot;[]&quot;;</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">        } else if (javaType instanceof ParameterizedType) {</span>
+<span class="nc" id="L285">            ParameterizedType genericType = (ParameterizedType) javaType;</span>
+<span class="nc" id="L286">            Type rawType = genericType.getRawType();</span>
+<span class="nc" id="L287">            Type[] args = genericType.getActualTypeArguments();</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">            if (isArrayLike(rawType)) {</span>
+<span class="nc" id="L289">                return convertType(args[0], customTypes) + &quot;[]&quot;;</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">            } else if (isMap(rawType)) {</span>
+<span class="nc" id="L291">                return &quot;{[key: &quot; + convertType(args[0], customTypes) + &quot;]: &quot; + convertType(args[1], customTypes) + &quot;}&quot;;</span>
             } else {
-<span class="nc" id="L284">                return &quot;unknown&quot;;</span>
+<span class="nc" id="L293">                return &quot;unknown&quot;;</span>
             }
         } else {
-<span class="nc" id="L287">            return &quot;unknown&quot;;</span>
+<span class="nc" id="L296">            return &quot;unknown&quot;;</span>
         }
     }
 }

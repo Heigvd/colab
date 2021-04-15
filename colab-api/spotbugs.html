@@ -81,8 +81,8 @@
 <th>Errors</th>
 <th>Missing Classes</th></tr>
 <tr class="b">
-<td>78</td>
-<td>79</td>
+<td>96</td>
+<td>112</td>
 <td>0</td>
 <td>4</td></tr></table></section><section>
 <h2><a name="Files"></a>Files</h2>
@@ -94,11 +94,23 @@
 <td><a href="#ch.colabproject.colab.api.Helper">ch.colabproject.colab.api.Helper</a></td>
 <td>1</td></tr>
 <tr class="a">
+<td><a href="#ch.colabproject.colab.api.ejb.ProjectFacade">ch.colabproject.colab.api.ejb.ProjectFacade</a></td>
+<td>4</td></tr>
+<tr class="b">
 <td><a href="#ch.colabproject.colab.api.ejb.TokenFacade">ch.colabproject.colab.api.ejb.TokenFacade</a></td>
 <td>7</td></tr>
+<tr class="a">
+<td><a href="#ch.colabproject.colab.api.ejb.TransactionManager">ch.colabproject.colab.api.ejb.TransactionManager</a></td>
+<td>3</td></tr>
 <tr class="b">
 <td><a href="#ch.colabproject.colab.api.ejb.UserManagement">ch.colabproject.colab.api.ejb.UserManagement</a></td>
 <td>3</td></tr>
+<tr class="a">
+<td><a href="#ch.colabproject.colab.api.ejb.WebsocketFacade">ch.colabproject.colab.api.ejb.WebsocketFacade</a></td>
+<td>11</td></tr>
+<tr class="b">
+<td><a href="#ch.colabproject.colab.api.model.tools.EntityListener">ch.colabproject.colab.api.model.tools.EntityListener</a></td>
+<td>2</td></tr>
 <tr class="a">
 <td><a href="#ch.colabproject.colab.api.model.user.HashMethod$1">ch.colabproject.colab.api.model.user.HashMethod$1</a></td>
 <td>1</td></tr>
@@ -113,54 +125,89 @@
 <td>3</td></tr>
 <tr class="a">
 <td><a href="#ch.colabproject.colab.api.rest.MonitoringController">ch.colabproject.colab.api.rest.MonitoringController</a></td>
-<td>1</td></tr>
+<td>3</td></tr>
 <tr class="b">
 <td><a href="#ch.colabproject.colab.api.rest.ProjectController">ch.colabproject.colab.api.rest.ProjectController</a></td>
-<td>5</td></tr>
+<td>11</td></tr>
 <tr class="a">
 <td><a href="#ch.colabproject.colab.api.rest.TokenController">ch.colabproject.colab.api.rest.TokenController</a></td>
 <td>2</td></tr>
 <tr class="b">
 <td><a href="#ch.colabproject.colab.api.rest.UserController">ch.colabproject.colab.api.rest.UserController</a></td>
-<td>25</td></tr>
+<td>27</td></tr>
 <tr class="a">
+<td><a href="#ch.colabproject.colab.api.rest.WebsocketController">ch.colabproject.colab.api.rest.WebsocketController</a></td>
+<td>4</td></tr>
+<tr class="b">
 <td><a href="#ch.colabproject.colab.api.rest.card.CardContentController">ch.colabproject.colab.api.rest.card.CardContentController</a></td>
 <td>5</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#ch.colabproject.colab.api.rest.card.CardController">ch.colabproject.colab.api.rest.card.CardController</a></td>
 <td>5</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#ch.colabproject.colab.api.rest.card.CardDefController">ch.colabproject.colab.api.rest.card.CardDefController</a></td>
 <td>5</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#ch.colabproject.colab.api.rest.utils.AbstractExceptionMapper">ch.colabproject.colab.api.rest.utils.AbstractExceptionMapper</a></td>
 <td>1</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#ch.colabproject.colab.api.rest.utils.RequestFilter">ch.colabproject.colab.api.rest.utils.RequestFilter</a></td>
 <td>1</td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#ch.colabproject.colab.api.security.CookieFilter">ch.colabproject.colab.api.security.CookieFilter</a></td>
 <td>2</td></tr>
-<tr class="a">
-<td><a href="#ch.colabproject.colab.api.setup.ApplicationLifecycle">ch.colabproject.colab.api.setup.ApplicationLifecycle</a></td>
-<td>2</td></tr>
 <tr class="b">
+<td><a href="#ch.colabproject.colab.api.setup.ApplicationLifecycle">ch.colabproject.colab.api.setup.ApplicationLifecycle</a></td>
+<td>1</td></tr>
+<tr class="a">
 <td><a href="#ch.colabproject.colab.api.ws.WebsocketEndpoint">ch.colabproject.colab.api.ws.WebsocketEndpoint</a></td>
 <td>4</td></tr></table></section><a name="ch.colabproject.colab.api.Helper"></a><section>
 <h3><a name="ch.colabproject.colab.api.Helper"></a>ch.colabproject.colab.api.Helper</h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>The regular expression &quot;(?:[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&amp;'*+/=?^_`{|}~-]+)*|&quot;(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*&quot;)@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])&quot; is vulnerable to a denial of service attack (ReDOS)</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#REDOS">REDOS</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/Helper.html#L25">25</a></td>
-<td>Medium</td></tr></table></section><a name="ch.colabproject.colab.api.ejb.TokenFacade"></a><section>
+<td>Medium</td></tr></table></section><a name="ch.colabproject.colab.api.ejb.ProjectFacade"></a><section>
+<h3><a name="ch.colabproject.colab.api.ejb.ProjectFacade"></a>ch.colabproject.colab.api.ejb.ProjectFacade</h3>
+<table border="0" class="table table-striped">
+<tr class="b">
+<th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/ProjectFacade.html#L94">94</a></td>
+<td>Low</td></tr>
+<tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/ProjectFacade.html#L75">75</a></td>
+<td>Low</td></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/ProjectFacade.html#L116">116</a></td>
+<td>Low</td></tr>
+<tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/ProjectFacade.html#L129">129</a></td>
+<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.ejb.TokenFacade"></a><section>
 <h3><a name="ch.colabproject.colab.api.ejb.TokenFacade"></a>ch.colabproject.colab.api.ejb.TokenFacade</h3>
 <table border="0" class="table table-striped">
 <tr class="a">
@@ -182,6 +229,18 @@
 <td><a href="./xref/ch/colabproject/colab/api/ejb/TokenFacade.html#L143">143</a></td>
 <td>Medium</td></tr>
 <tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/TokenFacade.html#L80">80</a></td>
+<td>Medium</td></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.trace(Ljava/lang/String;[Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/TokenFacade.html#L102">102</a></td>
+<td>Medium</td></tr>
+<tr class="b">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
@@ -198,19 +257,33 @@
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/ejb/TokenFacade.html#L238">238</a></td>
-<td>Low</td></tr>
+<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.ejb.TransactionManager"></a><section>
+<h3><a name="ch.colabproject.colab.api.ejb.TransactionManager"></a>ch.colabproject.colab.api.ejb.TransactionManager</h3>
+<table border="0" class="table table-striped">
 <tr class="a">
+<th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th></tr>
+<tr class="b">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ejb/TokenFacade.html#L80">80</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/TransactionManager.html#L133">133</a></td>
 <td>Low</td></tr>
+<tr class="a">
+<td>Class ch.colabproject.colab.api.ejb.TransactionManager defines non-transient non-serializable instance field userDao</td>
+<td>BAD_PRACTICE</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
+<td>Not available</td>
+<td>High</td></tr>
 <tr class="b">
-<td>This use of org/slf4j/Logger.trace(Ljava/lang/String;[Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
-<td>SECURITY</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ejb/TokenFacade.html#L102">102</a></td>
-<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.ejb.UserManagement"></a><section>
+<td>Class ch.colabproject.colab.api.ejb.TransactionManager defines non-transient non-serializable instance field websocketFacade</td>
+<td>BAD_PRACTICE</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
+<td>Not available</td>
+<td>High</td></tr></table></section><a name="ch.colabproject.colab.api.ejb.UserManagement"></a><section>
 <h3><a name="ch.colabproject.colab.api.ejb.UserManagement"></a>ch.colabproject.colab.api.ejb.UserManagement</h3>
 <table border="0" class="table table-striped">
 <tr class="a">
@@ -223,21 +296,21 @@
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L383">383</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L449">449</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L403">403</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L469">469</a></td>
 <td>Low</td></tr>
 <tr class="b">
 <td>Unsafe comparison of hash that are susceptible to timing attack</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#UNSAFE_HASH_EQUALS">UNSAFE_HASH_EQUALS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L229">229</a></td>
-<td>Medium</td></tr></table></section><a name="ch.colabproject.colab.api.model.user.HashMethod1"></a><section>
-<h3><a name="ch.colabproject.colab.api.model.user.HashMethod.241"></a>ch.colabproject.colab.api.model.user.HashMethod$1</h3>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/UserManagement.html#L269">269</a></td>
+<td>Medium</td></tr></table></section><a name="ch.colabproject.colab.api.ejb.WebsocketFacade"></a><section>
+<h3><a name="ch.colabproject.colab.api.ejb.WebsocketFacade"></a>ch.colabproject.colab.api.ejb.WebsocketFacade</h3>
 <table border="0" class="table table-striped">
 <tr class="a">
 <th>Bug</th>
@@ -246,6 +319,100 @@
 <th>Line</th>
 <th>Priority</th></tr>
 <tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/WebsocketFacade.html#L172">172</a></td>
+<td>Medium</td></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/WebsocketFacade.html#L197">197</a></td>
+<td>Medium</td></tr>
+<tr class="b">
+<td>This use of org/slf4j/Logger.error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/WebsocketFacade.html#L355">355</a></td>
+<td>Low</td></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/WebsocketFacade.html#L221">221</a></td>
+<td>Low</td></tr>
+<tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/WebsocketFacade.html#L224">224</a></td>
+<td>Low</td></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/WebsocketFacade.html#L261">261</a></td>
+<td>Low</td></tr>
+<tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/WebsocketFacade.html#L264">264</a></td>
+<td>Low</td></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/WebsocketFacade.html#L276">276</a></td>
+<td>Low</td></tr>
+<tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/WebsocketFacade.html#L135">135</a></td>
+<td>Low</td></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/WebsocketFacade.html#L292">292</a></td>
+<td>Low</td></tr>
+<tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ejb/WebsocketFacade.html#L152">152</a></td>
+<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.model.tools.EntityListener"></a><section>
+<h3><a name="ch.colabproject.colab.api.model.tools.EntityListener"></a>ch.colabproject.colab.api.model.tools.EntityListener</h3>
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th></tr>
+<tr class="b">
+<td>This use of org/slf4j/Logger.trace(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/model/tools/EntityListener.html#L56">56</a></td>
+<td>Low</td></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.trace(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/model/tools/EntityListener.html#L43">43</a></td>
+<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.model.user.HashMethod1"></a><section>
+<h3><a name="ch.colabproject.colab.api.model.user.HashMethod.241"></a>ch.colabproject.colab.api.model.user.HashMethod$1</h3>
+<table border="0" class="table table-striped">
+<tr class="b">
+<th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th></tr>
+<tr class="a">
 <td>Should ch.colabproject.colab.api.model.user.HashMethod$1.hash(String, byte[]) return a zero length array rather than null?</td>
 <td>STYLE</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#PZLA_PREFER_ZERO_LENGTH_ARRAYS">PZLA_PREFER_ZERO_LENGTH_ARRAYS</a></td>
@@ -253,25 +420,25 @@
 <td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.persistence.card.CardContentDao"></a><section>
 <h3><a name="ch.colabproject.colab.api.persistence.card.CardContentDao"></a>ch.colabproject.colab.api.persistence.card.CardContentDao</h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/persistence/card/CardContentDao.html#L102">102</a></td>
 <td>Low</td></tr>
-<tr class="a">
+<tr class="b">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/persistence/card/CardContentDao.html#L59">59</a></td>
 <td>Low</td></tr>
-<tr class="b">
+<tr class="a">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
@@ -279,25 +446,25 @@
 <td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.persistence.card.CardDao"></a><section>
 <h3><a name="ch.colabproject.colab.api.persistence.card.CardDao"></a>ch.colabproject.colab.api.persistence.card.CardDao</h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/persistence/card/CardDao.html#L100">100</a></td>
 <td>Low</td></tr>
-<tr class="a">
+<tr class="b">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/persistence/card/CardDao.html#L57">57</a></td>
 <td>Low</td></tr>
-<tr class="b">
+<tr class="a">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
@@ -305,25 +472,25 @@
 <td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.persistence.card.CardDefDao"></a><section>
 <h3><a name="ch.colabproject.colab.api.persistence.card.CardDefDao"></a>ch.colabproject.colab.api.persistence.card.CardDefDao</h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/persistence/card/CardDefDao.html#L100">100</a></td>
 <td>Low</td></tr>
-<tr class="a">
+<tr class="b">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/persistence/card/CardDefDao.html#L57">57</a></td>
 <td>Low</td></tr>
-<tr class="b">
+<tr class="a">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
@@ -331,71 +498,119 @@
 <td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.rest.MonitoringController"></a><section>
 <h3><a name="ch.colabproject.colab.api.rest.MonitoringController"></a>ch.colabproject.colab.api.rest.MonitoringController</h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
+<tr class="a">
+<td>ch.colabproject.colab.api.rest.MonitoringController.ch.colabproject.colab.api.rest.MonitoringController.changeLoggerLevel(String, String) is a REST Web Service endpoint</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/MonitoringController.html#L62">62-63</a></td>
+<td>Low</td></tr>
 <tr class="b">
+<td>ch.colabproject.colab.api.rest.MonitoringController.ch.colabproject.colab.api.rest.MonitoringController.getLoggerLevels() is a REST Web Service endpoint</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/MonitoringController.html#L74">74</a></td>
+<td>Low</td></tr>
+<tr class="a">
 <td>ch.colabproject.colab.api.rest.MonitoringController.ch.colabproject.colab.api.rest.MonitoringController.getStatus() is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/MonitoringController.html#L33">33</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/MonitoringController.html#L45">45</a></td>
 <td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.rest.ProjectController"></a><section>
 <h3><a name="ch.colabproject.colab.api.rest.ProjectController"></a>ch.colabproject.colab.api.rest.ProjectController</h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L128">128</a></td>
+<td>Medium</td></tr>
 <tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L142">142</a></td>
+<td>Medium</td></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L90">90</a></td>
+<td>Medium</td></tr>
+<tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L156">156</a></td>
+<td>Medium</td></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L103">103</a></td>
+<td>Low</td></tr>
+<tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L116">116</a></td>
+<td>Low</td></tr>
+<tr class="a">
 <td>ch.colabproject.colab.api.rest.ProjectController.ch.colabproject.colab.api.rest.ProjectController.deleteProject(Long) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L118">118-119</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L128">128-130</a></td>
 <td>Low</td></tr>
-<tr class="a">
+<tr class="b">
 <td>ch.colabproject.colab.api.rest.ProjectController.ch.colabproject.colab.api.rest.ProjectController.getMembers(Long) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L131">131</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L142">142-143</a></td>
 <td>Low</td></tr>
-<tr class="b">
+<tr class="a">
 <td>ch.colabproject.colab.api.rest.ProjectController.ch.colabproject.colab.api.rest.ProjectController.getProject(Long) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L83">83</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L90">90-91</a></td>
 <td>Low</td></tr>
-<tr class="a">
+<tr class="b">
 <td>ch.colabproject.colab.api.rest.ProjectController.ch.colabproject.colab.api.rest.ProjectController.getUserProjects() is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L70">70</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L76">76-77</a></td>
 <td>Low</td></tr>
-<tr class="b">
+<tr class="a">
 <td>ch.colabproject.colab.api.rest.ProjectController.ch.colabproject.colab.api.rest.ProjectController.inviteSomeone(Long, String) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L144">144-145</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/ProjectController.html#L156">156-158</a></td>
 <td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.rest.TokenController"></a><section>
 <h3><a name="ch.colabproject.colab.api.rest.TokenController"></a>ch.colabproject.colab.api.rest.TokenController</h3>
 <table border="0" class="table table-striped">
-<tr class="a">
+<tr class="b">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="b">
+<tr class="a">
 <td>ch.colabproject.colab.api.rest.TokenController.ch.colabproject.colab.api.rest.TokenController.consumeToken(Long, String) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/rest/TokenController.html#L71">71-72</a></td>
 <td>Low</td></tr>
-<tr class="a">
+<tr class="b">
 <td>ch.colabproject.colab.api.rest.TokenController.ch.colabproject.colab.api.rest.TokenController.getToken(Long) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
@@ -403,161 +618,205 @@
 <td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.rest.UserController"></a><section>
 <h3><a name="ch.colabproject.colab.api.rest.UserController"></a>ch.colabproject.colab.api.rest.UserController</h3>
 <table border="0" class="table table-striped">
-<tr class="b">
+<tr class="a">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="a">
-<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
-<td>SECURITY</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L84">84</a></td>
-<td>Medium</td></tr>
 <tr class="b">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L98">98</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L85">85</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L205">205</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L111">111</a></td>
 <td>Medium</td></tr>
 <tr class="b">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L232">232</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L218">218</a></td>
 <td>Medium</td></tr>
 <tr class="a">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L260">260</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L258">258</a></td>
 <td>Medium</td></tr>
 <tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L231">231</a></td>
+<td>Medium</td></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L286">286</a></td>
+<td>Medium</td></tr>
+<tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L299">299</a></td>
+<td>Medium</td></tr>
+<tr class="a">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L180">180</a></td>
+<td>Low</td></tr>
+<tr class="b">
+<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L166">166</a></td>
+<td>Low</td></tr>
+<tr class="a">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L273">273</a></td>
-<td>Medium</td></tr>
-<tr class="a">
-<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
-<td>SECURITY</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L167">167</a></td>
 <td>Low</td></tr>
 <tr class="b">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L153">153</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L245">245</a></td>
 <td>Low</td></tr>
 <tr class="a">
 <td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L247">247</a></td>
-<td>Low</td></tr>
-<tr class="b">
-<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
-<td>SECURITY</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L219">219</a></td>
-<td>Low</td></tr>
-<tr class="a">
-<td>This use of org/slf4j/Logger.debug(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
-<td>SECURITY</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L191">191</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L204">204</a></td>
 <td>Low</td></tr>
 <tr class="b">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.getAllCurrentUserAccounts() is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L134">134-139</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L147">147-152</a></td>
 <td>Low</td></tr>
 <tr class="a">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.getAuthMethod(String) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L84">84-85</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L85">85-86</a></td>
 <td>Low</td></tr>
 <tr class="b">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.getCurrentAccount() is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L122">122-123</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L135">135-136</a></td>
 <td>Low</td></tr>
 <tr class="a">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.getCurrentUser() is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L110">110-111</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L123">123-124</a></td>
 <td>Low</td></tr>
 <tr class="b">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.getUserById(Long) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L98">98-99</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L111">111-112</a></td>
 <td>Low</td></tr>
 <tr class="a">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.grantAdminRight(Long) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L205">205-207</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L218">218-220</a></td>
 <td>Low</td></tr>
 <tr class="b">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.requestPasswordReset(String) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L232">232-234</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L258">258-260</a></td>
 <td>Low</td></tr>
 <tr class="a">
+<td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.revokeAdminRight(Long) is a REST Web Service endpoint</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L231">231-233</a></td>
+<td>Low</td></tr>
+<tr class="b">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.signIn(AuthInfo) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L167">167-169</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L180">180-182</a></td>
 <td>Low</td></tr>
-<tr class="b">
+<tr class="a">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.signOut() is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L177">177-179</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L190">190-192</a></td>
 <td>Low</td></tr>
-<tr class="a">
+<tr class="b">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.signUp(SignUpInfo) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L153">153-155</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L166">166-168</a></td>
 <td>Low</td></tr>
-<tr class="b">
+<tr class="a">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.switchClientHashMethod(Long) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L260">260-262</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L286">286-288</a></td>
+<td>Low</td></tr>
+<tr class="b">
+<td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.switchServerHashMethod(Long) is a REST Web Service endpoint</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L299">299-301</a></td>
 <td>Low</td></tr>
 <tr class="a">
-<td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.switchServerHashMethod(Long) is a REST Web Service endpoint</td>
+<td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.updateLocalAccountEmailAddress(LocalAccount) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
 <td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L273">273-275</a></td>
 <td>Low</td></tr>
 <tr class="b">
-<td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.updateLocalAccountEmailAddress(LocalAccount) is a REST Web Service endpoint</td>
-<td>SECURITY</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L247">247-249</a></td>
-<td>Low</td></tr>
-<tr class="a">
 <td>ch.colabproject.colab.api.rest.UserController.ch.colabproject.colab.api.rest.UserController.updateLocalAccountPassword(AuthInfo) is a REST Web Service endpoint</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L219">219-221</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/UserController.html#L245">245-247</a></td>
+<td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.rest.WebsocketController"></a><section>
+<h3><a name="ch.colabproject.colab.api.rest.WebsocketController"></a>ch.colabproject.colab.api.rest.WebsocketController</h3>
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>Bug</th>
+<th>Category</th>
+<th>Details</th>
+<th>Line</th>
+<th>Priority</th></tr>
+<tr class="b">
+<td>ch.colabproject.colab.api.rest.WebsocketController.ch.colabproject.colab.api.rest.WebsocketController.subscribeToProjectChannel(Long, WsSessionIdentifier) is a REST Web Service endpoint</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/WebsocketController.html#L79">79-80</a></td>
+<td>Low</td></tr>
+<tr class="a">
+<td>ch.colabproject.colab.api.rest.WebsocketController.ch.colabproject.colab.api.rest.WebsocketController.subscribeToUserChannel(WsSessionIdentifier) is a REST Web Service endpoint</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/WebsocketController.html#L52">52-53</a></td>
+<td>Low</td></tr>
+<tr class="b">
+<td>ch.colabproject.colab.api.rest.WebsocketController.ch.colabproject.colab.api.rest.WebsocketController.unsubscribeFromProjectChannel(Long, WsSessionIdentifier) is a REST Web Service endpoint</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/WebsocketController.html#L94">94-95</a></td>
+<td>Low</td></tr>
+<tr class="a">
+<td>ch.colabproject.colab.api.rest.WebsocketController.ch.colabproject.colab.api.rest.WebsocketController.unsubscribeFromUserChannel(WsSessionIdentifier) is a REST Web Service endpoint</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#JAXRS_ENDPOINT">JAXRS_ENDPOINT</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/rest/WebsocketController.html#L64">64-65</a></td>
 <td>Low</td></tr></table></section><a name="ch.colabproject.colab.api.rest.card.CardContentController"></a><section>
 <h3><a name="ch.colabproject.colab.api.rest.card.CardContentController"></a>ch.colabproject.colab.api.rest.card.CardContentController</h3>
 <table border="0" class="table table-striped">
@@ -730,48 +989,42 @@
 <th>Line</th>
 <th>Priority</th></tr>
 <tr class="b">
-<td>Class ch.colabproject.colab.api.setup.ApplicationLifecycle defines non-transient non-serializable instance field userDao</td>
-<td>BAD_PRACTICE</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
-<td>Not available</td>
-<td>Medium</td></tr>
-<tr class="a">
-<td>Class ch.colabproject.colab.api.setup.ApplicationLifecycle defines non-transient non-serializable instance field userManagement</td>
+<td>Class ch.colabproject.colab.api.setup.ApplicationLifecycle defines non-transient non-serializable instance field applicationLifecycleFacade</td>
 <td>BAD_PRACTICE</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a></td>
 <td>Not available</td>
 <td>Medium</td></tr></table></section><a name="ch.colabproject.colab.api.ws.WebsocketEndpoint"></a><section>
 <h3><a name="ch.colabproject.colab.api.ws.WebsocketEndpoint"></a>ch.colabproject.colab.api.ws.WebsocketEndpoint</h3>
 <table border="0" class="table table-striped">
-<tr class="b">
+<tr class="a">
 <th>Bug</th>
 <th>Category</th>
 <th>Details</th>
 <th>Line</th>
 <th>Priority</th></tr>
-<tr class="a">
-<td>This use of org/slf4j/Logger.info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
-<td>SECURITY</td>
-<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ws/WebsocketEndpoint.html#L111">111</a></td>
-<td>Low</td></tr>
 <tr class="b">
 <td>This use of org/slf4j/Logger.info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ws/WebsocketEndpoint.html#L100">100</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ws/WebsocketEndpoint.html#L117">117</a></td>
 <td>Low</td></tr>
 <tr class="a">
 <td>This use of org/slf4j/Logger.info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ws/WebsocketEndpoint.html#L89">89</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ws/WebsocketEndpoint.html#L106">106</a></td>
 <td>Low</td></tr>
 <tr class="b">
+<td>This use of org/slf4j/Logger.info(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
+<td>SECURITY</td>
+<td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ws/WebsocketEndpoint.html#L95">95</a></td>
+<td>Low</td></tr>
+<tr class="a">
 <td>This use of org/slf4j/Logger.info(Ljava/lang/String;Ljava/lang/Object;)V might be used to include CRLF characters into log messages</td>
 <td>SECURITY</td>
 <td><a class="externalLink" href="https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html#CRLF_INJECTION_LOGS">CRLF_INJECTION_LOGS</a></td>
-<td><a href="./xref/ch/colabproject/colab/api/ws/WebsocketEndpoint.html#L76">76</a></td>
+<td><a href="./xref/ch/colabproject/colab/api/ws/WebsocketEndpoint.html#L82">82</a></td>
 <td>Low</td></tr></table></section>
         </div>
       </div>

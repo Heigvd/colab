@@ -1,5 +1,6 @@
 ch.colabproject.colab.api
 ch.colabproject.colab.api.ejb
+ch.colabproject.colab.api.ejb.monitoring
 ch.colabproject.colab.api.exceptions
 ch.colabproject.colab.api.model
 ch.colabproject.colab.api.model.card
@@ -20,6 +21,7 @@ ch.colabproject.colab.api.security
 ch.colabproject.colab.api.service.smtp
 ch.colabproject.colab.api.setup
 ch.colabproject.colab.api.ws
+ch.colabproject.colab.api.ws.channel
 ch.colabproject.colab.api.ws.message
 ch.colabproject.colab.api.ws.utils
 ch.colabproject.colab.client

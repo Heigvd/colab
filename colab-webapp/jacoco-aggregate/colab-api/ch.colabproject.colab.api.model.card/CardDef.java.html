@@ -11,6 +11,9 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -28,7 +31,7 @@ import javax.persistence.NamedQuery;
 //TODO review accurate constraints when stabilised
 @Entity
 @NamedQuery(name = &quot;CardDef.findAll&quot;, query = &quot;SELECT c from CardDef c&quot;)
-<span class="nc" id="L31">public class CardDef implements ColabEntity {</span>
+<span class="nc" id="L34">public class CardDef implements ColabEntity {</span>
 
     /**
      * Serial version UID
@@ -80,57 +83,57 @@ import javax.persistence.NamedQuery;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L83">        return id;</span>
+<span class="nc" id="L86">        return id;</span>
     }
 
     /**
      * @param id the new id
      */
     public void setId(Long id) {
-<span class="nc" id="L90">        this.id = id;</span>
-<span class="nc" id="L91">    }</span>
+<span class="nc" id="L93">        this.id = id;</span>
+<span class="nc" id="L94">    }</span>
 
     /**
      * @return the uniqueId
      */
     public String getUniqueId() {
-<span class="nc" id="L97">        return uniqueId;</span>
+<span class="nc" id="L100">        return uniqueId;</span>
     }
 
     /**
      * @param uniqueId the new uniqueId
      */
     public void setUniqueId(String uniqueId) {
-<span class="nc" id="L104">        this.uniqueId = uniqueId;</span>
-<span class="nc" id="L105">    }</span>
+<span class="nc" id="L107">        this.uniqueId = uniqueId;</span>
+<span class="nc" id="L108">    }</span>
 
     /**
      * @return the title
      */
     public String getTitle() {
-<span class="nc" id="L111">        return title;</span>
+<span class="nc" id="L114">        return title;</span>
     }
 
     /**
      * @param title the new title
      */
     public void setTitle(String title) {
-<span class="nc" id="L118">        this.title = title;</span>
-<span class="nc" id="L119">    }</span>
+<span class="nc" id="L121">        this.title = title;</span>
+<span class="nc" id="L122">    }</span>
 
     /**
      * @return the purpose
      */
     public String getPurpose() {
-<span class="nc" id="L125">        return purpose;</span>
+<span class="nc" id="L128">        return purpose;</span>
     }
 
     /**
      * @param purpose the new purpose
      */
     public void setPurpose(String purpose) {
-<span class="nc" id="L132">        this.purpose = purpose;</span>
-<span class="nc" id="L133">    }</span>
+<span class="nc" id="L135">        this.purpose = purpose;</span>
+<span class="nc" id="L136">    }</span>
 
     /**
      * @return Authority holder : is it belonging to
@@ -140,61 +143,70 @@ import javax.persistence.NamedQuery;
      * &lt;/ul&gt;
      */
     public ConcretizationCategory getAuthorityHolder() {
-<span class="nc" id="L143">        return authorityHolder;</span>
+<span class="nc" id="L146">        return authorityHolder;</span>
     }
 
     /**
      * @param authorityHolder new authority holder
      */
     public void setAuthorityHolder(ConcretizationCategory authorityHolder) {
-<span class="nc" id="L150">        this.authorityHolder = authorityHolder;</span>
-<span class="nc" id="L151">    }</span>
+<span class="nc" id="L153">        this.authorityHolder = authorityHolder;</span>
+<span class="nc" id="L154">    }</span>
 
     /**
      * @return the project
      */
     public Project getProject() {
-<span class="nc" id="L157">        return project;</span>
+<span class="nc" id="L160">        return project;</span>
     }
 
     /**
      * @param project the new project
      */
     public void setProject(Project project) {
-<span class="nc" id="L164">        this.project = project;</span>
-<span class="nc" id="L165">    }</span>
+<span class="nc" id="L167">        this.project = project;</span>
+<span class="nc" id="L168">    }</span>
 
     /**
      * {@inheritDoc }
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L172" title="All 2 branches missed.">        if (other instanceof CardDef) {</span>
-<span class="nc" id="L173">            CardDef o = (CardDef) other;</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        if (other instanceof CardDef) {</span>
+<span class="nc" id="L176">            CardDef o = (CardDef) other;</span>
             // this.setUniqueId(o.getUniqueId());
-<span class="nc" id="L175">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L176">            this.setPurpose(o.getPurpose());</span>
+<span class="nc" id="L178">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L179">            this.setPurpose(o.getPurpose());</span>
             // this.setAuthorityHolder(o.getAuthorityHolder());
-<span class="nc" id="L178">        } else {</span>
-<span class="nc" id="L179">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L181">        } else {</span>
+<span class="nc" id="L182">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L181">    }</span>
+<span class="nc" id="L184">    }</span>
+
+    @Override
+    public Set&lt;WebsocketChannel&gt; getChannels() {
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L189">            return Set.of(ProjectContentChannel.build(project));</span>
+        } else {
+<span class="nc" id="L191">            return Set.of();</span>
+        }
+    }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L185">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L197">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L191">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L203">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L196">        return &quot;CardDef{&quot; + &quot;id=&quot; + id + &quot;uniqueId=&quot; + uniqueId + &quot;title=&quot; + title + &quot;purpose=&quot;</span>
-                + purpose + &quot;}&quot;;
+<span class="nc" id="L208">        return &quot;CardDef{&quot; + &quot;id=&quot; + id + &quot;uniqueId=&quot; + uniqueId + &quot;title=&quot; + title + &quot;purpose=&quot;</span>
+            + purpose + &quot;}&quot;;
     }
 
 }

@@ -7,18 +7,23 @@
 package ch.colabproject.colab.api.model.tools;
 
 import ch.colabproject.colab.api.ejb.TransactionManager;
-import ch.colabproject.colab.api.model.WithId;
+import ch.colabproject.colab.api.model.ColabEntity;
 import javax.inject.Inject;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
 import javax.persistence.PreRemove;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JPA Entity listener defined in orm.xml
  *
  * @author maxence
  */
-<span class="nc" id="L21">public class EntityListener {</span>
+<span class="nc" id="L23">public class EntityListener {</span>
+
+    /** logger */
+<span class="nc" id="L26">    private static final Logger logger = LoggerFactory.getLogger(EntityListener.class);</span>
 
     /**
      * RequestManager
@@ -34,10 +39,11 @@ import javax.persistence.PreRemove;
     @PostPersist
     @PostUpdate
     public void onUpdate(Object o) {
-<span class="nc bnc" id="L37" title="All 2 branches missed.">        if (o instanceof WithId) {</span>
-<span class="nc" id="L38">            transactionManager.registerUpdate((WithId) o);</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        if (o instanceof ColabEntity) {</span>
+<span class="nc" id="L43">            logger.trace(&quot;Update {}&quot;, o);</span>
+<span class="nc" id="L44">            transactionManager.registerUpdate((ColabEntity) o);</span>
         }
-<span class="nc" id="L40">    }</span>
+<span class="nc" id="L46">    }</span>
 
     /**
      * Intercept object just before their deletion
@@ -46,9 +52,10 @@ import javax.persistence.PreRemove;
      */
     @PreRemove
     public void onDestroy(Object o) {
-<span class="nc bnc" id="L49" title="All 2 branches missed.">        if (o instanceof WithId) {</span>
-<span class="nc" id="L50">            transactionManager.registerDelete((WithId) o);</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (o instanceof ColabEntity) {</span>
+<span class="nc" id="L56">            logger.trace(&quot;Destroy {}&quot;, o);</span>
+<span class="nc" id="L57">            transactionManager.registerDelete((ColabEntity) o);</span>
         }
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L59">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

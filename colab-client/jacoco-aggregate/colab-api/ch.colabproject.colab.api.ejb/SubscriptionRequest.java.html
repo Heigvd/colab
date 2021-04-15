@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SubscriptionRequest.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.ejb</a> &gt; <span class="el_source">SubscriptionRequest.java</span></div><h1>SubscriptionRequest.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.ejb;
+
+import java.io.Serializable;
+
+/**
+ * Subscription request to be propagated through the cluster to reach the instance which is
+ * responsible for the given wsSessionId
+ *
+ * @author maxence
+ */
+<span class="nc" id="L17">public class SubscriptionRequest implements Serializable {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Subscript or unsubscribe
+     */
+<span class="nc" id="L24">    public enum SubscriptionType {</span>
+        /**
+         * subscription request
+         */
+<span class="nc" id="L28">        SUBSCRIBE,</span>
+        /**
+         * Unsubscribe request
+         */
+<span class="nc" id="L32">        UNSUBSCRIBE</span>
+    }
+
+    /**
+     * One-to-one mapping to EffectiveChannels
+     */
+<span class="nc" id="L38">    public enum ChannelType {</span>
+        /**
+         * {@link ch.colabproject.colab.api.ws.channel.UserChannel user channel}
+         */
+<span class="nc" id="L42">        USER,</span>
+        /**
+         * {@link ch.colabproject.colab.api.ws.channel.ProjectContentChannel project channel}
+         */
+<span class="nc" id="L46">        PROJECT</span>
+    }
+
+    /**
+     * Type of request
+     */
+    private SubscriptionType type;
+
+    /**
+     * Websocket session id which want to (un)subscribe
+     */
+    private String wsSessionId;
+
+    /**
+     *
+     * HTTP session id which want to (un)subscribe
+     */
+    private String colabSessionId;
+
+    /**
+     * Type of channel : User | Project
+     */
+    private ChannelType channelType;
+
+    /**
+     * Id of the channel. Id of a project or user.
+     */
+    private Long channelId;
+
+    /**
+     * Get the type of request
+     *
+     * @return request type
+     */
+    public SubscriptionType getType() {
+<span class="nc" id="L81">        return type;</span>
+    }
+
+    /**
+     * Set type of request
+     *
+     * @param type subscript or unsubscribe
+     */
+    public void setType(SubscriptionType type) {
+<span class="nc" id="L90">        this.type = type;</span>
+<span class="nc" id="L91">    }</span>
+
+    /**
+     * Get the ws session id
+     *
+     * @return the ws session id
+     */
+    public String getWsSessionId() {
+<span class="nc" id="L99">        return wsSessionId;</span>
+    }
+
+    /**
+     * Set the websocket session id
+     *
+     * @param wsSessionId ws session id
+     */
+    public void setWsSessionId(String wsSessionId) {
+<span class="nc" id="L108">        this.wsSessionId = wsSessionId;</span>
+<span class="nc" id="L109">    }</span>
+
+    /**
+     * Get http session id
+     *
+     * @return http session id
+     */
+    public String getColabSessionId() {
+<span class="nc" id="L117">        return colabSessionId;</span>
+    }
+
+    /**
+     * Set HTTP session id
+     *
+     * @param colabSessionId id of the HTTP session
+     */
+    public void setColabSessionId(String colabSessionId) {
+<span class="nc" id="L126">        this.colabSessionId = colabSessionId;</span>
+<span class="nc" id="L127">    }</span>
+
+    /**
+     * get channel type.
+     *
+     * @return the type
+     */
+    public ChannelType getChannelType() {
+<span class="nc" id="L135">        return channelType;</span>
+    }
+
+    /**
+     * Set the type of channel
+     *
+     * @param channelType new channel type
+     */
+    public void setChannelType(ChannelType channelType) {
+<span class="nc" id="L144">        this.channelType = channelType;</span>
+<span class="nc" id="L145">    }</span>
+
+    /**
+     * Get id channel
+     *
+     * @return id of the channel
+     */
+    public Long getChannelId() {
+<span class="nc" id="L153">        return channelId;</span>
+    }
+
+    /**
+     * Set id of the channel
+     *
+     * @param channelId new id
+     */
+    public void setChannelId(Long channelId) {
+<span class="nc" id="L162">        this.channelId = channelId;</span>
+<span class="nc" id="L163">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L167">        return &quot;SubscriptionRequest{&quot;</span>
+            + &quot;type=&quot; + type
+            + &quot;, wsSessionId=&quot; + wsSessionId
+            + &quot;, colabSessionId=&quot; + colabSessionId
+            + &quot;, channelType=&quot; + channelType
+            + &quot;, channelId=&quot; + channelId + '}';
+    }
+
+    /**
+     * Build a request message
+     *
+     * @param type          type of the request
+     * @param channelType   channel type
+     * @param channelId     channel id
+     * @param wsSessionId   ws id
+     * @param httpSessionId http id
+     *
+     * @return the request
+     */
+    public static SubscriptionRequest build(
+        SubscriptionType type,
+        ChannelType channelType,
+        Long channelId,
+        String wsSessionId,
+        String httpSessionId
+    ) {
+<span class="nc" id="L193">        SubscriptionRequest sr = new SubscriptionRequest();</span>
+
+<span class="nc" id="L195">        sr.setType(type);</span>
+<span class="nc" id="L196">        sr.setChannelType(channelType);</span>
+<span class="nc" id="L197">        sr.setChannelId(channelId);</span>
+<span class="nc" id="L198">        sr.setColabSessionId(httpSessionId);</span>
+<span class="nc" id="L199">        sr.setWsSessionId(wsSessionId);</span>
+<span class="nc" id="L200">        return sr;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

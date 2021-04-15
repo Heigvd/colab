@@ -155,12 +155,14 @@ import javax.persistence.TypedQuery;
      * @return true if both users are member of the same team
      */
     public boolean areUserTeammate(User a, User b) {
-<span class="nc" id="L158">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(&quot;TeamMember.areUserTeammate&quot;, Boolean.class);</span>
-<span class="nc" id="L159">        query.setParameter(&quot;aUserId&quot;, a.getId());</span>
-<span class="nc" id="L160">        query.setParameter(&quot;bUserId&quot;, b.getId());</span>
+<span class="nc" id="L158">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
+            &quot;TeamMember.areUserTeammate&quot;,
+            Boolean.class);
+<span class="nc" id="L161">        query.setParameter(&quot;aUserId&quot;, a.getId());</span>
+<span class="nc" id="L162">        query.setParameter(&quot;bUserId&quot;, b.getId());</span>
 
         // if the query returns something, users are teammates
-<span class="nc bnc" id="L163" title="All 2 branches missed.">        return !query.getResultList().isEmpty();</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        return !query.getResultList().isEmpty();</span>
     }
 
     /**
@@ -171,11 +173,11 @@ import javax.persistence.TypedQuery;
      * @throws HttpErrorMessage forbidden
      */
     public void assertProjectWriteRight(Project project) {
-<span class="nc" id="L174">        User currentUser = assertAndGetCurrentUser();</span>
-<span class="nc bnc" id="L175" title="All 4 branches missed.">        if (!currentUser.isAdmin() &amp;&amp; !this.isUserMemebrOfProject(currentUser, project)) {</span>
-<span class="nc" id="L176">            throw HttpErrorMessage.forbidden();</span>
+<span class="nc" id="L176">        User currentUser = assertAndGetCurrentUser();</span>
+<span class="nc bnc" id="L177" title="All 4 branches missed.">        if (!currentUser.isAdmin() &amp;&amp; !this.isUserMemebrOfProject(currentUser, project)) {</span>
+<span class="nc" id="L178">            throw HttpErrorMessage.forbidden();</span>
         }
-<span class="nc" id="L178">    }</span>
+<span class="nc" id="L180">    }</span>
 
     /**
      * Make sure the current user has right to edit the project
@@ -185,10 +187,10 @@ import javax.persistence.TypedQuery;
      * @throws HttpErrorMessage forbidden
      */
     public void assertIsMember(Project project) {
-<span class="nc" id="L188">        User currentUser = assertAndGetCurrentUser();</span>
-<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (!this.isUserMemebrOfProject(currentUser, project)) {</span>
-<span class="nc" id="L190">            throw HttpErrorMessage.forbidden();</span>
+<span class="nc" id="L190">        User currentUser = assertAndGetCurrentUser();</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">        if (!this.isUserMemebrOfProject(currentUser, project)) {</span>
+<span class="nc" id="L192">            throw HttpErrorMessage.forbidden();</span>
         }
-<span class="nc" id="L192">    }</span>
+<span class="nc" id="L194">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

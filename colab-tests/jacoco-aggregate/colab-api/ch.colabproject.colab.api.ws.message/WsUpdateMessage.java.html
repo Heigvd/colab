@@ -6,13 +6,13 @@
  */
 package ch.colabproject.colab.api.ws.message;
 
-import ch.colabproject.colab.api.model.WithId;
+import ch.colabproject.colab.api.model.ColabEntity;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.validation.constraints.NotNull;
 
 /**
- * Websocket update message. Contains list of new or updated object
+ * Websocket update message. Contains list of new or updated object and list of destroyed entities.
  *
  * @author maxence
  */
@@ -21,41 +21,53 @@ public class WsUpdateMessage extends WsMessage {
     private static final long serialVersionUID = 1L;
 
     /**
-     * List of new or updated objects
+     * Collection of new or updated objects
      */
     @NotNull
-    private Collection&lt;WithId&gt; payload;
+    private Collection&lt;ColabEntity&gt; updated;
+
+    /**
+     * Collection of destroyed entities
+     */
+    @NotNull
+    private Collection&lt;IndexEntry&gt; deleted;
 
     /**
      * Default constructor
      */
-<span class="nc" id="L32">    public WsUpdateMessage() {</span>
-<span class="nc" id="L33">        this.payload = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L34">    }</span>
-
-    /**
-     * Create a message based on a list of new or updated objects
-     *
-     * @param payload list of objects
-     */
-<span class="fc" id="L41">    public WsUpdateMessage(Collection&lt;WithId&gt; payload) {</span>
-<span class="fc" id="L42">        this.payload = payload;</span>
-<span class="fc" id="L43">    }</span>
+<span class="fc" id="L38">    public WsUpdateMessage() {</span>
+<span class="fc" id="L39">        this.updated = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L40">        this.deleted = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L41">    }</span>
 
     /**
      * @return the list of new or updated objects to send to clients
      */
-    public Collection&lt;WithId&gt; getPayload() {
-<span class="nc" id="L49">        return payload;</span>
+    public Collection&lt;ColabEntity&gt; getUpdated() {
+<span class="fc" id="L47">        return updated;</span>
     }
 
     /**
      * Set paylosd
      *
-     * @param payload list of updated elements
+     * @param updated list of updated elements
      */
-    public void setPayload(Collection&lt;WithId&gt; payload) {
-<span class="nc" id="L58">        this.payload = payload;</span>
-<span class="nc" id="L59">    }</span>
+    public void setUpdated(Collection&lt;ColabEntity&gt; updated) {
+<span class="nc" id="L56">        this.updated = updated;</span>
+<span class="nc" id="L57">    }</span>
+
+    /**
+     * Get the list of deleted entities
+     *
+     * @return all deleted entites
+     */
+    public Collection&lt;IndexEntry&gt; getDeleted() {
+<span class="fc" id="L65">        return deleted;</span>
+    }
+
+    public void setDeleted(Collection&lt;IndexEntry&gt; deleted) {
+<span class="nc" id="L69">        this.deleted = deleted;</span>
+<span class="nc" id="L70">    }</span>
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

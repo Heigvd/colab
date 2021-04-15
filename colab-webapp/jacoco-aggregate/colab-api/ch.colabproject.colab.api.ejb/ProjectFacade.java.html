@@ -15,6 +15,8 @@ import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Some project logic
@@ -23,7 +25,10 @@ import javax.inject.Inject;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L26">public class ProjectFacade {</span>
+<span class="nc" id="L28">public class ProjectFacade {</span>
+
+    /** logger */
+<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(ProjectFacade.class);</span>
 
     /**
      * To control access
@@ -55,8 +60,8 @@ import javax.inject.Inject;
      * @return list of projects
      */
     public List&lt;Project&gt; getCurrentUserProject() {
-<span class="nc" id="L58">        User user = securityFacade.assertAndGetCurrentUser();</span>
-<span class="nc" id="L59">        return projectDao.getUserProject(user.getId());</span>
+<span class="nc" id="L63">        User user = securityFacade.assertAndGetCurrentUser();</span>
+<span class="nc" id="L64">        return projectDao.getUserProject(user.getId());</span>
     }
 
     /**
@@ -67,13 +72,14 @@ import javax.inject.Inject;
      * @return the new persisted project
      */
     public Project createNewProject(Project project) {
-<span class="nc" id="L70">        Card rootCard = cardFacade.createRootCard();</span>
-<span class="nc" id="L71">        project.setRootCard(rootCard);</span>
+<span class="nc" id="L75">        logger.debug(&quot;Create new project: {}&quot;, project);</span>
+<span class="nc" id="L76">        Card rootCard = cardFacade.createRootCard();</span>
+<span class="nc" id="L77">        project.setRootCard(rootCard);</span>
 
-<span class="nc" id="L73">        User user = securityFacade.assertAndGetCurrentUser();</span>
-<span class="nc" id="L74">        this.addMember(project, user);</span>
+<span class="nc" id="L79">        User user = securityFacade.assertAndGetCurrentUser();</span>
+<span class="nc" id="L80">        this.addMember(project, user);</span>
 
-<span class="nc" id="L76">        return projectDao.createProject(project);</span>
+<span class="nc" id="L82">        return projectDao.createProject(project);</span>
     }
 
     /**
@@ -85,16 +91,17 @@ import javax.inject.Inject;
      * @return the brand new member
      */
     public TeamMember addMember(Project project, User user) {
-<span class="nc" id="L88">        TeamMember teamMember = new TeamMember();</span>
+<span class="nc" id="L94">        logger.debug(&quot;Add member {} in {}&quot;, user, project);</span>
+<span class="nc" id="L95">        TeamMember teamMember = new TeamMember();</span>
 
         // todo check if user is already member of the team
-<span class="nc" id="L91">        teamMember.setUser(user);</span>
-<span class="nc" id="L92">        teamMember.setProject(project);</span>
-<span class="nc" id="L93">        project.getTeamMembers().add(teamMember);</span>
-<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (user != null) {</span>
-<span class="nc" id="L95">            user.getTeamMembers().add(teamMember);</span>
+<span class="nc" id="L98">        teamMember.setUser(user);</span>
+<span class="nc" id="L99">        teamMember.setProject(project);</span>
+<span class="nc" id="L100">        project.getTeamMembers().add(teamMember);</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (user != null) {</span>
+<span class="nc" id="L102">            user.getTeamMembers().add(teamMember);</span>
         }
-<span class="nc" id="L97">        return teamMember;</span>
+<span class="nc" id="L104">        return teamMember;</span>
     }
 
     /**
@@ -105,9 +112,10 @@ import javax.inject.Inject;
      * @return all members of the project team
      */
     public List&lt;TeamMember&gt; getTeamMembers(Long id) {
-<span class="nc" id="L108">        Project project = projectDao.getProject(id);</span>
-<span class="nc" id="L109">        securityFacade.assertIsMember(project);</span>
-<span class="nc" id="L110">        return project.getTeamMembers();</span>
+<span class="nc" id="L115">        Project project = projectDao.getProject(id);</span>
+<span class="nc" id="L116">        logger.debug(&quot;Get team members: {}&quot;, project);</span>
+<span class="nc" id="L117">        securityFacade.assertIsMember(project);</span>
+<span class="nc" id="L118">        return project.getTeamMembers();</span>
     }
 
     /**
@@ -117,8 +125,10 @@ import javax.inject.Inject;
      * @param email     send invitation to this address
      */
     public void invite(Long projectId, String email) {
-<span class="nc" id="L120">        Project project = projectDao.getProject(projectId);</span>
-<span class="nc" id="L121">        tokenFacade.sendMembershipInvitation(project, email);</span>
-<span class="nc" id="L122">    }</span>
+<span class="nc" id="L128">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L129">        logger.debug(&quot;Invite {} to join {}&quot;, email, project);</span>
+<span class="nc" id="L130">        securityFacade.assertProjectWriteRight(project);</span>
+<span class="nc" id="L131">        tokenFacade.sendMembershipInvitation(project, email);</span>
+<span class="nc" id="L132">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

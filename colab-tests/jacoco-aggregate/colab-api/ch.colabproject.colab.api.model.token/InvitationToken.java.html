@@ -27,9 +27,10 @@ import javax.validation.constraints.NotNull;
 
 @NamedQuery(
     name = &quot;InvitationToken.findByProjectAndRecipient&quot;,
-    query = &quot;SELECT t from InvitationToken t WHERE t.teamMember.project.id = :projectId AND t.recipient =:recipient&quot;
+    query = &quot;SELECT t from InvitationToken t &quot;
+    + &quot;WHERE t.teamMember.project.id = :projectId AND t.recipient =:recipient&quot;
 )
-<span class="fc" id="L32">public class InvitationToken extends Token {</span>
+<span class="fc" id="L33">public class InvitationToken extends Token {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -62,7 +63,7 @@ import javax.validation.constraints.NotNull;
      * @return team member
      */
     public TeamMember getTeamMember() {
-<span class="nc" id="L65">        return teamMember;</span>
+<span class="nc" id="L66">        return teamMember;</span>
     }
 
     /**
@@ -71,8 +72,8 @@ import javax.validation.constraints.NotNull;
      * @param teamMember the team member for which this invitation is pending
      */
     public void setTeamMember(TeamMember teamMember) {
-<span class="fc" id="L74">        this.teamMember = teamMember;</span>
-<span class="fc" id="L75">    }</span>
+<span class="fc" id="L75">        this.teamMember = teamMember;</span>
+<span class="fc" id="L76">    }</span>
 
     /**
      * Get sender name
@@ -80,7 +81,7 @@ import javax.validation.constraints.NotNull;
      * @return name of sender
      */
     public String getSender() {
-<span class="fc" id="L83">        return sender;</span>
+<span class="fc" id="L84">        return sender;</span>
     }
 
     /**
@@ -89,8 +90,8 @@ import javax.validation.constraints.NotNull;
      * @param sender name of the sender
      */
     public void setSender(String sender) {
-<span class="fc" id="L92">        this.sender = sender;</span>
-<span class="fc" id="L93">    }</span>
+<span class="fc" id="L93">        this.sender = sender;</span>
+<span class="fc" id="L94">    }</span>
 
     /**
      * Email address to send the invitation to
@@ -98,7 +99,7 @@ import javax.validation.constraints.NotNull;
      * @return email address
      */
     public String getRecipient() {
-<span class="fc" id="L101">        return recipient;</span>
+<span class="fc" id="L102">        return recipient;</span>
     }
 
     /**
@@ -107,16 +108,16 @@ import javax.validation.constraints.NotNull;
      * @param recipient recipient email address
      */
     public void setRecipient(String recipient) {
-<span class="fc" id="L110">        this.recipient = recipient;</span>
-<span class="fc" id="L111">    }</span>
+<span class="fc" id="L111">        this.recipient = recipient;</span>
+<span class="fc" id="L112">    }</span>
 
     @Override
     public String getRedirectTo() {
-<span class="fc" id="L115">        Project project = getProject();</span>
-<span class="pc bpc" id="L116" title="2 of 4 branches missed.">        if (project != null &amp;&amp; project.getId() != null) {</span>
-<span class="fc" id="L117">            return &quot;/project/&quot; + getId();</span>
+<span class="fc" id="L116">        Project project = getProject();</span>
+<span class="pc bpc" id="L117" title="2 of 4 branches missed.">        if (project != null &amp;&amp; project.getId() != null) {</span>
+<span class="fc" id="L118">            return &quot;/project/&quot; + getId();</span>
         }
-<span class="nc" id="L119">        return &quot;&quot;;</span>
+<span class="nc" id="L120">        return &quot;&quot;;</span>
     }
 
     /**
@@ -124,14 +125,14 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void consume(RequestManager requestManager) {
-<span class="fc" id="L127">        User user = requestManager.getCurrentUser();</span>
-<span class="pc bpc" id="L128" title="1 of 2 branches missed.">        if (user != null) {</span>
-<span class="fc" id="L129">            teamMember.setUser(user);</span>
-<span class="fc" id="L130">            user.getTeamMembers().add(teamMember);</span>
+<span class="fc" id="L128">        User user = requestManager.getCurrentUser();</span>
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">        if (user != null) {</span>
+<span class="fc" id="L130">            teamMember.setUser(user);</span>
+<span class="fc" id="L131">            user.getTeamMembers().add(teamMember);</span>
         } else {
-<span class="nc" id="L132">            throw HttpErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L133">            throw HttpErrorMessage.authenticationRequired();</span>
         }
-<span class="fc" id="L134">    }</span>
+<span class="fc" id="L135">    }</span>
 
     /**
      * If team member is set, return the associated project.
@@ -139,34 +140,34 @@ import javax.validation.constraints.NotNull;
      * @return the project
      */
     private Project getProject() {
-<span class="pc bpc" id="L142" title="1 of 2 branches missed.">        if (teamMember != null) {</span>
-<span class="fc" id="L143">            return teamMember.getProject();</span>
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">        if (teamMember != null) {</span>
+<span class="fc" id="L144">            return teamMember.getProject();</span>
         }
-<span class="nc" id="L145">        return null;</span>
+<span class="nc" id="L146">        return null;</span>
     }
 
     @Override
     public String getSubject() {
-<span class="fc" id="L150">        return EMAIL_SUBJECT;</span>
+<span class="fc" id="L151">        return EMAIL_SUBJECT;</span>
     }
 
     @Override
     public String getEmailBody(String link) {
-<span class="fc" id="L155">        Project project = getProject();</span>
+<span class="fc" id="L156">        Project project = getProject();</span>
 
-<span class="pc bpc" id="L157" title="1 of 2 branches missed.">        String theProject = project != null</span>
-<span class="fc" id="L158">            ? &quot;the \&quot;&quot; + project.getName() + &quot;\&quot; project&quot;</span>
-<span class="pc" id="L159">            : &quot;a co.LAB project&quot;;</span>
+<span class="pc bpc" id="L158" title="1 of 2 branches missed.">        String theProject = project != null</span>
+<span class="fc" id="L159">            ? &quot;the \&quot;&quot; + project.getName() + &quot;\&quot; project&quot;</span>
+<span class="pc" id="L160">            : &quot;a co.LAB project&quot;;</span>
 
-<span class="fc" id="L161">        return MessageFormat.format(&quot;Hi,&lt;br /&gt;&lt;br /&gt;&quot;</span>
+<span class="fc" id="L162">        return MessageFormat.format(&quot;Hi,&lt;br /&gt;&lt;br /&gt;&quot;</span>
             + &quot;{0} invites you to collaborate on {1}.&lt;br /&gt;&lt;br /&gt;&quot;
             + &quot;Click &lt;a href=\&quot;{2}\&quot;&gt;here&lt;/a&gt; to join the team.&lt;br /&gt;&lt;br /&gt;&quot;,
-<span class="pc bpc" id="L164" title="1 of 2 branches missed.">            sender != null ? sender : &quot;Someone&quot;, theProject, link);</span>
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">            sender != null ? sender : &quot;Someone&quot;, theProject, link);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L169">        return &quot;InvitationToken{&quot; + &quot;id=&quot; + getId() + &quot;, teamMember&quot;</span>
+<span class="nc" id="L170">        return &quot;InvitationToken{&quot; + &quot;id=&quot; + getId() + &quot;, teamMember&quot;</span>
             + teamMember + '}';
     }
 }

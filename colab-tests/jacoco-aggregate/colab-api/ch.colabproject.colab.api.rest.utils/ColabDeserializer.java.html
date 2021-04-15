@@ -28,7 +28,7 @@ import org.reflections.Reflections;
     /**
      * Store class references
      */
-<span class="fc" id="L31">    private static final Map&lt;String, Class&lt;? extends WithJsonDiscriminator&gt;&gt; CLASSES_MAP </span>
+<span class="fc" id="L31">    private static final Map&lt;String, Class&lt;? extends WithJsonDiscriminator&gt;&gt; CLASSES_MAP</span>
         = new HashMap&lt;&gt;();
 
     /**
@@ -40,7 +40,7 @@ import org.reflections.Reflections;
         // analyse classes in the model package
 <span class="fc" id="L41">        REFLECTIONS = new Reflections(</span>
             &quot;ch.colabproject.colab.generator.model&quot;,
-            &quot;ch.colabproject.colab.api.model&quot;
+            &quot;ch.colabproject.colab.api&quot;
         );
 <span class="fc" id="L45">    }</span>
 
@@ -49,7 +49,7 @@ import org.reflections.Reflections;
      */
     @Override
     public WithJsonDiscriminator deserialize(JsonParser parser, DeserializationContext ctx,
-            Type rtType) {
+        Type rtType) {
 
         // find @class discriminant from object to deserialize
 <span class="fc" id="L55">        JsonObject value = parser.getObject();</span>

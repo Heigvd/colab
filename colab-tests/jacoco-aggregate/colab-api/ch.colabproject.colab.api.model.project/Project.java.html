@@ -13,8 +13,11 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -34,8 +37,10 @@ import javax.persistence.OneToOne;
  */
 @Entity
 @NamedQuery(name = &quot;Project.findAll&quot;, query = &quot;SELECT p from Project p&quot;)
-@NamedQuery(name = &quot;Project.findProjectByUser&quot;, query = &quot;SELECT p from Project p JOIN p.teamMembers members WHERE members.user.id = :userId&quot;)
-<span class="fc" id="L38">public class Project implements ColabEntity {</span>
+@NamedQuery(
+    name = &quot;Project.findProjectByUser&quot;,
+    query = &quot;SELECT p from Project p JOIN p.teamMembers members WHERE  members.user.id = :userId&quot;)
+<span class="fc" id="L43">public class Project implements ColabEntity {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -69,13 +74,13 @@ import javax.persistence.OneToOne;
     /**
      * List of team members
      */
-<span class="fc" id="L72">    @OneToMany(mappedBy = &quot;project&quot;, cascade = { CascadeType.ALL })</span>
+<span class="fc" id="L77">    @OneToMany(mappedBy = &quot;project&quot;, cascade = { CascadeType.ALL })</span>
     private List&lt;TeamMember&gt; teamMembers = new ArrayList&lt;&gt;();
 
     /**
      * List of elements to be defined within the cards
      */
-<span class="fc" id="L78">    @OneToMany(mappedBy = &quot;project&quot;, cascade = { CascadeType.ALL })</span>
+<span class="fc" id="L83">    @OneToMany(mappedBy = &quot;project&quot;, cascade = { CascadeType.ALL })</span>
     private List&lt;CardDef&gt; elementsToDefine = new ArrayList&lt;&gt;();
 
     /**
@@ -93,22 +98,22 @@ import javax.persistence.OneToOne;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L96">        return id;</span>
+<span class="fc" id="L101">        return id;</span>
     }
 
     /**
      * @param id the project ID
      */
     public void setId(Long id) {
-<span class="fc" id="L103">        this.id = id;</span>
-<span class="fc" id="L104">    }</span>
+<span class="fc" id="L108">        this.id = id;</span>
+<span class="fc" id="L109">    }</span>
 
     /**
      *
      * @return the project name
      */
     public String getName() {
-<span class="fc" id="L111">        return name;</span>
+<span class="fc" id="L116">        return name;</span>
     }
 
     /**
@@ -117,36 +122,36 @@ import javax.persistence.OneToOne;
      * @param name new project name
      */
     public void setName(String name) {
-<span class="fc" id="L120">        this.name = name;</span>
-<span class="fc" id="L121">    }</span>
+<span class="fc" id="L125">        this.name = name;</span>
+<span class="fc" id="L126">    }</span>
 
     /**
      * @return the description
      */
     public String getDescription() {
-<span class="fc" id="L127">        return description;</span>
+<span class="fc" id="L132">        return description;</span>
     }
 
     /**
      * @param description the description to set
      */
     public void setDescription(String description) {
-<span class="fc" id="L134">        this.description = description;</span>
-<span class="fc" id="L135">    }</span>
+<span class="fc" id="L139">        this.description = description;</span>
+<span class="fc" id="L140">    }</span>
 
     /**
      * @return concretization type : is it a concrete project or an abstract model
      */
     public ConcretizationCategory getConcretizationCategory() {
-<span class="fc" id="L141">        return concretizationCategory;</span>
+<span class="fc" id="L146">        return concretizationCategory;</span>
     }
 
     /**
      * @param category new concretization type : is it a concrete project or an abstract model
      */
     public void setConcretizationCategory(ConcretizationCategory category) {
-<span class="nc" id="L148">        this.concretizationCategory = category;</span>
-<span class="nc" id="L149">    }</span>
+<span class="nc" id="L153">        this.concretizationCategory = category;</span>
+<span class="nc" id="L154">    }</span>
 
     /**
      * get team members
@@ -154,7 +159,7 @@ import javax.persistence.OneToOne;
      * @return members
      */
     public List&lt;TeamMember&gt; getTeamMembers() {
-<span class="fc" id="L157">        return teamMembers;</span>
+<span class="fc" id="L162">        return teamMembers;</span>
     }
 
     /**
@@ -163,36 +168,36 @@ import javax.persistence.OneToOne;
      * @param teamMembers list of members
      */
     public void setTeamMembers(List&lt;TeamMember&gt; teamMembers) {
-<span class="fc" id="L166">        this.teamMembers = teamMembers;</span>
-<span class="fc" id="L167">    }</span>
+<span class="fc" id="L171">        this.teamMembers = teamMembers;</span>
+<span class="fc" id="L172">    }</span>
 
     /**
      * @return the elementsToDefine
      */
     public List&lt;CardDef&gt; getElementsToDefine() {
-<span class="fc" id="L173">        return elementsToDefine;</span>
+<span class="fc" id="L178">        return elementsToDefine;</span>
     }
 
     /**
      * @param elementsToDefine the elementsToDefine to set
      */
     public void setElementsToDefine(List&lt;CardDef&gt; elementsToDefine) {
-<span class="fc" id="L180">        this.elementsToDefine = elementsToDefine;</span>
-<span class="fc" id="L181">    }</span>
+<span class="fc" id="L185">        this.elementsToDefine = elementsToDefine;</span>
+<span class="fc" id="L186">    }</span>
 
     /**
      * @return root card of the project that contains every other cards
      */
     public Card getRootCard() {
-<span class="fc" id="L187">        return rootCard;</span>
+<span class="fc" id="L192">        return rootCard;</span>
     }
 
     /**
      * @param rootCard Root card of the project that contains every other cards
      */
     public void setRootCard(Card rootCard) {
-<span class="fc" id="L194">        this.rootCard = rootCard;</span>
-<span class="fc" id="L195">    }</span>
+<span class="fc" id="L199">        this.rootCard = rootCard;</span>
+<span class="fc" id="L200">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -203,30 +208,40 @@ import javax.persistence.OneToOne;
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L206" title="1 of 2 branches missed.">        if (other instanceof Project) {</span>
-<span class="fc" id="L207">            Project o = (Project) other;</span>
-<span class="fc" id="L208">            this.setName(o.getName());</span>
-<span class="fc" id="L209">            this.setDescription(o.getDescription());</span>
+<span class="pc bpc" id="L211" title="1 of 2 branches missed.">        if (other instanceof Project) {</span>
+<span class="fc" id="L212">            Project o = (Project) other;</span>
+<span class="fc" id="L213">            this.setName(o.getName());</span>
+<span class="fc" id="L214">            this.setDescription(o.getDescription());</span>
             // TODO see if concretizationCategory should be there
-<span class="fc" id="L211">        } else {</span>
-<span class="nc" id="L212">            throw new ColabMergeException(this, other);</span>
+<span class="fc" id="L216">        } else {</span>
+<span class="nc" id="L217">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L214">    }</span>
+<span class="fc" id="L219">    }</span>
+
+    /**
+     * Project if propagated through its own overview channel.
+     *
+     * @return the channel
+     */
+    @Override
+    public Set&lt;WebsocketChannel&gt; getChannels() {
+<span class="fc" id="L228">        return Set.of(ProjectOverviewChannel.build(this));</span>
+    }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L218">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L233">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L224">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L239">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L229">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, descr=&quot; + description + &quot;, category=&quot;</span>
+<span class="nc" id="L244">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, descr=&quot; + description + &quot;, category=&quot;</span>
                 + concretizationCategory + '}';
     }
 }

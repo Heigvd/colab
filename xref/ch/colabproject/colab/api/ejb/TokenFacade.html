@@ -264,7 +264,7 @@
 <a class="jxr_linenumber" name="L256" href="#L256">256</a> <em class="jxr_javadoccomment">     * @param recipient email address to send invitation to</em>
 <a class="jxr_linenumber" name="L257" href="#L257">257</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> sendMembershipInvitation(<a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project, String recipient) {
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>         <a name="User" href="../../../../../ch/colabproject/colab/api/model/user/User.html#User">User</a> currentUser = securityFacade.assertAndGetCurrentUser();
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>         User currentUser = securityFacade.assertAndGetCurrentUser();
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>         <em class="jxr_comment">// user must have write right on the project</em>
 <a class="jxr_linenumber" name="L261" href="#L261">261</a>         securityFacade.assertProjectWriteRight(project);
 <a class="jxr_linenumber" name="L262" href="#L262">262</a> 
