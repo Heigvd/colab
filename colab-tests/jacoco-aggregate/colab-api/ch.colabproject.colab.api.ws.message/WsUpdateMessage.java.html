@@ -7,8 +7,8 @@
 package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.ColabEntity;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -21,29 +21,29 @@ public class WsUpdateMessage extends WsMessage {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Collection of new or updated objects
+     * Set of new or updated objects
      */
     @NotNull
-    private Collection&lt;ColabEntity&gt; updated;
+    private Set&lt;ColabEntity&gt; updated;
 
     /**
-     * Collection of destroyed entities
+     * Set of destroyed entities
      */
     @NotNull
-    private Collection&lt;IndexEntry&gt; deleted;
+    private Set&lt;IndexEntry&gt; deleted;
 
     /**
      * Default constructor
      */
 <span class="fc" id="L38">    public WsUpdateMessage() {</span>
-<span class="fc" id="L39">        this.updated = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L40">        this.deleted = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L39">        this.updated = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L40">        this.deleted = new HashSet&lt;&gt;();</span>
 <span class="fc" id="L41">    }</span>
 
     /**
      * @return the list of new or updated objects to send to clients
      */
-    public Collection&lt;ColabEntity&gt; getUpdated() {
+    public Set&lt;ColabEntity&gt; getUpdated() {
 <span class="fc" id="L47">        return updated;</span>
     }
 
@@ -52,7 +52,7 @@ public class WsUpdateMessage extends WsMessage {
      *
      * @param updated list of updated elements
      */
-    public void setUpdated(Collection&lt;ColabEntity&gt; updated) {
+    public void setUpdated(Set&lt;ColabEntity&gt; updated) {
 <span class="nc" id="L56">        this.updated = updated;</span>
 <span class="nc" id="L57">    }</span>
 
@@ -61,13 +61,17 @@ public class WsUpdateMessage extends WsMessage {
      *
      * @return all deleted entites
      */
-    public Collection&lt;IndexEntry&gt; getDeleted() {
+    public Set&lt;IndexEntry&gt; getDeleted() {
 <span class="fc" id="L65">        return deleted;</span>
     }
 
-    public void setDeleted(Collection&lt;IndexEntry&gt; deleted) {
+    public void setDeleted(Set&lt;IndexEntry&gt; deleted) {
 <span class="nc" id="L69">        this.deleted = deleted;</span>
 <span class="nc" id="L70">    }</span>
 
+    @Override
+    public String toString() {
+<span class="nc" id="L74">        return &quot;WsUpdateMessage{&quot; + &quot;updated=&quot; + updated + &quot;, deleted=&quot; + deleted + '}';</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

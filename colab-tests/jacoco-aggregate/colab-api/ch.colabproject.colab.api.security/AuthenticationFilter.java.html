@@ -38,12 +38,12 @@ import org.slf4j.LoggerFactory;
  */
 @Provider
 @Priority(10)
-<span class="fc" id="L41">public class AuthenticationFilter implements ContainerRequestFilter {</span>
+<span class="nc" id="L41">public class AuthenticationFilter implements ContainerRequestFilter {</span>
 
     /**
      * Logger
      */
-<span class="fc" id="L46">    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);</span>
+<span class="nc" id="L46">    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);</span>
 
     /**
      * Request related logic
@@ -76,19 +76,19 @@ import org.slf4j.LoggerFactory;
     private &lt;T extends Annotation&gt; List&lt;T&gt; getAnnotations(Class&lt;T&gt; annotation,
         Class&lt;?&gt; klass, Method method) {
 
-<span class="fc" id="L79">        List&lt;T&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L79">        List&lt;T&gt; list = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L81">        T a = method.getAnnotation(annotation);</span>
-<span class="fc bfc" id="L82" title="All 2 branches covered.">        if (a != null) {</span>
-<span class="fc" id="L83">            list.add(a);</span>
+<span class="nc" id="L81">        T a = method.getAnnotation(annotation);</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (a != null) {</span>
+<span class="nc" id="L83">            list.add(a);</span>
         }
-<span class="fc" id="L85">        a = klass.getAnnotation(annotation);</span>
+<span class="nc" id="L85">        a = klass.getAnnotation(annotation);</span>
 
-<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        if (a != null) {</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (a != null) {</span>
 <span class="nc" id="L88">            list.add(a);</span>
         }
 
-<span class="fc" id="L91">        return list;</span>
+<span class="nc" id="L91">        return list;</span>
     }
 
     /**
@@ -98,20 +98,20 @@ import org.slf4j.LoggerFactory;
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         // Targeted Class &amp; method
-<span class="fc" id="L101">        final Class&lt;?&gt; targetClass = resourceInfo.getResourceClass();</span>
-<span class="fc" id="L102">        Method targetMethod = resourceInfo.getResourceMethod();</span>
+<span class="nc" id="L101">        final Class&lt;?&gt; targetClass = resourceInfo.getResourceClass();</span>
+<span class="nc" id="L102">        Method targetMethod = resourceInfo.getResourceMethod();</span>
 
-<span class="fc" id="L104">        User currentUser = requestManager.getCurrentUser();</span>
-<span class="fc" id="L105">        HttpErrorMessage abortWith = null;</span>
+<span class="nc" id="L104">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc" id="L105">        HttpErrorMessage abortWith = null;</span>
 
-<span class="fc bfc" id="L107" title="All 2 branches covered.">        if (currentUser == null) {</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">        if (currentUser == null) {</span>
             // curenr user not authenticated: make sure the targeted method is accessible to
             // unauthenticated user
-<span class="fc" id="L110">            List&lt;AuthenticationRequired&gt; annotations = getAnnotations(</span>
+<span class="nc" id="L110">            List&lt;AuthenticationRequired&gt; annotations = getAnnotations(</span>
                 AuthenticationRequired.class,
                 targetClass, targetMethod);
 
-<span class="pc bpc" id="L114" title="1 of 2 branches missed.">            if (!annotations.isEmpty()) {</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">            if (!annotations.isEmpty()) {</span>
                 // No current user but annotation required to be authenticated
                 // abort with 401 code
 <span class="nc" id="L117">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
@@ -119,26 +119,26 @@ import org.slf4j.LoggerFactory;
             }
         }
 
-<span class="fc" id="L122">        List&lt;AdminResource&gt; annotations = getAnnotations(</span>
+<span class="nc" id="L122">        List&lt;AdminResource&gt; annotations = getAnnotations(</span>
             AdminResource.class,
             targetClass, targetMethod);
-<span class="fc bfc" id="L125" title="All 2 branches covered.">        if (!annotations.isEmpty()) {</span>
-<span class="pc bpc" id="L126" title="1 of 2 branches missed.">            if (currentUser == null) {</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (!annotations.isEmpty()) {</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">            if (currentUser == null) {</span>
                 // no current user : unauthorized asks for user to authenticate
 <span class="nc" id="L128">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
 <span class="nc" id="L129">                abortWith = HttpErrorMessage.authenticationRequired();</span>
             } else {
-<span class="fc bfc" id="L131" title="All 2 branches covered.">                if (!currentUser.isAdmin()) {</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">                if (!currentUser.isAdmin()) {</span>
                     // current user is authenticaed but lack admin right: forbidden
-<span class="fc" id="L133">                    logger.trace(&quot;Request aborted:user tries to access admin resource&quot;);</span>
-<span class="fc" id="L134">                    abortWith = HttpErrorMessage.forbidden();</span>
+<span class="nc" id="L133">                    logger.trace(&quot;Request aborted:user tries to access admin resource&quot;);</span>
+<span class="nc" id="L134">                    abortWith = HttpErrorMessage.forbidden();</span>
                 }
             }
         }
 
-<span class="fc bfc" id="L139" title="All 2 branches covered.">        if (abortWith != null) {</span>
-<span class="fc" id="L140">            requestContext.abortWith(exceptionMapper.toResponse(abortWith));</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (abortWith != null) {</span>
+<span class="nc" id="L140">            requestContext.abortWith(exceptionMapper.toResponse(abortWith));</span>
         }
-<span class="fc" id="L142">    }</span>
+<span class="nc" id="L142">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

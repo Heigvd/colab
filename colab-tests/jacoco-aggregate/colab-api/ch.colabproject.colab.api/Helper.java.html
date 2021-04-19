@@ -128,14 +128,14 @@ public class Helper {
      * @return hex-encoded byte array
      */
     public static String generateHexSalt(int length) {
-<span class="fc" id="L131">        return Helper.bytesToHex(Helper.generateSalt(length));</span>
+<span class="nc" id="L131">        return Helper.bytesToHex(Helper.generateSalt(length));</span>
     }
 
     /**
      * @return the hash method to use for new accounts
      */
     public static HashMethod getDefaultHashMethod() {
-<span class="fc" id="L138">        return HashMethod.PBKDF2WithHmacSHA512_65536_64;</span>
+<span class="nc" id="L138">        return HashMethod.PBKDF2WithHmacSHA512_65536_64;</span>
     }
 
     /**

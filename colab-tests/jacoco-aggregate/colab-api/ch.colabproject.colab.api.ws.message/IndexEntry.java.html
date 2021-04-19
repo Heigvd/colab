@@ -73,7 +73,7 @@ import javax.validation.constraints.NotNull;
      * @return channels
      */
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="fc" id="L76">        return channels;</span>
+<span class="nc" id="L76">        return channels;</span>
     }
 
     /**
@@ -93,13 +93,13 @@ import javax.validation.constraints.NotNull;
      * @return index entry which represent the object
      */
     public static IndexEntry build(ColabEntity object) {
-<span class="fc" id="L96">        IndexEntry entry = new IndexEntry();</span>
+<span class="nc" id="L96">        IndexEntry entry = new IndexEntry();</span>
 
-<span class="fc" id="L98">        entry.type = object.getJsonDiscriminator();</span>
-<span class="fc" id="L99">        entry.id = object.getId();</span>
-<span class="fc" id="L100">        entry.channels = object.getChannels();</span>
+<span class="nc" id="L98">        entry.type = object.getJsonDiscriminator();</span>
+<span class="nc" id="L99">        entry.id = object.getId();</span>
+<span class="nc" id="L100">        entry.channels = object.getChannels();</span>
 
-<span class="fc" id="L102">        return entry;</span>
+<span class="nc" id="L102">        return entry;</span>
     }
 
 }

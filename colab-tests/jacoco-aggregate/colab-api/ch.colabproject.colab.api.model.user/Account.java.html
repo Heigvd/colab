@@ -10,8 +10,10 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,7 +27,8 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
-<span class="fc" id="L28">public abstract class Account implements ColabEntity {</span>
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
+<span class="fc" id="L31">public abstract class Account implements ColabEntity {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -54,7 +57,7 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L57">        return id;</span>
+<span class="nc" id="L60">        return id;</span>
     }
 
     /**
@@ -63,14 +66,14 @@ import javax.persistence.Transient;
      * @param id id
      */
     public void setId(Long id) {
-<span class="fc" id="L66">        this.id = id;</span>
-<span class="fc" id="L67">    }</span>
+<span class="nc" id="L69">        this.id = id;</span>
+<span class="nc" id="L70">    }</span>
 
     /**
      * @return the user
      */
     public User getUser() {
-<span class="fc" id="L73">        return user;</span>
+<span class="nc" id="L76">        return user;</span>
     }
 
     /**
@@ -79,8 +82,8 @@ import javax.persistence.Transient;
      * @param user user who owns this account
      */
     public void setUser(User user) {
-<span class="fc" id="L82">        this.user = user;</span>
-<span class="fc" id="L83">    }</span>
+<span class="nc" id="L85">        this.user = user;</span>
+<span class="nc" id="L86">    }</span>
 
     /**
      * Return the id of the account owner
@@ -88,10 +91,10 @@ import javax.persistence.Transient;
      * @return id of the user
      */
     public Long getUserId() {
-<span class="pc bpc" id="L91" title="1 of 2 branches missed.">        if (this.getUser() != null) {</span>
-<span class="fc" id="L92">            return getUser().getId();</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (this.getUser() != null) {</span>
+<span class="nc" id="L95">            return getUser().getId();</span>
         } else {
-<span class="nc" id="L94">            return userId;</span>
+<span class="nc" id="L97">            return userId;</span>
         }
     }
 
@@ -101,27 +104,27 @@ import javax.persistence.Transient;
      * @param id if of the user
      */
     public void setUserId(Long id) {
-<span class="fc" id="L104">        this.userId = id;</span>
-<span class="fc" id="L105">    }</span>
+<span class="nc" id="L107">        this.userId = id;</span>
+<span class="nc" id="L108">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        if (this.user != null) {</span>
-<span class="fc" id="L110">            return Set.of(this.user.getEffectiveChannel(), new AdminChannel());</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (this.user != null) {</span>
+<span class="nc" id="L113">            return Set.of(this.user.getEffectiveChannel(), new AdminChannel());</span>
         } else {
-<span class="nc" id="L112">            return Set.of(new AdminChannel());</span>
+<span class="nc" id="L115">            return Set.of(new AdminChannel());</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L118">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L121">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L124">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L127">        return EntityHelper.equals(this, obj);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

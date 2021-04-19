@@ -7,12 +7,15 @@
 package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
 
 /**
  * Abstract class for all websocket messages
  *
  * @author maxence
  */
-<span class="fc" id="L16">public abstract class WsMessage implements WithJsonDiscriminator {</span>
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
+<span class="fc" id="L19">public abstract class WsMessage implements WithJsonDiscriminator {</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

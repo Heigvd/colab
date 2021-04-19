@@ -79,7 +79,8 @@ import org.slf4j.LoggerFactory;
      */
     public void registerUpdate(ColabEntity o) {
 <span class="nc" id="L81">        updated.add(o);</span>
-<span class="nc" id="L82">    }</span>
+<span class="nc" id="L82">        logger.trace(&quot;UpdatedSet: {}&quot;, updated);</span>
+<span class="nc" id="L83">    }</span>
 
     /**
      * Register deleted object within the WS JTA synchronizer
@@ -87,41 +88,42 @@ import org.slf4j.LoggerFactory;
      * @param o just deleted object
      */
     public void registerDelete(ColabEntity o) {
-<span class="nc" id="L90">        deleted.add(IndexEntry.build(o));</span>
-<span class="nc" id="L91">    }</span>
+<span class="nc" id="L91">        deleted.add(IndexEntry.build(o));</span>
+<span class="nc" id="L92">    }</span>
 
     /**
      * Pre compute the message.
      */
     private void precomputeMessage() throws EncodeException {
-<span class="nc" id="L97">        logger.debug(&quot;Pecompute messages&quot;);</span>
-<span class="nc" id="L98">        Set&lt;ColabEntity&gt; filtered = updated.stream()</span>
-<span class="nc" id="L99">            .filter(</span>
-<span class="nc" id="L100">                (u) -&gt; !deleted.stream()</span>
-<span class="nc bnc" id="L101" title="All 2 branches missed.">                    .anyMatch(</span>
-<span class="nc bnc" id="L102" title="All 2 branches missed.">                        (d) -&gt; d.getId().equals(u.getId())</span>
-<span class="nc bnc" id="L103" title="All 2 branches missed.">                        &amp;&amp; d.getType().equals(u.getJsonDiscriminator())</span>
+<span class="nc" id="L98">        logger.debug(&quot;Precompute messages&quot;);</span>
+<span class="nc" id="L99">        Set&lt;ColabEntity&gt; filtered = updated.stream()</span>
+<span class="nc" id="L100">            .filter(</span>
+<span class="nc" id="L101">                (u) -&gt; !deleted.stream()</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">                    .anyMatch(</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">                        (d) -&gt; d.getId().equals(u.getId())</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">                        &amp;&amp; d.getType().equals(u.getJsonDiscriminator())</span>
                     )
-<span class="nc" id="L105">            ).collect(Collectors.toSet());</span>
+<span class="nc" id="L106">            ).collect(Collectors.toSet());</span>
 
-<span class="nc" id="L107">        this.precomputed = true;</span>
-<span class="nc" id="L108">        this.message = WebsocketHelper.prepareWsMessage(userDao, filtered, deleted);</span>
-<span class="nc" id="L109">    }</span>
+<span class="nc" id="L108">        this.precomputed = true;</span>
+<span class="nc" id="L109">        this.message = WebsocketHelper.prepareWsMessage(userDao, filtered, deleted);</span>
+<span class="nc" id="L110">        logger.trace(&quot;Precomputed: {}&quot;, message);</span>
+<span class="nc" id="L111">    }</span>
 
     /**
      * Prepare websocket messages
      */
     @BeforeCompletion
     public void beforeCompletion() {
-<span class="nc" id="L116">        logger.warn(&quot;Before transactionCompletion: &quot;</span>
+<span class="nc" id="L118">        logger.warn(&quot;Before transactionCompletion: &quot;</span>
             + &quot;This method is not called for each transaction, why ???&quot;);
         try {
-<span class="nc" id="L119">            this.precomputeMessage();</span>
-<span class="nc" id="L120">        } catch (EncodeException ex) {</span>
+<span class="nc" id="L121">            this.precomputeMessage();</span>
+<span class="nc" id="L122">        } catch (EncodeException ex) {</span>
             //throw runtime error to rollback
-<span class="nc" id="L122">            throw new ColabRollbackException(ex);</span>
-<span class="nc" id="L123">        }</span>
-<span class="nc" id="L124">    }</span>
+<span class="nc" id="L124">            throw new ColabRollbackException(ex);</span>
+<span class="nc" id="L125">        }</span>
+<span class="nc" id="L126">    }</span>
 
     /**
      * After commit, if the transaction was successful, send pre-computed messages.
@@ -130,23 +132,23 @@ import org.slf4j.LoggerFactory;
      */
     @AfterCompletion
     public void afterCompletion(boolean successful) {
-<span class="nc" id="L133">        logger.debug(&quot;After transaction completion : {}; messages: {}&quot;, successful, message);</span>
-<span class="nc bnc" id="L134" title="All 2 branches missed.">        if (successful) {</span>
-<span class="nc bnc" id="L135" title="All 2 branches missed.">            if (!precomputed) {</span>
-<span class="nc" id="L136">                logger.warn(&quot;Messages were not precomputed @BeforeCompletion!!!&quot;);</span>
+<span class="nc" id="L135">        logger.debug(&quot;After transaction completion : {}; messages: {}&quot;, successful, message);</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (successful) {</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">            if (!precomputed) {</span>
+<span class="nc" id="L138">                logger.warn(&quot;Messages were not precomputed @BeforeCompletion!!!&quot;);</span>
                 // ,essage shall be precomputed during the &quot;before completion&quot; phase, but the
                 // dedicated method is never called, and I do not understand the reason...
                 try {
-<span class="nc" id="L140">                    this.precomputeMessage();</span>
-<span class="nc" id="L141">                } catch (EncodeException ex) {</span>
-<span class="nc" id="L142">                    logger.error(&quot;Failed to precompute websocket messages&quot;);</span>
-<span class="nc" id="L143">                }</span>
+<span class="nc" id="L142">                    this.precomputeMessage();</span>
+<span class="nc" id="L143">                } catch (EncodeException ex) {</span>
+<span class="nc" id="L144">                    logger.error(&quot;Failed to precompute websocket messages&quot;);</span>
+<span class="nc" id="L145">                }</span>
             }
-<span class="nc bnc" id="L145" title="All 4 branches missed.">            if (message != null &amp;&amp; !message.getMessages().isEmpty()) {</span>
-<span class="nc" id="L146">                logger.warn(&quot;Send messages&quot;);</span>
-<span class="nc" id="L147">                websocketFacade.propagate(message);</span>
+<span class="nc bnc" id="L147" title="All 4 branches missed.">            if (message != null &amp;&amp; !message.getMessages().isEmpty()) {</span>
+<span class="nc" id="L148">                logger.warn(&quot;Send messages&quot;);</span>
+<span class="nc" id="L149">                websocketFacade.propagate(message);</span>
             }
         }
-<span class="nc" id="L150">    }</span>
+<span class="nc" id="L152">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

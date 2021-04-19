@@ -34,10 +34,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="fc" id="L37">public class CardContentController {</span>
+<span class="nc" id="L37">public class CardContentController {</span>
 
     /** logger */
-<span class="fc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(CardContentController.class);</span>
+<span class="nc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(CardContentController.class);</span>
 
     /**
      * The CardContent business logic
@@ -56,8 +56,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;CardContent&gt; getAllCardContents() {
-<span class="fc" id="L59">        logger.debug(&quot;get all card contents&quot;);</span>
-<span class="fc" id="L60">        return dao.getAllCardContent();</span>
+<span class="nc" id="L59">        logger.debug(&quot;get all card contents&quot;);</span>
+<span class="nc" id="L60">        return dao.getAllCardContent();</span>
     }
 
     /**
@@ -70,8 +70,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;/{id}&quot;)
     public CardContent getCardContent(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L73">        logger.debug(&quot;get card #&quot; + id);</span>
-<span class="fc" id="L74">        return dao.getCardContent(id);</span>
+<span class="nc" id="L73">        logger.debug(&quot;get card #&quot; + id);</span>
+<span class="nc" id="L74">        return dao.getCardContent(id);</span>
     }
 
     /**
@@ -83,8 +83,8 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createCardContent(CardContent cardContent) {
-<span class="fc" id="L86">        logger.debug(&quot;create card content&quot;);</span>
-<span class="fc" id="L87">        return dao.createCardContent(cardContent).getId();</span>
+<span class="nc" id="L86">        logger.debug(&quot;create card content&quot;);</span>
+<span class="nc" id="L87">        return dao.createCardContent(cardContent).getId();</span>
     }
 
     /**
@@ -96,9 +96,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCardContent(CardContent cardContent) throws ColabMergeException {
-<span class="fc" id="L99">        logger.debug(&quot;update card content #&quot; + cardContent.getId());</span>
-<span class="fc" id="L100">        dao.updateCardContent(cardContent);</span>
-<span class="fc" id="L101">    }</span>
+<span class="nc" id="L99">        logger.debug(&quot;update card content #&quot; + cardContent.getId());</span>
+<span class="nc" id="L100">        dao.updateCardContent(cardContent);</span>
+<span class="nc" id="L101">    }</span>
 
     /**
      * Permanently delete a card content
@@ -108,8 +108,8 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;/{id}&quot;)
     public void deleteCardContent(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L111">        logger.debug(&quot;delete card #&quot; + id);</span>
-<span class="fc" id="L112">        dao.deleteCardContent(id);</span>
-<span class="fc" id="L113">    }</span>
+<span class="nc" id="L111">        logger.debug(&quot;delete card #&quot; + id);</span>
+<span class="nc" id="L112">        dao.deleteCardContent(id);</span>
+<span class="nc" id="L113">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author maxence
  */
-<span class="fc" id="L16">public class Message {</span>
+<span class="nc" id="L16">public class Message {</span>
 
     /**
      * Sender email address
@@ -28,17 +28,17 @@ import java.util.List;
     /**
      * List of direct recipients
      */
-<span class="fc" id="L31">    private List&lt;String&gt; to = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L31">    private List&lt;String&gt; to = new ArrayList&lt;&gt;();</span>
 
     /**
      * List of carbon-copy recipients
      */
-<span class="fc" id="L36">    private List&lt;String&gt; cc = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L36">    private List&lt;String&gt; cc = new ArrayList&lt;&gt;();</span>
 
     /**
      * List of blind-carbon-copy recipients
      */
-<span class="fc" id="L41">    private List&lt;String&gt; bcc = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L41">    private List&lt;String&gt; bcc = new ArrayList&lt;&gt;();</span>
 
     /**
      * Message subject
@@ -61,7 +61,7 @@ import java.util.List;
      * @return the from
      */
     public String getFrom() {
-<span class="fc" id="L64">        return from;</span>
+<span class="nc" id="L64">        return from;</span>
     }
 
     /**
@@ -70,8 +70,8 @@ import java.util.List;
      * @param from the from to set
      */
     public void setFrom(String from) {
-<span class="fc" id="L73">        this.from = from;</span>
-<span class="fc" id="L74">    }</span>
+<span class="nc" id="L73">        this.from = from;</span>
+<span class="nc" id="L74">    }</span>
 
     /**
      * Get the replyTo.
@@ -79,7 +79,7 @@ import java.util.List;
      * @return the replyTo
      */
     public String getReplyTo() {
-<span class="fc" id="L82">        return replyTo;</span>
+<span class="nc" id="L82">        return replyTo;</span>
     }
 
     /**
@@ -97,7 +97,7 @@ import java.util.List;
      * @return the to
      */
     public List&lt;String&gt; getTo() {
-<span class="fc" id="L100">        return to;</span>
+<span class="nc" id="L100">        return to;</span>
     }
 
     /**
@@ -115,7 +115,7 @@ import java.util.List;
      * @return the cc
      */
     public List&lt;String&gt; getCc() {
-<span class="fc" id="L118">        return cc;</span>
+<span class="nc" id="L118">        return cc;</span>
     }
 
     /**
@@ -133,7 +133,7 @@ import java.util.List;
      * @return the bcc
      */
     public List&lt;String&gt; getBcc() {
-<span class="fc" id="L136">        return bcc;</span>
+<span class="nc" id="L136">        return bcc;</span>
     }
 
     /**
@@ -151,7 +151,7 @@ import java.util.List;
      * @return the subject
      */
     public String getSubject() {
-<span class="fc" id="L154">        return subject;</span>
+<span class="nc" id="L154">        return subject;</span>
     }
 
     /**
@@ -160,8 +160,8 @@ import java.util.List;
      * @param subject the subject to set
      */
     public void setSubject(String subject) {
-<span class="fc" id="L163">        this.subject = subject;</span>
-<span class="fc" id="L164">    }</span>
+<span class="nc" id="L163">        this.subject = subject;</span>
+<span class="nc" id="L164">    }</span>
 
     /**
      * Get the body.
@@ -169,7 +169,7 @@ import java.util.List;
      * @return the body
      */
     public String getBody() {
-<span class="fc" id="L172">        return body;</span>
+<span class="nc" id="L172">        return body;</span>
     }
 
     /**
@@ -178,8 +178,8 @@ import java.util.List;
      * @param body the body to set
      */
     public void setBody(String body) {
-<span class="fc" id="L181">        this.body = body;</span>
-<span class="fc" id="L182">    }</span>
+<span class="nc" id="L181">        this.body = body;</span>
+<span class="nc" id="L182">    }</span>
 
     /**
      * Get the mimeType.
@@ -187,7 +187,7 @@ import java.util.List;
      * @return the mimeType
      */
     public String getMimeType() {
-<span class="fc" id="L190">        return mimeType;</span>
+<span class="nc" id="L190">        return mimeType;</span>
     }
 
     /**
@@ -196,8 +196,8 @@ import java.util.List;
      * @param mimeType the mimeType to set
      */
     public void setMimeType(String mimeType) {
-<span class="fc" id="L199">        this.mimeType = mimeType;</span>
-<span class="fc" id="L200">    }</span>
+<span class="nc" id="L199">        this.mimeType = mimeType;</span>
+<span class="nc" id="L200">    }</span>
 
     /**
      * Create a new builder.
@@ -205,7 +205,7 @@ import java.util.List;
      * @return the builder
      */
     public static MessageBuilder create() {
-<span class="fc" id="L208">        return MessageBuilder.create();</span>
+<span class="nc" id="L208">        return MessageBuilder.create();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

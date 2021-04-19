@@ -20,15 +20,15 @@ public class HttpErrorMessage extends HttpException {
     /**
      * List of message type
      */
-<span class="fc" id="L23">    public enum MessageCode {</span>
-<span class="fc" id="L24">        AUTHENTICATION_FAILED,</span>
-<span class="fc" id="L25">        AUTHENTICATION_REQUIRED,</span>
-<span class="fc" id="L26">        ACCESS_DENIED,</span>
-<span class="fc" id="L27">        BAD_REQUEST,</span>
-<span class="fc" id="L28">        NOT_FOUND,</span>
-<span class="fc" id="L29">        USERNAME_ALREADY_TAKEN,</span>
-<span class="fc" id="L30">        SMTP_ERROR,</span>
-<span class="fc" id="L31">        EMAIL_MESSAGE_ERROR,</span>
+<span class="nc" id="L23">    public enum MessageCode {</span>
+<span class="nc" id="L24">        AUTHENTICATION_FAILED,</span>
+<span class="nc" id="L25">        AUTHENTICATION_REQUIRED,</span>
+<span class="nc" id="L26">        ACCESS_DENIED,</span>
+<span class="nc" id="L27">        BAD_REQUEST,</span>
+<span class="nc" id="L28">        NOT_FOUND,</span>
+<span class="nc" id="L29">        USERNAME_ALREADY_TAKEN,</span>
+<span class="nc" id="L30">        SMTP_ERROR,</span>
+<span class="nc" id="L31">        EMAIL_MESSAGE_ERROR,</span>
     }
 
     /**
@@ -40,8 +40,8 @@ public class HttpErrorMessage extends HttpException {
      * Default bad request error
      */
     public HttpErrorMessage() {
-<span class="fc" id="L43">        this(Response.Status.BAD_REQUEST, MessageCode.BAD_REQUEST);</span>
-<span class="fc" id="L44">    }</span>
+<span class="nc" id="L43">        this(Response.Status.BAD_REQUEST, MessageCode.BAD_REQUEST);</span>
+<span class="nc" id="L44">    }</span>
 
     /**
      * Create a new error message with a HTTP 400 bad request status
@@ -49,8 +49,8 @@ public class HttpErrorMessage extends HttpException {
      * @param messageCode error message code
      */
     private HttpErrorMessage(MessageCode messageCode) {
-<span class="fc" id="L52">        this(Response.Status.BAD_REQUEST, messageCode);</span>
-<span class="fc" id="L53">    }</span>
+<span class="nc" id="L52">        this(Response.Status.BAD_REQUEST, messageCode);</span>
+<span class="nc" id="L53">    }</span>
 
     /**
      * Create a new error message
@@ -59,15 +59,15 @@ public class HttpErrorMessage extends HttpException {
      * @param messageCode error message code
      */
     private HttpErrorMessage(Response.Status status, MessageCode messageCode) {
-<span class="fc" id="L62">        super(status);</span>
-<span class="fc" id="L63">        this.messageCode = messageCode;</span>
-<span class="fc" id="L64">    }</span>
+<span class="nc" id="L62">        super(status);</span>
+<span class="nc" id="L63">        this.messageCode = messageCode;</span>
+<span class="nc" id="L64">    }</span>
 
     /**
      * @return message code
      */
     public MessageCode getMessageCode() {
-<span class="fc" id="L70">        return messageCode;</span>
+<span class="nc" id="L70">        return messageCode;</span>
     }
 
     /**
@@ -76,8 +76,8 @@ public class HttpErrorMessage extends HttpException {
      * @param messageCode message code
      */
     public void setMessageCode(MessageCode messageCode) {
-<span class="fc" id="L79">        this.messageCode = messageCode;</span>
-<span class="fc" id="L80">    }</span>
+<span class="nc" id="L79">        this.messageCode = messageCode;</span>
+<span class="nc" id="L80">    }</span>
 
     /**
      * @return 400 invalid bad request
@@ -98,7 +98,7 @@ public class HttpErrorMessage extends HttpException {
      * @return 403 Forbidden
      */
     public static HttpErrorMessage forbidden() {
-<span class="fc" id="L101">        return new HttpErrorMessage(Response.Status.FORBIDDEN,</span>
+<span class="nc" id="L101">        return new HttpErrorMessage(Response.Status.FORBIDDEN,</span>
             HttpErrorMessage.MessageCode.ACCESS_DENIED);
     }
 
@@ -106,7 +106,7 @@ public class HttpErrorMessage extends HttpException {
      * @return 401 Unauthorized
      */
     public static HttpErrorMessage authenticationRequired() {
-<span class="fc" id="L109">        return new HttpErrorMessage(Response.Status.UNAUTHORIZED,</span>
+<span class="nc" id="L109">        return new HttpErrorMessage(Response.Status.UNAUTHORIZED,</span>
             HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED);
     }
 
@@ -121,7 +121,7 @@ public class HttpErrorMessage extends HttpException {
      * @return 400 authentication failed
      */
     public static HttpErrorMessage authenticationFailed() {
-<span class="fc" id="L124">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED);</span>
+<span class="nc" id="L124">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED);</span>
     }
 
     /**

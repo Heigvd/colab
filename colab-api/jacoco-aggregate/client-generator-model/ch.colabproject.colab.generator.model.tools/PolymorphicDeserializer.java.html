@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>PolymorphicDeserializer.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-api</a> &gt; <a href="../index.html" class="el_bundle">client-generator-model</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.generator.model.tools</a> &gt; <span class="el_source">PolymorphicDeserializer.java</span></div><h1>PolymorphicDeserializer.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.generator.model.tools;
+
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import javax.json.JsonObject;
+import javax.json.bind.serializer.DeserializationContext;
+import javax.json.bind.serializer.JsonbDeserializer;
+import javax.json.stream.JsonParser;
+import org.reflections.Reflections;
+
+/**
+ * Custom deserializer which can handle polymorphic objects. By default, this deserializer handles
+ * all {@link WithJsonDiscriminator} implementations defined if the
+ * &lt;code&gt;ch.colabproject.colab.generator.model&lt;/code&gt; package.
+ * &lt;p&gt;
+ * The {@link #includePackage(java.lang.String) } method can be used to register implementations
+ * from other packages.
+ * &lt;/p&gt;
+ * All WithJsonDiscriminator abstract implementation MUST register this deserializer with the
+ * {@link javax.json.bind.annotation.JsonbTypeDeserializer  JsonbTypeDeserializer} annotation.
+ * &lt;p&gt;
+ * Yasson/JSON-b polymorphic deserializer is a &quot;vieux serpent de mer&quot;. Some inputs:
+ * &lt;ul&gt;
+ * &lt;li&gt;https://github.com/eclipse-ee4j/yasson/issues/279
+ * &lt;li&gt;https://github.com/eclipse-ee4j/jsonb-api/issues/147
+ * &lt;li&gt;https://stackoverflow.com/questions/62398858/deserialize-json-into-polymorphic-pojo-with-json-b-yasson
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * This implementation does not work if the deserializer is registered with &lt;code&gt;
+ * JsonbConfig config = new JsonbConfig().withDeserializers(new PolymorphicDeserializer());
+ * &lt;/code&gt;. Such a config leads to infinite recusions. See
+ * &lt;a href=&quot;https://github.com/maxencelaurent/YassonPolymorphicDeserializer/blob/main/src/main/java/com/github/maxencelaurent/yasson/polymorphic/InternalHackDeserializer.java&quot;&gt;here&lt;/a&gt;
+ * for a &quot;global-config&quot; complient implementation.
+ *
+ * @author Maxence
+ */
+<span class="nc" id="L46">public class PolymorphicDeserializer implements JsonbDeserializer&lt;WithJsonDiscriminator&gt; {</span>
+
+    /**
+     * Store class references
+     */
+<span class="nc" id="L51">    private static final Map&lt;String, Class&lt;? extends WithJsonDiscriminator&gt;&gt; CLASSES_MAP</span>
+        = new HashMap&lt;&gt;();
+
+    /**
+     * Reflections allow to find, for instance, all implementations of an interface
+     */
+    private static final Reflections REFLECTIONS;
+
+    static {
+        // analyse classes in the model package
+<span class="nc" id="L61">        REFLECTIONS = new Reflections(</span>
+            &quot;ch.colabproject.colab.generator.model&quot;
+        );
+<span class="nc" id="L64">    }</span>
+
+    /**
+     * Include all {@link WithJsonDiscriminator} implementations defined in the given package.
+     *
+     * @param packageName name of the package
+     */
+    public static void includePackage(String packageName) {
+<span class="nc" id="L72">        REFLECTIONS.merge(new Reflections(packageName));</span>
+<span class="nc" id="L73">    }</span>
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public WithJsonDiscriminator deserialize(JsonParser parser, DeserializationContext ctx,
+        Type rtType) {
+        // find @class discriminant from object to deserialize
+<span class="nc" id="L82">        JsonObject value = parser.getObject();</span>
+<span class="nc" id="L83">        String atClass = value.getString(&quot;@class&quot;, null);</span>
+
+        // is this @class already known?
+<span class="nc" id="L86">        Class&lt;? extends WithJsonDiscriminator&gt; theClass = CLASSES_MAP.get(atClass);</span>
+
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (theClass == null) {</span>
+            // nope -&gt; let's resolve it with the help of reflections
+<span class="nc" id="L90">            Optional&lt;Class&lt;? extends WithJsonDiscriminator&gt;&gt; concreteClass</span>
+<span class="nc" id="L91">                = REFLECTIONS.getSubTypesOf(WithJsonDiscriminator.class)</span>
+<span class="nc" id="L92">                    .stream()</span>
+<span class="nc" id="L93">                    .filter(cl -&gt; cl.getSimpleName().equals(atClass))</span>
+<span class="nc" id="L94">                    .findFirst();</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">            if (concreteClass.isPresent()) {</span>
+<span class="nc" id="L96">                theClass = concreteClass.get();</span>
+<span class="nc" id="L97">                CLASSES_MAP.put(atClass, theClass);</span>
+            }
+        }
+
+<span class="nc" id="L101">        return JsonbProvider.getJsonb().fromJson(value.toString(), theClass);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

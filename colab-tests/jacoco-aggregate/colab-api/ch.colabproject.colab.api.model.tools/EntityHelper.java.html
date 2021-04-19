@@ -50,30 +50,30 @@ public class EntityHelper {
      * @return {@code true} if both objects represent the same persisted entity
      */
     public static boolean equals(WithId a, Object b) {
-<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (a == b) {</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (a == b) {</span>
             // same object or both are null
-<span class="fc" id="L55">            return true;</span>
+<span class="nc" id="L55">            return true;</span>
         }
-<span class="pc bpc" id="L57" title="2 of 4 branches missed.">        if (a == null || b == null) {</span>
+<span class="nc bnc" id="L57" title="All 4 branches missed.">        if (a == null || b == null) {</span>
             // only one is null
 <span class="nc" id="L59">            return false;</span>
         }
 
         // at this point, both are not null
-<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (a.getClass() != b.getClass()) {</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (a.getClass() != b.getClass()) {</span>
             // class mismatch
-<span class="fc" id="L65">            return false;</span>
+<span class="nc" id="L65">            return false;</span>
         } else {
             // same class
-<span class="fc" id="L68">            WithId otherB = (WithId) b;</span>
-<span class="pc bpc" id="L69" title="2 of 4 branches missed.">            if (a.getId() == null || otherB.getId() == null) {</span>
+<span class="nc" id="L68">            WithId otherB = (WithId) b;</span>
+<span class="nc bnc" id="L69" title="All 4 branches missed.">            if (a.getId() == null || otherB.getId() == null) {</span>
                 // if at least one object has no id, object are not equals
                 // if both id are null, objects may equal, but this case is handled by the strict
                 // (a == b) equality check
 <span class="nc" id="L73">                return false;</span>
             }
             // same class, ids must equals
-<span class="fc" id="L76">            return Objects.equals(a.getId(), otherB.getId());</span>
+<span class="nc" id="L76">            return Objects.equals(a.getId(), otherB.getId());</span>
         }
     }
 }

@@ -15,7 +15,6 @@ ch.colabproject.colab.api.persistence.token
 ch.colabproject.colab.api.persistence.user
 ch.colabproject.colab.api.rest
 ch.colabproject.colab.api.rest.card
-ch.colabproject.colab.api.rest.config
 ch.colabproject.colab.api.rest.utils
 ch.colabproject.colab.api.security
 ch.colabproject.colab.api.service.smtp

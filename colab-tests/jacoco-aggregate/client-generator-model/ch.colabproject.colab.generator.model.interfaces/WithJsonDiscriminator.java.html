@@ -7,8 +7,10 @@
 package ch.colabproject.colab.generator.model.interfaces;
 
 import ch.colabproject.colab.generator.model.annotations.JsonClassName;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.io.Serializable;
 import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
 
 /**
  * Represent an object which can be serialize to JSON. Implementing this interface force
@@ -19,6 +21,7 @@ import javax.json.bind.annotation.JsonbProperty;
  *
  * @author maxence
  */
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public interface WithJsonDiscriminator extends Serializable {
 
     /**
@@ -29,12 +32,12 @@ public interface WithJsonDiscriminator extends Serializable {
      * @return name to be used as discriminant
      */
     static String getJsonDiscriminator(Class&lt;?&gt; klass) {
-<span class="fc" id="L32">        JsonClassName annotation = klass.getAnnotation(JsonClassName.class);</span>
+<span class="fc" id="L35">        JsonClassName annotation = klass.getAnnotation(JsonClassName.class);</span>
 
-<span class="pc bpc" id="L34" title="1 of 2 branches missed.">        if (annotation != null) {</span>
-<span class="nc" id="L35">            return annotation.value();</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (annotation != null) {</span>
+<span class="nc" id="L38">            return annotation.value();</span>
         } else {
-<span class="fc" id="L37">            return klass.getSimpleName();</span>
+<span class="fc" id="L40">            return klass.getSimpleName();</span>
         }
     }
 
@@ -45,7 +48,7 @@ public interface WithJsonDiscriminator extends Serializable {
      */
     @JsonbProperty(&quot;@class&quot;)
     default String getJsonDiscriminator() {
-<span class="fc" id="L48">        return WithJsonDiscriminator.getJsonDiscriminator(this.getClass());</span>
+<span class="fc" id="L51">        return WithJsonDiscriminator.getJsonDiscriminator(this.getClass());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

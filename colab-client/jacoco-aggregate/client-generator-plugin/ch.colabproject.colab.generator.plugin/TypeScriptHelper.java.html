@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.generator.plugin;
 
-import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -31,6 +30,7 @@ import javax.json.stream.JsonParser;
 import javax.validation.constraints.NotNull;
 import org.apache.maven.plugin.MojoFailureException;
 import org.reflections.Reflections;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 
 /**
  * Some methods to convert java things to typescript ones

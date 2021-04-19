@@ -7,8 +7,10 @@
 package ch.colabproject.colab.generator.model.exceptions;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import javax.ejb.ApplicationException;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.ws.rs.core.Response;
 
 /**
@@ -17,6 +19,7 @@ import javax.ws.rs.core.Response;
  * @author maxence
  */
 @ApplicationException(rollback = true)
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public abstract class HttpException extends RuntimeException implements WithJsonDiscriminator {
 
     private static final long serialVersionUID = 1L;
@@ -30,28 +33,28 @@ public abstract class HttpException extends RuntimeException implements WithJson
      * Create a default error with HTTP 400 bad request status
      */
     public HttpException() {
-<span class="nc" id="L33">        this(Response.Status.BAD_REQUEST);</span>
-<span class="nc" id="L34">    }</span>
+<span class="nc" id="L36">        this(Response.Status.BAD_REQUEST);</span>
+<span class="nc" id="L37">    }</span>
 
     /**
      * Create error with custom HTTP status
      *
      * @param httpStatus HTTP status code
      */
-<span class="fc" id="L41">    public HttpException(Response.Status httpStatus) {</span>
-<span class="fc" id="L42">        this.httpStatus = httpStatus;</span>
-<span class="fc" id="L43">    }</span>
+<span class="nc" id="L44">    public HttpException(Response.Status httpStatus) {</span>
+<span class="nc" id="L45">        this.httpStatus = httpStatus;</span>
+<span class="nc" id="L46">    }</span>
 
     @JsonbTransient
     @Override
     public synchronized Throwable getCause() {
-<span class="nc" id="L48">        return super.getCause();</span>
+<span class="nc" id="L51">        return super.getCause();</span>
     }
 
     @JsonbTransient
     @Override
     public StackTraceElement[] getStackTrace() {
-<span class="nc" id="L54">        return super.getStackTrace();</span>
+<span class="nc" id="L57">        return super.getStackTrace();</span>
     }
 
     /**
@@ -61,7 +64,7 @@ public abstract class HttpException extends RuntimeException implements WithJson
      */
     @JsonbTransient
     public Response.Status getHttpStatus() {
-<span class="fc" id="L64">        return this.httpStatus;</span>
+<span class="nc" id="L67">        return this.httpStatus;</span>
     }
 
     /*

@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"ch.colabproject.colab.generator.model.annotations"},{"l":"ch.colabproject.colab.generator.model.exceptions"},{"l":"ch.colabproject.colab.generator.model.interfaces"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"ch.colabproject.colab.generator.model.annotations"},{"l":"ch.colabproject.colab.generator.model.exceptions"},{"l":"ch.colabproject.colab.generator.model.interfaces"},{"l":"ch.colabproject.colab.generator.model.tools"}]
