@@ -8,18 +8,24 @@ package ch.colabproject.colab.api.ws;
 
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketMetaChannel;
 import ch.colabproject.colab.api.ws.message.IndexEntry;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 import javax.websocket.EncodeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Some convenient methods to help sending data through websockets.
@@ -27,6 +33,9 @@ import javax.websocket.EncodeException;
  * @author maxence
  */
 public class WebsocketHelper {
+
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(WebsocketHelper.class);
 
     /**
      * never-called private constructor
@@ -48,17 +57,22 @@ public class WebsocketHelper {
         Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
         WebsocketEffectiveChannel key
     ) {
+        logger.trace("GetOrCreate WsUpdateMessge for channel {}", key);
         if (!byChannels.containsKey(key)) {
+            logger.trace(" -> create channel {}", key);
             byChannels.put(key, List.of(new WsUpdateMessage()));
             return (WsUpdateMessage) byChannels.get(key).get(0);
         } else {
             List<WsMessage> get = byChannels.get(key);
+            logger.trace(" -> use existing channel {} := {}", key, get);
             Optional<WsMessage> find = get.stream()
                 .filter(message -> message instanceof WsUpdateMessage)
                 .findFirst();
             if (find.isPresent()) {
+                logger.trace("   -> use existing message {}", find.get());
                 return (WsUpdateMessage) find.get();
             } else {
+                logger.trace("   -> create emtpy message");
                 WsUpdateMessage wsUpdateMessage = new WsUpdateMessage();
                 get.add(wsUpdateMessage);
                 return wsUpdateMessage;
@@ -67,29 +81,76 @@ public class WebsocketHelper {
     }
 
     /**
-     * Add entity to the set identified by the key.
+     * Add entity to the set identified by the channel.
      *
      * @param byChannels all sets
-     * @param key        key to identify correct set
+     * @param channel    channel to identify correct set
      * @param entity     entity to add
      */
     private static void add(Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
-        WebsocketEffectiveChannel key,
+        WebsocketEffectiveChannel channel,
         ColabEntity entity) {
-        WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, key).getUpdated().add(entity);
+        Collection<ColabEntity> set = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel).getUpdated();
+        logger.trace("Add {} to updated set {}", entity, set);
+        set.add(entity);
+        if (logger.isTraceEnabled()) {
+            set.forEach(e -> {
+                logger.trace("Entity: {}", e);
+                logger.trace("Entity hashCode: {}", e.hashCode());
+                logger.trace("Entity equals new: {}", e.equals(entity));
+            });
+        }
     }
 
     /**
-     * Add index entry to the set identified by the key.
+     * Add index entry to the set identified by the channel.
      *
      * @param byChannels all sets
-     * @param key        key to identify correct set
+     * @param channel    channel to identify correct set
      * @param entry      entry to add
      */
     private static void add(Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
-        WebsocketEffectiveChannel key,
+        WebsocketEffectiveChannel channel,
         IndexEntry entry) {
-        WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, key).getDeleted().add(entry);
+        Collection<IndexEntry> set = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel).getDeleted();
+        logger.trace("Add {} to deleted set {}", entry, set);
+        set.add(entry);
+    }
+
+    /**
+     * Resolve all channels to a list of effective channels, then apply then action of each distinct
+     * channel
+     *
+     * @param channels list of WebsocketChannel
+     * @param userDao  the userDao to resolve meta channels
+     * @param action   action to apply of each unique effective channel
+     *
+     * @return stream of unique WebsocketEffectiveChannel
+     */
+    private static void forEachDistinctEffectiveChannel(Set<WebsocketChannel> channels,
+        UserDao userDao,
+        Consumer<WebsocketEffectiveChannel> action
+    ) {
+        logger.trace("Flatten Channels {}", channels);
+        channels.stream().flatMap(channel -> {
+            if (channel instanceof WebsocketEffectiveChannel) {
+                logger.trace(" -> {}", channel);
+                return Stream.of((WebsocketEffectiveChannel) channel);
+            } else if (channel instanceof WebsocketMetaChannel) {
+                Set<WebsocketEffectiveChannel> resolved = ((WebsocketMetaChannel) channel).resolve(userDao);
+                if (logger.isTraceEnabled()) {
+                    logger.trace(" -> {}", resolved);
+                }
+                return resolved.stream();
+            } else {
+                logger.warn(" unknown channel type: {}", channel);
+                return Stream.of();
+            }
+        }).distinct()
+            .forEach(channel -> {
+                logger.trace(" distinct: {}", channel);
+                action.accept(channel);
+            });
     }
 
     /**
@@ -109,28 +170,19 @@ public class WebsocketHelper {
         Set<IndexEntry> deleted
     ) throws EncodeException {
         Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
+        logger.debug("Prepare WsMessage. Update:{}; Deleted:{}", updated, deleted);
 
         updated.forEach(entity -> {
-            entity.getChannels().forEach(channel -> {
-                if (channel instanceof WebsocketEffectiveChannel) {
-                    add(messagesByChannel, (WebsocketEffectiveChannel) channel, entity);
-                } else if (channel instanceof WebsocketMetaChannel) {
-                    ((WebsocketMetaChannel) channel).resolve(userDao).forEach(resolved -> {
-                        add(messagesByChannel, resolved, entity);
-                    });
-                }
+            logger.trace("Process updated entity {}", entity);
+            forEachDistinctEffectiveChannel(entity.getChannels(), userDao, channel -> {
+                add(messagesByChannel, channel, entity);
             });
         });
 
         deleted.forEach(entity -> {
-            entity.getChannels().forEach(channel -> {
-                if (channel instanceof WebsocketEffectiveChannel) {
-                    add(messagesByChannel, (WebsocketEffectiveChannel) channel, entity);
-                } else if (channel instanceof WebsocketMetaChannel) {
-                    ((WebsocketMetaChannel) channel).resolve(userDao).forEach(resolved -> {
-                        add(messagesByChannel, resolved, entity);
-                    });
-                }
+            logger.trace("Process deleted entry {}", entity);
+            forEachDistinctEffectiveChannel(entity.getChannels(), userDao, channel -> {
+                add(messagesByChannel, channel, entity);
             });
         });
 

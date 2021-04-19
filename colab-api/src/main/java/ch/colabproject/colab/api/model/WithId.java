@@ -7,12 +7,15 @@
 package ch.colabproject.colab.api.model;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
 
 /**
  * Simple interface which depict objects having a Long id
  *
  * @author maxence
  */
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public interface WithId extends WithJsonDiscriminator {
 
     /**

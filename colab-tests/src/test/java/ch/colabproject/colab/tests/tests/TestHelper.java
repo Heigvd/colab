@@ -9,6 +9,8 @@ package ch.colabproject.colab.tests.tests;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.function.Executable;
+import org.slf4j.Logger;
+import org.slf4j.event.Level;
 
 /**
  *
@@ -35,5 +37,16 @@ public class TestHelper {
             Assertions.fail("Expect HttpErrorMessage Exception but got " + ex);
         }
         Assertions.fail("Did not thown anything");
+    }
+
+    /**
+     * Set the level of the given logger
+     *
+     * @param logger logger
+     * @param level  new level
+     */
+    public static void setLoggerLevel(Logger logger, Level level) {
+        ch.qos.logback.classic.Logger lLogger = (ch.qos.logback.classic.Logger) logger;
+        lLogger.setLevel(ch.qos.logback.classic.Level.valueOf(level.toString()));
     }
 }

@@ -15,4 +15,13 @@
         <name>AlbaSim, MEI, HEIG-VD, HES-SO</name>
         <url>https://www.colab-project.ch</url>
     </organization>
+
+    <dependencies>
+        <!-- reflections used for JSON deserialization -->
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
 </project>

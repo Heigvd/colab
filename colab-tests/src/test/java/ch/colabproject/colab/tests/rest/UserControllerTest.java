@@ -6,20 +6,33 @@
  */
 package ch.colabproject.colab.tests.rest;
 
+import ch.colabproject.colab.api.ejb.TransactionManager;
+import ch.colabproject.colab.api.ejb.WebsocketFacade;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.ws.WebsocketHelper;
+import ch.colabproject.colab.api.ws.message.WsMessage;
+import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.TestHelper;
 import ch.colabproject.colab.tests.tests.TestUser;
+import ch.colabproject.colab.tests.ws.WebsocketClient;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import javax.inject.Inject;
+import javax.websocket.DeploymentException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 
 /**
  *
@@ -356,7 +369,6 @@ public class UserControllerTest extends AbstractArquillianTest {
             "goulashsensei@test.local",
             "SoSecuredPassword");
 
-
         this.signIn(otherUser);
         LocalAccount account = (LocalAccount) this.client.userController.getCurrentAccount();
         Assertions.assertEquals(account.getEmail(), otherUser.getEmail());
@@ -374,5 +386,45 @@ public class UserControllerTest extends AbstractArquillianTest {
         this.signIn(otherUser);
         account = (LocalAccount) this.client.userController.getCurrentAccount();
         Assertions.assertEquals(account.getEmail(), otherUser.getEmail());
+    }
+
+    @Test
+    public void testWebsocket() throws URISyntaxException, DeploymentException, IOException, InterruptedException {
+        this.signIn(admin);
+
+        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketHelper.class), Level.DEBUG);
+        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketClient.class), Level.DEBUG);
+        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketFacade.class), Level.DEBUG);
+        TestHelper.setLoggerLevel(LoggerFactory.getLogger(TransactionManager.class), Level.DEBUG);
+
+        WebsocketClient wsClient = this.createWsClient();
+        // subscript to currentUser channel
+        client.websocketController.subscribeToUserChannel(wsClient.getSessionId());
+
+        User me = client.userController.getCurrentUser();
+
+        final String NEW_NAME = "Georges";
+        me.setCommonname(NEW_NAME);
+
+        wsClient.clearMessages();
+        client.userController.updateUser(me);
+
+        List<WsMessage> messages = wsClient.getMessages(1, 10);
+        Assertions.assertEquals(1, messages.size());
+        WsMessage wsMessage = messages.get(0);
+        Assertions.assertTrue(wsMessage instanceof WsUpdateMessage);
+
+        WsUpdateMessage updateMessage = (WsUpdateMessage) wsMessage;
+        // nothing has been deleted
+        Assertions.assertEquals(0, updateMessage.getDeleted().size());
+        // one entity has been updated
+        Assertions.assertEquals(1, updateMessage.getUpdated().size());
+
+        WithJsonDiscriminator entity = updateMessage.getUpdated().iterator().next();
+
+        Assertions.assertTrue(entity instanceof User);
+        Assertions.assertEquals(NEW_NAME, ((User) entity).getCommonname());
+
+        wsClient.close();
     }
 }

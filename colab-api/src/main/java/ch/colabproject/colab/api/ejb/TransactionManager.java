@@ -79,6 +79,7 @@ public class TransactionManager implements Serializable {
      */
     public void registerUpdate(ColabEntity o) {
         updated.add(o);
+        logger.trace("UpdatedSet: {}", updated);
     }
 
     /**
@@ -94,7 +95,7 @@ public class TransactionManager implements Serializable {
      * Pre compute the message.
      */
     private void precomputeMessage() throws EncodeException {
-        logger.debug("Pecompute messages");
+        logger.debug("Precompute messages");
         Set<ColabEntity> filtered = updated.stream()
             .filter(
                 (u) -> !deleted.stream()
@@ -106,6 +107,7 @@ public class TransactionManager implements Serializable {
 
         this.precomputed = true;
         this.message = WebsocketHelper.prepareWsMessage(userDao, filtered, deleted);
+        logger.trace("Precomputed: {}", message);
     }
 
     /**

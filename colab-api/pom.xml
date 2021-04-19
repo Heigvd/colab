@@ -47,6 +47,14 @@
             <type>jar</type>
         </dependency>
 
+        <!-- Used by the polymophic-deserialization hack -->
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>yasson</artifactId>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+
         <!--*****************************************************************-->
         <!-- DEPENDENCIES -->
 
@@ -55,13 +63,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>client-generator-model</artifactId>
             <version>${project.version}</version>
-        </dependency>
-
-        <!-- reflections used for JSON deserialization -->
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <type>jar</type>
         </dependency>
 
         <!-- Liquibase: db refactoring tool -->

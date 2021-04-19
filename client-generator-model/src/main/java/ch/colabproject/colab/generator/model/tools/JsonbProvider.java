@@ -4,10 +4,8 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.rest.config;
+package ch.colabproject.colab.generator.model.tools;
 
-import ch.colabproject.colab.api.rest.utils.ColabDeserializer;
-import ch.colabproject.colab.generator.model.annotations.JsonbMapperProvider;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
@@ -20,7 +18,7 @@ import javax.ws.rs.ext.Provider;
  * @author Maxence
  */
 @Provider
-public class JsonbProvider implements JsonbMapperProvider, ContextResolver<Jsonb> {
+public class JsonbProvider implements ContextResolver<Jsonb> {
 
     /**
      * {@inheritDoc}
@@ -37,16 +35,10 @@ public class JsonbProvider implements JsonbMapperProvider, ContextResolver<Jsonb
      */
     public static Jsonb getJsonb() {
         JsonbConfig config = new JsonbConfig()
-            .withFormatting(false)
-            //.withSerializers(new DateSerializer())
-            //.withDeserializers(new DateDeserializer())
-            .withDeserializers(new ColabDeserializer());
+            .withFormatting(false);
+            // DO NEVER DO THAT EVER (sse PolymorphicDeserializer doc):
+            //.withDeserializers(new PolymorphicDeserializer());
 
         return JsonbBuilder.create(config);
-    }
-
-    @Override
-    public Jsonb getJsonbMapper() {
-        return JsonbProvider.getJsonb();
     }
 }

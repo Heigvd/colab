@@ -13,11 +13,13 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.HashMethod;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -32,6 +34,7 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @Entity
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public abstract class Token implements ColabEntity {
 
     /**

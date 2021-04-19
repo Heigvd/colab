@@ -10,8 +10,10 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,6 +27,7 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public abstract class Account implements ColabEntity {
 
     private static final long serialVersionUID = 1L;

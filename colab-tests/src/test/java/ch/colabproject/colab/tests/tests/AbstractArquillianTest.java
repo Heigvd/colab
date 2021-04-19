@@ -16,11 +16,15 @@ import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
-import ch.colabproject.colab.api.rest.config.JsonbProvider;
+import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import ch.colabproject.colab.client.ColabClient;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
 import ch.colabproject.colab.tests.mailhog.model.Message;
+import ch.colabproject.colab.tests.ws.WebsocketClient;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -35,6 +39,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
+import javax.websocket.DeploymentException;
 import javax.ws.rs.ClientErrorException;
 import org.eu.ingwar.tools.arquillian.extension.suite.annotations.ArquillianSuiteDeployment;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -112,7 +117,7 @@ public abstract class AbstractArquillianTest {
      * URL to reach application
      */
     @ArquillianResource
-    private URL deploymentURL;
+    protected URL deploymentURL;
 
     /**
      * REST client to use to call co.LAB REST methods
@@ -361,6 +366,28 @@ public abstract class AbstractArquillianTest {
         /* no-op */
     }
 
+    protected ColabClient createRestClient() {
+        PolymorphicDeserializer.includePackage("ch.colabproject.colab.api");
+        JsonbProvider jsonbProvider = new JsonbProvider();
+        return new ColabClient(
+            deploymentURL.toString(),
+            "COLAB_SESSION_ID",
+            JsonbProvider.getJsonb(),
+            jsonbProvider
+        );
+    }
+
+    protected WebsocketClient createWsClient() throws DeploymentException, IOException, InterruptedException, URISyntaxException {
+        String httpProtocol = deploymentURL.getProtocol();
+        String host = deploymentURL.getHost();
+        int port = deploymentURL.getPort();
+        String path = deploymentURL.getPath();
+        String endpoint = (httpProtocol.equals("http") ? "ws" : "wss")
+            + "://" + host + ":" + port + path + "ws";
+
+        return WebsocketClient.build(endpoint);
+    }
+
     /**
      * Before each step: reset db state
      *
@@ -377,13 +404,7 @@ public abstract class AbstractArquillianTest {
                 Assertions.fail("No Mailhog ! did you \"docker run -d --restart always -p 8025:8025 -p 1025:1025 mailhog/mailhog\"?");
             }
 
-            JsonbProvider jsonbProvider = new JsonbProvider();
-            this.client = new ColabClient(
-                deploymentURL.toString(),
-                "COLAB_SESSION_ID",
-                jsonbProvider.getJsonbMapper(),
-                new JsonbProvider()
-            );
+            this.client = createRestClient();
             logger.info("Start TEST {}", info.getDisplayName());
             this.startTime = System.currentTimeMillis();
 

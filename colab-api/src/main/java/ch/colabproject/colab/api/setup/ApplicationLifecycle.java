@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.setup;
 
 import ch.colabproject.colab.api.ejb.ApplicationLifecycleFacade;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import javax.inject.Inject;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -35,12 +36,16 @@ public class ApplicationLifecycle extends HttpServlet {
     @Inject
     private ApplicationLifecycleFacade applicationLifecycleFacade;
 
-
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         logger.trace("LIFE CYCLE : init");
+
+        PolymorphicDeserializer.includePackage("ch.colabproject.colab.api");
+
+        logger.trace("Create admin");
         applicationLifecycleFacade.createDefaultAdminIfNone();
+
     }
 
     @Override

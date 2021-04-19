@@ -7,8 +7,8 @@
 package ch.colabproject.colab.api.ws.message;
 
 import ch.colabproject.colab.api.model.ColabEntity;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -21,29 +21,29 @@ public class WsUpdateMessage extends WsMessage {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Collection of new or updated objects
+     * Set of new or updated objects
      */
     @NotNull
-    private Collection<ColabEntity> updated;
+    private Set<ColabEntity> updated;
 
     /**
-     * Collection of destroyed entities
+     * Set of destroyed entities
      */
     @NotNull
-    private Collection<IndexEntry> deleted;
+    private Set<IndexEntry> deleted;
 
     /**
      * Default constructor
      */
     public WsUpdateMessage() {
-        this.updated = new ArrayList<>();
-        this.deleted = new ArrayList<>();
+        this.updated = new HashSet<>();
+        this.deleted = new HashSet<>();
     }
 
     /**
      * @return the list of new or updated objects to send to clients
      */
-    public Collection<ColabEntity> getUpdated() {
+    public Set<ColabEntity> getUpdated() {
         return updated;
     }
 
@@ -52,7 +52,7 @@ public class WsUpdateMessage extends WsMessage {
      *
      * @param updated list of updated elements
      */
-    public void setUpdated(Collection<ColabEntity> updated) {
+    public void setUpdated(Set<ColabEntity> updated) {
         this.updated = updated;
     }
 
@@ -61,12 +61,16 @@ public class WsUpdateMessage extends WsMessage {
      *
      * @return all deleted entites
      */
-    public Collection<IndexEntry> getDeleted() {
+    public Set<IndexEntry> getDeleted() {
         return deleted;
     }
 
-    public void setDeleted(Collection<IndexEntry> deleted) {
+    public void setDeleted(Set<IndexEntry> deleted) {
         this.deleted = deleted;
     }
 
+    @Override
+    public String toString() {
+        return "WsUpdateMessage{" + "updated=" + updated + ", deleted=" + deleted + '}';
+    }
 }

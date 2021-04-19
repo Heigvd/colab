@@ -7,7 +7,7 @@
         <artifactId>colab</artifactId>
         <version>0.1</version>
     </parent>
-    
+
     <artifactId>colab-tests</artifactId>
     <packaging>jar</packaging>
 
@@ -115,6 +115,13 @@
             <artifactId>arquillian-persistence-dbunit</artifactId>
             <scope>test</scope>
         </dependency>-->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>

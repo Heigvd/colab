@@ -273,7 +273,7 @@ public class WebsocketFacade {
      * @param session session to remove from the set
      */
     private void subscribe(WebsocketEffectiveChannel channel, Session session) {
-        logger.debug("Session {} subscribes to {}", session, channel);
+        logger.debug("Session {} subscribes to {}", session.getId(), channel);
         if (!subscriptions.containsKey(channel)) {
             subscriptions.put(channel, new HashSet<>());
         }
@@ -289,7 +289,9 @@ public class WebsocketFacade {
      */
     private void unsubscribe(WebsocketEffectiveChannel channel, Set<Session> sessions) {
         Set<Session> chSessions = subscriptions.get(channel);
-        logger.debug("Sessions {} unsubscribes from {}", sessions, channel);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Sessions {} unsubscribes from {}", sessions.stream().map(session -> session.getId()), channel);
+        }
         if (chSessions != null) {
             chSessions.removeAll(sessions);
             if (chSessions.isEmpty()) {

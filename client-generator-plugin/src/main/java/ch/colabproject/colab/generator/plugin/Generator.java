@@ -6,12 +6,9 @@
  */
 package ch.colabproject.colab.generator.plugin;
 
-import ch.colabproject.colab.generator.model.annotations.JsonbMapperProvider;
-import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.plugin.rest.RestController;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.util.AbstractMap.SimpleEntry;
@@ -28,6 +25,8 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Path;
 import org.apache.maven.plugin.MojoFailureException;
 import org.reflections.Reflections;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 
 /**
  *
@@ -91,25 +90,12 @@ public class Generator {
     }
 
     /**
-     * Try to find a jsonb mapper from a {@link JsonbMapperProvider} implementation.
+     * get JSON-B to use.
      *
      * @return jsbonb mapper
      */
     public Jsonb getJsonBMapper() {
-        Set<Class<? extends JsonbMapperProvider>> mapperProviders
-            = reflections.getSubTypesOf(JsonbMapperProvider.class);
-        if (!mapperProviders.isEmpty()) {
-            Class<? extends JsonbMapperProvider> provider = mapperProviders.iterator().next();
-            try {
-                return provider.getConstructor().newInstance().getJsonbMapper();
-            } catch (NoSuchMethodException | SecurityException | InstantiationException
-                | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException ex) {
-                Logger.error("Fails to instantiate JsonbMapperProvider");
-            }
-        }
-
-        return null;
+        return JsonbProvider.getJsonb();
     }
 
     /**

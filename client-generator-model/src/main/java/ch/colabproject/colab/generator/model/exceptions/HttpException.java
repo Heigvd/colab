@@ -7,8 +7,10 @@
 package ch.colabproject.colab.generator.model.exceptions;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import javax.ejb.ApplicationException;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.ws.rs.core.Response;
 
 /**
@@ -17,6 +19,7 @@ import javax.ws.rs.core.Response;
  * @author maxence
  */
 @ApplicationException(rollback = true)
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public abstract class HttpException extends RuntimeException implements WithJsonDiscriminator {
 
     private static final long serialVersionUID = 1L;

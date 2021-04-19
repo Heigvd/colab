@@ -8,14 +8,17 @@ package ch.colabproject.colab.api.model;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
 
 /**
  * Simple interface which depict persisted object that may be exchanged with clients
  *
  * @author maxence
  */
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public interface ColabEntity extends WithId {
 
     /**

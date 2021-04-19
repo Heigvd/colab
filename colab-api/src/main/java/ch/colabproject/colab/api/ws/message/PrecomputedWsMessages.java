@@ -76,4 +76,9 @@ public class PrecomputedWsMessages implements Serializable {
         }
         return m;
     }
+
+    @Override
+    public String toString() {
+        return "PrecomputedWsMessages{" + "messages=" + messages + '}';
+    }
 }
