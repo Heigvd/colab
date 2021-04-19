@@ -41,9 +41,9 @@ public abstract class HttpException extends RuntimeException implements WithJson
      *
      * @param httpStatus HTTP status code
      */
-<span class="nc" id="L44">    public HttpException(Response.Status httpStatus) {</span>
-<span class="nc" id="L45">        this.httpStatus = httpStatus;</span>
-<span class="nc" id="L46">    }</span>
+<span class="fc" id="L44">    public HttpException(Response.Status httpStatus) {</span>
+<span class="fc" id="L45">        this.httpStatus = httpStatus;</span>
+<span class="fc" id="L46">    }</span>
 
     @JsonbTransient
     @Override
@@ -64,7 +64,7 @@ public abstract class HttpException extends RuntimeException implements WithJson
      */
     @JsonbTransient
     public Response.Status getHttpStatus() {
-<span class="nc" id="L67">        return this.httpStatus;</span>
+<span class="fc" id="L67">        return this.httpStatus;</span>
     }
 
     /*

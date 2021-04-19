@@ -18,14 +18,14 @@ import javax.ws.rs.ext.Provider;
  * @author Maxence
  */
 @Provider
-<span class="nc" id="L21">public class JsonbProvider implements ContextResolver&lt;Jsonb&gt; {</span>
+<span class="fc" id="L21">public class JsonbProvider implements ContextResolver&lt;Jsonb&gt; {</span>
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Jsonb getContext(Class&lt;?&gt; theClass) {
-<span class="nc" id="L28">        return JsonbProvider.getJsonb();</span>
+<span class="fc" id="L28">        return JsonbProvider.getJsonb();</span>
     }
 
     /**

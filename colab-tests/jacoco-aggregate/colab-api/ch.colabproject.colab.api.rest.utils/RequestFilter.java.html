@@ -29,12 +29,12 @@ import org.slf4j.LoggerFactory;
  */
 @Provider
 @Priority(2)
-<span class="nc" id="L32">public class RequestFilter implements ContainerRequestFilter, ContainerResponseFilter {</span>
+<span class="fc" id="L32">public class RequestFilter implements ContainerRequestFilter, ContainerResponseFilter {</span>
 
     /**
      * Logger
      */
-<span class="nc" id="L37">    private static final Logger log = LoggerFactory.getLogger(RequestFilter.class);</span>
+<span class="fc" id="L37">    private static final Logger log = LoggerFactory.getLogger(RequestFilter.class);</span>
 
     /**
      * Request related logic
@@ -51,14 +51,14 @@ import org.slf4j.LoggerFactory;
      */
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-<span class="nc" id="L54">        requestManager.setStartTime(System.currentTimeMillis());</span>
+<span class="fc" id="L54">        requestManager.setStartTime(System.currentTimeMillis());</span>
 
         // request base url starts with REST @ApplicationPath = &quot;api&quot;, remove such suffix
-<span class="nc" id="L57">        requestManager.setBaseUrl(</span>
-<span class="nc" id="L58">            requestContext.getUriInfo().getBaseUri().toString()</span>
-<span class="nc" id="L59">                .replaceFirst(&quot;/api/$&quot;, &quot;&quot;)</span>
+<span class="fc" id="L57">        requestManager.setBaseUrl(</span>
+<span class="fc" id="L58">            requestContext.getUriInfo().getBaseUri().toString()</span>
+<span class="fc" id="L59">                .replaceFirst(&quot;/api/$&quot;, &quot;&quot;)</span>
         );
-<span class="nc" id="L61">    }</span>
+<span class="fc" id="L61">    }</span>
 
     /**
      * Intercept response, save httpSession in sessions cache and make sure set-cookie header is set
@@ -71,16 +71,16 @@ import org.slf4j.LoggerFactory;
     @Override
     public void filter(ContainerRequestContext requestContext,
         ContainerResponseContext responseContext) throws IOException {
-<span class="nc" id="L74">        long startTime = requestManager.getStartTime();</span>
-<span class="nc" id="L75">        User user = requestManager.getCurrentUser();</span>
+<span class="fc" id="L74">        long startTime = requestManager.getStartTime();</span>
+<span class="fc" id="L75">        User user = requestManager.getCurrentUser();</span>
 
-<span class="nc" id="L77">        log.info(&quot;{} {} {} ({}) completed in {} ms&quot;,</span>
-<span class="nc" id="L78">            responseContext.getStatus(),</span>
-<span class="nc" id="L79">            requestContext.getRequest().getMethod(),</span>
-<span class="nc" id="L80">            requestContext.getUriInfo().getPath(),</span>
-<span class="nc bnc" id="L81" title="All 2 branches missed.">            user != null ? user.getUsername() : &quot;anonymous&quot;,</span>
-<span class="nc" id="L82">            System.currentTimeMillis() - startTime);</span>
-<span class="nc" id="L83">    }</span>
+<span class="fc" id="L77">        log.info(&quot;{} {} {} ({}) completed in {} ms&quot;,</span>
+<span class="fc" id="L78">            responseContext.getStatus(),</span>
+<span class="fc" id="L79">            requestContext.getRequest().getMethod(),</span>
+<span class="fc" id="L80">            requestContext.getUriInfo().getPath(),</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">            user != null ? user.getUsername() : &quot;anonymous&quot;,</span>
+<span class="fc" id="L82">            System.currentTimeMillis() - startTime);</span>
+<span class="fc" id="L83">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

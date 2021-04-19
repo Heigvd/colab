@@ -18,10 +18,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author maxence
  */
-<span class="nc" id="L21">public class AbstractExceptionMapper {</span>
+<span class="fc" id="L21">public class AbstractExceptionMapper {</span>
 
     /** logger */
-<span class="nc" id="L24">    private static final Logger logger = LoggerFactory.getLogger(AbstractExceptionMapper.class);</span>
+<span class="fc" id="L24">    private static final Logger logger = LoggerFactory.getLogger(AbstractExceptionMapper.class);</span>
 
     /**
      *
@@ -30,14 +30,14 @@ import org.slf4j.LoggerFactory;
      * @return a HTTP response which wrap the exception
      */
     protected Response processException(Exception exception) {
-<span class="nc bnc" id="L33" title="All 2 branches missed.">        if (exception == null) {</span>
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">        if (exception == null) {</span>
 <span class="nc" id="L34">            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();</span>
-<span class="nc bnc" id="L35" title="All 2 branches missed.">        } else if (exception instanceof EJBException) {</span>
-<span class="nc" id="L36">            return processException(((EJBException) exception).getCausedByException());</span>
-<span class="nc bnc" id="L37" title="All 2 branches missed.">        } else if (exception instanceof HttpException) {</span>
-<span class="nc" id="L38">            return Response.status(((HttpException) exception).getHttpStatus())</span>
-<span class="nc" id="L39">                .entity(exception)</span>
-<span class="nc" id="L40">                .build();</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        } else if (exception instanceof EJBException) {</span>
+<span class="fc" id="L36">            return processException(((EJBException) exception).getCausedByException());</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        } else if (exception instanceof HttpException) {</span>
+<span class="fc" id="L38">            return Response.status(((HttpException) exception).getHttpStatus())</span>
+<span class="fc" id="L39">                .entity(exception)</span>
+<span class="fc" id="L40">                .build();</span>
 <span class="nc bnc" id="L41" title="All 2 branches missed.">        } else if (exception instanceof ConstraintViolationException) {</span>
 <span class="nc" id="L42">            ConstraintViolationException constraintViolation</span>
                 = (ConstraintViolationException) exception;

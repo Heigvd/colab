@@ -14,7 +14,7 @@ import java.util.Objects;
  *
  * @author maxence
  */
-<span class="nc" id="L17">public class ProjectContentChannel extends WebsocketEffectiveChannel {</span>
+<span class="fc" id="L17">public class ProjectContentChannel extends WebsocketEffectiveChannel {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -38,14 +38,14 @@ import java.util.Objects;
      * @param projectId new projectId
      */
     public void setProjectId(Long projectId) {
-<span class="nc" id="L41">        this.projectId = projectId;</span>
-<span class="nc" id="L42">    }</span>
+<span class="fc" id="L41">        this.projectId = projectId;</span>
+<span class="fc" id="L42">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L46">        int hash = 7;</span>
-<span class="nc" id="L47">        hash = 53 * hash + Objects.hashCode(this.projectId);</span>
-<span class="nc" id="L48">        return hash;</span>
+<span class="fc" id="L46">        int hash = 7;</span>
+<span class="fc" id="L47">        hash = 53 * hash + Objects.hashCode(this.projectId);</span>
+<span class="fc" id="L48">        return hash;</span>
     }
 
     /**
@@ -79,9 +79,9 @@ import java.util.Objects;
      * @return the projectId very own channel
      */
     public static ProjectContentChannel build(Project project) {
-<span class="nc" id="L82">        ProjectContentChannel channel = new ProjectContentChannel();</span>
-<span class="nc" id="L83">        channel.setProjectId(project.getId());</span>
-<span class="nc" id="L84">        return channel;</span>
+<span class="fc" id="L82">        ProjectContentChannel channel = new ProjectContentChannel();</span>
+<span class="fc" id="L83">        channel.setProjectId(project.getId());</span>
+<span class="fc" id="L84">        return channel;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

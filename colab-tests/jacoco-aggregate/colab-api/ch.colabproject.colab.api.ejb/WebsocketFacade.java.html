@@ -132,16 +132,16 @@ import org.slf4j.LoggerFactory;
      * @param sessionId websocket session identifier
      */
     public void subscribeToUserChannel(WsSessionIdentifier sessionId) {
-<span class="nc" id="L135">        logger.debug(&quot;Session {} want to subscribe to its UserChannel&quot;, sessionId);</span>
-<span class="nc" id="L136">        User user = securityFacade.assertAndGetCurrentUser();</span>
-<span class="nc" id="L137">        SubscriptionRequest request = SubscriptionRequest.build(</span>
+<span class="fc" id="L135">        logger.debug(&quot;Session {} want to subscribe to its UserChannel&quot;, sessionId);</span>
+<span class="fc" id="L136">        User user = securityFacade.assertAndGetCurrentUser();</span>
+<span class="fc" id="L137">        SubscriptionRequest request = SubscriptionRequest.build(</span>
             SubscriptionRequest.SubscriptionType.SUBSCRIBE,
             SubscriptionRequest.ChannelType.USER,
-<span class="nc" id="L140">            user.getId(),</span>
-<span class="nc" id="L141">            sessionId.getSessionId(),</span>
-<span class="nc" id="L142">            requestManager.getHttpSession().getSessionId());</span>
-<span class="nc" id="L143">        subscriptionEvents.fire(request);</span>
-<span class="nc" id="L144">    }</span>
+<span class="fc" id="L140">            user.getId(),</span>
+<span class="fc" id="L141">            sessionId.getSessionId(),</span>
+<span class="fc" id="L142">            requestManager.getHttpSession().getSessionId());</span>
+<span class="fc" id="L143">        subscriptionEvents.fire(request);</span>
+<span class="fc" id="L144">    }</span>
 
     /**
      * Current user want to unsubscribe from its own channel.
@@ -218,34 +218,34 @@ import org.slf4j.LoggerFactory;
      */
     public void processSubscription(
         @Observes @Inbound(eventName = WS_SUBSCRIPTION_EVENT_CHANNEL) SubscriptionRequest request) {
-<span class="nc" id="L221">        logger.debug(&quot;Channel subscription request: {}&quot;, request);</span>
-<span class="nc" id="L222">        Session session = WebsocketEndpoint.getSession(request.getWsSessionId());</span>
-<span class="nc bnc" id="L223" title="All 2 branches missed.">        if (session != null) {</span>
-<span class="nc" id="L224">            logger.debug(&quot;Process channel subscription request: {}&quot;, request);</span>
+<span class="fc" id="L221">        logger.debug(&quot;Channel subscription request: {}&quot;, request);</span>
+<span class="fc" id="L222">        Session session = WebsocketEndpoint.getSession(request.getWsSessionId());</span>
+<span class="pc bpc" id="L223" title="1 of 2 branches missed.">        if (session != null) {</span>
+<span class="fc" id="L224">            logger.debug(&quot;Process channel subscription request: {}&quot;, request);</span>
 
             // first determine the effective channel
-<span class="nc" id="L227">            WebsocketEffectiveChannel channel = getChannel(request);</span>
-<span class="nc bnc" id="L228" title="All 2 branches missed.">            if (channel != null) {</span>
+<span class="fc" id="L227">            WebsocketEffectiveChannel channel = getChannel(request);</span>
+<span class="pc bpc" id="L228" title="1 of 2 branches missed.">            if (channel != null) {</span>
                 // make sure the http session has its own set of wsSessions
-<span class="nc bnc" id="L230" title="All 2 branches missed.">                if (!httpSessionToWsSessions.containsKey(request.getColabSessionId())) {</span>
-<span class="nc" id="L231">                    httpSessionToWsSessions.put(request.getColabSessionId(), new HashSet&lt;&gt;());</span>
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">                if (!httpSessionToWsSessions.containsKey(request.getColabSessionId())) {</span>
+<span class="fc" id="L231">                    httpSessionToWsSessions.put(request.getColabSessionId(), new HashSet&lt;&gt;());</span>
                 }
                 // and  make sure the websocket session is linked to the http session
-<span class="nc" id="L234">                httpSessionToWsSessions.get(request.getColabSessionId()).add(session);</span>
+<span class="fc" id="L234">                httpSessionToWsSessions.get(request.getColabSessionId()).add(session);</span>
 
                 // make sure to link wsSession to its Http session
-<span class="nc" id="L237">                wsSessionToHttpSession.put(session, request.getColabSessionId());</span>
+<span class="fc" id="L237">                wsSessionToHttpSession.put(session, request.getColabSessionId());</span>
 
-<span class="nc bnc" id="L239" title="All 2 branches missed.">                if (request.getType() == SubscriptionRequest.SubscriptionType.SUBSCRIBE) {</span>
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">                if (request.getType() == SubscriptionRequest.SubscriptionType.SUBSCRIBE) {</span>
                     // make sure the http session has its own list of channels
-<span class="nc bnc" id="L241" title="All 2 branches missed.">                    if (!wsSessionMap.containsKey(session)) {</span>
-<span class="nc" id="L242">                        wsSessionMap.put(session, new HashSet&lt;&gt;());</span>
+<span class="pc bpc" id="L241" title="1 of 2 branches missed.">                    if (!wsSessionMap.containsKey(session)) {</span>
+<span class="fc" id="L242">                        wsSessionMap.put(session, new HashSet&lt;&gt;());</span>
                     }
                     // keep wsSession to channel registry up-to date
-<span class="nc" id="L245">                    wsSessionMap.get(session).add(channel);</span>
+<span class="fc" id="L245">                    wsSessionMap.get(session).add(channel);</span>
 
                     // subscribe to channel
-<span class="nc" id="L248">                    subscribe(channel, session);</span>
+<span class="fc" id="L248">                    subscribe(channel, session);</span>
                 } else {
                     // Remove the channel from the set of channel linked to the wsSession
 <span class="nc bnc" id="L251" title="All 2 branches missed.">                    if (wsSessionMap.containsKey(session)) {</span>
@@ -260,10 +260,10 @@ import org.slf4j.LoggerFactory;
             } else {
 <span class="nc" id="L261">                logger.debug(&quot;Failed to resolve {} to an effective channel&quot;, request);</span>
             }
-<span class="nc" id="L263">        } else {</span>
+<span class="fc" id="L263">        } else {</span>
 <span class="nc" id="L264">            logger.debug(&quot;Ignore channel subscription: {}&quot;, request);</span>
         }
-<span class="nc" id="L266">    }</span>
+<span class="fc" id="L266">    }</span>
 
     /**
      * Add the given session to the set identified by the given channel, in the given map.
@@ -273,12 +273,12 @@ import org.slf4j.LoggerFactory;
      * @param session session to remove from the set
      */
     private void subscribe(WebsocketEffectiveChannel channel, Session session) {
-<span class="nc" id="L276">        logger.debug(&quot;Session {} subscribes to {}&quot;, session.getId(), channel);</span>
-<span class="nc bnc" id="L277" title="All 2 branches missed.">        if (!subscriptions.containsKey(channel)) {</span>
-<span class="nc" id="L278">            subscriptions.put(channel, new HashSet&lt;&gt;());</span>
+<span class="fc" id="L276">        logger.debug(&quot;Session {} subscribes to {}&quot;, session.getId(), channel);</span>
+<span class="pc bpc" id="L277" title="1 of 2 branches missed.">        if (!subscriptions.containsKey(channel)) {</span>
+<span class="fc" id="L278">            subscriptions.put(channel, new HashSet&lt;&gt;());</span>
         }
-<span class="nc" id="L280">        subscriptions.get(channel).add(session);</span>
-<span class="nc" id="L281">    }</span>
+<span class="fc" id="L280">        subscriptions.get(channel).add(session);</span>
+<span class="fc" id="L281">    }</span>
 
     /**
      * Unsubscribe all sessions from given channel. If the channel is empty after the operation, it
@@ -288,17 +288,17 @@ import org.slf4j.LoggerFactory;
      * @param sessions session to remove from channel
      */
     private void unsubscribe(WebsocketEffectiveChannel channel, Set&lt;Session&gt; sessions) {
-<span class="nc" id="L291">        Set&lt;Session&gt; chSessions = subscriptions.get(channel);</span>
-<span class="nc bnc" id="L292" title="All 2 branches missed.">        if (logger.isDebugEnabled()) {</span>
-<span class="nc" id="L293">            logger.debug(&quot;Sessions {} unsubscribes from {}&quot;, sessions.stream().map(session -&gt; session.getId()), channel);</span>
+<span class="fc" id="L291">        Set&lt;Session&gt; chSessions = subscriptions.get(channel);</span>
+<span class="pc bpc" id="L292" title="1 of 2 branches missed.">        if (logger.isDebugEnabled()) {</span>
+<span class="pc" id="L293">            logger.debug(&quot;Sessions {} unsubscribes from {}&quot;, sessions.stream().map(session -&gt; session.getId()), channel);</span>
         }
-<span class="nc bnc" id="L295" title="All 2 branches missed.">        if (chSessions != null) {</span>
-<span class="nc" id="L296">            chSessions.removeAll(sessions);</span>
-<span class="nc bnc" id="L297" title="All 2 branches missed.">            if (chSessions.isEmpty()) {</span>
-<span class="nc" id="L298">                subscriptions.remove(channel);</span>
+<span class="pc bpc" id="L295" title="1 of 2 branches missed.">        if (chSessions != null) {</span>
+<span class="fc" id="L296">            chSessions.removeAll(sessions);</span>
+<span class="pc bpc" id="L297" title="1 of 2 branches missed.">            if (chSessions.isEmpty()) {</span>
+<span class="fc" id="L298">                subscriptions.remove(channel);</span>
             }
         }
-<span class="nc" id="L301">    }</span>
+<span class="fc" id="L301">    }</span>
 
     /**
      * Determine the EffectiveChannel
@@ -308,15 +308,15 @@ import org.slf4j.LoggerFactory;
      * @return the channel which match the request
      */
     private WebsocketEffectiveChannel getChannel(SubscriptionRequest request) {
-<span class="nc bnc" id="L311" title="All 2 branches missed.">        if (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {</span>
+<span class="pc bpc" id="L311" title="1 of 2 branches missed.">        if (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {</span>
 <span class="nc" id="L312">            Project project = projectDao.getProject(request.getChannelId());</span>
 <span class="nc bnc" id="L313" title="All 2 branches missed.">            if (project != null) {</span>
 <span class="nc" id="L314">                return ProjectContentChannel.build(project);</span>
             }
-<span class="nc bnc" id="L316" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {</span>
-<span class="nc" id="L317">            User user = userDao.findUser(request.getChannelId());</span>
-<span class="nc bnc" id="L318" title="All 2 branches missed.">            if (user != null) {</span>
-<span class="nc" id="L319">                return user.getEffectiveChannel();</span>
+<span class="pc bpc" id="L316" title="1 of 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {</span>
+<span class="fc" id="L317">            User user = userDao.findUser(request.getChannelId());</span>
+<span class="pc bpc" id="L318" title="1 of 2 branches missed.">            if (user != null) {</span>
+<span class="fc" id="L319">                return user.getEffectiveChannel();</span>
             }
         }
 
@@ -332,8 +332,8 @@ import org.slf4j.LoggerFactory;
      * @param message precomputed message to propagate.
      */
     public void propagate(PrecomputedWsMessages message) {
-<span class="nc" id="L335">        this.messagePropagation.fire(message);</span>
-<span class="nc" id="L336">    }</span>
+<span class="fc" id="L335">        this.messagePropagation.fire(message);</span>
+<span class="fc" id="L336">    }</span>
 
     /**
      * On Hazelcast event. Each instance receive precomputed message.
@@ -344,25 +344,25 @@ import org.slf4j.LoggerFactory;
     public void onMessagePropagation(
         @Observes @Inbound(eventName = WS_PROPAGATION_CHANNEL) PrecomputedWsMessages payload) {
 
-<span class="nc" id="L347">        Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; messagesByChannels = payload.getMessages();</span>
-<span class="nc bnc" id="L348" title="All 2 branches missed.">        if (messagesByChannels != null) {</span>
-<span class="nc" id="L349">            messagesByChannels.forEach((channel, messages) -&gt; {</span>
-<span class="nc" id="L350">                Set&lt;Session&gt; subscribers = this.subscriptions.get(channel);</span>
-<span class="nc bnc" id="L351" title="All 2 branches missed.">                if (subscribers != null) {</span>
-<span class="nc" id="L352">                    subscribers.forEach(session -&gt; {</span>
-<span class="nc" id="L353">                        messages.forEach(message -&gt; {</span>
+<span class="fc" id="L347">        Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; messagesByChannels = payload.getMessages();</span>
+<span class="pc bpc" id="L348" title="1 of 2 branches missed.">        if (messagesByChannels != null) {</span>
+<span class="fc" id="L349">            messagesByChannels.forEach((channel, messages) -&gt; {</span>
+<span class="fc" id="L350">                Set&lt;Session&gt; subscribers = this.subscriptions.get(channel);</span>
+<span class="fc bfc" id="L351" title="All 2 branches covered.">                if (subscribers != null) {</span>
+<span class="fc" id="L352">                    subscribers.forEach(session -&gt; {</span>
+<span class="fc" id="L353">                        messages.forEach(message -&gt; {</span>
                             try {
-<span class="nc" id="L355">                                session.getBasicRemote().sendText(message);</span>
+<span class="fc" id="L355">                                session.getBasicRemote().sendText(message);</span>
 <span class="nc" id="L356">                            } catch (IOException ex) {</span>
 <span class="nc" id="L357">                                logger.error(&quot;Failed to send websocket message {} to {}&quot;,</span>
                                     message, session);
-<span class="nc" id="L359">                            }</span>
-<span class="nc" id="L360">                        });</span>
-<span class="nc" id="L361">                    });</span>
+<span class="fc" id="L359">                            }</span>
+<span class="fc" id="L360">                        });</span>
+<span class="fc" id="L361">                    });</span>
                 }
-<span class="nc" id="L363">            });</span>
+<span class="fc" id="L363">            });</span>
         }
-<span class="nc" id="L365">    }</span>
+<span class="fc" id="L365">    }</span>
 
     /**
      * Unsubscribe all channel linked to the given httpSessionId. This is required after the user
@@ -372,8 +372,8 @@ import org.slf4j.LoggerFactory;
      */
     public void signoutAndUnsubscribeFromAll(String httpSessionId) {
         // TODO send logout event, so each client (each browser tab) knows it has been disconected
-<span class="nc" id="L375">        Set&lt;Session&gt; wsSessions = this.httpSessionToWsSessions.get(httpSessionId);</span>
-<span class="nc bnc" id="L376" title="All 2 branches missed.">        if (wsSessions != null) {</span>
+<span class="fc" id="L375">        Set&lt;Session&gt; wsSessions = this.httpSessionToWsSessions.get(httpSessionId);</span>
+<span class="pc bpc" id="L376" title="1 of 2 branches missed.">        if (wsSessions != null) {</span>
             // the http session is linked to one or more websocket session, let's cancel all their
             // subscriptions
 <span class="nc" id="L379">            wsSessions.stream()</span>
@@ -391,8 +391,8 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L391">                });</span>
         }
 
-<span class="nc" id="L394">        this.httpSessionToWsSessions.remove(httpSessionId);</span>
-<span class="nc" id="L395">    }</span>
+<span class="fc" id="L394">        this.httpSessionToWsSessions.remove(httpSessionId);</span>
+<span class="fc" id="L395">    }</span>
 
     /**
      * Clean subscription on session close
@@ -400,14 +400,14 @@ import org.slf4j.LoggerFactory;
      * @param session websocket session to clean subscription for
      */
     public void unsubscribeFromAll(Session session) {
-<span class="nc" id="L403">        Set&lt;WebsocketEffectiveChannel&gt; set = this.wsSessionMap.get(session);</span>
-<span class="nc bnc" id="L404" title="All 2 branches missed.">        if (set != null) {</span>
-<span class="nc" id="L405">            Set&lt;Session&gt; setOfSession = Set.of(session);</span>
-<span class="nc" id="L406">            set.forEach(channel -&gt; {</span>
-<span class="nc" id="L407">                unsubscribe(channel, setOfSession);</span>
-<span class="nc" id="L408">            });</span>
-<span class="nc" id="L409">            this.wsSessionMap.remove(session);</span>
+<span class="fc" id="L403">        Set&lt;WebsocketEffectiveChannel&gt; set = this.wsSessionMap.get(session);</span>
+<span class="pc bpc" id="L404" title="1 of 2 branches missed.">        if (set != null) {</span>
+<span class="fc" id="L405">            Set&lt;Session&gt; setOfSession = Set.of(session);</span>
+<span class="fc" id="L406">            set.forEach(channel -&gt; {</span>
+<span class="fc" id="L407">                unsubscribe(channel, setOfSession);</span>
+<span class="fc" id="L408">            });</span>
+<span class="fc" id="L409">            this.wsSessionMap.remove(session);</span>
         }
-<span class="nc" id="L411">    }</span>
+<span class="fc" id="L411">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

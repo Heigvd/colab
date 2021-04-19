@@ -36,10 +36,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L39">public class ProjectController {</span>
+<span class="fc" id="L39">public class ProjectController {</span>
 
     /** logger */
-<span class="nc" id="L42">    private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);</span>
+<span class="fc" id="L42">    private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);</span>
 
     /**
      * The Project business logic
@@ -61,8 +61,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;Project&gt; getAllProjects() {
-<span class="nc" id="L64">        logger.debug(&quot;Get all projects&quot;);</span>
-<span class="nc" id="L65">        return projectDao.getAllProject();</span>
+<span class="fc" id="L64">        logger.debug(&quot;Get all projects&quot;);</span>
+<span class="fc" id="L65">        return projectDao.getAllProject();</span>
     }
 
     /**
@@ -87,8 +87,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;/{id}&quot;)
     public Project getProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L90">        logger.debug(&quot;Get project #{}&quot;, id);</span>
-<span class="nc" id="L91">        return projectDao.getProject(id);</span>
+<span class="fc" id="L90">        logger.debug(&quot;Get project #{}&quot;, id);</span>
+<span class="fc" id="L91">        return projectDao.getProject(id);</span>
     }
 
     /**
@@ -100,8 +100,8 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createProject(Project project) {
-<span class="nc" id="L103">        logger.debug(&quot;Create project {}&quot;, project);</span>
-<span class="nc" id="L104">        return projectFacade.createNewProject(project).getId();</span>
+<span class="fc" id="L103">        logger.debug(&quot;Create project {}&quot;, project);</span>
+<span class="fc" id="L104">        return projectFacade.createNewProject(project).getId();</span>
     }
 
     /**
@@ -113,9 +113,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateProject(Project project) throws ColabMergeException {
-<span class="nc" id="L116">        logger.debug(&quot;Update project {}&quot;, project);</span>
-<span class="nc" id="L117">        projectDao.updateProject(project);</span>
-<span class="nc" id="L118">    }</span>
+<span class="fc" id="L116">        logger.debug(&quot;Update project {}&quot;, project);</span>
+<span class="fc" id="L117">        projectDao.updateProject(project);</span>
+<span class="fc" id="L118">    }</span>
 
     /**
      * Permanently delete a project.
@@ -125,9 +125,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;/{id}&quot;)
     public void deleteProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L128">        logger.debug(&quot;Delete project #{}&quot;, id);</span>
-<span class="nc" id="L129">        projectDao.deleteProject(id);</span>
-<span class="nc" id="L130">    }</span>
+<span class="fc" id="L128">        logger.debug(&quot;Delete project #{}&quot;, id);</span>
+<span class="fc" id="L129">        projectDao.deleteProject(id);</span>
+<span class="fc" id="L130">    }</span>
 
     /**
      * Get all members of the project teams.
@@ -139,8 +139,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/Members&quot;)
     public List&lt;TeamMember&gt; getMembers(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L142">        logger.debug(&quot;Get project #{} members&quot;, id);</span>
-<span class="nc" id="L143">        return projectFacade.getTeamMembers(id);</span>
+<span class="fc" id="L142">        logger.debug(&quot;Get project #{} members&quot;, id);</span>
+<span class="fc" id="L143">        return projectFacade.getTeamMembers(id);</span>
     }
 
     /**
@@ -153,8 +153,8 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;Invite/{projectId: [0-9]}/{email}&quot;)
     public void inviteSomeone(@PathParam(&quot;projectId&quot;) Long projectId,
             @PathParam(&quot;email&quot;) String email) {
-<span class="nc" id="L156">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
-<span class="nc" id="L157">        projectFacade.invite(projectId, email);</span>
-<span class="nc" id="L158">    }</span>
+<span class="fc" id="L156">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
+<span class="fc" id="L157">        projectFacade.invite(projectId, email);</span>
+<span class="fc" id="L158">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

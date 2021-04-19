@@ -26,7 +26,7 @@ import liquibase.pro.packaged.ch;
 @Path(&quot;tokens&quot;)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-<span class="nc" id="L29">public class TokenController {</span>
+<span class="fc" id="L29">public class TokenController {</span>
 
     /**
      * token facade
@@ -47,7 +47,7 @@ import liquibase.pro.packaged.ch;
     @GET
     @Path(&quot;{id}&quot;)
     public Token getToken(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L50">        return tokenFacade.getNotExpiredToken(id);</span>
+<span class="fc" id="L50">        return tokenFacade.getNotExpiredToken(id);</span>
     }
 
     /**
@@ -68,7 +68,7 @@ import liquibase.pro.packaged.ch;
         @PathParam(&quot;id&quot;) Long id,
         @PathParam(&quot;token&quot;) String plainToken
     ) {
-<span class="nc" id="L71">        tokenFacade.consume(id, plainToken);</span>
-<span class="nc" id="L72">    }</span>
+<span class="fc" id="L71">        tokenFacade.consume(id, plainToken);</span>
+<span class="fc" id="L72">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

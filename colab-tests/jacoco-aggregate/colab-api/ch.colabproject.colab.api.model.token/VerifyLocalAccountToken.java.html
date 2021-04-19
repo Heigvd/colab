@@ -56,12 +56,12 @@ import javax.validation.constraints.NotNull;
      * @param localAccount new value of localAccount
      */
     public void setLocalAccount(LocalAccount localAccount) {
-<span class="nc" id="L59">        this.localAccount = localAccount;</span>
-<span class="nc" id="L60">    }</span>
+<span class="fc" id="L59">        this.localAccount = localAccount;</span>
+<span class="fc" id="L60">    }</span>
 
     @Override
     public String getRedirectTo() {
-<span class="nc" id="L64">        return &quot;/&quot;;</span>
+<span class="fc" id="L64">        return &quot;/&quot;;</span>
     }
 
     /**
@@ -71,24 +71,24 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void consume(RequestManager reqMan) {
-<span class="nc" id="L74">        this.localAccount.setVerified(Boolean.TRUE);</span>
-<span class="nc" id="L75">    }</span>
+<span class="fc" id="L74">        this.localAccount.setVerified(Boolean.TRUE);</span>
+<span class="fc" id="L75">    }</span>
 
     @Override
     public String getSubject() {
-<span class="nc" id="L79">        return EMAIL_SUBJECT;</span>
+<span class="fc" id="L79">        return EMAIL_SUBJECT;</span>
     }
 
     @Override
     public String getEmailBody(String link) {
-<span class="nc" id="L84">        return MessageFormat.format(&quot;Hi {0},&lt;br /&gt;&lt;br /&gt;&quot;</span>
+<span class="fc" id="L84">        return MessageFormat.format(&quot;Hi {0},&lt;br /&gt;&lt;br /&gt;&quot;</span>
             + &quot;Please verify your email address: &lt;a href=\&quot;{1}\&quot;&gt;verify&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;&quot;,
-<span class="nc" id="L86">            localAccount.getUser().getDisplayName(), link);</span>
+<span class="fc" id="L86">            localAccount.getUser().getDisplayName(), link);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L91">        return &quot;VerifyLocalAccountToken{&quot; + &quot;id=&quot; + getId()</span>
+<span class="fc" id="L91">        return &quot;VerifyLocalAccountToken{&quot; + &quot;id=&quot; + getId()</span>
             + &quot;, localAccount=&quot; + localAccount + '}';
     }
 }

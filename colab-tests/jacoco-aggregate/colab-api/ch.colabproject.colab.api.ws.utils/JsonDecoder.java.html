@@ -22,7 +22,7 @@ import javax.websocket.EndpointConfig;
  *
  * @author maxence
  */
-<span class="nc" id="L25">public class JsonDecoder implements Decoder.Text&lt;WsMessage&gt; {</span>
+<span class="fc" id="L25">public class JsonDecoder implements Decoder.Text&lt;WsMessage&gt; {</span>
 
     /**
      * Parse message with {@link JsonbProvider#getJsonb()}
@@ -35,8 +35,8 @@ import javax.websocket.EndpointConfig;
      */
     @Override
     public WsMessage decode(String s) throws DecodeException {
-<span class="nc" id="L38">        Jsonb jsonb = JsonbProvider.getJsonb();</span>
-<span class="nc" id="L39">        return jsonb.fromJson(s, WsMessage.class);</span>
+<span class="fc" id="L38">        Jsonb jsonb = JsonbProvider.getJsonb();</span>
+<span class="fc" id="L39">        return jsonb.fromJson(s, WsMessage.class);</span>
     }
 
     /**
@@ -48,9 +48,9 @@ import javax.websocket.EndpointConfig;
      */
     @Override
     public boolean willDecode(String s) {
-<span class="nc" id="L51">        try (JsonReader jsonReader = Json.createReader(new StringReader(s))) {</span>
-<span class="nc" id="L52">            jsonReader.readObject();</span>
-<span class="nc" id="L53">            return true;</span>
+<span class="fc" id="L51">        try (JsonReader jsonReader = Json.createReader(new StringReader(s))) {</span>
+<span class="fc" id="L52">            jsonReader.readObject();</span>
+<span class="fc" id="L53">            return true;</span>
 <span class="nc" id="L54">        } catch (JsonException e) {</span>
 <span class="nc" id="L55">            return false;</span>
         }
@@ -62,7 +62,7 @@ import javax.websocket.EndpointConfig;
     @Override
     public void init(EndpointConfig config) {
         /* no-op */
-<span class="nc" id="L65">    }</span>
+<span class="fc" id="L65">    }</span>
 
     /**
      * {@inheritDoc  }
@@ -70,7 +70,7 @@ import javax.websocket.EndpointConfig;
     @Override
     public void destroy() {
         /* no-op */
-<span class="nc" id="L73">    }</span>
+<span class="fc" id="L73">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

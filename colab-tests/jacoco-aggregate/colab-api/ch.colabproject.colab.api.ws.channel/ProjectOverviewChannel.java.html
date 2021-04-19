@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  *
  * @author maxence
  */
-<span class="nc" id="L23">public class ProjectOverviewChannel extends WebsocketMetaChannel {</span>
+<span class="fc" id="L23">public class ProjectOverviewChannel extends WebsocketMetaChannel {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -44,8 +44,8 @@ import java.util.stream.Collectors;
      * @param project new project
      */
     public void setProject(Project project) {
-<span class="nc" id="L47">        this.project = project;</span>
-<span class="nc" id="L48">    }</span>
+<span class="fc" id="L47">        this.project = project;</span>
+<span class="fc" id="L48">    }</span>
 
     /**
      * Resolve this meta channel to list of effective channels. Project overview shall be sent to
@@ -55,21 +55,21 @@ import java.util.stream.Collectors;
      */
     @Override
     public Set&lt;WebsocketEffectiveChannel&gt; resolve(UserDao userDao) {
-<span class="nc" id="L58">        Set&lt;WebsocketEffectiveChannel&gt; channels = new HashSet&lt;&gt;();</span>
-<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="fc" id="L58">        Set&lt;WebsocketEffectiveChannel&gt; channels = new HashSet&lt;&gt;();</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (this.project != null) {</span>
             // get channel of each team member
-<span class="nc" id="L61">            channels.addAll(</span>
-<span class="nc" id="L62">                this.project.getTeamMembers().stream()</span>
+<span class="fc" id="L61">            channels.addAll(</span>
+<span class="fc" id="L62">                this.project.getTeamMembers().stream()</span>
                     // filter out pending invitation
-<span class="nc bnc" id="L64" title="All 2 branches missed.">                    .filter(member -&gt; member.getUser() != null)</span>
-<span class="nc" id="L65">                    .map(member -&gt; member.getUser().getEffectiveChannel())</span>
-<span class="nc" id="L66">                    .collect(Collectors.toSet()));</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">                    .filter(member -&gt; member.getUser() != null)</span>
+<span class="fc" id="L65">                    .map(member -&gt; member.getUser().getEffectiveChannel())</span>
+<span class="fc" id="L66">                    .collect(Collectors.toSet()));</span>
         }
 
         // add all admin user channels
-<span class="nc" id="L70">        channels.addAll((new AdminChannel()).resolve(userDao));</span>
+<span class="fc" id="L70">        channels.addAll((new AdminChannel()).resolve(userDao));</span>
 
-<span class="nc" id="L72">        return channels;</span>
+<span class="fc" id="L72">        return channels;</span>
     }
 
     @Override
@@ -110,9 +110,9 @@ import java.util.stream.Collectors;
      * @return the project very own channel
      */
     public static ProjectOverviewChannel build(Project project) {
-<span class="nc" id="L113">        ProjectOverviewChannel channel = new ProjectOverviewChannel();</span>
-<span class="nc" id="L114">        channel.setProject(project);</span>
-<span class="nc" id="L115">        return channel;</span>
+<span class="fc" id="L113">        ProjectOverviewChannel channel = new ProjectOverviewChannel();</span>
+<span class="fc" id="L114">        channel.setProject(project);</span>
+<span class="fc" id="L115">        return channel;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

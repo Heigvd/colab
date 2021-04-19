@@ -21,7 +21,7 @@ import javax.websocket.EncodeException;
  *
  * @author maxence
  */
-<span class="nc" id="L24">public class PrecomputedWsMessages implements Serializable {</span>
+<span class="fc" id="L24">public class PrecomputedWsMessages implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -36,7 +36,7 @@ import javax.websocket.EncodeException;
      * @return all messages, mapped by channel
      */
     public Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; getMessages() {
-<span class="nc" id="L39">        return messages;</span>
+<span class="fc" id="L39">        return messages;</span>
     }
 
     /**
@@ -45,8 +45,8 @@ import javax.websocket.EncodeException;
      * @param messages list of messages, map by their channels
      */
     public void setMessages(Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; messages) {
-<span class="nc" id="L48">        this.messages = messages;</span>
-<span class="nc" id="L49">    }</span>
+<span class="fc" id="L48">        this.messages = messages;</span>
+<span class="fc" id="L49">    }</span>
 
     /**
      * Pre-compute all messages to send
@@ -60,26 +60,26 @@ import javax.websocket.EncodeException;
     public static PrecomputedWsMessages build(
         Map&lt;WebsocketEffectiveChannel, List&lt;WsMessage&gt;&gt; messages
     ) throws EncodeException {
-<span class="nc" id="L63">        PrecomputedWsMessages m = new PrecomputedWsMessages();</span>
-<span class="nc" id="L64">        m.setMessages(new HashMap&lt;&gt;());</span>
-<span class="nc" id="L65">        Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; encoded = m.getMessages();</span>
-<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (messages != null) {</span>
+<span class="fc" id="L63">        PrecomputedWsMessages m = new PrecomputedWsMessages();</span>
+<span class="fc" id="L64">        m.setMessages(new HashMap&lt;&gt;());</span>
+<span class="fc" id="L65">        Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; encoded = m.getMessages();</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if (messages != null) {</span>
             // TODO: is there a way to throw exception from lambda ?
-<span class="nc bnc" id="L68" title="All 2 branches missed.">            for (var entry : messages.entrySet()) {</span>
-<span class="nc" id="L69">                var wsMessages = entry.getValue();</span>
-<span class="nc" id="L70">                var encodedMessages = new ArrayList&lt;String&gt;(wsMessages.size());</span>
-<span class="nc bnc" id="L71" title="All 2 branches missed.">                for (var wsMessage : wsMessages) {</span>
-<span class="nc" id="L72">                    encodedMessages.add(JsonEncoder.toJson(wsMessage));</span>
-<span class="nc" id="L73">                }</span>
-<span class="nc" id="L74">                encoded.put(entry.getKey(), encodedMessages);</span>
-<span class="nc" id="L75">            }</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">            for (var entry : messages.entrySet()) {</span>
+<span class="fc" id="L69">                var wsMessages = entry.getValue();</span>
+<span class="fc" id="L70">                var encodedMessages = new ArrayList&lt;String&gt;(wsMessages.size());</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">                for (var wsMessage : wsMessages) {</span>
+<span class="fc" id="L72">                    encodedMessages.add(JsonEncoder.toJson(wsMessage));</span>
+<span class="fc" id="L73">                }</span>
+<span class="fc" id="L74">                encoded.put(entry.getKey(), encodedMessages);</span>
+<span class="fc" id="L75">            }</span>
         }
-<span class="nc" id="L77">        return m;</span>
+<span class="fc" id="L77">        return m;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L82">        return &quot;PrecomputedWsMessages{&quot; + &quot;messages=&quot; + messages + '}';</span>
+<span class="fc" id="L82">        return &quot;PrecomputedWsMessages{&quot; + &quot;messages=&quot; + messages + '}';</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

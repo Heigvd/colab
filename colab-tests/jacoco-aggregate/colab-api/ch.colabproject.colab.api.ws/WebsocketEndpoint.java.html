@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 @ApplicationScoped
 @ServerEndpoint(value = &quot;/ws&quot;, encoders = JsonEncoder.class, decoders = JsonDecoder.class)
-<span class="nc" id="L39">public class WebsocketEndpoint {</span>
+<span class="fc" id="L39">public class WebsocketEndpoint {</span>
 
     /**
      * Websocket business logic.
@@ -47,12 +47,12 @@ import org.slf4j.LoggerFactory;
     /**
      * Logger
      */
-<span class="nc" id="L50">    private static final Logger logger = LoggerFactory.getLogger(WebsocketEndpoint.class);</span>
+<span class="fc" id="L50">    private static final Logger logger = LoggerFactory.getLogger(WebsocketEndpoint.class);</span>
 
     /**
      * Map of active sessions
      */
-<span class="nc" id="L55">    private static Set&lt;Session&gt; sessions = Collections.synchronizedSet(new HashSet&lt;&gt;());</span>
+<span class="fc" id="L55">    private static Set&lt;Session&gt; sessions = Collections.synchronizedSet(new HashSet&lt;&gt;());</span>
 
     /**
      * Send a message to all clients
@@ -79,10 +79,10 @@ import org.slf4j.LoggerFactory;
      */
     @OnOpen
     public void onOpen(Session session) throws IOException, EncodeException {
-<span class="nc" id="L82">        logger.info(&quot;WebSocket opened: {}&quot;, session.getId());</span>
-<span class="nc" id="L83">        sessions.add(session);</span>
-<span class="nc" id="L84">        session.getBasicRemote().sendObject(new WsSessionIdentifier(session));</span>
-<span class="nc" id="L85">    }</span>
+<span class="fc" id="L82">        logger.info(&quot;WebSocket opened: {}&quot;, session.getId());</span>
+<span class="fc" id="L83">        sessions.add(session);</span>
+<span class="fc" id="L84">        session.getBasicRemote().sendObject(new WsSessionIdentifier(session));</span>
+<span class="fc" id="L85">    }</span>
 
     /**
      * called when client send messages
@@ -114,11 +114,11 @@ import org.slf4j.LoggerFactory;
      */
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-<span class="nc" id="L117">        logger.info(&quot;WebSocket closed for {} with reason {}&quot;,</span>
-<span class="nc" id="L118">            session.getId(), closeReason.getCloseCode());</span>
-<span class="nc" id="L119">        sessions.remove(session);</span>
-<span class="nc" id="L120">        websocketFacade.unsubscribeFromAll(session);</span>
-<span class="nc" id="L121">    }</span>
+<span class="fc" id="L117">        logger.info(&quot;WebSocket closed for {} with reason {}&quot;,</span>
+<span class="fc" id="L118">            session.getId(), closeReason.getCloseCode());</span>
+<span class="fc" id="L119">        sessions.remove(session);</span>
+<span class="fc" id="L120">        websocketFacade.unsubscribeFromAll(session);</span>
+<span class="fc" id="L121">    }</span>
 
     /**
      * Get session by its id
@@ -128,11 +128,11 @@ import org.slf4j.LoggerFactory;
      * @return the session or null
      */
     public static Session getSession(String sessionId) {
-<span class="nc" id="L131">        Optional&lt;Session&gt; find = sessions.stream()</span>
-<span class="nc" id="L132">            .filter(session -&gt; session.getId().equals(sessionId))</span>
-<span class="nc" id="L133">            .findFirst();</span>
-<span class="nc bnc" id="L134" title="All 2 branches missed.">        if (find.isPresent()) {</span>
-<span class="nc" id="L135">            return find.get();</span>
+<span class="fc" id="L131">        Optional&lt;Session&gt; find = sessions.stream()</span>
+<span class="fc" id="L132">            .filter(session -&gt; session.getId().equals(sessionId))</span>
+<span class="fc" id="L133">            .findFirst();</span>
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">        if (find.isPresent()) {</span>
+<span class="fc" id="L135">            return find.get();</span>
         } else {
 <span class="nc" id="L137">            return null;</span>
         }

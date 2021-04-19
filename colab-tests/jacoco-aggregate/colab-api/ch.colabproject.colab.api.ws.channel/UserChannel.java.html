@@ -16,7 +16,7 @@ import java.util.Objects;
  *
  * @author maxence
  */
-<span class="nc" id="L19">public class UserChannel extends WebsocketEffectiveChannel {</span>
+<span class="fc" id="L19">public class UserChannel extends WebsocketEffectiveChannel {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -40,14 +40,14 @@ import java.util.Objects;
      * @param userId new value of userId
      */
     public void setUserId(Long userId) {
-<span class="nc" id="L43">        this.userId = userId;</span>
-<span class="nc" id="L44">    }</span>
+<span class="fc" id="L43">        this.userId = userId;</span>
+<span class="fc" id="L44">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L48">        int hash = 5;</span>
-<span class="nc" id="L49">        hash = 17 * hash + Objects.hashCode(this.userId);</span>
-<span class="nc" id="L50">        return hash;</span>
+<span class="fc" id="L48">        int hash = 5;</span>
+<span class="fc" id="L49">        hash = 17 * hash + Objects.hashCode(this.userId);</span>
+<span class="fc" id="L50">        return hash;</span>
     }
 
     /**
@@ -59,23 +59,23 @@ import java.util.Objects;
      */
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        if (this == obj) {</span>
 <span class="nc" id="L63">            return true;</span>
         }
-<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (obj == null) {</span>
 <span class="nc" id="L66">            return false;</span>
         }
-<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L69">            return false;</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (getClass() != obj.getClass()) {</span>
+<span class="fc" id="L69">            return false;</span>
         }
-<span class="nc" id="L71">        final UserChannel other = (UserChannel) obj;</span>
+<span class="fc" id="L71">        final UserChannel other = (UserChannel) obj;</span>
 
-<span class="nc" id="L73">        return Objects.equals(this.userId, other.userId);</span>
+<span class="fc" id="L73">        return Objects.equals(this.userId, other.userId);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L78">        return &quot;UserChannel{&quot; + &quot;userId=&quot; + userId + '}';</span>
+<span class="fc" id="L78">        return &quot;UserChannel{&quot; + &quot;userId=&quot; + userId + '}';</span>
     }
 
     /**
@@ -86,9 +86,9 @@ import java.util.Objects;
      * @return the user very own channel
      */
     public static UserChannel build(User user) {
-<span class="nc" id="L89">        UserChannel channel = new UserChannel();</span>
-<span class="nc" id="L90">        channel.setUserId(user.getId());</span>
-<span class="nc" id="L91">        return channel;</span>
+<span class="fc" id="L89">        UserChannel channel = new UserChannel();</span>
+<span class="fc" id="L90">        channel.setUserId(user.getId());</span>
+<span class="fc" id="L91">        return channel;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

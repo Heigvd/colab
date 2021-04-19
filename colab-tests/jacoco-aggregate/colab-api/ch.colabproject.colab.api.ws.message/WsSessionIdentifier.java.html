@@ -27,24 +27,24 @@ public class WsSessionIdentifier extends WsMessage {
     /**
      * Default constructor
      */
-<span class="nc" id="L30">    public WsSessionIdentifier() {</span>
+<span class="fc" id="L30">    public WsSessionIdentifier() {</span>
         /* no-op */
-<span class="nc" id="L32">    }</span>
+<span class="fc" id="L32">    }</span>
 
     /**
      * create a message based on a websocket session
      *
      * @param session client session
      */
-<span class="nc" id="L39">    public WsSessionIdentifier(Session session) {</span>
-<span class="nc" id="L40">        this.sessionId = session.getId();</span>
-<span class="nc" id="L41">    }</span>
+<span class="fc" id="L39">    public WsSessionIdentifier(Session session) {</span>
+<span class="fc" id="L40">        this.sessionId = session.getId();</span>
+<span class="fc" id="L41">    }</span>
 
     /**
      * @return the socket ID to send to the client
      */
     public String getSessionId() {
-<span class="nc" id="L47">        return sessionId;</span>
+<span class="fc" id="L47">        return sessionId;</span>
     }
 
     /**
@@ -53,8 +53,8 @@ public class WsSessionIdentifier extends WsMessage {
      * @param sessionId session id
      */
     public void setSessionId(String sessionId) {
-<span class="nc" id="L56">        this.sessionId = sessionId;</span>
-<span class="nc" id="L57">    }</span>
+<span class="fc" id="L56">        this.sessionId = sessionId;</span>
+<span class="fc" id="L57">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
