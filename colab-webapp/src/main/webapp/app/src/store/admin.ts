@@ -90,7 +90,10 @@ const adminSlice = createSlice({
       })
       .addCase(API.getOccupiedChannels.fulfilled, (state, action) => {
         state.occupiedChannels = action.payload;
-      }),
+      })
+      .addCase(API.signOut.fulfilled, () => {
+        return initialState;
+      })
 });
 
 export const { channelUpdate } = adminSlice.actions;

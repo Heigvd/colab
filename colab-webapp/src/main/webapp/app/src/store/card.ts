@@ -47,7 +47,10 @@ const cardsSlice = createSlice({
             return acc;
           }, {}),
         };
-      }),
+      })
+      .addCase(API.signOut.fulfilled, () => {
+        return initialState;
+      })
 });
 
 export const { updateCard, removeCard } = cardsSlice.actions;

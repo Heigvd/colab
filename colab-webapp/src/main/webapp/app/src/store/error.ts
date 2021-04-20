@@ -6,6 +6,7 @@
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HttpException } from 'colab-rest-client';
+//import * as API from '../API/api';
 
 export interface ColabError {
   status: 'OPEN' | 'CLOSED';
@@ -25,6 +26,11 @@ const errorsSlice = createSlice({
       state[action.payload].status = 'CLOSED';
     },
   },
+//  extraReducers: builder =>
+//    builder
+//      .addCase(API.signOut.fulfilled, () => {
+//        return initialState;
+//      })
 });
 
 export const { addError, closeError } = errorsSlice.actions;

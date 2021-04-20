@@ -80,7 +80,10 @@ const userSlice = createSlice({
       })
       .addCase(API.getAllUsers.fulfilled, (state, action) => {
         state.users = mapById(action.payload);
-      }),
+      })
+      .addCase(API.signOut.fulfilled, () => {
+        return initialState;
+      })
 });
 
 export const { updateUser, removeUser } = userSlice.actions;

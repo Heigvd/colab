@@ -111,7 +111,10 @@ const projectsSlice = createSlice({
       })
       .addCase(API.createProject.fulfilled, (state, action) => {
         state.mine.push(action.payload);
-      }),
+      })
+      .addCase(API.signOut.fulfilled, () => {
+        return initialState;
+      })
 });
 
 export const {
