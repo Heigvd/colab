@@ -189,5 +189,27 @@ public class WebsocketHelper {
 <span class="nc" id="L189">        return PrecomputedWsMessages.build(messagesByChannel);</span>
     }
 
+    /**
+     * Prepare one message for one channel
+     *
+     * @param userDao provide userDao to resolve meta channels
+     * @param channel the channel
+     * @param message the message
+     *
+     * @return the precomputedMessage
+     *
+     * @throws EncodeException if json-encoding failed
+     */
+    public static PrecomputedWsMessages prepareWsMessage(UserDao userDao, WebsocketChannel channel, WsMessage message) throws EncodeException {
+
+<span class="nc" id="L205">        Map&lt;WebsocketEffectiveChannel, List&lt;WsMessage&gt;&gt; messagesByChannel = new HashMap&lt;&gt;();</span>
+
+<span class="nc" id="L207">        forEachDistinctEffectiveChannel(Set.of(channel), userDao, (effectiveChannel) -&gt; {</span>
+<span class="nc" id="L208">            messagesByChannel.put(effectiveChannel, List.of(message));</span>
+<span class="nc" id="L209">        });</span>
+
+<span class="nc" id="L211">        return PrecomputedWsMessages.build(messagesByChannel);</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

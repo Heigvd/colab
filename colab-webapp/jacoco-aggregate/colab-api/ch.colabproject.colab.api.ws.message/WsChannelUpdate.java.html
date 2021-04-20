@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>WsChannelUpdate.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.ws.message</a> &gt; <span class="el_source">WsChannelUpdate.java</span></div><h1>WsChannelUpdate.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.ws.message;
+
+import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
+import javax.validation.constraints.NotNull;
+
+/**
+ * Indicated channel subscription change
+ *
+ * @author maxence
+ */
+<span class="nc" id="L17">public class WsChannelUpdate extends WsMessage {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * The channel this message is about
+     */
+    @NotNull
+    private WebsocketEffectiveChannel channel;
+
+    /**
+     * number of new (un)subscriptions
+     */
+    @NotNull
+    private Integer diff;
+
+    /**
+     * Get the value of diff
+     *
+     * @return the value of diff
+     */
+    public Integer getDiff() {
+<span class="nc" id="L39">        return diff;</span>
+    }
+
+    /**
+     * Set the value of diff
+     *
+     * @param diff new value of diff
+     */
+    public void setDiff(Integer diff) {
+<span class="nc" id="L48">        this.diff = diff;</span>
+<span class="nc" id="L49">    }</span>
+
+    /**
+     * Get the value of channel
+     *
+     * @return the value of channel
+     */
+    public WebsocketEffectiveChannel getChannel() {
+<span class="nc" id="L57">        return channel;</span>
+    }
+
+    /**
+     * Set the value of channel
+     *
+     * @param channel new value of channel
+     */
+    public void setChannel(WebsocketEffectiveChannel channel) {
+<span class="nc" id="L66">        this.channel = channel;</span>
+<span class="nc" id="L67">    }</span>
+
+    /**
+     * Build a message
+     *
+     * @param channel the channel
+     * @param diff    number of new (un)subscriptions
+     *
+     * @return the message
+     */
+    public static WsChannelUpdate build(WebsocketEffectiveChannel channel, Integer diff) {
+<span class="nc" id="L78">        WsChannelUpdate message = new WsChannelUpdate();</span>
+<span class="nc" id="L79">        message.setChannel(channel);</span>
+<span class="nc" id="L80">        message.setDiff(diff);</span>
+<span class="nc" id="L81">        return message;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

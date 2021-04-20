@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.setup;
 
 import ch.colabproject.colab.api.ejb.ApplicationLifecycleFacade;
+import ch.colabproject.colab.api.ejb.CdiBridgeSingleton;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import javax.inject.Inject;
 import javax.servlet.ServletConfig;
@@ -21,14 +22,14 @@ import org.slf4j.LoggerFactory;
  * @author maxence
  */
 @WebServlet(loadOnStartup = 2)
-<span class="fc" id="L24">public class ApplicationLifecycle extends HttpServlet {</span>
+<span class="fc" id="L25">public class ApplicationLifecycle extends HttpServlet {</span>
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Logger. Default level, set in logback.xml, is INFO
      */
-<span class="fc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(ApplicationLifecycle.class);</span>
+<span class="fc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(ApplicationLifecycle.class);</span>
 
     /**
      * User related methods
@@ -36,22 +37,41 @@ import org.slf4j.LoggerFactory;
     @Inject
     private ApplicationLifecycleFacade applicationLifecycleFacade;
 
+    /**
+     * CDI bridge
+     */
+    @Inject
+    private CdiBridgeSingleton cdiBridgeSingleton;
+
+    /**
+     * Initialize application
+     *
+     * @param config servlet config
+     *
+     * @exception ServletException if an exception occurs that interrupts the servlet's normal
+     *                             operation
+     */
     @Override
     public void init(ServletConfig config) throws ServletException {
-<span class="fc" id="L41">        super.init(config);</span>
-<span class="fc" id="L42">        logger.trace(&quot;LIFE CYCLE : init&quot;);</span>
+<span class="fc" id="L56">        super.init(config);</span>
+<span class="fc" id="L57">        logger.info(&quot;Initialize Application&quot;);</span>
 
-<span class="fc" id="L44">        PolymorphicDeserializer.includePackage(&quot;ch.colabproject.colab.api&quot;);</span>
+<span class="fc" id="L59">        logger.info(&quot;Initialize Bridge Singleton&quot;);</span>
+<span class="fc" id="L60">        cdiBridgeSingleton.init();</span>
 
-<span class="fc" id="L46">        logger.trace(&quot;Create admin&quot;);</span>
-<span class="fc" id="L47">        applicationLifecycleFacade.createDefaultAdminIfNone();</span>
+        // make sure the PolymoorphicDeserializer known all entities defined in
+        // the ch.colabproject.colab.api package
+<span class="fc" id="L64">        int newTypeCount = PolymorphicDeserializer.includePackage(&quot;ch.colabproject.colab.api&quot;);</span>
+<span class="fc" id="L65">        logger.info(&quot;Update PolymorphicDeserializer: {} new types&quot;, newTypeCount);</span>
 
-<span class="fc" id="L49">    }</span>
+<span class="fc" id="L67">        logger.info(&quot;Create a default admin user if none exists&quot;);</span>
+<span class="fc" id="L68">        applicationLifecycleFacade.createDefaultAdminIfNone();</span>
+<span class="fc" id="L69">    }</span>
 
     @Override
     public void destroy() {
-<span class="fc" id="L53">        super.destroy();</span>
-<span class="fc" id="L54">        logger.trace(&quot;LIFE CYCLE : destroy&quot;);</span>
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L73">        super.destroy();</span>
+<span class="fc" id="L74">        logger.trace(&quot;LIFE CYCLE : destroy&quot;);</span>
+<span class="fc" id="L75">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

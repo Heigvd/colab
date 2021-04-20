@@ -15,25 +15,28 @@
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.ws.channel;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.user.UserDao;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> * A channel that can not be used as-is. It represent a conceptual channel. It should be resolved to</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * a set of {@link WebsocketEffectiveChannel}.</em>
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> * @author maxence</em>
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> <a name="WebsocketMetaChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/WebsocketMetaChannel.html#WebsocketMetaChannel">WebsocketMetaChannel</a> <strong class="jxr_keyword">extends</strong> <a name="WebsocketChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/WebsocketChannel.html#WebsocketChannel">WebsocketChannel</a> {
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment">     * Resolve the meta channel to a list of effective channels.</em>
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment">     * @param userDao some resolver may need to fetch user from DB</em>
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment">     * @return list of effective channels</em>
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> Set&lt;WebsocketEffectiveChannel&gt; resolve(<a name="UserDao" href="../../../../../../ch/colabproject/colab/api/persistence/user/UserDao.html#UserDao">UserDao</a> userDao);
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  }
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> javax.json.bind.annotation.JsonbTypeDeserializer;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * A channel that can not be used as-is. It represent a conceptual channel. It should be resolved to</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> * a set of {@link WebsocketEffectiveChannel}.</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * @author maxence</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  @JsonbTypeDeserializer(PolymorphicDeserializer.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a name="WebsocketMetaChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/WebsocketMetaChannel.html#WebsocketMetaChannel">WebsocketMetaChannel</a> <strong class="jxr_keyword">extends</strong> <a name="WebsocketChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/WebsocketChannel.html#WebsocketChannel">WebsocketChannel</a> {
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment">     * Resolve the meta channel to a list of effective channels.</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment">     * @param userDao some resolver may need to fetch user from DB</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">     * @return list of effective channels</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      Set&lt;WebsocketEffectiveChannel&gt; resolve(<a name="UserDao" href="../../../../../../ch/colabproject/colab/api/persistence/user/UserDao.html#UserDao">UserDao</a> userDao);
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

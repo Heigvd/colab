@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -27,12 +28,12 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="fc" id="L30">public class ApplicationLifecycleFacade {</span>
+<span class="fc" id="L31">public class ApplicationLifecycleFacade {</span>
 
     /**
      * Logger. Default level, set in logback.xml, is INFO
      */
-<span class="fc" id="L35">    private static final Logger logger = LoggerFactory.getLogger(ApplicationLifecycleFacade.class);</span>
+<span class="fc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(ApplicationLifecycleFacade.class);</span>
 
     /**
      * User persistence
@@ -50,23 +51,24 @@ import org.slf4j.LoggerFactory;
      * Create a default admin user if there is no admin at all.
      */
     public void createDefaultAdminIfNone() {
-<span class="pc bpc" id="L53" title="1 of 2 branches missed.">        if (userDao.findAllAdmin().isEmpty()) {</span>
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">        if (userDao.findAllAdmin().isEmpty()) {</span>
             try {
-<span class="fc" id="L55">                logger.info(&quot;Create default admin user&quot;);</span>
+<span class="fc" id="L56">                logger.info(&quot;No admin exists, create one&quot;);</span>
                 //make sure to create the user within a brand new transaction
-<span class="fc" id="L57">                userManagement.createAdminUserTx(</span>
-<span class="fc" id="L58">                    ColabConfiguration.getDefaultAdminUsername(),</span>
-<span class="fc" id="L59">                    ColabConfiguration.getDefaultAdminEmail(),</span>
-<span class="fc" id="L60">                    ColabConfiguration.getDefaultAdminPassword()</span>
+<span class="fc" id="L58">                User admin = userManagement.createAdminUserTx(</span>
+<span class="fc" id="L59">                    ColabConfiguration.getDefaultAdminUsername(),</span>
+<span class="fc" id="L60">                    ColabConfiguration.getDefaultAdminEmail(),</span>
+<span class="fc" id="L61">                    ColabConfiguration.getDefaultAdminPassword()</span>
                 );
-<span class="nc" id="L62">            } catch (HttpErrorMessage ex) {</span>
-<span class="nc" id="L63">                logger.error(&quot;Fails to create default amdin user. &quot;</span>
+<span class="fc" id="L63">                logger.info(&quot;New admin user: {}&quot;, admin);</span>
+<span class="nc" id="L64">            } catch (HttpErrorMessage ex) {</span>
+<span class="nc" id="L65">                logger.error(&quot;Fails to create default amdin user. &quot;</span>
                     + &quot;Does non-admin user exists with same username or email address&quot;);
-<span class="nc" id="L65">            } catch (RuntimeException ex) {</span>
-<span class="nc" id="L66">                logger.error(&quot;Fails to create default amdin user for some unknown reason.&quot;</span>
-                    + &quot; Please check config&quot;);
-<span class="pc" id="L68">            }</span>
+<span class="nc" id="L67">            } catch (RuntimeException ex) {</span>
+<span class="nc" id="L68">                logger.error(&quot;Fails to create default amdin user for some unknown reason.&quot;</span>
+                    + &quot; Please check config&quot;, ex);
+<span class="pc" id="L70">            }</span>
         }
-<span class="fc" id="L70">    }</span>
+<span class="fc" id="L72">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

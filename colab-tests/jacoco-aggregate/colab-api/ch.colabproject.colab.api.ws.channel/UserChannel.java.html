@@ -16,7 +16,7 @@ import java.util.Objects;
  *
  * @author maxence
  */
-<span class="fc" id="L19">public class UserChannel extends WebsocketEffectiveChannel {</span>
+<span class="fc" id="L19">public class UserChannel implements WebsocketEffectiveChannel {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -31,7 +31,7 @@ import java.util.Objects;
      * @return the value of userId
      */
     public Long getUserId() {
-<span class="nc" id="L34">        return userId;</span>
+<span class="fc" id="L34">        return userId;</span>
     }
 
     /**
