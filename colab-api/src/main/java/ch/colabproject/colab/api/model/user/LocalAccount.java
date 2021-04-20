@@ -28,6 +28,7 @@ import javax.validation.constraints.NotNull;
 @NamedQuery(name = "LocalAccount.findByEmail",
     query = "SELECT a from LocalAccount a where a.email = :email")
 @Table(
+    // make sure to have JOINED inheritance, otherwise indexes and constraints will be ignored!
     indexes = {
         @Index(columnList = "email", unique = true)
     })

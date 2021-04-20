@@ -18,6 +18,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
@@ -27,6 +29,9 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
+// JOIND inheritance will generate one "abstract" account table and one table for each subclass.
+// Having one table per subclass allows subclasses to defined their own indexes and constraints
+@Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public abstract class Account implements ColabEntity {
 
