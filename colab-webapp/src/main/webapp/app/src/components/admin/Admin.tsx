@@ -9,8 +9,9 @@ import * as React from 'react';
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { SecondLevelLink } from '../common/Link';
 import LoggersConfig from './LoggersConfig';
-import UserList from './UserList';
 import { AllProjects } from '../projects/ProjectList';
+import Who from './Who';
+import AllUsers from './AllUsers';
 
 export default () => {
   return (
@@ -22,6 +23,7 @@ export default () => {
             <SecondLevelLink to="/users">Users</SecondLevelLink>
             <SecondLevelLink to="/projects">Projects</SecondLevelLink>
             <SecondLevelLink to="/loggers">Loggers</SecondLevelLink>
+            <SecondLevelLink to="/onlineusers">Online Users</SecondLevelLink>
           </nav>
           <ul>
             <li>Models</li>
@@ -40,7 +42,10 @@ export default () => {
                 <AllProjects />
               </Route>
               <Route exact path="/users">
-                <UserList />
+                <AllUsers />
+              </Route>
+              <Route exact path="/onlineusers">
+                <Who />
               </Route>
               <Route>
                 <Redirect to="/" />

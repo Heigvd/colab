@@ -50,7 +50,7 @@ export default () => {
               <SecondLevelLink to="/user">User Profile</SecondLevelLink>
               {accounts.map(account => {
                 return (
-                  <SecondLevelLink to={`/account/${account.id}`}>
+                  <SecondLevelLink key={`account-${account.id}`} to={`/account/${account.id}`}>
                     {accountTitle(account)}
                   </SecondLevelLink>
                 );

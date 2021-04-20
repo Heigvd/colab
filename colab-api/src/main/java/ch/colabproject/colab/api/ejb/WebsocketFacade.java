@@ -11,11 +11,19 @@ import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.ws.WebsocketEndpoint;
+import ch.colabproject.colab.api.ws.WebsocketHelper;
+import ch.colabproject.colab.api.ws.channel.AdminChannel;
+import ch.colabproject.colab.api.ws.channel.ChannelOverview;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
+import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
+import ch.colabproject.colab.api.ws.utils.CallableGetChannel;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import com.hazelcast.cluster.Member;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IExecutorService;
 import fish.payara.micro.cdi.Inbound;
 import fish.payara.micro.cdi.Outbound;
 import java.io.IOException;
@@ -24,12 +32,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.websocket.EncodeException;
 import javax.websocket.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +69,12 @@ public class WebsocketFacade {
      * Subscription event name.
      */
     private static final String WS_SUBSCRIPTION_EVENT_CHANNEL = "WS_SUBSCRIPTION_CHANNEL";
+
+    /**
+     * Hazelcast instance.
+     */
+    @Inject
+    private HazelcastInstance hzInstance;
 
     /**
      * Instance which receive the REST subscription request may not be the same as the one which
@@ -125,6 +148,56 @@ public class WebsocketFacade {
      * List the channels each websocket session subscribe to.
      */
     private Map<Session, Set<WebsocketEffectiveChannel>> wsSessionMap = new HashMap<>();
+
+    /**
+     * Get list of all occupied channels.
+     * <p>
+     * This method is cluster-aware. In short, {@link #getSubscrciptionsCount() } will be called for
+     * each instance of the cluster.
+     *
+     * @return list of all occupied channels mapped to the number of subscribers
+     */
+    @Lock(LockType.READ)
+    public Set<ChannelOverview> getExistingChannels() {
+        IExecutorService executorService = hzInstance.getExecutorService("COLAB_WS");
+        Map<Member, Future<Map<WebsocketEffectiveChannel, Integer>>> results = executorService.submitToAllMembers(new CallableGetChannel());
+
+        Map<WebsocketEffectiveChannel, Integer> aggregate = new HashMap<>();
+
+        results.values().stream()
+            .flatMap((result) -> {
+                try {
+                    return result.get(5, TimeUnit.SECONDS).entrySet().stream();
+                } catch (InterruptedException | ExecutionException | TimeoutException ex) {
+                    return null;
+                }
+            })
+            .forEach(entry -> {
+                if (aggregate.containsKey(entry.getKey())) {
+                    aggregate.put(entry.getKey(), aggregate.get(entry.getKey()) + entry.getValue());
+                } else {
+                    aggregate.put(entry.getKey(), entry.getValue());
+                }
+            });
+
+        return aggregate.entrySet().stream().map(entry -> {
+            ChannelOverview channelOverview = new ChannelOverview();
+            channelOverview.setChannel(entry.getKey());
+            channelOverview.setCount(entry.getValue());
+            return channelOverview;
+        }).collect(Collectors.toSet());
+    }
+
+    /**
+     * Get the list of occupied channels this instance is in charge.
+     *
+     * @return the list of channels and the number of sessions subscribed to each of them
+     */
+    @Lock(LockType.READ)
+    public Map<WebsocketEffectiveChannel, Integer> getSubscrciptionsCount() {
+        return this.subscriptions.entrySet().stream()
+            .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().size()));
+    }
 
     /**
      * Current user want to subscribe to its own channel.
@@ -276,6 +349,7 @@ public class WebsocketFacade {
         logger.debug("Session {} subscribes to {}", session.getId(), channel);
         if (!subscriptions.containsKey(channel)) {
             subscriptions.put(channel, new HashSet<>());
+            this.propagateChannelChange(channel, 1);
         }
         subscriptions.get(channel).add(session);
     }
@@ -284,7 +358,7 @@ public class WebsocketFacade {
      * Unsubscribe all sessions from given channel. If the channel is empty after the operation, it
      * will be destroyed.
      *
-     * @param channel  chanel to update
+     * @param channel  channel to update
      * @param sessions session to remove from channel
      */
     private void unsubscribe(WebsocketEffectiveChannel channel, Set<Session> sessions) {
@@ -293,10 +367,28 @@ public class WebsocketFacade {
             logger.debug("Sessions {} unsubscribes from {}", sessions.stream().map(session -> session.getId()), channel);
         }
         if (chSessions != null) {
+            int size = chSessions.size();
             chSessions.removeAll(sessions);
+            this.propagateChannelChange(channel, chSessions.size() - size);
+
             if (chSessions.isEmpty()) {
                 subscriptions.remove(channel);
             }
+        }
+    }
+
+    /**
+     * Propagate a channel change
+     *
+     * @param channel the channel
+     * @param diff    diff
+     */
+    private void propagateChannelChange(WebsocketEffectiveChannel channel, int diff) {
+        try {
+            PrecomputedWsMessages prepareWsMessage = WebsocketHelper.prepareWsMessage(userDao, new AdminChannel(), WsChannelUpdate.build(channel, diff));
+            this.propagate(prepareWsMessage);
+        } catch (EncodeException ex) {
+            logger.error("Faild to propagate channel change :{}", channel);
         }
     }
 

@@ -68,7 +68,10 @@ export default () => {
         <div
           className={css({
             display: 'grid',
-            gridTemplateColumns: 'repeat(7, auto)',
+            gridTemplateColumns: 'repeat(7, max-content)',
+            '& div div': {
+              paddingRight: '10px',
+            },
           })}
         >
           {keys.map(loggerName => {
@@ -78,8 +81,11 @@ export default () => {
                 key={loggerName}
                 className={css({
                   display: 'contents',
-                  ':hover > div:first-child': {
-                    textDecoration: 'underline',
+                  ':hover': {
+                    color: 'var(--hoverFgColor)',
+                    '& > div:first-child': {
+                      textDecoration: 'underline',
+                    },
                   },
                 })}
               >

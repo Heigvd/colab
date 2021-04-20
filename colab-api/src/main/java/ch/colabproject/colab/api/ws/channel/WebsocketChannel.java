@@ -6,7 +6,9 @@
  */
 package ch.colabproject.colab.api.ws.channel;
 
-import java.io.Serializable;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
 
 /**
  * Abstract websocket channel. This class is extended by {@link WebsocketEffectiveChannel} and
@@ -18,7 +20,7 @@ import java.io.Serializable;
  * @author maxence
  *
  */
-public abstract class WebsocketChannel implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
+public interface WebsocketChannel extends WithJsonDiscriminator {
+    /* Abstract class */
 }

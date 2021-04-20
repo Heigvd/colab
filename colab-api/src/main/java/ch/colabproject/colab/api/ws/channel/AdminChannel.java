@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  *
  * @author maxence
  */
-public class AdminChannel extends WebsocketMetaChannel {
+public class AdminChannel implements WebsocketMetaChannel {
 
     private static final long serialVersionUID = 1L;
 

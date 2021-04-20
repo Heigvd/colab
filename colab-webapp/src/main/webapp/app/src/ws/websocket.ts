@@ -4,8 +4,9 @@
  *
  * Licensed under the MIT License
  */
-import { WsUpdateMessage, entityIs, IndexEntry, TypeMap } from 'colab-rest-client';
+import { WsUpdateMessage, WsChannelUpdate, entityIs, IndexEntry, TypeMap } from 'colab-rest-client';
 import { dispatch } from '../store/store';
+import * as AdminActions from '../store/admin';
 import * as ErrorActions from '../store/error';
 import * as ProjectActions from '../store/project';
 import * as CardActions from '../store/card';
@@ -61,12 +62,20 @@ const onUpdate = (event: WsUpdateMessage) => {
   }
 };
 
+const onChannelUpdate = (message: WsChannelUpdate) => {
+  dispatch(AdminActions.channelUpdate(message));
+};
+
 //export function send(channel: string, payload: {}) {
 //  connection.send(JSON.stringify({
 //    channel,
 //    payload
 //  }));
 //}
+
+function checkUnreachable(x: never) {
+  console.error(x);
+}
 
 function createConnection(onCloseCb: () => void) {
   console.log('Init Websocket Connection');
@@ -82,10 +91,24 @@ function createConnection(onCloseCb: () => void) {
 
   connection.onmessage = messageEvent => {
     const message = JSON.parse(messageEvent.data);
-    if (entityIs(message, 'WsSessionIdentifier')) {
-      dispatch(initSocketId(message));
-    } else if (entityIs(message, 'WsUpdateMessage')) {
-      onUpdate(message);
+    if (entityIs(message, 'WsMessage')) {
+      if (entityIs(message, 'WsSessionIdentifier')) {
+        dispatch(initSocketId(message));
+      } else if (entityIs(message, 'WsUpdateMessage')) {
+        onUpdate(message);
+      } else if (entityIs(message, 'WsChannelUpdate')) {
+        onChannelUpdate(message);
+      } else {
+        //If next line is erroneous, it means a type of WsMessage is not handled
+        checkUnreachable(message);
+      }
+    } else {
+      dispatch(
+        ErrorActions.addError({
+          status: 'OPEN',
+          error: new Error(`Unhandled message type: ${message['@class']}`),
+        }),
+      );
     }
   };
 }

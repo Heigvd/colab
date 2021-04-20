@@ -15,6 +15,8 @@ import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.ws.WebsocketHelper;
+import ch.colabproject.colab.api.ws.channel.UserChannel;
+import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
@@ -401,6 +403,16 @@ public class UserControllerTest extends AbstractArquillianTest {
         // subscript to currentUser channel
         client.websocketController.subscribeToUserChannel(wsClient.getSessionId());
 
+        List<WsMessage> messages = wsClient.getMessages(1, 10);
+        Assertions.assertEquals(1, messages.size());
+        Assertions.assertTrue(messages.get(0) instanceof WsChannelUpdate);
+        WsChannelUpdate channelUpdate = (WsChannelUpdate) messages.get(0);
+        Assertions.assertTrue(channelUpdate.getChannel() instanceof UserChannel);
+        UserChannel userChannel = (UserChannel) channelUpdate.getChannel();
+        Assertions.assertEquals(this.adminUserId, userChannel.getUserId());
+        Assertions.assertEquals(1, channelUpdate.getDiff());
+
+
         User me = client.userController.getCurrentUser();
 
         final String NEW_NAME = "Georges";
@@ -409,7 +421,7 @@ public class UserControllerTest extends AbstractArquillianTest {
         wsClient.clearMessages();
         client.userController.updateUser(me);
 
-        List<WsMessage> messages = wsClient.getMessages(1, 10);
+        messages = wsClient.getMessages(1, 10);
         Assertions.assertEquals(1, messages.size());
         WsMessage wsMessage = messages.get(0);
         Assertions.assertTrue(wsMessage instanceof WsUpdateMessage);

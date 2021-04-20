@@ -48,10 +48,17 @@
         </dependency>
 
         <!-- Used by the polymophic-deserialization hack -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
             <type>jar</type>
+            <scope>provided</scope>
+        </dependency>-->
+
+        <!-- HazelCast API -->
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
             <scope>provided</scope>
         </dependency>
 

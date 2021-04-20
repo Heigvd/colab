@@ -36,7 +36,7 @@ const mainLinkActiveClass = cx(
 
 const secondLevelLinkActiveClass = cx(
   css({
-    borderBottom: '2px solid var(--pictoLightBlue)',
+    borderBottom: '2px solid var(--pictoOrange)',
   }),
 );
 

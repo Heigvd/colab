@@ -16,7 +16,7 @@ import java.util.Objects;
  *
  * @author maxence
  */
-public class UserChannel extends WebsocketEffectiveChannel {
+public class UserChannel implements WebsocketEffectiveChannel {
 
     private static final long serialVersionUID = 1L;
 

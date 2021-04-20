@@ -7,7 +7,9 @@
 package ch.colabproject.colab.api.ws.channel;
 
 import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.Set;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
 
 /**
  * A channel that can not be used as-is. It represent a conceptual channel. It should be resolved to
@@ -15,7 +17,8 @@ import java.util.Set;
  *
  * @author maxence
  */
-public abstract class WebsocketMetaChannel extends WebsocketChannel {
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
+public interface WebsocketMetaChannel extends WebsocketChannel {
 
     /**
      * Resolve the meta channel to a list of effective channels.
@@ -24,5 +27,5 @@ public abstract class WebsocketMetaChannel extends WebsocketChannel {
      *
      * @return list of effective channels
      */
-    public abstract Set<WebsocketEffectiveChannel> resolve(UserDao userDao);
+    Set<WebsocketEffectiveChannel> resolve(UserDao userDao);
 }

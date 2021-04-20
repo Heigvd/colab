@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  *
  * @author maxence
  */
-public class ProjectOverviewChannel extends WebsocketMetaChannel {
+public class ProjectOverviewChannel implements WebsocketMetaChannel {
 
     private static final long serialVersionUID = 1L;
 

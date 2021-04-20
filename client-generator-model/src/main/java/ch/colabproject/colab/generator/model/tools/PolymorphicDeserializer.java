@@ -39,7 +39,7 @@ import org.reflections.Reflections;
  * JsonbConfig config = new JsonbConfig().withDeserializers(new PolymorphicDeserializer());
  * </code>. Such a config leads to infinite recusions. See
  * <a href="https://github.com/maxencelaurent/YassonPolymorphicDeserializer/blob/main/src/main/java/com/github/maxencelaurent/yasson/polymorphic/InternalHackDeserializer.java">here</a>
- * for a "global-config" complient implementation.
+ * for a "global-config" compliant implementation.
  *
  * @author Maxence
  */
@@ -67,9 +67,12 @@ public class PolymorphicDeserializer implements JsonbDeserializer<WithJsonDiscri
      * Include all {@link WithJsonDiscriminator} implementations defined in the given package.
      *
      * @param packageName name of the package
+     * @return the number of new types
      */
-    public static void includePackage(String packageName) {
+    public static int includePackage(String packageName) {
+        int size = REFLECTIONS.getSubTypesOf(WithJsonDiscriminator.class).size();
         REFLECTIONS.merge(new Reflections(packageName));
+        return REFLECTIONS.getSubTypesOf(WithJsonDiscriminator.class).size() -  size;
     }
 
     /**

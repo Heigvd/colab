@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -52,19 +53,20 @@ public class ApplicationLifecycleFacade {
     public void createDefaultAdminIfNone() {
         if (userDao.findAllAdmin().isEmpty()) {
             try {
-                logger.info("Create default admin user");
+                logger.info("No admin exists, create one");
                 //make sure to create the user within a brand new transaction
-                userManagement.createAdminUserTx(
+                User admin = userManagement.createAdminUserTx(
                     ColabConfiguration.getDefaultAdminUsername(),
                     ColabConfiguration.getDefaultAdminEmail(),
                     ColabConfiguration.getDefaultAdminPassword()
                 );
+                logger.info("New admin user: {}", admin);
             } catch (HttpErrorMessage ex) {
                 logger.error("Fails to create default amdin user. "
                     + "Does non-admin user exists with same username or email address");
             } catch (RuntimeException ex) {
                 logger.error("Fails to create default amdin user for some unknown reason."
-                    + " Please check config");
+                    + " Please check config", ex);
             }
         }
     }

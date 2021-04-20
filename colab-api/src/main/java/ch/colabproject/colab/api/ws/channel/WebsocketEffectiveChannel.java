@@ -6,11 +6,15 @@
  */
 package ch.colabproject.colab.api.ws.channel;
 
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
+
 /**
  * channel which can be use "as-is".
  *
  * @author maxence
  */
-public abstract class WebsocketEffectiveChannel extends WebsocketChannel {
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
+public interface WebsocketEffectiveChannel extends WebsocketChannel {
     /* abstract class */
 }

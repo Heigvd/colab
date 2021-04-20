@@ -7,11 +7,15 @@
 package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.WebsocketFacade;
+import ch.colabproject.colab.api.ws.channel.ChannelOverview;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
+import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -39,6 +43,17 @@ public class WebsocketController {
      */
     @Inject
     private WebsocketFacade wsFacade;
+
+    /**
+     * Get the list of all occupied channels.
+     *
+     * @return list of all occupied channels:
+     */
+    @GET
+    @AdminResource
+    public Set<ChannelOverview> getExistingChannels() {
+        return wsFacade.getExistingChannels();
+    }
 
     /**
      * Subscribe to the currentUser channel

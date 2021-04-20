@@ -71,6 +71,10 @@ export const initSocketId = createAsyncThunk(
 // Admin & Monitoring
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+export const getOccupiedChannels = createAsyncThunk('admin/getChannels', async () => {
+  return await restClient.WebsocketController.getExistingChannels();
+});
+
 export const getLoggerLevels = createAsyncThunk('admin/getLoggerLevels', async () => {
   return await restClient.MonitoringController.getLoggerLevels();
 });
@@ -86,6 +90,10 @@ export const changeLoggerLevel = createAsyncThunk(
     return payload;
   },
 );
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Authentication
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const requestPasswordReset = createAsyncThunk(
   'auth/restPassword',

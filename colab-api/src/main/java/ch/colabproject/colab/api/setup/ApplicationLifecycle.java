@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.setup;
 
 import ch.colabproject.colab.api.ejb.ApplicationLifecycleFacade;
+import ch.colabproject.colab.api.ejb.CdiBridgeSingleton;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import javax.inject.Inject;
 import javax.servlet.ServletConfig;
@@ -36,16 +37,35 @@ public class ApplicationLifecycle extends HttpServlet {
     @Inject
     private ApplicationLifecycleFacade applicationLifecycleFacade;
 
+    /**
+     * CDI bridge
+     */
+    @Inject
+    private CdiBridgeSingleton cdiBridgeSingleton;
+
+    /**
+     * Initialize application
+     *
+     * @param config servlet config
+     *
+     * @exception ServletException if an exception occurs that interrupts the servlet's normal
+     *                             operation
+     */
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        logger.trace("LIFE CYCLE : init");
+        logger.info("Initialize Application");
 
-        PolymorphicDeserializer.includePackage("ch.colabproject.colab.api");
+        logger.info("Initialize Bridge Singleton");
+        cdiBridgeSingleton.init();
 
-        logger.trace("Create admin");
+        // make sure the PolymoorphicDeserializer known all entities defined in
+        // the ch.colabproject.colab.api package
+        int newTypeCount = PolymorphicDeserializer.includePackage("ch.colabproject.colab.api");
+        logger.info("Update PolymorphicDeserializer: {} new types", newTypeCount);
+
+        logger.info("Create a default admin user if none exists");
         applicationLifecycleFacade.createDefaultAdminIfNone();
-
     }
 
     @Override

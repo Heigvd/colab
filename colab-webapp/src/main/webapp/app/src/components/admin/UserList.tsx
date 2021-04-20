@@ -6,9 +6,8 @@
  */
 
 import * as React from 'react';
-import { useAppSelector, useAppDispatch, useCurrentUser } from '../../store/hooks';
-import { getAllUsers, grantAdminRight, revokeAdminRight } from '../../API/api';
-import InlineLoading from '../common/InlineLoading';
+import { useAppDispatch, useCurrentUser } from '../../store/hooks';
+import { grantAdminRight, revokeAdminRight } from '../../API/api';
 import { css } from '@emotion/css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -49,17 +48,11 @@ const UserComp = ({ user }: { user: User }) => {
   );
 };
 
-export default () => {
-  const dispatch = useAppDispatch();
+interface UserListProps {
+  users: User[];
+}
 
-  const status = useAppSelector(state => state.admin.userStatus);
-
-  const users = useAppSelector(state => {
-    // common sense would use a "filter(u => u != null)"
-    // but resulting list will be typed (User | null)[]
-    return Object.values(state.users.users).flatMap(user => (user != null ? [user] : []));
-  });
-
+export default ({ users }: UserListProps) => {
   const [search, setSearch] = React.useState('');
 
   const [sortBy, setSortBy] = React.useState<{ key: keyof User; direction: 1 | -1 }>({
@@ -80,12 +73,6 @@ export default () => {
       });
     }
   };
-
-  const title = <h3>Users</h3>;
-
-  if (status === 'NOT_INITIALIZED') {
-    dispatch(getAllUsers());
-  }
 
   const matchSearch = (user: User) => {
     if (search) {
@@ -111,88 +98,75 @@ export default () => {
     }
   };
 
-  if (status != 'INITIALIZED') {
-    return (
-      <div>
-        {title}
-        <div>
-          <InlineLoading />
+  const filterSortedList = users.filter(matchSearch).sort(sortFn);
+
+  const Header = ({ sortKey, children }: { sortKey?: keyof User; children: React.ReactNode }) => {
+    if (sortKey) {
+      const colour = sortKey === sortBy.key ? 'black' : 'lightgrey';
+      const icon = sortBy.direction > 0 || sortKey != sortBy.key ? faSortAlphaDown : faSortAlphaUp;
+      const button = <FontAwesomeIcon className={css({ color: colour })} icon={icon} />;
+
+      return (
+        <div
+          className={buttonStyle}
+          onClick={() => {
+            toggleSort(sortKey);
+          }}
+        >
+          {children} {button}
         </div>
+      );
+    } else {
+      return <div>{children}</div>;
+    }
+  };
+
+  const headers = (
+    <div
+      className={css({
+        display: 'contents',
+        fontWeight: 'bold',
+      })}
+    >
+      <Header sortKey="username">Username</Header>
+      <Header sortKey="firstname">Firstname</Header>
+      <Header sortKey="lastname">Lastname</Header>
+      <Header sortKey="commonname">CommonName</Header>
+      <Header sortKey="admin">Admin</Header>
+      <Header>Actions</Header>
+    </div>
+  );
+
+  return (
+    <>
+      <div>
+        <label>
+          <FontAwesomeIcon icon={faSearch} />
+          <input type="text" onChange={e => setSearch(e.target.value)} />
+        </label>
       </div>
-    );
-  } else {
-    const filterSortedList = users.filter(matchSearch).sort(sortFn);
-
-    const Header = ({ sortKey, children }: { sortKey?: keyof User; children: React.ReactNode }) => {
-      if (sortKey) {
-        const colour = sortKey === sortBy.key ? 'black' : 'lightgrey';
-        const icon =
-          sortBy.direction > 0 || sortKey != sortBy.key ? faSortAlphaDown : faSortAlphaUp;
-        const button = <FontAwesomeIcon className={css({ color: colour })} icon={icon} />;
-
-        return (
+      <div>
+        {filterSortedList.length > 0 ? (
           <div
-            className={buttonStyle}
-            onClick={() => {
-              toggleSort(sortKey);
-            }}
+            className={css({
+              display: 'grid',
+              gridTemplateColumns: 'repeat(6, max-content)',
+              '& div div': {
+                paddingRight: '10px',
+              },
+            })}
           >
-            {children} {button}
+            {headers}
+            {filterSortedList.map(user => (
+              <UserComp key={user.id} user={user} />
+            ))}
           </div>
-        );
-      } else {
-        return <div>{children}</div>;
-      }
-    };
-
-    const headers = (
-      <div
-        className={css({
-          display: 'contents',
-          fontWeight: 'bold',
-        })}
-      >
-        <Header sortKey="username">Username</Header>
-        <Header sortKey="firstname">Firstname</Header>
-        <Header sortKey="lastname">Lastname</Header>
-        <Header sortKey="commonname">CommonName</Header>
-        <Header sortKey="admin">Admin</Header>
-        <Header>Actions</Header>
+        ) : (
+          <div>
+            <i>no result</i>
+          </div>
+        )}
       </div>
-    );
-
-    return (
-      <div>
-        {title}
-        <div>
-          <label>
-            <FontAwesomeIcon icon={faSearch} />
-            <input type="text" onChange={e => setSearch(e.target.value)} />
-          </label>
-        </div>
-        <div>
-          {filterSortedList.length > 0 ? (
-            <div
-              className={css({
-                display: 'grid',
-                gridTemplateColumns: 'repeat(6, max-content)',
-                '& div div': {
-                  paddingRight: '10px',
-                },
-              })}
-            >
-              {headers}
-              {filterSortedList.map(user => (
-                <UserComp key={user.id} user={user} />
-              ))}
-            </div>
-          ) : (
-            <div>
-              <i>no result</i>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
+    </>
+  );
 };
