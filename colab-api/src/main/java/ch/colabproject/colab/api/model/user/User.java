@@ -11,10 +11,12 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
+import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
 import ch.colabproject.colab.api.ws.channel.UserChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
@@ -327,7 +329,15 @@ public class User implements ColabEntity {
 
     @Override
     public Set<WebsocketChannel> getChannels() {
-        return Set.of(this.getEffectiveChannel(), new AdminChannel());
+        Set<WebsocketChannel> channels = new HashSet<>();
+        channels.add(this.getEffectiveChannel());
+        // teammate through ProjectOverview channels
+        this.getTeamMembers().forEach(member -> {
+            channels.add(ProjectOverviewChannel.build(member.getProject()));
+        });
+        // all admin
+        channels.add(new AdminChannel());
+        return channels;
     }
 
     @Override
