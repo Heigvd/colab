@@ -434,15 +434,10 @@ public class RestController {
             // Body
             /////////////////////////////
             indent++;
-            UriTemplate pathTemplate = new PathPattern(method.getFullPath()).getTemplate();
-            Map<String, String> pathParams = method.getPathParameters().stream()
-                .collect(Collectors.toMap(
-                    p -> p.getName(),
-                    p -> "${" + p.getName() + "}")
-                );
             newLine(sb);
             sb.append("const queryString : string[] = [];");
             newLine(sb);
+
             method.getQueryParameters().forEach(queryParam -> {
                 sb.append("if (").append(queryParam.getName()).append(" != null){");
                 indent++;
@@ -456,10 +451,19 @@ public class RestController {
                 sb.append("}");
             });
             newLine(sb);
+
+            Map<String, String> pathParams = method.getPathParameters().stream()
+                .collect(Collectors.toMap(
+                    p -> p.getName(),
+                    p -> "${" + p.getName() + "}")
+                );
+
+            UriTemplate pathTemplate = new PathPattern(method.getFullPath()).getTemplate();
             String tsPath = pathTemplate.createURI(pathParams);
             sb.append("const path = `${baseUrl}").append(tsPath)
                 .append("` + (queryString.length > 0 ? '?' + queryString.join('&') : '');");
             newLine(sb);
+
             sb.append("return sendRequest")
                 .append("<")
                 .append(TypeScriptHelper.convertType(method.getReturnType(), types))

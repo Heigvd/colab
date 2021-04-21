@@ -160,7 +160,8 @@ public class WebsocketFacade {
     @Lock(LockType.READ)
     public Set<ChannelOverview> getExistingChannels() {
         IExecutorService executorService = hzInstance.getExecutorService("COLAB_WS");
-        Map<Member, Future<Map<WebsocketEffectiveChannel, Integer>>> results = executorService.submitToAllMembers(new CallableGetChannel());
+        Map<Member, Future<Map<WebsocketEffectiveChannel, Integer>>> results
+            = executorService.submitToAllMembers(new CallableGetChannel());
 
         Map<WebsocketEffectiveChannel, Integer> aggregate = new HashMap<>();
 
@@ -346,7 +347,10 @@ public class WebsocketFacade {
      * @param session session to remove from the set
      */
     private void subscribe(WebsocketEffectiveChannel channel, Session session) {
-        logger.debug("Session {} subscribes to {}", session.getId(), channel);
+        if (logger.isDebugEnabled()) {
+            String sessionId = WebsocketEndpoint.getSessionId(session);
+            logger.debug("Session {} subscribes to {}", sessionId, channel);
+        }
         if (!subscriptions.containsKey(channel)) {
             subscriptions.put(channel, new HashSet<>());
             this.propagateChannelChange(channel, 1);
@@ -364,7 +368,9 @@ public class WebsocketFacade {
     private void unsubscribe(WebsocketEffectiveChannel channel, Set<Session> sessions) {
         Set<Session> chSessions = subscriptions.get(channel);
         if (logger.isDebugEnabled()) {
-            logger.debug("Sessions {} unsubscribes from {}", sessions.stream().map(session -> session.getId()), channel);
+            logger.debug("Sessions {} unsubscribes from {}", sessions.stream().map(session
+                -> WebsocketEndpoint.getSessionId(session)
+            ), channel);
         }
         if (chSessions != null) {
             int size = chSessions.size();
@@ -385,7 +391,11 @@ public class WebsocketFacade {
      */
     private void propagateChannelChange(WebsocketEffectiveChannel channel, int diff) {
         try {
-            PrecomputedWsMessages prepareWsMessage = WebsocketHelper.prepareWsMessage(userDao, new AdminChannel(), WsChannelUpdate.build(channel, diff));
+            PrecomputedWsMessages prepareWsMessage = WebsocketHelper.prepareWsMessage(
+                userDao,
+                new AdminChannel(),
+                WsChannelUpdate.build(channel, diff)
+            );
             this.propagate(prepareWsMessage);
         } catch (EncodeException ex) {
             logger.error("Faild to propagate channel change :{}", channel);

@@ -21,6 +21,8 @@ import javax.ejb.BeforeCompletion;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.websocket.EncodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +41,12 @@ public class TransactionManager implements Serializable {
 
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(TransactionManager.class);
+
+    /**
+     * Access to the persistence unit
+     */
+    @PersistenceContext(unitName = "COLAB_PU")
+    private EntityManager em;
 
     /**
      * To send message to clients
@@ -89,13 +97,14 @@ public class TransactionManager implements Serializable {
      */
     public void registerDelete(ColabEntity o) {
         deleted.add(IndexEntry.build(o));
+        logger.trace("Deleted set: {}", deleted);
     }
 
     /**
      * Pre compute the message.
      */
     private void precomputeMessage() throws EncodeException {
-        logger.debug("Precompute messages");
+        logger.debug("Precompute messages; Update:{}, Deletes:{}", updated, deleted);
         Set<ColabEntity> filtered = updated.stream()
             .filter(
                 (u) -> !deleted.stream()
@@ -115,6 +124,8 @@ public class TransactionManager implements Serializable {
      */
     @BeforeCompletion
     public void beforeCompletion() {
+        //make sure to flush everything to database
+        em.flush();
         logger.warn("Before transactionCompletion: "
             + "This method is not called for each transaction, why ???");
         try {

@@ -36,8 +36,8 @@ public class JsonbProvider implements ContextResolver<Jsonb> {
     public static Jsonb getJsonb() {
         JsonbConfig config = new JsonbConfig()
             .withFormatting(false);
-            // DO NEVER DO THAT EVER (sse PolymorphicDeserializer doc):
-            //.withDeserializers(new PolymorphicDeserializer());
+        // DO NEVER DO THAT EVER (sse PolymorphicDeserializer doc):
+        //.withDeserializers(new PolymorphicDeserializer());
 
         return JsonbBuilder.create(config);
     }

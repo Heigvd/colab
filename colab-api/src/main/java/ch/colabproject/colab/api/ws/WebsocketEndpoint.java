@@ -11,10 +11,13 @@ import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
 import ch.colabproject.colab.api.ws.utils.JsonDecoder;
 import ch.colabproject.colab.api.ws.utils.JsonEncoder;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.flakeidgen.FlakeIdGenerator;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -39,6 +42,12 @@ import org.slf4j.LoggerFactory;
 public class WebsocketEndpoint {
 
     /**
+     * To generate cluster-wide unique id
+     */
+    @Inject
+    private HazelcastInstance hzInstance;
+
+    /**
      * Websocket business logic.
      */
     @Inject
@@ -53,6 +62,17 @@ public class WebsocketEndpoint {
      * Map of active sessions
      */
     private static Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
+
+    /**
+     * Map session to session id
+     */
+    private static Map<Session, String> sessionToIds = Collections.synchronizedMap(new HashMap<>());
+
+    /**
+     * Map session id to sessions
+     */
+    private static Map<String, Session> idsToSessions
+        = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * Send a message to all clients
@@ -81,7 +101,11 @@ public class WebsocketEndpoint {
     public void onOpen(Session session) throws IOException, EncodeException {
         logger.info("WebSocket opened: {}", session.getId());
         sessions.add(session);
-        session.getBasicRemote().sendObject(new WsSessionIdentifier(session));
+        FlakeIdGenerator idGenerator = hzInstance.getFlakeIdGenerator("WS_SESSION_ID_GENERATOR");
+        String sessionId = "ws-" + idGenerator.newId();
+        sessionToIds.put(session, sessionId);
+        idsToSessions.put(sessionId, session);
+        session.getBasicRemote().sendObject(new WsSessionIdentifier(sessionId));
     }
 
     /**
@@ -117,6 +141,9 @@ public class WebsocketEndpoint {
         logger.info("WebSocket closed for {} with reason {}",
             session.getId(), closeReason.getCloseCode());
         sessions.remove(session);
+        String id = sessionToIds.get(session);
+        idsToSessions.remove(id);
+        sessionToIds.remove(session);
         websocketFacade.unsubscribeFromAll(session);
     }
 
@@ -128,13 +155,17 @@ public class WebsocketEndpoint {
      * @return the session or null
      */
     public static Session getSession(String sessionId) {
-        Optional<Session> find = sessions.stream()
-            .filter(session -> session.getId().equals(sessionId))
-            .findFirst();
-        if (find.isPresent()) {
-            return find.get();
-        } else {
-            return null;
-        }
+        return idsToSessions.get(sessionId);
+    }
+
+    /**
+     * Get id by session
+     *
+     * @param session the session
+     *
+     * @return sessionid or null
+     */
+    public static String getSessionId(Session session) {
+        return sessionToIds.get(session);
     }
 }

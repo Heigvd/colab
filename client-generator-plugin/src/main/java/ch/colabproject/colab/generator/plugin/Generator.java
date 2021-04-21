@@ -6,6 +6,8 @@
  */
 package ch.colabproject.colab.generator.plugin;
 
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import ch.colabproject.colab.generator.plugin.rest.RestController;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -25,8 +27,6 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Path;
 import org.apache.maven.plugin.MojoFailureException;
 import org.reflections.Reflections;
-import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
-import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 
 /**
  *

@@ -90,7 +90,8 @@ public class WebsocketHelper {
     private static void add(Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
         WebsocketEffectiveChannel channel,
         ColabEntity entity) {
-        Collection<ColabEntity> set = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel).getUpdated();
+        Collection<ColabEntity> set
+            = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel).getUpdated();
         logger.trace("Add {} to updated set {}", entity, set);
         set.add(entity);
         if (logger.isTraceEnabled()) {
@@ -112,7 +113,8 @@ public class WebsocketHelper {
     private static void add(Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
         WebsocketEffectiveChannel channel,
         IndexEntry entry) {
-        Collection<IndexEntry> set = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel).getDeleted();
+        Collection<IndexEntry> set
+            = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel).getDeleted();
         logger.trace("Add {} to deleted set {}", entry, set);
         set.add(entry);
     }
@@ -137,7 +139,8 @@ public class WebsocketHelper {
                 logger.trace(" -> {}", channel);
                 return Stream.of((WebsocketEffectiveChannel) channel);
             } else if (channel instanceof WebsocketMetaChannel) {
-                Set<WebsocketEffectiveChannel> resolved = ((WebsocketMetaChannel) channel).resolve(userDao);
+                Set<WebsocketEffectiveChannel> resolved
+                    = ((WebsocketMetaChannel) channel).resolve(userDao);
                 if (logger.isTraceEnabled()) {
                     logger.trace(" -> {}", resolved);
                 }
@@ -200,7 +203,9 @@ public class WebsocketHelper {
      *
      * @throws EncodeException if json-encoding failed
      */
-    public static PrecomputedWsMessages prepareWsMessage(UserDao userDao, WebsocketChannel channel, WsMessage message) throws EncodeException {
+    public static PrecomputedWsMessages prepareWsMessage(
+        UserDao userDao, WebsocketChannel channel, WsMessage message
+    ) throws EncodeException {
 
         Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
 

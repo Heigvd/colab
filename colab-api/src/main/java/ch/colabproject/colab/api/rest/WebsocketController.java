@@ -21,6 +21,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * API to manage subscription to {@link WebsocketEffectiveChannel}.
@@ -38,6 +40,9 @@ import javax.ws.rs.core.MediaType;
 @AuthenticationRequired
 public class WebsocketController {
 
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(WebsocketController.class);
+
     /**
      * Websocket business logic
      */
@@ -52,6 +57,7 @@ public class WebsocketController {
     @GET
     @AdminResource
     public Set<ChannelOverview> getExistingChannels() {
+        logger.debug("Get all existing channels");
         return wsFacade.getExistingChannels();
     }
 
@@ -64,6 +70,7 @@ public class WebsocketController {
     @PUT
     @Path("SubscribeToUserChannel")
     public void subscribeToUserChannel(WsSessionIdentifier sessionId) {
+        logger.debug("Subscribe to its own userchanell with session id {}", sessionId);
         wsFacade.subscribeToUserChannel(sessionId);
     }
 
@@ -76,6 +83,7 @@ public class WebsocketController {
     @PUT
     @Path("UnsubscribeFromUserChannel")
     public void unsubscribeFromUserChannel(WsSessionIdentifier sessionId) {
+        logger.debug("Unsubscribe from its own userchanell with session id {}", sessionId);
         wsFacade.unsubscribeFromUserChannel(sessionId);
     }
 
@@ -91,6 +99,8 @@ public class WebsocketController {
         @PathParam("projectId") Long projectId,
         WsSessionIdentifier sessionId
     ) {
+        logger.debug("Subscribe to project #{} channel with session id {}",
+            projectId, sessionId);
         wsFacade.subscribeToProjectChannel(sessionId, projectId);
     }
 
@@ -106,6 +116,8 @@ public class WebsocketController {
         @PathParam("projectId") Long projectId,
         WsSessionIdentifier sessionId
     ) {
+        logger.debug("Unsubscribe from project #{} channel with session id {}",
+            projectId, sessionId);
         wsFacade.unsubscribeFromProjectChannel(sessionId, projectId);
     }
 }

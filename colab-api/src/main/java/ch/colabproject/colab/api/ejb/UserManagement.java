@@ -164,8 +164,8 @@ public class UserManagement {
     }
 
     /**
-     * {@link #createAdminUser(java.lang.String, java.lang.String, java.lang.String) createAdminUser}
-     * within a brand new transation.
+     * {@link #createAdminUser(java.lang.String, java.lang.String, java.lang.String)
+     * createAdminUser} within a brand new transaction.
      *
      * @param username      username
      * @param email         email address

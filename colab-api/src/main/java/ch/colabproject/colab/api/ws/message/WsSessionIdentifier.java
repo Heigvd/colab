@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.ws.message;
 
 import javax.validation.constraints.NotNull;
-import javax.websocket.Session;
 
 /**
  * Message sent to each client as soon as they initialize the websocket connection.
@@ -34,10 +33,10 @@ public class WsSessionIdentifier extends WsMessage {
     /**
      * create a message based on a websocket session
      *
-     * @param session client session
+     * @param sessionId client session id
      */
-    public WsSessionIdentifier(Session session) {
-        this.sessionId = session.getId();
+    public WsSessionIdentifier(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     /**
