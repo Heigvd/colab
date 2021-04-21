@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.ws.utils;
 
-import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import ch.colabproject.colab.api.ws.message.WsMessage;
+import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbException;
 import javax.websocket.EncodeException;

@@ -408,46 +408,35 @@
 <a class="jxr_linenumber" name="L400" href="#L400">400</a>         TestHelper.setLoggerLevel(LoggerFactory.getLogger(TransactionManager.<strong class="jxr_keyword">class</strong>), Level.DEBUG);
 <a class="jxr_linenumber" name="L401" href="#L401">401</a> 
 <a class="jxr_linenumber" name="L402" href="#L402">402</a>         <a name="WebsocketClient" href="../../../../../ch/colabproject/colab/tests/ws/WebsocketClient.html#WebsocketClient">WebsocketClient</a> wsClient = <strong class="jxr_keyword">this</strong>.createWsClient();
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>         <em class="jxr_comment">// subscript to currentUser channel</em>
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>         <em class="jxr_comment">// subscribe to currentUser channel</em>
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>         client.websocketController.subscribeToUserChannel(wsClient.getSessionId());
 <a class="jxr_linenumber" name="L405" href="#L405">405</a> 
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>         List&lt;WsMessage&gt; messages = wsClient.getMessages(1, 10);
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>         Assertions.assertEquals(1, messages.size());
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>         Assertions.assertTrue(messages.get(0) instanceof WsChannelUpdate);
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>         WsChannelUpdate channelUpdate = (WsChannelUpdate) messages.get(0);
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>         Assertions.assertTrue(channelUpdate.getChannel() instanceof UserChannel);
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>         UserChannel userChannel = (UserChannel) channelUpdate.getChannel();
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>         Assertions.assertEquals(<strong class="jxr_keyword">this</strong>.adminUserId, userChannel.getUserId());
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>         Assertions.assertEquals(1, channelUpdate.getDiff());
-<a class="jxr_linenumber" name="L414" href="#L414">414</a> 
-<a class="jxr_linenumber" name="L415" href="#L415">415</a> 
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>         User me = client.userController.getCurrentUser();
-<a class="jxr_linenumber" name="L417" href="#L417">417</a> 
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>         <strong class="jxr_keyword">final</strong> String NEW_NAME = <span class="jxr_string">"Georges"</span>;
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>         me.setCommonname(NEW_NAME);
-<a class="jxr_linenumber" name="L420" href="#L420">420</a> 
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>         wsClient.clearMessages();
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>         client.userController.updateUser(me);
-<a class="jxr_linenumber" name="L423" href="#L423">423</a> 
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>         messages = wsClient.getMessages(1, 10);
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>         Assertions.assertEquals(1, messages.size());
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>         WsMessage wsMessage = messages.get(0);
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>         Assertions.assertTrue(wsMessage instanceof WsUpdateMessage);
-<a class="jxr_linenumber" name="L428" href="#L428">428</a> 
-<a class="jxr_linenumber" name="L429" href="#L429">429</a>         WsUpdateMessage updateMessage = (WsUpdateMessage) wsMessage;
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>         <em class="jxr_comment">// nothing has been deleted</em>
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>         Assertions.assertEquals(0, updateMessage.getDeleted().size());
-<a class="jxr_linenumber" name="L432" href="#L432">432</a>         <em class="jxr_comment">// one entity has been updated</em>
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>         Assertions.assertEquals(1, updateMessage.getUpdated().size());
-<a class="jxr_linenumber" name="L434" href="#L434">434</a> 
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>         WithJsonDiscriminator entity = updateMessage.getUpdated().iterator().next();
-<a class="jxr_linenumber" name="L436" href="#L436">436</a> 
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>         Assertions.assertTrue(entity instanceof User);
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>         Assertions.assertEquals(NEW_NAME, ((User) entity).getCommonname());
-<a class="jxr_linenumber" name="L439" href="#L439">439</a> 
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>         wsClient.close();
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>     }
-<a class="jxr_linenumber" name="L442" href="#L442">442</a> }
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>         WsChannelUpdate channelUpdate = TestHelper.waitForMessagesAndAssert(wsClient, 1, 10, WsChannelUpdate.<strong class="jxr_keyword">class</strong>).get(0);
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>         Assertions.assertTrue(channelUpdate.getChannel() instanceof UserChannel);
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>         UserChannel userChannel = (UserChannel) channelUpdate.getChannel();
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>         Assertions.assertEquals(<strong class="jxr_keyword">this</strong>.adminUserId, userChannel.getUserId());
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>         Assertions.assertEquals(1, channelUpdate.getDiff());
+<a class="jxr_linenumber" name="L411" href="#L411">411</a> 
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>         User me = client.userController.getCurrentUser();
+<a class="jxr_linenumber" name="L413" href="#L413">413</a> 
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>         <strong class="jxr_keyword">final</strong> String NEW_NAME = <span class="jxr_string">"Georges"</span>;
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>         me.setCommonname(NEW_NAME);
+<a class="jxr_linenumber" name="L416" href="#L416">416</a> 
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>         wsClient.clearMessages();
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>         client.userController.updateUser(me);
+<a class="jxr_linenumber" name="L419" href="#L419">419</a> 
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>         WsUpdateMessage updateMessage = TestHelper.waitForMessagesAndAssert(wsClient, 1, 10, WsUpdateMessage.<strong class="jxr_keyword">class</strong>).get(0);
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>         <em class="jxr_comment">// nothing has been deleted</em>
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>         Assertions.assertEquals(0, updateMessage.getDeleted().size());
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>         <em class="jxr_comment">// one entity has been updated</em>
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>         Assertions.assertEquals(1, updateMessage.getUpdated().size());
+<a class="jxr_linenumber" name="L425" href="#L425">425</a> 
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>         WithJsonDiscriminator entity = updateMessage.getUpdated().iterator().next();
+<a class="jxr_linenumber" name="L427" href="#L427">427</a> 
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>         Assertions.assertTrue(entity instanceof User);
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>         Assertions.assertEquals(NEW_NAME, ((User) entity).getCommonname());
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>     }
+<a class="jxr_linenumber" name="L431" href="#L431">431</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

@@ -21,6 +21,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * API to manage subscription to {@link WebsocketEffectiveChannel}.
@@ -36,7 +38,10 @@ import javax.ws.rs.core.MediaType;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="fc" id="L39">public class WebsocketController {</span>
+<span class="fc" id="L41">public class WebsocketController {</span>
+
+    /** logger */
+<span class="fc" id="L44">    private static final Logger logger = LoggerFactory.getLogger(WebsocketController.class);</span>
 
     /**
      * Websocket business logic
@@ -52,7 +57,8 @@ import javax.ws.rs.core.MediaType;
     @GET
     @AdminResource
     public Set&lt;ChannelOverview&gt; getExistingChannels() {
-<span class="nc" id="L55">        return wsFacade.getExistingChannels();</span>
+<span class="nc" id="L60">        logger.debug(&quot;Get all existing channels&quot;);</span>
+<span class="nc" id="L61">        return wsFacade.getExistingChannels();</span>
     }
 
     /**
@@ -64,8 +70,9 @@ import javax.ws.rs.core.MediaType;
     @PUT
     @Path(&quot;SubscribeToUserChannel&quot;)
     public void subscribeToUserChannel(WsSessionIdentifier sessionId) {
-<span class="fc" id="L67">        wsFacade.subscribeToUserChannel(sessionId);</span>
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L73">        logger.debug(&quot;Subscribe to its own userchanell with session id {}&quot;, sessionId);</span>
+<span class="fc" id="L74">        wsFacade.subscribeToUserChannel(sessionId);</span>
+<span class="fc" id="L75">    }</span>
 
     /**
      * Unsubscribe from the currentUser channel
@@ -76,8 +83,9 @@ import javax.ws.rs.core.MediaType;
     @PUT
     @Path(&quot;UnsubscribeFromUserChannel&quot;)
     public void unsubscribeFromUserChannel(WsSessionIdentifier sessionId) {
-<span class="nc" id="L79">        wsFacade.unsubscribeFromUserChannel(sessionId);</span>
-<span class="nc" id="L80">    }</span>
+<span class="nc" id="L86">        logger.debug(&quot;Unsubscribe from its own userchanell with session id {}&quot;, sessionId);</span>
+<span class="nc" id="L87">        wsFacade.unsubscribeFromUserChannel(sessionId);</span>
+<span class="nc" id="L88">    }</span>
 
     /**
      * Subscribe to a ProjectContent channel.
@@ -91,8 +99,10 @@ import javax.ws.rs.core.MediaType;
         @PathParam(&quot;projectId&quot;) Long projectId,
         WsSessionIdentifier sessionId
     ) {
-<span class="nc" id="L94">        wsFacade.subscribeToProjectChannel(sessionId, projectId);</span>
-<span class="nc" id="L95">    }</span>
+<span class="nc" id="L102">        logger.debug(&quot;Subscribe to project #{} channel with session id {}&quot;,</span>
+            projectId, sessionId);
+<span class="nc" id="L104">        wsFacade.subscribeToProjectChannel(sessionId, projectId);</span>
+<span class="nc" id="L105">    }</span>
 
     /**
      * Unsubscribe from a ProjectContent channel.
@@ -106,7 +116,9 @@ import javax.ws.rs.core.MediaType;
         @PathParam(&quot;projectId&quot;) Long projectId,
         WsSessionIdentifier sessionId
     ) {
-<span class="nc" id="L109">        wsFacade.unsubscribeFromProjectChannel(sessionId, projectId);</span>
-<span class="nc" id="L110">    }</span>
+<span class="nc" id="L119">        logger.debug(&quot;Unsubscribe from project #{} channel with session id {}&quot;,</span>
+            projectId, sessionId);
+<span class="nc" id="L121">        wsFacade.unsubscribeFromProjectChannel(sessionId, projectId);</span>
+<span class="nc" id="L122">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

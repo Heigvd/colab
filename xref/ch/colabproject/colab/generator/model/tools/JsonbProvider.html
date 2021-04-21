@@ -44,8 +44,8 @@
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Jsonb getJsonb() {
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>          JsonbConfig config = <strong class="jxr_keyword">new</strong> JsonbConfig()
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>              .withFormatting(false);
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>              <em class="jxr_comment">// DO NEVER DO THAT EVER (sse PolymorphicDeserializer doc):</em>
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>              <em class="jxr_comment">//.withDeserializers(new PolymorphicDeserializer());</em>
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>          <em class="jxr_comment">// DO NEVER DO THAT EVER (sse PolymorphicDeserializer doc):</em>
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>          <em class="jxr_comment">//.withDeserializers(new PolymorphicDeserializer());</em>
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>          <strong class="jxr_keyword">return</strong> JsonbBuilder.create(config);
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>      }

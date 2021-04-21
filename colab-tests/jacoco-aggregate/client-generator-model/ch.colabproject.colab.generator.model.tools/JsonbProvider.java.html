@@ -36,8 +36,8 @@ import javax.ws.rs.ext.Provider;
     public static Jsonb getJsonb() {
 <span class="fc" id="L37">        JsonbConfig config = new JsonbConfig()</span>
 <span class="fc" id="L38">            .withFormatting(false);</span>
-            // DO NEVER DO THAT EVER (sse PolymorphicDeserializer doc):
-            //.withDeserializers(new PolymorphicDeserializer());
+        // DO NEVER DO THAT EVER (sse PolymorphicDeserializer doc):
+        //.withDeserializers(new PolymorphicDeserializer());
 
 <span class="fc" id="L42">        return JsonbBuilder.create(config);</span>
     }

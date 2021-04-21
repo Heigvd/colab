@@ -168,348 +168,358 @@
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>     @Lock(LockType.READ)
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>     <strong class="jxr_keyword">public</strong> Set&lt;ChannelOverview&gt; getExistingChannels() {
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>         IExecutorService executorService = hzInstance.getExecutorService(<span class="jxr_string">"COLAB_WS"</span>);
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>         Map&lt;Member, Future&lt;Map&lt;WebsocketEffectiveChannel, Integer&gt;&gt;&gt; results = executorService.submitToAllMembers(<strong class="jxr_keyword">new</strong> <a name="CallableGetChannel" href="../../../../../ch/colabproject/colab/api/ws/utils/CallableGetChannel.html#CallableGetChannel">CallableGetChannel</a>());
-<a class="jxr_linenumber" name="L164" href="#L164">164</a> 
-<a class="jxr_linenumber" name="L165" href="#L165">165</a>         Map&lt;WebsocketEffectiveChannel, Integer&gt; aggregate = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
-<a class="jxr_linenumber" name="L166" href="#L166">166</a> 
-<a class="jxr_linenumber" name="L167" href="#L167">167</a>         results.values().stream()
-<a class="jxr_linenumber" name="L168" href="#L168">168</a>             .flatMap((result) -&gt; {
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>                 <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>                     <strong class="jxr_keyword">return</strong> result.get(5, TimeUnit.SECONDS).entrySet().stream();
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>                 } <strong class="jxr_keyword">catch</strong> (InterruptedException | ExecutionException | TimeoutException ex) {
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>                     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>                 }
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>             })
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>             .forEach(entry -&gt; {
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>                 <strong class="jxr_keyword">if</strong> (aggregate.containsKey(entry.getKey())) {
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>                     aggregate.put(entry.getKey(), aggregate.get(entry.getKey()) + entry.getValue());
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>                 } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>                     aggregate.put(entry.getKey(), entry.getValue());
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>                 }
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>             });
-<a class="jxr_linenumber" name="L182" href="#L182">182</a> 
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>         <strong class="jxr_keyword">return</strong> aggregate.entrySet().stream().map(entry -&gt; {
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>             <a name="ChannelOverview" href="../../../../../ch/colabproject/colab/api/ws<a name="ChannelOverview" href="../../../../../ch/colabproject/colab/api/ws/channel/ChannelOverview.html#ChannelOverview">ChannelOverview</a>lOverview.html#ChannelOverview">ChannelOverview</a> channelOverview = <strong class="jxr_keyword">new</strong> <a name="ChannelOverview" href="../../../../../ch/colabproject/colab/api/ws/channel/ChannelOverview.html#ChannelOverview">ChannelOverview</a>();
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>             channelOverview.setChannel(entry.getKey());
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>             channelOverview.setCount(entry.getValue());
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>             <strong class="jxr_keyword">return</strong> channelOverview;
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>         }).collect(Collectors.toSet());
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>     }
-<a class="jxr_linenumber" name="L190" href="#L190">190</a> 
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L192" href="#L192">192</a> <em class="jxr_javadoccomment">     * Get the list of occupied channels this instance is in charge.</em>
-<a class="jxr_linenumber" name="L193" href="#L193">193</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L194" href="#L194">194</a> <em class="jxr_javadoccomment">     * @return the list of channels and the number of sessions subscribed to each of them</em>
-<a class="jxr_linenumber" name="L195" href="#L195">195</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>     @Lock(LockType.READ)
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>     <strong class="jxr_keyword">public</strong> Map&lt;WebsocketEffectiveChannel, Integer&gt; getSubscrciptionsCount() {
-<a class="jxr_linenumber" name="L198" href="#L198">198</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.subscriptions.entrySet().stream()
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>             .collect(Collectors.toMap(Entry::getKey, entry -&gt; entry.getValue().size()));
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>     }
-<a class="jxr_linenumber" name="L201" href="#L201">201</a> 
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L203" href="#L203">203</a> <em class="jxr_javadoccomment">     * Current user want to subscribe to its own channel.</em>
-<a class="jxr_linenumber" name="L204" href="#L204">204</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L205" href="#L205">205</a> <em class="jxr_javadoccomment">     * @param sessionId websocket session identifier</em>
-<a class="jxr_linenumber" name="L206" href="#L206">206</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> subscribeToUserChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId) {
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>         logger.debug(<span class="jxr_string">"Session {} want to subscribe to its UserChannel"</span>, sessionId);
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>         User user = securityFacade.assertAndGetCurrentUser();
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>         <a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/ejb/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request = SubscriptionRequest.build(
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>             SubscriptionRequest.SubscriptionType.SUBSCRIBE,
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>             SubscriptionRequest.ChannelType.USER,
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>             user.getId(),
-<a class="jxr_linenumber" name="L214" href="#L214">214</a>             sessionId.getSessionId(),
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>             requestManager.getHttpSession().getSessionId());
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>         subscriptionEvents.fire(request);
-<a class="jxr_linenumber" name="L217" href="#L217">217</a>     }
-<a class="jxr_linenumber" name="L218" href="#L218">218</a> 
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L220" href="#L220">220</a> <em class="jxr_javadoccomment">     * Current user want to unsubscribe from its own channel.</em>
-<a class="jxr_linenumber" name="L221" href="#L221">221</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L222" href="#L222">222</a> <em class="jxr_javadoccomment">     * @param sessionId websocket session identifier</em>
-<a class="jxr_linenumber" name="L223" href="#L223">223</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> unsubscribeFromUserChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId) {
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>         logger.debug(<span class="jxr_string">"Session {} want to unsubscribe from its UserChannel"</span>, sessionId);
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>         User user = securityFacade.assertAndGetCurrentUser();
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>         <a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/ejb/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request = SubscriptionRequest.build(
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>             SubscriptionRequest.SubscriptionType.UNSUBSCRIBE,
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>             SubscriptionRequest.ChannelType.USER,
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>             user.getId(),
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>             sessionId.getSessionId(),
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>             requestManager.getHttpSession().getSessionId());
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>         subscriptionEvents.fire(request);
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>     }
-<a class="jxr_linenumber" name="L235" href="#L235">235</a> 
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L237" href="#L237">237</a> <em class="jxr_javadoccomment">     * Current user want to subscribe to a project channel.</em>
-<a class="jxr_linenumber" name="L238" href="#L238">238</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L239" href="#L239">239</a> <em class="jxr_javadoccomment">     * @param sessionId websocket session identifier</em>
-<a class="jxr_linenumber" name="L240" href="#L240">240</a> <em class="jxr_javadoccomment">     * @param projectId if of the project</em>
-<a class="jxr_linenumber" name="L241" href="#L241">241</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L242" href="#L242">242</a> <em class="jxr_javadoccomment">     * @throws HttpErrorMessage notFound if the project does not exists</em>
-<a class="jxr_linenumber" name="L243" href="#L243">243</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L244" href="#L244">244</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> subscribeToProjectChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId, Long projectId) {
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>         logger.debug(<span class="jxr_string">"Session {} want to subscribe to Project#{}"</span>, sessionId, projectId);
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>         <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(projectId);
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>         <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>             securityFacade.assertIsMember(project);
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>             <a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/ejb/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request = SubscriptionRequest.build(
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>                 SubscriptionRequest.SubscriptionType.SUBSCRIBE,
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>                 SubscriptionRequest.ChannelType.PROJECT,
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>                 project.getId(),
-<a class="jxr_linenumber" name="L253" href="#L253">253</a>                 sessionId.getSessionId(),
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>                 requestManager.getHttpSession().getSessionId());
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>             subscriptionEvents.fire(request);
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.notFound();
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>         }
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>     }
-<a class="jxr_linenumber" name="L260" href="#L260">260</a> 
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L262" href="#L262">262</a> <em class="jxr_javadoccomment">     * Current user want to unsubscribe from a project channel.</em>
-<a class="jxr_linenumber" name="L263" href="#L263">263</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L264" href="#L264">264</a> <em class="jxr_javadoccomment">     * @param sessionId websocket session identifier</em>
-<a class="jxr_linenumber" name="L265" href="#L265">265</a> <em class="jxr_javadoccomment">     * @param projectId if of the project</em>
-<a class="jxr_linenumber" name="L266" href="#L266">266</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L267" href="#L267">267</a> <em class="jxr_javadoccomment">     * @throws HttpErrorMessage notFound if the project does not exists</em>
-<a class="jxr_linenumber" name="L268" href="#L268">268</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> unsubscribeFromProjectChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId, Long projectId) {
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>         logger.debug(<span class="jxr_string">"Session {} want to unsubscribe from Project#{}"</span>, sessionId, projectId);
-<a class="jxr_linenumber" name="L271" href="#L271">271</a>         <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(projectId);
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>         <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>             securityFacade.assertIsMember(project);
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>             <a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/ejb/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request = SubscriptionRequest.build(
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>                 SubscriptionRequest.SubscriptionType.UNSUBSCRIBE,
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>                 SubscriptionRequest.ChannelType.PROJECT,
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>                 project.getId(),
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>                 sessionId.getSessionId(),
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>                 requestManager.getHttpSession().getSessionId());
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>             subscriptionEvents.fire(request);
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.notFound();
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>         }
-<a class="jxr_linenumber" name="L284" href="#L284">284</a> 
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>     }
-<a class="jxr_linenumber" name="L286" href="#L286">286</a> 
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L288" href="#L288">288</a> <em class="jxr_javadoccomment">     * Process subscription request</em>
-<a class="jxr_linenumber" name="L289" href="#L289">289</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L290" href="#L290">290</a> <em class="jxr_javadoccomment">     * @param request the subscription request</em>
-<a class="jxr_linenumber" name="L291" href="#L291">291</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> processSubscription(
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>         @Observes @Inbound(eventName = WS_SUBSCRIPTION_EVENT_CHANNEL) <a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/ejb/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request) {
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>         logger.debug(<span class="jxr_string">"Channel subscription request: {}"</span>, request);
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>         Session session = WebsocketEndpoint.getSession(request.getWsSessionId());
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>         <strong class="jxr_keyword">if</strong> (session != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>             logger.debug(<span class="jxr_string">"Process channel subscription request: {}"</span>, request);
-<a class="jxr_linenumber" name="L298" href="#L298">298</a> 
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>             <em class="jxr_comment">// first determine the effective channel</em>
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>             <a name="WebsocketEffectiveChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/WebsocketEffectiveChannel.html#WebsocketEffectiveChannel">WebsocketEffectiveChannel</a> channel = getChannel(request);
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>             <strong class="jxr_keyword">if</strong> (channel != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>                 <em class="jxr_comment">// make sure the http session has its own set of wsSessions</em>
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>                 <strong class="jxr_keyword">if</strong> (!httpSessionToWsSessions.containsKey(request.getColabSessionId())) {
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>                     httpSessionToWsSessions.put(request.getColabSessionId(), <strong class="jxr_keyword">new</strong> HashSet&lt;&gt;());
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>                 }
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>                 <em class="jxr_comment">// and  make sure the websocket session is linked to the http session</em>
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>                 httpSessionToWsSessions.get(request.getColabSessionId()).add(session);
-<a class="jxr_linenumber" name="L308" href="#L308">308</a> 
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>                 <em class="jxr_comment">// make sure to link wsSession to its Http session</em>
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>                 wsSessionToHttpSession.put(session, request.getColabSessionId());
-<a class="jxr_linenumber" name="L311" href="#L311">311</a> 
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>                 <strong class="jxr_keyword">if</strong> (request.getType() == SubscriptionRequest.SubscriptionType.SUBSCRIBE) {
-<a class="jxr_linenumber" name="L313" href="#L313">313</a>                     <em class="jxr_comment">// make sure the http session has its own list of channels</em>
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>                     <strong class="jxr_keyword">if</strong> (!wsSessionMap.containsKey(session)) {
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>                         wsSessionMap.put(session, <strong class="jxr_keyword">new</strong> HashSet&lt;&gt;());
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>                     }
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>                     <em class="jxr_comment">// keep wsSession to channel registry up-to date</em>
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>                     wsSessionMap.get(session).add(channel);
-<a class="jxr_linenumber" name="L319" href="#L319">319</a> 
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>                     <em class="jxr_comment">// subscribe to channel</em>
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>                     subscribe(channel, session);
-<a class="jxr_linenumber" name="L322" href="#L322">322</a>                 } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>                     <em class="jxr_comment">// Remove the channel from the set of channel linked to the wsSession</em>
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>                     <strong class="jxr_keyword">if</strong> (wsSessionMap.containsKey(session)) {
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>                         Set&lt;WebsocketEffectiveChannel&gt; channels = wsSessionMap.get(session);
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>                         channels.remove(channel);
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>                         <strong class="jxr_keyword">if</strong> (channels.isEmpty()) {
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>                             wsSessionMap.remove(session);
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>                         }
-<a class="jxr_linenumber" name="L330" href="#L330">330</a>                     }
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>                     unsubscribe(channel, Set.of(session));
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>                 }
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>                 logger.debug(<span class="jxr_string">"Failed to resolve {} to an effective channel"</span>, request);
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>             }
-<a class="jxr_linenumber" name="L336" href="#L336">336</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>             logger.debug(<span class="jxr_string">"Ignore channel subscription: {}"</span>, request);
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>         }
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>     }
-<a class="jxr_linenumber" name="L340" href="#L340">340</a> 
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L342" href="#L342">342</a> <em class="jxr_javadoccomment">     * Add the given session to the set identified by the given channel, in the given map.</em>
-<a class="jxr_linenumber" name="L343" href="#L343">343</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L344" href="#L344">344</a> <em class="jxr_javadoccomment">     * @param map     map which contains sets</em>
-<a class="jxr_linenumber" name="L345" href="#L345">345</a> <em class="jxr_javadoccomment">     * @param keyId   set id</em>
-<a class="jxr_linenumber" name="L346" href="#L346">346</a> <em class="jxr_javadoccomment">     * @param session session to remove from the set</em>
-<a class="jxr_linenumber" name="L347" href="#L347">347</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> subscribe(<a name="WebsocketEffectiveChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/WebsocketEffectiveChannel.html#WebsocketEffectiveChannel">WebsocketEffectiveChannel</a> channel, Session session) {
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>         logger.debug(<span class="jxr_string">"Session {} subscribes to {}"</span>, session.getId(), channel);
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>         <strong class="jxr_keyword">if</strong> (!subscriptions.containsKey(channel)) {
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>             subscriptions.put(channel, <strong class="jxr_keyword">new</strong> HashSet&lt;&gt;());
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>             <strong class="jxr_keyword">this</strong>.propagateChannelChange(channel, 1);
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>         Map&lt;Member, Future&lt;Map&lt;WebsocketEffectiveChannel, Integer&gt;&gt;&gt; results
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>             = executorService.submitToAllMembers(<strong class="jxr_keyword">new</strong> <a name="CallableGetChannel" href="../../../../../ch/colabproject/colab/api/ws/utils/CallableGetChannel.html#CallableGetChannel">CallableGetChannel</a>());
+<a class="jxr_linenumber" name="L165" href="#L165">165</a> 
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>         Map&lt;WebsocketEffectiveChannel, Integer&gt; aggregate = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
+<a class="jxr_linenumber" name="L167" href="#L167">167</a> 
+<a class="jxr_linenumber" name="L168" href="#L168">168</a>         results.values().stream()
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>             .flatMap((result) -&gt; {
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>                 <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>                     <strong class="jxr_keyword">return</strong> result.get(5, TimeUnit.SECONDS).entrySet().stream();
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>                 } <strong class="jxr_keyword">catch</strong> (InterruptedException | ExecutionException | TimeoutException ex) {
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>                     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>                 }
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>             })
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>             .forEach(entry -&gt; {
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>                 <strong class="jxr_keyword">if</strong> (aggregate.containsKey(entry.getKey())) {
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>                     aggregate.put(entry.getKey(), aggregate.get(entry.getKey()) + entry.getValue());
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>                 } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>                     aggregate.put(entry.getKey(), entry.getValue());
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>                 }
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>             });
+<a class="jxr_linenumber" name="L183" href="#L183">183</a> 
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>         <strong class="jxr_keyword">return</strong> aggregate.entrySet().stream().map(entry -&gt; {
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>             <a name="ChannelOverview" href="../../../../../ch/colabproject/colab/api/ws<a name="ChannelOverview" href="../../../../../ch/colabproject/colab/api/ws/channel/ChannelOverview.html#ChannelOverview">ChannelOverview</a>lOverview.html#ChannelOverview">ChannelOverview</a> channelOverview = <strong class="jxr_keyword">new</strong> <a name="ChannelOverview" href="../../../../../ch/colabproject/colab/api/ws/channel/ChannelOverview.html#ChannelOverview">ChannelOverview</a>();
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>             channelOverview.setChannel(entry.getKey());
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>             channelOverview.setCount(entry.getValue());
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>             <strong class="jxr_keyword">return</strong> channelOverview;
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>         }).collect(Collectors.toSet());
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>     }
+<a class="jxr_linenumber" name="L191" href="#L191">191</a> 
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L193" href="#L193">193</a> <em class="jxr_javadoccomment">     * Get the list of occupied channels this instance is in charge.</em>
+<a class="jxr_linenumber" name="L194" href="#L194">194</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L195" href="#L195">195</a> <em class="jxr_javadoccomment">     * @return the list of channels and the number of sessions subscribed to each of them</em>
+<a class="jxr_linenumber" name="L196" href="#L196">196</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>     @Lock(LockType.READ)
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>     <strong class="jxr_keyword">public</strong> Map&lt;WebsocketEffectiveChannel, Integer&gt; getSubscrciptionsCount() {
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.subscriptions.entrySet().stream()
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>             .collect(Collectors.toMap(Entry::getKey, entry -&gt; entry.getValue().size()));
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>     }
+<a class="jxr_linenumber" name="L202" href="#L202">202</a> 
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L204" href="#L204">204</a> <em class="jxr_javadoccomment">     * Current user want to subscribe to its own channel.</em>
+<a class="jxr_linenumber" name="L205" href="#L205">205</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L206" href="#L206">206</a> <em class="jxr_javadoccomment">     * @param sessionId websocket session identifier</em>
+<a class="jxr_linenumber" name="L207" href="#L207">207</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> subscribeToUserChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId) {
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>         logger.debug(<span class="jxr_string">"Session {} want to subscribe to its UserChannel"</span>, sessionId);
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>         User user = securityFacade.assertAndGetCurrentUser();
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>         <a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/ejb/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request = SubscriptionRequest.build(
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>             SubscriptionRequest.SubscriptionType.SUBSCRIBE,
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>             SubscriptionRequest.ChannelType.USER,
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>             user.getId(),
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>             sessionId.getSessionId(),
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>             requestManager.getHttpSession().getSessionId());
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>         subscriptionEvents.fire(request);
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>     }
+<a class="jxr_linenumber" name="L219" href="#L219">219</a> 
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L221" href="#L221">221</a> <em class="jxr_javadoccomment">     * Current user want to unsubscribe from its own channel.</em>
+<a class="jxr_linenumber" name="L222" href="#L222">222</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L223" href="#L223">223</a> <em class="jxr_javadoccomment">     * @param sessionId websocket session identifier</em>
+<a class="jxr_linenumber" name="L224" href="#L224">224</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> unsubscribeFromUserChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId) {
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>         logger.debug(<span class="jxr_string">"Session {} want to unsubscribe from its UserChannel"</span>, sessionId);
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>         User user = securityFacade.assertAndGetCurrentUser();
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>         <a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/ejb/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request = SubscriptionRequest.build(
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>             SubscriptionRequest.SubscriptionType.UNSUBSCRIBE,
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>             SubscriptionRequest.ChannelType.USER,
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>             user.getId(),
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>             sessionId.getSessionId(),
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>             requestManager.getHttpSession().getSessionId());
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>         subscriptionEvents.fire(request);
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>     }
+<a class="jxr_linenumber" name="L236" href="#L236">236</a> 
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L238" href="#L238">238</a> <em class="jxr_javadoccomment">     * Current user want to subscribe to a project channel.</em>
+<a class="jxr_linenumber" name="L239" href="#L239">239</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L240" href="#L240">240</a> <em class="jxr_javadoccomment">     * @param sessionId websocket session identifier</em>
+<a class="jxr_linenumber" name="L241" href="#L241">241</a> <em class="jxr_javadoccomment">     * @param projectId if of the project</em>
+<a class="jxr_linenumber" name="L242" href="#L242">242</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L243" href="#L243">243</a> <em class="jxr_javadoccomment">     * @throws HttpErrorMessage notFound if the project does not exists</em>
+<a class="jxr_linenumber" name="L244" href="#L244">244</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> subscribeToProjectChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId, Long projectId) {
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>         logger.debug(<span class="jxr_string">"Session {} want to subscribe to Project#{}"</span>, sessionId, projectId);
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>         <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(projectId);
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>         <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>             securityFacade.assertIsMember(project);
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>             <a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/ejb/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request = SubscriptionRequest.build(
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>                 SubscriptionRequest.SubscriptionType.SUBSCRIBE,
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>                 SubscriptionRequest.ChannelType.PROJECT,
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>                 project.getId(),
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>                 sessionId.getSessionId(),
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>                 requestManager.getHttpSession().getSessionId());
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>             subscriptionEvents.fire(request);
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.notFound();
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>         }
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>     }
+<a class="jxr_linenumber" name="L261" href="#L261">261</a> 
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L263" href="#L263">263</a> <em class="jxr_javadoccomment">     * Current user want to unsubscribe from a project channel.</em>
+<a class="jxr_linenumber" name="L264" href="#L264">264</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L265" href="#L265">265</a> <em class="jxr_javadoccomment">     * @param sessionId websocket session identifier</em>
+<a class="jxr_linenumber" name="L266" href="#L266">266</a> <em class="jxr_javadoccomment">     * @param projectId if of the project</em>
+<a class="jxr_linenumber" name="L267" href="#L267">267</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L268" href="#L268">268</a> <em class="jxr_javadoccomment">     * @throws HttpErrorMessage notFound if the project does not exists</em>
+<a class="jxr_linenumber" name="L269" href="#L269">269</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> unsubscribeFromProjectChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId, Long projectId) {
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>         logger.debug(<span class="jxr_string">"Session {} want to unsubscribe from Project#{}"</span>, sessionId, projectId);
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>         <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(projectId);
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>         <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>             securityFacade.assertIsMember(project);
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>             <a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/ejb/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request = SubscriptionRequest.build(
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>                 SubscriptionRequest.SubscriptionType.UNSUBSCRIBE,
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>                 SubscriptionRequest.ChannelType.PROJECT,
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>                 project.getId(),
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>                 sessionId.getSessionId(),
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>                 requestManager.getHttpSession().getSessionId());
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>             subscriptionEvents.fire(request);
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.notFound();
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>         }
+<a class="jxr_linenumber" name="L285" href="#L285">285</a> 
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>     }
+<a class="jxr_linenumber" name="L287" href="#L287">287</a> 
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L289" href="#L289">289</a> <em class="jxr_javadoccomment">     * Process subscription request</em>
+<a class="jxr_linenumber" name="L290" href="#L290">290</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L291" href="#L291">291</a> <em class="jxr_javadoccomment">     * @param request the subscription request</em>
+<a class="jxr_linenumber" name="L292" href="#L292">292</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> processSubscription(
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>         @Observes @Inbound(eventName = WS_SUBSCRIPTION_EVENT_CHANNEL) <a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/ejb/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request) {
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>         logger.debug(<span class="jxr_string">"Channel subscription request: {}"</span>, request);
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>         Session session = WebsocketEndpoint.getSession(request.getWsSessionId());
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>         <strong class="jxr_keyword">if</strong> (session != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>             logger.debug(<span class="jxr_string">"Process channel subscription request: {}"</span>, request);
+<a class="jxr_linenumber" name="L299" href="#L299">299</a> 
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>             <em class="jxr_comment">// first determine the effective channel</em>
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>             <a name="WebsocketEffectiveChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/WebsocketEffectiveChannel.html#WebsocketEffectiveChannel">WebsocketEffectiveChannel</a> channel = getChannel(request);
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>             <strong class="jxr_keyword">if</strong> (channel != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>                 <em class="jxr_comment">// make sure the http session has its own set of wsSessions</em>
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>                 <strong class="jxr_keyword">if</strong> (!httpSessionToWsSessions.containsKey(request.getColabSessionId())) {
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>                     httpSessionToWsSessions.put(request.getColabSessionId(), <strong class="jxr_keyword">new</strong> HashSet&lt;&gt;());
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>                 }
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>                 <em class="jxr_comment">// and  make sure the websocket session is linked to the http session</em>
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>                 httpSessionToWsSessions.get(request.getColabSessionId()).add(session);
+<a class="jxr_linenumber" name="L309" href="#L309">309</a> 
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>                 <em class="jxr_comment">// make sure to link wsSession to its Http session</em>
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>                 wsSessionToHttpSession.put(session, request.getColabSessionId());
+<a class="jxr_linenumber" name="L312" href="#L312">312</a> 
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>                 <strong class="jxr_keyword">if</strong> (request.getType() == SubscriptionRequest.SubscriptionType.SUBSCRIBE) {
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>                     <em class="jxr_comment">// make sure the http session has its own list of channels</em>
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>                     <strong class="jxr_keyword">if</strong> (!wsSessionMap.containsKey(session)) {
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>                         wsSessionMap.put(session, <strong class="jxr_keyword">new</strong> HashSet&lt;&gt;());
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>                     }
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>                     <em class="jxr_comment">// keep wsSession to channel registry up-to date</em>
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>                     wsSessionMap.get(session).add(channel);
+<a class="jxr_linenumber" name="L320" href="#L320">320</a> 
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>                     <em class="jxr_comment">// subscribe to channel</em>
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>                     subscribe(channel, session);
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>                 } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>                     <em class="jxr_comment">// Remove the channel from the set of channel linked to the wsSession</em>
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>                     <strong class="jxr_keyword">if</strong> (wsSessionMap.containsKey(session)) {
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>                         Set&lt;WebsocketEffectiveChannel&gt; channels = wsSessionMap.get(session);
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>                         channels.remove(channel);
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>                         <strong class="jxr_keyword">if</strong> (channels.isEmpty()) {
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>                             wsSessionMap.remove(session);
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>                         }
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>                     }
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>                     unsubscribe(channel, Set.of(session));
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>                 }
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>                 logger.debug(<span class="jxr_string">"Failed to resolve {} to an effective channel"</span>, request);
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>             }
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>             logger.debug(<span class="jxr_string">"Ignore channel subscription: {}"</span>, request);
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>         }
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>     }
+<a class="jxr_linenumber" name="L341" href="#L341">341</a> 
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L343" href="#L343">343</a> <em class="jxr_javadoccomment">     * Add the given session to the set identified by the given channel, in the given map.</em>
+<a class="jxr_linenumber" name="L344" href="#L344">344</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L345" href="#L345">345</a> <em class="jxr_javadoccomment">     * @param map     map which contains sets</em>
+<a class="jxr_linenumber" name="L346" href="#L346">346</a> <em class="jxr_javadoccomment">     * @param keyId   set id</em>
+<a class="jxr_linenumber" name="L347" href="#L347">347</a> <em class="jxr_javadoccomment">     * @param session session to remove from the set</em>
+<a class="jxr_linenumber" name="L348" href="#L348">348</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> subscribe(<a name="WebsocketEffectiveChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/WebsocketEffectiveChannel.html#WebsocketEffectiveChannel">WebsocketEffectiveChannel</a> channel, Session session) {
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>         <strong class="jxr_keyword">if</strong> (logger.isDebugEnabled()) {
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>             String sessionId = WebsocketEndpoint.getSessionId(session);
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>             logger.debug(<span class="jxr_string">"Session {} subscribes to {}"</span>, sessionId, channel);
 <a class="jxr_linenumber" name="L353" href="#L353">353</a>         }
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>         subscriptions.get(channel).add(session);
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>     }
-<a class="jxr_linenumber" name="L356" href="#L356">356</a> 
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L358" href="#L358">358</a> <em class="jxr_javadoccomment">     * Unsubscribe all sessions from given channel. If the channel is empty after the operation, it</em>
-<a class="jxr_linenumber" name="L359" href="#L359">359</a> <em class="jxr_javadoccomment">     * will be destroyed.</em>
-<a class="jxr_linenumber" name="L360" href="#L360">360</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L361" href="#L361">361</a> <em class="jxr_javadoccomment">     * @param channel  channel to update</em>
-<a class="jxr_linenumber" name="L362" href="#L362">362</a> <em class="jxr_javadoccomment">     * @param sessions session to remove from channel</em>
-<a class="jxr_linenumber" name="L363" href="#L363">363</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> unsubscribe(<a name="WebsocketEffectiveChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/WebsocketEffectiveChannel.html#WebsocketEffectiveChannel">WebsocketEffectiveChannel</a> channel, Set&lt;Session&gt; sessions) {
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>         Set&lt;Session&gt; chSessions = subscriptions.get(channel);
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>         <strong class="jxr_keyword">if</strong> (logger.isDebugEnabled()) {
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>             logger.debug(<span class="jxr_string">"Sessions {} unsubscribes from {}"</span>, sessions.stream().map(session -&gt; session.getId()), channel);
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>         }
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>         <strong class="jxr_keyword">if</strong> (chSessions != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>             <strong class="jxr_keyword">int</strong> size = chSessions.size();
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>             chSessions.removeAll(sessions);
-<a class="jxr_linenumber" name="L372" href="#L372">372</a>             <strong class="jxr_keyword">this</strong>.propagateChannelChange(channel, chSessions.size() - size);
-<a class="jxr_linenumber" name="L373" href="#L373">373</a> 
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>             <strong class="jxr_keyword">if</strong> (chSessions.isEmpty()) {
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>                 subscriptions.remove(channel);
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>             }
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>         }
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>     }
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>         <strong class="jxr_keyword">if</strong> (!subscriptions.containsKey(channel)) {
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>             subscriptions.put(channel, <strong class="jxr_keyword">new</strong> HashSet&lt;&gt;());
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>             <strong class="jxr_keyword">this</strong>.propagateChannelChange(channel, 1);
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>         }
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>         subscriptions.get(channel).add(session);
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>     }
+<a class="jxr_linenumber" name="L360" href="#L360">360</a> 
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L362" href="#L362">362</a> <em class="jxr_javadoccomment">     * Unsubscribe all sessions from given channel. If the channel is empty after the operation, it</em>
+<a class="jxr_linenumber" name="L363" href="#L363">363</a> <em class="jxr_javadoccomment">     * will be destroyed.</em>
+<a class="jxr_linenumber" name="L364" href="#L364">364</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L365" href="#L365">365</a> <em class="jxr_javadoccomment">     * @param channel  channel to update</em>
+<a class="jxr_linenumber" name="L366" href="#L366">366</a> <em class="jxr_javadoccomment">     * @param sessions session to remove from channel</em>
+<a class="jxr_linenumber" name="L367" href="#L367">367</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> unsubscribe(<a name="WebsocketEffectiveChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/WebsocketEffectiveChannel.html#WebsocketEffectiveChannel">WebsocketEffectiveChannel</a> channel, Set&lt;Session&gt; sessions) {
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>         Set&lt;Session&gt; chSessions = subscriptions.get(channel);
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>         <strong class="jxr_keyword">if</strong> (logger.isDebugEnabled()) {
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>             logger.debug(<span class="jxr_string">"Sessions {} unsubscribes from {}"</span>, sessions.stream().map(session
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>                 -&gt; WebsocketEndpoint.getSessionId(session)
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>             ), channel);
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>         }
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>         <strong class="jxr_keyword">if</strong> (chSessions != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>             <strong class="jxr_keyword">int</strong> size = chSessions.size();
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>             chSessions.removeAll(sessions);
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>             <strong class="jxr_keyword">this</strong>.propagateChannelChange(channel, chSessions.size() - size);
 <a class="jxr_linenumber" name="L379" href="#L379">379</a> 
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L381" href="#L381">381</a> <em class="jxr_javadoccomment">     * Propagate a channel change</em>
-<a class="jxr_linenumber" name="L382" href="#L382">382</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L383" href="#L383">383</a> <em class="jxr_javadoccomment">     * @param channel the channel</em>
-<a class="jxr_linenumber" name="L384" href="#L384">384</a> <em class="jxr_javadoccomment">     * @param diff    diff</em>
-<a class="jxr_linenumber" name="L385" href="#L385">385</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L386" href="#L386">386</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> propagateChannelChange(<a name="WebsocketEffectiveChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/WebsocketEffectiveChannel.html#WebsocketEffectiveChannel">WebsocketEffectiveChannel</a> channel, <strong class="jxr_keyword">int</strong> diff) {
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>             <a name="PrecomputedWsMessages" href="../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a> prepareWsMessage = WebsocketHelper.prepareWsMessage(userDao, <strong class="jxr_keyword">new</strong> <a name="AdminChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/AdminChannel.html#AdminChannel">AdminChannel</a>(), WsChannelUpdate.build(channel, diff));
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>             <strong class="jxr_keyword">this</strong>.propagate(prepareWsMessage);
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>         } <strong class="jxr_keyword">catch</strong> (EncodeException ex) {
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>             logger.error(<span class="jxr_string">"Faild to propagate channel change :{}"</span>, channel);
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>         }
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>     }
-<a class="jxr_linenumber" name="L394" href="#L394">394</a> 
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L396" href="#L396">396</a> <em class="jxr_javadoccomment">     * Determine the EffectiveChannel</em>
-<a class="jxr_linenumber" name="L397" href="#L397">397</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L398" href="#L398">398</a> <em class="jxr_javadoccomment">     * @param request the request</em>
-<a class="jxr_linenumber" name="L399" href="#L399">399</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L400" href="#L400">400</a> <em class="jxr_javadoccomment">     * @return the channel which match the request</em>
-<a class="jxr_linenumber" name="L401" href="#L401">401</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>     <strong class="jxr_keyword">private</strong> <a name="WebsocketEffectiveChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/WebsocketEffectiveChannel.html#WebsocketEffectiveChannel">WebsocketEffectiveChannel</a> getChannel(<a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/ejb/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request) {
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>         <strong class="jxr_keyword">if</strong> (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>             <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(request.getChannelId());
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>             <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>                 <strong class="jxr_keyword">return</strong> ProjectContentChannel.build(project);
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>             }
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>             User user = userDao.findUser(request.getChannelId());
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>             <strong class="jxr_keyword">if</strong> (user != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>                 <strong class="jxr_keyword">return</strong> user.getEffectiveChannel();
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>             }
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>         }
-<a class="jxr_linenumber" name="L414" href="#L414">414</a> 
-<a class="jxr_linenumber" name="L415" href="#L415">415</a>         <em class="jxr_comment">// not found...</em>
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>     }
-<a class="jxr_linenumber" name="L418" href="#L418">418</a> 
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L420" href="#L420">420</a> <em class="jxr_javadoccomment">     * Propagate precomputed message to clients. Actually, this methods, will ask all instances of</em>
-<a class="jxr_linenumber" name="L421" href="#L421">421</a> <em class="jxr_javadoccomment">     * the hazelcast cluster to propagate the message to session they're in charge. This will call</em>
-<a class="jxr_linenumber" name="L422" href="#L422">422</a> <em class="jxr_javadoccomment">     * {@link #onMessagePropagation(PrecomputedWsMessages) onMessagePropagation}cluster-wide.</em>
-<a class="jxr_linenumber" name="L423" href="#L423">423</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L424" href="#L424">424</a> <em class="jxr_javadoccomment">     * @param message precomputed message to propagate.</em>
-<a class="jxr_linenumber" name="L425" href="#L425">425</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> propagate(<a name="PrecomputedWsMessages" href="../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a> message) {
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>         <strong class="jxr_keyword">this</strong>.messagePropagation.fire(message);
-<a class="jxr_linenumber" name="L428" href="#L428">428</a>     }
-<a class="jxr_linenumber" name="L429" href="#L429">429</a> 
-<a class="jxr_linenumber" name="L430" href="#L430">430</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L431" href="#L431">431</a> <em class="jxr_javadoccomment">     * On Hazelcast event. Each instance receive precomputed message.</em>
-<a class="jxr_linenumber" name="L432" href="#L432">432</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>             <strong class="jxr_keyword">if</strong> (chSessions.isEmpty()) {
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>                 subscriptions.remove(channel);
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>             }
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>         }
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>     }
+<a class="jxr_linenumber" name="L385" href="#L385">385</a> 
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L387" href="#L387">387</a> <em class="jxr_javadoccomment">     * Propagate a channel change</em>
+<a class="jxr_linenumber" name="L388" href="#L388">388</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L389" href="#L389">389</a> <em class="jxr_javadoccomment">     * @param channel the channel</em>
+<a class="jxr_linenumber" name="L390" href="#L390">390</a> <em class="jxr_javadoccomment">     * @param diff    diff</em>
+<a class="jxr_linenumber" name="L391" href="#L391">391</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> propagateChannelChange(<a name="WebsocketEffectiveChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/WebsocketEffectiveChannel.html#WebsocketEffectiveChannel">WebsocketEffectiveChannel</a> channel, <strong class="jxr_keyword">int</strong> diff) {
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>             <a name="PrecomputedWsMessages" href="../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a> prepareWsMessage = WebsocketHelper.prepareWsMessage(
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>                 userDao,
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>                 <strong class="jxr_keyword">new</strong> <a name="AdminChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/AdminChannel.html#AdminChannel">AdminChannel</a>(),
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>                 WsChannelUpdate.build(channel, diff)
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>             );
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>             <strong class="jxr_keyword">this</strong>.propagate(prepareWsMessage);
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>         } <strong class="jxr_keyword">catch</strong> (EncodeException ex) {
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>             logger.error(<span class="jxr_string">"Faild to propagate channel change :{}"</span>, channel);
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>         }
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>     }
+<a class="jxr_linenumber" name="L404" href="#L404">404</a> 
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L406" href="#L406">406</a> <em class="jxr_javadoccomment">     * Determine the EffectiveChannel</em>
+<a class="jxr_linenumber" name="L407" href="#L407">407</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L408" href="#L408">408</a> <em class="jxr_javadoccomment">     * @param request the request</em>
+<a class="jxr_linenumber" name="L409" href="#L409">409</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L410" href="#L410">410</a> <em class="jxr_javadoccomment">     * @return the channel which match the request</em>
+<a class="jxr_linenumber" name="L411" href="#L411">411</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>     <strong class="jxr_keyword">private</strong> <a name="WebsocketEffectiveChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/WebsocketEffectiveChannel.html#WebsocketEffectiveChannel">WebsocketEffectiveChannel</a> getChannel(<a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/ejb/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request) {
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>         <strong class="jxr_keyword">if</strong> (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>             <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(request.getChannelId());
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>             <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>                 <strong class="jxr_keyword">return</strong> ProjectContentChannel.build(project);
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>             }
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>             User user = userDao.findUser(request.getChannelId());
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>             <strong class="jxr_keyword">if</strong> (user != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>                 <strong class="jxr_keyword">return</strong> user.getEffectiveChannel();
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>             }
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>         }
+<a class="jxr_linenumber" name="L424" href="#L424">424</a> 
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>         <em class="jxr_comment">// not found...</em>
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>     }
+<a class="jxr_linenumber" name="L428" href="#L428">428</a> 
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L430" href="#L430">430</a> <em class="jxr_javadoccomment">     * Propagate precomputed message to clients. Actually, this methods, will ask all instances of</em>
+<a class="jxr_linenumber" name="L431" href="#L431">431</a> <em class="jxr_javadoccomment">     * the hazelcast cluster to propagate the message to session they're in charge. This will call</em>
+<a class="jxr_linenumber" name="L432" href="#L432">432</a> <em class="jxr_javadoccomment">     * {@link #onMessagePropagation(PrecomputedWsMessages) onMessagePropagation}cluster-wide.</em>
 <a class="jxr_linenumber" name="L433" href="#L433">433</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L434" href="#L434">434</a> <em class="jxr_javadoccomment">     * @param payload the messagesByChannels to send to clients though relevant websocket channels</em>
+<a class="jxr_linenumber" name="L434" href="#L434">434</a> <em class="jxr_javadoccomment">     * @param message precomputed message to propagate.</em>
 <a class="jxr_linenumber" name="L435" href="#L435">435</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onMessagePropagation(
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>         @Observes @Inbound(eventName = WS_PROPAGATION_CHANNEL) <a name="PrecomputedWsMessages" href="../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a> payload) {
-<a class="jxr_linenumber" name="L438" href="#L438">438</a> 
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>         Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; messagesByChannels = payload.getMessages();
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>         <strong class="jxr_keyword">if</strong> (messagesByChannels != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>             messagesByChannels.forEach((channel, messages) -&gt; {
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>                 Set&lt;Session&gt; subscribers = <strong class="jxr_keyword">this</strong>.subscriptions.get(channel);
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>                 <strong class="jxr_keyword">if</strong> (subscribers != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L444" href="#L444">444</a>                     subscribers.forEach(session -&gt; {
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>                         messages.forEach(message -&gt; {
-<a class="jxr_linenumber" name="L446" href="#L446">446</a>                             <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L447" href="#L447">447</a>                                 session.getBasicRemote().sendText(message);
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>                             } <strong class="jxr_keyword">catch</strong> (IOException ex) {
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>                                 logger.error(<span class="jxr_string">"Failed to send websocket message {} to {}"</span>,
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>                                     message, session);
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>                             }
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>                         });
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>                     });
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>                 }
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>             });
-<a class="jxr_linenumber" name="L456" href="#L456">456</a>         }
-<a class="jxr_linenumber" name="L457" href="#L457">457</a>     }
-<a class="jxr_linenumber" name="L458" href="#L458">458</a> 
-<a class="jxr_linenumber" name="L459" href="#L459">459</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L460" href="#L460">460</a> <em class="jxr_javadoccomment">     * Unsubscribe all channel linked to the given httpSessionId. This is required after the user</em>
-<a class="jxr_linenumber" name="L461" href="#L461">461</a> <em class="jxr_javadoccomment">     * sign out.</em>
-<a class="jxr_linenumber" name="L462" href="#L462">462</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L463" href="#L463">463</a> <em class="jxr_javadoccomment">     * @param httpSessionId httpSessionId which just sign out</em>
-<a class="jxr_linenumber" name="L464" href="#L464">464</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> signoutAndUnsubscribeFromAll(String httpSessionId) {
-<a class="jxr_linenumber" name="L466" href="#L466">466</a>         <em class="jxr_comment">// TODO send logout event, so each client (each browser tab) knows it has been disconected</em>
-<a class="jxr_linenumber" name="L467" href="#L467">467</a>         Set&lt;Session&gt; wsSessions = <strong class="jxr_keyword">this</strong>.httpSessionToWsSessions.get(httpSessionId);
-<a class="jxr_linenumber" name="L468" href="#L468">468</a>         <strong class="jxr_keyword">if</strong> (wsSessions != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L469" href="#L469">469</a>             <em class="jxr_comment">// the http session is linked to one or more websocket session, let's cancel all their</em>
-<a class="jxr_linenumber" name="L470" href="#L470">470</a>             <em class="jxr_comment">// subscriptions</em>
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>             wsSessions.stream()
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>                 <em class="jxr_comment">// get channels from each wsSession</em>
-<a class="jxr_linenumber" name="L473" href="#L473">473</a>                 .map(wsSession -&gt; <strong class="jxr_keyword">this</strong>.wsSessionMap.get(wsSession))
-<a class="jxr_linenumber" name="L474" href="#L474">474</a>                 <em class="jxr_comment">// filter out null channels set</em>
-<a class="jxr_linenumber" name="L475" href="#L475">475</a>                 .filter(channels -&gt; channels != <strong class="jxr_keyword">null</strong>)
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>                 <em class="jxr_comment">// convert "stream of set of channels" to "stream of channels"</em>
-<a class="jxr_linenumber" name="L477" href="#L477">477</a>                 .flatMap(Collection::stream)
-<a class="jxr_linenumber" name="L478" href="#L478">478</a>                 <em class="jxr_comment">// no need to list same channel twise</em>
-<a class="jxr_linenumber" name="L479" href="#L479">479</a>                 .distinct()
-<a class="jxr_linenumber" name="L480" href="#L480">480</a>                 <em class="jxr_comment">// clean subscriptions</em>
-<a class="jxr_linenumber" name="L481" href="#L481">481</a>                 .forEach(channel -&gt; {
-<a class="jxr_linenumber" name="L482" href="#L482">482</a>                     <strong class="jxr_keyword">this</strong>.unsubscribe(channel, wsSessions);
-<a class="jxr_linenumber" name="L483" href="#L483">483</a>                 });
-<a class="jxr_linenumber" name="L484" href="#L484">484</a>         }
-<a class="jxr_linenumber" name="L485" href="#L485">485</a> 
-<a class="jxr_linenumber" name="L486" href="#L486">486</a>         <strong class="jxr_keyword">this</strong>.httpSessionToWsSessions.remove(httpSessionId);
-<a class="jxr_linenumber" name="L487" href="#L487">487</a>     }
-<a class="jxr_linenumber" name="L488" href="#L488">488</a> 
-<a class="jxr_linenumber" name="L489" href="#L489">489</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L490" href="#L490">490</a> <em class="jxr_javadoccomment">     * Clean subscription on session close</em>
-<a class="jxr_linenumber" name="L491" href="#L491">491</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L492" href="#L492">492</a> <em class="jxr_javadoccomment">     * @param session websocket session to clean subscription for</em>
-<a class="jxr_linenumber" name="L493" href="#L493">493</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L494" href="#L494">494</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> unsubscribeFromAll(Session session) {
-<a class="jxr_linenumber" name="L495" href="#L495">495</a>         Set&lt;WebsocketEffectiveChannel&gt; set = <strong class="jxr_keyword">this</strong>.wsSessionMap.get(session);
-<a class="jxr_linenumber" name="L496" href="#L496">496</a>         <strong class="jxr_keyword">if</strong> (set != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L497" href="#L497">497</a>             Set&lt;Session&gt; setOfSession = Set.of(session);
-<a class="jxr_linenumber" name="L498" href="#L498">498</a>             set.forEach(channel -&gt; {
-<a class="jxr_linenumber" name="L499" href="#L499">499</a>                 unsubscribe(channel, setOfSession);
-<a class="jxr_linenumber" name="L500" href="#L500">500</a>             });
-<a class="jxr_linenumber" name="L501" href="#L501">501</a>             <strong class="jxr_keyword">this</strong>.wsSessionMap.remove(session);
-<a class="jxr_linenumber" name="L502" href="#L502">502</a>         }
-<a class="jxr_linenumber" name="L503" href="#L503">503</a>     }
-<a class="jxr_linenumber" name="L504" href="#L504">504</a> }
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> propagate(<a name="PrecomputedWsMessages" href="../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a> message) {
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>         <strong class="jxr_keyword">this</strong>.messagePropagation.fire(message);
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>     }
+<a class="jxr_linenumber" name="L439" href="#L439">439</a> 
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L441" href="#L441">441</a> <em class="jxr_javadoccomment">     * On Hazelcast event. Each instance receive precomputed message.</em>
+<a class="jxr_linenumber" name="L442" href="#L442">442</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L443" href="#L443">443</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L444" href="#L444">444</a> <em class="jxr_javadoccomment">     * @param payload the messagesByChannels to send to clients though relevant websocket channels</em>
+<a class="jxr_linenumber" name="L445" href="#L445">445</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onMessagePropagation(
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>         @Observes @Inbound(eventName = WS_PROPAGATION_CHANNEL) <a name="PrecomputedWsMessages" href="../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a> payload) {
+<a class="jxr_linenumber" name="L448" href="#L448">448</a> 
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>         Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; messagesByChannels = payload.getMessages();
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>         <strong class="jxr_keyword">if</strong> (messagesByChannels != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>             messagesByChannels.forEach((channel, messages) -&gt; {
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>                 Set&lt;Session&gt; subscribers = <strong class="jxr_keyword">this</strong>.subscriptions.get(channel);
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>                 <strong class="jxr_keyword">if</strong> (subscribers != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>                     subscribers.forEach(session -&gt; {
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>                         messages.forEach(message -&gt; {
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>                             <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>                                 session.getBasicRemote().sendText(message);
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>                             } <strong class="jxr_keyword">catch</strong> (IOException ex) {
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>                                 logger.error(<span class="jxr_string">"Failed to send websocket message {} to {}"</span>,
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>                                     message, session);
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>                             }
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>                         });
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>                     });
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>                 }
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>             });
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>         }
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>     }
+<a class="jxr_linenumber" name="L468" href="#L468">468</a> 
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L470" href="#L470">470</a> <em class="jxr_javadoccomment">     * Unsubscribe all channel linked to the given httpSessionId. This is required after the user</em>
+<a class="jxr_linenumber" name="L471" href="#L471">471</a> <em class="jxr_javadoccomment">     * sign out.</em>
+<a class="jxr_linenumber" name="L472" href="#L472">472</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L473" href="#L473">473</a> <em class="jxr_javadoccomment">     * @param httpSessionId httpSessionId which just sign out</em>
+<a class="jxr_linenumber" name="L474" href="#L474">474</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> signoutAndUnsubscribeFromAll(String httpSessionId) {
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>         <em class="jxr_comment">// TODO send logout event, so each client (each browser tab) knows it has been disconected</em>
+<a class="jxr_linenumber" name="L477" href="#L477">477</a>         Set&lt;Session&gt; wsSessions = <strong class="jxr_keyword">this</strong>.httpSessionToWsSessions.get(httpSessionId);
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>         <strong class="jxr_keyword">if</strong> (wsSessions != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>             <em class="jxr_comment">// the http session is linked to one or more websocket session, let's cancel all their</em>
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>             <em class="jxr_comment">// subscriptions</em>
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>             wsSessions.stream()
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>                 <em class="jxr_comment">// get channels from each wsSession</em>
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>                 .map(wsSession -&gt; <strong class="jxr_keyword">this</strong>.wsSessionMap.get(wsSession))
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>                 <em class="jxr_comment">// filter out null channels set</em>
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>                 .filter(channels -&gt; channels != <strong class="jxr_keyword">null</strong>)
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>                 <em class="jxr_comment">// convert "stream of set of channels" to "stream of channels"</em>
+<a class="jxr_linenumber" name="L487" href="#L487">487</a>                 .flatMap(Collection::stream)
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>                 <em class="jxr_comment">// no need to list same channel twise</em>
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>                 .distinct()
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>                 <em class="jxr_comment">// clean subscriptions</em>
+<a class="jxr_linenumber" name="L491" href="#L491">491</a>                 .forEach(channel -&gt; {
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>                     <strong class="jxr_keyword">this</strong>.unsubscribe(channel, wsSessions);
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>                 });
+<a class="jxr_linenumber" name="L494" href="#L494">494</a>         }
+<a class="jxr_linenumber" name="L495" href="#L495">495</a> 
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>         <strong class="jxr_keyword">this</strong>.httpSessionToWsSessions.remove(httpSessionId);
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>     }
+<a class="jxr_linenumber" name="L498" href="#L498">498</a> 
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L500" href="#L500">500</a> <em class="jxr_javadoccomment">     * Clean subscription on session close</em>
+<a class="jxr_linenumber" name="L501" href="#L501">501</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L502" href="#L502">502</a> <em class="jxr_javadoccomment">     * @param session websocket session to clean subscription for</em>
+<a class="jxr_linenumber" name="L503" href="#L503">503</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L504" href="#L504">504</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> unsubscribeFromAll(Session session) {
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>         Set&lt;WebsocketEffectiveChannel&gt; set = <strong class="jxr_keyword">this</strong>.wsSessionMap.get(session);
+<a class="jxr_linenumber" name="L506" href="#L506">506</a>         <strong class="jxr_keyword">if</strong> (set != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L507" href="#L507">507</a>             Set&lt;Session&gt; setOfSession = Set.of(session);
+<a class="jxr_linenumber" name="L508" href="#L508">508</a>             set.forEach(channel -&gt; {
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>                 unsubscribe(channel, setOfSession);
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>             });
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>             <strong class="jxr_keyword">this</strong>.wsSessionMap.remove(session);
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>         }
+<a class="jxr_linenumber" name="L513" href="#L513">513</a>     }
+<a class="jxr_linenumber" name="L514" href="#L514">514</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>
