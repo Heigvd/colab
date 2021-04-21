@@ -61,7 +61,7 @@ interface LinkProps {
   children: React.ReactNode;
 }
 
-export const MainMenuLink = ({ to, exact = false, children }: LinkProps) => {
+export const MainMenuLink = ({ to, exact = false, children }: LinkProps): JSX.Element => {
   return (
     <NavLink exact={exact} to={to} activeClassName={mainLinkActiveClass} className={mainMenuLink}>
       {children}
@@ -69,7 +69,7 @@ export const MainMenuLink = ({ to, exact = false, children }: LinkProps) => {
   );
 };
 
-export const SecondLevelLink = ({ to, exact = false, children }: LinkProps) => {
+export const SecondLevelLink = ({ to, exact = false, children }: LinkProps): JSX.Element => {
   return (
     <NavLink
       exact={exact}
@@ -82,7 +82,7 @@ export const SecondLevelLink = ({ to, exact = false, children }: LinkProps) => {
   );
 };
 
-export const InlineLink = ({ to, exact = false, children }: LinkProps) => {
+export const InlineLink = ({ to, exact = false, children }: LinkProps): JSX.Element => {
   return (
     <NavLink exact={exact} to={to} className={inlineLink}>
       {children}

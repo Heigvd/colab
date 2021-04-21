@@ -12,6 +12,7 @@ import * as ProjectActions from '../store/project';
 import * as CardActions from '../store/card';
 import * as UserActions from '../store/user';
 import { initSocketId } from '../API/api';
+import logger from '../logger';
 
 /**
  * Does the given index entry represent the given type ?
@@ -21,7 +22,7 @@ const indexEntryIs = <T extends keyof TypeMap>(entry: IndexEntry, klass: T) => {
 };
 
 const onUpdate = (event: WsUpdateMessage) => {
-  console.log('Delete: ', event.deleted);
+  logger.info('Delete: ', event.deleted);
   for (const item of event.deleted) {
     if (indexEntryIs(item, 'Project')) {
       dispatch(ProjectActions.removeProject(item.id));
@@ -41,7 +42,7 @@ const onUpdate = (event: WsUpdateMessage) => {
     }
   }
 
-  console.log('Update: ', event.updated);
+  logger.info('Update: ', event.updated);
   for (const item of event.updated) {
     if (entityIs(item, 'Project')) {
       dispatch(ProjectActions.updateProject(item));
@@ -74,18 +75,18 @@ const onChannelUpdate = (message: WsChannelUpdate) => {
 //}
 
 function checkUnreachable(x: never) {
-  console.error(x);
+  logger.error(x);
 }
 
 function createConnection(onCloseCb: () => void) {
-  console.log('Init Websocket Connection');
+  logger.info('Init Websocket Connection');
   const protocol = window.location.protocol === 'https' ? 'wss' : 'ws';
   const connection = new WebSocket(`${protocol}:///${window.location.host}/ws`);
-  console.log('Init Ws Done');
+  logger.info('Init Ws Done');
 
   connection.onclose = () => {
     // reset by peer => reconnect please
-    console.log('WS reset by peer');
+    logger.info('WS reset by peer');
     onCloseCb();
   };
 
@@ -116,7 +117,7 @@ function createConnection(onCloseCb: () => void) {
 /**
  * Init websocket connection
  */
-export function init() {
+export function init(): void {
   // re-init connection to server if the current connection closed
   // it occurs when server is restarting
   const reinit = () => {

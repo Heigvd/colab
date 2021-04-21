@@ -12,7 +12,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export default ({ children }: Props) => {
+export default ({ children }: Props): JSX.Element => {
   return (
     <div className={fullPageOverlayStyle}>
       <div

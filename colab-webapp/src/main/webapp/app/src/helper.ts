@@ -7,7 +7,7 @@ import { User, WithId } from 'colab-rest-client';
  * Licensed under the MIT License
  */
 
-export const getDisplayName = (user: User) => {
+export const getDisplayName = (user: User): string => {
   return (
     user.commonname || `${user.firstname || ''} ${user.lastname || ''}`.trim() || user.username
   );
@@ -23,7 +23,7 @@ export const mapById = <T extends WithId>(entities: T[]): { [id: number]: T } =>
   return map;
 };
 
-export const updateById = <T extends WithId>(entities: T[], entity: T) => {
+export const updateById = <T extends WithId>(entities: T[], entity: T): void => {
   const index = entities.findIndex(item => entity.id === item.id);
   if (index >= 0) {
     // entity exists in array:replace it

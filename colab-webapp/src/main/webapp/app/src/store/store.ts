@@ -32,7 +32,7 @@ const store = configureStore({
   middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(thunk),
 });
 
-export const getStore = () => store;
+export const getStore = (): typeof store => store;
 
 export const dispatch = store.dispatch;
 

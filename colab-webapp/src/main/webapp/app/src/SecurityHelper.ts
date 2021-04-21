@@ -30,7 +30,7 @@ export async function hashPBKDF2(
   hash: AlgorithmIdentifier,
   iterations: number,
   length: number,
-) {
+): Promise<string> {
   const pwKey = await crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(password),
@@ -57,7 +57,7 @@ export async function hashPassword(
   method: API.AuthMethod['mandatoryMethod'],
   salt: string,
   password: string,
-) {
+): Promise<string> {
   switch (method) {
     case 'PBKDF2WithHmacSHA512_65536_64':
       return hashPBKDF2(salt, password, 'SHA-512', 65536, 64 * 8);

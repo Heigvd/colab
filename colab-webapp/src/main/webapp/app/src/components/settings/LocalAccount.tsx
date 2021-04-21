@@ -17,7 +17,7 @@ export interface Props {
   accountId: number;
 }
 
-export default (props: Props) => {
+export default (props: Props): JSX.Element => {
   const dispatch = useAppDispatch();
   const [pwState, setPwState] = React.useState<'SET' | 'CHANGE_PASSWORD'>('SET');
   const [newPassword, setNewPassword] = React.useState('');

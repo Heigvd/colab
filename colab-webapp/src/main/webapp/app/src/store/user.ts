@@ -83,7 +83,7 @@ const userSlice = createSlice({
       })
       .addCase(API.signOut.fulfilled, () => {
         return initialState;
-      })
+      }),
 });
 
 export const { updateUser, removeUser } = userSlice.actions;

@@ -16,20 +16,30 @@ type State = {
   currentValue: string;
 };
 
-export default ({ value, onChange }: { value: string; onChange: (newValue: string) => void }) => {
+export default ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (newValue: string) => void;
+}): JSX.Element => {
   const [state, setState] = React.useState<State>({
     status: 'DISPLAY',
     currentValue: value || '',
   });
 
   React.useEffect(() => {
-    setState({ ...state, currentValue: value });
+    setState(s => ({ ...s, currentValue: value }));
   }, [value]);
 
-  const debouncedOnChange = React.useCallback(
-    debounce((value: string) => {
-      onChange(value);
-    }, 1000),
+  const onChangeRef = React.useRef(onChange);
+  onChangeRef.current = onChange;
+
+  const debouncedOnChange = React.useMemo(
+    () =>
+      debounce((value: string) => {
+        onChangeRef.current(value);
+      }, 1000),
     [],
   );
 

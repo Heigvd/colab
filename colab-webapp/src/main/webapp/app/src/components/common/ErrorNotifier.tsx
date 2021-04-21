@@ -41,7 +41,7 @@ function translateErrorCode(code: HttpErrorMessage['messageCode']): string {
   }
 }
 
-export default function ErrorNotifier() {
+export default function ErrorNotifier(): JSX.Element {
   const dispatch = useAppDispatch();
 
   const closeErrorCb = (index: number) => {

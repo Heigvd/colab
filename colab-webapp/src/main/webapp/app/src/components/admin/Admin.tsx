@@ -13,7 +13,7 @@ import { AllProjects } from '../projects/ProjectList';
 import Who from './Who';
 import AllUsers from './AllUsers';
 
-export default () => {
+export default (): JSX.Element => {
   return (
     <div>
       <h2>Admin Page</h2>

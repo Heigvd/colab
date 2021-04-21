@@ -16,7 +16,7 @@ interface UserProfileProps {
   user: User;
 }
 
-export default ({ user }: UserProfileProps) => {
+export default ({ user }: UserProfileProps): JSX.Element => {
   const dispatch = useAppDispatch();
 
   if (user) {

@@ -23,7 +23,7 @@ interface Props {
 }
 
 // Display one card and allow to edit its color
-const CardDisplay = ({ card }: Props) => {
+const CardDisplay = ({ card }: Props): JSX.Element => {
   const dispatch = useAppDispatch();
   return (
     <div
@@ -64,7 +64,7 @@ const CardDisplay = ({ card }: Props) => {
   );
 };
 
-export function CardList() {
+export function CardList(): JSX.Element {
   const status = useAppSelector(state => state.cards.status);
   const cards = useAppSelector(state => Object.values(state.cards.cards));
   const dispatch = useAppDispatch();

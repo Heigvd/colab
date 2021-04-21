@@ -34,7 +34,7 @@ function WrapLocalAccountEditor() {
   }
 }
 
-export default () => {
+export default (): JSX.Element => {
   const accounts = useAppSelector(state =>
     Object.values(state.users.accounts).filter(a => a.userId == state.auth.currentUserId),
   );

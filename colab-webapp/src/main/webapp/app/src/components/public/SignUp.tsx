@@ -22,7 +22,7 @@ interface Props {
 
 const PasswordStrengthBar = React.lazy(() => import('react-password-strength-bar'));
 
-export default (_props: Props) => {
+export default (_props: Props): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const [credentials, setCredentials] = React.useState({

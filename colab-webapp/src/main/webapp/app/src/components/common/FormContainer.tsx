@@ -16,7 +16,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export default function({ children }: Props) {
+export default function({ children }: Props): JSX.Element {
   return (
     <div className={fullPageStyle}>
       <div

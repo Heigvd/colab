@@ -18,7 +18,7 @@ interface TokenProps {
 
 type STATE_TYPE = 'LOADING' | 'AUTH_REQUIRED' | 'NO_TOKEN' | 'ERROR' | 'DONE';
 
-export default (props: TokenProps) => {
+export default (props: TokenProps): JSX.Element => {
   const user = useCurrentUser();
   const dispatch = useAppDispatch();
 
@@ -60,7 +60,7 @@ export default (props: TokenProps) => {
     return () => {
       //clean}
     };
-  }, [user]);
+  }, [dispatch, user, props.tokenId, props.token]);
 
   if (state == 'LOADING') {
     return <Loading />;

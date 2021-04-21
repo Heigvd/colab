@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faCheck, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { iconButton } from '../styling/style';
 
-export function Destroyer({ onDelete }: { onDelete: () => void }) {
+export function Destroyer({ onDelete }: { onDelete: () => void }): JSX.Element {
   const [waitDeleteConfirm, setConfirm] = React.useState(false);
 
   return (

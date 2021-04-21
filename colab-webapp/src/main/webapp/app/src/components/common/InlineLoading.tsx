@@ -22,7 +22,7 @@ export default function InlineLoading({
   maxWidth = '',
   margin = '',
   colour = false,
-}: Props) {
+}: Props): JSX.Element {
   const EffectivePicto = colour ? Picto : PictoBw;
   return (
     <div

@@ -26,7 +26,7 @@ interface Props {
   project: Project;
 }
 
-// Display one project and allow to edit its name
+// Display one project and allow to edit it
 const ProjectDisplay = ({ project }: Props) => {
   const dispatch = useAppDispatch();
   return (
@@ -78,6 +78,7 @@ const ProjectDisplay = ({ project }: Props) => {
 interface ProjectListProps {
   projects: Project[];
   status: StateStatus;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   reload: AsyncThunk<Project[], void, {}>;
 }
 
@@ -120,7 +121,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
   }
 }
 
-export const UserProjects = () => {
+export const UserProjects = (): JSX.Element => {
   const projects = useAppSelector(state =>
     state.projects.mine.map(projectId => state.projects.projects[projectId]),
   );
@@ -130,7 +131,7 @@ export const UserProjects = () => {
   return <ProjectList projects={projects} status={status} reload={API.getUserProjects} />;
 };
 
-export const AllProjects = () => {
+export const AllProjects = (): JSX.Element => {
   const projects = useAppSelector(state => Object.values(state.projects.projects));
   const status = useAppSelector(state => state.projects.allStatus);
 

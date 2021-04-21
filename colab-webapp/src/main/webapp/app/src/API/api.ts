@@ -46,7 +46,7 @@ const restClient = ColabClient('', error => {
  * to do such calls but may be usefull in some edge-cades whene using the redux state is useless.
  * EG. token processing
  */
-export const getRestClient = () => restClient;
+export const getRestClient = (): typeof restClient => restClient;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Websocket Management

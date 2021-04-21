@@ -11,7 +11,7 @@ import { getAllUsers } from '../../API/api';
 import InlineLoading from '../common/InlineLoading';
 import UserList from './UserList';
 
-export default () => {
+export default (): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const status = useAppSelector(state => state.admin.userStatus);

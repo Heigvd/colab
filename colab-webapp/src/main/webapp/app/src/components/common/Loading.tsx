@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import { fullPageStyle } from '../styling/style';
 import InlineLoading from './InlineLoading';
 
-export default function Loading() {
+export default function Loading(): JSX.Element {
   return (
     <div className={fullPageStyle}>
       <div

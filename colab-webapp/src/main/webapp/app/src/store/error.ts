@@ -26,11 +26,11 @@ const errorsSlice = createSlice({
       state[action.payload].status = 'CLOSED';
     },
   },
-//  extraReducers: builder =>
-//    builder
-//      .addCase(API.signOut.fulfilled, () => {
-//        return initialState;
-//      })
+  //  extraReducers: builder =>
+  //    builder
+  //      .addCase(API.signOut.fulfilled, () => {
+  //        return initialState;
+  //      })
 });
 
 export const { addError, closeError } = errorsSlice.actions;

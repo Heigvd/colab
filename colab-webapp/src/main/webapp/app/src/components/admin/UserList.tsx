@@ -52,7 +52,7 @@ interface UserListProps {
   users: User[];
 }
 
-export default ({ users }: UserListProps) => {
+export default ({ users }: UserListProps): JSX.Element => {
   const [search, setSearch] = React.useState('');
 
   const [sortBy, setSortBy] = React.useState<{ key: keyof User; direction: 1 | -1 }>({

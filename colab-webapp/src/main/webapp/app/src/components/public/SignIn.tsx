@@ -19,7 +19,7 @@ interface Props {
   redirectTo?: string;
 }
 
-export default function SignInForm(_props: Props) {
+export default function SignInForm(_props: Props): JSX.Element {
   const dispatch = useAppDispatch();
 
   const [credentials, setCredentials] = React.useState({

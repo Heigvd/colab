@@ -18,6 +18,7 @@ import { mapById } from '../helper';
 export type StateStatus = 'NOT_SET' | 'LOADING' | 'SET';
 
 export interface ProjectState {
+  currentUserId: number | undefined;
   status: StateStatus;
   allStatus: StateStatus;
   mine: number[];
@@ -34,6 +35,7 @@ export interface ProjectState {
   };
 }
 const initialState: ProjectState = {
+  currentUserId: undefined,
   status: 'NOT_SET',
   allStatus: 'NOT_SET',
   mine: [],
@@ -59,10 +61,18 @@ const projectsSlice = createSlice({
       delete state.projects[action.payload];
     },
     updateTeamMember: (state, action: PayloadAction<TeamMember>) => {
-      const pId = action.payload.projectId;
+      const projectId = action.payload.projectId;
       const mId = action.payload.id;
-      if (pId != null && mId != null) {
-        const team = state.teams[pId];
+
+      const userId = action.payload.userId;
+      if (projectId != null && userId != null && userId === state.currentUserId) {
+        if (state.mine.indexOf(projectId) == -1) {
+          state.mine.push(projectId);
+        }
+      }
+
+      if (projectId != null && mId != null) {
+        const team = state.teams[projectId];
         if (team != null && team.status === 'SET') {
           team.members[mId] = action.payload;
         }
@@ -78,6 +88,12 @@ const projectsSlice = createSlice({
   },
   extraReducers: builder =>
     builder
+      .addCase(API.reloadCurrentUser.fulfilled, (state, action) => {
+        // hack: to build state.mine projects, currentUserId must be known
+        state.currentUserId = action.payload.currentUser
+          ? action.payload.currentUser.id || undefined
+          : undefined;
+      })
       .addCase(API.getUserProjects.pending, state => {
         state.status = 'LOADING';
       })
@@ -109,12 +125,12 @@ const projectsSlice = createSlice({
           }
         }
       })
-      .addCase(API.createProject.fulfilled, (state, action) => {
-        state.mine.push(action.payload);
-      })
+      //      .addCase(API.createProject.fulfilled, (state, action) => {
+      //        state.mine.push(action.payload);
+      //      })
       .addCase(API.signOut.fulfilled, () => {
         return initialState;
-      })
+      }),
 });
 
 export const {

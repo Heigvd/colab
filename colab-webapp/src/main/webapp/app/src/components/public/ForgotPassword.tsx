@@ -17,7 +17,7 @@ interface Props {
   redirectTo?: string;
 }
 
-export default (_props: Props) => {
+export default (_props: Props): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const [credentials, setCredentials] = React.useState({

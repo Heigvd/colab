@@ -15,7 +15,7 @@ import { faSync } from '@fortawesome/free-solid-svg-icons';
 import { buttonStyle } from '../styling/style';
 import UserList from './UserList';
 
-export default () => {
+export default (): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const channels = useAppSelector(state => state.admin.occupiedChannels);

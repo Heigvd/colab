@@ -33,7 +33,7 @@ import Overlay from './common/Overlay';
 /**
  * To read parameters from hash
  */
-function TeamWrapper() {
+const TeamWrapper = () => {
   const { id } = useParams<{ id: string }>();
 
   const dispatch = useAppDispatch();
@@ -49,9 +49,9 @@ function TeamWrapper() {
   } else {
     return <Team project={project} />;
   }
-}
+};
 
-export default () => {
+export default (): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const user = useCurrentUser();
@@ -168,7 +168,7 @@ export default () => {
                 <TeamWrapper />
               </Route>
               <Route>
-                // no matching route, redirect to projects
+                {/* no matching route, redirect to projects */}
                 <Redirect to="/" />
               </Route>
             </Switch>

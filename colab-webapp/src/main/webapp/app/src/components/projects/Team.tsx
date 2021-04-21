@@ -51,7 +51,7 @@ export interface Props {
   project: Project;
 }
 
-export default (props: Props) => {
+export default (props: Props): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const { members, status } = useAppSelector(state => {

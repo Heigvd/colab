@@ -12,7 +12,7 @@ import InlineLoading from '../common/InlineLoading';
 import { css, cx } from '@emotion/css';
 import { buttonStyle } from '../styling/style';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSync } from '@fortawesome/free-solid-svg-icons';
+import { faSync, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const LEVELS = ['OFF', 'ERROR', 'WARN', 'INFO', 'DEBUG', 'TRACE'];
 
@@ -32,9 +32,11 @@ const selectedStyle = cx(
   }),
 );
 
-export default () => {
+export default (): JSX.Element => {
   const levels = useAppSelector(state => state.admin.loggers);
   const dispatch = useAppDispatch();
+
+  const [search, setSearch] = React.useState('');
 
   const title = <h3>Loggers</h3>;
 
@@ -53,7 +55,9 @@ export default () => {
       </div>
     );
   } else {
-    const keys = Object.keys(levels).sort();
+    const keys = Object.keys(levels)
+      .filter(logger => !search || logger.includes(search))
+      .sort();
     return (
       <div>
         {title}
@@ -65,6 +69,12 @@ export default () => {
         >
           <FontAwesomeIcon icon={faSync} />
         </span>
+        <div>
+          <label>
+            <FontAwesomeIcon icon={faSearch} />
+            <input type="text" onChange={e => setSearch(e.target.value)} />
+          </label>
+        </div>
         <div
           className={css({
             display: 'grid',
