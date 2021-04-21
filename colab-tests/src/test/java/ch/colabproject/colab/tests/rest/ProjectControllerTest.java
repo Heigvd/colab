@@ -6,18 +6,25 @@
  */
 package ch.colabproject.colab.tests.rest;
 
+import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
+import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.tests.mailhog.model.Message;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.TestHelper;
 import ch.colabproject.colab.tests.tests.TestUser;
+import ch.colabproject.colab.tests.ws.WebsocketClient;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.regex.Matcher;
+import javax.websocket.DeploymentException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -100,25 +107,63 @@ public class ProjectControllerTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testInvite() {
+    public void testInvite() throws URISyntaxException, DeploymentException, IOException, InterruptedException {
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketHelper.class), Level.TRACE);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketClient.class), Level.TRACE);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketFacade.class), Level.TRACE);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(TransactionManager.class), Level.TRACE);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // this.client sign up as GoulashSensei and subscribes to its channel with wsGoulashClient
+        ////////////////////////////////////////////////////////////////////////////////////////////
         TestUser user = this.signup("goulashsensei", "goulash@test.local", "SoSecure");
         String mateAddress = "georges@valgeorges.local";
-
         this.signIn(user);
 
+        WebsocketClient wsGoulashClient = this.createWsClient();
+        client.websocketController.subscribeToUserChannel(wsGoulashClient.getSessionId());
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Goulash creates a projects
+        ////////////////////////////////////////////////////////////////////////////////////////////
         Project p = new Project();
         p.setName("The Hitchhiker's Guide to the Serious-Game");
 
         Long projectId = client.projectController.createProject(p);
-        Project project = client.projectController.getProject(projectId);
+
+        // Goulash receives the project, the user (ie himself) and the teamMmeber linking the project to the user
+        WsUpdateMessage wsProjectUpdate = TestHelper.waitForMessagesAndAssert(wsGoulashClient, 1, 5, WsUpdateMessage.class).get(0);
+        Assertions.assertEquals(3, wsProjectUpdate.getUpdated().size());
+
+        Project project = TestHelper.findFirst(wsProjectUpdate.getUpdated(), Project.class);
+        TeamMember member = TestHelper.findFirst(wsProjectUpdate.getUpdated(), TeamMember.class);
+        User wsUpdatedUser = TestHelper.findFirst(wsProjectUpdate.getUpdated(), User.class);
+
+        Assertions.assertEquals(projectId, project.getId());
+        Assertions.assertEquals(projectId, member.getProjectId());
+        Assertions.assertEquals(member.getUserId(), wsUpdatedUser.getId());
 
         // user is a lonely team member
         List<TeamMember> members = client.projectController.getMembers(project.getId());
         Assertions.assertEquals(1, members.size());
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Goulash invites Georges
+        ////////////////////////////////////////////////////////////////////////////////////////////
         mailClient.deleteAllMessages();
         client.projectController.inviteSomeone(projectId, mateAddress);
 
+        // Invitation creates a TeamMember and touch the project;
+        // The two objects are propagated to goulashsensei
+        WsUpdateMessage wsInvitationUpdate = TestHelper.waitForMessagesAndAssert(
+            wsGoulashClient, 1, 5, WsUpdateMessage.class).get(0);
+        Assertions.assertEquals(2, wsInvitationUpdate.getUpdated().size());
+        TestHelper.findFirst(wsInvitationUpdate.getUpdated(), Project.class);
+        TestHelper.findFirst(wsInvitationUpdate.getUpdated(), TeamMember.class);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Fetch e-maild and extract the token
+        ////////////////////////////////////////////////////////////////////////////////////////////
         List<Message> messages = getMessageByRecipient(mateAddress);
         Assertions.assertEquals(1, messages.size());
         Message invitation = messages.get(0);
@@ -128,30 +173,60 @@ public class ProjectControllerTest extends AbstractArquillianTest {
 
         Long tokenId = Long.parseLong(matcher.group(1));
         String plainToken = matcher.group(2);
+        this.mailClient.deleteMessage(invitation.getId());
 
-        this.signOut();
-
-        Token token = client.tokenController.getToken(tokenId);
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // With is own http client 'borschClient', Georges fetch the token
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        ColabClient borschClient = this.createRestClient();
+        Token token = borschClient.tokenController.getToken(tokenId);
 
         Assertions.assertTrue(token instanceof InvitationToken);
 
         Assertions.assertTrue(token.isAuthenticationRequired());
 
+        // an try to consume the token being unauthenticated
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -> {
             // consuming the token without being authenticated is not possible
-            client.tokenController.consumeToken(tokenId, plainToken);
+            borschClient.tokenController.consumeToken(tokenId, plainToken);
         });
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Georges sign up as borschsensei and subscribes to its channel with wsBorschClient
+        ////////////////////////////////////////////////////////////////////////////////////////////
         TestUser mateUser = this.signup("borschsensei", mateAddress, "SoSoSoSecure");
-        this.signIn(mateUser);
-        client.tokenController.consumeToken(tokenId, plainToken);
-        this.mailClient.deleteMessage(invitation.getId());
+        signIn(borschClient, mateUser);
+        WebsocketClient wsBorschClient = this.createWsClient();
+        borschClient.websocketController.subscribeToUserChannel(wsBorschClient.getSessionId());
 
-        // not lonely anylonger
-        members = client.projectController.getMembers(project.getId());
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Borsch consumes the tokens amd, thus, join the team.
+        // Borsch and Goulash both receive the temmMember and borsch's user update.
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        borschClient.tokenController.consumeToken(tokenId, plainToken);
+
+        WsUpdateMessage goulashTeamUpdate = TestHelper.waitForMessagesAndAssert(
+            wsGoulashClient, 1, 5, WsUpdateMessage.class).get(0);
+        WsUpdateMessage borschTeamUpdate = TestHelper.waitForMessagesAndAssert(wsBorschClient, 1, 5, WsUpdateMessage.class).get(0);
+
+        Assertions.assertEquals(2, goulashTeamUpdate.getUpdated().size());
+        Assertions.assertEquals(2, borschTeamUpdate.getUpdated().size());
+
+        TeamMember gTeamMemeber = TestHelper.findFirst(goulashTeamUpdate.getUpdated(), TeamMember.class);
+        TeamMember bTeamMember = TestHelper.findFirst(borschTeamUpdate.getUpdated(), TeamMember.class);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // They both reload the team from REST method
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        reloadTwoMembersTeam(client, projectId);
+        reloadTwoMembersTeam(borschClient, projectId);
+    }
+
+    private void reloadTwoMembersTeam(ColabClient client, Long projectId) {
+        List<TeamMember> members = client.projectController.getMembers(projectId);
         Assertions.assertEquals(2, members.size());
 
-        //assert currentUser can user of teammate
+        //assert currentUser can read user of teammate
         members.forEach((TeamMember member) -> {
             User u = client.userController.getUserById(member.getUserId());
             Assertions.assertNotNull(u);

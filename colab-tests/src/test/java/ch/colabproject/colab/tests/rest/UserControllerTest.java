@@ -400,18 +400,14 @@ public class UserControllerTest extends AbstractArquillianTest {
         TestHelper.setLoggerLevel(LoggerFactory.getLogger(TransactionManager.class), Level.DEBUG);
 
         WebsocketClient wsClient = this.createWsClient();
-        // subscript to currentUser channel
+        // subscribe to currentUser channel
         client.websocketController.subscribeToUserChannel(wsClient.getSessionId());
 
-        List<WsMessage> messages = wsClient.getMessages(1, 10);
-        Assertions.assertEquals(1, messages.size());
-        Assertions.assertTrue(messages.get(0) instanceof WsChannelUpdate);
-        WsChannelUpdate channelUpdate = (WsChannelUpdate) messages.get(0);
+        WsChannelUpdate channelUpdate = TestHelper.waitForMessagesAndAssert(wsClient, 1, 10, WsChannelUpdate.class).get(0);
         Assertions.assertTrue(channelUpdate.getChannel() instanceof UserChannel);
         UserChannel userChannel = (UserChannel) channelUpdate.getChannel();
         Assertions.assertEquals(this.adminUserId, userChannel.getUserId());
         Assertions.assertEquals(1, channelUpdate.getDiff());
-
 
         User me = client.userController.getCurrentUser();
 
@@ -421,12 +417,7 @@ public class UserControllerTest extends AbstractArquillianTest {
         wsClient.clearMessages();
         client.userController.updateUser(me);
 
-        messages = wsClient.getMessages(1, 10);
-        Assertions.assertEquals(1, messages.size());
-        WsMessage wsMessage = messages.get(0);
-        Assertions.assertTrue(wsMessage instanceof WsUpdateMessage);
-
-        WsUpdateMessage updateMessage = (WsUpdateMessage) wsMessage;
+        WsUpdateMessage updateMessage = TestHelper.waitForMessagesAndAssert(wsClient, 1, 10, WsUpdateMessage.class).get(0);
         // nothing has been deleted
         Assertions.assertEquals(0, updateMessage.getDeleted().size());
         // one entity has been updated
@@ -436,7 +427,5 @@ public class UserControllerTest extends AbstractArquillianTest {
 
         Assertions.assertTrue(entity instanceof User);
         Assertions.assertEquals(NEW_NAME, ((User) entity).getCommonname());
-
-        wsClient.close();
     }
 }

@@ -105,13 +105,21 @@ public class WebsocketClient {
      *
      * @param message the message to send
      *
-     * @throws java.io.IOException failed to send the message
+     * @throws java.io.IOException             failed to send the message
      * @throws javax.websocket.EncodeException websocket error
      */
     public void sendMessage(WsMessage message) throws IOException, EncodeException {
         this.session.getBasicRemote().sendObject(message);
     }
 
+    /**
+     * wait until client received {@code numberOfExpectedMessages} messages.
+     *
+     * @param numberOfExpectedMessages number of expected messages
+     * @param timeout                  stop waiting after this amount of second
+     *
+     * @return list of messages
+     */
     public List<WsMessage> getMessages(int numberOfExpectedMessages, int timeout) {
         logger.debug("Wait for {} mesages", numberOfExpectedMessages);
         if (latch == null) {

@@ -29,6 +29,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -123,6 +124,12 @@ public abstract class AbstractArquillianTest {
      * REST client to use to call co.LAB REST methods
      */
     protected ColabClient client;
+
+    /**
+     * List of created clients. This list is populated by {@link #createWsClient() } and cleared by
+     * {@link #clean(org.junit.jupiter.api.TestInfo) @AfterEach} callback
+     */
+    private final List<WebsocketClient> wsClients = new ArrayList<>();
 
     /**
      * REST client to use to call REST methods
@@ -259,6 +266,10 @@ public abstract class AbstractArquillianTest {
      * @throws ClientErrorException if authentication fails
      */
     protected void signIn(TestUser user) throws ClientErrorException {
+        this.signIn(this.client, user);
+    }
+
+    protected void signIn(ColabClient client, TestUser user) {
         AuthInfo authInfo = getAuthInfo(user.getEmail(), user.getPassword());
         client.userController.signIn(authInfo);
     }
@@ -385,7 +396,9 @@ public abstract class AbstractArquillianTest {
         String endpoint = (httpProtocol.equals("http") ? "ws" : "wss")
             + "://" + host + ":" + port + path + "ws";
 
-        return WebsocketClient.build(endpoint);
+        WebsocketClient wsClient = WebsocketClient.build(endpoint);
+        this.wsClients.add(wsClient);
+        return wsClient;
     }
 
     /**
@@ -436,6 +449,17 @@ public abstract class AbstractArquillianTest {
     @AfterEach
     public void clean(TestInfo info) {
         if (userManagement != null) {
+            if (wsClients != null) {
+                wsClients.forEach(wsClient -> {
+                    try {
+                        logger.info("Close websocket client {}", wsClient);
+                        wsClient.close();
+                    } catch (IOException ex) {
+                        logger.warn("Failed to close websocket client");
+                    }
+                });
+                wsClients.clear();
+            }
             long now = System.currentTimeMillis();
             logger.info("TEST {} DURATION: total: {} ms; init: {} ms; test: {} ms",
                 info.getDisplayName(),
