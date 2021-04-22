@@ -48,14 +48,28 @@ import org.slf4j.LoggerFactory;
     }
 
     /**
+     * Get all cards children
+     *
+     * @param parentId parent ID
+     * @return list of cards
+     */
+    public List&lt;Card&gt; getSubCards(Long parentId) {
+<span class="nc" id="L57">        logger.debug(&quot;get all cards children of card content #{}&quot;, parentId);</span>
+<span class="nc" id="L58">        TypedQuery&lt;Card&gt; query = em.createNamedQuery(&quot;Card.findCardByParent&quot;, Card.class);</span>
+<span class="nc" id="L59">        query.setParameter(&quot;parentId&quot;, parentId);</span>
+
+<span class="nc" id="L61">        return query.getResultList();</span>
+    }
+
+    /**
      *
      * @param id id of the card to fetch
      *
      * @return the card with the given id or null if such a card does not exists
      */
     public Card getCard(Long id) {
-<span class="fc" id="L57">        logger.debug(&quot;get card #&quot; + id);</span>
-<span class="fc" id="L58">        return em.find(Card.class, id);</span>
+<span class="fc" id="L71">        logger.debug(&quot;get card #{}&quot;, id);</span>
+<span class="fc" id="L72">        return em.find(Card.class, id);</span>
     }
 
     /**
@@ -66,9 +80,9 @@ import org.slf4j.LoggerFactory;
      * @return the new persisted card
      */
     public Card createCard(Card card) {
-<span class="fc" id="L69">        logger.debug(&quot;create card&quot;);</span>
-<span class="fc" id="L70">        em.persist(card);</span>
-<span class="fc" id="L71">        return card;</span>
+<span class="fc" id="L83">        logger.debug(&quot;create card&quot;);</span>
+<span class="fc" id="L84">        em.persist(card);</span>
+<span class="fc" id="L85">        return card;</span>
     }
 
     /**
@@ -81,12 +95,12 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the card failed
      */
     public Card updateCard(Card card) throws ColabMergeException {
-<span class="fc" id="L84">        logger.debug(&quot;update card #&quot; + card.getId());</span>
-<span class="fc" id="L85">        Card mCard = this.getCard(card.getId());</span>
+<span class="fc" id="L98">        logger.debug(&quot;update card #{}&quot;, card.getId());</span>
+<span class="fc" id="L99">        Card mCard = this.getCard(card.getId());</span>
 
-<span class="fc" id="L87">        mCard.merge(card);</span>
+<span class="fc" id="L101">        mCard.merge(card);</span>
 
-<span class="fc" id="L89">        return mCard;</span>
+<span class="fc" id="L103">        return mCard;</span>
     }
 
     /**
@@ -97,11 +111,11 @@ import org.slf4j.LoggerFactory;
      * @return just deleted card
      */
     public Card deleteCard(Long id) {
-<span class="fc" id="L100">        logger.debug(&quot;delete card #&quot; + id);</span>
+<span class="fc" id="L114">        logger.debug(&quot;delete card #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="fc" id="L102">        Card card = this.getCard(id);</span>
-<span class="fc" id="L103">        em.remove(card);</span>
-<span class="fc" id="L104">        return card;</span>
+<span class="fc" id="L116">        Card card = this.getCard(id);</span>
+<span class="fc" id="L117">        em.remove(card);</span>
+<span class="fc" id="L118">        return card;</span>
     }
 
 }

@@ -137,10 +137,16 @@
 <a class="jxr_linenumber" name="L129" href="#L129">129</a> 
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>         CardDef persistedCardDef = client.cardDefController.getCardDef(cardDefId);
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         Assertions.assertNotNull(persistedCardDef);
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>         Assertions.assertNotNull(persistedCardDef.getProject());
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>         Assertions.assertEquals(projectName, persistedCardDef.getProject().getName());
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>     }
-<a class="jxr_linenumber" name="L135" href="#L135">135</a> }
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         Assertions.assertNotNull(persistedCardDef.getProjectId());
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>         Assertions.assertEquals(projectId, persistedCardDef.getProjectId());
+<a class="jxr_linenumber" name="L134" href="#L134">134</a> 
+<a class="jxr_linenumber" name="L135" href="#L135">135</a> <em class="jxr_comment">// TODO have the link between cardDef and project</em>
+<a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_comment">//        List&lt;CardDef&gt; cardDefsOfProject = client.projectController.getCardDefsOfProject(projectId);</em>
+<a class="jxr_linenumber" name="L137" href="#L137">137</a> <em class="jxr_comment">//        Assertions.assertNotNull(cardDefsOfProject);</em>
+<a class="jxr_linenumber" name="L138" href="#L138">138</a> <em class="jxr_comment">//        Assertions.assertEquals(1, cardDefsOfProject.size());</em>
+<a class="jxr_linenumber" name="L139" href="#L139">139</a> <em class="jxr_comment">//        Assertions.assertEquals(cardDefId, cardDefsOfProject.get(0));</em>
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>     }
+<a class="jxr_linenumber" name="L141" href="#L141">141</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

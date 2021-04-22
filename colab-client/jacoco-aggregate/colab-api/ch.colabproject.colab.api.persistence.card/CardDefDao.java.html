@@ -47,6 +47,21 @@ import org.slf4j.LoggerFactory;
     }
 
     /**
+     * Get all card definitions to be defined in a project
+     *
+     * @param projectId project ID
+     * @return list of card definitions
+     */
+    public List&lt;CardDef&gt; getProjectCardDefs(Long projectId) {
+<span class="nc" id="L56">        logger.debug(&quot;get all card defs of the project #{}&quot;, projectId);</span>
+<span class="nc" id="L57">        TypedQuery&lt;CardDef&gt; query = em.createNamedQuery(&quot;CardDef.findCardDefByProject&quot;,</span>
+                CardDef.class);
+<span class="nc" id="L59">        query.setParameter(&quot;projectId&quot;, projectId);</span>
+
+<span class="nc" id="L61">        return query.getResultList();</span>
+    }
+
+    /**
      *
      * @param id id of the card def to fetch
      *
@@ -54,8 +69,8 @@ import org.slf4j.LoggerFactory;
      *         exists
      */
     public CardDef getCardDef(Long id) {
-<span class="nc" id="L57">        logger.debug(&quot;get card def #&quot; + id);</span>
-<span class="nc" id="L58">        return em.find(CardDef.class, id);</span>
+<span class="nc" id="L72">        logger.debug(&quot;get card def #{}&quot;, id);</span>
+<span class="nc" id="L73">        return em.find(CardDef.class, id);</span>
     }
 
     /**
@@ -66,9 +81,9 @@ import org.slf4j.LoggerFactory;
      * @return the new persisted card def
      */
     public CardDef createCardDef(CardDef cardDef) {
-<span class="nc" id="L69">        logger.debug(&quot;create card def&quot;);</span>
-<span class="nc" id="L70">        em.persist(cardDef);</span>
-<span class="nc" id="L71">        return cardDef;</span>
+<span class="nc" id="L84">        logger.debug(&quot;create card def&quot;);</span>
+<span class="nc" id="L85">        em.persist(cardDef);</span>
+<span class="nc" id="L86">        return cardDef;</span>
     }
 
     /**
@@ -81,12 +96,12 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the card def failed
      */
     public CardDef updateCardDef(CardDef cardDef) throws ColabMergeException {
-<span class="nc" id="L84">        logger.debug(&quot;update card def #&quot; + cardDef.getId());</span>
-<span class="nc" id="L85">        CardDef mCardDef = this.getCardDef(cardDef.getId());</span>
+<span class="nc" id="L99">        logger.debug(&quot;update card def #{}&quot;, cardDef.getId());</span>
+<span class="nc" id="L100">        CardDef mCardDef = this.getCardDef(cardDef.getId());</span>
 
-<span class="nc" id="L87">        mCardDef.merge(cardDef);</span>
+<span class="nc" id="L102">        mCardDef.merge(cardDef);</span>
 
-<span class="nc" id="L89">        return mCardDef;</span>
+<span class="nc" id="L104">        return mCardDef;</span>
     }
 
     /**
@@ -97,11 +112,11 @@ import org.slf4j.LoggerFactory;
      * @return just deleted card def
      */
     public CardDef deleteCardDef(Long id) {
-<span class="nc" id="L100">        logger.debug(&quot;delete card def #&quot; + id);</span>
+<span class="nc" id="L115">        logger.debug(&quot;delete card def #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="nc" id="L102">        CardDef cardDef = this.getCardDef(id);</span>
-<span class="nc" id="L103">        em.remove(cardDef);</span>
-<span class="nc" id="L104">        return cardDef;</span>
+<span class="nc" id="L117">        CardDef cardDef = this.getCardDef(id);</span>
+<span class="nc" id="L118">        em.remove(cardDef);</span>
+<span class="nc" id="L119">        return cardDef;</span>
     }
 
 }

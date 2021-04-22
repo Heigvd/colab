@@ -28,18 +28,21 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
-@NamedQuery(
-    name = &quot;TeamMember.areUserTeammate&quot;,
-    // SELECT true FROM TeamMember a, TeamMember b WHERE ...
-    query = &quot;SELECT true FROM TeamMember a &quot;
-    + &quot;JOIN TeamMember b ON a.project.id = b.project.id &quot;
-    + &quot;WHERE a.user.id = :aUserId AND b.user.id = :bUserId&quot;)
-<span class="nc" id="L37">public class TeamMember implements ColabEntity {</span>
+@NamedQuery(name = &quot;TeamMember.areUserTeammate&quot;,
+        // SELECT true FROM TeamMember a, TeamMember b WHERE ...
+        query = &quot;SELECT true FROM TeamMember a &quot;
+                + &quot;JOIN TeamMember b ON a.project.id = b.project.id &quot;
+                + &quot;WHERE a.user.id = :aUserId AND b.user.id = :bUserId&quot;)
+<span class="nc" id="L36">public class TeamMember implements ColabEntity {</span>
 
     private static final long serialVersionUID = 1L;
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
-     * Member ID.
+     * Member ID
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +56,7 @@ import javax.persistence.Transient;
     private User user;
 
     /**
-     * serialization sugar
+     * The user ID (serialization sugar)
      */
     @Transient
     private Long userId;
@@ -66,45 +69,43 @@ import javax.persistence.Transient;
     private Project project;
 
     /**
-     * serialization sugar
+     * The project ID (serialization sugar)
      */
     @Transient
     private Long projectId;
 
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
     /**
-     * @return the ID
+     * @return the member ID
      */
     @Override
     public Long getId() {
-<span class="nc" id="L79">        return id;</span>
+<span class="nc" id="L86">        return id;</span>
     }
 
     /**
-     * Set id
-     *
-     * @param id id
+     * @param id the member ID
      */
     public void setId(Long id) {
-<span class="nc" id="L88">        this.id = id;</span>
-<span class="nc" id="L89">    }</span>
+<span class="nc" id="L93">        this.id = id;</span>
+<span class="nc" id="L94">    }</span>
 
     /**
-     * Get the user
-     *
      * @return the user
      */
     public User getUser() {
-<span class="nc" id="L97">        return user;</span>
+<span class="nc" id="L100">        return user;</span>
     }
 
     /**
-     * set the user
-     *
-     * @param user user
+     * @param user the user
      */
     public void setUser(User user) {
-<span class="nc" id="L106">        this.user = user;</span>
-<span class="nc" id="L107">    }</span>
+<span class="nc" id="L107">        this.user = user;</span>
+<span class="nc" id="L108">    }</span>
 
     /**
      * get the user id. To be sent to client
@@ -112,30 +113,35 @@ import javax.persistence.Transient;
      * @return id of the user or null
      */
     public Long getUserId() {
-<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (this.user != null) {</span>
-<span class="nc" id="L116">            return this.user.getId();</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (this.user != null) {</span>
+<span class="nc" id="L117">            return this.user.getId();</span>
         } else {
-<span class="nc" id="L118">            return userId;</span>
+<span class="nc" id="L119">            return userId;</span>
         }
     }
 
     /**
-     * For serialization only
+     * set the user id. For serialization only
      *
-     * @param id if of the user
+     * @param id the id of the user
      */
     public void setUserId(Long id) {
-<span class="nc" id="L128">        this.userId = id;</span>
-<span class="nc" id="L129">    }</span>
+<span class="nc" id="L129">        this.userId = id;</span>
+<span class="nc" id="L130">    }</span>
 
     /**
-     * get project
-     *
      * @return the project
      */
     public Project getProject() {
-<span class="nc" id="L137">        return project;</span>
+<span class="nc" id="L136">        return project;</span>
     }
+
+    /**
+     * @param project the project
+     */
+    public void setProject(Project project) {
+<span class="nc" id="L143">        this.project = project;</span>
+<span class="nc" id="L144">    }</span>
 
     /**
      * get the project id. To be sent to client
@@ -143,59 +149,55 @@ import javax.persistence.Transient;
      * @return id of the project or null
      */
     public Long getProjectId() {
-<span class="nc bnc" id="L146" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L147">            return this.project.getId();</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L153">            return this.project.getId();</span>
         } else {
-<span class="nc" id="L149">            return projectId;</span>
+<span class="nc" id="L155">            return projectId;</span>
         }
     }
 
     /**
-     * For serialization only
+     * set the project id. For serialization only
      *
-     * @param id if of the project
+     * @param id the id of the project
      */
     public void setProjectId(Long id) {
-<span class="nc" id="L159">        this.projectId = id;</span>
-<span class="nc" id="L160">    }</span>
+<span class="nc" id="L165">        this.projectId = id;</span>
+<span class="nc" id="L166">    }</span>
 
-    /**
-     * set project
-     *
-     * @param project the project
-     */
-    public void setProject(Project project) {
-<span class="nc" id="L168">        this.project = project;</span>
-<span class="nc" id="L169">    }</span>
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         /* no-op */
-<span class="nc" id="L174">    }</span>
+<span class="nc" id="L175">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L179">            return this.project.getChannels();</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L180">            return this.project.getChannels();</span>
         } else {
-<span class="nc" id="L181">            return Set.of();</span>
+<span class="nc" id="L182">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L187">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L188">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L193">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L194">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L198">        return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, user=&quot; + user + &quot;, project=&quot; + project + '}';</span>
+<span class="nc" id="L199">        return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + getUserId() + &quot;, projectId=&quot;</span>
+<span class="nc" id="L200">                + getProjectId() + &quot;}&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -8,8 +8,10 @@ package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.ProjectFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.persistence.card.CardDefDao;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -36,10 +38,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="fc" id="L39">public class ProjectController {</span>
+<span class="fc" id="L41">public class ProjectController {</span>
 
     /** logger */
-<span class="fc" id="L42">    private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);</span>
+<span class="fc" id="L44">    private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);</span>
 
     /**
      * The Project business logic
@@ -54,6 +56,12 @@ import org.slf4j.LoggerFactory;
     private ProjectDao projectDao;
 
     /**
+     * Card definition persistence
+     */
+    @Inject
+    private CardDefDao cardDefDao;
+
+    /**
      * Retrieve the list of all projects. This is available to admin only
      *
      * @return all known project
@@ -61,8 +69,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;Project&gt; getAllProjects() {
-<span class="fc" id="L64">        logger.debug(&quot;Get all projects&quot;);</span>
-<span class="fc" id="L65">        return projectDao.getAllProject();</span>
+<span class="fc" id="L72">        logger.debug(&quot;Get all projects&quot;);</span>
+<span class="fc" id="L73">        return projectDao.getAllProject();</span>
     }
 
     /**
@@ -73,8 +81,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;MyOwn&quot;)
     public List&lt;Project&gt; getUserProjects() {
-<span class="nc" id="L76">        logger.debug(&quot;Get user projects&quot;);</span>
-<span class="nc" id="L77">        return projectFacade.getCurrentUserProject();</span>
+<span class="nc" id="L84">        logger.debug(&quot;Get user projects&quot;);</span>
+<span class="nc" id="L85">        return projectFacade.getCurrentUserProject();</span>
     }
 
     /**
@@ -87,8 +95,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;/{id}&quot;)
     public Project getProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L90">        logger.debug(&quot;Get project #{}&quot;, id);</span>
-<span class="fc" id="L91">        return projectDao.getProject(id);</span>
+<span class="fc" id="L98">        logger.debug(&quot;Get project #{}&quot;, id);</span>
+<span class="fc" id="L99">        return projectDao.getProject(id);</span>
     }
 
     /**
@@ -100,8 +108,8 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createProject(Project project) {
-<span class="fc" id="L103">        logger.debug(&quot;Create project {}&quot;, project);</span>
-<span class="fc" id="L104">        return projectFacade.createNewProject(project).getId();</span>
+<span class="fc" id="L111">        logger.debug(&quot;Create project {}&quot;, project);</span>
+<span class="fc" id="L112">        return projectFacade.createNewProject(project).getId();</span>
     }
 
     /**
@@ -113,9 +121,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateProject(Project project) throws ColabMergeException {
-<span class="fc" id="L116">        logger.debug(&quot;Update project {}&quot;, project);</span>
-<span class="fc" id="L117">        projectDao.updateProject(project);</span>
-<span class="fc" id="L118">    }</span>
+<span class="fc" id="L124">        logger.debug(&quot;Update project {}&quot;, project);</span>
+<span class="fc" id="L125">        projectDao.updateProject(project);</span>
+<span class="fc" id="L126">    }</span>
 
     /**
      * Permanently delete a project.
@@ -125,9 +133,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;/{id}&quot;)
     public void deleteProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L128">        logger.debug(&quot;Delete project #{}&quot;, id);</span>
-<span class="fc" id="L129">        projectDao.deleteProject(id);</span>
-<span class="fc" id="L130">    }</span>
+<span class="fc" id="L136">        logger.debug(&quot;Delete project #{}&quot;, id);</span>
+<span class="fc" id="L137">        projectDao.deleteProject(id);</span>
+<span class="fc" id="L138">    }</span>
 
     /**
      * Get all members of the project teams.
@@ -139,22 +147,39 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/Members&quot;)
     public List&lt;TeamMember&gt; getMembers(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L142">        logger.debug(&quot;Get project #{} members&quot;, id);</span>
-<span class="fc" id="L143">        return projectFacade.getTeamMembers(id);</span>
+<span class="fc" id="L150">        logger.debug(&quot;Get project #{} members&quot;, id);</span>
+<span class="fc" id="L151">        return projectFacade.getTeamMembers(id);</span>
     }
 
     /**
      * Send invitation to someone.
      *
      * @param projectId id of the project
-     * @param email     recipient address
+     * @param email recipient address
      */
     @POST
     @Path(&quot;Invite/{projectId: [0-9]}/{email}&quot;)
     public void inviteSomeone(@PathParam(&quot;projectId&quot;) Long projectId,
             @PathParam(&quot;email&quot;) String email) {
-<span class="fc" id="L156">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
-<span class="fc" id="L157">        projectFacade.invite(projectId, email);</span>
-<span class="fc" id="L158">    }</span>
+<span class="fc" id="L164">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
+<span class="fc" id="L165">        projectFacade.invite(projectId, email);</span>
+<span class="fc" id="L166">    }</span>
+
+    /**
+     * Get all card definitions belonging to a project
+     *
+     * @param id ID of the project the card definitions belong to
+     *
+     * @return the card definitions linked to the project
+     */
+    @GET
+    @Path(&quot;{id}/CardDefs&quot;)
+    public List&lt;CardDef&gt; getCardDefsOfProject(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L178">        logger.debug(&quot;Get project #{} card definitions&quot;, id);</span>
+<span class="nc" id="L179">        return cardDefDao.getProjectCardDefs(id);</span>
+        // an alternative would be to define a method in the facade
+        // projectDao.getProject(id).getElementsToBeDefined()
+        // FIXME see what is the best
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

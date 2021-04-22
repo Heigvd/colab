@@ -6,9 +6,12 @@
  */
 package ch.colabproject.colab.api.rest.card;
 
+import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
+import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -34,16 +37,28 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L37">public class CardContentController {</span>
+<span class="nc" id="L40">public class CardContentController {</span>
 
     /** logger */
-<span class="nc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(CardContentController.class);</span>
+<span class="nc" id="L43">    private static final Logger logger = LoggerFactory.getLogger(CardContentController.class);</span>
 
     /**
-     * The CardContent business logic
+     * The card content persistence manager
      */
     @Inject
-    private CardContentDao dao;
+    private CardContentDao cardContentDao;
+
+    /**
+     * The card persistence manager
+     */
+    @Inject
+    private CardDao cardDao;
+
+    /**
+     * The card-related logic
+     */
+    @Inject
+    private CardFacade facade;
 
     /**
      * Retrieve the list of all card contents. This is available to admin only
@@ -56,8 +71,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;CardContent&gt; getAllCardContents() {
-<span class="nc" id="L59">        logger.debug(&quot;get all card contents&quot;);</span>
-<span class="nc" id="L60">        return dao.getAllCardContent();</span>
+<span class="nc" id="L74">        logger.debug(&quot;Get all card contents&quot;);</span>
+<span class="nc" id="L75">        return cardContentDao.getAllCardContent();</span>
     }
 
     /**
@@ -70,8 +85,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;/{id}&quot;)
     public CardContent getCardContent(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L73">        logger.debug(&quot;get card #&quot; + id);</span>
-<span class="nc" id="L74">        return dao.getCardContent(id);</span>
+<span class="nc" id="L88">        logger.debug(&quot;Get card #{}&quot;, id);</span>
+<span class="nc" id="L89">        return cardContentDao.getCardContent(id);</span>
     }
 
     /**
@@ -83,8 +98,20 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createCardContent(CardContent cardContent) {
-<span class="nc" id="L86">        logger.debug(&quot;create card content&quot;);</span>
-<span class="nc" id="L87">        return dao.createCardContent(cardContent).getId();</span>
+<span class="nc" id="L101">        logger.debug(&quot;Create card content&quot;);</span>
+<span class="nc" id="L102">        return cardContentDao.createCardContent(cardContent).getId();</span>
+    }
+
+    /**
+     * Create and persist a new card
+     *
+     * @param card the new card's parent
+     * @return the persisted new card
+     */
+    // TODO
+    public CardContent createNewCard(final Card card) {
+<span class="nc" id="L113">        logger.debug(&quot;create a new card content for the card {}&quot;, card);</span>
+<span class="nc" id="L114">        return facade.createNewCardContent(card);</span>
     }
 
     /**
@@ -96,9 +123,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCardContent(CardContent cardContent) throws ColabMergeException {
-<span class="nc" id="L99">        logger.debug(&quot;update card content #&quot; + cardContent.getId());</span>
-<span class="nc" id="L100">        dao.updateCardContent(cardContent);</span>
-<span class="nc" id="L101">    }</span>
+<span class="nc" id="L126">        logger.debug(&quot;Update card content #{}&quot;, cardContent.getId());</span>
+<span class="nc" id="L127">        cardContentDao.updateCardContent(cardContent);</span>
+<span class="nc" id="L128">    }</span>
 
     /**
      * Permanently delete a card content
@@ -108,8 +135,26 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;/{id}&quot;)
     public void deleteCardContent(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L111">        logger.debug(&quot;delete card #&quot; + id);</span>
-<span class="nc" id="L112">        dao.deleteCardContent(id);</span>
-<span class="nc" id="L113">    }</span>
+<span class="nc" id="L138">        logger.debug(&quot;Delete card #{}&quot;, id);</span>
+<span class="nc" id="L139">        cardContentDao.deleteCardContent(id);</span>
+<span class="nc" id="L140">    }</span>
+
+    /**
+     * Get all sub cards
+     *
+     * @param parentId parent of the searched cards
+     *
+     * @return list of cards
+     */
+    @GET
+    @Path(&quot;/{id}/Subcards&quot;)
+    public List&lt;Card&gt; getSubCards(@PathParam(&quot;id&quot;) Long parentId) {
+<span class="nc" id="L152">        logger.debug(&quot;Get parent #{} sub cards&quot;, parentId);</span>
+<span class="nc" id="L153">        return cardDao.getSubCards(parentId);</span>
+
+        // an alternative would be to define a method in the facade
+        // cardContentDao.getCardContent(id).getSubCards()
+        // FIXME see what is the best
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

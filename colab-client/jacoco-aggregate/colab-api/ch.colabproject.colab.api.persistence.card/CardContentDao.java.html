@@ -49,6 +49,21 @@ import org.slf4j.LoggerFactory;
     }
 
     /**
+     * Get all card content variants of a card
+     *
+     * @param cardId card ID
+     * @return list of card contents
+     */
+    public List&lt;CardContent&gt; getContentVariantsOfCard(Long cardId) {
+<span class="nc" id="L58">        logger.debug(&quot;get all card content variants of card #{}&quot;, cardId);</span>
+<span class="nc" id="L59">        TypedQuery&lt;CardContent&gt; query = em.createNamedQuery(&quot;CardContent.findCardContentByCard&quot;,</span>
+                CardContent.class);
+<span class="nc" id="L61">        query.setParameter(&quot;cardId&quot;, cardId);</span>
+
+<span class="nc" id="L63">        return query.getResultList();</span>
+    }
+
+    /**
      *
      * @param id id of the card content to fetch
      *
@@ -56,8 +71,8 @@ import org.slf4j.LoggerFactory;
      *         does not exists
      */
     public CardContent getCardContent(Long id) {
-<span class="nc" id="L59">        logger.debug(&quot;get card content #&quot; + id);</span>
-<span class="nc" id="L60">        return em.find(CardContent.class, id);</span>
+<span class="nc" id="L74">        logger.debug(&quot;get card content #{}&quot;, id);</span>
+<span class="nc" id="L75">        return em.find(CardContent.class, id);</span>
     }
 
     /**
@@ -68,9 +83,9 @@ import org.slf4j.LoggerFactory;
      * @return the new persisted card content
      */
     public CardContent createCardContent(CardContent cardContent) {
-<span class="nc" id="L71">        logger.debug(&quot;create card content&quot;);</span>
-<span class="nc" id="L72">        em.persist(cardContent);</span>
-<span class="nc" id="L73">        return cardContent;</span>
+<span class="nc" id="L86">        logger.debug(&quot;create card content&quot;);</span>
+<span class="nc" id="L87">        em.persist(cardContent);</span>
+<span class="nc" id="L88">        return cardContent;</span>
     }
 
     /**
@@ -83,12 +98,12 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the card content failed
      */
     public CardContent updateCardContent(CardContent cardContent) throws ColabMergeException {
-<span class="nc" id="L86">        logger.debug(&quot;update card content #&quot; + cardContent.getId());</span>
-<span class="nc" id="L87">        CardContent mCardContent = this.getCardContent(cardContent.getId());</span>
+<span class="nc" id="L101">        logger.debug(&quot;update card content #{}&quot;, cardContent.getId());</span>
+<span class="nc" id="L102">        CardContent mCardContent = this.getCardContent(cardContent.getId());</span>
 
-<span class="nc" id="L89">        mCardContent.merge(cardContent);</span>
+<span class="nc" id="L104">        mCardContent.merge(cardContent);</span>
 
-<span class="nc" id="L91">        return mCardContent;</span>
+<span class="nc" id="L106">        return mCardContent;</span>
     }
 
     /**
@@ -99,11 +114,11 @@ import org.slf4j.LoggerFactory;
      * @return just deleted card content
      */
     public CardContent deleteCardContent(Long id) {
-<span class="nc" id="L102">        logger.debug(&quot;delete card content #&quot; + id);</span>
+<span class="nc" id="L117">        logger.debug(&quot;delete card content #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="nc" id="L104">        CardContent cardContent = this.getCardContent(id);</span>
-<span class="nc" id="L105">        em.remove(cardContent);</span>
-<span class="nc" id="L106">        return cardContent;</span>
+<span class="nc" id="L119">        CardContent cardContent = this.getCardContent(id);</span>
+<span class="nc" id="L120">        em.remove(cardContent);</span>
+<span class="nc" id="L121">        return cardContent;</span>
     }
 
 }

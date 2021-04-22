@@ -7,8 +7,18 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.card.CardContentStatus;
+import ch.colabproject.colab.api.model.card.CardDef;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.persistence.card.CardContentDao;
+import ch.colabproject.colab.api.persistence.card.CardDao;
+import ch.colabproject.colab.api.persistence.card.CardDefDao;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Card specific logic
@@ -17,17 +27,162 @@ import javax.ejb.Stateless;
  */
 @Stateless
 @LocalBean
-<span class="fc" id="L20">public class CardFacade {</span>
+<span class="fc" id="L30">public class CardFacade {</span>
+
+    /** logger */
+<span class="fc" id="L33">    private static final Logger logger = LoggerFactory.getLogger(CardFacade.class);</span>
 
     /**
-     * Create a new root card. This card contains every other cards of a project.
+     * Minimal completion level
+     */
+    static final int MIN_COMPLETION_LEVEL = 0;
+    /**
+     * Maximal completion level
+     */
+    static final int MAX_COMPLETION_LEVEL = 100;
+
+    /**
+     * Initial card status
+     */
+<span class="fc" id="L47">    static final CardContentStatus CARD_CONTENT_INITIAL_STATUS = CardContentStatus.ACTIVE;</span>
+
+    // *********************************************************************************************
+    // injections
+    // *********************************************************************************************
+
+    /**
+     * Card definition persistence
+     */
+    @Inject
+    private CardDefDao cardDefDao;
+
+    /**
+     * Card persistence
+     */
+    @Inject
+    private CardDao cardDao;
+
+    /**
+     * Card content persistence
+     */
+    @Inject
+    private CardContentDao cardContentDao;
+
+    // *********************************************************************************************
+    // card definition stuff
+    // *********************************************************************************************
+
+    /**
+     * Create a new card definition for the project
+     *
+     * @param project the project the card definition belongs to
+     * @return a new, persisted card definition
+     */
+    public CardDef createNewCardDef(final Project project) {
+<span class="nc" id="L82">        logger.debug(&quot;create a new card def in the project {}&quot;, project);</span>
+<span class="nc" id="L83">        CardDef cardDef = this.initNewCardDef();</span>
+<span class="nc" id="L84">        cardDef.setProject(project);</span>
+<span class="nc" id="L85">        cardDefDao.createCardDef(cardDef);</span>
+<span class="nc" id="L86">        project.getElementsToBeDefined().add(cardDef);</span>
+<span class="nc" id="L87">        return cardDef;</span>
+    }
+
+    /**
+     * @return a new card definition initialized object
+     */
+    private CardDef initNewCardDef() {
+<span class="nc" id="L94">        CardDef cardDef = new CardDef();</span>
+        // see if uniqueId must be initialized
+<span class="nc" id="L96">        return cardDef;</span>
+    }
+
+    // *********************************************************************************************
+    // card stuff
+    // *********************************************************************************************
+
+    /**
+     * Initialize a new root card. This card contains every other cards of a
+     * project.
+     * &lt;p&gt;
+     * No persistence stuff in there
      *
      * @return a new card dedicated to be the root card of a project
      */
-    public Card createRootCard() {
-<span class="fc" id="L28">        Card rootCard = new Card();</span>
-        // See if something special about it
-<span class="fc" id="L30">        return rootCard;</span>
+    public Card initNewRootCard() {
+<span class="fc" id="L112">        logger.debug(&quot;initialize a new root card&quot;);</span>
+<span class="fc" id="L113">        Card rootCard = this.initNewCard();</span>
+<span class="fc" id="L114">        rootCard.setIndex(0);</span>
+<span class="fc" id="L115">        return rootCard;</span>
+    }
+
+    /**
+     * Create a new sub card into a card content with a card definition
+     *
+     * @param parent Parent of the new card
+     * @param cardDefinition Card definition of the new card
+     * @return a new, initialized and persisted card
+     */
+    public Card createNewSubCard(final CardContent parent, final CardDef cardDefinition) {
+<span class="nc" id="L126">        logger.debug(&quot;create a new sub card of {} with the definition of {}&quot;, parent,</span>
+                cardDefinition);
+<span class="nc" id="L128">        Card card = this.initNewCard(parent, cardDefinition);</span>
+<span class="nc" id="L129">        cardDao.createCard(card);</span>
+<span class="nc" id="L130">        return card;</span>
+    }
+
+    /**
+     * @param parent Parent of the new card
+     * @param cardDefinition Related card definition
+     * @return a new card containing a new card content with cardDefinition
+     */
+    private Card initNewCard(final CardContent parent, final CardDef cardDefinition) {
+<span class="nc" id="L139">        Card card = this.initNewCard();</span>
+
+<span class="nc" id="L141">        card.setParent(parent);</span>
+<span class="nc" id="L142">        parent.getSubCards().add(card);</span>
+
+<span class="nc" id="L144">        card.setCardDefinition(cardDefinition);</span>
+
+<span class="nc" id="L146">        return card;</span>
+    }
+
+    /**
+     * @return a new card containing a new card content
+     */
+    private Card initNewCard() {
+<span class="fc" id="L153">        Card card = new Card();</span>
+<span class="fc" id="L154">        CardContent cardContent = this.initNewCardContent(card);</span>
+<span class="fc" id="L155">        card.getContentVariants().add(cardContent);</span>
+<span class="fc" id="L156">        return card;</span>
+    }
+
+    // *********************************************************************************************
+    // card content stuff
+    // *********************************************************************************************
+
+    /**
+     * Create a new card content variant for the card
+     *
+     * @param card the card needing a new card content variant
+     * @return a new, initialized and persisted card content
+     */
+    public CardContent createNewCardContent(final Card card) {
+<span class="nc" id="L170">        logger.debug(&quot;create a new card content for the card {}&quot;, card);</span>
+<span class="nc" id="L171">        CardContent cardContent = this.initNewCardContent(card);</span>
+<span class="nc" id="L172">        return cardContentDao.createCardContent(cardContent);</span>
+    }
+
+    /**
+     * @param card the card needing a new card content
+     * @return a new, initialized card content
+     */
+    private CardContent initNewCardContent(final Card card) {
+<span class="fc" id="L180">        CardContent cardContent = new CardContent();</span>
+<span class="fc" id="L181">        cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);</span>
+<span class="fc" id="L182">        cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);</span>
+<span class="fc" id="L183">        cardContent.setCard(card);</span>
+<span class="fc" id="L184">        card.getContentVariants().add(cardContent);</span>
+<span class="fc" id="L185">        return cardContent;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

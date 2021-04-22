@@ -24,6 +24,10 @@ import javax.persistence.Id;
 
     private static final long serialVersionUID = 1L;
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * Role ID.
      */
@@ -36,12 +40,16 @@ import javax.persistence.Id;
      */
     private String name;
 
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the project ID
      */
     @Override
     public Long getId() {
-<span class="nc" id="L44">        return id;</span>
+<span class="nc" id="L52">        return id;</span>
     }
 
     /**
@@ -50,8 +58,8 @@ import javax.persistence.Id;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L53">        this.id = id;</span>
-<span class="nc" id="L54">    }</span>
+<span class="nc" id="L61">        this.id = id;</span>
+<span class="nc" id="L62">    }</span>
 
     /**
      * Get role name
@@ -59,7 +67,7 @@ import javax.persistence.Id;
      * @return the name
      */
     public String getName() {
-<span class="nc" id="L62">        return name;</span>
+<span class="nc" id="L70">        return name;</span>
     }
 
     /**
@@ -68,18 +76,22 @@ import javax.persistence.Id;
      * @param name new role name
      */
     public void setName(String name) {
-<span class="nc" id="L71">        this.name = name;</span>
-<span class="nc" id="L72">    }</span>
+<span class="nc" id="L79">        this.name = name;</span>
+<span class="nc" id="L80">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         /* no-op */
-<span class="nc" id="L77">    }</span>
+<span class="nc" id="L89">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
         // TODO
-<span class="nc" id="L82">        return Set.of();</span>
+<span class="nc" id="L94">        return Set.of();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
