@@ -35,16 +35,12 @@ public class CardFacade {
     /**
      * Minimal completion level
      */
-    static final int MIN_COMPLETION_LEVEL = 0;
-    /**
-     * Maximal completion level
-     */
-    static final int MAX_COMPLETION_LEVEL = 100;
+    private static final int MIN_COMPLETION_LEVEL = 0;
 
     /**
      * Initial card status
      */
-    static final CardContentStatus CARD_CONTENT_INITIAL_STATUS = CardContentStatus.ACTIVE;
+    private static final CardContentStatus CARD_CONTENT_INITIAL_STATUS = CardContentStatus.ACTIVE;
 
     // *********************************************************************************************
     // injections
