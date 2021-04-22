@@ -8,11 +8,9 @@
 import * as React from 'react';
 import * as API from '../../API/api';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faUsers, faPen } from '@fortawesome/free-solid-svg-icons';
 import { Project } from 'colab-rest-client';
 import { css } from '@emotion/css';
-import { iconButton, buttonStyle } from '../styling/style';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import { Destroyer } from '../common/Destroyer';
@@ -21,6 +19,7 @@ import { AsyncThunk } from '@reduxjs/toolkit';
 import { StateStatus } from '../../store/project';
 import AutoSaveInput from '../common/AutoSaveInput';
 import AutoSaveTextEditor from '../common/AutoSaveTextEditor';
+import IconButton from '../common/IconButton';
 
 interface Props {
   project: Project;
@@ -63,8 +62,9 @@ const ProjectDisplay = ({ project }: Props) => {
           onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
         />
         <InlineLink to={`/team/${project.id}`}>
-          <FontAwesomeIcon icon={faUsers} />
+          <IconButton icon={faUsers} />
         </InlineLink>
+        <IconButton onClick={() => dispatch(API.startProjectEdition(project))} icon={faPen} />
         <Destroyer
           onDelete={() => {
             dispatch(API.deleteProject(project));
@@ -96,13 +96,17 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
         <div>
           {projects
             .sort((a, b) => (a.id || 0) - (b.id || 0))
-            .map(project => (
-              <ProjectDisplay key={project.id} project={project} />
-            ))}
+            .map(project => {
+              if (project != null) {
+                return <ProjectDisplay key={project.id} project={project} />;
+              } else {
+                return <InlineLoading />;
+              }
+            })}
         </div>
         <div>
-          <span
-            className={buttonStyle}
+          <IconButton
+            icon={faPlus}
             onClick={() => {
               dispatch(
                 API.createProject({
@@ -112,9 +116,8 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
               );
             }}
           >
-            <FontAwesomeIcon className={iconButton} icon={faPlus} />
-            New project
-          </span>
+            Create a project
+          </IconButton>
         </div>
       </div>
     );

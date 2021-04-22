@@ -10,9 +10,9 @@ import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { getLoggerLevels, changeLoggerLevel } from '../../API/api';
 import InlineLoading from '../common/InlineLoading';
 import { css, cx } from '@emotion/css';
-import { buttonStyle } from '../styling/style';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { linkStyle } from '../styling/style';
 import { faSync, faSearch } from '@fortawesome/free-solid-svg-icons';
+import IconButton from '../common/IconButton';
 
 const LEVELS = ['OFF', 'ERROR', 'WARN', 'INFO', 'DEBUG', 'TRACE'];
 
@@ -61,17 +61,15 @@ export default (): JSX.Element => {
     return (
       <div>
         {title}
-        <span
-          className={buttonStyle}
+        <IconButton
+          icon={faSync}
           onClick={() => {
             dispatch(getLoggerLevels());
           }}
-        >
-          <FontAwesomeIcon icon={faSync} />
-        </span>
+        />
         <div>
           <label>
-            <FontAwesomeIcon icon={faSearch} />
+            <IconButton icon={faSearch} />
             <input type="text" onChange={e => setSearch(e.target.value)} />
           </label>
         </div>
@@ -111,7 +109,7 @@ export default (): JSX.Element => {
                           }),
                         );
                       }}
-                      className={cx(buttonStyle, css({ marginLeft: '5px' }))}
+                      className={cx(linkStyle, css({ marginLeft: '5px' }))}
                     >
                       {lvl}
                     </span>

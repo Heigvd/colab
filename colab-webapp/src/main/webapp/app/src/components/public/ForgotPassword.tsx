@@ -8,7 +8,7 @@ import * as React from 'react';
 import { css, cx } from '@emotion/css';
 
 import FormContainer from '../common/FormContainer';
-import { darkMode, buttonStyle } from '../styling/style';
+import { darkMode, linkStyle } from '../styling/style';
 import { requestPasswordReset } from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { InlineLink } from '../common/Link';
@@ -41,7 +41,7 @@ export default (_props: Props): JSX.Element => {
       <button
         className={cx(
           darkMode,
-          buttonStyle,
+          linkStyle,
           css({
             padding: '5px',
             width: 'max-content',

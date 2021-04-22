@@ -83,7 +83,7 @@ export const pulseEase = css`
   animation: ${pulseKeyframes} 2s ease 10;
 `;
 
-export const buttonStyle = css({
+export const linkStyle = css({
   cursor: 'pointer',
   ':hover': {
     color: 'var(--hoverFgColor)',
@@ -91,11 +91,19 @@ export const buttonStyle = css({
   },
 });
 
-const icon = css({
+export const iconStyle = css({
   paddingLeft: '5px',
   paddingRight: '5px',
 });
 
-export const iconButton = cx(buttonStyle, icon);
+export const iconButton = cx(linkStyle, iconStyle);
 
-export const disabledIconStyle = icon;
+export const buttonStyle = cx(
+  linkStyle,
+  darkMode,
+  css({
+    padding: '5px',
+  }),
+);
+
+export const disabledIconStyle = iconStyle;

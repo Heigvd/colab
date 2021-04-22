@@ -33,6 +33,7 @@ export interface ProjectState {
       };
     };
   };
+  editing: number | null;
 }
 const initialState: ProjectState = {
   currentUserId: undefined,
@@ -41,6 +42,7 @@ const initialState: ProjectState = {
   mine: [],
   projects: {},
   teams: {},
+  editing: null,
 };
 
 const projectsSlice = createSlice({
@@ -130,6 +132,16 @@ const projectsSlice = createSlice({
       //      })
       .addCase(API.signOut.fulfilled, () => {
         return initialState;
+      })
+      .addCase(API.closeCurrentProject.fulfilled, state => {
+        state.editing = null;
+      })
+      .addCase(API.startProjectEdition.fulfilled, (state, action) => {
+        if (action.payload.id != null) {
+          state.editing = action.payload.id;
+        } else {
+          state.editing = null;
+        }
       }),
 });
 

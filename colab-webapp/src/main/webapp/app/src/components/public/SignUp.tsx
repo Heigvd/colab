@@ -5,16 +5,16 @@
  * Licensed under the MIT License
  */
 import * as React from 'react';
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import FormContainer from '../common/FormContainer';
 import InlineLoading from '../common/InlineLoading';
 import { signUp } from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import { darkMode, buttonStyle } from '../styling/style';
+import { buttonStyle } from '../styling/style';
 import { InlineLink } from '../common/Link';
+import IconButton from '../common/IconButton';
 
 interface Props {
   redirectTo?: string;
@@ -75,32 +75,13 @@ export default (_props: Props): JSX.Element => {
           </React.Suspense>
         </div>
         <div>
-          <button
-            className={cx(
-              darkMode,
-              buttonStyle,
-              css({
-                padding: '5px',
-                width: 'max-content',
-                margin: 'auto',
-              }),
-            )}
+          <IconButton
+            className={buttonStyle}
+            icon={faSignInAlt}
             onClick={() => dispatch(signUp(credentials))}
           >
-            <span
-              className={css({
-                padding: '0 5px',
-              })}
-            >
-              Sign up
-            </span>
-            <FontAwesomeIcon
-              className={css({
-                padding: '0 5px',
-              })}
-              icon={faSignInAlt}
-            />
-          </button>
+            Sign up
+          </IconButton>
           <InlineLink to="/SignIn">cancel</InlineLink>
         </div>
       </div>

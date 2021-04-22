@@ -10,10 +10,9 @@ import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import { getOccupiedChannels, getAllUsers } from '../../API/api';
 import { UserChannel, ProjectContentChannel, entityIs } from 'colab-rest-client';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSync } from '@fortawesome/free-solid-svg-icons';
-import { buttonStyle } from '../styling/style';
 import UserList from './UserList';
+import IconButton from '../common/IconButton';
 
 export default (): JSX.Element => {
   const dispatch = useAppDispatch();
@@ -68,14 +67,12 @@ export default (): JSX.Element => {
     return (
       <div>
         <h3>Online Users</h3>
-        <span
-          className={buttonStyle}
+        <IconButton
           onClick={() => {
             dispatch(getOccupiedChannels());
           }}
-        >
-          <FontAwesomeIcon icon={faSync} />
-        </span>
+          icon={faSync}
+        />
 
         <div>
           <UserList users={onlineUsers} />

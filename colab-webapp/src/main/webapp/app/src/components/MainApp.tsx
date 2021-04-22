@@ -10,15 +10,20 @@ import Logo from './styling//WhiteLogo';
 
 import * as API from '../API/api';
 import { css, cx } from '@emotion/css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { CardList } from './cards/CardList';
 import { UserProjects } from './projects/ProjectList';
 import SignInForm from './public/SignIn';
 import SignUpForm from './public/SignUp';
-import { fullPageStyle, iconButton, darkMode } from './styling/style';
+import { fullPageStyle, darkMode } from './styling/style';
 import Loading from './common/Loading';
-import { useAppDispatch, useCurrentUser, useProject, useAppSelector } from '../store/hooks';
+import {
+  useAppDispatch,
+  useCurrentUser,
+  useProject,
+  useAppSelector,
+  useProjectBeingEdited,
+} from '../store/hooks';
 
 import { HashRouter as Router, Switch, Route, useParams, Redirect } from 'react-router-dom';
 import Settings from './settings/Settings';
@@ -29,6 +34,8 @@ import { getDisplayName } from '../helper';
 import Team from './projects/Team';
 import InlineLoading from './common/InlineLoading';
 import Overlay from './common/Overlay';
+import Editor from './projects/edition/Editor';
+import IconButton from './common/IconButton';
 
 /**
  * To read parameters from hash
@@ -57,6 +64,8 @@ export default (): JSX.Element => {
   const user = useCurrentUser();
 
   const socketId = useAppSelector(state => state.websockets.sessionId);
+
+  const projectBeingEdited = useProjectBeingEdited();
 
   const reconnecting =
     socketId == null ? (
@@ -126,6 +135,9 @@ export default (): JSX.Element => {
               <MainMenuLink exact to="/">
                 Projects
               </MainMenuLink>
+              {projectBeingEdited != null ? (
+                <MainMenuLink to="/editor">Project {projectBeingEdited.name}</MainMenuLink>
+              ) : null}
               <MainMenuLink exact to="/cards">
                 Cards
               </MainMenuLink>
@@ -139,16 +151,14 @@ export default (): JSX.Element => {
             ></div>
 
             <InlineLink to="/settings/user">{getDisplayName(user)}</InlineLink>
-            <FontAwesomeIcon
-              className={iconButton}
-              onClick={() => dispatch(API.signOut())}
-              icon={faSignOutAlt}
-            />
+            <IconButton onClick={() => dispatch(API.signOut())} icon={faSignOutAlt} />
           </div>
 
           <div
             className={css({
               flexGrow: 1,
+              overflowY: 'auto',
+              '& > *': { padding: '0 30px 30px 30px' },
             })}
           >
             <Switch>
@@ -163,6 +173,9 @@ export default (): JSX.Element => {
               </Route>
               <Route path="/admin">
                 <Admin />
+              </Route>
+              <Route path="/editor">
+                <Editor />
               </Route>
               <Route path="/team/:id">
                 <TeamWrapper />

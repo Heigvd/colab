@@ -5,15 +5,15 @@
  * Licensed under the MIT License
  */
 import * as React from 'react';
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import FormContainer from '../common/FormContainer';
-import { darkMode, buttonStyle } from '../styling/style';
+import { buttonStyle } from '../styling/style';
 import { signInWithLocalAccount } from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { InlineLink } from '../common/Link';
+import IconButton from '../common/IconButton';
 
 interface Props {
   redirectTo?: string;
@@ -51,33 +51,13 @@ export default function SignInForm(_props: Props): JSX.Element {
         </label>
       </div>
 
-      <button
-        className={cx(
-          darkMode,
-          buttonStyle,
-          css({
-            padding: '5px',
-            width: 'max-content',
-            margin: 'auto',
-          }),
-        )}
+      <IconButton
+        className={buttonStyle}
+        icon={faSignInAlt}
         onClick={() => dispatch(signInWithLocalAccount(credentials))}
       >
-        <span
-          className={css({
-            padding: '0 5px',
-          })}
-        >
-          Login
-        </span>
-        <FontAwesomeIcon
-          className={css({
-            padding: '0 5px',
-          })}
-          icon={faSignInAlt}
-        />
-      </button>
-
+        Sign in
+      </IconButton>
       <InlineLink to="/SignUp">create a account</InlineLink>
       <InlineLink to="/ForgotPassword">forgot your password ?</InlineLink>
     </FormContainer>

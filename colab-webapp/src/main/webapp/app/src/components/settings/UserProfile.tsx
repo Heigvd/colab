@@ -9,8 +9,8 @@ import * as React from 'react';
 import { useAppDispatch } from '../../store/hooks';
 import { User } from 'colab-rest-client';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { updateUser } from '../../API/api';
+import IconButton from '../common/IconButton';
 
 interface UserProfileProps {
   user: User;
@@ -63,8 +63,7 @@ export default ({ user }: UserProfileProps): JSX.Element => {
           </div>
         </div>
 
-        <FontAwesomeIcon
-          size="2x"
+        <IconButton
           icon={faSave}
           onClick={() => {
             dispatch(updateUser(uUser));

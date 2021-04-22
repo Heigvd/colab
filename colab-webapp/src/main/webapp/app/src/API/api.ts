@@ -256,6 +256,39 @@ export const deleteProject = createAsyncThunk('project/delete', async (project: 
   }
 });
 
+export const startProjectEdition = createAsyncThunk(
+  'project/startEditing',
+  async (project: Project, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (state.websockets.sessionId != null && project.id != null) {
+      if (state.projects.editing != null) {
+        // close current project if there is one
+        await thunkApi.dispatch(closeCurrentProject());
+      }
+
+      // Subscribe to new project channel
+      await restClient.WebsocketController.subscribeToProjectChannel(project.id, {
+        '@class': 'WsSessionIdentifier',
+        sessionId: state.websockets.sessionId,
+      });
+    }
+    return project;
+  },
+);
+
+export const closeCurrentProject = createAsyncThunk(
+  'project/stopEditing',
+  async (_action: void, thunkApi) => {
+    const state = thunkApi.getState() as ColabState;
+    if (state.projects.editing != null && state.websockets.sessionId) {
+      restClient.WebsocketController.unsubscribeFromProjectChannel(state.projects.editing, {
+        '@class': 'WsSessionIdentifier',
+        sessionId: state.websockets.sessionId,
+      });
+    }
+  },
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Project team
 ////////////////////////////////////////////////////////////////////////////////////////////////////

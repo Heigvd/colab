@@ -8,10 +8,11 @@
 import * as React from 'react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { updateLocalAccountPassword } from '../../API/api';
+import IconButton from '../common/IconButton';
+import { linkStyle } from '../styling/style';
 
 export interface Props {
   accountId: number;
@@ -33,11 +34,12 @@ export default (props: Props): JSX.Element => {
             <span>email:</span>
             <span>{account.email} </span>
           </div>
-          <FontAwesomeIcon size="2x" icon={faSave} onClick={() => {}} />
+          <IconButton icon={faSave} onClick={() => {}} />
         </div>
         <div>
           {pwState === 'SET' ? (
             <span
+              className={linkStyle}
               onClick={() => {
                 setPwState('CHANGE_PASSWORD');
               }}
@@ -57,8 +59,7 @@ export default (props: Props): JSX.Element => {
                 <PasswordStrengthBar password={newPassword} />
               </label>
 
-              <FontAwesomeIcon
-                size="2x"
+              <IconButton
                 icon={faTimes}
                 onClick={() => {
                   setPwState('SET');
@@ -66,8 +67,7 @@ export default (props: Props): JSX.Element => {
                 }}
               />
 
-              <FontAwesomeIcon
-                size="2x"
+              <IconButton
                 icon={faSave}
                 onClick={() => {
                   dispatch(

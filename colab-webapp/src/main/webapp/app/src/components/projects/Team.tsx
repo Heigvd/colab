@@ -12,8 +12,9 @@ import { StateStatus } from '../../store/project';
 import InlineLoading from '../common/InlineLoading';
 import { getProjectTeam, getUser, sendInvitation } from '../../API/api';
 import { getDisplayName } from '../../helper';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { linkStyle } from '../styling/style';
+import IconButton from '../common/IconButton';
 
 export interface MemberProps {
   member: TeamMember;
@@ -91,18 +92,18 @@ export default (props: Props): JSX.Element => {
             Invite:
             <input type="text" onChange={e => setInvite(e.target.value)} value={invite} />
           </label>
-          <span
+          <IconButton
+            className={linkStyle}
+            icon={faPaperPlane}
             onClick={() =>
               dispatch(
                 sendInvitation({
                   projectId: props.project.id!,
                   recipient: invite,
                 }),
-              )
+              ).then(() => setInvite(''))
             }
-          >
-            <FontAwesomeIcon icon={faPaperPlane} />
-          </span>
+          />
         </div>
       </div>
     );

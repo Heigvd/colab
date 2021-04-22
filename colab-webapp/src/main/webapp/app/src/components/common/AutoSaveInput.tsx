@@ -8,8 +8,7 @@
 import * as React from 'react';
 import { debounce } from 'lodash';
 import { faPen, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { iconButton } from '../styling/style';
+import IconButton from './IconButton';
 
 type State = {
   status: 'EDIT' | 'DISPLAY';
@@ -52,8 +51,7 @@ export default ({
       <div>
         <input value={state.currentValue} onChange={onInternalChange} />
 
-        <FontAwesomeIcon
-          className={iconButton}
+        <IconButton
           icon={faCheck}
           onClick={() => {
             setState({
@@ -69,8 +67,7 @@ export default ({
       <div>
         {state.currentValue}
 
-        <FontAwesomeIcon
-          className={iconButton}
+        <IconButton
           icon={faPen}
           onClick={() => {
             setState({

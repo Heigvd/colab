@@ -8,15 +8,14 @@
 import * as React from 'react';
 import * as API from '../../API/api';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Card } from 'colab-rest-client';
 import { css } from '@emotion/css';
-import { iconButton, buttonStyle } from '../styling/style';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import AutoSaveTextEditor from '../common/AutoSaveTextEditor';
 import { Destroyer } from '../common/Destroyer';
+import IconButton from '../common/IconButton';
 
 interface Props {
   card: Card;
@@ -85,8 +84,8 @@ export function CardList(): JSX.Element {
             ))}
         </div>
         <div>
-          <span
-            className={buttonStyle}
+          <IconButton
+            icon={faPlus}
             onClick={() => {
               dispatch(
                 API.createCard({
@@ -97,9 +96,8 @@ export function CardList(): JSX.Element {
               );
             }}
           >
-            <FontAwesomeIcon className={iconButton} icon={faPlus} />
             Add a card
-          </span>
+          </IconButton>
         </div>
       </div>
     );

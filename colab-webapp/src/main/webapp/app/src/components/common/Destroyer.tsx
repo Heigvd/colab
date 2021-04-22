@@ -6,9 +6,8 @@
  */
 
 import * as React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faCheck, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { iconButton } from '../styling/style';
+import IconButton from './IconButton';
 
 export function Destroyer({ onDelete }: { onDelete: () => void }): JSX.Element {
   const [waitDeleteConfirm, setConfirm] = React.useState(false);
@@ -17,20 +16,12 @@ export function Destroyer({ onDelete }: { onDelete: () => void }): JSX.Element {
     <div>
       {waitDeleteConfirm ? (
         <div>
-          <FontAwesomeIcon
-            className={iconButton}
-            icon={faTimes}
-            onClick={() => setConfirm(false)}
-          />
-          <FontAwesomeIcon className={iconButton} icon={faCheck} onClick={() => onDelete()} />
+          <IconButton icon={faTimes} onClick={() => setConfirm(false)} />
+          <IconButton icon={faCheck} onClick={() => onDelete()} />
         </div>
       ) : (
         <div>
-          <FontAwesomeIcon
-            className={iconButton}
-            icon={faTrashAlt}
-            onClick={() => setConfirm(true)}
-          />
+          <IconButton icon={faTrashAlt} onClick={() => setConfirm(true)} />
         </div>
       )}
     </div>

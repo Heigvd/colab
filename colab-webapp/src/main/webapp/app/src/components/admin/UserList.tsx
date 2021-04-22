@@ -6,10 +6,10 @@
  */
 
 import * as React from 'react';
-import { useAppDispatch, useCurrentUser } from '../../store/hooks';
-import { grantAdminRight, revokeAdminRight } from '../../API/api';
-import { css } from '@emotion/css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {useAppDispatch, useCurrentUser} from '../../store/hooks';
+import {grantAdminRight, revokeAdminRight} from '../../API/api';
+import {css} from '@emotion/css';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
   faSearch,
   faTimes,
@@ -17,15 +17,15 @@ import {
   faSortAlphaUp,
   faSortAlphaDown,
 } from '@fortawesome/free-solid-svg-icons';
-import { User } from 'colab-rest-client';
-import { buttonStyle } from '../styling/style';
+import {User} from 'colab-rest-client';
+import IconButton from '../common/IconButton';
 
-const UserComp = ({ user }: { user: User }) => {
+const UserComp = ({user}: {user: User}) => {
   const dispatch = useAppDispatch();
   const currentUser = useCurrentUser()!;
 
   return (
-    <div className={css({ display: 'contents' })}>
+    <div className={css({display: 'contents'})}>
       <div>
         {user.username} {user.id === currentUser.id ? ' (you) ' : null}
       </div>
@@ -33,8 +33,7 @@ const UserComp = ({ user }: { user: User }) => {
       <div>{user.lastname}</div>
       <div>{user.commonname}</div>
       <div>
-        <FontAwesomeIcon
-          className={buttonStyle}
+        <IconButton
           icon={user.admin ? faCheck : faTimes}
           onClick={() => {
             dispatch(user.admin ? revokeAdminRight(user) : grantAdminRight(user));
@@ -48,31 +47,87 @@ const UserComp = ({ user }: { user: User }) => {
   );
 };
 
+const SortContext = React.createContext<{
+  key: keyof User;
+  direction: 1 | -1;
+  onToggle?: (key: keyof User) => void;
+}>({
+  key: 'username',
+  direction: 1,
+});
+
 interface UserListProps {
   users: User[];
 }
 
-export default ({ users }: UserListProps): JSX.Element => {
+interface HeaderProps {
+  text: string;
+  sortKey?: keyof User;
+}
+
+const Header = ({sortKey, text}: HeaderProps) => {
+  const sortBy = React.useContext(SortContext);
+
+  const onClickCk = React.useCallback(() => {
+    if (sortKey!= null && sortBy.onToggle != null) {
+      sortBy.onToggle(sortKey);
+    }
+  }, [sortKey, sortBy]);
+
+  if (sortKey) {
+    const colour = sortKey === sortBy.key ? 'black' : 'lightgrey';
+    const icon = sortBy.direction > 0 || sortKey != sortBy.key ? faSortAlphaDown : faSortAlphaUp;
+    return (
+      <IconButton reverseOrder icon={icon} iconColor={colour} onClick={onClickCk}>
+        {text}
+      </IconButton>
+    );
+  } else {
+    return <div>{text}</div>;
+  }
+};
+
+const Headers = () => {
+  return (
+    <div
+      className={css({
+        display: 'contents',
+        fontWeight: 'bold',
+      })}
+    >
+      <Header sortKey="username" text="Username" />
+      <Header sortKey="firstname" text="Firstname" />
+      <Header sortKey="lastname" text="Lastname" />
+      <Header sortKey="commonname" text="CommonName" />
+      <Header sortKey="admin" text="Admin" />
+      <Header text="Actions " />
+    </div>
+  );
+};
+
+export default ({users}: UserListProps): JSX.Element => {
   const [search, setSearch] = React.useState('');
 
-  const [sortBy, setSortBy] = React.useState<{ key: keyof User; direction: 1 | -1 }>({
+  const [sortBy, setSortBy] = React.useState<{key: keyof User; direction: 1 | -1}>({
     key: 'username',
     direction: 1,
   });
 
-  const toggleSort = (key: keyof User) => {
-    if (key === sortBy.key) {
-      setSortBy({
-        key: key,
-        direction: sortBy.direction > 0 ? -1 : 1,
-      });
-    } else {
-      setSortBy({
-        key: key,
-        direction: 1,
-      });
-    }
-  };
+  const onToggleCb = React.useCallback((key: keyof User) => {
+    setSortBy(state => {
+      if (key === state.key) {
+        return {
+          key: key,
+          direction: state.direction > 0 ? -1 : 1,
+        };
+      } else {
+        return {
+          key: key,
+          direction: 1,
+        };
+      }
+    });
+  }, []);
 
   const matchSearch = (user: User) => {
     if (search) {
@@ -100,43 +155,6 @@ export default ({ users }: UserListProps): JSX.Element => {
 
   const filterSortedList = users.filter(matchSearch).sort(sortFn);
 
-  const Header = ({ sortKey, children }: { sortKey?: keyof User; children: React.ReactNode }) => {
-    if (sortKey) {
-      const colour = sortKey === sortBy.key ? 'black' : 'lightgrey';
-      const icon = sortBy.direction > 0 || sortKey != sortBy.key ? faSortAlphaDown : faSortAlphaUp;
-      const button = <FontAwesomeIcon className={css({ color: colour })} icon={icon} />;
-
-      return (
-        <div
-          className={buttonStyle}
-          onClick={() => {
-            toggleSort(sortKey);
-          }}
-        >
-          {children} {button}
-        </div>
-      );
-    } else {
-      return <div>{children}</div>;
-    }
-  };
-
-  const headers = (
-    <div
-      className={css({
-        display: 'contents',
-        fontWeight: 'bold',
-      })}
-    >
-      <Header sortKey="username">Username</Header>
-      <Header sortKey="firstname">Firstname</Header>
-      <Header sortKey="lastname">Lastname</Header>
-      <Header sortKey="commonname">CommonName</Header>
-      <Header sortKey="admin">Admin</Header>
-      <Header>Actions</Header>
-    </div>
-  );
-
   return (
     <>
       <div>
@@ -156,16 +174,18 @@ export default ({ users }: UserListProps): JSX.Element => {
               },
             })}
           >
-            {headers}
+            <SortContext.Provider value={{...sortBy, onToggle: onToggleCb}}>
+              <Headers />
+            </SortContext.Provider>
             {filterSortedList.map(user => (
               <UserComp key={user.id} user={user} />
             ))}
           </div>
         ) : (
-          <div>
-            <i>no result</i>
-          </div>
-        )}
+            <div>
+              <i>no result</i>
+            </div>
+          )}
       </div>
     </>
   );

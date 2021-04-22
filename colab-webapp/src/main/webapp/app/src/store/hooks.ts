@@ -56,3 +56,13 @@ export const useProject = (id: number): UsedProject => {
     }
   });
 };
+
+export const useProjectBeingEdited = (): Project | null => {
+  return useAppSelector(state => {
+    if (state.projects.editing != null) {
+      return state.projects.projects[state.projects.editing];
+    } else {
+      return null;
+    }
+  });
+};
