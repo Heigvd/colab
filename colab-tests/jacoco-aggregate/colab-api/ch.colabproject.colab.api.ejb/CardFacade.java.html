@@ -35,16 +35,12 @@ import org.slf4j.LoggerFactory;
     /**
      * Minimal completion level
      */
-    static final int MIN_COMPLETION_LEVEL = 0;
-    /**
-     * Maximal completion level
-     */
-    static final int MAX_COMPLETION_LEVEL = 100;
+    private static final int MIN_COMPLETION_LEVEL = 0;
 
     /**
      * Initial card status
      */
-<span class="fc" id="L47">    static final CardContentStatus CARD_CONTENT_INITIAL_STATUS = CardContentStatus.ACTIVE;</span>
+<span class="fc" id="L43">    private static final CardContentStatus CARD_CONTENT_INITIAL_STATUS = CardContentStatus.ACTIVE;</span>
 
     // *********************************************************************************************
     // injections
@@ -79,21 +75,21 @@ import org.slf4j.LoggerFactory;
      * @return a new, persisted card definition
      */
     public CardDef createNewCardDef(final Project project) {
-<span class="nc" id="L82">        logger.debug(&quot;create a new card def in the project {}&quot;, project);</span>
-<span class="nc" id="L83">        CardDef cardDef = this.initNewCardDef();</span>
-<span class="nc" id="L84">        cardDef.setProject(project);</span>
-<span class="nc" id="L85">        cardDefDao.createCardDef(cardDef);</span>
-<span class="nc" id="L86">        project.getElementsToBeDefined().add(cardDef);</span>
-<span class="nc" id="L87">        return cardDef;</span>
+<span class="nc" id="L78">        logger.debug(&quot;create a new card def in the project {}&quot;, project);</span>
+<span class="nc" id="L79">        CardDef cardDef = this.initNewCardDef();</span>
+<span class="nc" id="L80">        cardDef.setProject(project);</span>
+<span class="nc" id="L81">        cardDefDao.createCardDef(cardDef);</span>
+<span class="nc" id="L82">        project.getElementsToBeDefined().add(cardDef);</span>
+<span class="nc" id="L83">        return cardDef;</span>
     }
 
     /**
      * @return a new card definition initialized object
      */
     private CardDef initNewCardDef() {
-<span class="nc" id="L94">        CardDef cardDef = new CardDef();</span>
+<span class="nc" id="L90">        CardDef cardDef = new CardDef();</span>
         // see if uniqueId must be initialized
-<span class="nc" id="L96">        return cardDef;</span>
+<span class="nc" id="L92">        return cardDef;</span>
     }
 
     // *********************************************************************************************
@@ -109,10 +105,10 @@ import org.slf4j.LoggerFactory;
      * @return a new card dedicated to be the root card of a project
      */
     public Card initNewRootCard() {
-<span class="fc" id="L112">        logger.debug(&quot;initialize a new root card&quot;);</span>
-<span class="fc" id="L113">        Card rootCard = this.initNewCard();</span>
-<span class="fc" id="L114">        rootCard.setIndex(0);</span>
-<span class="fc" id="L115">        return rootCard;</span>
+<span class="fc" id="L108">        logger.debug(&quot;initialize a new root card&quot;);</span>
+<span class="fc" id="L109">        Card rootCard = this.initNewCard();</span>
+<span class="fc" id="L110">        rootCard.setIndex(0);</span>
+<span class="fc" id="L111">        return rootCard;</span>
     }
 
     /**
@@ -123,11 +119,11 @@ import org.slf4j.LoggerFactory;
      * @return a new, initialized and persisted card
      */
     public Card createNewSubCard(final CardContent parent, final CardDef cardDefinition) {
-<span class="nc" id="L126">        logger.debug(&quot;create a new sub card of {} with the definition of {}&quot;, parent,</span>
+<span class="nc" id="L122">        logger.debug(&quot;create a new sub card of {} with the definition of {}&quot;, parent,</span>
                 cardDefinition);
-<span class="nc" id="L128">        Card card = this.initNewCard(parent, cardDefinition);</span>
-<span class="nc" id="L129">        cardDao.createCard(card);</span>
-<span class="nc" id="L130">        return card;</span>
+<span class="nc" id="L124">        Card card = this.initNewCard(parent, cardDefinition);</span>
+<span class="nc" id="L125">        cardDao.createCard(card);</span>
+<span class="nc" id="L126">        return card;</span>
     }
 
     /**
@@ -136,24 +132,24 @@ import org.slf4j.LoggerFactory;
      * @return a new card containing a new card content with cardDefinition
      */
     private Card initNewCard(final CardContent parent, final CardDef cardDefinition) {
-<span class="nc" id="L139">        Card card = this.initNewCard();</span>
+<span class="nc" id="L135">        Card card = this.initNewCard();</span>
 
-<span class="nc" id="L141">        card.setParent(parent);</span>
-<span class="nc" id="L142">        parent.getSubCards().add(card);</span>
+<span class="nc" id="L137">        card.setParent(parent);</span>
+<span class="nc" id="L138">        parent.getSubCards().add(card);</span>
 
-<span class="nc" id="L144">        card.setCardDefinition(cardDefinition);</span>
+<span class="nc" id="L140">        card.setCardDefinition(cardDefinition);</span>
 
-<span class="nc" id="L146">        return card;</span>
+<span class="nc" id="L142">        return card;</span>
     }
 
     /**
      * @return a new card containing a new card content
      */
     private Card initNewCard() {
-<span class="fc" id="L153">        Card card = new Card();</span>
-<span class="fc" id="L154">        CardContent cardContent = this.initNewCardContent(card);</span>
-<span class="fc" id="L155">        card.getContentVariants().add(cardContent);</span>
-<span class="fc" id="L156">        return card;</span>
+<span class="fc" id="L149">        Card card = new Card();</span>
+<span class="fc" id="L150">        CardContent cardContent = this.initNewCardContent(card);</span>
+<span class="fc" id="L151">        card.getContentVariants().add(cardContent);</span>
+<span class="fc" id="L152">        return card;</span>
     }
 
     // *********************************************************************************************
@@ -167,9 +163,9 @@ import org.slf4j.LoggerFactory;
      * @return a new, initialized and persisted card content
      */
     public CardContent createNewCardContent(final Card card) {
-<span class="nc" id="L170">        logger.debug(&quot;create a new card content for the card {}&quot;, card);</span>
-<span class="nc" id="L171">        CardContent cardContent = this.initNewCardContent(card);</span>
-<span class="nc" id="L172">        return cardContentDao.createCardContent(cardContent);</span>
+<span class="nc" id="L166">        logger.debug(&quot;create a new card content for the card {}&quot;, card);</span>
+<span class="nc" id="L167">        CardContent cardContent = this.initNewCardContent(card);</span>
+<span class="nc" id="L168">        return cardContentDao.createCardContent(cardContent);</span>
     }
 
     /**
@@ -177,12 +173,12 @@ import org.slf4j.LoggerFactory;
      * @return a new, initialized card content
      */
     private CardContent initNewCardContent(final Card card) {
-<span class="fc" id="L180">        CardContent cardContent = new CardContent();</span>
-<span class="fc" id="L181">        cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);</span>
-<span class="fc" id="L182">        cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);</span>
-<span class="fc" id="L183">        cardContent.setCard(card);</span>
-<span class="fc" id="L184">        card.getContentVariants().add(cardContent);</span>
-<span class="fc" id="L185">        return cardContent;</span>
+<span class="fc" id="L176">        CardContent cardContent = new CardContent();</span>
+<span class="fc" id="L177">        cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);</span>
+<span class="fc" id="L178">        cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);</span>
+<span class="fc" id="L179">        cardContent.setCard(card);</span>
+<span class="fc" id="L180">        card.getContentVariants().add(cardContent);</span>
+<span class="fc" id="L181">        return cardContent;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

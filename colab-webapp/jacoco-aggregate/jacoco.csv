@@ -29,8 +29,8 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,JsonEncoder,22,0,0,0,8
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,Account,54,0,4,0,17,0,12,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HashMethod.new HashMethod() {...},25,0,0,0,6,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,AuthInfo,24,0,0,0,10,0,7,0,7,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HashMethod,20,0,0,0,3,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,LocalAccount,94,0,4,0,36,0,25,0,23,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HashMethod,20,0,0,0,3,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,SignUpInfo,38,0,0,0,16,0,11,0,11,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,AuthMethod,46,0,0,0,20,0,10,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,User,209,0,12,0,63,0,34,0,28,0
