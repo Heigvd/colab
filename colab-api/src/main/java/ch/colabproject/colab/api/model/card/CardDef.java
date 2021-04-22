@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.Set;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -22,21 +23,29 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
 
 /**
  * Card definition
  *
  * @author sandra
  */
-//TODO review accurate constraints when stabilised
+//TODO review accurate constraints when stabilized
 @Entity
-@NamedQuery(name = "CardDef.findAll", query = "SELECT c from CardDef c")
+@NamedQuery(name = "CardDef.findAll", query = "SELECT c FROM CardDef c")
+@NamedQuery(
+        name = "CardDef.findCardDefByProject",
+        query = "SELECT c FROM CardDef c JOIN c.project p WHERE p.id = :projectId")
 public class CardDef implements ColabEntity {
 
     /**
      * Serial version UID
      */
     private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * CardDef ID
@@ -46,22 +55,22 @@ public class CardDef implements ColabEntity {
     private Long id;
 
     /**
-     * Unique identifier
+     * A unique identifier
      */
     private String uniqueId;
 
     /**
-     * Title
+     * The title
      */
     private String title;
 
     /**
-     * Purpose
+     * The purpose
      */
     private String purpose;
 
     /**
-     * Authority holder : is it belonging to
+     * The authority holder : is it belonging to
      * <ul>
      * <li>a concrete project and behave for itself</li>
      * <li>a shared abstract model</li>
@@ -71,15 +80,26 @@ public class CardDef implements ColabEntity {
     private ConcretizationCategory authorityHolder;
 
     /**
-     * Project
+     * The project it belongs to
      */
     @ManyToOne
-    // @JsonbTransient
-    // TODO sandra - challenge JsonbTransient
+    @JsonbTransient
     private Project project;
 
     /**
-     * @return the id
+     * The id of the project (serialization sugar)
+     */
+    @Transient
+    private Long projectId;
+
+    // Is there a need to have a list of its cards ?
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the cardDef ID
      */
     @Override
     public Long getId() {
@@ -87,21 +107,21 @@ public class CardDef implements ColabEntity {
     }
 
     /**
-     * @param id the new id
+     * @param id the cardDef ID
      */
     public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * @return the uniqueId
+     * @return the unique identifier
      */
     public String getUniqueId() {
         return uniqueId;
     }
 
     /**
-     * @param uniqueId the new uniqueId
+     * @param uniqueId the unique identifier
      */
     public void setUniqueId(String uniqueId) {
         this.uniqueId = uniqueId;
@@ -115,7 +135,7 @@ public class CardDef implements ColabEntity {
     }
 
     /**
-     * @param title the new title
+     * @param title the title
      */
     public void setTitle(String title) {
         this.title = title;
@@ -129,7 +149,7 @@ public class CardDef implements ColabEntity {
     }
 
     /**
-     * @param purpose the new purpose
+     * @param purpose the purpose
      */
     public void setPurpose(String purpose) {
         this.purpose = purpose;
@@ -137,35 +157,61 @@ public class CardDef implements ColabEntity {
 
     /**
      * @return Authority holder : is it belonging to
-     * <ul>
-     * <li>a concrete project and behave for itself</li>
-     * <li>a shared abstract model</li>
-     * </ul>
+     *         <ul>
+     *         <li>a concrete project and behave for itself</li>
+     *         <li>a shared abstract model</li>
+     *         </ul>
      */
     public ConcretizationCategory getAuthorityHolder() {
         return authorityHolder;
     }
 
     /**
-     * @param authorityHolder new authority holder
+     * @param authorityHolder the authority holder
      */
     public void setAuthorityHolder(ConcretizationCategory authorityHolder) {
         this.authorityHolder = authorityHolder;
     }
 
     /**
-     * @return the project
+     * @return the project it belongs to
      */
     public Project getProject() {
         return project;
     }
 
     /**
-     * @param project the new project
+     * @param project the project it belongs to
      */
     public void setProject(Project project) {
         this.project = project;
     }
+
+    /**
+     * get the project id. To be sent to client
+     *
+     * @return id of the project or null
+     */
+    public Long getProjectId() {
+        if (this.project != null) {
+            return this.project.getId();
+        } else {
+            return projectId;
+        }
+    }
+
+    /**
+     * set the project id. For serialization only
+     *
+     * @param id the id of the project
+     */
+    public void setProjectId(Long id) {
+        this.projectId = id;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * {@inheritDoc }
@@ -206,7 +252,8 @@ public class CardDef implements ColabEntity {
     @Override
     public String toString() {
         return "CardDef{" + "id=" + id + "uniqueId=" + uniqueId + "title=" + title + "purpose="
-            + purpose + "}";
+                + purpose + "authorityHolder=" + authorityHolder + "projectId=" + getProjectId()
+                + "}";
     }
 
 }

@@ -54,6 +54,10 @@ public class ProjectFacade {
     @Inject
     private TokenFacade tokenFacade;
 
+    // *********************************************************************************************
+    // pure projects
+    // *********************************************************************************************
+
     /**
      * Get all projects the current user is member of
      *
@@ -73,7 +77,7 @@ public class ProjectFacade {
      */
     public Project createNewProject(Project project) {
         logger.debug("Create new project: {}", project);
-        Card rootCard = cardFacade.createRootCard();
+        Card rootCard = cardFacade.initNewRootCard();
         project.setRootCard(rootCard);
 
         User user = securityFacade.assertAndGetCurrentUser();
@@ -82,11 +86,15 @@ public class ProjectFacade {
         return projectDao.createProject(project);
     }
 
+    // *********************************************************************************************
+    // team members
+    // *********************************************************************************************
+
     /**
      * Add given user to the project teams
      *
      * @param project the project
-     * @param user    the user
+     * @param user the user
      *
      * @return the brand new member
      */
@@ -122,7 +130,7 @@ public class ProjectFacade {
      * Send invitation
      *
      * @param projectId if of the project
-     * @param email     send invitation to this address
+     * @param email send invitation to this address
      */
     public void invite(Long projectId, String email) {
         Project project = projectDao.getProject(projectId);

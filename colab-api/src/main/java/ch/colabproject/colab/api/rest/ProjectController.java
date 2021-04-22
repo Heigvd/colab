@@ -8,8 +8,10 @@ package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.ProjectFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.persistence.card.CardDefDao;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -52,6 +54,12 @@ public class ProjectController {
      */
     @Inject
     private ProjectDao projectDao;
+
+    /**
+     * Card definition persistence
+     */
+    @Inject
+    private CardDefDao cardDefDao;
 
     /**
      * Retrieve the list of all projects. This is available to admin only
@@ -147,7 +155,7 @@ public class ProjectController {
      * Send invitation to someone.
      *
      * @param projectId id of the project
-     * @param email     recipient address
+     * @param email recipient address
      */
     @POST
     @Path("Invite/{projectId: [0-9]}/{email}")
@@ -155,5 +163,22 @@ public class ProjectController {
             @PathParam("email") String email) {
         logger.debug("Invite {} to joint project #{}", email, projectId);
         projectFacade.invite(projectId, email);
+    }
+
+    /**
+     * Get all card definitions belonging to a project
+     *
+     * @param id ID of the project the card definitions belong to
+     *
+     * @return the card definitions linked to the project
+     */
+    @GET
+    @Path("{id}/CardDefs")
+    public List<CardDef> getCardDefsOfProject(@PathParam("id") Long id) {
+        logger.debug("Get project #{} card definitions", id);
+        return cardDefDao.getProjectCardDefs(id);
+        // an alternative would be to define a method in the facade
+        // projectDao.getProject(id).getElementsToBeDefined()
+        // FIXME see what is the best
     }
 }

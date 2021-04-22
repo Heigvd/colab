@@ -10,17 +10,21 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
@@ -29,15 +33,22 @@ import javax.validation.constraints.Min;
  *
  * @author sandra
  */
-//TODO review accurate constraints when stabilised
+//TODO review accurate constraints when stabilized
 @Entity
-@NamedQuery(name = "CardContent.findAll", query = "SELECT c from CardContent c")
+@NamedQuery(name = "CardContent.findAll", query = "SELECT c FROM CardContent c")
+@NamedQuery(
+        name = "CardContent.findCardContentByCard",
+        query = "SELECT c from CardContent c JOIN c.card a WHERE a.id = :cardId")
 public class CardContent implements ColabEntity {
 
     /**
      * Serial version UID
      */
     private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * Card content ID
@@ -47,37 +58,53 @@ public class CardContent implements ColabEntity {
     private Long id;
 
     /**
-     * Card content title
+     * Title
      */
     private String title;
 
     /**
-     * Card status
+     * Status
      */
     @Enumerated(value = EnumType.STRING)
     private CardContentStatus status;
 
     /**
-     * Card completion level
+     * Completion level
      */
+    // TODO sandra : vérifier si contrainte 0 - 100 ok
     @Min(value = 0)
     @Max(value = 100)
-    private int completionLevel; // TODO sandra : voir où bloquer entre 0 et 100
+    private int completionLevel;
 
     /**
-     * Card content completion mode
+     * Completion mode : how the completion level is filled
      */
     @Enumerated(value = EnumType.STRING)
     private CardContentCompletionMode completionMode;
 
     /**
-     * Card
+     * The card to which this content belongs
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JsonbTransient
-    // TODO sandra - challenge JsonTransient
-    // FIXME sandra - see if there is a need to get the card from the cardcontent
     private Card card;
+
+    /**
+     * The card ID (serialization sugar)
+     */
+    @Transient
+    private Long cardId;
+
+    /**
+     * The cards contained in there
+     */
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<Card> subCards = new ArrayList<>();
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * @return the id
@@ -137,32 +164,65 @@ public class CardContent implements ColabEntity {
     }
 
     /**
-     * @return the completionMode
+     * @return the completion mode : how the completion level is filled
      */
     public CardContentCompletionMode getCompletionMode() {
         return completionMode;
     }
 
     /**
-     * @param completionMode the new completionMode
+     * @param completionMode the new completion mode : how the completion level is
+     *        filled
      */
     public void setCompletionMode(CardContentCompletionMode completionMode) {
         this.completionMode = completionMode;
     }
 
     /**
-     * @return the card
+     * @return the card to which this content belongs
      */
     public Card getCard() {
         return card;
     }
 
     /**
-     * @param card the new card
+     * @param card the new card to which this content belongs
      */
     public void setCard(Card card) {
         this.card = card;
     }
+
+    /**
+     * @return the ID of the card to which this content belongs
+     */
+    public Long getCardId() {
+        return cardId;
+    }
+
+    /**
+     * @param cardId the ID of the card to which this content belongs
+     */
+    public void setCardId(Long cardId) {
+        this.cardId = cardId;
+    }
+
+    /**
+     * @return the cards contained in there
+     */
+    public List<Card> getSubCards() {
+        return subCards;
+    }
+
+    /**
+     * @param subCards the cards contained in there
+     */
+    public void setSubCards(List<Card> subCards) {
+        this.subCards = subCards;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * {@inheritDoc}
@@ -203,7 +263,8 @@ public class CardContent implements ColabEntity {
     @Override
     public String toString() {
         return "CardContent{" + "id=" + id + ", title= " + title + ", status= " + status
-            + ", completion= " + completionLevel + ", completionMode= " + completionMode + "}";
+                + ", completion= " + completionLevel + ", completionMode= " + completionMode
+                + ", card= " + card + "}";
     }
 
 }

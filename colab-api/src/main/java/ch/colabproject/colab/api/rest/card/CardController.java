@@ -6,8 +6,12 @@
  */
 package ch.colabproject.colab.api.rest.card;
 
+import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.card.CardDef;
+import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -40,10 +44,22 @@ public class CardController {
     private static final Logger logger = LoggerFactory.getLogger(CardController.class);
 
     /**
-     * The Card business logic
+     * The card persistence manager
      */
     @Inject
-    private CardDao dao;
+    private CardDao cardDao;
+
+    /**
+     * The card content persistence manager
+     */
+    @Inject
+    private CardContentDao cardContentDao;
+
+    /**
+     * The card-related logic
+     */
+    @Inject
+    private CardFacade facade;
 
     /**
      * Retrieve the list of all cards. This is available to admin only
@@ -57,7 +73,7 @@ public class CardController {
     @AdminResource
     public List<Card> getAllCards() {
         logger.debug("get all cards");
-        return dao.getAllCard();
+        return cardDao.getAllCard();
     }
 
     /**
@@ -70,8 +86,8 @@ public class CardController {
     @GET
     @Path("/{id}")
     public Card getCard(@PathParam("id") Long id) {
-        logger.debug("get card #" + id);
-        return dao.getCard(id);
+        logger.debug("get card #{}", id);
+        return cardDao.getCard(id);
     }
 
     /**
@@ -84,7 +100,21 @@ public class CardController {
     @POST
     public Long createCard(Card card) {
         logger.debug("create card");
-        return dao.createCard(card).getId();
+        return cardDao.createCard(card).getId();
+    }
+
+    /**
+     * Create and persist a new card
+     *
+     * @param parent the new card's parent
+     * @param cardDefinition the card definition of the new card
+     * @return the persisted new card
+     */
+    // TODO
+    public Card createNewCard(final CardContent parent, final CardDef cardDefinition) {
+        logger.debug("create a new card for the parent {} and the definition {}", parent,
+                cardDefinition);
+        return facade.createNewSubCard(parent, cardDefinition);
     }
 
     /**
@@ -96,8 +126,8 @@ public class CardController {
      */
     @PUT
     public void updateCard(Card card) throws ColabMergeException {
-        logger.debug("update card #" + card.getId());
-        dao.updateCard(card);
+        logger.debug("update card #{}", card.getId());
+        cardDao.updateCard(card);
     }
 
     /**
@@ -108,7 +138,25 @@ public class CardController {
     @DELETE
     @Path("/{id}")
     public void deleteCard(@PathParam("id") Long id) {
-        logger.debug("delete card #" + id);
-        dao.deleteCard(id);
+        logger.debug("delete card #{}", id);
+        cardDao.deleteCard(id);
+    }
+
+    /**
+     * Get all card content variants of a card
+     *
+     * @param cardId Card of the searched content variants
+     *
+     * @return list of card contents
+     */
+    @GET
+    @Path("{id}/CardContents")
+    public List<CardContent> getContentVariantsOfCard(@PathParam("id") Long cardId) {
+        logger.debug("Get card #{} content variants", cardId);
+        return cardContentDao.getContentVariantsOfCard(cardId);
+
+        // an alternative would be to define a method in the facade
+        // cardDao.getCard(id).getContentVariants()
+        // FIXME see what is the best
     }
 }

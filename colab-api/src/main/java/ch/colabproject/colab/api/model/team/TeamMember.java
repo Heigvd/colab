@@ -28,18 +28,21 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
-@NamedQuery(
-    name = "TeamMember.areUserTeammate",
-    // SELECT true FROM TeamMember a, TeamMember b WHERE ...
-    query = "SELECT true FROM TeamMember a "
-    + "JOIN TeamMember b ON a.project.id = b.project.id "
-    + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
+@NamedQuery(name = "TeamMember.areUserTeammate",
+        // SELECT true FROM TeamMember a, TeamMember b WHERE ...
+        query = "SELECT true FROM TeamMember a "
+                + "JOIN TeamMember b ON a.project.id = b.project.id "
+                + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
 public class TeamMember implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
-     * Member ID.
+     * Member ID
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +56,7 @@ public class TeamMember implements ColabEntity {
     private User user;
 
     /**
-     * serialization sugar
+     * The user ID (serialization sugar)
      */
     @Transient
     private Long userId;
@@ -66,13 +69,17 @@ public class TeamMember implements ColabEntity {
     private Project project;
 
     /**
-     * serialization sugar
+     * The project ID (serialization sugar)
      */
     @Transient
     private Long projectId;
 
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
     /**
-     * @return the ID
+     * @return the member ID
      */
     @Override
     public Long getId() {
@@ -80,17 +87,13 @@ public class TeamMember implements ColabEntity {
     }
 
     /**
-     * Set id
-     *
-     * @param id id
+     * @param id the member ID
      */
     public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * Get the user
-     *
      * @return the user
      */
     public User getUser() {
@@ -98,9 +101,7 @@ public class TeamMember implements ColabEntity {
     }
 
     /**
-     * set the user
-     *
-     * @param user user
+     * @param user the user
      */
     public void setUser(User user) {
         this.user = user;
@@ -120,21 +121,26 @@ public class TeamMember implements ColabEntity {
     }
 
     /**
-     * For serialization only
+     * set the user id. For serialization only
      *
-     * @param id if of the user
+     * @param id the id of the user
      */
     public void setUserId(Long id) {
         this.userId = id;
     }
 
     /**
-     * get project
-     *
      * @return the project
      */
     public Project getProject() {
         return project;
+    }
+
+    /**
+     * @param project the project
+     */
+    public void setProject(Project project) {
+        this.project = project;
     }
 
     /**
@@ -151,22 +157,17 @@ public class TeamMember implements ColabEntity {
     }
 
     /**
-     * For serialization only
+     * set the project id. For serialization only
      *
-     * @param id if of the project
+     * @param id the id of the project
      */
     public void setProjectId(Long id) {
         this.projectId = id;
     }
 
-    /**
-     * set project
-     *
-     * @param project the project
-     */
-    public void setProject(Project project) {
-        this.project = project;
-    }
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
@@ -195,6 +196,7 @@ public class TeamMember implements ColabEntity {
 
     @Override
     public String toString() {
-        return "TeamMember{" + "id=" + id + ", user=" + user + ", project=" + project + '}';
+        return "TeamMember{" + "id=" + id + ", userId=" + getUserId() + ", projectId="
+                + getProjectId() + "}";
     }
 }

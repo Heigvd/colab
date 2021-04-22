@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -28,6 +29,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 /**
  * A project as persisted in database
@@ -36,10 +38,10 @@ import javax.persistence.OneToOne;
  * @author sandra
  */
 @Entity
-@NamedQuery(name = "Project.findAll", query = "SELECT p from Project p")
+@NamedQuery(name = "Project.findAll", query = "SELECT p FROM Project p")
 @NamedQuery(
-    name = "Project.findProjectByUser",
-    query = "SELECT p from Project p JOIN p.teamMembers members WHERE  members.user.id = :userId")
+        name = "Project.findProjectByUser",
+        query = "SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId")
 public class Project implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
@@ -49,45 +51,54 @@ public class Project implements ColabEntity {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Project ID.
+     * Project ID
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
-     * Project name
+     * The name
      */
     private String name;
 
     /**
-     * Description
+     * The description
      */
     private String description;
 
     /**
-     * Concretization type : is it a concrete project or an abstract model
+     * The concretization type : is it a concrete project or an abstract model
      */
     @Enumerated(value = EnumType.STRING)
     private ConcretizationCategory concretizationCategory;
 
     /**
+     * The root card of the project containing all other cards
+     */
+    @OneToOne(cascade = CascadeType.ALL) // , optional=false)
+    @JsonbTransient
+    private Card rootCard;
+
+    /**
+     * The ID of the root card (serialization sugar)
+     */
+    @Transient
+    private Long rootCardId;
+
+    /**
      * List of team members
      */
-    @OneToMany(mappedBy = "project", cascade = { CascadeType.ALL })
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonbTransient
     private List<TeamMember> teamMembers = new ArrayList<>();
 
     /**
      * List of elements to be defined within the cards
      */
-    @OneToMany(mappedBy = "project", cascade = { CascadeType.ALL })
-    private List<CardDef> elementsToDefine = new ArrayList<>();
-
-    /**
-     * Root card of the project containing all other cards
-     */
-    @OneToOne(cascade = { CascadeType.ALL }) // , optional=false)
-    private Card rootCard;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<CardDef> elementsToBeDefined = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -119,7 +130,7 @@ public class Project implements ColabEntity {
     /**
      * Set the project name
      *
-     * @param name new project name
+     * @param name the project name
      */
     public void setName(String name) {
         this.name = name;
@@ -140,17 +151,55 @@ public class Project implements ColabEntity {
     }
 
     /**
-     * @return concretization type : is it a concrete project or an abstract model
+     * @return the concretization type : is it a concrete project or an abstract
+     *         model
      */
     public ConcretizationCategory getConcretizationCategory() {
         return concretizationCategory;
     }
 
     /**
-     * @param category new concretization type : is it a concrete project or an abstract model
+     * @param category the concretization type : is it a concrete project or an
+     *        abstract model
      */
     public void setConcretizationCategory(ConcretizationCategory category) {
         this.concretizationCategory = category;
+    }
+
+    /**
+     * @return the root card of the project that contains every other cards
+     */
+    public Card getRootCard() {
+        return rootCard;
+    }
+
+    /**
+     * @param rootCard the root card of the project that contains every other cards
+     */
+    public void setRootCard(Card rootCard) {
+        this.rootCard = rootCard;
+    }
+
+    /**
+     * get the id of the root card. To be sent to client
+     *
+     * @return id of the root card or null
+     */
+    public Long getRootCardId() {
+        if (this.getRootCard() != null) {
+            return this.getRootCard().getId();
+        } else {
+            return rootCardId;
+        }
+    }
+
+    /**
+     * set the id of the root card. For serialization only
+     *
+     * @param rootCardId the rootCardId to set
+     */
+    public void setRootCardId(Long rootCardId) {
+        this.rootCardId = rootCardId;
     }
 
     /**
@@ -174,29 +223,15 @@ public class Project implements ColabEntity {
     /**
      * @return the elementsToDefine
      */
-    public List<CardDef> getElementsToDefine() {
-        return elementsToDefine;
+    public List<CardDef> getElementsToBeDefined() {
+        return elementsToBeDefined;
     }
 
     /**
-     * @param elementsToDefine the elementsToDefine to set
+     * @param elements the elementsToDefine to set
      */
-    public void setElementsToDefine(List<CardDef> elementsToDefine) {
-        this.elementsToDefine = elementsToDefine;
-    }
-
-    /**
-     * @return root card of the project that contains every other cards
-     */
-    public Card getRootCard() {
-        return rootCard;
-    }
-
-    /**
-     * @param rootCard Root card of the project that contains every other cards
-     */
-    public void setRootCard(Card rootCard) {
-        this.rootCard = rootCard;
+    public void setElementsToBeDefined(List<CardDef> elements) {
+        this.elementsToBeDefined = elements;
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -242,6 +277,6 @@ public class Project implements ColabEntity {
     @Override
     public String toString() {
         return "Project{" + "id=" + id + ", name=" + name + ", descr=" + description + ", category="
-                + concretizationCategory + '}';
+                + concretizationCategory + ", rootCardId=" + getRootCardId() + '}';
     }
 }

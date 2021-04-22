@@ -48,13 +48,27 @@ public class CardDao {
     }
 
     /**
+     * Get all cards children
+     *
+     * @param parentId parent ID
+     * @return list of cards
+     */
+    public List<Card> getSubCards(Long parentId) {
+        logger.debug("get all cards children of card content #{}", parentId);
+        TypedQuery<Card> query = em.createNamedQuery("Card.findCardByParent", Card.class);
+        query.setParameter("parentId", parentId);
+
+        return query.getResultList();
+    }
+
+    /**
      *
      * @param id id of the card to fetch
      *
      * @return the card with the given id or null if such a card does not exists
      */
     public Card getCard(Long id) {
-        logger.debug("get card #" + id);
+        logger.debug("get card #{}", id);
         return em.find(Card.class, id);
     }
 
@@ -81,7 +95,7 @@ public class CardDao {
      * @throws ColabMergeException if updating the card failed
      */
     public Card updateCard(Card card) throws ColabMergeException {
-        logger.debug("update card #" + card.getId());
+        logger.debug("update card #{}", card.getId());
         Card mCard = this.getCard(card.getId());
 
         mCard.merge(card);
@@ -97,7 +111,7 @@ public class CardDao {
      * @return just deleted card
      */
     public Card deleteCard(Long id) {
-        logger.debug("delete card #" + id);
+        logger.debug("delete card #{}", id);
         // TODO: move to recycle bin first
         Card card = this.getCard(id);
         em.remove(card);

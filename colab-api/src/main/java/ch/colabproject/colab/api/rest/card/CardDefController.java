@@ -6,8 +6,10 @@
  */
 package ch.colabproject.colab.api.rest.card;
 
+import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.CardDef;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.card.CardDefDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -41,10 +43,16 @@ public class CardDefController {
     private static final Logger logger = LoggerFactory.getLogger(CardDefController.class);
 
     /**
-     * The CardDef business logic
+     * The card definition persistence manager
      */
     @Inject
-    private CardDefDao dao;
+    private CardDefDao cardDefDao;
+
+    /**
+     * The card-related logic
+     */
+    @Inject
+    private CardFacade facade;
 
     /**
      * Retrieve the list of all card defs. This is available to admin only
@@ -55,7 +63,7 @@ public class CardDefController {
     @AdminResource
     public List<CardDef> getAllCardDefs() {
         logger.debug("get all card defs");
-        return dao.getAllCardDef();
+        return cardDefDao.getAllCardDef();
     }
 
     /**
@@ -68,8 +76,8 @@ public class CardDefController {
     @GET
     @Path("/{id}")
     public CardDef getCardDef(@PathParam("id") Long id) {
-        logger.debug("get card def#" + id);
-        return dao.getCardDef(id);
+        logger.debug("get card def #{}", id);
+        return cardDefDao.getCardDef(id);
     }
 
     /**
@@ -82,7 +90,20 @@ public class CardDefController {
     @POST
     public Long createCardDef(CardDef cardDef) {
         logger.debug("create card def");
-        return dao.createCardDef(cardDef).getId();
+        return cardDefDao.createCardDef(cardDef).getId();
+    }
+
+    /**
+     * Create and persist a new card definition
+     *
+     * @param project the project the new card definition belongs to
+     *
+     * @return the persisted new card definition
+     */
+    // TODO
+    public CardDef createNewCardDef(final Project project) {
+        logger.debug("create new card def for the project {}", project);
+        return facade.createNewCardDef(project);
     }
 
     /**
@@ -94,8 +115,8 @@ public class CardDefController {
      */
     @PUT
     public void updateCardDef(CardDef cardDef) throws ColabMergeException {
-        logger.debug("update card def #" + cardDef.getId());
-        dao.updateCardDef(cardDef);
+        logger.debug("update card def #{}", cardDef.getId());
+        cardDefDao.updateCardDef(cardDef);
     }
 
     /**
@@ -106,7 +127,8 @@ public class CardDefController {
     @DELETE
     @Path("/{id}")
     public void deleteCardDef(@PathParam("id") Long id) {
-        logger.debug("delete card def #" + id);
-        dao.deleteCardDef(id);
+        logger.debug("delete card def #{}", id);
+        cardDefDao.deleteCardDef(id);
     }
+
 }

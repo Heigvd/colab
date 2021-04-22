@@ -49,6 +49,21 @@ public class CardContentDao {
     }
 
     /**
+     * Get all card content variants of a card
+     *
+     * @param cardId card ID
+     * @return list of card contents
+     */
+    public List<CardContent> getContentVariantsOfCard(Long cardId) {
+        logger.debug("get all card content variants of card #{}", cardId);
+        TypedQuery<CardContent> query = em.createNamedQuery("CardContent.findCardContentByCard",
+                CardContent.class);
+        query.setParameter("cardId", cardId);
+
+        return query.getResultList();
+    }
+
+    /**
      *
      * @param id id of the card content to fetch
      *
@@ -56,7 +71,7 @@ public class CardContentDao {
      *         does not exists
      */
     public CardContent getCardContent(Long id) {
-        logger.debug("get card content #" + id);
+        logger.debug("get card content #{}", id);
         return em.find(CardContent.class, id);
     }
 
@@ -83,7 +98,7 @@ public class CardContentDao {
      * @throws ColabMergeException if updating the card content failed
      */
     public CardContent updateCardContent(CardContent cardContent) throws ColabMergeException {
-        logger.debug("update card content #" + cardContent.getId());
+        logger.debug("update card content #{}", cardContent.getId());
         CardContent mCardContent = this.getCardContent(cardContent.getId());
 
         mCardContent.merge(cardContent);
@@ -99,7 +114,7 @@ public class CardContentDao {
      * @return just deleted card content
      */
     public CardContent deleteCardContent(Long id) {
-        logger.debug("delete card content #" + id);
+        logger.debug("delete card content #{}", id);
         // TODO: move to recycle bin first
         CardContent cardContent = this.getCardContent(id);
         em.remove(cardContent);

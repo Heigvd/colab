@@ -37,6 +37,10 @@ public abstract class Account implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * Account unique ID IDs are unique within all account class hierarchy
      */
@@ -56,6 +60,10 @@ public abstract class Account implements ColabEntity {
      */
     @Transient
     private Long userId;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * @return account id
@@ -104,13 +112,17 @@ public abstract class Account implements ColabEntity {
     }
 
     /**
-     * For serialization only
+     * set the id of the account owner. For serialization only
      *
      * @param id if of the user
      */
     public void setUserId(Long id) {
         this.userId = id;
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public Set<WebsocketChannel> getChannels() {

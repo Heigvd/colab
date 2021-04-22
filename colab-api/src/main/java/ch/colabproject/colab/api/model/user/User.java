@@ -53,6 +53,10 @@ public class User implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * User unique id
      */
@@ -127,10 +131,33 @@ public class User implements ColabEntity {
     }
 
     /**
-     * @return user first name, may be null or empty
+     * @return the isAdmin
      */
-    public String getFirstname() {
-        return firstname;
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    /**
+     * @param isAdmin the isAdmin to set
+     */
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+    /**
+     * @return user accounts
+     */
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    /**
+     * Set user accounts
+     *
+     * @param accounts account list
+     */
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
     }
 
     /**
@@ -149,6 +176,29 @@ public class User implements ColabEntity {
      */
     public void setTeamMembers(List<TeamMember> teamMembers) {
         this.teamMembers = teamMembers;
+    }
+
+    /**
+     * @return last seen at
+     */
+    public Date getLastSeenAt() {
+        return new Date(lastSeenAt.getTime());
+    }
+
+    /**
+     * update most recent activity date of the user
+     *
+     * @param lastSeenAt the lastSeenAt date
+     */
+    public void setLastSeenAt(Date lastSeenAt) {
+        this.lastSeenAt = new Date(lastSeenAt.getTime());
+    }
+
+    /**
+     * @return user first name, may be null or empty
+     */
+    public String getFirstname() {
+        return firstname;
     }
 
     /**
@@ -212,84 +262,9 @@ public class User implements ColabEntity {
         this.username = username;
     }
 
-    /**
-     * @return the isAdmin
-     */
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    /**
-     * @param isAdmin the isAdmin to set
-     */
-    public void setAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
-    }
-
-    /**
-     * @return user accounts
-     */
-    public List<Account> getAccounts() {
-        return accounts;
-    }
-
-    /**
-     * Set user accounts
-     *
-     * @param accounts account list
-     */
-    public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
-    }
-
-    /**
-     * @return last seen at
-     */
-    public Date getLastSeenAt() {
-        return new Date(lastSeenAt.getTime());
-    }
-
-    /**
-     * update most recent activity date of the user
-     *
-     * @param lastSeenAt the lastSeenAt date
-     */
-    public void setLastSeenAt(Date lastSeenAt) {
-        this.lastSeenAt = new Date(lastSeenAt.getTime());
-    }
-
-    /**
-     * Set lastSeenAt to now
-     */
-    public void touchLastSeenAt() {
-        this.setLastSeenAt(new Date());
-    }
-
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof User) {
-            User o = (User) other;
-            this.setFirstname(o.getFirstname());
-            this.setLastname(o.getLastname());
-            this.setCommonname(o.getCommonname());
-        } else {
-            throw new ColabMergeException(this, other);
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return EntityHelper.hashCode(this);
-    }
-
-    @Override
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-    public boolean equals(Object obj) {
-        return EntityHelper.equals(this, obj);
-    }
+    // ---------------------------------------------------------------------------------------------
+    // helpers
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * get most preferred name to display.
@@ -315,6 +290,47 @@ public class User implements ColabEntity {
             }
         }
         return this.username;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // init
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Set lastSeenAt to now
+     */
+    public void touchLastSeenAt() {
+        this.setLastSeenAt(new Date());
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+        if (other instanceof User) {
+            User o = (User) other;
+            this.setFirstname(o.getFirstname());
+            this.setLastname(o.getLastname());
+            this.setCommonname(o.getCommonname());
+        } else {
+            throw new ColabMergeException(this, other);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return EntityHelper.hashCode(this);
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object obj) {
+        return EntityHelper.equals(this, obj);
     }
 
     /**

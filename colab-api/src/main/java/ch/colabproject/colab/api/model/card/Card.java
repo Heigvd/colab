@@ -13,30 +13,41 @@ import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 /**
  * Card
+ * <p>
+ * It is defined by a cardDef. The content is stored in one or several
+ * CardContent.
  *
  * @author sandra
  */
-// TODO review accurate constraints when stabilised
+// TODO review accurate constraints when stabilized
 @Entity
-@NamedQuery(name = "Card.findAll", query = "SELECT c from Card c")
+@NamedQuery(name = "Card.findAll", query = "SELECT c FROM Card c")
+@NamedQuery(
+        name = "Card.findCardByParent",
+        query = "SELECT c FROM Card c JOIN c.parent p WHERE p.id = :parentId")
 public class Card implements ColabEntity {
 
     /**
      * Serial version UID
      */
     private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * Card ID
@@ -46,7 +57,7 @@ public class Card implements ColabEntity {
     private Long id;
 
     /**
-     * The index of the card in its parent
+     * The index of the card within its parent
      */
     private int index;
 
@@ -56,24 +67,51 @@ public class Card implements ColabEntity {
     private String color;
 
     /**
-     * card def
+     * The card definition defining what is it for
      */
-    // TODO sandra - challenge the fetch type
     @ManyToOne
-    private CardDef cardDef;
+    @JsonbTransient
+    private CardDef cardDefinition;
 
     /**
-     * The list of variants of card content
+     * The id of the card definition (serialization sugar)
+     */
+    @Transient
+    private Long cardDefinitionId;
+
+    /**
+     * The parent card content
+     * <p>
+     * A card can either be the root card of a project or be within a card content
+     */
+    @ManyToOne
+    @JsonbTransient
+    private CardContent parent;
+
+    /**
+     * The id of the parent card content (serialization sugar)
+     */
+    @Transient
+    private Long parentId;
+
+    /**
+     * The list of content variants.
+     * <p>
+     * There can be several variants of content
      */
     // TODO sandra - see where it is suitable to order it
     // TODO sandra - challenge cascade
     // TODO sandra - challenge ArrayList
-    // TODO sandra - challenge JsonTransient
-    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private ArrayList<CardContent> cardContentVariantList = new ArrayList<>();
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL) // , fetch = FetchType.LAZY)
+    @JsonbTransient
+    private List<CardContent> contentVariants = new ArrayList<>();
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
 
     /**
-     * @return the id
+     * @return the card id
      */
     @Override
     public Long getId() {
@@ -81,7 +119,7 @@ public class Card implements ColabEntity {
     }
 
     /**
-     * @param id the new id
+     * @param id the card id
      */
     public void setId(Long id) {
         this.id = id;
@@ -116,52 +154,95 @@ public class Card implements ColabEntity {
     }
 
     /**
-     * @return the cardDef
+     * @return the card def defining what is it for
      */
-    public CardDef getCardDef() {
-        return cardDef;
+    public CardDef getCardDefinition() {
+        return cardDefinition;
     }
 
     /**
-     * @param cardDef the new cardDef
+     * @param cardDef the card def defining what is it for
      */
-    public void setCardDef(CardDef cardDef) {
-        this.cardDef = cardDef;
+    public void setCardDefinition(CardDef cardDef) {
+        this.cardDefinition = cardDef;
+    }
+
+    /**
+     * get the id of the card def. To be sent to client
+     *
+     * @return the id of the card def
+     */
+    public Long getCardDefinitionId() {
+        if (this.cardDefinition != null) {
+            return this.cardDefinition.getId();
+        } else {
+            return cardDefinitionId;
+        }
+    }
+
+    /**
+     * @param cardDefId the cardDefId to set
+     */
+    public void setCardDefinitionId(Long cardDefId) {
+        this.cardDefinitionId = cardDefId;
+    }
+
+    /**
+     * @return the parent card content
+     *         <p>
+     *         A card can either be the root card of a project or be within a card
+     *         content
+     */
+    public CardContent getParent() {
+        return parent;
+    }
+
+    /**
+     * @param parent the parent card content
+     */
+    public void setParent(CardContent parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * get the id of the parent card content. To be sent to client
+     *
+     * @return the id of the parent card content
+     */
+    public Long getParentId() {
+        if (this.parent != null) {
+            return parent.getId();
+        } else {
+            return parentId;
+        }
+    }
+
+    /**
+     * set the id of the parent card content. For serialization only
+     *
+     * @param parentId the id of the parent card content
+     */
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     /**
      * @return the list of variants of card content
      */
-    public List<CardContent> getCardContentVariantList() {
-        return cardContentVariantList;
+    public List<CardContent> getContentVariants() {
+        return contentVariants;
     }
 
     /**
-     * @param variantList the list of variants of card content
+     * @param contentVariantList the list of variants of card content
      */
-    public void setCardContentVariantList(ArrayList<CardContent> variantList) {
-        this.cardContentVariantList = variantList;
+    public void setContentVariants(List<CardContent> contentVariantList) {
+        this.contentVariants = contentVariantList;
     }
 
-    /**
-     * Add a card content to the list of variants of card content
-     *
-     * @param cardContent the card content to add
-     */
-    public void addCardContent(CardContent cardContent) {
-        cardContentVariantList.add(cardContent);
-        cardContent.setCard(this);
-    }
-
-    /**
-     * Remove a card content from the list of variants of card content
-     *
-     * @param cardContent the card content to remove
-     */
-    public void removeCardContent(CardContent cardContent) {
-        cardContentVariantList.remove(cardContent);
-        cardContent.setCard(null);
-    }
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * {@inheritDoc }
@@ -179,8 +260,8 @@ public class Card implements ColabEntity {
 
     @Override
     public Set<WebsocketChannel> getChannels() {
-        if (this.cardDef != null) {
-            return this.cardDef.getChannels();
+        if (this.cardDefinition != null) {
+            return this.cardDefinition.getChannels();
         } else {
             return Set.of();
         }
@@ -199,7 +280,8 @@ public class Card implements ColabEntity {
 
     @Override
     public String toString() {
-        return "Card{" + "id=" + id + ", index=" + index + ", color=" + color + "}";
+        return "Card{" + "id=" + id + ", index=" + index + ", color=" + color + ", cardDefId="
+                + getCardDefinitionId() + ", parentId=" + getParentId() + "}";
     }
 
 }

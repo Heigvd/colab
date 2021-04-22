@@ -6,7 +6,8 @@
  */
 package ch.colabproject.colab.tests.rest;
 
-import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.token.InvitationToken;
@@ -51,8 +52,12 @@ public class ProjectControllerTest extends AbstractArquillianTest {
 
         Assertions.assertEquals(persistedProject.getId(), projectId);
 
-        Assertions.assertNotNull(persistedProject.getRootCard());
-        Assertions.assertNotNull(persistedProject.getRootCard().getId());
+        Assertions.assertNotNull(persistedProject.getRootCardId());
+        Card rootCard = client.cardController.getCard(persistedProject.getRootCardId());
+        Assertions.assertNotNull(rootCard);
+        List<CardContent> rootCardContents = client.cardController.getContentVariantsOfCard(rootCard.getId());
+        Assertions.assertNotNull(rootCardContents);
+        Assertions.assertEquals(1, rootCardContents.size());
 
         List<TeamMember> members = client.projectController.getMembers(projectId);
         Assertions.assertEquals(1, members.size());

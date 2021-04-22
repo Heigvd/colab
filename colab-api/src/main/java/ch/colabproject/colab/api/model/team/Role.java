@@ -24,6 +24,10 @@ public class Role implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
 
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
     /**
      * Role ID.
      */
@@ -35,6 +39,10 @@ public class Role implements ColabEntity {
      * Name of the role
      */
     private String name;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
 
     /**
      * @return the project ID
@@ -70,6 +78,10 @@ public class Role implements ColabEntity {
     public void setName(String name) {
         this.name = name;
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {

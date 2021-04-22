@@ -129,7 +129,13 @@ public class CardDefControllerTest extends AbstractArquillianTest {
 
         CardDef persistedCardDef = client.cardDefController.getCardDef(cardDefId);
         Assertions.assertNotNull(persistedCardDef);
-        Assertions.assertNotNull(persistedCardDef.getProject());
-        Assertions.assertEquals(projectName, persistedCardDef.getProject().getName());
+        Assertions.assertNotNull(persistedCardDef.getProjectId());
+        Assertions.assertEquals(projectId, persistedCardDef.getProjectId());
+
+// TODO have the link between cardDef and project
+//        List<CardDef> cardDefsOfProject = client.projectController.getCardDefsOfProject(projectId);
+//        Assertions.assertNotNull(cardDefsOfProject);
+//        Assertions.assertEquals(1, cardDefsOfProject.size());
+//        Assertions.assertEquals(cardDefId, cardDefsOfProject.get(0));
     }
 }

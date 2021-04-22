@@ -47,6 +47,21 @@ public class CardDefDao {
     }
 
     /**
+     * Get all card definitions to be defined in a project
+     *
+     * @param projectId project ID
+     * @return list of card definitions
+     */
+    public List<CardDef> getProjectCardDefs(Long projectId) {
+        logger.debug("get all card defs of the project #{}", projectId);
+        TypedQuery<CardDef> query = em.createNamedQuery("CardDef.findCardDefByProject",
+                CardDef.class);
+        query.setParameter("projectId", projectId);
+
+        return query.getResultList();
+    }
+
+    /**
      *
      * @param id id of the card def to fetch
      *
@@ -54,7 +69,7 @@ public class CardDefDao {
      *         exists
      */
     public CardDef getCardDef(Long id) {
-        logger.debug("get card def #" + id);
+        logger.debug("get card def #{}", id);
         return em.find(CardDef.class, id);
     }
 
@@ -81,7 +96,7 @@ public class CardDefDao {
      * @throws ColabMergeException if updating the card def failed
      */
     public CardDef updateCardDef(CardDef cardDef) throws ColabMergeException {
-        logger.debug("update card def #" + cardDef.getId());
+        logger.debug("update card def #{}", cardDef.getId());
         CardDef mCardDef = this.getCardDef(cardDef.getId());
 
         mCardDef.merge(cardDef);
@@ -97,7 +112,7 @@ public class CardDefDao {
      * @return just deleted card def
      */
     public CardDef deleteCardDef(Long id) {
-        logger.debug("delete card def #" + id);
+        logger.debug("delete card def #{}", id);
         // TODO: move to recycle bin first
         CardDef cardDef = this.getCardDef(id);
         em.remove(cardDef);
