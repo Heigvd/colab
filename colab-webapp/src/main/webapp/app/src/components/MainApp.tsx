@@ -25,7 +25,14 @@ import {
   useProjectBeingEdited,
 } from '../store/hooks';
 
-import { HashRouter as Router, Switch, Route, useParams, Redirect } from 'react-router-dom';
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  useParams,
+  Redirect,
+  useLocation,
+} from 'react-router-dom';
 import Settings from './settings/Settings';
 import Admin from './admin/Admin';
 import { MainMenuLink, InlineLink } from './common/Link';
@@ -58,6 +65,12 @@ const TeamWrapper = () => {
   }
 };
 
+// A custom hook that builds on useLocation to parse
+// the query string for you.
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 export default (): JSX.Element => {
   const dispatch = useAppDispatch();
 
@@ -81,6 +94,8 @@ export default (): JSX.Element => {
       </Overlay>
     ) : null;
 
+  const query = useQuery();
+
   if (user === undefined) {
     // user is not known. Reload state from API
     dispatch(API.reloadCurrentUser());
@@ -91,16 +106,16 @@ export default (): JSX.Element => {
       <Router>
         <Switch>
           <Route exact path="/SignUp">
-            <SignUpForm />
+            <SignUpForm redirectTo={query.get('redirectTo')} />
           </Route>
           <Route exact path="/ForgotPassword">
-            <ForgotPassword />
+            <ForgotPassword redirectTo={query.get('redirectTo')} />
           </Route>
           <Route exact path="/SignIn">
-            <SignInForm />
+            <SignInForm redirectTo={query.get('redirectTo')} />
           </Route>
           <Route>
-            <SignInForm />
+            <SignInForm redirectTo={query.get('redirectTo')} />
           </Route>
         </Switch>
         {reconnecting}

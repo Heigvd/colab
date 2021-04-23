@@ -11,10 +11,10 @@ import { NavLink } from 'react-router-dom';
 
 const linkStyle = css({
   textDecoration: 'none',
-  color: 'var(--fgColor)',
+  color: 'var(--linkColor)',
   ':hover': {
-    backgroundColor: 'var(--hoverBgColor)',
-    color: 'var(--hoverFgColor)',
+    backgroundColor: 'var(--linkHoverBgColor)',
+    color: 'var(--linkHoverColor)',
   },
 });
 
@@ -23,8 +23,10 @@ const mainMenuLink = cx(
   css({
     lineHeight: '44px',
     display: 'inline-block',
-    paddingTop: '8px',
-    paddingLeft: '10px',
+    padding: '8px 5px 0 5px',
+    ':focus': {
+      outlineStyle: 'inset',
+    },
   }),
 );
 

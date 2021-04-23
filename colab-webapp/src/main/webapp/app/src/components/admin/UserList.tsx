@@ -6,10 +6,10 @@
  */
 
 import * as React from 'react';
-import {useAppDispatch, useCurrentUser} from '../../store/hooks';
-import {grantAdminRight, revokeAdminRight} from '../../API/api';
-import {css} from '@emotion/css';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { useAppDispatch, useCurrentUser } from '../../store/hooks';
+import { grantAdminRight, revokeAdminRight } from '../../API/api';
+import { css } from '@emotion/css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSearch,
   faTimes,
@@ -17,15 +17,15 @@ import {
   faSortAlphaUp,
   faSortAlphaDown,
 } from '@fortawesome/free-solid-svg-icons';
-import {User} from 'colab-rest-client';
+import { User } from 'colab-rest-client';
 import IconButton from '../common/IconButton';
 
-const UserComp = ({user}: {user: User}) => {
+const UserComp = ({ user }: { user: User }) => {
   const dispatch = useAppDispatch();
   const currentUser = useCurrentUser()!;
 
   return (
-    <div className={css({display: 'contents'})}>
+    <div className={css({ display: 'contents' })}>
       <div>
         {user.username} {user.id === currentUser.id ? ' (you) ' : null}
       </div>
@@ -65,11 +65,11 @@ interface HeaderProps {
   sortKey?: keyof User;
 }
 
-const Header = ({sortKey, text}: HeaderProps) => {
+const Header = ({ sortKey, text }: HeaderProps) => {
   const sortBy = React.useContext(SortContext);
 
   const onClickCk = React.useCallback(() => {
-    if (sortKey!= null && sortBy.onToggle != null) {
+    if (sortKey != null && sortBy.onToggle != null) {
       sortBy.onToggle(sortKey);
     }
   }, [sortKey, sortBy]);
@@ -105,10 +105,10 @@ const Headers = () => {
   );
 };
 
-export default ({users}: UserListProps): JSX.Element => {
+export default ({ users }: UserListProps): JSX.Element => {
   const [search, setSearch] = React.useState('');
 
-  const [sortBy, setSortBy] = React.useState<{key: keyof User; direction: 1 | -1}>({
+  const [sortBy, setSortBy] = React.useState<{ key: keyof User; direction: 1 | -1 }>({
     key: 'username',
     direction: 1,
   });
@@ -174,7 +174,7 @@ export default ({users}: UserListProps): JSX.Element => {
               },
             })}
           >
-            <SortContext.Provider value={{...sortBy, onToggle: onToggleCb}}>
+            <SortContext.Provider value={{ ...sortBy, onToggle: onToggleCb }}>
               <Headers />
             </SortContext.Provider>
             {filterSortedList.map(user => (
@@ -182,10 +182,10 @@ export default ({users}: UserListProps): JSX.Element => {
             ))}
           </div>
         ) : (
-            <div>
-              <i>no result</i>
-            </div>
-          )}
+          <div>
+            <i>no result</i>
+          </div>
+        )}
       </div>
     </>
   );

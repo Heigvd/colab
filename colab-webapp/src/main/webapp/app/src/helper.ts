@@ -33,3 +33,23 @@ export const updateById = <T extends WithId>(entities: T[], entity: T): void => 
     entities.push(entity);
   }
 };
+
+export const buildLinkWithQueryParam = (
+  baseUrl: string,
+  queryParameters?: { [key: string]: string | null | undefined },
+) => {
+  if (queryParameters == null) {
+    return baseUrl;
+  } else {
+    return (
+      baseUrl +
+      '?' +
+      Object.entries(queryParameters)
+        .map(kv =>
+          kv[0] && kv[1] ? encodeURIComponent(kv[0]) + '=' + encodeURIComponent(kv[1]) : null,
+        )
+        .filter(param => !!param)
+        .join('&')
+    );
+  }
+};

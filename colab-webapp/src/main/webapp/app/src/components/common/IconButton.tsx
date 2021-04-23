@@ -6,10 +6,10 @@
  */
 
 import * as React from 'react';
-import {iconButton, linkStyle, iconStyle} from '../styling/style';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {IconProp} from '@fortawesome/fontawesome-svg-core';
-import {cx, css} from '@emotion/css';
+import { iconButton, linkStyle, iconStyle } from '../styling/style';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { cx, css } from '@emotion/css';
 
 export interface IconButtonProps {
   onClick?: () => void;
@@ -21,8 +21,15 @@ export interface IconButtonProps {
   iconColor?: string;
 }
 
-export default ({onClick, icon, title, children, className, reverseOrder,
-  iconColor}: IconButtonProps): JSX.Element => {
+export default ({
+  onClick,
+  icon,
+  title,
+  children,
+  className,
+  reverseOrder,
+  iconColor,
+}: IconButtonProps): JSX.Element => {
   /**
    * Pressing enter or space simulates click
    */
@@ -50,8 +57,8 @@ export default ({onClick, icon, title, children, className, reverseOrder,
         className
           ? cx(onClick != null ? linkStyle : iconStyle, className)
           : onClick != null
-            ? linkStyle
-            : iconStyle
+          ? linkStyle
+          : iconStyle
       }
       onClick={onClickCb}
       onKeyDown={keyDownCb}
@@ -60,7 +67,7 @@ export default ({onClick, icon, title, children, className, reverseOrder,
       {reverseOrder ? children : null}
       <FontAwesomeIcon
         icon={icon}
-        className={iconColor ? cx(iconButton, css({color: iconColor})) : iconButton}
+        className={iconColor ? cx(iconButton, css({ color: iconColor })) : iconButton}
       />
       {!reverseOrder ? children : null}
     </span>

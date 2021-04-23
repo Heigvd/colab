@@ -9,7 +9,10 @@ import * as React from 'react';
 import Loading from '../common/Loading';
 import { getRestClient, reloadCurrentUser } from '../../API/api';
 import { useAppDispatch, useCurrentUser } from '../../store/hooks';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useLocation } from 'react-router-dom';
+import { InlineLink } from '../common/Link';
+import { buildLinkWithQueryParam } from '../../helper';
+import Overlay from '../common/Overlay';
 
 interface TokenProps {
   tokenId: string;
@@ -21,6 +24,8 @@ type STATE_TYPE = 'LOADING' | 'AUTH_REQUIRED' | 'NO_TOKEN' | 'ERROR' | 'DONE';
 export default (props: TokenProps): JSX.Element => {
   const user = useCurrentUser();
   const dispatch = useAppDispatch();
+
+  const location = useLocation();
 
   if (user === undefined) {
     // authenticate state not known-> reload
@@ -67,11 +72,33 @@ export default (props: TokenProps): JSX.Element => {
   } else if (state == 'DONE') {
     return <Redirect to={redirectTo} />;
   } else if (state == 'AUTH_REQUIRED') {
-    // TODO ask user to sign in/up and, once authenticated, redirect back here
-    return <div>Authentication required: please sign in or sign up</div>;
+    const backToTokenUrl = location.pathname;
+    return (
+      <Overlay>
+        <div>
+          <span>Authentication required: please </span>
+          <InlineLink to={buildLinkWithQueryParam('/SignIn', { redirectTo: backToTokenUrl })}>
+            sign in
+          </InlineLink>
+          <span> or </span>
+          <InlineLink to={buildLinkWithQueryParam('/SignUp', { redirectTo: backToTokenUrl })}>
+            sign up
+          </InlineLink>
+          <span>.</span>
+        </div>
+      </Overlay>
+    );
   } else if (state == 'NO_TOKEN') {
-    return <div>Token does not exists</div>;
+    return (
+      <Overlay>
+        <div>Token does not exists</div>
+      </Overlay>
+    );
   } else {
-    return <div> Error while processing token </div>;
+    return (
+      <Overlay>
+        <div> Error while processing token </div>;
+      </Overlay>
+    );
   }
 };

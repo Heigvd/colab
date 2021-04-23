@@ -12,12 +12,13 @@ import { darkMode, linkStyle } from '../styling/style';
 import { requestPasswordReset } from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { InlineLink } from '../common/Link';
+import { buildLinkWithQueryParam } from '../../helper';
 
 interface Props {
-  redirectTo?: string;
+  redirectTo: string | null;
 }
 
-export default (_props: Props): JSX.Element => {
+export default (props: Props): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const [credentials, setCredentials] = React.useState({
@@ -58,7 +59,9 @@ export default (_props: Props): JSX.Element => {
           Submit
         </span>
       </button>
-      <InlineLink to="/SignIn">cancel</InlineLink>
+      <InlineLink to={buildLinkWithQueryParam('/SignIn', { redirectTo: props.redirectTo })}>
+        cancel
+      </InlineLink>
     </FormContainer>
   );
 };
