@@ -158,12 +158,12 @@ import org.slf4j.LoggerFactory;
      * @param email recipient address
      */
     @POST
-    @Path(&quot;Invite/{projectId: [0-9]}/{email}&quot;)
+    @Path(&quot;Invite/{projectId: [0-9]+}/{email}&quot;)
     public void inviteSomeone(@PathParam(&quot;projectId&quot;) Long projectId,
             @PathParam(&quot;email&quot;) String email) {
-<span class="nc" id="L164">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
-<span class="nc" id="L165">        projectFacade.invite(projectId, email);</span>
-<span class="nc" id="L166">    }</span>
+<span class="fc" id="L164">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
+<span class="fc" id="L165">        projectFacade.invite(projectId, email);</span>
+<span class="fc" id="L166">    }</span>
 
     /**
      * Get all card definitions belonging to a project

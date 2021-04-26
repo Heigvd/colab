@@ -126,9 +126,9 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L126">        logger.debug(&quot;Consume token #{}&quot;, id);</span>
 <span class="fc" id="L127">        Token token = tokenDao.getToken(id);</span>
 <span class="pc bpc" id="L128" title="1 of 2 branches missed.">        if (token != null) {</span>
-<span class="pc bpc" id="L129" title="3 of 4 branches missed.">            if (token.isAuthenticationRequired() &amp;&amp; !requestManager.isAuthenticated()) {</span>
-<span class="nc" id="L130">                logger.debug(&quot;Token requires an authenticated user&quot;);</span>
-<span class="nc" id="L131">                throw HttpErrorMessage.authenticationRequired();</span>
+<span class="fc bfc" id="L129" title="All 4 branches covered.">            if (token.isAuthenticationRequired() &amp;&amp; !requestManager.isAuthenticated()) {</span>
+<span class="fc" id="L130">                logger.debug(&quot;Token requires an authenticated user&quot;);</span>
+<span class="fc" id="L131">                throw HttpErrorMessage.authenticationRequired();</span>
             } else {
 <span class="pc bpc" id="L133" title="1 of 2 branches missed.">                if (token.checkHash(plainToken)) {</span>
 <span class="fc" id="L134">                    token.consume(requestManager);</span>
@@ -256,34 +256,34 @@ import org.slf4j.LoggerFactory;
      * @param recipient email address to send invitation to
      */
     public void sendMembershipInvitation(Project project, String recipient) {
-<span class="nc" id="L259">        User currentUser = securityFacade.assertAndGetCurrentUser();</span>
+<span class="fc" id="L259">        User currentUser = securityFacade.assertAndGetCurrentUser();</span>
         // user must have write right on the project
-<span class="nc" id="L261">        securityFacade.assertProjectWriteRight(project);</span>
+<span class="fc" id="L261">        securityFacade.assertProjectWriteRight(project);</span>
 
-<span class="nc" id="L263">        InvitationToken token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);</span>
-<span class="nc bnc" id="L264" title="All 2 branches missed.">        if (token == null) {</span>
+<span class="fc" id="L263">        InvitationToken token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);</span>
+<span class="pc bpc" id="L264" title="1 of 2 branches missed.">        if (token == null) {</span>
             // create a member and link it to the project, but do not link it to any user
             // this link will be set during token consumtion
-<span class="nc" id="L267">            TeamMember newMember = projectFacade.addMember(project, null);</span>
-<span class="nc" id="L268">            token = new InvitationToken();</span>
+<span class="fc" id="L267">            TeamMember newMember = projectFacade.addMember(project, null);</span>
+<span class="fc" id="L268">            token = new InvitationToken();</span>
 
-<span class="nc" id="L270">            token.setTeamMember(newMember);</span>
+<span class="fc" id="L270">            token.setTeamMember(newMember);</span>
             // never expire
-<span class="nc" id="L272">            token.setExpirationDate(null);</span>
-<span class="nc" id="L273">            token.setAuthenticationRequired(Boolean.TRUE);</span>
-<span class="nc" id="L274">            token.setRecipient(recipient);</span>
+<span class="fc" id="L272">            token.setExpirationDate(null);</span>
+<span class="fc" id="L273">            token.setAuthenticationRequired(Boolean.TRUE);</span>
+<span class="fc" id="L274">            token.setRecipient(recipient);</span>
 
-<span class="nc" id="L276">            tokenDao.persistToken(token);</span>
+<span class="fc" id="L276">            tokenDao.persistToken(token);</span>
         }
 
-<span class="nc" id="L279">        token.setSender(currentUser.getDisplayName());</span>
+<span class="fc" id="L279">        token.setSender(currentUser.getDisplayName());</span>
         try {
-<span class="nc" id="L281">            sendTokenByEmail(token, recipient);</span>
+<span class="fc" id="L281">            sendTokenByEmail(token, recipient);</span>
 <span class="nc" id="L282">        } catch (MessagingException ex) {</span>
 <span class="nc" id="L283">            logger.error(&quot;Failed to send pssword reset email&quot;, ex);</span>
 <span class="nc" id="L284">            throw HttpErrorMessage.smtpError();</span>
-<span class="nc" id="L285">        }</span>
-<span class="nc" id="L286">    }</span>
+<span class="fc" id="L285">        }</span>
+<span class="fc" id="L286">    }</span>
 
     /**
      * Fetch token with given id from DAO. If it's outdated, it will be destroyed and null will be

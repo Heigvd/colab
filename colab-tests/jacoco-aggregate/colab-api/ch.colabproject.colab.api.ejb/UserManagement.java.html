@@ -84,9 +84,9 @@ import org.slf4j.LoggerFactory;
      * @return the user or null if user not exist or current user has not right to read the user
      */
     public User getUserById(Long id) {
-<span class="nc" id="L87">        User user = userDao.findUser(id);</span>
-<span class="nc" id="L88">        securityFacade.assertCanRead(user);</span>
-<span class="nc" id="L89">        return user;</span>
+<span class="fc" id="L87">        User user = userDao.findUser(id);</span>
+<span class="fc" id="L88">        securityFacade.assertCanRead(user);</span>
+<span class="fc" id="L89">        return user;</span>
     }
 
     /**

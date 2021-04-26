@@ -108,8 +108,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id : [0-9]*}&quot;)
     public User getUserById(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L111">        logger.debug(&quot;get user #{}&quot;, id);</span>
-<span class="nc" id="L112">        return userManagement.getUserById(id);</span>
+<span class="fc" id="L111">        logger.debug(&quot;get user #{}&quot;, id);</span>
+<span class="fc" id="L112">        return userManagement.getUserById(id);</span>
     }
 
     /**

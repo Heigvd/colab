@@ -106,19 +106,19 @@ import javax.persistence.TypedQuery;
      *
      */
     public void assertCanRead(User user) {
-<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        if (user == null) {</span>
 <span class="nc" id="L110">            throw HttpErrorMessage.badRequest();</span>
         } else {
-<span class="nc" id="L112">            User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L113" title="All 2 branches missed.">            if (currentUser == null) {</span>
+<span class="fc" id="L112">            User currentUser = requestManager.getCurrentUser();</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">            if (currentUser == null) {</span>
 <span class="nc" id="L114">                throw HttpErrorMessage.authenticationRequired();</span>
             } else {
-<span class="nc bnc" id="L116" title="All 4 branches missed.">                if (!currentUser.isAdmin() &amp;&amp; !this.areUserTeammate(currentUser, user)) {</span>
-<span class="nc" id="L117">                    throw HttpErrorMessage.forbidden();</span>
+<span class="pc bpc" id="L116" title="1 of 4 branches missed.">                if (!currentUser.isAdmin() &amp;&amp; !this.areUserTeammate(currentUser, user)) {</span>
+<span class="fc" id="L117">                    throw HttpErrorMessage.forbidden();</span>
                 }
             }
         }
-<span class="nc" id="L121">    }</span>
+<span class="fc" id="L121">    }</span>
 
     /**
      * Get the current user if it exists.
@@ -166,14 +166,14 @@ import javax.persistence.TypedQuery;
      * @return true if both users are member of the same team
      */
     public boolean areUserTeammate(User a, User b) {
-<span class="nc" id="L169">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
+<span class="fc" id="L169">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
             &quot;TeamMember.areUserTeammate&quot;,
             Boolean.class);
-<span class="nc" id="L172">        query.setParameter(&quot;aUserId&quot;, a.getId());</span>
-<span class="nc" id="L173">        query.setParameter(&quot;bUserId&quot;, b.getId());</span>
+<span class="fc" id="L172">        query.setParameter(&quot;aUserId&quot;, a.getId());</span>
+<span class="fc" id="L173">        query.setParameter(&quot;bUserId&quot;, b.getId());</span>
 
         // if the query returns something, users are teammates
-<span class="nc bnc" id="L176" title="All 2 branches missed.">        return !query.getResultList().isEmpty();</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">        return !query.getResultList().isEmpty();</span>
     }
 
     /**
@@ -184,11 +184,11 @@ import javax.persistence.TypedQuery;
      * @throws HttpErrorMessage forbidden
      */
     public void assertProjectWriteRight(Project project) {
-<span class="nc" id="L187">        User currentUser = assertAndGetCurrentUser();</span>
-<span class="nc bnc" id="L188" title="All 4 branches missed.">        if (!currentUser.isAdmin() &amp;&amp; !this.isUserMemebrOfProject(currentUser, project)) {</span>
+<span class="fc" id="L187">        User currentUser = assertAndGetCurrentUser();</span>
+<span class="pc bpc" id="L188" title="2 of 4 branches missed.">        if (!currentUser.isAdmin() &amp;&amp; !this.isUserMemebrOfProject(currentUser, project)) {</span>
 <span class="nc" id="L189">            throw HttpErrorMessage.forbidden();</span>
         }
-<span class="nc" id="L191">    }</span>
+<span class="fc" id="L191">    }</span>
 
     /**
      * Make sure the current user has right to edit the project
