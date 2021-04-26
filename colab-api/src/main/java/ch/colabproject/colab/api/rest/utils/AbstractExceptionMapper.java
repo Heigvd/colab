@@ -6,9 +6,12 @@
  */
 package ch.colabproject.colab.api.rest.utils;
 
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
 import javax.ejb.EJBException;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +39,11 @@ public class AbstractExceptionMapper {
             return processException(((EJBException) exception).getCausedByException());
         } else if (exception instanceof HttpException) {
             return Response.status(((HttpException) exception).getHttpStatus())
+                .type(MediaType.APPLICATION_JSON)
                 .entity(exception)
                 .build();
+        } else if (exception instanceof NotFoundException) {
+            return processException(HttpErrorMessage.notFound());
         } else if (exception instanceof ConstraintViolationException) {
             ConstraintViolationException constraintViolation
                 = (ConstraintViolationException) exception;
