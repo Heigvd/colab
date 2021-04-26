@@ -6,19 +6,16 @@
  */
 package ch.colabproject.colab.tests.rest;
 
-import ch.colabproject.colab.api.ejb.TransactionManager;
-import ch.colabproject.colab.api.ejb.WebsocketFacade;
 import ch.colabproject.colab.api.model.user.AuthInfo;
-import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
-import ch.colabproject.colab.api.ws.WebsocketHelper;
 import ch.colabproject.colab.api.ws.channel.UserChannel;
 import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
-import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.TestHelper;
 import ch.colabproject.colab.tests.tests.TestUser;
@@ -27,14 +24,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import javax.inject.Inject;
 import javax.websocket.DeploymentException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
-import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 
 /**
  *
@@ -394,10 +387,10 @@ public class UserControllerTest extends AbstractArquillianTest {
     public void testWebsocket() throws URISyntaxException, DeploymentException, IOException, InterruptedException {
         this.signIn(admin);
 
-        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketHelper.class), Level.DEBUG);
-        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketClient.class), Level.DEBUG);
-        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketFacade.class), Level.DEBUG);
-        TestHelper.setLoggerLevel(LoggerFactory.getLogger(TransactionManager.class), Level.DEBUG);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketHelper.class), Level.DEBUG);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketClient.class), Level.DEBUG);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketFacade.class), Level.DEBUG);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(TransactionManager.class), Level.DEBUG);
 
         WebsocketClient wsClient = this.createWsClient();
         // subscribe to currentUser channel
