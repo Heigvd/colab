@@ -260,8 +260,8 @@ import javax.persistence.Transient;
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="pc bpc" id="L263" title="1 of 2 branches missed.">        if (this.cardDefinition != null) {</span>
-<span class="nc" id="L264">            return this.cardDefinition.getChannels();</span>
+<span class="fc bfc" id="L263" title="All 2 branches covered.">        if (this.cardDefinition != null) {</span>
+<span class="fc" id="L264">            return this.cardDefinition.getChannels();</span>
         } else {
 <span class="fc" id="L266">            return Set.of();</span>
         }

@@ -106,7 +106,7 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L106">        teamMember.setUser(user);</span>
 <span class="fc" id="L107">        teamMember.setProject(project);</span>
 <span class="fc" id="L108">        project.getTeamMembers().add(teamMember);</span>
-<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (user != null) {</span>
+<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        if (user != null) {</span>
 <span class="fc" id="L110">            user.getTeamMembers().add(teamMember);</span>
         }
 <span class="fc" id="L112">        return teamMember;</span>
@@ -133,10 +133,10 @@ import org.slf4j.LoggerFactory;
      * @param email send invitation to this address
      */
     public void invite(Long projectId, String email) {
-<span class="fc" id="L136">        Project project = projectDao.getProject(projectId);</span>
-<span class="fc" id="L137">        logger.debug(&quot;Invite {} to join {}&quot;, email, project);</span>
-<span class="fc" id="L138">        securityFacade.assertProjectWriteRight(project);</span>
-<span class="fc" id="L139">        tokenFacade.sendMembershipInvitation(project, email);</span>
-<span class="fc" id="L140">    }</span>
+<span class="nc" id="L136">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L137">        logger.debug(&quot;Invite {} to join {}&quot;, email, project);</span>
+<span class="nc" id="L138">        securityFacade.assertProjectWriteRight(project);</span>
+<span class="nc" id="L139">        tokenFacade.sendMembershipInvitation(project, email);</span>
+<span class="nc" id="L140">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

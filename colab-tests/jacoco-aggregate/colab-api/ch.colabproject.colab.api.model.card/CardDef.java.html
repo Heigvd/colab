@@ -124,8 +124,8 @@ import javax.persistence.Transient;
      * @param uniqueId the unique identifier
      */
     public void setUniqueId(String uniqueId) {
-<span class="fc" id="L127">        this.uniqueId = uniqueId;</span>
-<span class="fc" id="L128">    }</span>
+<span class="nc" id="L127">        this.uniqueId = uniqueId;</span>
+<span class="nc" id="L128">    }</span>
 
     /**
      * @return the title
@@ -177,7 +177,7 @@ import javax.persistence.Transient;
      * @return the project it belongs to
      */
     public Project getProject() {
-<span class="fc" id="L180">        return project;</span>
+<span class="nc" id="L180">        return project;</span>
     }
 
     /**
@@ -232,9 +232,9 @@ import javax.persistence.Transient;
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
 <span class="pc bpc" id="L234" title="1 of 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L235">            return Set.of(ProjectContentChannel.build(project));</span>
+<span class="fc" id="L235">            return Set.of(ProjectContentChannel.build(project));</span>
         } else {
-<span class="fc" id="L237">            return Set.of();</span>
+<span class="nc" id="L237">            return Set.of();</span>
         }
     }
 
@@ -246,14 +246,14 @@ import javax.persistence.Transient;
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L249">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L249">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L254">        return &quot;CardDef{&quot; + &quot;id=&quot; + id + &quot;uniqueId=&quot; + uniqueId + &quot;title=&quot; + title + &quot;purpose=&quot;</span>
-<span class="nc" id="L255">                + purpose + &quot;authorityHolder=&quot; + authorityHolder + &quot;projectId=&quot; + getProjectId()</span>
-                + &quot;}&quot;;
+<span class="nc" id="L254">        return &quot;CardDef{&quot; + &quot;id=&quot; + id + &quot;, uniqueId=&quot; + uniqueId + &quot;, title=&quot; + title</span>
+                + &quot;, purpose=&quot; + purpose + &quot;, authorityHolder=&quot; + authorityHolder + &quot;, projectId=&quot;
+<span class="nc" id="L256">                + getProjectId() + &quot;}&quot;;</span>
     }
 
 }

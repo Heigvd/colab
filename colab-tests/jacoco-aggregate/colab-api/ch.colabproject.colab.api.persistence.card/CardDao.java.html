@@ -54,11 +54,11 @@ import org.slf4j.LoggerFactory;
      * @return list of cards
      */
     public List&lt;Card&gt; getSubCards(Long parentId) {
-<span class="nc" id="L57">        logger.debug(&quot;get all cards children of card content #{}&quot;, parentId);</span>
-<span class="nc" id="L58">        TypedQuery&lt;Card&gt; query = em.createNamedQuery(&quot;Card.findCardByParent&quot;, Card.class);</span>
-<span class="nc" id="L59">        query.setParameter(&quot;parentId&quot;, parentId);</span>
+<span class="fc" id="L57">        logger.debug(&quot;get all cards children of card content #{}&quot;, parentId);</span>
+<span class="fc" id="L58">        TypedQuery&lt;Card&gt; query = em.createNamedQuery(&quot;Card.findCardByParent&quot;, Card.class);</span>
+<span class="fc" id="L59">        query.setParameter(&quot;parentId&quot;, parentId);</span>
 
-<span class="nc" id="L61">        return query.getResultList();</span>
+<span class="fc" id="L61">        return query.getResultList();</span>
     }
 
     /**

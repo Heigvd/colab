@@ -9,11 +9,11 @@ package ch.colabproject.colab.api.rest.card;
 import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.CardDef;
-import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.card.CardDefDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -74,36 +74,41 @@ import org.slf4j.LoggerFactory;
      * @return the card def or null
      */
     @GET
-    @Path(&quot;/{id}&quot;)
+    @Path(&quot;{id}&quot;)
     public CardDef getCardDef(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L79">        logger.debug(&quot;get card def #{}&quot;, id);</span>
 <span class="nc" id="L80">        return cardDefDao.getCardDef(id);</span>
     }
 
     /**
-     * Persist the card def
+     * Persist the card definition
      *
-     * @param cardDef the card def to persist
+     * @param cardDef the card definition to persist
      *
-     * @return id of the persisted new card def
+     * @return id of the persisted new card definition
+     *
+     * @deprecated a priori there will be no need to directly create a card
+     *             definition
      */
+    @Deprecated
     @POST
     public Long createCardDef(CardDef cardDef) {
-<span class="nc" id="L92">        logger.debug(&quot;create card def&quot;);</span>
-<span class="nc" id="L93">        return cardDefDao.createCardDef(cardDef).getId();</span>
+<span class="nc" id="L96">        logger.debug(&quot;create card def {}&quot;, Objects.toString(cardDef));</span>
+<span class="nc" id="L97">        return cardDefDao.createCardDef(cardDef).getId();</span>
     }
 
     /**
      * Create and persist a new card definition
      *
-     * @param project the project the new card definition belongs to
+     * @param projectId the project the new card definition belongs to
      *
      * @return the persisted new card definition
      */
-    // TODO
-    public CardDef createNewCardDef(final Project project) {
-<span class="nc" id="L105">        logger.debug(&quot;create new card def for the project {}&quot;, project);</span>
-<span class="nc" id="L106">        return facade.createNewCardDef(project);</span>
+    @POST
+    @Path(&quot;create/{projectId}&quot;)
+    public CardDef createNewCardDef(@PathParam(&quot;projectId&quot;) Long projectId) {
+<span class="nc" id="L110">        logger.debug(&quot;create new card def for the project #{}&quot;, projectId);</span>
+<span class="nc" id="L111">        return facade.createNewCardDef(projectId);</span>
     }
 
     /**
@@ -115,9 +120,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCardDef(CardDef cardDef) throws ColabMergeException {
-<span class="nc" id="L118">        logger.debug(&quot;update card def #{}&quot;, cardDef.getId());</span>
-<span class="nc" id="L119">        cardDefDao.updateCardDef(cardDef);</span>
-<span class="nc" id="L120">    }</span>
+<span class="nc" id="L123">        logger.debug(&quot;update card def #{}&quot;, cardDef.getId());</span>
+<span class="nc" id="L124">        cardDefDao.updateCardDef(cardDef);</span>
+<span class="nc" id="L125">    }</span>
 
     /**
      * Permanently delete a card def
@@ -125,11 +130,11 @@ import org.slf4j.LoggerFactory;
      * @param id id of the card def to delete
      */
     @DELETE
-    @Path(&quot;/{id}&quot;)
+    @Path(&quot;{id}&quot;)
     public void deleteCardDef(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L130">        logger.debug(&quot;delete card def #{}&quot;, id);</span>
-<span class="nc" id="L131">        cardDefDao.deleteCardDef(id);</span>
-<span class="nc" id="L132">    }</span>
+<span class="nc" id="L135">        logger.debug(&quot;delete card def #{}&quot;, id);</span>
+<span class="nc" id="L136">        cardDefDao.deleteCardDef(id);</span>
+<span class="nc" id="L137">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

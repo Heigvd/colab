@@ -108,9 +108,9 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L108">        Set&lt;ColabEntity&gt; filtered = updated.stream()</span>
 <span class="fc" id="L109">            .filter(</span>
 <span class="fc" id="L110">                (u) -&gt; !deleted.stream()</span>
-<span class="fc bfc" id="L111" title="All 2 branches covered.">                    .anyMatch(</span>
-<span class="fc bfc" id="L112" title="All 2 branches covered.">                        (d) -&gt; d.getId().equals(u.getId())</span>
-<span class="fc bfc" id="L113" title="All 2 branches covered.">                        &amp;&amp; d.getType().equals(u.getJsonDiscriminator())</span>
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">                    .anyMatch(</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">                        (d) -&gt; d.getId().equals(u.getId())</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">                        &amp;&amp; d.getType().equals(u.getJsonDiscriminator())</span>
                     )
 <span class="fc" id="L115">            ).collect(Collectors.toSet());</span>
 

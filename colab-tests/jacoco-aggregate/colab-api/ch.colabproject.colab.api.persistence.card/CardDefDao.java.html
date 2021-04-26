@@ -53,12 +53,12 @@ import org.slf4j.LoggerFactory;
      * @return list of card definitions
      */
     public List&lt;CardDef&gt; getProjectCardDefs(Long projectId) {
-<span class="nc" id="L56">        logger.debug(&quot;get all card defs of the project #{}&quot;, projectId);</span>
-<span class="nc" id="L57">        TypedQuery&lt;CardDef&gt; query = em.createNamedQuery(&quot;CardDef.findCardDefByProject&quot;,</span>
+<span class="fc" id="L56">        logger.debug(&quot;get all card defs of the project #{}&quot;, projectId);</span>
+<span class="fc" id="L57">        TypedQuery&lt;CardDef&gt; query = em.createNamedQuery(&quot;CardDef.findCardDefByProject&quot;,</span>
                 CardDef.class);
-<span class="nc" id="L59">        query.setParameter(&quot;projectId&quot;, projectId);</span>
+<span class="fc" id="L59">        query.setParameter(&quot;projectId&quot;, projectId);</span>
 
-<span class="nc" id="L61">        return query.getResultList();</span>
+<span class="fc" id="L61">        return query.getResultList();</span>
     }
 
     /**

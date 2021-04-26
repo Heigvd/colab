@@ -196,29 +196,33 @@ import javax.validation.constraints.Min;
      * @return the ID of the card to which this content belongs
      */
     public Long getCardId() {
-<span class="nc" id="L199">        return cardId;</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L200">            return card.getId();</span>
+        } else {
+<span class="nc" id="L202">            return cardId;</span>
+        }
     }
 
     /**
      * @param cardId the ID of the card to which this content belongs
      */
     public void setCardId(Long cardId) {
-<span class="nc" id="L206">        this.cardId = cardId;</span>
-<span class="nc" id="L207">    }</span>
+<span class="nc" id="L210">        this.cardId = cardId;</span>
+<span class="nc" id="L211">    }</span>
 
     /**
      * @return the cards contained in there
      */
     public List&lt;Card&gt; getSubCards() {
-<span class="nc" id="L213">        return subCards;</span>
+<span class="nc" id="L217">        return subCards;</span>
     }
 
     /**
      * @param subCards the cards contained in there
      */
     public void setSubCards(List&lt;Card&gt; subCards) {
-<span class="nc" id="L220">        this.subCards = subCards;</span>
-<span class="nc" id="L221">    }</span>
+<span class="nc" id="L224">        this.subCards = subCards;</span>
+<span class="nc" id="L225">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -229,42 +233,42 @@ import javax.validation.constraints.Min;
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L232" title="All 2 branches missed.">        if (other instanceof CardContent) {</span>
-<span class="nc" id="L233">            CardContent o = (CardContent) other;</span>
-<span class="nc" id="L234">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L235">            this.setStatus(o.getStatus());</span>
-<span class="nc" id="L236">            this.setCompletionLevel(o.getCompletionLevel());</span>
-<span class="nc" id="L237">            this.setCompletionMode(o.getCompletionMode());</span>
-<span class="nc" id="L238">        } else {</span>
-<span class="nc" id="L239">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">        if (other instanceof CardContent) {</span>
+<span class="nc" id="L237">            CardContent o = (CardContent) other;</span>
+<span class="nc" id="L238">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L239">            this.setStatus(o.getStatus());</span>
+<span class="nc" id="L240">            this.setCompletionLevel(o.getCompletionLevel());</span>
+<span class="nc" id="L241">            this.setCompletionMode(o.getCompletionMode());</span>
+<span class="nc" id="L242">        } else {</span>
+<span class="nc" id="L243">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L241">    }</span>
+<span class="nc" id="L245">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L245" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L246">            return this.card.getChannels();</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L250">            return this.card.getChannels();</span>
         } else {
-<span class="nc" id="L248">            return Set.of();</span>
+<span class="nc" id="L252">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L254">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L258">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L260">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L264">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L265">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title= &quot; + title + &quot;, status= &quot; + status</span>
-                + &quot;, completion= &quot; + completionLevel + &quot;, completionMode= &quot; + completionMode
-                + &quot;, card= &quot; + card + &quot;}&quot;;
+<span class="nc" id="L269">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
+                + &quot;, completion=&quot; + completionLevel + &quot;, completionMode=&quot; + completionMode
+                + &quot;, card=&quot; + card + &quot;}&quot;;
     }
 
 }

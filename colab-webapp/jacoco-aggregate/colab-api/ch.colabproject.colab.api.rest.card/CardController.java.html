@@ -10,12 +10,12 @@ import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
      * The card-related logic
      */
     @Inject
-    private CardFacade facade;
+    private CardFacade cardFacade;
 
     /**
      * Retrieve the list of all cards. This is available to admin only
@@ -84,7 +84,7 @@ import org.slf4j.LoggerFactory;
      * @return the card or null
      */
     @GET
-    @Path(&quot;/{id}&quot;)
+    @Path(&quot;{id}&quot;)
     public Card getCard(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L89">        logger.debug(&quot;get card #{}&quot;, id);</span>
 <span class="nc" id="L90">        return cardDao.getCard(id);</span>
@@ -96,25 +96,31 @@ import org.slf4j.LoggerFactory;
      * @param card the card to persist
      *
      * @return id of the persisted new card
+     *
+     * @deprecated a priori there will be no need to directly create a card
      */
+    @Deprecated
     @POST
     public Long createCard(Card card) {
-<span class="nc" id="L102">        logger.debug(&quot;create card&quot;);</span>
-<span class="nc" id="L103">        return cardDao.createCard(card).getId();</span>
+<span class="nc" id="L105">        logger.debug(&quot;create card {}&quot;, Objects.toString(card));</span>
+<span class="nc" id="L106">        return cardDao.createCard(card).getId();</span>
     }
 
     /**
      * Create and persist a new card
      *
-     * @param parent the new card's parent
-     * @param cardDefinition the card definition of the new card
+     * @param parentId id of the new card's parent
+     * @param cardDefinitionId id of the card definition of the new card
+     *
      * @return the persisted new card
      */
-    // TODO
-    public Card createNewCard(final CardContent parent, final CardDef cardDefinition) {
-<span class="nc" id="L115">        logger.debug(&quot;create a new card for the parent {} and the definition {}&quot;, parent,</span>
-                cardDefinition);
-<span class="nc" id="L117">        return facade.createNewSubCard(parent, cardDefinition);</span>
+    @POST
+    @Path(&quot;create/{parentId}/{cardDefId}&quot;)
+    public Card createNewCard(@PathParam(&quot;parentId&quot;) Long parentId,
+            @PathParam(&quot;cardDefId&quot;) Long cardDefinitionId) {
+<span class="nc" id="L121">        logger.debug(&quot;create a new card for the parent #{} and the definition #{}&quot;, parentId,</span>
+                cardDefinitionId);
+<span class="nc" id="L123">        return cardFacade.createNewCard(parentId, cardDefinitionId);</span>
     }
 
     /**
@@ -126,9 +132,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCard(Card card) throws ColabMergeException {
-<span class="nc" id="L129">        logger.debug(&quot;update card #{}&quot;, card.getId());</span>
-<span class="nc" id="L130">        cardDao.updateCard(card);</span>
-<span class="nc" id="L131">    }</span>
+<span class="nc" id="L135">        logger.debug(&quot;update card #{}&quot;, card.getId());</span>
+<span class="nc" id="L136">        cardDao.updateCard(card);</span>
+<span class="nc" id="L137">    }</span>
 
     /**
      * Permanently delete a card
@@ -136,11 +142,11 @@ import org.slf4j.LoggerFactory;
      * @param id id of the card to delete
      */
     @DELETE
-    @Path(&quot;/{id}&quot;)
+    @Path(&quot;{id}&quot;)
     public void deleteCard(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L141">        logger.debug(&quot;delete card #{}&quot;, id);</span>
-<span class="nc" id="L142">        cardDao.deleteCard(id);</span>
-<span class="nc" id="L143">    }</span>
+<span class="nc" id="L147">        logger.debug(&quot;delete card #{}&quot;, id);</span>
+<span class="nc" id="L148">        cardDao.deleteCard(id);</span>
+<span class="nc" id="L149">    }</span>
 
     /**
      * Get all card content variants of a card
@@ -152,12 +158,13 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/CardContents&quot;)
     public List&lt;CardContent&gt; getContentVariantsOfCard(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L155">        logger.debug(&quot;Get card #{} content variants&quot;, cardId);</span>
-<span class="nc" id="L156">        return cardContentDao.getContentVariantsOfCard(cardId);</span>
+<span class="nc" id="L161">        logger.debug(&quot;Get card #{} content variants&quot;, cardId);</span>
+<span class="nc" id="L162">        return cardContentDao.getContentVariantsOfCard(cardId);</span>
 
         // an alternative would be to define a method in the facade
         // cardDao.getCard(id).getContentVariants()
         // FIXME see what is the best
     }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

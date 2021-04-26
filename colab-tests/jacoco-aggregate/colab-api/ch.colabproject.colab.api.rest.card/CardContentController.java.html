@@ -15,6 +15,7 @@ import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -37,10 +38,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="fc" id="L40">public class CardContentController {</span>
+<span class="fc" id="L41">public class CardContentController {</span>
 
     /** logger */
-<span class="fc" id="L43">    private static final Logger logger = LoggerFactory.getLogger(CardContentController.class);</span>
+<span class="fc" id="L44">    private static final Logger logger = LoggerFactory.getLogger(CardContentController.class);</span>
 
     /**
      * The card content persistence manager
@@ -71,8 +72,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;CardContent&gt; getAllCardContents() {
-<span class="fc" id="L74">        logger.debug(&quot;Get all card contents&quot;);</span>
-<span class="fc" id="L75">        return cardContentDao.getAllCardContent();</span>
+<span class="fc" id="L75">        logger.debug(&quot;Get all card contents&quot;);</span>
+<span class="fc" id="L76">        return cardContentDao.getAllCardContent();</span>
     }
 
     /**
@@ -83,10 +84,10 @@ import org.slf4j.LoggerFactory;
      * @return the card content or null
      */
     @GET
-    @Path(&quot;/{id}&quot;)
+    @Path(&quot;{id}&quot;)
     public CardContent getCardContent(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L88">        logger.debug(&quot;Get card #{}&quot;, id);</span>
-<span class="fc" id="L89">        return cardContentDao.getCardContent(id);</span>
+<span class="fc" id="L89">        logger.debug(&quot;Get card #{}&quot;, id);</span>
+<span class="fc" id="L90">        return cardContentDao.getCardContent(id);</span>
     }
 
     /**
@@ -95,23 +96,28 @@ import org.slf4j.LoggerFactory;
      * @param cardContent the card content to persist
      *
      * @return id of the persisted new card content
+     *
+     * @deprecated a priori there will be no need to directly create a card content
      */
+    @Deprecated
     @POST
     public Long createCardContent(CardContent cardContent) {
-<span class="fc" id="L101">        logger.debug(&quot;Create card content&quot;);</span>
-<span class="fc" id="L102">        return cardContentDao.createCardContent(cardContent).getId();</span>
+<span class="nc" id="L105">        logger.debug(&quot;Create card content {}&quot;, Objects.toString(cardContent));</span>
+<span class="nc" id="L106">        return cardContentDao.createCardContent(cardContent).getId();</span>
     }
 
     /**
-     * Create and persist a new card
+     * Create and persist a new card content
      *
-     * @param card the new card's parent
-     * @return the persisted new card
+     * @param cardId id of the new card content's parent
+     *
+     * @return the persisted new card content
      */
-    // TODO
-    public CardContent createNewCard(final Card card) {
-<span class="nc" id="L113">        logger.debug(&quot;create a new card content for the card {}&quot;, card);</span>
-<span class="nc" id="L114">        return facade.createNewCardContent(card);</span>
+    @POST
+    @Path(&quot;create/{cardId}&quot;)
+    public CardContent createNewCardContent(@PathParam(&quot;cardId&quot;) Long cardId) {
+<span class="fc" id="L119">        logger.debug(&quot;create a new card content for the card #{}&quot;, cardId);</span>
+<span class="fc" id="L120">        return facade.createNewCardContent(cardId);</span>
     }
 
     /**
@@ -123,9 +129,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCardContent(CardContent cardContent) throws ColabMergeException {
-<span class="fc" id="L126">        logger.debug(&quot;Update card content #{}&quot;, cardContent.getId());</span>
-<span class="fc" id="L127">        cardContentDao.updateCardContent(cardContent);</span>
-<span class="fc" id="L128">    }</span>
+<span class="fc" id="L132">        logger.debug(&quot;Update card content #{}&quot;, cardContent.getId());</span>
+<span class="fc" id="L133">        cardContentDao.updateCardContent(cardContent);</span>
+<span class="fc" id="L134">    }</span>
 
     /**
      * Permanently delete a card content
@@ -133,11 +139,11 @@ import org.slf4j.LoggerFactory;
      * @param id id of the card content to delete
      */
     @DELETE
-    @Path(&quot;/{id}&quot;)
+    @Path(&quot;{id}&quot;)
     public void deleteCardContent(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L138">        logger.debug(&quot;Delete card #{}&quot;, id);</span>
-<span class="fc" id="L139">        cardContentDao.deleteCardContent(id);</span>
-<span class="fc" id="L140">    }</span>
+<span class="fc" id="L144">        logger.debug(&quot;Delete card #{}&quot;, id);</span>
+<span class="fc" id="L145">        cardContentDao.deleteCardContent(id);</span>
+<span class="fc" id="L146">    }</span>
 
     /**
      * Get all sub cards
@@ -147,14 +153,15 @@ import org.slf4j.LoggerFactory;
      * @return list of cards
      */
     @GET
-    @Path(&quot;/{id}/Subcards&quot;)
+    @Path(&quot;{id}/Subcards&quot;)
     public List&lt;Card&gt; getSubCards(@PathParam(&quot;id&quot;) Long parentId) {
-<span class="nc" id="L152">        logger.debug(&quot;Get parent #{} sub cards&quot;, parentId);</span>
-<span class="nc" id="L153">        return cardDao.getSubCards(parentId);</span>
+<span class="fc" id="L158">        logger.debug(&quot;Get parent #{} sub cards&quot;, parentId);</span>
+<span class="fc" id="L159">        return cardDao.getSubCards(parentId);</span>
 
         // an alternative would be to define a method in the facade
         // cardContentDao.getCardContent(id).getSubCards()
         // FIXME see what is the best
     }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

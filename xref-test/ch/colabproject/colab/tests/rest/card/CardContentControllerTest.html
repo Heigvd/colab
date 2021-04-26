@@ -14,46 +14,46 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.tests.<strong class="jxr_keyword">rest</strong>.card;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.CardContent;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.CardContentCompletionMode;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.CardContentStatus;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.AbstractArquillianTest;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> java.util.List;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Assertions;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * Unit testing of card content controller from a client point of view</em>
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> * @author sandra</em>
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_comment">// TODO sandra - Check the constraints</em>
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="CardContentControllerTest" href="../../../../../../ch/colabproject/colab/tests/rest/card/CardContentControllerTest.html#CardContentControllerTest">CardContentControllerTest</a> <strong class="jxr_keyword">extends</strong> <a name="AbstractArquillianTest" href="../../../../../../ch/colabproject/colab/tests/tests/AbstractArquillianTest.html#AbstractArquillianTest">AbstractArquillianTest</a> {
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>      @Test
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateCardContent() {
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>          String title = <span class="jxr_string">"Receipt "</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>          <strong class="jxr_keyword">int</strong> completionLevel = (<strong class="jxr_keyword">int</strong>) (Math.random() * 100);
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>          CardContent cardContent = <strong class="jxr_keyword">new</strong> CardContent();
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>          cardContent.setTitle(title);
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>          cardContent.setStatus(CardContentStatus.POSTPONED);
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>          cardContent.setCompletionLevel(completionLevel);
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>          cardContent.setCompletionMode(CardContentCompletionMode.AUTO);
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>          Long cardContentId = client.cardContentController.createCardContent(cardContent);
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>          CardContent persistedCardContent = client.cardContentController
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>                  .getCardContent(cardContentId);
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>          Assertions.assertNotNull(persistedCardContent);
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>          Assertions.assertNotNull(persistedCardContent.getId());
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>          Assertions.assertEquals(persistedCardContent.getId(), cardContentId);
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>          Assertions.assertEquals(title, persistedCardContent.getTitle());
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>          Assertions.assertEquals(completionLevel, persistedCardContent.getCompletionLevel());
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>          Assertions.assertEquals(CardContentCompletionMode.AUTO,
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>                  persistedCardContent.getCompletionMode());
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>          Assertions.assertEquals(CardContentStatus.POSTPONED, persistedCardContent.getStatus());
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.Card;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.CardContent;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.CardContentCompletionMode;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.CardContentStatus;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.project.Project;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.AbstractArquillianTest;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Assertions;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> * Unit testing of card content controller from a client point of view</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> * @author sandra</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_comment">// TODO sandra - Check the constraints</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="CardContentControllerTest" href="../../../../../../ch/colabproject/colab/tests/rest/card/CardContentControllerTest.html#CardContentControllerTest">CardContentControllerTest</a> <strong class="jxr_keyword">extends</strong> <a name="AbstractArquillianTest" href="../../../../../../ch/colabproject/colab/tests/tests/AbstractArquillianTest.html#AbstractArquillianTest">AbstractArquillianTest</a> {
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>      @Test
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateCardContent() {
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>          Long projectId = client.projectController.createProject(<strong class="jxr_keyword">new</strong> Project());
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>          Project project = client.projectController.getProject(projectId);
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>          Card card = client.cardController.getCard(project.getRootCardId());
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          Long cardId = card.getId();
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>          CardContent cardContent = client.cardContentController.createNewCardContent(cardId);
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          Long cardContentId = cardContent.getId();
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>  
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>          Assertions.assertNotNull(cardContent);
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>          Assertions.assertNotNull(cardContent.getId());
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>          Assertions.assertEquals(cardId, cardContent.getCardId());
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          Assertions.assertNull(cardContent.getTitle());
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>          Assertions.assertEquals(0, cardContent.getCompletionLevel());
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>          Assertions.assertNull(cardContent.getCompletionMode());
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          Assertions.assertEquals(CardContentStatus.ACTIVE, cardContent.getStatus());
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          List&lt;Card&gt; subCards = client.cardContentController.getSubCards(cardContentId);
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>          Assertions.assertNotNull(subCards);
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          Assertions.assertEquals(0, subCards.size());
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      }
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>      @Test
@@ -61,62 +61,79 @@
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>          String title = <span class="jxr_string">"Galaxy plan "</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>          <strong class="jxr_keyword">int</strong> completionLevel = (<strong class="jxr_keyword">int</strong>) (Math.random() * 100);
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>          CardContent cardContent = <strong class="jxr_keyword">new</strong> CardContent();
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>          Long cardContentId = client.cardContentController.createCardContent(cardContent);
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>          Long projectId = client.projectController.createProject(<strong class="jxr_keyword">new</strong> Project());
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>          Project project = client.projectController.getProject(projectId);
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>          CardContent persistedCardContent1 = client.cardContentController
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>                  .getCardContent(cardContentId);
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>          Assertions.assertNull(persistedCardContent1.getTitle());
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          Assertions.assertEquals(0, persistedCardContent1.getCompletionLevel());
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>          Assertions.assertNull(persistedCardContent1.getCompletionMode());
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          Assertions.assertNull(persistedCardContent1.getStatus());
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>          persistedCardContent1.setTitle(title);
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>          persistedCardContent1.setCompletionLevel(completionLevel);
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>          persistedCardContent1.setStatus(CardContentStatus.ACTIVE);
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          persistedCardContent1.setCompletionMode(CardContentCompletionMode.NO_OP);
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          client.cardContentController.updateCardContent(persistedCardContent1);
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>  
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          CardContent persistedCardContent2 = client.cardContentController
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  .getCardContent(cardContentId);
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>          Assertions.assertEquals(title, persistedCardContent2.getTitle());
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>          Assertions.assertEquals(completionLevel, persistedCardContent2.getCompletionLevel());
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>          Assertions.assertEquals(CardContentCompletionMode.NO_OP,
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>                  persistedCardContent2.getCompletionMode());
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>          Assertions.assertEquals(CardContentStatus.ACTIVE, persistedCardContent2.getStatus());
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>      }
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>  
-<a class="jxr_linenumber" name="L81" href="#L81">81</a>      @Test
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testGetAllCardContents() {
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>          <strong class="jxr_keyword">int</strong> initialSize = client.cardContentController.getAllCardContents().size();
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>          Card card = client.cardController.getCard(project.getRootCardId());
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>          Long cardId = card.getId();
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          CardContent cardContent = client.cardContentController.createNewCardContent(cardId);
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          Long cardContentId = cardContent.getId();
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>  
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          Assertions.assertNull(cardContent.getTitle());
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>          Assertions.assertEquals(0, cardContent.getCompletionLevel());
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          Assertions.assertNull(cardContent.getCompletionMode());
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          Assertions.assertEquals(CardContentStatus.ACTIVE, cardContent.getStatus());
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          cardContent.setTitle(title);
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          cardContent.setCompletionLevel(completionLevel);
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          cardContent.setStatus(CardContentStatus.ACTIVE);
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          cardContent.setCompletionMode(CardContentCompletionMode.NO_OP);
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>          client.cardContentController.updateCardContent(cardContent);
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>  
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>          CardContent persistedCardContent = client.cardContentController
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>                  .getCardContent(cardContentId);
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>          Assertions.assertEquals(title, persistedCardContent.getTitle());
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>          Assertions.assertEquals(completionLevel, persistedCardContent.getCompletionLevel());
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          Assertions.assertEquals(CardContentCompletionMode.NO_OP,
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>                  persistedCardContent.getCompletionMode());
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>          Assertions.assertEquals(CardContentStatus.ACTIVE, persistedCardContent.getStatus());
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      }
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>  
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>          CardContent cardContent = <strong class="jxr_keyword">new</strong> CardContent();
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>          cardContent.setTitle(<span class="jxr_string">"Sketch"</span>);
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          client.cardContentController.createCardContent(cardContent);
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>  
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          cardContent = <strong class="jxr_keyword">new</strong> CardContent();
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>          cardContent.setTitle(<span class="jxr_string">"Artistic best practices"</span>);
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>          client.cardContentController.createCardContent(cardContent);
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>  
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>          List&lt;CardContent&gt; cardContents = client.cardContentController.getAllCardContents();
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>          Assertions.assertEquals(initialSize + 2, cardContents.size());
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>      }
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>  
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>      @Test
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDeleteCardContent() {
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>          CardContent cardContent = <strong class="jxr_keyword">new</strong> CardContent();
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>         Long cardContentId = client.cardContentController.createCardContent(cardContent);
-<a class="jxr_linenumber" name="L101" href="#L101">101</a> 
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>         CardContent persistedCardContent = client.cardContentController
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>                 .getCardContent(cardContentId);
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>         Assertions.assertNotNull(persistedCardContent);
-<a class="jxr_linenumber" name="L105" href="#L105">105</a> 
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>         client.cardContentController.deleteCardContent(cardContentId);
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      @Test
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testGetAllCardContents() {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>  
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>          Long projectId = client.projectController.createProject(<strong class="jxr_keyword">new</strong> Project());
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          Project project = client.projectController.getProject(projectId);
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>  
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>          Card card = client.cardController.getCard(project.getRootCardId());
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>          Long cardId = card.getId();
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>          <strong class="jxr_keyword">int</strong> initialSize = client.cardContentController.getAllCardContents().size();
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>          CardContent cardContent = client.cardContentController.createNewCardContent(cardId);
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>          cardContent.setTitle(<span class="jxr_string">"Sketch"</span>);
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>          client.cardContentController.updateCardContent(cardContent);
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>  
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>         cardContent = client.cardContentController.createNewCardContent(cardId);
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>         cardContent.setTitle(<span class="jxr_string">"Artistic best practices"</span>);
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         client.cardContentController.updateCardContent(cardContent);
+<a class="jxr_linenumber" name="L103" href="#L103">103</a> 
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>         List&lt;CardContent&gt; cardContents = client.cardContentController.getAllCardContents();
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         Assertions.assertEquals(initialSize + 2, cardContents.size());
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>     }
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> 
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>         persistedCardContent = client.cardContentController.getCardContent(cardContentId);
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>         Assertions.assertNull(persistedCardContent);
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>     }
-<a class="jxr_linenumber" name="L111" href="#L111">111</a> }
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>     @Test
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDeleteCardContent() {
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>         Long projectId = client.projectController.createProject(<strong class="jxr_keyword">new</strong> Project());
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>         Project project = client.projectController.getProject(projectId);
+<a class="jxr_linenumber" name="L112" href="#L112">112</a> 
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>         Card card = client.cardController.getCard(project.getRootCardId());
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>         Long cardId = card.getId();
+<a class="jxr_linenumber" name="L115" href="#L115">115</a> 
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>         CardContent cardContent = client.cardContentController.createNewCardContent(cardId);
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>         Long cardContentId = cardContent.getId();
+<a class="jxr_linenumber" name="L118" href="#L118">118</a> 
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>         CardContent persistedCardContent = client.cardContentController
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>                 .getCardContent(cardContentId);
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>         Assertions.assertNotNull(persistedCardContent);
+<a class="jxr_linenumber" name="L122" href="#L122">122</a> 
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>         client.cardContentController.deleteCardContent(cardContentId);
+<a class="jxr_linenumber" name="L124" href="#L124">124</a> 
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>         persistedCardContent = client.cardContentController.getCardContent(cardContentId);
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>         Assertions.assertNull(persistedCardContent);
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>     }
+<a class="jxr_linenumber" name="L128" href="#L128">128</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

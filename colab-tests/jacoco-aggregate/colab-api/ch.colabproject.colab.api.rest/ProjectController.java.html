@@ -161,9 +161,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;Invite/{projectId: [0-9]}/{email}&quot;)
     public void inviteSomeone(@PathParam(&quot;projectId&quot;) Long projectId,
             @PathParam(&quot;email&quot;) String email) {
-<span class="fc" id="L164">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
-<span class="fc" id="L165">        projectFacade.invite(projectId, email);</span>
-<span class="fc" id="L166">    }</span>
+<span class="nc" id="L164">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
+<span class="nc" id="L165">        projectFacade.invite(projectId, email);</span>
+<span class="nc" id="L166">    }</span>
 
     /**
      * Get all card definitions belonging to a project
@@ -175,8 +175,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/CardDefs&quot;)
     public List&lt;CardDef&gt; getCardDefsOfProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L178">        logger.debug(&quot;Get project #{} card definitions&quot;, id);</span>
-<span class="nc" id="L179">        return cardDefDao.getProjectCardDefs(id);</span>
+<span class="fc" id="L178">        logger.debug(&quot;Get project #{} card definitions&quot;, id);</span>
+<span class="fc" id="L179">        return cardDefDao.getProjectCardDefs(id);</span>
         // an alternative would be to define a method in the facade
         // projectDao.getProject(id).getElementsToBeDefined()
         // FIXME see what is the best

@@ -1,6 +1,6 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContentStatus,44,0,0,0,5,0,1,0,1,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContent,124,0,4,0,41,0,24,0,22,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContent,131,0,6,0,43,0,25,0,22,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,Card,128,0,8,0,44,0,26,0,22,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardDef,112,0,6,0,38,0,23,0,20,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContentCompletionMode,34,0,0,0,4,0,1,0,1,0
@@ -14,13 +14,13 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ejb,TokenFacade,326,0,24,0,97,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,WebsocketFacade,631,0,48,0,165,0,53,0,29,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ProjectFacade,107,0,2,0,27,0,8,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.ChannelType,24,0,0,0,3,0,1,0,1,0
-colab-webapp/colab-api,ch.colabproject.colab.api.ejb,CardFacade,129,0,0,0,37,0,10,0,10,0
+colab-webapp/colab-api,ch.colabproject.colab.api.ejb,CardFacade,171,0,8,0,50,0,14,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,TransactionManager,159,0,14,0,42,0,16,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,RequestManager,78,0,8,0,26,0,16,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest,71,0,0,0,24,0,13,0,13,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,CdiBridgeSingleton,19,0,0,0,7,0,5,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,UserManagement,467,0,44,0,134,0,43,0,21,0
-colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,156,0,36,0,44,0,29,0,11,0
+colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,165,0,36,0,53,0,38,0,20,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.SubscriptionType,24,0,0,0,3,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ApplicationLifecycleFacade,38,0,2,0,15,0,4,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,CallableGetChannel,12,0,2,0,5,0,3,0,2,0
@@ -64,9 +64,9 @@ colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,MessageBuilder,77,
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail.new Authenticator() {...},17,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Message,76,0,0,0,29,0,18,0,18,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail,173,0,6,0,42,0,6,0,3,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardContentController,71,0,0,0,18,0,9,0,9,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardController,73,0,0,0,18,0,9,0,9,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardDefController,62,0,0,0,16,0,8,0,8,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardContentController,73,0,0,0,18,0,9,0,9,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardController,75,0,0,0,18,0,9,0,9,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.card,CardDefController,64,0,0,0,16,0,8,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.exceptions,ColabMergeException,15,0,0,0,5,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.exceptions,ColabRollbackException,4,0,0,0,2,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model,ConcretizationCategory,24,0,0,0,3,0,1,0,1,0

@@ -93,10 +93,10 @@ import javax.inject.Inject;
      * @return the current account or null if none
      */
     public Account getCurrentAccount() {
-<span class="pc bpc" id="L96" title="1 of 2 branches missed.">        if (this.httpSession != null) {</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (this.httpSession != null) {</span>
 <span class="fc" id="L97">            return userDao.findAccount(this.httpSession.getAccountId());</span>
         }
-<span class="nc" id="L99">        return null;</span>
+<span class="fc" id="L99">        return null;</span>
     }
 
     /**
@@ -139,7 +139,7 @@ import javax.inject.Inject;
      * @return true if the current user is fully authenticated
      */
     public Boolean isAuthenticated() {
-<span class="fc bfc" id="L142" title="All 2 branches covered.">        return this.getCurrentAccount() != null;</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        return this.getCurrentAccount() != null;</span>
     }
 
     /**
