@@ -158,7 +158,7 @@ public class ProjectController {
      * @param email recipient address
      */
     @POST
-    @Path("Invite/{projectId: [0-9]}/{email}")
+    @Path("Invite/{projectId: [0-9]+}/{email}")
     public void inviteSomeone(@PathParam("projectId") Long projectId,
             @PathParam("email") String email) {
         logger.debug("Invite {} to joint project #{}", email, projectId);
