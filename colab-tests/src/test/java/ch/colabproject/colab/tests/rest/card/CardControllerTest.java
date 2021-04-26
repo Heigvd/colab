@@ -9,6 +9,7 @@ package ch.colabproject.colab.tests.rest.card;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardDef;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -21,64 +22,100 @@ import org.junit.jupiter.api.Test;
  */
 public class CardControllerTest extends AbstractArquillianTest {
 
-    // ** logger */
-    // private static final Logger logger =
-    // LoggerFactory.getLogger(CardControllerTest.class);
-
     @Test
     public void testCreateCard() {
-        String color = "purple " + ((int) (Math.random() * 1000));
+        Long projectId = client.projectController.createProject(new Project());
+        Project project = client.projectController.getProject(projectId);
+
+        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        Long cardDefId = cardDef.getId();
+
+        Card rootCard = client.cardController.getCard(project.getRootCardId());
+        Long rootCardId = rootCard.getId();
+
+        List<CardContent> rootCardContents = client.cardController
+                .getContentVariantsOfCard(rootCardId);
+        Long parentId = rootCardContents.get(0).getId();
+
+        Card card = client.cardController.createNewCard(parentId, cardDefId);
+        Long cardId = card.getId();
+
+        Assertions.assertNotNull(card);
+        Assertions.assertNotNull(card.getId());
+        Assertions.assertNull(card.getColor());
+        Assertions.assertEquals(0, card.getIndex());
+        Assertions.assertEquals(parentId, card.getParentId());
+        Assertions.assertEquals(cardDefId, card.getCardDefinitionId());
+
+        List<CardContent> variants = client.cardController.getContentVariantsOfCard(cardId);
+        Assertions.assertNotNull(variants);
+        Assertions.assertEquals(1, variants.size());
+        Assertions.assertEquals(cardId, variants.get(0).getCardId());
+        Assertions.assertNotEquals(parentId, variants.get(0).getId());
+    }
+
+    @Test
+    public void testUpdateCard() {
+        Long projectId = client.projectController.createProject(new Project());
+        Project project = client.projectController.getProject(projectId);
+
+        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        Long cardDefId = cardDef.getId();
+
+        Card rootCard = client.cardController.getCard(project.getRootCardId());
+        Long rootCardId = rootCard.getId();
+
+        List<CardContent> rootCardContents = client.cardController
+                .getContentVariantsOfCard(rootCardId);
+        Long parentId = rootCardContents.get(0).getId();
+
+        Card card = client.cardController.createNewCard(parentId, cardDefId);
+        Long cardId = card.getId();
+
+        Assertions.assertNull(card.getColor());
+        Assertions.assertEquals(0, card.getIndex());
+
+        String color = "blue " + ((int) (Math.random() * 1000));
         int index = (int) (Math.random() * 100);
 
-        Card card = new Card();
         card.setColor(color);
         card.setIndex(index);
-        Long cardId = client.cardController.createCard(card);
+        client.cardController.updateCard(card);
 
         Card persistedCard = client.cardController.getCard(cardId);
-
-        Assertions.assertNotNull(persistedCard);
-        Assertions.assertNotNull(persistedCard.getId());
-
-        Assertions.assertEquals(cardId, persistedCard.getId());
         Assertions.assertEquals(color, persistedCard.getColor());
         Assertions.assertEquals(index, persistedCard.getIndex());
     }
 
     @Test
-    public void testUpdateCard() {
-        String color = "blue " + ((int) (Math.random() * 1000));
-        int index = (int) (Math.random() * 100);
-
-        Card card = new Card();
-        Long cardId = client.cardController.createCard(card);
-
-        Card persistedCard1 = client.cardController.getCard(cardId);
-        Assertions.assertNull(persistedCard1.getColor());
-        Assertions.assertEquals(0, persistedCard1.getIndex());
-
-        persistedCard1.setColor(color);
-        persistedCard1.setIndex(index);
-        client.cardController.updateCard(persistedCard1);
-
-        Card persistedCard2 = client.cardController.getCard(cardId);
-        Assertions.assertEquals(color, persistedCard2.getColor());
-        Assertions.assertEquals(index, persistedCard2.getIndex());
-    }
-
-    @Test
     public void testGetAllCards() {
+        Long projectId = client.projectController.createProject(new Project());
+        Project project = client.projectController.getProject(projectId);
+
+        CardDef cardDef1 = client.cardDefController.createNewCardDef(projectId);
+        Long cardDef1Id = cardDef1.getId();
+
+        CardDef cardDef2 = client.cardDefController.createNewCardDef(projectId);
+        Long cardDef2Id = cardDef2.getId();
+
+        Card rootCard = client.cardController.getCard(project.getRootCardId());
+        Long rootCardId = rootCard.getId();
+
+        List<CardContent> rootCardContents = client.cardController
+                .getContentVariantsOfCard(rootCardId);
+        Long parentId = rootCardContents.get(0).getId();
+
         int initialSize = client.cardController.getAllCards().size();
 
-        Card card1 = new Card();
+        Card card1 = client.cardController.createNewCard(parentId, cardDef1Id);
         card1.setIndex(1337);
         card1.setColor("red");
-        client.cardController.createCard(card1);
+        client.cardController.updateCard(card1);
 
-        Card card2 = new Card();
+        Card card2 = client.cardController.createNewCard(parentId, cardDef2Id);
         card2.setIndex(42);
         card2.setColor("yellow");
-        client.cardController.createCard(card2);
+        client.cardController.updateCard(card2);
 
         List<Card> cards = client.cardController.getAllCards();
         Assertions.assertEquals(initialSize + 2, cards.size());
@@ -86,8 +123,21 @@ public class CardControllerTest extends AbstractArquillianTest {
 
     @Test
     public void testDeleteCard() {
-        Card card = new Card();
-        Long cardId = client.cardController.createCard(card);
+        Long projectId = client.projectController.createProject(new Project());
+        Project project = client.projectController.getProject(projectId);
+
+        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        Long cardDefId = cardDef.getId();
+
+        Card rootCard = client.cardController.getCard(project.getRootCardId());
+        Long rootCardId = rootCard.getId();
+
+        List<CardContent> rootCardContents = client.cardController
+                .getContentVariantsOfCard(rootCardId);
+        Long parentId = rootCardContents.get(0).getId();
+
+        Card card = client.cardController.createNewCard(parentId, cardDefId);
+        Long cardId = card.getId();
 
         Card persistedCard = client.cardController.getCard(cardId);
         Assertions.assertNotNull(persistedCard);
@@ -100,91 +150,79 @@ public class CardControllerTest extends AbstractArquillianTest {
 
     @Test
     public void testCardContentAccess() {
-        String title = "Logo design " + ((int) (Math.random() * 1000));
-        String color = "soft blue " + ((int) (Math.random() * 1000));
+        Long projectId = client.projectController.createProject(new Project());
+        Project project = client.projectController.getProject(projectId);
 
-        Card card = new Card();
-        card.setColor(color);
+        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        Long cardDefId = cardDef.getId();
 
-        CardContent cardContent = new CardContent();
-        cardContent.setTitle(title);
-        cardContent.setCard(card);
-        card.getContentVariants().add(cardContent);
-        Long cardId = client.cardController.createCard(card);
-        cardContent.setCardId(cardId);
-        Long cardContentId = client.cardContentController.createCardContent(cardContent);
+        Card rootCard = client.cardController.getCard(project.getRootCardId());
+        Long rootCardId = rootCard.getId();
 
-        CardContent persistedCardContent = client.cardContentController
-                .getCardContent(cardContentId);
-        Assertions.assertNotNull(persistedCardContent);
-        Assertions.assertEquals(title, persistedCardContent.getTitle());
-        Assertions.assertEquals(cardId, persistedCardContent.getCardId());
+        List<CardContent> rootCardContents = client.cardController
+                .getContentVariantsOfCard(rootCardId);
+        Long parentId = rootCardContents.get(0).getId();
 
-        Card persistedCard = client.cardController.getCard(cardId);
-        Assertions.assertNotNull(persistedCard);
-        Assertions.assertEquals(color, persistedCard.getColor());
+        Card card = client.cardController.createNewCard(parentId, cardDefId);
+        Long cardId = card.getId();
 
-        // TODO make the link work between card and card content
-//        List<CardContent> contentVariants = client.cardController.getContentVariantsOfCard(cardId);
-//        Assertions.assertNotNull(contentVariants);
-//        Assertions.assertEquals(1, contentVariants.size());
-//        Assertions.assertEquals(cardContentId, contentVariants.get(0).getId());
+        CardContent cardContent = client.cardContentController.createNewCardContent(cardId);
+        Long cardContentId = cardContent.getId();
+
+        Assertions.assertEquals(cardId, cardContent.getCardId());
+
+        List<CardContent> variants = client.cardController.getContentVariantsOfCard(cardId);
+        Assertions.assertNotNull(variants);
+        Assertions.assertEquals(2, variants.size());
+        Assertions.assertTrue(cardContentId == variants.get(0).getId()
+                || cardContentId == variants.get(1).getId());
     }
 
     @Test
     public void SubCardAccess() {
-        String title = "Training " + ((int) (Math.random() * 1000));
-        String color = "hell brown " + ((int) (Math.random() * 1000));
+        Long projectId = client.projectController.createProject(new Project());
+        Project project = client.projectController.getProject(projectId);
 
-        CardContent cardContent = new CardContent();
-        cardContent.setTitle(title);
-        Long cardContentId = client.cardContentController.createCardContent(cardContent);
+        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        Long cardDefId = cardDef.getId();
 
-        CardContent persistedCardContent = client.cardContentController
-                .getCardContent(cardContentId);
-        Assertions.assertNotNull(persistedCardContent);
+        Card rootCard = client.cardController.getCard(project.getRootCardId());
+        Long rootCardId = rootCard.getId();
 
-        Card card = new Card();
-        card.setColor(color);
-        card.setParent(persistedCardContent);
-        card.setParentId(cardContentId);
-        Long cardId = client.cardController.createCard(card);
+        List<CardContent> rootCardContents = client.cardController
+                .getContentVariantsOfCard(rootCardId);
+        CardContent rootCardContent = rootCardContents.get(0);
+        Long rootCardContentId = rootCardContent.getId();
 
-        Card persistedCard = client.cardController.getCard(cardId);
-        persistedCardContent.getSubCards().add(persistedCard);
-        client.cardContentController.updateCardContent(persistedCardContent);
+        Card card = client.cardController.createNewCard(rootCardContentId, cardDefId);
+        Long cardId = card.getId();
 
-        // TODO make the link work between card and card content
-//        List<Card> subCards = client.cardContentController.getSubCards(cardContentId);
-//        Assertions.assertNotNull(subCards);
-//        Assertions.assertEquals(1, subCards.size());
-//        Assertions.assertEquals(cardId, subCards.get(0).getId());
-//
-//       // Card persistedCard = client.cardController.getCard(cardId);
-//        Assertions.assertNotNull(persistedCard);
-//        Assertions.assertEquals(color, persistedCard.getColor());
-//        Assertions.assertEquals(cardContentId, persistedCard.getParentId());
+        Assertions.assertEquals(rootCardContentId, card.getParentId());
+
+        List<Card> subCards = client.cardContentController.getSubCards(rootCardContentId);
+        Assertions.assertNotNull(subCards);
+        Assertions.assertEquals(1, subCards.size());
+        Assertions.assertEquals(cardId, subCards.get(0).getId());
     }
 
     @Test
     public void testCardDefAccess() {
-        String cardDefTitle = "communication " + ((int) (Math.random() * 1000));
-        String color = "violet " + ((int) (Math.random() * 1000));
+        Long projectId = client.projectController.createProject(new Project());
+        Project project = client.projectController.getProject(projectId);
 
-        CardDef cardDef = new CardDef();
-        cardDef.setTitle(cardDefTitle);
-        Long cardDefId = client.cardDefController.createCardDef(cardDef);
+        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        Long cardDefId = cardDef.getId();
 
-        CardDef persistedCardDef = client.cardDefController.getCardDef(cardDefId);
+        Card rootCard = client.cardController.getCard(project.getRootCardId());
+        Long rootCardId = rootCard.getId();
 
-        Card card = new Card();
-        card.setColor(color);
-        card.setCardDefinition(persistedCardDef);
-        Long cardId = client.cardController.createCard(card);
+        List<CardContent> rootCardContents = client.cardController
+                .getContentVariantsOfCard(rootCardId);
+        Long parentId = rootCardContents.get(0).getId();
 
-        Card persistedCard = client.cardController.getCard(cardId);
-        Assertions.assertNotNull(persistedCard);
-        Assertions.assertNotNull(persistedCard.getCardDefinitionId());
-        Assertions.assertEquals(cardDefId, persistedCard.getCardDefinitionId());
+        Card card = client.cardController.createNewCard(parentId, cardDefId);
+
+        Assertions.assertEquals(cardDefId, card.getCardDefinitionId());
+
     }
 }

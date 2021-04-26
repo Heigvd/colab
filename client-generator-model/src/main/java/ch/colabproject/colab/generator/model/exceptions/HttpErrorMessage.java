@@ -29,6 +29,7 @@ public class HttpErrorMessage extends HttpException {
         USERNAME_ALREADY_TAKEN,
         SMTP_ERROR,
         EMAIL_MESSAGE_ERROR,
+        RELATED_OBJECT_NOT_FOUND,
     }
 
     /**
@@ -136,6 +137,13 @@ public class HttpErrorMessage extends HttpException {
      */
     public static HttpErrorMessage emailMessageError() {
         return new HttpErrorMessage(HttpErrorMessage.MessageCode.EMAIL_MESSAGE_ERROR);
+    }
+
+    /**
+     * @return 400 Related object not found
+     */
+    public static HttpErrorMessage relatedObjectNotFoundError() {
+        return new HttpErrorMessage(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND);
     }
 
 }

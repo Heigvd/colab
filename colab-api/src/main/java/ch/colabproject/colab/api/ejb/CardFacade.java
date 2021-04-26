@@ -14,6 +14,8 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.api.persistence.card.CardDefDao;
+import ch.colabproject.colab.api.persistence.project.ProjectDao;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -21,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Card specific logic
+ * Card, card def and card content specific logic
  *
  * @author sandra
  */
@@ -47,7 +49,7 @@ public class CardFacade {
     // *********************************************************************************************
 
     /**
-     * Card definition persistence
+     * Card definition persistence handling
      */
     @Inject
     private CardDefDao cardDefDao;
@@ -59,10 +61,22 @@ public class CardFacade {
     private CardDao cardDao;
 
     /**
-     * Card content persistence
+     * Card content persistence handling
      */
     @Inject
     private CardContentDao cardContentDao;
+
+    /**
+     * Project persistence handling
+     */
+    @Inject
+    private ProjectDao projectDao;
+
+    /**
+     * To check access rights
+     */
+    @Inject
+    private SecurityFacade securityFacade;
 
     // *********************************************************************************************
     // card definition stuff
@@ -71,15 +85,25 @@ public class CardFacade {
     /**
      * Create a new card definition for the project
      *
-     * @param project the project the card definition belongs to
+     * @param projectId id of the project the card definition belongs to
+     *
      * @return a new, persisted card definition
      */
-    public CardDef createNewCardDef(final Project project) {
-        logger.debug("create a new card def in the project {}", project);
-        CardDef cardDef = this.initNewCardDef();
+    public CardDef createNewCardDef(Long projectId) {
+        logger.debug("create a new card def in the project #{}", projectId);
+
+        Project project = projectDao.getProject(projectId);
+        if (project == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        securityFacade.assertCanCreateCardDef(project);
+
+        CardDef cardDef = initNewCardDef();
         cardDef.setProject(project);
         cardDefDao.createCardDef(cardDef);
+
         project.getElementsToBeDefined().add(cardDef);
+
         return cardDef;
     }
 
@@ -88,7 +112,9 @@ public class CardFacade {
      */
     private CardDef initNewCardDef() {
         CardDef cardDef = new CardDef();
+
         // see if uniqueId must be initialized
+
         return cardDef;
     }
 
@@ -106,33 +132,50 @@ public class CardFacade {
      */
     public Card initNewRootCard() {
         logger.debug("initialize a new root card");
-        Card rootCard = this.initNewCard();
+
+        Card rootCard = initNewCard();
         rootCard.setIndex(0);
+
         return rootCard;
     }
 
     /**
-     * Create a new sub card into a card content with a card definition
+     * Create a new card into a card content with a card definition
      *
-     * @param parent Parent of the new card
-     * @param cardDefinition Card definition of the new card
+     * @param parentId parent id of the new card
+     * @param cardDefinitionId card definition id of the new card
+     *
      * @return a new, initialized and persisted card
      */
-    public Card createNewSubCard(final CardContent parent, final CardDef cardDefinition) {
-        logger.debug("create a new sub card of {} with the definition of {}", parent,
-                cardDefinition);
-        Card card = this.initNewCard(parent, cardDefinition);
-        cardDao.createCard(card);
-        return card;
+    public Card createNewCard(Long parentId, Long cardDefinitionId) {
+        logger.debug("create a new sub card of #{} with the definition of #{}", parentId,
+                cardDefinitionId);
+
+        CardContent parent = cardContentDao.getCardContent(parentId);
+        if (parent == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        CardDef cardDefinition = cardDefDao.getCardDef(cardDefinitionId);
+        if (cardDefinition == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        securityFacade.assertCanCreateCard(parent, cardDefinition);
+
+        Card card = initNewCard(parent, cardDefinition);
+
+        return cardDao.createCard(card);
     }
 
     /**
      * @param parent Parent of the new card
      * @param cardDefinition Related card definition
+     *
      * @return a new card containing a new card content with cardDefinition
      */
-    private Card initNewCard(final CardContent parent, final CardDef cardDefinition) {
-        Card card = this.initNewCard();
+    private Card initNewCard(CardContent parent, CardDef cardDefinition) {
+        Card card = initNewCard();
 
         card.setParent(parent);
         parent.getSubCards().add(card);
@@ -147,8 +190,9 @@ public class CardFacade {
      */
     private Card initNewCard() {
         Card card = new Card();
-        CardContent cardContent = this.initNewCardContent(card);
-        card.getContentVariants().add(cardContent);
+
+        initNewCardContent(card);
+
         return card;
     }
 
@@ -159,20 +203,30 @@ public class CardFacade {
     /**
      * Create a new card content variant for the card
      *
-     * @param card the card needing a new card content variant
+     * @param cardId id of the card needing a new card content variant
+     *
      * @return a new, initialized and persisted card content
      */
-    public CardContent createNewCardContent(final Card card) {
-        logger.debug("create a new card content for the card {}", card);
-        CardContent cardContent = this.initNewCardContent(card);
+    public CardContent createNewCardContent(Long cardId) {
+        logger.debug("create a new card content for the card #{}", cardId);
+
+        Card card = cardDao.getCard(cardId);
+        if (card == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        securityFacade.assertCanCreateCardContent(card);
+
+        CardContent cardContent = initNewCardContent(card);
+
         return cardContentDao.createCardContent(cardContent);
     }
 
     /**
      * @param card the card needing a new card content
+     *
      * @return a new, initialized card content
      */
-    private CardContent initNewCardContent(final Card card) {
+    private CardContent initNewCardContent(Card card) {
         CardContent cardContent = new CardContent();
         cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);
         cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);
@@ -180,4 +234,5 @@ public class CardFacade {
         card.getContentVariants().add(cardContent);
         return cardContent;
     }
+
 }

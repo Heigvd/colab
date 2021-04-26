@@ -251,9 +251,9 @@ public class CardDef implements ColabEntity {
 
     @Override
     public String toString() {
-        return "CardDef{" + "id=" + id + "uniqueId=" + uniqueId + "title=" + title + "purpose="
-                + purpose + "authorityHolder=" + authorityHolder + "projectId=" + getProjectId()
-                + "}";
+        return "CardDef{" + "id=" + id + ", uniqueId=" + uniqueId + ", title=" + title
+                + ", purpose=" + purpose + ", authorityHolder=" + authorityHolder + ", projectId="
+                + getProjectId() + "}";
     }
 
 }

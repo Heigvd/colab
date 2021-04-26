@@ -6,6 +6,9 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -36,6 +39,10 @@ public class SecurityFacade {
      */
     @Inject
     private RequestManager requestManager;
+
+    // *********************************************************************************************
+    // user stuff
+    // *********************************************************************************************
 
     /**
      * Is the current authenticated user an administrator ?
@@ -129,6 +136,10 @@ public class SecurityFacade {
         }
     }
 
+    // *********************************************************************************************
+    // project stuff
+    // *********************************************************************************************
+
     /**
      * Check if the user is member of the team of the project.
      *
@@ -192,4 +203,91 @@ public class SecurityFacade {
             throw HttpErrorMessage.forbidden();
         }
     }
+
+    // *********************************************************************************************
+    // card (+ definition + content) stuff
+    // *********************************************************************************************
+
+    /**
+     * Make sure the current user has the right to read the card definition
+     *
+     * @param cardDefinition card definition to read
+     */
+    public void assertCanReadCardDef(CardDef cardDefinition) {
+        // TODO
+    }
+
+    /**
+     * Make sure the current user has the right to read the card
+     *
+     * @param card card to read
+     */
+    public void assertCanReadCard(Card card) {
+        // TODO
+    }
+
+    /**
+     * Make sure the current user has the right to read the card content
+     *
+     * @param cardContent card content to read
+     */
+    public void assertCanReadCardContent(CardContent cardContent) {
+        // TODO
+    }
+
+    /**
+     * Make sure the current user has the right to edit the card definition
+     *
+     * @param cardDefinition card definition to edit
+     */
+    public void assertCanWriteCardDef(CardDef cardDefinition) {
+        // TODO
+    }
+
+    /**
+     * Make sure the current user has the right to edit the card
+     *
+     * @param card card to edit
+     */
+    public void assertCanWriteCard(Card card) {
+        // TODO
+    }
+
+    /**
+     * Make sure the current user has the right to edit the card content
+     *
+     * @param cardContent card content to edit
+     */
+    public void assertCanWriteCardContent(CardContent cardContent) {
+        // TODO
+    }
+
+    /**
+     * Make sure the current user has the right to create a card definition
+     *
+     * @param project the project the new card definition will belong to
+     */
+    public void assertCanCreateCardDef(Project project) {
+        // TODO
+    }
+
+    /**
+     * Make sure the current user has the right to create a card
+     *
+     * @param cardContent the card content the new card will belong to
+     * @param cardDefinition the card definition the new card will refer to
+     */
+    public void assertCanCreateCard(CardContent cardContent, CardDef cardDefinition) {
+        // TODO
+    }
+
+    /**
+     * Make sure the current user has the right to create a card content
+     *
+     * @param card the card the new card content will be part of
+     */
+    public void assertCanCreateCardContent(Card card) {
+        // TODO
+    }
+
 }
