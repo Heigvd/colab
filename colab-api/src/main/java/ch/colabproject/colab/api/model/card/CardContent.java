@@ -196,7 +196,11 @@ public class CardContent implements ColabEntity {
      * @return the ID of the card to which this content belongs
      */
     public Long getCardId() {
-        return cardId;
+        if (this.card != null) {
+            return card.getId();
+        } else {
+            return cardId;
+        }
     }
 
     /**
@@ -262,9 +266,9 @@ public class CardContent implements ColabEntity {
 
     @Override
     public String toString() {
-        return "CardContent{" + "id=" + id + ", title= " + title + ", status= " + status
-                + ", completion= " + completionLevel + ", completionMode= " + completionMode
-                + ", card= " + card + "}";
+        return "CardContent{" + "id=" + id + ", title=" + title + ", status=" + status
+                + ", completion=" + completionLevel + ", completionMode=" + completionMode
+                + ", card=" + card + "}";
     }
 
 }

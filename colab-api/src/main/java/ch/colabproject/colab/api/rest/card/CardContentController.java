@@ -15,6 +15,7 @@ import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -83,7 +84,7 @@ public class CardContentController {
      * @return the card content or null
      */
     @GET
-    @Path("/{id}")
+    @Path("{id}")
     public CardContent getCardContent(@PathParam("id") Long id) {
         logger.debug("Get card #{}", id);
         return cardContentDao.getCardContent(id);
@@ -95,23 +96,28 @@ public class CardContentController {
      * @param cardContent the card content to persist
      *
      * @return id of the persisted new card content
+     *
+     * @deprecated a priori there will be no need to directly create a card content
      */
+    @Deprecated
     @POST
     public Long createCardContent(CardContent cardContent) {
-        logger.debug("Create card content");
+        logger.debug("Create card content {}", Objects.toString(cardContent));
         return cardContentDao.createCardContent(cardContent).getId();
     }
 
     /**
-     * Create and persist a new card
+     * Create and persist a new card content
      *
-     * @param card the new card's parent
-     * @return the persisted new card
+     * @param cardId id of the new card content's parent
+     *
+     * @return the persisted new card content
      */
-    // TODO
-    public CardContent createNewCard(final Card card) {
-        logger.debug("create a new card content for the card {}", card);
-        return facade.createNewCardContent(card);
+    @POST
+    @Path("create/{cardId}")
+    public CardContent createNewCardContent(@PathParam("cardId") Long cardId) {
+        logger.debug("create a new card content for the card #{}", cardId);
+        return facade.createNewCardContent(cardId);
     }
 
     /**
@@ -133,7 +139,7 @@ public class CardContentController {
      * @param id id of the card content to delete
      */
     @DELETE
-    @Path("/{id}")
+    @Path("{id}")
     public void deleteCardContent(@PathParam("id") Long id) {
         logger.debug("Delete card #{}", id);
         cardContentDao.deleteCardContent(id);
@@ -147,7 +153,7 @@ public class CardContentController {
      * @return list of cards
      */
     @GET
-    @Path("/{id}/Subcards")
+    @Path("{id}/Subcards")
     public List<Card> getSubCards(@PathParam("id") Long parentId) {
         logger.debug("Get parent #{} sub cards", parentId);
         return cardDao.getSubCards(parentId);
@@ -156,4 +162,5 @@ public class CardContentController {
         // cardContentDao.getCardContent(id).getSubCards()
         // FIXME see what is the best
     }
+
 }

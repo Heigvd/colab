@@ -9,11 +9,11 @@ package ch.colabproject.colab.api.rest.card;
 import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.CardDef;
-import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.card.CardDefDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -74,36 +74,41 @@ public class CardDefController {
      * @return the card def or null
      */
     @GET
-    @Path("/{id}")
+    @Path("{id}")
     public CardDef getCardDef(@PathParam("id") Long id) {
         logger.debug("get card def #{}", id);
         return cardDefDao.getCardDef(id);
     }
 
     /**
-     * Persist the card def
+     * Persist the card definition
      *
-     * @param cardDef the card def to persist
+     * @param cardDef the card definition to persist
      *
-     * @return id of the persisted new card def
+     * @return id of the persisted new card definition
+     *
+     * @deprecated a priori there will be no need to directly create a card
+     *             definition
      */
+    @Deprecated
     @POST
     public Long createCardDef(CardDef cardDef) {
-        logger.debug("create card def");
+        logger.debug("create card def {}", Objects.toString(cardDef));
         return cardDefDao.createCardDef(cardDef).getId();
     }
 
     /**
      * Create and persist a new card definition
      *
-     * @param project the project the new card definition belongs to
+     * @param projectId the project the new card definition belongs to
      *
      * @return the persisted new card definition
      */
-    // TODO
-    public CardDef createNewCardDef(final Project project) {
-        logger.debug("create new card def for the project {}", project);
-        return facade.createNewCardDef(project);
+    @POST
+    @Path("create/{projectId}")
+    public CardDef createNewCardDef(@PathParam("projectId") Long projectId) {
+        logger.debug("create new card def for the project #{}", projectId);
+        return facade.createNewCardDef(projectId);
     }
 
     /**
@@ -125,7 +130,7 @@ public class CardDefController {
      * @param id id of the card def to delete
      */
     @DELETE
-    @Path("/{id}")
+    @Path("{id}")
     public void deleteCardDef(@PathParam("id") Long id) {
         logger.debug("delete card def #{}", id);
         cardDefDao.deleteCardDef(id);

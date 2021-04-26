@@ -10,12 +10,12 @@ import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -59,7 +59,7 @@ public class CardController {
      * The card-related logic
      */
     @Inject
-    private CardFacade facade;
+    private CardFacade cardFacade;
 
     /**
      * Retrieve the list of all cards. This is available to admin only
@@ -84,7 +84,7 @@ public class CardController {
      * @return the card or null
      */
     @GET
-    @Path("/{id}")
+    @Path("{id}")
     public Card getCard(@PathParam("id") Long id) {
         logger.debug("get card #{}", id);
         return cardDao.getCard(id);
@@ -96,25 +96,31 @@ public class CardController {
      * @param card the card to persist
      *
      * @return id of the persisted new card
+     *
+     * @deprecated a priori there will be no need to directly create a card
      */
+    @Deprecated
     @POST
     public Long createCard(Card card) {
-        logger.debug("create card");
+        logger.debug("create card {}", Objects.toString(card));
         return cardDao.createCard(card).getId();
     }
 
     /**
      * Create and persist a new card
      *
-     * @param parent the new card's parent
-     * @param cardDefinition the card definition of the new card
+     * @param parentId id of the new card's parent
+     * @param cardDefinitionId id of the card definition of the new card
+     *
      * @return the persisted new card
      */
-    // TODO
-    public Card createNewCard(final CardContent parent, final CardDef cardDefinition) {
-        logger.debug("create a new card for the parent {} and the definition {}", parent,
-                cardDefinition);
-        return facade.createNewSubCard(parent, cardDefinition);
+    @POST
+    @Path("create/{parentId}/{cardDefId}")
+    public Card createNewCard(@PathParam("parentId") Long parentId,
+            @PathParam("cardDefId") Long cardDefinitionId) {
+        logger.debug("create a new card for the parent #{} and the definition #{}", parentId,
+                cardDefinitionId);
+        return cardFacade.createNewCard(parentId, cardDefinitionId);
     }
 
     /**
@@ -136,7 +142,7 @@ public class CardController {
      * @param id id of the card to delete
      */
     @DELETE
-    @Path("/{id}")
+    @Path("{id}")
     public void deleteCard(@PathParam("id") Long id) {
         logger.debug("delete card #{}", id);
         cardDao.deleteCard(id);
@@ -159,4 +165,5 @@ public class CardController {
         // cardDao.getCard(id).getContentVariants()
         // FIXME see what is the best
     }
+
 }
