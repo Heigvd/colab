@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { css, cx } from '@emotion/css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, NavLinkProps } from 'react-router-dom';
 
 const linkStyle = css({
   textDecoration: 'none',
@@ -61,19 +61,32 @@ interface LinkProps {
   to: string;
   exact?: boolean;
   children: React.ReactNode;
+  isActive?: NavLinkProps['isActive'];
 }
 
-export const MainMenuLink = ({ to, exact = false, children }: LinkProps): JSX.Element => {
+export const MainMenuLink = ({ to, exact = false, children, isActive }: LinkProps): JSX.Element => {
   return (
-    <NavLink exact={exact} to={to} activeClassName={mainLinkActiveClass} className={mainMenuLink}>
+    <NavLink
+      isActive={isActive}
+      exact={exact}
+      to={to}
+      activeClassName={mainLinkActiveClass}
+      className={mainMenuLink}
+    >
       {children}
     </NavLink>
   );
 };
 
-export const SecondLevelLink = ({ to, exact = false, children }: LinkProps): JSX.Element => {
+export const SecondLevelLink = ({
+  to,
+  exact = false,
+  children,
+  isActive,
+}: LinkProps): JSX.Element => {
   return (
     <NavLink
+      isActive={isActive}
       exact={exact}
       to={to}
       activeClassName={secondLevelLinkActiveClass}

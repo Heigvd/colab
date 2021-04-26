@@ -11,7 +11,7 @@ import * as API from '../API/api';
 export interface CardState {
   status: 'UNSET' | 'LOADING' | 'READY';
   cards: {
-    [id: number]: Card;
+    [id: number]: Card | null;
   };
 }
 const initialState: CardState = {
@@ -47,6 +47,17 @@ const cardsSlice = createSlice({
             return acc;
           }, {}),
         };
+      })
+      .addCase(API.getCard.pending, (state, action) => {
+        state.cards[action.meta.arg] = null;
+      })
+      .addCase(API.getCard.fulfilled, (state, action) => {
+        if (action.payload.id) {
+          state.cards[action.payload.id] = action.payload;
+        }
+      })
+      .addCase(API.closeCurrentProject.fulfilled, () => {
+        return initialState;
       })
       .addCase(API.signOut.fulfilled, () => {
         return initialState;

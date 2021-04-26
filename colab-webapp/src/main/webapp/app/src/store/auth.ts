@@ -4,19 +4,19 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 import * as API from '../API/api';
 
 export interface AuthState {
-  //authenticationStatus: 'UNKNOWN' | 'UNAUTHENTICATED' | 'AUTHENTICATED';
-  currentUserId: number | null | undefined;
-  currentAccountId?: number | null | undefined;
+  status: 'UNKNOWN' | 'LOADING' | 'NOT_AUTHENTICATED' | 'AUTHENTICATED';
+  currentUserId: number | null;
+  currentAccountId: number | null;
 }
 
 const initialState: AuthState = {
-  //authenticationStatus: 'UNKNOWN',
-  currentUserId: undefined,
-  currentAccountId: undefined,
+  currentUserId: null,
+  currentAccountId: null,
+  status: 'UNKNOWN',
 };
 
 const authSlice = createSlice({
@@ -32,17 +32,27 @@ const authSlice = createSlice({
   },
   extraReducers: builder =>
     builder
+      .addCase(API.reloadCurrentUser.pending, state => {
+        state.status = 'LOADING';
+      })
       .addCase(API.reloadCurrentUser.fulfilled, (state, action) => {
-        //const signedIn =
-        //  action.payload.currentUser != null && action.payload.currentAccount != null;
-        //state.authenticationStatus = signedIn ? 'AUTHENTICATED' : 'UNAUTHENTICATED';
-        state.currentUserId = action.payload.currentUser?.id || null;
-        state.currentAccountId = action.payload.currentAccount?.id || null;
+        if (action.payload.currentUser && action.payload.currentAccount) {
+          state.currentUserId = action.payload.currentUser.id || null;
+          state.currentAccountId = action.payload.currentAccount.id || null;
+          state.status = 'AUTHENTICATED'
+        } else {
+          state.currentUserId = null;
+          state.currentAccountId = null;
+          state.status = 'NOT_AUTHENTICATED'
+        }
+      })
+      .addCase(API.signOut.pending, state => {
+        state.status = 'LOADING';
       })
       .addCase(API.signOut.fulfilled, state => {
-        //state.authenticationStatus = 'UNAUTHENTICATED';
         state.currentUserId = null;
         state.currentAccountId = null;
+        state.status = 'NOT_AUTHENTICATED';
       }),
 });
 

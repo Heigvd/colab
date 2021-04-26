@@ -37,7 +37,7 @@ export const updateById = <T extends WithId>(entities: T[], entity: T): void => 
 export const buildLinkWithQueryParam = (
   baseUrl: string,
   queryParameters?: { [key: string]: string | null | undefined },
-) => {
+): string => {
   if (queryParameters == null) {
     return baseUrl;
   } else {

@@ -16,12 +16,13 @@ export function Destroyer({ onDelete }: { onDelete: () => void }): JSX.Element {
     <div>
       {waitDeleteConfirm ? (
         <div>
-          <IconButton icon={faTimes} onClick={() => setConfirm(false)} />
-          <IconButton icon={faCheck} onClick={() => onDelete()} />
+          <IconButton title="destroy" icon={faTrashAlt} />:
+          <IconButton title="cancel" icon={faTimes} onClick={() => setConfirm(false)} />
+          <IconButton title="confirm destroy" icon={faCheck} onClick={() => onDelete()} />
         </div>
       ) : (
         <div>
-          <IconButton icon={faTrashAlt} onClick={() => setConfirm(true)} />
+          <IconButton title="destroy" icon={faTrashAlt} onClick={() => setConfirm(true)} />
         </div>
       )}
     </div>

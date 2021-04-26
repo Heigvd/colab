@@ -22,12 +22,13 @@ import IconButton from '../common/IconButton';
 
 const UserComp = ({ user }: { user: User }) => {
   const dispatch = useAppDispatch();
-  const currentUser = useCurrentUser()!;
+  const { currentUser } = useCurrentUser()!;
+  const currentUserId = currentUser && currentUser.id;
 
   return (
     <div className={css({ display: 'contents' })}>
       <div>
-        {user.username} {user.id === currentUser.id ? ' (you) ' : null}
+        {user.username} {user.id === currentUserId ? ' (you) ' : null}
       </div>
       <div>{user.firstname}</div>
       <div>{user.lastname}</div>

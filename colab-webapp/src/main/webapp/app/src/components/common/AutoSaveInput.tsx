@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { debounce } from 'lodash';
-import { faPen, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faPenNib, faTimes } from '@fortawesome/free-solid-svg-icons';
 import IconButton from './IconButton';
 
 type State = {
@@ -15,13 +15,19 @@ type State = {
   currentValue: string;
 };
 
+export interface Props {
+  value: string;
+  onChange: (newValue: string) => void;
+  placeholder?: string;
+  inputType?: 'INPUT' | 'TEXTAREA';
+}
+
 export default ({
   value,
   onChange,
-}: {
-  value: string;
-  onChange: (newValue: string) => void;
-}): JSX.Element => {
+  placeholder = 'no value',
+  inputType = 'INPUT',
+}: Props): JSX.Element => {
   const [state, setState] = React.useState<State>({
     status: 'DISPLAY',
     currentValue: value || '',
@@ -42,17 +48,35 @@ export default ({
     [],
   );
 
-  const onInternalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    debouncedOnChange(e.target.value);
-    setState({ ...state, currentValue: e.target.value });
-  };
+  const onInternalChangeCb = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const newValue = e.target.value;
+      debouncedOnChange(newValue);
+      setState(state => ({ ...state, currentValue: newValue }));
+    },
+    [debouncedOnChange],
+  );
+
   if (state.status === 'EDIT') {
     return (
       <div>
-        <input value={state.currentValue} onChange={onInternalChange} />
+        {inputType === 'INPUT' ? (
+          <input
+            placeholder={placeholder}
+            value={state.currentValue}
+            onChange={onInternalChangeCb}
+          />
+        ) : (
+          <textarea
+            placeholder={placeholder}
+            value={state.currentValue}
+            onChange={onInternalChangeCb}
+          />
+        )}
 
         <IconButton
-          icon={faCheck}
+          icon={faTimes}
+          title="stop edition"
           onClick={() => {
             setState({
               ...state,
@@ -65,10 +89,10 @@ export default ({
   } else {
     return (
       <div>
-        {state.currentValue}
-
+        {state.currentValue ? state.currentValue : <i>{placeholder}</i>}
         <IconButton
-          icon={faPen}
+          icon={faPenNib}
+          title="edit"
           onClick={() => {
             setState({
               ...state,

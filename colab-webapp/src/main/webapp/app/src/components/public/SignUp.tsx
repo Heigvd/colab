@@ -5,18 +5,18 @@
  * Licensed under the MIT License
  */
 import * as React from 'react';
-import {css} from '@emotion/css';
+import { css } from '@emotion/css';
 
-import {faSignInAlt} from '@fortawesome/free-solid-svg-icons';
+import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import FormContainer from '../common/FormContainer';
 import InlineLoading from '../common/InlineLoading';
-import {signUp} from '../../API/api';
-import {useAppDispatch} from '../../store/hooks';
-import {buttonStyle} from '../styling/style';
-import {InlineLink} from '../common/Link';
+import { signUp } from '../../API/api';
+import { useAppDispatch } from '../../store/hooks';
+import { buttonStyle } from '../styling/style';
+import { InlineLink } from '../common/Link';
 import IconButton from '../common/IconButton';
-import {buildLinkWithQueryParam} from '../../helper';
-import {useHistory} from 'react-router-dom';
+import { buildLinkWithQueryParam } from '../../helper';
+import { useHistory } from 'react-router-dom';
 
 interface Props {
   redirectTo: string | null;
@@ -43,7 +43,7 @@ export default (props: Props): JSX.Element => {
             username
             <input
               type="text"
-              onChange={e => setCredentials({...credentials, username: e.target.value})}
+              onChange={e => setCredentials({ ...credentials, username: e.target.value })}
             />
           </label>
         </div>
@@ -52,7 +52,7 @@ export default (props: Props): JSX.Element => {
             email address
             <input
               type="text"
-              onChange={e => setCredentials({...credentials, email: e.target.value})}
+              onChange={e => setCredentials({ ...credentials, email: e.target.value })}
             />
           </label>
         </div>
@@ -67,10 +67,10 @@ export default (props: Props): JSX.Element => {
               >
                 <input
                   type="password"
-                  onChange={e => setCredentials({...credentials, password: e.target.value})}
+                  onChange={e => setCredentials({ ...credentials, password: e.target.value })}
                 />
                 <PasswordStrengthBar
-                  onChangeScore={e => setCredentials({...credentials, passwordScore: e})}
+                  onChangeScore={e => setCredentials({ ...credentials, passwordScore: e })}
                   password={credentials.password}
                 />
               </div>
@@ -82,7 +82,7 @@ export default (props: Props): JSX.Element => {
             className={buttonStyle}
             icon={faSignInAlt}
             onClick={() => {
-              dispatch(signUp(credentials)).then((action) => {
+              dispatch(signUp(credentials)).then(action => {
                 // is that a hack or not ???
                 if (props.redirectTo && action.meta.requestStatus === 'fulfilled') {
                   history.push(props.redirectTo);
@@ -92,7 +92,7 @@ export default (props: Props): JSX.Element => {
           >
             Sign up
           </IconButton>
-          <InlineLink to={buildLinkWithQueryParam('/SignIn', {redirectTo: props.redirectTo})}>
+          <InlineLink to={buildLinkWithQueryParam('/SignIn', { redirectTo: props.redirectTo })}>
             cancel
           </InlineLink>
         </div>

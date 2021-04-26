@@ -9,59 +9,10 @@ import * as React from 'react';
 import * as API from '../../API/api';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Card } from 'colab-rest-client';
-import { css } from '@emotion/css';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
-import AutoSaveTextEditor from '../common/AutoSaveTextEditor';
-import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/IconButton';
-
-interface Props {
-  card: Card;
-}
-
-// Display one card and allow to edit its color
-const CardDisplay = ({ card }: Props): JSX.Element => {
-  const dispatch = useAppDispatch();
-  return (
-    <div
-      className={css({
-        margin: '20px',
-        width: 'max-content',
-        border: `2px solid ${card.color}`,
-        borderRadius: '20px',
-        padding: '10px',
-      })}
-    >
-      <div
-        className={css({
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          borderBottom: '1px solid grey',
-        })}
-      >
-        <span className={css({})}>Card #{card.id}</span>
-      </div>
-      <div
-        className={css({
-          margin: '10px',
-        })}
-      >
-        <AutoSaveTextEditor
-          value={card.color || ''}
-          onChange={newValue => dispatch(API.updateCard({ ...card, color: newValue }))}
-        />
-        <Destroyer
-          onDelete={() => {
-            dispatch(API.deleteCard(card));
-          }}
-        />
-      </div>
-    </div>
-  );
-};
+import CardDisplay from './CardDisplay';
 
 export function CardList(): JSX.Element {
   const status = useAppSelector(state => state.cards.status);
@@ -78,6 +29,7 @@ export function CardList(): JSX.Element {
       <div>
         <div>
           {cards
+            .flatMap(c => (c ? [c] : []))
             .sort((a, b) => (a.id || 0) - (b.id || 0))
             .map(card => (
               <CardDisplay key={card.id} card={card} />

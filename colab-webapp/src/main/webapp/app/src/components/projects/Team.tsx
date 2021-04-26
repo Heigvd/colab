@@ -56,7 +56,10 @@ export default (props: Props): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const { members, status } = useAppSelector(state => {
-    const r: { members: TeamMember[]; status: StateStatus } = { members: [], status: 'NOT_SET' };
+    const r: { members: TeamMember[]; status: StateStatus } = {
+      members: [],
+      status: 'NOT_INITIALIZED',
+    };
     const projectId = props.project.id;
 
     if (projectId != null && state.projects.teams[projectId]) {
@@ -70,7 +73,7 @@ export default (props: Props): JSX.Element => {
 
   const [invite, setInvite] = React.useState('');
 
-  if (status === 'NOT_SET') {
+  if (status === 'NOT_INITIALIZED') {
     // Load team members from server
     if (props.project.id != null) {
       dispatch(getProjectTeam(props.project.id));
@@ -78,7 +81,7 @@ export default (props: Props): JSX.Element => {
   }
   const title = <h3>Team Members</h3>;
 
-  if (status === 'SET') {
+  if (status === 'INITIALIZED') {
     return (
       <div>
         {title}

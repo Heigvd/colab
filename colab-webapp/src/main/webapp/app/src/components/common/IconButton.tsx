@@ -8,12 +8,13 @@
 import * as React from 'react';
 import { iconButton, linkStyle, iconStyle } from '../styling/style';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { cx, css } from '@emotion/css';
+import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
+import { cx } from '@emotion/css';
 
 export interface IconButtonProps {
   onClick?: () => void;
   icon: IconProp;
+  iconSize?: SizeProp;
   title?: string;
   children?: React.ReactNode;
   className?: string;
@@ -29,6 +30,7 @@ export default ({
   className,
   reverseOrder,
   iconColor,
+  iconSize,
 }: IconButtonProps): JSX.Element => {
   /**
    * Pressing enter or space simulates click
@@ -65,10 +67,7 @@ export default ({
       title={title}
     >
       {reverseOrder ? children : null}
-      <FontAwesomeIcon
-        icon={icon}
-        className={iconColor ? cx(iconButton, css({ color: iconColor })) : iconButton}
-      />
+      <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} className={iconButton} />
       {!reverseOrder ? children : null}
     </span>
   );

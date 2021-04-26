@@ -27,8 +27,10 @@ export default (): JSX.Element => {
     dispatch(getAllUsers());
   }
 
-  if (channels === undefined) {
-    dispatch(getOccupiedChannels());
+  if (channels === 'LOADING' || channels === 'NOT_INITIALIZED') {
+    if (channels === 'NOT_INITIALIZED') {
+      dispatch(getOccupiedChannels());
+    }
     return (
       <div>
         <h3>Online Users</h3>

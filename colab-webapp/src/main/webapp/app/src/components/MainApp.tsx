@@ -9,13 +9,13 @@ import * as React from 'react';
 import Logo from './styling//WhiteLogo';
 
 import * as API from '../API/api';
-import { css, cx } from '@emotion/css';
-import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import { CardList } from './cards/CardList';
-import { UserProjects } from './projects/ProjectList';
+import {css, cx} from '@emotion/css';
+import {faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
+import {CardList} from './cards/CardList';
+import {UserProjects} from './projects/ProjectList';
 import SignInForm from './public/SignIn';
 import SignUpForm from './public/SignUp';
-import { fullPageStyle, darkMode } from './styling/style';
+import {fullPageStyle, darkMode} from './styling/style';
 import Loading from './common/Loading';
 import {
   useAppDispatch,
@@ -35,9 +35,9 @@ import {
 } from 'react-router-dom';
 import Settings from './settings/Settings';
 import Admin from './admin/Admin';
-import { MainMenuLink, InlineLink } from './common/Link';
+import {MainMenuLink, InlineLink} from './common/Link';
 import ForgotPassword from './public/ForgotPassword';
-import { getDisplayName } from '../helper';
+import {getDisplayName} from '../helper';
 import Team from './projects/Team';
 import InlineLoading from './common/InlineLoading';
 import Overlay from './common/Overlay';
@@ -47,14 +47,41 @@ import IconButton from './common/IconButton';
 /**
  * To read parameters from hash
  */
-const TeamWrapper = () => {
-  const { id } = useParams<{ id: string }>();
+const EditorWrapper = () => {
+  const {id} = useParams<{id: string}>();
 
   const dispatch = useAppDispatch();
-  const { project, status } = useProject(+id);
+  const {project, status} = useProject(+id);
+  const {project: editedProject, status: editingStatus} = useProjectBeingEdited();
 
   if (project === undefined) {
-    if (status === 'NOT_SET') {
+    if (status === 'NOT_INITIALIZED') {
+      dispatch(API.getUserProjects());
+    }
+    return <InlineLoading />;
+  } else if (project == null) {
+    return <div>The project does not exists</div>;
+  } else {
+    if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
+      dispatch(API.startProjectEdition(project));
+      return <InlineLoading />;
+    } else {
+      return <Editor />;
+    }
+  }
+};
+
+/**
+ * To read parameters from hash
+ */
+const TeamWrapper = () => {
+  const {id} = useParams<{id: string}>();
+
+  const dispatch = useAppDispatch();
+  const {project, status} = useProject(+id);
+
+  if (project === undefined) {
+    if (status === 'NOT_INITIALIZED') {
       dispatch(API.getUserProjects());
     }
     return <InlineLoading />;
@@ -74,11 +101,11 @@ function useQuery() {
 export default (): JSX.Element => {
   const dispatch = useAppDispatch();
 
-  const user = useCurrentUser();
+  const {currentUser, status: currentUserStatus} = useCurrentUser();
 
   const socketId = useAppSelector(state => state.websockets.sessionId);
 
-  const projectBeingEdited = useProjectBeingEdited();
+  const {project: projectBeingEdited} = useProjectBeingEdited();
 
   const reconnecting =
     socketId == null ? (
@@ -96,12 +123,13 @@ export default (): JSX.Element => {
 
   const query = useQuery();
 
-  if (user === undefined) {
+  if (currentUserStatus == 'UNKNOWN') {
     // user is not known. Reload state from API
     dispatch(API.reloadCurrentUser());
     return <Loading />;
-  } else if (user === null) {
-    // null means the client is not authenticated yet
+  } else if (currentUserStatus == 'LOADING') {
+    return <Loading />;
+  } else if (currentUserStatus == 'NOT_AUTHENTICATED') {
     return (
       <Router>
         <Switch>
@@ -121,7 +149,7 @@ export default (): JSX.Element => {
         {reconnecting}
       </Router>
     );
-  } else {
+  } else if (currentUser != null) {
     // user is authenticated
     return (
       <Router>
@@ -151,13 +179,23 @@ export default (): JSX.Element => {
                 Projects
               </MainMenuLink>
               {projectBeingEdited != null ? (
-                <MainMenuLink to="/editor">Project {projectBeingEdited.name}</MainMenuLink>
+                <MainMenuLink
+                  to={`/editor/${projectBeingEdited.id}`}
+                  isActive={(match, _location) => {
+                    if (match) {
+                      return match.url.startsWith(`/editor/${projectBeingEdited.id}`);
+                    }
+                    return false;
+                  }}
+                >
+                  Project {projectBeingEdited.name}
+                </MainMenuLink>
               ) : null}
               <MainMenuLink exact to="/cards">
                 Cards
               </MainMenuLink>
               <MainMenuLink to="/settings">Settings</MainMenuLink>
-              {user.admin ? <MainMenuLink to="/admin">Admin</MainMenuLink> : null}
+              {currentUser.admin ? <MainMenuLink to="/admin">Admin</MainMenuLink> : null}
             </nav>
             <div
               className={css({
@@ -165,7 +203,7 @@ export default (): JSX.Element => {
               })}
             ></div>
 
-            <InlineLink to="/settings/user">{getDisplayName(user)}</InlineLink>
+            <InlineLink to="/settings/user">{getDisplayName(currentUser)}</InlineLink>
             <IconButton onClick={() => dispatch(API.signOut())} icon={faSignOutAlt} />
           </div>
 
@@ -173,7 +211,7 @@ export default (): JSX.Element => {
             className={css({
               flexGrow: 1,
               overflowY: 'auto',
-              '& > *': { padding: '0 30px 30px 30px' },
+              '& > *': {padding: '0 30px 30px 30px'},
             })}
           >
             <Switch>
@@ -189,8 +227,8 @@ export default (): JSX.Element => {
               <Route path="/admin">
                 <Admin />
               </Route>
-              <Route path="/editor">
-                <Editor />
+              <Route path="/editor/:id">
+                <EditorWrapper />
               </Route>
               <Route path="/team/:id">
                 <TeamWrapper />
@@ -205,5 +243,9 @@ export default (): JSX.Element => {
         {reconnecting}
       </Router>
     );
+  } else {
+    return (<Overlay>
+      <i>Inconsistent state</i>
+    </Overlay>);
   }
 };

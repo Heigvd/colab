@@ -38,9 +38,9 @@ export default (): JSX.Element => {
   const accounts = useAppSelector(state =>
     Object.values(state.users.accounts).filter(a => a.userId == state.auth.currentUserId),
   );
-  const user = useCurrentUser();
+  const { currentUser } = useCurrentUser();
 
-  if (user) {
+  if (currentUser) {
     return (
       <div>
         <h2>Settings</h2>
@@ -64,7 +64,7 @@ export default (): JSX.Element => {
                   <span>select something...</span>
                 </Route>
                 <Route exact path="/user">
-                  <UserProfile user={user} />
+                  <UserProfile user={currentUser} />
                 </Route>
                 <Route path="/account/:id">
                   <WrapLocalAccountEditor />

@@ -15,7 +15,7 @@ import { mapById } from '../helper';
  * LOADING: request to load all data is pending
  * SET:     all data are known
  */
-export type StateStatus = 'NOT_SET' | 'LOADING' | 'SET';
+export type StateStatus = 'NOT_INITIALIZED' | 'LOADING' | 'INITIALIZED';
 
 export interface ProjectState {
   currentUserId: number | undefined;
@@ -34,15 +34,17 @@ export interface ProjectState {
     };
   };
   editing: number | null;
+  editingStatus: 'NOT_EDITING' | 'LOADING' | 'READY';
 }
 const initialState: ProjectState = {
   currentUserId: undefined,
-  status: 'NOT_SET',
-  allStatus: 'NOT_SET',
+  status: 'NOT_INITIALIZED',
+  allStatus: 'NOT_INITIALIZED',
   mine: [],
   projects: {},
   teams: {},
   editing: null,
+  editingStatus: 'NOT_EDITING',
 };
 
 const projectsSlice = createSlice({
@@ -75,7 +77,7 @@ const projectsSlice = createSlice({
 
       if (projectId != null && mId != null) {
         const team = state.teams[projectId];
-        if (team != null && team.status === 'SET') {
+        if (team != null && team.status === 'INITIALIZED') {
           team.members[mId] = action.payload;
         }
       }
@@ -100,7 +102,7 @@ const projectsSlice = createSlice({
         state.status = 'LOADING';
       })
       .addCase(API.getUserProjects.fulfilled, (state, action) => {
-        state.status = 'SET';
+        state.status = 'INITIALIZED';
         state.mine = action.payload.flatMap(project => (project.id != null ? [project.id] : []));
         state.projects = { ...state.projects, ...mapById(action.payload) };
       })
@@ -108,7 +110,7 @@ const projectsSlice = createSlice({
         state.allStatus = 'LOADING';
       })
       .addCase(API.getAllProjects.fulfilled, (state, action) => {
-        state.allStatus = 'SET';
+        state.allStatus = 'INITIALIZED';
         state.projects = mapById(action.payload);
       })
       .addCase(API.getProjectTeam.pending, (state, action) => {
@@ -121,7 +123,7 @@ const projectsSlice = createSlice({
       .addCase(API.getProjectTeam.fulfilled, (state, action) => {
         const projectId = action.meta.arg;
         if (projectId) {
-          state.teams[projectId].status = 'SET';
+          state.teams[projectId].status = 'INITIALIZED';
           if (action.payload) {
             state.teams[projectId].members = mapById(action.payload);
           }
@@ -133,15 +135,20 @@ const projectsSlice = createSlice({
       .addCase(API.signOut.fulfilled, () => {
         return initialState;
       })
-      .addCase(API.closeCurrentProject.fulfilled, state => {
-        state.editing = null;
+      .addCase(API.startProjectEdition.pending, state => {
+        state.editingStatus = 'LOADING';
       })
       .addCase(API.startProjectEdition.fulfilled, (state, action) => {
+        state.editingStatus = 'READY';
         if (action.payload.id != null) {
           state.editing = action.payload.id;
         } else {
           state.editing = null;
         }
+      })
+      .addCase(API.closeCurrentProject.pending, state => {
+        state.editing = null;
+        state.editingStatus = 'NOT_EDITING';
       }),
 });
 

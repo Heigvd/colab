@@ -271,6 +271,11 @@ export const startProjectEdition = createAsyncThunk(
         '@class': 'WsSessionIdentifier',
         sessionId: state.websockets.sessionId,
       });
+
+      // initialized project content
+      if (project.rootCardId != null) {
+        await thunkApi.dispatch(getCard(project.rootCardId));
+      }
     }
     return project;
   },
@@ -313,6 +318,10 @@ export const sendInvitation = createAsyncThunk(
 
 export const initCards = createAsyncThunk('card/init', async () => {
   return await restClient.CardController.getAllCards();
+});
+
+export const getCard = createAsyncThunk('card/create', async (id: number) => {
+  return await restClient.CardController.getCard(id);
 });
 
 export const createCard = createAsyncThunk('card/create', async (card: Card) => {

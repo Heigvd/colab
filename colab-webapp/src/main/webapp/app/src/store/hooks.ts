@@ -5,23 +5,27 @@
  * Licensed under the MIT License
  */
 
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { ColabState, AppDispatch } from './store';
-import { Project, User } from 'colab-rest-client';
-import { StateStatus } from './project';
+import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
+import {ColabState, AppDispatch} from './store';
+import {Project, User} from 'colab-rest-client';
+import {StateStatus} from './project';
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = (): AppDispatch => useDispatch<AppDispatch>();
 
 export const useAppSelector: TypedUseSelectorHook<ColabState> = useSelector;
 
-export const useCurrentUser = (): User | null | undefined => {
+export const useCurrentUser = (): {
+  currentUser: User | null;
+  status: ColabState['auth']['status']
+} => {
   return useAppSelector(state => {
-    if (state.auth.currentUserId != null) {
-      return state.users.users[state.auth.currentUserId];
-    } else {
-      return state.auth.currentUserId;
-    }
+    const user = (state.auth.currentUserId != null ? state.users.users[state.auth.currentUserId] : null);
+
+    return {
+      currentUser: user,
+      status: state.auth.status
+    };
   });
 };
 
@@ -36,15 +40,15 @@ export const useProject = (id: number): UsedProject => {
       // project is known
       return {
         project: state.projects.projects[id],
-        status: 'SET',
+        status: 'INITIALIZED',
       };
     } else {
       // project is not knwon
-      if (state.projects.status === 'SET') {
+      if (state.projects.status === 'INITIALIZED') {
         // state is up to date, such project just does not exist
         return {
           project: null,
-          status: `SET`,
+          status: `INITIALIZED`,
         };
       } else {
         // this project may or may not exist...
@@ -57,12 +61,21 @@ export const useProject = (id: number): UsedProject => {
   });
 };
 
-export const useProjectBeingEdited = (): Project | null => {
+export const useProjectBeingEdited = (): {
+  project: Project | null;
+  status: 'NOT_EDITING' | 'LOADING' | 'READY';
+} => {
   return useAppSelector(state => {
     if (state.projects.editing != null) {
-      return state.projects.projects[state.projects.editing];
+      return {
+        project: state.projects.projects[state.projects.editing],
+        status: state.projects.editingStatus,
+      };
     } else {
-      return null;
+      return {
+        project: null,
+        status: state.projects.editingStatus,
+      };
     }
   });
 };

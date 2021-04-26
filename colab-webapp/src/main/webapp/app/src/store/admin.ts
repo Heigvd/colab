@@ -16,13 +16,13 @@ import {
 export interface AdminState {
   loggers: { [key: string]: LevelDescriptor } | undefined | null;
   userStatus: 'NOT_INITIALIZED' | 'LOADING' | 'INITIALIZED';
-  occupiedChannels: ChannelOverview[] | undefined;
+  occupiedChannels: ChannelOverview[] | 'NOT_INITIALIZED' | 'LOADING';
 }
 
 const initialState: AdminState = {
   loggers: undefined,
   userStatus: 'NOT_INITIALIZED',
-  occupiedChannels: undefined,
+  occupiedChannels: 'NOT_INITIALIZED',
 };
 
 const adminSlice = createSlice({
@@ -33,7 +33,7 @@ const adminSlice = createSlice({
       state,
       action: PayloadAction<{ channel: WebsocketEffectiveChannel; diff: number }>,
     ) => {
-      if (state.occupiedChannels) {
+      if (typeof state.occupiedChannels != 'string') {
         const channel = action.payload.channel;
         const count = action.payload.diff;
 
@@ -87,6 +87,9 @@ const adminSlice = createSlice({
       })
       .addCase(API.getLoggerLevels.fulfilled, (state, action) => {
         state.loggers = action.payload;
+      })
+      .addCase(API.getOccupiedChannels.pending, state => {
+        state.occupiedChannels = 'LOADING';
       })
       .addCase(API.getOccupiedChannels.fulfilled, (state, action) => {
         state.occupiedChannels = action.payload;

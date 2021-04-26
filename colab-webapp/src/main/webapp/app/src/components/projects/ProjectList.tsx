@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as API from '../../API/api';
 
-import { faPlus, faUsers, faPen } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faUsers, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Project } from 'colab-rest-client';
 import { css } from '@emotion/css';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -18,7 +18,6 @@ import { InlineLink } from '../common/Link';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { StateStatus } from '../../store/project';
 import AutoSaveInput from '../common/AutoSaveInput';
-import AutoSaveTextEditor from '../common/AutoSaveTextEditor';
 import IconButton from '../common/IconButton';
 
 interface Props {
@@ -28,6 +27,7 @@ interface Props {
 // Display one project and allow to edit it
 const ProjectDisplay = ({ project }: Props) => {
   const dispatch = useAppDispatch();
+
   return (
     <div
       className={css({
@@ -41,30 +41,43 @@ const ProjectDisplay = ({ project }: Props) => {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
-          borderBottom: '1px solid grey',
         })}
       >
-        <span className={css({})}>
-          Project #{project.id}
-          <AutoSaveInput
-            value={project.name || ''}
-            onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
-          />
-        </span>
+        <span className={css({})}>Project #{project.id}</span>
+        <AutoSaveInput
+          placeholder="unnamed"
+          value={project.name || ''}
+          onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+        />
       </div>
       <div
         className={css({
-          margin: '10px',
+          padding: '10px',
+          borderTop: '1px solid grey',
+          borderBottom: '1px solid grey',
         })}
       >
-        <AutoSaveTextEditor
+        <AutoSaveInput
+          inputType="TEXTAREA"
+          placeholder="no description"
           value={project.description || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
         />
-        <InlineLink to={`/team/${project.id}`}>
-          <IconButton icon={faUsers} />
+      </div>
+      <div
+        className={css({
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        })}
+      >
+        <InlineLink to={`/editor/${project.id}`}>
+          <IconButton title="Edit project" iconColor="var(--fgColor)" icon={faEdit} />
         </InlineLink>
-        <IconButton onClick={() => dispatch(API.startProjectEdition(project))} icon={faPen} />
+
+        <InlineLink to={`/team/${project.id}`}>
+          <IconButton title="Manage team" iconColor="var(--fgColor)" icon={faUsers} />
+        </InlineLink>
         <Destroyer
           onDelete={() => {
             dispatch(API.deleteProject(project));
@@ -85,7 +98,7 @@ interface ProjectListProps {
 function ProjectList({ projects, status, reload }: ProjectListProps) {
   const dispatch = useAppDispatch();
 
-  if (status === 'NOT_SET') {
+  if (status === 'NOT_INITIALIZED') {
     dispatch(reload());
     return <InlineLoading />;
   } else if (status === 'LOADING') {
