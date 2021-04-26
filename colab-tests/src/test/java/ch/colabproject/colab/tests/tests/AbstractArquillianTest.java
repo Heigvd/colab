@@ -8,7 +8,6 @@ package ch.colabproject.colab.tests.tests;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.ejb.UserManagement;
-import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.AuthInfo;
@@ -16,8 +15,9 @@ import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
-import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import ch.colabproject.colab.client.ColabClient;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
 import ch.colabproject.colab.tests.mailhog.model.Message;
@@ -26,9 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -85,6 +83,8 @@ public abstract class AbstractArquillianTest {
      * Provide one-stop-shop reflections object
      */
     protected static final Reflections reflections;
+
+    private boolean hasDbBeenInitialized = false;
 
     static {
         reflections = new Reflections("ch.colabproject.colab");
@@ -188,39 +188,15 @@ public abstract class AbstractArquillianTest {
 
     /**
      * Clear and init database
+     *
+     * @throws SQLException something went wrong
      */
-    protected void resetDatabase() {
+    protected void resetDatabase() throws SQLException {
 //        em.flush();
 //        em.clear();
         em.getEntityManagerFactory().getCache().evictAll();
-        clearDatabase();
+        DatabaseTools.clearDatabase(colabDataSource);
         initDatabase();
-    }
-
-    /**
-     * delete all records from database
-     */
-    protected void clearDatabase() {
-        String sql = "DO\n"
-            + "$func$\n"
-            + "BEGIN \n"
-            + "EXECUTE (\n"
-            + "  SELECT 'TRUNCATE TABLE '\n"
-            + "    || string_agg(quote_ident(schemaname) || '.' || quote_ident(tablename), ', ')\n"
-            + "    || ' CASCADE'\n"
-            + "  FROM   pg_tables\n"
-            + "  WHERE  (schemaname = 'public'\n"
-            + "          AND tablename <> 'sequence')\n"
-            + ");\n"
-            + "END\n"
-            + "$func$;";
-
-        try (Connection connection = colabDataSource.getConnection();
-             Statement st = connection.createStatement()) {
-            st.execute(sql);
-        } catch (SQLException ex) {
-            logger.error("Table reset (SQL: " + sql + ")", ex);
-        }
     }
 
     /**
@@ -363,10 +339,28 @@ public abstract class AbstractArquillianTest {
     }
 
     /**
-     * Insert minimal required data in test database; TODO
+     * Insert minimal required data in test database;
+     *
+     * @throws SQLException something went wrong
      */
-    protected void initDatabase() {
-        // TODO
+    protected void initDatabase() throws SQLException {
+        // make sure to have unpretictable IDs
+        initDatabaseOnce();
+
+        // TODO: setup initai dataset
+    }
+
+    /**
+     * Setup initial dataset
+     *
+     * @throws SQLException something went wrong
+     */
+    protected void initDatabaseOnce() throws SQLException {
+        if (!hasDbBeenInitialized) {
+            hasDbBeenInitialized = true;
+            logger.info("Randomize sequences");
+            DatabaseTools.randomizeSequences(colabDataSource);
+        }
     }
 
     /**
@@ -405,9 +399,11 @@ public abstract class AbstractArquillianTest {
      * Before each step: reset db state
      *
      * @param info Jupiter Test info
+     *
+     * @throws java.sql.SQLException if db initialization failed
      */
     @BeforeEach
-    public void init(TestInfo info) {
+    public void init(TestInfo info) throws SQLException {
         if (userManagement != null) {
             this.mailClient = new MailhogClient();
             try {

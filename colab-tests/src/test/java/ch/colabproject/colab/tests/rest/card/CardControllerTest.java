@@ -34,7 +34,7 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long rootCardId = rootCard.getId();
 
         List<CardContent> rootCardContents = client.cardController
-                .getContentVariantsOfCard(rootCardId);
+            .getContentVariantsOfCard(rootCardId);
         Long parentId = rootCardContents.get(0).getId();
 
         Card card = client.cardController.createNewCard(parentId, cardDefId);
@@ -66,7 +66,7 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long rootCardId = rootCard.getId();
 
         List<CardContent> rootCardContents = client.cardController
-                .getContentVariantsOfCard(rootCardId);
+            .getContentVariantsOfCard(rootCardId);
         Long parentId = rootCardContents.get(0).getId();
 
         Card card = client.cardController.createNewCard(parentId, cardDefId);
@@ -102,7 +102,7 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long rootCardId = rootCard.getId();
 
         List<CardContent> rootCardContents = client.cardController
-                .getContentVariantsOfCard(rootCardId);
+            .getContentVariantsOfCard(rootCardId);
         Long parentId = rootCardContents.get(0).getId();
 
         int initialSize = client.cardController.getAllCards().size();
@@ -133,7 +133,7 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long rootCardId = rootCard.getId();
 
         List<CardContent> rootCardContents = client.cardController
-                .getContentVariantsOfCard(rootCardId);
+            .getContentVariantsOfCard(rootCardId);
         Long parentId = rootCardContents.get(0).getId();
 
         Card card = client.cardController.createNewCard(parentId, cardDefId);
@@ -160,7 +160,7 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long rootCardId = rootCard.getId();
 
         List<CardContent> rootCardContents = client.cardController
-                .getContentVariantsOfCard(rootCardId);
+            .getContentVariantsOfCard(rootCardId);
         Long parentId = rootCardContents.get(0).getId();
 
         Card card = client.cardController.createNewCard(parentId, cardDefId);
@@ -174,8 +174,8 @@ public class CardControllerTest extends AbstractArquillianTest {
         List<CardContent> variants = client.cardController.getContentVariantsOfCard(cardId);
         Assertions.assertNotNull(variants);
         Assertions.assertEquals(2, variants.size());
-        Assertions.assertTrue(cardContentId == variants.get(0).getId()
-                || cardContentId == variants.get(1).getId());
+        Assertions.assertTrue(cardContentId.equals(variants.get(0).getId())
+            || cardContentId.equals(variants.get(1).getId()));
     }
 
     @Test
@@ -190,7 +190,7 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long rootCardId = rootCard.getId();
 
         List<CardContent> rootCardContents = client.cardController
-                .getContentVariantsOfCard(rootCardId);
+            .getContentVariantsOfCard(rootCardId);
         CardContent rootCardContent = rootCardContents.get(0);
         Long rootCardContentId = rootCardContent.getId();
 
@@ -217,7 +217,7 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long rootCardId = rootCard.getId();
 
         List<CardContent> rootCardContents = client.cardController
-                .getContentVariantsOfCard(rootCardId);
+            .getContentVariantsOfCard(rootCardId);
         Long parentId = rootCardContents.get(0).getId();
 
         Card card = client.cardController.createNewCard(parentId, cardDefId);

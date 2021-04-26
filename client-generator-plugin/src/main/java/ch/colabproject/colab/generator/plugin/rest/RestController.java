@@ -577,7 +577,7 @@ public class RestController {
         // eg @Path("project/{pId: [regex]}/card/{}")   or "project"
         Map<String, Class<?>> mainPathParam = splitPath(classPath);
 
-        Logger.debug("Build RestController for class " + klass);
+        Logger.debug("Build RestController for " + klass);
         // Go through each class methods but only cares about ones annotated with
         // a HttpMethod-like annotation
         for (Method method : klass.getMethods()) {

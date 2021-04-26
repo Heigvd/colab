@@ -126,7 +126,7 @@ public class TransactionManager implements Serializable {
     public void beforeCompletion() {
         //make sure to flush everything to database
         em.flush();
-        logger.warn("Before transactionCompletion: "
+        logger.info("Before transactionCompletion: "
             + "This method is not called for each transaction, why ???");
         try {
             this.precomputeMessage();
@@ -146,7 +146,7 @@ public class TransactionManager implements Serializable {
         logger.debug("After transaction completion : {}; messages: {}", successful, message);
         if (successful) {
             if (!precomputed) {
-                logger.warn("Messages were not precomputed @BeforeCompletion!!!");
+                logger.info("Messages were not precomputed @BeforeCompletion!!!");
                 // ,essage shall be precomputed during the "before completion" phase, but the
                 // dedicated method is never called, and I do not understand the reason...
                 try {
@@ -156,7 +156,7 @@ public class TransactionManager implements Serializable {
                 }
             }
             if (message != null && !message.getMessages().isEmpty()) {
-                logger.warn("Send messages");
+                logger.info("Send messages");
                 websocketFacade.propagate(message);
             }
         }
