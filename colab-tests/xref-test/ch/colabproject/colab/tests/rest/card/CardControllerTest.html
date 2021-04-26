@@ -42,7 +42,7 @@
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>          Long rootCardId = rootCard.getId();
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>          List&lt;CardContent&gt; rootCardContents = client.cardController
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>                  .getContentVariantsOfCard(rootCardId);
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>              .getContentVariantsOfCard(rootCardId);
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>          Long parentId = rootCardContents.get(0).getId();
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>          Card card = client.cardController.createNewCard(parentId, cardDefId);
@@ -74,7 +74,7 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          Long rootCardId = rootCard.getId();
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          List&lt;CardContent&gt; rootCardContents = client.cardController
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>                  .getContentVariantsOfCard(rootCardId);
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>              .getContentVariantsOfCard(rootCardId);
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          Long parentId = rootCardContents.get(0).getId();
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          Card card = client.cardController.createNewCard(parentId, cardDefId);
@@ -110,7 +110,7 @@
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>         Long rootCardId = rootCard.getId();
 <a class="jxr_linenumber" name="L103" href="#L103">103</a> 
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>         List&lt;CardContent&gt; rootCardContents = client.cardController
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>                 .getContentVariantsOfCard(rootCardId);
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>             .getContentVariantsOfCard(rootCardId);
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         Long parentId = rootCardContents.get(0).getId();
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> 
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         <strong class="jxr_keyword">int</strong> initialSize = client.cardController.getAllCards().size();
@@ -141,7 +141,7 @@
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         Long rootCardId = rootCard.getId();
 <a class="jxr_linenumber" name="L134" href="#L134">134</a> 
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         List&lt;CardContent&gt; rootCardContents = client.cardController
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>                 .getContentVariantsOfCard(rootCardId);
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>             .getContentVariantsOfCard(rootCardId);
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         Long parentId = rootCardContents.get(0).getId();
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> 
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>         Card card = client.cardController.createNewCard(parentId, cardDefId);
@@ -168,7 +168,7 @@
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>         Long rootCardId = rootCard.getId();
 <a class="jxr_linenumber" name="L161" href="#L161">161</a> 
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>         List&lt;CardContent&gt; rootCardContents = client.cardController
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>                 .getContentVariantsOfCard(rootCardId);
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>             .getContentVariantsOfCard(rootCardId);
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>         Long parentId = rootCardContents.get(0).getId();
 <a class="jxr_linenumber" name="L165" href="#L165">165</a> 
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>         Card card = client.cardController.createNewCard(parentId, cardDefId);
@@ -182,8 +182,8 @@
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>         List&lt;CardContent&gt; variants = client.cardController.getContentVariantsOfCard(cardId);
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>         Assertions.assertNotNull(variants);
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>         Assertions.assertEquals(2, variants.size());
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>         Assertions.assertTrue(cardContentId == variants.get(0).getId()
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>                 || cardContentId == variants.get(1).getId());
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>         Assertions.assertTrue(cardContentId.equals(variants.get(0).getId())
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>             || cardContentId.equals(variants.get(1).getId()));
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>     }
 <a class="jxr_linenumber" name="L180" href="#L180">180</a> 
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>     @Test
@@ -198,7 +198,7 @@
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>         Long rootCardId = rootCard.getId();
 <a class="jxr_linenumber" name="L191" href="#L191">191</a> 
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>         List&lt;CardContent&gt; rootCardContents = client.cardController
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>                 .getContentVariantsOfCard(rootCardId);
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>             .getContentVariantsOfCard(rootCardId);
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>         CardContent rootCardContent = rootCardContents.get(0);
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>         Long rootCardContentId = rootCardContent.getId();
 <a class="jxr_linenumber" name="L196" href="#L196">196</a> 
@@ -225,7 +225,7 @@
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         Long rootCardId = rootCard.getId();
 <a class="jxr_linenumber" name="L218" href="#L218">218</a> 
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>         List&lt;CardContent&gt; rootCardContents = client.cardController
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>                 .getContentVariantsOfCard(rootCardId);
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>             .getContentVariantsOfCard(rootCardId);
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>         Long parentId = rootCardContents.get(0).getId();
 <a class="jxr_linenumber" name="L222" href="#L222">222</a> 
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>         Card card = client.cardController.createNewCard(parentId, cardDefId);

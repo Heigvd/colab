@@ -6,7 +6,7 @@ colab-client/colab-api,ch.colabproject.colab.api.model.card,CardDef,112,0,6,0,38
 colab-client/colab-api,ch.colabproject.colab.api.model.card,CardContentCompletionMode,34,0,0,0,4,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api,Helper,150,0,14,0,38,0,17,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.utils,CacheControlFilter,28,0,4,0,7,0,5,0,3,0
-colab-client/colab-api,ch.colabproject.colab.api.rest.utils,AbstractExceptionMapper,69,0,8,0,23,0,8,0,4,0
+colab-client/colab-api,ch.colabproject.colab.api.rest.utils,AbstractExceptionMapper,78,0,10,0,26,0,9,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.utils,InternalExceptionMapper,7,0,0,0,2,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.utils,RequestFilter,70,0,2,0,16,0,5,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.utils,EjbExceptionMapper,7,0,0,0,2,0,2,0,2,0

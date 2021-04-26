@@ -14,6 +14,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
+import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.NewCookie;
@@ -24,18 +25,19 @@ import org.slf4j.LoggerFactory;
 /**
  * Intercept all request to the API. Make sure COLAB_SESSION_ID exists
  *
- * With a priority of 1, this filter is the very first to be executed
+ * With a priority of 1, this {@link PreMatching @PreMatching} filter is the very first to be executed
  *
  * @author maxence
  */
 @Provider
 @Priority(1)
-<span class="nc" id="L33">public class CookieFilter implements ContainerRequestFilter, ContainerResponseFilter {</span>
+@PreMatching
+<span class="nc" id="L35">public class CookieFilter implements ContainerRequestFilter, ContainerResponseFilter {</span>
 
     /**
      * Logger
      */
-<span class="nc" id="L38">    private static final Logger logger = LoggerFactory.getLogger(CookieFilter.class);</span>
+<span class="nc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(CookieFilter.class);</span>
 
     /**
      * Cluster-wide session cache.
@@ -63,15 +65,15 @@ import org.slf4j.LoggerFactory;
      */
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-<span class="nc" id="L66">        Cookie cookie = requestContext.getCookies().get(COOKIE_NAME);</span>
-<span class="nc" id="L67">        String sessionId = null;</span>
-<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (cookie != null) {</span>
-<span class="nc" id="L69">            sessionId = cookie.getValue();</span>
-<span class="nc" id="L70">            logger.trace(&quot;Request received with session id {}&quot;, sessionId);</span>
+<span class="nc" id="L68">        Cookie cookie = requestContext.getCookies().get(COOKIE_NAME);</span>
+<span class="nc" id="L69">        String sessionId = null;</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (cookie != null) {</span>
+<span class="nc" id="L71">            sessionId = cookie.getValue();</span>
+<span class="nc" id="L72">            logger.trace(&quot;Request received with session id {}&quot;, sessionId);</span>
         }
-<span class="nc" id="L72">        HttpSession httpSession = sessionManager.getOrCreate(sessionId);</span>
-<span class="nc" id="L73">        requestManager.setHttpSession(httpSession);</span>
-<span class="nc" id="L74">    }</span>
+<span class="nc" id="L74">        HttpSession httpSession = sessionManager.getOrCreate(sessionId);</span>
+<span class="nc" id="L75">        requestManager.setHttpSession(httpSession);</span>
+<span class="nc" id="L76">    }</span>
 
     /**
      * Intercept response, save httpSession in sessions cache and make sure set-cookie header is set
@@ -84,18 +86,18 @@ import org.slf4j.LoggerFactory;
     @Override
     public void filter(ContainerRequestContext requestContext,
         ContainerResponseContext responseContext) throws IOException {
-<span class="nc" id="L87">        HttpSession session = requestManager.getHttpSession();</span>
+<span class="nc" id="L89">        HttpSession session = requestManager.getHttpSession();</span>
 
-<span class="nc" id="L89">        session.keepAlive();</span>
-<span class="nc" id="L90">        sessionManager.save(session);</span>
+<span class="nc" id="L91">        session.keepAlive();</span>
+<span class="nc" id="L92">        sessionManager.save(session);</span>
 
-<span class="nc" id="L92">        NewCookie sessionCookie = new NewCookie(COOKIE_NAME, session.getSessionId(),</span>
+<span class="nc" id="L94">        NewCookie sessionCookie = new NewCookie(COOKIE_NAME, session.getSessionId(),</span>
             &quot;/&quot;, null, null, -1, true, true);
 
 
-<span class="nc" id="L96">        logger.trace(&quot;Request completed with session id {}&quot;, sessionCookie);</span>
-<span class="nc" id="L97">        responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);</span>
-<span class="nc" id="L98">    }</span>
+<span class="nc" id="L98">        logger.trace(&quot;Request completed with session id {}&quot;, sessionCookie);</span>
+<span class="nc" id="L99">        responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);</span>
+<span class="nc" id="L100">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

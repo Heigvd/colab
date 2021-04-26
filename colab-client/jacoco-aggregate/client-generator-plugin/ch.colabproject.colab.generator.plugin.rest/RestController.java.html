@@ -577,7 +577,7 @@ import org.glassfish.jersey.uri.UriTemplate;
         // eg @Path(&quot;project/{pId: [regex]}/card/{}&quot;)   or &quot;project&quot;
 <span class="nc" id="L578">        Map&lt;String, Class&lt;?&gt;&gt; mainPathParam = splitPath(classPath);</span>
 
-<span class="nc" id="L580">        Logger.debug(&quot;Build RestController for class &quot; + klass);</span>
+<span class="nc" id="L580">        Logger.debug(&quot;Build RestController for &quot; + klass);</span>
         // Go through each class methods but only cares about ones annotated with
         // a HttpMethod-like annotation
 <span class="nc bnc" id="L583" title="All 2 branches missed.">        for (Method method : klass.getMethods()) {</span>

@@ -347,9 +347,9 @@ import org.slf4j.LoggerFactory;
      * @param session session to remove from the set
      */
     private void subscribe(WebsocketEffectiveChannel channel, Session session) {
-<span class="fc bfc" id="L350" title="All 2 branches covered.">        if (logger.isDebugEnabled()) {</span>
-<span class="fc" id="L351">            String sessionId = WebsocketEndpoint.getSessionId(session);</span>
-<span class="fc" id="L352">            logger.debug(&quot;Session {} subscribes to {}&quot;, sessionId, channel);</span>
+<span class="pc bpc" id="L350" title="1 of 2 branches missed.">        if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L351">            String sessionId = WebsocketEndpoint.getSessionId(session);</span>
+<span class="nc" id="L352">            logger.debug(&quot;Session {} subscribes to {}&quot;, sessionId, channel);</span>
         }
 <span class="pc bpc" id="L354" title="1 of 2 branches missed.">        if (!subscriptions.containsKey(channel)) {</span>
 <span class="fc" id="L355">            subscriptions.put(channel, new HashSet&lt;&gt;());</span>
@@ -367,8 +367,8 @@ import org.slf4j.LoggerFactory;
      */
     private void unsubscribe(WebsocketEffectiveChannel channel, Set&lt;Session&gt; sessions) {
 <span class="fc" id="L369">        Set&lt;Session&gt; chSessions = subscriptions.get(channel);</span>
-<span class="fc bfc" id="L370" title="All 2 branches covered.">        if (logger.isDebugEnabled()) {</span>
-<span class="fc" id="L371">            logger.debug(&quot;Sessions {} unsubscribes from {}&quot;, sessions.stream().map(session</span>
+<span class="pc bpc" id="L370" title="1 of 2 branches missed.">        if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L371">            logger.debug(&quot;Sessions {} unsubscribes from {}&quot;, sessions.stream().map(session</span>
 <span class="nc" id="L372">                -&gt; WebsocketEndpoint.getSessionId(session)</span>
             ), channel);
         }

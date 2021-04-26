@@ -126,7 +126,7 @@ import org.slf4j.LoggerFactory;
     public void beforeCompletion() {
         //make sure to flush everything to database
 <span class="nc" id="L128">        em.flush();</span>
-<span class="nc" id="L129">        logger.warn(&quot;Before transactionCompletion: &quot;</span>
+<span class="nc" id="L129">        logger.info(&quot;Before transactionCompletion: &quot;</span>
             + &quot;This method is not called for each transaction, why ???&quot;);
         try {
 <span class="nc" id="L132">            this.precomputeMessage();</span>
@@ -146,7 +146,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L146">        logger.debug(&quot;After transaction completion : {}; messages: {}&quot;, successful, message);</span>
 <span class="nc bnc" id="L147" title="All 2 branches missed.">        if (successful) {</span>
 <span class="nc bnc" id="L148" title="All 2 branches missed.">            if (!precomputed) {</span>
-<span class="nc" id="L149">                logger.warn(&quot;Messages were not precomputed @BeforeCompletion!!!&quot;);</span>
+<span class="nc" id="L149">                logger.info(&quot;Messages were not precomputed @BeforeCompletion!!!&quot;);</span>
                 // ,essage shall be precomputed during the &quot;before completion&quot; phase, but the
                 // dedicated method is never called, and I do not understand the reason...
                 try {
@@ -156,7 +156,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L156">                }</span>
             }
 <span class="nc bnc" id="L158" title="All 4 branches missed.">            if (message != null &amp;&amp; !message.getMessages().isEmpty()) {</span>
-<span class="nc" id="L159">                logger.warn(&quot;Send messages&quot;);</span>
+<span class="nc" id="L159">                logger.info(&quot;Send messages&quot;);</span>
 <span class="nc" id="L160">                websocketFacade.propagate(message);</span>
             }
         }

@@ -134,7 +134,7 @@
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> beforeCompletion() {
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>         <em class="jxr_comment">//make sure to flush everything to database</em>
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>         em.flush();
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>         logger.warn(<span class="jxr_string">"Before transactionCompletion: "</span>
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>         logger.info(<span class="jxr_string">"Before transactionCompletion: "</span>
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>             + <span class="jxr_string">"This method is not called for each transaction, why ???"</span>);
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>             <strong class="jxr_keyword">this</strong>.precomputeMessage();
@@ -154,7 +154,7 @@
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>         logger.debug(<span class="jxr_string">"After transaction completion : {}; messages: {}"</span>, successful, message);
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>         <strong class="jxr_keyword">if</strong> (successful) {
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>             <strong class="jxr_keyword">if</strong> (!precomputed) {
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>                 logger.warn(<span class="jxr_string">"Messages were not precomputed @BeforeCompletion!!!"</span>);
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>                 logger.info(<span class="jxr_string">"Messages were not precomputed @BeforeCompletion!!!"</span>);
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>                 <em class="jxr_comment">// ,essage shall be precomputed during the "before completion" phase, but the</em>
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>                 <em class="jxr_comment">// dedicated method is never called, and I do not understand the reason...</em>
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>                 <strong class="jxr_keyword">try</strong> {
@@ -164,7 +164,7 @@
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>                 }
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>             }
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>             <strong class="jxr_keyword">if</strong> (message != <strong class="jxr_keyword">null</strong> &amp;&amp; !message.getMessages().isEmpty()) {
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>                 logger.warn(<span class="jxr_string">"Send messages"</span>);
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>                 logger.info(<span class="jxr_string">"Send messages"</span>);
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>                 websocketFacade.propagate(message);
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>             }
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>         }

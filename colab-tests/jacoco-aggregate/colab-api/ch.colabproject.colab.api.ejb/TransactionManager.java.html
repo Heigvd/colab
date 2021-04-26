@@ -109,8 +109,8 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L109">            .filter(</span>
 <span class="fc" id="L110">                (u) -&gt; !deleted.stream()</span>
 <span class="pc bpc" id="L111" title="1 of 2 branches missed.">                    .anyMatch(</span>
-<span class="fc bfc" id="L112" title="All 2 branches covered.">                        (d) -&gt; d.getId().equals(u.getId())</span>
-<span class="pc bpc" id="L113" title="1 of 2 branches missed.">                        &amp;&amp; d.getType().equals(u.getJsonDiscriminator())</span>
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">                        (d) -&gt; d.getId().equals(u.getId())</span>
+<span class="pc bnc" id="L113" title="All 2 branches missed.">                        &amp;&amp; d.getType().equals(u.getJsonDiscriminator())</span>
                     )
 <span class="fc" id="L115">            ).collect(Collectors.toSet());</span>
 
@@ -126,7 +126,7 @@ import org.slf4j.LoggerFactory;
     public void beforeCompletion() {
         //make sure to flush everything to database
 <span class="fc" id="L128">        em.flush();</span>
-<span class="fc" id="L129">        logger.warn(&quot;Before transactionCompletion: &quot;</span>
+<span class="fc" id="L129">        logger.info(&quot;Before transactionCompletion: &quot;</span>
             + &quot;This method is not called for each transaction, why ???&quot;);
         try {
 <span class="fc" id="L132">            this.precomputeMessage();</span>
@@ -146,7 +146,7 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L146">        logger.debug(&quot;After transaction completion : {}; messages: {}&quot;, successful, message);</span>
 <span class="pc bpc" id="L147" title="1 of 2 branches missed.">        if (successful) {</span>
 <span class="fc bfc" id="L148" title="All 2 branches covered.">            if (!precomputed) {</span>
-<span class="fc" id="L149">                logger.warn(&quot;Messages were not precomputed @BeforeCompletion!!!&quot;);</span>
+<span class="fc" id="L149">                logger.info(&quot;Messages were not precomputed @BeforeCompletion!!!&quot;);</span>
                 // ,essage shall be precomputed during the &quot;before completion&quot; phase, but the
                 // dedicated method is never called, and I do not understand the reason...
                 try {
@@ -156,7 +156,7 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L156">                }</span>
             }
 <span class="pc bpc" id="L158" title="1 of 4 branches missed.">            if (message != null &amp;&amp; !message.getMessages().isEmpty()) {</span>
-<span class="fc" id="L159">                logger.warn(&quot;Send messages&quot;);</span>
+<span class="fc" id="L159">                logger.info(&quot;Send messages&quot;);</span>
 <span class="fc" id="L160">                websocketFacade.propagate(message);</span>
             }
         }
