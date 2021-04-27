@@ -251,13 +251,15 @@ public class RestMethod {
     /**
      * Register a path parameter
      *
-     * @param name    name of the parameter
-     * @param javadoc some documentation
-     * @param type    type of the parameter
+     * @param name           name of the parameter
+     * @param annotationName @PathParam name
+     * @param javadoc        some documentation
+     * @param type           type of the parameter
      */
-    public void addPathParameter(String name, String javadoc, Type type) {
+    public void addPathParameter(String name, String annotationName, String javadoc, Type type) {
         Param param = new Param();
         param.setName(name);
+        param.setInAnnotationName(annotationName);
         param.setJavadoc(javadoc);
         param.setType(type);
 
@@ -267,13 +269,15 @@ public class RestMethod {
     /**
      * Register a query parameter
      *
-     * @param name    name of the parameter
-     * @param javadoc some documentation
-     * @param type    type of the parameter
+     * @param name           name of the parameter
+     * @param annotationName @QueryParam name
+     * @param javadoc        some documentation
+     * @param type           type of the parameter
      */
-    public void addQueryParameter(String name, String javadoc, Type type) {
+    public void addQueryParameter(String name, String annotationName, String javadoc, Type type) {
         Param param = new Param();
         param.setName(name);
+        param.setInAnnotationName(annotationName);
         param.setJavadoc(javadoc);
         param.setType(type);
 

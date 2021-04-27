@@ -459,7 +459,7 @@ public class RestController {
                 method.getQueryParameters().stream()
                     .map(queryParam
                         -> "if (" + queryParam.getName() + " != null){ "
-                    + " qs.add(\"" + queryParam.getName()
+                    + " qs.add(\"" + queryParam.getInAnnotationName()
                     + "=\"+URLEncoder.encode("
                     + queryParam.getName() + ".toString(), StandardCharsets.UTF_8)); }"
                     )
@@ -576,7 +576,7 @@ public class RestController {
                 indent++;
                 newLine(sb);
                 sb.append("queryString.push('")
-                    .append(queryParam.getName())
+                    .append(queryParam.getInAnnotationName())
                     .append("=' + encodeURIComponent(").append(queryParam.getName())
                     .append("+')'));");
                 indent--;
@@ -587,7 +587,7 @@ public class RestController {
 
             Map<String, String> pathParams = method.getPathParameters().stream()
                 .collect(Collectors.toMap(
-                    p -> p.getName(),
+                    p -> p.getInAnnotationName(),
                     p -> "${" + p.getName() + "}")
                 );
 
@@ -633,9 +633,10 @@ public class RestController {
      * @param javadoc some documentation
      * @param type    type of the parameter
      */
-    private void addPathParameter(String name, String javadoc, Type type) {
+    private void addPathParameter(String name, String pathParamName, String javadoc, Type type) {
         Param param = new Param();
         param.setName(name);
+        param.setInAnnotationName(pathParamName);
         param.setJavadoc(javadoc);
         param.setType(type);
 
@@ -761,12 +762,14 @@ public class RestController {
                                 methodPathParam.put(pathParam.value(), p.getType());
                                 restMethod.addPathParameter(
                                     p.getName(),
+                                    pathParam.value(),
                                     "path param",
                                     p.getType());
                             } else if (mainPathParam.containsKey(pathParam.value())) {
                                 mainPathParam.put(pathParam.value(), p.getType());
 
                                 restController.addPathParameter(
+                                    p.getName(),
                                     pathParam.value(),
                                     "path param",
                                     p.getType());
@@ -778,6 +781,7 @@ public class RestController {
                         } else if (queryParam != null) {
                             restMethod.addQueryParameter(
                                 p.getName(),
+                                queryParam.value(),
                                 "query param",
                                 p.getType());
                         } else if (p.getAnnotations().length == 0) {

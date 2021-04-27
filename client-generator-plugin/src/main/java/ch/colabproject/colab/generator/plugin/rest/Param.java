@@ -16,6 +16,11 @@ import java.lang.reflect.Type;
 public class Param {
 
     /**
+     * Name of the @PathParam / @QueryParam
+     */
+    private String inAnnotationName;
+
+    /**
      * Name of the parameter
      */
     private String name;
@@ -64,6 +69,24 @@ public class Param {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Get @PathParam name
+     *
+     * @return path param name
+     */
+    public String getInAnnotationName() {
+        return inAnnotationName;
+    }
+
+    /**
+     * Set the path param name
+     *
+     * @param inAnnotationName new path param name
+     */
+    public void setInAnnotationName(String inAnnotationName) {
+        this.inAnnotationName = inAnnotationName;
     }
 
     /**
