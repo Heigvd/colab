@@ -14,13 +14,14 @@ import {
   entityIs,
   User,
   WsSessionIdentifier,
+  CardContent,
 } from 'colab-rest-client';
 
-import { getStore, ColabState } from '../store/store';
+import {getStore, ColabState} from '../store/store';
 
-import { addError } from '../store/error';
-import { hashPassword } from '../SecurityHelper';
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import {addError} from '../store/error';
+import {hashPassword} from '../SecurityHelper';
+import {createAsyncThunk} from '@reduxjs/toolkit';
 
 const restClient = ColabClient('', error => {
   if (entityIs(error, 'HttpException') || error instanceof Error) {
@@ -81,7 +82,7 @@ export const getLoggerLevels = createAsyncThunk('admin/getLoggerLevels', async (
 
 export const changeLoggerLevel = createAsyncThunk(
   'admin/setLoggerLevel',
-  async (payload: { loggerName: string; loggerLevel: string }, thunkApi) => {
+  async (payload: {loggerName: string; loggerLevel: string}, thunkApi) => {
     await restClient.MonitoringController.changeLoggerLevel(
       payload.loggerName,
       payload.loggerLevel,
@@ -97,7 +98,7 @@ export const changeLoggerLevel = createAsyncThunk(
 
 export const requestPasswordReset = createAsyncThunk(
   'auth/restPassword',
-  async (a: { email: string }) => {
+  async (a: {email: string}) => {
     await restClient.UserController.requestPasswordReset(a.email);
   },
 );
@@ -127,7 +128,7 @@ export const signInWithLocalAccount = createAsyncThunk(
 
 export const updateLocalAccountPassword = createAsyncThunk(
   'user/updatePassword',
-  async (a: { email: string; password: string }) => {
+  async (a: {email: string; password: string}) => {
     // first, fetch the authenatication method fot the account
     const authMethod = await restClient.UserController.getAuthMethod(a.email);
 
@@ -171,7 +172,7 @@ export const signUp = createAsyncThunk(
     await restClient.UserController.signUp(signUpInfo);
 
     // go back to login page
-    thunkApi.dispatch(signInWithLocalAccount({ identifier: a.email, password: a.password }));
+    thunkApi.dispatch(signInWithLocalAccount({identifier: a.email, password: a.password}));
   },
 );
 
@@ -198,7 +199,7 @@ export const reloadCurrentUser = createAsyncThunk(
         });
       }
     }
-    return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
+    return {currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts};
   },
 );
 
@@ -304,7 +305,7 @@ export const getProjectTeam = createAsyncThunk('project/team/get', async (projec
 
 export const sendInvitation = createAsyncThunk(
   'project/team/invite',
-  async (payload: { projectId: number; recipient: string }, thunkApi) => {
+  async (payload: {projectId: number; recipient: string}, thunkApi) => {
     if (payload.recipient) {
       await restClient.ProjectController.inviteSomeone(payload.projectId, payload.recipient);
       thunkApi.dispatch(getProjectTeam(payload.projectId));
@@ -339,4 +340,17 @@ export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => 
   if (card.id) {
     await restClient.CardController.deleteCard(card.id);
   }
+});
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Card Contents
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getCardContents = createAsyncThunk('cardcontent/getByCard', async (cardId: number) => {
+  return await restClient.CardController.getContentVariantsOfCard(cardId);
+});
+
+export const updateCardContent = createAsyncThunk('cardcontent/update', async (cardContent: CardContent) => {
+  return await restClient.CardContentController.updateCardContent(cardContent);
 });

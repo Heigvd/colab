@@ -24,7 +24,7 @@ export default (): JSX.Element => {
 
   const root = useAppSelector(state => {
     if (project != null && project.rootCardId != null) {
-      return state.cards.cards[project.rootCardId];
+      return state.cards.cards[project.rootCardId].card
     } else {
       return null;
     }

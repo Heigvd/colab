@@ -8,15 +8,16 @@
 import * as React from 'react';
 import * as API from '../../API/api';
 
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {useAppDispatch, useAppSelector} from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import IconButton from '../common/IconButton';
 import CardDisplay from './CardDisplay';
 
 export function CardList(): JSX.Element {
   const status = useAppSelector(state => state.cards.status);
-  const cards = useAppSelector(state => Object.values(state.cards.cards));
+  const cards = useAppSelector(state => Object.values(state.cards.cards)
+    .flatMap(s => s.card ? [s.card] : []));
   const dispatch = useAppDispatch();
 
   if (status === 'UNSET') {
