@@ -8,8 +8,11 @@ package ch.colabproject.colab.generator.plugin.rest;
 
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.exceptions.HttpException;
+import ch.colabproject.colab.generator.model.tools.ClassDoc;
 import ch.colabproject.colab.generator.plugin.Logger;
 import ch.colabproject.colab.generator.plugin.TypeScriptHelper;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -19,6 +22,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
@@ -26,6 +32,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import org.glassfish.jersey.uri.PathPattern;
 import org.glassfish.jersey.uri.UriTemplate;
+import org.reflections.Reflections;
 
 /**
  * Represent a rest controller.
@@ -140,6 +147,106 @@ public class RestController {
         }
     }
 
+    /**
+     * Guess a Class based on its simple name.
+     *
+     * @param simpleName  simple name of the class
+     * @param reflections reflections stores
+     *
+     * @return class the class if found, null otherwise
+     */
+    private Class<? extends Serializable> getClassFromSimpleName(
+        String simpleName, Reflections reflections
+    ) {
+        Optional<Class<? extends Serializable>> any
+            = reflections.getSubTypesOf(Serializable.class).stream()
+                .filter(type -> {
+                    return type.getSimpleName().equals(simpleName);
+                }).findAny();
+        if (any.isPresent()) {
+            return any.get();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Process java doc and make it exportable
+     *
+     * @param javadoc     javadoc text
+     * @param reflections reflections store
+     *
+     * @return processed javadoc
+     */
+    private String processJavaDoc(String javadoc, boolean keepJava, Reflections reflections) {
+        Pattern atLink = Pattern.compile("\\{@link ([a-zA-Z]+)\\}");
+        Matcher atLinkMatcher = atLink.matcher(javadoc);
+        String atLinkProcessed = atLinkMatcher.replaceAll(match -> {
+            var klass = this.getClassFromSimpleName(match.group(1), reflections);
+            if (keepJava && klass != null) {
+                return "{@link " + klass.getName() + " " + match.group(1) + "}";
+            } else {
+                return match.group(1);
+            }
+        });
+
+        Pattern throwsPattern = Pattern.compile("@throws ([a-zA-Z]+)");
+        Matcher throwsMatcher = throwsPattern.matcher(atLinkProcessed);
+
+        return throwsMatcher.replaceAll(match -> {
+            Class<? extends Serializable> klass
+                = this.getClassFromSimpleName(match.group(1), reflections);
+            if (klass != null && HttpException.class.isAssignableFrom(klass)) {
+                return "@throws " + klass.getName();
+            } else {
+                return "";
+            }
+        });
+    }
+
+    /**
+     * Write a multi-line block, prefixing each line by the prefix
+     *
+     * @param sb     sink
+     * @param prefix to be added
+     */
+    private void appendBlock(StringBuilder sb, String prefix, String block) {
+        StringBuilder sbPrefix = new StringBuilder();
+        newLine(sbPrefix);
+        if (prefix != null) {
+            sbPrefix.append(prefix);
+        }
+        String formattedComment = block.replaceAll("\n", sbPrefix.toString());
+        sb.append(sbPrefix).append(formattedComment);
+    }
+
+    /**
+     * Process javadoc block and append it to string builder.
+     *
+     * @param sb          the string builder
+     * @param prefix      prefix each block line with this prefix
+     * @param block       block to append
+     * @param keepJava    should keep java specific tags (eg @link)
+     * @param reflections reflections store
+     */
+    private void appendJavadocBlock(
+        StringBuilder sb, String prefix, String block, boolean keepJava, Reflections reflections
+    ) {
+        this.appendBlock(sb, prefix, processJavaDoc(block, keepJava, reflections));
+    }
+
+    /**
+     * Try to imports given class. If the import is possible (ie no simple name collision), register
+     * the import in {@code imports} and return the simpleName. If importing the class is not
+     * possible, return the class fullname.
+     * <p>
+     * This method works for simple types, not for parametrized
+     *
+     * @param name    class full name
+     * @param imports map of simplename to fullname to be imported
+     *
+     * @return the name to use
+     */
     private String resolveSimpleImport(String name, Map<String, String> imports) {
         String[] split = name.split("\\.");
         String simpleName = split[split.length - 1];
@@ -164,6 +271,18 @@ public class RestController {
 
     }
 
+    /**
+     * Try to imports given class. If the import is possible (ie no simple name collision), register
+     * the import in {@code imports} and return the simpleName. If importing the class is not
+     * possible, return the class fullname.
+     * <p>
+     * This method works for simple types and for parametrized ones.
+     *
+     * @param name    class full name
+     * @param imports map of simplename to fullname to be imported
+     *
+     * @return the name to use
+     */
     private String resolveImport(String name, Map<String, String> imports) {
         // case 1: standard type eg java.lang.Long
         // case 2: generic type eg. java.lang.List<java.lang.Long>
@@ -212,15 +331,22 @@ public class RestController {
     }
 
     /**
-     * Write java class as string. The generated class is an inner class which has to be included in
+     * Write java class as string.The generated class is an inner class which has to be included in
      * a main class.
      *
-     * @param imports    map of imports
-     * @param clientName name of client class
+     * @param imports     map of imports
+     * @param clientName  name of client class
+     * @param javadoc     javadoc as extracted by the JavaDocEtractor
+     * @param reflections reflections store
      *
      * @return generated java inner static class
      */
-    public String generateJavaClient(Map<String, String> imports, String clientName) {
+    public String generateJavaClient(
+        Map<String, String> imports,
+        String clientName,
+        Map<String, ClassDoc> javadoc,
+        Reflections reflections
+    ) {
         tabSize = 4;
         StringBuilder sb = new StringBuilder();
         Logger.debug("Generate client class " + this);
@@ -228,7 +354,13 @@ public class RestController {
         newLine(sb);
         newLine(sb);
         sb.append("/**");
-        newLine(sb);
+        ClassDoc classDoc = javadoc.get(this.className);
+        if (classDoc != null) {
+            appendJavadocBlock(sb, " *", classDoc.getDoc(), true, reflections);
+            newLine(sb);
+            sb.append(" * <p>");
+            newLine(sb);
+        }
         sb.append(" * {@link ").append(this.className).append(" } client");
         newLine(sb);
         sb.append(" */")
@@ -256,45 +388,23 @@ public class RestController {
             newLine(sb);
             sb.append("/**");
             newLine(sb);
-            sb.append("* ").append(method.getHttpMethod()).append(" ")
+            sb.append(" * ").append(method.getHttpMethod()).append(" ")
                 .append(method.getFullPath()).append(" calls {@link ")
                 // do not resolve imports in javadoc links
                 // one would not imports classes unless they are used in the code
                 .append(this.className)
                 .append("#").append(method.getName()).append("}");
 
-            for (Param param : this.getPathParameters()) {
-                newLine(sb);
-                sb.append("* @param ")
-                    .append(param.getName()).append(" ").append(param.getJavadoc());
-            }
-
-            for (Param param : method.getAllParameters()) {
-                newLine(sb);
-                sb.append("* @param ")
-                    .append(param.getName()).append(" ").append(param.getJavadoc());
-            }
+            String methodDoc = classDoc.getMethods().getOrDefault(method.getName(), "");
+            newLine(sb);
+            sb.append(" *");
+            appendJavadocBlock(sb, " *", methodDoc, true, reflections);
 
             String resolvedReturnType
                 = resolveImport(method.getReturnType().getTypeName(), imports);
 
-            if (method.getReturnType() != null && !method.getReturnType().equals(void.class)) {
-                newLine(sb);
-                if (method.isReturnTypeGeneric()) {
-                    // no way to @link a generic template
-                    sb.append("* @return an instance of ")
-                        .append(
-                            resolvedReturnType.replaceAll("<", "&lt;")
-                                .replaceAll(">", "&gt;")
-                        );
-                } else {
-                    sb.append("* @return an instance of {@link ").append(resolvedReturnType)
-                        .append("}");
-                }
-            }
-
             newLine(sb);
-            sb.append("*/");
+            sb.append(" */");
             newLine(sb);
             ////////////////////////////////////////////////////////////////////////////////////////
             // SIGNATURE
@@ -395,20 +505,32 @@ public class RestController {
     }
 
     /**
-     * Write ts client for this controller. This method will populate types map with type which
+     * Write ts client for this controller.This method will populate types map with type which
      * requires a dedicated TS interface
      *
-     * @param types map of types which requires
+     * @param types       map of types which requires
+     * @param javadoc     javadoc as extracted by the JavaDocEtractor
+     * @param reflections reflections store
      *
      * @return Typscript REST client
      */
-    public String generateTypescriptClient(Map<String, Type> types) {
+    public String generateTypescriptClient(Map<String, Type> types,
+        Map<String, ClassDoc> javadoc,
+        Reflections reflections
+    ) {
         tabSize = 2;
         Logger.debug("Generate typescript class " + this);
 
         indent++;
-        // TODO jsDoc
         StringBuilder sb = new StringBuilder();
+        newLine(sb);
+        sb.append("/**");
+        ClassDoc classDoc = javadoc.get(this.className);
+        if (classDoc != null) {
+            appendJavadocBlock(sb, " *", classDoc.getDoc(), false, reflections);
+        }
+        newLine(sb);
+        sb.append(" */");
         newLine(sb);
         sb.append(this.simpleClassName).append(" : {");
         indent++;
@@ -417,8 +539,19 @@ public class RestController {
         restMethods.forEach(method -> {
             Logger.debug(" * generate " + method);
 
-            // JSDOC (todo: extract javadoc)
+            // JSDOC
             ////////////////////////
+            newLine(sb);
+            sb.append("/**");
+            newLine(sb);
+            sb.append(" * ").append(method.getHttpMethod()).append(" ")
+                .append(method.getFullPath());
+            newLine(sb);
+            sb.append(" * <p> ");
+            String methodDoc = classDoc.getMethods().getOrDefault(method.getName(), "");
+            appendJavadocBlock(sb, " *", methodDoc, false, reflections);
+            newLine(sb);
+            sb.append(" */");
             newLine(sb);
             // Signature
             /////////////////////////////
@@ -627,7 +760,7 @@ public class RestController {
                             if (methodPathParam.containsKey(pathParam.value())) {
                                 methodPathParam.put(pathParam.value(), p.getType());
                                 restMethod.addPathParameter(
-                                    pathParam.value(),
+                                    p.getName(),
                                     "path param",
                                     p.getType());
                             } else if (mainPathParam.containsKey(pathParam.value())) {

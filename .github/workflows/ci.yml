@@ -61,5 +61,8 @@ jobs:
       run: mvn -Dpmd.failurePriority=5 -B clean install
     - name: Build Site
       # build site but do not upload it
-      run: mvn -Dreporting -B clean site site:stage
+      run: |
+        # rebuild all pacakges with reporting profile
+        mvn -Dreporting -DskipTests -B clean package
+        mvn -Dreporting -B site site:stage
 

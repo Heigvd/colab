@@ -7,6 +7,7 @@
 package ch.colabproject.colab.generator.plugin;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import ch.colabproject.colab.generator.model.tools.ClassDoc;
 import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -97,6 +98,7 @@ public class TypeScriptHelper {
      * @param types       list of type this interface required to be generated too
      * @param inheritance this method will populate this map will known implementation
      * @param reflections reflection store to fetch abstract classes /interfaces directSubtypes
+     * @param javadoc     javadoc as extracted by the JavaDocEtractor
      *
      * @return ts interface or type
      *
@@ -106,7 +108,8 @@ public class TypeScriptHelper {
         Type javaType,
         Map<String, Type> types,
         Map<String, List<String>> inheritance,
-        Reflections reflections
+        Reflections reflections,
+        Map<String, ClassDoc> javadoc
     ) throws MojoFailureException {
         if (javaType instanceof Class<?>) {
             Class<?> javaClass = (Class<?>) javaType;
@@ -115,7 +118,7 @@ public class TypeScriptHelper {
                 // hack: remove []
                 name = name.replace("[]", "");
             }
-            StringBuilder sb = new StringBuilder("export ");
+            StringBuilder sb = new StringBuilder();
 
             int modifiers = javaClass.getModifiers();
             if (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers)) {
@@ -148,7 +151,7 @@ public class TypeScriptHelper {
                     })
                     .collect(Collectors.joining(" | "));
 
-                sb.append("type ").append(name).append(" = ")
+                sb.append("export type ").append(name).append(" = ")
                     .append(directSubtypes == null || directSubtypes.isBlank() ? " never"
                         : directSubtypes)
                     .append(";\n");
@@ -157,7 +160,20 @@ public class TypeScriptHelper {
                 inheritance.get(name).add(name);
 
                 // concrete class
-                sb.append("interface ").append(name).append("{\n").append("  '@class': '")
+                ///////////////////////////////
+                ClassDoc classDoc = javadoc.get(javaClass.getName());
+                Map<String, String> fields = null;
+                // javadoc
+                sb.append("/**\n");
+                if (classDoc != null) {
+                    sb.append(classDoc.getDoc());
+                    fields = classDoc.getFields();
+                } else {
+                    Logger.warn("No javadoc for class " + name);
+                }
+                sb.append("*/\n");
+
+                sb.append("export interface ").append(name).append("{\n").append("  '@class': '")
                     .append(name).append("';\n");
 
                 try {
@@ -189,6 +205,10 @@ public class TypeScriptHelper {
                                 if (getter != null) {
                                     propertyType = getter.getGenericReturnType();
                                 }
+                            }
+                            if (fields != null) {
+                                String fieldDoc = fields.getOrDefault(key, "");
+                                sb.append("  /**\n  ").append(fieldDoc).append("\n  */");
                             }
 
                             sb.append("  '").append(key).append("'");

@@ -24,8 +24,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Intercept all request to the API. Make sure COLAB_SESSION_ID exists
- *
- * With a priority of 1, this {@link PreMatching @PreMatching} filter is the very first to be executed
+ * <p>
+ * With a priority of 1, this {@link PreMatching @PreMatching} filter is the very first to be
+ * executed
  *
  * @author maxence
  */
@@ -93,7 +94,6 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
 
         NewCookie sessionCookie = new NewCookie(COOKIE_NAME, session.getSessionId(),
             "/", null, null, -1, true, true);
-
 
         logger.trace("Request completed with session id {}", sessionCookie);
         responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);

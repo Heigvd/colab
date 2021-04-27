@@ -40,8 +40,8 @@ import javax.persistence.Transient;
 @Entity
 @NamedQuery(name = "Project.findAll", query = "SELECT p FROM Project p")
 @NamedQuery(
-        name = "Project.findProjectByUser",
-        query = "SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId")
+    name = "Project.findProjectByUser",
+    query = "SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId")
 public class Project implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
@@ -49,7 +49,6 @@ public class Project implements ColabEntity {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Project ID
      */
@@ -103,7 +102,6 @@ public class Project implements ColabEntity {
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the project ID
      */
@@ -151,16 +149,14 @@ public class Project implements ColabEntity {
     }
 
     /**
-     * @return the concretization type : is it a concrete project or an abstract
-     *         model
+     * @return the concretization type : is it a concrete project or an abstract model
      */
     public ConcretizationCategory getConcretizationCategory() {
         return concretizationCategory;
     }
 
     /**
-     * @param category the concretization type : is it a concrete project or an
-     *        abstract model
+     * @param category the concretization type : is it a concrete project or an abstract model
      */
     public void setConcretizationCategory(ConcretizationCategory category) {
         this.concretizationCategory = category;
@@ -237,7 +233,6 @@ public class Project implements ColabEntity {
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     /**
      * {@inheritDoc }
      */
@@ -277,6 +272,6 @@ public class Project implements ColabEntity {
     @Override
     public String toString() {
         return "Project{" + "id=" + id + ", name=" + name + ", descr=" + description + ", category="
-                + concretizationCategory + ", rootCardId=" + getRootCardId() + '}';
+            + concretizationCategory + ", rootCardId=" + getRootCardId() + '}';
     }
 }

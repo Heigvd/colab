@@ -7,6 +7,8 @@
 package ch.colabproject.colab.generator.plugin;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import ch.colabproject.colab.generator.model.tools.ClassDoc;
+import ch.colabproject.colab.generator.model.tools.JavaDocExtractor;
 import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import ch.colabproject.colab.generator.plugin.rest.RestController;
 import java.io.BufferedWriter;
@@ -55,6 +57,11 @@ public class Generator {
     private final String clientName;
 
     /**
+     * Javadoc as extracted by the annotation processor
+     */
+    private final Map<String, ClassDoc> javadoc;
+
+    /**
      * Main REST application path
      */
     private String applicationPath = null;
@@ -77,6 +84,7 @@ public class Generator {
         pkgs.addAll(Arrays.asList(restPackages));
 
         this.reflections = new Reflections(pkgs.toArray());
+        this.javadoc = JavaDocExtractor.loadJavaDocFromJson();
     }
 
     /**
@@ -144,7 +152,12 @@ public class Generator {
         imports.put("void", null); // null means no import statement
 
         String innerClasses = this.restControllers.stream().map(controller -> {
-            String javaCode = controller.generateJavaClient(imports, clientName);
+            String javaCode = controller.generateJavaClient(
+                imports,
+                clientName,
+                javadoc,
+                reflections
+            );
             return javaCode;
         }).collect(Collectors.joining(System.lineSeparator()));
 
@@ -219,7 +232,7 @@ public class Generator {
         extraTypes.put("WithJsonDiscriminator", WithJsonDiscriminator.class);
 
         String modules = this.restControllers.stream().map(controller
-            -> controller.generateTypescriptClient(extraTypes)
+            -> controller.generateTypescriptClient(extraTypes, this.javadoc, reflections)
         ).collect(Collectors.joining(System.lineSeparator()));
 
         // TS interface name => list of @class values
@@ -235,7 +248,8 @@ public class Generator {
                 entry.getValue(),
                 snowballedTypes,
                 inheritance,
-                reflections
+                reflections,
+                javadoc
             );
             sb.append(tsInterface);
 

@@ -23,5 +23,11 @@
             <artifactId>reflections</artifactId>
             <type>jar</type>
         </dependency>
+
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>yasson</artifactId>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 </project>

@@ -207,11 +207,35 @@
                     It's used to generate REST client with correct parameter names -->
                     <parameters>true</parameters>
                     <!--<compilerArgument>-XDignore.symbol.file</compilerArgument>-->
-                    <!--<annotationProcessors>
-                        <proc>ch.albasim.wegas.annotations.processor.JavaDocExtractor</proc>
-                    </annotationProcessors>-->
+                    <annotationProcessors>
+                        <proc>ch.colabproject.colab.generator.model.tools.JavaDocExtractor</proc>
+                    </annotationProcessors>
                 </configuration>
             </plugin>
+
+            <!-- Copy generated javadoc.json in the jar-->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-annotations-generated</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <overwrite>true</overwrite>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>target/generated-sources/annotations</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
 
             <!-- java code coverage check and reporting -->
             <plugin>
