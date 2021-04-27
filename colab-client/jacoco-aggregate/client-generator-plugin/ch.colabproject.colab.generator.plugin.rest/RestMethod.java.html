@@ -251,34 +251,38 @@ import java.util.List;
     /**
      * Register a path parameter
      *
-     * @param name    name of the parameter
-     * @param javadoc some documentation
-     * @param type    type of the parameter
+     * @param name           name of the parameter
+     * @param annotationName PathParam name
+     * @param javadoc        some documentation
+     * @param type           type of the parameter
      */
-    public void addPathParameter(String name, String javadoc, Type type) {
-<span class="nc" id="L259">        Param param = new Param();</span>
-<span class="nc" id="L260">        param.setName(name);</span>
-<span class="nc" id="L261">        param.setJavadoc(javadoc);</span>
-<span class="nc" id="L262">        param.setType(type);</span>
+    public void addPathParameter(String name, String annotationName, String javadoc, Type type) {
+<span class="nc" id="L260">        Param param = new Param();</span>
+<span class="nc" id="L261">        param.setName(name);</span>
+<span class="nc" id="L262">        param.setInAnnotationName(annotationName);</span>
+<span class="nc" id="L263">        param.setJavadoc(javadoc);</span>
+<span class="nc" id="L264">        param.setType(type);</span>
 
-<span class="nc" id="L264">        this.pathParameters.add(param);</span>
-<span class="nc" id="L265">    }</span>
+<span class="nc" id="L266">        this.pathParameters.add(param);</span>
+<span class="nc" id="L267">    }</span>
 
     /**
      * Register a query parameter
      *
-     * @param name    name of the parameter
-     * @param javadoc some documentation
-     * @param type    type of the parameter
+     * @param name           name of the parameter
+     * @param annotationName QueryParam name
+     * @param javadoc        some documentation
+     * @param type           type of the parameter
      */
-    public void addQueryParameter(String name, String javadoc, Type type) {
-<span class="nc" id="L275">        Param param = new Param();</span>
-<span class="nc" id="L276">        param.setName(name);</span>
-<span class="nc" id="L277">        param.setJavadoc(javadoc);</span>
-<span class="nc" id="L278">        param.setType(type);</span>
+    public void addQueryParameter(String name, String annotationName, String javadoc, Type type) {
+<span class="nc" id="L278">        Param param = new Param();</span>
+<span class="nc" id="L279">        param.setName(name);</span>
+<span class="nc" id="L280">        param.setInAnnotationName(annotationName);</span>
+<span class="nc" id="L281">        param.setJavadoc(javadoc);</span>
+<span class="nc" id="L282">        param.setType(type);</span>
 
-<span class="nc" id="L280">        this.queryParameters.add(param);</span>
-<span class="nc" id="L281">    }</span>
+<span class="nc" id="L284">        this.queryParameters.add(param);</span>
+<span class="nc" id="L285">    }</span>
 
     /**
      * Get all parameters. PathParams + queryParams + body
@@ -286,19 +290,19 @@ import java.util.List;
      * @return list of all non-null parameters
      */
     public List&lt;Param&gt; getAllParameters() {
-<span class="nc" id="L289">        List&lt;Param&gt; list = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L290">        list.addAll(this.pathParameters);</span>
-<span class="nc" id="L291">        list.addAll(this.queryParameters);</span>
+<span class="nc" id="L293">        List&lt;Param&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L294">        list.addAll(this.pathParameters);</span>
+<span class="nc" id="L295">        list.addAll(this.queryParameters);</span>
 
-<span class="nc bnc" id="L293" title="All 2 branches missed.">        if (bodyParam != null) {</span>
-<span class="nc" id="L294">            list.add(bodyParam);</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">        if (bodyParam != null) {</span>
+<span class="nc" id="L298">            list.add(bodyParam);</span>
         }
-<span class="nc" id="L296">        return list;</span>
+<span class="nc" id="L300">        return list;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L301">        return MessageFormat.format(&quot;{0} {1}&quot;, this.getHttpMethod(), this.getFullPath());</span>
+<span class="nc" id="L305">        return MessageFormat.format(&quot;{0} {1}&quot;, this.getHttpMethod(), this.getFullPath());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

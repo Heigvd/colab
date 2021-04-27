@@ -467,7 +467,7 @@
 <a class="jxr_linenumber" name="L459" href="#L459">459</a>                 method.getQueryParameters().stream()
 <a class="jxr_linenumber" name="L460" href="#L460">460</a>                     .map(queryParam
 <a class="jxr_linenumber" name="L461" href="#L461">461</a>                         -&gt; <span class="jxr_string">"if ("</span> + queryParam.getName() + <span class="jxr_string">" != null){ "</span>
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>                     + <span class="jxr_string">" qs.add(\&quot;"</span> + queryParam.getName()
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>                     + <span class="jxr_string">" qs.add(\&quot;"</span> + queryParam.getInAnnotationName()
 <a class="jxr_linenumber" name="L463" href="#L463">463</a>                     + <span class="jxr_string">"=\&quot;+URLEncoder.encode("</span>
 <a class="jxr_linenumber" name="L464" href="#L464">464</a>                     + queryParam.getName() + <span class="jxr_string">".toString(), StandardCharsets.UTF_8)); }"</span>
 <a class="jxr_linenumber" name="L465" href="#L465">465</a>                     )
@@ -584,7 +584,7 @@
 <a class="jxr_linenumber" name="L576" href="#L576">576</a>                 indent++;
 <a class="jxr_linenumber" name="L577" href="#L577">577</a>                 newLine(sb);
 <a class="jxr_linenumber" name="L578" href="#L578">578</a>                 sb.append(<span class="jxr_string">"queryString.push('"</span>)
-<a class="jxr_linenumber" name="L579" href="#L579">579</a>                     .append(queryParam.getName())
+<a class="jxr_linenumber" name="L579" href="#L579">579</a>                     .append(queryParam.getInAnnotationName())
 <a class="jxr_linenumber" name="L580" href="#L580">580</a>                     .append(<span class="jxr_string">"=' + encodeURIComponent("</span>).append(queryParam.getName())
 <a class="jxr_linenumber" name="L581" href="#L581">581</a>                     .append(<span class="jxr_string">"+')'));"</span>);
 <a class="jxr_linenumber" name="L582" href="#L582">582</a>                 indent--;
@@ -595,7 +595,7 @@
 <a class="jxr_linenumber" name="L587" href="#L587">587</a> 
 <a class="jxr_linenumber" name="L588" href="#L588">588</a>             Map&lt;String, String&gt; pathParams = method.getPathParameters().stream()
 <a class="jxr_linenumber" name="L589" href="#L589">589</a>                 .collect(Collectors.toMap(
-<a class="jxr_linenumber" name="L590" href="#L590">590</a>                     p -&gt; p.getName(),
+<a class="jxr_linenumber" name="L590" href="#L590">590</a>                     p -&gt; p.getInAnnotationName(),
 <a class="jxr_linenumber" name="L591" href="#L591">591</a>                     p -&gt; <span class="jxr_string">"${"</span> + p.getName() + <span class="jxr_string">"}"</span>)
 <a class="jxr_linenumber" name="L592" href="#L592">592</a>                 );
 <a class="jxr_linenumber" name="L593" href="#L593">593</a> 
@@ -641,188 +641,192 @@
 <a class="jxr_linenumber" name="L633" href="#L633">633</a> <em class="jxr_javadoccomment">     * @param javadoc some documentation</em>
 <a class="jxr_linenumber" name="L634" href="#L634">634</a> <em class="jxr_javadoccomment">     * @param type    type of the parameter</em>
 <a class="jxr_linenumber" name="L635" href="#L635">635</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L636" href="#L636">636</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addPathParameter(String name, String javadoc, Type type) {
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addPathParameter(String name, String pathParamName, String javadoc, Type type) {
 <a class="jxr_linenumber" name="L637" href="#L637">637</a>         <a name="Param" href="../../../../../../ch/colabproject<a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>b/generator/plugin/rest/Param.html#Param">Param</a> param = <strong class="jxr_keyword">new</strong> <a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>();
 <a class="jxr_linenumber" name="L638" href="#L638">638</a>         param.setName(name);
-<a class="jxr_linenumber" name="L639" href="#L639">639</a>         param.setJavadoc(javadoc);
-<a class="jxr_linenumber" name="L640" href="#L640">640</a>         param.setType(type);
-<a class="jxr_linenumber" name="L641" href="#L641">641</a> 
-<a class="jxr_linenumber" name="L642" href="#L642">642</a>         <strong class="jxr_keyword">this</strong>.pathParameters.add(param);
-<a class="jxr_linenumber" name="L643" href="#L643">643</a>     }
-<a class="jxr_linenumber" name="L644" href="#L644">644</a> 
-<a class="jxr_linenumber" name="L645" href="#L645">645</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L646" href="#L646">646</a> <em class="jxr_javadoccomment">     * Get all rest methods</em>
-<a class="jxr_linenumber" name="L647" href="#L647">647</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L648" href="#L648">648</a> <em class="jxr_javadoccomment">     * @return list of rest methods</em>
-<a class="jxr_linenumber" name="L649" href="#L649">649</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L650" href="#L650">650</a>     <strong class="jxr_keyword">public</strong> List&lt;RestMethod&gt; getRestMethods() {
-<a class="jxr_linenumber" name="L651" href="#L651">651</a>         <strong class="jxr_keyword">return</strong> restMethods;
-<a class="jxr_linenumber" name="L652" href="#L652">652</a>     }
-<a class="jxr_linenumber" name="L653" href="#L653">653</a> 
-<a class="jxr_linenumber" name="L654" href="#L654">654</a>     @Override
-<a class="jxr_linenumber" name="L655" href="#L655">655</a>     <strong class="jxr_keyword">public</strong> String toString() {
-<a class="jxr_linenumber" name="L656" href="#L656">656</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.className;
-<a class="jxr_linenumber" name="L657" href="#L657">657</a>     }
-<a class="jxr_linenumber" name="L658" href="#L658">658</a> 
-<a class="jxr_linenumber" name="L659" href="#L659">659</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L660" href="#L660">660</a> <em class="jxr_javadoccomment">     * Get simple class name</em>
-<a class="jxr_linenumber" name="L661" href="#L661">661</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L662" href="#L662">662</a> <em class="jxr_javadoccomment">     * @return simple class name</em>
-<a class="jxr_linenumber" name="L663" href="#L663">663</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L664" href="#L664">664</a>     <strong class="jxr_keyword">public</strong> String getSimpleClassName() {
-<a class="jxr_linenumber" name="L665" href="#L665">665</a>         <strong class="jxr_keyword">return</strong> simpleClassName;
-<a class="jxr_linenumber" name="L666" href="#L666">666</a>     }
-<a class="jxr_linenumber" name="L667" href="#L667">667</a> 
-<a class="jxr_linenumber" name="L668" href="#L668">668</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L669" href="#L669">669</a> <em class="jxr_javadoccomment">     * Analyze path and extract path parameters.</em>
-<a class="jxr_linenumber" name="L670" href="#L670">670</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L671" href="#L671">671</a> <em class="jxr_javadoccomment">     * @param path path to analyze</em>
-<a class="jxr_linenumber" name="L672" href="#L672">672</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L673" href="#L673">673</a> <em class="jxr_javadoccomment">     * @return path parameters named mapped to null type. Effective type must be resolved while</em>
-<a class="jxr_linenumber" name="L674" href="#L674">674</a> <em class="jxr_javadoccomment">     *         parsing various methods</em>
-<a class="jxr_linenumber" name="L675" href="#L675">675</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L676" href="#L676">676</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Map&lt;String, Class&lt;?&gt;&gt; splitPath(Path path) {
-<a class="jxr_linenumber" name="L677" href="#L677">677</a>         HashMap&lt;String, Class&lt;?&gt;&gt; parameters = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
-<a class="jxr_linenumber" name="L678" href="#L678">678</a> 
-<a class="jxr_linenumber" name="L679" href="#L679">679</a>         <strong class="jxr_keyword">if</strong> (path != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L680" href="#L680">680</a>             PathPattern pathPattern = <strong class="jxr_keyword">new</strong> PathPattern(path.value());
-<a class="jxr_linenumber" name="L681" href="#L681">681</a>             UriTemplate template = pathPattern.getTemplate();
-<a class="jxr_linenumber" name="L682" href="#L682">682</a>             <strong class="jxr_keyword">for</strong> (String param : template.getTemplateVariables()) {
-<a class="jxr_linenumber" name="L683" href="#L683">683</a>                 <em class="jxr_comment">// no way to detect param type at the moment</em>
-<a class="jxr_linenumber" name="L684" href="#L684">684</a>                 parameters.put(param, <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L685" href="#L685">685</a>             }
-<a class="jxr_linenumber" name="L686" href="#L686">686</a>         }
-<a class="jxr_linenumber" name="L687" href="#L687">687</a> 
-<a class="jxr_linenumber" name="L688" href="#L688">688</a>         <strong class="jxr_keyword">return</strong> parameters;
-<a class="jxr_linenumber" name="L689" href="#L689">689</a>     }
-<a class="jxr_linenumber" name="L690" href="#L690">690</a> 
-<a class="jxr_linenumber" name="L691" href="#L691">691</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L692" href="#L692">692</a> <em class="jxr_javadoccomment">     * Build a RestController based on a klass</em>
-<a class="jxr_linenumber" name="L693" href="#L693">693</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L694" href="#L694">694</a> <em class="jxr_javadoccomment">     * @param klass           the class must be annotated with {@link Path}</em>
-<a class="jxr_linenumber" name="L695" href="#L695">695</a> <em class="jxr_javadoccomment">     * @param applicationPath main application path</em>
-<a class="jxr_linenumber" name="L696" href="#L696">696</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L697" href="#L697">697</a> <em class="jxr_javadoccomment">     * @return RestControlle instance, ready for code generation</em>
-<a class="jxr_linenumber" name="L698" href="#L698">698</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L699" href="#L699">699</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="RestController" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestController.html#RestController">RestController</a> build(Class&lt;?&gt; klass, String applicationPath) {
-<a class="jxr_linenumber" name="L700" href="#L700">700</a>         <a name="RestController" href="../../../../../../ch/colabproject/colab/ge<a name="RestController" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestController.html#RestController">RestController</a>/rest/RestController.html#RestController">RestController</a> restController = <strong class="jxr_keyword">new</strong> <a name="RestController" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestController.html#RestController">RestController</a>();
-<a class="jxr_linenumber" name="L701" href="#L701">701</a> 
-<a class="jxr_linenumber" name="L702" href="#L702">702</a>         restController.setAdminResource(klass.getAnnotation(AdminResource.<strong class="jxr_keyword">class</strong>) != <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L703" href="#L703">703</a>         restController.setAuthenticationRequired(
-<a class="jxr_linenumber" name="L704" href="#L704">704</a>             klass.getAnnotation(AuthenticationRequired.<strong class="jxr_keyword">class</strong>) != <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L705" href="#L705">705</a> 
-<a class="jxr_linenumber" name="L706" href="#L706">706</a>         restController.simpleClassName = klass.getSimpleName();
-<a class="jxr_linenumber" name="L707" href="#L707">707</a>         restController.className = klass.getName();
-<a class="jxr_linenumber" name="L708" href="#L708">708</a> 
-<a class="jxr_linenumber" name="L709" href="#L709">709</a>         Path classPath = klass.getAnnotation(Path.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L710" href="#L710">710</a>         <em class="jxr_comment">// eg @Path("project/{pId: [regex]}/card/{}")   or "project"</em>
-<a class="jxr_linenumber" name="L711" href="#L711">711</a>         Map&lt;String, Class&lt;?&gt;&gt; mainPathParam = splitPath(classPath);
-<a class="jxr_linenumber" name="L712" href="#L712">712</a> 
-<a class="jxr_linenumber" name="L713" href="#L713">713</a>         Logger.debug(<span class="jxr_string">"Build RestController for "</span> + klass);
-<a class="jxr_linenumber" name="L714" href="#L714">714</a>         <em class="jxr_comment">// Go through each class methods but only cares about ones annotated with</em>
-<a class="jxr_linenumber" name="L715" href="#L715">715</a>         <em class="jxr_comment">// a HttpMethod-like annotation</em>
-<a class="jxr_linenumber" name="L716" href="#L716">716</a>         <strong class="jxr_keyword">for</strong> (Method method : klass.getMethods()) {
-<a class="jxr_linenumber" name="L717" href="#L717">717</a>             <strong class="jxr_keyword">for</strong> (Annotation annotation : method.getAnnotations()) {
-<a class="jxr_linenumber" name="L718" href="#L718">718</a>                 <em class="jxr_comment">// @GET @POST, etc ?</em>
-<a class="jxr_linenumber" name="L719" href="#L719">719</a>                 HttpMethod httpMethodAnno = annotation.annotationType()
-<a class="jxr_linenumber" name="L720" href="#L720">720</a>                     .getAnnotation(HttpMethod.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L721" href="#L721">721</a>                 <strong class="jxr_keyword">if</strong> (httpMethodAnno != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L722" href="#L722">722</a>                     <a name="RestMethod" href="../../../../../../ch/colabproject/cola<a name="RestMethod" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestMethod.html#RestMethod">RestMethod</a>r/plugin/rest/RestMethod.html#RestMethod">RestMethod</a> restMethod = <strong class="jxr_keyword">new</strong> <a name="RestMethod" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestMethod.html#RestMethod">RestMethod</a>();
-<a class="jxr_linenumber" name="L723" href="#L723">723</a>                     restMethod.setName(method.getName());
-<a class="jxr_linenumber" name="L724" href="#L724">724</a>                     restController.registerMethod(restMethod);
-<a class="jxr_linenumber" name="L725" href="#L725">725</a> 
-<a class="jxr_linenumber" name="L726" href="#L726">726</a>                     String httpMethod = httpMethodAnno.value();
-<a class="jxr_linenumber" name="L727" href="#L727">727</a>                     restMethod.setHttpMethod(httpMethod);
-<a class="jxr_linenumber" name="L728" href="#L728">728</a> 
-<a class="jxr_linenumber" name="L729" href="#L729">729</a>                     Path methodPath = method.getAnnotation(Path.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L730" href="#L730">730</a> 
-<a class="jxr_linenumber" name="L731" href="#L731">731</a>                     restMethod
-<a class="jxr_linenumber" name="L732" href="#L732">732</a>                         .setAdminResource(method.getAnnotation(AdminResource.<strong class="jxr_keyword">class</strong>) != <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L733" href="#L733">733</a>                     restMethod.setAuthenticationRequired(
-<a class="jxr_linenumber" name="L734" href="#L734">734</a>                         method.getAnnotation(AuthenticationRequired.<strong class="jxr_keyword">class</strong>) != <strong class="jxr_keyword">null</strong>);
-<a class="jxr_linenumber" name="L735" href="#L735">735</a> 
-<a class="jxr_linenumber" name="L736" href="#L736">736</a>                     <em class="jxr_comment">// full path</em>
-<a class="jxr_linenumber" name="L737" href="#L737">737</a>                     StringBuilder pathBuilder = <strong class="jxr_keyword">new</strong> StringBuilder(applicationPath).append('/')
-<a class="jxr_linenumber" name="L738" href="#L738">738</a>                         .append(classPath.value());
-<a class="jxr_linenumber" name="L739" href="#L739">739</a>                     <strong class="jxr_keyword">if</strong> (methodPath != <strong class="jxr_keyword">null</strong> &amp;&amp; !methodPath.value().isEmpty() &amp;&amp; !<span class="jxr_string">"/"</span>
-<a class="jxr_linenumber" name="L740" href="#L740">740</a>                         .equals(methodPath.value())) {
-<a class="jxr_linenumber" name="L741" href="#L741">741</a>                         <strong class="jxr_keyword">if</strong> (methodPath.value().charAt(0) != '/') {
-<a class="jxr_linenumber" name="L742" href="#L742">742</a>                             pathBuilder.append('/');
-<a class="jxr_linenumber" name="L743" href="#L743">743</a>                         }
-<a class="jxr_linenumber" name="L744" href="#L744">744</a>                         pathBuilder.append(methodPath.value());
-<a class="jxr_linenumber" name="L745" href="#L745">745</a>                     }
-<a class="jxr_linenumber" name="L746" href="#L746">746</a>                     String fullPath = pathBuilder.toString();
-<a class="jxr_linenumber" name="L747" href="#L747">747</a> 
-<a class="jxr_linenumber" name="L748" href="#L748">748</a>                     restMethod.setFullPath(fullPath);
-<a class="jxr_linenumber" name="L749" href="#L749">749</a> 
-<a class="jxr_linenumber" name="L750" href="#L750">750</a>                     Map&lt;String, Class&lt;?&gt;&gt; methodPathParam = splitPath(methodPath);
-<a class="jxr_linenumber" name="L751" href="#L751">751</a> 
-<a class="jxr_linenumber" name="L752" href="#L752">752</a>                     <em class="jxr_comment">// Process parameters</em>
-<a class="jxr_linenumber" name="L753" href="#L753">753</a>                     <strong class="jxr_keyword">for</strong> (Parameter p : method.getParameters()) {
-<a class="jxr_linenumber" name="L754" href="#L754">754</a>                         PathParam pathParam = p.getAnnotation(PathParam.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L755" href="#L755">755</a>                         QueryParam queryParam = p.getAnnotation(QueryParam.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L756" href="#L756">756</a> 
-<a class="jxr_linenumber" name="L757" href="#L757">757</a>                         <strong class="jxr_keyword">if</strong> (pathParam != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L758" href="#L758">758</a>                             <em class="jxr_comment">// Path param may be a method specific param or a class one</em>
-<a class="jxr_linenumber" name="L759" href="#L759">759</a>                             <em class="jxr_comment">// at this point, resolving effective pathParam type is possible</em>
-<a class="jxr_linenumber" name="L760" href="#L760">760</a>                             <strong class="jxr_keyword">if</strong> (methodPathParam.containsKey(pathParam.value())) {
-<a class="jxr_linenumber" name="L761" href="#L761">761</a>                                 methodPathParam.put(pathParam.value(), p.getType());
-<a class="jxr_linenumber" name="L762" href="#L762">762</a>                                 restMethod.addPathParameter(
-<a class="jxr_linenumber" name="L763" href="#L763">763</a>                                     p.getName(),
-<a class="jxr_linenumber" name="L764" href="#L764">764</a>                                     <span class="jxr_string">"path param"</span>,
-<a class="jxr_linenumber" name="L765" href="#L765">765</a>                                     p.getType());
-<a class="jxr_linenumber" name="L766" href="#L766">766</a>                             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (mainPathParam.containsKey(pathParam.value())) {
-<a class="jxr_linenumber" name="L767" href="#L767">767</a>                                 mainPathParam.put(pathParam.value(), p.getType());
-<a class="jxr_linenumber" name="L768" href="#L768">768</a> 
-<a class="jxr_linenumber" name="L769" href="#L769">769</a>                                 restController.addPathParameter(
-<a class="jxr_linenumber" name="L770" href="#L770">770</a>                                     pathParam.value(),
-<a class="jxr_linenumber" name="L771" href="#L771">771</a>                                     <span class="jxr_string">"path param"</span>,
-<a class="jxr_linenumber" name="L772" href="#L772">772</a>                                     p.getType());
-<a class="jxr_linenumber" name="L773" href="#L773">773</a>                             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L774" href="#L774">774</a>                                 Logger.error(<span class="jxr_string">"@PathParam "</span>
-<a class="jxr_linenumber" name="L775" href="#L775">775</a>                                     + pathParam.value() + <span class="jxr_string">" not found in @Path"</span>);
-<a class="jxr_linenumber" name="L776" href="#L776">776</a>                                 <em class="jxr_comment">// error !</em>
-<a class="jxr_linenumber" name="L777" href="#L777">777</a>                             }
-<a class="jxr_linenumber" name="L778" href="#L778">778</a>                         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (queryParam != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L779" href="#L779">779</a>                             restMethod.addQueryParameter(
-<a class="jxr_linenumber" name="L780" href="#L780">780</a>                                 p.getName(),
-<a class="jxr_linenumber" name="L781" href="#L781">781</a>                                 <span class="jxr_string">"query param"</span>,
-<a class="jxr_linenumber" name="L782" href="#L782">782</a>                                 p.getType());
-<a class="jxr_linenumber" name="L783" href="#L783">783</a>                         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (p.getAnnotations().length == 0) {
-<a class="jxr_linenumber" name="L784" href="#L784">784</a>                             <em class="jxr_comment">// request body</em>
-<a class="jxr_linenumber" name="L785" href="#L785">785</a>                             <strong class="jxr_keyword">if</strong> (restMethod.getBodyParam() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L786" href="#L786">786</a>                                 <em class="jxr_comment">// several body param ????</em>
-<a class="jxr_linenumber" name="L787" href="#L787">787</a>                                 Logger.warn(<span class="jxr_string">"Several body parameters ???"</span>);
-<a class="jxr_linenumber" name="L788" href="#L788">788</a>                             }
-<a class="jxr_linenumber" name="L789" href="#L789">789</a>                             <a name="Param" href="../../../../../../ch/colabproject/col<a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>nerator/plugin/rest/Param.html#Param">Param</a> bodyParam = <strong class="jxr_keyword">new</strong> <a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>();
-<a class="jxr_linenumber" name="L790" href="#L790">790</a>                             bodyParam.setName(p.getName());
-<a class="jxr_linenumber" name="L791" href="#L791">791</a>                             bodyParam.setType(p.getParameterizedType());
-<a class="jxr_linenumber" name="L792" href="#L792">792</a>                             bodyParam.setJavadoc(<span class="jxr_string">"body payload"</span>);
-<a class="jxr_linenumber" name="L793" href="#L793">793</a>                             restMethod.setBodyParam(bodyParam);
-<a class="jxr_linenumber" name="L794" href="#L794">794</a>                         }
-<a class="jxr_linenumber" name="L795" href="#L795">795</a>                     }
-<a class="jxr_linenumber" name="L796" href="#L796">796</a> 
-<a class="jxr_linenumber" name="L797" href="#L797">797</a>                     Class&lt;?&gt; returnType = method.getReturnType();
-<a class="jxr_linenumber" name="L798" href="#L798">798</a>                     Type genericType = method.getGenericReturnType();
-<a class="jxr_linenumber" name="L799" href="#L799">799</a> 
-<a class="jxr_linenumber" name="L800" href="#L800">800</a>                     String typeName = returnType.getTypeName();
-<a class="jxr_linenumber" name="L801" href="#L801">801</a>                     String genericTypeName = genericType.getTypeName();
-<a class="jxr_linenumber" name="L802" href="#L802">802</a> 
-<a class="jxr_linenumber" name="L803" href="#L803">803</a>                     <strong class="jxr_keyword">boolean</strong> isReturnTypeGeneric = !typeName.equals(genericTypeName);
-<a class="jxr_linenumber" name="L804" href="#L804">804</a>                     <strong class="jxr_keyword">if</strong> (isReturnTypeGeneric) {
-<a class="jxr_linenumber" name="L805" href="#L805">805</a>                         restMethod.setReturnTypeGeneric(isReturnTypeGeneric);
-<a class="jxr_linenumber" name="L806" href="#L806">806</a>                     }
-<a class="jxr_linenumber" name="L807" href="#L807">807</a> 
-<a class="jxr_linenumber" name="L808" href="#L808">808</a>                     restMethod.setReturnType(isReturnTypeGeneric ? genericType : returnType);
-<a class="jxr_linenumber" name="L809" href="#L809">809</a> 
-<a class="jxr_linenumber" name="L810" href="#L810">810</a>                     <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L811" href="#L811">811</a>                 }
-<a class="jxr_linenumber" name="L812" href="#L812">812</a>             }
-<a class="jxr_linenumber" name="L813" href="#L813">813</a>         }
-<a class="jxr_linenumber" name="L814" href="#L814">814</a>         <strong class="jxr_keyword">return</strong> restController;
-<a class="jxr_linenumber" name="L815" href="#L815">815</a>     }
-<a class="jxr_linenumber" name="L816" href="#L816">816</a> 
-<a class="jxr_linenumber" name="L817" href="#L817">817</a> }
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>         param.setInAnnotationName(pathParamName);
+<a class="jxr_linenumber" name="L640" href="#L640">640</a>         param.setJavadoc(javadoc);
+<a class="jxr_linenumber" name="L641" href="#L641">641</a>         param.setType(type);
+<a class="jxr_linenumber" name="L642" href="#L642">642</a> 
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>         <strong class="jxr_keyword">this</strong>.pathParameters.add(param);
+<a class="jxr_linenumber" name="L644" href="#L644">644</a>     }
+<a class="jxr_linenumber" name="L645" href="#L645">645</a> 
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L647" href="#L647">647</a> <em class="jxr_javadoccomment">     * Get all rest methods</em>
+<a class="jxr_linenumber" name="L648" href="#L648">648</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L649" href="#L649">649</a> <em class="jxr_javadoccomment">     * @return list of rest methods</em>
+<a class="jxr_linenumber" name="L650" href="#L650">650</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L651" href="#L651">651</a>     <strong class="jxr_keyword">public</strong> List&lt;RestMethod&gt; getRestMethods() {
+<a class="jxr_linenumber" name="L652" href="#L652">652</a>         <strong class="jxr_keyword">return</strong> restMethods;
+<a class="jxr_linenumber" name="L653" href="#L653">653</a>     }
+<a class="jxr_linenumber" name="L654" href="#L654">654</a> 
+<a class="jxr_linenumber" name="L655" href="#L655">655</a>     @Override
+<a class="jxr_linenumber" name="L656" href="#L656">656</a>     <strong class="jxr_keyword">public</strong> String toString() {
+<a class="jxr_linenumber" name="L657" href="#L657">657</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.className;
+<a class="jxr_linenumber" name="L658" href="#L658">658</a>     }
+<a class="jxr_linenumber" name="L659" href="#L659">659</a> 
+<a class="jxr_linenumber" name="L660" href="#L660">660</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L661" href="#L661">661</a> <em class="jxr_javadoccomment">     * Get simple class name</em>
+<a class="jxr_linenumber" name="L662" href="#L662">662</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L663" href="#L663">663</a> <em class="jxr_javadoccomment">     * @return simple class name</em>
+<a class="jxr_linenumber" name="L664" href="#L664">664</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L665" href="#L665">665</a>     <strong class="jxr_keyword">public</strong> String getSimpleClassName() {
+<a class="jxr_linenumber" name="L666" href="#L666">666</a>         <strong class="jxr_keyword">return</strong> simpleClassName;
+<a class="jxr_linenumber" name="L667" href="#L667">667</a>     }
+<a class="jxr_linenumber" name="L668" href="#L668">668</a> 
+<a class="jxr_linenumber" name="L669" href="#L669">669</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L670" href="#L670">670</a> <em class="jxr_javadoccomment">     * Analyze path and extract path parameters.</em>
+<a class="jxr_linenumber" name="L671" href="#L671">671</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L672" href="#L672">672</a> <em class="jxr_javadoccomment">     * @param path path to analyze</em>
+<a class="jxr_linenumber" name="L673" href="#L673">673</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L674" href="#L674">674</a> <em class="jxr_javadoccomment">     * @return path parameters named mapped to null type. Effective type must be resolved while</em>
+<a class="jxr_linenumber" name="L675" href="#L675">675</a> <em class="jxr_javadoccomment">     *         parsing various methods</em>
+<a class="jxr_linenumber" name="L676" href="#L676">676</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L677" href="#L677">677</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Map&lt;String, Class&lt;?&gt;&gt; splitPath(Path path) {
+<a class="jxr_linenumber" name="L678" href="#L678">678</a>         HashMap&lt;String, Class&lt;?&gt;&gt; parameters = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
+<a class="jxr_linenumber" name="L679" href="#L679">679</a> 
+<a class="jxr_linenumber" name="L680" href="#L680">680</a>         <strong class="jxr_keyword">if</strong> (path != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L681" href="#L681">681</a>             PathPattern pathPattern = <strong class="jxr_keyword">new</strong> PathPattern(path.value());
+<a class="jxr_linenumber" name="L682" href="#L682">682</a>             UriTemplate template = pathPattern.getTemplate();
+<a class="jxr_linenumber" name="L683" href="#L683">683</a>             <strong class="jxr_keyword">for</strong> (String param : template.getTemplateVariables()) {
+<a class="jxr_linenumber" name="L684" href="#L684">684</a>                 <em class="jxr_comment">// no way to detect param type at the moment</em>
+<a class="jxr_linenumber" name="L685" href="#L685">685</a>                 parameters.put(param, <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L686" href="#L686">686</a>             }
+<a class="jxr_linenumber" name="L687" href="#L687">687</a>         }
+<a class="jxr_linenumber" name="L688" href="#L688">688</a> 
+<a class="jxr_linenumber" name="L689" href="#L689">689</a>         <strong class="jxr_keyword">return</strong> parameters;
+<a class="jxr_linenumber" name="L690" href="#L690">690</a>     }
+<a class="jxr_linenumber" name="L691" href="#L691">691</a> 
+<a class="jxr_linenumber" name="L692" href="#L692">692</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L693" href="#L693">693</a> <em class="jxr_javadoccomment">     * Build a RestController based on a klass</em>
+<a class="jxr_linenumber" name="L694" href="#L694">694</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L695" href="#L695">695</a> <em class="jxr_javadoccomment">     * @param klass           the class must be annotated with {@link Path}</em>
+<a class="jxr_linenumber" name="L696" href="#L696">696</a> <em class="jxr_javadoccomment">     * @param applicationPath main application path</em>
+<a class="jxr_linenumber" name="L697" href="#L697">697</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L698" href="#L698">698</a> <em class="jxr_javadoccomment">     * @return RestControlle instance, ready for code generation</em>
+<a class="jxr_linenumber" name="L699" href="#L699">699</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L700" href="#L700">700</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="RestController" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestController.html#RestController">RestController</a> build(Class&lt;?&gt; klass, String applicationPath) {
+<a class="jxr_linenumber" name="L701" href="#L701">701</a>         <a name="RestController" href="../../../../../../ch/colabproject/colab/ge<a name="RestController" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestController.html#RestController">RestController</a>/rest/RestController.html#RestController">RestController</a> restController = <strong class="jxr_keyword">new</strong> <a name="RestController" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestController.html#RestController">RestController</a>();
+<a class="jxr_linenumber" name="L702" href="#L702">702</a> 
+<a class="jxr_linenumber" name="L703" href="#L703">703</a>         restController.setAdminResource(klass.getAnnotation(AdminResource.<strong class="jxr_keyword">class</strong>) != <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L704" href="#L704">704</a>         restController.setAuthenticationRequired(
+<a class="jxr_linenumber" name="L705" href="#L705">705</a>             klass.getAnnotation(AuthenticationRequired.<strong class="jxr_keyword">class</strong>) != <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L706" href="#L706">706</a> 
+<a class="jxr_linenumber" name="L707" href="#L707">707</a>         restController.simpleClassName = klass.getSimpleName();
+<a class="jxr_linenumber" name="L708" href="#L708">708</a>         restController.className = klass.getName();
+<a class="jxr_linenumber" name="L709" href="#L709">709</a> 
+<a class="jxr_linenumber" name="L710" href="#L710">710</a>         Path classPath = klass.getAnnotation(Path.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L711" href="#L711">711</a>         <em class="jxr_comment">// eg @Path("project/{pId: [regex]}/card/{}")   or "project"</em>
+<a class="jxr_linenumber" name="L712" href="#L712">712</a>         Map&lt;String, Class&lt;?&gt;&gt; mainPathParam = splitPath(classPath);
+<a class="jxr_linenumber" name="L713" href="#L713">713</a> 
+<a class="jxr_linenumber" name="L714" href="#L714">714</a>         Logger.debug(<span class="jxr_string">"Build RestController for "</span> + klass);
+<a class="jxr_linenumber" name="L715" href="#L715">715</a>         <em class="jxr_comment">// Go through each class methods but only cares about ones annotated with</em>
+<a class="jxr_linenumber" name="L716" href="#L716">716</a>         <em class="jxr_comment">// a HttpMethod-like annotation</em>
+<a class="jxr_linenumber" name="L717" href="#L717">717</a>         <strong class="jxr_keyword">for</strong> (Method method : klass.getMethods()) {
+<a class="jxr_linenumber" name="L718" href="#L718">718</a>             <strong class="jxr_keyword">for</strong> (Annotation annotation : method.getAnnotations()) {
+<a class="jxr_linenumber" name="L719" href="#L719">719</a>                 <em class="jxr_comment">// @GET @POST, etc ?</em>
+<a class="jxr_linenumber" name="L720" href="#L720">720</a>                 HttpMethod httpMethodAnno = annotation.annotationType()
+<a class="jxr_linenumber" name="L721" href="#L721">721</a>                     .getAnnotation(HttpMethod.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L722" href="#L722">722</a>                 <strong class="jxr_keyword">if</strong> (httpMethodAnno != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L723" href="#L723">723</a>                     <a name="RestMethod" href="../../../../../../ch/colabproject/cola<a name="RestMethod" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestMethod.html#RestMethod">RestMethod</a>r/plugin/rest/RestMethod.html#RestMethod">RestMethod</a> restMethod = <strong class="jxr_keyword">new</strong> <a name="RestMethod" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestMethod.html#RestMethod">RestMethod</a>();
+<a class="jxr_linenumber" name="L724" href="#L724">724</a>                     restMethod.setName(method.getName());
+<a class="jxr_linenumber" name="L725" href="#L725">725</a>                     restController.registerMethod(restMethod);
+<a class="jxr_linenumber" name="L726" href="#L726">726</a> 
+<a class="jxr_linenumber" name="L727" href="#L727">727</a>                     String httpMethod = httpMethodAnno.value();
+<a class="jxr_linenumber" name="L728" href="#L728">728</a>                     restMethod.setHttpMethod(httpMethod);
+<a class="jxr_linenumber" name="L729" href="#L729">729</a> 
+<a class="jxr_linenumber" name="L730" href="#L730">730</a>                     Path methodPath = method.getAnnotation(Path.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L731" href="#L731">731</a> 
+<a class="jxr_linenumber" name="L732" href="#L732">732</a>                     restMethod
+<a class="jxr_linenumber" name="L733" href="#L733">733</a>                         .setAdminResource(method.getAnnotation(AdminResource.<strong class="jxr_keyword">class</strong>) != <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L734" href="#L734">734</a>                     restMethod.setAuthenticationRequired(
+<a class="jxr_linenumber" name="L735" href="#L735">735</a>                         method.getAnnotation(AuthenticationRequired.<strong class="jxr_keyword">class</strong>) != <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L736" href="#L736">736</a> 
+<a class="jxr_linenumber" name="L737" href="#L737">737</a>                     <em class="jxr_comment">// full path</em>
+<a class="jxr_linenumber" name="L738" href="#L738">738</a>                     StringBuilder pathBuilder = <strong class="jxr_keyword">new</strong> StringBuilder(applicationPath).append('/')
+<a class="jxr_linenumber" name="L739" href="#L739">739</a>                         .append(classPath.value());
+<a class="jxr_linenumber" name="L740" href="#L740">740</a>                     <strong class="jxr_keyword">if</strong> (methodPath != <strong class="jxr_keyword">null</strong> &amp;&amp; !methodPath.value().isEmpty() &amp;&amp; !<span class="jxr_string">"/"</span>
+<a class="jxr_linenumber" name="L741" href="#L741">741</a>                         .equals(methodPath.value())) {
+<a class="jxr_linenumber" name="L742" href="#L742">742</a>                         <strong class="jxr_keyword">if</strong> (methodPath.value().charAt(0) != '/') {
+<a class="jxr_linenumber" name="L743" href="#L743">743</a>                             pathBuilder.append('/');
+<a class="jxr_linenumber" name="L744" href="#L744">744</a>                         }
+<a class="jxr_linenumber" name="L745" href="#L745">745</a>                         pathBuilder.append(methodPath.value());
+<a class="jxr_linenumber" name="L746" href="#L746">746</a>                     }
+<a class="jxr_linenumber" name="L747" href="#L747">747</a>                     String fullPath = pathBuilder.toString();
+<a class="jxr_linenumber" name="L748" href="#L748">748</a> 
+<a class="jxr_linenumber" name="L749" href="#L749">749</a>                     restMethod.setFullPath(fullPath);
+<a class="jxr_linenumber" name="L750" href="#L750">750</a> 
+<a class="jxr_linenumber" name="L751" href="#L751">751</a>                     Map&lt;String, Class&lt;?&gt;&gt; methodPathParam = splitPath(methodPath);
+<a class="jxr_linenumber" name="L752" href="#L752">752</a> 
+<a class="jxr_linenumber" name="L753" href="#L753">753</a>                     <em class="jxr_comment">// Process parameters</em>
+<a class="jxr_linenumber" name="L754" href="#L754">754</a>                     <strong class="jxr_keyword">for</strong> (Parameter p : method.getParameters()) {
+<a class="jxr_linenumber" name="L755" href="#L755">755</a>                         PathParam pathParam = p.getAnnotation(PathParam.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L756" href="#L756">756</a>                         QueryParam queryParam = p.getAnnotation(QueryParam.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L757" href="#L757">757</a> 
+<a class="jxr_linenumber" name="L758" href="#L758">758</a>                         <strong class="jxr_keyword">if</strong> (pathParam != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L759" href="#L759">759</a>                             <em class="jxr_comment">// Path param may be a method specific param or a class one</em>
+<a class="jxr_linenumber" name="L760" href="#L760">760</a>                             <em class="jxr_comment">// at this point, resolving effective pathParam type is possible</em>
+<a class="jxr_linenumber" name="L761" href="#L761">761</a>                             <strong class="jxr_keyword">if</strong> (methodPathParam.containsKey(pathParam.value())) {
+<a class="jxr_linenumber" name="L762" href="#L762">762</a>                                 methodPathParam.put(pathParam.value(), p.getType());
+<a class="jxr_linenumber" name="L763" href="#L763">763</a>                                 restMethod.addPathParameter(
+<a class="jxr_linenumber" name="L764" href="#L764">764</a>                                     p.getName(),
+<a class="jxr_linenumber" name="L765" href="#L765">765</a>                                     pathParam.value(),
+<a class="jxr_linenumber" name="L766" href="#L766">766</a>                                     <span class="jxr_string">"path param"</span>,
+<a class="jxr_linenumber" name="L767" href="#L767">767</a>                                     p.getType());
+<a class="jxr_linenumber" name="L768" href="#L768">768</a>                             } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (mainPathParam.containsKey(pathParam.value())) {
+<a class="jxr_linenumber" name="L769" href="#L769">769</a>                                 mainPathParam.put(pathParam.value(), p.getType());
+<a class="jxr_linenumber" name="L770" href="#L770">770</a> 
+<a class="jxr_linenumber" name="L771" href="#L771">771</a>                                 restController.addPathParameter(
+<a class="jxr_linenumber" name="L772" href="#L772">772</a>                                     p.getName(),
+<a class="jxr_linenumber" name="L773" href="#L773">773</a>                                     pathParam.value(),
+<a class="jxr_linenumber" name="L774" href="#L774">774</a>                                     <span class="jxr_string">"path param"</span>,
+<a class="jxr_linenumber" name="L775" href="#L775">775</a>                                     p.getType());
+<a class="jxr_linenumber" name="L776" href="#L776">776</a>                             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L777" href="#L777">777</a>                                 Logger.error(<span class="jxr_string">"@PathParam "</span>
+<a class="jxr_linenumber" name="L778" href="#L778">778</a>                                     + pathParam.value() + <span class="jxr_string">" not found in @Path"</span>);
+<a class="jxr_linenumber" name="L779" href="#L779">779</a>                                 <em class="jxr_comment">// error !</em>
+<a class="jxr_linenumber" name="L780" href="#L780">780</a>                             }
+<a class="jxr_linenumber" name="L781" href="#L781">781</a>                         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (queryParam != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L782" href="#L782">782</a>                             restMethod.addQueryParameter(
+<a class="jxr_linenumber" name="L783" href="#L783">783</a>                                 p.getName(),
+<a class="jxr_linenumber" name="L784" href="#L784">784</a>                                 queryParam.value(),
+<a class="jxr_linenumber" name="L785" href="#L785">785</a>                                 <span class="jxr_string">"query param"</span>,
+<a class="jxr_linenumber" name="L786" href="#L786">786</a>                                 p.getType());
+<a class="jxr_linenumber" name="L787" href="#L787">787</a>                         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (p.getAnnotations().length == 0) {
+<a class="jxr_linenumber" name="L788" href="#L788">788</a>                             <em class="jxr_comment">// request body</em>
+<a class="jxr_linenumber" name="L789" href="#L789">789</a>                             <strong class="jxr_keyword">if</strong> (restMethod.getBodyParam() != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L790" href="#L790">790</a>                                 <em class="jxr_comment">// several body param ????</em>
+<a class="jxr_linenumber" name="L791" href="#L791">791</a>                                 Logger.warn(<span class="jxr_string">"Several body parameters ???"</span>);
+<a class="jxr_linenumber" name="L792" href="#L792">792</a>                             }
+<a class="jxr_linenumber" name="L793" href="#L793">793</a>                             <a name="Param" href="../../../../../../ch/colabproject/col<a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>nerator/plugin/rest/Param.html#Param">Param</a> bodyParam = <strong class="jxr_keyword">new</strong> <a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>();
+<a class="jxr_linenumber" name="L794" href="#L794">794</a>                             bodyParam.setName(p.getName());
+<a class="jxr_linenumber" name="L795" href="#L795">795</a>                             bodyParam.setType(p.getParameterizedType());
+<a class="jxr_linenumber" name="L796" href="#L796">796</a>                             bodyParam.setJavadoc(<span class="jxr_string">"body payload"</span>);
+<a class="jxr_linenumber" name="L797" href="#L797">797</a>                             restMethod.setBodyParam(bodyParam);
+<a class="jxr_linenumber" name="L798" href="#L798">798</a>                         }
+<a class="jxr_linenumber" name="L799" href="#L799">799</a>                     }
+<a class="jxr_linenumber" name="L800" href="#L800">800</a> 
+<a class="jxr_linenumber" name="L801" href="#L801">801</a>                     Class&lt;?&gt; returnType = method.getReturnType();
+<a class="jxr_linenumber" name="L802" href="#L802">802</a>                     Type genericType = method.getGenericReturnType();
+<a class="jxr_linenumber" name="L803" href="#L803">803</a> 
+<a class="jxr_linenumber" name="L804" href="#L804">804</a>                     String typeName = returnType.getTypeName();
+<a class="jxr_linenumber" name="L805" href="#L805">805</a>                     String genericTypeName = genericType.getTypeName();
+<a class="jxr_linenumber" name="L806" href="#L806">806</a> 
+<a class="jxr_linenumber" name="L807" href="#L807">807</a>                     <strong class="jxr_keyword">boolean</strong> isReturnTypeGeneric = !typeName.equals(genericTypeName);
+<a class="jxr_linenumber" name="L808" href="#L808">808</a>                     <strong class="jxr_keyword">if</strong> (isReturnTypeGeneric) {
+<a class="jxr_linenumber" name="L809" href="#L809">809</a>                         restMethod.setReturnTypeGeneric(isReturnTypeGeneric);
+<a class="jxr_linenumber" name="L810" href="#L810">810</a>                     }
+<a class="jxr_linenumber" name="L811" href="#L811">811</a> 
+<a class="jxr_linenumber" name="L812" href="#L812">812</a>                     restMethod.setReturnType(isReturnTypeGeneric ? genericType : returnType);
+<a class="jxr_linenumber" name="L813" href="#L813">813</a> 
+<a class="jxr_linenumber" name="L814" href="#L814">814</a>                     <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L815" href="#L815">815</a>                 }
+<a class="jxr_linenumber" name="L816" href="#L816">816</a>             }
+<a class="jxr_linenumber" name="L817" href="#L817">817</a>         }
+<a class="jxr_linenumber" name="L818" href="#L818">818</a>         <strong class="jxr_keyword">return</strong> restController;
+<a class="jxr_linenumber" name="L819" href="#L819">819</a>     }
+<a class="jxr_linenumber" name="L820" href="#L820">820</a> 
+<a class="jxr_linenumber" name="L821" href="#L821">821</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

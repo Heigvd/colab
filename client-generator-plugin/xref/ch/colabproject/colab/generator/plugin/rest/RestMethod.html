@@ -259,56 +259,60 @@
 <a class="jxr_linenumber" name="L251" href="#L251">251</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L252" href="#L252">252</a> <em class="jxr_javadoccomment">     * Register a path parameter</em>
 <a class="jxr_linenumber" name="L253" href="#L253">253</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L254" href="#L254">254</a> <em class="jxr_javadoccomment">     * @param name    name of the parameter</em>
-<a class="jxr_linenumber" name="L255" href="#L255">255</a> <em class="jxr_javadoccomment">     * @param javadoc some documentation</em>
-<a class="jxr_linenumber" name="L256" href="#L256">256</a> <em class="jxr_javadoccomment">     * @param type    type of the parameter</em>
-<a class="jxr_linenumber" name="L257" href="#L257">257</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addPathParameter(String name, String javadoc, Type type) {
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>         <a name="Param" href="../../../../../../ch/colabproject<a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>b/generator/plugin/rest/Param.html#Param">Param</a> param = <strong class="jxr_keyword">new</strong> <a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>();
-<a class="jxr_linenumber" name="L260" href="#L260">260</a>         param.setName(name);
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>         param.setJavadoc(javadoc);
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>         param.setType(type);
-<a class="jxr_linenumber" name="L263" href="#L263">263</a> 
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>         <strong class="jxr_keyword">this</strong>.pathParameters.add(param);
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>     }
-<a class="jxr_linenumber" name="L266" href="#L266">266</a> 
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L268" href="#L268">268</a> <em class="jxr_javadoccomment">     * Register a query parameter</em>
-<a class="jxr_linenumber" name="L269" href="#L269">269</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L270" href="#L270">270</a> <em class="jxr_javadoccomment">     * @param name    name of the parameter</em>
-<a class="jxr_linenumber" name="L271" href="#L271">271</a> <em class="jxr_javadoccomment">     * @param javadoc some documentation</em>
-<a class="jxr_linenumber" name="L272" href="#L272">272</a> <em class="jxr_javadoccomment">     * @param type    type of the parameter</em>
-<a class="jxr_linenumber" name="L273" href="#L273">273</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addQueryParameter(String name, String javadoc, Type type) {
-<a class="jxr_linenumber" name="L275" href="#L275">275</a>         <a name="Param" href="../../../../../../ch/colabproject<a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>b/generator/plugin/rest/Param.html#Param">Param</a> param = <strong class="jxr_keyword">new</strong> <a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>();
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>         param.setName(name);
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>         param.setJavadoc(javadoc);
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>         param.setType(type);
-<a class="jxr_linenumber" name="L279" href="#L279">279</a> 
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>         <strong class="jxr_keyword">this</strong>.queryParameters.add(param);
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>     }
-<a class="jxr_linenumber" name="L282" href="#L282">282</a> 
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L284" href="#L284">284</a> <em class="jxr_javadoccomment">     * Get all parameters. PathParams + queryParams + body</em>
-<a class="jxr_linenumber" name="L285" href="#L285">285</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L286" href="#L286">286</a> <em class="jxr_javadoccomment">     * @return list of all non-null parameters</em>
-<a class="jxr_linenumber" name="L287" href="#L287">287</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>     <strong class="jxr_keyword">public</strong> List&lt;Param&gt; getAllParameters() {
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>         List&lt;Param&gt; list = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>         list.addAll(<strong class="jxr_keyword">this</strong>.pathParameters);
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>         list.addAll(<strong class="jxr_keyword">this</strong>.queryParameters);
-<a class="jxr_linenumber" name="L292" href="#L292">292</a> 
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>         <strong class="jxr_keyword">if</strong> (bodyParam != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>             list.add(bodyParam);
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>         }
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>         <strong class="jxr_keyword">return</strong> list;
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>     }
-<a class="jxr_linenumber" name="L298" href="#L298">298</a> 
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>     @Override
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>     <strong class="jxr_keyword">public</strong> String toString() {
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>         <strong class="jxr_keyword">return</strong> MessageFormat.format(<span class="jxr_string">"{0} {1}"</span>, <strong class="jxr_keyword">this</strong>.getHttpMethod(), <strong class="jxr_keyword">this</strong>.getFullPath());
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>     }
-<a class="jxr_linenumber" name="L303" href="#L303">303</a> }
+<a class="jxr_linenumber" name="L254" href="#L254">254</a> <em class="jxr_javadoccomment">     * @param name           name of the parameter</em>
+<a class="jxr_linenumber" name="L255" href="#L255">255</a> <em class="jxr_javadoccomment">     * @param annotationName PathParam name</em>
+<a class="jxr_linenumber" name="L256" href="#L256">256</a> <em class="jxr_javadoccomment">     * @param javadoc        some documentation</em>
+<a class="jxr_linenumber" name="L257" href="#L257">257</a> <em class="jxr_javadoccomment">     * @param type           type of the parameter</em>
+<a class="jxr_linenumber" name="L258" href="#L258">258</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addPathParameter(String name, String annotationName, String javadoc, Type type) {
+<a class="jxr_linenumber" name="L260" href="#L260">260</a>         <a name="Param" href="../../../../../../ch/colabproject<a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>b/generator/plugin/rest/Param.html#Param">Param</a> param = <strong class="jxr_keyword">new</strong> <a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>();
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>         param.setName(name);
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>         param.setInAnnotationName(annotationName);
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>         param.setJavadoc(javadoc);
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>         param.setType(type);
+<a class="jxr_linenumber" name="L265" href="#L265">265</a> 
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>         <strong class="jxr_keyword">this</strong>.pathParameters.add(param);
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>     }
+<a class="jxr_linenumber" name="L268" href="#L268">268</a> 
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L270" href="#L270">270</a> <em class="jxr_javadoccomment">     * Register a query parameter</em>
+<a class="jxr_linenumber" name="L271" href="#L271">271</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L272" href="#L272">272</a> <em class="jxr_javadoccomment">     * @param name           name of the parameter</em>
+<a class="jxr_linenumber" name="L273" href="#L273">273</a> <em class="jxr_javadoccomment">     * @param annotationName QueryParam name</em>
+<a class="jxr_linenumber" name="L274" href="#L274">274</a> <em class="jxr_javadoccomment">     * @param javadoc        some documentation</em>
+<a class="jxr_linenumber" name="L275" href="#L275">275</a> <em class="jxr_javadoccomment">     * @param type           type of the parameter</em>
+<a class="jxr_linenumber" name="L276" href="#L276">276</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> addQueryParameter(String name, String annotationName, String javadoc, Type type) {
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>         <a name="Param" href="../../../../../../ch/colabproject<a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>b/generator/plugin/rest/Param.html#Param">Param</a> param = <strong class="jxr_keyword">new</strong> <a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>();
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>         param.setName(name);
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>         param.setInAnnotationName(annotationName);
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>         param.setJavadoc(javadoc);
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>         param.setType(type);
+<a class="jxr_linenumber" name="L283" href="#L283">283</a> 
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>         <strong class="jxr_keyword">this</strong>.queryParameters.add(param);
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>     }
+<a class="jxr_linenumber" name="L286" href="#L286">286</a> 
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L288" href="#L288">288</a> <em class="jxr_javadoccomment">     * Get all parameters. PathParams + queryParams + body</em>
+<a class="jxr_linenumber" name="L289" href="#L289">289</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L290" href="#L290">290</a> <em class="jxr_javadoccomment">     * @return list of all non-null parameters</em>
+<a class="jxr_linenumber" name="L291" href="#L291">291</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>     <strong class="jxr_keyword">public</strong> List&lt;Param&gt; getAllParameters() {
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>         List&lt;Param&gt; list = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>         list.addAll(<strong class="jxr_keyword">this</strong>.pathParameters);
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>         list.addAll(<strong class="jxr_keyword">this</strong>.queryParameters);
+<a class="jxr_linenumber" name="L296" href="#L296">296</a> 
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>         <strong class="jxr_keyword">if</strong> (bodyParam != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>             list.add(bodyParam);
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>         }
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>         <strong class="jxr_keyword">return</strong> list;
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>     }
+<a class="jxr_linenumber" name="L302" href="#L302">302</a> 
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>     @Override
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>     <strong class="jxr_keyword">public</strong> String toString() {
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>         <strong class="jxr_keyword">return</strong> MessageFormat.format(<span class="jxr_string">"{0} {1}"</span>, <strong class="jxr_keyword">this</strong>.getHttpMethod(), <strong class="jxr_keyword">this</strong>.getFullPath());
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>     }
+<a class="jxr_linenumber" name="L307" href="#L307">307</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>
