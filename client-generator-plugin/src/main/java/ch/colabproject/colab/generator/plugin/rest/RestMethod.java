@@ -252,7 +252,7 @@ public class RestMethod {
      * Register a path parameter
      *
      * @param name           name of the parameter
-     * @param annotationName @PathParam name
+     * @param annotationName PathParam name
      * @param javadoc        some documentation
      * @param type           type of the parameter
      */
@@ -270,7 +270,7 @@ public class RestMethod {
      * Register a query parameter
      *
      * @param name           name of the parameter
-     * @param annotationName @QueryParam name
+     * @param annotationName QueryParam name
      * @param javadoc        some documentation
      * @param type           type of the parameter
      */
