@@ -7,6 +7,8 @@
 package ch.colabproject.colab.generator.plugin;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import ch.colabproject.colab.generator.model.tools.ClassDoc;
+import ch.colabproject.colab.generator.model.tools.JavaDocExtractor;
 import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import ch.colabproject.colab.generator.plugin.rest.RestController;
 import java.io.BufferedWriter;
@@ -55,9 +57,14 @@ public class Generator {
     private final String clientName;
 
     /**
+     * Javadoc as extracted by the annotation processor
+     */
+    private final Map&lt;String, ClassDoc&gt; javadoc;
+
+    /**
      * Main REST application path
      */
-<span class="nc" id="L60">    private String applicationPath = null;</span>
+<span class="nc" id="L67">    private String applicationPath = null;</span>
 
     /**
      * Initialize the client generator.
@@ -68,16 +75,17 @@ public class Generator {
      */
     public Generator(String[] restPackages,
         String packageName, String clientName
-<span class="nc" id="L71">    ) {</span>
-<span class="nc" id="L72">        this.packageName = packageName;</span>
-<span class="nc" id="L73">        this.clientName = clientName;</span>
+<span class="nc" id="L78">    ) {</span>
+<span class="nc" id="L79">        this.packageName = packageName;</span>
+<span class="nc" id="L80">        this.clientName = clientName;</span>
 
-<span class="nc" id="L75">        List&lt;Object&gt; pkgs = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L76">        pkgs.add(&quot;ch.colabproject.colab.generator.model&quot;);</span>
-<span class="nc" id="L77">        pkgs.addAll(Arrays.asList(restPackages));</span>
+<span class="nc" id="L82">        List&lt;Object&gt; pkgs = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L83">        pkgs.add(&quot;ch.colabproject.colab.generator.model&quot;);</span>
+<span class="nc" id="L84">        pkgs.addAll(Arrays.asList(restPackages));</span>
 
-<span class="nc" id="L79">        this.reflections = new Reflections(pkgs.toArray());</span>
-<span class="nc" id="L80">    }</span>
+<span class="nc" id="L86">        this.reflections = new Reflections(pkgs.toArray());</span>
+<span class="nc" id="L87">        this.javadoc = JavaDocExtractor.loadJavaDocFromJson();</span>
+<span class="nc" id="L88">    }</span>
 
     /**
      *
@@ -86,8 +94,8 @@ public class Generator {
      * @param pkgs packages to analyze
      */
     public Generator(String[] pkgs) {
-<span class="nc" id="L89">        this(pkgs, null, null);</span>
-<span class="nc" id="L90">    }</span>
+<span class="nc" id="L97">        this(pkgs, null, null);</span>
+<span class="nc" id="L98">    }</span>
 
     /**
      * get JSON-B to use.
@@ -95,7 +103,7 @@ public class Generator {
      * @return jsbonb mapper
      */
     public Jsonb getJsonBMapper() {
-<span class="nc" id="L98">        return JsonbProvider.getJsonb();</span>
+<span class="nc" id="L106">        return JsonbProvider.getJsonb();</span>
     }
 
     /**
@@ -103,26 +111,26 @@ public class Generator {
      * for each class and store them in {@link #restControllers}
      */
     public void processPackages() {
-<span class="nc" id="L106">        Set&lt;Class&lt;?&gt;&gt; appConfig = reflections.getTypesAnnotatedWith(ApplicationPath.class);</span>
-<span class="nc bnc" id="L107" title="All 2 branches missed.">        if (!appConfig.isEmpty()) {</span>
-<span class="nc bnc" id="L108" title="All 2 branches missed.">            if (appConfig.size() &gt; 1) {</span>
-<span class="nc" id="L109">                Logger.warn(&quot;Several ApplicationPath found&quot;);</span>
+<span class="nc" id="L114">        Set&lt;Class&lt;?&gt;&gt; appConfig = reflections.getTypesAnnotatedWith(ApplicationPath.class);</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (!appConfig.isEmpty()) {</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">            if (appConfig.size() &gt; 1) {</span>
+<span class="nc" id="L117">                Logger.warn(&quot;Several ApplicationPath found&quot;);</span>
             }
-<span class="nc" id="L111">            Class&lt;?&gt; applicationConfig = appConfig.iterator().next();</span>
-<span class="nc" id="L112">            ApplicationPath annotation = applicationConfig.getAnnotation(ApplicationPath.class);</span>
-<span class="nc bnc" id="L113" title="All 2 branches missed.">            if (annotation != null) {</span>
-<span class="nc" id="L114">                this.applicationPath = annotation.value();</span>
+<span class="nc" id="L119">            Class&lt;?&gt; applicationConfig = appConfig.iterator().next();</span>
+<span class="nc" id="L120">            ApplicationPath annotation = applicationConfig.getAnnotation(ApplicationPath.class);</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">            if (annotation != null) {</span>
+<span class="nc" id="L122">                this.applicationPath = annotation.value();</span>
             }
         }
 
-<span class="nc" id="L118">        Set&lt;Class&lt;?&gt;&gt; restClasses = reflections.getTypesAnnotatedWith(Path.class);</span>
+<span class="nc" id="L126">        Set&lt;Class&lt;?&gt;&gt; restClasses = reflections.getTypesAnnotatedWith(Path.class);</span>
 
-<span class="nc" id="L120">        this.restControllers = restClasses.stream()</span>
-<span class="nc" id="L121">            .map(klass -&gt; RestController.build(klass, applicationPath))</span>
-<span class="nc" id="L122">            .collect(Collectors.toSet());</span>
+<span class="nc" id="L128">        this.restControllers = restClasses.stream()</span>
+<span class="nc" id="L129">            .map(klass -&gt; RestController.build(klass, applicationPath))</span>
+<span class="nc" id="L130">            .collect(Collectors.toSet());</span>
         /* .map(p -&gt; p.generateJavaClient()) .innerClasses(Collectors.toList());
          */
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L133">    }</span>
 
     /**
      * One all classes have been processed with {@link #processPackages() }, this method will create
@@ -135,39 +143,44 @@ public class Generator {
      * @throws org.apache.maven.plugin.MojoFailureException if generation fails
      */
     public void generateJavaClient(String targetDir, boolean dryRun) throws MojoFailureException {
-<span class="nc" id="L138">        Map&lt;String, String&gt; imports = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L139">        imports.put(&quot;RestClient&quot;, &quot;ch.colabproject.colab.generator.plugin.rest.RestClient&quot;);</span>
-<span class="nc" id="L140">        imports.put(&quot;Jsonb&quot;, &quot;javax.json.bind.Jsonb&quot;);</span>
-<span class="nc" id="L141">        imports.put(&quot;GenericType&quot;, &quot;javax.ws.rs.core.GenericType&quot;);</span>
-<span class="nc" id="L142">        imports.put(&quot;PathPattern&quot;, &quot;org.glassfish.jersey.uri.PathPattern&quot;);</span>
-<span class="nc" id="L143">        imports.put(&quot;UriTemplate&quot;, &quot;org.glassfish.jersey.uri.UriTemplate&quot;);</span>
-<span class="nc" id="L144">        imports.put(&quot;void&quot;, null); // null means no import statement</span>
+<span class="nc" id="L146">        Map&lt;String, String&gt; imports = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L147">        imports.put(&quot;RestClient&quot;, &quot;ch.colabproject.colab.generator.plugin.rest.RestClient&quot;);</span>
+<span class="nc" id="L148">        imports.put(&quot;Jsonb&quot;, &quot;javax.json.bind.Jsonb&quot;);</span>
+<span class="nc" id="L149">        imports.put(&quot;GenericType&quot;, &quot;javax.ws.rs.core.GenericType&quot;);</span>
+<span class="nc" id="L150">        imports.put(&quot;PathPattern&quot;, &quot;org.glassfish.jersey.uri.PathPattern&quot;);</span>
+<span class="nc" id="L151">        imports.put(&quot;UriTemplate&quot;, &quot;org.glassfish.jersey.uri.UriTemplate&quot;);</span>
+<span class="nc" id="L152">        imports.put(&quot;void&quot;, null); // null means no import statement</span>
 
-<span class="nc" id="L146">        String innerClasses = this.restControllers.stream().map(controller -&gt; {</span>
-<span class="nc" id="L147">            String javaCode = controller.generateJavaClient(imports, clientName);</span>
-<span class="nc" id="L148">            return javaCode;</span>
-<span class="nc" id="L149">        }).collect(Collectors.joining(System.lineSeparator()));</span>
+<span class="nc" id="L154">        String innerClasses = this.restControllers.stream().map(controller -&gt; {</span>
+<span class="nc" id="L155">            String javaCode = controller.generateJavaClient(</span>
+                imports,
+                clientName,
+                javadoc,
+                reflections
+            );
+<span class="nc" id="L161">            return javaCode;</span>
+<span class="nc" id="L162">        }).collect(Collectors.joining(System.lineSeparator()));</span>
 
-<span class="nc" id="L151">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L164">        StringBuilder sb = new StringBuilder();</span>
 
-<span class="nc" id="L153">        sb.append(&quot;package &quot;).append(packageName).append(&quot;;\n\n&quot;)</span>
-<span class="nc" id="L154">            .append(</span>
-<span class="nc" id="L155">                imports.values().stream()</span>
-<span class="nc bnc" id="L156" title="All 2 branches missed.">                    .filter(pkg -&gt; pkg != null)</span>
-<span class="nc" id="L157">                    .sorted()</span>
-<span class="nc" id="L158">                    .map(pkg -&gt; &quot;import &quot; + pkg + &quot;;&quot;)</span>
-<span class="nc" id="L159">                    .collect(Collectors.joining(System.lineSeparator()))</span>
+<span class="nc" id="L166">        sb.append(&quot;package &quot;).append(packageName).append(&quot;;\n\n&quot;)</span>
+<span class="nc" id="L167">            .append(</span>
+<span class="nc" id="L168">                imports.values().stream()</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">                    .filter(pkg -&gt; pkg != null)</span>
+<span class="nc" id="L170">                    .sorted()</span>
+<span class="nc" id="L171">                    .map(pkg -&gt; &quot;import &quot; + pkg + &quot;;&quot;)</span>
+<span class="nc" id="L172">                    .collect(Collectors.joining(System.lineSeparator()))</span>
             )
-<span class="nc" id="L161">            .append(&quot;\n&quot;</span>
+<span class="nc" id="L174">            .append(&quot;\n&quot;</span>
                 + &quot;/**\n&quot;
                 + &quot; * The &quot;)
-<span class="nc" id="L164">            .append(clientName)</span>
-<span class="nc" id="L165">            .append(&quot; REST client&quot;</span>
+<span class="nc" id="L177">            .append(clientName)</span>
+<span class="nc" id="L178">            .append(&quot; REST client&quot;</span>
                 + &quot; */\n&quot;
                 + &quot;@SuppressWarnings(\&quot;PMD.FieldDeclarationsShouldBeAtStartOfClass\&quot;)\n&quot;
                 + &quot;public class &quot;)
-<span class="nc" id="L169">            .append(clientName)</span>
-<span class="nc" id="L170">            .append(&quot; extends RestClient {&quot;</span>
+<span class="nc" id="L182">            .append(clientName)</span>
+<span class="nc" id="L183">            .append(&quot; extends RestClient {&quot;</span>
                 + &quot;\n&quot;
                 + &quot;\n&quot;
                 + &quot;    /**\n&quot;
@@ -179,20 +192,20 @@ public class Generator {
                 + &quot;     * @param clientFeatures addition http client feature\n&quot;
                 + &quot;     */\n&quot;
                 + &quot;    public &quot;)
-<span class="nc" id="L182">            .append(clientName)</span>
-<span class="nc" id="L183">            .append(&quot;(String baseUri, String cookieName, Jsonb jsonb, Object... clientFeatures) {\n&quot;</span>
+<span class="nc" id="L195">            .append(clientName)</span>
+<span class="nc" id="L196">            .append(&quot;(String baseUri, String cookieName, Jsonb jsonb, Object... clientFeatures) {\n&quot;</span>
                 + &quot;        super(baseUri, cookieName, jsonb, clientFeatures);\n&quot;
                 + &quot;    }&quot;)
-<span class="nc" id="L186">            .append(innerClasses)</span>
-<span class="nc" id="L187">            .append(&quot;}&quot;);</span>
+<span class="nc" id="L199">            .append(innerClasses)</span>
+<span class="nc" id="L200">            .append(&quot;}&quot;);</span>
 
-<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (dryRun) {</span>
-<span class="nc" id="L190">            Logger.debug(sb.toString());</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">        if (dryRun) {</span>
+<span class="nc" id="L203">            Logger.debug(sb.toString());</span>
         } else {
-<span class="nc" id="L192">            String packagePath = targetDir + &quot;/&quot; + packageName.replaceAll(&quot;\\.&quot;, &quot;/&quot;);</span>
-<span class="nc" id="L193">            writeFile(sb.toString(), packagePath, clientName + &quot;.java&quot;);</span>
+<span class="nc" id="L205">            String packagePath = targetDir + &quot;/&quot; + packageName.replaceAll(&quot;\\.&quot;, &quot;/&quot;);</span>
+<span class="nc" id="L206">            writeFile(sb.toString(), packagePath, clientName + &quot;.java&quot;);</span>
         }
-<span class="nc" id="L195">    }</span>
+<span class="nc" id="L208">    }</span>
 
     /**
      * Get rest service description
@@ -200,7 +213,7 @@ public class Generator {
      * @return all rest resource
      */
     public Set&lt;RestController&gt; getRestControllers() {
-<span class="nc" id="L203">        return restControllers;</span>
+<span class="nc" id="L216">        return restControllers;</span>
     }
 
     /**
@@ -213,59 +226,60 @@ public class Generator {
      */
     public void generateTypescriptClient(String targetDir, boolean dryRun)
         throws MojoFailureException {
-<span class="nc" id="L216">        Map&lt;String, Type&gt; extraTypes = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L217">        StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L218">        sb.append(this.getTsClientTemplate());</span>
-<span class="nc" id="L219">        extraTypes.put(&quot;WithJsonDiscriminator&quot;, WithJsonDiscriminator.class);</span>
+<span class="nc" id="L229">        Map&lt;String, Type&gt; extraTypes = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L230">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L231">        sb.append(this.getTsClientTemplate());</span>
+<span class="nc" id="L232">        extraTypes.put(&quot;WithJsonDiscriminator&quot;, WithJsonDiscriminator.class);</span>
 
-<span class="nc" id="L221">        String modules = this.restControllers.stream().map(controller</span>
-<span class="nc" id="L222">            -&gt; controller.generateTypescriptClient(extraTypes)</span>
-<span class="nc" id="L223">        ).collect(Collectors.joining(System.lineSeparator()));</span>
+<span class="nc" id="L234">        String modules = this.restControllers.stream().map(controller</span>
+<span class="nc" id="L235">            -&gt; controller.generateTypescriptClient(extraTypes, this.javadoc, reflections)</span>
+<span class="nc" id="L236">        ).collect(Collectors.joining(System.lineSeparator()));</span>
 
         // TS interface name =&gt; list of @class values
-<span class="nc" id="L226">        Map&lt;String, List&lt;String&gt;&gt; inheritance = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L239">        Map&lt;String, List&lt;String&gt;&gt; inheritance = new HashMap&lt;&gt;();</span>
 
-<span class="nc" id="L228">        List&lt;Entry&lt;String, Type&gt;&gt; queue = new ArrayList&lt;&gt;(extraTypes.entrySet());</span>
-<span class="nc bnc" id="L229" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
-<span class="nc" id="L230">            Map&lt;String, Type&gt; snowballedTypes = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L241">        List&lt;Entry&lt;String, Type&gt;&gt; queue = new ArrayList&lt;&gt;(extraTypes.entrySet());</span>
+<span class="nc bnc" id="L242" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
+<span class="nc" id="L243">            Map&lt;String, Type&gt; snowballedTypes = new HashMap&lt;&gt;();</span>
 
-<span class="nc" id="L232">            Entry&lt;String, Type&gt; entry = queue.remove(0);</span>
+<span class="nc" id="L245">            Entry&lt;String, Type&gt; entry = queue.remove(0);</span>
 
-<span class="nc" id="L234">            String tsInterface = TypeScriptHelper.generateInterface(</span>
-<span class="nc" id="L235">                entry.getValue(),</span>
+<span class="nc" id="L247">            String tsInterface = TypeScriptHelper.generateInterface(</span>
+<span class="nc" id="L248">                entry.getValue(),</span>
                 snowballedTypes,
                 inheritance,
-                reflections
+                reflections,
+                javadoc
             );
-<span class="nc" id="L240">            sb.append(tsInterface);</span>
+<span class="nc" id="L254">            sb.append(tsInterface);</span>
 
-<span class="nc" id="L242">            snowballedTypes.forEach((name, type) -&gt; {</span>
-<span class="nc bnc" id="L243" title="All 2 branches missed.">                if (!extraTypes.containsKey(name)) {</span>
-<span class="nc" id="L244">                    extraTypes.put(name, type);</span>
-<span class="nc" id="L245">                    queue.add(0, new SimpleEntry&lt;&gt;(name, type));</span>
+<span class="nc" id="L256">            snowballedTypes.forEach((name, type) -&gt; {</span>
+<span class="nc bnc" id="L257" title="All 2 branches missed.">                if (!extraTypes.containsKey(name)) {</span>
+<span class="nc" id="L258">                    extraTypes.put(name, type);</span>
+<span class="nc" id="L259">                    queue.add(0, new SimpleEntry&lt;&gt;(name, type));</span>
                 }
-<span class="nc" id="L247">            });</span>
-<span class="nc" id="L248">        }</span>
+<span class="nc" id="L261">            });</span>
+<span class="nc" id="L262">        }</span>
 
-<span class="nc" id="L250">        sb.append(&quot;/**\n&quot;</span>
+<span class="nc" id="L264">        sb.append(&quot;/**\n&quot;</span>
             + &quot; * Some orthopedic tools\n&quot;
             + &quot; */\n\n&quot;
             + &quot;export interface TypeMap {\n  &quot;)
-<span class="nc" id="L254">            .append(</span>
-<span class="nc" id="L255">                inheritance.keySet().stream().map((key)</span>
-<span class="nc" id="L256">                    -&gt; key + &quot;: &quot; + key + &quot;;&quot;)</span>
-<span class="nc" id="L257">                    .collect(Collectors.joining(&quot;\n  &quot;))</span>
+<span class="nc" id="L268">            .append(</span>
+<span class="nc" id="L269">                inheritance.keySet().stream().map((key)</span>
+<span class="nc" id="L270">                    -&gt; key + &quot;: &quot; + key + &quot;;&quot;)</span>
+<span class="nc" id="L271">                    .collect(Collectors.joining(&quot;\n  &quot;))</span>
             )
-<span class="nc" id="L259">            .append(&quot;\n}\n\n&quot;)</span>
-<span class="nc" id="L260">            .append(&quot;const inheritance : {[key: string]: string[]} = {\n&quot;)</span>
-<span class="nc" id="L261">            .append(</span>
-<span class="nc" id="L262">                inheritance.entrySet().stream().map((entry)</span>
-<span class="nc" id="L263">                    -&gt; entry.getKey() + &quot;: [&quot; + entry.getValue().stream()</span>
-<span class="nc" id="L264">                .map(v -&gt; &quot;'&quot; + v + &quot;'&quot;)</span>
-<span class="nc" id="L265">                .collect(Collectors.joining(&quot;, &quot;)) + &quot;]&quot;</span>
-<span class="nc" id="L266">                ).collect(Collectors.joining(&quot;,\n  &quot;)))</span>
-<span class="nc" id="L267">            .append(&quot;\n}\n\n&quot;)</span>
-<span class="nc" id="L268">            .append(&quot;export const entityIs = &lt;T extends keyof TypeMap&gt;(entity: unknown, klass: T)\n&quot;</span>
+<span class="nc" id="L273">            .append(&quot;\n}\n\n&quot;)</span>
+<span class="nc" id="L274">            .append(&quot;const inheritance : {[key: string]: string[]} = {\n&quot;)</span>
+<span class="nc" id="L275">            .append(</span>
+<span class="nc" id="L276">                inheritance.entrySet().stream().map((entry)</span>
+<span class="nc" id="L277">                    -&gt; entry.getKey() + &quot;: [&quot; + entry.getValue().stream()</span>
+<span class="nc" id="L278">                .map(v -&gt; &quot;'&quot; + v + &quot;'&quot;)</span>
+<span class="nc" id="L279">                .collect(Collectors.joining(&quot;, &quot;)) + &quot;]&quot;</span>
+<span class="nc" id="L280">                ).collect(Collectors.joining(&quot;,\n  &quot;)))</span>
+<span class="nc" id="L281">            .append(&quot;\n}\n\n&quot;)</span>
+<span class="nc" id="L282">            .append(&quot;export const entityIs = &lt;T extends keyof TypeMap&gt;(entity: unknown, klass: T)\n&quot;</span>
                 + &quot;    : entity is TypeMap[T] =&gt; {\n&quot;
                 + &quot;\n&quot;
                 + &quot;    if (typeof entity === 'object' &amp;&amp; entity != null) {\n&quot;
@@ -278,27 +292,27 @@ public class Generator {
                 + &quot;    }\n&quot;
                 + &quot;    return false;\n&quot;
                 + &quot;}&quot;)
-<span class="nc" id="L281">            .append(&quot;\n\n\n/**\n&quot;</span>
-<span class="nc" id="L282">                + &quot;* The &quot;).append(clientName).append(&quot; REST client\n&quot;</span>
+<span class="nc" id="L295">            .append(&quot;\n\n\n/**\n&quot;</span>
+<span class="nc" id="L296">                + &quot;* The &quot;).append(clientName).append(&quot; REST client\n&quot;</span>
             + &quot; */\n&quot;
-<span class="nc" id="L284">            + &quot;export const &quot;).append(clientName)</span>
-<span class="nc" id="L285">            .append(&quot; = function (baseUrl: string, errorHandler: (error: unknown) =&gt; void) {&quot;)</span>
-<span class="nc" id="L286">            .append(&quot;\n    return {&quot;)</span>
-<span class="nc" id="L287">            .append(modules)</span>
-<span class="nc" id="L288">            .append(&quot;    }\n&quot;)</span>
-<span class="nc" id="L289">            .append(&quot;}&quot;);</span>
+<span class="nc" id="L298">            + &quot;export const &quot;).append(clientName)</span>
+<span class="nc" id="L299">            .append(&quot; = function (baseUrl: string, errorHandler: (error: unknown) =&gt; void) {&quot;)</span>
+<span class="nc" id="L300">            .append(&quot;\n    return {&quot;)</span>
+<span class="nc" id="L301">            .append(modules)</span>
+<span class="nc" id="L302">            .append(&quot;    }\n&quot;)</span>
+<span class="nc" id="L303">            .append(&quot;}&quot;);</span>
 
-<span class="nc bnc" id="L291" title="All 2 branches missed.">        if (dryRun) {</span>
-<span class="nc" id="L292">            Logger.debug(sb.toString());</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">        if (dryRun) {</span>
+<span class="nc" id="L306">            Logger.debug(sb.toString());</span>
         } else {
-<span class="nc" id="L294">            String srcPath = targetDir + &quot;/src&quot;;</span>
-<span class="nc" id="L295">            writeFile(sb.toString(), srcPath, clientName + &quot;.ts&quot;);</span>
+<span class="nc" id="L308">            String srcPath = targetDir + &quot;/src&quot;;</span>
+<span class="nc" id="L309">            writeFile(sb.toString(), srcPath, clientName + &quot;.ts&quot;);</span>
 
-<span class="nc" id="L297">            writeFile(&quot;export * from './dist/&quot; + clientName + &quot;';&quot;, targetDir, &quot;index.ts&quot;);</span>
-<span class="nc" id="L298">            writeFile(generatePackageDotJson(), targetDir, &quot;package.json&quot;);</span>
-<span class="nc" id="L299">            writeFile(generateTsconfigDotJson(), targetDir, &quot;tsconfig.json&quot;);</span>
+<span class="nc" id="L311">            writeFile(&quot;export * from './dist/&quot; + clientName + &quot;';&quot;, targetDir, &quot;index.ts&quot;);</span>
+<span class="nc" id="L312">            writeFile(generatePackageDotJson(), targetDir, &quot;package.json&quot;);</span>
+<span class="nc" id="L313">            writeFile(generateTsconfigDotJson(), targetDir, &quot;tsconfig.json&quot;);</span>
         }
-<span class="nc" id="L301">    }</span>
+<span class="nc" id="L315">    }</span>
 
     /**
      * Write file to disk.
@@ -310,25 +324,25 @@ public class Generator {
     private void writeFile(String content, String directory, String filename)
         throws MojoFailureException {
         try {
-<span class="nc" id="L313">            Files.createDirectories(java.nio.file.Path.of(directory));</span>
+<span class="nc" id="L327">            Files.createDirectories(java.nio.file.Path.of(directory));</span>
 
-<span class="nc" id="L315">            try (BufferedWriter writer = Files.newBufferedWriter(</span>
-<span class="nc" id="L316">                java.nio.file.Path.of(directory, filename))) {</span>
-<span class="nc" id="L317">                writer.write(content);</span>
-<span class="nc" id="L318">            } catch (IOException ex) {</span>
-<span class="nc bnc" id="L319" title="All 2 branches missed.">                if (Logger.isInit()) {</span>
-<span class="nc" id="L320">                    throw new MojoFailureException(&quot;Failed to write '&quot;</span>
+<span class="nc" id="L329">            try (BufferedWriter writer = Files.newBufferedWriter(</span>
+<span class="nc" id="L330">                java.nio.file.Path.of(directory, filename))) {</span>
+<span class="nc" id="L331">                writer.write(content);</span>
+<span class="nc" id="L332">            } catch (IOException ex) {</span>
+<span class="nc bnc" id="L333" title="All 2 branches missed.">                if (Logger.isInit()) {</span>
+<span class="nc" id="L334">                    throw new MojoFailureException(&quot;Failed to write '&quot;</span>
                         + filename + &quot;' in '&quot; + directory + &quot;'&quot;, ex);
                 }
-<span class="nc" id="L323">            }</span>
+<span class="nc" id="L337">            }</span>
 
-<span class="nc" id="L325">        } catch (IOException ex) {</span>
-<span class="nc bnc" id="L326" title="All 2 branches missed.">            if (Logger.isInit()) {</span>
-<span class="nc" id="L327">                throw new MojoFailureException(&quot;Failed to create package directory &quot;</span>
+<span class="nc" id="L339">        } catch (IOException ex) {</span>
+<span class="nc bnc" id="L340" title="All 2 branches missed.">            if (Logger.isInit()) {</span>
+<span class="nc" id="L341">                throw new MojoFailureException(&quot;Failed to create package directory &quot;</span>
                     + directory, ex);
             }
-<span class="nc" id="L330">        }</span>
-<span class="nc" id="L331">    }</span>
+<span class="nc" id="L344">        }</span>
+<span class="nc" id="L345">    }</span>
 
     /**
      * Convert Java className-like to dash-separated-lower-case version.
@@ -338,11 +352,11 @@ public class Generator {
      * @return eg. my-awesome-rest-client
      */
     private String generateModuleName(String name) {
-<span class="nc" id="L341">        return name</span>
-<span class="nc" id="L342">            .trim()</span>
+<span class="nc" id="L355">        return name</span>
+<span class="nc" id="L356">            .trim()</span>
             // prefix all uppercase char preceded by something with an dash
-<span class="nc" id="L344">            .replaceAll(&quot;(?&lt;!^)[A-Z](?!$)&quot;, &quot;-$0&quot;)</span>
-<span class="nc" id="L345">            .toLowerCase();</span>
+<span class="nc" id="L358">            .replaceAll(&quot;(?&lt;!^)[A-Z](?!$)&quot;, &quot;-$0&quot;)</span>
+<span class="nc" id="L359">            .toLowerCase();</span>
     }
 
     /**
@@ -351,10 +365,10 @@ public class Generator {
      * @return intial content of the TS client
      */
     private String getTsClientTemplate() {
-<span class="nc" id="L354">        String tsConfig = FileHelper.readFile(&quot;templates/client.ts&quot;);</span>
-<span class="nc" id="L355">        return tsConfig.replaceAll(</span>
+<span class="nc" id="L368">        String tsConfig = FileHelper.readFile(&quot;templates/client.ts&quot;);</span>
+<span class="nc" id="L369">        return tsConfig.replaceAll(</span>
             &quot;\\{\\{MODULE_NAME\\}\\}&quot;,
-<span class="nc" id="L357">            generateModuleName(clientName)</span>
+<span class="nc" id="L371">            generateModuleName(clientName)</span>
         );
     }
 
@@ -364,10 +378,10 @@ public class Generator {
      * @return content of package.json
      */
     private String generatePackageDotJson() {
-<span class="nc" id="L367">        String tsConfig = FileHelper.readFile(&quot;templates/package.json&quot;);</span>
-<span class="nc" id="L368">        return tsConfig.replaceAll(</span>
+<span class="nc" id="L381">        String tsConfig = FileHelper.readFile(&quot;templates/package.json&quot;);</span>
+<span class="nc" id="L382">        return tsConfig.replaceAll(</span>
             &quot;\\{\\{MODULE_NAME\\}\\}&quot;,
-<span class="nc" id="L370">            generateModuleName(clientName)</span>
+<span class="nc" id="L384">            generateModuleName(clientName)</span>
         );
     }
 
@@ -377,8 +391,8 @@ public class Generator {
      * @return content of package.json
      */
     private String generateTsconfigDotJson() {
-<span class="nc" id="L380">        String tsConfig = FileHelper.readFile(&quot;templates/tsconfig.json&quot;);</span>
-<span class="nc" id="L381">        return tsConfig.replaceAll(&quot;\\{\\{CLIENT_NAME\\}\\}&quot;, this.clientName);</span>
+<span class="nc" id="L394">        String tsConfig = FileHelper.readFile(&quot;templates/tsconfig.json&quot;);</span>
+<span class="nc" id="L395">        return tsConfig.replaceAll(&quot;\\{\\{CLIENT_NAME\\}\\}&quot;, this.clientName);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

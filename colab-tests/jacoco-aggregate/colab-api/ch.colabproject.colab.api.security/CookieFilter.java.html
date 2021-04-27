@@ -24,20 +24,21 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Intercept all request to the API. Make sure COLAB_SESSION_ID exists
- *
- * With a priority of 1, this {@link PreMatching @PreMatching} filter is the very first to be executed
+ * &lt;p&gt;
+ * With a priority of 1, this {@link PreMatching @PreMatching} filter is the very first to be
+ * executed
  *
  * @author maxence
  */
 @Provider
 @Priority(1)
 @PreMatching
-<span class="fc" id="L35">public class CookieFilter implements ContainerRequestFilter, ContainerResponseFilter {</span>
+<span class="fc" id="L36">public class CookieFilter implements ContainerRequestFilter, ContainerResponseFilter {</span>
 
     /**
      * Logger
      */
-<span class="fc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(CookieFilter.class);</span>
+<span class="fc" id="L41">    private static final Logger logger = LoggerFactory.getLogger(CookieFilter.class);</span>
 
     /**
      * Cluster-wide session cache.
@@ -65,15 +66,15 @@ import org.slf4j.LoggerFactory;
      */
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-<span class="fc" id="L68">        Cookie cookie = requestContext.getCookies().get(COOKIE_NAME);</span>
-<span class="fc" id="L69">        String sessionId = null;</span>
-<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (cookie != null) {</span>
-<span class="fc" id="L71">            sessionId = cookie.getValue();</span>
-<span class="fc" id="L72">            logger.trace(&quot;Request received with session id {}&quot;, sessionId);</span>
+<span class="fc" id="L69">        Cookie cookie = requestContext.getCookies().get(COOKIE_NAME);</span>
+<span class="fc" id="L70">        String sessionId = null;</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (cookie != null) {</span>
+<span class="fc" id="L72">            sessionId = cookie.getValue();</span>
+<span class="fc" id="L73">            logger.trace(&quot;Request received with session id {}&quot;, sessionId);</span>
         }
-<span class="fc" id="L74">        HttpSession httpSession = sessionManager.getOrCreate(sessionId);</span>
-<span class="fc" id="L75">        requestManager.setHttpSession(httpSession);</span>
-<span class="fc" id="L76">    }</span>
+<span class="fc" id="L75">        HttpSession httpSession = sessionManager.getOrCreate(sessionId);</span>
+<span class="fc" id="L76">        requestManager.setHttpSession(httpSession);</span>
+<span class="fc" id="L77">    }</span>
 
     /**
      * Intercept response, save httpSession in sessions cache and make sure set-cookie header is set
@@ -86,14 +87,13 @@ import org.slf4j.LoggerFactory;
     @Override
     public void filter(ContainerRequestContext requestContext,
         ContainerResponseContext responseContext) throws IOException {
-<span class="fc" id="L89">        HttpSession session = requestManager.getHttpSession();</span>
+<span class="fc" id="L90">        HttpSession session = requestManager.getHttpSession();</span>
 
-<span class="fc" id="L91">        session.keepAlive();</span>
-<span class="fc" id="L92">        sessionManager.save(session);</span>
+<span class="fc" id="L92">        session.keepAlive();</span>
+<span class="fc" id="L93">        sessionManager.save(session);</span>
 
-<span class="fc" id="L94">        NewCookie sessionCookie = new NewCookie(COOKIE_NAME, session.getSessionId(),</span>
+<span class="fc" id="L95">        NewCookie sessionCookie = new NewCookie(COOKIE_NAME, session.getSessionId(),</span>
             &quot;/&quot;, null, null, -1, true, true);
-
 
 <span class="fc" id="L98">        logger.trace(&quot;Request completed with session id {}&quot;, sessionCookie);</span>
 <span class="fc" id="L99">        responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);</span>

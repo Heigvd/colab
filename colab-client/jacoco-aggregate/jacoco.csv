@@ -92,14 +92,14 @@ colab-client/colab-api,ch.colabproject.colab.api.ws.message,WsUpdateMessage,33,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.message,WsMessage,3,0,0,0,1,0,1,0,1,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,HelpMojo,802,0,110,0,159,0,71,0,16,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,Logger,49,0,8,0,18,0,11,0,7,0
-colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,TypeScriptHelper,535,0,88,0,144,0,58,0,14,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,TypeScriptHelper,580,0,92,0,155,0,60,0,14,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,FileHelper,24,0,0,0,7,0,2,0,2,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,GeneratorPlugin,70,0,2,0,20,0,5,0,4,0
-colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,Generator,515,0,20,0,136,0,31,0,21,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,Generator,529,0,20,0,137,0,31,0,21,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestClient.CookieFilter,49,0,4,0,14,0,5,0,3,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,ServerException,8,0,0,0,4,0,2,0,2,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,Param,24,0,0,0,10,0,7,0,7,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,ClientException,8,0,0,0,4,0,2,0,2,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestClient,232,0,24,0,47,0,22,0,10,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestMethod,160,0,2,0,52,0,26,0,25,0
-colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestController,1352,0,86,0,318,0,73,0,30,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestController,1518,0,92,0,358,0,83,0,37,0
