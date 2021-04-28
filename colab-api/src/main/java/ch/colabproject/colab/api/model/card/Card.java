@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 /**
@@ -36,8 +38,8 @@ import javax.persistence.Transient;
 @Entity
 @NamedQuery(name = "Card.findAll", query = "SELECT c FROM Card c")
 @NamedQuery(
-        name = "Card.findCardByParent",
-        query = "SELECT c FROM Card c JOIN c.parent p WHERE p.id = :parentId")
+    name = "Card.findCardByParent",
+    query = "SELECT c FROM Card c JOIN c.parent p WHERE p.id = :parentId")
 public class Card implements ColabEntity {
 
     /**
@@ -78,6 +80,19 @@ public class Card implements ColabEntity {
      */
     @Transient
     private Long cardDefinitionId;
+
+    /**
+     * The project this card is root of. may be null
+     */
+    @OneToOne(mappedBy = "rootCard")
+    @JsonbTransient
+    private Project rootCardProject;
+
+    /**
+     * The id of the project for root cards (serialization sugar)
+     */
+    @Transient
+    private Long rootCardProjectId;
 
     /**
      * The parent card content
@@ -227,6 +242,46 @@ public class Card implements ColabEntity {
     }
 
     /**
+     * Get the project this card is root of.
+     *
+     * @return the project
+     */
+    public Project getRootCardProject() {
+        return rootCardProject;
+    }
+
+    /**
+     * Set the project this card is the root of
+     *
+     * @param rootCardProject the project
+     */
+    public void setRootCardProject(Project rootCardProject) {
+        this.rootCardProject = rootCardProject;
+    }
+
+    /**
+     * get the id of the rootCardProject. To be sent to client.
+     *
+     * @return the id of the rootCardProject
+     */
+    public Long getRootCardProjectId() {
+        if (this.rootCardProject != null) {
+            return rootCardProject.getId();
+        } else {
+            return rootCardProjectId;
+        }
+    }
+
+    /**
+     * set the id of the rootCard project. For serialization only.
+     *
+     * @param rootCardProjectId the id of the root-card project
+     */
+    public void setRootCardProjectId(Long rootCardProjectId) {
+        this.rootCardProjectId = rootCardProjectId;
+    }
+
+    /**
      * @return the list of variants of card content
      */
     public List<CardContent> getContentVariants() {
@@ -260,9 +315,18 @@ public class Card implements ColabEntity {
 
     @Override
     public Set<WebsocketChannel> getChannels() {
-        if (this.cardDefinition != null) {
+        if (this.rootCardProject != null) {
+            // this card is a root card, propagate through the project channels
+            return this.rootCardProject.getChannels();
+        } else if (this.parent!= null) {
+            // this card is a sub-card, propagate through its parent channels
+            return this.rootCardProject.getChannels();
+        } else if (this.cardDefinition != null) {
+            // such a card shoudln't exist...
+            // Lorem-ipsum cards for global cardDefinitions ???
             return this.cardDefinition.getChannels();
         } else {
+            // such an orphan card shoudln't exist...
             return Set.of();
         }
     }
@@ -281,7 +345,7 @@ public class Card implements ColabEntity {
     @Override
     public String toString() {
         return "Card{" + "id=" + id + ", index=" + index + ", color=" + color + ", cardDefId="
-                + getCardDefinitionId() + ", parentId=" + getParentId() + "}";
+            + getCardDefinitionId() + ", parentId=" + getParentId() + "}";
     }
 
 }

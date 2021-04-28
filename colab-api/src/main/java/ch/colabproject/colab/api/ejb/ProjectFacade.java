@@ -79,6 +79,7 @@ public class ProjectFacade {
         logger.debug("Create new project: {}", project);
         Card rootCard = cardFacade.initNewRootCard();
         project.setRootCard(rootCard);
+        rootCard.setRootCardProject(project);
 
         User user = securityFacade.assertAndGetCurrentUser();
         this.addMember(project, user);
