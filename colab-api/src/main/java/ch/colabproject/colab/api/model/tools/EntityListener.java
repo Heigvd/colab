@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.model.tools;
 
 import ch.colabproject.colab.api.ejb.TransactionManager;
-import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import javax.inject.Inject;
 import javax.persistence.PostPersist;

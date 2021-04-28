@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.exceptions.ColabRollbackException;
-import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.ws.WebsocketHelper;

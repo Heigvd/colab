@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.api.ws;
 
-import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;

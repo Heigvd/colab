@@ -138,15 +138,20 @@ public class ProjectControllerTest extends AbstractArquillianTest {
 
         // Goulash receives the project, the user (ie himself) and the teamMmeber linking the project to the user
         WsUpdateMessage wsProjectUpdate = TestHelper.waitForMessagesAndAssert(wsGoulashClient, 1, 5, WsUpdateMessage.class).get(0);
-        Assertions.assertEquals(3, wsProjectUpdate.getUpdated().size());
+        Assertions.assertEquals(5, wsProjectUpdate.getUpdated().size(), "Got " + wsProjectUpdate.getUpdated());
 
         Project project = TestHelper.findFirst(wsProjectUpdate.getUpdated(), Project.class);
         TeamMember member = TestHelper.findFirst(wsProjectUpdate.getUpdated(), TeamMember.class);
         User wsUpdatedUser = TestHelper.findFirst(wsProjectUpdate.getUpdated(), User.class);
+        Card wsUpdatedRoot = TestHelper.findFirst(wsProjectUpdate.getUpdated(), Card.class);
+        CardContent wsUpdatedRootContent = TestHelper.findFirst(wsProjectUpdate.getUpdated(), CardContent.class);
 
         Assertions.assertEquals(projectId, project.getId());
         Assertions.assertEquals(projectId, member.getProjectId());
         Assertions.assertEquals(member.getUserId(), wsUpdatedUser.getId());
+        Assertions.assertNotNull(wsUpdatedRoot.getId());
+        Assertions.assertEquals(projectId, wsUpdatedRoot.getRootCardProjectId());
+        Assertions.assertEquals(wsUpdatedRoot.getId(), wsUpdatedRootContent.getCardId());
 
         // user is a lonely team member
         List<TeamMember> members = client.projectController.getMembers(project.getId());
