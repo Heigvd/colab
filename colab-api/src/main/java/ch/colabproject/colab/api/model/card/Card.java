@@ -321,7 +321,7 @@ public class Card implements ColabEntity, WithWebsocketChannels {
             return this.rootCardProject.getChannels();
         } else if (this.parent!= null) {
             // this card is a sub-card, propagate through its parent channels
-            return this.rootCardProject.getChannels();
+            return this.parent.getChannels();
         } else if (this.cardDefinition != null) {
             // such a card shoudln't exist...
             // Lorem-ipsum cards for global cardDefinitions ???
