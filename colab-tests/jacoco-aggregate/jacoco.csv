@@ -108,8 +108,8 @@ colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.TokenControlle
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardDefControllerClientImpl,22,127,0,0,3,18,1,6,1,6
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserControllerClientImpl,89,314,0,0,14,49,3,15,3,15
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectControllerClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectControllerClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient,0,55,0,0,0,10,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,JsonbProvider,0,15,0,0,0,5,0,3,0,3
