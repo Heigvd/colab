@@ -61,7 +61,7 @@ import java.util.stream.Collectors;
 <span class="fc" id="L61">            channels.addAll(</span>
 <span class="fc" id="L62">                this.project.getTeamMembers().stream()</span>
                     // filter out pending invitation
-<span class="fc bfc" id="L64" title="All 2 branches covered.">                    .filter(member -&gt; member.getUser() != null)</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">                    .filter(member -&gt; member.getUser() != null)</span>
 <span class="fc" id="L65">                    .map(member -&gt; member.getUser().getEffectiveChannel())</span>
 <span class="fc" id="L66">                    .collect(Collectors.toSet()));</span>
         }

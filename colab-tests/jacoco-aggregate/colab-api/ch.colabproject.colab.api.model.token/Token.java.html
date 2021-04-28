@@ -231,20 +231,14 @@ import javax.validation.constraints.NotNull;
     }
 
     @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
-        // never send tokens by websocket
-<span class="fc" id="L236">        return Set.of();</span>
-    }
-
-    @Override
     public int hashCode() {
-<span class="fc" id="L241">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L235">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L247">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L241">        return EntityHelper.equals(this, obj);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

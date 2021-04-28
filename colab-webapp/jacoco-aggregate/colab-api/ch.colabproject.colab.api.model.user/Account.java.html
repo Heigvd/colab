@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.model.user;
 
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
@@ -33,7 +34,7 @@ import javax.persistence.Transient;
 // Having one table per subclass allows subclasses to defined their own indexes and constraints
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-<span class="nc" id="L36">public abstract class Account implements ColabEntity {</span>
+<span class="nc" id="L37">public abstract class Account implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -70,7 +71,7 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L73">        return id;</span>
+<span class="nc" id="L74">        return id;</span>
     }
 
     /**
@@ -79,14 +80,14 @@ import javax.persistence.Transient;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L82">        this.id = id;</span>
-<span class="nc" id="L83">    }</span>
+<span class="nc" id="L83">        this.id = id;</span>
+<span class="nc" id="L84">    }</span>
 
     /**
      * @return the user
      */
     public User getUser() {
-<span class="nc" id="L89">        return user;</span>
+<span class="nc" id="L90">        return user;</span>
     }
 
     /**
@@ -95,8 +96,8 @@ import javax.persistence.Transient;
      * @param user user who owns this account
      */
     public void setUser(User user) {
-<span class="nc" id="L98">        this.user = user;</span>
-<span class="nc" id="L99">    }</span>
+<span class="nc" id="L99">        this.user = user;</span>
+<span class="nc" id="L100">    }</span>
 
     /**
      * Return the id of the account owner
@@ -104,10 +105,10 @@ import javax.persistence.Transient;
      * @return id of the user
      */
     public Long getUserId() {
-<span class="nc bnc" id="L107" title="All 2 branches missed.">        if (this.getUser() != null) {</span>
-<span class="nc" id="L108">            return getUser().getId();</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (this.getUser() != null) {</span>
+<span class="nc" id="L109">            return getUser().getId();</span>
         } else {
-<span class="nc" id="L110">            return userId;</span>
+<span class="nc" id="L111">            return userId;</span>
         }
     }
 
@@ -117,8 +118,8 @@ import javax.persistence.Transient;
      * @param id if of the user
      */
     public void setUserId(Long id) {
-<span class="nc" id="L120">        this.userId = id;</span>
-<span class="nc" id="L121">    }</span>
+<span class="nc" id="L121">        this.userId = id;</span>
+<span class="nc" id="L122">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -126,22 +127,22 @@ import javax.persistence.Transient;
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (this.user != null) {</span>
-<span class="nc" id="L130">            return Set.of(this.user.getEffectiveChannel(), new AdminChannel());</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        if (this.user != null) {</span>
+<span class="nc" id="L131">            return Set.of(this.user.getEffectiveChannel(), new AdminChannel());</span>
         } else {
-<span class="nc" id="L132">            return Set.of(new AdminChannel());</span>
+<span class="nc" id="L133">            return Set.of(new AdminChannel());</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L138">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L139">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L144">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L145">        return EntityHelper.equals(this, obj);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

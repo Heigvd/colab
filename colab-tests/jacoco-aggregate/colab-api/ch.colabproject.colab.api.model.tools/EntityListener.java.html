@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.tools;
 
 import ch.colabproject.colab.api.ejb.TransactionManager;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import javax.inject.Inject;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
@@ -20,10 +21,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author maxence
  */
-<span class="fc" id="L23">public class EntityListener {</span>
+<span class="fc" id="L24">public class EntityListener {</span>
 
     /** logger */
-<span class="fc" id="L26">    private static final Logger logger = LoggerFactory.getLogger(EntityListener.class);</span>
+<span class="fc" id="L27">    private static final Logger logger = LoggerFactory.getLogger(EntityListener.class);</span>
 
     /**
      * RequestManager
@@ -39,11 +40,11 @@ import org.slf4j.LoggerFactory;
     @PostPersist
     @PostUpdate
     public void onUpdate(Object o) {
-<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if (o instanceof ColabEntity) {</span>
-<span class="fc" id="L43">            logger.trace(&quot;Update {}&quot;, o);</span>
-<span class="fc" id="L44">            transactionManager.registerUpdate((ColabEntity) o);</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (o instanceof WithWebsocketChannels) {</span>
+<span class="fc" id="L44">            logger.trace(&quot;Update {}&quot;, o);</span>
+<span class="fc" id="L45">            transactionManager.registerUpdate((WithWebsocketChannels) o);</span>
         }
-<span class="fc" id="L46">    }</span>
+<span class="fc" id="L47">    }</span>
 
     /**
      * Intercept object just before their deletion
@@ -52,10 +53,10 @@ import org.slf4j.LoggerFactory;
      */
     @PreRemove
     public void onDestroy(Object o) {
-<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (o instanceof ColabEntity) {</span>
-<span class="fc" id="L56">            logger.trace(&quot;Destroy {}&quot;, o);</span>
-<span class="fc" id="L57">            transactionManager.registerDelete((ColabEntity) o);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (o instanceof WithWebsocketChannels) {</span>
+<span class="fc" id="L57">            logger.trace(&quot;Destroy {}&quot;, o);</span>
+<span class="fc" id="L58">            transactionManager.registerDelete((WithWebsocketChannels) o);</span>
         }
-<span class="fc" id="L59">    }</span>
+<span class="fc" id="L60">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

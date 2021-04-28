@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.ws;
 
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
@@ -35,13 +36,13 @@ import org.slf4j.LoggerFactory;
 public class WebsocketHelper {
 
     /** logger */
-<span class="fc" id="L38">    private static final Logger logger = LoggerFactory.getLogger(WebsocketHelper.class);</span>
+<span class="fc" id="L39">    private static final Logger logger = LoggerFactory.getLogger(WebsocketHelper.class);</span>
 
     /**
      * never-called private constructor
      */
-<span class="nc" id="L43">    private WebsocketHelper() {</span>
-<span class="nc" id="L44">        throw new UnsupportedOperationException(</span>
+<span class="nc" id="L44">    private WebsocketHelper() {</span>
+<span class="nc" id="L45">        throw new UnsupportedOperationException(</span>
             &quot;This is a utility class and cannot be instantiated&quot;);
     }
 
@@ -57,25 +58,25 @@ public class WebsocketHelper {
         Map&lt;WebsocketEffectiveChannel, List&lt;WsMessage&gt;&gt; byChannels,
         WebsocketEffectiveChannel key
     ) {
-<span class="fc" id="L60">        logger.trace(&quot;GetOrCreate WsUpdateMessge for channel {}&quot;, key);</span>
-<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (!byChannels.containsKey(key)) {</span>
-<span class="fc" id="L62">            logger.trace(&quot; -&gt; create channel {}&quot;, key);</span>
-<span class="fc" id="L63">            byChannels.put(key, List.of(new WsUpdateMessage()));</span>
-<span class="fc" id="L64">            return (WsUpdateMessage) byChannels.get(key).get(0);</span>
+<span class="fc" id="L61">        logger.trace(&quot;GetOrCreate WsUpdateMessge for channel {}&quot;, key);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (!byChannels.containsKey(key)) {</span>
+<span class="fc" id="L63">            logger.trace(&quot; -&gt; create channel {}&quot;, key);</span>
+<span class="fc" id="L64">            byChannels.put(key, List.of(new WsUpdateMessage()));</span>
+<span class="fc" id="L65">            return (WsUpdateMessage) byChannels.get(key).get(0);</span>
         } else {
-<span class="fc" id="L66">            List&lt;WsMessage&gt; get = byChannels.get(key);</span>
-<span class="fc" id="L67">            logger.trace(&quot; -&gt; use existing channel {} := {}&quot;, key, get);</span>
-<span class="fc" id="L68">            Optional&lt;WsMessage&gt; find = get.stream()</span>
-<span class="fc" id="L69">                .filter(message -&gt; message instanceof WsUpdateMessage)</span>
-<span class="fc" id="L70">                .findFirst();</span>
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">            if (find.isPresent()) {</span>
-<span class="fc" id="L72">                logger.trace(&quot;   -&gt; use existing message {}&quot;, find.get());</span>
-<span class="fc" id="L73">                return (WsUpdateMessage) find.get();</span>
+<span class="fc" id="L67">            List&lt;WsMessage&gt; get = byChannels.get(key);</span>
+<span class="fc" id="L68">            logger.trace(&quot; -&gt; use existing channel {} := {}&quot;, key, get);</span>
+<span class="fc" id="L69">            Optional&lt;WsMessage&gt; find = get.stream()</span>
+<span class="fc" id="L70">                .filter(message -&gt; message instanceof WsUpdateMessage)</span>
+<span class="fc" id="L71">                .findFirst();</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">            if (find.isPresent()) {</span>
+<span class="fc" id="L73">                logger.trace(&quot;   -&gt; use existing message {}&quot;, find.get());</span>
+<span class="fc" id="L74">                return (WsUpdateMessage) find.get();</span>
             } else {
-<span class="nc" id="L75">                logger.trace(&quot;   -&gt; create emtpy message&quot;);</span>
-<span class="nc" id="L76">                WsUpdateMessage wsUpdateMessage = new WsUpdateMessage();</span>
-<span class="nc" id="L77">                get.add(wsUpdateMessage);</span>
-<span class="nc" id="L78">                return wsUpdateMessage;</span>
+<span class="nc" id="L76">                logger.trace(&quot;   -&gt; create emtpy message&quot;);</span>
+<span class="nc" id="L77">                WsUpdateMessage wsUpdateMessage = new WsUpdateMessage();</span>
+<span class="nc" id="L78">                get.add(wsUpdateMessage);</span>
+<span class="nc" id="L79">                return wsUpdateMessage;</span>
             }
         }
     }
@@ -89,19 +90,19 @@ public class WebsocketHelper {
      */
     private static void add(Map&lt;WebsocketEffectiveChannel, List&lt;WsMessage&gt;&gt; byChannels,
         WebsocketEffectiveChannel channel,
-        ColabEntity entity) {
-<span class="fc" id="L93">        Collection&lt;ColabEntity&gt; set</span>
-<span class="fc" id="L94">            = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel).getUpdated();</span>
-<span class="fc" id="L95">        logger.trace(&quot;Add {} to updated set {}&quot;, entity, set);</span>
-<span class="fc" id="L96">        set.add(entity);</span>
-<span class="pc bpc" id="L97" title="1 of 2 branches missed.">        if (logger.isTraceEnabled()) {</span>
-<span class="nc" id="L98">            set.forEach(e -&gt; {</span>
-<span class="nc" id="L99">                logger.trace(&quot;Entity: {}&quot;, e);</span>
-<span class="nc" id="L100">                logger.trace(&quot;Entity hashCode: {}&quot;, e.hashCode());</span>
-<span class="nc" id="L101">                logger.trace(&quot;Entity equals new: {}&quot;, e.equals(entity));</span>
-<span class="nc" id="L102">            });</span>
+        WithWebsocketChannels entity) {
+<span class="fc" id="L94">        Collection&lt;WithWebsocketChannels&gt; set</span>
+<span class="fc" id="L95">            = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel).getUpdated();</span>
+<span class="fc" id="L96">        logger.trace(&quot;Add {} to updated set {}&quot;, entity, set);</span>
+<span class="fc" id="L97">        set.add(entity);</span>
+<span class="pc bpc" id="L98" title="1 of 2 branches missed.">        if (logger.isTraceEnabled()) {</span>
+<span class="nc" id="L99">            set.forEach(e -&gt; {</span>
+<span class="nc" id="L100">                logger.trace(&quot;Entity: {}&quot;, e);</span>
+<span class="nc" id="L101">                logger.trace(&quot;Entity hashCode: {}&quot;, e.hashCode());</span>
+<span class="nc" id="L102">                logger.trace(&quot;Entity equals new: {}&quot;, e.equals(entity));</span>
+<span class="nc" id="L103">            });</span>
         }
-<span class="fc" id="L104">    }</span>
+<span class="fc" id="L105">    }</span>
 
     /**
      * Add index entry to the set identified by the channel.
@@ -113,11 +114,11 @@ public class WebsocketHelper {
     private static void add(Map&lt;WebsocketEffectiveChannel, List&lt;WsMessage&gt;&gt; byChannels,
         WebsocketEffectiveChannel channel,
         IndexEntry entry) {
-<span class="fc" id="L116">        Collection&lt;IndexEntry&gt; set</span>
-<span class="fc" id="L117">            = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel).getDeleted();</span>
-<span class="fc" id="L118">        logger.trace(&quot;Add {} to deleted set {}&quot;, entry, set);</span>
-<span class="fc" id="L119">        set.add(entry);</span>
-<span class="fc" id="L120">    }</span>
+<span class="fc" id="L117">        Collection&lt;IndexEntry&gt; set</span>
+<span class="fc" id="L118">            = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel).getDeleted();</span>
+<span class="fc" id="L119">        logger.trace(&quot;Add {} to deleted set {}&quot;, entry, set);</span>
+<span class="fc" id="L120">        set.add(entry);</span>
+<span class="fc" id="L121">    }</span>
 
     /**
      * Resolve all channels to a list of effective channels, then apply then action of each distinct
@@ -133,28 +134,28 @@ public class WebsocketHelper {
         UserDao userDao,
         Consumer&lt;WebsocketEffectiveChannel&gt; action
     ) {
-<span class="fc" id="L136">        logger.trace(&quot;Flatten Channels {}&quot;, channels);</span>
-<span class="fc" id="L137">        channels.stream().flatMap(channel -&gt; {</span>
-<span class="fc bfc" id="L138" title="All 2 branches covered.">            if (channel instanceof WebsocketEffectiveChannel) {</span>
-<span class="fc" id="L139">                logger.trace(&quot; -&gt; {}&quot;, channel);</span>
-<span class="fc" id="L140">                return Stream.of((WebsocketEffectiveChannel) channel);</span>
-<span class="pc bpc" id="L141" title="1 of 2 branches missed.">            } else if (channel instanceof WebsocketMetaChannel) {</span>
-<span class="fc" id="L142">                Set&lt;WebsocketEffectiveChannel&gt; resolved</span>
-<span class="fc" id="L143">                    = ((WebsocketMetaChannel) channel).resolve(userDao);</span>
-<span class="pc bpc" id="L144" title="1 of 2 branches missed.">                if (logger.isTraceEnabled()) {</span>
-<span class="nc" id="L145">                    logger.trace(&quot; -&gt; {}&quot;, resolved);</span>
+<span class="fc" id="L137">        logger.trace(&quot;Flatten Channels {}&quot;, channels);</span>
+<span class="fc" id="L138">        channels.stream().flatMap(channel -&gt; {</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">            if (channel instanceof WebsocketEffectiveChannel) {</span>
+<span class="fc" id="L140">                logger.trace(&quot; -&gt; {}&quot;, channel);</span>
+<span class="fc" id="L141">                return Stream.of((WebsocketEffectiveChannel) channel);</span>
+<span class="pc bpc" id="L142" title="1 of 2 branches missed.">            } else if (channel instanceof WebsocketMetaChannel) {</span>
+<span class="fc" id="L143">                Set&lt;WebsocketEffectiveChannel&gt; resolved</span>
+<span class="fc" id="L144">                    = ((WebsocketMetaChannel) channel).resolve(userDao);</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">                if (logger.isTraceEnabled()) {</span>
+<span class="nc" id="L146">                    logger.trace(&quot; -&gt; {}&quot;, resolved);</span>
                 }
-<span class="fc" id="L147">                return resolved.stream();</span>
+<span class="fc" id="L148">                return resolved.stream();</span>
             } else {
-<span class="nc" id="L149">                logger.warn(&quot; unknown channel type: {}&quot;, channel);</span>
-<span class="nc" id="L150">                return Stream.of();</span>
+<span class="nc" id="L150">                logger.warn(&quot; unknown channel type: {}&quot;, channel);</span>
+<span class="nc" id="L151">                return Stream.of();</span>
             }
-<span class="fc" id="L152">        }).distinct()</span>
-<span class="fc" id="L153">            .forEach(channel -&gt; {</span>
-<span class="fc" id="L154">                logger.trace(&quot; distinct: {}&quot;, channel);</span>
-<span class="fc" id="L155">                action.accept(channel);</span>
-<span class="fc" id="L156">            });</span>
-<span class="fc" id="L157">    }</span>
+<span class="fc" id="L153">        }).distinct()</span>
+<span class="fc" id="L154">            .forEach(channel -&gt; {</span>
+<span class="fc" id="L155">                logger.trace(&quot; distinct: {}&quot;, channel);</span>
+<span class="fc" id="L156">                action.accept(channel);</span>
+<span class="fc" id="L157">            });</span>
+<span class="fc" id="L158">    }</span>
 
     /**
      * Prepare all WsUpdateMessage.
@@ -169,27 +170,27 @@ public class WebsocketHelper {
      */
     public static PrecomputedWsMessages prepareWsMessage(
         UserDao userDao,
-        Set&lt;ColabEntity&gt; updated,
+        Set&lt;WithWebsocketChannels&gt; updated,
         Set&lt;IndexEntry&gt; deleted
     ) throws EncodeException {
-<span class="fc" id="L175">        Map&lt;WebsocketEffectiveChannel, List&lt;WsMessage&gt;&gt; messagesByChannel = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L176">        logger.debug(&quot;Prepare WsMessage. Update:{}; Deleted:{}&quot;, updated, deleted);</span>
+<span class="fc" id="L176">        Map&lt;WebsocketEffectiveChannel, List&lt;WsMessage&gt;&gt; messagesByChannel = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L177">        logger.debug(&quot;Prepare WsMessage. Update:{}; Deleted:{}&quot;, updated, deleted);</span>
 
-<span class="fc" id="L178">        updated.forEach(entity -&gt; {</span>
-<span class="fc" id="L179">            logger.trace(&quot;Process updated entity {}&quot;, entity);</span>
-<span class="fc" id="L180">            forEachDistinctEffectiveChannel(entity.getChannels(), userDao, channel -&gt; {</span>
-<span class="fc" id="L181">                add(messagesByChannel, channel, entity);</span>
-<span class="fc" id="L182">            });</span>
-<span class="fc" id="L183">        });</span>
+<span class="fc" id="L179">        updated.forEach(entity -&gt; {</span>
+<span class="fc" id="L180">            logger.trace(&quot;Process updated entity {}&quot;, entity);</span>
+<span class="fc" id="L181">            forEachDistinctEffectiveChannel(entity.getChannels(), userDao, channel -&gt; {</span>
+<span class="fc" id="L182">                add(messagesByChannel, channel, entity);</span>
+<span class="fc" id="L183">            });</span>
+<span class="fc" id="L184">        });</span>
 
-<span class="fc" id="L185">        deleted.forEach(entity -&gt; {</span>
-<span class="fc" id="L186">            logger.trace(&quot;Process deleted entry {}&quot;, entity);</span>
-<span class="fc" id="L187">            forEachDistinctEffectiveChannel(entity.getChannels(), userDao, channel -&gt; {</span>
-<span class="fc" id="L188">                add(messagesByChannel, channel, entity);</span>
-<span class="fc" id="L189">            });</span>
-<span class="fc" id="L190">        });</span>
+<span class="fc" id="L186">        deleted.forEach(entity -&gt; {</span>
+<span class="fc" id="L187">            logger.trace(&quot;Process deleted entry {}&quot;, entity);</span>
+<span class="fc" id="L188">            forEachDistinctEffectiveChannel(entity.getChannels(), userDao, channel -&gt; {</span>
+<span class="fc" id="L189">                add(messagesByChannel, channel, entity);</span>
+<span class="fc" id="L190">            });</span>
+<span class="fc" id="L191">        });</span>
 
-<span class="fc" id="L192">        return PrecomputedWsMessages.build(messagesByChannel);</span>
+<span class="fc" id="L193">        return PrecomputedWsMessages.build(messagesByChannel);</span>
     }
 
     /**
@@ -207,13 +208,13 @@ public class WebsocketHelper {
         UserDao userDao, WebsocketChannel channel, WsMessage message
     ) throws EncodeException {
 
-<span class="fc" id="L210">        Map&lt;WebsocketEffectiveChannel, List&lt;WsMessage&gt;&gt; messagesByChannel = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L211">        Map&lt;WebsocketEffectiveChannel, List&lt;WsMessage&gt;&gt; messagesByChannel = new HashMap&lt;&gt;();</span>
 
-<span class="fc" id="L212">        forEachDistinctEffectiveChannel(Set.of(channel), userDao, (effectiveChannel) -&gt; {</span>
-<span class="fc" id="L213">            messagesByChannel.put(effectiveChannel, List.of(message));</span>
-<span class="fc" id="L214">        });</span>
+<span class="fc" id="L213">        forEachDistinctEffectiveChannel(Set.of(channel), userDao, (effectiveChannel) -&gt; {</span>
+<span class="fc" id="L214">            messagesByChannel.put(effectiveChannel, List.of(message));</span>
+<span class="fc" id="L215">        });</span>
 
-<span class="fc" id="L216">        return PrecomputedWsMessages.build(messagesByChannel);</span>
+<span class="fc" id="L217">        return PrecomputedWsMessages.build(messagesByChannel);</span>
     }
 
 }

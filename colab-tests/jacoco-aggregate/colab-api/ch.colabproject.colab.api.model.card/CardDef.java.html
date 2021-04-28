@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
@@ -36,7 +37,7 @@ import javax.persistence.Transient;
 @NamedQuery(
         name = &quot;CardDef.findCardDefByProject&quot;,
         query = &quot;SELECT c FROM CardDef c JOIN c.project p WHERE p.id = :projectId&quot;)
-<span class="fc" id="L39">public class CardDef implements ColabEntity {</span>
+<span class="fc" id="L40">public class CardDef implements ColabEntity, WithWebsocketChannels {</span>
 
     /**
      * Serial version UID
@@ -103,57 +104,57 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L106">        return id;</span>
+<span class="fc" id="L107">        return id;</span>
     }
 
     /**
      * @param id the cardDef ID
      */
     public void setId(Long id) {
-<span class="fc" id="L113">        this.id = id;</span>
-<span class="fc" id="L114">    }</span>
+<span class="fc" id="L114">        this.id = id;</span>
+<span class="fc" id="L115">    }</span>
 
     /**
      * @return the unique identifier
      */
     public String getUniqueId() {
-<span class="fc" id="L120">        return uniqueId;</span>
+<span class="fc" id="L121">        return uniqueId;</span>
     }
 
     /**
      * @param uniqueId the unique identifier
      */
     public void setUniqueId(String uniqueId) {
-<span class="nc" id="L127">        this.uniqueId = uniqueId;</span>
-<span class="nc" id="L128">    }</span>
+<span class="nc" id="L128">        this.uniqueId = uniqueId;</span>
+<span class="nc" id="L129">    }</span>
 
     /**
      * @return the title
      */
     public String getTitle() {
-<span class="fc" id="L134">        return title;</span>
+<span class="fc" id="L135">        return title;</span>
     }
 
     /**
      * @param title the title
      */
     public void setTitle(String title) {
-<span class="fc" id="L141">        this.title = title;</span>
-<span class="fc" id="L142">    }</span>
+<span class="fc" id="L142">        this.title = title;</span>
+<span class="fc" id="L143">    }</span>
 
     /**
      * @return the purpose
      */
     public String getPurpose() {
-<span class="fc" id="L148">        return purpose;</span>
+<span class="fc" id="L149">        return purpose;</span>
     }
 
     /**
      * @param purpose the purpose
      */
     public void setPurpose(String purpose) {
-<span class="fc" id="L155">        this.purpose = purpose;</span>
-<span class="fc" id="L156">    }</span>
+<span class="fc" id="L156">        this.purpose = purpose;</span>
+<span class="fc" id="L157">    }</span>
 
     /**
      * @return Authority holder : is it belonging to
@@ -163,29 +164,29 @@ import javax.persistence.Transient;
      *         &lt;/ul&gt;
      */
     public ConcretizationCategory getAuthorityHolder() {
-<span class="fc" id="L166">        return authorityHolder;</span>
+<span class="fc" id="L167">        return authorityHolder;</span>
     }
 
     /**
      * @param authorityHolder the authority holder
      */
     public void setAuthorityHolder(ConcretizationCategory authorityHolder) {
-<span class="fc" id="L173">        this.authorityHolder = authorityHolder;</span>
-<span class="fc" id="L174">    }</span>
+<span class="fc" id="L174">        this.authorityHolder = authorityHolder;</span>
+<span class="fc" id="L175">    }</span>
 
     /**
      * @return the project it belongs to
      */
     public Project getProject() {
-<span class="nc" id="L180">        return project;</span>
+<span class="nc" id="L181">        return project;</span>
     }
 
     /**
      * @param project the project it belongs to
      */
     public void setProject(Project project) {
-<span class="fc" id="L187">        this.project = project;</span>
-<span class="fc" id="L188">    }</span>
+<span class="fc" id="L188">        this.project = project;</span>
+<span class="fc" id="L189">    }</span>
 
     /**
      * get the project id. To be sent to client
@@ -193,10 +194,10 @@ import javax.persistence.Transient;
      * @return id of the project or null
      */
     public Long getProjectId() {
-<span class="fc bfc" id="L196" title="All 2 branches covered.">        if (this.project != null) {</span>
-<span class="fc" id="L197">            return this.project.getId();</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">        if (this.project != null) {</span>
+<span class="fc" id="L198">            return this.project.getId();</span>
         } else {
-<span class="fc" id="L199">            return projectId;</span>
+<span class="fc" id="L200">            return projectId;</span>
         }
     }
 
@@ -206,8 +207,8 @@ import javax.persistence.Transient;
      * @param id the id of the project
      */
     public void setProjectId(Long id) {
-<span class="fc" id="L209">        this.projectId = id;</span>
-<span class="fc" id="L210">    }</span>
+<span class="fc" id="L210">        this.projectId = id;</span>
+<span class="fc" id="L211">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -218,42 +219,42 @@ import javax.persistence.Transient;
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L221" title="1 of 2 branches missed.">        if (other instanceof CardDef) {</span>
-<span class="fc" id="L222">            CardDef o = (CardDef) other;</span>
+<span class="pc bpc" id="L222" title="1 of 2 branches missed.">        if (other instanceof CardDef) {</span>
+<span class="fc" id="L223">            CardDef o = (CardDef) other;</span>
             // this.setUniqueId(o.getUniqueId());
-<span class="fc" id="L224">            this.setTitle(o.getTitle());</span>
-<span class="fc" id="L225">            this.setPurpose(o.getPurpose());</span>
+<span class="fc" id="L225">            this.setTitle(o.getTitle());</span>
+<span class="fc" id="L226">            this.setPurpose(o.getPurpose());</span>
             // this.setAuthorityHolder(o.getAuthorityHolder());
-<span class="fc" id="L227">        } else {</span>
-<span class="nc" id="L228">            throw new ColabMergeException(this, other);</span>
+<span class="fc" id="L228">        } else {</span>
+<span class="nc" id="L229">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L230">    }</span>
+<span class="fc" id="L231">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="pc bpc" id="L234" title="1 of 2 branches missed.">        if (this.project != null) {</span>
-<span class="fc" id="L235">            return Set.of(ProjectContentChannel.build(project));</span>
+<span class="pc bpc" id="L235" title="1 of 2 branches missed.">        if (this.project != null) {</span>
+<span class="fc" id="L236">            return Set.of(ProjectContentChannel.build(project));</span>
         } else {
-<span class="nc" id="L237">            return Set.of();</span>
+<span class="nc" id="L238">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L243">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L244">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L249">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L250">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L254">        return &quot;CardDef{&quot; + &quot;id=&quot; + id + &quot;, uniqueId=&quot; + uniqueId + &quot;, title=&quot; + title</span>
+<span class="nc" id="L255">        return &quot;CardDef{&quot; + &quot;id=&quot; + id + &quot;, uniqueId=&quot; + uniqueId + &quot;, title=&quot; + title</span>
                 + &quot;, purpose=&quot; + purpose + &quot;, authorityHolder=&quot; + authorityHolder + &quot;, projectId=&quot;
-<span class="nc" id="L256">                + getProjectId() + &quot;}&quot;;</span>
+<span class="nc" id="L257">                + getProjectId() + &quot;}&quot;;</span>
     }
 
 }
