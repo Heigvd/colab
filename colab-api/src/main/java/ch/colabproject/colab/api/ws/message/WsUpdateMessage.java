@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.message;
 
-import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import java.util.HashSet;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
@@ -24,7 +24,7 @@ public class WsUpdateMessage extends WsMessage {
      * Set of new or updated objects
      */
     @NotNull
-    private Set<ColabEntity> updated;
+    private Set<WithWebsocketChannels> updated;
 
     /**
      * Set of destroyed entities
@@ -43,7 +43,7 @@ public class WsUpdateMessage extends WsMessage {
     /**
      * @return the list of new or updated objects to send to clients
      */
-    public Set<ColabEntity> getUpdated() {
+    public Set<WithWebsocketChannels> getUpdated() {
         return updated;
     }
 
@@ -52,7 +52,7 @@ public class WsUpdateMessage extends WsMessage {
      *
      * @param updated list of updated elements
      */
-    public void setUpdated(Set<ColabEntity> updated) {
+    public void setUpdated(Set<WithWebsocketChannels> updated) {
         this.updated = updated;
     }
 

@@ -25,6 +25,13 @@ const initialState: CardState = {
   cards: {},
 };
 
+const findCardByContentId = (contentId: number, state: CardState) => {
+  const found = Object.values(state.cards).find((entry) => {
+    return entry.contents && entry.contents[contentId] != null;
+  })
+  return found ? found.card : null
+}
+
 const cardsSlice = createSlice({
   name: 'cards',
   initialState,
@@ -43,9 +50,18 @@ const cardsSlice = createSlice({
       if (action.payload.id != null && action.payload.cardId != null) {
         const cardState = state.cards[action.payload.cardId];
         if (cardState != null) {
-          if (cardState.contents != null){
+          if (cardState.contents != null) {
             cardState.contents[action.payload.id] = action.payload;
           }
+        }
+      }
+    },
+    removeContent: (state, action: PayloadAction<number>) => {
+      const card = findCardByContentId(action.payload, state);
+      if (card != null && card.id != null) {
+        const contents = state.cards[card.id].contents;
+        if (contents != null) {
+          delete contents[action.payload];
         }
       }
     },
@@ -90,6 +106,6 @@ const cardsSlice = createSlice({
       }),
 });
 
-export const {updateCard, removeCard} = cardsSlice.actions;
+export const {updateCard, removeCard, updateContent, removeContent} = cardsSlice.actions;
 
 export default cardsSlice.reducer;

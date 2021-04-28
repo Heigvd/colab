@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.project;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.model.team.TeamMember;
@@ -42,7 +43,7 @@ import javax.persistence.Transient;
 @NamedQuery(
     name = "Project.findProjectByUser",
     query = "SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId")
-public class Project implements ColabEntity {
+public class Project implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 

@@ -10,6 +10,7 @@ import thunk from 'redux-thunk';
 import authReducer from './auth';
 import adminReducer from './admin';
 import cardReducer from './card';
+import cardDefReducer from './carddef';
 import errorReducer from './error';
 import projectReducer from './project';
 import userReducer from './user';
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
   admin: adminReducer,
   errors: errorReducer,
   projects: projectReducer,
-  cards: cardReducer, // TODO remove ! non sense
+  cards: cardReducer,
+  carddef: cardDefReducer,
   users: userReducer,
   websockets: websocketReducer,
 });

@@ -36,6 +36,14 @@ const userSlice = createSlice({
     removeUser: (state, action: PayloadAction<number>) => {
       delete state.users[action.payload];
     },
+    updateAccount: (state, action: PayloadAction<Account>) => {
+      if (action.payload.id != null){
+        state.accounts[action.payload.id] = action.payload;
+      }
+    },
+    removeAccount: (state, action: PayloadAction<number>) => {
+      delete state.accounts[action.payload];
+    },
   },
   extraReducers: builder =>
     builder
@@ -86,6 +94,6 @@ const userSlice = createSlice({
       }),
 });
 
-export const { updateUser, removeUser } = userSlice.actions;
+export const {updateUser, removeUser, updateAccount, removeAccount } = userSlice.actions;
 
 export default userSlice.reducer;

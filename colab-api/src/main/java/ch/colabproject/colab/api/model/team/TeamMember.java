@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.team;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.User;
@@ -33,7 +34,7 @@ import javax.persistence.Transient;
         query = "SELECT true FROM TeamMember a "
                 + "JOIN TeamMember b ON a.project.id = b.project.id "
                 + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
-public class TeamMember implements ColabEntity {
+public class TeamMember implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 

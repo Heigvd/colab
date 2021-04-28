@@ -231,12 +231,6 @@ public abstract class Token implements ColabEntity {
     }
 
     @Override
-    public Set<WebsocketChannel> getChannels() {
-        // never send tokens by websocket
-        return Set.of();
-    }
-
-    @Override
     public int hashCode() {
         return EntityHelper.hashCode(this);
     }

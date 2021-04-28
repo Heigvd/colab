@@ -8,8 +8,6 @@ package ch.colabproject.colab.api.model.team;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
-import java.util.Set;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -88,9 +86,4 @@ public class Role implements ColabEntity {
         /* no-op */
     }
 
-    @Override
-    public Set<WebsocketChannel> getChannels() {
-        // TODO
-        return Set.of();
-    }
 }

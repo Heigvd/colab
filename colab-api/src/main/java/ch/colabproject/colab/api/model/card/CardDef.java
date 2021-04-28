@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
@@ -36,7 +37,7 @@ import javax.persistence.Transient;
 @NamedQuery(
         name = "CardDef.findCardDefByProject",
         query = "SELECT c FROM CardDef c JOIN c.project p WHERE p.id = :projectId")
-public class CardDef implements ColabEntity {
+public class CardDef implements ColabEntity, WithWebsocketChannels {
 
     /**
      * Serial version UID

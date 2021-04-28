@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.ws;
 
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
@@ -89,8 +90,8 @@ public class WebsocketHelper {
      */
     private static void add(Map<WebsocketEffectiveChannel, List<WsMessage>> byChannels,
         WebsocketEffectiveChannel channel,
-        ColabEntity entity) {
-        Collection<ColabEntity> set
+        WithWebsocketChannels entity) {
+        Collection<WithWebsocketChannels> set
             = WebsocketHelper.getOrCreateWsUpdateMessage(byChannels, channel).getUpdated();
         logger.trace("Add {} to updated set {}", entity, set);
         set.add(entity);
@@ -169,7 +170,7 @@ public class WebsocketHelper {
      */
     public static PrecomputedWsMessages prepareWsMessage(
         UserDao userDao,
-        Set<ColabEntity> updated,
+        Set<WithWebsocketChannels> updated,
         Set<IndexEntry> deleted
     ) throws EncodeException {
         Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel = new HashMap<>();

@@ -15,6 +15,7 @@ import {
   User,
   WsSessionIdentifier,
   CardContent,
+  CardDef,
 } from 'colab-rest-client';
 
 import {getStore, ColabState} from '../store/store';
@@ -24,18 +25,25 @@ import {hashPassword} from '../SecurityHelper';
 import {createAsyncThunk} from '@reduxjs/toolkit';
 
 const restClient = ColabClient('', error => {
-  if (entityIs(error, 'HttpException') || error instanceof Error) {
+  if (entityIs(error, 'HttpException')) {
     getStore().dispatch(
       addError({
         status: 'OPEN',
         error: error,
       }),
     );
+  } else if (error instanceof Error) {
+    getStore().dispatch(
+      addError({
+        status: 'OPEN',
+        error: `${error.name}: ${error.message}`,
+      }),
+    );
   } else {
     getStore().dispatch(
       addError({
         status: 'OPEN',
-        error: new Error('Something went wrong'),
+        error: 'Something went wrong',
       }),
     );
   }
@@ -313,6 +321,40 @@ export const sendInvitation = createAsyncThunk(
   },
 );
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Card Definitions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const initCardDefs = createAsyncThunk('cardDef/init', async () => {
+  return await restClient.CardDefController.getAllCardDefs()
+});
+
+export const getCardDef = createAsyncThunk('cardDef/create', async (id: number) => {
+  return await restClient.CardDefController.getCardDef(id);
+});
+
+export const createCardDef = createAsyncThunk('cardDef/create', async (cardDef: CardDef) => {
+  return await restClient.CardDefController.createCardDef({
+    ...cardDef,
+    id: undefined,
+  });
+});
+
+export const updateCardDef = createAsyncThunk('cardDef/update', async (cardDef: CardDef) => {
+  await restClient.CardDefController.updateCardDef(cardDef);
+});
+
+export const deleteCardDef = createAsyncThunk('cardDef/delete', async (cardDef: CardDef) => {
+  if (cardDef.id) {
+    await restClient.CardDefController.deleteCardDef(cardDef.id);
+  }
+});
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cards
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -354,3 +396,8 @@ export const getCardContents = createAsyncThunk('cardcontent/getByCard', async (
 export const updateCardContent = createAsyncThunk('cardcontent/update', async (cardContent: CardContent) => {
   return await restClient.CardContentController.updateCardContent(cardContent);
 });
+
+export const createCardContentVariant = createAsyncThunk('cardcontent/create', async (cardId: number) => {
+  return await restClient.CardContentController.createNewCardContent(cardId);
+});
+

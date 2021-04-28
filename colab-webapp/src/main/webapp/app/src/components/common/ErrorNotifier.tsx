@@ -11,11 +11,11 @@ import { HttpErrorMessage, HttpException, entityIs } from 'colab-rest-client';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { closeError } from '../../store/error';
 
-function prettyPrintError(error: HttpException | Error): string {
+function prettyPrintError(error: HttpException | string): string {
   if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage')) {
     return translateErrorCode(error.messageCode);
   } else {
-    return error.message;
+    return error;
   }
 }
 

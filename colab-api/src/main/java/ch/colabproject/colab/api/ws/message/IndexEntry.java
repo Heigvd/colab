@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.message;
 
-import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.util.Set;
@@ -92,7 +92,7 @@ public class IndexEntry implements WithJsonDiscriminator {
      *
      * @return index entry which represent the object
      */
-    public static IndexEntry build(ColabEntity object) {
+    public static IndexEntry build(WithWebsocketChannels object) {
         IndexEntry entry = new IndexEntry();
 
         entry.type = object.getJsonDiscriminator();

@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
@@ -40,7 +41,7 @@ import javax.persistence.Transient;
 @NamedQuery(
     name = "Card.findCardByParent",
     query = "SELECT c FROM Card c JOIN c.parent p WHERE p.id = :parentId")
-public class Card implements ColabEntity {
+public class Card implements ColabEntity, WithWebsocketChannels {
 
     /**
      * Serial version UID

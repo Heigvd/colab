@@ -10,7 +10,7 @@ import { HttpException } from 'colab-rest-client';
 
 export interface ColabError {
   status: 'OPEN' | 'CLOSED';
-  error: HttpException | Error;
+  error: HttpException | string;
 }
 
 const initialState: ColabError[] = [];

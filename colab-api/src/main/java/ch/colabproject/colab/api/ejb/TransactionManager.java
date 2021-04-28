@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.exceptions.ColabRollbackException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.ws.WebsocketHelper;
 import ch.colabproject.colab.api.ws.message.IndexEntry;
@@ -63,7 +64,7 @@ public class TransactionManager implements Serializable {
     /**
      * set of updated entities to be propagated
      */
-    private Set<ColabEntity> updated = new HashSet<>();
+    private Set<WithWebsocketChannels> updated = new HashSet<>();
 
     /**
      * set of entities which have been deleted during the transaction
@@ -85,7 +86,7 @@ public class TransactionManager implements Serializable {
      *
      * @param o object to register
      */
-    public void registerUpdate(ColabEntity o) {
+    public void registerUpdate(WithWebsocketChannels o) {
         updated.add(o);
         logger.trace("UpdatedSet: {}", updated);
     }
@@ -95,7 +96,7 @@ public class TransactionManager implements Serializable {
      *
      * @param o just deleted object
      */
-    public void registerDelete(ColabEntity o) {
+    public void registerDelete(WithWebsocketChannels o) {
         deleted.add(IndexEntry.build(o));
         logger.trace("Deleted set: {}", deleted);
     }
@@ -105,7 +106,7 @@ public class TransactionManager implements Serializable {
      */
     private void precomputeMessage() throws EncodeException {
         logger.debug("Precompute messages; Update:{}, Deletes:{}", updated, deleted);
-        Set<ColabEntity> filtered = updated.stream()
+        Set<WithWebsocketChannels> filtered = updated.stream()
             .filter(
                 (u) -> !deleted.stream()
                     .anyMatch(

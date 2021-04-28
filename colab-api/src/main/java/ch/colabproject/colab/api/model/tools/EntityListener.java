@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.tools;
 
 import ch.colabproject.colab.api.ejb.TransactionManager;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import javax.inject.Inject;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
@@ -39,9 +40,9 @@ public class EntityListener {
     @PostPersist
     @PostUpdate
     public void onUpdate(Object o) {
-        if (o instanceof ColabEntity) {
+        if (o instanceof WithWebsocketChannels) {
             logger.trace("Update {}", o);
-            transactionManager.registerUpdate((ColabEntity) o);
+            transactionManager.registerUpdate((WithWebsocketChannels) o);
         }
     }
 
@@ -52,9 +53,9 @@ public class EntityListener {
      */
     @PreRemove
     public void onDestroy(Object o) {
-        if (o instanceof ColabEntity) {
+        if (o instanceof WithWebsocketChannels) {
             logger.trace("Destroy {}", o);
-            transactionManager.registerDelete((ColabEntity) o);
+            transactionManager.registerDelete((WithWebsocketChannels) o);
         }
     }
 }

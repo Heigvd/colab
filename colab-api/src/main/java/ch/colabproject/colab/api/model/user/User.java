@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.user;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
@@ -49,7 +50,7 @@ import javax.validation.constraints.Pattern;
     query = "SELECT u from User u where u.username = :username")
 @NamedQuery(name = "User.findAllAdmin",
     query = "SELECT u from User u where u.isAdmin = TRUE")
-public class User implements ColabEntity {
+public class User implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 

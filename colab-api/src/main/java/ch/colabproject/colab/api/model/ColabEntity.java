@@ -7,10 +7,7 @@
 package ch.colabproject.colab.api.model;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
-import java.util.Set;
-import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 
 /**
@@ -20,14 +17,6 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
  */
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public interface ColabEntity extends WithId {
-
-    /**
-     * Get the channels this entity shall be sent through.
-     *
-     * @return list of channels
-     */
-    @JsonbTransient
-    Set<WebsocketChannel> getChannels();
 
     /**
      * Update this object according to values provided by other

@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.model.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ import javax.validation.constraints.Min;
 @NamedQuery(
         name = "CardContent.findCardContentByCard",
         query = "SELECT c from CardContent c JOIN c.card a WHERE a.id = :cardId")
-public class CardContent implements ColabEntity {
+public class CardContent implements ColabEntity, WithWebsocketChannels {
 
     /**
      * Serial version UID
