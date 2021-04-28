@@ -48,13 +48,13 @@ public abstract class HttpException extends RuntimeException implements WithJson
     @JsonbTransient
     @Override
     public synchronized Throwable getCause() {
-<span class="fc" id="L51">        return super.getCause();</span>
+<span class="nc" id="L51">        return super.getCause();</span>
     }
 
     @JsonbTransient
     @Override
     public StackTraceElement[] getStackTrace() {
-<span class="fc" id="L57">        return super.getStackTrace();</span>
+<span class="nc" id="L57">        return super.getStackTrace();</span>
     }
 
     /**

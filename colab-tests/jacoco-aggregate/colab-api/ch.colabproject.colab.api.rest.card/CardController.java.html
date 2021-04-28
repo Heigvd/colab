@@ -145,8 +145,8 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id}&quot;)
     public void deleteCard(@PathParam(&quot;id&quot;) Long id) {
 <span class="fc" id="L147">        logger.debug(&quot;delete card #{}&quot;, id);</span>
-<span class="nc" id="L148">        cardDao.deleteCard(id);</span>
-<span class="nc" id="L149">    }</span>
+<span class="fc" id="L148">        cardDao.deleteCard(id);</span>
+<span class="fc" id="L149">    }</span>
 
     /**
      * Get all card content variants of a card

@@ -90,13 +90,13 @@ import javax.persistence.PersistenceContext;
      */
     public InvitationToken findInvitationByProjectAndRecipient(Project project, String recipient) {
         try {
-<span class="nc" id="L93">            return em.createNamedQuery(&quot;InvitationToken.findByProjectAndRecipient&quot;,</span>
+<span class="pc" id="L93">            return em.createNamedQuery(&quot;InvitationToken.findByProjectAndRecipient&quot;,</span>
                 InvitationToken.class)
-<span class="nc" id="L95">                .setParameter(&quot;projectId&quot;, project.getId())</span>
-<span class="nc" id="L96">                .setParameter(&quot;recipient&quot;, recipient)</span>
+<span class="fc" id="L95">                .setParameter(&quot;projectId&quot;, project.getId())</span>
+<span class="fc" id="L96">                .setParameter(&quot;recipient&quot;, recipient)</span>
 <span class="nc" id="L97">                .getSingleResult();</span>
-<span class="nc" id="L98">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L99">            return null;</span>
+<span class="fc" id="L98">        } catch (NoResultException ex) {</span>
+<span class="fc" id="L99">            return null;</span>
         }
     }
 

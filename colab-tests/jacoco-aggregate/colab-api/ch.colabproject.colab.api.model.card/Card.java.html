@@ -321,7 +321,7 @@ import javax.persistence.Transient;
 <span class="fc" id="L321">            return this.rootCardProject.getChannels();</span>
 <span class="pc bpc" id="L322" title="1 of 2 branches missed.">        } else if (this.parent!= null) {</span>
             // this card is a sub-card, propagate through its parent channels
-<span class="nc" id="L324">            return this.rootCardProject.getChannels();</span>
+<span class="fc" id="L324">            return this.parent.getChannels();</span>
 <span class="nc bnc" id="L325" title="All 2 branches missed.">        } else if (this.cardDefinition != null) {</span>
             // such a card shoudln't exist...
             // Lorem-ipsum cards for global cardDefinitions ???
@@ -345,8 +345,8 @@ import javax.persistence.Transient;
 
     @Override
     public String toString() {
-<span class="nc" id="L348">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;, cardDefId=&quot;</span>
-<span class="nc" id="L349">            + getCardDefinitionId() + &quot;, parentId=&quot; + getParentId() + &quot;}&quot;;</span>
+<span class="fc" id="L348">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;, cardDefId=&quot;</span>
+<span class="fc" id="L349">            + getCardDefinitionId() + &quot;, parentId=&quot; + getParentId() + &quot;}&quot;;</span>
     }
 
 }

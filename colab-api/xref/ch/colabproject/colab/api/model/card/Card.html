@@ -329,7 +329,7 @@
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.rootCardProject.getChannels();
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.parent!= <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L323" href="#L323">323</a>             <em class="jxr_comment">// this card is a sub-card, propagate through its parent channels</em>
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.rootCardProject.getChannels();
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.parent.getChannels();
 <a class="jxr_linenumber" name="L325" href="#L325">325</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.cardDefinition != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L326" href="#L326">326</a>             <em class="jxr_comment">// such a card shoudln't exist...</em>
 <a class="jxr_linenumber" name="L327" href="#L327">327</a>             <em class="jxr_comment">// Lorem-ipsum cards for global cardDefinitions ???</em>

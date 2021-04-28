@@ -321,7 +321,7 @@ import javax.persistence.Transient;
 <span class="nc" id="L321">            return this.rootCardProject.getChannels();</span>
 <span class="nc bnc" id="L322" title="All 2 branches missed.">        } else if (this.parent!= null) {</span>
             // this card is a sub-card, propagate through its parent channels
-<span class="nc" id="L324">            return this.rootCardProject.getChannels();</span>
+<span class="nc" id="L324">            return this.parent.getChannels();</span>
 <span class="nc bnc" id="L325" title="All 2 branches missed.">        } else if (this.cardDefinition != null) {</span>
             // such a card shoudln't exist...
             // Lorem-ipsum cards for global cardDefinitions ???
