@@ -48,20 +48,6 @@ public class CardDao {
     }
 
     /**
-     * Get all cards children
-     *
-     * @param parentId parent ID
-     * @return list of cards
-     */
-    public List<Card> getSubCards(Long parentId) {
-        logger.debug("get all cards children of card content #{}", parentId);
-        TypedQuery<Card> query = em.createNamedQuery("Card.findCardByParent", Card.class);
-        query.setParameter("parentId", parentId);
-
-        return query.getResultList();
-    }
-
-    /**
      *
      * @param id id of the card to fetch
      *

@@ -47,21 +47,6 @@ public class CardDefDao {
     }
 
     /**
-     * Get all card definitions to be defined in a project
-     *
-     * @param projectId project ID
-     * @return list of card definitions
-     */
-    public List<CardDef> getProjectCardDefs(Long projectId) {
-        logger.debug("get all card defs of the project #{}", projectId);
-        TypedQuery<CardDef> query = em.createNamedQuery("CardDef.findCardDefByProject",
-                CardDef.class);
-        query.setParameter("projectId", projectId);
-
-        return query.getResultList();
-    }
-
-    /**
      *
      * @param id id of the card def to fetch
      *

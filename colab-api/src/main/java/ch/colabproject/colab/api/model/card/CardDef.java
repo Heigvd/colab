@@ -34,9 +34,6 @@ import javax.persistence.Transient;
 //TODO review accurate constraints when stabilized
 @Entity
 @NamedQuery(name = "CardDef.findAll", query = "SELECT c FROM CardDef c")
-@NamedQuery(
-        name = "CardDef.findCardDefByProject",
-        query = "SELECT c FROM CardDef c JOIN c.project p WHERE p.id = :projectId")
 public class CardDef implements ColabEntity, WithWebsocketChannels {
 
     /**

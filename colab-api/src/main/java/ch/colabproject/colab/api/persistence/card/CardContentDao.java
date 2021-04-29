@@ -49,21 +49,6 @@ public class CardContentDao {
     }
 
     /**
-     * Get all card content variants of a card
-     *
-     * @param cardId card ID
-     * @return list of card contents
-     */
-    public List<CardContent> getContentVariantsOfCard(Long cardId) {
-        logger.debug("get all card content variants of card #{}", cardId);
-        TypedQuery<CardContent> query = em.createNamedQuery("CardContent.findCardContentByCard",
-                CardContent.class);
-        query.setParameter("cardId", cardId);
-
-        return query.getResultList();
-    }
-
-    /**
      *
      * @param id id of the card content to fetch
      *

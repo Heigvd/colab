@@ -38,9 +38,6 @@ import javax.persistence.Transient;
 // TODO review accurate constraints when stabilized
 @Entity
 @NamedQuery(name = "Card.findAll", query = "SELECT c FROM Card c")
-@NamedQuery(
-    name = "Card.findCardByParent",
-    query = "SELECT c FROM Card c JOIN c.parent p WHERE p.id = :parentId")
 public class Card implements ColabEntity, WithWebsocketChannels {
 
     /**

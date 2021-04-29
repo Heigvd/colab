@@ -37,9 +37,6 @@ import javax.validation.constraints.Min;
 //TODO review accurate constraints when stabilized
 @Entity
 @NamedQuery(name = "CardContent.findAll", query = "SELECT c FROM CardContent c")
-@NamedQuery(
-        name = "CardContent.findCardContentByCard",
-        query = "SELECT c from CardContent c JOIN c.card a WHERE a.id = :cardId")
 public class CardContent implements ColabEntity, WithWebsocketChannels {
 
     /**

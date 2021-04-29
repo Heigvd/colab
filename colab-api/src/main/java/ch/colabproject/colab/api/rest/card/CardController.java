@@ -10,7 +10,6 @@ import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -48,12 +47,6 @@ public class CardController {
      */
     @Inject
     private CardDao cardDao;
-
-    /**
-     * The card content persistence manager
-     */
-    @Inject
-    private CardContentDao cardContentDao;
 
     /**
      * The card-related logic
@@ -159,11 +152,7 @@ public class CardController {
     @Path("{id}/CardContents")
     public List<CardContent> getContentVariantsOfCard(@PathParam("id") Long cardId) {
         logger.debug("Get card #{} content variants", cardId);
-        return cardContentDao.getContentVariantsOfCard(cardId);
-
-        // an alternative would be to define a method in the facade
-        // cardDao.getCard(id).getContentVariants()
-        // FIXME see what is the best
+        return cardFacade.getContentVariants(cardId);
     }
 
 }

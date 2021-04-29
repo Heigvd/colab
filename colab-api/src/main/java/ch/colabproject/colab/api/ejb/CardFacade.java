@@ -16,6 +16,7 @@ import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.api.persistence.card.CardDefDao;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -196,6 +197,22 @@ public class CardFacade {
         return card;
     }
 
+    /**
+     * Get all variants content for the given card
+     *
+     * @param cardId id of the card
+     *
+     * @return all card contents of the card
+     */
+    public List<CardContent> getContentVariants(Long cardId) {
+        logger.debug("Get card contents of card #{}", cardId);
+        Card card = cardDao.getCard(cardId);
+        if (card == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return card.getContentVariants();
+    }
+
     // *********************************************************************************************
     // card content stuff
     // *********************************************************************************************
@@ -233,6 +250,22 @@ public class CardFacade {
         cardContent.setCard(card);
         card.getContentVariants().add(cardContent);
         return cardContent;
+    }
+
+    /**
+     * Get all sub cards of a given card content
+     *
+     * @param cardContentId id of the card content
+     *
+     * @return all cards of the card content
+     */
+    public List<Card> getSubCards(Long cardContentId) {
+        logger.debug("get sub cards of card content #{}", cardContentId);
+        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+        if (cardContent == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return cardContent.getSubCards();
     }
 
 }
