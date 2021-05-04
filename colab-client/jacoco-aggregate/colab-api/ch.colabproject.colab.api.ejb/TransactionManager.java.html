@@ -126,8 +126,8 @@ import org.slf4j.LoggerFactory;
     public void beforeCompletion() {
         //make sure to flush everything to database
 <span class="nc" id="L128">        em.flush();</span>
-<span class="nc" id="L129">        logger.info(&quot;Before transactionCompletion: &quot;</span>
-            + &quot;This method is not called for each transaction, why ???&quot;);
+<span class="nc" id="L129">        logger.info(</span>
+            &quot;Before transactionCompletion: This method is not called for each transaction, why ???&quot;);
         try {
 <span class="nc" id="L132">            this.precomputeMessage();</span>
 <span class="nc" id="L133">        } catch (EncodeException ex) {</span>

@@ -62,13 +62,14 @@ import org.slf4j.LoggerFactory;
                 );
 <span class="fc" id="L63">                logger.info(&quot;New admin user: {}&quot;, admin);</span>
 <span class="nc" id="L64">            } catch (HttpErrorMessage ex) {</span>
-<span class="nc" id="L65">                logger.error(&quot;Fails to create default amdin user. &quot;</span>
-                    + &quot;Does non-admin user exists with same username or email address&quot;);
+<span class="nc" id="L65">                logger.error(</span>
+                    &quot;Fails to create default amdin user. Does non-admin user exists with same username or email address&quot;);
 <span class="nc" id="L67">            } catch (RuntimeException ex) {</span>
-<span class="nc" id="L68">                logger.error(&quot;Fails to create default amdin user for some unknown reason.&quot;</span>
-                    + &quot; Please check config&quot;, ex);
-<span class="pc" id="L70">            }</span>
+<span class="nc" id="L68">                logger.error(</span>
+                    &quot;Fails to create default amdin user for some unknown reason. Please check config&quot;,
+                    ex);
+<span class="pc" id="L71">            }</span>
         }
-<span class="fc" id="L72">    }</span>
+<span class="fc" id="L73">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

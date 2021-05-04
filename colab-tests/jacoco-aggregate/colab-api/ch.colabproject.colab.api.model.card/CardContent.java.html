@@ -37,10 +37,7 @@ import javax.validation.constraints.Min;
 //TODO review accurate constraints when stabilized
 @Entity
 @NamedQuery(name = &quot;CardContent.findAll&quot;, query = &quot;SELECT c FROM CardContent c&quot;)
-@NamedQuery(
-        name = &quot;CardContent.findCardContentByCard&quot;,
-        query = &quot;SELECT c from CardContent c JOIN c.card a WHERE a.id = :cardId&quot;)
-<span class="fc" id="L43">public class CardContent implements ColabEntity, WithWebsocketChannels {</span>
+<span class="fc" id="L40">public class CardContent implements ColabEntity, WithWebsocketChannels {</span>
 
     /**
      * Serial version UID
@@ -66,21 +63,21 @@ import javax.validation.constraints.Min;
     /**
      * Status
      */
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private CardContentStatus status;
 
     /**
      * Completion level
      */
     // TODO sandra : vérifier si contrainte 0 - 100 ok
-    @Min(value = 0)
-    @Max(value = 100)
+    @Min(0)
+    @Max(100)
     private int completionLevel;
 
     /**
      * Completion mode : how the completion level is filled
      */
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private CardContentCompletionMode completionMode;
 
     /**
@@ -99,7 +96,7 @@ import javax.validation.constraints.Min;
     /**
      * The cards contained in there
      */
-<span class="fc" id="L102">    @OneToMany(mappedBy = &quot;parent&quot;, cascade = CascadeType.ALL)</span>
+<span class="fc" id="L99">    @OneToMany(mappedBy = &quot;parent&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;Card&gt; subCards = new ArrayList&lt;&gt;();
 
@@ -112,63 +109,63 @@ import javax.validation.constraints.Min;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L115">        return id;</span>
+<span class="fc" id="L112">        return id;</span>
     }
 
     /**
      * @param id the new id
      */
     public void setId(Long id) {
-<span class="fc" id="L122">        this.id = id;</span>
-<span class="fc" id="L123">    }</span>
+<span class="fc" id="L119">        this.id = id;</span>
+<span class="fc" id="L120">    }</span>
 
     /**
      * @return the title
      */
     public String getTitle() {
-<span class="fc" id="L129">        return title;</span>
+<span class="fc" id="L126">        return title;</span>
     }
 
     /**
      * @param title the new title
      */
     public void setTitle(String title) {
-<span class="fc" id="L136">        this.title = title;</span>
-<span class="fc" id="L137">    }</span>
+<span class="fc" id="L133">        this.title = title;</span>
+<span class="fc" id="L134">    }</span>
 
     /**
      * @return the status
      */
     public CardContentStatus getStatus() {
-<span class="fc" id="L143">        return status;</span>
+<span class="fc" id="L140">        return status;</span>
     }
 
     /**
      * @param status the new status
      */
     public void setStatus(CardContentStatus status) {
-<span class="fc" id="L150">        this.status = status;</span>
-<span class="fc" id="L151">    }</span>
+<span class="fc" id="L147">        this.status = status;</span>
+<span class="fc" id="L148">    }</span>
 
     /**
      * @return the completionLevel
      */
     public int getCompletionLevel() {
-<span class="fc" id="L157">        return completionLevel;</span>
+<span class="fc" id="L154">        return completionLevel;</span>
     }
 
     /**
      * @param completionLevel the new completionLevel
      */
     public void setCompletionLevel(int completionLevel) {
-<span class="fc" id="L164">        this.completionLevel = completionLevel;</span>
-<span class="fc" id="L165">    }</span>
+<span class="fc" id="L161">        this.completionLevel = completionLevel;</span>
+<span class="fc" id="L162">    }</span>
 
     /**
      * @return the completion mode : how the completion level is filled
      */
     public CardContentCompletionMode getCompletionMode() {
-<span class="fc" id="L171">        return completionMode;</span>
+<span class="fc" id="L168">        return completionMode;</span>
     }
 
     /**
@@ -176,31 +173,31 @@ import javax.validation.constraints.Min;
      *        filled
      */
     public void setCompletionMode(CardContentCompletionMode completionMode) {
-<span class="fc" id="L179">        this.completionMode = completionMode;</span>
-<span class="fc" id="L180">    }</span>
+<span class="fc" id="L176">        this.completionMode = completionMode;</span>
+<span class="fc" id="L177">    }</span>
 
     /**
      * @return the card to which this content belongs
      */
     public Card getCard() {
-<span class="nc" id="L186">        return card;</span>
+<span class="nc" id="L183">        return card;</span>
     }
 
     /**
      * @param card the new card to which this content belongs
      */
     public void setCard(Card card) {
-<span class="fc" id="L193">        this.card = card;</span>
-<span class="fc" id="L194">    }</span>
+<span class="fc" id="L190">        this.card = card;</span>
+<span class="fc" id="L191">    }</span>
 
     /**
      * @return the ID of the card to which this content belongs
      */
     public Long getCardId() {
-<span class="fc bfc" id="L200" title="All 2 branches covered.">        if (this.card != null) {</span>
-<span class="fc" id="L201">            return card.getId();</span>
+<span class="fc bfc" id="L197" title="All 2 branches covered.">        if (this.card != null) {</span>
+<span class="fc" id="L198">            return card.getId();</span>
         } else {
-<span class="fc" id="L203">            return cardId;</span>
+<span class="fc" id="L200">            return cardId;</span>
         }
     }
 
@@ -208,22 +205,22 @@ import javax.validation.constraints.Min;
      * @param cardId the ID of the card to which this content belongs
      */
     public void setCardId(Long cardId) {
-<span class="fc" id="L211">        this.cardId = cardId;</span>
-<span class="fc" id="L212">    }</span>
+<span class="fc" id="L208">        this.cardId = cardId;</span>
+<span class="fc" id="L209">    }</span>
 
     /**
      * @return the cards contained in there
      */
     public List&lt;Card&gt; getSubCards() {
-<span class="fc" id="L218">        return subCards;</span>
+<span class="fc" id="L215">        return subCards;</span>
     }
 
     /**
      * @param subCards the cards contained in there
      */
     public void setSubCards(List&lt;Card&gt; subCards) {
-<span class="nc" id="L225">        this.subCards = subCards;</span>
-<span class="nc" id="L226">    }</span>
+<span class="nc" id="L222">        this.subCards = subCards;</span>
+<span class="nc" id="L223">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -234,40 +231,40 @@ import javax.validation.constraints.Min;
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L237" title="1 of 2 branches missed.">        if (other instanceof CardContent) {</span>
-<span class="fc" id="L238">            CardContent o = (CardContent) other;</span>
-<span class="fc" id="L239">            this.setTitle(o.getTitle());</span>
-<span class="fc" id="L240">            this.setStatus(o.getStatus());</span>
-<span class="fc" id="L241">            this.setCompletionLevel(o.getCompletionLevel());</span>
-<span class="fc" id="L242">            this.setCompletionMode(o.getCompletionMode());</span>
-<span class="fc" id="L243">        } else {</span>
-<span class="nc" id="L244">            throw new ColabMergeException(this, other);</span>
+<span class="pc bpc" id="L234" title="1 of 2 branches missed.">        if (other instanceof CardContent) {</span>
+<span class="fc" id="L235">            CardContent o = (CardContent) other;</span>
+<span class="fc" id="L236">            this.setTitle(o.getTitle());</span>
+<span class="fc" id="L237">            this.setStatus(o.getStatus());</span>
+<span class="fc" id="L238">            this.setCompletionLevel(o.getCompletionLevel());</span>
+<span class="fc" id="L239">            this.setCompletionMode(o.getCompletionMode());</span>
+<span class="fc" id="L240">        } else {</span>
+<span class="nc" id="L241">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L246">    }</span>
+<span class="fc" id="L243">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="pc bpc" id="L250" title="1 of 2 branches missed.">        if (this.card != null) {</span>
-<span class="fc" id="L251">            return this.card.getChannels();</span>
+<span class="pc bpc" id="L247" title="1 of 2 branches missed.">        if (this.card != null) {</span>
+<span class="fc" id="L248">            return this.card.getChannels();</span>
         } else {
-<span class="nc" id="L253">            return Set.of();</span>
+<span class="nc" id="L250">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L259">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L256">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L265">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L262">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L270">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
+<span class="fc" id="L267">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
                 + &quot;, completion=&quot; + completionLevel + &quot;, completionMode=&quot; + completionMode
                 + &quot;, card=&quot; + card + &quot;}&quot;;
     }

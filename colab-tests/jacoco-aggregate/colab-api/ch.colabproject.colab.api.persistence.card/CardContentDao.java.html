@@ -44,35 +44,18 @@ import org.slf4j.LoggerFactory;
     public List&lt;CardContent&gt; getAllCardContent() {
 <span class="fc" id="L45">        logger.debug(&quot;get all card contents&quot;);</span>
 <span class="fc" id="L46">        TypedQuery&lt;CardContent&gt; query = em.createNamedQuery(&quot;CardContent.findAll&quot;,</span>
-                CardContent.class);
+            CardContent.class);
 <span class="fc" id="L48">        return query.getResultList();</span>
     }
 
     /**
-     * Get all card content variants of a card
-     *
-     * @param cardId card ID
-     * @return list of card contents
-     */
-    public List&lt;CardContent&gt; getContentVariantsOfCard(Long cardId) {
-<span class="fc" id="L58">        logger.debug(&quot;get all card content variants of card #{}&quot;, cardId);</span>
-<span class="fc" id="L59">        TypedQuery&lt;CardContent&gt; query = em.createNamedQuery(&quot;CardContent.findCardContentByCard&quot;,</span>
-                CardContent.class);
-<span class="fc" id="L61">        query.setParameter(&quot;cardId&quot;, cardId);</span>
-
-<span class="fc" id="L63">        return query.getResultList();</span>
-    }
-
-    /**
-     *
      * @param id id of the card content to fetch
      *
-     * @return the card content with the given id or null if such a card content
-     *         does not exists
+     * @return the card content with the given id or null if such a card content does not exists
      */
     public CardContent getCardContent(Long id) {
-<span class="fc" id="L74">        logger.debug(&quot;get card content #{}&quot;, id);</span>
-<span class="fc" id="L75">        return em.find(CardContent.class, id);</span>
+<span class="fc" id="L57">        logger.debug(&quot;get card content #{}&quot;, id);</span>
+<span class="fc" id="L58">        return em.find(CardContent.class, id);</span>
     }
 
     /**
@@ -83,9 +66,9 @@ import org.slf4j.LoggerFactory;
      * @return the new persisted card content
      */
     public CardContent createCardContent(CardContent cardContent) {
-<span class="fc" id="L86">        logger.debug(&quot;create card content&quot;);</span>
-<span class="fc" id="L87">        em.persist(cardContent);</span>
-<span class="fc" id="L88">        return cardContent;</span>
+<span class="fc" id="L69">        logger.debug(&quot;create card content {}&quot;, cardContent);</span>
+<span class="fc" id="L70">        em.persist(cardContent);</span>
+<span class="fc" id="L71">        return cardContent;</span>
     }
 
     /**
@@ -93,17 +76,17 @@ import org.slf4j.LoggerFactory;
      *
      * @param cardContent card content as supply by clients (ie not managed)
      *
-     * @return return updated managed card content
+     * @return updated managed card content
      *
      * @throws ColabMergeException if updating the card content failed
      */
     public CardContent updateCardContent(CardContent cardContent) throws ColabMergeException {
-<span class="fc" id="L101">        logger.debug(&quot;update card content #{}&quot;, cardContent.getId());</span>
-<span class="fc" id="L102">        CardContent mCardContent = this.getCardContent(cardContent.getId());</span>
+<span class="fc" id="L84">        logger.debug(&quot;update card content {}&quot;, cardContent);</span>
+<span class="fc" id="L85">        CardContent mCardContent = this.getCardContent(cardContent.getId());</span>
 
-<span class="fc" id="L104">        mCardContent.merge(cardContent);</span>
+<span class="fc" id="L87">        mCardContent.merge(cardContent);</span>
 
-<span class="fc" id="L106">        return mCardContent;</span>
+<span class="fc" id="L89">        return mCardContent;</span>
     }
 
     /**
@@ -114,11 +97,11 @@ import org.slf4j.LoggerFactory;
      * @return just deleted card content
      */
     public CardContent deleteCardContent(Long id) {
-<span class="fc" id="L117">        logger.debug(&quot;delete card content #{}&quot;, id);</span>
+<span class="fc" id="L100">        logger.debug(&quot;delete card content #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="fc" id="L119">        CardContent cardContent = this.getCardContent(id);</span>
-<span class="fc" id="L120">        em.remove(cardContent);</span>
-<span class="fc" id="L121">        return cardContent;</span>
+<span class="fc" id="L102">        CardContent cardContent = this.getCardContent(id);</span>
+<span class="fc" id="L103">        em.remove(cardContent);</span>
+<span class="fc" id="L104">        return cardContent;</span>
     }
 
 }

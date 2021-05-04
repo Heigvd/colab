@@ -7,10 +7,12 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -25,10 +27,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L28">public class ProjectFacade {</span>
+<span class="nc" id="L30">public class ProjectFacade {</span>
 
     /** logger */
-<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(ProjectFacade.class);</span>
+<span class="nc" id="L33">    private static final Logger logger = LoggerFactory.getLogger(ProjectFacade.class);</span>
 
     /**
      * To control access
@@ -64,8 +66,8 @@ import org.slf4j.LoggerFactory;
      * @return list of projects
      */
     public List&lt;Project&gt; getCurrentUserProject() {
-<span class="nc" id="L67">        User user = securityFacade.assertAndGetCurrentUser();</span>
-<span class="nc" id="L68">        return projectDao.getUserProject(user.getId());</span>
+<span class="nc" id="L69">        User user = securityFacade.assertAndGetCurrentUser();</span>
+<span class="nc" id="L70">        return projectDao.getUserProject(user.getId());</span>
     }
 
     /**
@@ -76,15 +78,15 @@ import org.slf4j.LoggerFactory;
      * @return the new persisted project
      */
     public Project createNewProject(Project project) {
-<span class="nc" id="L79">        logger.debug(&quot;Create new project: {}&quot;, project);</span>
-<span class="nc" id="L80">        Card rootCard = cardFacade.initNewRootCard();</span>
-<span class="nc" id="L81">        project.setRootCard(rootCard);</span>
-<span class="nc" id="L82">        rootCard.setRootCardProject(project);</span>
+<span class="nc" id="L81">        logger.debug(&quot;Create new project: {}&quot;, project);</span>
+<span class="nc" id="L82">        Card rootCard = cardFacade.initNewRootCard();</span>
+<span class="nc" id="L83">        project.setRootCard(rootCard);</span>
+<span class="nc" id="L84">        rootCard.setRootCardProject(project);</span>
 
-<span class="nc" id="L84">        User user = securityFacade.assertAndGetCurrentUser();</span>
-<span class="nc" id="L85">        this.addMember(project, user);</span>
+<span class="nc" id="L86">        User user = securityFacade.assertAndGetCurrentUser();</span>
+<span class="nc" id="L87">        this.addMember(project, user);</span>
 
-<span class="nc" id="L87">        return projectDao.createProject(project);</span>
+<span class="nc" id="L89">        return projectDao.createProject(project);</span>
     }
 
     // *********************************************************************************************
@@ -100,17 +102,17 @@ import org.slf4j.LoggerFactory;
      * @return the brand new member
      */
     public TeamMember addMember(Project project, User user) {
-<span class="nc" id="L103">        logger.debug(&quot;Add member {} in {}&quot;, user, project);</span>
-<span class="nc" id="L104">        TeamMember teamMember = new TeamMember();</span>
+<span class="nc" id="L105">        logger.debug(&quot;Add member {} in {}&quot;, user, project);</span>
+<span class="nc" id="L106">        TeamMember teamMember = new TeamMember();</span>
 
         // todo check if user is already member of the team
-<span class="nc" id="L107">        teamMember.setUser(user);</span>
-<span class="nc" id="L108">        teamMember.setProject(project);</span>
-<span class="nc" id="L109">        project.getTeamMembers().add(teamMember);</span>
-<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (user != null) {</span>
-<span class="nc" id="L111">            user.getTeamMembers().add(teamMember);</span>
+<span class="nc" id="L109">        teamMember.setUser(user);</span>
+<span class="nc" id="L110">        teamMember.setProject(project);</span>
+<span class="nc" id="L111">        project.getTeamMembers().add(teamMember);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (user != null) {</span>
+<span class="nc" id="L113">            user.getTeamMembers().add(teamMember);</span>
         }
-<span class="nc" id="L113">        return teamMember;</span>
+<span class="nc" id="L115">        return teamMember;</span>
     }
 
     /**
@@ -121,10 +123,10 @@ import org.slf4j.LoggerFactory;
      * @return all members of the project team
      */
     public List&lt;TeamMember&gt; getTeamMembers(Long id) {
-<span class="nc" id="L124">        Project project = projectDao.getProject(id);</span>
-<span class="nc" id="L125">        logger.debug(&quot;Get team members: {}&quot;, project);</span>
-<span class="nc" id="L126">        securityFacade.assertIsMember(project);</span>
-<span class="nc" id="L127">        return project.getTeamMembers();</span>
+<span class="nc" id="L126">        Project project = projectDao.getProject(id);</span>
+<span class="nc" id="L127">        logger.debug(&quot;Get team members: {}&quot;, project);</span>
+<span class="nc" id="L128">        securityFacade.assertIsMember(project);</span>
+<span class="nc" id="L129">        return project.getTeamMembers();</span>
     }
 
     /**
@@ -134,10 +136,31 @@ import org.slf4j.LoggerFactory;
      * @param email send invitation to this address
      */
     public void invite(Long projectId, String email) {
-<span class="nc" id="L137">        Project project = projectDao.getProject(projectId);</span>
-<span class="nc" id="L138">        logger.debug(&quot;Invite {} to join {}&quot;, email, project);</span>
-<span class="nc" id="L139">        securityFacade.assertProjectWriteRight(project);</span>
-<span class="nc" id="L140">        tokenFacade.sendMembershipInvitation(project, email);</span>
-<span class="nc" id="L141">    }</span>
+<span class="nc" id="L139">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L140">        logger.debug(&quot;Invite {} to join {}&quot;, email, project);</span>
+<span class="nc" id="L141">        securityFacade.assertProjectWriteRight(project);</span>
+<span class="nc" id="L142">        tokenFacade.sendMembershipInvitation(project, email);</span>
+<span class="nc" id="L143">    }</span>
+
+    // *********************************************************************************************
+    // cards
+    // *********************************************************************************************
+
+    /**
+     * Get all card definitions of the given project
+     *
+     * @param projectId id of the project
+     *
+     * @return all card definitions of the project
+     */
+    public List&lt;CardDef&gt; getCardDefs(Long projectId) {
+<span class="nc" id="L157">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L158">        logger.debug(&quot;Get card defs of project {}&quot;, project);</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        if (project == null) {</span>
+<span class="nc" id="L160">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+<span class="nc" id="L162">        return project.getElementsToBeDefined();</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

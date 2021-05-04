@@ -242,7 +242,7 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;/UpdatePassword&quot;)
     public void updateLocalAccountPassword(AuthInfo authInfo) {
-<span class="fc" id="L245">        logger.debug(&quot;Update local acocunt \&quot;{}\&quot; password&quot;, authInfo.getIdentifier());</span>
+<span class="fc" id="L245">        logger.debug(&quot;Update local account \&quot;{}\&quot; password&quot;, authInfo.getIdentifier());</span>
 <span class="fc" id="L246">        userManagement.updatePassword(authInfo);</span>
 <span class="fc" id="L247">    }</span>
 

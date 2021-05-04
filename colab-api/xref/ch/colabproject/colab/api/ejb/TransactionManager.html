@@ -134,8 +134,8 @@
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> beforeCompletion() {
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>         <em class="jxr_comment">//make sure to flush everything to database</em>
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>         em.flush();
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>         logger.info(<span class="jxr_string">"Before transactionCompletion: "</span>
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>             + <span class="jxr_string">"This method is not called for each transaction, why ???"</span>);
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>         logger.info(
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>             <span class="jxr_string">"Before transactionCompletion: This method is not called for each transaction, why ???"</span>);
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>             <strong class="jxr_keyword">this</strong>.precomputeMessage();
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         } <strong class="jxr_keyword">catch</strong> (EncodeException ex) {
