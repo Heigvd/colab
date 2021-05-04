@@ -48,7 +48,6 @@ public class CardDao {
     }
 
     /**
-     *
      * @param id id of the card to fetch
      *
      * @return the card with the given id or null if such a card does not exists
@@ -66,7 +65,7 @@ public class CardDao {
      * @return the new persisted card
      */
     public Card createCard(Card card) {
-        logger.debug("create card");
+        logger.debug("create card {}", card);
         em.persist(card);
         return card;
     }
@@ -76,12 +75,12 @@ public class CardDao {
      *
      * @param card card as supply by clients (ie not managed)
      *
-     * @return return updated managed card
+     * @return updated managed card
      *
      * @throws ColabMergeException if updating the card failed
      */
     public Card updateCard(Card card) throws ColabMergeException {
-        logger.debug("update card #{}", card.getId());
+        logger.debug("update card {}", card);
         Card mCard = this.getCard(card.getId());
 
         mCard.merge(card);

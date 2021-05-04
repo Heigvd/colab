@@ -44,16 +44,14 @@ public class CardContentDao {
     public List<CardContent> getAllCardContent() {
         logger.debug("get all card contents");
         TypedQuery<CardContent> query = em.createNamedQuery("CardContent.findAll",
-                CardContent.class);
+            CardContent.class);
         return query.getResultList();
     }
 
     /**
-     *
      * @param id id of the card content to fetch
      *
-     * @return the card content with the given id or null if such a card content
-     *         does not exists
+     * @return the card content with the given id or null if such a card content does not exists
      */
     public CardContent getCardContent(Long id) {
         logger.debug("get card content #{}", id);
@@ -68,7 +66,7 @@ public class CardContentDao {
      * @return the new persisted card content
      */
     public CardContent createCardContent(CardContent cardContent) {
-        logger.debug("create card content");
+        logger.debug("create card content {}", cardContent);
         em.persist(cardContent);
         return cardContent;
     }
@@ -78,12 +76,12 @@ public class CardContentDao {
      *
      * @param cardContent card content as supply by clients (ie not managed)
      *
-     * @return return updated managed card content
+     * @return updated managed card content
      *
      * @throws ColabMergeException if updating the card content failed
      */
     public CardContent updateCardContent(CardContent cardContent) throws ColabMergeException {
-        logger.debug("update card content #{}", cardContent.getId());
+        logger.debug("update card content {}", cardContent);
         CardContent mCardContent = this.getCardContent(cardContent.getId());
 
         mCardContent.merge(cardContent);

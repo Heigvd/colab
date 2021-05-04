@@ -74,7 +74,7 @@ public class CardDef implements ColabEntity, WithWebsocketChannels {
      * <li>a shared abstract model</li>
      * </ul>
      */
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private ConcretizationCategory authorityHolder;
 
     /**

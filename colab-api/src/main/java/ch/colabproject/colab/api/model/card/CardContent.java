@@ -63,21 +63,21 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
     /**
      * Status
      */
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private CardContentStatus status;
 
     /**
      * Completion level
      */
     // TODO sandra : vérifier si contrainte 0 - 100 ok
-    @Min(value = 0)
-    @Max(value = 100)
+    @Min(0)
+    @Max(100)
     private int completionLevel;
 
     /**
      * Completion mode : how the completion level is filled
      */
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private CardContentCompletionMode completionMode;
 
     /**

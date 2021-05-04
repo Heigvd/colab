@@ -13,7 +13,6 @@ import ch.colabproject.colab.api.persistence.card.CardDefDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
-import java.util.Objects;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -93,7 +92,7 @@ public class CardDefController {
     @Deprecated
     @POST
     public Long createCardDef(CardDef cardDef) {
-        logger.debug("create card def {}", Objects.toString(cardDef));
+        logger.debug("create card def {}", cardDef);
         return cardDefDao.createCardDef(cardDef).getId();
     }
 
@@ -120,7 +119,7 @@ public class CardDefController {
      */
     @PUT
     public void updateCardDef(CardDef cardDef) throws ColabMergeException {
-        logger.debug("update card def #{}", cardDef.getId());
+        logger.debug("update card def {}", cardDef);
         cardDefDao.updateCardDef(cardDef);
     }
 
