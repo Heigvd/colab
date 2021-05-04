@@ -17,6 +17,7 @@
     </organization>
 
     <dependencies>
+        <!-- Java runtime metadata analysis -->
         <!-- reflections used for JSON deserialization -->
         <dependency>
             <groupId>org.reflections</groupId>
@@ -24,6 +25,7 @@
             <type>jar</type>
         </dependency>
 
+        <!-- standard binding layer between Java classes and JSON documents -->
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
