@@ -42,7 +42,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvi
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,40,0,0,0,14,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationConfig,3,0,0,0,1,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardDefDao,68,0,0,0,18,0,7,0,7,0
-colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardDao,68,0,0,0,18,0,7,0,7,0
+colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardDao,73,0,2,0,20,0,8,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardContentDao,68,0,0,0,18,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.user,UserDao,117,0,6,0,36,0,13,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.team,Role,18,0,0,0,8,0,6,0,6,0
