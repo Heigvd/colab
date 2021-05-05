@@ -24,6 +24,7 @@ import Clickable from '../../common/Clickable';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import CardEditor from '../../cards/CardEditor';
 import VariantSelector from '../../cards/VariantSelector';
+import CardDefList from '../../cards/carddefs/CardDefList';
 
 const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   const history = useHistory();
@@ -171,6 +172,7 @@ export default (): JSX.Element => {
                 Project
               </SecondLevelLink>
               <SecondLevelLink to="/hierarchy">Hierarchy</SecondLevelLink>
+              <SecondLevelLink to="/defs">Card Types</SecondLevelLink>
             </nav>
             <IconButton
               iconSize="2x"
@@ -186,6 +188,9 @@ export default (): JSX.Element => {
           <Switch>
             <Route exact path="/hierarchy">
               <Hierachy rootId={root.id} />
+            </Route>
+            <Route exact path="/defs">
+              <CardDefList />
             </Route>
             <Route exact path="/card/:id">
               <CardWrapper>{card => <CardThumbWithSelector depth={2} card={card} />}</CardWrapper>

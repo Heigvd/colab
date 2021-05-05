@@ -13,6 +13,7 @@ import IconButton from '../../common/IconButton';
 import { useAppDispatch } from '../../../store/hooks';
 import { faTimes, faPlus, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
+import { entityIs } from 'colab-rest-client';
 
 export interface Props {
   afterCreation?: (id: number) => void;
@@ -65,16 +66,18 @@ export default ({ afterCreation }: Props): JSX.Element => {
           onClick={() => {
             dispatch(
               API.createCardDef({
-                '@class': 'CardDef',
-                projectId: project.id,
-                title: title,
-                purpose: purpose,
+                cardDef: {
+                  '@class': 'CardDef',
+                  title: title,
+                  purpose: purpose,
+                },
+                projectId: project.id!,
               }),
             ).then(action => {
               if (action.meta.requestStatus === 'fulfilled') {
                 if (afterCreation != null) {
-                  if (action.meta.arg.id) {
-                    afterCreation(action.meta.arg.id);
+                  if (entityIs(action.payload, 'CardDef')) {
+                    afterCreation(action.payload.id!);
                   }
                 }
               }

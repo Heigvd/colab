@@ -62,7 +62,6 @@ export const fullPageStyle = cx(
     display: 'flex',
     flexDirection: 'column',
     position: 'fixed',
-    zIndex: 999,
     top: 0,
     right: 0,
     bottom: 0,

@@ -76,7 +76,7 @@ export default ({ card, children }: Props): JSX.Element => {
           margin: '10px',
           display: 'flex',
           alignItems: 'center',
-          '& > *': {
+          '& > div': {
             flexGrow: 1,
           },
         })}

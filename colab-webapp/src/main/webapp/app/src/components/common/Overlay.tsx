@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import * as React from 'react';
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { fullPageOverlayStyle } from '../styling/style';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 
 export default ({ children }: Props): JSX.Element => {
   return (
-    <div className={fullPageOverlayStyle}>
+    <div className={cx(fullPageOverlayStyle, css({ zIndex: 999 }))}>
       <div
         className={css({
           margin: 'auto',

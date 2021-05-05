@@ -350,18 +350,16 @@ export const getCardDef = createAsyncThunk('cardDef/get', async (id: number) => 
   return await restClient.CardDefController.getCardDef(id);
 });
 
-export const createCardDef = createAsyncThunk('cardDef/create', async (cardDef: CardDef) => {
-  if (cardDef.projectId != null) {
+export const createCardDef = createAsyncThunk(
+  'cardDef/create',
+  async ({ projectId, cardDef }: { cardDef: CardDef; projectId: number }) => {
     // TODO : one step REST method : :projectId/CreateTypeDef with body
-    const c = await restClient.CardDefController.createNewCardDef(cardDef.projectId);
-    cardDef.id = c.id;
+    const c = await restClient.CardDefController.createNewCardDef(projectId);
 
-    await restClient.CardDefController.updateCardDef(cardDef);
+    await restClient.CardDefController.updateCardDef({ ...cardDef, ...c });
     return cardDef.id;
-  } else {
-    return undefined;
-  }
-});
+  },
+);
 
 export const updateCardDef = createAsyncThunk('cardDef/update', async (cardDef: CardDef) => {
   await restClient.CardDefController.updateCardDef(cardDef);

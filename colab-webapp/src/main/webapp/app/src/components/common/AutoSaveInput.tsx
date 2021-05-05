@@ -16,17 +16,21 @@ type State = {
 };
 
 export interface Props {
+  label?: string;
   value: string;
   onChange: (newValue: string) => void;
   placeholder?: string;
   inputType?: 'INPUT' | 'TEXTAREA';
+  delay?: number;
 }
 
 export default ({
+  label,
   value,
   onChange,
   placeholder = 'no value',
   inputType = 'INPUT',
+  delay = 500,
 }: Props): JSX.Element => {
   const [state, setState] = React.useState<State>({
     status: 'DISPLAY',
@@ -44,8 +48,8 @@ export default ({
     () =>
       debounce((value: string) => {
         onChangeRef.current(value);
-      }, 1000),
-    [],
+      }, delay),
+    [delay],
   );
 
   const onInternalChangeCb = React.useCallback(
@@ -60,19 +64,22 @@ export default ({
   if (state.status === 'EDIT') {
     return (
       <div>
-        {inputType === 'INPUT' ? (
-          <input
-            placeholder={placeholder}
-            value={state.currentValue}
-            onChange={onInternalChangeCb}
-          />
-        ) : (
-          <textarea
-            placeholder={placeholder}
-            value={state.currentValue}
-            onChange={onInternalChangeCb}
-          />
-        )}
+        <label>
+          {label}
+          {inputType === 'INPUT' ? (
+            <input
+              placeholder={placeholder}
+              value={state.currentValue}
+              onChange={onInternalChangeCb}
+            />
+          ) : (
+            <textarea
+              placeholder={placeholder}
+              value={state.currentValue}
+              onChange={onInternalChangeCb}
+            />
+          )}
+        </label>
 
         <IconButton
           icon={faTimes}
@@ -89,6 +96,7 @@ export default ({
   } else {
     return (
       <div>
+        <label>{label}</label>
         {state.currentValue ? state.currentValue : <i>{placeholder}</i>}
         <IconButton
           icon={faPenNib}
