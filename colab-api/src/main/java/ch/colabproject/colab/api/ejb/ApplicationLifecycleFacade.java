@@ -62,11 +62,12 @@ public class ApplicationLifecycleFacade {
                 );
                 logger.info("New admin user: {}", admin);
             } catch (HttpErrorMessage ex) {
-                logger.error("Fails to create default amdin user. "
-                    + "Does non-admin user exists with same username or email address");
+                logger.error(
+                    "Fails to create default amdin user. Does non-admin user exists with same username or email address");
             } catch (RuntimeException ex) {
-                logger.error("Fails to create default amdin user for some unknown reason."
-                    + " Please check config", ex);
+                logger.error(
+                    "Fails to create default amdin user for some unknown reason. Please check config",
+                    ex);
             }
         }
     }

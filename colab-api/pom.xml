@@ -47,6 +47,7 @@
             <type>jar</type>
         </dependency>
 
+        <!-- standard binding layer between Java classes and JSON documents -->
         <!-- Used by the polymophic-deserialization hack -->
         <!--<dependency>
             <groupId>org.eclipse</groupId>

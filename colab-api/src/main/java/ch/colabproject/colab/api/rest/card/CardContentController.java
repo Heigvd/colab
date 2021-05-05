@@ -11,11 +11,9 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
-import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
-import java.util.Objects;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -50,16 +48,10 @@ public class CardContentController {
     private CardContentDao cardContentDao;
 
     /**
-     * The card persistence manager
-     */
-    @Inject
-    private CardDao cardDao;
-
-    /**
      * The card-related logic
      */
     @Inject
-    private CardFacade facade;
+    private CardFacade cardFacade;
 
     /**
      * Retrieve the list of all card contents. This is available to admin only
@@ -102,7 +94,7 @@ public class CardContentController {
     @Deprecated
     @POST
     public Long createCardContent(CardContent cardContent) {
-        logger.debug("Create card content {}", Objects.toString(cardContent));
+        logger.debug("Create card content {}", cardContent);
         return cardContentDao.createCardContent(cardContent).getId();
     }
 
@@ -117,7 +109,7 @@ public class CardContentController {
     @Path("create/{cardId}")
     public CardContent createNewCardContent(@PathParam("cardId") Long cardId) {
         logger.debug("create a new card content for the card #{}", cardId);
-        return facade.createNewCardContent(cardId);
+        return cardFacade.createNewCardContent(cardId);
     }
 
     /**
@@ -129,7 +121,7 @@ public class CardContentController {
      */
     @PUT
     public void updateCardContent(CardContent cardContent) throws ColabMergeException {
-        logger.debug("Update card content #{}", cardContent.getId());
+        logger.debug("Update card content {}", cardContent);
         cardContentDao.updateCardContent(cardContent);
     }
 
@@ -156,11 +148,7 @@ public class CardContentController {
     @Path("{id}/Subcards")
     public List<Card> getSubCards(@PathParam("id") Long parentId) {
         logger.debug("Get parent #{} sub cards", parentId);
-        return cardDao.getSubCards(parentId);
-
-        // an alternative would be to define a method in the facade
-        // cardContentDao.getCardContent(id).getSubCards()
-        // FIXME see what is the best
+        return cardFacade.getSubCards(parentId);
     }
 
 }

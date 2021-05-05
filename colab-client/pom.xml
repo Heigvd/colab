@@ -7,7 +7,7 @@
         <artifactId>colab</artifactId>
         <version>0.1</version>
     </parent>
-    
+
     <artifactId>colab-client</artifactId>
     <packaging>jar</packaging>
 
@@ -17,7 +17,10 @@
     </organization>
 
     <dependencies>
+        <!--*****************************************************************-->
         <!-- PROVIDED DEPENDENCIES -->
+
+        <!-- Jakarta EE Platform API -->
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
@@ -31,6 +34,7 @@
 
         <!--*****************************************************************-->
         <!-- DEPENDENCIES -->
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>colab-api</artifactId>

@@ -7,10 +7,12 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -139,4 +141,25 @@ public class ProjectFacade {
         securityFacade.assertProjectWriteRight(project);
         tokenFacade.sendMembershipInvitation(project, email);
     }
+
+    // *********************************************************************************************
+    // cards
+    // *********************************************************************************************
+
+    /**
+     * Get all card definitions of the given project
+     *
+     * @param projectId id of the project
+     *
+     * @return all card definitions of the project
+     */
+    public List<CardDef> getCardDefs(Long projectId) {
+        Project project = projectDao.getProject(projectId);
+        logger.debug("Get card defs of project {}", project);
+        if (project == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return project.getElementsToBeDefined();
+    }
+
 }

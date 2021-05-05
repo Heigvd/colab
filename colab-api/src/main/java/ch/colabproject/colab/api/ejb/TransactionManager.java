@@ -126,8 +126,8 @@ public class TransactionManager implements Serializable {
     public void beforeCompletion() {
         //make sure to flush everything to database
         em.flush();
-        logger.info("Before transactionCompletion: "
-            + "This method is not called for each transaction, why ???");
+        logger.info(
+            "Before transactionCompletion: This method is not called for each transaction, why ???");
         try {
             this.precomputeMessage();
         } catch (EncodeException ex) {

@@ -242,7 +242,7 @@ public class UserController {
     @PUT
     @Path("/UpdatePassword")
     public void updateLocalAccountPassword(AuthInfo authInfo) {
-        logger.debug("Update local acocunt \"{}\" password", authInfo.getIdentifier());
+        logger.debug("Update local account \"{}\" password", authInfo.getIdentifier());
         userManagement.updatePassword(authInfo);
     }
 

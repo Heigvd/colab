@@ -32,10 +32,11 @@
         </profile>
     </profiles>
 
-
-
     <dependencies>
+        <!--*****************************************************************-->
         <!-- PROVIDED DEPENDENCIES -->
+
+        <!-- Jakarta EE Platform API -->
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
@@ -43,13 +44,15 @@
 
         <!--*****************************************************************-->
         <!-- DEPENDENCIES -->
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>client-generator-model</artifactId>
             <version>${project.version}</version>
         </dependency>
 
-        <!--  reflections used for JSON deserialization -->
+        <!-- Java runtime metadata analysis -->
+        <!-- reflections used for JSON deserialization -->
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>

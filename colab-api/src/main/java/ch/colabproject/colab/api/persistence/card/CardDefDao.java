@@ -47,26 +47,9 @@ public class CardDefDao {
     }
 
     /**
-     * Get all card definitions to be defined in a project
-     *
-     * @param projectId project ID
-     * @return list of card definitions
-     */
-    public List<CardDef> getProjectCardDefs(Long projectId) {
-        logger.debug("get all card defs of the project #{}", projectId);
-        TypedQuery<CardDef> query = em.createNamedQuery("CardDef.findCardDefByProject",
-                CardDef.class);
-        query.setParameter("projectId", projectId);
-
-        return query.getResultList();
-    }
-
-    /**
-     *
      * @param id id of the card def to fetch
      *
-     * @return the card def with the given id or null if such a card def does not
-     *         exists
+     * @return the card def with the given id or null if such a card def does not exists
      */
     public CardDef getCardDef(Long id) {
         logger.debug("get card def #{}", id);
@@ -81,7 +64,7 @@ public class CardDefDao {
      * @return the new persisted card def
      */
     public CardDef createCardDef(CardDef cardDef) {
-        logger.debug("create card def");
+        logger.debug("create card def {}", cardDef);
         em.persist(cardDef);
         return cardDef;
     }
@@ -91,12 +74,12 @@ public class CardDefDao {
      *
      * @param cardDef card def as supply by clients (ie not managed)
      *
-     * @return return updated managed card def
+     * @return updated managed card def
      *
      * @throws ColabMergeException if updating the card def failed
      */
     public CardDef updateCardDef(CardDef cardDef) throws ColabMergeException {
-        logger.debug("update card def #{}", cardDef.getId());
+        logger.debug("update card def {}", cardDef);
         CardDef mCardDef = this.getCardDef(cardDef.getId());
 
         mCardDef.merge(cardDef);

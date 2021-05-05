@@ -37,9 +37,6 @@ import javax.validation.constraints.Min;
 //TODO review accurate constraints when stabilized
 @Entity
 @NamedQuery(name = "CardContent.findAll", query = "SELECT c FROM CardContent c")
-@NamedQuery(
-        name = "CardContent.findCardContentByCard",
-        query = "SELECT c from CardContent c JOIN c.card a WHERE a.id = :cardId")
 public class CardContent implements ColabEntity, WithWebsocketChannels {
 
     /**
@@ -66,21 +63,21 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
     /**
      * Status
      */
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private CardContentStatus status;
 
     /**
      * Completion level
      */
     // TODO sandra : vérifier si contrainte 0 - 100 ok
-    @Min(value = 0)
-    @Max(value = 100)
+    @Min(0)
+    @Max(100)
     private int completionLevel;
 
     /**
      * Completion mode : how the completion level is filled
      */
-    @Enumerated(value = EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     private CardContentCompletionMode completionMode;
 
     /**
