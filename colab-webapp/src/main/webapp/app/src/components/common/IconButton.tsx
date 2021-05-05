@@ -10,6 +10,7 @@ import { iconButton, linkStyle, iconStyle } from '../styling/style';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
 import { cx } from '@emotion/css';
+import Clickable from './Clickable';
 
 export interface IconButtonProps {
   onClick?: () => void;
@@ -32,43 +33,16 @@ export default ({
   iconColor,
   iconSize,
 }: IconButtonProps): JSX.Element => {
-  /**
-   * Pressing enter or space simulates click
-   */
-  const keyDownCb = React.useCallback(
-    (event: React.KeyboardEvent<HTMLSpanElement>) => {
-      if (onClick != null) {
-        if (event.code === 'Space' || event.key === 'Enter') {
-          onClick();
-        }
-      }
-    },
-    [onClick],
-  );
-
-  const onClickCb = React.useCallback(() => {
-    if (onClick != null) {
-      onClick();
-    }
-  }, [onClick]);
-
   return (
-    <span
-      tabIndex={0}
-      className={
-        className
-          ? cx(onClick != null ? linkStyle : iconStyle, className)
-          : onClick != null
-          ? linkStyle
-          : iconStyle
-      }
-      onClick={onClickCb}
-      onKeyDown={keyDownCb}
+    <Clickable
+      onClick={onClick}
       title={title}
+      className={cx(iconStyle, className)}
+      clickableClassName={cx(linkStyle, className)}
     >
       {reverseOrder ? children : null}
       <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} className={iconButton} />
       {!reverseOrder ? children : null}
-    </span>
+    </Clickable>
   );
 };

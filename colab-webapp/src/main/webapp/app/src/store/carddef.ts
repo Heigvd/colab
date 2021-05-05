@@ -4,17 +4,17 @@
  *
  * Licensed under the MIT License
  */
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {CardDef} from 'colab-rest-client';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { CardDef } from 'colab-rest-client';
 import * as API from '../API/api';
-import {mapById} from '../helper';
+import { mapById } from '../helper';
 
 export interface CardDefState {
   status: 'UNSET' | 'LOADING' | 'READY';
   carddefs: {
-    [id: number]: CardDef | null
-  }
-};
+    [id: number]: CardDef | null;
+  };
+}
 
 const initialState: CardDefState = {
   status: 'UNSET',
@@ -27,9 +27,7 @@ const cardsSlice = createSlice({
   reducers: {
     updateCardDef: (state, action: PayloadAction<CardDef>) => {
       if (action.payload.id != null) {
-        if (state.carddefs[action.payload.id]) {
-          state.carddefs[action.payload.id] = action.payload;
-        }
+        state.carddefs[action.payload.id] = action.payload;
       }
     },
     removeCardDef: (state, action: PayloadAction<number>) => {
@@ -44,8 +42,15 @@ const cardsSlice = createSlice({
       .addCase(API.initCardDefs.fulfilled, (_state, action) => {
         return {
           status: 'READY',
-          carddefs: mapById(action.payload)
+          carddefs: mapById(action.payload),
         };
+      })
+      .addCase(API.getProjectCardDefs.pending, state => {
+        state.status = 'LOADING';
+      })
+      .addCase(API.getProjectCardDefs.fulfilled, (state, action) => {
+        (state.status = 'READY'),
+          (state.carddefs = { ...state.carddefs, ...mapById(action.payload) });
       })
       .addCase(API.getCardDef.pending, (state, action) => {
         state.carddefs[action.meta.arg] = null;
@@ -63,6 +68,6 @@ const cardsSlice = createSlice({
       }),
 });
 
-export const {updateCardDef, removeCardDef} = cardsSlice.actions;
+export const { updateCardDef, removeCardDef } = cardsSlice.actions;
 
 export default cardsSlice.reducer;

@@ -10,9 +10,10 @@ import * as React from 'react';
 import { HashRouter as Router, Switch, Route, useParams } from 'react-router-dom';
 import UserProfile from './UserProfile';
 import { SecondLevelLink } from '../common/Link';
-import { useAppSelector, useCurrentUser } from '../../store/hooks';
+import { useAppSelector } from '../../store/hooks';
 import { entityIs, Account } from 'colab-rest-client';
 import LocalAccount from './LocalAccount';
+import { useCurrentUser } from '../../selectors/userSelector';
 
 function accountTitle(account: Account) {
   if (entityIs(account, 'LocalAccount')) {

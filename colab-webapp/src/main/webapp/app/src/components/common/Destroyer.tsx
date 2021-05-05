@@ -9,20 +9,24 @@ import * as React from 'react';
 import { faTimes, faCheck, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import IconButton from './IconButton';
 
-export function Destroyer({ onDelete }: { onDelete: () => void }): JSX.Element {
+export interface Props {
+  title?: string;
+  onDelete: () => void;
+}
+export function Destroyer({ onDelete, title }: Props): JSX.Element {
   const [waitDeleteConfirm, setConfirm] = React.useState(false);
 
   return (
-    <div>
+    <div title={title || 'destroy'}>
       {waitDeleteConfirm ? (
         <div>
-          <IconButton title="destroy" icon={faTrashAlt} />:
-          <IconButton title="cancel" icon={faTimes} onClick={() => setConfirm(false)} />
-          <IconButton title="confirm destroy" icon={faCheck} onClick={() => onDelete()} />
+          <IconButton icon={faTrashAlt} />:
+          <IconButton title={`cancel ${title}`} icon={faTimes} onClick={() => setConfirm(false)} />
+          <IconButton title={`confirm ${title}`} icon={faCheck} onClick={() => onDelete()} />
         </div>
       ) : (
         <div>
-          <IconButton title="destroy" icon={faTrashAlt} onClick={() => setConfirm(true)} />
+          <IconButton icon={faTrashAlt} onClick={() => setConfirm(true)} />
         </div>
       )}
     </div>

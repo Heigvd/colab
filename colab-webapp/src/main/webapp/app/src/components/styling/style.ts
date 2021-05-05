@@ -29,6 +29,19 @@ export const darkMode = css({
   color: 'var(--fgColor)',
 });
 
+export const semiDarkMode = css({
+  '--bgColor': '#d7d7d7',
+  '--fgColor': '#333',
+  '--hoverBgColor': '#FFF0',
+  '--hoverFgColor': '#999',
+  '--linkColor': 'var(--pictoSteelBlue)',
+  '--linkHoverColor': 'var(--pictoBlue)',
+  '--linkHoverBgColor': '#FFF0',
+  '--focusColor': 'var(--pictoSteelBlue)',
+  backgroundColor: 'var(--bgColor)',
+  color: 'var(--fgColor)',
+});
+
 export const lightMode = css({
   '--bgColor': 'white',
   '--fgColor': '#333333',
@@ -49,6 +62,7 @@ export const fullPageStyle = cx(
     display: 'flex',
     flexDirection: 'column',
     position: 'fixed',
+    zIndex: 999,
     top: 0,
     right: 0,
     bottom: 0,

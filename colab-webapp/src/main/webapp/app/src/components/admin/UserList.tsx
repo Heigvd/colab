@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { useAppDispatch, useCurrentUser } from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
 import { grantAdminRight, revokeAdminRight } from '../../API/api';
 import { css } from '@emotion/css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,6 +19,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { User } from 'colab-rest-client';
 import IconButton from '../common/IconButton';
+import { useCurrentUser } from '../../selectors/userSelector';
 
 const UserComp = ({ user }: { user: User }) => {
   const dispatch = useAppDispatch();

@@ -63,7 +63,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     @Inject
     private ExceptionMapper<Exception> exceptionMapper;
 
-    /**
+     /**
      * Get all method or class annotations matching the given type.
      *
      * @param <T>        type of annotation to search

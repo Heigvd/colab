@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import * as API from '../API/api';
 
 export interface AuthState {
@@ -39,11 +39,11 @@ const authSlice = createSlice({
         if (action.payload.currentUser && action.payload.currentAccount) {
           state.currentUserId = action.payload.currentUser.id || null;
           state.currentAccountId = action.payload.currentAccount.id || null;
-          state.status = 'AUTHENTICATED'
+          state.status = 'AUTHENTICATED';
         } else {
           state.currentUserId = null;
           state.currentAccountId = null;
-          state.status = 'NOT_AUTHENTICATED'
+          state.status = 'NOT_AUTHENTICATED';
         }
       })
       .addCase(API.signOut.pending, state => {

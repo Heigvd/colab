@@ -37,7 +37,7 @@ const userSlice = createSlice({
       delete state.users[action.payload];
     },
     updateAccount: (state, action: PayloadAction<Account>) => {
-      if (action.payload.id != null){
+      if (action.payload.id != null) {
         state.accounts[action.payload.id] = action.payload;
       }
     },
@@ -94,6 +94,6 @@ const userSlice = createSlice({
       }),
 });
 
-export const {updateUser, removeUser, updateAccount, removeAccount } = userSlice.actions;
+export const { updateUser, removeUser, updateAccount, removeAccount } = userSlice.actions;
 
 export default userSlice.reducer;

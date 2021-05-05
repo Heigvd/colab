@@ -17,6 +17,13 @@ import { mapById } from '../helper';
  */
 export type StateStatus = 'NOT_INITIALIZED' | 'LOADING' | 'INITIALIZED';
 
+export interface TeamState {
+  status: StateStatus;
+  members: {
+    [id: number]: TeamMember;
+  };
+}
+
 export interface ProjectState {
   currentUserId: number | undefined;
   status: StateStatus;
@@ -25,14 +32,7 @@ export interface ProjectState {
   projects: {
     [id: number]: Project;
   };
-  teams: {
-    [id: number]: {
-      status: StateStatus;
-      members: {
-        [id: number]: TeamMember;
-      };
-    };
-  };
+  teams: Record<number, TeamState>;
   editing: number | null;
   editingStatus: 'NOT_EDITING' | 'LOADING' | 'READY';
 }
@@ -45,6 +45,17 @@ const initialState: ProjectState = {
   teams: {},
   editing: null,
   editingStatus: 'NOT_EDITING',
+};
+
+const getOrCreateTeamState = (state: ProjectState, projectId: number): TeamState => {
+  const teamState = state.teams[projectId];
+  if (teamState) {
+    return teamState;
+  } else {
+    const ts: TeamState = { status: 'NOT_INITIALIZED', members: {} };
+    state.teams[projectId] = ts;
+    return ts;
+  }
 };
 
 const projectsSlice = createSlice({
@@ -116,16 +127,17 @@ const projectsSlice = createSlice({
       .addCase(API.getProjectTeam.pending, (state, action) => {
         const projectId = action.meta.arg;
         if (projectId) {
-          state.teams[projectId] = state.teams[projectId] || { status: 'NOT_SET', members: {} };
-          state.teams[projectId].status = 'LOADING';
+          const ts = getOrCreateTeamState(state, projectId);
+          ts.status = 'LOADING';
         }
       })
       .addCase(API.getProjectTeam.fulfilled, (state, action) => {
         const projectId = action.meta.arg;
         if (projectId) {
-          state.teams[projectId].status = 'INITIALIZED';
+          const ts = getOrCreateTeamState(state, projectId);
+          ts.status = 'INITIALIZED';
           if (action.payload) {
-            state.teams[projectId].members = mapById(action.payload);
+            ts.members = mapById(action.payload);
           }
         }
       })

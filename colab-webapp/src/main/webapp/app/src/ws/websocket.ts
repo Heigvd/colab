@@ -4,22 +4,22 @@
  *
  * Licensed under the MIT License
  */
-import {WsUpdateMessage, WsChannelUpdate, entityIs, IndexEntry, TypeMap} from 'colab-rest-client';
-import {dispatch} from '../store/store';
+import { WsUpdateMessage, WsChannelUpdate, entityIs, IndexEntry, TypeMap } from 'colab-rest-client';
+import { dispatch } from '../store/store';
 import * as AdminActions from '../store/admin';
 import * as ErrorActions from '../store/error';
 import * as ProjectActions from '../store/project';
 import * as CardActions from '../store/card';
 import * as CardDefActions from '../store/carddef';
 import * as UserActions from '../store/user';
-import {initSocketId} from '../API/api';
+import { initSocketId } from '../API/api';
 import logger from '../logger';
 
 /**
  * Does the given index entry represent the given type ?
  */
 const indexEntryIs = <T extends keyof TypeMap>(entry: IndexEntry, klass: T) => {
-  return entityIs({'@class': entry.type, id: entry.id}, klass);
+  return entityIs({ '@class': entry.type, id: entry.id }, klass);
 };
 
 const onUpdate = (event: WsUpdateMessage) => {
@@ -68,12 +68,12 @@ const onUpdate = (event: WsUpdateMessage) => {
     } else {
       //If next line is erroneous, it means a type of WsMessage is not handled
       checkUnreachable(item);
-//      dispatch(
-//        ErrorActions.addError({
-//          status: 'OPEN',
-//          error: `Unhandled udpated entity: ${item['@class']}#${item.id}`,
-//        }),
-//      );
+      //      dispatch(
+      //        ErrorActions.addError({
+      //          status: 'OPEN',
+      //          error: `Unhandled udpated entity: ${item['@class']}#${item.id}`,
+      //        }),
+      //      );
     }
   }
 };

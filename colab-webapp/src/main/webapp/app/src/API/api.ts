@@ -18,11 +18,11 @@ import {
   CardDef,
 } from 'colab-rest-client';
 
-import {getStore, ColabState} from '../store/store';
+import { getStore, ColabState } from '../store/store';
 
-import {addError} from '../store/error';
-import {hashPassword} from '../SecurityHelper';
-import {createAsyncThunk} from '@reduxjs/toolkit';
+import { addError } from '../store/error';
+import { hashPassword } from '../SecurityHelper';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
 const restClient = ColabClient('', error => {
   if (entityIs(error, 'HttpException')) {
@@ -90,7 +90,7 @@ export const getLoggerLevels = createAsyncThunk('admin/getLoggerLevels', async (
 
 export const changeLoggerLevel = createAsyncThunk(
   'admin/setLoggerLevel',
-  async (payload: {loggerName: string; loggerLevel: string}, thunkApi) => {
+  async (payload: { loggerName: string; loggerLevel: string }, thunkApi) => {
     await restClient.MonitoringController.changeLoggerLevel(
       payload.loggerName,
       payload.loggerLevel,
@@ -106,7 +106,7 @@ export const changeLoggerLevel = createAsyncThunk(
 
 export const requestPasswordReset = createAsyncThunk(
   'auth/restPassword',
-  async (a: {email: string}) => {
+  async (a: { email: string }) => {
     await restClient.UserController.requestPasswordReset(a.email);
   },
 );
@@ -136,7 +136,7 @@ export const signInWithLocalAccount = createAsyncThunk(
 
 export const updateLocalAccountPassword = createAsyncThunk(
   'user/updatePassword',
-  async (a: {email: string; password: string}) => {
+  async (a: { email: string; password: string }) => {
     // first, fetch the authenatication method fot the account
     const authMethod = await restClient.UserController.getAuthMethod(a.email);
 
@@ -180,7 +180,7 @@ export const signUp = createAsyncThunk(
     await restClient.UserController.signUp(signUpInfo);
 
     // go back to login page
-    thunkApi.dispatch(signInWithLocalAccount({identifier: a.email, password: a.password}));
+    thunkApi.dispatch(signInWithLocalAccount({ identifier: a.email, password: a.password }));
   },
 );
 
@@ -207,7 +207,7 @@ export const reloadCurrentUser = createAsyncThunk(
         });
       }
     }
-    return {currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts};
+    return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
   },
 );
 
@@ -313,7 +313,7 @@ export const getProjectTeam = createAsyncThunk('project/team/get', async (projec
 
 export const sendInvitation = createAsyncThunk(
   'project/team/invite',
-  async (payload: {projectId: number; recipient: string}, thunkApi) => {
+  async (payload: { projectId: number; recipient: string }, thunkApi) => {
     if (payload.recipient) {
       await restClient.ProjectController.inviteSomeone(payload.projectId, payload.recipient);
       thunkApi.dispatch(getProjectTeam(payload.projectId));
@@ -321,24 +321,46 @@ export const sendInvitation = createAsyncThunk(
   },
 );
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Card Definitions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * For Admins: get all cardDefs
+ */
 export const initCardDefs = createAsyncThunk('cardDef/init', async () => {
-  return await restClient.CardDefController.getAllCardDefs()
+  return await restClient.CardDefController.getAllCardDefs();
 });
 
-export const getCardDef = createAsyncThunk('cardDef/create', async (id: number) => {
+/**
+ * Get project own cardDefs
+ */
+export const getProjectCardDefs = createAsyncThunk(
+  'cardDef/getProjectOnes',
+  async (project: Project) => {
+    if (project.id) {
+      return await restClient.ProjectController.getCardDefsOfProject(project.id);
+    } else {
+      return [];
+    }
+  },
+);
+
+export const getCardDef = createAsyncThunk('cardDef/get', async (id: number) => {
   return await restClient.CardDefController.getCardDef(id);
 });
 
 export const createCardDef = createAsyncThunk('cardDef/create', async (cardDef: CardDef) => {
-  return await restClient.CardDefController.createCardDef({
-    ...cardDef,
-    id: undefined,
-  });
+  if (cardDef.projectId != null) {
+    // TODO : one step REST method : :projectId/CreateTypeDef with body
+    const c = await restClient.CardDefController.createNewCardDef(cardDef.projectId);
+    cardDef.id = c.id;
+
+    await restClient.CardDefController.updateCardDef(cardDef);
+    return cardDef.id;
+  } else {
+    return undefined;
+  }
 });
 
 export const updateCardDef = createAsyncThunk('cardDef/update', async (cardDef: CardDef) => {
@@ -351,10 +373,6 @@ export const deleteCardDef = createAsyncThunk('cardDef/delete', async (cardDef: 
   }
 });
 
-
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cards
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -363,7 +381,7 @@ export const initCards = createAsyncThunk('card/init', async () => {
   return await restClient.CardController.getAllCards();
 });
 
-export const getCard = createAsyncThunk('card/create', async (id: number) => {
+export const getCard = createAsyncThunk('card/get', async (id: number) => {
   return await restClient.CardController.getCard(id);
 });
 
@@ -373,6 +391,15 @@ export const createCard = createAsyncThunk('card/create', async (card: Card) => 
     id: undefined,
   });
 });
+
+export const createSubCard = createAsyncThunk(
+  'card/createSubCard',
+  async ({ parent, cardDefId }: { parent: CardContent; cardDefId: number }) => {
+    if (parent.id != null) {
+      return await restClient.CardController.createNewCard(parent.id, cardDefId);
+    }
+  },
+);
 
 export const updateCard = createAsyncThunk('card/update', async (card: Card) => {
   await restClient.CardController.updateCard(card);
@@ -384,20 +411,44 @@ export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => 
   }
 });
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Card Contents
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getCardContent = createAsyncThunk('cardcontent/get', async (id: number) => {
+  return await restClient.CardContentController.getCardContent(id);
+});
 
 export const getCardContents = createAsyncThunk('cardcontent/getByCard', async (cardId: number) => {
   return await restClient.CardController.getContentVariantsOfCard(cardId);
 });
 
-export const updateCardContent = createAsyncThunk('cardcontent/update', async (cardContent: CardContent) => {
-  return await restClient.CardContentController.updateCardContent(cardContent);
-});
+export const createCardContentVariant = createAsyncThunk(
+  'cardcontent/create',
+  async (cardId: number) => {
+    return await restClient.CardContentController.createNewCardContent(cardId);
+  },
+);
 
-export const createCardContentVariant = createAsyncThunk('cardcontent/create', async (cardId: number) => {
-  return await restClient.CardContentController.createNewCardContent(cardId);
-});
+export const updateCardContent = createAsyncThunk(
+  'cardcontent/update',
+  async (cardContent: CardContent) => {
+    return await restClient.CardContentController.updateCardContent(cardContent);
+  },
+);
 
+export const deleteCardContent = createAsyncThunk(
+  'cardcontent/delete',
+  async (cardContent: CardContent) => {
+    if (cardContent.id != null) {
+      return await restClient.CardContentController.deleteCardContent(cardContent.id);
+    }
+  },
+);
+
+export const getSubCards = createAsyncThunk(
+  'cardcontent/getSubs',
+  async (cardContentId: number) => {
+    return await restClient.CardContentController.getSubCards(cardContentId);
+  },
+);

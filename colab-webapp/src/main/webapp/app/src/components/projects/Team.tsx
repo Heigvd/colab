@@ -61,11 +61,12 @@ export default (props: Props): JSX.Element => {
       status: 'NOT_INITIALIZED',
     };
     const projectId = props.project.id;
-
-    if (projectId != null && state.projects.teams[projectId]) {
+    if (projectId != null) {
       const team = state.projects.teams[projectId];
-      r.status = team.status;
-      r.members = Object.values(team.members);
+      if (team) {
+        r.status = team.status;
+        r.members = Object.values(team.members);
+      }
     }
 
     return r;

@@ -41,6 +41,7 @@ const ProjectDisplay = ({ project }: Props) => {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
+          padding: '10px',
         })}
       >
         <span className={css({})}>Project #{project.id}</span>
@@ -69,6 +70,7 @@ const ProjectDisplay = ({ project }: Props) => {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
+          padding: '10px',
         })}
       >
         <InlineLink to={`/editor/${project.id}`}>
@@ -139,7 +141,14 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
 
 export const UserProjects = (): JSX.Element => {
   const projects = useAppSelector(state =>
-    state.projects.mine.map(projectId => state.projects.projects[projectId]),
+    state.projects.mine.flatMap(projectId => {
+      const p = state.projects.projects[projectId];
+      if (p) {
+        return [p];
+      } else {
+        return [];
+      }
+    }),
   );
 
   const status = useAppSelector(state => state.projects.status);

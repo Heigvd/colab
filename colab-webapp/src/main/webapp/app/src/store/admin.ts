@@ -51,14 +51,17 @@ const adminSlice = createSlice({
         });
 
         if (index >= 0) {
-          // channel exists
-          const newCount = state.occupiedChannels[index].count + count;
-          if (newCount > 0) {
-            // update channel
-            state.occupiedChannels[index].count = newCount;
-          } else {
-            // remove channel
-            state.occupiedChannels.splice(index, 1);
+          const found = state.occupiedChannels[index];
+          if (found != null) {
+            // channel exists
+            const newCount = found.count + count;
+            if (newCount > 0) {
+              // update channel
+              found.count = newCount;
+            } else {
+              // remove channel
+              state.occupiedChannels.splice(index, 1);
+            }
           }
         } else if (count > 0) {
           state.occupiedChannels.push({

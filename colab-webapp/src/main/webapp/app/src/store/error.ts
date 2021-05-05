@@ -23,7 +23,10 @@ const errorsSlice = createSlice({
       state.push(action.payload);
     },
     closeError: (state, action: PayloadAction<number>) => {
-      state[action.payload].status = 'CLOSED';
+      const error = state[action.payload];
+      if (error) {
+        error.status = 'CLOSED';
+      }
     },
   },
   //  extraReducers: builder =>

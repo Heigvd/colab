@@ -9,21 +9,14 @@ import * as React from 'react';
 import Logo from './styling//WhiteLogo';
 
 import * as API from '../API/api';
-import {css, cx} from '@emotion/css';
-import {faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
-import {CardList} from './cards/CardList';
-import {UserProjects} from './projects/ProjectList';
+import { css, cx } from '@emotion/css';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { UserProjects } from './projects/ProjectList';
 import SignInForm from './public/SignIn';
 import SignUpForm from './public/SignUp';
-import {fullPageStyle, darkMode} from './styling/style';
+import { fullPageStyle, darkMode } from './styling/style';
 import Loading from './common/Loading';
-import {
-  useAppDispatch,
-  useCurrentUser,
-  useProject,
-  useAppSelector,
-  useProjectBeingEdited,
-} from '../store/hooks';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 
 import {
   HashRouter as Router,
@@ -35,24 +28,26 @@ import {
 } from 'react-router-dom';
 import Settings from './settings/Settings';
 import Admin from './admin/Admin';
-import {MainMenuLink, InlineLink} from './common/Link';
+import { MainMenuLink, InlineLink } from './common/Link';
 import ForgotPassword from './public/ForgotPassword';
-import {getDisplayName} from '../helper';
+import { getDisplayName } from '../helper';
 import Team from './projects/Team';
 import InlineLoading from './common/InlineLoading';
 import Overlay from './common/Overlay';
 import Editor from './projects/edition/Editor';
 import IconButton from './common/IconButton';
+import { useProjectBeingEdited, useProject } from '../selectors/projectSelector';
+import { useCurrentUser } from '../selectors/userSelector';
 
 /**
  * To read parameters from hash
  */
 const EditorWrapper = () => {
-  const {id} = useParams<{id: string}>();
+  const { id } = useParams<{ id: string }>();
 
   const dispatch = useAppDispatch();
-  const {project, status} = useProject(+id);
-  const {project: editedProject, status: editingStatus} = useProjectBeingEdited();
+  const { project, status } = useProject(+id);
+  const { project: editedProject, status: editingStatus } = useProjectBeingEdited();
 
   if (project === undefined) {
     if (status === 'NOT_INITIALIZED') {
@@ -75,10 +70,10 @@ const EditorWrapper = () => {
  * To read parameters from hash
  */
 const TeamWrapper = () => {
-  const {id} = useParams<{id: string}>();
+  const { id } = useParams<{ id: string }>();
 
   const dispatch = useAppDispatch();
-  const {project, status} = useProject(+id);
+  const { project, status } = useProject(+id);
 
   if (project === undefined) {
     if (status === 'NOT_INITIALIZED') {
@@ -101,11 +96,11 @@ function useQuery() {
 export default (): JSX.Element => {
   const dispatch = useAppDispatch();
 
-  const {currentUser, status: currentUserStatus} = useCurrentUser();
+  const { currentUser, status: currentUserStatus } = useCurrentUser();
 
   const socketId = useAppSelector(state => state.websockets.sessionId);
 
-  const {project: projectBeingEdited} = useProjectBeingEdited();
+  const { project: projectBeingEdited } = useProjectBeingEdited();
 
   const reconnecting =
     socketId == null ? (
@@ -191,9 +186,6 @@ export default (): JSX.Element => {
                   Project {projectBeingEdited.name}
                 </MainMenuLink>
               ) : null}
-              <MainMenuLink exact to="/cards">
-                Cards
-              </MainMenuLink>
               <MainMenuLink to="/settings">Settings</MainMenuLink>
               {currentUser.admin ? <MainMenuLink to="/admin">Admin</MainMenuLink> : null}
             </nav>
@@ -211,15 +203,12 @@ export default (): JSX.Element => {
             className={css({
               flexGrow: 1,
               overflowY: 'auto',
-              '& > *': {padding: '0 30px 30px 30px'},
+              '& > *': { padding: '0 30px 30px 30px' },
             })}
           >
             <Switch>
               <Route exact path="/">
                 <UserProjects />
-              </Route>
-              <Route exact path="/cards">
-                <CardList />
               </Route>
               <Route path="/settings">
                 <Settings />
@@ -244,8 +233,10 @@ export default (): JSX.Element => {
       </Router>
     );
   } else {
-    return (<Overlay>
-      <i>Inconsistent state</i>
-    </Overlay>);
+    return (
+      <Overlay>
+        <i>Inconsistent state</i>
+      </Overlay>
+    );
   }
 };

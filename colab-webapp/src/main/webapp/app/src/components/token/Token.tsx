@@ -8,11 +8,12 @@
 import * as React from 'react';
 import Loading from '../common/Loading';
 import { getRestClient, reloadCurrentUser } from '../../API/api';
-import { useAppDispatch, useCurrentUser } from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
 import { Redirect, useLocation } from 'react-router-dom';
 import { InlineLink } from '../common/Link';
 import { buildLinkWithQueryParam } from '../../helper';
 import Overlay from '../common/Overlay';
+import { useCurrentUser } from '../../selectors/userSelector';
 
 interface TokenProps {
   tokenId: string;

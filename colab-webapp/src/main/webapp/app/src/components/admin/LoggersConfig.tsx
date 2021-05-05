@@ -84,58 +84,62 @@ export default (): JSX.Element => {
         >
           {keys.map(loggerName => {
             const level = levels[loggerName];
-            return (
-              <div
-                key={loggerName}
-                className={css({
-                  display: 'contents',
-                  ':hover': {
-                    color: 'var(--hoverFgColor)',
-                    '& > div:first-child': {
-                      textDecoration: 'underline',
+            if (level != null) {
+              return (
+                <div
+                  key={loggerName}
+                  className={css({
+                    display: 'contents',
+                    ':hover': {
+                      color: 'var(--hoverFgColor)',
+                      '& > div:first-child': {
+                        textDecoration: 'underline',
+                      },
                     },
-                  },
-                })}
-              >
-                <div>{loggerName}</div>
-                {LEVELS.map(lvl => {
-                  const item = (
-                    <span
-                      onClick={() => {
-                        dispatch(
-                          changeLoggerLevel({
-                            loggerName: loggerName,
-                            loggerLevel: lvl,
-                          }),
-                        );
-                      }}
-                      className={cx(linkStyle, css({ marginLeft: '5px' }))}
-                    >
-                      {lvl}
-                    </span>
-                  );
-                  if (level.effectiveLevel !== lvl) {
-                    return (
-                      <div key={lvl} className={levelStyle}>
-                        {item}
-                      </div>
+                  })}
+                >
+                  <div>{loggerName}</div>
+                  {LEVELS.map(lvl => {
+                    const item = (
+                      <span
+                        onClick={() => {
+                          dispatch(
+                            changeLoggerLevel({
+                              loggerName: loggerName,
+                              loggerLevel: lvl,
+                            }),
+                          );
+                        }}
+                        className={cx(linkStyle, css({ marginLeft: '5px' }))}
+                      >
+                        {lvl}
+                      </span>
                     );
-                  } else if (level.effectiveLevel === level.level) {
-                    return (
-                      <div key={lvl} className={selectedStyle}>
-                        {item}
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div key={lvl} className={effectiveStyle}>
-                        {item}
-                      </div>
-                    );
-                  }
-                })}
-              </div>
-            );
+                    if (level.effectiveLevel !== lvl) {
+                      return (
+                        <div key={lvl} className={levelStyle}>
+                          {item}
+                        </div>
+                      );
+                    } else if (level.effectiveLevel === level.level) {
+                      return (
+                        <div key={lvl} className={selectedStyle}>
+                          {item}
+                        </div>
+                      );
+                    } else {
+                      return (
+                        <div key={lvl} className={effectiveStyle}>
+                          {item}
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
+              );
+            } else {
+              return null;
+            }
           })}
         </div>
       </div>
