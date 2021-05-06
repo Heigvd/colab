@@ -38,8 +38,8 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ws,WebsocketEndpoint,134,0,2,0,
 colab-webapp/colab-api,ch.colabproject.colab.api.ws,WebsocketHelper,274,0,12,0,75,0,23,0,17,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ColabConfiguration,47,0,0,0,12,0,11,0,11,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,LiquibaseProducer,13,0,0,0,3,0,3,0,3,0
-colab-webapp/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvider,5,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,40,0,0,0,14,0,4,0,4,0
+colab-webapp/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvider,5,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationConfig,3,0,0,0,1,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardDefDao,68,0,0,0,18,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardDao,73,0,2,0,20,0,8,0,7,0
