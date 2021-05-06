@@ -22,7 +22,7 @@ interface Props {
   showSubcards?: boolean;
 }
 
-export default ({ card, showSubcards = true, variant, variants }: Props): JSX.Element => {
+export default function CardEditor({card, showSubcards = true, variant, variants}: Props): JSX.Element {
   const dispatch = useAppDispatch();
 
   const cardDef = useAppSelector(state => {
@@ -60,8 +60,7 @@ export default ({ card, showSubcards = true, variant, variants }: Props): JSX.El
                 placeholder="grey"
                 inputType="INPUT"
                 value={card.color || ''}
-                onChange={newValue => dispatch(API.updateCard({ ...card, color: newValue }))}
-              />
+                onChange={newValue => dispatch(API.updateCard({...card, color: newValue}))} />
             </div>
 
             {variant != null ? (
@@ -72,10 +71,7 @@ export default ({ card, showSubcards = true, variant, variants }: Props): JSX.El
                   <AutoSaveInput
                     inputType="INPUT"
                     value={variant.title || ''}
-                    onChange={newValue =>
-                      dispatch(API.updateCardContent({ ...variant, title: newValue }))
-                    }
-                  />
+                    onChange={newValue => dispatch(API.updateCardContent({...variant, title: newValue}))} />
                 </div>
               </div>
             ) : null}

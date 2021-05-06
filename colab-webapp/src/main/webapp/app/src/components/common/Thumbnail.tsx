@@ -24,7 +24,7 @@ const thumbStyle = css({
   border: '1px solid grey',
 });
 
-export default ({ children, onClick, className }: Props): JSX.Element => {
+export default function Thumbnail({children, onClick, className}: Props): JSX.Element {
   return (
     <div className={cx(thumbStyle, className)}>
       <Clickable onClick={onClick}>{children}</Clickable>

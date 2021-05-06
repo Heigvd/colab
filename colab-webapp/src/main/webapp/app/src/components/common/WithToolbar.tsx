@@ -111,7 +111,7 @@ const hoverStyle = css({
   boxShadow: '0 0 6px 0px grey',
 });
 
-export default function({
+export default function WithToolbar({
   children,
   toolbar,
   toolbarPosition = 'BOTTOM_RIGHT',
@@ -161,7 +161,7 @@ export default function({
           {toolbar}
         </div>
       ) : null}
-      <div className={css({})}>{children}</div>
+      <div>{children}</div>
     </div>
   );
 }

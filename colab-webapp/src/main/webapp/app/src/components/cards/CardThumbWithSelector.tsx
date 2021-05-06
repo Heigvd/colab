@@ -16,7 +16,7 @@ interface Props {
   depth?: number;
 }
 
-export default ({ card, depth = 1 }: Props): JSX.Element => {
+export default function CardThumbWithSelector({card, depth = 1}: Props): JSX.Element {
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
@@ -28,8 +28,7 @@ export default ({ card, depth = 1 }: Props): JSX.Element => {
             variant={variant}
             variants={list}
             showSubcards={true}
-            depth={depth}
-          />
+            depth={depth} />
         )}
       </VariantSelector>
     );

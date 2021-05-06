@@ -24,41 +24,40 @@ export interface Props {
   delay?: number;
 }
 
-export default ({
+export default function AutoSaveInput({
   label,
   value,
   onChange,
   placeholder = 'no value',
   inputType = 'INPUT',
   delay = 500,
-}: Props): JSX.Element => {
+}: Props): JSX.Element {
   const [state, setState] = React.useState<State>({
     status: 'DISPLAY',
     currentValue: value || '',
   });
 
   React.useEffect(() => {
-    setState(s => ({ ...s, currentValue: value }));
+    setState(s => ({...s, currentValue: value}));
   }, [value]);
 
   const onChangeRef = React.useRef(onChange);
   onChangeRef.current = onChange;
 
   const debouncedOnChange = React.useMemo(
-    () =>
-      debounce((value: string) => {
-        onChangeRef.current(value);
-      }, delay),
-    [delay],
+    () => debounce((value: string) => {
+      onChangeRef.current(value);
+    }, delay),
+    [delay]
   );
 
   const onInternalChangeCb = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newValue = e.target.value;
       debouncedOnChange(newValue);
-      setState(state => ({ ...state, currentValue: newValue }));
+      setState(state => ({...state, currentValue: newValue}));
     },
-    [debouncedOnChange],
+    [debouncedOnChange]
   );
 
   if (state.status === 'EDIT') {
@@ -70,14 +69,12 @@ export default ({
             <input
               placeholder={placeholder}
               value={state.currentValue}
-              onChange={onInternalChangeCb}
-            />
+              onChange={onInternalChangeCb} />
           ) : (
             <textarea
               placeholder={placeholder}
               value={state.currentValue}
-              onChange={onInternalChangeCb}
-            />
+              onChange={onInternalChangeCb} />
           )}
         </label>
 
@@ -89,8 +86,7 @@ export default ({
               ...state,
               status: 'DISPLAY',
             });
-          }}
-        />
+          } } />
       </div>
     );
   } else {
@@ -106,8 +102,7 @@ export default ({
               ...state,
               status: 'EDIT',
             });
-          }}
-        />
+          } } />
       </div>
     );
   }

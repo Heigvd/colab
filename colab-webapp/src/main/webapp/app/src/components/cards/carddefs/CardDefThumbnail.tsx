@@ -20,7 +20,6 @@ interface Props {
 const defaultStyle = css({
   cursor: 'pointer',
   margin: '20px',
-  padding: '10px',
   width: 'max-content',
   border: '1px solid grey',
 });
@@ -28,12 +27,12 @@ const defaultStyle = css({
 const selected = cx(
   defaultStyle,
   css({
-    borderColor: 'hotpink',
-    borderSize: '2px',
+    backgroundColor: 'var(--focusColor)',
+    color: 'var(--bgColor)'
   }),
 );
 
-export default ({ cardDef, highlighted, onClick }: Props): JSX.Element => {
+export default function CardDefThumbnail({cardDef, highlighted, onClick}: Props): JSX.Element {
   if (cardDef.id == null) {
     return <i>CardDef without id is invalid...</i>;
   } else {
@@ -43,10 +42,10 @@ export default ({ cardDef, highlighted, onClick }: Props): JSX.Element => {
           if (cardDef.id != null) {
             onClick(cardDef.id);
           }
-        }}
+        } }
         className={highlighted ? selected : defaultStyle}
       >
-        <span title={cardDef.purpose || ''}>{cardDef.title}</span>
+        <span className={css({padding: "10px"})}title={cardDef.purpose || ''}>{cardDef.title}</span>
       </Thumbnail>
     );
   }

@@ -16,13 +16,13 @@ export interface ClickablenProps {
   clickableClassName?: string;
 }
 
-export default ({
+export default function Clickable({
   onClick,
   title,
   children,
   className = '',
   clickableClassName = linkStyle,
-}: ClickablenProps): JSX.Element => {
+}: ClickablenProps): JSX.Element {
   /**
    * Pressing enter or space simulates click
    */
@@ -34,7 +34,7 @@ export default ({
         }
       }
     },
-    [onClick],
+    [onClick]
   );
 
   const onClickCb = React.useCallback(() => {

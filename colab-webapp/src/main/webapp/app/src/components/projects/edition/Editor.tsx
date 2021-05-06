@@ -25,6 +25,8 @@ import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import CardEditor from '../../cards/CardEditor';
 import VariantSelector from '../../cards/VariantSelector';
 import CardDefList from '../../cards/carddefs/CardDefList';
+import WithToolbar from '../../common/WithToolbar';
+import CardCreator from '../../cards/CardCreator';
 
 const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   const history = useHistory();
@@ -103,11 +105,11 @@ const CardWrapper = ({ children }: CardWrapperProps): JSX.Element => {
   }
 };
 
-export default (): JSX.Element => {
+export default function Editor(): JSX.Element {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
-  const { project, status } = useProjectBeingEdited();
+  const {project, status} = useProjectBeingEdited();
 
   const root = useAppSelector(state => {
     if (project != null && project.rootCardId != null) {
@@ -181,9 +183,8 @@ export default (): JSX.Element => {
                 // to avoid infinite loop
                 history.push('/projects');
                 dispatch(API.closeCurrentProject());
-              }}
-              icon={faTimes}
-            />
+              } }
+              icon={faTimes} />
           </div>
           <Switch>
             <Route exact path="/hierarchy">
@@ -204,8 +205,7 @@ export default (): JSX.Element => {
                         card={card}
                         variant={variant}
                         variants={list}
-                        showSubcards={true}
-                      />
+                        showSubcards={true} />
                     )}
                   </VariantSelector>
                 )}
@@ -214,7 +214,9 @@ export default (): JSX.Element => {
             <Route>
               <div>
                 {rootContent != null ? (
-                  <ContentSubs depth={2} cardContent={rootContent} />
+                  <WithToolbar toolbar={<CardCreator parent={rootContent} />}>
+                    <ContentSubs showEmptiness={true} depth={2} cardContent={rootContent} />
+                  </WithToolbar>
                 ) : (
                   <InlineLoading />
                 )}

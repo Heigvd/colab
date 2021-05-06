@@ -6,10 +6,10 @@
  */
 
 import * as React from 'react';
-import { iconButton, linkStyle, iconStyle } from '../styling/style';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
-import { cx } from '@emotion/css';
+import {iconButton, linkStyle, iconStyle} from '../styling/style';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {IconProp, SizeProp} from '@fortawesome/fontawesome-svg-core';
+import {cx} from '@emotion/css';
 import Clickable from './Clickable';
 
 export interface IconButtonProps {
@@ -23,7 +23,7 @@ export interface IconButtonProps {
   iconColor?: string;
 }
 
-export default ({
+export default function IconButton({
   onClick,
   icon,
   title,
@@ -32,7 +32,7 @@ export default ({
   reverseOrder,
   iconColor,
   iconSize,
-}: IconButtonProps): JSX.Element => {
+}: IconButtonProps): JSX.Element {
   return (
     <Clickable
       onClick={onClick}

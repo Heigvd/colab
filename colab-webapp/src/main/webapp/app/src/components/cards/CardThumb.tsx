@@ -20,13 +20,13 @@ interface Props {
   depth?: number;
 }
 
-export default ({
+export default function CardThumb({
   card,
   depth = 1,
   showSubcards = true,
   variant,
   variants,
-}: Props): JSX.Element => {
+}: Props): JSX.Element {
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
