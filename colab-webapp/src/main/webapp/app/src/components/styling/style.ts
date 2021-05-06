@@ -43,7 +43,7 @@ export const semiDarkMode = css({
 });
 
 export const lightMode = css({
-  '--bgColor': 'white',
+  '--bgColor': '#F6F1F1',
   '--fgColor': '#333333',
   '--hoverBgColor': '#FFF0',
   '--hoverFgColor': '#999',

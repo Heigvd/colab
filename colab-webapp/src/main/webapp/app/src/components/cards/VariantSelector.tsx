@@ -37,7 +37,7 @@ const computeNav = (contents: CardContent[] | null | undefined, currentId: numbe
   }
 };
 
-export default function VariantSelector({card, children}: Props): JSX.Element {
+export default function VariantSelector({ card, children }: Props): JSX.Element {
   const dispatch = useAppDispatch();
 
   const [displayedVariantId, setDisplayedVariantId] = React.useState<number | undefined>();
@@ -90,25 +90,29 @@ export default function VariantSelector({card, children}: Props): JSX.Element {
               if (variantPager.previous.id) {
                 setDisplayedVariantId(variantPager.previous.id);
               }
-            } } />
+            }}
+          />
         ) : null}
 
         <WithToolbar
           toolbarPosition="RIGHT_TOP"
           offsetX="-8px"
-          toolbar={<IconButton
-            icon={faPlus}
-            title="Create new variant"
-            onClick={() => {
-              dispatch(API.createCardContentVariant(cardId)).then(payload => {
-                // TODO select and display new content
-                if (payload.meta.requestStatus === 'fulfilled') {
-                  if (entityIs(payload.payload, 'CardContent')) {
-                    setDisplayedVariantId(payload.payload.id || undefined);
+          toolbar={
+            <IconButton
+              icon={faPlus}
+              title="Create new variant"
+              onClick={() => {
+                dispatch(API.createCardContentVariant(cardId)).then(payload => {
+                  // TODO select and display new content
+                  if (payload.meta.requestStatus === 'fulfilled') {
+                    if (entityIs(payload.payload, 'CardContent')) {
+                      setDisplayedVariantId(payload.payload.id || undefined);
+                    }
                   }
-                }
-              });
-            } } />}
+                });
+              }}
+            />
+          }
         >
           {children(variantPager?.current, contents || [])}
         </WithToolbar>
@@ -122,9 +126,10 @@ export default function VariantSelector({card, children}: Props): JSX.Element {
               if (variantPager.next.id) {
                 setDisplayedVariantId(variantPager.next.id);
               }
-            } } />
+            }}
+          />
         ) : null}
       </div>
     );
   }
-};
+}

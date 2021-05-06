@@ -6,10 +6,10 @@
  */
 
 import * as React from 'react';
-import {iconButton, linkStyle, iconStyle} from '../styling/style';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {IconProp, SizeProp} from '@fortawesome/fontawesome-svg-core';
-import {cx} from '@emotion/css';
+import { iconButton, linkStyle, iconStyle } from '../styling/style';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
+import { cx } from '@emotion/css';
 import Clickable from './Clickable';
 
 export interface IconButtonProps {
@@ -45,4 +45,4 @@ export default function IconButton({
       {!reverseOrder ? children : null}
     </Clickable>
   );
-};
+}

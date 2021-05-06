@@ -29,6 +29,12 @@ const style = css({
   padding: '10px',
 });
 
+const flexWrap = css({
+  display: 'flex',
+  flexDirecion: 'row',
+  flexWrap: 'wrap',
+});
+
 const CardDefEditor = ({ cardDef }: DisplayProps) => {
   const dispatch = useAppDispatch();
 
@@ -96,13 +102,17 @@ export default ({}: Props): JSX.Element => {
           <h3>Card Definition</h3>
           <h4>Project own types</h4>
           <IconButton onClick={createNewCb} icon={faPlus} />
-          {cardDefs.projectCardDef.map(cardDef => (
-            <CardDefEditor key={cardDef.id} cardDef={cardDef} />
-          ))}
+          <div className={flexWrap}>
+            {cardDefs.projectCardDef.map(cardDef => (
+              <CardDefEditor key={cardDef.id} cardDef={cardDef} />
+            ))}
+          </div>
           <h4>Global types</h4>
-          {cardDefs.inheritedCardDef.map(cardDef => (
-            <CardDefDisplay key={cardDef.id} cardDef={cardDef} />
-          ))}
+          <div className={flexWrap}>
+            {cardDefs.inheritedCardDef.map(cardDef => (
+              <CardDefDisplay key={cardDef.id} cardDef={cardDef} />
+            ))}
+          </div>
         </div>
       );
     }

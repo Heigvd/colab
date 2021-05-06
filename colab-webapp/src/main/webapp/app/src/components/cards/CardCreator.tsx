@@ -32,11 +32,11 @@ const listOfTypeStyle = css({
   flexWrap: 'wrap',
 });
 
-export default function CardCreator({parent}: Props): JSX.Element {
+export default function CardCreator({ parent }: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const [state, setState] = React.useState<'COLLAPSED' | 'EXPANDED' | 'PENDING'>('COLLAPSED');
   const [selectedType, setSelectedType] = React.useState<number | undefined>();
-  const {project} = useProjectBeingEdited();
+  const { project } = useProjectBeingEdited();
 
   const onSelect = React.useCallback((id: number) => {
     setSelectedType(id);
@@ -52,7 +52,8 @@ export default function CardCreator({parent}: Props): JSX.Element {
           title="Add sub-card"
           onClick={() => {
             setState('EXPANDED');
-          } } />
+          }}
+        />
       </div>
     );
   } else {
@@ -72,7 +73,7 @@ export default function CardCreator({parent}: Props): JSX.Element {
               css({
                 border: '1px solid grey',
                 padding: '20px',
-              })
+              }),
             )}
           >
             <div>
@@ -85,7 +86,8 @@ export default function CardCreator({parent}: Props): JSX.Element {
                       key={cardDef.id}
                       onClick={onSelect}
                       highlighted={cardDef.id === selectedType}
-                      cardDef={cardDef} />
+                      cardDef={cardDef}
+                    />
                   ))}
                 </div>
               </div>
@@ -97,12 +99,14 @@ export default function CardCreator({parent}: Props): JSX.Element {
                       key={cardDef.id}
                       onClick={onSelect}
                       highlighted={cardDef.id === selectedType}
-                      cardDef={cardDef} />
+                      cardDef={cardDef}
+                    />
                   ))}
                   <CardDefCreator
                     afterCreation={(id: number) => {
                       setSelectedType(id);
-                    } } />
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -112,7 +116,8 @@ export default function CardCreator({parent}: Props): JSX.Element {
                 title="cancel"
                 onClick={() => {
                   setState('COLLAPSED');
-                } } />
+                }}
+              />
               {selectedType != null ? (
                 <IconButton
                   icon={faCheck}
@@ -123,11 +128,12 @@ export default function CardCreator({parent}: Props): JSX.Element {
                       API.createSubCard({
                         parent: parent,
                         cardDefId: selectedType,
-                      })
+                      }),
                     ).then(() => {
                       setState('COLLAPSED');
                     });
-                  } } />
+                  }}
+                />
               ) : null}
             </div>
           </div>
@@ -135,4 +141,4 @@ export default function CardCreator({parent}: Props): JSX.Element {
       );
     }
   }
-};
+}

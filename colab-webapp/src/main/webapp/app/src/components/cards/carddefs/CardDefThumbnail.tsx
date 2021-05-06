@@ -28,11 +28,11 @@ const selected = cx(
   defaultStyle,
   css({
     backgroundColor: 'var(--focusColor)',
-    color: 'var(--bgColor)'
+    color: 'var(--bgColor)',
   }),
 );
 
-export default function CardDefThumbnail({cardDef, highlighted, onClick}: Props): JSX.Element {
+export default function CardDefThumbnail({ cardDef, highlighted, onClick }: Props): JSX.Element {
   if (cardDef.id == null) {
     return <i>CardDef without id is invalid...</i>;
   } else {
@@ -42,11 +42,13 @@ export default function CardDefThumbnail({cardDef, highlighted, onClick}: Props)
           if (cardDef.id != null) {
             onClick(cardDef.id);
           }
-        } }
+        }}
         className={highlighted ? selected : defaultStyle}
       >
-        <span className={css({padding: "10px"})}title={cardDef.purpose || ''}>{cardDef.title}</span>
+        <span className={css({ padding: '10px' })} title={cardDef.purpose || ''}>
+          {cardDef.title}
+        </span>
       </Thumbnail>
     );
   }
-};
+}

@@ -12,9 +12,9 @@ interface Props {
   children: React.ReactNode;
 }
 
-export default function Overlay({children}: Props): JSX.Element {
+export default function Overlay({ children }: Props): JSX.Element {
   return (
-    <div className={cx(fullPageOverlayStyle, css({zIndex: 999}))}>
+    <div className={cx(fullPageOverlayStyle, css({ zIndex: 999 }))}>
       <div
         className={css({
           margin: 'auto',
@@ -24,4 +24,4 @@ export default function Overlay({children}: Props): JSX.Element {
       </div>
     </div>
   );
-};
+}

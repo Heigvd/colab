@@ -109,7 +109,7 @@ export default function Editor(): JSX.Element {
   const dispatch = useAppDispatch();
   const history = useHistory();
 
-  const {project, status} = useProjectBeingEdited();
+  const { project, status } = useProjectBeingEdited();
 
   const root = useAppSelector(state => {
     if (project != null && project.rootCardId != null) {
@@ -183,8 +183,9 @@ export default function Editor(): JSX.Element {
                 // to avoid infinite loop
                 history.push('/projects');
                 dispatch(API.closeCurrentProject());
-              } }
-              icon={faTimes} />
+              }}
+              icon={faTimes}
+            />
           </div>
           <Switch>
             <Route exact path="/hierarchy">
@@ -205,7 +206,8 @@ export default function Editor(): JSX.Element {
                         card={card}
                         variant={variant}
                         variants={list}
-                        showSubcards={true} />
+                        showSubcards={true}
+                      />
                     )}
                   </VariantSelector>
                 )}
@@ -227,4 +229,4 @@ export default function Editor(): JSX.Element {
       </Router>
     );
   }
-};
+}

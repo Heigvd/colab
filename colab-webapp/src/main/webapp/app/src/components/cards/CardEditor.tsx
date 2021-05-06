@@ -14,6 +14,8 @@ import ContentSubs from './ContentSubs';
 import CardLayout from './CardLayout';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import AutoSaveInput from '../common/AutoSaveInput';
+import { TwitterPicker } from 'react-color';
+import OpenClose from '../common/OpenClose';
 
 interface Props {
   card: Card;
@@ -22,7 +24,12 @@ interface Props {
   showSubcards?: boolean;
 }
 
-export default function CardEditor({card, showSubcards = true, variant, variants}: Props): JSX.Element {
+export default function CardEditor({
+  card,
+  showSubcards = true,
+  variant,
+  variants,
+}: Props): JSX.Element {
   const dispatch = useAppDispatch();
 
   const cardDef = useAppSelector(state => {
@@ -56,11 +63,15 @@ export default function CardEditor({card, showSubcards = true, variant, variants
 
             <div>
               <h5>Card settings</h5>
-              <AutoSaveInput
-                placeholder="grey"
-                inputType="INPUT"
-                value={card.color || ''}
-                onChange={newValue => dispatch(API.updateCard({...card, color: newValue}))} />
+              <OpenClose collaspedChildren={<span>{card.color}</span>}>
+                <TwitterPicker
+                  colors={['#EDD3EC', '#EAC2C2', '#CCEFD4', '#E1F2F9', '#F9F5D6', '#F6F1F1']}
+                  color={card.color || 'white'}
+                  onChangeComplete={newColor => {
+                    dispatch(API.updateCard({ ...card, color: newColor.hex }));
+                  }}
+                />
+              </OpenClose>
             </div>
 
             {variant != null ? (
@@ -71,7 +82,10 @@ export default function CardEditor({card, showSubcards = true, variant, variants
                   <AutoSaveInput
                     inputType="INPUT"
                     value={variant.title || ''}
-                    onChange={newValue => dispatch(API.updateCardContent({...variant, title: newValue}))} />
+                    onChange={newValue =>
+                      dispatch(API.updateCardContent({ ...variant, title: newValue }))
+                    }
+                  />
                 </div>
               </div>
             ) : null}
@@ -87,4 +101,4 @@ export default function CardEditor({card, showSubcards = true, variant, variants
       </>
     );
   }
-};
+}

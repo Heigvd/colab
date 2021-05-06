@@ -7,11 +7,11 @@
 
 import * as React from 'react';
 
-import {CardContent} from 'colab-rest-client';
-import {useAppSelector, useAppDispatch} from '../../store/hooks';
+import { CardContent } from 'colab-rest-client';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
-import {getSubCards} from '../../API/api';
-import {css, cx} from '@emotion/css';
+import { getSubCards } from '../../API/api';
+import { css, cx } from '@emotion/css';
 import CardThumbWithSelector from './CardThumbWithSelector';
 
 interface Props {
@@ -33,21 +33,26 @@ const flexWrap = css({
 });
 
 const voidStyle = css({
-  minHeight: "200px",
-  background: "repeating-Linear-gradient(45deg,#ffffff00,#ffffff00 5px,#eeeeee80 5px,#eeeeee80 10px)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
+  minHeight: '200px',
+  background:
+    'repeating-Linear-gradient(45deg,#ffffff00,#ffffff00 5px,#eeeeee80 5px,#eeeeee80 10px)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
 });
 
 const foggyBackground = css({
-	boxShadow: "0 0 25px 20px white",
-	background: "white",
-  color: "var(--hoverFgColor)"
+  boxShadow: '0 0 25px 20px white',
+  background: 'white',
+  color: 'var(--hoverFgColor)',
 });
 
 // Display sub cards of a parent
-export default function ContentSubs({cardContent, depth = 1, showEmptiness = false}: Props): JSX.Element {
+export default function ContentSubs({
+  cardContent,
+  depth = 1,
+  showEmptiness = false,
+}: Props): JSX.Element {
   const dispatch = useAppDispatch();
 
   const subCards = useAppSelector(state => {
@@ -79,7 +84,11 @@ export default function ContentSubs({cardContent, depth = 1, showEmptiness = fal
     return <InlineLoading />;
   } else {
     if (subCards.length === 0 && showEmptiness) {
-      return <div className={voidStyle}><i className={foggyBackground}>empty</i></div>;
+      return (
+        <div className={voidStyle}>
+          <i className={foggyBackground}>empty</i>
+        </div>
+      );
     } else {
       return depth > 0 ? (
         <div className={flexWrap}>
@@ -92,11 +101,11 @@ export default function ContentSubs({cardContent, depth = 1, showEmptiness = fal
           {subCards.map(sub => (
             <div
               key={sub.id}
-              className={cx(tinyCard, css({borderColor: sub.color || 'grey'}))}
+              className={cx(tinyCard, css({ backgroundColor: sub.color || 'grey' }))}
             ></div>
           ))}
         </div>
       );
     }
   }
-};
+}

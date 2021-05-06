@@ -34,7 +34,7 @@ export default function Clickable({
         }
       }
     },
-    [onClick]
+    [onClick],
   );
 
   const onClickCb = React.useCallback(() => {
@@ -54,4 +54,4 @@ export default function Clickable({
       {children}
     </span>
   );
-};
+}
