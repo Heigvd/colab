@@ -100,7 +100,7 @@ public class CardDao {
         logger.debug("delete card #{}", id);
         // TODO: move to recycle bin first
         Card card = this.getCard(id);
-        if (card.getRootCardProject() != null){
+        if (card.getRootCardProject() != null) {
             // no way to delete the root card
             throw HttpErrorMessage.badRequest();
         }

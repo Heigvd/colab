@@ -173,7 +173,7 @@ public abstract class Document implements ColabEntity /* , WithWebsocketChannels
     }
 
     @Override
-    abstract public String toString();
+    public abstract String toString();
 
     /**
      * @return This abstract class fields to mention in the toString implementations

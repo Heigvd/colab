@@ -165,9 +165,7 @@ public abstract class Block implements ColabEntity /* , WithWebsocketChannels */
     }
 
     @Override
-    public String toString() {
-        return "Block{" + toPartialString() + "}";
-    }
+    public abstract String toString();
 
     /**
      * @return This abstract class fields to mention in the toString implementations
