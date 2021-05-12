@@ -11,6 +11,8 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentCompletionMode;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
 import ch.colabproject.colab.api.model.card.CardDef;
+import ch.colabproject.colab.api.model.document.BlockDocument;
+import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import java.util.List;
@@ -156,4 +158,40 @@ public class CardContentControllerTest extends AbstractArquillianTest {
         Assertions.assertTrue(cardContentId.equals(variants.get(0).getId())
             || cardContentId.equals(variants.get(1).getId()));
     }
+
+   @Test
+   public void testDeliverableAccess() {
+       Long projectId = client.projectController.createProject(new Project());
+       Project project = client.projectController.getProject(projectId);
+
+       CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+       Long cardDefId = cardDef.getId();
+
+       Card rootCard = client.cardController.getCard(project.getRootCardId());
+       Long rootCardId = rootCard.getId();
+
+       List<CardContent> rootCardContents = client.cardController
+           .getContentVariantsOfCard(rootCardId);
+       Long parentId = rootCardContents.get(0).getId();
+
+       Card card = client.cardController.createNewCard(parentId, cardDefId);
+       Long cardId = card.getId();
+
+       CardContent cardContent = client.cardController.getContentVariantsOfCard(cardId).get(0);
+       Long cardContentId = cardContent.getId();
+
+       Long docId = client.documentRestEndPoint.createDocument(new BlockDocument());
+
+       cardContent.setDeliverableId(docId);
+       client.cardContentController.updateCardContent(cardContent);
+
+       CardContent persistedCardContent = client.cardContentController.getCardContent(cardContentId);
+       Assertions.assertNotNull(persistedCardContent);
+       Assertions.assertEquals(docId, persistedCardContent.getDeliverableId());
+
+       Document persistedDocument = client.documentRestEndPoint.getDocument(docId);
+       Assertions.assertNotNull(persistedDocument);
+       Assertions.assertEquals(cardContentId, persistedDocument.getDeliverableCardContentId());
+   }
+
 }

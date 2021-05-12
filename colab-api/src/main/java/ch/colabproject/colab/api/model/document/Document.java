@@ -9,9 +9,12 @@ package ch.colabproject.colab.api.model.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
+import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,6 +24,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 /**
  * Any document
@@ -29,7 +34,7 @@ import javax.persistence.NamedQuery;
  *
  * @author sandra
  */
-//TODO adjust the constraints / indexes
+//TODO adjust the constraints / indexes / cascade / fetch
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
@@ -69,6 +74,20 @@ public abstract class Document implements ColabEntity /* , WithWebsocketChannels
      */
     @Enumerated(EnumType.STRING)
     protected ConcretizationCategory authorityHolder;
+
+    /**
+     * The card content for which this document is the deliverable
+     */
+    // TODO see where to prevent that a document is used by several card contents
+    @OneToOne(mappedBy = "deliverable", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private CardContent deliverableCardContent;
+
+    /**
+     * The id of the card content for which this document is the deliverable
+     */
+    @Transient
+    private Long deliverableCardContentId;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -137,6 +156,45 @@ public abstract class Document implements ColabEntity /* , WithWebsocketChannels
      */
     public void setAuthorityHolder(ConcretizationCategory authorityHolder) {
         this.authorityHolder = authorityHolder;
+    }
+
+    /**
+     * @return the card content for which this document is the deliverable
+     */
+    public CardContent getDeliverableCardContent() {
+        return deliverableCardContent;
+    }
+
+    /**
+     * @param deliverableCardContent the card content for which this document is the deliverable to
+     *                               set
+     */
+    public void setDeliverableCardContent(CardContent deliverableCardContent) {
+        this.deliverableCardContent = deliverableCardContent;
+    }
+
+    /**
+     * get the id of the card content for which this document is the deliverable. To be sent to
+     * client
+     *
+     * @return the id of the card content
+     */
+    public Long getDeliverableCardContentId() {
+        if (this.deliverableCardContent != null) {
+            return deliverableCardContent.getId();
+        } else {
+            return deliverableCardContentId;
+        }
+    }
+
+    /**
+     * set the id of the card content for which this document is the deliverable. For serialization
+     * only
+     *
+     * @param deliverableCardContentId the id of the card contentto set
+     */
+    public void setDeliverableCardContentId(Long deliverableCardContentId) {
+        this.deliverableCardContentId = deliverableCardContentId;
     }
 
     // ---------------------------------------------------------------------------------------------

@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -92,6 +94,20 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
      */
     @Transient
     private Long cardId;
+
+    /**
+     * The deliverable of this card content
+     */
+    // TODO challenge the cascade
+    @OneToOne
+    @JsonbTransient
+    private Document deliverable;
+
+    /**
+     * The deliverable ID (serialization sugar)
+     */
+    @Transient
+    private Long deliverableId;
 
     /**
      * The cards contained in there
@@ -169,8 +185,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * @param completionMode the new completion mode : how the completion level is
-     *        filled
+     * @param completionMode the new completion mode : how the completion level is filled
      */
     public void setCompletionMode(CardContentCompletionMode completionMode) {
         this.completionMode = completionMode;
@@ -191,6 +206,8 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
+     * get the id of the card to which this content belongs. To be sent to client.
+     *
      * @return the ID of the card to which this content belongs
      */
     public Long getCardId() {
@@ -202,10 +219,48 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
+     * set the id of the card to which this content belongs. For serialization only.
+     *
      * @param cardId the ID of the card to which this content belongs
      */
     public void setCardId(Long cardId) {
         this.cardId = cardId;
+    }
+
+    /**
+     * @return the deliverable of this card content
+     */
+    public Document getDeliverable() {
+        return deliverable;
+    }
+
+    /**
+     * @param deliverable the deliverable of this card content to set
+     */
+    public void setDeliverable(Document deliverable) {
+        this.deliverable = deliverable;
+    }
+
+    /**
+     * get the id of the deliverable. To be sent to client.
+     *
+     * @return the id of the deliverable of this card content
+     */
+    public Long getDeliverableId() {
+        if (this.deliverable != null) {
+            return this.deliverable.getId();
+        } else {
+            return deliverableId;
+        }
+    }
+
+    /**
+     * set the id of the deliverable. For serialization only.
+     *
+     * @param deliverableId the id of the deliverable of this card content to set
+     */
+    public void setDeliverableId(Long deliverableId) {
+        this.deliverableId = deliverableId;
     }
 
     /**
@@ -237,6 +292,8 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
             this.setStatus(o.getStatus());
             this.setCompletionLevel(o.getCompletionLevel());
             this.setCompletionMode(o.getCompletionMode());
+            this.setDeliverable(o.getDeliverable());
+            this.setDeliverableId(o.getDeliverableId());
         } else {
             throw new ColabMergeException(this, other);
         }
