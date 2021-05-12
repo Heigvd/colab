@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentCompletionMode;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
+import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import java.util.List;
@@ -124,5 +125,35 @@ public class CardContentControllerTest extends AbstractArquillianTest {
 
         persistedCardContent = client.cardContentController.getCardContent(cardContentId);
         Assertions.assertNull(persistedCardContent);
+    }
+
+    @Test
+    public void testVariantAccess() {
+        Long projectId = client.projectController.createProject(new Project());
+        Project project = client.projectController.getProject(projectId);
+
+        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        Long cardDefId = cardDef.getId();
+
+        Card rootCard = client.cardController.getCard(project.getRootCardId());
+        Long rootCardId = rootCard.getId();
+
+        List<CardContent> rootCardContents = client.cardController
+            .getContentVariantsOfCard(rootCardId);
+        Long parentId = rootCardContents.get(0).getId();
+
+        Card card = client.cardController.createNewCard(parentId, cardDefId);
+        Long cardId = card.getId();
+
+        CardContent cardContent = client.cardContentController.createNewCardContent(cardId);
+        Long cardContentId = cardContent.getId();
+
+        Assertions.assertEquals(cardId, cardContent.getCardId());
+
+        List<CardContent> variants = client.cardController.getContentVariantsOfCard(cardId);
+        Assertions.assertNotNull(variants);
+        Assertions.assertEquals(2, variants.size());
+        Assertions.assertTrue(cardContentId.equals(variants.get(0).getId())
+            || cardContentId.equals(variants.get(1).getId()));
     }
 }

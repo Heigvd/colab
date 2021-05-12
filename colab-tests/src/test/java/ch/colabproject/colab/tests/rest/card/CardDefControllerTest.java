@@ -103,25 +103,15 @@ public class CardDefControllerTest extends AbstractArquillianTest {
     @Test
     public void testProjectAccess() {
         String projectName = "Easy learn german " + ((int) (Math.random() * 1000));
-        String cardDefTitle = "design " + ((int) (Math.random() * 1000));
 
         Project project = new Project();
         project.setName(projectName);
         Long projectId = client.projectController.createProject(project);
 
-        Project persistedProject = client.projectController.getProject(projectId);
-
         CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
-        cardDef.setTitle(cardDefTitle);
-        cardDef.setProject(persistedProject);
-        client.cardDefController.updateCardDef(cardDef);
-
         Long cardDefId = cardDef.getId();
 
-        CardDef persistedCardDef = client.cardDefController.getCardDef(cardDefId);
-        Assertions.assertNotNull(persistedCardDef);
-        Assertions.assertNotNull(persistedCardDef.getProjectId());
-        Assertions.assertEquals(projectId, persistedCardDef.getProjectId());
+        Assertions.assertEquals(projectId, cardDef.getProjectId());
 
         List<CardDef> cardDefsOfProject = client.projectController.getCardDefsOfProject(projectId);
         Assertions.assertNotNull(cardDefsOfProject);

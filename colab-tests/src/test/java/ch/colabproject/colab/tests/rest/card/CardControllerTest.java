@@ -149,7 +149,7 @@ public class CardControllerTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testCardContentAccess() {
+    public void testSubCardAccess() {
         Long projectId = client.projectController.createProject(new Project());
         Project project = client.projectController.getProject(projectId);
 
@@ -161,38 +161,7 @@ public class CardControllerTest extends AbstractArquillianTest {
 
         List<CardContent> rootCardContents = client.cardController
             .getContentVariantsOfCard(rootCardId);
-        Long parentId = rootCardContents.get(0).getId();
-
-        Card card = client.cardController.createNewCard(parentId, cardDefId);
-        Long cardId = card.getId();
-
-        CardContent cardContent = client.cardContentController.createNewCardContent(cardId);
-        Long cardContentId = cardContent.getId();
-
-        Assertions.assertEquals(cardId, cardContent.getCardId());
-
-        List<CardContent> variants = client.cardController.getContentVariantsOfCard(cardId);
-        Assertions.assertNotNull(variants);
-        Assertions.assertEquals(2, variants.size());
-        Assertions.assertTrue(cardContentId.equals(variants.get(0).getId())
-            || cardContentId.equals(variants.get(1).getId()));
-    }
-
-    @Test
-    public void SubCardAccess() {
-        Long projectId = client.projectController.createProject(new Project());
-        Project project = client.projectController.getProject(projectId);
-
-        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
-        Long cardDefId = cardDef.getId();
-
-        Card rootCard = client.cardController.getCard(project.getRootCardId());
-        Long rootCardId = rootCard.getId();
-
-        List<CardContent> rootCardContents = client.cardController
-            .getContentVariantsOfCard(rootCardId);
-        CardContent rootCardContent = rootCardContents.get(0);
-        Long rootCardContentId = rootCardContent.getId();
+        Long rootCardContentId = rootCardContents.get(0).getId();
 
         Card card = client.cardController.createNewCard(rootCardContentId, cardDefId);
         Long cardId = card.getId();
@@ -225,4 +194,15 @@ public class CardControllerTest extends AbstractArquillianTest {
         Assertions.assertEquals(cardDefId, card.getCardDefinitionId());
 
     }
+
+    @Test
+    public void testProjectRootCardAccess() {
+        Long projectId = client.projectController.createProject(new Project());
+        Project project = client.projectController.getProject(projectId);
+
+        Card rootCard = client.cardController.getCard(project.getRootCardId());
+
+        Assertions.assertEquals(projectId, rootCard.getRootCardProjectId());
+    }
+
 }
