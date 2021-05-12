@@ -122,7 +122,7 @@ import org.slf4j.LoggerFactory;
     @PUT
     public void updateCardContent(CardContent cardContent) throws ColabMergeException {
 <span class="fc" id="L124">        logger.debug(&quot;Update card content {}&quot;, cardContent);</span>
-<span class="fc" id="L125">        cardContentDao.updateCardContent(cardContent);</span>
+<span class="fc" id="L125">        cardFacade.updateCardContent(cardContent);</span>
 <span class="fc" id="L126">    }</span>
 
     /**

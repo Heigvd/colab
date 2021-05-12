@@ -9,9 +9,12 @@ package ch.colabproject.colab.api.model.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
+import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,6 +24,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 /**
  * Any document
@@ -29,13 +34,13 @@ import javax.persistence.NamedQuery;
  *
  * @author sandra
  */
-//TODO adjust the constraints / indexes
+//TODO adjust the constraints / indexes / cascade / fetch
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 //FIXME see if is needed or not. It was implemented for test purpose at first
 @NamedQuery(name = &quot;Document.findAll&quot;, query = &quot;SELECT d FROM Document d&quot;)
-<span class="nc" id="L38">public abstract class Document implements ColabEntity /* , WithWebsocketChannels */ {</span>
+<span class="nc" id="L43">public abstract class Document implements ColabEntity /* , WithWebsocketChannels */ {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -70,6 +75,20 @@ import javax.persistence.NamedQuery;
     @Enumerated(EnumType.STRING)
     protected ConcretizationCategory authorityHolder;
 
+    /**
+     * The card content for which this document is the deliverable
+     */
+    // TODO see where to prevent that a document is used by several card contents
+    @OneToOne(mappedBy = &quot;deliverable&quot;, cascade = CascadeType.ALL)
+    @JsonbTransient
+    private CardContent deliverableCardContent;
+
+    /**
+     * The id of the card content for which this document is the deliverable
+     */
+    @Transient
+    private Long deliverableCardContentId;
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
@@ -79,43 +98,43 @@ import javax.persistence.NamedQuery;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L82">        return id;</span>
+<span class="nc" id="L101">        return id;</span>
     }
 
     /**
      * @param id the document id
      */
     public void setId(Long id) {
-<span class="nc" id="L89">        this.id = id;</span>
-<span class="nc" id="L90">    }</span>
+<span class="nc" id="L108">        this.id = id;</span>
+<span class="nc" id="L109">    }</span>
 
     /**
      * @return the title
      */
     public String getTitle() {
-<span class="nc" id="L96">        return title;</span>
+<span class="nc" id="L115">        return title;</span>
     }
 
     /**
      * @param title the title to set
      */
     public void setTitle(String title) {
-<span class="nc" id="L103">        this.title = title;</span>
-<span class="nc" id="L104">    }</span>
+<span class="nc" id="L122">        this.title = title;</span>
+<span class="nc" id="L123">    }</span>
 
     /**
      * @return the abstract / teaser of the content of the document
      */
     public String getTeaser() {
-<span class="nc" id="L110">        return teaser;</span>
+<span class="nc" id="L129">        return teaser;</span>
     }
 
     /**
      * @param teaser the abstract / teaser of the content of the document
      */
     public void setTeaser(String teaser) {
-<span class="nc" id="L117">        this.teaser = teaser;</span>
-<span class="nc" id="L118">    }</span>
+<span class="nc" id="L136">        this.teaser = teaser;</span>
+<span class="nc" id="L137">    }</span>
 
     /**
      * @return the authority holder : is it belonging to
@@ -125,7 +144,7 @@ import javax.persistence.NamedQuery;
      *         &lt;/ul&gt;
      */
     public ConcretizationCategory getAuthorityHolder() {
-<span class="nc" id="L128">        return authorityHolder;</span>
+<span class="nc" id="L147">        return authorityHolder;</span>
     }
 
     /**
@@ -136,8 +155,47 @@ import javax.persistence.NamedQuery;
      *                        &lt;/ul&gt;
      */
     public void setAuthorityHolder(ConcretizationCategory authorityHolder) {
-<span class="nc" id="L139">        this.authorityHolder = authorityHolder;</span>
-<span class="nc" id="L140">    }</span>
+<span class="nc" id="L158">        this.authorityHolder = authorityHolder;</span>
+<span class="nc" id="L159">    }</span>
+
+    /**
+     * @return the card content for which this document is the deliverable
+     */
+    public CardContent getDeliverableCardContent() {
+<span class="nc" id="L165">        return deliverableCardContent;</span>
+    }
+
+    /**
+     * @param deliverableCardContent the card content for which this document is the deliverable to
+     *                               set
+     */
+    public void setDeliverableCardContent(CardContent deliverableCardContent) {
+<span class="nc" id="L173">        this.deliverableCardContent = deliverableCardContent;</span>
+<span class="nc" id="L174">    }</span>
+
+    /**
+     * get the id of the card content for which this document is the deliverable. To be sent to
+     * client
+     *
+     * @return the id of the card content
+     */
+    public Long getDeliverableCardContentId() {
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        if (this.deliverableCardContent != null) {</span>
+<span class="nc" id="L184">            return deliverableCardContent.getId();</span>
+        } else {
+<span class="nc" id="L186">            return deliverableCardContentId;</span>
+        }
+    }
+
+    /**
+     * set the id of the card content for which this document is the deliverable. For serialization
+     * only
+     *
+     * @param deliverableCardContentId the id of the card contentto set
+     */
+    public void setDeliverableCardContentId(Long deliverableCardContentId) {
+<span class="nc" id="L197">        this.deliverableCardContentId = deliverableCardContentId;</span>
+<span class="nc" id="L198">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -145,15 +203,15 @@ import javax.persistence.NamedQuery;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L148" title="All 2 branches missed.">        if (other instanceof Document) {</span>
-<span class="nc" id="L149">            Document o = (Document) other;</span>
-<span class="nc" id="L150">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L151">            this.setTeaser(o.getTeaser());</span>
-<span class="nc" id="L152">            this.setAuthorityHolder(o.getAuthorityHolder());</span>
-<span class="nc" id="L153">        } else {</span>
-<span class="nc" id="L154">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">        if (other instanceof Document) {</span>
+<span class="nc" id="L207">            Document o = (Document) other;</span>
+<span class="nc" id="L208">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L209">            this.setTeaser(o.getTeaser());</span>
+<span class="nc" id="L210">            this.setAuthorityHolder(o.getAuthorityHolder());</span>
+<span class="nc" id="L211">        } else {</span>
+<span class="nc" id="L212">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L156">    }</span>
+<span class="nc" id="L214">    }</span>
 
 //    @Override
 //    public Set&lt;WebsocketChannel&gt; getChannels() {
@@ -163,13 +221,13 @@ import javax.persistence.NamedQuery;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L166">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L224">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L172">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L230">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
@@ -179,7 +237,7 @@ import javax.persistence.NamedQuery;
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-<span class="nc" id="L182">        return &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, teaser=&quot; + teaser + &quot;, authorityHolder=&quot;</span>
+<span class="nc" id="L240">        return &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, teaser=&quot; + teaser + &quot;, authorityHolder=&quot;</span>
                 + authorityHolder;
     }
 
