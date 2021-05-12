@@ -316,7 +316,7 @@ import javax.persistence.Transient;
 <span class="nc bnc" id="L316" title="All 2 branches missed.">        if (this.rootCardProject != null) {</span>
             // this card is a root card, propagate through the project channels
 <span class="nc" id="L318">            return this.rootCardProject.getChannels();</span>
-<span class="nc bnc" id="L319" title="All 2 branches missed.">        } else if (this.parent!= null) {</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">        } else if (this.parent != null) {</span>
             // this card is a sub-card, propagate through its parent channels
 <span class="nc" id="L321">            return this.parent.getChannels();</span>
 <span class="nc bnc" id="L322" title="All 2 branches missed.">        } else if (this.cardDefinition != null) {</span>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TextDataBlock.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.document</a> &gt; <span class="el_source">TextDataBlock.java</span></div><h1>TextDataBlock.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.document;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+
+/**
+ * Piece of a block document containing text data
+ *
+ * @author sandra
+ */
+// TODO adjust the constraints / indexes
+@Entity
+@DiscriminatorValue(&quot;TEXT_DATA&quot;)
+<span class="nc" id="L24">public class TextDataBlock extends Block {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * The mime type of the information
+     */
+    private String mimeType;
+
+    /**
+     * The information contained
+     */
+    @Lob
+    private String textData;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the mime type of the information
+     */
+    public String getMimeType() {
+<span class="nc" id="L51">        return mimeType;</span>
+    }
+
+    /**
+     * @param mimeType the mime type of the information to set
+     */
+    public void setMimeType(String mimeType) {
+<span class="nc" id="L58">        this.mimeType = mimeType;</span>
+<span class="nc" id="L59">    }</span>
+
+    /**
+     * @return the information contained
+     */
+    public String getTextData() {
+<span class="nc" id="L65">        return textData;</span>
+    }
+
+    /**
+     * @param data the information contained to set
+     */
+    public void setTextData(String data) {
+<span class="nc" id="L72">        this.textData = data;</span>
+<span class="nc" id="L73">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (other instanceof TextDataBlock) {</span>
+<span class="nc" id="L82">            TextDataBlock o = (TextDataBlock) other;</span>
+<span class="nc" id="L83">            super.merge(other);</span>
+<span class="nc" id="L84">            this.setMimeType(o.getMimeType());</span>
+<span class="nc" id="L85">            this.setTextData(o.getTextData());</span>
+<span class="nc" id="L86">        } else {</span>
+<span class="nc" id="L87">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L89">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L93">        return EntityHelper.hashCode(this);</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
+    public boolean equals(Object obj) {
+<span class="nc" id="L99">        return EntityHelper.equals(this, obj);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L104">        return &quot;TextDataBlock{&quot; + super.toPartialString() + &quot;, mimeType=&quot; + mimeType + &quot;}&quot;;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

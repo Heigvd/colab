@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2021 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 8,
+      <title>File: 11,
              Errors: 0,
-             Warnings: 10,
+             Warnings: 12,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -80,7 +80,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  1
                 </td>
                 <td>
                   0
@@ -88,7 +88,35 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.card.Card.java">ch/colabproject/colab/api/model/card/Card.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.Document.java">ch/colabproject/colab/api/model/document/Document.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.BlockDao.java">ch/colabproject/colab/api/persistence/document/BlockDao.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.Block.java">ch/colabproject/colab/api/model/document/Block.java</a>
                 </td>
                 <td>
                   0
@@ -131,6 +159,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.Helper.java">ch/colabproject/colab/api/Helper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.DocumentDao.java">ch/colabproject/colab/api/persistence/document/DocumentDao.java</a>
                 </td>
                 <td>
                   0

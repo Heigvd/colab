@@ -100,7 +100,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L100">        logger.debug(&quot;delete card #{}&quot;, id);</span>
         // TODO: move to recycle bin first
 <span class="nc" id="L102">        Card card = this.getCard(id);</span>
-<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (card.getRootCardProject() != null){</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (card.getRootCardProject() != null) {</span>
             // no way to delete the root card
 <span class="nc" id="L105">            throw HttpErrorMessage.badRequest();</span>
         }

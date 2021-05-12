@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>BlockRestEndPoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.document</a> &gt; <span class="el_source">BlockRestEndPoint.java</span></div><h1>BlockRestEndPoint.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.document;
+
+import ch.colabproject.colab.api.ejb.BlockFacade;
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.persistence.document.BlockDao;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * REST block controller
+ *
+ * @author sandra
+ */
+@Path(&quot;blocks&quot;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@AuthenticationRequired
+<span class="nc" id="L36">public class BlockRestEndPoint {</span>
+
+    /** logger */
+<span class="nc" id="L39">    private static final Logger logger = LoggerFactory.getLogger(BlockRestEndPoint.class);</span>
+
+    /**
+     * The block persistence manager
+     */
+    @Inject
+    private BlockDao blockDao;
+
+    /**
+     * The block-related logic
+     */
+    @Inject
+    private BlockFacade blockFacade;
+
+    /**
+     * Get the block identified by the given id
+     *
+     * @param id id of the block to fetch
+     *
+     * @return the block or null
+     */
+    @GET
+    @Path(&quot;{id}&quot;)
+    public Block getBlock(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L63">        logger.debug(&quot;get block #{}&quot;, id);</span>
+<span class="nc" id="L64">        return blockDao.findBlock(id);</span>
+    }
+
+    /**
+     * Save changes to database
+     *
+     * @param block block to update
+     *
+     * @throws ColabMergeException if the merge is impossible
+     */
+    @PUT
+    public void updateBlock(Block block) throws ColabMergeException {
+<span class="nc" id="L76">        logger.debug(&quot;update block {}&quot;, block);</span>
+<span class="nc" id="L77">        blockDao.updateBlock(block);</span>
+<span class="nc" id="L78">    }</span>
+
+    /**
+     * Persist the block
+     *
+     * @param block the block to persist
+     *
+     * @return id of the persisted new block
+     */
+    @POST
+    public Long createBlock(Block block) {
+<span class="nc" id="L89">        logger.debug(&quot;create block {}&quot;, block);</span>
+<span class="nc" id="L90">        return blockFacade.persistBlock(block).getId();</span>
+    }
+
+    /**
+     * Create and persist a new text data block
+     *
+     * @param documentId the id of the document it belongs to
+     *
+     * @return the new persisted text data block
+     */
+    @POST
+    @Path(&quot;newTextData/{documentId}&quot;)
+    public Block createNewTextDataBlock(@PathParam(&quot;documentId&quot;) Long documentId) {
+<span class="nc" id="L103">        logger.debug(&quot;create new text data block for document #{}&quot;, documentId);</span>
+<span class="nc" id="L104">        return blockFacade.createNewTextDataBlock(documentId);</span>
+    }
+
+    /**
+     * Permanently delete a block
+     *
+     * @param id id of the block to delete
+     */
+    @DELETE
+    @Path(&quot;{id}&quot;)
+    public void deleteBlock(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L115">        logger.debug(&quot;delete block #{}&quot;, id);</span>
+<span class="nc" id="L116">        blockDao.deleteBlock(id);</span>
+<span class="nc" id="L117">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Block.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.document</a> &gt; <span class="el_source">Block.java</span></div><h1>Block.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.document;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
+/**
+ * One piece of a block document
+ *
+ * @author sandra
+ */
+//TODO adjust the constraints / indexes
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
+<span class="nc" id="L33">public abstract class Block implements ColabEntity /* , WithWebsocketChannels */ {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * The block ID
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /**
+     * The index to define the place in the document
+     */
+    private int index;
+
+    /**
+     * The document it is part of
+     */
+    @ManyToOne
+    @JsonbTransient
+    private BlockDocument document;
+
+    /**
+     * The id of the document it is part of
+     */
+    @Transient
+    private Long documentId;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the block id
+     */
+    @Override
+    public Long getId() {
+<span class="nc" id="L75">        return id;</span>
+    }
+
+    /**
+     * @param id the block id
+     */
+    public void setId(Long id) {
+<span class="nc" id="L82">        this.id = id;</span>
+<span class="nc" id="L83">    }</span>
+
+    /**
+     * @return the index to define the place in the document
+     */
+    public int getIndex() {
+<span class="nc" id="L89">        return index;</span>
+    }
+
+    /**
+     * @param index the index to define the place in the document to set
+     */
+    public void setIndex(int index) {
+<span class="nc" id="L96">        this.index = index;</span>
+<span class="nc" id="L97">    }</span>
+
+    /**
+     * @return the document it is part of
+     */
+    public BlockDocument getDocument() {
+<span class="nc" id="L103">        return document;</span>
+    }
+
+    /**
+     * @param document the document it is part of
+     */
+    public void setDocument(BlockDocument document) {
+<span class="nc" id="L110">        this.document = document;</span>
+<span class="nc" id="L111">    }</span>
+
+    /**
+     * get the document id. To be sent to client
+     *
+     * @return id of the document or null
+     */
+    public Long getDocumentId() {
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (this.document != null) {</span>
+<span class="nc" id="L120">            return this.document.getId();</span>
+        } else {
+<span class="nc" id="L122">            return documentId;</span>
+        }
+    }
+
+    /**
+     * set the document id. For serialization only
+     *
+     * @param id the id of the document
+     */
+    public void setDocumentId(Long id) {
+<span class="nc" id="L132">        this.documentId = id;</span>
+<span class="nc" id="L133">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------------------
+
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (other instanceof Block) {</span>
+<span class="nc" id="L143">            Block o = (Block) other;</span>
+<span class="nc" id="L144">            this.setIndex(o.getIndex());</span>
+<span class="nc" id="L145">        } else {</span>
+<span class="nc" id="L146">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L148">    }</span>
+
+//  @Override
+//  public Set&lt;WebsocketChannel&gt; getChannels() {
+//      // TODO
+//      return null;
+//  }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L158">        return EntityHelper.hashCode(this);</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
+    public boolean equals(Object obj) {
+<span class="nc" id="L164">        return EntityHelper.equals(this, obj);</span>
+    }
+
+    @Override
+    public abstract String toString();
+
+    /**
+     * @return This abstract class fields to mention in the toString implementations
+     */
+    protected String toPartialString() {
+<span class="nc" id="L174">        return &quot;id=&quot; + id + &quot;, index=&quot; + index;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -11,11 +11,12 @@ colab-tests/colab-api,ch.colabproject.colab.api.rest.utils,EjbExceptionMapper,0,
 colab-tests/colab-api,ch.colabproject.colab.api.rest.utils,AbstractExceptionMapper,47,31,6,4,16,10,5,4,1,3
 colab-tests/colab-api,ch.colabproject.colab.api.rest.utils,RequestFilter,0,70,0,2,0,16,0,5,0,4
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,TokenFacade,100,226,13,11,34,63,12,10,2,8
+colab-tests/colab-api,ch.colabproject.colab.api.ejb,BlockFacade,4,76,2,2,2,19,2,4,0,4
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.ChannelType,0,24,0,0,0,3,0,1,0,1
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest,12,59,0,0,1,23,1,12,1,12
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,CdiBridgeSingleton,9,10,0,0,3,4,2,3,2,3
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,UserManagement,106,361,22,22,33,101,21,22,4,17
-colab-tests/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,49,116,17,19,20,33,22,16,8,12
+colab-tests/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,49,117,17,19,20,34,22,17,8,13
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.SubscriptionType,0,24,0,0,0,3,0,1,0,1
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,ApplicationLifecycleFacade,10,28,1,1,4,11,1,3,0,3
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,WebsocketFacade,318,313,30,18,82,83,36,17,13,16
@@ -23,6 +24,7 @@ colab-tests/colab-api,ch.colabproject.colab.api.ejb,ProjectFacade,12,114,1,3,3,3
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,CardFacade,12,191,6,6,6,54,6,12,0,12
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,TransactionManager,27,132,8,6,6,36,7,9,1,8
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,RequestManager,2,76,1,7,1,25,1,15,0,12
+colab-tests/colab-api,ch.colabproject.colab.api.ejb,DocumentFacade,2,23,1,1,1,6,1,3,0,3
 colab-tests/colab-api,ch.colabproject.colab.api.ws.utils,JsonDecoder,3,26,0,0,2,8,0,5,0,5
 colab-tests/colab-api,ch.colabproject.colab.api.ws.utils,JsonEncoder,8,14,0,0,2,6,0,5,0,5
 colab-tests/colab-api,ch.colabproject.colab.api.ws.utils,CallableGetChannel,12,0,2,0,5,0,3,0,2,0
@@ -41,6 +43,8 @@ colab-tests/colab-api,ch.colabproject.colab.api.setup,LiquibaseProducer,13,0,0,0
 colab-tests/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,0,40,0,0,0,14,0,4,0,4
 colab-tests/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvider,2,3,0,0,1,1,1,1,1,1
 colab-tests/colab-api,ch.colabproject.colab.api.setup,ApplicationConfig,0,3,0,0,0,1,0,1,0,1
+colab-tests/colab-api,ch.colabproject.colab.api.persistence.document,BlockDao,3,56,0,0,2,15,0,6,0,6
+colab-tests/colab-api,ch.colabproject.colab.api.persistence.document,DocumentDao,3,68,0,0,2,18,0,7,0,7
 colab-tests/colab-api,ch.colabproject.colab.api.persistence.card,CardDefDao,0,68,0,0,0,18,0,7,0,7
 colab-tests/colab-api,ch.colabproject.colab.api.persistence.card,CardDao,2,71,1,1,1,19,1,7,0,7
 colab-tests/colab-api,ch.colabproject.colab.api.persistence.card,CardContentDao,0,68,0,0,0,18,0,7,0,7
@@ -59,6 +63,12 @@ colab-tests/colab-api,ch.colabproject.colab.api.ws.channel,UserChannel,8,53,2,4,
 colab-tests/colab-api,ch.colabproject.colab.api.ws.channel,ProjectOverviewChannel,28,70,7,3,9,18,6,8,2,7
 colab-tests/colab-api,ch.colabproject.colab.api.ws.channel,ChannelOverview,72,0,10,0,23,0,13,0,8,0
 colab-tests/colab-api,ch.colabproject.colab.api.ws.channel,AdminChannel,0,15,0,0,0,4,0,3,0,3
+colab-tests/colab-api,ch.colabproject.colab.api.model.document,HostedDocLink,16,28,1,1,3,11,3,5,2,5
+colab-tests/colab-api,ch.colabproject.colab.api.model.document,ExternalDocLink,16,28,1,1,3,11,3,5,2,5
+colab-tests/colab-api,ch.colabproject.colab.api.model.document,TextDataBlock,16,39,1,1,3,15,3,7,2,7
+colab-tests/colab-api,ch.colabproject.colab.api.model.document,Document,23,51,1,1,4,20,4,10,3,10
+colab-tests/colab-api,ch.colabproject.colab.api.model.document,Block,22,47,1,3,5,19,5,10,4,9
+colab-tests/colab-api,ch.colabproject.colab.api.model.document,BlockDocument,18,25,1,1,5,9,4,4,3,4
 colab-tests/colab-api,ch.colabproject.colab.api.persistence.project,ProjectDao,14,45,0,0,3,12,1,6,1,6
 colab-tests/colab-api,ch.colabproject.colab.api.service.smtp,MessageBuilder,27,50,0,0,7,15,4,8,4,8
 colab-tests/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail.new Authenticator() {...},8,9,0,0,1,1,1,1,1,1
@@ -70,6 +80,8 @@ colab-tests/colab-api,ch.colabproject.colab.api.rest.card,CardDefController,10,5
 colab-tests/colab-api,ch.colabproject.colab.api.exceptions,ColabMergeException,15,0,0,0,5,0,2,0,2,0
 colab-tests/colab-api,ch.colabproject.colab.api.exceptions,ColabRollbackException,4,0,0,0,2,0,1,0,1,0
 colab-tests/colab-api,ch.colabproject.colab.api.model,ConcretizationCategory,0,24,0,0,0,3,0,1,0,1
+colab-tests/colab-api,ch.colabproject.colab.api.rest.document,DocumentRestEndPoint,0,62,0,0,0,16,0,8,0,8
+colab-tests/colab-api,ch.colabproject.colab.api.rest.document,BlockRestEndPoint,0,55,0,0,0,14,0,7,0,7
 colab-tests/colab-api,ch.colabproject.colab.api.security,SessionManager,0,46,1,5,0,12,1,5,0,3
 colab-tests/colab-api,ch.colabproject.colab.api.security,HttpSession,7,21,0,0,3,9,2,6,2,6
 colab-tests/colab-api,ch.colabproject.colab.api.security,CookieFilter,0,67,0,2,0,17,0,5,0,4
@@ -93,24 +105,28 @@ colab-tests/colab-api,ch.colabproject.colab.api.ws.message,WsMessage,0,3,0,0,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.WebsocketControllerClientImpl,86,39,0,0,13,7,3,3,3,3
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentControllerClientImpl,22,153,0,0,3,21,1,7,1,7
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectControllerClientImpl,21,206,0,0,3,28,1,9,1,9
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserControllerClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.MonitoringControllerClientImpl,41,38,0,0,6,5,1,3,1,3
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.DocumentRestEndPointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.TokenControllerClientImpl,0,63,0,0,0,8,0,3,0,3
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.DocumentRestEndPointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.BlockRestEndPointClientImpl,0,128,0,0,0,18,0,6,0,6
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient,0,67,0,0,0,12,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardControllerClientImpl,22,158,0,0,3,21,1,7,1,7
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.MonitoringControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardDefControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.WebsocketControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserControllerClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.MonitoringControllerClientImpl,41,38,0,0,6,5,1,3,1,3
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.DocumentRestEndPointClientImpl,0,149,0,0,0,21,0,7,0,7
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardDefControllerClientImpl,22,127,0,0,3,18,1,6,1,6
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.TokenControllerClientImpl,0,63,0,0,0,8,0,3,0,3
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserControllerClientImpl,89,314,0,0,14,49,3,15,3,15
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectControllerClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient,0,55,0,0,0,10,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectControllerClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,JsonbProvider,0,15,0,0,0,5,0,3,0,3
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,PolymorphicDeserializer,0,84,1,3,0,20,1,6,0,5
