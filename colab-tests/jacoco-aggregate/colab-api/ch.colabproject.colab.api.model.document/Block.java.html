@@ -28,7 +28,7 @@ import javax.persistence.Transient;
  */
 //TODO adjust the constraints / indexes
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 <span class="fc" id="L33">public abstract class Block implements ColabEntity /* , WithWebsocketChannels */ {</span>
 
