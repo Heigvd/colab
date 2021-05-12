@@ -12,6 +12,7 @@ package ch.colabproject.colab.api.model;
  *
  * @author sandra
  */
+// TODO sandra : rename. It has no comprehensible sense when it is an authority holder
 //WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
 public enum ConcretizationCategory {
     /**
