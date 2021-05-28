@@ -12,11 +12,11 @@ import { css } from '@emotion/css';
 import { useAppDispatch } from '../../../store/hooks';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { useCardDefs } from '../../../selectors/cardDefSelector';
+import { useCardTypes } from '../../../selectors/cardTypeSelector';
 import InlineLoading from '../../common/InlineLoading';
 import IconButton from '../../common/IconButton';
-import CardDefEditor from './CardDefEditor';
-import CardDefDisplay from './CardDefDisplay';
+import CardTypeEditor from './CardTypeEditor';
+import CardTypeDisplay from './CardTypeDisplay';
 
 const flexWrap = css({
   display: 'flex',
@@ -29,12 +29,12 @@ export interface Props {}
 export default ({}: Props): JSX.Element => {
   const dispatch = useAppDispatch();
   const { project } = useProjectBeingEdited();
-  const cardDefs = useCardDefs();
+  const cardTypes = useCardTypes();
 
   const createNewCb = React.useCallback(() => {
     dispatch(
-      API.createCardDef({
-        '@class': 'CardDef',
+      API.createCardType({
+        '@class': 'CardType',
         projectId: project!.id!,
       }),
     );
@@ -43,13 +43,13 @@ export default ({}: Props): JSX.Element => {
   if (project == null) {
     return <i>No project</i>;
   } else {
-    if (cardDefs.status === 'UNSET') {
+    if (cardTypes.status === 'UNSET') {
       if (project != null) {
-        dispatch(API.getProjectCardDefs(project));
+        dispatch(API.getProjectCardTypes(project));
       }
     }
 
-    if (cardDefs.status !== 'READY') {
+    if (cardTypes.status !== 'READY') {
       return <InlineLoading />;
     } else {
       return (
@@ -58,14 +58,14 @@ export default ({}: Props): JSX.Element => {
           <h4>Project own types</h4>
           <IconButton onClick={createNewCb} icon={faPlus} />
           <div className={flexWrap}>
-            {cardDefs.projectCardDef.map(cardDef => (
-              <CardDefEditor key={cardDef.id} cardDef={cardDef} />
+            {cardTypes.projectCardType.map(cardType => (
+              <CardTypeEditor key={cardType.id} cardType={cardType} />
             ))}
           </div>
           <h4>Global types</h4>
           <div className={flexWrap}>
-            {cardDefs.inheritedCardDef.map(cardDef => (
-              <CardDefDisplay key={cardDef.id} cardDef={cardDef} />
+            {cardTypes.inheritedCardType.map(cardType => (
+              <CardTypeDisplay key={cardType.id} cardType={cardType} />
             ))}
           </div>
         </div>

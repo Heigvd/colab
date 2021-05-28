@@ -22,7 +22,7 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
-public class CardDefRef extends AbstractCardDef {
+public class CardTypeRef extends AbstractCardType {
 
     /**
      * Serial version UID
@@ -37,13 +37,13 @@ public class CardDefRef extends AbstractCardDef {
      */
     @ManyToOne
     @JsonbTransient
-    private AbstractCardDef cardDef;
+    private AbstractCardType cardType;
 
     /**
      * The id of the project (serialization sugar)
      */
     @Transient
-    private Long cardDefId;
+    private Long cardTypeId;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -53,37 +53,37 @@ public class CardDefRef extends AbstractCardDef {
      *
      * @return the referenced type
      */
-    public AbstractCardDef getAbstractCardDef() {
-        return this.cardDef;
+    public AbstractCardType getAbstractCardType() {
+        return this.cardType;
     }
 
     /**
-     * @param cardDef the new referenced type
+     * @param cardType the new referenced type
      */
-    public void setAbstractCardDef(AbstractCardDef cardDef) {
-        this.cardDef = cardDef;
+    public void setAbstractCardType(AbstractCardType cardType) {
+        this.cardType = cardType;
     }
 
     /**
-     * get the cardDef id. To be sent to client
+     * get the cardType id. To be sent to client
      *
-     * @return id of the cardDef or null
+     * @return id of the cardType or null
      */
-    public Long getAbstractCardDefId() {
-        if (this.cardDef != null) {
-            return this.cardDef.getId();
+    public Long getAbstractCardTypeId() {
+        if (this.cardType != null) {
+            return this.cardType.getId();
         } else {
-            return cardDefId;
+            return cardTypeId;
         }
     }
 
     /**
-     * set the cardDef id. For serialization only
+     * set the cardType id. For serialization only
      *
-     * @param id the id of the cardDef
+     * @param id the id of the cardType
      */
-    public void setAbstractCardDefId(Long id) {
-        this.cardDefId = id;
+    public void setAbstractCardTypeId(Long id) {
+        this.cardTypeId = id;
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -92,14 +92,14 @@ public class CardDefRef extends AbstractCardDef {
     /**
      * Resolve the reference.
      *
-     * @return the cardDef
+     * @return the cardType
      */
     @Override
-    public CardDef resolve() {
-        if (this.cardDef instanceof CardDef) {
-            return (CardDef) this.cardDef;
-        } else if (this.cardDef instanceof CardDefRef) {
-            return ((CardDefRef) cardDef).resolve();
+    public CardType resolve() {
+        if (this.cardType instanceof CardType) {
+            return (CardType) this.cardType;
+        } else if (this.cardType instanceof CardTypeRef) {
+            return ((CardTypeRef) cardType).resolve();
         }
         return null;
     }
@@ -109,7 +109,7 @@ public class CardDefRef extends AbstractCardDef {
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof CardDefRef == false) {
+        if (other instanceof CardTypeRef == false) {
             throw new ColabMergeException(this, other);
         }
     }
@@ -125,9 +125,9 @@ public class CardDefRef extends AbstractCardDef {
 
     @Override
     public String toString() {
-        return "CardDefRef{"
+        return "CardTypeRef{"
             + "id=" + this.getId()
-            + ", cardDef=" + cardDef
-            + ", cardDefId=" + cardDefId + '}';
+            + ", cardType=" + cardType
+            + ", cardTypeId=" + cardTypeId + '}';
     }
 }

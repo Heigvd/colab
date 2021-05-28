@@ -8,8 +8,8 @@ package ch.colabproject.colab.api.rest.card;
 
 import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.card.CardDef;
-import ch.colabproject.colab.api.persistence.card.CardDefDao;
+import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.persistence.card.CardTypeDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -32,20 +32,20 @@ import org.slf4j.LoggerFactory;
  * @author sandra
  */
 // TODO will need access to a unique id generator
-@Path("cardDefs")
+@Path("cardTypes")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-public class CardDefController {
+public class CardTypeEndpoint {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(CardDefController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CardTypeEndpoint.class);
 
     /**
      * The card definition persistence manager
      */
     @Inject
-    private CardDefDao cardDefDao;
+    private CardTypeDao cardTypeDao;
 
     /**
      * The card-related logic
@@ -60,9 +60,9 @@ public class CardDefController {
      */
     @GET
     @AdminResource
-    public List<CardDef> getAllCardDefs() {
+    public List<CardType> getAllCardTypes() {
         logger.debug("get all card defs");
-        return cardDefDao.getAllCardDef();
+        return cardTypeDao.getAllCardType();
     }
 
     /**
@@ -73,9 +73,9 @@ public class CardDefController {
     @GET
     @Path("allGlobals")
     @AdminResource
-    public List<CardDef> getAllGlobalCardDefs() {
+    public List<CardType> getAllGlobalCardTypes() {
         logger.debug("get all global card defs");
-        return cardDefDao.getGlobalCardDef();
+        return cardTypeDao.getGlobalCardType();
     }
 
     /**
@@ -85,9 +85,9 @@ public class CardDefController {
      */
     @GET
     @Path("publishedGlobals")
-    public List<CardDef> getPublishedGlobalsCardDefs() {
+    public List<CardType> getPublishedGlobalsCardTypes() {
         logger.debug("get published global card defs");
-        return cardDefDao.getPublishedGlobalCardDef();
+        return cardTypeDao.getPublishedGlobalCardType();
     }
 
 
@@ -99,9 +99,9 @@ public class CardDefController {
      */
     @GET
     @Path("allProjectsPublished")
-    public List<CardDef> getPublishedCardDefs() {
+    public List<CardType> getPublishedCardTypes() {
         logger.debug("get published projects card defs");
-        return cardDefDao.getPublishedProjectsCardDef();
+        return cardTypeDao.getPublishedProjectsCardType();
     }
 
     /**
@@ -113,22 +113,22 @@ public class CardDefController {
      */
     @GET
     @Path("{id}")
-    public CardDef getCardDef(@PathParam("id") Long id) {
+    public CardType getCardType(@PathParam("id") Long id) {
         logger.debug("get card def #{}", id);
-        return cardDefDao.getCardDef(id);
+        return cardTypeDao.getCardType(id);
     }
 
     /**
      * Persist a card type.
      *
-     * @param cardDef the card definition to persist
+     * @param cardType the card definition to persist
      *
      * @return id of the persisted new card definition
      */
     @POST
-    public Long createCardDef(CardDef cardDef) {
-        logger.debug("create card def {}", cardDef);
-        return facade.createNewCardDef(cardDef).getId();
+    public Long createCardType(CardType cardType) {
+        logger.debug("create card def {}", cardType);
+        return facade.createNewCardType(cardType).getId();
     }
 
     /**
@@ -139,23 +139,23 @@ public class CardDefController {
      * @return the persisted new card definition
     @POST
     @Path("create/{projectId}")
-    public CardDef createNewCardDef(@PathParam("projectId") Long projectId) {
+    public CardType createNewCardType(@PathParam("projectId") Long projectId) {
         logger.debug("create new card def for the project #{}", projectId);
-        return facade.createNewCardDef(projectId);
+        return facade.createNewCardType(projectId);
     }
      */
 
     /**
      * Save changes to database
      *
-     * @param cardDef card def to update
+     * @param cardType card def to update
      *
      * @throws ColabMergeException if the merge is not possible
      */
     @PUT
-    public void updateCardDef(CardDef cardDef) throws ColabMergeException {
-        logger.debug("update card def {}", cardDef);
-        cardDefDao.updateCardDef(cardDef);
+    public void updateCardType(CardType cardType) throws ColabMergeException {
+        logger.debug("update card def {}", cardType);
+        cardTypeDao.updateCardType(cardType);
     }
 
     /**
@@ -165,9 +165,9 @@ public class CardDefController {
      */
     @DELETE
     @Path("{id}")
-    public void deleteCardDef(@PathParam("id") Long id) {
+    public void deleteCardType(@PathParam("id") Long id) {
         logger.debug("delete card def #{}", id);
-        cardDefDao.deleteCardDef(id);
+        cardTypeDao.deleteCardType(id);
     }
 
 }

@@ -36,10 +36,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-public class CardController {
+public class CardEndpoint {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(CardController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CardEndpoint.class);
 
     /**
      * The card persistence manager
@@ -102,17 +102,17 @@ public class CardController {
      * Create and persist a new card
      *
      * @param parentId id of the new card's parent
-     * @param cardDefinitionId id of the card definition of the new card
+     * @param cardTypeinitionId id of the card definition of the new card
      *
      * @return the persisted new card
      */
     @POST
-    @Path("create/{parentId}/{cardDefId}")
+    @Path("create/{parentId}/{cardTypeId}")
     public Card createNewCard(@PathParam("parentId") Long parentId,
-            @PathParam("cardDefId") Long cardDefinitionId) {
+            @PathParam("cardTypeId") Long cardTypeinitionId) {
         logger.debug("create a new card for the parent #{} and the definition #{}", parentId,
-                cardDefinitionId);
-        return cardFacade.createNewCard(parentId, cardDefinitionId);
+                cardTypeinitionId);
+        return cardFacade.createNewCard(parentId, cardTypeinitionId);
     }
 
     /**

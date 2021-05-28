@@ -11,10 +11,10 @@ import * as API from '../../../API/api';
 import { css } from '@emotion/css';
 import { useAppDispatch } from '../../../store/hooks';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { useCardDefs } from '../../../selectors/cardDefSelector';
+import { useCardTypes } from '../../../selectors/cardTypeSelector';
 import InlineLoading from '../../common/InlineLoading';
 import IconButton from '../../common/IconButton';
-import CardDefEditor from './CardDefEditor';
+import CardTypeEditor from './CardTypeEditor';
 
 const flexWrap = css({
   display: 'flex',
@@ -26,22 +26,22 @@ export interface Props {}
 
 export default ({}: Props): JSX.Element => {
   const dispatch = useAppDispatch();
-  const cardDefs = useCardDefs();
+  const cardTypes = useCardTypes();
 
   const createNewCb = React.useCallback(() => {
     dispatch(
-      API.createCardDef({
-        '@class': 'CardDef',
+      API.createCardType({
+        '@class': 'CardType',
         projectId: null,
       }),
     );
   }, [dispatch]);
 
-  if (cardDefs.status === 'UNSET') {
-    dispatch(API.getAllGlobalCardDefs());
+  if (cardTypes.status === 'UNSET') {
+    dispatch(API.getAllGlobalCardTypes());
   }
 
-  if (cardDefs.status !== 'READY') {
+  if (cardTypes.status !== 'READY') {
     return <InlineLoading />;
   } else {
     return (
@@ -49,8 +49,8 @@ export default ({}: Props): JSX.Element => {
         <h3>Global Card Types</h3>
         <IconButton onClick={createNewCb} icon={faPlus} />
         <div className={flexWrap}>
-          {cardDefs.projectCardDef.map(cardDef => (
-            <CardDefEditor key={cardDef.id} cardDef={cardDef} />
+          {cardTypes.projectCardType.map(cardType => (
+            <CardTypeEditor key={cardType.id} cardType={cardType} />
           ))}
         </div>
       </div>

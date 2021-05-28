@@ -10,12 +10,12 @@ import * as API from '../../../API/api';
 
 import { css } from '@emotion/css';
 import { useAppDispatch } from '../../../store/hooks';
-import { CardDef } from 'colab-rest-client';
+import { CardType } from 'colab-rest-client';
 import AutoSaveInput from '../../common/AutoSaveInput';
 import { cardShadow } from '../../styling/style';
 
 interface DisplayProps {
-  cardDef: CardDef;
+  cardType: CardType;
 }
 
 const style = css({
@@ -27,7 +27,7 @@ const style = css({
   boxShadow: cardShadow,
 });
 
-export default function CardDefEditor({ cardDef }: DisplayProps) {
+export default function CardTypeEditor({ cardType }: DisplayProps) {
   const dispatch = useAppDispatch();
 
   return (
@@ -36,15 +36,15 @@ export default function CardDefEditor({ cardDef }: DisplayProps) {
         label="Title: "
         placeholder=""
         inputType="INPUT"
-        value={cardDef.title || ''}
-        onChange={newValue => dispatch(API.updateCardDef({ ...cardDef, title: newValue }))}
+        value={cardType.title || ''}
+        onChange={newValue => dispatch(API.updateCardType({ ...cardType, title: newValue }))}
       />
       <AutoSaveInput
         label="Purpose: "
         placeholder=""
         inputType="TEXTAREA"
-        value={cardDef.purpose || ''}
-        onChange={newValue => dispatch(API.updateCardDef({ ...cardDef, purpose: newValue }))}
+        value={cardType.purpose || ''}
+        onChange={newValue => dispatch(API.updateCardType({ ...cardType, purpose: newValue }))}
       />
     </div>
   );

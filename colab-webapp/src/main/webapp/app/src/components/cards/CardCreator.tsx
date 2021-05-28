@@ -12,13 +12,13 @@ import { CardContent } from 'colab-rest-client';
 import IconButton from '../common/IconButton';
 import { faPlus, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import Overlay from '../common/Overlay';
-import { useCardDefs } from '../../selectors/cardDefSelector';
+import { useCardTypes } from '../../selectors/cardTypeSelector';
 import Loading from '../common/Loading';
-import { getProjectCardDefs } from '../../API/api';
+import { getProjectCardTypes } from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
-import CardDefThumbnail from './carddefs/CardDefThumbnail';
-import CardDefCreator from './carddefs/CardDefCreator';
+import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
+import CardTypeCreator from './cardtypes/CardTypeCreator';
 import { css, cx } from '@emotion/css';
 import { lightMode } from '../styling/style';
 
@@ -42,7 +42,7 @@ export default function CardCreator({ parent }: Props): JSX.Element {
     setSelectedType(id);
   }, []);
 
-  const cardDefs = useCardDefs();
+  const cardTypes = useCardTypes();
 
   if (state === 'COLLAPSED') {
     return (
@@ -57,12 +57,12 @@ export default function CardCreator({ parent }: Props): JSX.Element {
       </div>
     );
   } else {
-    if (cardDefs.status === 'UNSET') {
+    if (cardTypes.status === 'UNSET') {
       if (project != null) {
-        dispatch(getProjectCardDefs(project));
+        dispatch(getProjectCardTypes(project));
       }
     }
-    if (cardDefs.status !== 'READY' || state === 'PENDING') {
+    if (cardTypes.status !== 'READY' || state === 'PENDING') {
       return <Loading />;
     } else {
       return (
@@ -81,12 +81,12 @@ export default function CardCreator({ parent }: Props): JSX.Element {
               <div>
                 <h3>Common types</h3>
                 <div className={listOfTypeStyle}>
-                  {cardDefs.inheritedCardDef.map(cardDef => (
-                    <CardDefThumbnail
-                      key={cardDef.id}
+                  {cardTypes.inheritedCardType.map(cardType => (
+                    <CardTypeThumbnail
+                      key={cardType.id}
                       onClick={onSelect}
-                      highlighted={cardDef.id === selectedType}
-                      cardDef={cardDef}
+                      highlighted={cardType.id === selectedType}
+                      cardType={cardType}
                     />
                   ))}
                 </div>
@@ -94,15 +94,15 @@ export default function CardCreator({ parent }: Props): JSX.Element {
               <div>
                 <h3>Custom Types</h3>
                 <div className={listOfTypeStyle}>
-                  {cardDefs.projectCardDef.map(cardDef => (
-                    <CardDefThumbnail
-                      key={cardDef.id}
+                  {cardTypes.projectCardType.map(cardType => (
+                    <CardTypeThumbnail
+                      key={cardType.id}
                       onClick={onSelect}
-                      highlighted={cardDef.id === selectedType}
-                      cardDef={cardDef}
+                      highlighted={cardType.id === selectedType}
+                      cardType={cardType}
                     />
                   ))}
-                  <CardDefCreator
+                  <CardTypeCreator
                     afterCreation={(id: number) => {
                       setSelectedType(id);
                     }}
@@ -127,7 +127,7 @@ export default function CardCreator({ parent }: Props): JSX.Element {
                     dispatch(
                       API.createSubCard({
                         parent: parent,
-                        cardDefId: selectedType,
+                        cardTypeId: selectedType,
                       }),
                     ).then(() => {
                       setState('COLLAPSED');

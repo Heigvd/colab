@@ -19,7 +19,7 @@ import OpenClose from '../common/OpenClose';
 import { faFile, faPalette, faStickyNote } from '@fortawesome/free-solid-svg-icons';
 import IconButton from '../common/IconButton';
 import FitSpace from '../common/FitSpace';
-import { useCardDef } from '../../selectors/cardDefSelector';
+import { useCardType } from '../../selectors/cardTypeSelector';
 
 interface Props {
   card: Card;
@@ -39,14 +39,14 @@ export default function CardEditor({
   const [resourcesVisible, showResources] = React.useState(false);
   const [stickyNotesVisible, showStickyNotes] = React.useState(false);
 
-  const cardTypeFull = useCardDef(card.cardDefinitionId);
-  const cardType = cardTypeFull.cardDef;
+  const cardTypeFull = useCardType(card.cardTypeinitionId);
+  const cardType = cardTypeFull.cardType;
 
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
-    if (cardType === undefined && card.cardDefinitionId != null) {
-      dispatch(API.getCardDef(card.cardDefinitionId));
+    if (cardType === undefined && card.cardTypeinitionId != null) {
+      dispatch(API.getCardType(card.cardTypeinitionId));
     }
 
     return (

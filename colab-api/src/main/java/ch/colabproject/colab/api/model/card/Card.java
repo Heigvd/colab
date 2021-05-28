@@ -30,7 +30,7 @@ import javax.persistence.Transient;
 /**
  * Card
  * <p>
- * It is defined by a cardDef. The content is stored in one or several CardContent.
+ * It is defined by a cardType. The content is stored in one or several CardContent.
  *
  * @author sandra
  */
@@ -69,13 +69,13 @@ public class Card implements ColabEntity, WithWebsocketChannels {
      */
     @ManyToOne
     @JsonbTransient
-    private AbstractCardDef cardDefinition;
+    private AbstractCardType cardTypeinition;
 
     /**
      * The id of the card definition (serialization sugar)
      */
     @Transient
-    private Long cardDefinitionId;
+    private Long cardTypeinitionId;
 
     /**
      * The project this card is root of. may be null
@@ -166,15 +166,15 @@ public class Card implements ColabEntity, WithWebsocketChannels {
     /**
      * @return the card def defining what is it for
      */
-    public AbstractCardDef getCardDefinition() {
-        return cardDefinition;
+    public AbstractCardType getCardTypeinition() {
+        return cardTypeinition;
     }
 
     /**
-     * @param cardDef the card def defining what is it for
+     * @param cardType the card def defining what is it for
      */
-    public void setCardDefinition(AbstractCardDef cardDef) {
-        this.cardDefinition = cardDef;
+    public void setCardTypeinition(AbstractCardType cardType) {
+        this.cardTypeinition = cardType;
     }
 
     /**
@@ -182,19 +182,19 @@ public class Card implements ColabEntity, WithWebsocketChannels {
      *
      * @return the id of the card def
      */
-    public Long getCardDefinitionId() {
-        if (this.cardDefinition != null) {
-            return this.cardDefinition.getId();
+    public Long getCardTypeinitionId() {
+        if (this.cardTypeinition != null) {
+            return this.cardTypeinition.getId();
         } else {
-            return cardDefinitionId;
+            return cardTypeinitionId;
         }
     }
 
     /**
-     * @param cardDefId the cardDefId to set
+     * @param cardTypeId the cardTypeId to set
      */
-    public void setCardDefinitionId(Long cardDefId) {
-        this.cardDefinitionId = cardDefId;
+    public void setCardTypeinitionId(Long cardTypeId) {
+        this.cardTypeinitionId = cardTypeId;
     }
 
     /**
@@ -314,10 +314,10 @@ public class Card implements ColabEntity, WithWebsocketChannels {
         } else if (this.parent != null) {
             // this card is a sub-card, propagate through its parent channels
             return this.parent.getChannels();
-        } else if (this.cardDefinition != null) {
+        } else if (this.cardTypeinition != null) {
             // such a card shoudln't exist...
-            // Lorem-ipsum cards for global cardDefinitions ???
-            return this.cardDefinition.getChannels();
+            // Lorem-ipsum cards for global cardTypeinitions ???
+            return this.cardTypeinition.getChannels();
         } else {
             // such an orphan card shoudln't exist...
             return Set.of();
@@ -354,8 +354,8 @@ public class Card implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public String toString() {
-        return "Card{" + "id=" + id + ", index=" + index + ", color=" + color + ", cardDefId="
-            + getCardDefinitionId() + ", parentId=" + getParentId() + "}";
+        return "Card{" + "id=" + id + ", index=" + index + ", color=" + color + ", cardTypeId="
+            + getCardTypeinitionId() + ", parentId=" + getParentId() + "}";
     }
 
 }

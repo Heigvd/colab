@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.ProjectFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.card.AbstractCardDef;
+import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
@@ -37,10 +37,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-public class ProjectController {
+public class ProjectEndpoint {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(ProjectController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProjectEndpoint.class);
 
     /**
      * The Project business logic
@@ -166,9 +166,9 @@ public class ProjectController {
      * @return the card definitions linked to the project
      */
     @GET
-    @Path("{id}/CardDefs")
-    public List<AbstractCardDef> getCardDefsOfProject(@PathParam("id") Long id) {
+    @Path("{id}/CardTypes")
+    public List<AbstractCardType> getCardTypesOfProject(@PathParam("id") Long id) {
         logger.debug("Get project #{} card definitions", id);
-        return projectFacade.getCardDefs(id);
+        return projectFacade.getCardTypes(id);
     }
 }

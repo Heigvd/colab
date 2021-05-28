@@ -30,7 +30,7 @@ import javax.persistence.Transient;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public abstract class AbstractCardDef implements ColabEntity, WithWebsocketChannels {
+public abstract class AbstractCardType implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,7 +38,7 @@ public abstract class AbstractCardDef implements ColabEntity, WithWebsocketChann
     // fields
     // ---------------------------------------------------------------------------------------------
     /**
-     * CardDef ID
+     * CardType ID
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,7 +71,7 @@ public abstract class AbstractCardDef implements ColabEntity, WithWebsocketChann
     // getters and setters
     // ---------------------------------------------------------------------------------------------
     /**
-     * @return the cardDef ID
+     * @return the cardType ID
      */
     @Override
     public Long getId() {
@@ -79,7 +79,7 @@ public abstract class AbstractCardDef implements ColabEntity, WithWebsocketChann
     }
 
     /**
-     * @param id the cardDef ID
+     * @param id the cardType ID
      */
     public void setId(Long id) {
         this.id = id;
@@ -158,11 +158,11 @@ public abstract class AbstractCardDef implements ColabEntity, WithWebsocketChann
     }
 
     /**
-     * Resolve to concrete CardDef
+     * Resolve to concrete CardType
      *
-     * @return the effective cardDef
+     * @return the effective cardType
      */
-    public abstract CardDef resolve();
+    public abstract CardType resolve();
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class

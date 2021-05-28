@@ -66,8 +66,8 @@ export default ({ afterCreation, global = false }: Props): JSX.Element => {
           icon={faCheck}
           onClick={() => {
             dispatch(
-              API.createCardDef({
-                '@class': 'CardDef',
+              API.createCardType({
+                '@class': 'CardType',
                 projectId: project && !global ? project.id! : null,
                 title: title,
                 purpose: purpose,
@@ -75,7 +75,7 @@ export default ({ afterCreation, global = false }: Props): JSX.Element => {
             ).then(action => {
               if (action.meta.requestStatus === 'fulfilled') {
                 if (afterCreation != null) {
-                  if (entityIs(action.payload, 'CardDef')) {
+                  if (entityIs(action.payload, 'CardType')) {
                     afterCreation(action.payload.id!);
                   }
                 }

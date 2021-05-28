@@ -10,7 +10,7 @@ import thunk from 'redux-thunk';
 import authReducer from './auth';
 import adminReducer from './admin';
 import cardReducer from './card';
-import cardDefReducer from './carddef';
+import cardTypeReducer from './cardtype';
 import errorReducer from './error';
 import projectReducer from './project';
 import userReducer from './user';
@@ -23,7 +23,7 @@ const rootReducer = combineReducers({
   errors: errorReducer,
   projects: projectReducer,
   cards: cardReducer,
-  carddef: cardDefReducer,
+  cardtype: cardTypeReducer,
   users: userReducer,
   websockets: websocketReducer,
 });

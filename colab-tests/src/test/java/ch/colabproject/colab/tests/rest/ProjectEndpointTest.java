@@ -33,19 +33,19 @@ import org.junit.jupiter.api.Test;
  *
  * @author maxence
  */
-public class ProjectControllerTest extends AbstractArquillianTest {
+public class ProjectEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testCreateProject() {
         TestUser user = this.signup("goulashsensei", "goulash@test.local", "SoSecure");
         this.signIn(user);
 
-        User currentUser = client.userController.getCurrentUser();
+        User currentUser = client.userEndpoint.getCurrentUser();
 
         Project project = new Project();
 
-        Long projectId = client.projectController.createProject(project);
-        Project persistedProject = client.projectController.getProject(projectId);
+        Long projectId = client.projectEndpoint.createProject(project);
+        Project persistedProject = client.projectEndpoint.getProject(projectId);
 
         Assertions.assertNotNull(persistedProject);
         Assertions.assertNotNull(persistedProject.getId());
@@ -53,13 +53,13 @@ public class ProjectControllerTest extends AbstractArquillianTest {
         Assertions.assertEquals(persistedProject.getId(), projectId);
 
         Assertions.assertNotNull(persistedProject.getRootCardId());
-        Card rootCard = client.cardController.getCard(persistedProject.getRootCardId());
+        Card rootCard = client.cardEndpoint.getCard(persistedProject.getRootCardId());
         Assertions.assertNotNull(rootCard);
-        List<CardContent> rootCardContents = client.cardController.getContentVariantsOfCard(rootCard.getId());
+        List<CardContent> rootCardContents = client.cardEndpoint.getContentVariantsOfCard(rootCard.getId());
         Assertions.assertNotNull(rootCardContents);
         Assertions.assertEquals(1, rootCardContents.size());
 
-        List<TeamMember> members = client.projectController.getMembers(projectId);
+        List<TeamMember> members = client.projectEndpoint.getMembers(projectId);
         Assertions.assertEquals(1, members.size());
 
         TeamMember me = members.get(0);
@@ -71,14 +71,14 @@ public class ProjectControllerTest extends AbstractArquillianTest {
     public void testUpdateProject() {
         Project project = new Project();
 
-        Long projectId = client.projectController.createProject(project);
-        project = client.projectController.getProject(projectId);
+        Long projectId = client.projectEndpoint.createProject(project);
+        project = client.projectEndpoint.getProject(projectId);
         project.setName("The Hitchhiker's Guide to the Serious-Game");
         project.setDescription("So Long, and Thanks for All the Games");
 
-        client.projectController.updateProject(project);
+        client.projectEndpoint.updateProject(project);
 
-        Project project2 = client.projectController.getProject(projectId);
+        Project project2 = client.projectEndpoint.getProject(projectId);
         Assertions.assertEquals(project.getName(), project2.getName());
         Assertions.assertEquals(project.getDescription(), project2.getDescription());
     }
@@ -87,26 +87,26 @@ public class ProjectControllerTest extends AbstractArquillianTest {
     public void testGetAllProjects() {
         Project project = new Project();
         project.setName("The Hitchhiker's Guide to the Serious-Game");
-        client.projectController.createProject(project);
+        client.projectEndpoint.createProject(project);
 
         project = new Project();
         project.setName("Don't Panic");
-        client.projectController.createProject(project);
+        client.projectEndpoint.createProject(project);
 
-        List<Project> projects = client.projectController.getAllProjects();
+        List<Project> projects = client.projectEndpoint.getAllProjects();
         Assertions.assertEquals(2, projects.size());
     }
 
     @Test
     public void testDeleteProject() {
         Project project = new Project();
-        Long projectId = client.projectController.createProject(project);
-        Project persistedProject = client.projectController.getProject(projectId);
+        Long projectId = client.projectEndpoint.createProject(project);
+        Project persistedProject = client.projectEndpoint.getProject(projectId);
 
         Assertions.assertNotNull(persistedProject);
 
-        client.projectController.deleteProject(projectId);
-        persistedProject = client.projectController.getProject(projectId);
+        client.projectEndpoint.deleteProject(projectId);
+        persistedProject = client.projectEndpoint.getProject(projectId);
 
         Assertions.assertNull(persistedProject);
     }
@@ -126,7 +126,7 @@ public class ProjectControllerTest extends AbstractArquillianTest {
         this.signIn(user);
 
         WebsocketClient wsGoulashClient = this.createWsClient();
-        client.websocketController.subscribeToUserChannel(wsGoulashClient.getSessionId());
+        client.websocketEndpoint.subscribeToUserChannel(wsGoulashClient.getSessionId());
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Goulash creates a projects
@@ -134,7 +134,7 @@ public class ProjectControllerTest extends AbstractArquillianTest {
         Project p = new Project();
         p.setName("The Hitchhiker's Guide to the Serious-Game");
 
-        Long projectId = client.projectController.createProject(p);
+        Long projectId = client.projectEndpoint.createProject(p);
 
         // Goulash receives the project, the user (ie himself) and the teamMmeber linking the project to the user
         WsUpdateMessage wsProjectUpdate = TestHelper.waitForMessagesAndAssert(wsGoulashClient, 1, 5, WsUpdateMessage.class).get(0);
@@ -154,14 +154,14 @@ public class ProjectControllerTest extends AbstractArquillianTest {
         Assertions.assertEquals(wsUpdatedRoot.getId(), wsUpdatedRootContent.getCardId());
 
         // user is a lonely team member
-        List<TeamMember> members = client.projectController.getMembers(project.getId());
+        List<TeamMember> members = client.projectEndpoint.getMembers(project.getId());
         Assertions.assertEquals(1, members.size());
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Goulash invites Georges
         ////////////////////////////////////////////////////////////////////////////////////////////
         mailClient.deleteAllMessages();
-        client.projectController.inviteSomeone(projectId, mateAddress);
+        client.projectEndpoint.inviteSomeone(projectId, mateAddress);
 
         // Invitation creates a TeamMember and touch the project;
         // The two objects are propagated to goulashsensei
@@ -189,7 +189,7 @@ public class ProjectControllerTest extends AbstractArquillianTest {
         // With is own http client 'borschClient', Georges fetch the token
         ////////////////////////////////////////////////////////////////////////////////////////////
         ColabClient borschClient = this.createRestClient();
-        Token token = borschClient.tokenController.getToken(tokenId);
+        Token token = borschClient.tokenEndpoint.getToken(tokenId);
 
         Assertions.assertTrue(token instanceof InvitationToken);
 
@@ -198,7 +198,7 @@ public class ProjectControllerTest extends AbstractArquillianTest {
         // an try to consume the token being unauthenticated
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -> {
             // consuming the token without being authenticated is not possible
-            borschClient.tokenController.consumeToken(tokenId, plainToken);
+            borschClient.tokenEndpoint.consumeToken(tokenId, plainToken);
         });
 
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,13 +207,13 @@ public class ProjectControllerTest extends AbstractArquillianTest {
         TestUser mateUser = this.signup("borschsensei", mateAddress, "SoSoSoSecure");
         signIn(borschClient, mateUser);
         WebsocketClient wsBorschClient = this.createWsClient();
-        borschClient.websocketController.subscribeToUserChannel(wsBorschClient.getSessionId());
+        borschClient.websocketEndpoint.subscribeToUserChannel(wsBorschClient.getSessionId());
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Borsch consumes the tokens amd, thus, join the team.
         // Borsch and Goulash both receive the temmMember and borsch's user update.
         ////////////////////////////////////////////////////////////////////////////////////////////
-        borschClient.tokenController.consumeToken(tokenId, plainToken);
+        borschClient.tokenEndpoint.consumeToken(tokenId, plainToken);
 
         WsUpdateMessage goulashTeamUpdate = TestHelper.waitForMessagesAndAssert(
             wsGoulashClient, 1, 5, WsUpdateMessage.class).get(0);
@@ -233,18 +233,18 @@ public class ProjectControllerTest extends AbstractArquillianTest {
     }
 
     private void reloadTwoMembersTeam(ColabClient client, Long projectId) {
-        List<TeamMember> members = client.projectController.getMembers(projectId);
+        List<TeamMember> members = client.projectEndpoint.getMembers(projectId);
         Assertions.assertEquals(2, members.size());
 
         //assert currentUser can read user of teammate
         members.forEach((TeamMember member) -> {
-            User u = client.userController.getUserById(member.getUserId());
+            User u = client.userEndpoint.getUserById(member.getUserId());
             Assertions.assertNotNull(u);
         });
 
         // assert currentuser can not read other users
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.userController.getUserById(this.adminUserId);
+            client.userEndpoint.getUserById(this.adminUserId);
         });
     }
 }

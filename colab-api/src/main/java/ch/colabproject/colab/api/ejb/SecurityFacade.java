@@ -6,10 +6,10 @@
  */
 package ch.colabproject.colab.api.ejb;
 
-import ch.colabproject.colab.api.model.card.AbstractCardDef;
+import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.card.CardDef;
+import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -222,9 +222,9 @@ public class SecurityFacade {
     /**
      * Make sure the current user has the right to read the card definition
      *
-     * @param cardDefinition card definition to read
+     * @param cardTypeinition card definition to read
      */
-    public void assertCanReadCardDef(AbstractCardDef cardDefinition) {
+    public void assertCanReadCardType(AbstractCardType cardTypeinition) {
         // TODO
     }
 
@@ -249,9 +249,9 @@ public class SecurityFacade {
     /**
      * Make sure the current user has the right to edit the card definition
      *
-     * @param cardDefinition card definition to edit
+     * @param cardTypeinition card definition to edit
      */
-    public void assertCanWriteCardDef(CardDef cardDefinition) {
+    public void assertCanWriteCardType(CardType cardTypeinition) {
         // TODO
     }
 
@@ -278,7 +278,7 @@ public class SecurityFacade {
      *
      * @param project the project the new card definition will belong to
      */
-    public void assertCanCreateCardDef(Project project) {
+    public void assertCanCreateCardType(Project project) {
         // TODO
     }
 
@@ -286,10 +286,10 @@ public class SecurityFacade {
      * Make sure the current user has the right to create a card
      *
      * @param cardContent    the card content the new card will belong to
-     * @param cardDefinition the card definition the new card will refer to
+     * @param cardTypeinition the card definition the new card will refer to
      */
-    public void assertCanCreateCard(CardContent cardContent, AbstractCardDef cardDefinition) {
-        this.assertCanReadCardDef(cardDefinition);
+    public void assertCanCreateCard(CardContent cardContent, AbstractCardType cardTypeinition) {
+        this.assertCanReadCardType(cardTypeinition);
         this.assertCanWriteCardContent(cardContent);
     }
 

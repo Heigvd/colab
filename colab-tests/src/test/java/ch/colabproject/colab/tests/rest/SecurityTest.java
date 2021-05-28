@@ -10,7 +10,7 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.TestUser;
 import ch.colabproject.colab.generator.plugin.Generator;
-import ch.colabproject.colab.generator.plugin.rest.RestController;
+import ch.colabproject.colab.generator.plugin.rest.RestEndpoint;
 import ch.colabproject.colab.generator.plugin.rest.RestMethod;
 import ch.colabproject.colab.tests.tests.TestHelper;
 import com.github.javaparser.StaticJavaParser;
@@ -40,43 +40,43 @@ public class SecurityTest extends AbstractArquillianTest {
      */
     public void assertAccessDenied() {
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.userController.getAllUsers();
+            client.userEndpoint.getAllUsers();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.projectController.getAllProjects();
+            client.projectEndpoint.getAllProjects();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.cardDefController.getAllCardDefs();
+            client.cardTypeEndpoint.getAllCardTypes();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.cardDefController.getAllGlobalCardDefs();
+            client.cardTypeEndpoint.getAllGlobalCardTypes();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.cardController.getAllCards();
+            client.cardEndpoint.getAllCards();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.cardContentController.getAllCardContents();
+            client.cardContentEndpoint.getAllCardContents();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.userController.grantAdminRight(1l);
+            client.userEndpoint.grantAdminRight(1l);
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.userController.revokeAdminRight(1l);
+            client.userEndpoint.revokeAdminRight(1l);
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.userController.switchClientHashMethod(1l);
+            client.userEndpoint.switchClientHashMethod(1l);
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.userController.switchServerHashMethod(1l);
+            client.userEndpoint.switchServerHashMethod(1l);
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.monitoringController.changeLoggerLevel("abcd", "DEBUG");
+            client.monitoringEndpoint.changeLoggerLevel("abcd", "DEBUG");
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.monitoringController.getLoggerLevels();
+            client.monitoringEndpoint.getLoggerLevels();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.websocketController.getExistingChannels();
+            client.websocketEndpoint.getExistingChannels();
         });
     }
 
@@ -105,8 +105,8 @@ public class SecurityTest extends AbstractArquillianTest {
         String[] pkgs = {"ch.colabproject.colab.api"};
         Generator generator = new Generator(pkgs);
         generator.processPackages();
-        Set<RestController> restControllers = generator.getRestControllers();
-        restControllers.forEach(controller -> {
+        Set<RestEndpoint> restEndpoints = generator.getRestEndpoints();
+        restEndpoints.forEach(controller -> {
             boolean isAdminResource = controller.isAdminResource();
 
             String simpleClassName = controller.getSimpleClassName();

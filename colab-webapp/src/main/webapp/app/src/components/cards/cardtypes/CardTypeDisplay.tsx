@@ -8,11 +8,11 @@
 import * as React from 'react';
 
 import { css } from '@emotion/css';
-import { CardDef } from 'colab-rest-client';
+import { CardType } from 'colab-rest-client';
 import { cardShadow } from '../../styling/style';
 
 interface DisplayProps {
-  cardDef: CardDef;
+  cardType: CardType;
 }
 
 const style = css({
@@ -24,11 +24,11 @@ const style = css({
   boxShadow: cardShadow,
 });
 
-export default function CardDefDisplay({ cardDef }: DisplayProps) {
+export default function CardTypeDisplay({ cardType }: DisplayProps) {
   return (
     <div className={style}>
-      <div>Title: {cardDef.title}</div>
-      <div>Purpose: {cardDef.purpose}</div>
+      <div>Title: {cardType.title}</div>
+      <div>Purpose: {cardType.purpose}</div>
     </div>
   );
 }

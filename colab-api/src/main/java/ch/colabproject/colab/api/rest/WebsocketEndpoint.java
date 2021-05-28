@@ -38,10 +38,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-public class WebsocketController {
+public class WebsocketEndpoint {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(WebsocketController.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebsocketEndpoint.class);
 
     /**
      * Websocket business logic

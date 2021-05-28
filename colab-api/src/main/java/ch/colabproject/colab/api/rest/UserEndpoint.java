@@ -42,10 +42,10 @@ import org.slf4j.LoggerFactory;
 @Path("users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class UserController {
+public class UserEndpoint {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserEndpoint.class);
 
     /**
      * Users related business logic

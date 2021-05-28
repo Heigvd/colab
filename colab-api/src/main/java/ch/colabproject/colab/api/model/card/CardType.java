@@ -24,11 +24,11 @@ import javax.persistence.NamedQuery;
  */
 //TODO review accurate constraints when stabilized
 @Entity
-@NamedQuery(name = "CardDef.findAll", query = "SELECT c FROM CardDef c")
-@NamedQuery(name = "CardDef.findGlobals", query = "SELECT c FROM CardDef c WHERE c.project is NULL")
-@NamedQuery(name = "CardDef.findPublishedGlobals", query = "SELECT c FROM CardDef c WHERE c.project is NULL AND c.published = TRUE")
-@NamedQuery(name = "CardDef.findPublishedFromProjects", query = "SELECT c FROM CardDef c JOIN c.project project JOIN project.teamMembers teamMember WHERE c.published = TRUE AND teamMember.user.id = :userId")
-public class CardDef extends AbstractCardDef {
+@NamedQuery(name = "CardType.findAll", query = "SELECT c FROM CardType c")
+@NamedQuery(name = "CardType.findGlobals", query = "SELECT c FROM CardType c WHERE c.project is NULL")
+@NamedQuery(name = "CardType.findPublishedGlobals", query = "SELECT c FROM CardType c WHERE c.project is NULL AND c.published = TRUE")
+@NamedQuery(name = "CardType.findPublishedFromProjects", query = "SELECT c FROM CardType c JOIN c.project project JOIN project.teamMembers teamMember WHERE c.published = TRUE AND teamMember.user.id = :userId")
+public class CardType extends AbstractCardType {
 
     /**
      * Serial version UID
@@ -127,7 +127,7 @@ public class CardDef extends AbstractCardDef {
     }
 
     @Override
-    public CardDef resolve() {
+    public CardType resolve() {
         return this;
     }
 
@@ -139,8 +139,8 @@ public class CardDef extends AbstractCardDef {
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof CardDef) {
-            CardDef o = (CardDef) other;
+        if (other instanceof CardType) {
+            CardType o = (CardType) other;
             // this.setUniqueId(o.getUniqueId());
             this.setTitle(o.getTitle());
             this.setPurpose(o.getPurpose());
@@ -161,7 +161,7 @@ public class CardDef extends AbstractCardDef {
 
     @Override
     public String toString() {
-        return "CardDef{" + "id=" + getId() + ", uniqueId=" + uniqueId + ", title=" + title
+        return "CardType{" + "id=" + getId() + ", uniqueId=" + uniqueId + ", title=" + title
             + ", purpose=" + purpose + ", authorityHolder=" + authorityHolder + ", projectId="
             + getProjectId() + "}";
     }

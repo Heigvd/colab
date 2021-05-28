@@ -39,7 +39,7 @@ import org.reflections.Reflections;
  *
  * @author maxence
  */
-public class RestController {
+public class RestEndpoint {
 
     /**
      * Full class name.
@@ -319,11 +319,11 @@ public class RestController {
     }
 
     /**
-     * Camelcasify simpleClassname (eg ArrayList, UserController, ...)
+     * Camelcasify simpleClassname (eg ArrayList, UserEndpoint, ...)
      *
      * @param simpleClassName className
      *
-     * @return camel-case version of className eg(arrayList, userController, ...)
+     * @return camel-case version of className eg(arrayList, userEndpoint, ...)
      */
     private String camelcasify(String simpleClassName) {
         String firstChar = simpleClassName.substring(0, 1);
@@ -690,28 +690,28 @@ public class RestController {
     }
 
     /**
-     * Build a RestController based on a klass
+     * Build a RestEndpoint based on a klass
      *
      * @param klass           the class must be annotated with {@link Path}
      * @param applicationPath main application path
      *
      * @return RestControlle instance, ready for code generation
      */
-    public static RestController build(Class<?> klass, String applicationPath) {
-        RestController restController = new RestController();
+    public static RestEndpoint build(Class<?> klass, String applicationPath) {
+        RestEndpoint restEndpoint = new RestEndpoint();
 
-        restController.setAdminResource(klass.getAnnotation(AdminResource.class) != null);
-        restController.setAuthenticationRequired(
+        restEndpoint.setAdminResource(klass.getAnnotation(AdminResource.class) != null);
+        restEndpoint.setAuthenticationRequired(
             klass.getAnnotation(AuthenticationRequired.class) != null);
 
-        restController.simpleClassName = klass.getSimpleName();
-        restController.className = klass.getName();
+        restEndpoint.simpleClassName = klass.getSimpleName();
+        restEndpoint.className = klass.getName();
 
         Path classPath = klass.getAnnotation(Path.class);
         // eg @Path("project/{pId: [regex]}/card/{}")   or "project"
         Map<String, Class<?>> mainPathParam = splitPath(classPath);
 
-        Logger.debug("Build RestController for " + klass);
+        Logger.debug("Build RestEndpoint for " + klass);
         // Go through each class methods but only cares about ones annotated with
         // a HttpMethod-like annotation
         for (Method method : klass.getMethods()) {
@@ -722,7 +722,7 @@ public class RestController {
                 if (httpMethodAnno != null) {
                     RestMethod restMethod = new RestMethod();
                     restMethod.setName(method.getName());
-                    restController.registerMethod(restMethod);
+                    restEndpoint.registerMethod(restMethod);
 
                     String httpMethod = httpMethodAnno.value();
                     restMethod.setHttpMethod(httpMethod);
@@ -768,7 +768,7 @@ public class RestController {
                             } else if (mainPathParam.containsKey(pathParam.value())) {
                                 mainPathParam.put(pathParam.value(), p.getType());
 
-                                restController.addPathParameter(
+                                restEndpoint.addPathParameter(
                                     p.getName(),
                                     pathParam.value(),
                                     "path param",
@@ -815,7 +815,7 @@ public class RestController {
                 }
             }
         }
-        return restController;
+        return restEndpoint;
     }
 
 }

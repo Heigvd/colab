@@ -8,7 +8,7 @@ package ch.colabproject.colab.tests.tests;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.ejb.UserManagement;
-import ch.colabproject.colab.api.model.card.CardDef;
+import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
@@ -215,7 +215,7 @@ public abstract class AbstractArquillianTest {
     protected TestUser signup(String username, String email, String password)
         throws ClientErrorException {
         // Create a brand new user with a local account
-        AuthMethod authMethod = client.userController.getAuthMethod(email);
+        AuthMethod authMethod = client.userEndpoint.getAuthMethod(email);
 
         SignUpInfo signup = new SignUpInfo();
         signup.setUsername(username);
@@ -231,7 +231,7 @@ public abstract class AbstractArquillianTest {
 
         signup.setHash(hash);
 
-        client.userController.signUp(signup);
+        client.userEndpoint.signUp(signup);
 
         return new TestUser(username, email, password);
     }
@@ -249,7 +249,7 @@ public abstract class AbstractArquillianTest {
 
     protected void signIn(ColabClient client, TestUser user) {
         AuthInfo authInfo = getAuthInfo(user.getEmail(), user.getPassword());
-        client.userController.signIn(authInfo);
+        client.userEndpoint.signIn(authInfo);
     }
 
     /**
@@ -261,7 +261,7 @@ public abstract class AbstractArquillianTest {
      * @return authinfo with hashed password
      */
     protected AuthInfo getAuthInfo(String identifier, String plainPassword) {
-        AuthMethod authMethod = client.userController.getAuthMethod(identifier);
+        AuthMethod authMethod = client.userEndpoint.getAuthMethod(identifier);
         AuthInfo authInfo = new AuthInfo();
         authInfo.setIdentifier(identifier);
 
@@ -305,9 +305,9 @@ public abstract class AbstractArquillianTest {
                     Long tokenId = Long.parseLong(matcher.group(1));
                     String plainToken = matcher.group(2);
 
-                    Token token = client.tokenController.getToken(tokenId);
+                    Token token = client.tokenEndpoint.getToken(tokenId);
                     if (token instanceof VerifyLocalAccountToken) {
-                        client.tokenController.consumeToken(tokenId, plainToken);
+                        client.tokenEndpoint.consumeToken(tokenId, plainToken);
                         this.mailClient.deleteMessage(message.getId());
                     }
                 }
@@ -337,7 +337,7 @@ public abstract class AbstractArquillianTest {
      * Sign the current user out
      */
     protected void signOut() {
-        client.userController.signOut();
+        client.userEndpoint.signOut();
     }
 
     /**
@@ -470,18 +470,18 @@ public abstract class AbstractArquillianTest {
     // --------------------------------------------------------------------------------------------
     // FACTORY
     // --------------------------------------------------------------------------------------------
-    protected CardDef createCardDef(Long projectId) {
-        CardDef cardDef = new CardDef();
-        cardDef.setProjectId(projectId);
+    protected CardType createCardType(Long projectId) {
+        CardType cardType = new CardType();
+        cardType.setProjectId(projectId);
 
-        Long cardDefId = client.cardDefController.createCardDef(cardDef);
-        return client.cardDefController.getCardDef(cardDefId);
+        Long cardTypeId = client.cardTypeEndpoint.createCardType(cardType);
+        return client.cardTypeEndpoint.getCardType(cardTypeId);
     }
 
     protected Project createProject(String name) {
         Project p = new Project();
         p.setName(name);
-        Long id = client.projectController.createProject(p);
-        return client.projectController.getProject(id);
+        Long id = client.projectEndpoint.createProject(p);
+        return client.projectEndpoint.getProject(id);
     }
 }

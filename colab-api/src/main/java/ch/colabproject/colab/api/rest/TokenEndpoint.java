@@ -26,7 +26,7 @@ import liquibase.pro.packaged.ch;
 @Path("tokens")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class TokenController {
+public class TokenEndpoint {
 
     /**
      * token facade

@@ -10,7 +10,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.model.card.AbstractCardDef;
+import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
@@ -98,7 +98,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonbTransient
-    private List<AbstractCardDef> elementsToBeDefined = new ArrayList<>();
+    private List<AbstractCardType> elementsToBeDefined = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -220,14 +220,14 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     /**
      * @return the elementsToDefine
      */
-    public List<AbstractCardDef> getElementsToBeDefined() {
+    public List<AbstractCardType> getElementsToBeDefined() {
         return elementsToBeDefined;
     }
 
     /**
      * @param elements the elementsToDefine to set
      */
-    public void setElementsToBeDefined(List<AbstractCardDef> elements) {
+    public void setElementsToBeDefined(List<AbstractCardType> elements) {
         this.elementsToBeDefined = elements;
     }
 

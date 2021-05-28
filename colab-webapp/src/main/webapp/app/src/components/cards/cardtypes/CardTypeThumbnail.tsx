@@ -7,13 +7,13 @@
 
 import * as React from 'react';
 
-import { CardDef } from 'colab-rest-client';
+import { CardType } from 'colab-rest-client';
 import { css, cx } from '@emotion/css';
 import Thumbnail from '../../common/Thumbnail';
 
 interface Props {
   highlighted: boolean;
-  cardDef: CardDef;
+  cardType: CardType;
   onClick: (id: number) => void;
 }
 
@@ -32,21 +32,21 @@ const selected = cx(
   }),
 );
 
-export default function CardDefThumbnail({ cardDef, highlighted, onClick }: Props): JSX.Element {
-  if (cardDef.id == null) {
-    return <i>CardDef without id is invalid...</i>;
+export default function CardTypeThumbnail({ cardType, highlighted, onClick }: Props): JSX.Element {
+  if (cardType.id == null) {
+    return <i>CardType without id is invalid...</i>;
   } else {
     return (
       <Thumbnail
         onClick={() => {
-          if (cardDef.id != null) {
-            onClick(cardDef.id);
+          if (cardType.id != null) {
+            onClick(cardType.id);
           }
         }}
         className={highlighted ? selected : defaultStyle}
       >
-        <span className={css({ padding: '10px' })} title={cardDef.purpose || ''}>
-          {cardDef.title}
+        <span className={css({ padding: '10px' })} title={cardType.purpose || ''}>
+          {cardType.title}
         </span>
       </Thumbnail>
     );

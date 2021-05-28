@@ -24,7 +24,7 @@ import Clickable from '../../common/Clickable';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import CardEditor from '../../cards/CardEditor';
 import VariantSelector from '../../cards/VariantSelector';
-import CardDefList from '../../cards/carddefs/CardDefList';
+import CardTypeList from '../../cards/cardtypes/CardTypeList';
 import WithToolbar from '../../common/WithToolbar';
 import CardCreator from '../../cards/CardCreator';
 import FitSpace from '../../common/FitSpace';
@@ -201,7 +201,7 @@ export default function Editor(): JSX.Element {
                 <Hierachy rootId={root.id} />
               </Route>
               <Route exact path="/defs">
-                <CardDefList />
+                <CardTypeList />
               </Route>
               <Route exact path="/card/:id">
                 <CardWrapper>{card => <CardThumbWithSelector depth={2} card={card} />}</CardWrapper>

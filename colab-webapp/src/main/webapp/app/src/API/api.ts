@@ -15,7 +15,7 @@ import {
   User,
   WsSessionIdentifier,
   CardContent,
-  CardDef,
+  CardType,
 } from 'colab-rest-client';
 
 import { getStore, ColabState } from '../store/store';
@@ -69,7 +69,7 @@ export const initSocketId = createAsyncThunk(
       // when initializing / setting a new socket id
       // an authenticated user shall reconnect to its own channel ASAP
       if (state.auth.currentUserId != null) {
-        restClient.WebsocketController.subscribeToUserChannel(payload);
+        restClient.WebsocketEndpoint.subscribeToUserChannel(payload);
       }
     }
     return payload;
@@ -81,17 +81,17 @@ export const initSocketId = createAsyncThunk(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const getOccupiedChannels = createAsyncThunk('admin/getChannels', async () => {
-  return await restClient.WebsocketController.getExistingChannels();
+  return await restClient.WebsocketEndpoint.getExistingChannels();
 });
 
 export const getLoggerLevels = createAsyncThunk('admin/getLoggerLevels', async () => {
-  return await restClient.MonitoringController.getLoggerLevels();
+  return await restClient.MonitoringEndpoint.getLoggerLevels();
 });
 
 export const changeLoggerLevel = createAsyncThunk(
   'admin/setLoggerLevel',
   async (payload: { loggerName: string; loggerLevel: string }, thunkApi) => {
-    await restClient.MonitoringController.changeLoggerLevel(
+    await restClient.MonitoringEndpoint.changeLoggerLevel(
       payload.loggerName,
       payload.loggerLevel,
     );
@@ -107,7 +107,7 @@ export const changeLoggerLevel = createAsyncThunk(
 export const requestPasswordReset = createAsyncThunk(
   'auth/restPassword',
   async (a: { email: string }) => {
-    await restClient.UserController.requestPasswordReset(a.email);
+    await restClient.UserEndpoint.requestPasswordReset(a.email);
   },
 );
 
@@ -121,14 +121,14 @@ export const signInWithLocalAccount = createAsyncThunk(
     thunkApi,
   ) => {
     // first, fetch an authenatication method
-    const authMethod = await restClient.UserController.getAuthMethod(a.identifier);
+    const authMethod = await restClient.UserEndpoint.getAuthMethod(a.identifier);
     const authInfo: AuthInfo = {
       '@class': 'AuthInfo',
       identifier: a.identifier,
       mandatoryHash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, a.password),
     };
 
-    await restClient.UserController.signIn(authInfo);
+    await restClient.UserEndpoint.signIn(authInfo);
 
     thunkApi.dispatch(reloadCurrentUser());
   },
@@ -138,7 +138,7 @@ export const updateLocalAccountPassword = createAsyncThunk(
   'user/updatePassword',
   async (a: { email: string; password: string }) => {
     // first, fetch the authenatication method fot the account
-    const authMethod = await restClient.UserController.getAuthMethod(a.email);
+    const authMethod = await restClient.UserEndpoint.getAuthMethod(a.email);
 
     if (entityIs(authMethod, 'AuthMethod')) {
       const authInfo: AuthInfo = {
@@ -147,13 +147,13 @@ export const updateLocalAccountPassword = createAsyncThunk(
         mandatoryHash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, a.password),
       };
 
-      await restClient.UserController.updateLocalAccountPassword(authInfo);
+      await restClient.UserEndpoint.updateLocalAccountPassword(authInfo);
     }
   },
 );
 
 export const signOut = createAsyncThunk('auth/signout', async () => {
-  return await restClient.UserController.signOut();
+  return await restClient.UserEndpoint.signOut();
 });
 
 export const signUp = createAsyncThunk(
@@ -167,7 +167,7 @@ export const signUp = createAsyncThunk(
     thunkApi,
   ) => {
     // first, fetch a
-    const authMethod = await restClient.UserController.getAuthMethod(a.email);
+    const authMethod = await restClient.UserEndpoint.getAuthMethod(a.email);
 
     const signUpInfo: SignUpInfo = {
       '@class': 'SignUpInfo',
@@ -177,7 +177,7 @@ export const signUp = createAsyncThunk(
       salt: authMethod.salt,
       hash: await hashPassword(authMethod.mandatoryMethod, authMethod.salt, a.password),
     };
-    await restClient.UserController.signUp(signUpInfo);
+    await restClient.UserEndpoint.signUp(signUpInfo);
 
     // go back to login page
     thunkApi.dispatch(signInWithLocalAccount({ identifier: a.email, password: a.password }));
@@ -190,10 +190,10 @@ export const reloadCurrentUser = createAsyncThunk(
     // one would like to await both query result later, but as those requests are most likely
     // the very firsts to be sent to the server, it shoudl be avoided to prevent creatiing two
     // colab_session_id
-    const currentAccount = await restClient.UserController.getCurrentAccount();
-    const currentUser = await restClient.UserController.getCurrentUser();
+    const currentAccount = await restClient.UserEndpoint.getCurrentAccount();
+    const currentUser = await restClient.UserEndpoint.getCurrentUser();
 
-    const allAccounts = await restClient.UserController.getAllCurrentUserAccounts();
+    const allAccounts = await restClient.UserEndpoint.getAllCurrentUserAccounts();
 
     if (currentUser != null) {
       // current user is authenticated
@@ -201,7 +201,7 @@ export const reloadCurrentUser = createAsyncThunk(
       if (state.websockets.sessionId != null && state.auth.currentUserId != currentUser.id) {
         // Websocket session is ready AND currentUser just changed
         // subscribe to the new current user channel ASAP
-        await restClient.WebsocketController.subscribeToUserChannel({
+        await restClient.WebsocketEndpoint.subscribeToUserChannel({
           '@class': 'WsSessionIdentifier',
           sessionId: state.websockets.sessionId,
         });
@@ -212,27 +212,27 @@ export const reloadCurrentUser = createAsyncThunk(
 );
 
 export const updateUser = createAsyncThunk('user/update', async (user: User) => {
-  await restClient.UserController.updateUser(user);
+  await restClient.UserEndpoint.updateUser(user);
   return user;
 });
 
 export const getUser = createAsyncThunk('user/get', async (id: number) => {
-  return await restClient.UserController.getUserById(id);
+  return await restClient.UserEndpoint.getUserById(id);
 });
 
 export const getAllUsers = createAsyncThunk('user/getAll', async () => {
-  return await restClient.UserController.getAllUsers();
+  return await restClient.UserEndpoint.getAllUsers();
 });
 
 export const grantAdminRight = createAsyncThunk('user/grantAdminRight', async (user: User) => {
   if (user.id != null) {
-    return await restClient.UserController.grantAdminRight(user.id);
+    return await restClient.UserEndpoint.grantAdminRight(user.id);
   }
 });
 
 export const revokeAdminRight = createAsyncThunk('user/revokeAdminRight', async (user: User) => {
   if (user.id != null) {
-    return await restClient.UserController.revokeAdminRight(user.id);
+    return await restClient.UserEndpoint.revokeAdminRight(user.id);
   }
 });
 
@@ -241,27 +241,27 @@ export const revokeAdminRight = createAsyncThunk('user/revokeAdminRight', async 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const getUserProjects = createAsyncThunk('project/users', async () => {
-  return await restClient.ProjectController.getUserProjects();
+  return await restClient.ProjectEndpoint.getUserProjects();
 });
 
 export const getAllProjects = createAsyncThunk('project/all', async () => {
-  return await restClient.ProjectController.getAllProjects();
+  return await restClient.ProjectEndpoint.getAllProjects();
 });
 
 export const createProject = createAsyncThunk('project/create', async (project: Project) => {
-  return await restClient.ProjectController.createProject({
+  return await restClient.ProjectEndpoint.createProject({
     ...project,
     id: undefined,
   });
 });
 
 export const updateProject = createAsyncThunk('project/update', async (project: Project) => {
-  await restClient.ProjectController.updateProject(project);
+  await restClient.ProjectEndpoint.updateProject(project);
 });
 
 export const deleteProject = createAsyncThunk('project/delete', async (project: Project) => {
   if (project.id) {
-    await restClient.ProjectController.deleteProject(project.id);
+    await restClient.ProjectEndpoint.deleteProject(project.id);
   }
 });
 
@@ -276,7 +276,7 @@ export const startProjectEdition = createAsyncThunk(
       }
 
       // Subscribe to new project channel
-      await restClient.WebsocketController.subscribeToProjectChannel(project.id, {
+      await restClient.WebsocketEndpoint.subscribeToProjectChannel(project.id, {
         '@class': 'WsSessionIdentifier',
         sessionId: state.websockets.sessionId,
       });
@@ -295,7 +295,7 @@ export const closeCurrentProject = createAsyncThunk(
   async (_action: void, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
     if (state.projects.editing != null && state.websockets.sessionId) {
-      restClient.WebsocketController.unsubscribeFromProjectChannel(state.projects.editing, {
+      restClient.WebsocketEndpoint.unsubscribeFromProjectChannel(state.projects.editing, {
         '@class': 'WsSessionIdentifier',
         sessionId: state.websockets.sessionId,
       });
@@ -308,14 +308,14 @@ export const closeCurrentProject = createAsyncThunk(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const getProjectTeam = createAsyncThunk('project/team/get', async (projectId: number) => {
-  return await restClient.ProjectController.getMembers(projectId);
+  return await restClient.ProjectEndpoint.getMembers(projectId);
 });
 
 export const sendInvitation = createAsyncThunk(
   'project/team/invite',
   async (payload: { projectId: number; recipient: string }, thunkApi) => {
     if (payload.recipient) {
-      await restClient.ProjectController.inviteSomeone(payload.projectId, payload.recipient);
+      await restClient.ProjectEndpoint.inviteSomeone(payload.projectId, payload.recipient);
       thunkApi.dispatch(getProjectTeam(payload.projectId));
     }
   },
@@ -326,20 +326,20 @@ export const sendInvitation = createAsyncThunk(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * For Admins: get all cardDefs
+ * For Admins: get all cardTypes
  */
-export const initCardDefs = createAsyncThunk('cardDef/init', async () => {
-  return await restClient.CardDefController.getAllCardDefs();
+export const initCardTypes = createAsyncThunk('cardType/init', async () => {
+  return await restClient.CardTypeEndpoint.getAllCardTypes();
 });
 
 /**
- * Get project own cardDefs
+ * Get project own cardTypes
  */
-export const getProjectCardDefs = createAsyncThunk(
-  'cardDef/getProjectOnes',
+export const getProjectCardTypes = createAsyncThunk(
+  'cardType/getProjectOnes',
   async (project: Project) => {
     if (project.id) {
-      return await restClient.ProjectController.getCardDefsOfProject(project.id);
+      return await restClient.ProjectEndpoint.getCardTypesOfProject(project.id);
     } else {
       return [];
     }
@@ -349,35 +349,35 @@ export const getProjectCardDefs = createAsyncThunk(
 /**
  * Get all global cardTypes
  */
-export const getAllGlobalCardDefs = createAsyncThunk('cardDef/getAllGlobals', async () => {
-  return await restClient.CardDefController.getAllGlobalCardDefs();
+export const getAllGlobalCardTypes = createAsyncThunk('cardType/getAllGlobals', async () => {
+  return await restClient.CardTypeEndpoint.getAllGlobalCardTypes();
 });
 
 /**
  * Get published global cardTypes
  */
-export const getPublishedGlobalCardDefs = createAsyncThunk(
-  'cardDef/getPublihedGlobals',
+export const getPublishedGlobalCardTypes = createAsyncThunk(
+  'cardType/getPublihedGlobals',
   async () => {
-    return await restClient.CardDefController.getPublishedGlobalsCardDefs();
+    return await restClient.CardTypeEndpoint.getPublishedGlobalsCardTypes();
   },
 );
 
-export const getCardDef = createAsyncThunk('cardDef/get', async (id: number) => {
-  return await restClient.CardDefController.getCardDef(id);
+export const getCardType = createAsyncThunk('cardType/get', async (id: number) => {
+  return await restClient.CardTypeEndpoint.getCardType(id);
 });
 
-export const createCardDef = createAsyncThunk('cardDef/create', async (cardDef: CardDef) => {
-  return await restClient.CardDefController.createCardDef(cardDef);
+export const createCardType = createAsyncThunk('cardType/create', async (cardType: CardType) => {
+  return await restClient.CardTypeEndpoint.createCardType(cardType);
 });
 
-export const updateCardDef = createAsyncThunk('cardDef/update', async (cardDef: CardDef) => {
-  await restClient.CardDefController.updateCardDef(cardDef);
+export const updateCardType = createAsyncThunk('cardType/update', async (cardType: CardType) => {
+  await restClient.CardTypeEndpoint.updateCardType(cardType);
 });
 
-export const deleteCardDef = createAsyncThunk('cardDef/delete', async (cardDef: CardDef) => {
-  if (cardDef.id) {
-    await restClient.CardDefController.deleteCardDef(cardDef.id);
+export const deleteCardType = createAsyncThunk('cardType/delete', async (cardType: CardType) => {
+  if (cardType.id) {
+    await restClient.CardTypeEndpoint.deleteCardType(cardType.id);
   }
 });
 
@@ -386,15 +386,15 @@ export const deleteCardDef = createAsyncThunk('cardDef/delete', async (cardDef: 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const initCards = createAsyncThunk('card/init', async () => {
-  return await restClient.CardController.getAllCards();
+  return await restClient.CardEndpoint.getAllCards();
 });
 
 export const getCard = createAsyncThunk('card/get', async (id: number) => {
-  return await restClient.CardController.getCard(id);
+  return await restClient.CardEndpoint.getCard(id);
 });
 
 export const createCard = createAsyncThunk('card/create', async (card: Card) => {
-  return await restClient.CardController.createCard({
+  return await restClient.CardEndpoint.createCard({
     ...card,
     id: undefined,
   });
@@ -402,20 +402,20 @@ export const createCard = createAsyncThunk('card/create', async (card: Card) => 
 
 export const createSubCard = createAsyncThunk(
   'card/createSubCard',
-  async ({ parent, cardDefId }: { parent: CardContent; cardDefId: number }) => {
+  async ({ parent, cardTypeId }: { parent: CardContent; cardTypeId: number }) => {
     if (parent.id != null) {
-      return await restClient.CardController.createNewCard(parent.id, cardDefId);
+      return await restClient.CardEndpoint.createNewCard(parent.id, cardTypeId);
     }
   },
 );
 
 export const updateCard = createAsyncThunk('card/update', async (card: Card) => {
-  await restClient.CardController.updateCard(card);
+  await restClient.CardEndpoint.updateCard(card);
 });
 
 export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => {
   if (card.id) {
-    await restClient.CardController.deleteCard(card.id);
+    await restClient.CardEndpoint.deleteCard(card.id);
   }
 });
 
@@ -424,24 +424,24 @@ export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const getCardContent = createAsyncThunk('cardcontent/get', async (id: number) => {
-  return await restClient.CardContentController.getCardContent(id);
+  return await restClient.CardContentEndpoint.getCardContent(id);
 });
 
 export const getCardContents = createAsyncThunk('cardcontent/getByCard', async (cardId: number) => {
-  return await restClient.CardController.getContentVariantsOfCard(cardId);
+  return await restClient.CardEndpoint.getContentVariantsOfCard(cardId);
 });
 
 export const createCardContentVariant = createAsyncThunk(
   'cardcontent/create',
   async (cardId: number) => {
-    return await restClient.CardContentController.createNewCardContent(cardId);
+    return await restClient.CardContentEndpoint.createNewCardContent(cardId);
   },
 );
 
 export const updateCardContent = createAsyncThunk(
   'cardcontent/update',
   async (cardContent: CardContent) => {
-    return await restClient.CardContentController.updateCardContent(cardContent);
+    return await restClient.CardContentEndpoint.updateCardContent(cardContent);
   },
 );
 
@@ -449,7 +449,7 @@ export const deleteCardContent = createAsyncThunk(
   'cardcontent/delete',
   async (cardContent: CardContent) => {
     if (cardContent.id != null) {
-      return await restClient.CardContentController.deleteCardContent(cardContent.id);
+      return await restClient.CardContentEndpoint.deleteCardContent(cardContent.id);
     }
   },
 );
@@ -457,6 +457,6 @@ export const deleteCardContent = createAsyncThunk(
 export const getSubCards = createAsyncThunk(
   'cardcontent/getSubs',
   async (cardContentId: number) => {
-    return await restClient.CardContentController.getSubCards(cardContentId);
+    return await restClient.CardContentEndpoint.getSubCards(cardContentId);
   },
 );

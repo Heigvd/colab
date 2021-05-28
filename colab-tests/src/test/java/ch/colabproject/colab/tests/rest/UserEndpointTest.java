@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author maxence
  */
-public class UserControllerTest extends AbstractArquillianTest {
+public class UserEndpointTest extends AbstractArquillianTest {
 
     /**
      * Internal userManagement logic. Required to inspect properties not exposed through REST API.
@@ -53,7 +53,7 @@ public class UserControllerTest extends AbstractArquillianTest {
 
         this.signIn(myUser);
 
-        User user = client.userController.getCurrentUser();
+        User user = client.userEndpoint.getCurrentUser();
         Assertions.assertNotNull(user);
 
         String cn = "Goulash Sensei";
@@ -64,15 +64,15 @@ public class UserControllerTest extends AbstractArquillianTest {
         user.setFirstname(fn);
         user.setLastname(ln);
 
-        client.userController.updateUser(user);
+        client.userEndpoint.updateUser(user);
 
-        user = client.userController.getCurrentUser();
+        user = client.userEndpoint.getCurrentUser();
         Assertions.assertEquals(cn, user.getCommonname());
         Assertions.assertEquals(fn, user.getFirstname());
         Assertions.assertEquals(ln, user.getLastname());
 
         this.signOut();
-        Assertions.assertNull(client.userController.getCurrentUser());
+        Assertions.assertNull(client.userEndpoint.getCurrentUser());
     }
 
     /**
@@ -88,7 +88,7 @@ public class UserControllerTest extends AbstractArquillianTest {
 
         this.signIn(myUser);
 
-        User user = client.userController.getCurrentUser();
+        User user = client.userEndpoint.getCurrentUser();
         Assertions.assertNotNull(user);
 
         String cn = "Goulash Sensei";
@@ -104,9 +104,9 @@ public class UserControllerTest extends AbstractArquillianTest {
         user.setAdmin(true);
         user.setLastSeenAt(new Date(0));
 
-        client.userController.updateUser(user);
+        client.userEndpoint.updateUser(user);
 
-        user = client.userController.getCurrentUser();
+        user = client.userEndpoint.getCurrentUser();
         Assertions.assertEquals(cn, user.getCommonname());
         Assertions.assertEquals(fn, user.getFirstname());
         Assertions.assertEquals(ln, user.getLastname());
@@ -114,7 +114,7 @@ public class UserControllerTest extends AbstractArquillianTest {
         Assertions.assertFalse(user.isAdmin());
 
         this.signOut();
-        Assertions.assertNull(client.userController.getCurrentUser());
+        Assertions.assertNull(client.userEndpoint.getCurrentUser());
     }
 
     /**
@@ -135,7 +135,7 @@ public class UserControllerTest extends AbstractArquillianTest {
             this.signIn(myUser);
         });
 
-        User user = client.userController.getCurrentUser();
+        User user = client.userEndpoint.getCurrentUser();
 
         Assertions.assertNull(user);
     }
@@ -152,20 +152,20 @@ public class UserControllerTest extends AbstractArquillianTest {
         );
 
         this.signIn(myUser);
-        User sensei = client.userController.getCurrentUser();
+        User sensei = client.userEndpoint.getCurrentUser();
         Assertions.assertFalse(sensei.isAdmin());
 
         this.signOut();
         this.signIn(this.admin);
 
-        User adminUser = client.userController.getCurrentUser();
+        User adminUser = client.userEndpoint.getCurrentUser();
         Assertions.assertTrue(adminUser.isAdmin());
 
-        client.userController.grantAdminRight(sensei.getId());
+        client.userEndpoint.grantAdminRight(sensei.getId());
 
         this.signOut();
         this.signIn(myUser);
-        sensei = client.userController.getCurrentUser();
+        sensei = client.userEndpoint.getCurrentUser();
         Assertions.assertTrue(sensei.isAdmin());
     }
 
@@ -178,15 +178,15 @@ public class UserControllerTest extends AbstractArquillianTest {
             .signup("GoulashSensei", "goulashsensei@test.local", "SoSecuredPassword");
 
         this.signIn(myUser);
-        User sensei = client.userController.getCurrentUser();
+        User sensei = client.userEndpoint.getCurrentUser();
         Assertions.assertFalse(sensei.isAdmin());
         Long senseiId = sensei.getId();
 
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.userController.grantAdminRight(senseiId);
+            client.userEndpoint.grantAdminRight(senseiId);
         });
 
-        sensei = client.userController.getCurrentUser();
+        sensei = client.userEndpoint.getCurrentUser();
         Assertions.assertFalse(sensei.isAdmin());
     }
 
@@ -198,17 +198,17 @@ public class UserControllerTest extends AbstractArquillianTest {
         TestUser myUser = this
             .signup("GoulashSensei", "goulashsensei@test.local", "SoSecuredPassword");
 
-        AuthMethod initialAuthMethod = client.userController.getAuthMethod(myUser.getEmail());
+        AuthMethod initialAuthMethod = client.userEndpoint.getAuthMethod(myUser.getEmail());
 
         this.signIn(myUser);
-        LocalAccount senseiAccount = (LocalAccount) client.userController.getCurrentAccount();
+        LocalAccount senseiAccount = (LocalAccount) client.userEndpoint.getCurrentAccount();
 
         this.signOut();
         this.signIn(this.admin);
 
-        client.userController.switchClientHashMethod(senseiAccount.getId());
+        client.userEndpoint.switchClientHashMethod(senseiAccount.getId());
 
-        AuthMethod pendingAuthMethod = client.userController.getAuthMethod(myUser.getEmail());
+        AuthMethod pendingAuthMethod = client.userEndpoint.getAuthMethod(myUser.getEmail());
 
         // Mandatory method is still the same
         Assertions.assertEquals(initialAuthMethod.getSalt(), pendingAuthMethod.getSalt());
@@ -223,7 +223,7 @@ public class UserControllerTest extends AbstractArquillianTest {
         // sign in will trigger method rotation
         this.signIn(myUser);
 
-        AuthMethod newAuthMethod = client.userController.getAuthMethod(myUser.getEmail());
+        AuthMethod newAuthMethod = client.userEndpoint.getAuthMethod(myUser.getEmail());
 
         // Mandatory method is the new one
         Assertions.assertEquals(pendingAuthMethod.getNewSalt(), newAuthMethod.getSalt());
@@ -234,11 +234,11 @@ public class UserControllerTest extends AbstractArquillianTest {
         Assertions.assertNull(newAuthMethod.getOptionalMethod());
 
         this.signOut();
-        User user = client.userController.getCurrentUser();
+        User user = client.userEndpoint.getCurrentUser();
         Assertions.assertNull(user);
         // sign in one more time to authenticate with new method
         this.signIn(myUser);
-        user = client.userController.getCurrentUser();
+        user = client.userEndpoint.getCurrentUser();
         Assertions.assertNotNull(user);
     }
 
@@ -252,7 +252,7 @@ public class UserControllerTest extends AbstractArquillianTest {
             "SoSecuredPassword");
 
         this.signIn(myUser);
-        LocalAccount senseiAccount = (LocalAccount) client.userController.getCurrentAccount();
+        LocalAccount senseiAccount = (LocalAccount) client.userEndpoint.getCurrentAccount();
 
         User internalUser = userDao.findUserByUsername(myUser.getUsername());
         LocalAccount internalAccount = (LocalAccount) internalUser.getAccounts().get(0);
@@ -261,7 +261,7 @@ public class UserControllerTest extends AbstractArquillianTest {
         this.signOut();
         this.signIn(this.admin);
 
-        client.userController.switchServerHashMethod(senseiAccount.getId());
+        client.userEndpoint.switchServerHashMethod(senseiAccount.getId());
 
         // assert next db method is staged
         internalUser = userDao.findUserByUsername(myUser.getUsername());
@@ -279,10 +279,10 @@ public class UserControllerTest extends AbstractArquillianTest {
 
         // sign in one more time to authenticate with new method
         this.signOut();
-        User user = client.userController.getCurrentUser();
+        User user = client.userEndpoint.getCurrentUser();
         Assertions.assertNull(user);
         this.signIn(myUser);
-        user = client.userController.getCurrentUser();
+        user = client.userEndpoint.getCurrentUser();
         Assertions.assertNotNull(user);
     }
 
@@ -297,12 +297,12 @@ public class UserControllerTest extends AbstractArquillianTest {
             "SoSecuredPassword");
 
         this.signIn(myUser);
-        LocalAccount account = (LocalAccount) this.client.userController.getCurrentAccount();
+        LocalAccount account = (LocalAccount) this.client.userEndpoint.getCurrentAccount();
         Assertions.assertFalse(account.isVerified());
 
         this.verifyAccounts();
 
-        account = (LocalAccount) this.client.userController.getCurrentAccount();
+        account = (LocalAccount) this.client.userEndpoint.getCurrentAccount();
         Assertions.assertTrue(account.isVerified());
     }
 
@@ -314,13 +314,13 @@ public class UserControllerTest extends AbstractArquillianTest {
             "SoSecuredPassword");
 
         this.signIn(myUser);
-        LocalAccount account = (LocalAccount) this.client.userController.getCurrentAccount();
+        LocalAccount account = (LocalAccount) this.client.userEndpoint.getCurrentAccount();
         Assertions.assertEquals(account.getEmail(), myUser.getEmail());
 
         String newPassword = "N3kronom;c0n";
         AuthInfo authInfo = getAuthInfo(myUser.getEmail(), newPassword);
 
-        this.client.userController.updateLocalAccountPassword(authInfo);
+        this.client.userEndpoint.updateLocalAccountPassword(authInfo);
         this.signOut();
 
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED, () -> {
@@ -329,7 +329,7 @@ public class UserControllerTest extends AbstractArquillianTest {
 
         myUser.setPassword(newPassword);
         this.signIn(myUser);
-        account = (LocalAccount) this.client.userController.getCurrentAccount();
+        account = (LocalAccount) this.client.userEndpoint.getCurrentAccount();
         Assertions.assertEquals(account.getEmail(), myUser.getEmail());
     }
 
@@ -346,14 +346,14 @@ public class UserControllerTest extends AbstractArquillianTest {
             "SoSecuredPassword");
 
         this.signIn(myUser);
-        LocalAccount account = (LocalAccount) this.client.userController.getCurrentAccount();
+        LocalAccount account = (LocalAccount) this.client.userEndpoint.getCurrentAccount();
         Assertions.assertEquals(account.getEmail(), myUser.getEmail());
 
         String newPassword = "N3kronom;c0n";
         AuthInfo authInfo = getAuthInfo(otherUser.getEmail(), newPassword);
 
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            this.client.userController.updateLocalAccountPassword(authInfo);
+            this.client.userEndpoint.updateLocalAccountPassword(authInfo);
         });
     }
 
@@ -365,7 +365,7 @@ public class UserControllerTest extends AbstractArquillianTest {
             "SoSecuredPassword");
 
         this.signIn(otherUser);
-        LocalAccount account = (LocalAccount) this.client.userController.getCurrentAccount();
+        LocalAccount account = (LocalAccount) this.client.userEndpoint.getCurrentAccount();
         Assertions.assertEquals(account.getEmail(), otherUser.getEmail());
 
         this.signOut();
@@ -374,12 +374,12 @@ public class UserControllerTest extends AbstractArquillianTest {
         String newPassword = "N3kronom;c0n";
         AuthInfo authInfo = getAuthInfo(otherUser.getEmail(), newPassword);
         otherUser.setPassword(newPassword);
-        this.client.userController.updateLocalAccountPassword(authInfo);
+        this.client.userEndpoint.updateLocalAccountPassword(authInfo);
 
         this.signOut();
 
         this.signIn(otherUser);
-        account = (LocalAccount) this.client.userController.getCurrentAccount();
+        account = (LocalAccount) this.client.userEndpoint.getCurrentAccount();
         Assertions.assertEquals(account.getEmail(), otherUser.getEmail());
     }
 
@@ -394,7 +394,7 @@ public class UserControllerTest extends AbstractArquillianTest {
 
         WebsocketClient wsClient = this.createWsClient();
         // subscribe to currentUser channel
-        client.websocketController.subscribeToUserChannel(wsClient.getSessionId());
+        client.websocketEndpoint.subscribeToUserChannel(wsClient.getSessionId());
 
         WsChannelUpdate channelUpdate = TestHelper.waitForMessagesAndAssert(wsClient, 1, 10, WsChannelUpdate.class).get(0);
         Assertions.assertTrue(channelUpdate.getChannel() instanceof UserChannel);
@@ -402,13 +402,13 @@ public class UserControllerTest extends AbstractArquillianTest {
         Assertions.assertEquals(this.adminUserId, userChannel.getUserId());
         Assertions.assertEquals(1, channelUpdate.getDiff());
 
-        User me = client.userController.getCurrentUser();
+        User me = client.userEndpoint.getCurrentUser();
 
         final String NEW_NAME = "Georges";
         me.setCommonname(NEW_NAME);
 
         wsClient.clearMessages();
-        client.userController.updateUser(me);
+        client.userEndpoint.updateUser(me);
 
         WsUpdateMessage updateMessage = TestHelper.waitForMessagesAndAssert(wsClient, 1, 10, WsUpdateMessage.class).get(0);
         // nothing has been deleted
