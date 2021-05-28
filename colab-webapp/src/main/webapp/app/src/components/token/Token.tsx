@@ -41,14 +41,14 @@ export default (props: TokenProps): JSX.Element => {
     if (user !== undefined) {
       // null user means unauthenticated
       const loadToken = async () => {
-        const token = await getRestClient().TokenEndpoint.getToken(+props.tokenId);
+        const token = await getRestClient().TokenRestEndpoint.getToken(+props.tokenId);
         if (token != null) {
           setRedirectTo(token.redirectTo || '');
           if (user === null && token.authenticationRequired) {
             setState('AUTH_REQUIRED');
           } else {
             try {
-              await getRestClient().TokenEndpoint.consumeToken(+props.tokenId, props.token);
+              await getRestClient().TokenRestEndpoint.consumeToken(+props.tokenId, props.token);
               // some token may change authentication status: force to reload current user/account
               dispatch(reloadCurrentUser());
               setState('DONE');

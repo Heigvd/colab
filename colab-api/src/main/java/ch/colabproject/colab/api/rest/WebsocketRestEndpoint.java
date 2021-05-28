@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * <u>Note about un/subcriptions protocol:</u> The link between HttpSessionId (cookie) and websocket
  * session id must be known. As the client has no access to its cookie (httpOnly cookie, for
  * security concerns), the subscription is made through the REST methods defined here. Thus, both
- * htto session id and websocket session id are known at the same time.
+ * http session id and websocket session id are known at the same time.
  *
  * @author maxence
  */
@@ -38,10 +38,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-public class WebsocketEndpoint {
+public class WebsocketRestEndpoint {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(WebsocketEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebsocketRestEndpoint.class);
 
     /**
      * Websocket business logic

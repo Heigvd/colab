@@ -36,10 +36,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-public class CardContentEndpoint {
+public class CardContentRestEndpoint {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(CardContentEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(CardContentRestEndpoint.class);
 
     /**
      * The card content persistence manager

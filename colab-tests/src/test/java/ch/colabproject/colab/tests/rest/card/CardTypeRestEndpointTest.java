@@ -23,11 +23,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author sandra
  */
-public class CardTypeEndpointTest extends AbstractArquillianTest {
+public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testCreateCardType() {
-        Long projectId = client.projectEndpoint.createProject(new Project());
+        Long projectId = client.projectRestEndpoint.createProject(new Project());
         CardType cardType = createCardType(projectId);
 
         Assertions.assertNotNull(cardType);
@@ -50,22 +50,22 @@ public class CardTypeEndpointTest extends AbstractArquillianTest {
         // Global type is used by projectOne
         // -----
         Project projectOne = this.createProject("Project One");
-        List<AbstractCardType> types = client.projectEndpoint.getCardTypesOfProject(projectOne.getId());
+        List<AbstractCardType> types = client.projectRestEndpoint.getCardTypesOfProject(projectOne.getId());
         Assertions.assertEquals(0, types.size());
 
-        Card rootCard = client.cardEndpoint.getCard(projectOne.getRootCardId());
+        Card rootCard = client.cardRestEndpoint.getCard(projectOne.getRootCardId());
         Long rootCardId = rootCard.getId();
 
-        List<CardContent> rootCardContents = client.cardEndpoint
+        List<CardContent> rootCardContents = client.cardRestEndpoint
             .getContentVariantsOfCard(rootCardId);
         Long parentId = rootCardContents.get(0).getId();
 
         // create a card based on a global type
-        Card card = client.cardEndpoint.createNewCard(parentId, globalType.getId());
+        Card card = client.cardRestEndpoint.createNewCard(parentId, globalType.getId());
         Long cardId = card.getId();
 
         // assert the proejct now contains a CardTypeRef to the global type
-        types = client.projectEndpoint.getCardTypesOfProject(projectOne.getId());
+        types = client.projectRestEndpoint.getCardTypesOfProject(projectOne.getId());
         Assertions.assertEquals(1, types.size());
         AbstractCardType theType = types.get(0);
         Assertions.assertTrue(theType instanceof CardTypeRef);
@@ -79,19 +79,19 @@ public class CardTypeEndpointTest extends AbstractArquillianTest {
         // -----
         Project projectTwo = this.createProject("Project Two");
 
-        rootCard = client.cardEndpoint.getCard(projectTwo.getRootCardId());
+        rootCard = client.cardRestEndpoint.getCard(projectTwo.getRootCardId());
         rootCardId = rootCard.getId();
 
-        rootCardContents = client.cardEndpoint
+        rootCardContents = client.cardRestEndpoint
             .getContentVariantsOfCard(rootCardId);
         parentId = rootCardContents.get(0).getId();
 
         // create a card based on projectOne type
-        card = client.cardEndpoint.createNewCard(parentId, projectOneRef.getId());
+        card = client.cardRestEndpoint.createNewCard(parentId, projectOneRef.getId());
         cardId = card.getId();
 
         // assert the proejct now contains a CardTypeRef to the project one type
-        types = client.projectEndpoint.getCardTypesOfProject(projectTwo.getId());
+        types = client.projectRestEndpoint.getCardTypesOfProject(projectTwo.getId());
         Assertions.assertEquals(1, types.size());
         theType = types.get(0);
         Assertions.assertTrue(theType instanceof CardTypeRef);
@@ -104,7 +104,7 @@ public class CardTypeEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testUpdateCardType() {
-        Long projectId = client.projectEndpoint.createProject(new Project());
+        Long projectId = client.projectRestEndpoint.createProject(new Project());
 
         // String uniqueId = String.valueOf(new Date().getTime() + ((long)(Math.random()
         // * 1000)));
@@ -124,9 +124,9 @@ public class CardTypeEndpointTest extends AbstractArquillianTest {
         cardType.setTitle(title);
         cardType.setPurpose(purpose);
         cardType.setAuthorityHolder(authorityHolder);
-        client.cardTypeEndpoint.updateCardType(cardType);
+        client.cardTypeRestEndpoint.updateCardType(cardType);
 
-        CardType persistedCardType = client.cardTypeEndpoint.getCardType(cardType.getId());
+        CardType persistedCardType = client.cardTypeRestEndpoint.getCardType(cardType.getId());
         // Assertions.assertEquals(uniqueId, persistedCardType2.getUniqueId());
         Assertions.assertEquals(title, persistedCardType.getTitle());
         Assertions.assertEquals(purpose, persistedCardType.getPurpose());
@@ -136,34 +136,34 @@ public class CardTypeEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testGetAllCardTypes() {
-        Long projectId = client.projectEndpoint.createProject(new Project());
-        int initialSize = client.cardTypeEndpoint.getAllCardTypes().size();
+        Long projectId = client.projectRestEndpoint.createProject(new Project());
+        int initialSize = client.cardTypeRestEndpoint.getAllCardTypes().size();
 
         CardType cardType1 = this.createCardType(projectId);
         cardType1.setTitle("Game design " + ((int) (Math.random() * 1000)));
-        client.cardTypeEndpoint.updateCardType(cardType1);
+        client.cardTypeRestEndpoint.updateCardType(cardType1);
 
         CardType cardType2 = this.createCardType(projectId);
         cardType2.setTitle("Game rules " + ((int) (Math.random() * 1000)));
-        client.cardTypeEndpoint.updateCardType(cardType2);
+        client.cardTypeRestEndpoint.updateCardType(cardType2);
 
-        List<CardType> cardTypes = client.cardTypeEndpoint.getAllCardTypes();
+        List<CardType> cardTypes = client.cardTypeRestEndpoint.getAllCardTypes();
         Assertions.assertEquals(initialSize + 2, cardTypes.size());
     }
 
     @Test
     public void testDeleteCardType() {
-        Long projectId = client.projectEndpoint.createProject(new Project());
+        Long projectId = client.projectRestEndpoint.createProject(new Project());
 
         CardType cardType = this.createCardType(projectId);
         Long cardTypeId = cardType.getId();
 
-        CardType persistedCardType = client.cardTypeEndpoint.getCardType(cardTypeId);
+        CardType persistedCardType = client.cardTypeRestEndpoint.getCardType(cardTypeId);
         Assertions.assertNotNull(persistedCardType);
 
-        client.cardTypeEndpoint.deleteCardType(cardTypeId);
+        client.cardTypeRestEndpoint.deleteCardType(cardTypeId);
 
-        persistedCardType = client.cardTypeEndpoint.getCardType(cardTypeId);
+        persistedCardType = client.cardTypeRestEndpoint.getCardType(cardTypeId);
         Assertions.assertNull(persistedCardType);
     }
 
@@ -179,7 +179,7 @@ public class CardTypeEndpointTest extends AbstractArquillianTest {
 
         Assertions.assertEquals(projectId, cardType.getProjectId());
 
-        List<AbstractCardType> cardTypesOfProject = client.projectEndpoint.getCardTypesOfProject(projectId);
+        List<AbstractCardType> cardTypesOfProject = client.projectRestEndpoint.getCardTypesOfProject(projectId);
         Assertions.assertNotNull(cardTypesOfProject);
         Assertions.assertEquals(1, cardTypesOfProject.size());
         Assertions.assertEquals(cardTypeId, cardTypesOfProject.get(0).getId());

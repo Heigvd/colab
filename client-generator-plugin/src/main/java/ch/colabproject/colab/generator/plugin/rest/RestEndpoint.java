@@ -319,11 +319,11 @@ public class RestEndpoint {
     }
 
     /**
-     * Camelcasify simpleClassname (eg ArrayList, UserEndpoint, ...)
+     * Camelcasify simpleClassname (eg ArrayList, UserRestEndpoint, ...)
      *
      * @param simpleClassName className
      *
-     * @return camel-case version of className eg(arrayList, userEndpoint, ...)
+     * @return camel-case version of className eg(arrayList, userRestEndpoint, ...)
      */
     private String camelcasify(String simpleClassName) {
         String firstChar = simpleClassName.substring(0, 1);
@@ -695,7 +695,7 @@ public class RestEndpoint {
      * @param klass           the class must be annotated with {@link Path}
      * @param applicationPath main application path
      *
-     * @return RestControlle instance, ready for code generation
+     * @return RestEndpoint instance, ready for code generation
      */
     public static RestEndpoint build(Class<?> klass, String applicationPath) {
         RestEndpoint restEndpoint = new RestEndpoint();

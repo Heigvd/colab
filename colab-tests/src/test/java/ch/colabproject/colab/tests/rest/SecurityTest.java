@@ -40,49 +40,49 @@ public class SecurityTest extends AbstractArquillianTest {
      */
     public void assertAccessDenied() {
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.userEndpoint.getAllUsers();
+            client.userRestEndpoint.getAllUsers();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.projectEndpoint.getAllProjects();
+            client.projectRestEndpoint.getAllProjects();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.cardTypeEndpoint.getAllCardTypes();
+            client.cardTypeRestEndpoint.getAllCardTypes();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.cardTypeEndpoint.getAllGlobalCardTypes();
+            client.cardTypeRestEndpoint.getAllGlobalCardTypes();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.cardEndpoint.getAllCards();
+            client.cardRestEndpoint.getAllCards();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.documentRestEndPoint.getAllDocuments();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.cardContentEndpoint.getAllCardContents();
+            client.cardContentRestEndpoint.getAllCardContents();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.userEndpoint.grantAdminRight(1l);
+            client.userRestEndpoint.grantAdminRight(1l);
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.userEndpoint.grantAdminRight(1l);
+            client.userRestEndpoint.grantAdminRight(1l);
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.userEndpoint.revokeAdminRight(1l);
+            client.userRestEndpoint.revokeAdminRight(1l);
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.userEndpoint.switchClientHashMethod(1l);
+            client.userRestEndpoint.switchClientHashMethod(1l);
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.userEndpoint.switchServerHashMethod(1l);
+            client.userRestEndpoint.switchServerHashMethod(1l);
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.monitoringEndpoint.changeLoggerLevel("abcd", "DEBUG");
+            client.monitoringRestEndpoint.changeLoggerLevel("abcd", "DEBUG");
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.monitoringEndpoint.getLoggerLevels();
+            client.monitoringRestEndpoint.getLoggerLevels();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.websocketEndpoint.getExistingChannels();
+            client.websocketRestEndpoint.getExistingChannels();
         });
     }
 

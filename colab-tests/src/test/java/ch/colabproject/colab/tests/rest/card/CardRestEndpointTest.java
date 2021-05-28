@@ -20,24 +20,24 @@ import org.junit.jupiter.api.Test;
  *
  * @author sandra
  */
-public class CardEndpointTest extends AbstractArquillianTest {
+public class CardRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testCreateCard() {
-        Long projectId = client.projectEndpoint.createProject(new Project());
-        Project project = client.projectEndpoint.getProject(projectId);
+        Long projectId = client.projectRestEndpoint.createProject(new Project());
+        Project project = client.projectRestEndpoint.getProject(projectId);
 
         CardType cardType = this.createCardType(projectId);
-        Long cardTypeId = client.cardTypeEndpoint.createCardType(cardType);
+        Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardType);
 
-        Card rootCard = client.cardEndpoint.getCard(project.getRootCardId());
+        Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());
         Long rootCardId = rootCard.getId();
 
-        List<CardContent> rootCardContents = client.cardEndpoint
+        List<CardContent> rootCardContents = client.cardRestEndpoint
             .getContentVariantsOfCard(rootCardId);
         Long parentId = rootCardContents.get(0).getId();
 
-        Card card = client.cardEndpoint.createNewCard(parentId, cardTypeId);
+        Card card = client.cardRestEndpoint.createNewCard(parentId, cardTypeId);
         Long cardId = card.getId();
 
         Assertions.assertNotNull(card);
@@ -47,7 +47,7 @@ public class CardEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(parentId, card.getParentId());
         Assertions.assertEquals(cardTypeId, card.getCardTypeinitionId());
 
-        List<CardContent> variants = client.cardEndpoint.getContentVariantsOfCard(cardId);
+        List<CardContent> variants = client.cardRestEndpoint.getContentVariantsOfCard(cardId);
         Assertions.assertNotNull(variants);
         Assertions.assertEquals(1, variants.size());
         Assertions.assertEquals(cardId, variants.get(0).getCardId());
@@ -56,20 +56,20 @@ public class CardEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testUpdateCard() {
-        Long projectId = client.projectEndpoint.createProject(new Project());
-        Project project = client.projectEndpoint.getProject(projectId);
+        Long projectId = client.projectRestEndpoint.createProject(new Project());
+        Project project = client.projectRestEndpoint.getProject(projectId);
 
         CardType cardType = this.createCardType(projectId);
         Long cardTypeId = cardType.getId();
 
-        Card rootCard = client.cardEndpoint.getCard(project.getRootCardId());
+        Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());
         Long rootCardId = rootCard.getId();
 
-        List<CardContent> rootCardContents = client.cardEndpoint
+        List<CardContent> rootCardContents = client.cardRestEndpoint
             .getContentVariantsOfCard(rootCardId);
         Long parentId = rootCardContents.get(0).getId();
 
-        Card card = client.cardEndpoint.createNewCard(parentId, cardTypeId);
+        Card card = client.cardRestEndpoint.createNewCard(parentId, cardTypeId);
         Long cardId = card.getId();
 
         Assertions.assertNull(card.getColor());
@@ -80,17 +80,17 @@ public class CardEndpointTest extends AbstractArquillianTest {
 
         card.setColor(color);
         card.setIndex(index);
-        client.cardEndpoint.updateCard(card);
+        client.cardRestEndpoint.updateCard(card);
 
-        Card persistedCard = client.cardEndpoint.getCard(cardId);
+        Card persistedCard = client.cardRestEndpoint.getCard(cardId);
         Assertions.assertEquals(color, persistedCard.getColor());
         Assertions.assertEquals(index, persistedCard.getIndex());
     }
 
     @Test
     public void testGetAllCards() {
-        Long projectId = client.projectEndpoint.createProject(new Project());
-        Project project = client.projectEndpoint.getProject(projectId);
+        Long projectId = client.projectRestEndpoint.createProject(new Project());
+        Project project = client.projectRestEndpoint.getProject(projectId);
 
         CardType cardType1 = this.createCardType(projectId);
         Long cardType1Id = cardType1.getId();
@@ -98,78 +98,78 @@ public class CardEndpointTest extends AbstractArquillianTest {
         CardType cardType2 = this.createCardType(projectId);
         Long cardType2Id = cardType2.getId();
 
-        Card rootCard = client.cardEndpoint.getCard(project.getRootCardId());
+        Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());
         Long rootCardId = rootCard.getId();
 
-        List<CardContent> rootCardContents = client.cardEndpoint
+        List<CardContent> rootCardContents = client.cardRestEndpoint
             .getContentVariantsOfCard(rootCardId);
         Long parentId = rootCardContents.get(0).getId();
 
-        int initialSize = client.cardEndpoint.getAllCards().size();
+        int initialSize = client.cardRestEndpoint.getAllCards().size();
 
-        Card card1 = client.cardEndpoint.createNewCard(parentId, cardType1Id);
+        Card card1 = client.cardRestEndpoint.createNewCard(parentId, cardType1Id);
         card1.setIndex(1337);
         card1.setColor("red");
-        client.cardEndpoint.updateCard(card1);
+        client.cardRestEndpoint.updateCard(card1);
 
-        Card card2 = client.cardEndpoint.createNewCard(parentId, cardType2Id);
+        Card card2 = client.cardRestEndpoint.createNewCard(parentId, cardType2Id);
         card2.setIndex(42);
         card2.setColor("yellow");
-        client.cardEndpoint.updateCard(card2);
+        client.cardRestEndpoint.updateCard(card2);
 
-        List<Card> cards = client.cardEndpoint.getAllCards();
+        List<Card> cards = client.cardRestEndpoint.getAllCards();
         Assertions.assertEquals(initialSize + 2, cards.size());
     }
 
     @Test
     public void testDeleteCard() {
-        Long projectId = client.projectEndpoint.createProject(new Project());
-        Project project = client.projectEndpoint.getProject(projectId);
+        Long projectId = client.projectRestEndpoint.createProject(new Project());
+        Project project = client.projectRestEndpoint.getProject(projectId);
 
         CardType cardType = this.createCardType(projectId);
         Long cardTypeId = cardType.getId();
 
-        Card rootCard = client.cardEndpoint.getCard(project.getRootCardId());
+        Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());
         Long rootCardId = rootCard.getId();
 
-        List<CardContent> rootCardContents = client.cardEndpoint
+        List<CardContent> rootCardContents = client.cardRestEndpoint
             .getContentVariantsOfCard(rootCardId);
         Long parentId = rootCardContents.get(0).getId();
 
-        Card card = client.cardEndpoint.createNewCard(parentId, cardTypeId);
+        Card card = client.cardRestEndpoint.createNewCard(parentId, cardTypeId);
         Long cardId = card.getId();
 
-        Card persistedCard = client.cardEndpoint.getCard(cardId);
+        Card persistedCard = client.cardRestEndpoint.getCard(cardId);
         Assertions.assertNotNull(persistedCard);
 
-        client.cardEndpoint.deleteCard(cardId);
+        client.cardRestEndpoint.deleteCard(cardId);
 
-        persistedCard = client.cardEndpoint.getCard(cardId);
+        persistedCard = client.cardRestEndpoint.getCard(cardId);
         Assertions.assertNull(persistedCard);
     }
 
     @Test
     public void testSubCardAccess() {
-        Long projectId = client.projectEndpoint.createProject(new Project());
-        Project project = client.projectEndpoint.getProject(projectId);
+        Long projectId = client.projectRestEndpoint.createProject(new Project());
+        Project project = client.projectRestEndpoint.getProject(projectId);
 
         CardType cardType = this.createCardType(projectId);
         Long cardTypeId = cardType.getId();
 
-        Card rootCard = client.cardEndpoint.getCard(project.getRootCardId());
+        Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());
         Long rootCardId = rootCard.getId();
 
-        List<CardContent> rootCardContents = client.cardEndpoint
+        List<CardContent> rootCardContents = client.cardRestEndpoint
             .getContentVariantsOfCard(rootCardId);
         CardContent rootCardContent = rootCardContents.get(0);
         Long rootCardContentId = rootCardContent.getId();
 
-        Card card = client.cardEndpoint.createNewCard(rootCardContentId, cardTypeId);
+        Card card = client.cardRestEndpoint.createNewCard(rootCardContentId, cardTypeId);
         Long cardId = card.getId();
 
         Assertions.assertEquals(rootCardContentId, card.getParentId());
 
-        List<Card> subCards = client.cardContentEndpoint.getSubCards(rootCardContentId);
+        List<Card> subCards = client.cardContentRestEndpoint.getSubCards(rootCardContentId);
         Assertions.assertNotNull(subCards);
         Assertions.assertEquals(1, subCards.size());
         Assertions.assertEquals(cardId, subCards.get(0).getId());
@@ -177,20 +177,20 @@ public class CardEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testCardTypeAccess() {
-        Long projectId = client.projectEndpoint.createProject(new Project());
-        Project project = client.projectEndpoint.getProject(projectId);
+        Long projectId = client.projectRestEndpoint.createProject(new Project());
+        Project project = client.projectRestEndpoint.getProject(projectId);
 
         CardType cardType = this.createCardType(projectId);
         Long cardTypeId = cardType.getId();
 
-        Card rootCard = client.cardEndpoint.getCard(project.getRootCardId());
+        Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());
         Long rootCardId = rootCard.getId();
 
-        List<CardContent> rootCardContents = client.cardEndpoint
+        List<CardContent> rootCardContents = client.cardRestEndpoint
             .getContentVariantsOfCard(rootCardId);
         Long parentId = rootCardContents.get(0).getId();
 
-        Card card = client.cardEndpoint.createNewCard(parentId, cardTypeId);
+        Card card = client.cardRestEndpoint.createNewCard(parentId, cardTypeId);
 
         Assertions.assertEquals(cardTypeId, card.getCardTypeinitionId());
 
@@ -198,10 +198,10 @@ public class CardEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testProjectRootCardAccess() {
-        Long projectId = client.projectEndpoint.createProject(new Project());
-        Project project = client.projectEndpoint.getProject(projectId);
+        Long projectId = client.projectRestEndpoint.createProject(new Project());
+        Project project = client.projectRestEndpoint.getProject(projectId);
 
-        Card rootCard = client.cardEndpoint.getCard(project.getRootCardId());
+        Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());
 
         Assertions.assertEquals(projectId, rootCard.getRootCardProjectId());
     }

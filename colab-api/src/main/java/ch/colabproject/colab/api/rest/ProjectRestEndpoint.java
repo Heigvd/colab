@@ -37,10 +37,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-public class ProjectEndpoint {
+public class ProjectRestEndpoint {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(ProjectEndpoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProjectRestEndpoint.class);
 
     /**
      * The Project business logic
@@ -148,12 +148,12 @@ public class ProjectEndpoint {
      * Send invitation to someone.
      *
      * @param projectId id of the project
-     * @param email recipient address
+     * @param email     recipient address
      */
     @POST
     @Path("Invite/{projectId: [0-9]+}/{email}")
     public void inviteSomeone(@PathParam("projectId") Long projectId,
-            @PathParam("email") String email) {
+        @PathParam("email") String email) {
         logger.debug("Invite {} to joint project #{}", email, projectId);
         projectFacade.invite(projectId, email);
     }

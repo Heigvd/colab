@@ -215,7 +215,7 @@ public abstract class AbstractArquillianTest {
     protected TestUser signup(String username, String email, String password)
         throws ClientErrorException {
         // Create a brand new user with a local account
-        AuthMethod authMethod = client.userEndpoint.getAuthMethod(email);
+        AuthMethod authMethod = client.userRestEndpoint.getAuthMethod(email);
 
         SignUpInfo signup = new SignUpInfo();
         signup.setUsername(username);
@@ -231,7 +231,7 @@ public abstract class AbstractArquillianTest {
 
         signup.setHash(hash);
 
-        client.userEndpoint.signUp(signup);
+        client.userRestEndpoint.signUp(signup);
 
         return new TestUser(username, email, password);
     }
@@ -249,7 +249,7 @@ public abstract class AbstractArquillianTest {
 
     protected void signIn(ColabClient client, TestUser user) {
         AuthInfo authInfo = getAuthInfo(user.getEmail(), user.getPassword());
-        client.userEndpoint.signIn(authInfo);
+        client.userRestEndpoint.signIn(authInfo);
     }
 
     /**
@@ -261,7 +261,7 @@ public abstract class AbstractArquillianTest {
      * @return authinfo with hashed password
      */
     protected AuthInfo getAuthInfo(String identifier, String plainPassword) {
-        AuthMethod authMethod = client.userEndpoint.getAuthMethod(identifier);
+        AuthMethod authMethod = client.userRestEndpoint.getAuthMethod(identifier);
         AuthInfo authInfo = new AuthInfo();
         authInfo.setIdentifier(identifier);
 
@@ -305,9 +305,9 @@ public abstract class AbstractArquillianTest {
                     Long tokenId = Long.parseLong(matcher.group(1));
                     String plainToken = matcher.group(2);
 
-                    Token token = client.tokenEndpoint.getToken(tokenId);
+                    Token token = client.tokenRestEndpoint.getToken(tokenId);
                     if (token instanceof VerifyLocalAccountToken) {
-                        client.tokenEndpoint.consumeToken(tokenId, plainToken);
+                        client.tokenRestEndpoint.consumeToken(tokenId, plainToken);
                         this.mailClient.deleteMessage(message.getId());
                     }
                 }
@@ -337,7 +337,7 @@ public abstract class AbstractArquillianTest {
      * Sign the current user out
      */
     protected void signOut() {
-        client.userEndpoint.signOut();
+        client.userRestEndpoint.signOut();
     }
 
     /**
@@ -474,14 +474,14 @@ public abstract class AbstractArquillianTest {
         CardType cardType = new CardType();
         cardType.setProjectId(projectId);
 
-        Long cardTypeId = client.cardTypeEndpoint.createCardType(cardType);
-        return client.cardTypeEndpoint.getCardType(cardTypeId);
+        Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardType);
+        return client.cardTypeRestEndpoint.getCardType(cardTypeId);
     }
 
     protected Project createProject(String name) {
         Project p = new Project();
         p.setName(name);
-        Long id = client.projectEndpoint.createProject(p);
-        return client.projectEndpoint.getProject(id);
+        Long id = client.projectRestEndpoint.createProject(p);
+        return client.projectRestEndpoint.getProject(id);
     }
 }

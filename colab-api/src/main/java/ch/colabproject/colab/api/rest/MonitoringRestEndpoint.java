@@ -19,14 +19,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
- * REST MonitoringEndpoint to monitor the system
+ * REST MonitoringRestEndpoint to monitor the system
  *
  * @author maxence
  */
 @Path("monitoring")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class MonitoringEndpoint {
+public class MonitoringRestEndpoint {
 
     /**
      * Monitoring business logic
