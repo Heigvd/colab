@@ -27,8 +27,8 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long projectId = client.projectController.createProject(new Project());
         Project project = client.projectController.getProject(projectId);
 
-        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
-        Long cardDefId = cardDef.getId();
+        CardDef cardDef = this.createCardDef(projectId);
+        Long cardDefId = client.cardDefController.createCardDef(cardDef);
 
         Card rootCard = client.cardController.getCard(project.getRootCardId());
         Long rootCardId = rootCard.getId();
@@ -59,7 +59,7 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long projectId = client.projectController.createProject(new Project());
         Project project = client.projectController.getProject(projectId);
 
-        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        CardDef cardDef = this.createCardDef(projectId);
         Long cardDefId = cardDef.getId();
 
         Card rootCard = client.cardController.getCard(project.getRootCardId());
@@ -92,10 +92,10 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long projectId = client.projectController.createProject(new Project());
         Project project = client.projectController.getProject(projectId);
 
-        CardDef cardDef1 = client.cardDefController.createNewCardDef(projectId);
+        CardDef cardDef1 = this.createCardDef(projectId);
         Long cardDef1Id = cardDef1.getId();
 
-        CardDef cardDef2 = client.cardDefController.createNewCardDef(projectId);
+        CardDef cardDef2 = this.createCardDef(projectId);
         Long cardDef2Id = cardDef2.getId();
 
         Card rootCard = client.cardController.getCard(project.getRootCardId());
@@ -126,7 +126,7 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long projectId = client.projectController.createProject(new Project());
         Project project = client.projectController.getProject(projectId);
 
-        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        CardDef cardDef = this.createCardDef(projectId);
         Long cardDefId = cardDef.getId();
 
         Card rootCard = client.cardController.getCard(project.getRootCardId());
@@ -153,7 +153,7 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long projectId = client.projectController.createProject(new Project());
         Project project = client.projectController.getProject(projectId);
 
-        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        CardDef cardDef = this.createCardDef(projectId);
         Long cardDefId = cardDef.getId();
 
         Card rootCard = client.cardController.getCard(project.getRootCardId());
@@ -183,7 +183,7 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long projectId = client.projectController.createProject(new Project());
         Project project = client.projectController.getProject(projectId);
 
-        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        CardDef cardDef = this.createCardDef(projectId);
         Long cardDefId = cardDef.getId();
 
         Card rootCard = client.cardController.getCard(project.getRootCardId());
@@ -210,7 +210,7 @@ public class CardControllerTest extends AbstractArquillianTest {
         Long projectId = client.projectController.createProject(new Project());
         Project project = client.projectController.getProject(projectId);
 
-        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        CardDef cardDef = this.createCardDef(projectId);
         Long cardDefId = cardDef.getId();
 
         Card rootCard = client.cardController.getCard(project.getRootCardId());
@@ -223,6 +223,5 @@ public class CardControllerTest extends AbstractArquillianTest {
         Card card = client.cardController.createNewCard(parentId, cardDefId);
 
         Assertions.assertEquals(cardDefId, card.getCardDefinitionId());
-
     }
 }

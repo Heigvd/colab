@@ -8,6 +8,8 @@ package ch.colabproject.colab.tests.tests;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.ejb.UserManagement;
+import ch.colabproject.colab.api.model.card.CardDef;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.AuthInfo;
@@ -465,4 +467,21 @@ public abstract class AbstractArquillianTest {
         }
     }
 
+    // --------------------------------------------------------------------------------------------
+    // FACTORY
+    // --------------------------------------------------------------------------------------------
+    protected CardDef createCardDef(Long projectId) {
+        CardDef cardDef = new CardDef();
+        cardDef.setProjectId(projectId);
+
+        Long cardDefId = client.cardDefController.createCardDef(cardDef);
+        return client.cardDefController.getCardDef(cardDefId);
+    }
+
+    protected Project createProject(String name) {
+        Project p = new Project();
+        p.setName(name);
+        Long id = client.projectController.createProject(p);
+        return client.projectController.getProject(id);
+    }
 }

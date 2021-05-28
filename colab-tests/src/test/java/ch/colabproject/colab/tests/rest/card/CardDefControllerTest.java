@@ -1,5 +1,5 @@
 /*
- * The coLAB project
+ * The coLAB projectOne
  * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
@@ -7,7 +7,11 @@
 package ch.colabproject.colab.tests.rest.card;
 
 import ch.colabproject.colab.api.model.ConcretizationCategory;
+import ch.colabproject.colab.api.model.card.AbstractCardDef;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardDef;
+import ch.colabproject.colab.api.model.card.CardDefRef;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import java.util.List;
@@ -24,8 +28,7 @@ public class CardDefControllerTest extends AbstractArquillianTest {
     @Test
     public void testCreateCardDef() {
         Long projectId = client.projectController.createProject(new Project());
-
-        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        CardDef cardDef = createCardDef(projectId);
 
         Assertions.assertNotNull(cardDef);
         Assertions.assertNotNull(cardDef.getId());
@@ -37,6 +40,69 @@ public class CardDefControllerTest extends AbstractArquillianTest {
     }
 
     @Test
+    public void testCreateAndUseGlobalCardDef() {
+        // -----
+        // Global type
+        // -----
+        CardDef globalType = this.createCardDef(null);
+
+        // -----
+        // Global type is used by projectOne
+        // -----
+        Project projectOne = this.createProject("Project One");
+        List<AbstractCardDef> types = client.projectController.getCardDefsOfProject(projectOne.getId());
+        Assertions.assertEquals(0, types.size());
+
+        Card rootCard = client.cardController.getCard(projectOne.getRootCardId());
+        Long rootCardId = rootCard.getId();
+
+        List<CardContent> rootCardContents = client.cardController
+            .getContentVariantsOfCard(rootCardId);
+        Long parentId = rootCardContents.get(0).getId();
+
+        // create a card based on a global type
+        Card card = client.cardController.createNewCard(parentId, globalType.getId());
+        Long cardId = card.getId();
+
+        // assert the proejct now contains a CardTypeRef to the global type
+        types = client.projectController.getCardDefsOfProject(projectOne.getId());
+        Assertions.assertEquals(1, types.size());
+        AbstractCardDef theType = types.get(0);
+        Assertions.assertTrue(theType instanceof CardDefRef);
+
+        CardDefRef projectOneRef = (CardDefRef) theType;
+        Assertions.assertEquals(projectOne.getId(), projectOneRef.getProjectId());
+        Assertions.assertEquals(globalType.getId(), projectOneRef.getAbstractCardDefId());
+
+        // -----
+        // ProjectOne type is used by projectTwo
+        // -----
+        Project projectTwo = this.createProject("Project Two");
+
+        rootCard = client.cardController.getCard(projectTwo.getRootCardId());
+        rootCardId = rootCard.getId();
+
+        rootCardContents = client.cardController
+            .getContentVariantsOfCard(rootCardId);
+        parentId = rootCardContents.get(0).getId();
+
+        // create a card based on projectOne type
+        card = client.cardController.createNewCard(parentId, projectOneRef.getId());
+        cardId = card.getId();
+
+        // assert the proejct now contains a CardTypeRef to the project one type
+        types = client.projectController.getCardDefsOfProject(projectTwo.getId());
+        Assertions.assertEquals(1, types.size());
+        theType = types.get(0);
+        Assertions.assertTrue(theType instanceof CardDefRef);
+
+        CardDefRef projectTwoRef = (CardDefRef) theType;
+        Assertions.assertEquals(projectTwo.getId(), projectTwoRef.getProjectId());
+        Assertions.assertEquals(projectOneRef.getId(), projectTwoRef.getAbstractCardDefId());
+
+    }
+
+    @Test
     public void testUpdateCardDef() {
         Long projectId = client.projectController.createProject(new Project());
 
@@ -44,10 +110,10 @@ public class CardDefControllerTest extends AbstractArquillianTest {
         // * 1000)));
         String title = "Dissemination " + ((int) (Math.random() * 1000));
         String purpose = "Define how the project will be promoted "
-                + ((int) (Math.random() * 1000));
+            + ((int) (Math.random() * 1000));
         ConcretizationCategory authorityHolder = ConcretizationCategory.PROJECT;
 
-        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        CardDef cardDef = this.createCardDef(projectId);
 
         Assertions.assertNull(cardDef.getUniqueId());
         Assertions.assertNull(cardDef.getTitle());
@@ -73,11 +139,11 @@ public class CardDefControllerTest extends AbstractArquillianTest {
         Long projectId = client.projectController.createProject(new Project());
         int initialSize = client.cardDefController.getAllCardDefs().size();
 
-        CardDef cardDef1 = client.cardDefController.createNewCardDef(projectId);
+        CardDef cardDef1 = this.createCardDef(projectId);
         cardDef1.setTitle("Game design " + ((int) (Math.random() * 1000)));
         client.cardDefController.updateCardDef(cardDef1);
 
-        CardDef cardDef2 = client.cardDefController.createNewCardDef(projectId);
+        CardDef cardDef2 = this.createCardDef(projectId);
         cardDef2.setTitle("Game rules " + ((int) (Math.random() * 1000)));
         client.cardDefController.updateCardDef(cardDef2);
 
@@ -89,7 +155,8 @@ public class CardDefControllerTest extends AbstractArquillianTest {
     public void testDeleteCardDef() {
         Long projectId = client.projectController.createProject(new Project());
 
-        Long cardDefId = client.cardDefController.createNewCardDef(projectId).getId();
+        CardDef cardDef = this.createCardDef(projectId);
+        Long cardDefId = cardDef.getId();
 
         CardDef persistedCardDef = client.cardDefController.getCardDef(cardDefId);
         Assertions.assertNotNull(persistedCardDef);
@@ -105,13 +172,12 @@ public class CardDefControllerTest extends AbstractArquillianTest {
         String projectName = "Easy learn german " + ((int) (Math.random() * 1000));
         String cardDefTitle = "design " + ((int) (Math.random() * 1000));
 
-        Project project = new Project();
-        project.setName(projectName);
-        Long projectId = client.projectController.createProject(project);
+        Project project = this.createProject(projectName);
+        Long projectId = project.getId();
 
         Project persistedProject = client.projectController.getProject(projectId);
 
-        CardDef cardDef = client.cardDefController.createNewCardDef(projectId);
+        CardDef cardDef = this.createCardDef(projectId);
         cardDef.setTitle(cardDefTitle);
         cardDef.setProject(persistedProject);
         client.cardDefController.updateCardDef(cardDef);
@@ -123,7 +189,7 @@ public class CardDefControllerTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedCardDef.getProjectId());
         Assertions.assertEquals(projectId, persistedCardDef.getProjectId());
 
-        List<CardDef> cardDefsOfProject = client.projectController.getCardDefsOfProject(projectId);
+        List<AbstractCardDef> cardDefsOfProject = client.projectController.getCardDefsOfProject(projectId);
         Assertions.assertNotNull(cardDefsOfProject);
         Assertions.assertEquals(1, cardDefsOfProject.size());
         Assertions.assertEquals(cardDefId, cardDefsOfProject.get(0).getId());

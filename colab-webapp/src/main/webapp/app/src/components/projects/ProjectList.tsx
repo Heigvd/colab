@@ -10,7 +10,7 @@ import * as API from '../../API/api';
 
 import { faPlus, faUsers, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Project } from 'colab-rest-client';
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import { Destroyer } from '../common/Destroyer';
@@ -19,6 +19,7 @@ import { AsyncThunk } from '@reduxjs/toolkit';
 import { StateStatus } from '../../store/project';
 import AutoSaveInput from '../common/AutoSaveInput';
 import IconButton from '../common/IconButton';
+import { cardStyle } from '../styling/style';
 
 interface Props {
   project: Project;
@@ -30,11 +31,13 @@ const ProjectDisplay = ({ project }: Props) => {
 
   return (
     <div
-      className={css({
-        margin: '20px',
-        width: 'max-content',
-        border: '1px solid grey',
-      })}
+      className={cx(
+        cardStyle,
+        css({
+          margin: '20px',
+          width: 'max-content',
+        }),
+      )}
     >
       <div
         className={css({

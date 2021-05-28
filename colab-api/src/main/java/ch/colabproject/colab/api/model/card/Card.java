@@ -30,8 +30,7 @@ import javax.persistence.Transient;
 /**
  * Card
  * <p>
- * It is defined by a cardDef. The content is stored in one or several
- * CardContent.
+ * It is defined by a cardDef. The content is stored in one or several CardContent.
  *
  * @author sandra
  */
@@ -48,7 +47,6 @@ public class Card implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Card ID
      */
@@ -71,7 +69,7 @@ public class Card implements ColabEntity, WithWebsocketChannels {
      */
     @ManyToOne
     @JsonbTransient
-    private CardDef cardDefinition;
+    private AbstractCardDef cardDefinition;
 
     /**
      * The id of the card definition (serialization sugar)
@@ -122,7 +120,6 @@ public class Card implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the card id
      */
@@ -169,14 +166,14 @@ public class Card implements ColabEntity, WithWebsocketChannels {
     /**
      * @return the card def defining what is it for
      */
-    public CardDef getCardDefinition() {
+    public AbstractCardDef getCardDefinition() {
         return cardDefinition;
     }
 
     /**
      * @param cardDef the card def defining what is it for
      */
-    public void setCardDefinition(CardDef cardDef) {
+    public void setCardDefinition(AbstractCardDef cardDef) {
         this.cardDefinition = cardDef;
     }
 
@@ -202,9 +199,8 @@ public class Card implements ColabEntity, WithWebsocketChannels {
 
     /**
      * @return the parent card content
-     *         <p>
-     *         A card can either be the root card of a project or be within a card
-     *         content
+     * <p>
+     * A card can either be the root card of a project or be within a card content
      */
     public CardContent getParent() {
         return parent;
@@ -296,7 +292,6 @@ public class Card implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     /**
      * {@inheritDoc }
      */
@@ -316,7 +311,7 @@ public class Card implements ColabEntity, WithWebsocketChannels {
         if (this.rootCardProject != null) {
             // this card is a root card, propagate through the project channels
             return this.rootCardProject.getChannels();
-        } else if (this.parent!= null) {
+        } else if (this.parent != null) {
             // this card is a sub-card, propagate through its parent channels
             return this.parent.getChannels();
         } else if (this.cardDefinition != null) {
@@ -327,6 +322,23 @@ public class Card implements ColabEntity, WithWebsocketChannels {
             // such an orphan card shoudln't exist...
             return Set.of();
         }
+    }
+
+    /**
+     * Get the project this card belongs to.
+     *
+     * @return card owner
+     */
+    @JsonbTransient
+    public Project getProject() {
+        if (this.rootCardProject != null) {
+            // this card is a root card
+            return this.rootCardProject;
+        } else if (this.parent != null) {
+            // this card is a sub-card
+            return this.parent.getProject();
+        }
+        return null;
     }
 
     @Override

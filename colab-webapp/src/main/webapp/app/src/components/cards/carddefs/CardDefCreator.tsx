@@ -16,10 +16,11 @@ import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { entityIs } from 'colab-rest-client';
 
 export interface Props {
+  global?: boolean;
   afterCreation?: (id: number) => void;
 }
 
-export default ({ afterCreation }: Props): JSX.Element => {
+export default ({ afterCreation, global = false }: Props): JSX.Element => {
   const dispatch = useAppDispatch();
   const { project } = useProjectBeingEdited();
 
@@ -27,7 +28,7 @@ export default ({ afterCreation }: Props): JSX.Element => {
   const [title, setTitle] = React.useState('');
   const [purpose, setPurpose] = React.useState('');
 
-  if (project == null) {
+  if (project == null && !global) {
     //TODO: global types
     return <i>No project</i>;
   }
@@ -66,12 +67,10 @@ export default ({ afterCreation }: Props): JSX.Element => {
           onClick={() => {
             dispatch(
               API.createCardDef({
-                cardDef: {
-                  '@class': 'CardDef',
-                  title: title,
-                  purpose: purpose,
-                },
-                projectId: project.id!,
+                '@class': 'CardDef',
+                projectId: project && !global ? project.id! : null,
+                title: title,
+                purpose: purpose,
               }),
             ).then(action => {
               if (action.meta.requestStatus === 'fulfilled') {

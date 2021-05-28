@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.ProjectFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.card.CardDef;
+import ch.colabproject.colab.api.model.card.AbstractCardDef;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
@@ -167,7 +167,7 @@ public class ProjectController {
      */
     @GET
     @Path("{id}/CardDefs")
-    public List<CardDef> getCardDefsOfProject(@PathParam("id") Long id) {
+    public List<AbstractCardDef> getCardDefsOfProject(@PathParam("id") Long id) {
         logger.debug("Get project #{} card definitions", id);
         return projectFacade.getCardDefs(id);
     }

@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.card.AbstractCardDef;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardDef;
@@ -43,7 +44,6 @@ public class SecurityFacade {
     // *********************************************************************************************
     // user stuff
     // *********************************************************************************************
-
     /**
      * Is the current authenticated user an administrator ?
      *
@@ -136,10 +136,22 @@ public class SecurityFacade {
         }
     }
 
+    /**
+     * Assert the current user is admin.
+     *
+     * @throws HttpErrorMessage authRequired if currentUser is not authenticated;forbidden is
+     *                          current user is not an admin
+     */
+    public void assertCurrentUserIsAdmin() {
+        User user = this.assertAndGetCurrentUser();
+        if (!user.isAdmin()) {
+            throw HttpErrorMessage.forbidden();
+        }
+    }
+
     // *********************************************************************************************
     // project stuff
     // *********************************************************************************************
-
     /**
      * Check if the user is member of the team of the project.
      *
@@ -207,13 +219,12 @@ public class SecurityFacade {
     // *********************************************************************************************
     // card (+ definition + content) stuff
     // *********************************************************************************************
-
     /**
      * Make sure the current user has the right to read the card definition
      *
      * @param cardDefinition card definition to read
      */
-    public void assertCanReadCardDef(CardDef cardDefinition) {
+    public void assertCanReadCardDef(AbstractCardDef cardDefinition) {
         // TODO
     }
 
@@ -274,11 +285,12 @@ public class SecurityFacade {
     /**
      * Make sure the current user has the right to create a card
      *
-     * @param cardContent the card content the new card will belong to
+     * @param cardContent    the card content the new card will belong to
      * @param cardDefinition the card definition the new card will refer to
      */
-    public void assertCanCreateCard(CardContent cardContent, CardDef cardDefinition) {
-        // TODO
+    public void assertCanCreateCard(CardContent cardContent, AbstractCardDef cardDefinition) {
+        this.assertCanReadCardDef(cardDefinition);
+        this.assertCanWriteCardContent(cardContent);
     }
 
     /**

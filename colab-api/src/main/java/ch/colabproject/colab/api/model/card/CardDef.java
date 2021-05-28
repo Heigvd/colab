@@ -9,22 +9,13 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
-import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.Set;
-import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.Transient;
 
 /**
  * Card definition
@@ -34,7 +25,10 @@ import javax.persistence.Transient;
 //TODO review accurate constraints when stabilized
 @Entity
 @NamedQuery(name = "CardDef.findAll", query = "SELECT c FROM CardDef c")
-public class CardDef implements ColabEntity, WithWebsocketChannels {
+@NamedQuery(name = "CardDef.findGlobals", query = "SELECT c FROM CardDef c WHERE c.project is NULL")
+@NamedQuery(name = "CardDef.findPublishedGlobals", query = "SELECT c FROM CardDef c WHERE c.project is NULL AND c.published = TRUE")
+@NamedQuery(name = "CardDef.findPublishedFromProjects", query = "SELECT c FROM CardDef c JOIN c.project project JOIN project.teamMembers teamMember WHERE c.published = TRUE AND teamMember.user.id = :userId")
+public class CardDef extends AbstractCardDef {
 
     /**
      * Serial version UID
@@ -44,14 +38,6 @@ public class CardDef implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
-    /**
-     * CardDef ID
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     /**
      * A unique identifier
      */
@@ -77,40 +63,9 @@ public class CardDef implements ColabEntity, WithWebsocketChannels {
     @Enumerated(EnumType.STRING)
     private ConcretizationCategory authorityHolder;
 
-    /**
-     * The project it belongs to
-     */
-    @ManyToOne
-    @JsonbTransient
-    private Project project;
-
-    /**
-     * The id of the project (serialization sugar)
-     */
-    @Transient
-    private Long projectId;
-
-    // Is there a need to have a list of its cards ?
-
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
-    /**
-     * @return the cardDef ID
-     */
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @param id the cardDef ID
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     /**
      * @return the unique identifier
      */
@@ -155,10 +110,10 @@ public class CardDef implements ColabEntity, WithWebsocketChannels {
 
     /**
      * @return Authority holder : is it belonging to
-     *         <ul>
-     *         <li>a concrete project and behave for itself</li>
-     *         <li>a shared abstract model</li>
-     *         </ul>
+     * <ul>
+     * <li>a concrete project and behave for itself</li>
+     * <li>a shared abstract model</li>
+     * </ul>
      */
     public ConcretizationCategory getAuthorityHolder() {
         return authorityHolder;
@@ -171,46 +126,14 @@ public class CardDef implements ColabEntity, WithWebsocketChannels {
         this.authorityHolder = authorityHolder;
     }
 
-    /**
-     * @return the project it belongs to
-     */
-    public Project getProject() {
-        return project;
-    }
-
-    /**
-     * @param project the project it belongs to
-     */
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    /**
-     * get the project id. To be sent to client
-     *
-     * @return id of the project or null
-     */
-    public Long getProjectId() {
-        if (this.project != null) {
-            return this.project.getId();
-        } else {
-            return projectId;
-        }
-    }
-
-    /**
-     * set the project id. For serialization only
-     *
-     * @param id the id of the project
-     */
-    public void setProjectId(Long id) {
-        this.projectId = id;
+    @Override
+    public CardDef resolve() {
+        return this;
     }
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     /**
      * {@inheritDoc }
      */
@@ -229,29 +152,18 @@ public class CardDef implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public Set<WebsocketChannel> getChannels() {
-        if (this.project != null) {
-            return Set.of(ProjectContentChannel.build(project));
+        if (this.getProject() != null) {
+            return Set.of(ProjectContentChannel.build(this.getProject()));
         } else {
             return Set.of();
         }
     }
 
     @Override
-    public int hashCode() {
-        return EntityHelper.hashCode(this);
-    }
-
-    @Override
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-    public boolean equals(Object obj) {
-        return EntityHelper.equals(this, obj);
-    }
-
-    @Override
     public String toString() {
-        return "CardDef{" + "id=" + id + ", uniqueId=" + uniqueId + ", title=" + title
-                + ", purpose=" + purpose + ", authorityHolder=" + authorityHolder + ", projectId="
-                + getProjectId() + "}";
+        return "CardDef{" + "id=" + getId() + ", uniqueId=" + uniqueId + ", title=" + title
+            + ", purpose=" + purpose + ", authorityHolder=" + authorityHolder + ", projectId="
+            + getProjectId() + "}";
     }
 
 }

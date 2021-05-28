@@ -203,7 +203,12 @@ export default (): JSX.Element => {
             className={css({
               flexGrow: 1,
               overflowY: 'auto',
-              '& > *': { padding: '0 30px 30px 30px' },
+              display: 'flex',
+              flexDirection: 'column',
+              '& > *': {
+                padding: '0 30px 30px 30px',
+                flexGrow: 1,
+              },
             })}
           >
             <Switch>

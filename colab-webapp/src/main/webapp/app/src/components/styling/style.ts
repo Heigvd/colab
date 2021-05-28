@@ -43,7 +43,7 @@ export const semiDarkMode = css({
 });
 
 export const lightMode = css({
-  '--bgColor': '#F6F1F1',
+  '--bgColor': 'white',
   '--fgColor': '#333333',
   '--hoverBgColor': '#FFF0',
   '--hoverFgColor': '#999',
@@ -59,6 +59,7 @@ export const fullPageStyle = cx(
   pictoColours,
   lightMode,
   css({
+    backgroundColor: '#F6F1F1',
     display: 'flex',
     flexDirection: 'column',
     position: 'fixed',
@@ -126,3 +127,14 @@ export const buttonStyle = cx(
 );
 
 export const disabledIconStyle = iconStyle;
+
+export const cardShadow = '0px 0px 7px rgba(0, 0, 0, 0.2)';
+
+export const cardStyle = cx(
+  lightMode,
+  css({
+    border: `1px solid lightgrey`,
+    boxShadow: cardShadow,
+    borderRadius: '5px',
+  }),
+);

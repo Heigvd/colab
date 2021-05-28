@@ -13,14 +13,58 @@ import { css } from '@emotion/css';
 import InlineLoading from '../../common/InlineLoading';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { Card } from 'colab-rest-client';
-import CardThumb from '../../cards/CardThumb';
-import WithToolbar from '../../common/WithToolbar';
+import { cardShadow } from '../../styling/style';
 import CardCreator from '../../cards/CardCreator';
+
+const flexRow = css({
+  display: 'flex',
+  padding: '5px',
+  flexDirection: 'row',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+});
+
+const flexColumn = css({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-evenly',
+  alignItems: 'flexStart',
+  borderLeft: '1px solid grey',
+  marginRight: '10px',
+});
+
+const leftDotted = css({
+  borderLeft: '2px dotted grey',
+  margin: '2px 0 2px 5px',
+});
+
+interface ThumbProps {
+  children: JSX.Element;
+  color: string;
+}
+
+const Thumb = ({ color, children }: ThumbProps): JSX.Element => {
+  return (
+    <div
+      className={css({
+        //            width: 'max-content',
+        border: `1px solid lightgrey`,
+        backgroundColor: color,
+        borderRadius: '5px',
+        boxShadow: cardShadow,
+      })}
+    >
+      {children}
+    </div>
+  );
+};
 
 interface HierarchyDisplayProps {
   rootId: number;
 }
-
+/**
+ *
+ */
 const Hierachy = (props: HierarchyDisplayProps): JSX.Element => {
   const dispatch = useAppDispatch();
 
@@ -97,95 +141,56 @@ const Hierachy = (props: HierarchyDisplayProps): JSX.Element => {
   } else if (status != 'READY') {
     return <InlineLoading />;
   } else {
-    const variants = contents.flatMap(ccDetail =>
-      ccDetail && ccDetail.content ? [ccDetail.content] : [],
-    );
+    //    const variants = contents.flatMap(ccDetail =>
+    //      ccDetail && ccDetail.content ? [ccDetail.content] : [],
+    //    );
     return (
-      <div
-        className={css({
-          display: 'flex',
-          padding: '5px',
-          flexDirection: 'row',
-          justifyContent: 'flex-start',
-          //            alignItems: 'center',
-        })}
-      >
-        <div
-          className={css({
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-evenly',
-            alignItems: 'stretch',
-            borderRight: '1px dashed grey',
-            paddingRight: '10px',
-          })}
-        >
-          {project.rootCardId === props.rootId ? (
-            <div>
-              {contents[0] != null && contents[0].content ? (
-                <WithToolbar toolbar={<CardCreator parent={contents[0].content} />}>
-                  <span>{project.name}</span>
-                </WithToolbar>
-              ) : (
-                <InlineLoading />
-              )}
-            </div>
-          ) : (
-            contents.map(cardContent => {
-              if (
-                root != null &&
-                root.card != null &&
-                cardContent != null &&
-                cardContent.content != null
-              ) {
-                return (
-                  <CardThumb
-                    card={root.card}
-                    variant={cardContent.content}
-                    variants={variants}
-                    showSubcards={false}
-                  />
+      <div className={leftDotted}>
+        {contents.map(cardContent => {
+          if (
+            root != null &&
+            root.card != null &&
+            cardContent != null &&
+            cardContent.content != null
+          ) {
+            let children: JSX.Element[] = [];
+            if (cardContent.content.id) {
+              const subcards = subs[cardContent.content.id];
+              if (subcards === undefined) {
+                dispatch(API.getSubCards(cardContent.content.id));
+              }
+              if (subcards != null) {
+                children = subcards.flatMap(subcard =>
+                  subcard && subcard.id ? [<Hierachy rootId={subcard.id} />] : [],
                 );
-              } else {
-                return <InlineLoading />;
               }
-            })
-          )}
-        </div>
-        <div
-          className={css({
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-evenly',
-            alignItems: 'stretch',
-            borderLeft: '1px dashed orange',
-          })}
-        >
-          {contents
-            .flatMap(cardContent => {
-              if (cardContent != null && cardContent.content != null) {
-                if (cardContent.content.id) {
-                  const subIds = subs[cardContent.content.id];
-                  if (subIds === undefined) {
-                    dispatch(API.getSubCards(cardContent.content.id));
-                  }
-                  if (subIds != null) {
-                    return subIds;
-                  } else {
-                    return [];
-                  }
-                }
-                //cardContent.subs.map();
-              }
-            })
-            .map(card => {
-              if (card != null && card.id != null) {
-                return <Hierachy rootId={card.id} />;
-              } else {
-                return <InlineLoading />;
-              }
-            })}
-        </div>
+            }
+
+            return (
+              <div className={flexRow}>
+                {project.rootCardId === props.rootId ? (
+                  <Thumb color={'white'}>
+                    <span>{project.name}</span>
+                  </Thumb>
+                ) : (
+                  <Thumb color={root.card.color || 'white'}>
+                    <span>{cardContent.content.title || 'untitled'}</span>
+                  </Thumb>
+                )}
+                <div className={flexColumn}>
+                  {children}
+                  <div className={leftDotted}>
+                    <Thumb color="#fff20">
+                      <CardCreator parent={cardContent.content} />
+                    </Thumb>
+                  </div>
+                </div>
+              </div>
+            );
+          } else {
+            return <InlineLoading />;
+          }
+        })}
       </div>
     );
   }

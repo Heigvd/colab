@@ -12,7 +12,7 @@ import { Card, CardContent, entityIs } from 'colab-rest-client';
 import { css } from '@emotion/css';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import IconButton from '../common/IconButton';
-import { faCaretLeft, faCaretRight, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCaretLeft, faCaretRight, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 import WithToolbar from '../common/WithToolbar';
 
 interface Props {
@@ -74,8 +74,9 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
       <div
         className={css({
           margin: '10px',
+          flexGrow: 1,
           display: 'flex',
-          alignItems: 'center',
+          //          alignItems: 'center',
           '& > div': {
             flexGrow: 1,
           },
@@ -99,7 +100,7 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
           offsetX="-8px"
           toolbar={
             <IconButton
-              icon={faPlus}
+              icon={faWindowRestore}
               title="Create new variant"
               onClick={() => {
                 dispatch(API.createCardContentVariant(cardId)).then(payload => {

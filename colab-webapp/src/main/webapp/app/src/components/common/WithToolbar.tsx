@@ -8,6 +8,7 @@
 import * as React from 'react';
 import { css, cx } from '@emotion/css';
 import { semiDarkMode } from '../styling/style';
+import FitSpace from './FitSpace';
 
 interface Props {
   children: JSX.Element;
@@ -127,6 +128,7 @@ export default function WithToolbar({
       className={cx(
         hoverToolbar ? hoverStyle : undefined,
         css({
+          flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
           position: 'relative',
@@ -161,7 +163,7 @@ export default function WithToolbar({
           {toolbar}
         </div>
       ) : null}
-      <div>{children}</div>
+      <FitSpace>{children}</FitSpace>
     </div>
   );
 }

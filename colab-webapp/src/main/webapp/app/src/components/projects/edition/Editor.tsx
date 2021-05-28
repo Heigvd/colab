@@ -27,6 +27,7 @@ import VariantSelector from '../../cards/VariantSelector';
 import CardDefList from '../../cards/carddefs/CardDefList';
 import WithToolbar from '../../common/WithToolbar';
 import CardCreator from '../../cards/CardCreator';
+import FitSpace from '../../common/FitSpace';
 
 const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   const history = useHistory();
@@ -96,10 +97,12 @@ const CardWrapper = ({ children }: CardWrapperProps): JSX.Element => {
   } else {
     return (
       <>
-        {ancestors.map((ancestor, x) => (
-          <Ancestor key={x} card={ancestor.card} content={ancestor.content} />
-        ))}
-        {children(card)}
+        <div>
+          {ancestors.map((ancestor, x) => (
+            <Ancestor key={x} card={ancestor.card} content={ancestor.content} />
+          ))}
+        </div>
+        <FitSpace>{children(card)}</FitSpace>
       </>
     );
   }
@@ -159,7 +162,12 @@ export default function Editor(): JSX.Element {
   } else {
     return (
       <Router basename={`/editor/${project.id}`}>
-        <div>
+        <div
+          className={css({
+            display: 'flex',
+            flexDirection: 'column',
+          })}
+        >
           <div
             className={css({
               display: 'flex',
@@ -187,44 +195,46 @@ export default function Editor(): JSX.Element {
               icon={faTimes}
             />
           </div>
-          <Switch>
-            <Route exact path="/hierarchy">
-              <Hierachy rootId={root.id} />
-            </Route>
-            <Route exact path="/defs">
-              <CardDefList />
-            </Route>
-            <Route exact path="/card/:id">
-              <CardWrapper>{card => <CardThumbWithSelector depth={2} card={card} />}</CardWrapper>
-            </Route>
-            <Route exact path="/edit/:id">
-              <CardWrapper>
-                {card => (
-                  <VariantSelector card={card}>
-                    {(variant, list) => (
-                      <CardEditor
-                        card={card}
-                        variant={variant}
-                        variants={list}
-                        showSubcards={true}
-                      />
-                    )}
-                  </VariantSelector>
-                )}
-              </CardWrapper>
-            </Route>
-            <Route>
-              <div>
-                {rootContent != null ? (
-                  <WithToolbar toolbar={<CardCreator parent={rootContent} />}>
-                    <ContentSubs showEmptiness={true} depth={2} cardContent={rootContent} />
-                  </WithToolbar>
-                ) : (
-                  <InlineLoading />
-                )}
-              </div>
-            </Route>
-          </Switch>
+          <FitSpace>
+            <Switch>
+              <Route exact path="/hierarchy">
+                <Hierachy rootId={root.id} />
+              </Route>
+              <Route exact path="/defs">
+                <CardDefList />
+              </Route>
+              <Route exact path="/card/:id">
+                <CardWrapper>{card => <CardThumbWithSelector depth={2} card={card} />}</CardWrapper>
+              </Route>
+              <Route exact path="/edit/:id">
+                <CardWrapper>
+                  {card => (
+                    <VariantSelector card={card}>
+                      {(variant, list) => (
+                        <CardEditor
+                          card={card}
+                          variant={variant}
+                          variants={list}
+                          showSubcards={true}
+                        />
+                      )}
+                    </VariantSelector>
+                  )}
+                </CardWrapper>
+              </Route>
+              <Route>
+                <div>
+                  {rootContent != null ? (
+                    <WithToolbar toolbar={<CardCreator parent={rootContent} />}>
+                      <ContentSubs showEmptiness={true} depth={2} cardContent={rootContent} />
+                    </WithToolbar>
+                  ) : (
+                    <InlineLoading />
+                  )}
+                </div>
+              </Route>
+            </Switch>
+          </FitSpace>
         </div>
       </Router>
     );

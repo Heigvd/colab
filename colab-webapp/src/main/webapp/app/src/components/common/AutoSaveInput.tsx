@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { debounce } from 'lodash';
-import { faPenNib, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
 import IconButton from './IconButton';
 
 type State = {
@@ -99,7 +99,7 @@ export default function AutoSaveInput({
         <label>{label}</label>
         {state.currentValue ? state.currentValue : <i>{placeholder}</i>}
         <IconButton
-          icon={faPenNib}
+          icon={faPen}
           title="edit"
           onClick={() => {
             setState({

@@ -14,58 +14,15 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useCardDefs } from '../../../selectors/cardDefSelector';
 import InlineLoading from '../../common/InlineLoading';
-import { CardDef } from 'colab-rest-client';
-import AutoSaveInput from '../../common/AutoSaveInput';
 import IconButton from '../../common/IconButton';
-
-interface DisplayProps {
-  cardDef: CardDef;
-}
-
-const style = css({
-  width: 'max-content',
-  border: '1px solid grey',
-  margin: '10px',
-  padding: '10px',
-});
+import CardDefEditor from './CardDefEditor';
+import CardDefDisplay from './CardDefDisplay';
 
 const flexWrap = css({
   display: 'flex',
   flexDirecion: 'row',
   flexWrap: 'wrap',
 });
-
-const CardDefEditor = ({ cardDef }: DisplayProps) => {
-  const dispatch = useAppDispatch();
-
-  return (
-    <div className={style}>
-      <AutoSaveInput
-        label="Title: "
-        placeholder=""
-        inputType="INPUT"
-        value={cardDef.title || ''}
-        onChange={newValue => dispatch(API.updateCardDef({ ...cardDef, title: newValue }))}
-      />
-      <AutoSaveInput
-        label="Purpose: "
-        placeholder=""
-        inputType="TEXTAREA"
-        value={cardDef.purpose || ''}
-        onChange={newValue => dispatch(API.updateCardDef({ ...cardDef, purpose: newValue }))}
-      />
-    </div>
-  );
-};
-
-const CardDefDisplay = ({ cardDef }: DisplayProps) => {
-  return (
-    <div className={style}>
-      <div>Title: {cardDef.title}</div>
-      <div>Purpose: {cardDef.purpose}</div>
-    </div>
-  );
-};
 
 export interface Props {}
 
@@ -77,10 +34,8 @@ export default ({}: Props): JSX.Element => {
   const createNewCb = React.useCallback(() => {
     dispatch(
       API.createCardDef({
+        '@class': 'CardDef',
         projectId: project!.id!,
-        cardDef: {
-          '@class': 'CardDef',
-        },
       }),
     );
   }, [dispatch, project]);
@@ -99,7 +54,7 @@ export default ({}: Props): JSX.Element => {
     } else {
       return (
         <div>
-          <h3>Card Definition</h3>
+          <h3>Card Types</h3>
           <h4>Project own types</h4>
           <IconButton onClick={createNewCb} icon={faPlus} />
           <div className={flexWrap}>

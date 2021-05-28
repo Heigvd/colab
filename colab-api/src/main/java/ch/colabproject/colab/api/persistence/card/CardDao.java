@@ -104,6 +104,7 @@ public class CardDao {
             // no way to delete the root card
             throw HttpErrorMessage.badRequest();
         }
+        card.getParent().getSubCards().remove(card);
         em.remove(card);
         return card;
     }

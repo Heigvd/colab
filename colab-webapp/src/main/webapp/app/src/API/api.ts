@@ -346,20 +346,30 @@ export const getProjectCardDefs = createAsyncThunk(
   },
 );
 
+/**
+ * Get all global cardTypes
+ */
+export const getAllGlobalCardDefs = createAsyncThunk('cardDef/getAllGlobals', async () => {
+  return await restClient.CardDefController.getAllGlobalCardDefs();
+});
+
+/**
+ * Get published global cardTypes
+ */
+export const getPublishedGlobalCardDefs = createAsyncThunk(
+  'cardDef/getPublihedGlobals',
+  async () => {
+    return await restClient.CardDefController.getPublishedGlobalsCardDefs();
+  },
+);
+
 export const getCardDef = createAsyncThunk('cardDef/get', async (id: number) => {
   return await restClient.CardDefController.getCardDef(id);
 });
 
-export const createCardDef = createAsyncThunk(
-  'cardDef/create',
-  async ({ projectId, cardDef }: { cardDef: CardDef; projectId: number }) => {
-    // TODO : one step REST method : :projectId/CreateTypeDef with body
-    const c = await restClient.CardDefController.createNewCardDef(projectId);
-
-    await restClient.CardDefController.updateCardDef({ ...cardDef, ...c });
-    return cardDef.id;
-  },
-);
+export const createCardDef = createAsyncThunk('cardDef/create', async (cardDef: CardDef) => {
+  return await restClient.CardDefController.createCardDef(cardDef);
+});
 
 export const updateCardDef = createAsyncThunk('cardDef/update', async (cardDef: CardDef) => {
   await restClient.CardDefController.updateCardDef(cardDef);

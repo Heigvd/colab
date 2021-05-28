@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
@@ -240,6 +241,19 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
         } else {
             throw new ColabMergeException(this, other);
         }
+    }
+
+    /**
+     * Get the project this content belongs to
+     *
+     * @return content owner
+     */
+    @JsonbTransient
+    public Project getProject(){
+        if (this.card != null){
+            return this.card.getProject();
+        }
+        return null;
     }
 
     @Override

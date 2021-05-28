@@ -5,14 +5,14 @@
  * Licensed under the MIT License
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CardDef } from 'colab-rest-client';
+import { AbstractCardDef, CardDef, CardDefRef } from 'colab-rest-client';
 import * as API from '../API/api';
 import { mapById } from '../helper';
 
 export interface CardDefState {
   status: 'UNSET' | 'LOADING' | 'READY';
   carddefs: {
-    [id: number]: CardDef | null;
+    [id: number]: AbstractCardDef | null;
   };
 }
 
@@ -32,6 +32,12 @@ const cardsSlice = createSlice({
     },
     removeCardDef: (state, action: PayloadAction<number>) => {
       delete state.carddefs[action.payload];
+    },
+    updateCardDefRef: (_state, _action: PayloadAction<CardDefRef>) => {
+      // TODO
+    },
+    removeCardDefRef: (_state, _action: PayloadAction<number>) => {
+      // TODO
     },
   },
   extraReducers: builder =>
@@ -68,6 +74,11 @@ const cardsSlice = createSlice({
       }),
 });
 
-export const { updateCardDef, removeCardDef } = cardsSlice.actions;
+export const {
+  updateCardDef,
+  removeCardDef,
+  updateCardDefRef,
+  removeCardDefRef,
+} = cardsSlice.actions;
 
 export default cardsSlice.reducer;

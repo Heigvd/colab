@@ -9,7 +9,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 
 import { Card, CardContent } from 'colab-rest-client';
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { Destroyer } from '../common/Destroyer';
 import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/IconButton';
@@ -17,6 +17,7 @@ import { faPen, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useHistory } from 'react-router-dom';
 import WithToolbar from '../common/WithToolbar';
 import CardCreator from './CardCreator';
+import { cardShadow, cardStyle } from '../styling/style';
 
 interface Props {
   card: Card;
@@ -24,8 +25,6 @@ interface Props {
   variants: CardContent[];
   children: JSX.Element;
 }
-
-const shadow = '0px 0px 7px rgba(0, 0, 0, 0.2)';
 
 export default function CardLayout({ card, variant, variants, children }: Props): JSX.Element {
   const dispatch = useAppDispatch();
@@ -88,16 +87,17 @@ export default function CardLayout({ card, variant, variants, children }: Props)
         }
       >
         <div
-          className={css({
-            //            width: 'max-content',
-            border: `1px solid lightgrey`,
-            backgroundColor: color,
-            borderRadius: '5px',
-            boxShadow:
-              variants.length > 1
-                ? `${shadow}, 3px 3px 0px -1px white, 4px 4px 0px 0px ${color}`
-                : shadow,
-          })}
+          className={cx(
+            cardStyle,
+            css({
+              flexGrow: 1,
+              backgroundColor: color,
+              boxShadow:
+                variants.length > 1
+                  ? `${cardShadow}, 3px 3px 0px -1px white, 4px 4px 0px 0px ${color}`
+                  : undefined,
+            }),
+          )}
         >
           {children}
         </div>

@@ -66,6 +66,45 @@ public class CardDefController {
     }
 
     /**
+     * Retrieve the list of all global card types. This is available to admin only
+     *
+     * @return all known global card types
+     */
+    @GET
+    @Path("allGlobals")
+    @AdminResource
+    public List<CardDef> getAllGlobalCardDefs() {
+        logger.debug("get all global card defs");
+        return cardDefDao.getGlobalCardDef();
+    }
+
+    /**
+     * Retrieve the list of public global card types.
+     *
+     * @return all published global types
+     */
+    @GET
+    @Path("publishedGlobals")
+    public List<CardDef> getPublishedGlobalsCardDefs() {
+        logger.debug("get published global card defs");
+        return cardDefDao.getPublishedGlobalCardDef();
+    }
+
+
+    /**
+     * Retrieve the list of published card types accessible to current user.
+     * It means all the published types of project the current user is member of.
+     *
+     * @return all published card types
+     */
+    @GET
+    @Path("allProjectsPublished")
+    public List<CardDef> getPublishedCardDefs() {
+        logger.debug("get published projects card defs");
+        return cardDefDao.getPublishedProjectsCardDef();
+    }
+
+    /**
      * Get card def identified by the given id
      *
      * @param id id of the card def to fetch
@@ -80,35 +119,31 @@ public class CardDefController {
     }
 
     /**
-     * Persist the card definition
+     * Persist a card type.
      *
      * @param cardDef the card definition to persist
      *
      * @return id of the persisted new card definition
-     *
-     * @deprecated a priori there will be no need to directly create a card
-     *             definition
      */
-    @Deprecated
     @POST
     public Long createCardDef(CardDef cardDef) {
         logger.debug("create card def {}", cardDef);
-        return cardDefDao.createCardDef(cardDef).getId();
+        return facade.createNewCardDef(cardDef).getId();
     }
 
     /**
-     * Create and persist a new card definition
+     * Create and persist a new card type. The card type belongs to the given project.
      *
      * @param projectId the project the new card definition belongs to
      *
      * @return the persisted new card definition
-     */
     @POST
     @Path("create/{projectId}")
     public CardDef createNewCardDef(@PathParam("projectId") Long projectId) {
         logger.debug("create new card def for the project #{}", projectId);
         return facade.createNewCardDef(projectId);
     }
+     */
 
     /**
      * Save changes to database

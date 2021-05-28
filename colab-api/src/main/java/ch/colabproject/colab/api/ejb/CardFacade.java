@@ -6,10 +6,12 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.card.AbstractCardDef;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
 import ch.colabproject.colab.api.model.card.CardDef;
+import ch.colabproject.colab.api.model.card.CardDefRef;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
@@ -17,6 +19,7 @@ import ch.colabproject.colab.api.persistence.card.CardDefDao;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
+import java.util.Optional;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -48,7 +51,6 @@ public class CardFacade {
     // *********************************************************************************************
     // injections
     // *********************************************************************************************
-
     /**
      * Card definition persistence handling
      */
@@ -82,28 +84,33 @@ public class CardFacade {
     // *********************************************************************************************
     // card definition stuff
     // *********************************************************************************************
-
     /**
-     * Create a new card definition for the project
+     * Create a new card definition. The new type will be a global type if the type is not bound to
+     * any project.
      *
-     * @param projectId id of the project the card definition belongs to
+     * @param cardDef the type to create
      *
      * @return a new, persisted card definition
      */
-    public CardDef createNewCardDef(Long projectId) {
-        logger.debug("create a new card def in the project #{}", projectId);
-
-        Project project = projectDao.getProject(projectId);
-        if (project == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+    public CardDef createNewCardDef(CardDef cardDef) {
+        Long projectId = cardDef.getProjectId();
+        if (projectId != null) {
+            logger.debug("create a new card type in the project #{}", projectId);
+            Project project = projectDao.getProject(projectId);
+            if (project == null) {
+                throw HttpErrorMessage.relatedObjectNotFoundError();
+            }
+            securityFacade.assertCanCreateCardDef(project);
+            project.getElementsToBeDefined().add(cardDef);
+            cardDef.setProject(project);
+        } else {
+            logger.debug("create a new global card def");
+            securityFacade.assertCurrentUserIsAdmin();
+            cardDef.setProject(null);
         }
-        securityFacade.assertCanCreateCardDef(project);
 
-        CardDef cardDef = initNewCardDef();
-        cardDef.setProject(project);
+        initNewCardDef(cardDef);
         cardDefDao.createCardDef(cardDef);
-
-        project.getElementsToBeDefined().add(cardDef);
 
         return cardDef;
     }
@@ -111,21 +118,16 @@ public class CardFacade {
     /**
      * @return a new card definition initialized object
      */
-    private CardDef initNewCardDef() {
-        CardDef cardDef = new CardDef();
-
+    private CardDef initNewCardDef(CardDef cardDef) {
         // see if uniqueId must be initialized
-
         return cardDef;
     }
 
     // *********************************************************************************************
     // card stuff
     // *********************************************************************************************
-
     /**
-     * Initialize a new root card. This card contains every other cards of a
-     * project.
+     * Initialize a new root card. This card contains every other cards of a project.
      * <p>
      * No persistence stuff in there
      *
@@ -143,25 +145,26 @@ public class CardFacade {
     /**
      * Create a new card into a card content with a card definition
      *
-     * @param parentId parent id of the new card
+     * @param parentId         parent id of the new card
      * @param cardDefinitionId card definition id of the new card
      *
      * @return a new, initialized and persisted card
      */
     public Card createNewCard(Long parentId, Long cardDefinitionId) {
         logger.debug("create a new sub card of #{} with the definition of #{}", parentId,
-                cardDefinitionId);
+            cardDefinitionId);
 
         CardContent parent = cardContentDao.getCardContent(parentId);
         if (parent == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        CardDef cardDefinition = cardDefDao.getCardDef(cardDefinitionId);
+        AbstractCardDef cardDefinition = cardDefDao.getAbstractCardDef(cardDefinitionId);
         if (cardDefinition == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
+        // check type read access and parent wirte right
         securityFacade.assertCanCreateCard(parent, cardDefinition);
 
         Card card = initNewCard(parent, cardDefinition);
@@ -170,20 +173,115 @@ public class CardFacade {
     }
 
     /**
-     * @param parent Parent of the new card
+     * Create a type reference to the given type. The ref will belongs to the given project.
+     *
+     * @param cardType type to reference
+     * @param project  reference owner
+     *
+     * @return the reference
+     */
+    private CardDefRef createReference(AbstractCardDef cardType, Project project) {
+        CardDefRef ref = new CardDefRef();
+        ref.setProject(project);
+        ref.setAbstractCardDef(cardType);
+        // TODO: copy deprecated state or do never deprecate just created types?
+        //ref.setDeprecated(cardType.isDeprecated());
+        ref.setDeprecated(false);
+        ref.setPublished(false);
+
+        cardDefDao.createCardDef(ref);
+        project.getElementsToBeDefined().add(ref);
+        return ref;
+    }
+
+    /**
+     * Initialize card. Card will be bound to the given type. If the type does not belongs to the
+     * same project as the card do, a type ref is created.
+     *
+     * @param parent         Parent of the new card
      * @param cardDefinition Related card definition
      *
      * @return a new card containing a new card content with cardDefinition
      */
-    private Card initNewCard(CardContent parent, CardDef cardDefinition) {
+    private Card initNewCard(CardContent parent, AbstractCardDef cardDefinition) {
         Card card = initNewCard();
 
         card.setParent(parent);
         parent.getSubCards().add(card);
 
-        card.setCardDefinition(cardDefinition);
+        Project project = parent.getProject();
+
+        if (project != null) {
+            AbstractCardDef effectiveType = null;
+            if (project.equals(cardDefinition.getProject())) {
+                //Given type belongs to the project
+                // it can be used as-is
+                effectiveType = cardDefinition;
+            } else {
+                // second case: cardDef belongs to another project
+
+                // shall we check something to prevent extending same type several times?
+                //
+                // Check if the project already got a direct reference the super-type
+                Optional<AbstractCardDef> findFirst = project.getElementsToBeDefined().stream()
+                    .filter(type -> {
+                        return this.isDirectRef(type, cardDefinition);
+                    }).findFirst();
+
+                if (findFirst.isPresent()) {
+                    // direct ref found, reuse it
+                    effectiveType = findFirst.get();
+                } else {
+                    // no direct ref. Create one.
+                    effectiveType = createReference(cardDefinition, project);
+                }
+            }
+
+            if (effectiveType != null) {
+                card.setCardDefinition(effectiveType);
+            } else {
+                logger.error("Unable to find effective type for {}", cardDefinition);
+                throw HttpErrorMessage.relatedObjectNotFoundError();
+            }
+        }
 
         return card;
+    }
+
+    /**
+     * Is the given child a direct reference to the given parent
+     *
+     * @param child  the child
+     * @param parent the parent
+     *
+     * @return true if child is a direct reference to the parent
+     */
+    public boolean isDirectRef(AbstractCardDef child, AbstractCardDef parent) {
+        if (child instanceof CardDefRef) {
+            CardDefRef ref = (CardDefRef) child;
+            AbstractCardDef refTarget = ref.getAbstractCardDef();
+            return parent != null && parent.equals(refTarget);
+        }
+        return false;
+    }
+
+    /**
+     * Is the given ancestor an ancestor of the given child
+     *
+     * @param child    the child
+     * @param ancestor the ancestor
+     *
+     * @return true if child is a ref and if ancestor is an ancestor of the ref
+     */
+    public boolean isTransitiveRef(AbstractCardDef child, AbstractCardDef ancestor) {
+        if (isDirectRef(child, ancestor)) {
+            return true;
+        } else if (child instanceof CardDefRef) {
+            AbstractCardDef parent = ((CardDefRef) child).getAbstractCardDef();
+            return this.isTransitiveRef(parent, ancestor);
+        }
+
+        return false;
     }
 
     /**
@@ -216,7 +314,6 @@ public class CardFacade {
     // *********************************************************************************************
     // card content stuff
     // *********************************************************************************************
-
     /**
      * Create a new card content variant for the card
      *

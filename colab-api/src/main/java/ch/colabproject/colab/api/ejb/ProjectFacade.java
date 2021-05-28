@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.card.AbstractCardDef;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;
@@ -153,7 +153,7 @@ public class ProjectFacade {
      *
      * @return all card definitions of the project
      */
-    public List<CardDef> getCardDefs(Long projectId) {
+    public List<AbstractCardDef> getCardDefs(Long projectId) {
         Project project = projectDao.getProject(projectId);
         logger.debug("Get card defs of project {}", project);
         if (project == null) {

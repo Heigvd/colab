@@ -33,6 +33,8 @@ const onUpdate = (event: WsUpdateMessage) => {
       dispatch(CardActions.removeCard(item.id));
     } else if (indexEntryIs(item, 'CardDef')) {
       dispatch(CardDefActions.removeCardDef(item.id));
+    } else if (indexEntryIs(item, 'CardDefRef')) {
+      dispatch(CardDefActions.removeCardDefRef(item.id));
     } else if (indexEntryIs(item, 'CardContent')) {
       dispatch(CardActions.removeContent(item.id));
     } else if (indexEntryIs(item, 'User')) {
@@ -61,6 +63,8 @@ const onUpdate = (event: WsUpdateMessage) => {
       dispatch(CardActions.updateContent(item));
     } else if (entityIs(item, 'CardDef')) {
       dispatch(CardDefActions.updateCardDef(item));
+    } else if (entityIs(item, 'CardDefRef')) {
+      dispatch(CardDefActions.updateCardDefRef(item));
     } else if (entityIs(item, 'User')) {
       dispatch(UserActions.updateUser(item));
     } else if (entityIs(item, 'Account')) {
