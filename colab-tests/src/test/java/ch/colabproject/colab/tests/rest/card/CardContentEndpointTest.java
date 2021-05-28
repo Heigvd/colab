@@ -10,6 +10,9 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentCompletionMode;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
+import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.document.BlockDocument;
+import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import java.util.List;
@@ -74,11 +77,11 @@ public class CardContentEndpointTest extends AbstractArquillianTest {
         client.cardContentEndpoint.updateCardContent(cardContent);
 
         CardContent persistedCardContent = client.cardContentEndpoint
-                .getCardContent(cardContentId);
+            .getCardContent(cardContentId);
         Assertions.assertEquals(title, persistedCardContent.getTitle());
         Assertions.assertEquals(completionLevel, persistedCardContent.getCompletionLevel());
         Assertions.assertEquals(CardContentCompletionMode.NO_OP,
-                persistedCardContent.getCompletionMode());
+            persistedCardContent.getCompletionMode());
         Assertions.assertEquals(CardContentStatus.ACTIVE, persistedCardContent.getStatus());
     }
 
@@ -117,7 +120,7 @@ public class CardContentEndpointTest extends AbstractArquillianTest {
         Long cardContentId = cardContent.getId();
 
         CardContent persistedCardContent = client.cardContentEndpoint
-                .getCardContent(cardContentId);
+            .getCardContent(cardContentId);
         Assertions.assertNotNull(persistedCardContent);
 
         client.cardContentEndpoint.deleteCardContent(cardContentId);
@@ -125,4 +128,70 @@ public class CardContentEndpointTest extends AbstractArquillianTest {
         persistedCardContent = client.cardContentEndpoint.getCardContent(cardContentId);
         Assertions.assertNull(persistedCardContent);
     }
+
+    @Test
+    public void testVariantAccess() {
+        Long projectId = client.projectEndpoint.createProject(new Project());
+        Project project = client.projectEndpoint.getProject(projectId);
+
+        CardType cardType = this.createCardType(projectId);
+        Long cardTypeId = cardType.getId();
+
+        Card rootCard = client.cardEndpoint.getCard(project.getRootCardId());
+        Long rootCardId = rootCard.getId();
+
+        List<CardContent> rootCardContents = client.cardEndpoint
+            .getContentVariantsOfCard(rootCardId);
+        Long parentId = rootCardContents.get(0).getId();
+
+        Card card = client.cardEndpoint.createNewCard(parentId, cardTypeId);
+        Long cardId = card.getId();
+
+        CardContent cardContent = client.cardContentEndpoint.createNewCardContent(cardId);
+        Long cardContentId = cardContent.getId();
+
+        Assertions.assertEquals(cardId, cardContent.getCardId());
+
+        List<CardContent> variants = client.cardEndpoint.getContentVariantsOfCard(cardId);
+        Assertions.assertNotNull(variants);
+        Assertions.assertEquals(2, variants.size());
+        Assertions.assertTrue(cardContentId.equals(variants.get(0).getId())
+            || cardContentId.equals(variants.get(1).getId()));
+    }
+
+    @Test
+    public void testDeliverableAccess() {
+        Long projectId = client.projectEndpoint.createProject(new Project());
+        Project project = client.projectEndpoint.getProject(projectId);
+
+        CardType cardType = this.createCardType(projectId);
+        Long cardTypeId = cardType.getId();
+
+        Card rootCard = client.cardEndpoint.getCard(project.getRootCardId());
+        Long rootCardId = rootCard.getId();
+
+        List<CardContent> rootCardContents = client.cardEndpoint
+            .getContentVariantsOfCard(rootCardId);
+        Long parentId = rootCardContents.get(0).getId();
+
+        Card card = client.cardEndpoint.createNewCard(parentId, cardTypeId);
+        Long cardId = card.getId();
+
+        CardContent cardContent = client.cardEndpoint.getContentVariantsOfCard(cardId).get(0);
+        Long cardContentId = cardContent.getId();
+
+        Long docId = client.documentRestEndPoint.createDocument(new BlockDocument());
+
+        cardContent.setDeliverableId(docId);
+        client.cardContentEndpoint.updateCardContent(cardContent);
+
+        CardContent persistedCardContent = client.cardContentEndpoint.getCardContent(cardContentId);
+        Assertions.assertNotNull(persistedCardContent);
+        Assertions.assertEquals(docId, persistedCardContent.getDeliverableId());
+
+        Document persistedDocument = client.documentRestEndPoint.getDocument(docId);
+        Assertions.assertNotNull(persistedDocument);
+        Assertions.assertEquals(cardContentId, persistedDocument.getDeliverableCardContentId());
+    }
+
 }

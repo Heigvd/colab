@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -299,6 +300,19 @@ public class SecurityFacade {
      * @param card the card the new card content will be part of
      */
     public void assertCanCreateCardContent(Card card) {
+        // TODO
+    }
+
+    // *********************************************************************************************
+    // block document stuff
+    // *********************************************************************************************
+
+    /**
+     * Make sure the current user has the right to create a block in a document
+     *
+     * @param blockDocument the document the new block will be part of
+     */
+    public void assertCanCreateBlock(BlockDocument blockDocument) {
         // TODO
     }
 

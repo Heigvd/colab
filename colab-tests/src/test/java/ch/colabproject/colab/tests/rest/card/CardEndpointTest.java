@@ -149,37 +149,7 @@ public class CardEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testCardContentAccess() {
-        Long projectId = client.projectEndpoint.createProject(new Project());
-        Project project = client.projectEndpoint.getProject(projectId);
-
-        CardType cardType = this.createCardType(projectId);
-        Long cardTypeId = cardType.getId();
-
-        Card rootCard = client.cardEndpoint.getCard(project.getRootCardId());
-        Long rootCardId = rootCard.getId();
-
-        List<CardContent> rootCardContents = client.cardEndpoint
-            .getContentVariantsOfCard(rootCardId);
-        Long parentId = rootCardContents.get(0).getId();
-
-        Card card = client.cardEndpoint.createNewCard(parentId, cardTypeId);
-        Long cardId = card.getId();
-
-        CardContent cardContent = client.cardContentEndpoint.createNewCardContent(cardId);
-        Long cardContentId = cardContent.getId();
-
-        Assertions.assertEquals(cardId, cardContent.getCardId());
-
-        List<CardContent> variants = client.cardEndpoint.getContentVariantsOfCard(cardId);
-        Assertions.assertNotNull(variants);
-        Assertions.assertEquals(2, variants.size());
-        Assertions.assertTrue(cardContentId.equals(variants.get(0).getId())
-            || cardContentId.equals(variants.get(1).getId()));
-    }
-
-    @Test
-    public void SubCardAccess() {
+    public void testSubCardAccess() {
         Long projectId = client.projectEndpoint.createProject(new Project());
         Project project = client.projectEndpoint.getProject(projectId);
 
@@ -223,5 +193,17 @@ public class CardEndpointTest extends AbstractArquillianTest {
         Card card = client.cardEndpoint.createNewCard(parentId, cardTypeId);
 
         Assertions.assertEquals(cardTypeId, card.getCardTypeinitionId());
+
     }
+
+    @Test
+    public void testProjectRootCardAccess() {
+        Long projectId = client.projectEndpoint.createProject(new Project());
+        Project project = client.projectEndpoint.getProject(projectId);
+
+        Card rootCard = client.cardEndpoint.getCard(project.getRootCardId());
+
+        Assertions.assertEquals(projectId, rootCard.getRootCardProjectId());
+    }
+
 }

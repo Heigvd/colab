@@ -170,24 +170,14 @@ public class CardTypeEndpointTest extends AbstractArquillianTest {
     @Test
     public void testProjectAccess() {
         String projectName = "Easy learn german " + ((int) (Math.random() * 1000));
-        String cardTypeTitle = "design " + ((int) (Math.random() * 1000));
 
         Project project = this.createProject(projectName);
         Long projectId = project.getId();
 
-        Project persistedProject = client.projectEndpoint.getProject(projectId);
-
         CardType cardType = this.createCardType(projectId);
-        cardType.setTitle(cardTypeTitle);
-        cardType.setProject(persistedProject);
-        client.cardTypeEndpoint.updateCardType(cardType);
-
         Long cardTypeId = cardType.getId();
 
-        CardType persistedCardType = client.cardTypeEndpoint.getCardType(cardTypeId);
-        Assertions.assertNotNull(persistedCardType);
-        Assertions.assertNotNull(persistedCardType.getProjectId());
-        Assertions.assertEquals(projectId, persistedCardType.getProjectId());
+        Assertions.assertEquals(projectId, cardType.getProjectId());
 
         List<AbstractCardType> cardTypesOfProject = client.projectEndpoint.getCardTypesOfProject(projectId);
         Assertions.assertNotNull(cardTypesOfProject);

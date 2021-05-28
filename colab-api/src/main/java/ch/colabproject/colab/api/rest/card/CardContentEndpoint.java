@@ -122,7 +122,7 @@ public class CardContentEndpoint {
     @PUT
     public void updateCardContent(CardContent cardContent) throws ColabMergeException {
         logger.debug("Update card content {}", cardContent);
-        cardContentDao.updateCardContent(cardContent);
+        cardFacade.updateCardContent(cardContent);
     }
 
     /**

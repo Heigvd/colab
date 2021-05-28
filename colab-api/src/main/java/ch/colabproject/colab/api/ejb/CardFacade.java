@@ -6,16 +6,19 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
+import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.api.persistence.card.CardTypeDao;
+import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
@@ -74,6 +77,12 @@ public class CardFacade {
      */
     @Inject
     private ProjectDao projectDao;
+
+    /**
+     * Document persistence handling
+     */
+    @Inject
+    private DocumentDao documentDao;
 
     /**
      * To check access rights
@@ -314,6 +323,34 @@ public class CardFacade {
     // *********************************************************************************************
     // card content stuff
     // *********************************************************************************************
+    /**
+     * Update a card content
+     *
+     * @param cardContent The card content to update
+     *
+     * @return the card content updated
+     *
+     * @throws ColabMergeException if updating the card content failed
+     */
+    public CardContent updateCardContent(CardContent cardContent) throws ColabMergeException {
+        Long deliverableId = cardContent.getDeliverableId();
+        if (deliverableId != null) {
+            Document deliverable = documentDao.findDocument(deliverableId);
+            cardContent.setDeliverable(deliverable);
+
+            // TODO see if more checks must be done
+            // by example if there already were another deliverable
+
+            CardContent updatedCardContent = cardContentDao.updateCardContent(cardContent);
+
+            deliverable.setDeliverableCardContent(updatedCardContent);
+
+            return updatedCardContent;
+        }
+
+        return cardContentDao.updateCardContent(cardContent);
+    }
+
     /**
      * Create a new card content variant for the card
      *
