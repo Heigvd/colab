@@ -30,15 +30,14 @@ import javax.persistence.Transient;
 /**
  * Card
  * &lt;p&gt;
- * It is defined by a cardDef. The content is stored in one or several
- * CardContent.
+ * It is defined by a cardType. The content is stored in one or several CardContent.
  *
  * @author sandra
  */
 // TODO review accurate constraints when stabilized
 @Entity
 @NamedQuery(name = &quot;Card.findAll&quot;, query = &quot;SELECT c FROM Card c&quot;)
-<span class="fc" id="L41">public class Card implements ColabEntity, WithWebsocketChannels {</span>
+<span class="fc" id="L40">public class Card implements ColabEntity, WithWebsocketChannels {</span>
 
     /**
      * Serial version UID
@@ -48,7 +47,6 @@ import javax.persistence.Transient;
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Card ID
      */
@@ -71,13 +69,13 @@ import javax.persistence.Transient;
      */
     @ManyToOne
     @JsonbTransient
-    private CardDef cardDefinition;
+    private AbstractCardType cardTypeinition;
 
     /**
      * The id of the card definition (serialization sugar)
      */
     @Transient
-    private Long cardDefinitionId;
+    private Long cardTypeinitionId;
 
     /**
      * The project this card is root of. may be null
@@ -115,107 +113,105 @@ import javax.persistence.Transient;
     // TODO sandra - see where it is suitable to order it
     // TODO sandra - challenge cascade
     // TODO sandra - challenge ArrayList
-<span class="fc" id="L118">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL) // , fetch = FetchType.LAZY)</span>
+<span class="fc" id="L116">    @OneToMany(mappedBy = &quot;card&quot;, cascade = CascadeType.ALL) // , fetch = FetchType.LAZY)</span>
     @JsonbTransient
     private List&lt;CardContent&gt; contentVariants = new ArrayList&lt;&gt;();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the card id
      */
     @Override
     public Long getId() {
-<span class="fc" id="L131">        return id;</span>
+<span class="fc" id="L128">        return id;</span>
     }
 
     /**
      * @param id the card id
      */
     public void setId(Long id) {
-<span class="fc" id="L138">        this.id = id;</span>
-<span class="fc" id="L139">    }</span>
+<span class="fc" id="L135">        this.id = id;</span>
+<span class="fc" id="L136">    }</span>
 
     /**
      * @return the index of the card in its parent
      */
     public int getIndex() {
-<span class="fc" id="L145">        return index;</span>
+<span class="fc" id="L142">        return index;</span>
     }
 
     /**
      * @param index the new index of the card in its parent
      */
     public void setIndex(int index) {
-<span class="fc" id="L152">        this.index = index;</span>
-<span class="fc" id="L153">    }</span>
+<span class="fc" id="L149">        this.index = index;</span>
+<span class="fc" id="L150">    }</span>
 
     /**
      * @return the color of the card
      */
     public String getColor() {
-<span class="fc" id="L159">        return color;</span>
+<span class="fc" id="L156">        return color;</span>
     }
 
     /**
      * @param color the new color of the card
      */
     public void setColor(String color) {
-<span class="fc" id="L166">        this.color = color;</span>
-<span class="fc" id="L167">    }</span>
+<span class="fc" id="L163">        this.color = color;</span>
+<span class="fc" id="L164">    }</span>
 
     /**
      * @return the card def defining what is it for
      */
-    public CardDef getCardDefinition() {
-<span class="nc" id="L173">        return cardDefinition;</span>
+    public AbstractCardType getCardTypeinition() {
+<span class="nc" id="L170">        return cardTypeinition;</span>
     }
 
     /**
-     * @param cardDef the card def defining what is it for
+     * @param cardType the card def defining what is it for
      */
-    public void setCardDefinition(CardDef cardDef) {
-<span class="fc" id="L180">        this.cardDefinition = cardDef;</span>
-<span class="fc" id="L181">    }</span>
+    public void setCardTypeinition(AbstractCardType cardType) {
+<span class="fc" id="L177">        this.cardTypeinition = cardType;</span>
+<span class="fc" id="L178">    }</span>
 
     /**
      * get the id of the card def. To be sent to client
      *
      * @return the id of the card def
      */
-    public Long getCardDefinitionId() {
-<span class="fc bfc" id="L189" title="All 2 branches covered.">        if (this.cardDefinition != null) {</span>
-<span class="fc" id="L190">            return this.cardDefinition.getId();</span>
+    public Long getCardTypeinitionId() {
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        if (this.cardTypeinition != null) {</span>
+<span class="fc" id="L187">            return this.cardTypeinition.getId();</span>
         } else {
-<span class="fc" id="L192">            return cardDefinitionId;</span>
+<span class="fc" id="L189">            return cardTypeinitionId;</span>
         }
     }
 
     /**
-     * @param cardDefId the cardDefId to set
+     * @param cardTypeId the cardTypeId to set
      */
-    public void setCardDefinitionId(Long cardDefId) {
-<span class="fc" id="L200">        this.cardDefinitionId = cardDefId;</span>
-<span class="fc" id="L201">    }</span>
+    public void setCardTypeinitionId(Long cardTypeId) {
+<span class="fc" id="L197">        this.cardTypeinitionId = cardTypeId;</span>
+<span class="fc" id="L198">    }</span>
 
     /**
      * @return the parent card content
-     *         &lt;p&gt;
-     *         A card can either be the root card of a project or be within a card
-     *         content
+     * &lt;p&gt;
+     * A card can either be the root card of a project or be within a card content
      */
     public CardContent getParent() {
-<span class="nc" id="L210">        return parent;</span>
+<span class="fc" id="L206">        return parent;</span>
     }
 
     /**
      * @param parent the parent card content
      */
     public void setParent(CardContent parent) {
-<span class="fc" id="L217">        this.parent = parent;</span>
-<span class="fc" id="L218">    }</span>
+<span class="fc" id="L213">        this.parent = parent;</span>
+<span class="fc" id="L214">    }</span>
 
     /**
      * get the id of the parent card content. To be sent to client
@@ -223,10 +219,10 @@ import javax.persistence.Transient;
      * @return the id of the parent card content
      */
     public Long getParentId() {
-<span class="fc bfc" id="L226" title="All 2 branches covered.">        if (this.parent != null) {</span>
-<span class="fc" id="L227">            return parent.getId();</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">        if (this.parent != null) {</span>
+<span class="fc" id="L223">            return parent.getId();</span>
         } else {
-<span class="fc" id="L229">            return parentId;</span>
+<span class="fc" id="L225">            return parentId;</span>
         }
     }
 
@@ -236,8 +232,8 @@ import javax.persistence.Transient;
      * @param parentId the id of the parent card content
      */
     public void setParentId(Long parentId) {
-<span class="fc" id="L239">        this.parentId = parentId;</span>
-<span class="fc" id="L240">    }</span>
+<span class="fc" id="L235">        this.parentId = parentId;</span>
+<span class="fc" id="L236">    }</span>
 
     /**
      * Get the project this card is root of.
@@ -245,7 +241,7 @@ import javax.persistence.Transient;
      * @return the project
      */
     public Project getRootCardProject() {
-<span class="fc" id="L248">        return rootCardProject;</span>
+<span class="fc" id="L244">        return rootCardProject;</span>
     }
 
     /**
@@ -254,8 +250,8 @@ import javax.persistence.Transient;
      * @param rootCardProject the project
      */
     public void setRootCardProject(Project rootCardProject) {
-<span class="fc" id="L257">        this.rootCardProject = rootCardProject;</span>
-<span class="fc" id="L258">    }</span>
+<span class="fc" id="L253">        this.rootCardProject = rootCardProject;</span>
+<span class="fc" id="L254">    }</span>
 
     /**
      * get the id of the rootCardProject. To be sent to client.
@@ -263,10 +259,10 @@ import javax.persistence.Transient;
      * @return the id of the rootCardProject
      */
     public Long getRootCardProjectId() {
-<span class="fc bfc" id="L266" title="All 2 branches covered.">        if (this.rootCardProject != null) {</span>
-<span class="fc" id="L267">            return rootCardProject.getId();</span>
+<span class="fc bfc" id="L262" title="All 2 branches covered.">        if (this.rootCardProject != null) {</span>
+<span class="fc" id="L263">            return rootCardProject.getId();</span>
         } else {
-<span class="fc" id="L269">            return rootCardProjectId;</span>
+<span class="fc" id="L265">            return rootCardProjectId;</span>
         }
     }
 
@@ -276,74 +272,90 @@ import javax.persistence.Transient;
      * @param rootCardProjectId the id of the root-card project
      */
     public void setRootCardProjectId(Long rootCardProjectId) {
-<span class="fc" id="L279">        this.rootCardProjectId = rootCardProjectId;</span>
-<span class="fc" id="L280">    }</span>
+<span class="fc" id="L275">        this.rootCardProjectId = rootCardProjectId;</span>
+<span class="fc" id="L276">    }</span>
 
     /**
      * @return the list of variants of card content
      */
     public List&lt;CardContent&gt; getContentVariants() {
-<span class="fc" id="L286">        return contentVariants;</span>
+<span class="fc" id="L282">        return contentVariants;</span>
     }
 
     /**
      * @param contentVariantList the list of variants of card content
      */
     public void setContentVariants(List&lt;CardContent&gt; contentVariantList) {
-<span class="nc" id="L293">        this.contentVariants = contentVariantList;</span>
-<span class="nc" id="L294">    }</span>
+<span class="nc" id="L289">        this.contentVariants = contentVariantList;</span>
+<span class="nc" id="L290">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     /**
      * {@inheritDoc }
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L305" title="1 of 2 branches missed.">        if (other instanceof Card) {</span>
-<span class="fc" id="L306">            Card o = (Card) other;</span>
-<span class="fc" id="L307">            this.setIndex(o.getIndex());</span>
-<span class="fc" id="L308">            this.setColor(o.getColor());</span>
-<span class="fc" id="L309">        } else {</span>
-<span class="nc" id="L310">            throw new ColabMergeException(this, other);</span>
+<span class="pc bpc" id="L300" title="1 of 2 branches missed.">        if (other instanceof Card) {</span>
+<span class="fc" id="L301">            Card o = (Card) other;</span>
+<span class="fc" id="L302">            this.setIndex(o.getIndex());</span>
+<span class="fc" id="L303">            this.setColor(o.getColor());</span>
+<span class="fc" id="L304">        } else {</span>
+<span class="nc" id="L305">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L312">    }</span>
+<span class="fc" id="L307">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="fc bfc" id="L316" title="All 2 branches covered.">        if (this.rootCardProject != null) {</span>
+<span class="fc bfc" id="L311" title="All 2 branches covered.">        if (this.rootCardProject != null) {</span>
             // this card is a root card, propagate through the project channels
-<span class="fc" id="L318">            return this.rootCardProject.getChannels();</span>
-<span class="pc bpc" id="L319" title="1 of 2 branches missed.">        } else if (this.parent != null) {</span>
+<span class="fc" id="L313">            return this.rootCardProject.getChannels();</span>
+<span class="pc bpc" id="L314" title="1 of 2 branches missed.">        } else if (this.parent != null) {</span>
             // this card is a sub-card, propagate through its parent channels
-<span class="fc" id="L321">            return this.parent.getChannels();</span>
-<span class="nc bnc" id="L322" title="All 2 branches missed.">        } else if (this.cardDefinition != null) {</span>
+<span class="fc" id="L316">            return this.parent.getChannels();</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">        } else if (this.cardTypeinition != null) {</span>
             // such a card shoudln't exist...
-            // Lorem-ipsum cards for global cardDefinitions ???
-<span class="nc" id="L325">            return this.cardDefinition.getChannels();</span>
+            // Lorem-ipsum cards for global cardTypeinitions ???
+<span class="nc" id="L320">            return this.cardTypeinition.getChannels();</span>
         } else {
             // such an orphan card shoudln't exist...
-<span class="nc" id="L328">            return Set.of();</span>
+<span class="nc" id="L323">            return Set.of();</span>
         }
+    }
+
+    /**
+     * Get the project this card belongs to.
+     *
+     * @return card owner
+     */
+    @JsonbTransient
+    public Project getProject() {
+<span class="pc bpc" id="L334" title="1 of 2 branches missed.">        if (this.rootCardProject != null) {</span>
+            // this card is a root card
+<span class="fc" id="L336">            return this.rootCardProject;</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">        } else if (this.parent != null) {</span>
+            // this card is a sub-card
+<span class="nc" id="L339">            return this.parent.getProject();</span>
+        }
+<span class="nc" id="L341">        return null;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L334">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L346">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L340">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L352">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L345">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;, cardDefId=&quot;</span>
-<span class="fc" id="L346">            + getCardDefinitionId() + &quot;, parentId=&quot; + getParentId() + &quot;}&quot;;</span>
+<span class="fc" id="L357">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;, cardTypeId=&quot;</span>
+<span class="fc" id="L358">            + getCardTypeinitionId() + &quot;, parentId=&quot; + getParentId() + &quot;}&quot;;</span>
     }
 
 }

@@ -46,7 +46,7 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.RestController.java">ch/colabproject/colab/generator/plugin/rest/RestController.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.RestEndpoint.java">ch/colabproject/colab/generator/plugin/rest/RestEndpoint.java</a>
                 </td>
                 <td>
                   0

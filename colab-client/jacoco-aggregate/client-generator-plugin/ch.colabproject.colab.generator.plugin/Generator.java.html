@@ -10,7 +10,7 @@ import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.ClassDoc;
 import ch.colabproject.colab.generator.model.tools.JavaDocExtractor;
 import ch.colabproject.colab.generator.model.tools.JsonbProvider;
-import ch.colabproject.colab.generator.plugin.rest.RestController;
+import ch.colabproject.colab.generator.plugin.rest.RestEndpoint;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -44,7 +44,7 @@ public class Generator {
     /**
      * All rest controller found.
      */
-    private Set&lt;RestController&gt; restControllers;
+    private Set&lt;RestEndpoint&gt; restEndpoints;
 
     /**
      * Client will be generated in this package
@@ -107,8 +107,8 @@ public class Generator {
     }
 
     /**
-     * Process all classes annotated with {@link Path}. Generate a {@link RestController} instance
-     * for each class and store them in {@link #restControllers}
+     * Process all classes annotated with {@link Path}. Generate a {@link RestEndpoint} instance
+     * for each class and store them in {@link #restEndpoints}
      */
     public void processPackages() {
 <span class="nc" id="L114">        Set&lt;Class&lt;?&gt;&gt; appConfig = reflections.getTypesAnnotatedWith(ApplicationPath.class);</span>
@@ -125,8 +125,8 @@ public class Generator {
 
 <span class="nc" id="L126">        Set&lt;Class&lt;?&gt;&gt; restClasses = reflections.getTypesAnnotatedWith(Path.class);</span>
 
-<span class="nc" id="L128">        this.restControllers = restClasses.stream()</span>
-<span class="nc" id="L129">            .map(klass -&gt; RestController.build(klass, applicationPath))</span>
+<span class="nc" id="L128">        this.restEndpoints = restClasses.stream()</span>
+<span class="nc" id="L129">            .map(klass -&gt; RestEndpoint.build(klass, applicationPath))</span>
 <span class="nc" id="L130">            .collect(Collectors.toSet());</span>
         /* .map(p -&gt; p.generateJavaClient()) .innerClasses(Collectors.toList());
          */
@@ -151,7 +151,7 @@ public class Generator {
 <span class="nc" id="L151">        imports.put(&quot;UriTemplate&quot;, &quot;org.glassfish.jersey.uri.UriTemplate&quot;);</span>
 <span class="nc" id="L152">        imports.put(&quot;void&quot;, null); // null means no import statement</span>
 
-<span class="nc" id="L154">        String innerClasses = this.restControllers.stream().map(controller -&gt; {</span>
+<span class="nc" id="L154">        String innerClasses = this.restEndpoints.stream().map(controller -&gt; {</span>
 <span class="nc" id="L155">            String javaCode = controller.generateJavaClient(</span>
                 imports,
                 clientName,
@@ -212,8 +212,8 @@ public class Generator {
      *
      * @return all rest resource
      */
-    public Set&lt;RestController&gt; getRestControllers() {
-<span class="nc" id="L216">        return restControllers;</span>
+    public Set&lt;RestEndpoint&gt; getRestEndpoints() {
+<span class="nc" id="L216">        return restEndpoints;</span>
     }
 
     /**
@@ -231,7 +231,7 @@ public class Generator {
 <span class="nc" id="L231">        sb.append(this.getTsClientTemplate());</span>
 <span class="nc" id="L232">        extraTypes.put(&quot;WithJsonDiscriminator&quot;, WithJsonDiscriminator.class);</span>
 
-<span class="nc" id="L234">        String modules = this.restControllers.stream().map(controller</span>
+<span class="nc" id="L234">        String modules = this.restEndpoints.stream().map(controller</span>
 <span class="nc" id="L235">            -&gt; controller.generateTypescriptClient(extraTypes, this.javadoc, reflections)</span>
 <span class="nc" id="L236">        ).collect(Collectors.joining(System.lineSeparator()));</span>
 

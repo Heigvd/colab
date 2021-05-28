@@ -6,9 +6,10 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.card.CardDef;
+import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
@@ -27,7 +28,7 @@ import javax.persistence.TypedQuery;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L30">public class SecurityFacade {</span>
+<span class="nc" id="L31">public class SecurityFacade {</span>
 
     /**
      * Access to the persistence unit
@@ -44,7 +45,6 @@ import javax.persistence.TypedQuery;
     // *********************************************************************************************
     // user stuff
     // *********************************************************************************************
-
     /**
      * Is the current authenticated user an administrator ?
      *
@@ -137,10 +137,22 @@ import javax.persistence.TypedQuery;
         }
     }
 
+    /**
+     * Assert the current user is admin.
+     *
+     * @throws HttpErrorMessage authRequired if currentUser is not authenticated;forbidden is
+     *                          current user is not an admin
+     */
+    public void assertCurrentUserIsAdmin() {
+<span class="nc" id="L147">        User user = this.assertAndGetCurrentUser();</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        if (!user.isAdmin()) {</span>
+<span class="nc" id="L149">            throw HttpErrorMessage.forbidden();</span>
+        }
+<span class="nc" id="L151">    }</span>
+
     // *********************************************************************************************
     // project stuff
     // *********************************************************************************************
-
     /**
      * Check if the user is member of the team of the project.
      *
@@ -150,12 +162,12 @@ import javax.persistence.TypedQuery;
      * @return true if the user is member of the project
      */
     public boolean isUserMemebrOfProject(User user, Project project) {
-<span class="nc bnc" id="L153" title="All 4 branches missed.">        if (user != null &amp;&amp; project != null) {</span>
-<span class="nc" id="L154">            return project.getTeamMembers().stream()</span>
-<span class="nc" id="L155">                .filter(member -&gt; user.equals(member.getUser()))</span>
-<span class="nc" id="L156">                .findFirst().isPresent();</span>
+<span class="nc bnc" id="L165" title="All 4 branches missed.">        if (user != null &amp;&amp; project != null) {</span>
+<span class="nc" id="L166">            return project.getTeamMembers().stream()</span>
+<span class="nc" id="L167">                .filter(member -&gt; user.equals(member.getUser()))</span>
+<span class="nc" id="L168">                .findFirst().isPresent();</span>
         }
-<span class="nc" id="L158">        return false;</span>
+<span class="nc" id="L170">        return false;</span>
     }
 
     /**
@@ -167,14 +179,14 @@ import javax.persistence.TypedQuery;
      * @return true if both users are member of the same team
      */
     public boolean areUserTeammate(User a, User b) {
-<span class="nc" id="L170">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
+<span class="nc" id="L182">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
             &quot;TeamMember.areUserTeammate&quot;,
             Boolean.class);
-<span class="nc" id="L173">        query.setParameter(&quot;aUserId&quot;, a.getId());</span>
-<span class="nc" id="L174">        query.setParameter(&quot;bUserId&quot;, b.getId());</span>
+<span class="nc" id="L185">        query.setParameter(&quot;aUserId&quot;, a.getId());</span>
+<span class="nc" id="L186">        query.setParameter(&quot;bUserId&quot;, b.getId());</span>
 
         // if the query returns something, users are teammates
-<span class="nc bnc" id="L177" title="All 2 branches missed.">        return !query.getResultList().isEmpty();</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        return !query.getResultList().isEmpty();</span>
     }
 
     /**
@@ -185,11 +197,11 @@ import javax.persistence.TypedQuery;
      * @throws HttpErrorMessage forbidden
      */
     public void assertProjectWriteRight(Project project) {
-<span class="nc" id="L188">        User currentUser = assertAndGetCurrentUser();</span>
-<span class="nc bnc" id="L189" title="All 4 branches missed.">        if (!currentUser.isAdmin() &amp;&amp; !this.isUserMemebrOfProject(currentUser, project)) {</span>
-<span class="nc" id="L190">            throw HttpErrorMessage.forbidden();</span>
+<span class="nc" id="L200">        User currentUser = assertAndGetCurrentUser();</span>
+<span class="nc bnc" id="L201" title="All 4 branches missed.">        if (!currentUser.isAdmin() &amp;&amp; !this.isUserMemebrOfProject(currentUser, project)) {</span>
+<span class="nc" id="L202">            throw HttpErrorMessage.forbidden();</span>
         }
-<span class="nc" id="L192">    }</span>
+<span class="nc" id="L204">    }</span>
 
     /**
      * Make sure the current user has right to edit the project
@@ -199,24 +211,23 @@ import javax.persistence.TypedQuery;
      * @throws HttpErrorMessage forbidden
      */
     public void assertIsMember(Project project) {
-<span class="nc" id="L202">        User currentUser = assertAndGetCurrentUser();</span>
-<span class="nc bnc" id="L203" title="All 2 branches missed.">        if (!this.isUserMemebrOfProject(currentUser, project)) {</span>
-<span class="nc" id="L204">            throw HttpErrorMessage.forbidden();</span>
+<span class="nc" id="L214">        User currentUser = assertAndGetCurrentUser();</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        if (!this.isUserMemebrOfProject(currentUser, project)) {</span>
+<span class="nc" id="L216">            throw HttpErrorMessage.forbidden();</span>
         }
-<span class="nc" id="L206">    }</span>
+<span class="nc" id="L218">    }</span>
 
     // *********************************************************************************************
     // card (+ definition + content) stuff
     // *********************************************************************************************
-
     /**
      * Make sure the current user has the right to read the card definition
      *
-     * @param cardDefinition card definition to read
+     * @param cardTypeinition card definition to read
      */
-    public void assertCanReadCardDef(CardDef cardDefinition) {
+    public void assertCanReadCardType(AbstractCardType cardTypeinition) {
         // TODO
-<span class="nc" id="L219">    }</span>
+<span class="nc" id="L230">    }</span>
 
     /**
      * Make sure the current user has the right to read the card
@@ -225,7 +236,7 @@ import javax.persistence.TypedQuery;
      */
     public void assertCanReadCard(Card card) {
         // TODO
-<span class="nc" id="L228">    }</span>
+<span class="nc" id="L239">    }</span>
 
     /**
      * Make sure the current user has the right to read the card content
@@ -234,16 +245,16 @@ import javax.persistence.TypedQuery;
      */
     public void assertCanReadCardContent(CardContent cardContent) {
         // TODO
-<span class="nc" id="L237">    }</span>
+<span class="nc" id="L248">    }</span>
 
     /**
      * Make sure the current user has the right to edit the card definition
      *
-     * @param cardDefinition card definition to edit
+     * @param cardTypeinition card definition to edit
      */
-    public void assertCanWriteCardDef(CardDef cardDefinition) {
+    public void assertCanWriteCardType(CardType cardTypeinition) {
         // TODO
-<span class="nc" id="L246">    }</span>
+<span class="nc" id="L257">    }</span>
 
     /**
      * Make sure the current user has the right to edit the card
@@ -252,7 +263,7 @@ import javax.persistence.TypedQuery;
      */
     public void assertCanWriteCard(Card card) {
         // TODO
-<span class="nc" id="L255">    }</span>
+<span class="nc" id="L266">    }</span>
 
     /**
      * Make sure the current user has the right to edit the card content
@@ -261,26 +272,27 @@ import javax.persistence.TypedQuery;
      */
     public void assertCanWriteCardContent(CardContent cardContent) {
         // TODO
-<span class="nc" id="L264">    }</span>
+<span class="nc" id="L275">    }</span>
 
     /**
      * Make sure the current user has the right to create a card definition
      *
      * @param project the project the new card definition will belong to
      */
-    public void assertCanCreateCardDef(Project project) {
+    public void assertCanCreateCardType(Project project) {
         // TODO
-<span class="nc" id="L273">    }</span>
+<span class="nc" id="L284">    }</span>
 
     /**
      * Make sure the current user has the right to create a card
      *
-     * @param cardContent the card content the new card will belong to
-     * @param cardDefinition the card definition the new card will refer to
+     * @param cardContent    the card content the new card will belong to
+     * @param cardTypeinition the card definition the new card will refer to
      */
-    public void assertCanCreateCard(CardContent cardContent, CardDef cardDefinition) {
-        // TODO
-<span class="nc" id="L283">    }</span>
+    public void assertCanCreateCard(CardContent cardContent, AbstractCardType cardTypeinition) {
+<span class="nc" id="L293">        this.assertCanReadCardType(cardTypeinition);</span>
+<span class="nc" id="L294">        this.assertCanWriteCardContent(cardContent);</span>
+<span class="nc" id="L295">    }</span>
 
     /**
      * Make sure the current user has the right to create a card content
@@ -289,7 +301,7 @@ import javax.persistence.TypedQuery;
      */
     public void assertCanCreateCardContent(Card card) {
         // TODO
-<span class="nc" id="L292">    }</span>
+<span class="nc" id="L304">    }</span>
 
     // *********************************************************************************************
     // block document stuff
@@ -302,7 +314,7 @@ import javax.persistence.TypedQuery;
      */
     public void assertCanCreateBlock(BlockDocument blockDocument) {
         // TODO
-<span class="nc" id="L305">    }</span>
+<span class="nc" id="L317">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

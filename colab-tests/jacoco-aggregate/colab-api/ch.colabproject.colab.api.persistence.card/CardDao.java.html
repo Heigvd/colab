@@ -104,8 +104,9 @@ import org.slf4j.LoggerFactory;
             // no way to delete the root card
 <span class="nc" id="L105">            throw HttpErrorMessage.badRequest();</span>
         }
-<span class="fc" id="L107">        em.remove(card);</span>
-<span class="fc" id="L108">        return card;</span>
+<span class="fc" id="L107">        card.getParent().getSubCards().remove(card);</span>
+<span class="fc" id="L108">        em.remove(card);</span>
+<span class="fc" id="L109">        return card;</span>
     }
 
 }

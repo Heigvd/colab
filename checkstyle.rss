@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2021 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 12,
+      <title>File: 17,
              Errors: 0,
-             Warnings: 13,
+             Warnings: 24,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -46,7 +46,119 @@ under the License.
           <tbody>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.card.CardTypeDao.java">ch/colabproject/colab/api/persistence/card/CardTypeDao.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.security.AuthenticationFilter.java">ch/colabproject/colab/api/security/AuthenticationFilter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.card.CardContent.java">ch/colabproject/colab/api/model/card/CardContent.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.card.Card.java">ch/colabproject/colab/api/model/card/Card.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.RestEndpoint.java">ch/colabproject/colab/generator/plugin/rest/RestEndpoint.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.Block.java">ch/colabproject/colab/api/model/document/Block.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.ApplicationLifecycleFacade.java">ch/colabproject/colab/api/ejb/ApplicationLifecycleFacade.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.DocumentDao.java">ch/colabproject/colab/api/persistence/document/DocumentDao.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.TransactionManager.java">ch/colabproject/colab/api/ejb/TransactionManager.java</a>
                 </td>
                 <td>
                   0
@@ -74,7 +186,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.RestController.java">ch/colabproject/colab/generator/plugin/rest/RestController.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.card.CardDao.java">ch/colabproject/colab/api/persistence/card/CardDao.java</a>
                 </td>
                 <td>
                   0
@@ -88,13 +200,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.card.CardDao.java">ch/colabproject/colab/api/persistence/card/CardDao.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.card.CardType.java">ch/colabproject/colab/api/model/card/CardType.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  1
+                  3
                 </td>
                 <td>
                   0
@@ -130,41 +242,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.Block.java">ch/colabproject/colab/api/model/document/Block.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.CardFacade.java">ch/colabproject/colab/api/ejb/CardFacade.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
                   1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.card.CardDefDao.java">ch/colabproject/colab/api/persistence/card/CardDefDao.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.ApplicationLifecycleFacade.java">ch/colabproject/colab/api/ejb/ApplicationLifecycleFacade.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
                 </td>
                 <td>
                   0
@@ -186,21 +270,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.DocumentDao.java">ch/colabproject/colab/api/persistence/document/DocumentDao.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.TransactionManager.java">ch/colabproject/colab/api/ejb/TransactionManager.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.card.CardTypeRestEndpoint.java">ch/colabproject/colab/api/rest/card/CardTypeRestEndpoint.java</a>
                 </td>
                 <td>
                   0

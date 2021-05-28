@@ -10,8 +10,8 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
@@ -98,7 +98,7 @@ import javax.persistence.Transient;
      */
 <span class="fc" id="L99">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
-    private List&lt;CardDef&gt; elementsToBeDefined = new ArrayList&lt;&gt;();
+    private List&lt;AbstractCardType&gt; elementsToBeDefined = new ArrayList&lt;&gt;();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -220,14 +220,14 @@ import javax.persistence.Transient;
     /**
      * @return the elementsToDefine
      */
-    public List&lt;CardDef&gt; getElementsToBeDefined() {
+    public List&lt;AbstractCardType&gt; getElementsToBeDefined() {
 <span class="fc" id="L224">        return elementsToBeDefined;</span>
     }
 
     /**
      * @param elements the elementsToDefine to set
      */
-    public void setElementsToBeDefined(List&lt;CardDef&gt; elements) {
+    public void setElementsToBeDefined(List&lt;AbstractCardType&gt; elements) {
 <span class="nc" id="L231">        this.elementsToBeDefined = elements;</span>
 <span class="nc" id="L232">    }</span>
 

@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.card.CardDef;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;
@@ -153,7 +153,7 @@ import org.slf4j.LoggerFactory;
      *
      * @return all card definitions of the project
      */
-    public List&lt;CardDef&gt; getCardDefs(Long projectId) {
+    public List&lt;AbstractCardType&gt; getCardTypes(Long projectId) {
 <span class="nc" id="L157">        Project project = projectDao.getProject(projectId);</span>
 <span class="nc" id="L158">        logger.debug(&quot;Get card defs of project {}&quot;, project);</span>
 <span class="nc bnc" id="L159" title="All 2 branches missed.">        if (project == null) {</span>

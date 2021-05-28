@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CardContentRestEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.card</a> &gt; <span class="el_source">CardContentRestEndpoint.java</span></div><h1>CardContentRestEndpoint.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.card;
+
+import ch.colabproject.colab.api.ejb.CardFacade;
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.persistence.card.CardContentDao;
+import ch.colabproject.colab.generator.model.annotations.AdminResource;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import java.util.List;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * REST card content controller
+ *
+ * @author sandra
+ */
+@Path(&quot;cardContents&quot;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@AuthenticationRequired
+<span class="nc" id="L39">public class CardContentRestEndpoint {</span>
+
+    /** logger */
+<span class="nc" id="L42">    private static final Logger logger = LoggerFactory.getLogger(CardContentRestEndpoint.class);</span>
+
+    /**
+     * The card content persistence manager
+     */
+    @Inject
+    private CardContentDao cardContentDao;
+
+    /**
+     * The card-related logic
+     */
+    @Inject
+    private CardFacade cardFacade;
+
+    /**
+     * Retrieve the list of all card contents. This is available to admin only
+     *
+     * @return all known card contents
+     */
+    // FIXME sandra - It certainly has no reason to be called so (except for
+    // preliminary tests)
+    // To remove or change at the right moment
+    @GET
+    @AdminResource
+    public List&lt;CardContent&gt; getAllCardContents() {
+<span class="nc" id="L67">        logger.debug(&quot;Get all card contents&quot;);</span>
+<span class="nc" id="L68">        return cardContentDao.getAllCardContent();</span>
+    }
+
+    /**
+     * Get card content identified by the given id
+     *
+     * @param id id of the card content to fetch
+     *
+     * @return the card content or null
+     */
+    @GET
+    @Path(&quot;{id}&quot;)
+    public CardContent getCardContent(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L81">        logger.debug(&quot;Get card #{}&quot;, id);</span>
+<span class="nc" id="L82">        return cardContentDao.getCardContent(id);</span>
+    }
+
+    /**
+     * Persist the card content
+     *
+     * @param cardContent the card content to persist
+     *
+     * @return id of the persisted new card content
+     *
+     * @deprecated a priori there will be no need to directly create a card content
+     */
+    @Deprecated
+    @POST
+    public Long createCardContent(CardContent cardContent) {
+<span class="nc" id="L97">        logger.debug(&quot;Create card content {}&quot;, cardContent);</span>
+<span class="nc" id="L98">        return cardContentDao.createCardContent(cardContent).getId();</span>
+    }
+
+    /**
+     * Create and persist a new card content
+     *
+     * @param cardId id of the new card content's parent
+     *
+     * @return the persisted new card content
+     */
+    @POST
+    @Path(&quot;create/{cardId}&quot;)
+    public CardContent createNewCardContent(@PathParam(&quot;cardId&quot;) Long cardId) {
+<span class="nc" id="L111">        logger.debug(&quot;create a new card content for the card #{}&quot;, cardId);</span>
+<span class="nc" id="L112">        return cardFacade.createNewCardContent(cardId);</span>
+    }
+
+    /**
+     * Save changes to database
+     *
+     * @param cardContent card content to update
+     *
+     * @throws ColabMergeException if the merge is not possible
+     */
+    @PUT
+    public void updateCardContent(CardContent cardContent) throws ColabMergeException {
+<span class="nc" id="L124">        logger.debug(&quot;Update card content {}&quot;, cardContent);</span>
+<span class="nc" id="L125">        cardFacade.updateCardContent(cardContent);</span>
+<span class="nc" id="L126">    }</span>
+
+    /**
+     * Permanently delete a card content
+     *
+     * @param id id of the card content to delete
+     */
+    @DELETE
+    @Path(&quot;{id}&quot;)
+    public void deleteCardContent(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L136">        logger.debug(&quot;Delete card #{}&quot;, id);</span>
+<span class="nc" id="L137">        cardContentDao.deleteCardContent(id);</span>
+<span class="nc" id="L138">    }</span>
+
+    /**
+     * Get all sub cards
+     *
+     * @param parentId parent of the searched cards
+     *
+     * @return list of cards
+     */
+    @GET
+    @Path(&quot;{id}/Subcards&quot;)
+    public List&lt;Card&gt; getSubCards(@PathParam(&quot;id&quot;) Long parentId) {
+<span class="nc" id="L150">        logger.debug(&quot;Get parent #{} sub cards&quot;, parentId);</span>
+<span class="nc" id="L151">        return cardFacade.getSubCards(parentId);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

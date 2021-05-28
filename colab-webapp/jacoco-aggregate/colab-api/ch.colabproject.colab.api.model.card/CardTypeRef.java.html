@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CardTypeRef.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.card</a> &gt; <span class="el_source">CardTypeRef.java</span></div><h1>CardTypeRef.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.card;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.Set;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
+/**
+ * Reference to Card definition
+ *
+ * @author maxence
+ */
+@Entity
+<span class="nc" id="L25">public class CardTypeRef extends AbstractCardType {</span>
+
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+    /**
+     * The definition this reference references
+     */
+    @ManyToOne
+    @JsonbTransient
+    private AbstractCardType cardType;
+
+    /**
+     * The id of the project (serialization sugar)
+     */
+    @Transient
+    private Long cardTypeId;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+    /**
+     * get the type this ref references.
+     *
+     * @return the referenced type
+     */
+    public AbstractCardType getAbstractCardType() {
+<span class="nc" id="L57">        return this.cardType;</span>
+    }
+
+    /**
+     * @param cardType the new referenced type
+     */
+    public void setAbstractCardType(AbstractCardType cardType) {
+<span class="nc" id="L64">        this.cardType = cardType;</span>
+<span class="nc" id="L65">    }</span>
+
+    /**
+     * get the cardType id. To be sent to client
+     *
+     * @return id of the cardType or null
+     */
+    public Long getAbstractCardTypeId() {
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (this.cardType != null) {</span>
+<span class="nc" id="L74">            return this.cardType.getId();</span>
+        } else {
+<span class="nc" id="L76">            return cardTypeId;</span>
+        }
+    }
+
+    /**
+     * set the cardType id. For serialization only
+     *
+     * @param id the id of the cardType
+     */
+    public void setAbstractCardTypeId(Long id) {
+<span class="nc" id="L86">        this.cardTypeId = id;</span>
+<span class="nc" id="L87">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+    /**
+     * Resolve the reference.
+     *
+     * @return the cardType
+     */
+    @Override
+    public CardType resolve() {
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (this.cardType instanceof CardType) {</span>
+<span class="nc" id="L100">            return (CardType) this.cardType;</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        } else if (this.cardType instanceof CardTypeRef) {</span>
+<span class="nc" id="L102">            return ((CardTypeRef) cardType).resolve();</span>
+        }
+<span class="nc" id="L104">        return null;</span>
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (other instanceof CardTypeRef == false) {</span>
+<span class="nc" id="L113">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L115">    }</span>
+
+    @Override
+    public Set&lt;WebsocketChannel&gt; getChannels() {
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (this.getProject() != null) {</span>
+<span class="nc" id="L120">            return Set.of(ProjectContentChannel.build(this.getProject()));</span>
+        } else {
+<span class="nc" id="L122">            return Set.of();</span>
+        }
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L128">        return &quot;CardTypeRef{&quot;</span>
+<span class="nc" id="L129">            + &quot;id=&quot; + this.getId()</span>
+            + &quot;, cardType=&quot; + cardType
+            + &quot;, cardTypeId=&quot; + cardTypeId + '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

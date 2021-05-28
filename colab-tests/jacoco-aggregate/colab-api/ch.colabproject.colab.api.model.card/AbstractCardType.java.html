@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AbstractCardType.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.card</a> &gt; <span class="el_source">AbstractCardType.java</span></div><h1>AbstractCardType.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.card;
+
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
+/**
+ * Abstract Card definition
+ *
+ * @author maxence
+ */
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@JsonbTypeDeserializer(PolymorphicDeserializer.class)
+<span class="fc" id="L33">public abstract class AbstractCardType implements ColabEntity, WithWebsocketChannels {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+    /**
+     * CardType ID
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /**
+     * The project it belongs to
+     */
+    @ManyToOne
+    @JsonbTransient
+    private Project project;
+
+    /**
+     * The id of the project (serialization sugar)
+     */
+    @Transient
+    private Long projectId;
+
+    /**
+     * Is this definition available to other projects?
+     */
+    private boolean published;
+
+    /**
+     * Is this definition deprecated? A deprecated definition should not be used by new projects.
+     */
+    private boolean deprecated;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+    /**
+     * @return the cardType ID
+     */
+    @Override
+    public Long getId() {
+<span class="fc" id="L78">        return id;</span>
+    }
+
+    /**
+     * @param id the cardType ID
+     */
+    public void setId(Long id) {
+<span class="fc" id="L85">        this.id = id;</span>
+<span class="fc" id="L86">    }</span>
+
+    /**
+     * @return the project it belongs to
+     */
+    public Project getProject() {
+<span class="fc" id="L92">        return project;</span>
+    }
+
+    /**
+     * @param project the project it belongs to
+     */
+    public void setProject(Project project) {
+<span class="fc" id="L99">        this.project = project;</span>
+<span class="fc" id="L100">    }</span>
+
+    /**
+     * get the project id. To be sent to client
+     *
+     * @return id of the project or null
+     */
+    public Long getProjectId() {
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (this.project != null) {</span>
+<span class="fc" id="L109">            return this.project.getId();</span>
+        } else {
+<span class="fc" id="L111">            return projectId;</span>
+        }
+    }
+
+    /**
+     * set the project id. For serialization only
+     *
+     * @param id the id of the project
+     */
+    public void setProjectId(Long id) {
+<span class="fc" id="L121">        this.projectId = id;</span>
+<span class="fc" id="L122">    }</span>
+
+    /**
+     * Get the value of published
+     *
+     * @return the value of published
+     */
+    public boolean isPublished() {
+<span class="fc" id="L130">        return published;</span>
+    }
+
+    /**
+     * Set the value of published
+     *
+     * @param published new value of published
+     */
+    public void setPublished(boolean published) {
+<span class="fc" id="L139">        this.published = published;</span>
+<span class="fc" id="L140">    }</span>
+
+    /**
+     * Get the value of deprecated
+     *
+     * @return the value of deprecated
+     */
+    public boolean isDeprecated() {
+<span class="fc" id="L148">        return deprecated;</span>
+    }
+
+    /**
+     * Set the value of deprecated
+     *
+     * @param deprecated new value of deprecated
+     */
+    public void setDeprecated(boolean deprecated) {
+<span class="fc" id="L157">        this.deprecated = deprecated;</span>
+<span class="fc" id="L158">    }</span>
+
+    /**
+     * Resolve to concrete CardType
+     *
+     * @return the effective cardType
+     */
+    public abstract CardType resolve();
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+    @Override
+    public int hashCode() {
+<span class="fc" id="L172">        return EntityHelper.hashCode(this);</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
+    public boolean equals(Object obj) {
+<span class="nc" id="L178">        return EntityHelper.equals(this, obj);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

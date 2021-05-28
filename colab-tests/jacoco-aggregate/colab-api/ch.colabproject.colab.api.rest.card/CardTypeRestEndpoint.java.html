@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CardTypeRestEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.card</a> &gt; <span class="el_source">CardTypeRestEndpoint.java</span></div><h1>CardTypeRestEndpoint.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.card;
+
+import ch.colabproject.colab.api.ejb.CardFacade;
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.persistence.card.CardTypeDao;
+import ch.colabproject.colab.generator.model.annotations.AdminResource;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import java.util.List;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * REST card def controller
+ *
+ * @author sandra
+ */
+// TODO will need access to a unique id generator
+@Path(&quot;cardTypes&quot;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@AuthenticationRequired
+<span class="fc" id="L39">public class CardTypeRestEndpoint {</span>
+
+    /** logger */
+<span class="fc" id="L42">    private static final Logger logger = LoggerFactory.getLogger(CardTypeRestEndpoint.class);</span>
+
+    /**
+     * The card definition persistence manager
+     */
+    @Inject
+    private CardTypeDao cardTypeDao;
+
+    /**
+     * The card-related logic
+     */
+    @Inject
+    private CardFacade facade;
+
+    /**
+     * Retrieve the list of all card defs. This is available to admin only
+     *
+     * @return all known card defs
+     */
+    @GET
+    @AdminResource
+    public List&lt;CardType&gt; getAllCardTypes() {
+<span class="fc" id="L64">        logger.debug(&quot;get all card defs&quot;);</span>
+<span class="fc" id="L65">        return cardTypeDao.getAllCardType();</span>
+    }
+
+    /**
+     * Retrieve the list of all global card types. This is available to admin only
+     *
+     * @return all known global card types
+     */
+    @GET
+    @Path(&quot;allGlobals&quot;)
+    @AdminResource
+    public List&lt;CardType&gt; getAllGlobalCardTypes() {
+<span class="nc" id="L77">        logger.debug(&quot;get all global card defs&quot;);</span>
+<span class="nc" id="L78">        return cardTypeDao.getGlobalCardType();</span>
+    }
+
+    /**
+     * Retrieve the list of public global card types.
+     *
+     * @return all published global types
+     */
+    @GET
+    @Path(&quot;publishedGlobals&quot;)
+    public List&lt;CardType&gt; getPublishedGlobalsCardTypes() {
+<span class="nc" id="L89">        logger.debug(&quot;get published global card defs&quot;);</span>
+<span class="nc" id="L90">        return cardTypeDao.getPublishedGlobalCardType();</span>
+    }
+
+
+    /**
+     * Retrieve the list of published card types accessible to current user.
+     * It means all the published types of project the current user is member of.
+     *
+     * @return all published card types
+     */
+    @GET
+    @Path(&quot;allProjectsPublished&quot;)
+    public List&lt;CardType&gt; getPublishedCardTypes() {
+<span class="nc" id="L103">        logger.debug(&quot;get published projects card defs&quot;);</span>
+<span class="nc" id="L104">        return cardTypeDao.getPublishedProjectsCardType();</span>
+    }
+
+    /**
+     * Get card def identified by the given id
+     *
+     * @param id id of the card def to fetch
+     *
+     * @return the card def or null
+     */
+    @GET
+    @Path(&quot;{id}&quot;)
+    public CardType getCardType(@PathParam(&quot;id&quot;) Long id) {
+<span class="fc" id="L117">        logger.debug(&quot;get card def #{}&quot;, id);</span>
+<span class="fc" id="L118">        return cardTypeDao.getCardType(id);</span>
+    }
+
+    /**
+     * Persist a card type.
+     *
+     * @param cardType the card definition to persist
+     *
+     * @return id of the persisted new card definition
+     */
+    @POST
+    public Long createCardType(CardType cardType) {
+<span class="fc" id="L130">        logger.debug(&quot;create card def {}&quot;, cardType);</span>
+<span class="fc" id="L131">        return facade.createNewCardType(cardType).getId();</span>
+    }
+
+    /**
+     * Create and persist a new card type. The card type belongs to the given project.
+     *
+     * @param projectId the project the new card definition belongs to
+     *
+     * @return the persisted new card definition
+    @POST
+    @Path(&quot;create/{projectId}&quot;)
+    public CardType createNewCardType(@PathParam(&quot;projectId&quot;) Long projectId) {
+        logger.debug(&quot;create new card def for the project #{}&quot;, projectId);
+        return facade.createNewCardType(projectId);
+    }
+     */
+
+    /**
+     * Save changes to database
+     *
+     * @param cardType card def to update
+     *
+     * @throws ColabMergeException if the merge is not possible
+     */
+    @PUT
+    public void updateCardType(CardType cardType) throws ColabMergeException {
+<span class="fc" id="L157">        logger.debug(&quot;update card def {}&quot;, cardType);</span>
+<span class="fc" id="L158">        cardTypeDao.updateCardType(cardType);</span>
+<span class="fc" id="L159">    }</span>
+
+    /**
+     * Permanently delete a card def
+     *
+     * @param id id of the card def to delete
+     */
+    @DELETE
+    @Path(&quot;{id}&quot;)
+    public void deleteCardType(@PathParam(&quot;id&quot;) Long id) {
+<span class="fc" id="L169">        logger.debug(&quot;delete card def #{}&quot;, id);</span>
+<span class="fc" id="L170">        cardTypeDao.deleteCardType(id);</span>
+<span class="fc" id="L171">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

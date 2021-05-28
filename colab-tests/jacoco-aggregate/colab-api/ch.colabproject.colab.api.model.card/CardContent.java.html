@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
@@ -39,7 +40,7 @@ import javax.validation.constraints.Min;
 //TODO review accurate constraints when stabilized
 @Entity
 @NamedQuery(name = &quot;CardContent.findAll&quot;, query = &quot;SELECT c FROM CardContent c&quot;)
-<span class="fc" id="L42">public class CardContent implements ColabEntity, WithWebsocketChannels {</span>
+<span class="fc" id="L43">public class CardContent implements ColabEntity, WithWebsocketChannels {</span>
 
     /**
      * Serial version UID
@@ -112,7 +113,7 @@ import javax.validation.constraints.Min;
     /**
      * The cards contained in there
      */
-<span class="fc" id="L115">    @OneToMany(mappedBy = &quot;parent&quot;, cascade = CascadeType.ALL)</span>
+<span class="fc" id="L116">    @OneToMany(mappedBy = &quot;parent&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;Card&gt; subCards = new ArrayList&lt;&gt;();
 
@@ -125,85 +126,85 @@ import javax.validation.constraints.Min;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L128">        return id;</span>
+<span class="fc" id="L129">        return id;</span>
     }
 
     /**
      * @param id the new id
      */
     public void setId(Long id) {
-<span class="fc" id="L135">        this.id = id;</span>
-<span class="fc" id="L136">    }</span>
+<span class="fc" id="L136">        this.id = id;</span>
+<span class="fc" id="L137">    }</span>
 
     /**
      * @return the title
      */
     public String getTitle() {
-<span class="fc" id="L142">        return title;</span>
+<span class="fc" id="L143">        return title;</span>
     }
 
     /**
      * @param title the new title
      */
     public void setTitle(String title) {
-<span class="fc" id="L149">        this.title = title;</span>
-<span class="fc" id="L150">    }</span>
+<span class="fc" id="L150">        this.title = title;</span>
+<span class="fc" id="L151">    }</span>
 
     /**
      * @return the status
      */
     public CardContentStatus getStatus() {
-<span class="fc" id="L156">        return status;</span>
+<span class="fc" id="L157">        return status;</span>
     }
 
     /**
      * @param status the new status
      */
     public void setStatus(CardContentStatus status) {
-<span class="fc" id="L163">        this.status = status;</span>
-<span class="fc" id="L164">    }</span>
+<span class="fc" id="L164">        this.status = status;</span>
+<span class="fc" id="L165">    }</span>
 
     /**
      * @return the completionLevel
      */
     public int getCompletionLevel() {
-<span class="fc" id="L170">        return completionLevel;</span>
+<span class="fc" id="L171">        return completionLevel;</span>
     }
 
     /**
      * @param completionLevel the new completionLevel
      */
     public void setCompletionLevel(int completionLevel) {
-<span class="fc" id="L177">        this.completionLevel = completionLevel;</span>
-<span class="fc" id="L178">    }</span>
+<span class="fc" id="L178">        this.completionLevel = completionLevel;</span>
+<span class="fc" id="L179">    }</span>
 
     /**
      * @return the completion mode : how the completion level is filled
      */
     public CardContentCompletionMode getCompletionMode() {
-<span class="fc" id="L184">        return completionMode;</span>
+<span class="fc" id="L185">        return completionMode;</span>
     }
 
     /**
      * @param completionMode the new completion mode : how the completion level is filled
      */
     public void setCompletionMode(CardContentCompletionMode completionMode) {
-<span class="fc" id="L191">        this.completionMode = completionMode;</span>
-<span class="fc" id="L192">    }</span>
+<span class="fc" id="L192">        this.completionMode = completionMode;</span>
+<span class="fc" id="L193">    }</span>
 
     /**
      * @return the card to which this content belongs
      */
     public Card getCard() {
-<span class="nc" id="L198">        return card;</span>
+<span class="nc" id="L199">        return card;</span>
     }
 
     /**
      * @param card the new card to which this content belongs
      */
     public void setCard(Card card) {
-<span class="fc" id="L205">        this.card = card;</span>
-<span class="fc" id="L206">    }</span>
+<span class="fc" id="L206">        this.card = card;</span>
+<span class="fc" id="L207">    }</span>
 
     /**
      * get the id of the card to which this content belongs. To be sent to client.
@@ -211,10 +212,10 @@ import javax.validation.constraints.Min;
      * @return the ID of the card to which this content belongs
      */
     public Long getCardId() {
-<span class="fc bfc" id="L214" title="All 2 branches covered.">        if (this.card != null) {</span>
-<span class="fc" id="L215">            return card.getId();</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">        if (this.card != null) {</span>
+<span class="fc" id="L216">            return card.getId();</span>
         } else {
-<span class="fc" id="L217">            return cardId;</span>
+<span class="fc" id="L218">            return cardId;</span>
         }
     }
 
@@ -224,22 +225,22 @@ import javax.validation.constraints.Min;
      * @param cardId the ID of the card to which this content belongs
      */
     public void setCardId(Long cardId) {
-<span class="fc" id="L227">        this.cardId = cardId;</span>
-<span class="fc" id="L228">    }</span>
+<span class="fc" id="L228">        this.cardId = cardId;</span>
+<span class="fc" id="L229">    }</span>
 
     /**
      * @return the deliverable of this card content
      */
     public Document getDeliverable() {
-<span class="fc" id="L234">        return deliverable;</span>
+<span class="fc" id="L235">        return deliverable;</span>
     }
 
     /**
      * @param deliverable the deliverable of this card content to set
      */
     public void setDeliverable(Document deliverable) {
-<span class="fc" id="L241">        this.deliverable = deliverable;</span>
-<span class="fc" id="L242">    }</span>
+<span class="fc" id="L242">        this.deliverable = deliverable;</span>
+<span class="fc" id="L243">    }</span>
 
     /**
      * get the id of the deliverable. To be sent to client.
@@ -247,10 +248,10 @@ import javax.validation.constraints.Min;
      * @return the id of the deliverable of this card content
      */
     public Long getDeliverableId() {
-<span class="fc bfc" id="L250" title="All 2 branches covered.">        if (this.deliverable != null) {</span>
-<span class="fc" id="L251">            return this.deliverable.getId();</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">        if (this.deliverable != null) {</span>
+<span class="fc" id="L252">            return this.deliverable.getId();</span>
         } else {
-<span class="fc" id="L253">            return deliverableId;</span>
+<span class="fc" id="L254">            return deliverableId;</span>
         }
     }
 
@@ -260,22 +261,22 @@ import javax.validation.constraints.Min;
      * @param deliverableId the id of the deliverable of this card content to set
      */
     public void setDeliverableId(Long deliverableId) {
-<span class="fc" id="L263">        this.deliverableId = deliverableId;</span>
-<span class="fc" id="L264">    }</span>
+<span class="fc" id="L264">        this.deliverableId = deliverableId;</span>
+<span class="fc" id="L265">    }</span>
 
     /**
      * @return the cards contained in there
      */
     public List&lt;Card&gt; getSubCards() {
-<span class="fc" id="L270">        return subCards;</span>
+<span class="fc" id="L271">        return subCards;</span>
     }
 
     /**
      * @param subCards the cards contained in there
      */
     public void setSubCards(List&lt;Card&gt; subCards) {
-<span class="nc" id="L277">        this.subCards = subCards;</span>
-<span class="nc" id="L278">    }</span>
+<span class="nc" id="L278">        this.subCards = subCards;</span>
+<span class="nc" id="L279">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -286,42 +287,55 @@ import javax.validation.constraints.Min;
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L289" title="1 of 2 branches missed.">        if (other instanceof CardContent) {</span>
-<span class="fc" id="L290">            CardContent o = (CardContent) other;</span>
-<span class="fc" id="L291">            this.setTitle(o.getTitle());</span>
-<span class="fc" id="L292">            this.setStatus(o.getStatus());</span>
-<span class="fc" id="L293">            this.setCompletionLevel(o.getCompletionLevel());</span>
-<span class="fc" id="L294">            this.setCompletionMode(o.getCompletionMode());</span>
-<span class="fc" id="L295">            this.setDeliverable(o.getDeliverable());</span>
-<span class="fc" id="L296">            this.setDeliverableId(o.getDeliverableId());</span>
-<span class="fc" id="L297">        } else {</span>
-<span class="nc" id="L298">            throw new ColabMergeException(this, other);</span>
+<span class="pc bpc" id="L290" title="1 of 2 branches missed.">        if (other instanceof CardContent) {</span>
+<span class="fc" id="L291">            CardContent o = (CardContent) other;</span>
+<span class="fc" id="L292">            this.setTitle(o.getTitle());</span>
+<span class="fc" id="L293">            this.setStatus(o.getStatus());</span>
+<span class="fc" id="L294">            this.setCompletionLevel(o.getCompletionLevel());</span>
+<span class="fc" id="L295">            this.setCompletionMode(o.getCompletionMode());</span>
+<span class="fc" id="L296">            this.setDeliverable(o.getDeliverable());</span>
+<span class="fc" id="L297">            this.setDeliverableId(o.getDeliverableId());</span>
+<span class="fc" id="L298">        } else {</span>
+<span class="nc" id="L299">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L300">    }</span>
+<span class="fc" id="L301">    }</span>
+
+    /**
+     * Get the project this content belongs to
+     *
+     * @return content owner
+     */
+    @JsonbTransient
+    public Project getProject(){
+<span class="pc bpc" id="L310" title="1 of 2 branches missed.">        if (this.card != null){</span>
+<span class="fc" id="L311">            return this.card.getProject();</span>
+        }
+<span class="nc" id="L313">        return null;</span>
+    }
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="pc bpc" id="L304" title="1 of 2 branches missed.">        if (this.card != null) {</span>
-<span class="fc" id="L305">            return this.card.getChannels();</span>
+<span class="pc bpc" id="L318" title="1 of 2 branches missed.">        if (this.card != null) {</span>
+<span class="fc" id="L319">            return this.card.getChannels();</span>
         } else {
-<span class="nc" id="L307">            return Set.of();</span>
+<span class="nc" id="L321">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L313">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L327">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L319">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L333">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L324">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
+<span class="fc" id="L338">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
                 + &quot;, completion=&quot; + completionLevel + &quot;, completionMode=&quot; + completionMode
                 + &quot;, card=&quot; + card + &quot;}&quot;;
     }
