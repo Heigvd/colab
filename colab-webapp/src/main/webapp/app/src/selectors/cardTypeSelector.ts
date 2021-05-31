@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 
-import { useAppSelector } from '../store/hooks';
-import { CardType, CardTypeRef, entityIs } from 'colab-rest-client';
-import { ColabState } from '../store/store';
+import {useAppSelector} from '../store/hooks';
+import {CardType, CardTypeRef, entityIs} from 'colab-rest-client';
+import {ColabState} from '../store/store';
 
 export interface CardTypeState {
   /**
@@ -116,7 +116,7 @@ export const useCardTypes = (): CardTypesState => {
             if (resolved.cardType != null) {
               cds.inheritedCardType.push(resolved.cardType);
             }
-          } else if (entityIs(cd, 'CardTypeRef')) {
+          } else {
             cds.projectCardType.push(cd);
           }
         }
