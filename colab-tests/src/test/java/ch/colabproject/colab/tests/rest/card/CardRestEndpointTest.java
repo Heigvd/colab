@@ -45,7 +45,7 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNull(card.getColor());
         Assertions.assertEquals(0, card.getIndex());
         Assertions.assertEquals(parentId, card.getParentId());
-        Assertions.assertEquals(cardTypeId, card.getCardTypeinitionId());
+        Assertions.assertEquals(cardTypeId, card.getCardTypeId());
 
         List<CardContent> variants = client.cardRestEndpoint.getContentVariantsOfCard(cardId);
         Assertions.assertNotNull(variants);
@@ -192,7 +192,7 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
 
         Card card = client.cardRestEndpoint.createNewCard(parentId, cardTypeId);
 
-        Assertions.assertEquals(cardTypeId, card.getCardTypeinitionId());
+        Assertions.assertEquals(cardTypeId, card.getCardTypeId());
 
     }
 

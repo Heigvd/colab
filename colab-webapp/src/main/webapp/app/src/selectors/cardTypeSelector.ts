@@ -40,7 +40,7 @@ export interface CardTypesState {
    */
   projectCardType: CardType[];
   /**
-   * Inherited card def are readonly
+   * Inherited card type are readonly
    */
   inheritedCardType: CardType[];
 }

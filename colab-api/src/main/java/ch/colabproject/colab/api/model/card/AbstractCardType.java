@@ -23,7 +23,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 /**
- * Abstract Card definition
+ * Abstract Card type
  *
  * @author maxence
  */
@@ -58,12 +58,12 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     private Long projectId;
 
     /**
-     * Is this definition available to other projects?
+     * Is this type available to other projects?
      */
     private boolean published;
 
     /**
-     * Is this definition deprecated? A deprecated definition should not be used by new projects.
+     * Is this type deprecated? A deprecated type should not be used by new projects.
      */
     private boolean deprecated;
 

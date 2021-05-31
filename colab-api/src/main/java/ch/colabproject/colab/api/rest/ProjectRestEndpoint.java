@@ -159,16 +159,16 @@ public class ProjectRestEndpoint {
     }
 
     /**
-     * Get all card definitions belonging to a project
+     * Get all card types belonging to a project
      *
-     * @param id ID of the project the card definitions belong to
+     * @param id ID of the project the card types belong to
      *
-     * @return the card definitions linked to the project
+     * @return the card types linked to the project
      */
     @GET
     @Path("{id}/CardTypes")
     public List<AbstractCardType> getCardTypesOfProject(@PathParam("id") Long id) {
-        logger.debug("Get project #{} card definitions", id);
+        logger.debug("Get project #{} card types", id);
         return projectFacade.getCardTypes(id);
     }
 }

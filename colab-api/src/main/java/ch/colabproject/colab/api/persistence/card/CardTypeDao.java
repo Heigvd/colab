@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Card def persistence
+ * Card type persistence
  *
  * @author sandra
  */
@@ -46,34 +46,34 @@ public class CardTypeDao {
     private EntityManager em;
 
     /**
-     * Get the list of all card defs
+     * Get the list of all card types
      *
-     * @return list of all card defs
+     * @return list of all card types
      */
     public List<CardType> getAllCardType() {
-        logger.debug("get all card defs");
+        logger.debug("get all card types");
         TypedQuery<CardType> query = em.createNamedQuery("CardType.findAll", CardType.class);
         return query.getResultList();
     }
 
     /**
-     * Get the list of global card defs
+     * Get the list of global card types
      *
-     * @return list of global card defs
+     * @return list of global card types
      */
     public List<CardType> getGlobalCardType() {
-        logger.debug("get all global card defs");
+        logger.debug("get all global card types");
         TypedQuery<CardType> query = em.createNamedQuery("CardType.findGlobals", CardType.class);
         return query.getResultList();
     }
 
     /**
-     * Get the list of published global card defs
+     * Get the list of published global card types
      *
-     * @return list of published global card defs
+     * @return list of published global card types
      */
     public List<CardType> getPublishedGlobalCardType() {
-        logger.debug("get published  global card defs");
+        logger.debug("get published  global card types");
         TypedQuery<CardType> query = em.createNamedQuery("CardType.findPublishedGlobals", CardType.class);
         return query.getResultList();
     }
@@ -84,7 +84,7 @@ public class CardTypeDao {
      * @return list of published non-global card types accessible to the current user
      */
     public List<CardType> getPublishedProjectsCardType() {
-        logger.debug("get published  global card defs");
+        logger.debug("get published  global card types");
         User user = securityFacade.assertAndGetCurrentUser();
         TypedQuery<CardType> query = em.createNamedQuery("CardType.findPublishedFromProjects", CardType.class);
         query.setParameter("userId", user.getId());
@@ -92,50 +92,50 @@ public class CardTypeDao {
     }
 
     /**
-     * @param id id of the card def to fetch
+     * @param id id of the card type to fetch
      *
-     * @return the card def with the given id or null if such a card def does not exists
+     * @return the card type with the given id or null if such a card type does not exists
      */
     public AbstractCardType getAbstractCardType(Long id) {
-        logger.debug("get abstract card def #{}", id);
+        logger.debug("get abstract card type #{}", id);
         return em.find(AbstractCardType.class, id);
     }
 
     /**
-     * @param id id of the card def to fetch
+     * @param id id of the card type to fetch
      *
-     * @return the card def with the given id or null if such a card def does not exists
+     * @return the card type with the given id or null if such a card type does not exists
      */
     public CardType getCardType(Long id) {
-        logger.debug("get card def #{}", id);
+        logger.debug("get card type #{}", id);
         return em.find(CardType.class, id);
     }
 
     /**
-     * Persist a brand new card def to database
+     * Persist a brand new card type to database
      *
-     * @param cardType new card def to persist
+     * @param cardType new card type to persist
      *
-     * @return the new persisted card def
+     * @return the new persisted card type
      */
     public AbstractCardType createCardType(AbstractCardType cardType) {
-        logger.debug("create card def {}", cardType);
+        logger.debug("create card type {}", cardType);
         em.persist(cardType);
         em.flush();
         return cardType;
     }
 
     /**
-     * Update card def
+     * Update card type
      *
-     * @param cardType card def as supply by clients (ie not managed)
+     * @param cardType card type as supply by clients (ie not managed)
      *
-     * @return updated managed card def
+     * @return updated managed card type
      *
-     * @throws ColabMergeException if updating the card def failed
+     * @throws ColabMergeException if updating the card type failed
      */
     public CardType updateCardType(CardType cardType) throws ColabMergeException {
-        logger.debug("update card def {}", cardType);
+        logger.debug("update card type {}", cardType);
         CardType mCardType = this.getCardType(cardType.getId());
 
         mCardType.merge(cardType);
@@ -144,14 +144,14 @@ public class CardTypeDao {
     }
 
     /**
-     * Delete card def from database. This can't be undone
+     * Delete card type from database. This can't be undone
      *
-     * @param id id of the card def to delete
+     * @param id id of the card type to delete
      *
-     * @return just deleted card def
+     * @return just deleted card type
      */
     public CardType deleteCardType(Long id) {
-        logger.debug("delete card def #{}", id);
+        logger.debug("delete card type #{}", id);
         // TODO: move to recycle bin first
         CardType cardType = this.getCardType(id);
         em.remove(cardType);

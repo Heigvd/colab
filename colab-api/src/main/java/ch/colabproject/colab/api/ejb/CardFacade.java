@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Card, card def and card content specific logic
+ * Card, card type and card content specific logic
  *
  * @author sandra
  */
@@ -55,7 +55,7 @@ public class CardFacade {
     // injections
     // *********************************************************************************************
     /**
-     * Card definition persistence handling
+     * Card type persistence handling
      */
     @Inject
     private CardTypeDao cardTypeDao;
@@ -91,15 +91,15 @@ public class CardFacade {
     private SecurityFacade securityFacade;
 
     // *********************************************************************************************
-    // card definition stuff
+    // card type stuff
     // *********************************************************************************************
     /**
-     * Create a new card definition. The new type will be a global type if the type is not bound to
+     * Create a new card type. The new type will be a global type if the type is not bound to
      * any project.
      *
      * @param cardType the type to create
      *
-     * @return a new, persisted card definition
+     * @return a new, persisted card type
      */
     public CardType createNewCardType(CardType cardType) {
         Long projectId = cardType.getProjectId();
@@ -113,7 +113,7 @@ public class CardFacade {
             project.getElementsToBeDefined().add(cardType);
             cardType.setProject(project);
         } else {
-            logger.debug("create a new global card def");
+            logger.debug("create a new global card type");
             securityFacade.assertCurrentUserIsAdmin();
             cardType.setProject(null);
         }
@@ -125,7 +125,7 @@ public class CardFacade {
     }
 
     /**
-     * @return a new card definition initialized object
+     * @return a new card type initialized object
      */
     private CardType initNewCardType(CardType cardType) {
         // see if uniqueId must be initialized
@@ -152,31 +152,31 @@ public class CardFacade {
     }
 
     /**
-     * Create a new card into a card content with a card definition
+     * Create a new card into a card content with a card type
      *
-     * @param parentId         parent id of the new card
-     * @param cardTypeinitionId card definition id of the new card
+     * @param parentId   parent id of the new card
+     * @param cardTypeId card type id of the new card
      *
      * @return a new, initialized and persisted card
      */
-    public Card createNewCard(Long parentId, Long cardTypeinitionId) {
-        logger.debug("create a new sub card of #{} with the definition of #{}", parentId,
-            cardTypeinitionId);
+    public Card createNewCard(Long parentId, Long cardTypeId) {
+        logger.debug("create a new sub card of #{} with the type of #{}", parentId,
+            cardTypeId);
 
         CardContent parent = cardContentDao.getCardContent(parentId);
         if (parent == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        AbstractCardType cardTypeinition = cardTypeDao.getAbstractCardType(cardTypeinitionId);
-        if (cardTypeinition == null) {
+        AbstractCardType cardType = cardTypeDao.getAbstractCardType(cardTypeId);
+        if (cardType == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        // check type read access and parent wirte right
-        securityFacade.assertCanCreateCard(parent, cardTypeinition);
+        // check type read access and parent write right
+        securityFacade.assertCanCreateCard(parent, cardType);
 
-        Card card = initNewCard(parent, cardTypeinition);
+        Card card = initNewCard(parent, cardType);
 
         return cardDao.createCard(card);
     }
@@ -207,12 +207,12 @@ public class CardFacade {
      * Initialize card. Card will be bound to the given type. If the type does not belongs to the
      * same project as the card do, a type ref is created.
      *
-     * @param parent         Parent of the new card
-     * @param cardTypeinition Related card definition
+     * @param parent   Parent of the new card
+     * @param cardType Related card type
      *
-     * @return a new card containing a new card content with cardTypeinition
+     * @return a new card containing a new card content with cardType
      */
-    private Card initNewCard(CardContent parent, AbstractCardType cardTypeinition) {
+    private Card initNewCard(CardContent parent, AbstractCardType cardType) {
         Card card = initNewCard();
 
         card.setParent(parent);
@@ -222,10 +222,10 @@ public class CardFacade {
 
         if (project != null) {
             AbstractCardType effectiveType = null;
-            if (project.equals(cardTypeinition.getProject())) {
+            if (project.equals(cardType.getProject())) {
                 //Given type belongs to the project
                 // it can be used as-is
-                effectiveType = cardTypeinition;
+                effectiveType = cardType;
             } else {
                 // second case: cardType belongs to another project
 
@@ -234,7 +234,7 @@ public class CardFacade {
                 // Check if the project already got a direct reference the super-type
                 Optional<AbstractCardType> findFirst = project.getElementsToBeDefined().stream()
                     .filter(type -> {
-                        return this.isDirectRef(type, cardTypeinition);
+                        return this.isDirectRef(type, cardType);
                     }).findFirst();
 
                 if (findFirst.isPresent()) {
@@ -242,14 +242,14 @@ public class CardFacade {
                     effectiveType = findFirst.get();
                 } else {
                     // no direct ref. Create one.
-                    effectiveType = createReference(cardTypeinition, project);
+                    effectiveType = createReference(cardType, project);
                 }
             }
 
             if (effectiveType != null) {
-                card.setCardTypeinition(effectiveType);
+                card.setCardType(effectiveType);
             } else {
-                logger.error("Unable to find effective type for {}", cardTypeinition);
+                logger.error("Unable to find effective type for {}", cardType);
                 throw HttpErrorMessage.relatedObjectNotFoundError();
             }
         }
