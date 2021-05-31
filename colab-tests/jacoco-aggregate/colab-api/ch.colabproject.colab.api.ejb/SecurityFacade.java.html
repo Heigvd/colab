@@ -218,14 +218,14 @@ import javax.persistence.TypedQuery;
 <span class="fc" id="L218">    }</span>
 
     // *********************************************************************************************
-    // card (+ definition + content) stuff
+    // card (+ type + content) stuff
     // *********************************************************************************************
     /**
-     * Make sure the current user has the right to read the card definition
+     * Make sure the current user has the right to read the card type
      *
-     * @param cardTypeinition card definition to read
+     * @param cardType card type to read
      */
-    public void assertCanReadCardType(AbstractCardType cardTypeinition) {
+    public void assertCanReadCardType(AbstractCardType cardType) {
         // TODO
 <span class="fc" id="L230">    }</span>
 
@@ -248,11 +248,11 @@ import javax.persistence.TypedQuery;
 <span class="nc" id="L248">    }</span>
 
     /**
-     * Make sure the current user has the right to edit the card definition
+     * Make sure the current user has the right to edit the card type
      *
-     * @param cardTypeinition card definition to edit
+     * @param cardType card type to edit
      */
-    public void assertCanWriteCardType(CardType cardTypeinition) {
+    public void assertCanWriteCardType(CardType cardType) {
         // TODO
 <span class="nc" id="L257">    }</span>
 
@@ -275,9 +275,9 @@ import javax.persistence.TypedQuery;
 <span class="fc" id="L275">    }</span>
 
     /**
-     * Make sure the current user has the right to create a card definition
+     * Make sure the current user has the right to create a card type
      *
-     * @param project the project the new card definition will belong to
+     * @param project the project the new card type will belong to
      */
     public void assertCanCreateCardType(Project project) {
         // TODO
@@ -286,11 +286,11 @@ import javax.persistence.TypedQuery;
     /**
      * Make sure the current user has the right to create a card
      *
-     * @param cardContent    the card content the new card will belong to
-     * @param cardTypeinition the card definition the new card will refer to
+     * @param cardContent the card content the new card will belong to
+     * @param cardType    the card type the new card will refer to
      */
-    public void assertCanCreateCard(CardContent cardContent, AbstractCardType cardTypeinition) {
-<span class="fc" id="L293">        this.assertCanReadCardType(cardTypeinition);</span>
+    public void assertCanCreateCard(CardContent cardContent, AbstractCardType cardType) {
+<span class="fc" id="L293">        this.assertCanReadCardType(cardType);</span>
 <span class="fc" id="L294">        this.assertCanWriteCardContent(cardContent);</span>
 <span class="fc" id="L295">    }</span>
 

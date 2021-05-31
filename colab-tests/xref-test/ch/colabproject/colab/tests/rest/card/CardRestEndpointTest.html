@@ -53,7 +53,7 @@
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>          Assertions.assertNull(card.getColor());
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>          Assertions.assertEquals(0, card.getIndex());
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>          Assertions.assertEquals(parentId, card.getParentId());
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>          Assertions.assertEquals(cardTypeId, card.getCardTypeinitionId());
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          Assertions.assertEquals(cardTypeId, card.getCardTypeId());
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>          List&lt;CardContent&gt; variants = client.cardRestEndpoint.getContentVariantsOfCard(cardId);
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>          Assertions.assertNotNull(variants);
@@ -200,7 +200,7 @@
 <a class="jxr_linenumber" name="L192" href="#L192">192</a> 
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>         Card card = client.cardRestEndpoint.createNewCard(parentId, cardTypeId);
 <a class="jxr_linenumber" name="L194" href="#L194">194</a> 
-<a class="jxr_linenumber" name="L195" href="#L195">195</a>         Assertions.assertEquals(cardTypeId, card.getCardTypeinitionId());
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>         Assertions.assertEquals(cardTypeId, card.getCardTypeId());
 <a class="jxr_linenumber" name="L196" href="#L196">196</a> 
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>     }
 <a class="jxr_linenumber" name="L198" href="#L198">198</a> 

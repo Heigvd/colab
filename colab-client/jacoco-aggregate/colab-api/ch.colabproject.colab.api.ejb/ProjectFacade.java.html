@@ -147,15 +147,15 @@ import org.slf4j.LoggerFactory;
     // *********************************************************************************************
 
     /**
-     * Get all card definitions of the given project
+     * Get all card types of the given project
      *
      * @param projectId id of the project
      *
-     * @return all card definitions of the project
+     * @return all card types of the project
      */
     public List&lt;AbstractCardType&gt; getCardTypes(Long projectId) {
 <span class="nc" id="L157">        Project project = projectDao.getProject(projectId);</span>
-<span class="nc" id="L158">        logger.debug(&quot;Get card defs of project {}&quot;, project);</span>
+<span class="nc" id="L158">        logger.debug(&quot;Get card types of project {}&quot;, project);</span>
 <span class="nc bnc" id="L159" title="All 2 branches missed.">        if (project == null) {</span>
 <span class="nc" id="L160">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }

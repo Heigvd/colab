@@ -155,15 +155,15 @@
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>     <em class="jxr_comment">// *********************************************************************************************</em>
 <a class="jxr_linenumber" name="L148" href="#L148">148</a> 
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L150" href="#L150">150</a> <em class="jxr_javadoccomment">     * Get all card definitions of the given project</em>
+<a class="jxr_linenumber" name="L150" href="#L150">150</a> <em class="jxr_javadoccomment">     * Get all card types of the given project</em>
 <a class="jxr_linenumber" name="L151" href="#L151">151</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L152" href="#L152">152</a> <em class="jxr_javadoccomment">     * @param projectId id of the project</em>
 <a class="jxr_linenumber" name="L153" href="#L153">153</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L154" href="#L154">154</a> <em class="jxr_javadoccomment">     * @return all card definitions of the project</em>
+<a class="jxr_linenumber" name="L154" href="#L154">154</a> <em class="jxr_javadoccomment">     * @return all card types of the project</em>
 <a class="jxr_linenumber" name="L155" href="#L155">155</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>     <strong class="jxr_keyword">public</strong> List&lt;AbstractCardType&gt; getCardTypes(Long projectId) {
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>         <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(projectId);
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>         logger.debug(<span class="jxr_string">"Get card defs of project {}"</span>, project);
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>         logger.debug(<span class="jxr_string">"Get card types of project {}"</span>, project);
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>         <strong class="jxr_keyword">if</strong> (project == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>         }

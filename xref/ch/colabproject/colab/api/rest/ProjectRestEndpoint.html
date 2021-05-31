@@ -167,16 +167,16 @@
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>     }
 <a class="jxr_linenumber" name="L160" href="#L160">160</a> 
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L162" href="#L162">162</a> <em class="jxr_javadoccomment">     * Get all card definitions belonging to a project</em>
+<a class="jxr_linenumber" name="L162" href="#L162">162</a> <em class="jxr_javadoccomment">     * Get all card types belonging to a project</em>
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L164" href="#L164">164</a> <em class="jxr_javadoccomment">     * @param id ID of the project the card definitions belong to</em>
+<a class="jxr_linenumber" name="L164" href="#L164">164</a> <em class="jxr_javadoccomment">     * @param id ID of the project the card types belong to</em>
 <a class="jxr_linenumber" name="L165" href="#L165">165</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L166" href="#L166">166</a> <em class="jxr_javadoccomment">     * @return the card definitions linked to the project</em>
+<a class="jxr_linenumber" name="L166" href="#L166">166</a> <em class="jxr_javadoccomment">     * @return the card types linked to the project</em>
 <a class="jxr_linenumber" name="L167" href="#L167">167</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>     @GET
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>     @Path(<span class="jxr_string">"{id}/CardTypes"</span>)
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>     <strong class="jxr_keyword">public</strong> List&lt;AbstractCardType&gt; getCardTypesOfProject(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
-<a class="jxr_linenumber" name="L171" href="#L171">171</a>         logger.debug(<span class="jxr_string">"Get project #{} card definitions"</span>, id);
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>         logger.debug(<span class="jxr_string">"Get project #{} card types"</span>, id);
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>         <strong class="jxr_keyword">return</strong> projectFacade.getCardTypes(id);
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>     }
 <a class="jxr_linenumber" name="L174" href="#L174">174</a> }

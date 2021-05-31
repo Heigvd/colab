@@ -65,17 +65,17 @@ import javax.persistence.Transient;
     private String color;
 
     /**
-     * The card definition defining what is it for
+     * The card type defining what is it for
      */
     @ManyToOne
     @JsonbTransient
-    private AbstractCardType cardTypeinition;
+    private AbstractCardType cardType;
 
     /**
-     * The id of the card definition (serialization sugar)
+     * The id of the card type (serialization sugar)
      */
     @Transient
-    private Long cardTypeinitionId;
+    private Long cardTypeId;
 
     /**
      * The project this card is root of. may be null
@@ -164,37 +164,37 @@ import javax.persistence.Transient;
 <span class="fc" id="L164">    }</span>
 
     /**
-     * @return the card def defining what is it for
+     * @return the card type defining what is it for
      */
-    public AbstractCardType getCardTypeinition() {
-<span class="nc" id="L170">        return cardTypeinition;</span>
+    public AbstractCardType getCardType() {
+<span class="nc" id="L170">        return cardType;</span>
     }
 
     /**
-     * @param cardType the card def defining what is it for
+     * @param cardType the card type defining what is it for
      */
-    public void setCardTypeinition(AbstractCardType cardType) {
-<span class="fc" id="L177">        this.cardTypeinition = cardType;</span>
+    public void setCardType(AbstractCardType cardType) {
+<span class="fc" id="L177">        this.cardType = cardType;</span>
 <span class="fc" id="L178">    }</span>
 
     /**
-     * get the id of the card def. To be sent to client
+     * get the id of the card type. To be sent to client
      *
-     * @return the id of the card def
+     * @return the id of the card type
      */
-    public Long getCardTypeinitionId() {
-<span class="fc bfc" id="L186" title="All 2 branches covered.">        if (this.cardTypeinition != null) {</span>
-<span class="fc" id="L187">            return this.cardTypeinition.getId();</span>
+    public Long getCardTypeId() {
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        if (this.cardType != null) {</span>
+<span class="fc" id="L187">            return this.cardType.getId();</span>
         } else {
-<span class="fc" id="L189">            return cardTypeinitionId;</span>
+<span class="fc" id="L189">            return cardTypeId;</span>
         }
     }
 
     /**
      * @param cardTypeId the cardTypeId to set
      */
-    public void setCardTypeinitionId(Long cardTypeId) {
-<span class="fc" id="L197">        this.cardTypeinitionId = cardTypeId;</span>
+    public void setCardTypeId(Long cardTypeId) {
+<span class="fc" id="L197">        this.cardTypeId = cardTypeId;</span>
 <span class="fc" id="L198">    }</span>
 
     /**
@@ -314,10 +314,10 @@ import javax.persistence.Transient;
 <span class="pc bpc" id="L314" title="1 of 2 branches missed.">        } else if (this.parent != null) {</span>
             // this card is a sub-card, propagate through its parent channels
 <span class="fc" id="L316">            return this.parent.getChannels();</span>
-<span class="nc bnc" id="L317" title="All 2 branches missed.">        } else if (this.cardTypeinition != null) {</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">        } else if (this.cardType != null) {</span>
             // such a card shoudln't exist...
-            // Lorem-ipsum cards for global cardTypeinitions ???
-<span class="nc" id="L320">            return this.cardTypeinition.getChannels();</span>
+            // Lorem-ipsum cards for global cardTypes ???
+<span class="nc" id="L320">            return this.cardType.getChannels();</span>
         } else {
             // such an orphan card shoudln't exist...
 <span class="nc" id="L323">            return Set.of();</span>
@@ -355,7 +355,7 @@ import javax.persistence.Transient;
     @Override
     public String toString() {
 <span class="fc" id="L357">        return &quot;Card{&quot; + &quot;id=&quot; + id + &quot;, index=&quot; + index + &quot;, color=&quot; + color + &quot;, cardTypeId=&quot;</span>
-<span class="fc" id="L358">            + getCardTypeinitionId() + &quot;, parentId=&quot; + getParentId() + &quot;}&quot;;</span>
+<span class="fc" id="L358">            + getCardTypeId() + &quot;, parentId=&quot; + getParentId() + &quot;}&quot;;</span>
     }
 
 }

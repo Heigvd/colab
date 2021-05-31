@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * REST card def controller
+ * REST card type controller
  *
  * @author sandra
  */
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L42">    private static final Logger logger = LoggerFactory.getLogger(CardTypeRestEndpoint.class);</span>
 
     /**
-     * The card definition persistence manager
+     * The card type persistence manager
      */
     @Inject
     private CardTypeDao cardTypeDao;
@@ -54,14 +54,14 @@ import org.slf4j.LoggerFactory;
     private CardFacade facade;
 
     /**
-     * Retrieve the list of all card defs. This is available to admin only
+     * Retrieve the list of all card types. This is available to admin only
      *
-     * @return all known card defs
+     * @return all known card types
      */
     @GET
     @AdminResource
     public List&lt;CardType&gt; getAllCardTypes() {
-<span class="fc" id="L64">        logger.debug(&quot;get all card defs&quot;);</span>
+<span class="fc" id="L64">        logger.debug(&quot;get all card types&quot;);</span>
 <span class="fc" id="L65">        return cardTypeDao.getAllCardType();</span>
     }
 
@@ -74,7 +74,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;allGlobals&quot;)
     @AdminResource
     public List&lt;CardType&gt; getAllGlobalCardTypes() {
-<span class="nc" id="L77">        logger.debug(&quot;get all global card defs&quot;);</span>
+<span class="nc" id="L77">        logger.debug(&quot;get all global card types&quot;);</span>
 <span class="nc" id="L78">        return cardTypeDao.getGlobalCardType();</span>
     }
 
@@ -86,7 +86,7 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;publishedGlobals&quot;)
     public List&lt;CardType&gt; getPublishedGlobalsCardTypes() {
-<span class="nc" id="L89">        logger.debug(&quot;get published global card defs&quot;);</span>
+<span class="nc" id="L89">        logger.debug(&quot;get published global card types&quot;);</span>
 <span class="nc" id="L90">        return cardTypeDao.getPublishedGlobalCardType();</span>
     }
 
@@ -100,47 +100,47 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;allProjectsPublished&quot;)
     public List&lt;CardType&gt; getPublishedCardTypes() {
-<span class="nc" id="L103">        logger.debug(&quot;get published projects card defs&quot;);</span>
+<span class="nc" id="L103">        logger.debug(&quot;get published projects card types&quot;);</span>
 <span class="nc" id="L104">        return cardTypeDao.getPublishedProjectsCardType();</span>
     }
 
     /**
-     * Get card def identified by the given id
+     * Get card type identified by the given id
      *
-     * @param id id of the card def to fetch
+     * @param id id of the card type to fetch
      *
-     * @return the card def or null
+     * @return the card type or null
      */
     @GET
     @Path(&quot;{id}&quot;)
     public CardType getCardType(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L117">        logger.debug(&quot;get card def #{}&quot;, id);</span>
+<span class="fc" id="L117">        logger.debug(&quot;get card type #{}&quot;, id);</span>
 <span class="fc" id="L118">        return cardTypeDao.getCardType(id);</span>
     }
 
     /**
      * Persist a card type.
      *
-     * @param cardType the card definition to persist
+     * @param cardType the card type to persist
      *
-     * @return id of the persisted new card definition
+     * @return id of the persisted new card type
      */
     @POST
     public Long createCardType(CardType cardType) {
-<span class="fc" id="L130">        logger.debug(&quot;create card def {}&quot;, cardType);</span>
+<span class="fc" id="L130">        logger.debug(&quot;create card type {}&quot;, cardType);</span>
 <span class="fc" id="L131">        return facade.createNewCardType(cardType).getId();</span>
     }
 
     /**
      * Create and persist a new card type. The card type belongs to the given project.
      *
-     * @param projectId the project the new card definition belongs to
+     * @param projectId the project the new card type belongs to
      *
-     * @return the persisted new card definition
+     * @return the persisted new card type
     @POST
     @Path(&quot;create/{projectId}&quot;)
     public CardType createNewCardType(@PathParam(&quot;projectId&quot;) Long projectId) {
-        logger.debug(&quot;create new card def for the project #{}&quot;, projectId);
+        logger.debug(&quot;create new card type for the project #{}&quot;, projectId);
         return facade.createNewCardType(projectId);
     }
      */
@@ -148,25 +148,25 @@ import org.slf4j.LoggerFactory;
     /**
      * Save changes to database
      *
-     * @param cardType card def to update
+     * @param cardType card type to update
      *
      * @throws ColabMergeException if the merge is not possible
      */
     @PUT
     public void updateCardType(CardType cardType) throws ColabMergeException {
-<span class="fc" id="L157">        logger.debug(&quot;update card def {}&quot;, cardType);</span>
+<span class="fc" id="L157">        logger.debug(&quot;update card type {}&quot;, cardType);</span>
 <span class="fc" id="L158">        cardTypeDao.updateCardType(cardType);</span>
 <span class="fc" id="L159">    }</span>
 
     /**
-     * Permanently delete a card def
+     * Permanently delete a card type
      *
-     * @param id id of the card def to delete
+     * @param id id of the card type to delete
      */
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteCardType(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L169">        logger.debug(&quot;delete card def #{}&quot;, id);</span>
+<span class="fc" id="L169">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
 <span class="fc" id="L170">        cardTypeDao.deleteCardType(id);</span>
 <span class="fc" id="L171">    }</span>
 

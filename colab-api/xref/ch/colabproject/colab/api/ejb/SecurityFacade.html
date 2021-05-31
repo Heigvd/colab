@@ -226,14 +226,14 @@
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>     }
 <a class="jxr_linenumber" name="L219" href="#L219">219</a> 
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>     <em class="jxr_comment">// *********************************************************************************************</em>
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>     <em class="jxr_comment">// card (+ definition + content) stuff</em>
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>     <em class="jxr_comment">// card (+ type + content) stuff</em>
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>     <em class="jxr_comment">// *********************************************************************************************</em>
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L224" href="#L224">224</a> <em class="jxr_javadoccomment">     * Make sure the current user has the right to read the card definition</em>
+<a class="jxr_linenumber" name="L224" href="#L224">224</a> <em class="jxr_javadoccomment">     * Make sure the current user has the right to read the card type</em>
 <a class="jxr_linenumber" name="L225" href="#L225">225</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L226" href="#L226">226</a> <em class="jxr_javadoccomment">     * @param cardTypeinition card definition to read</em>
+<a class="jxr_linenumber" name="L226" href="#L226">226</a> <em class="jxr_javadoccomment">     * @param cardType card type to read</em>
 <a class="jxr_linenumber" name="L227" href="#L227">227</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> assertCanReadCardType(<a name="AbstractCardType" href="../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> cardTypeinition) {
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> assertCanReadCardType(<a name="AbstractCardType" href="../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> cardType) {
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>         <em class="jxr_comment">// TODO</em>
 <a class="jxr_linenumber" name="L230" href="#L230">230</a>     }
 <a class="jxr_linenumber" name="L231" href="#L231">231</a> 
@@ -256,11 +256,11 @@
 <a class="jxr_linenumber" name="L248" href="#L248">248</a>     }
 <a class="jxr_linenumber" name="L249" href="#L249">249</a> 
 <a class="jxr_linenumber" name="L250" href="#L250">250</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L251" href="#L251">251</a> <em class="jxr_javadoccomment">     * Make sure the current user has the right to edit the card definition</em>
+<a class="jxr_linenumber" name="L251" href="#L251">251</a> <em class="jxr_javadoccomment">     * Make sure the current user has the right to edit the card type</em>
 <a class="jxr_linenumber" name="L252" href="#L252">252</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L253" href="#L253">253</a> <em class="jxr_javadoccomment">     * @param cardTypeinition card definition to edit</em>
+<a class="jxr_linenumber" name="L253" href="#L253">253</a> <em class="jxr_javadoccomment">     * @param cardType card type to edit</em>
 <a class="jxr_linenumber" name="L254" href="#L254">254</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> assertCanWriteCardType(<a name="CardType" href="../../../../../ch/colabproject/colab/api/model/card/CardType.html#CardType">CardType</a> cardTypeinition) {
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> assertCanWriteCardType(<a name="CardType" href="../../../../../ch/colabproject/colab/api/model/card/CardType.html#CardType">CardType</a> cardType) {
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>         <em class="jxr_comment">// TODO</em>
 <a class="jxr_linenumber" name="L257" href="#L257">257</a>     }
 <a class="jxr_linenumber" name="L258" href="#L258">258</a> 
@@ -283,9 +283,9 @@
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>     }
 <a class="jxr_linenumber" name="L276" href="#L276">276</a> 
 <a class="jxr_linenumber" name="L277" href="#L277">277</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L278" href="#L278">278</a> <em class="jxr_javadoccomment">     * Make sure the current user has the right to create a card definition</em>
+<a class="jxr_linenumber" name="L278" href="#L278">278</a> <em class="jxr_javadoccomment">     * Make sure the current user has the right to create a card type</em>
 <a class="jxr_linenumber" name="L279" href="#L279">279</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L280" href="#L280">280</a> <em class="jxr_javadoccomment">     * @param project the project the new card definition will belong to</em>
+<a class="jxr_linenumber" name="L280" href="#L280">280</a> <em class="jxr_javadoccomment">     * @param project the project the new card type will belong to</em>
 <a class="jxr_linenumber" name="L281" href="#L281">281</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> assertCanCreateCardType(<a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project) {
 <a class="jxr_linenumber" name="L283" href="#L283">283</a>         <em class="jxr_comment">// TODO</em>
@@ -294,11 +294,11 @@
 <a class="jxr_linenumber" name="L286" href="#L286">286</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L287" href="#L287">287</a> <em class="jxr_javadoccomment">     * Make sure the current user has the right to create a card</em>
 <a class="jxr_linenumber" name="L288" href="#L288">288</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L289" href="#L289">289</a> <em class="jxr_javadoccomment">     * @param cardContent    the card content the new card will belong to</em>
-<a class="jxr_linenumber" name="L290" href="#L290">290</a> <em class="jxr_javadoccomment">     * @param cardTypeinition the card definition the new card will refer to</em>
+<a class="jxr_linenumber" name="L289" href="#L289">289</a> <em class="jxr_javadoccomment">     * @param cardContent the card content the new card will belong to</em>
+<a class="jxr_linenumber" name="L290" href="#L290">290</a> <em class="jxr_javadoccomment">     * @param cardType    the card type the new card will refer to</em>
 <a class="jxr_linenumber" name="L291" href="#L291">291</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> assertCanCreateCard(<a name="CardContent" href="../../../../../ch/colabproject/colab/api/model/card/CardContent.html#CardContent">CardContent</a> cardContent, <a name="AbstractCardType" href="../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> cardTypeinition) {
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>         <strong class="jxr_keyword">this</strong>.assertCanReadCardType(cardTypeinition);
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> assertCanCreateCard(<a name="CardContent" href="../../../../../ch/colabproject/colab/api/model/card/CardContent.html#CardContent">CardContent</a> cardContent, <a name="AbstractCardType" href="../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> cardType) {
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>         <strong class="jxr_keyword">this</strong>.assertCanReadCardType(cardType);
 <a class="jxr_linenumber" name="L294" href="#L294">294</a>         <strong class="jxr_keyword">this</strong>.assertCanWriteCardContent(cardContent);
 <a class="jxr_linenumber" name="L295" href="#L295">295</a>     }
 <a class="jxr_linenumber" name="L296" href="#L296">296</a> 
