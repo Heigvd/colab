@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -122,7 +123,7 @@ public class CardContentRestEndpoint {
     @PUT
     public void updateCardContent(CardContent cardContent) throws ColabMergeException {
         logger.debug("Update card content {}", cardContent);
-        cardFacade.updateCardContent(cardContent);
+        cardContentDao.updateCardContent(cardContent);
     }
 
     /**
@@ -149,6 +150,21 @@ public class CardContentRestEndpoint {
     public List<Card> getSubCards(@PathParam("id") Long parentId) {
         logger.debug("Get parent #{} sub cards", parentId);
         return cardFacade.getSubCards(parentId);
+    }
+
+    /**
+     * Set the deliverable to the card content.
+     *
+     * @param cardContentId the id of the card content
+     * @param document      the document to use as deliverable. It must be a new document
+     *
+     * @return the document newly created
+     */
+    @POST
+    @Path("{id}/setDeliverable")
+    public Document assignDeliverable(@PathParam("id") Long cardContentId, Document document) {
+        logger.debug("add the deliverable {} for the card content #{}", document, cardContentId);
+        return cardFacade.assignDeliverable(cardContentId, document);
     }
 
 }

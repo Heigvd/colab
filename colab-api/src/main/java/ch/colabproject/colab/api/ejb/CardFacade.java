@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.api.ejb;
 
-import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -323,33 +322,6 @@ public class CardFacade {
     // *********************************************************************************************
     // card content stuff
     // *********************************************************************************************
-    /**
-     * Update a card content
-     *
-     * @param cardContent The card content to update
-     *
-     * @return the card content updated
-     *
-     * @throws ColabMergeException if updating the card content failed
-     */
-    public CardContent updateCardContent(CardContent cardContent) throws ColabMergeException {
-        Long deliverableId = cardContent.getDeliverableId();
-        if (deliverableId != null) {
-            Document deliverable = documentDao.findDocument(deliverableId);
-            cardContent.setDeliverable(deliverable);
-
-            // TODO see if more checks must be done
-            // by example if there already were another deliverable
-
-            CardContent updatedCardContent = cardContentDao.updateCardContent(cardContent);
-
-            deliverable.setDeliverableCardContent(updatedCardContent);
-
-            return updatedCardContent;
-        }
-
-        return cardContentDao.updateCardContent(cardContent);
-    }
 
     /**
      * Create a new card content variant for the card
@@ -400,6 +372,30 @@ public class CardFacade {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
         return cardContent.getSubCards();
+    }
+
+    /**
+     * Set the deliverable to the card content
+     *
+     * @param cardContentId the id of the card content
+     * @param document      the document to use as deliverable. It must be a new document
+     *
+     * @return the newly created document
+     */
+    public Document assignDeliverable(Long cardContentId, Document document) {
+        logger.debug("set deliverable {} to card content #{}", document, cardContentId);
+
+        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+        if (cardContent == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        Document persistedDocument = documentDao.persistDocument(document);
+
+        cardContent.setDeliverable(persistedDocument);
+        persistedDocument.setDeliverableCardContent(cardContent);
+
+        return persistedDocument;
     }
 
 }
