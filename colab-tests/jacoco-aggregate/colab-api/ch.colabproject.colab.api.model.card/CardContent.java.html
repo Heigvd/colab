@@ -232,7 +232,7 @@ import javax.validation.constraints.Min;
      * @return the deliverable of this card content
      */
     public Document getDeliverable() {
-<span class="fc" id="L235">        return deliverable;</span>
+<span class="nc" id="L235">        return deliverable;</span>
     }
 
     /**
@@ -293,12 +293,11 @@ import javax.validation.constraints.Min;
 <span class="fc" id="L293">            this.setStatus(o.getStatus());</span>
 <span class="fc" id="L294">            this.setCompletionLevel(o.getCompletionLevel());</span>
 <span class="fc" id="L295">            this.setCompletionMode(o.getCompletionMode());</span>
-<span class="fc" id="L296">            this.setDeliverable(o.getDeliverable());</span>
-<span class="fc" id="L297">            this.setDeliverableId(o.getDeliverableId());</span>
-<span class="fc" id="L298">        } else {</span>
-<span class="nc" id="L299">            throw new ColabMergeException(this, other);</span>
+            // the deliverable cannot be changed with a merge
+<span class="fc" id="L297">        } else {</span>
+<span class="nc" id="L298">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L301">    }</span>
+<span class="fc" id="L300">    }</span>
 
     /**
      * Get the project this content belongs to
@@ -307,35 +306,35 @@ import javax.validation.constraints.Min;
      */
     @JsonbTransient
     public Project getProject(){
-<span class="pc bpc" id="L310" title="1 of 2 branches missed.">        if (this.card != null){</span>
-<span class="fc" id="L311">            return this.card.getProject();</span>
+<span class="pc bpc" id="L309" title="1 of 2 branches missed.">        if (this.card != null){</span>
+<span class="fc" id="L310">            return this.card.getProject();</span>
         }
-<span class="nc" id="L313">        return null;</span>
+<span class="nc" id="L312">        return null;</span>
     }
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="pc bpc" id="L318" title="1 of 2 branches missed.">        if (this.card != null) {</span>
-<span class="fc" id="L319">            return this.card.getChannels();</span>
+<span class="pc bpc" id="L317" title="1 of 2 branches missed.">        if (this.card != null) {</span>
+<span class="fc" id="L318">            return this.card.getChannels();</span>
         } else {
-<span class="nc" id="L321">            return Set.of();</span>
+<span class="nc" id="L320">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L327">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L326">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L333">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L332">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L338">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
+<span class="fc" id="L337">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
                 + &quot;, completion=&quot; + completionLevel + &quot;, completionMode=&quot; + completionMode
                 + &quot;, card=&quot; + card + &quot;}&quot;;
     }

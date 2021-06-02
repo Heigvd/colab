@@ -293,12 +293,11 @@ import javax.validation.constraints.Min;
 <span class="nc" id="L293">            this.setStatus(o.getStatus());</span>
 <span class="nc" id="L294">            this.setCompletionLevel(o.getCompletionLevel());</span>
 <span class="nc" id="L295">            this.setCompletionMode(o.getCompletionMode());</span>
-<span class="nc" id="L296">            this.setDeliverable(o.getDeliverable());</span>
-<span class="nc" id="L297">            this.setDeliverableId(o.getDeliverableId());</span>
-<span class="nc" id="L298">        } else {</span>
-<span class="nc" id="L299">            throw new ColabMergeException(this, other);</span>
+            // the deliverable cannot be changed with a merge
+<span class="nc" id="L297">        } else {</span>
+<span class="nc" id="L298">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L301">    }</span>
+<span class="nc" id="L300">    }</span>
 
     /**
      * Get the project this content belongs to
@@ -307,35 +306,35 @@ import javax.validation.constraints.Min;
      */
     @JsonbTransient
     public Project getProject(){
-<span class="nc bnc" id="L310" title="All 2 branches missed.">        if (this.card != null){</span>
-<span class="nc" id="L311">            return this.card.getProject();</span>
+<span class="nc bnc" id="L309" title="All 2 branches missed.">        if (this.card != null){</span>
+<span class="nc" id="L310">            return this.card.getProject();</span>
         }
-<span class="nc" id="L313">        return null;</span>
+<span class="nc" id="L312">        return null;</span>
     }
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L318" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L319">            return this.card.getChannels();</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L318">            return this.card.getChannels();</span>
         } else {
-<span class="nc" id="L321">            return Set.of();</span>
+<span class="nc" id="L320">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L327">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L326">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L333">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L332">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L338">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
+<span class="nc" id="L337">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
                 + &quot;, completion=&quot; + completionLevel + &quot;, completionMode=&quot; + completionMode
                 + &quot;, card=&quot; + card + &quot;}&quot;;
     }

@@ -3,7 +3,7 @@ colab-client/colab-api,ch.colabproject.colab.api.model.card,CardContentStatus,44
 colab-client/colab-api,ch.colabproject.colab.api.model.card,AbstractCardType,52,0,2,0,20,0,14,0,13,0
 colab-client/colab-api,ch.colabproject.colab.api.model.card,Card,178,0,18,0,61,0,36,0,27,0
 colab-client/colab-api,ch.colabproject.colab.api.model.card,CardTypeRef,71,0,10,0,22,0,14,0,9,0
-colab-client/colab-api,ch.colabproject.colab.api.model.card,CardContent,169,0,10,0,56,0,32,0,27,0
+colab-client/colab-api,ch.colabproject.colab.api.model.card,CardContent,161,0,10,0,54,0,32,0,27,0
 colab-client/colab-api,ch.colabproject.colab.api.model.card,CardContentCompletionMode,34,0,0,0,4,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.model.card,CardType,79,0,4,0,26,0,15,0,13,0
 colab-client/colab-api,ch.colabproject.colab.api,Helper,150,0,14,0,38,0,17,0,10,0
@@ -18,7 +18,7 @@ colab-client/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.Subscri
 colab-client/colab-api,ch.colabproject.colab.api.ejb,ApplicationLifecycleFacade,38,0,2,0,15,0,4,0,3,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,WebsocketFacade,631,0,48,0,165,0,53,0,29,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,ProjectFacade,126,0,4,0,33,0,10,0,8,0
-colab-client/colab-api,ch.colabproject.colab.api.ejb,CardFacade,364,0,34,0,107,0,34,0,17,0
+colab-client/colab-api,ch.colabproject.colab.api.ejb,CardFacade,363,0,34,0,107,0,34,0,17,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,TransactionManager,159,0,14,0,42,0,16,0,9,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,RequestManager,78,0,8,0,26,0,16,0,12,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,DocumentFacade,25,0,2,0,7,0,4,0,3,0
@@ -76,7 +76,7 @@ colab-client/colab-api,ch.colabproject.colab.api.service.smtp,MessageBuilder,77,
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail.new Authenticator() {...},17,0,0,0,2,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Message,76,0,0,0,29,0,18,0,18,0
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail,173,0,6,0,42,0,6,0,3,0
-colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,71,0,0,0,18,0,9,0,9,0
+colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,82,0,0,0,20,0,10,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,73,0,0,0,18,0,9,0,9,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardTypeRestEndpoint,74,0,0,0,20,0,10,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.exceptions,ColabMergeException,15,0,0,0,5,0,2,0,2,0
