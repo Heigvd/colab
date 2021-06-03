@@ -67,6 +67,7 @@ export const initSocketId = createAsyncThunk(
 
     if (payload != null) {
       // when initializing / setting a new socket id
+      restClient.WebsocketRestEndpoint.subscribeToBroadcastChannel(payload);
       // an authenticated user shall reconnect to its own channel ASAP
       if (state.auth.currentUserId != null) {
         restClient.WebsocketRestEndpoint.subscribeToUserChannel(payload);
@@ -327,13 +328,18 @@ export const sendInvitation = createAsyncThunk(
 
 /**
  * For Admins: get all cardTypes
+ * DEPRECATED!!!
  */
 export const initCardTypes = createAsyncThunk('cardType/init', async () => {
   return await restClient.CardTypeRestEndpoint.getAllCardTypes();
 });
 
 /**
- * Get project own cardTypes
+ * Get project own cardTypes:
+ *  - defined by the project
+ *    - list of CardType
+ *  - defined by other projects but already referenced by the current project
+ *    - CardTypeRef chain + CardType
  */
 export const getProjectCardTypes = createAsyncThunk(
   'cardType/getProjectOnes',
@@ -347,21 +353,22 @@ export const getProjectCardTypes = createAsyncThunk(
 );
 
 /**
- * Get all global cardTypes
+ * Get all published type from all project accessible to the curent user plus global published ones
+ */
+export const getPublishedCardTypes = createAsyncThunk('cardType/getPublished', async () => {
+  const getFromProjects = restClient.CardTypeRestEndpoint.getPublishedCardTypes();
+  const getGlobals = restClient.CardTypeRestEndpoint.getPublishedGlobalsCardTypes();
+
+  return [...(await getFromProjects), ...(await getGlobals)];
+});
+
+/**
+ * Get all global cardTypes.
+ * Admin only !
  */
 export const getAllGlobalCardTypes = createAsyncThunk('cardType/getAllGlobals', async () => {
   return await restClient.CardTypeRestEndpoint.getAllGlobalCardTypes();
 });
-
-/**
- * Get published global cardTypes
- */
-export const getPublishedGlobalCardTypes = createAsyncThunk(
-  'cardType/getPublihedGlobals',
-  async () => {
-    return await restClient.CardTypeRestEndpoint.getPublishedGlobalsCardTypes();
-  },
-);
 
 export const getCardType = createAsyncThunk('cardType/get', async (id: number) => {
   return await restClient.CardTypeRestEndpoint.getCardType(id);

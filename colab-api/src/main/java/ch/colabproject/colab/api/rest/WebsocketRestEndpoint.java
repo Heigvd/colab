@@ -62,6 +62,30 @@ public class WebsocketRestEndpoint {
     }
 
     /**
+     * Subscribe to the broadcast channel
+     *
+     * @param sessionId websocket session id
+     */
+    @PUT
+    @Path("SubscribeToBroadcastChannel")
+    public void subscribeToBroadcastChannel(WsSessionIdentifier sessionId) {
+        logger.debug("Subscribe to broadcast channel with session id {}", sessionId);
+        wsFacade.subscribeToBroadcastChannel(sessionId);
+    }
+
+    /**
+     * Unsubscribe from a the broadcast channel.
+     *
+     * @param sessionId websocket session id
+     */
+    @PUT
+    @Path("UnSubscribeFromBroadcastChannel")
+    public void unsubscribeFromBroadcastChannel(WsSessionIdentifier sessionId) {
+        logger.debug("Unsubscribe from broadcast channel with session id {}", sessionId);
+        wsFacade.unsubscribeFromBroadcastChannel(sessionId);
+    }
+
+    /**
      * Subscribe to the currentUser channel
      *
      * @param sessionId websocket session id

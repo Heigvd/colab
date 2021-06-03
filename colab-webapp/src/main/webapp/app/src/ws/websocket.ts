@@ -34,7 +34,7 @@ const onUpdate = (event: WsUpdateMessage) => {
     } else if (indexEntryIs(item, 'CardType')) {
       dispatch(CardTypeActions.removeCardType(item.id));
     } else if (indexEntryIs(item, 'CardTypeRef')) {
-      dispatch(CardTypeActions.removeCardTypeRef(item.id));
+      dispatch(CardTypeActions.removeCardType(item.id));
     } else if (indexEntryIs(item, 'CardContent')) {
       dispatch(CardActions.removeContent(item.id));
     } else if (indexEntryIs(item, 'User')) {
@@ -64,7 +64,7 @@ const onUpdate = (event: WsUpdateMessage) => {
     } else if (entityIs(item, 'CardType')) {
       dispatch(CardTypeActions.updateCardType(item));
     } else if (entityIs(item, 'CardTypeRef')) {
-      dispatch(CardTypeActions.updateCardTypeRef(item));
+      dispatch(CardTypeActions.updateCardType(item));
     } else if (entityIs(item, 'User')) {
       dispatch(UserActions.updateUser(item));
     } else if (entityIs(item, 'Account')) {

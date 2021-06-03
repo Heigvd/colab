@@ -76,12 +76,6 @@ public abstract class AbstractArquillianTest {
     protected static final Logger logger = LoggerFactory.getLogger(AbstractArquillianTest.class);
 
     /**
-     * Regex which extract token id and plain Token from an email body. It search the values within
-     * a href attribute
-     */
-    protected static final Pattern TOKEN_EXTRACTOR = Pattern.compile(".*href=\".*#/token/(\\d+)/(.*)\".*");
-
-    /**
      * Provide one-stop-shop reflections object
      */
     protected static final Reflections reflections;
@@ -299,8 +293,7 @@ public abstract class AbstractArquillianTest {
 
             if (!headers.isEmpty()
                 && VerifyLocalAccountToken.EMAIL_SUBJECT.equals(headers.get(0))) {
-                String body = message.getContent().getBody();
-                Matcher matcher = TOKEN_EXTRACTOR.matcher(body);
+                Matcher matcher = TestHelper.extractToken(message);
                 if (matcher.matches()) {
                     Long tokenId = Long.parseLong(matcher.group(1));
                     String plainToken = matcher.group(2);
@@ -315,23 +308,6 @@ public abstract class AbstractArquillianTest {
         });
     }
 
-    /**
-     * Get all mailhog messages sent to given recipient:
-     *
-     * @param recipient to addres
-     *
-     * @return list of message received by the recipient
-     */
-    protected List<Message> getMessageByRecipient(String recipient) {
-        if (recipient != null) {
-            return mailClient.getMessages().stream().filter(message -> {
-                return message.getRaw().getTo().stream()
-                    .anyMatch(to -> recipient.equals(to));
-            }).collect(Collectors.toList());
-        } else {
-            return List.of();
-        }
-    }
 
     /**
      * Sign the current user out
@@ -465,23 +441,5 @@ public abstract class AbstractArquillianTest {
                 this.initTime - this.startTime,
                 now - this.initTime);
         }
-    }
-
-    // --------------------------------------------------------------------------------------------
-    // FACTORY
-    // --------------------------------------------------------------------------------------------
-    protected CardType createCardType(Long projectId) {
-        CardType cardType = new CardType();
-        cardType.setProjectId(projectId);
-
-        Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardType);
-        return client.cardTypeRestEndpoint.getCardType(cardTypeId);
-    }
-
-    protected Project createProject(String name) {
-        Project p = new Project();
-        p.setName(name);
-        Long id = client.projectRestEndpoint.createProject(p);
-        return client.projectRestEndpoint.getProject(id);
     }
 }

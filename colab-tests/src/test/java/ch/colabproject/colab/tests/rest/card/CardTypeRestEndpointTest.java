@@ -7,14 +7,27 @@
 package ch.colabproject.colab.tests.rest.card;
 
 import ch.colabproject.colab.api.model.ConcretizationCategory;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
+import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
+import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
+import ch.colabproject.colab.tests.tests.ColabFactory;
+import ch.colabproject.colab.tests.tests.TestHelper;
+import ch.colabproject.colab.tests.tests.TestUser;
+import ch.colabproject.colab.tests.ws.WebsocketClient;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import javax.websocket.DeploymentException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +41,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
     @Test
     public void testCreateCardType() {
         Long projectId = client.projectRestEndpoint.createProject(new Project());
-        CardType cardType = createCardType(projectId);
+        CardType cardType = ColabFactory.createCardType(client, projectId);
 
         Assertions.assertNotNull(cardType);
         Assertions.assertNotNull(cardType.getId());
@@ -40,66 +53,216 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testCreateAndUseGlobalCardType() {
+    public void testCreateAndUseGlobalCardType() throws DeploymentException, IOException, URISyntaxException, InterruptedException {
+        // create some goulash user with its own clients
+        TestUser goulash = this.signup(
+            "goulash",
+            "goulash@test.local",
+            "MyPassword");
+        ColabClient goulashClient = this.createRestClient();
+        this.signIn(goulashClient, goulash);
+        WebsocketClient wsGoulashClient = this.createWsClient();
+        goulashClient.websocketRestEndpoint.subscribeToBroadcastChannel(wsGoulashClient.getSessionId());
+        goulashClient.websocketRestEndpoint.subscribeToUserChannel(wsGoulashClient.getSessionId());
+
+        // Sign in as admin and initialize websocket connection
+        this.signIn(admin);
+        WebsocketClient adminWsClient = this.createWsClient();
+        client.websocketRestEndpoint.subscribeToBroadcastChannel(adminWsClient.getSessionId());
+        client.websocketRestEndpoint.subscribeToUserChannel(adminWsClient.getSessionId());
+
+        // Wait for ChannelUpdateMessage
+        TestHelper.waitForMessagesAndAssert(adminWsClient, 1, 5, WsChannelUpdate.class);
+
         // -----
         // Global type
         // -----
-        CardType globalType = this.createCardType(null);
+        adminWsClient.clearMessages();
+        wsGoulashClient.clearMessages();
+        CardType globalType = ColabFactory.createCardType(client, null);
+
+        // admin should have receive the type by websocket
+        WsUpdateMessage adminWsType = TestHelper.waitForMessagesAndAssert(
+            adminWsClient, 1, 5, WsUpdateMessage.class).get(0);
+        Assertions.assertEquals(1, adminWsType.getUpdated().size());
+        CardType aWsCardType = TestHelper.findFirst(adminWsType.getUpdated(), CardType.class);
+
+        //Publish the projectOneType
+        globalType.setPublished(true);
+        client.cardTypeRestEndpoint.updateCardType(globalType);
+
+        // Assert the published type is sent to all users
+        WsUpdateMessage goulashGlobalTypeUpdate = TestHelper.waitForMessagesAndAssert(
+            wsGoulashClient, 1, 5, WsUpdateMessage.class).get(0);
+        Assertions.assertEquals(1, goulashGlobalTypeUpdate.getUpdated().size());
+        aWsCardType = TestHelper.findFirst(goulashGlobalTypeUpdate.getUpdated(), CardType.class);
+        Assertions.assertEquals(globalType, aWsCardType);
+        Assertions.assertTrue(aWsCardType.isPublished());
 
         // -----
         // Global type is used by projectOne
         // -----
-        Project projectOne = this.createProject("Project One");
-        List<AbstractCardType> types = client.projectRestEndpoint.getCardTypesOfProject(projectOne.getId());
+        Project projectOne = ColabFactory.createProject(client, "Project One");
+        Set<AbstractCardType> types = client.projectRestEndpoint.getCardTypesOfProject(projectOne.getId());
         Assertions.assertEquals(0, types.size());
 
-        Card rootCard = client.cardRestEndpoint.getCard(projectOne.getRootCardId());
-        Long rootCardId = rootCard.getId();
-
-        List<CardContent> rootCardContents = client.cardRestEndpoint
-            .getContentVariantsOfCard(rootCardId);
-        Long parentId = rootCardContents.get(0).getId();
+        Long parentId = ColabFactory.getRootContent(client, projectOne).getId();
 
         // create a card based on a global type
         Card card = client.cardRestEndpoint.createNewCard(parentId, globalType.getId());
-        Long cardId = card.getId();
 
         // assert the proejct now contains a CardTypeRef to the global type
         types = client.projectRestEndpoint.getCardTypesOfProject(projectOne.getId());
-        Assertions.assertEquals(1, types.size());
-        AbstractCardType theType = types.get(0);
-        Assertions.assertTrue(theType instanceof CardTypeRef);
+        // One concrete type
+        List<CardType> concrete = TestHelper.filterAndAssert(types, 1, CardType.class);
 
-        CardTypeRef projectOneRef = (CardTypeRef) theType;
+        // One type reference
+        List<CardTypeRef> refs = TestHelper.filterAndAssert(types, 1, CardTypeRef.class);
+
+        CardType theType = concrete.get(0);
+        CardTypeRef projectOneRef = refs.get(0);
+
         Assertions.assertEquals(projectOne.getId(), projectOneRef.getProjectId());
         Assertions.assertEquals(globalType.getId(), projectOneRef.getAbstractCardTypeId());
+        Assertions.assertEquals(globalType, theType);
 
         // -----
         // ProjectOne type is used by projectTwo
         // -----
-        Project projectTwo = this.createProject("Project Two");
-
-        rootCard = client.cardRestEndpoint.getCard(projectTwo.getRootCardId());
-        rootCardId = rootCard.getId();
-
-        rootCardContents = client.cardRestEndpoint
-            .getContentVariantsOfCard(rootCardId);
-        parentId = rootCardContents.get(0).getId();
+        Project projectTwo = ColabFactory.createProject(client, "Project Two");
+        parentId = ColabFactory.getRootContent(client, projectTwo).getId();
 
         // create a card based on projectOne type
         card = client.cardRestEndpoint.createNewCard(parentId, projectOneRef.getId());
-        cardId = card.getId();
 
         // assert the proejct now contains a CardTypeRef to the project one type
         types = client.projectRestEndpoint.getCardTypesOfProject(projectTwo.getId());
-        Assertions.assertEquals(1, types.size());
-        theType = types.get(0);
-        Assertions.assertTrue(theType instanceof CardTypeRef);
+        // One concrete type
+        concrete = TestHelper.filterAndAssert(types, 1, CardType.class);
 
-        CardTypeRef projectTwoRef = (CardTypeRef) theType;
+        // One type reference
+        refs = TestHelper.filterAndAssert(types, 2, CardTypeRef.class);
+
+        theType = concrete.get(0);
+
+        Optional<CardTypeRef> optRef = refs.stream().filter(ref -> projectTwo.getId().equals(ref.getProjectId())).findFirst();
+        Assertions.assertTrue(optRef.isPresent());
+        CardTypeRef projectTwoRef = optRef.get();
+
         Assertions.assertEquals(projectTwo.getId(), projectTwoRef.getProjectId());
         Assertions.assertEquals(projectOneRef.getId(), projectTwoRef.getAbstractCardTypeId());
+        Assertions.assertEquals(globalType, theType);
+    }
 
+    @Test
+    public void testCreateAndReuseCardType() throws DeploymentException, IOException, URISyntaxException, InterruptedException {
+        // create some goulash user with its own clients
+        TestUser goulash = this.signup(
+            "goulashsensei",
+            "goulash@test.local",
+            "MyPassword");
+        // Sign in as goulash and initialize websocket connection
+        this.signIn(goulash);
+        WebsocketClient wsClient = this.createWsClient();
+        client.websocketRestEndpoint.subscribeToBroadcastChannel(wsClient.getSessionId());
+        client.websocketRestEndpoint.subscribeToUserChannel(wsClient.getSessionId());
+
+        TestUser pizzaiolo = this.signup(
+            "pizzaiolo",
+            "pizza@test.local",
+            "qu3stap1zzaèlamI9lior3d3l0OndO");
+        // Sign in as goulash and initialize websocket connection
+        ColabClient pizzaHttpClient = this.createRestClient();
+        this.signIn(pizzaHttpClient, pizzaiolo);
+        WebsocketClient pizzaWsClient = this.createWsClient();
+        pizzaHttpClient.websocketRestEndpoint.subscribeToBroadcastChannel(pizzaWsClient.getSessionId());
+        pizzaHttpClient.websocketRestEndpoint.subscribeToUserChannel(pizzaWsClient.getSessionId());
+
+        // -----
+        // Goulash creates a project
+        // -----
+        Project projectOne = ColabFactory.createProject(client, "Project One");
+        Assertions.assertEquals(0, client.projectRestEndpoint.getCardTypesOfProject(projectOne.getId()).size());
+        client.websocketRestEndpoint.subscribeToProjectChannel(projectOne.getId(), wsClient.getSessionId());
+
+        // wait for propagation
+        TestHelper.waitForMessagesAndAssert(wsClient, 1, 5, WsUpdateMessage.class).get(0);
+
+
+        // -----
+        // Create type in project one
+        // -----
+        CardType projectOneType = ColabFactory.createCardType(client, projectOne.getId());
+
+        // user should have receive two message. One contains the project and has been sent through
+        // the user own channel. Second message contains the type and has been send through the
+        // project channel
+        List<WsUpdateMessage> wsUpdate = TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class);
+        // combine messages
+        Set<WithWebsocketChannels>  updated = new HashSet<>();
+        updated.addAll(wsUpdate.get(0).getUpdated());
+        updated.addAll(wsUpdate.get(1).getUpdated());
+
+        //Assertions.assertEquals(1, wsUpdate.getUpdated().size());
+        CardType wsProjectOneType = TestHelper.findFirst(updated, CardType.class);
+        Assertions.assertEquals(projectOneType, wsProjectOneType);
+
+        // create a card based on the type
+        Long projectOneRootContentId = ColabFactory.getRootContent(client, projectOne).getId();
+        client.cardRestEndpoint.createNewCard(projectOneRootContentId, projectOneType.getId());
+
+        // As the type is not published, Goulash does not read from the published list
+        Assertions.assertTrue(client.cardTypeRestEndpoint.getPublishedCardTypes().isEmpty());
+
+        // but can read it from the project list
+        Assertions.assertEquals(1, client.projectRestEndpoint.getCardTypesOfProject(projectOne.getId()).size());
+
+        // Goulash creates projectTwo
+        Project projectTwo = ColabFactory.createProject(client, "Project Two");
+
+        // Goulash invites pizzaiolo
+        ColabFactory.inviteAndJoin(client, projectTwo, "pizza@pizza.local", pizzaHttpClient, mailClient);
+
+        pizzaHttpClient.websocketRestEndpoint.subscribeToProjectChannel(projectTwo.getId(), pizzaWsClient.getSessionId());
+
+        // publish the projectOneType
+        projectOneType.setPublished(true);
+        client.cardTypeRestEndpoint.updateCardType(projectOneType);
+
+        // it is visible for goulash
+        Assertions.assertEquals(1l, client.cardTypeRestEndpoint.getPublishedCardTypes().size());
+
+        // but not for pizzaiolo
+        Assertions.assertEquals(0, pizzaHttpClient.cardTypeRestEndpoint.getPublishedCardTypes().size());
+
+        // goulash create a card in projectTwo based on the projectOne type
+        Long projectTwoRootContentId = ColabFactory.getRootContent(client, projectTwo).getId();
+        client.cardRestEndpoint.createNewCard(projectTwoRootContentId, projectOneType.getId());
+
+        // goulash and pizzaiolo can now access the type through the reference from projectTwo
+        Set<AbstractCardType> goulashTypes = client.projectRestEndpoint.getCardTypesOfProject(projectTwo.getId());
+        Set<AbstractCardType> pizzaTypes = pizzaHttpClient.projectRestEndpoint.getCardTypesOfProject(projectTwo.getId());
+
+        TestHelper.assertSetsEquals(goulashTypes, pizzaTypes);
+
+        pizzaWsClient.clearMessages();
+        wsClient.clearMessages();
+
+        // Update the projectOneType
+        projectOneType.setTitle("My Favourite Receipes");
+        projectOneType.setPurpose("How to cook dishes from all over the world");
+        client.cardTypeRestEndpoint.updateCardType(projectOneType);
+
+        // both goulash and pizzaiolo should receive the update through websocket
+        WsUpdateMessage goulashMessage = TestHelper.waitForMessagesAndAssert(wsClient, 1, 5, WsUpdateMessage.class).get(0);
+        WsUpdateMessage pizzaMessage = TestHelper.waitForMessagesAndAssert(pizzaWsClient, 1, 5, WsUpdateMessage.class).get(0);
+
+
+        CardType pizzaType = TestHelper.filterAndAssert(pizzaMessage.getUpdated(), 1, CardType.class).get(0);
+        CardType goulashType = TestHelper.filterAndAssert(goulashMessage.getUpdated(), 1, CardType.class).get(0);
+        Assertions.assertEquals(pizzaType, goulashType);
+        Assertions.assertEquals(projectOneType.getTitle(), goulashType.getTitle());
+        Assertions.assertEquals(projectOneType.getTitle(), pizzaType.getTitle());
     }
 
     @Test
@@ -113,7 +276,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
             + ((int) (Math.random() * 1000));
         ConcretizationCategory authorityHolder = ConcretizationCategory.PROJECT;
 
-        CardType cardType = this.createCardType(projectId);
+        CardType cardType = ColabFactory.createCardType(client, projectId);
 
         Assertions.assertNull(cardType.getUniqueId());
         Assertions.assertNull(cardType.getTitle());
@@ -139,11 +302,11 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Long projectId = client.projectRestEndpoint.createProject(new Project());
         int initialSize = client.cardTypeRestEndpoint.getAllCardTypes().size();
 
-        CardType cardType1 = this.createCardType(projectId);
+        CardType cardType1 = ColabFactory.createCardType(client, projectId);
         cardType1.setTitle("Game design " + ((int) (Math.random() * 1000)));
         client.cardTypeRestEndpoint.updateCardType(cardType1);
 
-        CardType cardType2 = this.createCardType(projectId);
+        CardType cardType2 = ColabFactory.createCardType(client, projectId);
         cardType2.setTitle("Game rules " + ((int) (Math.random() * 1000)));
         client.cardTypeRestEndpoint.updateCardType(cardType2);
 
@@ -155,7 +318,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
     public void testDeleteCardType() {
         Long projectId = client.projectRestEndpoint.createProject(new Project());
 
-        CardType cardType = this.createCardType(projectId);
+        CardType cardType = ColabFactory.createCardType(client, projectId);
         Long cardTypeId = cardType.getId();
 
         CardType persistedCardType = client.cardTypeRestEndpoint.getCardType(cardTypeId);
@@ -171,17 +334,17 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
     public void testProjectAccess() {
         String projectName = "Easy learn german " + ((int) (Math.random() * 1000));
 
-        Project project = this.createProject(projectName);
+        Project project = ColabFactory.createProject(client, projectName);
         Long projectId = project.getId();
 
-        CardType cardType = this.createCardType(projectId);
+        CardType cardType = ColabFactory.createCardType(client, projectId);
         Long cardTypeId = cardType.getId();
 
         Assertions.assertEquals(projectId, cardType.getProjectId());
 
-        List<AbstractCardType> cardTypesOfProject = client.projectRestEndpoint.getCardTypesOfProject(projectId);
+        Set<AbstractCardType> cardTypesOfProject = client.projectRestEndpoint.getCardTypesOfProject(projectId);
         Assertions.assertNotNull(cardTypesOfProject);
         Assertions.assertEquals(1, cardTypesOfProject.size());
-        Assertions.assertEquals(cardTypeId, cardTypesOfProject.get(0).getId());
+        Assertions.assertEquals(cardTypeId, cardTypesOfProject.iterator().next().getId());
     }
 }

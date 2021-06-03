@@ -400,15 +400,14 @@ public class RestEndpoint {
             sb.append(" *");
             appendJavadocBlock(sb, " *", methodDoc, true, reflections);
 
-            String resolvedReturnType
-                = resolveImport(method.getReturnType().getTypeName(), imports);
-
             newLine(sb);
             sb.append(" */");
             newLine(sb);
             ////////////////////////////////////////////////////////////////////////////////////////
             // SIGNATURE
             ////////////////////////////////////////////////////////////////////////////////////////
+            String resolvedReturnType
+                = resolveImport(method.getReturnType().getTypeName(), imports);
             sb.append("public ").append(resolvedReturnType)
                 .append(" ").append(method.getName()).append("(");
 

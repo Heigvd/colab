@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.ws.WebsocketEndpoint;
 import ch.colabproject.colab.api.ws.WebsocketHelper;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
+import ch.colabproject.colab.api.ws.channel.BroadcastChannel;
 import ch.colabproject.colab.api.ws.channel.ChannelOverview;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
@@ -198,6 +199,38 @@ public class WebsocketFacade {
     public Map<WebsocketEffectiveChannel, Integer> getSubscrciptionsCount() {
         return this.subscriptions.entrySet().stream()
             .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().size()));
+    }
+
+    /**
+     * Current user want to subscribe the broadcast channel
+     *
+     * @param sessionId websocket session identifier
+     */
+    public void subscribeToBroadcastChannel(WsSessionIdentifier sessionId) {
+        logger.debug("Session {} want to subscribe to broadcast channel", sessionId);
+        SubscriptionRequest request = SubscriptionRequest.build(
+            SubscriptionRequest.SubscriptionType.SUBSCRIBE,
+            SubscriptionRequest.ChannelType.BROADCAST,
+            0L,
+            sessionId.getSessionId(),
+            requestManager.getHttpSession().getSessionId());
+        subscriptionEvents.fire(request);
+    }
+
+    /**
+     * Current user want to unsubscribe from the broadcast channel
+     *
+     * @param sessionId websocket session identifier
+     */
+    public void unsubscribeFromBroadcastChannel(WsSessionIdentifier sessionId) {
+        logger.debug("Session {} want to unsubscribe from the broadcast channel", sessionId);
+        SubscriptionRequest request = SubscriptionRequest.build(
+            SubscriptionRequest.SubscriptionType.UNSUBSCRIBE,
+            SubscriptionRequest.ChannelType.BROADCAST,
+            0L,
+            sessionId.getSessionId(),
+            requestManager.getHttpSession().getSessionId());
+        subscriptionEvents.fire(request);
     }
 
     /**
@@ -420,6 +453,8 @@ public class WebsocketFacade {
             if (user != null) {
                 return user.getEffectiveChannel();
             }
+        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BROADCAST) {
+            return BroadcastChannel.build();
         }
 
         // not found...

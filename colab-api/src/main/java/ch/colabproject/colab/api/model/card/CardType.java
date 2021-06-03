@@ -9,9 +9,7 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
-import java.util.Set;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -131,6 +129,11 @@ public class CardType extends AbstractCardType {
         return this;
     }
 
+    @Override
+    public List<AbstractCardType> expand() {
+        return List.of(this);
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -139,6 +142,8 @@ public class CardType extends AbstractCardType {
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
+        super.merge(other);
+
         if (other instanceof CardType) {
             CardType o = (CardType) other;
             // this.setUniqueId(o.getUniqueId());
@@ -147,15 +152,6 @@ public class CardType extends AbstractCardType {
             // this.setAuthorityHolder(o.getAuthorityHolder());
         } else {
             throw new ColabMergeException(this, other);
-        }
-    }
-
-    @Override
-    public Set<WebsocketChannel> getChannels() {
-        if (this.getProject() != null) {
-            return Set.of(ProjectContentChannel.build(this.getProject()));
-        } else {
-            return Set.of();
         }
     }
 

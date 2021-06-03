@@ -164,11 +164,7 @@ const projectsSlice = createSlice({
       }),
 });
 
-export const {
-  updateProject,
-  removeProject,
-  updateTeamMember,
-  removeTeamMember,
-} = projectsSlice.actions;
+export const { updateProject, removeProject, updateTeamMember, removeTeamMember } =
+  projectsSlice.actions;
 
 export default projectsSlice.reducer;

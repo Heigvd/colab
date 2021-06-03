@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -153,13 +154,14 @@ public class ProjectFacade {
      *
      * @return all card definitions of the project
      */
-    public List<AbstractCardType> getCardTypes(Long projectId) {
+    public Set<AbstractCardType> getCardTypes(Long projectId) {
         Project project = projectDao.getProject(projectId);
         logger.debug("Get card defs of project {}", project);
         if (project == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
-        return project.getElementsToBeDefined();
+
+        return cardFacade.getExpandedProjectType(project);
     }
 
 }

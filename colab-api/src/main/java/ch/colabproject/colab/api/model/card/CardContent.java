@@ -9,8 +9,8 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
@@ -50,7 +50,6 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Card content ID
      */
@@ -120,7 +119,6 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the id
      */
@@ -281,7 +279,6 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     /**
      * {@inheritDoc}
      */
@@ -306,8 +303,8 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
      * @return content owner
      */
     @JsonbTransient
-    public Project getProject(){
-        if (this.card != null){
+    public Project getProject() {
+        if (this.card != null) {
             return this.card.getProject();
         }
         return null;
@@ -336,8 +333,8 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
     @Override
     public String toString() {
         return "CardContent{" + "id=" + id + ", title=" + title + ", status=" + status
-                + ", completion=" + completionLevel + ", completionMode=" + completionMode
-                + ", card=" + card + "}";
+            + ", completion=" + completionLevel + ", completionMode=" + completionMode
+            + ", card=" + card + "}";
     }
 
 }

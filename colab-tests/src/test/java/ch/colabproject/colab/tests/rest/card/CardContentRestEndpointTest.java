@@ -15,6 +15,7 @@ import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
+import ch.colabproject.colab.tests.tests.ColabFactory;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -134,7 +135,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Long projectId = client.projectRestEndpoint.createProject(new Project());
         Project project = client.projectRestEndpoint.getProject(projectId);
 
-        CardType cardType = this.createCardType(projectId);
+        CardType cardType = ColabFactory.createCardType(client, projectId);
         Long cardTypeId = cardType.getId();
 
         Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());
@@ -164,7 +165,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Long projectId = client.projectRestEndpoint.createProject(new Project());
         Project project = client.projectRestEndpoint.getProject(projectId);
 
-        CardType cardType = this.createCardType(projectId);
+        CardType cardType = ColabFactory.createCardType(client, projectId);
         Long cardTypeId = cardType.getId();
 
         Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());

@@ -8,10 +8,16 @@ package ch.colabproject.colab.tests.tests;
 
 import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.tests.mailhog.MailhogClient;
+import ch.colabproject.colab.tests.mailhog.model.Message;
 import ch.colabproject.colab.tests.ws.WebsocketClient;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.function.Executable;
 import org.slf4j.Logger;
@@ -22,6 +28,12 @@ import org.slf4j.event.Level;
  * @author maxence
  */
 public class TestHelper {
+
+/**
+     * Regex which extract token id and plain Token from an email body. It search the values within
+     * a href attribute
+     */
+    public static final Pattern TOKEN_EXTRACTOR = Pattern.compile(".*href=\".*#/token/(\\d+)/(.*)\".*");
 
     /**
      * Assert HttpErrorMessage is thrown with expected error code
@@ -42,6 +54,17 @@ public class TestHelper {
             Assertions.fail("Expect HttpErrorMessage Exception but got " + ex);
         }
         Assertions.fail("Did not thown anything");
+    }
+
+    public static void assertSetsEquals(Set a, Set b){
+        Assertions.assertNotNull(a);
+        Assertions.assertNotNull(b);
+
+        Assertions.assertEquals(a.size(), b.size());
+
+        a.forEach((o) -> {
+            Assertions.assertTrue(b.contains(o));
+        });
     }
 
     /**
@@ -82,7 +105,7 @@ public class TestHelper {
 
     /**
      *
-     * First this method filter the list to keep inly instance of the given class. Then, the method
+     * First this method filter the list to keep only instance of the given class. Then, the method
      * asserts the filtered list contains exactly {@code count} items.
      *
      * @param <T>   T
@@ -92,7 +115,7 @@ public class TestHelper {
      *
      * @return list which contains {@code count} item of type T
      */
-    public static <T> List<T> filterAndAssert(List list, int count, Class< ? extends T> klass) {
+    public static <T> List<T> filterAndAssert(Collection list, int count, Class< ? extends T> klass) {
         List<T> result = new ArrayList<>();
         for (var item : list) {
             if (klass.isAssignableFrom(item.getClass())) {
@@ -122,5 +145,28 @@ public class TestHelper {
 
         Assertions.fail("No " + klass + " instance in " + collection);
         return null;
+    }
+
+    /**
+     * Get all mailhog messages sent to given recipient:
+     *
+     * @param mailClient mailhog client
+     * @param recipient to address
+     *
+     * @return list of message received by the recipient
+     */
+    public static List<Message> getMessageByRecipient(MailhogClient mailClient, String recipient) {
+        if (recipient != null) {
+            return mailClient.getMessages().stream().filter(message -> {
+                return message.getRaw().getTo().stream()
+                    .anyMatch(to -> recipient.equals(to));
+            }).collect(Collectors.toList());
+        } else {
+            return List.of();
+        }
+    }
+
+    public static Matcher extractToken(Message message){
+        return TOKEN_EXTRACTOR.matcher(message.getContent().getBody());
     }
 }

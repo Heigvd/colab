@@ -13,6 +13,8 @@ import { useAppDispatch } from '../../../store/hooks';
 import { CardType } from 'colab-rest-client';
 import AutoSaveInput from '../../common/AutoSaveInput';
 import { cardShadow } from '../../styling/style';
+import IconButton from '../../common/IconButton';
+import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
 
 interface DisplayProps {
   cardType: CardType;
@@ -46,6 +48,22 @@ export default function CardTypeEditor({ cardType }: DisplayProps) {
         value={cardType.purpose || ''}
         onChange={newValue => dispatch(API.updateCardType({ ...cardType, purpose: newValue }))}
       />
+      <IconButton
+        icon={cardType.deprecated ? faCheckSquare : faSquare}
+        onClick={() =>
+          dispatch(API.updateCardType({ ...cardType, deprecated: !cardType.deprecated }))
+        }
+      >
+        Deprecated
+      </IconButton>
+      <IconButton
+        icon={cardType.published ? faCheckSquare : faSquare}
+        onClick={() =>
+          dispatch(API.updateCardType({ ...cardType, published: !cardType.published }))
+        }
+      >
+        Published
+      </IconButton>
     </div>
   );
 }

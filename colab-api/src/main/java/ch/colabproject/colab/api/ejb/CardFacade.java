@@ -21,8 +21,10 @@ import ch.colabproject.colab.api.persistence.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -125,6 +127,42 @@ public class CardFacade {
     }
 
     /**
+     * Expand project own types.
+     *
+     * @param project type owner
+     *
+     * @return set of concrete types and all transitive ref to reach them
+     */
+    public Set<AbstractCardType> getExpandedProjectType(Project project) {
+        return this.expand(project.getElementsToBeDefined());
+    }
+
+    /**
+     * Expand all type the current user has access to
+     *
+     * @return set of concrete types and all transitive ref to reach them
+     */
+    public Set<AbstractCardType> getExpandedPublishedTypes() {
+        return this.expand(cardTypeDao.getPublishedProjectsCardType());
+    }
+
+    /**
+     * Expand given types
+     *
+     * @param types to expand
+     *
+     * @return all types
+     */
+    public Set<AbstractCardType> expand(List<AbstractCardType> types) {
+        Set<AbstractCardType> allTypes = new HashSet<>();
+        types.forEach(type -> {
+            allTypes.addAll(type.expand());
+        });
+
+        return allTypes;
+    }
+
+    /**
      * @return a new card definition initialized object
      */
     private CardType initNewCardType(CardType cardType) {
@@ -154,7 +192,7 @@ public class CardFacade {
     /**
      * Create a new card into a card content with a card definition
      *
-     * @param parentId         parent id of the new card
+     * @param parentId          parent id of the new card
      * @param cardTypeinitionId card definition id of the new card
      *
      * @return a new, initialized and persisted card
@@ -192,7 +230,10 @@ public class CardFacade {
     private CardTypeRef createReference(AbstractCardType cardType, Project project) {
         CardTypeRef ref = new CardTypeRef();
         ref.setProject(project);
+
         ref.setAbstractCardType(cardType);
+        cardType.getReferences().add(ref);
+
         // TODO: copy deprecated state or do never deprecate just created types?
         //ref.setDeprecated(cardType.isDeprecated());
         ref.setDeprecated(false);
@@ -207,7 +248,7 @@ public class CardFacade {
      * Initialize card. Card will be bound to the given type. If the type does not belongs to the
      * same project as the card do, a type ref is created.
      *
-     * @param parent         Parent of the new card
+     * @param parent          Parent of the new card
      * @param cardTypeinition Related card definition
      *
      * @return a new card containing a new card content with cardTypeinition
@@ -258,6 +299,17 @@ public class CardFacade {
     }
 
     /**
+     * @return a new card containing a new card content
+     */
+    private Card initNewCard() {
+        Card card = new Card();
+
+        initNewCardContent(card);
+
+        return card;
+    }
+
+    /**
      * Is the given child a direct reference to the given parent
      *
      * @param child  the child
@@ -291,17 +343,6 @@ public class CardFacade {
         }
 
         return false;
-    }
-
-    /**
-     * @return a new card containing a new card content
-     */
-    private Card initNewCard() {
-        Card card = new Card();
-
-        initNewCardContent(card);
-
-        return card;
     }
 
     /**
@@ -340,7 +381,6 @@ public class CardFacade {
 
             // TODO see if more checks must be done
             // by example if there already were another deliverable
-
             CardContent updatedCardContent = cardContentDao.updateCardContent(cardContent);
 
             deliverable.setDeliverableCardContent(updatedCardContent);

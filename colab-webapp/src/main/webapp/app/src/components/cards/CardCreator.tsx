@@ -12,9 +12,8 @@ import { CardContent } from 'colab-rest-client';
 import IconButton from '../common/IconButton';
 import { faPlus, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import Overlay from '../common/Overlay';
-import { useCardTypes } from '../../selectors/cardTypeSelector';
+import { useProjectCardTypes } from '../../selectors/cardTypeSelector';
 import Loading from '../common/Loading';
-import { getProjectCardTypes } from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
@@ -42,7 +41,7 @@ export default function CardCreator({ parent }: Props): JSX.Element {
     setSelectedType(id);
   }, []);
 
-  const cardTypes = useCardTypes();
+  const cardTypes = useProjectCardTypes();
 
   if (state === 'COLLAPSED') {
     return (
@@ -57,12 +56,20 @@ export default function CardCreator({ parent }: Props): JSX.Element {
       </div>
     );
   } else {
-    if (cardTypes.status === 'UNSET') {
+    if (cardTypes.projectStatus === 'UNSET') {
       if (project != null) {
-        dispatch(getProjectCardTypes(project));
+        dispatch(API.getProjectCardTypes(project));
       }
     }
-    if (cardTypes.status !== 'READY' || state === 'PENDING') {
+    if (cardTypes.publishedStatus === 'UNSET') {
+      // published type from other project or global types not yet knonw
+      dispatch(API.getPublishedCardTypes());
+    }
+    if (
+      cardTypes.projectStatus !== 'READY' ||
+      cardTypes.publishedStatus !== 'READY' ||
+      state === 'PENDING'
+    ) {
       return <Loading />;
     } else {
       return (
@@ -80,8 +87,20 @@ export default function CardCreator({ parent }: Props): JSX.Element {
               <h2>Create a new subcard {parent.title ? 'for ' + parent.title : ''}</h2>
               <div>
                 <h3>Common types</h3>
+                <h4>Global</h4>
                 <div className={listOfTypeStyle}>
-                  {cardTypes.inheritedCardType.map(cardType => (
+                  {cardTypes.global.map(cardType => (
+                    <CardTypeThumbnail
+                      key={cardType.id}
+                      onClick={onSelect}
+                      highlighted={cardType.id === selectedType}
+                      cardType={cardType}
+                    />
+                  ))}
+                </div>
+                <h4>From other projects</h4>
+                <div className={listOfTypeStyle}>
+                  {cardTypes.published.map(cardType => (
                     <CardTypeThumbnail
                       key={cardType.id}
                       onClick={onSelect}
@@ -92,9 +111,21 @@ export default function CardCreator({ parent }: Props): JSX.Element {
                 </div>
               </div>
               <div>
-                <h3>Custom Types</h3>
+                <h3>Project Types</h3>
+                <h4>Inherited</h4>
                 <div className={listOfTypeStyle}>
-                  {cardTypes.projectCardType.map(cardType => (
+                  {cardTypes.inherited.map(cardType => (
+                    <CardTypeThumbnail
+                      key={cardType.id}
+                      onClick={onSelect}
+                      highlighted={cardType.id === selectedType}
+                      cardType={cardType}
+                    />
+                  ))}
+                </div>
+                <h4>Custom</h4>
+                <div className={listOfTypeStyle}>
+                  {cardTypes.own.map(cardType => (
                     <CardTypeThumbnail
                       key={cardType.id}
                       onClick={onSelect}

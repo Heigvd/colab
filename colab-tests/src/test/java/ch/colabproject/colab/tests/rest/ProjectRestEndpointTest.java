@@ -174,12 +174,12 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Fetch e-maild and extract the token
         ////////////////////////////////////////////////////////////////////////////////////////////
-        List<Message> messages = getMessageByRecipient(mateAddress);
+        List<Message> messages = TestHelper.getMessageByRecipient(mailClient, mateAddress);
         Assertions.assertEquals(1, messages.size());
         Message invitation = messages.get(0);
 
-        Matcher matcher = TOKEN_EXTRACTOR.matcher(invitation.getContent().getBody());
-        Assertions.assertTrue(matcher.matches());
+        Matcher matcher = TestHelper.extractToken(invitation);
+        Assertions.assertTrue(matcher.matches()); //
 
         Long tokenId = Long.parseLong(matcher.group(1));
         String plainToken = matcher.group(2);

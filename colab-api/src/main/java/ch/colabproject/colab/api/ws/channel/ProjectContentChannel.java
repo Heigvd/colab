@@ -71,6 +71,11 @@ public class ProjectContentChannel implements WebsocketEffectiveChannel {
         return Objects.equals(this.projectId, other.projectId);
     }
 
+    @Override
+    public String toString() {
+        return "ProjectContentChannel{" + "projectId=" + this.projectId + '}';
+    }
+
     /**
      * get the channel dedicated to the given projectId.
      *

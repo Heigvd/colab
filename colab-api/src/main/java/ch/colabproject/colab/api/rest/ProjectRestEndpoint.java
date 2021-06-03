@@ -15,6 +15,7 @@ import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -167,7 +168,7 @@ public class ProjectRestEndpoint {
      */
     @GET
     @Path("{id}/CardTypes")
-    public List<AbstractCardType> getCardTypesOfProject(@PathParam("id") Long id) {
+    public Set<AbstractCardType> getCardTypesOfProject(@PathParam("id") Long id) {
         logger.debug("Get project #{} card definitions", id);
         return projectFacade.getCardTypes(id);
     }

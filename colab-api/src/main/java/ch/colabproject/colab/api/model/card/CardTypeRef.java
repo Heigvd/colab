@@ -6,11 +6,8 @@
  */
 package ch.colabproject.colab.api.model.card;
 
-import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.ColabEntity;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -104,23 +101,15 @@ public class CardTypeRef extends AbstractCardType {
         return null;
     }
 
-    /**
-     * {@inheritDoc }
-     */
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof CardTypeRef == false) {
-            throw new ColabMergeException(this, other);
-        }
-    }
+    public List<AbstractCardType> expand() {
+        List list = new ArrayList<>();
 
-    @Override
-    public Set<WebsocketChannel> getChannels() {
-        if (this.getProject() != null) {
-            return Set.of(ProjectContentChannel.build(this.getProject()));
-        } else {
-            return Set.of();
+        list.add(this);
+        if (this.cardType != null) {
+            list.addAll(this.cardType.expand());
         }
+        return list;
     }
 
     @Override

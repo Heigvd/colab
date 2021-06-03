@@ -12,7 +12,7 @@ import { css } from '@emotion/css';
 import { useAppDispatch } from '../../../store/hooks';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { useCardTypes } from '../../../selectors/cardTypeSelector';
+import { useProjectCardTypes } from '../../../selectors/cardTypeSelector';
 import InlineLoading from '../../common/InlineLoading';
 import IconButton from '../../common/IconButton';
 import CardTypeEditor from './CardTypeEditor';
@@ -29,7 +29,7 @@ export interface Props {}
 export default ({}: Props): JSX.Element => {
   const dispatch = useAppDispatch();
   const { project } = useProjectBeingEdited();
-  const cardTypes = useCardTypes();
+  const cardTypes = useProjectCardTypes();
 
   const createNewCb = React.useCallback(() => {
     dispatch(
@@ -43,13 +43,17 @@ export default ({}: Props): JSX.Element => {
   if (project == null) {
     return <i>No project</i>;
   } else {
-    if (cardTypes.status === 'UNSET') {
+    if (cardTypes.projectStatus === 'UNSET') {
       if (project != null) {
         dispatch(API.getProjectCardTypes(project));
       }
     }
+    if (cardTypes.publishedStatus === 'UNSET') {
+      // published type from other project or global types not yet knonw
+      dispatch(API.getPublishedCardTypes());
+    }
 
-    if (cardTypes.status !== 'READY') {
+    if (cardTypes.projectStatus !== 'READY' || cardTypes.publishedStatus !== 'READY') {
       return <InlineLoading />;
     } else {
       return (
@@ -58,13 +62,25 @@ export default ({}: Props): JSX.Element => {
           <h4>Project own types</h4>
           <IconButton onClick={createNewCb} icon={faPlus} />
           <div className={flexWrap}>
-            {cardTypes.projectCardType.map(cardType => (
+            {cardTypes.own.map(cardType => (
               <CardTypeEditor key={cardType.id} cardType={cardType} />
             ))}
           </div>
-          <h4>Global types</h4>
+          <h4>Inherited</h4>
           <div className={flexWrap}>
-            {cardTypes.inheritedCardType.map(cardType => (
+            {cardTypes.inherited.map(cardType => (
+              <CardTypeDisplay key={cardType.id} cardType={cardType} />
+            ))}
+          </div>
+          <h4>From other projects</h4>
+          <div className={flexWrap}>
+            {cardTypes.published.map(cardType => (
+              <CardTypeDisplay key={cardType.id} cardType={cardType} />
+            ))}
+          </div>
+          <h4>Global</h4>
+          <div className={flexWrap}>
+            {cardTypes.global.map(cardType => (
               <CardTypeDisplay key={cardType.id} cardType={cardType} />
             ))}
           </div>

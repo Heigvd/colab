@@ -5,19 +5,27 @@
  * Licensed under the MIT License
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AbstractCardType, CardType, CardTypeRef } from 'colab-rest-client';
+import { AbstractCardType } from 'colab-rest-client';
 import * as API from '../API/api';
 import { mapById } from '../helper';
 
 export interface CardTypeState {
-  status: 'UNSET' | 'LOADING' | 'READY';
+  // are all types used by the current project known or not ?
+  currentProjectStatus: 'UNSET' | 'LOADING' | 'READY';
+  // are all types visible by the current user known ?
+  //  -> published type from other projects + global published
+  publishedStatus: 'UNSET' | 'LOADING' | 'READY';
+  // are all global types known (admin ony)
+  globalStatus: 'UNSET' | 'LOADING' | 'READY';
   cardtypes: {
     [id: number]: AbstractCardType | null;
   };
 }
 
 const initialState: CardTypeState = {
-  status: 'UNSET',
+  currentProjectStatus: 'UNSET',
+  publishedStatus: 'UNSET',
+  globalStatus: 'UNSET',
   cardtypes: {},
 };
 
@@ -25,7 +33,7 @@ const cardsSlice = createSlice({
   name: 'cardtypes',
   initialState,
   reducers: {
-    updateCardType: (state, action: PayloadAction<CardType>) => {
+    updateCardType: (state, action: PayloadAction<AbstractCardType>) => {
       if (action.payload.id != null) {
         state.cardtypes[action.payload.id] = action.payload;
       }
@@ -33,30 +41,29 @@ const cardsSlice = createSlice({
     removeCardType: (state, action: PayloadAction<number>) => {
       delete state.cardtypes[action.payload];
     },
-    updateCardTypeRef: (_state, _action: PayloadAction<CardTypeRef>) => {
-      // TODO
-    },
-    removeCardTypeRef: (_state, _action: PayloadAction<number>) => {
-      // TODO
-    },
   },
   extraReducers: builder =>
     builder
-      .addCase(API.initCardTypes.pending, state => {
-        state.status = 'LOADING';
-      })
-      .addCase(API.initCardTypes.fulfilled, (_state, action) => {
-        return {
-          status: 'READY',
-          cardtypes: mapById(action.payload),
-        };
-      })
       .addCase(API.getProjectCardTypes.pending, state => {
-        state.status = 'LOADING';
+        state.currentProjectStatus = 'LOADING';
       })
       .addCase(API.getProjectCardTypes.fulfilled, (state, action) => {
-        (state.status = 'READY'),
+        (state.currentProjectStatus = 'READY'),
           (state.cardtypes = { ...state.cardtypes, ...mapById(action.payload) });
+      })
+      .addCase(API.getPublishedCardTypes.pending, state => {
+        state.publishedStatus = 'LOADING';
+      })
+      .addCase(API.getPublishedCardTypes.fulfilled, (state, action) => {
+        state.publishedStatus = 'READY';
+        state.cardtypes = { ...state.cardtypes, ...mapById(action.payload) };
+      })
+      .addCase(API.getAllGlobalCardTypes.pending, state => {
+        state.globalStatus = 'LOADING';
+      })
+      .addCase(API.getAllGlobalCardTypes.fulfilled, (state, action) => {
+        state.globalStatus = 'READY';
+        state.cardtypes = { ...state.cardtypes, ...mapById(action.payload) };
       })
       .addCase(API.getCardType.pending, (state, action) => {
         state.cardtypes[action.meta.arg] = null;
@@ -74,11 +81,6 @@ const cardsSlice = createSlice({
       }),
 });
 
-export const {
-  updateCardType,
-  removeCardType,
-  updateCardTypeRef,
-  removeCardTypeRef,
-} = cardsSlice.actions;
+export const { updateCardType, removeCardType } = cardsSlice.actions;
 
 export default cardsSlice.reducer;

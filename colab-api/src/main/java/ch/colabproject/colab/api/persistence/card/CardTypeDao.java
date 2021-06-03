@@ -83,10 +83,10 @@ public class CardTypeDao {
      *
      * @return list of published non-global card types accessible to the current user
      */
-    public List<CardType> getPublishedProjectsCardType() {
+    public List<AbstractCardType> getPublishedProjectsCardType() {
         logger.debug("get published  global card defs");
         User user = securityFacade.assertAndGetCurrentUser();
-        TypedQuery<CardType> query = em.createNamedQuery("CardType.findPublishedFromProjects", CardType.class);
+        TypedQuery<AbstractCardType> query = em.createNamedQuery("CardType.findPublishedFromProjects", AbstractCardType.class);
         query.setParameter("userId", user.getId());
         return query.getResultList();
     }

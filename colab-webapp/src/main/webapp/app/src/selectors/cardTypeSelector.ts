@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 
-import {useAppSelector} from '../store/hooks';
-import {CardType, CardTypeRef, entityIs} from 'colab-rest-client';
-import {ColabState} from '../store/store';
+import { useAppSelector } from '../store/hooks';
+import { CardType, CardTypeRef, entityIs } from 'colab-rest-client';
+import { ColabState } from '../store/store';
 
 export interface CardTypeState {
   /**
@@ -16,7 +16,9 @@ export interface CardTypeState {
    * READY means all cardtypes are known.
    * LOADING indicates cardtypes loading is in progress
    */
-  status: 'UNSET' | 'LOADING' | 'READY';
+  projectStatus: 'UNSET' | 'LOADING' | 'READY';
+  publishedStatus: 'UNSET' | 'LOADING' | 'READY';
+  globalStatus: 'UNSET' | 'LOADING' | 'READY';
   /**
    * the cardType; undefined means does not exists if status is READY
    */
@@ -34,20 +36,26 @@ export interface CardTypesState {
    * READY means all cardtypes are known.
    * LOADING indicates cardtypes loading is in progress
    */
-  status: 'UNSET' | 'LOADING' | 'READY';
+  projectStatus: 'UNSET' | 'LOADING' | 'READY';
+  publishedStatus: 'UNSET' | 'LOADING' | 'READY';
+  globalStatus: 'UNSET' | 'LOADING' | 'READY';
   /**
    * Own cardtypes are editable
    */
-  projectCardType: CardType[];
+  own: CardType[];
   /**
    * Inherited card def are readonly
    */
-  inheritedCardType: CardType[];
+  inherited: CardType[];
+  published: CardType[];
+  global: CardType[];
 }
 
 function resolveRef(state: ColabState, ref: CardTypeRef): CardTypeState {
   const result: CardTypeState = {
-    status: 'READY',
+    projectStatus: state.cardtype.currentProjectStatus,
+    publishedStatus: state.cardtype.publishedStatus,
+    globalStatus: state.cardtype.globalStatus,
     chain: [],
     cardType: undefined,
   };
@@ -80,7 +88,9 @@ export const useCardType = (id: number | null | undefined): CardTypeState => {
       if (s != null) {
         if (entityIs(s, 'CardType')) {
           return {
-            status: 'READY',
+            projectStatus: state.cardtype.currentProjectStatus,
+            publishedStatus: state.cardtype.publishedStatus,
+            globalStatus: state.cardtype.globalStatus,
             cardType: s,
             chain: [],
           };
@@ -91,38 +101,80 @@ export const useCardType = (id: number | null | undefined): CardTypeState => {
     }
 
     return {
-      status: state.cardtype.status,
+      projectStatus: state.cardtype.currentProjectStatus,
+      publishedStatus: state.cardtype.publishedStatus,
+      globalStatus: state.cardtype.globalStatus,
       cardType: undefined,
       chain: [],
     };
   });
 };
 
-export const useCardTypes = (): CardTypesState => {
+export const useProjectCardTypes = (): CardTypesState => {
   return useAppSelector(state => {
     const cds: CardTypesState = {
-      status: state.cardtype.status,
-      projectCardType: [],
-      inheritedCardType: [],
+      projectStatus: state.cardtype.currentProjectStatus,
+      publishedStatus: state.cardtype.publishedStatus,
+      globalStatus: state.cardtype.globalStatus,
+      // own card types
+      own: [],
+      inherited: [],
+      published: [],
+      global: [],
     };
 
     const currentProjectId = state.projects.editing;
 
-    Object.values(state.cardtype.cardtypes).forEach(cd => {
-      if (cd != null) {
-        if (currentProjectId != null && cd.projectId === currentProjectId) {
-          if (entityIs(cd, 'CardTypeRef')) {
-            const resolved = resolveRef(state, cd);
-            if (resolved.cardType != null) {
-              cds.inheritedCardType.push(resolved.cardType);
+    const processed: CardType[] = [];
+
+    if (currentProjectId) {
+      // first pass: extract own and inherited types
+      Object.values(state.cardtype.cardtypes).forEach(cd => {
+        if (cd != null) {
+          if (cd.projectId === currentProjectId) {
+            if (entityIs(cd, 'CardTypeRef')) {
+              const resolved = resolveRef(state, cd);
+              if (resolved.cardType != null) {
+                processed.push(resolved.cardType);
+                cds.inherited.push(resolved.cardType);
+              }
+            } else {
+              processed.push(cd);
+              cds.own.push(cd);
             }
-          } else {
-            cds.projectCardType.push(cd);
           }
         }
-      }
-    });
+      });
+
+      // second pass: not-yet-used published types
+      Object.values(state.cardtype.cardtypes).forEach(cd => {
+        if (cd != null) {
+          const t = entityIs(cd, 'CardType') ? cd : resolveRef(state, cd).cardType;
+          if (t != null && processed.indexOf(t) === -1 && cd.published) {
+            if (cd.projectId == null) {
+              cds.global.push(t);
+            } else {
+              cds.published.push(t);
+            }
+          }
+        }
+      });
+    }
 
     return cds;
+  });
+};
+
+export const useGlobalTypes = (): {
+  status: 'READY' | 'LOADING' | 'UNSET';
+  types: CardType[];
+} => {
+  return useAppSelector(state => {
+    return {
+      status: state.cardtype.globalStatus,
+      types: Object.values(state.cardtype.cardtypes).flatMap(cd => {
+        return entityIs(cd, 'CardType') && cd.projectId == null ? [cd] : [];
+      }),
+    };
   });
 };

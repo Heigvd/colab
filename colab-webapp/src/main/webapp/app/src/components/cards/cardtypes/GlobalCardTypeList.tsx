@@ -11,7 +11,7 @@ import * as API from '../../../API/api';
 import { css } from '@emotion/css';
 import { useAppDispatch } from '../../../store/hooks';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { useCardTypes } from '../../../selectors/cardTypeSelector';
+import { useGlobalTypes } from '../../../selectors/cardTypeSelector';
 import InlineLoading from '../../common/InlineLoading';
 import IconButton from '../../common/IconButton';
 import CardTypeEditor from './CardTypeEditor';
@@ -26,7 +26,7 @@ export interface Props {}
 
 export default ({}: Props): JSX.Element => {
   const dispatch = useAppDispatch();
-  const cardTypes = useCardTypes();
+  const cardTypes = useGlobalTypes();
 
   const createNewCb = React.useCallback(() => {
     dispatch(
@@ -49,7 +49,7 @@ export default ({}: Props): JSX.Element => {
         <h3>Global Card Types</h3>
         <IconButton onClick={createNewCb} icon={faPlus} />
         <div className={flexWrap}>
-          {cardTypes.projectCardType.map(cardType => (
+          {cardTypes.types.map(cardType => (
             <CardTypeEditor key={cardType.id} cardType={cardType} />
           ))}
         </div>

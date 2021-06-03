@@ -6,13 +6,24 @@
  */
 package ch.colabproject.colab.api.model.card;
 
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.ws.channel.AdminChannel;
+import ch.colabproject.colab.api.ws.channel.BroadcastChannel;
+import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +31,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
 import javax.persistence.Transient;
 
 /**
@@ -63,9 +76,22 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     private boolean published;
 
     /**
+     * published state on load
+     */
+    @Transient
+    private boolean initialPublished;
+
+    /**
      * Is this definition deprecated? A deprecated definition should not be used by new projects.
      */
     private boolean deprecated;
+
+    /**
+     * List of references to this type
+     */
+    @JsonbTransient
+    @OneToMany(mappedBy = "cardType", cascade = CascadeType.ALL)
+    private List<CardTypeRef> references = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -158,15 +184,102 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     /**
+     * Get references
+     *
+     * @return list of references
+     */
+    public List<CardTypeRef> getReferences() {
+        return references;
+    }
+
+    /**
+     * Set the list of references
+     *
+     * @param references list of references
+     */
+    public void setReferences(List<CardTypeRef> references) {
+        this.references = references;
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+    /**
      * Resolve to concrete CardType
      *
      * @return the effective cardType
      */
     public abstract CardType resolve();
 
-    // ---------------------------------------------------------------------------------------------
-    // concerning the whole class
-    // ---------------------------------------------------------------------------------------------
+    /**
+     * Resolve to concrete type and return all transitive references too.
+     *
+     * @return concrete type and transitive references
+     */
+    public abstract List<AbstractCardType> expand();
+
+    /**
+     * JPA post-load callback. Used to keep trace of the initial value of the <code>published</code>
+     * field.
+     */
+    @PostLoad
+    public void postLoad() {
+        // keep trace of modification
+        this.initialPublished = this.published;
+    }
+
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        Set<WebsocketChannel> channels = new HashSet<>();
+
+        // should propagate data if the type is published or if it has just been unpublished
+        boolean isOrWasPublished = this.isPublished() || this.initialPublished;
+
+        if (this.getProject() != null) {
+            // this type belongs to a specific project
+            // first, everyone who is editing the project shall receive updates
+            channels.add(ProjectContentChannel.build(this.getProject()));
+
+            // then, the type must be propagated to all projects which reference it
+            this.references.forEach(ref -> {
+                channels.addAll(ref.getChannels());
+            });
+
+            if (isOrWasPublished) {
+                // eventually, published types are availaible to each project members dependless
+                // the project they're editing
+                this.getProject().getTeamMembers().forEach(member -> {
+                    User user = member.getUser();
+                    if (user != null) {
+                        channels.addAll(user.getChannels());
+                    }
+                });
+            }
+        } else {
+            //This is a global type
+            if (isOrWasPublished) {
+                // As the type is published, everyone may use this type -> broadcast
+                channels.add(BroadcastChannel.build());
+            } else {
+                // Not published type are only available to admin
+                channels.add(new AdminChannel());
+            }
+        }
+
+        return channels;
+    }
+
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+        if (other instanceof AbstractCardType) {
+            AbstractCardType o = (AbstractCardType) other;
+            this.setDeprecated(o.isDeprecated());
+            this.setPublished(o.isPublished());
+        } else {
+            throw new ColabMergeException(this, other);
+        }
+    }
+
     @Override
     public int hashCode() {
         return EntityHelper.hashCode(this);

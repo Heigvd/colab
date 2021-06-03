@@ -8,11 +8,13 @@ package ch.colabproject.colab.api.rest.card;
 
 import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.persistence.card.CardTypeDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -99,9 +101,9 @@ public class CardTypeRestEndpoint {
      */
     @GET
     @Path("allProjectsPublished")
-    public List<CardType> getPublishedCardTypes() {
+    public Set<AbstractCardType> getPublishedCardTypes() {
         logger.debug("get published projects card defs");
-        return cardTypeDao.getPublishedProjectsCardType();
+        return facade.getExpandedPublishedTypes();
     }
 
     /**
@@ -131,19 +133,19 @@ public class CardTypeRestEndpoint {
         return facade.createNewCardType(cardType).getId();
     }
 
-    /**
-     * Create and persist a new card type. The card type belongs to the given project.
-     *
-     * @param projectId the project the new card definition belongs to
-     *
-     * @return the persisted new card definition
-    @POST
-    @Path("create/{projectId}")
-    public CardType createNewCardType(@PathParam("projectId") Long projectId) {
-        logger.debug("create new card def for the project #{}", projectId);
-        return facade.createNewCardType(projectId);
-    }
-     */
+//    /**
+//     * Create and persist a new card type. The card type belongs to the given project.
+//     *
+//     * @param projectId the project the new card definition belongs to
+//     *
+//     * @return the persisted new card definition
+//     */
+//    @POST
+//    @Path("create/{projectId}")
+//    public CardType createNewCardType(@PathParam("projectId") Long projectId) {
+//        logger.debug("create new card def for the project #{}", projectId);
+//        return facade.createNewCardType(projectId);
+//    }
 
     /**
      * Save changes to database
