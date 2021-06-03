@@ -44,7 +44,7 @@ export interface CardTypesState {
    */
   own: CardType[];
   /**
-   * Inherited card def are readonly
+   * Inherited card type are readonly
    */
   inherited: CardType[];
   published: CardType[];

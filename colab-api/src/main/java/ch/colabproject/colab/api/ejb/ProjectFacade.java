@@ -148,15 +148,15 @@ public class ProjectFacade {
     // *********************************************************************************************
 
     /**
-     * Get all card definitions of the given project
+     * Get all card types of the given project
      *
      * @param projectId id of the project
      *
-     * @return all card definitions of the project
+     * @return all card types of the project
      */
     public Set<AbstractCardType> getCardTypes(Long projectId) {
         Project project = projectDao.getProject(projectId);
-        logger.debug("Get card defs of project {}", project);
+        logger.debug("Get card types of project {}", project);
         if (project == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }

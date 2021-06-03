@@ -16,7 +16,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.NamedQuery;
 
 /**
- * Card definition
+ * Card type, defining what is it for
  *
  * @author sandra
  */

@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 /**
- * Reference to Card definition
+ * Reference to Card type
  *
  * @author maxence
  */
@@ -30,7 +30,7 @@ public class CardTypeRef extends AbstractCardType {
     // fields
     // ---------------------------------------------------------------------------------------------
     /**
-     * The definition this reference references
+     * The type this reference references
      */
     @ManyToOne
     @JsonbTransient

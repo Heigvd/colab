@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * REST card def controller
+ * REST card type controller
  *
  * @author sandra
  */
@@ -44,7 +44,7 @@ public class CardTypeRestEndpoint {
     private static final Logger logger = LoggerFactory.getLogger(CardTypeRestEndpoint.class);
 
     /**
-     * The card definition persistence manager
+     * The card type persistence manager
      */
     @Inject
     private CardTypeDao cardTypeDao;
@@ -56,14 +56,14 @@ public class CardTypeRestEndpoint {
     private CardFacade facade;
 
     /**
-     * Retrieve the list of all card defs. This is available to admin only
+     * Retrieve the list of all card types. This is available to admin only
      *
-     * @return all known card defs
+     * @return all known card types
      */
     @GET
     @AdminResource
     public List<CardType> getAllCardTypes() {
-        logger.debug("get all card defs");
+        logger.debug("get all card types");
         return cardTypeDao.getAllCardType();
     }
 
@@ -76,7 +76,7 @@ public class CardTypeRestEndpoint {
     @Path("allGlobals")
     @AdminResource
     public List<CardType> getAllGlobalCardTypes() {
-        logger.debug("get all global card defs");
+        logger.debug("get all global card types");
         return cardTypeDao.getGlobalCardType();
     }
 
@@ -88,7 +88,7 @@ public class CardTypeRestEndpoint {
     @GET
     @Path("publishedGlobals")
     public List<CardType> getPublishedGlobalsCardTypes() {
-        logger.debug("get published global card defs");
+        logger.debug("get published global card types");
         return cardTypeDao.getPublishedGlobalCardType();
     }
 
@@ -102,73 +102,73 @@ public class CardTypeRestEndpoint {
     @GET
     @Path("allProjectsPublished")
     public Set<AbstractCardType> getPublishedCardTypes() {
-        logger.debug("get published projects card defs");
+        logger.debug("get published projects card types");
         return facade.getExpandedPublishedTypes();
     }
 
     /**
-     * Get card def identified by the given id
+     * Get card type identified by the given id
      *
-     * @param id id of the card def to fetch
+     * @param id id of the card type to fetch
      *
-     * @return the card def or null
+     * @return the card type or null
      */
     @GET
     @Path("{id}")
     public CardType getCardType(@PathParam("id") Long id) {
-        logger.debug("get card def #{}", id);
+        logger.debug("get card type #{}", id);
         return cardTypeDao.getCardType(id);
     }
 
     /**
      * Persist a card type.
      *
-     * @param cardType the card definition to persist
+     * @param cardType the card type to persist
      *
-     * @return id of the persisted new card definition
+     * @return id of the persisted new card type
      */
     @POST
     public Long createCardType(CardType cardType) {
-        logger.debug("create card def {}", cardType);
+        logger.debug("create card type {}", cardType);
         return facade.createNewCardType(cardType).getId();
     }
 
 //    /**
 //     * Create and persist a new card type. The card type belongs to the given project.
 //     *
-//     * @param projectId the project the new card definition belongs to
+//     * @param projectId the project the new card type belongs to
 //     *
-//     * @return the persisted new card definition
+//     * @return the persisted new card type
 //     */
 //    @POST
 //    @Path("create/{projectId}")
 //    public CardType createNewCardType(@PathParam("projectId") Long projectId) {
-//        logger.debug("create new card def for the project #{}", projectId);
+//        logger.debug("create new card type for the project #{}", projectId);
 //        return facade.createNewCardType(projectId);
 //    }
 
     /**
      * Save changes to database
      *
-     * @param cardType card def to update
+     * @param cardType card type to update
      *
      * @throws ColabMergeException if the merge is not possible
      */
     @PUT
     public void updateCardType(CardType cardType) throws ColabMergeException {
-        logger.debug("update card def {}", cardType);
+        logger.debug("update card type {}", cardType);
         cardTypeDao.updateCardType(cardType);
     }
 
     /**
-     * Permanently delete a card def
+     * Permanently delete a card type
      *
-     * @param id id of the card def to delete
+     * @param id id of the card type to delete
      */
     @DELETE
     @Path("{id}")
     public void deleteCardType(@PathParam("id") Long id) {
-        logger.debug("delete card def #{}", id);
+        logger.debug("delete card type #{}", id);
         cardTypeDao.deleteCardType(id);
     }
 

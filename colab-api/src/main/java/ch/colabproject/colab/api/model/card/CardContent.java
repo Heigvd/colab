@@ -290,8 +290,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
             this.setStatus(o.getStatus());
             this.setCompletionLevel(o.getCompletionLevel());
             this.setCompletionMode(o.getCompletionMode());
-            this.setDeliverable(o.getDeliverable());
-            this.setDeliverableId(o.getDeliverableId());
+            // the deliverable cannot be changed with a merge
         } else {
             throw new ColabMergeException(this, other);
         }

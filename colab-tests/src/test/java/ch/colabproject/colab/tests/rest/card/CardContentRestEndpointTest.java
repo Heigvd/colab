@@ -162,6 +162,8 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testDeliverableAccess() {
+        String title = "Description of what we need #" + ((int) (Math.random() * 1000));
+
         Long projectId = client.projectRestEndpoint.createProject(new Project());
         Project project = client.projectRestEndpoint.getProject(projectId);
 
@@ -181,18 +183,22 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         CardContent cardContent = client.cardRestEndpoint.getContentVariantsOfCard(cardId).get(0);
         Long cardContentId = cardContent.getId();
 
-        Long docId = client.documentRestEndPoint.createDocument(new BlockDocument());
+        Document newDoc = new BlockDocument();
+        newDoc.setTitle(title);
 
-        cardContent.setDeliverableId(docId);
-        client.cardContentRestEndpoint.updateCardContent(cardContent);
+        Document persistedDoc = client.cardContentRestEndpoint.assignDeliverable(cardContentId, newDoc);
+        Assertions.assertNotNull(persistedDoc);
+        Assertions.assertNotNull(persistedDoc.getId());
+        Long docId = persistedDoc.getId();
+        Assertions.assertEquals(title, newDoc.getTitle());
+        Assertions.assertEquals(cardContentId, persistedDoc.getDeliverableCardContentId());
 
         CardContent persistedCardContent = client.cardContentRestEndpoint.getCardContent(cardContentId);
         Assertions.assertNotNull(persistedCardContent);
         Assertions.assertEquals(docId, persistedCardContent.getDeliverableId());
 
         Document persistedDocument = client.documentRestEndPoint.getDocument(docId);
-        Assertions.assertNotNull(persistedDocument);
-        Assertions.assertEquals(cardContentId, persistedDocument.getDeliverableCardContentId());
+        Assertions.assertEquals(persistedDoc, persistedDocument);
     }
 
 }

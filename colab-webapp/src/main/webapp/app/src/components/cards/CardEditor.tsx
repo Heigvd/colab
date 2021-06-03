@@ -39,14 +39,14 @@ export default function CardEditor({
   const [resourcesVisible, showResources] = React.useState(false);
   const [stickyNotesVisible, showStickyNotes] = React.useState(false);
 
-  const cardTypeFull = useCardType(card.cardTypeinitionId);
+  const cardTypeFull = useCardType(card.cardTypeId);
   const cardType = cardTypeFull.cardType;
 
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
-    if (cardType === undefined && card.cardTypeinitionId != null) {
-      dispatch(API.getCardType(card.cardTypeinitionId));
+    if (cardType === undefined && card.cardTypeId != null) {
+      dispatch(API.getCardType(card.cardTypeId));
     }
 
     return (
@@ -87,7 +87,7 @@ export default function CardEditor({
                     />
                   </div>
                   <div>
-                    <h5>Card Definition</h5>
+                    <h5>Card Type</h5>
                     <div>Type: {cardType?.title || ''}</div>
                     <div>Purpose: {cardType?.purpose || ''}</div>
                   </div>

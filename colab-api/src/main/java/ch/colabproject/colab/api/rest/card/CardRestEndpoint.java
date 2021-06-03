@@ -101,18 +101,18 @@ public class CardRestEndpoint {
     /**
      * Create and persist a new card
      *
-     * @param parentId id of the new card's parent
-     * @param cardTypeinitionId id of the card definition of the new card
+     * @param parentId   id of the new card's parent
+     * @param cardTypeId id of the card type of the new card
      *
      * @return the persisted new card
      */
     @POST
     @Path("create/{parentId}/{cardTypeId}")
     public Card createNewCard(@PathParam("parentId") Long parentId,
-            @PathParam("cardTypeId") Long cardTypeinitionId) {
-        logger.debug("create a new card for the parent #{} and the definition #{}", parentId,
-                cardTypeinitionId);
-        return cardFacade.createNewCard(parentId, cardTypeinitionId);
+            @PathParam("cardTypeId") Long cardTypeId) {
+        logger.debug("create a new card for the parent #{} and the type #{}", parentId,
+            cardTypeId);
+        return cardFacade.createNewCard(parentId, cardTypeId);
     }
 
     /**
