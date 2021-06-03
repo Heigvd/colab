@@ -12,6 +12,7 @@ import LoggersConfig from './LoggersConfig';
 import { AllProjects } from '../projects/ProjectList';
 import Who from './Who';
 import AllUsers from './AllUsers';
+import GlobalCardTypeList from '../cards/cardtypes/GlobalCardTypeList';
 
 export default (): JSX.Element => {
   return (
@@ -24,6 +25,7 @@ export default (): JSX.Element => {
             <SecondLevelLink to="/projects">Projects</SecondLevelLink>
             <SecondLevelLink to="/loggers">Loggers</SecondLevelLink>
             <SecondLevelLink to="/onlineusers">Online Users</SecondLevelLink>
+            <SecondLevelLink to="/types">Card Types</SecondLevelLink>
           </nav>
           <ul>
             <li>Models</li>
@@ -46,6 +48,9 @@ export default (): JSX.Element => {
               </Route>
               <Route exact path="/onlineusers">
                 <Who />
+              </Route>
+              <Route exact path="/types">
+                <GlobalCardTypeList />
               </Route>
               <Route>
                 <Redirect to="/" />
