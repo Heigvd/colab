@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 
-import { useAppSelector } from '../store/hooks';
-import { CardType, CardTypeRef, entityIs } from 'colab-rest-client';
-import { ColabState } from '../store/store';
+import {useAppSelector} from '../store/hooks';
+import {CardType, CardTypeRef, entityIs} from 'colab-rest-client';
+import {ColabState} from '../store/store';
 
 export interface CardTypeState {
   /**
@@ -22,7 +22,7 @@ export interface CardTypeState {
   /**
    * the cardType; undefined means does not exists if status is READY
    */
-  cardType: CardType | undefined;
+  cardType: CardType | null | undefined;
   /**
    * references chain; first is the deepest
    */
@@ -56,7 +56,7 @@ function resolveRef(state: ColabState, ref: CardTypeRef): CardTypeState {
     projectStatus: state.cardtype.currentProjectStatus,
     publishedStatus: state.cardtype.publishedStatus,
     globalStatus: state.cardtype.globalStatus,
-    chain: [],
+    chain: [ref],
     cardType: undefined,
   };
 
@@ -72,6 +72,7 @@ function resolveRef(state: ColabState, ref: CardTypeRef): CardTypeState {
         result.chain.push(target);
         current = target;
       } else {
+        result.cardType = target;
         return result;
       }
     } else {
@@ -85,18 +86,16 @@ export const useCardType = (id: number | null | undefined): CardTypeState => {
   return useAppSelector(state => {
     if (id != null) {
       const s = state.cardtype.cardtypes[id];
-      if (s != null) {
-        if (entityIs(s, 'CardType')) {
-          return {
-            projectStatus: state.cardtype.currentProjectStatus,
-            publishedStatus: state.cardtype.publishedStatus,
-            globalStatus: state.cardtype.globalStatus,
-            cardType: s,
-            chain: [],
-          };
-        } else {
-          return resolveRef(state, s);
-        }
+      if (s == null || entityIs(s, 'CardType')) {
+        return {
+          projectStatus: state.cardtype.currentProjectStatus,
+          publishedStatus: state.cardtype.publishedStatus,
+          globalStatus: state.cardtype.globalStatus,
+          cardType: s,
+          chain: [],
+        };
+      } else {
+        return resolveRef(state, s);
       }
     }
 

@@ -115,9 +115,9 @@ public class CardTypeRestEndpoint {
      */
     @GET
     @Path("{id}")
-    public CardType getCardType(@PathParam("id") Long id) {
+    public AbstractCardType getCardType(@PathParam("id") Long id) {
         logger.debug("get card type #{}", id);
-        return cardTypeDao.getCardType(id);
+        return cardTypeDao.getAbstractCardType(id);
     }
 
     /**

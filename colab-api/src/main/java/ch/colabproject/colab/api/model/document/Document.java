@@ -9,9 +9,12 @@ package ch.colabproject.colab.api.model.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
@@ -40,7 +43,7 @@ import javax.persistence.Transient;
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 //FIXME see if is needed or not. It was implemented for test purpose at first
 @NamedQuery(name = "Document.findAll", query = "SELECT d FROM Document d")
-public abstract class Document implements ColabEntity /* , WithWebsocketChannels */ {
+public abstract class Document implements ColabEntity , WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 
@@ -213,11 +216,14 @@ public abstract class Document implements ColabEntity /* , WithWebsocketChannels
         }
     }
 
-//    @Override
-//    public Set<WebsocketChannel> getChannels() {
-//        // TODO
-//        return null;
-//    }
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.getDeliverableCardContent() != null){
+            return this.getDeliverableCardContent().getChannels();
+        } else {
+            return Set.of();
+        }
+    }
 
     @Override
     public int hashCode() {

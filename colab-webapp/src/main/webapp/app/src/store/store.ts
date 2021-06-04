@@ -11,6 +11,7 @@ import authReducer from './auth';
 import adminReducer from './admin';
 import cardReducer from './card';
 import cardTypeReducer from './cardtype';
+import documentReducer from './document';
 import errorReducer from './error';
 import projectReducer from './project';
 import userReducer from './user';
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   projects: projectReducer,
   cards: cardReducer,
   cardtype: cardTypeReducer,
+  document: documentReducer,
   users: userReducer,
   websockets: websocketReducer,
 });

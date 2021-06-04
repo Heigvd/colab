@@ -34,7 +34,7 @@ public class CardTypeRef extends AbstractCardType {
      */
     @ManyToOne
     @JsonbTransient
-    private AbstractCardType cardType;
+    private AbstractCardType abstractCardType;
 
     /**
      * The id of the project (serialization sugar)
@@ -51,24 +51,24 @@ public class CardTypeRef extends AbstractCardType {
      * @return the referenced type
      */
     public AbstractCardType getAbstractCardType() {
-        return this.cardType;
+        return this.abstractCardType;
     }
 
     /**
      * @param cardType the new referenced type
      */
     public void setAbstractCardType(AbstractCardType cardType) {
-        this.cardType = cardType;
+        this.abstractCardType = cardType;
     }
 
     /**
      * get the cardType id. To be sent to client
      *
-     * @return id of the cardType or null
+     * @return id of the abstractCardType or null
      */
     public Long getAbstractCardTypeId() {
-        if (this.cardType != null) {
-            return this.cardType.getId();
+        if (this.abstractCardType != null) {
+            return this.abstractCardType.getId();
         } else {
             return cardTypeId;
         }
@@ -77,7 +77,7 @@ public class CardTypeRef extends AbstractCardType {
     /**
      * set the cardType id. For serialization only
      *
-     * @param id the id of the cardType
+     * @param id the id of the abstractCardType
      */
     public void setAbstractCardTypeId(Long id) {
         this.cardTypeId = id;
@@ -89,14 +89,14 @@ public class CardTypeRef extends AbstractCardType {
     /**
      * Resolve the reference.
      *
-     * @return the cardType
+     * @return the abstractCardType
      */
     @Override
     public CardType resolve() {
-        if (this.cardType instanceof CardType) {
-            return (CardType) this.cardType;
-        } else if (this.cardType instanceof CardTypeRef) {
-            return ((CardTypeRef) cardType).resolve();
+        if (this.abstractCardType instanceof CardType) {
+            return (CardType) this.abstractCardType;
+        } else if (this.abstractCardType instanceof CardTypeRef) {
+            return ((CardTypeRef) abstractCardType).resolve();
         }
         return null;
     }
@@ -106,8 +106,8 @@ public class CardTypeRef extends AbstractCardType {
         List list = new ArrayList<>();
 
         list.add(this);
-        if (this.cardType != null) {
-            list.addAll(this.cardType.expand());
+        if (this.abstractCardType != null) {
+            list.addAll(this.abstractCardType.expand());
         }
         return list;
     }
@@ -116,7 +116,7 @@ public class CardTypeRef extends AbstractCardType {
     public String toString() {
         return "CardTypeRef{"
             + "id=" + this.getId()
-            + ", cardType=" + cardType
+            + ", cardType=" + abstractCardType
             + ", cardTypeId=" + cardTypeId + '}';
     }
 }

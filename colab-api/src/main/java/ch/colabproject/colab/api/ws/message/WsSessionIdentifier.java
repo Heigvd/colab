@@ -55,4 +55,8 @@ public class WsSessionIdentifier extends WsMessage {
         this.sessionId = sessionId;
     }
 
+    @Override
+    public String toString() {
+        return "WsSessionIdentifier{" + "sessionId=" + sessionId + '}';
+    }
 }

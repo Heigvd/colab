@@ -9,6 +9,7 @@ import { dispatch } from '../store/store';
 import * as AdminActions from '../store/admin';
 import * as ErrorActions from '../store/error';
 import * as ProjectActions from '../store/project';
+import * as DocumentActions from '../store/document';
 import * as CardActions from '../store/card';
 import * as CardTypeActions from '../store/cardtype';
 import * as UserActions from '../store/user';
@@ -31,10 +32,10 @@ const onUpdate = (event: WsUpdateMessage) => {
       dispatch(ProjectActions.removeTeamMember(item.id));
     } else if (indexEntryIs(item, 'Card')) {
       dispatch(CardActions.removeCard(item.id));
-    } else if (indexEntryIs(item, 'CardType')) {
+    } else if (indexEntryIs(item, 'AbstractCardType')) {
       dispatch(CardTypeActions.removeCardType(item.id));
-    } else if (indexEntryIs(item, 'CardTypeRef')) {
-      dispatch(CardTypeActions.removeCardType(item.id));
+    } else if (indexEntryIs(item, 'Document')) {
+      dispatch(DocumentActions.removeDocument(item.id));
     } else if (indexEntryIs(item, 'CardContent')) {
       dispatch(CardActions.removeContent(item.id));
     } else if (indexEntryIs(item, 'User')) {
@@ -61,10 +62,15 @@ const onUpdate = (event: WsUpdateMessage) => {
       dispatch(CardActions.updateCard(item));
     } else if (entityIs(item, 'CardContent')) {
       dispatch(CardActions.updateContent(item));
-    } else if (entityIs(item, 'CardType')) {
+    } else if (entityIs(item, 'AbstractCardType')) {
       dispatch(CardTypeActions.updateCardType(item));
-    } else if (entityIs(item, 'CardTypeRef')) {
-      dispatch(CardTypeActions.updateCardType(item));
+    } else if (entityIs(item, 'Document')) {
+            dispatch(
+              ErrorActions.addError({
+                status: 'OPEN',
+                error: 'TODO: Setup document store',
+              }),
+            );
     } else if (entityIs(item, 'User')) {
       dispatch(UserActions.updateUser(item));
     } else if (entityIs(item, 'Account')) {

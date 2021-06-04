@@ -431,6 +431,8 @@ public class CardFacade {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
+        // TODO: check if the content already got a document
+
         Document persistedDocument = documentDao.persistDocument(document);
 
         cardContent.setDeliverable(persistedDocument);

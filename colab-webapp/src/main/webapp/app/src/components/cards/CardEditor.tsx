@@ -8,18 +8,19 @@
 import * as React from 'react';
 import * as API from '../../API/api';
 
-import { Card, CardContent } from 'colab-rest-client';
-import { css } from '@emotion/css';
+import {Card, CardContent} from 'colab-rest-client';
+import {css} from '@emotion/css';
 import ContentSubs from './ContentSubs';
 import CardLayout from './CardLayout';
-import { useAppDispatch } from '../../store/hooks';
+import {useAppDispatch} from '../../store/hooks';
 import AutoSaveInput from '../common/AutoSaveInput';
-import { TwitterPicker } from 'react-color';
+import {TwitterPicker} from 'react-color';
 import OpenClose from '../common/OpenClose';
-import { faFile, faPalette, faStickyNote } from '@fortawesome/free-solid-svg-icons';
-import IconButton from '../common/IconButton';
+import {faCheck, faPalette} from '@fortawesome/free-solid-svg-icons';
 import FitSpace from '../common/FitSpace';
-import { useCardType } from '../../selectors/cardTypeSelector';
+import {useCardType} from '../../selectors/cardTypeSelector';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {DocumentEditor} from '../documents/DocumentEditor';
 
 interface Props {
   card: Card;
@@ -27,6 +28,12 @@ interface Props {
   variants: CardContent[];
   showSubcards?: boolean;
 }
+
+const sideTabButton = css({
+  writingMode: 'sideways-lr',
+  textOrientation: 'sideways',
+  width: '24px',
+});
 
 export default function CardEditor({
   card,
@@ -36,17 +43,22 @@ export default function CardEditor({
 }: Props): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const [resourcesVisible, showResources] = React.useState(false);
-  const [stickyNotesVisible, showStickyNotes] = React.useState(false);
-
   const cardTypeFull = useCardType(card.cardTypeId);
   const cardType = cardTypeFull.cardType;
 
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
-    if (cardType === undefined && card.cardTypeId != null) {
-      dispatch(API.getCardType(card.cardTypeId));
+    if (cardType === undefined) {
+      if (cardTypeFull.chain.length > 0) {
+        const link = cardTypeFull.chain[cardTypeFull.chain.length - 1];
+
+        if (link != null && link.abstractCardTypeId != null) {
+          dispatch(API.getCardType(link.abstractCardTypeId));
+        }
+      } else if (card.cardTypeId != null) {
+        dispatch(API.getCardType(card.cardTypeId));
+      }
     }
 
     return (
@@ -54,12 +66,14 @@ export default function CardEditor({
         <>
           <FitSpace direction="row">
             <>
-              <div className={css({ display: stickyNotesVisible ? undefined : 'none' })}>
-                <h3>Sticky Notes</h3>
-                <p>
-                  <i>show block to card relationship</i>
-                </p>
-              </div>
+              <OpenClose collaspedChildren={<span className={sideTabButton}>sticky notes</span>}>
+                <div>
+                  <h3>Sticky Notes</h3>
+                  <p>
+                    <i>show block to card relationship</i>
+                  </p>
+                </div>
+              </OpenClose>
 
               <CardLayout card={card} variant={variant} variants={variants}>
                 <div
@@ -68,24 +82,6 @@ export default function CardEditor({
                     flexGrow: 1,
                   })}
                 >
-                  <div
-                    className={css({
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'flex-end',
-                    })}
-                  >
-                    <IconButton
-                      icon={faStickyNote}
-                      iconColor={stickyNotesVisible ? 'var(--pictoOrange)' : undefined}
-                      onClick={() => showStickyNotes(state => !state)}
-                    />
-                    <IconButton
-                      icon={faFile}
-                      iconColor={resourcesVisible ? 'var(--pictoOrange)' : undefined}
-                      onClick={() => showResources(state => !state)}
-                    />
-                  </div>
                   <div>
                     <h5>Card Type</h5>
                     <div>Type: {cardType?.title || ''}</div>
@@ -95,14 +91,15 @@ export default function CardEditor({
                   <div>
                     <h5>Card settings</h5>
                     <OpenClose
-                      openIcon={faPalette}
-                      collaspedChildren={<span>{card.color || 'no color'}</span>}
+                      closeIcon={faCheck}
+                      collaspedChildren={<span><FontAwesomeIcon icon={faPalette} /></span>}
                     >
                       <TwitterPicker
                         colors={['#EDD3EC', '#EAC2C2', '#CCEFD4', '#E1F2F9', '#F9F5D6', '#F6F1F1']}
                         color={card.color || 'white'}
+                        triangle='hide'
                         onChangeComplete={newColor => {
-                          dispatch(API.updateCard({ ...card, color: newColor.hex }));
+                          dispatch(API.updateCard({...card, color: newColor.hex}));
                         }}
                       />
                     </OpenClose>
@@ -117,28 +114,33 @@ export default function CardEditor({
                           inputType="INPUT"
                           value={variant.title || ''}
                           onChange={newValue =>
-                            dispatch(API.updateCardContent({ ...variant, title: newValue }))
+                            dispatch(API.updateCardContent({...variant, title: newValue}))
                           }
                         />
+                        {variant.deliverableId != null ?
+                          <DocumentEditor docId={variant.deliverableId} />
+                          : <span>please create a doc !!!!</span>}
                       </div>
                     </div>
                   ) : null}
                 </div>
               </CardLayout>
-              <div className={css({ display: resourcesVisible ? undefined : 'none' })}>
-                <h3>Resources</h3>
-                <ul>
-                  <li>Acces ressources "héritées"</li>
-                  <li>
-                    Ajouter une ressource
-                    <ul>
-                      <li>Pour cette variante uniquement</li>
-                      <li>Pour toutes les variantes de la carte</li>
-                      <li>Pour toutes les cartes de ce type</li>
-                    </ul>
-                  </li>
-                </ul>
-              </div>
+              <OpenClose collaspedChildren={<span className={sideTabButton}>Resources</span>}>
+                <div>
+                  <h3>Resources</h3>
+                  <ul>
+                    <li>Acces ressources "héritées"</li>
+                    <li>
+                      Ajouter une ressource
+                      <ul>
+                        <li>Pour cette variante uniquement</li>
+                        <li>Pour toutes les variantes de la carte</li>
+                        <li>Pour toutes les cartes de ce type</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </OpenClose>
             </>
           </FitSpace>
           {showSubcards ? (

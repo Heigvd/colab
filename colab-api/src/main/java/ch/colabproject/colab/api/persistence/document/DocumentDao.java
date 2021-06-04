@@ -86,6 +86,7 @@ public class DocumentDao {
     public Document persistDocument(Document document) {
         logger.debug("persist document {}", document);
         em.persist(document);
+        em.flush();
         return document;
     }
 

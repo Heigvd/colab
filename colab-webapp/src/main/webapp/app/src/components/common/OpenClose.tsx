@@ -6,16 +6,17 @@
  */
 
 import * as React from 'react';
-import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import IconButton from './IconButton';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import {IconProp} from '@fortawesome/fontawesome-svg-core';
+import Clickable from './Clickable';
 
 type State = {
   status: 'COLLAPSED' | 'EXPANDED';
 };
 
 export interface Props {
-  openIcon?: IconProp;
+  closeIcon?: IconProp;
   collaspedChildren: JSX.Element;
   children: JSX.Element;
 }
@@ -23,7 +24,7 @@ export interface Props {
 export default function OpenClose({
   collaspedChildren,
   children,
-  openIcon = faPen,
+  closeIcon = faTimes,
 }: Props): JSX.Element {
   const [state, setState] = React.useState<State>({
     status: 'COLLAPSED',
@@ -34,7 +35,7 @@ export default function OpenClose({
       <>
         {children}
         <IconButton
-          icon={faTimes}
+          icon={closeIcon}
           title="close"
           onClick={() => {
             setState({
@@ -47,16 +48,15 @@ export default function OpenClose({
   } else {
     return (
       <div>
-        {collaspedChildren}
-        <IconButton
-          icon={openIcon}
-          title="edit"
+        <Clickable
           onClick={() => {
             setState({
               status: 'EXPANDED',
             });
           }}
-        />
+        >
+          {collaspedChildren}
+        </Clickable>
       </div>
     );
   }
