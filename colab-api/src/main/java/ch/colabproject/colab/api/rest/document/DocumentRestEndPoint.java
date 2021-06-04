@@ -41,6 +41,10 @@ public class DocumentRestEndPoint {
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(DocumentRestEndPoint.class);
 
+    // *********************************************************************************************
+    // injections
+    // *********************************************************************************************
+
     /**
      * The document persistence manager
      */
@@ -52,6 +56,10 @@ public class DocumentRestEndPoint {
      */
     @Inject
     private DocumentFacade documentFacade;
+
+    // *********************************************************************************************
+    // CRUD
+    // *********************************************************************************************
 
     /**
      * Retrieve the list of all documents. This is available to admin only
@@ -116,6 +124,10 @@ public class DocumentRestEndPoint {
         logger.debug("delete document #{}", id);
         documentDao.deleteDocument(id);
     }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 
     /**
      * Get all blocks that make up the document

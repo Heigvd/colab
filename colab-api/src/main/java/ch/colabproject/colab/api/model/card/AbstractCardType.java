@@ -8,11 +8,15 @@ package ch.colabproject.colab.api.model.card;
 
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import java.util.ArrayList;
+import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +24,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 /**
@@ -66,6 +71,21 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
      * Is this type deprecated? A deprecated type should not be used by new projects.
      */
     private boolean deprecated;
+
+    /**
+     * The list of all cards implementing this card definition
+     */
+    @OneToMany(mappedBy = "cardType", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<Card> implementingCards = new ArrayList<>();
+
+    /**
+     * The list of abstract resources directly linked to this card definition
+     */
+    @OneToMany(mappedBy = "abstractCardType", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<AbstractResource> directAbstractResources = new ArrayList<>();
+
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -155,6 +175,35 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
      */
     public void setDeprecated(boolean deprecated) {
         this.deprecated = deprecated;
+    }
+
+    /**
+     * @return the list of all cards implementing this card definition
+     */
+    public List<Card> getImplementingCards() {
+        return implementingCards;
+    }
+
+    /**
+     * @param implementingCards the list of all cards implementing this card definition
+     */
+    public void setImplementingCards(List<Card> implementingCards) {
+        this.implementingCards = implementingCards;
+    }
+
+    /**
+     * @return the list of abstract resources directly linked to this card definition
+     */
+    public List<AbstractResource> getDirectAbstractResources() {
+        return directAbstractResources;
+    }
+
+    /**
+     * @param abstractResources the list of abstract resources directly linked to this card
+     *                          definition
+     */
+    public void setDirectAbstractResources(List<AbstractResource> abstractResources) {
+        this.directAbstractResources = abstractResources;
     }
 
     /**

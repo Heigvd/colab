@@ -7,10 +7,13 @@
 package ch.colabproject.colab.api.rest.card;
 
 import ch.colabproject.colab.api.ejb.CardFacade;
+import ch.colabproject.colab.api.ejb.ResourceFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -53,6 +56,11 @@ public class CardContentRestEndpoint {
      */
     @Inject
     private CardFacade cardFacade;
+    /**
+     * The resource-related logic
+     */
+    @Inject
+    private ResourceFacade resourceFacade;
 
     /**
      * Retrieve the list of all card contents. This is available to admin only
@@ -136,6 +144,35 @@ public class CardContentRestEndpoint {
     public void deleteCardContent(@PathParam("id") Long id) {
         logger.debug("Delete card #{}", id);
         cardContentDao.deleteCardContent(id);
+    }
+
+    /**
+     * Get the available active resources linked to a card content
+     *
+     * @param cardId id of the card content
+     *
+     * @return list of matching resources
+     */
+    @GET
+    @Path("{id}/Resources")
+    public List<Resource> getAvailableActiveLinkedResources(@PathParam("id") Long cardContentId) {
+        logger.debug("get available and active resources linked to card content #{}",
+            cardContentId);
+        return resourceFacade.getAvailableActiveResourcesLinkedToCardContent(cardContentId);
+    }
+
+    /**
+     * Get all abstract resources directly linked to the card content
+     *
+     * @param cardContentId the id of the card content
+     *
+     * @return list of directly linked abstract resources
+     */
+    @GET
+    @Path("{id}/AbstractResources")
+    public List<AbstractResource> getDirectAbstractResourcesOfCardContent(@PathParam("id") Long cardContentId) {
+        logger.debug("get direct abstract resources linked to card content #{}", cardContentId);
+        return cardFacade.getDirectAbstractResourcesOfCardContent(cardContentId);
     }
 
     /**

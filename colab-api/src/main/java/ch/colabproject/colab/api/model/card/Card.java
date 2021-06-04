@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
@@ -30,7 +31,8 @@ import javax.persistence.Transient;
 /**
  * Card
  * <p>
- * It is defined by a cardType. The content is stored in one or several CardContent.
+ * It is defined by a cardType. The content is stored in one or several
+ * CardContent.
  *
  * @author sandra
  */
@@ -117,6 +119,13 @@ public class Card implements ColabEntity, WithWebsocketChannels {
     @JsonbTransient
     private List<CardContent> contentVariants = new ArrayList<>();
 
+    /**
+     * The list of abstract resources directly linked to this card
+     */
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<AbstractResource> directAbstractResources = new ArrayList<>();
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
@@ -191,7 +200,7 @@ public class Card implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * @param cardTypeId the cardTypeId to set
+     * @param cardTypeId the card type id to set
      */
     public void setCardTypeId(Long cardTypeId) {
         this.cardTypeId = cardTypeId;
@@ -199,8 +208,9 @@ public class Card implements ColabEntity, WithWebsocketChannels {
 
     /**
      * @return the parent card content
-     * <p>
-     * A card can either be the root card of a project or be within a card content
+     *         <p>
+     *         A card can either be the root card of a project or be within a card
+     *         content
      */
     public CardContent getParent() {
         return parent;
@@ -287,6 +297,20 @@ public class Card implements ColabEntity, WithWebsocketChannels {
      */
     public void setContentVariants(List<CardContent> contentVariantList) {
         this.contentVariants = contentVariantList;
+    }
+
+    /**
+     * @return the list of abstract resources directly linked to this card
+     */
+    public List<AbstractResource> getDirectAbstractResources() {
+        return directAbstractResources;
+    }
+
+    /**
+     * @param abstractResources the list of abstract resources directly linked to this card
+     */
+    public void setDirectAbstractResources(List<AbstractResource> abstractResources) {
+        this.directAbstractResources = abstractResources;
     }
 
     // ---------------------------------------------------------------------------------------------

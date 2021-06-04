@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
+import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
@@ -131,6 +132,22 @@ public class CardFacade {
         return cardType;
     }
 
+    /**
+     * Get all abstract resources of a given card type.
+     *
+     * @param cardTypeId the id of the card type
+     *
+     * @return all abstract resources directly linked to the card type
+     */
+    public List<AbstractResource> getDirectAbstractResourcesOfCardType(Long cardTypeId) {
+        logger.debug("get abstract resources directly linked to card type #{}", cardTypeId);
+        CardType cardType = cardTypeDao.getCardType(cardTypeId);
+        if (cardType == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return cardType.getDirectAbstractResources();
+    }
+
     // *********************************************************************************************
     // card stuff
     // *********************************************************************************************
@@ -247,6 +264,8 @@ public class CardFacade {
 
             if (effectiveType != null) {
                 card.setCardType(effectiveType);
+                effectiveType.getImplementingCards().add(card);
+
             } else {
                 logger.error("Unable to find effective type for {}", cardType);
                 throw HttpErrorMessage.relatedObjectNotFoundError();
@@ -319,6 +338,22 @@ public class CardFacade {
         return card.getContentVariants();
     }
 
+    /**
+     * Get all abstract resources of a given card.
+     *
+     * @param cardId the id of the card
+     *
+     * @return all abstract resources directly linked to the card
+     */
+    public List<AbstractResource> getDirectAbstractResourcesOfCard(Long cardId) {
+        logger.debug("get abstract resources directly linked to card #{}", cardId);
+        Card card = cardDao.getCard(cardId);
+        if (card == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return card.getDirectAbstractResources();
+    }
+
     // *********************************************************************************************
     // card content stuff
     // *********************************************************************************************
@@ -385,17 +420,44 @@ public class CardFacade {
     public Document assignDeliverable(Long cardContentId, Document document) {
         logger.debug("set deliverable {} to card content #{}", document, cardContentId);
 
+        if (document == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        // A document can be related at max to one card content
+        if (document.hasDeliverableCardContent()) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
         CardContent cardContent = cardContentDao.getCardContent(cardContentId);
         if (cardContent == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
+        securityFacade.assertCanCreateDeliverable(document, cardContent);
+
+        cardContent.setDeliverable(document);
+        document.setDeliverableCardContent(cardContent);
+
         Document persistedDocument = documentDao.persistDocument(document);
 
-        cardContent.setDeliverable(persistedDocument);
-        persistedDocument.setDeliverableCardContent(cardContent);
-
         return persistedDocument;
+    }
+
+    /**
+     * Get all abstract resources of a given card content.
+     *
+     * @param cardContentId the id of the card content
+     *
+     * @return all abstract resources directly linked to the card content
+     */
+    public List<AbstractResource> getDirectAbstractResourcesOfCardContent(Long cardContentId) {
+        logger.debug("get abstract resources directly linked to card content #{}", cardContentId);
+        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+        if (cardContent == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return cardContent.getDirectAbstractResources();
     }
 
 }

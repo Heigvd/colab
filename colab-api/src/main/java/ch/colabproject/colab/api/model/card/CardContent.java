@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
@@ -116,6 +117,13 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<Card> subCards = new ArrayList<>();
+
+    /**
+     * The list of abstract resources directly linked to this card content
+     */
+    @OneToMany(mappedBy = "cardContent", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<AbstractResource> directAbstractResources = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -278,6 +286,20 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
         this.subCards = subCards;
     }
 
+    /**
+     * @return the list of abstract resources directly linked to this card content
+     */
+    public List<AbstractResource> getDirectAbstractResources() {
+        return directAbstractResources;
+    }
+
+    /**
+     * @param abstractResources the list of abstract resources directly linked to this card content
+     */
+    public void setDirectAbstractResources(List<AbstractResource> abstractResources) {
+        this.directAbstractResources = abstractResources;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -335,8 +357,8 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
     @Override
     public String toString() {
         return "CardContent{" + "id=" + id + ", title=" + title + ", status=" + status
-                + ", completion=" + completionLevel + ", completionMode=" + completionMode
-                + ", card=" + card + "}";
+            + ", completion=" + completionLevel + ", completionMode=" + completionMode
+            + ", card=" + card + "}";
     }
 
 }
