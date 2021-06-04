@@ -149,7 +149,7 @@ public class CardContentRestEndpoint {
     /**
      * Get the available active resources linked to a card content
      *
-     * @param cardId id of the card content
+     * @param cardContentId id of the card content
      *
      * @return list of matching resources
      */

@@ -20,7 +20,7 @@ import javax.persistence.Transient;
  * <p>
  * There can be a chain of references to aim at a resource.
  * <p>
- * Ref -> [Ref ->](0..*) Resource
+ * Ref - [Ref -](0..*) Resource
  * <p>
  * The resource reference holds the comments for the resource in the context of a specific card /
  * card type / card type reference / card content.

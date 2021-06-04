@@ -131,7 +131,7 @@ public class ResourceFacade {
      * <p>
      * The resources must be active and available for the card content.
      *
-     * @param cardId the id of the card content
+     * @param cardContentId the id of the card content
      *
      * @return all resources that match
      */
