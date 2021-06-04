@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2021 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 23,
+      <title>File: 21,
              Errors: 0,
-             Warnings: 33,
+             Warnings: 31,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -215,34 +215,6 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage.java">ch/colabproject/colab/generator/model/exceptions/HttpErrorMessage.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.ResourceRef.java">ch/colabproject/colab/api/model/document/ResourceRef.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.Resource.java">ch/colabproject/colab/api/model/document/Resource.java</a>
                 </td>
                 <td>
                   0

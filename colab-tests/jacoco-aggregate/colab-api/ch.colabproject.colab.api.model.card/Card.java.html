@@ -339,11 +339,11 @@ import javax.persistence.Transient;
             // this card is a sub-card, propagate through its parent channels
 <span class="fc" id="L340">            return this.parent.getChannels();</span>
 <span class="nc bnc" id="L341" title="All 2 branches missed.">        } else if (this.cardType != null) {</span>
-            // such a card shoudln't exist...
+            // such a card shouldn't exist...
             // Lorem-ipsum cards for global cardTypes ???
 <span class="nc" id="L344">            return this.cardType.getChannels();</span>
         } else {
-            // such an orphan card shoudln't exist...
+            // such an orphan card shouldn't exist...
 <span class="nc" id="L347">            return Set.of();</span>
         }
     }

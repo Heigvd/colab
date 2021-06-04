@@ -178,26 +178,20 @@ import javax.persistence.Transient;
         }
 <span class="nc" id="L179">    }</span>
 
-//    @Override
-//    public Set&lt;WebsocketChannel&gt; getChannels() {
-//        // TODO
-//        return null;
-//    }
-
     @Override
     public int hashCode() {
-<span class="nc" id="L189">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L183">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L195">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L189">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L200">        return &quot;Resource{&quot; + toPartialString() + &quot;, documentId=&quot; + documentId + &quot;, published=&quot;</span>
+<span class="nc" id="L194">        return &quot;Resource{&quot; + toPartialString() + &quot;, documentId=&quot; + documentId + &quot;, published=&quot;</span>
             + published + &quot;, requestingForGlory=&quot; + requestingForGlory + &quot;, deprecated=&quot;
             + deprecated + &quot;}&quot;;
     }

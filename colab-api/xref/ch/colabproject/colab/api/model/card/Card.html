@@ -347,11 +347,11 @@
 <a class="jxr_linenumber" name="L339" href="#L339">339</a>             <em class="jxr_comment">// this card is a sub-card, propagate through its parent channels</em>
 <a class="jxr_linenumber" name="L340" href="#L340">340</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.parent.getChannels();
 <a class="jxr_linenumber" name="L341" href="#L341">341</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (<strong class="jxr_keyword">this</strong>.cardType != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>             <em class="jxr_comment">// such a card shoudln't exist...</em>
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>             <em class="jxr_comment">// such a card shouldn't exist...</em>
 <a class="jxr_linenumber" name="L343" href="#L343">343</a>             <em class="jxr_comment">// Lorem-ipsum cards for global cardTypes ???</em>
 <a class="jxr_linenumber" name="L344" href="#L344">344</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.cardType.getChannels();
 <a class="jxr_linenumber" name="L345" href="#L345">345</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>             <em class="jxr_comment">// such an orphan card shoudln't exist...</em>
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>             <em class="jxr_comment">// such an orphan card shouldn't exist...</em>
 <a class="jxr_linenumber" name="L347" href="#L347">347</a>             <strong class="jxr_keyword">return</strong> Set.of();
 <a class="jxr_linenumber" name="L348" href="#L348">348</a>         }
 <a class="jxr_linenumber" name="L349" href="#L349">349</a>     }

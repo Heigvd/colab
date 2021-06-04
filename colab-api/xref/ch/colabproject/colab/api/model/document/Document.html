@@ -48,7 +48,7 @@
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  @JsonbTypeDeserializer(PolymorphicDeserializer.<strong class="jxr_keyword">class</strong>)
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_comment">//FIXME see if is needed or not. It was implemented for test purpose at first</em>
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  @NamedQuery(name = <span class="jxr_string">"Document.findAll"</span>, query = <span class="jxr_string">"SELECT d FROM Document d"</span>)
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> Document <strong class="jxr_keyword">implements</strong> ColabEntity <em class="jxr_comment">/* , WithWebsocketChannels */</em> {
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">class</strong> Document <strong class="jxr_keyword">implements</strong> ColabEntity<em class="jxr_comment">/*, WithWebsocketChannels*/</em> {
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  
@@ -287,33 +287,41 @@
 <a class="jxr_linenumber" name="L279" href="#L279">279</a> 
 <a class="jxr_linenumber" name="L280" href="#L280">280</a> <em class="jxr_comment">//    @Override</em>
 <a class="jxr_linenumber" name="L281" href="#L281">281</a> <em class="jxr_comment">//    public Set&lt;WebsocketChannel&gt; getChannels() {</em>
-<a class="jxr_linenumber" name="L282" href="#L282">282</a> <em class="jxr_comment">//        // TODO</em>
-<a class="jxr_linenumber" name="L283" href="#L283">283</a> <em class="jxr_comment">//        return null;</em>
-<a class="jxr_linenumber" name="L284" href="#L284">284</a> <em class="jxr_comment">//    }</em>
-<a class="jxr_linenumber" name="L285" href="#L285">285</a> 
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>     @Override
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
-<a class="jxr_linenumber" name="L288" href="#L288">288</a>         <strong class="jxr_keyword">return</strong> EntityHelper.hashCode(<strong class="jxr_keyword">this</strong>);
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>     }
-<a class="jxr_linenumber" name="L290" href="#L290">290</a> 
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>     @Override
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>     @SuppressWarnings(<span class="jxr_string">"EqualsWhichDoesntCheckParameterClass"</span>)
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(Object obj) {
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>         <strong class="jxr_keyword">return</strong> EntityHelper.equals(<strong class="jxr_keyword">this</strong>, obj);
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>     }
-<a class="jxr_linenumber" name="L296" href="#L296">296</a> 
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>     @Override
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> String toString();
-<a class="jxr_linenumber" name="L299" href="#L299">299</a> 
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L301" href="#L301">301</a> <em class="jxr_javadoccomment">     * @return This abstract class fields to mention in the toString implementations</em>
-<a class="jxr_linenumber" name="L302" href="#L302">302</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>     <strong class="jxr_keyword">protected</strong> String toPartialString() {
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>         <strong class="jxr_keyword">return</strong> <span class="jxr_string">"id="</span> + id + <span class="jxr_string">", title="</span> + title + <span class="jxr_string">", teaser="</span> + teaser + <span class="jxr_string">", authorityHolder="</span>
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>             + authorityHolder;
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>     }
+<a class="jxr_linenumber" name="L282" href="#L282">282</a> <em class="jxr_comment">//        if (this.deliverableCardContent != null) {</em>
+<a class="jxr_linenumber" name="L283" href="#L283">283</a> <em class="jxr_comment">//            // The document is the deliverable of a card content</em>
+<a class="jxr_linenumber" name="L284" href="#L284">284</a> <em class="jxr_comment">//            return this.deliverableCardContent.getChannels();</em>
+<a class="jxr_linenumber" name="L285" href="#L285">285</a> <em class="jxr_comment">//        } else if (this.resource != null) {</em>
+<a class="jxr_linenumber" name="L286" href="#L286">286</a> <em class="jxr_comment">//            // The document is a resource</em>
+<a class="jxr_linenumber" name="L287" href="#L287">287</a> <em class="jxr_comment">//            return this.resource.getChannels();</em>
+<a class="jxr_linenumber" name="L288" href="#L288">288</a> <em class="jxr_comment">//        } else {</em>
+<a class="jxr_linenumber" name="L289" href="#L289">289</a> <em class="jxr_comment">//            // such an orphan shouldn't exist...</em>
+<a class="jxr_linenumber" name="L290" href="#L290">290</a> <em class="jxr_comment">//            return Set.of();</em>
+<a class="jxr_linenumber" name="L291" href="#L291">291</a> <em class="jxr_comment">//        }</em>
+<a class="jxr_linenumber" name="L292" href="#L292">292</a> <em class="jxr_comment">//    }</em>
+<a class="jxr_linenumber" name="L293" href="#L293">293</a> 
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>     @Override
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">int</strong> hashCode() {
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>         <strong class="jxr_keyword">return</strong> EntityHelper.hashCode(<strong class="jxr_keyword">this</strong>);
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>     }
+<a class="jxr_linenumber" name="L298" href="#L298">298</a> 
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>     @Override
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>     @SuppressWarnings(<span class="jxr_string">"EqualsWhichDoesntCheckParameterClass"</span>)
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> equals(Object obj) {
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>         <strong class="jxr_keyword">return</strong> EntityHelper.equals(<strong class="jxr_keyword">this</strong>, obj);
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>     }
+<a class="jxr_linenumber" name="L304" href="#L304">304</a> 
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>     @Override
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">abstract</strong> String toString();
 <a class="jxr_linenumber" name="L307" href="#L307">307</a> 
-<a class="jxr_linenumber" name="L308" href="#L308">308</a> }
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L309" href="#L309">309</a> <em class="jxr_javadoccomment">     * @return This abstract class fields to mention in the toString implementations</em>
+<a class="jxr_linenumber" name="L310" href="#L310">310</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>     <strong class="jxr_keyword">protected</strong> String toPartialString() {
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>         <strong class="jxr_keyword">return</strong> <span class="jxr_string">"id="</span> + id + <span class="jxr_string">", title="</span> + title + <span class="jxr_string">", teaser="</span> + teaser + <span class="jxr_string">", authorityHolder="</span>
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>             + authorityHolder;
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>     }
+<a class="jxr_linenumber" name="L315" href="#L315">315</a> 
+<a class="jxr_linenumber" name="L316" href="#L316">316</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

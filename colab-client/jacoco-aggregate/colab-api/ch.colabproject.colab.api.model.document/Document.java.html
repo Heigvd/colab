@@ -40,7 +40,7 @@ import javax.persistence.Transient;
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 //FIXME see if is needed or not. It was implemented for test purpose at first
 @NamedQuery(name = &quot;Document.findAll&quot;, query = &quot;SELECT d FROM Document d&quot;)
-<span class="nc" id="L43">public abstract class Document implements ColabEntity /* , WithWebsocketChannels */ {</span>
+<span class="nc" id="L43">public abstract class Document implements ColabEntity/*, WithWebsocketChannels*/ {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -279,19 +279,27 @@ import javax.persistence.Transient;
 
 //    @Override
 //    public Set&lt;WebsocketChannel&gt; getChannels() {
-//        // TODO
-//        return null;
+//        if (this.deliverableCardContent != null) {
+//            // The document is the deliverable of a card content
+//            return this.deliverableCardContent.getChannels();
+//        } else if (this.resource != null) {
+//            // The document is a resource
+//            return this.resource.getChannels();
+//        } else {
+//            // such an orphan shouldn't exist...
+//            return Set.of();
+//        }
 //    }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L288">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L296">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L294">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L302">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
@@ -301,7 +309,7 @@ import javax.persistence.Transient;
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-<span class="nc" id="L304">        return &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, teaser=&quot; + teaser + &quot;, authorityHolder=&quot;</span>
+<span class="nc" id="L312">        return &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, teaser=&quot; + teaser + &quot;, authorityHolder=&quot;</span>
             + authorityHolder;
     }
 
