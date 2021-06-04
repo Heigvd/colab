@@ -30,7 +30,7 @@ import javax.persistence.Transient;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public abstract class Block implements ColabEntity /* , WithWebsocketChannels */ {
+public abstract class Block implements ColabEntity/*, WithWebsocketChannels*/ {
 
     private static final long serialVersionUID = 1L;
 
@@ -147,11 +147,15 @@ public abstract class Block implements ColabEntity /* , WithWebsocketChannels */
         }
     }
 
-//  @Override
-//  public Set<WebsocketChannel> getChannels() {
-//      // TODO
-//      return null;
-//  }
+//    @Override
+//    public Set<WebsocketChannel> getChannels() {
+//        if (this.document != null) {
+//            return this.document.getChannels();
+//        } else {
+//            // such an orphan shouldn't exist...
+//            return Set.of();
+//        }
+//    }
 
     @Override
     public int hashCode() {

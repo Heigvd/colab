@@ -40,7 +40,7 @@ import javax.persistence.Transient;
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 //FIXME see if is needed or not. It was implemented for test purpose at first
 @NamedQuery(name = "Document.findAll", query = "SELECT d FROM Document d")
-public abstract class Document implements ColabEntity /* , WithWebsocketChannels */ {
+public abstract class Document implements ColabEntity/*, WithWebsocketChannels*/ {
 
     private static final long serialVersionUID = 1L;
 
@@ -279,8 +279,16 @@ public abstract class Document implements ColabEntity /* , WithWebsocketChannels
 
 //    @Override
 //    public Set<WebsocketChannel> getChannels() {
-//        // TODO
-//        return null;
+//        if (this.deliverableCardContent != null) {
+//            // The document is the deliverable of a card content
+//            return this.deliverableCardContent.getChannels();
+//        } else if (this.resource != null) {
+//            // The document is a resource
+//            return this.resource.getChannels();
+//        } else {
+//            // such an orphan shouldn't exist...
+//            return Set.of();
+//        }
 //    }
 
     @Override

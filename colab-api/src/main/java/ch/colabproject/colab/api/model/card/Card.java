@@ -339,11 +339,11 @@ public class Card implements ColabEntity, WithWebsocketChannels {
             // this card is a sub-card, propagate through its parent channels
             return this.parent.getChannels();
         } else if (this.cardType != null) {
-            // such a card shoudln't exist...
+            // such a card shouldn't exist...
             // Lorem-ipsum cards for global cardTypes ???
             return this.cardType.getChannels();
         } else {
-            // such an orphan card shoudln't exist...
+            // such an orphan card shouldn't exist...
             return Set.of();
         }
     }
