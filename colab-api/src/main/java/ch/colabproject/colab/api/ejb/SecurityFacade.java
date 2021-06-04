@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.document.BlockDocument;
+import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -303,6 +304,17 @@ public class SecurityFacade {
         // TODO
     }
 
+    /**
+     * Make sure the current user has the right to create a deliverable for this document and this
+     * card content
+     *
+     * @param document    the document the deliverable
+     * @param cardContent the card content the resource will be linked to
+     */
+    public void assertCanCreateDeliverable(Document document, CardContent cardContent) {
+        // TODO
+    }
+
     // *********************************************************************************************
     // block document stuff
     // *********************************************************************************************
@@ -313,6 +325,42 @@ public class SecurityFacade {
      * @param blockDocument the document the new block will be part of
      */
     public void assertCanCreateBlock(BlockDocument blockDocument) {
+        // TODO
+    }
+
+    // *********************************************************************************************
+    // resource stuff
+    // *********************************************************************************************
+
+    /**
+     * Make sure the current user has the right to create a resource for this document and this card
+     * type / card type reference
+     *
+     * @param document         the document the resource will represent
+     * @param abstractCardType the card type / card type reference the resource will be linked to
+     */
+    public void assertCanCreateResource(Document document, AbstractCardType abstractCardType) {
+        // TODO
+    }
+
+    /**
+     * Make sure the current user has the right to create a resource for this document and this card
+     *
+     * @param document the document the resource will represent
+     * @param card     the card the resource will be linked to
+     */
+    public void assertCanCreateResource(Document document, Card card) {
+        // TODO
+    }
+
+    /**
+     * Make sure the current user has the right to create a resource for this document and this card
+     * content
+     *
+     * @param document    the document the resource will represent
+     * @param cardContent the card content the resource will be linked to
+     */
+    public void assertCanCreateResource(Document document, CardContent cardContent) {
         // TODO
     }
 

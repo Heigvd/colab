@@ -92,6 +92,20 @@ public abstract class Document implements ColabEntity , WithWebsocketChannels {
     @Transient
     private Long deliverableCardContentId;
 
+    /**
+     * The resource representing this document
+     */
+    // TODO see where to prevent that a document is represented by several resources
+    @OneToOne(mappedBy = "document", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private Resource resource;
+
+    /**
+     * The id of the resource representing this document
+     */
+    @Transient
+    private Long resourceId;
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
@@ -200,6 +214,56 @@ public abstract class Document implements ColabEntity , WithWebsocketChannels {
         this.deliverableCardContentId = deliverableCardContentId;
     }
 
+    /**
+     * @return True if there is a linked deliverable card content
+     */
+    public boolean hasDeliverableCardContent() {
+        return deliverableCardContent != null || deliverableCardContentId != null;
+    }
+
+    /**
+     * @return the resource representing this document
+     */
+    public Resource getResource() {
+        return resource;
+    }
+
+    /**
+     * @param resource the resource representing this document
+     */
+    public void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
+    /**
+     * get the id of resource representing this document. To be sent to client
+     *
+     * @return the id of the resource representing this document
+     */
+    public Long getResourceId() {
+        if (this.resource != null) {
+            return resource.getId();
+        } else {
+            return resourceId;
+        }
+    }
+
+    /**
+     * set the id of the resource representing this document. For serialization only
+     *
+     * @param resourceId the id of the resource representing this document
+     */
+    public void setResourceId(Long resourceId) {
+        this.resourceId = resourceId;
+    }
+
+    /**
+     * @return True if there is a linked resource
+     */
+    public boolean hasResource() {
+       return resource != null || resourceId != null;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -244,7 +308,7 @@ public abstract class Document implements ColabEntity , WithWebsocketChannels {
      */
     protected String toPartialString() {
         return "id=" + id + ", title=" + title + ", teaser=" + teaser + ", authorityHolder="
-                + authorityHolder;
+            + authorityHolder;
     }
 
 }

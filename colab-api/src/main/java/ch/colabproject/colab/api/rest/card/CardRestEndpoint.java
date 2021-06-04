@@ -7,9 +7,12 @@
 package ch.colabproject.colab.api.rest.card;
 
 import ch.colabproject.colab.api.ejb.CardFacade;
+import ch.colabproject.colab.api.ejb.ResourceFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.document.AbstractResource;
+import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -52,6 +55,12 @@ public class CardRestEndpoint {
      */
     @Inject
     private CardFacade cardFacade;
+
+    /**
+     * The resource-related logic
+     */
+    @Inject
+    private ResourceFacade resourceFacade;
 
     /**
      * Retrieve the list of all cards. This is available to admin only
@@ -141,9 +150,37 @@ public class CardRestEndpoint {
     }
 
     /**
+     * Get the available active resources linked to a card
+     *
+     * @param cardId id of the card
+     *
+     * @return list of matching resources
+     */
+    @GET
+    @Path("{id}/Resources")
+    public List<Resource> getAvailableActiveLinkedResources(@PathParam("id") Long cardId) {
+        logger.debug("get available and active resources linked to card #{}", cardId);
+        return resourceFacade.getAvailableActiveResourcesLinkedToCard(cardId);
+    }
+
+    /**
+     * Get all abstract resources directly linked to the card
+     *
+     * @param cardId the id of the card
+     *
+     * @return list of directly linked abstract resources
+     */
+    @GET
+    @Path("{id}/AbstractResources")
+    public List<AbstractResource> getDirectAbstractResourcesOfCard(@PathParam("id") Long cardId) {
+        logger.debug("get direct abstract resources linked to card #{}", cardId);
+        return cardFacade.getDirectAbstractResourcesOfCard(cardId);
+    }
+
+    /**
      * Get all card content variants of a card
      *
-     * @param cardId Card of the searched content variants
+     * @param cardId Card id of the searched content variants
      *
      * @return list of card contents
      */

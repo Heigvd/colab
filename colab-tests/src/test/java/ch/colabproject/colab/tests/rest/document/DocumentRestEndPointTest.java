@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit testing of the document rest end point from a client point of view
+ * Testing of the document rest end point from a client point of view
  *
  * @author sandra
  */
@@ -52,7 +52,7 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
     public void testCreateExternalDocLink() {
         String title = "Co-Design Guidelines #" + ((int) (Math.random() * 1000));
         String teaser = "Basis of the guidelines that will be inserted in the maps of the platform this co-design #"
-                + ((int) (Math.random() * 1000));
+            + ((int) (Math.random() * 1000));
         ConcretizationCategory authorityHolder = ConcretizationCategory.MODEL;
         String url = "https://www.colab-project.ch/sites/default/files/2021-03/WP1%20-%20Co-Design%20Guidelines.pdf";
 
@@ -80,7 +80,7 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
     public void testCreateHostedDocLink() {
         String title = "How to do everything perfectly #" + ((int) (Math.random() * 1000));
         String teaser = "Learn the perfection with the authors' experiments #"
-                + ((int) (Math.random() * 1000));
+            + ((int) (Math.random() * 1000));
         ConcretizationCategory authorityHolder = ConcretizationCategory.MODEL;
         String path = "someWayToAccessTheMongoDBData #" + ((int) (Math.random() * 1000));
 
@@ -152,7 +152,7 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
 
         String title = "Serious Games Project Description Model #" + ((int) (Math.random() * 1000));
         String teaser = "This model is a supplement to the direct deliverables of the co.LAB project #"
-                + ((int) (Math.random() * 1000));
+            + ((int) (Math.random() * 1000));
         ConcretizationCategory authorityHolder = ConcretizationCategory.PROJECT;
         String url = "https://www.colab-project.ch/sites/default/files/2021-03/WP1%20-%20Project%20Description%20Model_0.pdf";
 

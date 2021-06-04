@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit testing of card content controller from a client point of view
+ * Testing of card content controller from a client point of view
  *
  * @author sandra
  */

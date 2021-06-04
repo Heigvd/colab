@@ -30,6 +30,7 @@ public class HttpErrorMessage extends HttpException {
         SMTP_ERROR,
         EMAIL_MESSAGE_ERROR,
         RELATED_OBJECT_NOT_FOUND,
+        DATA_INTEGRITY_FAILURE,
     }
 
     /**
@@ -144,6 +145,13 @@ public class HttpErrorMessage extends HttpException {
      */
     public static HttpErrorMessage relatedObjectNotFoundError() {
         return new HttpErrorMessage(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND);
+    }
+
+    /**
+     * @return 400 Data integrity problem
+     */
+    public static HttpErrorMessage dataIntegrityFailure () {
+        return new HttpErrorMessage(HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE);
     }
 
 }

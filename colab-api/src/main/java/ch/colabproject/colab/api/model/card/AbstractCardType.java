@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.User;
@@ -92,6 +93,20 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     @JsonbTransient
     @OneToMany(mappedBy = "abstractCardType", cascade = CascadeType.ALL)
     private List<CardTypeRef> references = new ArrayList<>();
+
+    /**
+     * The list of all cards implementing this card definition
+     */
+    @OneToMany(mappedBy = "cardType", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<Card> implementingCards = new ArrayList<>();
+
+    /**
+     * The list of abstract resources directly linked to this card definition
+     */
+    @OneToMany(mappedBy = "abstractCardType", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<AbstractResource> directAbstractResources = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -184,6 +199,36 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     /**
+     * @return the list of all cards implementing this card definition
+     */
+    public List<Card> getImplementingCards() {
+        return implementingCards;
+    }
+
+    /**
+     * @param implementingCards the list of all cards implementing this card definition
+     */
+    public void setImplementingCards(List<Card> implementingCards) {
+        this.implementingCards = implementingCards;
+    }
+
+    /**
+     * @return the list of abstract resources directly linked to this card definition
+     */
+    public List<AbstractResource> getDirectAbstractResources() {
+        return directAbstractResources;
+    }
+
+    /**
+     * @param abstractResources the list of abstract resources directly linked to this card
+     *                          definition
+     */
+    public void setDirectAbstractResources(List<AbstractResource> abstractResources) {
+        this.directAbstractResources = abstractResources;
+    }
+
+    /**
+     * Resolve to concrete CardType
      * Get references
      *
      * @return list of references
