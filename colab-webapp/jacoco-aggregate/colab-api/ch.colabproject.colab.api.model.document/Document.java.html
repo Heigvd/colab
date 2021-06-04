@@ -89,6 +89,20 @@ import javax.persistence.Transient;
     @Transient
     private Long deliverableCardContentId;
 
+    /**
+     * The resource representing this document
+     */
+    // TODO see where to prevent that a document is represented by several resources
+    @OneToOne(mappedBy = &quot;document&quot;, cascade = CascadeType.ALL)
+    @JsonbTransient
+    private Resource resource;
+
+    /**
+     * The id of the resource representing this document
+     */
+    @Transient
+    private Long resourceId;
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
@@ -98,43 +112,43 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L101">        return id;</span>
+<span class="nc" id="L115">        return id;</span>
     }
 
     /**
      * @param id the document id
      */
     public void setId(Long id) {
-<span class="nc" id="L108">        this.id = id;</span>
-<span class="nc" id="L109">    }</span>
+<span class="nc" id="L122">        this.id = id;</span>
+<span class="nc" id="L123">    }</span>
 
     /**
      * @return the title
      */
     public String getTitle() {
-<span class="nc" id="L115">        return title;</span>
+<span class="nc" id="L129">        return title;</span>
     }
 
     /**
      * @param title the title to set
      */
     public void setTitle(String title) {
-<span class="nc" id="L122">        this.title = title;</span>
-<span class="nc" id="L123">    }</span>
+<span class="nc" id="L136">        this.title = title;</span>
+<span class="nc" id="L137">    }</span>
 
     /**
      * @return the abstract / teaser of the content of the document
      */
     public String getTeaser() {
-<span class="nc" id="L129">        return teaser;</span>
+<span class="nc" id="L143">        return teaser;</span>
     }
 
     /**
      * @param teaser the abstract / teaser of the content of the document
      */
     public void setTeaser(String teaser) {
-<span class="nc" id="L136">        this.teaser = teaser;</span>
-<span class="nc" id="L137">    }</span>
+<span class="nc" id="L150">        this.teaser = teaser;</span>
+<span class="nc" id="L151">    }</span>
 
     /**
      * @return the authority holder : is it belonging to
@@ -144,7 +158,7 @@ import javax.persistence.Transient;
      *         &lt;/ul&gt;
      */
     public ConcretizationCategory getAuthorityHolder() {
-<span class="nc" id="L147">        return authorityHolder;</span>
+<span class="nc" id="L161">        return authorityHolder;</span>
     }
 
     /**
@@ -155,14 +169,14 @@ import javax.persistence.Transient;
      *                        &lt;/ul&gt;
      */
     public void setAuthorityHolder(ConcretizationCategory authorityHolder) {
-<span class="nc" id="L158">        this.authorityHolder = authorityHolder;</span>
-<span class="nc" id="L159">    }</span>
+<span class="nc" id="L172">        this.authorityHolder = authorityHolder;</span>
+<span class="nc" id="L173">    }</span>
 
     /**
      * @return the card content for which this document is the deliverable
      */
     public CardContent getDeliverableCardContent() {
-<span class="nc" id="L165">        return deliverableCardContent;</span>
+<span class="nc" id="L179">        return deliverableCardContent;</span>
     }
 
     /**
@@ -170,8 +184,8 @@ import javax.persistence.Transient;
      *                               set
      */
     public void setDeliverableCardContent(CardContent deliverableCardContent) {
-<span class="nc" id="L173">        this.deliverableCardContent = deliverableCardContent;</span>
-<span class="nc" id="L174">    }</span>
+<span class="nc" id="L187">        this.deliverableCardContent = deliverableCardContent;</span>
+<span class="nc" id="L188">    }</span>
 
     /**
      * get the id of the card content for which this document is the deliverable. To be sent to
@@ -180,10 +194,10 @@ import javax.persistence.Transient;
      * @return the id of the card content
      */
     public Long getDeliverableCardContentId() {
-<span class="nc bnc" id="L183" title="All 2 branches missed.">        if (this.deliverableCardContent != null) {</span>
-<span class="nc" id="L184">            return deliverableCardContent.getId();</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        if (this.deliverableCardContent != null) {</span>
+<span class="nc" id="L198">            return deliverableCardContent.getId();</span>
         } else {
-<span class="nc" id="L186">            return deliverableCardContentId;</span>
+<span class="nc" id="L200">            return deliverableCardContentId;</span>
         }
     }
 
@@ -194,8 +208,58 @@ import javax.persistence.Transient;
      * @param deliverableCardContentId the id of the card contentto set
      */
     public void setDeliverableCardContentId(Long deliverableCardContentId) {
-<span class="nc" id="L197">        this.deliverableCardContentId = deliverableCardContentId;</span>
-<span class="nc" id="L198">    }</span>
+<span class="nc" id="L211">        this.deliverableCardContentId = deliverableCardContentId;</span>
+<span class="nc" id="L212">    }</span>
+
+    /**
+     * @return True if there is a linked deliverable card content
+     */
+    public boolean hasDeliverableCardContent() {
+<span class="nc bnc" id="L218" title="All 4 branches missed.">        return deliverableCardContent != null || deliverableCardContentId != null;</span>
+    }
+
+    /**
+     * @return the resource representing this document
+     */
+    public Resource getResource() {
+<span class="nc" id="L225">        return resource;</span>
+    }
+
+    /**
+     * @param resource the resource representing this document
+     */
+    public void setResource(Resource resource) {
+<span class="nc" id="L232">        this.resource = resource;</span>
+<span class="nc" id="L233">    }</span>
+
+    /**
+     * get the id of resource representing this document. To be sent to client
+     *
+     * @return the id of the resource representing this document
+     */
+    public Long getResourceId() {
+<span class="nc bnc" id="L241" title="All 2 branches missed.">        if (this.resource != null) {</span>
+<span class="nc" id="L242">            return resource.getId();</span>
+        } else {
+<span class="nc" id="L244">            return resourceId;</span>
+        }
+    }
+
+    /**
+     * set the id of the resource representing this document. For serialization only
+     *
+     * @param resourceId the id of the resource representing this document
+     */
+    public void setResourceId(Long resourceId) {
+<span class="nc" id="L254">        this.resourceId = resourceId;</span>
+<span class="nc" id="L255">    }</span>
+
+    /**
+     * @return True if there is a linked resource
+     */
+    public boolean hasResource() {
+<span class="nc bnc" id="L261" title="All 4 branches missed.">       return resource != null || resourceId != null;</span>
+    }
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -203,15 +267,15 @@ import javax.persistence.Transient;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L206" title="All 2 branches missed.">        if (other instanceof Document) {</span>
-<span class="nc" id="L207">            Document o = (Document) other;</span>
-<span class="nc" id="L208">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L209">            this.setTeaser(o.getTeaser());</span>
-<span class="nc" id="L210">            this.setAuthorityHolder(o.getAuthorityHolder());</span>
-<span class="nc" id="L211">        } else {</span>
-<span class="nc" id="L212">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (other instanceof Document) {</span>
+<span class="nc" id="L271">            Document o = (Document) other;</span>
+<span class="nc" id="L272">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L273">            this.setTeaser(o.getTeaser());</span>
+<span class="nc" id="L274">            this.setAuthorityHolder(o.getAuthorityHolder());</span>
+<span class="nc" id="L275">        } else {</span>
+<span class="nc" id="L276">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L214">    }</span>
+<span class="nc" id="L278">    }</span>
 
 //    @Override
 //    public Set&lt;WebsocketChannel&gt; getChannels() {
@@ -221,13 +285,13 @@ import javax.persistence.Transient;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L224">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L288">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L230">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L294">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
@@ -237,8 +301,8 @@ import javax.persistence.Transient;
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-<span class="nc" id="L240">        return &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, teaser=&quot; + teaser + &quot;, authorityHolder=&quot;</span>
-                + authorityHolder;
+<span class="nc" id="L304">        return &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, teaser=&quot; + teaser + &quot;, authorityHolder=&quot;</span>
+            + authorityHolder;
     }
 
 }

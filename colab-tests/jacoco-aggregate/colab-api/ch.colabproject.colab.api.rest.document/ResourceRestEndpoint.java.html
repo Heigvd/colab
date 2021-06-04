@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ResourceRestEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.document</a> &gt; <span class="el_source">ResourceRestEndpoint.java</span></div><h1>ResourceRestEndpoint.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.document;
+
+import ch.colabproject.colab.api.ejb.ResourceFacade;
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.Resource;
+import ch.colabproject.colab.api.model.document.ResourceRef;
+import ch.colabproject.colab.api.persistence.document.ResourceDao;
+import ch.colabproject.colab.api.persistence.document.ResourceRefDao;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * REST resource controller
+ *
+ * @author sandra
+ */
+@Path(&quot;resources&quot;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@AuthenticationRequired
+<span class="fc" id="L38">public class ResourceRestEndpoint {</span>
+
+    /** logger */
+<span class="fc" id="L41">    private static final Logger logger = LoggerFactory.getLogger(ResourceRestEndpoint.class);</span>
+
+    // *********************************************************************************************
+    // injections
+    // *********************************************************************************************
+
+    /**
+     * The resource persistence manager
+     */
+    @Inject
+    private ResourceDao resourceDao;
+
+    /**
+     * The resource reference persistence manager
+     */
+    @Inject
+    private ResourceRefDao resourceRefDao;
+
+    /**
+     * The resource-related logic
+     */
+    @Inject
+    private ResourceFacade resourceFacade;
+
+    // *********************************************************************************************
+    // RU
+    // *********************************************************************************************
+
+    /**
+     * Get the resource identified by the given id
+     *
+     * @param id the id of the resource to fetch
+     *
+     * @return the resource or null
+     */
+    @GET
+    @Path(&quot;{id}&quot;)
+    public Resource getResource(@PathParam(&quot;id&quot;) Long id) {
+<span class="fc" id="L79">        logger.debug(&quot;get resource #{}&quot;, id);</span>
+<span class="fc" id="L80">        return resourceDao.findResource(id);</span>
+    }
+
+    /**
+     * Get the resource reference identified by the given id
+     *
+     * @param id the id of the resource reference to fetch
+     *
+     * @return the resource reference or null
+     */
+    @GET
+    @Path(&quot;ref/{id}&quot;)
+    public ResourceRef getResourceReference(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L93">        logger.debug(&quot;get resource reference #{}&quot;, id);</span>
+<span class="nc" id="L94">        return resourceRefDao.findResourceRef(id);</span>
+    }
+
+    /**
+     * Save changes to database
+     *
+     * @param resource the resource to update
+     *
+     * @throws ColabMergeException if the merge is impossible
+     */
+    @PUT
+    public void updateResource(Resource resource) throws ColabMergeException {
+<span class="fc" id="L106">        logger.debug(&quot;update resource {}&quot;, resource);</span>
+<span class="fc" id="L107">        resourceDao.updateResource(resource);</span>
+<span class="fc" id="L108">    }</span>
+
+    /**
+     * Save changes to database
+     *
+     * @param resourceRef the resource reference to update
+     *
+     * @throws ColabMergeException if the merge is impossible
+     */
+    @PUT
+    @Path(&quot;ref&quot;)
+    public void updateResourceRef(ResourceRef resourceRef) throws ColabMergeException {
+<span class="nc" id="L120">        logger.debug(&quot;update resource reference {}&quot;, resourceRef);</span>
+<span class="nc" id="L121">        resourceRefDao.updateResourceRef(resourceRef);</span>
+<span class="nc" id="L122">    }</span>
+
+    // *********************************************************************************************
+    // create a resource for a document
+    // *********************************************************************************************
+
+    /**
+     * Create a resource to link the document and the card type and create a reference to that new
+     * resource for each child (recursively)
+     *
+     * @param document   the document represented by the new resource
+     * @param cardTypeId the id of the card type the resource must be linked to
+     *
+     * @return id of the persisted new resource
+     */
+    @POST
+    @Path(&quot;createForCardType/{cardTypeId}&quot;)
+    public Resource createResourceForCardType(@PathParam(&quot;cardTypeId&quot;) Long cardTypeId,
+            Document document) {
+<span class="fc" id="L141">        logger.debug(&quot;create resource for document {} and card type #{}&quot;, document,</span>
+            cardTypeId);
+<span class="fc" id="L143">        return resourceFacade.createResourceForCardType(document, cardTypeId);</span>
+    }
+
+    /**
+     * Create a resource to link the document and the card and create a reference to that new
+     * resource for each child (recursively)
+     *
+     * @param document the document represented by the new resource
+     * @param cardId   the id of the card the resource must be linked to
+     *
+     * @return id of the persisted new resource
+     */
+    @POST
+    @Path(&quot;createForCard/{cardId}&quot;)
+    public Resource createResourceForCard(@PathParam(&quot;cardId&quot;) Long cardId, Document document) {
+<span class="fc" id="L158">        logger.debug(&quot;create resource for document {} and cardId #{}&quot;, document, cardId);</span>
+<span class="fc" id="L159">        return resourceFacade.createResourceForCard(document, cardId);</span>
+    }
+
+    /**
+     * Create a resource to link the document and the card content and create a reference to that
+     * new resource for each child (recursively)
+     *
+     * @param document      the document represented by the new resource
+     * @param cardContentId the id of the card content the resource must be linked to
+     *
+     * @return id of the persisted new resource
+     */
+    @POST
+    @Path(&quot;createForCardContent/{cardContentId}&quot;)
+    public Resource createResourceForCardContent(@PathParam(&quot;cardContentId&quot;) Long cardContentId,
+            Document document) {
+<span class="fc" id="L175">        logger.debug(&quot;create resource for document {} and card content #{}&quot;, document,</span>
+            cardContentId);
+<span class="fc" id="L177">        return resourceFacade.createResourceForCardContent(document, cardContentId);</span>
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

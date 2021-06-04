@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ResourceRef.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.document</a> &gt; <span class="el_source">ResourceRef.java</span></div><h1>ResourceRef.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.document;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+
+/**
+ * A reference to another existing abstract resource.
+ * &lt;p&gt;
+ * There can be a chain of references to aim at a resource.
+ * &lt;p&gt;
+ * Ref - [Ref -](0..*) Resource
+ * &lt;p&gt;
+ * The resource reference holds the comments for the resource in the context of a specific card /
+ * card type / card type reference / card content.
+ *
+ * @author sandra
+ */
+@Entity
+@DiscriminatorValue(&quot;RESOURCE_REF&quot;)
+<span class="fc" id="L32">public class ResourceRef extends AbstractResource {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * The abstract resource this reference aims at
+     */
+    @OneToOne
+    @JsonbTransient
+    private AbstractResource targetAbstractResource;
+
+    /**
+     * The abstract resource id (serialization sugar)
+     */
+    @Transient
+    private Long targetAbstractResourceId;
+
+    /**
+     * If the target resource is not useful for that card/cardDef/cardContent
+     */
+    private boolean refused;
+
+    // ---------------------------------------------------------------------------------------------
+    // initialize
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return an initialized new resource reference
+     */
+    public static ResourceRef initNewResourceRef() {
+        // nothing to initialize from the super class
+        // implicitly setRefused(false)
+<span class="fc" id="L68">        return new ResourceRef();</span>
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the abstract resource this reference aims at
+     */
+    public AbstractResource getTargetAbstractResource() {
+<span class="fc" id="L79">        return targetAbstractResource;</span>
+    }
+
+    /**
+     * @param targetAbstractResource the abstract resource this reference aims at
+     */
+    public void setTargetAbstractResource(AbstractResource targetAbstractResource) {
+<span class="fc" id="L86">        this.targetAbstractResource = targetAbstractResource;</span>
+<span class="fc" id="L87">    }</span>
+
+    /**
+     * get the id of the abstract resource this reference aims at. To be sent to client
+     *
+     * @return id of the abstract resource or null
+     */
+    public Long getTargetAbstractResourceId() {
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (targetAbstractResource != null) {</span>
+<span class="nc" id="L96">            return targetAbstractResource.getId();</span>
+        } else {
+<span class="nc" id="L98">            return targetAbstractResourceId;</span>
+        }
+    }
+
+    /**
+     * set the id of the abstract resource this reference aims at. For serialization only
+     *
+     * @param targetAbstractResourceId the id of the abstract resource
+     */
+    public void setTargetAbstractResourceId(Long targetAbstractResourceId) {
+<span class="nc" id="L108">        this.targetAbstractResourceId = targetAbstractResourceId;</span>
+<span class="nc" id="L109">    }</span>
+
+    /**
+     * @return if the target resource is not useful for that card/cardDef/cardContent
+     */
+    public boolean isRefused() {
+<span class="fc" id="L115">        return refused;</span>
+    }
+
+    /**
+     * @param refused if the target resource is not useful for that card/cardDef/cardContent
+     */
+    public void setRefused(boolean refused) {
+<span class="nc" id="L122">        this.refused = refused;</span>
+<span class="nc" id="L123">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
+    @Override
+    public Resource resolve() {
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (this.targetAbstractResource instanceof Resource) {</span>
+<span class="fc" id="L132">            return (Resource) this.targetAbstractResource;</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">        } else if (this.targetAbstractResource instanceof ResourceRef) {</span>
+<span class="fc" id="L134">            return ((ResourceRef) targetAbstractResource).resolve();</span>
+        }
+<span class="nc" id="L136">        return null;</span>
+    }
+
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (other instanceof ResourceRef) {</span>
+<span class="nc" id="L142">            ResourceRef o = (ResourceRef) other;</span>
+<span class="nc" id="L143">            this.setRefused(o.isRefused());</span>
+<span class="nc" id="L144">        } else {</span>
+<span class="nc" id="L145">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L147">    }</span>
+
+//    @Override
+//    public Set&lt;WebsocketChannel&gt; getChannels() {
+//        // TODO
+//        return null;
+//    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L157">        return EntityHelper.hashCode(this);</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
+    public boolean equals(Object obj) {
+<span class="nc" id="L163">        return EntityHelper.equals(this, obj);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L168">        return &quot;ResourceRef{&quot; + toPartialString() + &quot;, targetAbstractResourceId=&quot;</span>
+            + targetAbstractResourceId + &quot;, refused=&quot; + refused + &quot;}&quot;;
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

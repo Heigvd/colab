@@ -1,9 +1,9 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 colab-tests/colab-api,ch.colabproject.colab.api.model.card,CardContentStatus,0,44,0,0,0,5,0,1,0,1
-colab-tests/colab-api,ch.colabproject.colab.api.model.card,AbstractCardType,4,48,0,2,1,19,1,13,1,12
-colab-tests/colab-api,ch.colabproject.colab.api.model.card,Card,31,147,7,11,10,51,7,29,2,25
+colab-tests/colab-api,ch.colabproject.colab.api.model.card,AbstractCardType,12,64,0,2,5,23,3,15,3,14
+colab-tests/colab-api,ch.colabproject.colab.api.model.card,Card,28,162,5,13,10,55,7,31,3,26
 colab-tests/colab-api,ch.colabproject.colab.api.model.card,CardTypeRef,42,29,8,2,12,10,8,6,3,6
-colab-tests/colab-api,ch.colabproject.colab.api.model.card,CardContent,20,141,3,7,7,47,6,26,3,24
+colab-tests/colab-api,ch.colabproject.colab.api.model.card,CardContent,24,149,3,7,9,49,7,27,4,25
 colab-tests/colab-api,ch.colabproject.colab.api.model.card,CardContentCompletionMode,0,34,0,0,0,4,0,1,0,1
 colab-tests/colab-api,ch.colabproject.colab.api.model.card,CardType,26,53,1,3,6,20,4,11,3,10
 colab-tests/colab-api,ch.colabproject.colab.api,Helper,41,109,6,8,9,29,6,11,2,8
@@ -13,12 +13,13 @@ colab-tests/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.ChannelT
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest,12,59,0,0,1,23,1,12,1,12
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,CdiBridgeSingleton,9,10,0,0,3,4,2,3,2,3
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,UserManagement,106,361,22,22,33,101,21,22,4,17
-colab-tests/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,49,132,18,20,19,41,21,20,6,16
+colab-tests/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,49,136,18,20,19,45,21,24,6,20
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.SubscriptionType,0,24,0,0,0,3,0,1,0,1
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,ApplicationLifecycleFacade,10,28,1,1,4,11,1,3,0,3
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,WebsocketFacade,318,313,30,18,82,83,36,17,13,16
+colab-tests/colab-api,ch.colabproject.colab.api.ejb,ResourceFacade,27,392,14,34,13,105,14,24,0,14
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,ProjectFacade,12,114,1,3,3,30,2,8,1,7
-colab-tests/colab-api,ch.colabproject.colab.api.ejb,CardFacade,72,291,20,14,22,85,18,16,3,14
+colab-tests/colab-api,ch.colabproject.colab.api.ejb,CardFacade,124,306,28,16,39,89,26,16,6,14
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,TransactionManager,19,140,6,8,4,38,5,11,0,9
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,RequestManager,2,76,1,7,1,25,1,15,0,12
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,DocumentFacade,2,23,1,1,1,6,1,3,0,3
@@ -40,13 +41,15 @@ colab-tests/colab-api,ch.colabproject.colab.api.model.user,LocalAccount,9,85,2,2
 colab-tests/colab-api,ch.colabproject.colab.api.model.user,SignUpInfo,0,38,0,0,0,16,0,11,0,11
 colab-tests/colab-api,ch.colabproject.colab.api.ws,WebsocketEndpoint,42,92,2,0,12,23,5,5,4,5
 colab-tests/colab-api,ch.colabproject.colab.api.ws,WebsocketHelper,54,220,4,8,14,61,6,17,2,15
+colab-tests/colab-api,ch.colabproject.colab.api.persistence.document,ResourceDao,17,42,0,0,6,11,1,5,1,5
+colab-tests/colab-api,ch.colabproject.colab.api.persistence.document,BlockDao,3,56,0,0,2,15,0,6,0,6
+colab-tests/colab-api,ch.colabproject.colab.api.persistence.document,DocumentDao,3,68,0,0,2,18,0,7,0,7
+colab-tests/colab-api,ch.colabproject.colab.api.persistence.document,ResourceRefDao,42,17,0,0,12,5,3,3,3,3
 colab-tests/colab-api,ch.colabproject.colab.api.setup,ColabConfiguration,7,40,0,0,2,10,1,10,1,10
 colab-tests/colab-api,ch.colabproject.colab.api.setup,LiquibaseProducer,13,0,0,0,3,0,3,0,3,0
 colab-tests/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,0,40,0,0,0,14,0,4,0,4
 colab-tests/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvider,2,3,0,0,1,1,1,1,1,1
 colab-tests/colab-api,ch.colabproject.colab.api.setup,ApplicationConfig,0,3,0,0,0,1,0,1,0,1
-colab-tests/colab-api,ch.colabproject.colab.api.persistence.document,BlockDao,3,56,0,0,2,15,0,6,0,6
-colab-tests/colab-api,ch.colabproject.colab.api.persistence.document,DocumentDao,3,68,0,0,2,18,0,7,0,7
 colab-tests/colab-api,ch.colabproject.colab.api.persistence.card,CardTypeDao,46,82,0,0,11,21,3,8,3,8
 colab-tests/colab-api,ch.colabproject.colab.api.persistence.card,CardDao,2,77,1,1,1,20,1,7,0,7
 colab-tests/colab-api,ch.colabproject.colab.api.persistence.card,CardContentDao,0,68,0,0,0,18,0,7,0,7
@@ -66,9 +69,12 @@ colab-tests/colab-api,ch.colabproject.colab.api.ws.channel,ProjectOverviewChanne
 colab-tests/colab-api,ch.colabproject.colab.api.ws.channel,ChannelOverview,72,0,10,0,23,0,13,0,8,0
 colab-tests/colab-api,ch.colabproject.colab.api.ws.channel,AdminChannel,0,15,0,0,0,4,0,3,0,3
 colab-tests/colab-api,ch.colabproject.colab.api.model.document,HostedDocLink,16,28,1,1,3,11,3,5,2,5
+colab-tests/colab-api,ch.colabproject.colab.api.model.document,ResourceRef,53,34,5,3,17,10,10,7,7,6
 colab-tests/colab-api,ch.colabproject.colab.api.model.document,ExternalDocLink,16,28,1,1,3,11,3,5,2,5
+colab-tests/colab-api,ch.colabproject.colab.api.model.document,AbstractResource,40,92,6,12,9,29,12,20,8,15
 colab-tests/colab-api,ch.colabproject.colab.api.model.document,TextDataBlock,16,39,1,1,3,15,3,7,2,7
-colab-tests/colab-api,ch.colabproject.colab.api.model.document,Document,26,69,1,3,5,27,5,14,4,13
+colab-tests/colab-api,ch.colabproject.colab.api.model.document,Resource,23,73,1,3,4,27,4,15,3,14
+colab-tests/colab-api,ch.colabproject.colab.api.model.document,Document,33,103,5,9,6,36,10,20,5,18
 colab-tests/colab-api,ch.colabproject.colab.api.model.document,Block,22,47,1,3,5,19,5,10,4,9
 colab-tests/colab-api,ch.colabproject.colab.api.model.document,BlockDocument,14,29,1,1,4,10,3,5,2,5
 colab-tests/colab-api,ch.colabproject.colab.api.persistence.project,ProjectDao,14,45,0,0,3,12,1,6,1,6
@@ -76,14 +82,15 @@ colab-tests/colab-api,ch.colabproject.colab.api.service.smtp,MessageBuilder,27,5
 colab-tests/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail.new Authenticator() {...},8,9,0,0,1,1,1,1,1,1
 colab-tests/colab-api,ch.colabproject.colab.api.service.smtp,Message,16,60,0,0,8,21,4,14,4,14
 colab-tests/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail,26,147,2,4,7,35,3,3,1,2
-colab-tests/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,10,72,0,0,2,18,1,9,1,9
-colab-tests/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,10,63,0,0,2,16,1,8,1,8
-colab-tests/colab-api,ch.colabproject.colab.api.rest.card,CardTypeRestEndpoint,21,53,0,0,6,14,3,7,3,7
+colab-tests/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,19,81,0,0,4,20,2,10,2,10
+colab-tests/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,19,72,0,0,4,18,2,9,2,9
+colab-tests/colab-api,ch.colabproject.colab.api.rest.card,CardTypeRestEndpoint,30,62,0,0,8,16,4,8,4,8
 colab-tests/colab-api,ch.colabproject.colab.api.exceptions,ColabMergeException,15,0,0,0,5,0,2,0,2,0
 colab-tests/colab-api,ch.colabproject.colab.api.exceptions,ColabRollbackException,4,0,0,0,2,0,1,0,1,0
 colab-tests/colab-api,ch.colabproject.colab.api.model,ConcretizationCategory,0,24,0,0,0,3,0,1,0,1
 colab-tests/colab-api,ch.colabproject.colab.api.rest.document,DocumentRestEndPoint,0,62,0,0,0,16,0,8,0,8
 colab-tests/colab-api,ch.colabproject.colab.api.rest.document,BlockRestEndPoint,0,55,0,0,0,14,0,7,0,7
+colab-tests/colab-api,ch.colabproject.colab.api.rest.document,ResourceRestEndpoint,19,59,0,0,5,13,2,7,2,7
 colab-tests/colab-api,ch.colabproject.colab.api.security,SessionManager,0,46,1,5,0,12,1,5,0,3
 colab-tests/colab-api,ch.colabproject.colab.api.security,HttpSession,7,21,0,0,3,9,2,6,2,6
 colab-tests/colab-api,ch.colabproject.colab.api.security,CookieFilter,0,67,0,2,0,17,0,5,0,4
@@ -104,16 +111,21 @@ colab-tests/colab-api,ch.colabproject.colab.api.ws.message,WsChannelUpdate,0,29,
 colab-tests/colab-api,ch.colabproject.colab.api.ws.message,PrecomputedWsMessages,4,71,1,5,1,17,2,6,1,4
 colab-tests/colab-api,ch.colabproject.colab.api.ws.message,IndexEntry,12,30,0,0,6,9,3,5,3,5
 colab-tests/colab-api,ch.colabproject.colab.api.ws.message,WsMessage,0,3,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardRestEndpointClientImpl,22,158,0,0,3,21,1,7,1,7
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardRestEndpointClientImpl,48,184,0,0,6,24,2,8,2,8
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ResourceRestEndpointClientImpl,48,135,0,0,7,17,2,6,2,6
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.DocumentRestEndPointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentRestEndpointClientImpl,22,180,0,0,3,24,1,8,1,8
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentRestEndpointClientImpl,48,206,0,0,6,27,2,9,2,9
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.DocumentRestEndPointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserRestEndpointClientImpl,89,314,0,0,14,49,3,15,3,15
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.WebsocketRestEndpointClientImpl,86,39,0,0,13,7,3,3,3,3
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.BlockRestEndPointClientImpl,0,128,0,0,0,18,0,6,0,6
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl,52,134,0,0,7,20,2,7,2,7
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl,78,160,0,0,10,23,3,8,3,8
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.MonitoringRestEndpointClientImpl,41,38,0,0,6,5,1,3,1,3
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient,0,67,0,0,0,12,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient,0,73,0,0,0,13,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.DocumentRestEndPointClientImpl,0,149,0,0,0,21,0,7,0,7
@@ -123,15 +135,17 @@ colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserRestEndpoi
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl,21,206,0,0,3,28,1,9,1,9
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.UserRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.MonitoringRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,JsonbProvider,0,15,0,0,0,5,0,3,0,3
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,PolymorphicDeserializer,0,84,1,3,0,20,1,6,0,5
@@ -139,6 +153,6 @@ colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,J
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,ClassDoc,21,33,0,0,6,13,6,6,6,6
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,JavaDocExtractor.new TypeLiteral() {...},0,3,0,0,0,1,0,1,0,1
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpException,10,9,0,0,4,4,3,2,3,2
-colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage,31,41,0,0,6,13,6,8,6,8
-colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage.MessageCode,0,94,0,0,0,10,0,1,0,1
+colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage,36,41,0,0,7,13,7,8,7,8
+colab-tests/client-generator-model,ch.colabproject.colab.generator.model.exceptions,HttpErrorMessage.MessageCode,0,104,0,0,0,11,0,1,0,1
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.interfaces,WithJsonDiscriminator,3,14,1,1,1,4,1,2,0,2

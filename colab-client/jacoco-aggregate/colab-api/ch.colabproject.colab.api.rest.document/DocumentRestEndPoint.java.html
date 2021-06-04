@@ -41,6 +41,10 @@ import org.slf4j.LoggerFactory;
     /** logger */
 <span class="nc" id="L42">    private static final Logger logger = LoggerFactory.getLogger(DocumentRestEndPoint.class);</span>
 
+    // *********************************************************************************************
+    // injections
+    // *********************************************************************************************
+
     /**
      * The document persistence manager
      */
@@ -53,6 +57,10 @@ import org.slf4j.LoggerFactory;
     @Inject
     private DocumentFacade documentFacade;
 
+    // *********************************************************************************************
+    // CRUD
+    // *********************************************************************************************
+
     /**
      * Retrieve the list of all documents. This is available to admin only
      *
@@ -61,8 +69,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;Document&gt; getAllDocuments() {
-<span class="nc" id="L64">        logger.debug(&quot;get all documents&quot;);</span>
-<span class="nc" id="L65">        return documentDao.findAllDocuments();</span>
+<span class="nc" id="L72">        logger.debug(&quot;get all documents&quot;);</span>
+<span class="nc" id="L73">        return documentDao.findAllDocuments();</span>
     }
 
     /**
@@ -75,8 +83,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public Document getDocument(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L78">        logger.debug(&quot;get document #{}&quot;, id);</span>
-<span class="nc" id="L79">        return documentDao.findDocument(id);</span>
+<span class="nc" id="L86">        logger.debug(&quot;get document #{}&quot;, id);</span>
+<span class="nc" id="L87">        return documentDao.findDocument(id);</span>
     }
 
     /**
@@ -88,9 +96,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateDocument(Document document) throws ColabMergeException {
-<span class="nc" id="L91">        logger.debug(&quot;update document {}&quot;, document);</span>
-<span class="nc" id="L92">        documentDao.updateDocument(document);</span>
-<span class="nc" id="L93">    }</span>
+<span class="nc" id="L99">        logger.debug(&quot;update document {}&quot;, document);</span>
+<span class="nc" id="L100">        documentDao.updateDocument(document);</span>
+<span class="nc" id="L101">    }</span>
 
     /**
      * Persist the document
@@ -101,8 +109,8 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createDocument(Document document) {
-<span class="nc" id="L104">        logger.debug(&quot;create document {}&quot;, document);</span>
-<span class="nc" id="L105">        return documentDao.persistDocument(document).getId();</span>
+<span class="nc" id="L112">        logger.debug(&quot;create document {}&quot;, document);</span>
+<span class="nc" id="L113">        return documentDao.persistDocument(document).getId();</span>
     }
 
     /**
@@ -113,9 +121,13 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteDocument(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L116">        logger.debug(&quot;delete document #{}&quot;, id);</span>
-<span class="nc" id="L117">        documentDao.deleteDocument(id);</span>
-<span class="nc" id="L118">    }</span>
+<span class="nc" id="L124">        logger.debug(&quot;delete document #{}&quot;, id);</span>
+<span class="nc" id="L125">        documentDao.deleteDocument(id);</span>
+<span class="nc" id="L126">    }</span>
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 
     /**
      * Get all blocks that make up the document
@@ -127,8 +139,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/Blocks&quot;)
     public List&lt;Block&gt; getBlocksOfDocument(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L130">        logger.debug(&quot;get document #{} blocks&quot;, id);</span>
-<span class="nc" id="L131">        return documentFacade.getBlocksOfDocument(id);</span>
+<span class="nc" id="L142">        logger.debug(&quot;get document #{} blocks&quot;, id);</span>
+<span class="nc" id="L143">        return documentFacade.getBlocksOfDocument(id);</span>
     }
 
 }
