@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit testing of the block rest end point from a client point of view
+ * Testing of the block rest end point from a client point of view
  *
  * @author sandra
  */

@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit testing of card type controller from a client point of view
+ * Testing of card type controller from a client point of view
  *
  * @author sandra
  */
