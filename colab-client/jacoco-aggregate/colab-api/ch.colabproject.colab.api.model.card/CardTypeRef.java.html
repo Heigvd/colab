@@ -6,11 +6,8 @@
  */
 package ch.colabproject.colab.api.model.card;
 
-import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.ColabEntity;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -22,7 +19,7 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
-<span class="nc" id="L25">public class CardTypeRef extends AbstractCardType {</span>
+<span class="nc" id="L22">public class CardTypeRef extends AbstractCardType {</span>
 
     /**
      * Serial version UID
@@ -37,7 +34,7 @@ import javax.persistence.Transient;
      */
     @ManyToOne
     @JsonbTransient
-    private AbstractCardType cardType;
+    private AbstractCardType abstractCardType;
 
     /**
      * The id of the project (serialization sugar)
@@ -54,37 +51,37 @@ import javax.persistence.Transient;
      * @return the referenced type
      */
     public AbstractCardType getAbstractCardType() {
-<span class="nc" id="L57">        return this.cardType;</span>
+<span class="nc" id="L54">        return this.abstractCardType;</span>
     }
 
     /**
      * @param cardType the new referenced type
      */
     public void setAbstractCardType(AbstractCardType cardType) {
-<span class="nc" id="L64">        this.cardType = cardType;</span>
-<span class="nc" id="L65">    }</span>
+<span class="nc" id="L61">        this.abstractCardType = cardType;</span>
+<span class="nc" id="L62">    }</span>
 
     /**
      * get the cardType id. To be sent to client
      *
-     * @return id of the cardType or null
+     * @return id of the abstractCardType or null
      */
     public Long getAbstractCardTypeId() {
-<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (this.cardType != null) {</span>
-<span class="nc" id="L74">            return this.cardType.getId();</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
+<span class="nc" id="L71">            return this.abstractCardType.getId();</span>
         } else {
-<span class="nc" id="L76">            return cardTypeId;</span>
+<span class="nc" id="L73">            return cardTypeId;</span>
         }
     }
 
     /**
      * set the cardType id. For serialization only
      *
-     * @param id the id of the cardType
+     * @param id the id of the abstractCardType
      */
     public void setAbstractCardTypeId(Long id) {
-<span class="nc" id="L86">        this.cardTypeId = id;</span>
-<span class="nc" id="L87">    }</span>
+<span class="nc" id="L83">        this.cardTypeId = id;</span>
+<span class="nc" id="L84">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -92,42 +89,34 @@ import javax.persistence.Transient;
     /**
      * Resolve the reference.
      *
-     * @return the cardType
+     * @return the abstractCardType
      */
     @Override
     public CardType resolve() {
-<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (this.cardType instanceof CardType) {</span>
-<span class="nc" id="L100">            return (CardType) this.cardType;</span>
-<span class="nc bnc" id="L101" title="All 2 branches missed.">        } else if (this.cardType instanceof CardTypeRef) {</span>
-<span class="nc" id="L102">            return ((CardTypeRef) cardType).resolve();</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        if (this.abstractCardType instanceof CardType) {</span>
+<span class="nc" id="L97">            return (CardType) this.abstractCardType;</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        } else if (this.abstractCardType instanceof CardTypeRef) {</span>
+<span class="nc" id="L99">            return ((CardTypeRef) abstractCardType).resolve();</span>
         }
-<span class="nc" id="L104">        return null;</span>
+<span class="nc" id="L101">        return null;</span>
     }
 
-    /**
-     * {@inheritDoc }
-     */
     @Override
-    public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (other instanceof CardTypeRef == false) {</span>
-<span class="nc" id="L113">            throw new ColabMergeException(this, other);</span>
-        }
-<span class="nc" id="L115">    }</span>
+    public List&lt;AbstractCardType&gt; expand() {
+<span class="nc" id="L106">        List list = new ArrayList&lt;&gt;();</span>
 
-    @Override
-    public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (this.getProject() != null) {</span>
-<span class="nc" id="L120">            return Set.of(ProjectContentChannel.build(this.getProject()));</span>
-        } else {
-<span class="nc" id="L122">            return Set.of();</span>
+<span class="nc" id="L108">        list.add(this);</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
+<span class="nc" id="L110">            list.addAll(this.abstractCardType.expand());</span>
         }
+<span class="nc" id="L112">        return list;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L128">        return &quot;CardTypeRef{&quot;</span>
-<span class="nc" id="L129">            + &quot;id=&quot; + this.getId()</span>
-            + &quot;, cardType=&quot; + cardType
+<span class="nc" id="L117">        return &quot;CardTypeRef{&quot;</span>
+<span class="nc" id="L118">            + &quot;id=&quot; + this.getId()</span>
+            + &quot;, cardType=&quot; + abstractCardType
             + &quot;, cardTypeId=&quot; + cardTypeId + '}';
     }
 }

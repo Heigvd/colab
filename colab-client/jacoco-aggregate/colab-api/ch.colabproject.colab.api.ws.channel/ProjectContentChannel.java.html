@@ -71,6 +71,11 @@ import java.util.Objects;
 <span class="nc" id="L71">        return Objects.equals(this.projectId, other.projectId);</span>
     }
 
+    @Override
+    public String toString() {
+<span class="nc" id="L76">        return &quot;ProjectContentChannel{&quot; + &quot;projectId=&quot; + this.projectId + '}';</span>
+    }
+
     /**
      * get the channel dedicated to the given projectId.
      *
@@ -79,9 +84,9 @@ import java.util.Objects;
      * @return the projectId very own channel
      */
     public static ProjectContentChannel build(Project project) {
-<span class="nc" id="L82">        ProjectContentChannel channel = new ProjectContentChannel();</span>
-<span class="nc" id="L83">        channel.setProjectId(project.getId());</span>
-<span class="nc" id="L84">        return channel;</span>
+<span class="nc" id="L87">        ProjectContentChannel channel = new ProjectContentChannel();</span>
+<span class="nc" id="L88">        channel.setProjectId(project.getId());</span>
+<span class="nc" id="L89">        return channel;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

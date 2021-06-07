@@ -83,10 +83,10 @@ import org.slf4j.LoggerFactory;
      *
      * @return list of published non-global card types accessible to the current user
      */
-    public List&lt;CardType&gt; getPublishedProjectsCardType() {
+    public List&lt;AbstractCardType&gt; getPublishedProjectsCardType() {
 <span class="nc" id="L87">        logger.debug(&quot;get published  global card types&quot;);</span>
 <span class="nc" id="L88">        User user = securityFacade.assertAndGetCurrentUser();</span>
-<span class="nc" id="L89">        TypedQuery&lt;CardType&gt; query = em.createNamedQuery(&quot;CardType.findPublishedFromProjects&quot;, CardType.class);</span>
+<span class="nc" id="L89">        TypedQuery&lt;AbstractCardType&gt; query = em.createNamedQuery(&quot;CardType.findPublishedFromProjects&quot;, AbstractCardType.class);</span>
 <span class="nc" id="L90">        query.setParameter(&quot;userId&quot;, user.getId());</span>
 <span class="nc" id="L91">        return query.getResultList();</span>
     }

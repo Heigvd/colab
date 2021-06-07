@@ -37,13 +37,17 @@ import java.io.Serializable;
      */
 <span class="nc" id="L38">    public enum ChannelType {</span>
         /**
+         * {@link ch.colabproject.colab.api.ws.channel.BroadcastChannel}
+         */
+<span class="nc" id="L42">        BROADCAST,</span>
+        /**
          * {@link ch.colabproject.colab.api.ws.channel.UserChannel user channel}
          */
-<span class="nc" id="L42">        USER,</span>
+<span class="nc" id="L46">        USER,</span>
         /**
          * {@link ch.colabproject.colab.api.ws.channel.ProjectContentChannel project channel}
          */
-<span class="nc" id="L46">        PROJECT</span>
+<span class="nc" id="L50">        PROJECT</span>
     }
 
     /**
@@ -78,7 +82,7 @@ import java.io.Serializable;
      * @return request type
      */
     public SubscriptionType getType() {
-<span class="nc" id="L81">        return type;</span>
+<span class="nc" id="L85">        return type;</span>
     }
 
     /**
@@ -87,8 +91,8 @@ import java.io.Serializable;
      * @param type subscript or unsubscribe
      */
     public void setType(SubscriptionType type) {
-<span class="nc" id="L90">        this.type = type;</span>
-<span class="nc" id="L91">    }</span>
+<span class="nc" id="L94">        this.type = type;</span>
+<span class="nc" id="L95">    }</span>
 
     /**
      * Get the ws session id
@@ -96,7 +100,7 @@ import java.io.Serializable;
      * @return the ws session id
      */
     public String getWsSessionId() {
-<span class="nc" id="L99">        return wsSessionId;</span>
+<span class="nc" id="L103">        return wsSessionId;</span>
     }
 
     /**
@@ -105,8 +109,8 @@ import java.io.Serializable;
      * @param wsSessionId ws session id
      */
     public void setWsSessionId(String wsSessionId) {
-<span class="nc" id="L108">        this.wsSessionId = wsSessionId;</span>
-<span class="nc" id="L109">    }</span>
+<span class="nc" id="L112">        this.wsSessionId = wsSessionId;</span>
+<span class="nc" id="L113">    }</span>
 
     /**
      * Get http session id
@@ -114,7 +118,7 @@ import java.io.Serializable;
      * @return http session id
      */
     public String getColabSessionId() {
-<span class="nc" id="L117">        return colabSessionId;</span>
+<span class="nc" id="L121">        return colabSessionId;</span>
     }
 
     /**
@@ -123,8 +127,8 @@ import java.io.Serializable;
      * @param colabSessionId id of the HTTP session
      */
     public void setColabSessionId(String colabSessionId) {
-<span class="nc" id="L126">        this.colabSessionId = colabSessionId;</span>
-<span class="nc" id="L127">    }</span>
+<span class="nc" id="L130">        this.colabSessionId = colabSessionId;</span>
+<span class="nc" id="L131">    }</span>
 
     /**
      * get channel type.
@@ -132,7 +136,7 @@ import java.io.Serializable;
      * @return the type
      */
     public ChannelType getChannelType() {
-<span class="nc" id="L135">        return channelType;</span>
+<span class="nc" id="L139">        return channelType;</span>
     }
 
     /**
@@ -141,8 +145,8 @@ import java.io.Serializable;
      * @param channelType new channel type
      */
     public void setChannelType(ChannelType channelType) {
-<span class="nc" id="L144">        this.channelType = channelType;</span>
-<span class="nc" id="L145">    }</span>
+<span class="nc" id="L148">        this.channelType = channelType;</span>
+<span class="nc" id="L149">    }</span>
 
     /**
      * Get id channel
@@ -150,7 +154,7 @@ import java.io.Serializable;
      * @return id of the channel
      */
     public Long getChannelId() {
-<span class="nc" id="L153">        return channelId;</span>
+<span class="nc" id="L157">        return channelId;</span>
     }
 
     /**
@@ -159,12 +163,12 @@ import java.io.Serializable;
      * @param channelId new id
      */
     public void setChannelId(Long channelId) {
-<span class="nc" id="L162">        this.channelId = channelId;</span>
-<span class="nc" id="L163">    }</span>
+<span class="nc" id="L166">        this.channelId = channelId;</span>
+<span class="nc" id="L167">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L167">        return &quot;SubscriptionRequest{&quot;</span>
+<span class="nc" id="L171">        return &quot;SubscriptionRequest{&quot;</span>
             + &quot;type=&quot; + type
             + &quot;, wsSessionId=&quot; + wsSessionId
             + &quot;, colabSessionId=&quot; + colabSessionId
@@ -190,14 +194,14 @@ import java.io.Serializable;
         String wsSessionId,
         String httpSessionId
     ) {
-<span class="nc" id="L193">        SubscriptionRequest sr = new SubscriptionRequest();</span>
+<span class="nc" id="L197">        SubscriptionRequest sr = new SubscriptionRequest();</span>
 
-<span class="nc" id="L195">        sr.setType(type);</span>
-<span class="nc" id="L196">        sr.setChannelType(channelType);</span>
-<span class="nc" id="L197">        sr.setChannelId(channelId);</span>
-<span class="nc" id="L198">        sr.setColabSessionId(httpSessionId);</span>
-<span class="nc" id="L199">        sr.setWsSessionId(wsSessionId);</span>
-<span class="nc" id="L200">        return sr;</span>
+<span class="nc" id="L199">        sr.setType(type);</span>
+<span class="nc" id="L200">        sr.setChannelType(channelType);</span>
+<span class="nc" id="L201">        sr.setChannelId(channelId);</span>
+<span class="nc" id="L202">        sr.setColabSessionId(httpSessionId);</span>
+<span class="nc" id="L203">        sr.setWsSessionId(wsSessionId);</span>
+<span class="nc" id="L204">        return sr;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

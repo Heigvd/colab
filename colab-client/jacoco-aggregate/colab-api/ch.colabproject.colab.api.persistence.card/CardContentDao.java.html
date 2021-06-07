@@ -100,8 +100,9 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L100">        logger.debug(&quot;delete card content #{}&quot;, id);</span>
         // TODO: move to recycle bin first
 <span class="nc" id="L102">        CardContent cardContent = this.getCardContent(id);</span>
-<span class="nc" id="L103">        em.remove(cardContent);</span>
-<span class="nc" id="L104">        return cardContent;</span>
+<span class="nc" id="L103">        cardContent.getCard().getContentVariants().remove(cardContent);</span>
+<span class="nc" id="L104">        em.remove(cardContent);</span>
+<span class="nc" id="L105">        return cardContent;</span>
     }
 
 }

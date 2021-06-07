@@ -6,14 +6,22 @@
  */
 package ch.colabproject.colab.api.model.card;
 
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.ws.channel.AdminChannel;
+import ch.colabproject.colab.api.ws.channel.BroadcastChannel;
+import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
@@ -25,6 +33,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PostLoad;
 import javax.persistence.Transient;
 
 /**
@@ -35,7 +44,7 @@ import javax.persistence.Transient;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-<span class="fc" id="L38">public abstract class AbstractCardType implements ColabEntity, WithWebsocketChannels {</span>
+<span class="fc" id="L47">public abstract class AbstractCardType implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -68,24 +77,36 @@ import javax.persistence.Transient;
     private boolean published;
 
     /**
+     * published state on load
+     */
+    @Transient
+    private boolean initialPublished;
+
+    /**
      * Is this type deprecated? A deprecated type should not be used by new projects.
      */
     private boolean deprecated;
 
     /**
+     * List of references to this type
+     */
+<span class="fc" id="L93">    @JsonbTransient</span>
+    @OneToMany(mappedBy = &quot;abstractCardType&quot;, cascade = CascadeType.ALL)
+    private List&lt;CardTypeRef&gt; references = new ArrayList&lt;&gt;();
+
+    /**
      * The list of all cards implementing this card definition
      */
-<span class="fc" id="L78">    @OneToMany(mappedBy = &quot;cardType&quot;, cascade = CascadeType.ALL)</span>
+<span class="fc" id="L100">    @OneToMany(mappedBy = &quot;cardType&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;Card&gt; implementingCards = new ArrayList&lt;&gt;();
 
     /**
      * The list of abstract resources directly linked to this card definition
      */
-<span class="fc" id="L85">    @OneToMany(mappedBy = &quot;abstractCardType&quot;, cascade = CascadeType.ALL)</span>
+<span class="fc" id="L107">    @OneToMany(mappedBy = &quot;abstractCardType&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;AbstractResource&gt; directAbstractResources = new ArrayList&lt;&gt;();
-
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -95,29 +116,29 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L98">        return id;</span>
+<span class="fc" id="L119">        return id;</span>
     }
 
     /**
      * @param id the cardType ID
      */
     public void setId(Long id) {
-<span class="fc" id="L105">        this.id = id;</span>
-<span class="fc" id="L106">    }</span>
+<span class="fc" id="L126">        this.id = id;</span>
+<span class="fc" id="L127">    }</span>
 
     /**
      * @return the project it belongs to
      */
     public Project getProject() {
-<span class="fc" id="L112">        return project;</span>
+<span class="fc" id="L133">        return project;</span>
     }
 
     /**
      * @param project the project it belongs to
      */
     public void setProject(Project project) {
-<span class="fc" id="L119">        this.project = project;</span>
-<span class="fc" id="L120">    }</span>
+<span class="fc" id="L140">        this.project = project;</span>
+<span class="fc" id="L141">    }</span>
 
     /**
      * get the project id. To be sent to client
@@ -125,10 +146,10 @@ import javax.persistence.Transient;
      * @return id of the project or null
      */
     public Long getProjectId() {
-<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (this.project != null) {</span>
-<span class="fc" id="L129">            return this.project.getId();</span>
+<span class="fc bfc" id="L149" title="All 2 branches covered.">        if (this.project != null) {</span>
+<span class="fc" id="L150">            return this.project.getId();</span>
         } else {
-<span class="fc" id="L131">            return projectId;</span>
+<span class="fc" id="L152">            return projectId;</span>
         }
     }
 
@@ -138,8 +159,8 @@ import javax.persistence.Transient;
      * @param id the id of the project
      */
     public void setProjectId(Long id) {
-<span class="fc" id="L141">        this.projectId = id;</span>
-<span class="fc" id="L142">    }</span>
+<span class="fc" id="L162">        this.projectId = id;</span>
+<span class="fc" id="L163">    }</span>
 
     /**
      * Get the value of published
@@ -147,7 +168,7 @@ import javax.persistence.Transient;
      * @return the value of published
      */
     public boolean isPublished() {
-<span class="fc" id="L150">        return published;</span>
+<span class="fc" id="L171">        return published;</span>
     }
 
     /**
@@ -156,8 +177,8 @@ import javax.persistence.Transient;
      * @param published new value of published
      */
     public void setPublished(boolean published) {
-<span class="fc" id="L159">        this.published = published;</span>
-<span class="fc" id="L160">    }</span>
+<span class="fc" id="L180">        this.published = published;</span>
+<span class="fc" id="L181">    }</span>
 
     /**
      * Get the value of deprecated
@@ -165,7 +186,7 @@ import javax.persistence.Transient;
      * @return the value of deprecated
      */
     public boolean isDeprecated() {
-<span class="fc" id="L168">        return deprecated;</span>
+<span class="fc" id="L189">        return deprecated;</span>
     }
 
     /**
@@ -174,28 +195,28 @@ import javax.persistence.Transient;
      * @param deprecated new value of deprecated
      */
     public void setDeprecated(boolean deprecated) {
-<span class="fc" id="L177">        this.deprecated = deprecated;</span>
-<span class="fc" id="L178">    }</span>
+<span class="fc" id="L198">        this.deprecated = deprecated;</span>
+<span class="fc" id="L199">    }</span>
 
     /**
      * @return the list of all cards implementing this card definition
      */
     public List&lt;Card&gt; getImplementingCards() {
-<span class="fc" id="L184">        return implementingCards;</span>
+<span class="fc" id="L205">        return implementingCards;</span>
     }
 
     /**
      * @param implementingCards the list of all cards implementing this card definition
      */
     public void setImplementingCards(List&lt;Card&gt; implementingCards) {
-<span class="nc" id="L191">        this.implementingCards = implementingCards;</span>
-<span class="nc" id="L192">    }</span>
+<span class="nc" id="L212">        this.implementingCards = implementingCards;</span>
+<span class="nc" id="L213">    }</span>
 
     /**
      * @return the list of abstract resources directly linked to this card definition
      */
     public List&lt;AbstractResource&gt; getDirectAbstractResources() {
-<span class="fc" id="L198">        return directAbstractResources;</span>
+<span class="fc" id="L219">        return directAbstractResources;</span>
     }
 
     /**
@@ -203,9 +224,31 @@ import javax.persistence.Transient;
      *                          definition
      */
     public void setDirectAbstractResources(List&lt;AbstractResource&gt; abstractResources) {
-<span class="nc" id="L206">        this.directAbstractResources = abstractResources;</span>
-<span class="nc" id="L207">    }</span>
+<span class="nc" id="L227">        this.directAbstractResources = abstractResources;</span>
+<span class="nc" id="L228">    }</span>
 
+    /**
+     * Resolve to concrete CardType
+     * Get references
+     *
+     * @return list of references
+     */
+    public List&lt;CardTypeRef&gt; getReferences() {
+<span class="fc" id="L237">        return references;</span>
+    }
+
+    /**
+     * Set the list of references
+     *
+     * @param references list of references
+     */
+    public void setReferences(List&lt;CardTypeRef&gt; references) {
+<span class="nc" id="L246">        this.references = references;</span>
+<span class="nc" id="L247">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
     /**
      * Resolve to concrete CardType
      *
@@ -213,18 +256,84 @@ import javax.persistence.Transient;
      */
     public abstract CardType resolve();
 
-    // ---------------------------------------------------------------------------------------------
-    // concerning the whole class
-    // ---------------------------------------------------------------------------------------------
+    /**
+     * Resolve to concrete type and return all transitive references too.
+     *
+     * @return concrete type and transitive references
+     */
+    public abstract List&lt;AbstractCardType&gt; expand();
+
+    /**
+     * JPA post-load callback. Used to keep trace of the initial value of the &lt;code&gt;published&lt;/code&gt;
+     * field.
+     */
+    @PostLoad
+    public void postLoad() {
+        // keep trace of modification
+<span class="fc" id="L273">        this.initialPublished = this.published;</span>
+<span class="fc" id="L274">    }</span>
+
+    @Override
+    public Set&lt;WebsocketChannel&gt; getChannels() {
+<span class="fc" id="L278">        Set&lt;WebsocketChannel&gt; channels = new HashSet&lt;&gt;();</span>
+
+        // should propagate data if the type is published or if it has just been unpublished
+<span class="pc bpc" id="L281" title="1 of 4 branches missed.">        boolean isOrWasPublished = this.isPublished() || this.initialPublished;</span>
+
+<span class="fc bfc" id="L283" title="All 2 branches covered.">        if (this.getProject() != null) {</span>
+            // this type belongs to a specific project
+            // first, everyone who is editing the project shall receive updates
+<span class="fc" id="L286">            channels.add(ProjectContentChannel.build(this.getProject()));</span>
+
+            // then, the type must be propagated to all projects which reference it
+<span class="fc" id="L289">            this.references.forEach(ref -&gt; {</span>
+<span class="fc" id="L290">                channels.addAll(ref.getChannels());</span>
+<span class="fc" id="L291">            });</span>
+
+<span class="fc bfc" id="L293" title="All 2 branches covered.">            if (isOrWasPublished) {</span>
+                // eventually, published types are availaible to each project members dependless
+                // the project they're editing
+<span class="fc" id="L296">                this.getProject().getTeamMembers().forEach(member -&gt; {</span>
+<span class="fc" id="L297">                    User user = member.getUser();</span>
+<span class="pc bpc" id="L298" title="1 of 2 branches missed.">                    if (user != null) {</span>
+<span class="fc" id="L299">                        channels.add(user.getEffectiveChannel());</span>
+                    }
+<span class="fc" id="L301">                });</span>
+            }
+        } else {
+            //This is a global type
+<span class="fc bfc" id="L305" title="All 2 branches covered.">            if (isOrWasPublished) {</span>
+                // As the type is published, everyone may use this type -&gt; broadcast
+<span class="fc" id="L307">                channels.add(BroadcastChannel.build());</span>
+            } else {
+                // Not published type are only available to admin
+<span class="fc" id="L310">                channels.add(new AdminChannel());</span>
+            }
+        }
+
+<span class="fc" id="L314">        return channels;</span>
+    }
+
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+<span class="pc bpc" id="L319" title="1 of 2 branches missed.">        if (other instanceof AbstractCardType) {</span>
+<span class="fc" id="L320">            AbstractCardType o = (AbstractCardType) other;</span>
+<span class="fc" id="L321">            this.setDeprecated(o.isDeprecated());</span>
+<span class="fc" id="L322">            this.setPublished(o.isPublished());</span>
+<span class="fc" id="L323">        } else {</span>
+<span class="nc" id="L324">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="fc" id="L326">    }</span>
+
     @Override
     public int hashCode() {
-<span class="fc" id="L221">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L330">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L227">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L336">        return EntityHelper.equals(this, obj);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
