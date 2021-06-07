@@ -29,7 +29,7 @@ import org.slf4j.event.Level;
  */
 public class TestHelper {
 
-/**
+    /**
      * Regex which extract token id and plain Token from an email body. It search the values within
      * a href attribute
      */
@@ -56,7 +56,7 @@ public class TestHelper {
         Assertions.fail("Did not thown anything");
     }
 
-    public static void assertSetsEquals(Set a, Set b){
+    public static void assertSetsEquals(Set a, Set b) {
         Assertions.assertNotNull(a);
         Assertions.assertNotNull(b);
 
@@ -94,7 +94,7 @@ public class TestHelper {
         List<T> result = new ArrayList<>();
 
         List<WsMessage> messages = wsClient.getMessages(count, timeout);
-        Assertions.assertEquals(count, messages.size());
+        Assertions.assertEquals(count, messages.size(), "Expect " + count + " messages but got " + messages);
 
         for (var message : messages) {
             Assertions.assertTrue(klass.isAssignableFrom(message.getClass()));
@@ -151,7 +151,7 @@ public class TestHelper {
      * Get all mailhog messages sent to given recipient:
      *
      * @param mailClient mailhog client
-     * @param recipient to address
+     * @param recipient  to address
      *
      * @return list of message received by the recipient
      */
@@ -166,7 +166,7 @@ public class TestHelper {
         }
     }
 
-    public static Matcher extractToken(Message message){
+    public static Matcher extractToken(Message message) {
         return TOKEN_EXTRACTOR.matcher(message.getContent().getBody());
     }
 }

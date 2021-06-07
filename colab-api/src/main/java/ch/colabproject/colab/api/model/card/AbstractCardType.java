@@ -296,7 +296,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
                 this.getProject().getTeamMembers().forEach(member -> {
                     User user = member.getUser();
                     if (user != null) {
-                        channels.addAll(user.getChannels());
+                        channels.add(user.getEffectiveChannel());
                     }
                 });
             }

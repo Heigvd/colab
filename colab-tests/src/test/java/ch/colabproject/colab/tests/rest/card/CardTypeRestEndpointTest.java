@@ -156,6 +156,11 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testCreateAndReuseCardType() throws DeploymentException, IOException, URISyntaxException, InterruptedException {
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketHelper.class), Level.TRACE);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketClient.class), Level.TRACE);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketFacade.class), Level.TRACE);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(TransactionManager.class), Level.TRACE);
+
         // create some goulash user with its own clients
         TestUser goulash = this.signup(
             "goulashsensei",
@@ -211,7 +216,10 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Long projectOneRootContentId = ColabFactory.getRootContent(client, projectOne).getId();
         client.cardRestEndpoint.createNewCard(projectOneRootContentId, projectOneType.getId());
 
-        // As the type is not published, Goulash does not read from the published list
+        // consume websocket message
+        TestHelper.waitForMessagesAndAssert(wsClient, 1, 5, WsUpdateMessage.class).get(0);
+
+        // As the type is not published, Goulash does not read it from the published list
         Assertions.assertTrue(client.cardTypeRestEndpoint.getPublishedCardTypes().isEmpty());
 
         // but can read it from the project list
@@ -220,8 +228,19 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         // Goulash creates projectTwo
         Project projectTwo = ColabFactory.createProject(client, "Project Two");
 
+        // consume websocket message (new project)
+        TestHelper.waitForMessagesAndAssert(wsClient, 1, 5, WsUpdateMessage.class).get(0);
+
         // Goulash invites pizzaiolo
         ColabFactory.inviteAndJoin(client, projectTwo, "pizza@pizza.local", pizzaHttpClient, mailClient);
+
+        // consume 2 websocket messages (new invitation; new team member)
+        TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class).get(0);
+        this.client.websocketRestEndpoint.subscribeToProjectChannel(projectTwo.getId(), wsClient.getSessionId());
+
+
+        // pizza consume 1 websocket message (new team member)
+        TestHelper.waitForMessagesAndAssert(pizzaWsClient, 1, 5, WsUpdateMessage.class).get(0);
 
         pizzaHttpClient.websocketRestEndpoint.subscribeToProjectChannel(projectTwo.getId(), pizzaWsClient.getSessionId());
 
@@ -231,6 +250,8 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
         // it is visible for goulash
         Assertions.assertEquals(1l, client.cardTypeRestEndpoint.getPublishedCardTypes().size());
+        // consume websocket messages (one through project channel, other through user channel)
+        TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class).get(0);
 
         // but not for pizzaiolo
         Assertions.assertEquals(0, pizzaHttpClient.cardTypeRestEndpoint.getPublishedCardTypes().size());
@@ -238,6 +259,10 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         // goulash create a card in projectTwo based on the projectOne type
         Long projectTwoRootContentId = ColabFactory.getRootContent(client, projectTwo).getId();
         client.cardRestEndpoint.createNewCard(projectTwoRootContentId, projectOneType.getId());
+        // consume websocket messages (overview update; project 1 update; project 2 update)
+        TestHelper.waitForMessagesAndAssert(wsClient, 3, 5, WsUpdateMessage.class).get(0);
+        // consume websocket messages (overview update; project 2 update)
+        TestHelper.waitForMessagesAndAssert(pizzaWsClient, 2, 5, WsUpdateMessage.class).get(0);
 
         // goulash and pizzaiolo can now access the type through the reference from projectTwo
         Set<AbstractCardType> goulashTypes = client.projectRestEndpoint.getCardTypesOfProject(projectTwo.getId());
@@ -245,21 +270,23 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
         TestHelper.assertSetsEquals(goulashTypes, pizzaTypes);
 
-        pizzaWsClient.clearMessages();
-        wsClient.clearMessages();
-
         // Update the projectOneType
-        projectOneType.setTitle("My Favourite Receipes");
+        projectOneType.setTitle("My Favourite Recipes");
         projectOneType.setPurpose("How to cook dishes from all over the world");
         client.cardTypeRestEndpoint.updateCardType(projectOneType);
 
         // both goulash and pizzaiolo should receive the update through websocket
-        WsUpdateMessage goulashMessage = TestHelper.waitForMessagesAndAssert(wsClient, 1, 5, WsUpdateMessage.class).get(0);
+        WsUpdateMessage goulashMessage = TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class).get(0);
+        // (as type in project is not published, it's not propagated to Pizza, this only one message is sent)
         WsUpdateMessage pizzaMessage = TestHelper.waitForMessagesAndAssert(pizzaWsClient, 1, 5, WsUpdateMessage.class).get(0);
 
 
-        CardType pizzaType = TestHelper.filterAndAssert(pizzaMessage.getUpdated(), 1, CardType.class).get(0);
-        CardType goulashType = TestHelper.filterAndAssert(goulashMessage.getUpdated(), 1, CardType.class).get(0);
+        List<CardType>  pizzaList = TestHelper.filterAndAssert(pizzaMessage.getUpdated(), 1, CardType.class);
+        CardType pizzaType = pizzaList.get(0);
+
+        List<CardType> goulashList = TestHelper.filterAndAssert(goulashMessage.getUpdated(), 1, CardType.class);
+        CardType goulashType = goulashList.get(0);
+
         Assertions.assertEquals(pizzaType, goulashType);
         Assertions.assertEquals(projectOneType.getTitle(), goulashType.getTitle());
         Assertions.assertEquals(projectOneType.getTitle(), pizzaType.getTitle());
@@ -289,7 +316,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         cardType.setAuthorityHolder(authorityHolder);
         client.cardTypeRestEndpoint.updateCardType(cardType);
 
-        CardType persistedCardType = client.cardTypeRestEndpoint.getCardType(cardType.getId());
+        CardType persistedCardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardType.getId());
         // Assertions.assertEquals(uniqueId, persistedCardType2.getUniqueId());
         Assertions.assertEquals(title, persistedCardType.getTitle());
         Assertions.assertEquals(purpose, persistedCardType.getPurpose());
@@ -321,12 +348,12 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         CardType cardType = ColabFactory.createCardType(client, projectId);
         Long cardTypeId = cardType.getId();
 
-        CardType persistedCardType = client.cardTypeRestEndpoint.getCardType(cardTypeId);
+        CardType persistedCardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
         Assertions.assertNotNull(persistedCardType);
 
         client.cardTypeRestEndpoint.deleteCardType(cardTypeId);
 
-        persistedCardType = client.cardTypeRestEndpoint.getCardType(cardTypeId);
+        persistedCardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
         Assertions.assertNull(persistedCardType);
     }
 

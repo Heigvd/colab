@@ -138,20 +138,16 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
         // Goulash receives the project, the user (ie himself) and the teamMmeber linking the project to the user
         WsUpdateMessage wsProjectUpdate = TestHelper.waitForMessagesAndAssert(wsGoulashClient, 1, 5, WsUpdateMessage.class).get(0);
-        Assertions.assertEquals(5, wsProjectUpdate.getUpdated().size(), "Got " + wsProjectUpdate.getUpdated());
+        // project, teamMember, user
+        Assertions.assertEquals(3, wsProjectUpdate.getUpdated().size(), "Got " + wsProjectUpdate.getUpdated());
 
         Project project = TestHelper.findFirst(wsProjectUpdate.getUpdated(), Project.class);
         TeamMember member = TestHelper.findFirst(wsProjectUpdate.getUpdated(), TeamMember.class);
         User wsUpdatedUser = TestHelper.findFirst(wsProjectUpdate.getUpdated(), User.class);
-        Card wsUpdatedRoot = TestHelper.findFirst(wsProjectUpdate.getUpdated(), Card.class);
-        CardContent wsUpdatedRootContent = TestHelper.findFirst(wsProjectUpdate.getUpdated(), CardContent.class);
 
         Assertions.assertEquals(projectId, project.getId());
         Assertions.assertEquals(projectId, member.getProjectId());
         Assertions.assertEquals(member.getUserId(), wsUpdatedUser.getId());
-        Assertions.assertNotNull(wsUpdatedRoot.getId());
-        Assertions.assertEquals(projectId, wsUpdatedRoot.getRootCardProjectId());
-        Assertions.assertEquals(wsUpdatedRoot.getId(), wsUpdatedRootContent.getCardId());
 
         // user is a lonely team member
         List<TeamMember> members = client.projectRestEndpoint.getMembers(project.getId());
@@ -172,7 +168,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         TestHelper.findFirst(wsInvitationUpdate.getUpdated(), TeamMember.class);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
-        // Fetch e-maild and extract the token
+        // Fetch e-mail and extract the token
         ////////////////////////////////////////////////////////////////////////////////////////////
         List<Message> messages = TestHelper.getMessageByRecipient(mailClient, mateAddress);
         Assertions.assertEquals(1, messages.size());

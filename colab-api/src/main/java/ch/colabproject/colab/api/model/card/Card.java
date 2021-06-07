@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -333,8 +334,8 @@ public class Card implements ColabEntity, WithWebsocketChannels {
     @Override
     public Set<WebsocketChannel> getChannels() {
         if (this.rootCardProject != null) {
-            // this card is a root card, propagate through the project channels
-            return this.rootCardProject.getChannels();
+            // this card is a root card, propagate through the project content channel
+            return Set.of(ProjectContentChannel.build(this.rootCardProject));
         } else if (this.parent != null) {
             // this card is a sub-card, propagate through its parent channels
             return this.parent.getChannels();

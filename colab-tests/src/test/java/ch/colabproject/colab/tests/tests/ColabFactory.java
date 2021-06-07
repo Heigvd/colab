@@ -45,7 +45,7 @@ public class ColabFactory {
         cardType.setProjectId(projectId);
 
         Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardType);
-        return client.cardTypeRestEndpoint.getCardType(cardTypeId);
+        return (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
     }
 
     /**

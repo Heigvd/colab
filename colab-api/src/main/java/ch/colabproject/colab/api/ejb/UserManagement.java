@@ -17,7 +17,6 @@ import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.util.Arrays;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -248,6 +247,29 @@ public class UserManagement {
     }
 
     /**
+     * Make a full comparison of array. Do not return false as soon as array. Prevent timing-attack.
+     *
+     * @param a first array
+     * @param b second array
+     *
+     * @return array equals or not
+     */
+    private boolean constantTimeArrayEquals(byte[] a, byte[] b) {
+        boolean result = true;
+        int aSize = a.length;
+        int bSize = b.length;
+        int max = Math.max(aSize, bSize);
+        for (int i = 0; i < max; i++) {
+            if (i >= aSize || i >= bSize) {
+                result = false;
+            } else {
+                result = a[i] == b[i] && result;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Try to authenticate user with given token
      *
      * @param authInfo authentication information
@@ -266,7 +288,10 @@ public class UserManagement {
             if (mandatoryHash != null) {
                 byte[] hash = m.hash(mandatoryHash, account.getDbSalt());
 
-                if (Arrays.equals(hash, account.getHashedPassword())) {
+                // Spotbugs reports a timing attack vulnerability using:
+                //  if (Arrays.equals(hash, account.getHashedPassword())) {
+                // doing a a fullcomparison of arrays makes it happy:
+                if (this.constantTimeArrayEquals(hash, account.getHashedPassword())) {
                     // authentication succeed
                     /////////////////////////////////
 
