@@ -24,9 +24,7 @@ const flexWrap = css({
   flexWrap: 'wrap',
 });
 
-export interface Props {}
-
-export default ({}: Props): JSX.Element => {
+export default function CardTypeList() : JSX.Element {
   const dispatch = useAppDispatch();
   const { project } = useProjectBeingEdited();
   const cardTypes = useProjectCardTypes();

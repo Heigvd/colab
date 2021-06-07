@@ -27,7 +27,7 @@ const style = css({
   boxShadow: cardShadow,
 });
 
-export default function CardTypeDisplay({ cardType }: DisplayProps) {
+export default function CardTypeDisplay({cardType}: DisplayProps): JSX.Element {
   return (
     <div className={style}>
       <div>Title: {cardType.title}</div>

@@ -29,7 +29,7 @@ const style = css({
   boxShadow: cardShadow,
 });
 
-export default function CardTypeEditor({ cardType }: DisplayProps) {
+export default function CardTypeEditor({cardType}: DisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   return (

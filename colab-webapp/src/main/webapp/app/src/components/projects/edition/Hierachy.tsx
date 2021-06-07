@@ -161,7 +161,7 @@ const Hierachy = (props: HierarchyDisplayProps): JSX.Element => {
               }
               if (subcards != null) {
                 children = subcards.flatMap(subcard =>
-                  subcard && subcard.id ? [<Hierachy rootId={subcard.id} />] : [],
+                  subcard && subcard.id ? [<Hierachy key={subcard.id} rootId={subcard.id} />] : [],
                 );
               }
             }
