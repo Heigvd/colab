@@ -282,9 +282,14 @@ public abstract class Document implements ColabEntity , WithWebsocketChannels {
 
     @Override
     public Set<WebsocketChannel> getChannels() {
-        if (this.getDeliverableCardContent() != null){
-            return this.getDeliverableCardContent().getChannels();
+        if (this.deliverableCardContent != null) {
+            // The document is the deliverable of a card content
+            return this.deliverableCardContent.getChannels();
+        } else if (this.resource != null) {
+            // The document is a resource
+            return this.resource.getChannels();
         } else {
+            // such an orphan shouldn't exist...
             return Set.of();
         }
     }

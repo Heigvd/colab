@@ -41,7 +41,7 @@ import javax.persistence.Transient;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public abstract class AbstractResource implements ColabEntity /* , WithWebsocketChannels */ {
+public abstract class AbstractResource implements ColabEntity/* , WithWebsocketChannels */ {
 
     private static final long serialVersionUID = 1L;
 
@@ -284,8 +284,19 @@ public abstract class AbstractResource implements ColabEntity /* , WithWebsocket
 
 //    @Override
 //    public Set<WebsocketChannel> getChannels() {
-//        // TODO
-//        return null;
+//        if (this.abstractCardType != null) {
+//            // the abstract resource is linked to a card type / card type reference
+//            return this.abstractCardType.getChannels();
+//        } else if (this.card != null) {
+//            // the abstract resource is linked to a card
+//            return this.card.getChannels();
+//        } else if (this.cardContent != null) {
+//            // the abstract resource is linked to a card content
+//            return this.cardContent.getChannels();
+//        } else {
+//            // such an orphan shouldn't exist...
+//            return Set.of();
+//        }
 //    }
 
     @Override

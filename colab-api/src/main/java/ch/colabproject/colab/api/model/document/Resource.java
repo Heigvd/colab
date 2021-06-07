@@ -178,12 +178,6 @@ public class Resource extends AbstractResource {
         }
     }
 
-//    @Override
-//    public Set<WebsocketChannel> getChannels() {
-//        // TODO
-//        return null;
-//    }
-
     @Override
     public int hashCode() {
         return EntityHelper.hashCode(this);
