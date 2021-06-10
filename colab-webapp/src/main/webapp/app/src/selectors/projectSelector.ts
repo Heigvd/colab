@@ -1,13 +1,13 @@
-import { Project } from 'colab-rest-client';
-import { StateStatus } from '../store/project';
-import { useAppSelector } from '../store/hooks';
-
 /*
  * The coLAB project
  * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
  *
  * Licensed under the MIT License
  */
+
+import { Project } from 'colab-rest-client';
+import { StateStatus } from '../store/project';
+import { useAppSelector, shallowEqual } from '../store/hooks';
 
 export interface UsedProject {
   project: Project | null | undefined;
@@ -39,7 +39,7 @@ export const useProject = (id: number): UsedProject => {
         };
       }
     }
-  });
+  }, shallowEqual);
 };
 
 export const useProjectBeingEdited = (): {
@@ -59,5 +59,5 @@ export const useProjectBeingEdited = (): {
         status: state.projects.editingStatus,
       };
     }
-  });
+  }, shallowEqual);
 };

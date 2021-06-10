@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 
-import {useAppSelector} from '../store/hooks';
-import {CardType, CardTypeRef, entityIs} from 'colab-rest-client';
-import {ColabState} from '../store/store';
+import { useAppSelector, customColabStateEquals } from '../store/hooks';
+import { CardType, CardTypeRef, entityIs } from 'colab-rest-client';
+import { ColabState } from '../store/store';
 
 export interface CardTypeState {
   /**
@@ -106,7 +106,7 @@ export const useCardType = (id: number | null | undefined): CardTypeState => {
       cardType: undefined,
       chain: [],
     };
-  });
+  }, customColabStateEquals);
 };
 
 export const useProjectCardTypes = (): CardTypesState => {
@@ -161,7 +161,7 @@ export const useProjectCardTypes = (): CardTypesState => {
     }
 
     return cds;
-  });
+  }, customColabStateEquals);
 };
 
 export const useGlobalTypes = (): {
@@ -175,5 +175,5 @@ export const useGlobalTypes = (): {
         return entityIs(cd, 'CardType') && cd.projectId == null ? [cd] : [];
       }),
     };
-  });
+  }, customColabStateEquals);
 };

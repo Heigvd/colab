@@ -4,8 +4,8 @@
  *
  * Licensed under the MIT License
  */
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {Document} from 'colab-rest-client';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Document } from 'colab-rest-client';
 import * as API from '../API/api';
 //import {mapById} from '../helper';
 
@@ -13,7 +13,7 @@ export type Status = 'UNSET' | 'LOADING' | 'READY';
 
 export interface DocumentState {
   // resourcesStatus: Record<number, Status>
-  documents: Record<number, Document | null>
+  documents: Record<number, Document | null>;
 }
 
 const initialState: DocumentState = {
@@ -51,6 +51,6 @@ const documentsSlice = createSlice({
       }),
 });
 
-export const {updateDocument, removeDocument} = documentsSlice.actions;
+export const { updateDocument, removeDocument } = documentsSlice.actions;
 
 export default documentsSlice.reducer;

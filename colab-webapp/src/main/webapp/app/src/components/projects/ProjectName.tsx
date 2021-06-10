@@ -14,7 +14,7 @@ interface Props {
 }
 
 // Display one project and allow to edit it
-export function ProjectName({projectId}: Props): JSX.Element {
+export function ProjectName({ projectId }: Props): JSX.Element {
   const project = useProject(projectId);
 
   if (project.project != null) {

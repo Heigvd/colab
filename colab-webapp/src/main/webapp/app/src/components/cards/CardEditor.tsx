@@ -8,19 +8,19 @@
 import * as React from 'react';
 import * as API from '../../API/api';
 
-import {Card, CardContent} from 'colab-rest-client';
-import {css} from '@emotion/css';
+import { Card, CardContent } from 'colab-rest-client';
+import { css } from '@emotion/css';
 import ContentSubs from './ContentSubs';
 import CardLayout from './CardLayout';
-import {useAppDispatch} from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
 import AutoSaveInput from '../common/AutoSaveInput';
-import {TwitterPicker} from 'react-color';
+import { TwitterPicker } from 'react-color';
 import OpenClose from '../common/OpenClose';
-import {faCheck, faPalette} from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faPalette } from '@fortawesome/free-solid-svg-icons';
 import FitSpace from '../common/FitSpace';
-import {useCardType} from '../../selectors/cardTypeSelector';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {DocumentEditor} from '../documents/DocumentEditor';
+import { useCardType } from '../../selectors/cardTypeSelector';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { DocumentEditorWrapper } from '../documents/DocumentEditorWrapper';
 
 interface Props {
   card: Card;
@@ -46,9 +46,7 @@ export default function CardEditor({
   const cardTypeFull = useCardType(card.cardTypeId);
   const cardType = cardTypeFull.cardType;
 
-  if (card.id == null) {
-    return <i>Card without id is invalid...</i>;
-  } else {
+  React.useEffect(() => {
     if (cardType === undefined) {
       if (cardTypeFull.chain.length > 0) {
         const link = cardTypeFull.chain[cardTypeFull.chain.length - 1];
@@ -60,7 +58,11 @@ export default function CardEditor({
         dispatch(API.getCardType(card.cardTypeId));
       }
     }
+  }, [cardTypeFull, cardType, dispatch, card.cardTypeId]);
 
+  if (card.id == null) {
+    return <i>Card without id is invalid...</i>;
+  } else {
     return (
       <FitSpace>
         <>
@@ -92,14 +94,18 @@ export default function CardEditor({
                     <h5>Card settings</h5>
                     <OpenClose
                       closeIcon={faCheck}
-                      collaspedChildren={<span><FontAwesomeIcon icon={faPalette} /></span>}
+                      collaspedChildren={
+                        <span>
+                          <FontAwesomeIcon icon={faPalette} />
+                        </span>
+                      }
                     >
                       <TwitterPicker
                         colors={['#EDD3EC', '#EAC2C2', '#CCEFD4', '#E1F2F9', '#F9F5D6', '#F6F1F1']}
                         color={card.color || 'white'}
-                        triangle='hide'
+                        triangle="hide"
                         onChangeComplete={newColor => {
-                          dispatch(API.updateCard({...card, color: newColor.hex}));
+                          dispatch(API.updateCard({ ...card, color: newColor.hex }));
                         }}
                       />
                     </OpenClose>
@@ -114,12 +120,14 @@ export default function CardEditor({
                           inputType="INPUT"
                           value={variant.title || ''}
                           onChange={newValue =>
-                            dispatch(API.updateCardContent({...variant, title: newValue}))
+                            dispatch(API.updateCardContent({ ...variant, title: newValue }))
                           }
                         />
-                        {variant.deliverableId != null ?
-                          <DocumentEditor docId={variant.deliverableId} />
-                          : <span>please create a doc !!!!</span>}
+                        {variant.deliverableId != null ? (
+                          <DocumentEditorWrapper docId={variant.deliverableId} />
+                        ) : (
+                          <span>please create a doc !!!!</span>
+                        )}
                       </div>
                     </div>
                   ) : null}

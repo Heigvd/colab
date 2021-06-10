@@ -5,8 +5,8 @@
  * Licensed under the MIT License
  */
 
-import {Document} from 'colab-rest-client';
-import {useAppSelector} from '../store/hooks';
+import { Document } from 'colab-rest-client';
+import { useAppSelector } from '../store/hooks';
 
 export const useDocument = (id: number): Document | 'LOADING' | undefined => {
   return useAppSelector(state => {
@@ -20,5 +20,5 @@ export const useDocument = (id: number): Document | 'LOADING' | undefined => {
       }
     }
     return undefined;
-  });
+  }); // refEqual is fine
 };

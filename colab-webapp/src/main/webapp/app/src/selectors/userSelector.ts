@@ -6,7 +6,7 @@
  */
 import { User } from 'colab-rest-client';
 import { ColabState } from '../store/store';
-import { useAppSelector } from '../store/hooks';
+import { useAppSelector, shallowEqual } from '../store/hooks';
 
 export const useCurrentUser = (): {
   currentUser: User | null;
@@ -20,5 +20,5 @@ export const useCurrentUser = (): {
       currentUser: user || null,
       status: state.auth.status,
     };
-  });
+  }, shallowEqual);
 };

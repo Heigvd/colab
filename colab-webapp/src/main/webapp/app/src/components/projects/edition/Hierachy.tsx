@@ -8,7 +8,12 @@
 import * as React from 'react';
 import * as API from '../../../API/api';
 
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+  shallowEqual,
+  customColabStateEquals,
+} from '../../../store/hooks';
 import { css } from '@emotion/css';
 import InlineLoading from '../../common/InlineLoading';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
@@ -76,8 +81,13 @@ const Hierachy = (props: HierarchyDisplayProps): JSX.Element => {
       return rootState;
     }
     return undefined;
-  });
+  }); //refEqual is fine
 
+  React.useEffect(() => {
+    if (root != null && root.card && root.card.id && root.contents === undefined) {
+      dispatch(API.getCardContents(root.card.id));
+    }
+  }, [root, dispatch]);
   /**
    * Select card contents.
    * @return list of contents if they are known, undefined if they're unknown, null if loading is pending
@@ -95,7 +105,7 @@ const Hierachy = (props: HierarchyDisplayProps): JSX.Element => {
         }
       }
     }
-  });
+  }, shallowEqual);
 
   const subs = useAppSelector(state => {
     const result: { [contentId: number]: (Card | undefined)[] | null | undefined } = {};
@@ -124,11 +134,20 @@ const Hierachy = (props: HierarchyDisplayProps): JSX.Element => {
       });
     }
     return result;
-  });
+  }, customColabStateEquals);
 
-  if (root != null && root.card && root.card.id && root.contents === undefined) {
-    dispatch(API.getCardContents(root.card.id));
-  }
+  React.useEffect(() => {
+    if (contents != null) {
+      contents.forEach(cardContent => {
+        if (cardContent?.content?.id != null) {
+          const subcards = subs[cardContent.content.id];
+          if (subcards === undefined) {
+            dispatch(API.getSubCards(cardContent.content.id));
+          }
+        }
+      });
+    }
+  }, [contents, subs, dispatch]);
 
   if (contents == null) {
     return <InlineLoading />;
@@ -156,9 +175,6 @@ const Hierachy = (props: HierarchyDisplayProps): JSX.Element => {
             let children: JSX.Element[] = [];
             if (cardContent.content.id) {
               const subcards = subs[cardContent.content.id];
-              if (subcards === undefined) {
-                dispatch(API.getSubCards(cardContent.content.id));
-              }
               if (subcards != null) {
                 children = subcards.flatMap(subcard =>
                   subcard && subcard.id ? [<Hierachy key={subcard.id} rootId={subcard.id} />] : [],
@@ -167,7 +183,7 @@ const Hierachy = (props: HierarchyDisplayProps): JSX.Element => {
             }
 
             return (
-              <div className={flexRow}>
+              <div key={cardContent.content.id} className={flexRow}>
                 {project.rootCardId === props.rootId ? (
                   <Thumb color={'white'}>
                     <span>{project.name}</span>

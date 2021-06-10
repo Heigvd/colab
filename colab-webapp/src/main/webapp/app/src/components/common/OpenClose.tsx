@@ -6,9 +6,9 @@
  */
 
 import * as React from 'react';
-import {faTimes} from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import IconButton from './IconButton';
-import {IconProp} from '@fortawesome/fontawesome-svg-core';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import Clickable from './Clickable';
 
 type State = {

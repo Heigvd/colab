@@ -11,7 +11,7 @@ import * as API from '../../API/api';
 import { faPlus, faUsers, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Project } from 'colab-rest-client';
 import { css, cx } from '@emotion/css';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector, shallowEqual } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import { Destroyer } from '../common/Destroyer';
 import { InlineLink } from '../common/Link';
@@ -143,15 +143,17 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
 }
 
 export const UserProjects = (): JSX.Element => {
-  const projects = useAppSelector(state =>
-    state.projects.mine.flatMap(projectId => {
-      const p = state.projects.projects[projectId];
-      if (p) {
-        return [p];
-      } else {
-        return [];
-      }
-    }),
+  const projects = useAppSelector(
+    state =>
+      state.projects.mine.flatMap(projectId => {
+        const p = state.projects.projects[projectId];
+        if (p) {
+          return [p];
+        } else {
+          return [];
+        }
+      }),
+    shallowEqual,
   );
 
   const status = useAppSelector(state => state.projects.status);
@@ -160,7 +162,7 @@ export const UserProjects = (): JSX.Element => {
 };
 
 export const AllProjects = (): JSX.Element => {
-  const projects = useAppSelector(state => Object.values(state.projects.projects));
+  const projects = useAppSelector(state => Object.values(state.projects.projects), shallowEqual);
   const status = useAppSelector(state => state.projects.allStatus);
 
   return <ProjectList projects={projects} status={status} reload={API.getAllProjects} />;

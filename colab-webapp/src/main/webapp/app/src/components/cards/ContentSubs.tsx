@@ -8,7 +8,7 @@
 import * as React from 'react';
 
 import { CardContent } from 'colab-rest-client';
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { useAppSelector, useAppDispatch, shallowEqual } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import { getSubCards } from '../../API/api';
 import { css, cx } from '@emotion/css';
@@ -71,14 +71,16 @@ export default function ContentSubs({
     } else {
       return [];
     }
-  });
+  }, shallowEqual);
 
-  if (subCards === undefined) {
-    // dispatch(API.cmcc)
-    if (cardContent.id) {
-      dispatch(getSubCards(cardContent.id));
+  React.useEffect(() => {
+    if (subCards === undefined) {
+      // dispatch(API.cmcc)
+      if (cardContent.id) {
+        dispatch(getSubCards(cardContent.id));
+      }
     }
-  }
+  }, [subCards, dispatch, cardContent.id]);
 
   if (subCards == null) {
     return <InlineLoading />;

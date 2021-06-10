@@ -24,7 +24,7 @@ const flexWrap = css({
   flexWrap: 'wrap',
 });
 
-export default function CardTypeList() : JSX.Element {
+export default function CardTypeList(): JSX.Element {
   const dispatch = useAppDispatch();
   const { project } = useProjectBeingEdited();
   const cardTypes = useProjectCardTypes();
@@ -38,9 +38,7 @@ export default function CardTypeList() : JSX.Element {
     );
   }, [dispatch, project]);
 
-  if (project == null) {
-    return <i>No project</i>;
-  } else {
+  React.useEffect(() => {
     if (cardTypes.projectStatus === 'UNSET') {
       if (project != null) {
         dispatch(API.getProjectCardTypes(project));
@@ -50,7 +48,11 @@ export default function CardTypeList() : JSX.Element {
       // published type from other project or global types not yet knonw
       dispatch(API.getPublishedCardTypes());
     }
+  }, [project, cardTypes, dispatch]);
 
+  if (project == null) {
+    return <i>No project</i>;
+  } else {
     if (cardTypes.projectStatus !== 'READY' || cardTypes.publishedStatus !== 'READY') {
       return <InlineLoading />;
     } else {
@@ -86,4 +88,4 @@ export default function CardTypeList() : JSX.Element {
       );
     }
   }
-};
+}

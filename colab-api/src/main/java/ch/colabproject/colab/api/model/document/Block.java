@@ -8,8 +8,11 @@ package ch.colabproject.colab.api.model.document;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.Entity;
@@ -30,7 +33,7 @@ import javax.persistence.Transient;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public abstract class Block implements ColabEntity/*, WithWebsocketChannels*/ {
+public abstract class Block implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 
@@ -147,15 +150,15 @@ public abstract class Block implements ColabEntity/*, WithWebsocketChannels*/ {
         }
     }
 
-//    @Override
-//    public Set<WebsocketChannel> getChannels() {
-//        if (this.document != null) {
-//            return this.document.getChannels();
-//        } else {
-//            // such an orphan shouldn't exist...
-//            return Set.of();
-//        }
-//    }
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.document != null) {
+            return this.document.getChannels();
+        } else {
+            // such an orphan shouldn't exist...
+            return Set.of();
+        }
+    }
 
     @Override
     public int hashCode() {

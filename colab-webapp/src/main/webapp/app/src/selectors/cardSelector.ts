@@ -7,7 +7,7 @@
 
 import { Card, CardContent } from 'colab-rest-client';
 import { CardContentDetail } from '../store/card';
-import { useAppSelector } from '../store/hooks';
+import { useAppSelector, shallowEqual } from '../store/hooks';
 
 export const useCard = (id: number): Card | 'LOADING' | undefined => {
   return useAppSelector(state => {
@@ -86,5 +86,5 @@ export const useAncestors = (contentId: number | null | undefined): Ancestor[] =
     }
 
     return ancestors;
-  });
+  }, shallowEqual);
 };

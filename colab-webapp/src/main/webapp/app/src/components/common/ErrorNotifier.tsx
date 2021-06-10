@@ -8,7 +8,7 @@ import * as React from 'react';
 import { css } from '@emotion/css';
 
 import { HttpErrorMessage, HttpException, entityIs } from 'colab-rest-client';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector, shallowEqual } from '../../store/hooks';
 import { closeError } from '../../store/error';
 
 function prettyPrintError(error: HttpException | string): string {
@@ -47,7 +47,7 @@ export default function ErrorNotifier(): JSX.Element {
   const closeErrorCb = (index: number) => {
     dispatch(closeError(index));
   };
-  const errors = useAppSelector(state => state.errors);
+  const errors = useAppSelector(state => state.errors, shallowEqual);
 
   return (
     <div

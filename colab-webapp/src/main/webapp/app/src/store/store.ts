@@ -9,6 +9,7 @@ import thunk from 'redux-thunk';
 
 import authReducer from './auth';
 import adminReducer from './admin';
+import blockReducer from './block';
 import cardReducer from './card';
 import cardTypeReducer from './cardtype';
 import documentReducer from './document';
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   cards: cardReducer,
   cardtype: cardTypeReducer,
   document: documentReducer,
+  block: blockReducer,
   users: userReducer,
   websockets: websocketReducer,
 });

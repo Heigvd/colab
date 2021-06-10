@@ -10,7 +10,7 @@ import * as API from '../../API/api';
 
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import { css } from '@emotion/css';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector, shallowEqual } from '../../store/hooks';
 import IconButton from '../common/IconButton';
 import { faCaretLeft, faCaretRight, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 import WithToolbar from '../common/WithToolbar';
@@ -57,17 +57,18 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
     } else {
       return null;
     }
-  });
+  }, shallowEqual);
+
+  React.useEffect(() => {
+    if (contents === undefined && card.id != null) {
+      dispatch(API.getCardContents(card.id));
+    }
+  }, [contents, card.id, dispatch]);
 
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
     const cardId = card.id;
-
-    if (contents === undefined) {
-      dispatch(API.getCardContents(cardId));
-    }
-
     const variantPager = computeNav(contents, displayedVariantId);
 
     return (

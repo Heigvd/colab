@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { useAppSelector, useAppDispatch, shallowEqual } from '../../store/hooks';
 import { getAllUsers } from '../../API/api';
 import InlineLoading from '../common/InlineLoading';
 import UserList from './UserList';
@@ -20,7 +20,7 @@ export default (): JSX.Element => {
     // common sense would use a "filter(u => u != null)"
     // but resulting list will be typed (User | null)[]
     return Object.values(state.users.users).flatMap(user => (user != null ? [user] : []));
-  });
+  }, shallowEqual);
 
   const title = <h3>Users</h3>;
 

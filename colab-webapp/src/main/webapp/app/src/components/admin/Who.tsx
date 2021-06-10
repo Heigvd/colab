@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { useAppSelector, useAppDispatch, shallowEqual } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import { getOccupiedChannels, getAllUsers } from '../../API/api';
 import { UserChannel, ProjectContentChannel, entityIs } from 'colab-rest-client';
@@ -14,14 +14,14 @@ import { faSync } from '@fortawesome/free-solid-svg-icons';
 import UserList from './UserList';
 import IconButton from '../common/IconButton';
 
-export default (): JSX.Element => {
+export default function Who(): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const channels = useAppSelector(state => state.admin.occupiedChannels);
+  const channels = useAppSelector(state => state.admin.occupiedChannels, shallowEqual);
 
   const usersStatus = useAppSelector(state => state.admin.userStatus);
 
-  const users = useAppSelector(state => state.users.users);
+  const users = useAppSelector(state => state.users.users, shallowEqual);
 
   if (usersStatus === 'NOT_INITIALIZED') {
     dispatch(getAllUsers());
@@ -90,4 +90,4 @@ export default (): JSX.Element => {
       </div>
     );
   }
-};
+}

@@ -10,7 +10,7 @@ import * as React from 'react';
 import { HashRouter as Router, Switch, Route, useParams } from 'react-router-dom';
 import UserProfile from './UserProfile';
 import { SecondLevelLink } from '../common/Link';
-import { useAppSelector } from '../../store/hooks';
+import { useAppSelector, shallowEqual } from '../../store/hooks';
 import { entityIs, Account } from 'colab-rest-client';
 import LocalAccount from './LocalAccount';
 import { useCurrentUser } from '../../selectors/userSelector';
@@ -36,8 +36,9 @@ function WrapLocalAccountEditor() {
 }
 
 export default (): JSX.Element => {
-  const accounts = useAppSelector(state =>
-    Object.values(state.users.accounts).filter(a => a.userId == state.auth.currentUserId),
+  const accounts = useAppSelector(
+    state => Object.values(state.users.accounts).filter(a => a.userId == state.auth.currentUserId),
+    shallowEqual,
   );
   const { currentUser } = useCurrentUser();
 

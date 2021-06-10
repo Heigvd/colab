@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { useAppSelector, useAppDispatch, shallowEqual } from '../../store/hooks';
 import { getLoggerLevels, changeLoggerLevel } from '../../API/api';
 import InlineLoading from '../common/InlineLoading';
 import { css, cx } from '@emotion/css';
@@ -32,8 +32,8 @@ const selectedStyle = cx(
   }),
 );
 
-export default (): JSX.Element => {
-  const levels = useAppSelector(state => state.admin.loggers);
+export default function (): JSX.Element {
+  const levels = useAppSelector(state => state.admin.loggers, shallowEqual);
   const dispatch = useAppDispatch();
 
   const [search, setSearch] = React.useState('');
@@ -145,4 +145,4 @@ export default (): JSX.Element => {
       </div>
     );
   }
-};
+}

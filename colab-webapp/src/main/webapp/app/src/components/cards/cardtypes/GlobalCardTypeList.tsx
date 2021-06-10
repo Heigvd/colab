@@ -22,7 +22,7 @@ const flexWrap = css({
   flexWrap: 'wrap',
 });
 
-export default function GlobalCardTypeList() : JSX.Element {
+export default function GlobalCardTypeList(): JSX.Element {
   const dispatch = useAppDispatch();
   const cardTypes = useGlobalTypes();
 
@@ -54,4 +54,4 @@ export default function GlobalCardTypeList() : JSX.Element {
       </div>
     );
   }
-};
+}

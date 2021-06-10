@@ -33,13 +33,15 @@ const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   const history = useHistory();
   const dispatch = useAppDispatch();
 
-  if (typeof card === 'number') {
-    dispatch(API.getCard(card));
-  }
+  React.useEffect(() => {
+    if (typeof card === 'number') {
+      dispatch(API.getCard(card));
+    }
 
-  if (typeof content === 'number') {
-    dispatch(API.getCardContent(content));
-  }
+    if (typeof content === 'number') {
+      dispatch(API.getCardContent(content));
+    }
+  }, [card, content, dispatch]);
 
   if (entityIs(card, 'Card') && card.rootCardProjectId != null) {
     return (
@@ -88,9 +90,11 @@ const CardWrapper = ({ children }: CardWrapperProps): JSX.Element => {
 
   const ancestors = useAncestors(parentId);
 
-  if (card === undefined) {
-    dispatch(API.getCard(cardId));
-  }
+  React.useEffect(() => {
+    if (card === undefined && cardId) {
+      dispatch(API.getCard(cardId));
+    }
+  }, [card, cardId, dispatch]);
 
   if (card == null || card === 'LOADING' || project == null) {
     return <InlineLoading />;

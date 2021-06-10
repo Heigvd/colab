@@ -49,6 +49,15 @@ const EditorWrapper = () => {
   const { project, status } = useProject(+id);
   const { project: editedProject, status: editingStatus } = useProjectBeingEdited();
 
+  React.useEffect(() => {
+    if (
+      project != null &&
+      (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id))
+    ) {
+      dispatch(API.startProjectEdition(project));
+    }
+  }, [dispatch, editingStatus, editedProject, project, id]);
+
   if (project === undefined) {
     if (status === 'NOT_INITIALIZED') {
       dispatch(API.getUserProjects());
@@ -58,7 +67,6 @@ const EditorWrapper = () => {
     return <div>The project does not exists</div>;
   } else {
     if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
-      dispatch(API.startProjectEdition(project));
       return <InlineLoading />;
     } else {
       return <Editor />;
@@ -93,7 +101,7 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-export default (): JSX.Element => {
+export default function MainApp(): JSX.Element {
   const dispatch = useAppDispatch();
 
   const { currentUser, status: currentUserStatus } = useCurrentUser();
@@ -101,6 +109,10 @@ export default (): JSX.Element => {
   const socketId = useAppSelector(state => state.websockets.sessionId);
 
   const { project: projectBeingEdited } = useProjectBeingEdited();
+
+  const logout = React.useCallback(() => {
+    dispatch(API.signOut());
+  }, [dispatch]);
 
   const reconnecting =
     socketId == null ? (
@@ -196,7 +208,7 @@ export default (): JSX.Element => {
             ></div>
 
             <InlineLink to="/settings/user">{getDisplayName(currentUser)}</InlineLink>
-            <IconButton onClick={() => dispatch(API.signOut())} icon={faSignOutAlt} />
+            <IconButton onClick={logout} icon={faSignOutAlt} />
           </div>
 
           <div
@@ -244,4 +256,4 @@ export default (): JSX.Element => {
       </Overlay>
     );
   }
-};
+}

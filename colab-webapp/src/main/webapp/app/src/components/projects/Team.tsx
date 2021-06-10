@@ -6,7 +6,7 @@
  */
 import * as React from 'react';
 
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { useAppSelector, useAppDispatch, customColabStateEquals } from '../../store/hooks';
 import { Project, TeamMember } from 'colab-rest-client';
 import { StateStatus } from '../../store/project';
 import InlineLoading from '../common/InlineLoading';
@@ -70,7 +70,7 @@ export default (props: Props): JSX.Element => {
     }
 
     return r;
-  });
+  }, customColabStateEquals);
 
   const [invite, setInvite] = React.useState('');
 

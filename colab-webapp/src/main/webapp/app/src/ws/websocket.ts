@@ -8,6 +8,7 @@ import { WsUpdateMessage, WsChannelUpdate, entityIs, IndexEntry, TypeMap } from 
 import { dispatch } from '../store/store';
 import * as AdminActions from '../store/admin';
 import * as ErrorActions from '../store/error';
+import * as BlockActions from '../store/block';
 import * as ProjectActions from '../store/project';
 import * as DocumentActions from '../store/document';
 import * as CardActions from '../store/card';
@@ -36,6 +37,8 @@ const onUpdate = (event: WsUpdateMessage) => {
       dispatch(CardTypeActions.removeCardType(item.id));
     } else if (indexEntryIs(item, 'Document')) {
       dispatch(DocumentActions.removeDocument(item.id));
+    } else if (indexEntryIs(item, 'Block')) {
+      dispatch(BlockActions.removeBlock(item.id));
     } else if (indexEntryIs(item, 'CardContent')) {
       dispatch(CardActions.removeContent(item.id));
     } else if (indexEntryIs(item, 'User')) {
@@ -65,12 +68,9 @@ const onUpdate = (event: WsUpdateMessage) => {
     } else if (entityIs(item, 'AbstractCardType')) {
       dispatch(CardTypeActions.updateCardType(item));
     } else if (entityIs(item, 'Document')) {
-            dispatch(
-              ErrorActions.addError({
-                status: 'OPEN',
-                error: 'TODO: Setup document store',
-              }),
-            );
+      dispatch(DocumentActions.updateDocument(item));
+    } else if (entityIs(item, 'Block')) {
+      dispatch(BlockActions.updateBlock(item));
     } else if (entityIs(item, 'User')) {
       dispatch(UserActions.updateUser(item));
     } else if (entityIs(item, 'Account')) {
@@ -105,7 +105,7 @@ function checkUnreachable(x: never) {
 
 function createConnection(onCloseCb: () => void) {
   logger.info('Init Websocket Connection');
-  const protocol = window.location.protocol === 'https' ? 'wss' : 'ws';
+  const protocol = window.location.protocol.startsWith('https') ? 'wss' : 'ws';
   const connection = new WebSocket(`${protocol}:///${window.location.host}/ws`);
   logger.info('Init Ws Done');
 
