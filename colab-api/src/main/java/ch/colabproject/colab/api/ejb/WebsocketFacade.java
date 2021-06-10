@@ -490,7 +490,9 @@ public class WebsocketFacade {
                         messages.forEach(message -> {
                             try {
                                 logger.debug("Send {} to {}", message, session.getId());
-                                session.getBasicRemote().sendText(message);
+                                if (session.isOpen()) {
+                                    session.getBasicRemote().sendText(message);
+                                }
                             } catch (IOException ex) {
                                 logger.error("Failed to send websocket message {} to {}",
                                     message, session);
