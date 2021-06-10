@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2021 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 17,
+      <title>File: 16,
              Errors: 0,
-             Warnings: 26,
+             Warnings: 25,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -53,20 +53,6 @@ under the License.
                 </td>
                 <td>
                   3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.Block.java">ch/colabproject/colab/api/model/document/Block.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
                 </td>
                 <td>
                   0

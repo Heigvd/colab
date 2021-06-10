@@ -8,8 +8,11 @@ package ch.colabproject.colab.api.model.document;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.Entity;
@@ -30,7 +33,7 @@ import javax.persistence.Transient;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-<span class="nc" id="L33">public abstract class Block implements ColabEntity/*, WithWebsocketChannels*/ {</span>
+<span class="nc" id="L36">public abstract class Block implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -72,43 +75,43 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L75">        return id;</span>
+<span class="nc" id="L78">        return id;</span>
     }
 
     /**
      * @param id the block id
      */
     public void setId(Long id) {
-<span class="nc" id="L82">        this.id = id;</span>
-<span class="nc" id="L83">    }</span>
+<span class="nc" id="L85">        this.id = id;</span>
+<span class="nc" id="L86">    }</span>
 
     /**
      * @return the index to define the place in the document
      */
     public int getIndex() {
-<span class="nc" id="L89">        return index;</span>
+<span class="nc" id="L92">        return index;</span>
     }
 
     /**
      * @param index the index to define the place in the document to set
      */
     public void setIndex(int index) {
-<span class="nc" id="L96">        this.index = index;</span>
-<span class="nc" id="L97">    }</span>
+<span class="nc" id="L99">        this.index = index;</span>
+<span class="nc" id="L100">    }</span>
 
     /**
      * @return the document it is part of
      */
     public BlockDocument getDocument() {
-<span class="nc" id="L103">        return document;</span>
+<span class="nc" id="L106">        return document;</span>
     }
 
     /**
      * @param document the document it is part of
      */
     public void setDocument(BlockDocument document) {
-<span class="nc" id="L110">        this.document = document;</span>
-<span class="nc" id="L111">    }</span>
+<span class="nc" id="L113">        this.document = document;</span>
+<span class="nc" id="L114">    }</span>
 
     /**
      * get the document id. To be sent to client
@@ -116,10 +119,10 @@ import javax.persistence.Transient;
      * @return id of the document or null
      */
     public Long getDocumentId() {
-<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (this.document != null) {</span>
-<span class="nc" id="L120">            return this.document.getId();</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        if (this.document != null) {</span>
+<span class="nc" id="L123">            return this.document.getId();</span>
         } else {
-<span class="nc" id="L122">            return documentId;</span>
+<span class="nc" id="L125">            return documentId;</span>
         }
     }
 
@@ -129,8 +132,8 @@ import javax.persistence.Transient;
      * @param id the id of the document
      */
     public void setDocumentId(Long id) {
-<span class="nc" id="L132">        this.documentId = id;</span>
-<span class="nc" id="L133">    }</span>
+<span class="nc" id="L135">        this.documentId = id;</span>
+<span class="nc" id="L136">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -139,33 +142,33 @@ import javax.persistence.Transient;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (other instanceof Block) {</span>
-<span class="nc" id="L143">            Block o = (Block) other;</span>
-<span class="nc" id="L144">            this.setIndex(o.getIndex());</span>
-<span class="nc" id="L145">        } else {</span>
-<span class="nc" id="L146">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (other instanceof Block) {</span>
+<span class="nc" id="L146">            Block o = (Block) other;</span>
+<span class="nc" id="L147">            this.setIndex(o.getIndex());</span>
+<span class="nc" id="L148">        } else {</span>
+<span class="nc" id="L149">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L148">    }</span>
+<span class="nc" id="L151">    }</span>
 
-//    @Override
-//    public Set&lt;WebsocketChannel&gt; getChannels() {
-//        if (this.document != null) {
-//            return this.document.getChannels();
-//        } else {
-//            // such an orphan shouldn't exist...
-//            return Set.of();
-//        }
-//    }
+    @Override
+    public Set&lt;WebsocketChannel&gt; getChannels() {
+<span class="nc bnc" id="L155" title="All 2 branches missed.">        if (this.document != null) {</span>
+<span class="nc" id="L156">            return this.document.getChannels();</span>
+        } else {
+            // such an orphan shouldn't exist...
+<span class="nc" id="L159">            return Set.of();</span>
+        }
+    }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L162">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L165">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L168">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L171">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
@@ -175,7 +178,7 @@ import javax.persistence.Transient;
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-<span class="nc" id="L178">        return &quot;id=&quot; + id + &quot;, index=&quot; + index;</span>
+<span class="nc" id="L181">        return &quot;id=&quot; + id + &quot;, index=&quot; + index;</span>
     }
 
 }

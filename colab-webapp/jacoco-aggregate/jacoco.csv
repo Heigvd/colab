@@ -8,7 +8,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContentCompletio
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardType,75,0,2,0,25,0,14,0,13,0
 colab-webapp/colab-api,ch.colabproject.colab.api,Helper,150,0,14,0,38,0,17,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,TokenFacade,326,0,24,0,97,0,22,0,10,0
-colab-webapp/colab-api,ch.colabproject.colab.api.ejb,BlockFacade,80,0,4,0,21,0,6,0,4,0
+colab-webapp/colab-api,ch.colabproject.colab.api.ejb,BlockFacade,156,0,18,0,44,0,14,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.ChannelType,34,0,0,0,4,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest,71,0,0,0,24,0,13,0,13,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,CdiBridgeSingleton,19,0,0,0,7,0,5,0,5,0
@@ -16,7 +16,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ejb,UserManagement,511,0,54,0,1
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,185,0,38,0,64,0,45,0,26,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.SubscriptionType,24,0,0,0,3,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ApplicationLifecycleFacade,38,0,2,0,15,0,4,0,3,0
-colab-webapp/colab-api,ch.colabproject.colab.api.ejb,WebsocketFacade,686,0,50,0,182,0,56,0,31,0
+colab-webapp/colab-api,ch.colabproject.colab.api.ejb,WebsocketFacade,689,0,52,0,183,0,57,0,31,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ResourceFacade,419,0,48,0,118,0,38,0,14,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ProjectFacade,128,0,4,0,33,0,10,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,CardFacade,462,0,44,0,136,0,46,0,24,0
@@ -76,7 +76,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.document,AbstractResource
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,TextDataBlock,55,0,2,0,18,0,10,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Resource,96,0,4,0,31,0,19,0,17,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Document,145,0,16,0,45,0,32,0,24,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Block,69,0,4,0,24,0,15,0,13,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Block,78,0,6,0,27,0,17,0,14,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,BlockDocument,43,0,2,0,14,0,8,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.project,ProjectDao,59,0,0,0,15,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,MessageBuilder,77,0,0,0,22,0,12,0,12,0

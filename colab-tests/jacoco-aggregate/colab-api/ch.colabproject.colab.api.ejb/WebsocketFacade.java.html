@@ -490,17 +490,19 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L490">                        messages.forEach(message -&gt; {</span>
                             try {
 <span class="fc" id="L492">                                logger.debug(&quot;Send {} to {}&quot;, message, session.getId());</span>
-<span class="fc" id="L493">                                session.getBasicRemote().sendText(message);</span>
-<span class="nc" id="L494">                            } catch (IOException ex) {</span>
-<span class="nc" id="L495">                                logger.error(&quot;Failed to send websocket message {} to {}&quot;,</span>
+<span class="pc bpc" id="L493" title="1 of 2 branches missed.">                                if (session.isOpen()) {</span>
+<span class="fc" id="L494">                                    session.getBasicRemote().sendText(message);</span>
+                                }
+<span class="nc" id="L496">                            } catch (IOException ex) {</span>
+<span class="nc" id="L497">                                logger.error(&quot;Failed to send websocket message {} to {}&quot;,</span>
                                     message, session);
-<span class="fc" id="L497">                            }</span>
-<span class="fc" id="L498">                        });</span>
-<span class="fc" id="L499">                    });</span>
+<span class="fc" id="L499">                            }</span>
+<span class="fc" id="L500">                        });</span>
+<span class="fc" id="L501">                    });</span>
                 }
-<span class="fc" id="L501">            });</span>
+<span class="fc" id="L503">            });</span>
         }
-<span class="fc" id="L503">    }</span>
+<span class="fc" id="L505">    }</span>
 
     /**
      * Unsubscribe all channel linked to the given httpSessionId. This is required after the user
@@ -510,27 +512,27 @@ import org.slf4j.LoggerFactory;
      */
     public void signoutAndUnsubscribeFromAll(String httpSessionId) {
         // TODO send logout event, so each client (each browser tab) knows it has been disconected
-<span class="fc" id="L513">        Set&lt;Session&gt; wsSessions = this.httpSessionToWsSessions.get(httpSessionId);</span>
-<span class="pc bpc" id="L514" title="1 of 2 branches missed.">        if (wsSessions != null) {</span>
+<span class="fc" id="L515">        Set&lt;Session&gt; wsSessions = this.httpSessionToWsSessions.get(httpSessionId);</span>
+<span class="pc bpc" id="L516" title="1 of 2 branches missed.">        if (wsSessions != null) {</span>
             // the http session is linked to one or more websocket session, let's cancel all their
             // subscriptions
-<span class="nc" id="L517">            wsSessions.stream()</span>
+<span class="nc" id="L519">            wsSessions.stream()</span>
                 // get channels from each wsSession
-<span class="nc" id="L519">                .map(wsSession -&gt; this.wsSessionMap.get(wsSession))</span>
+<span class="nc" id="L521">                .map(wsSession -&gt; this.wsSessionMap.get(wsSession))</span>
                 // filter out null channels set
-<span class="nc bnc" id="L521" title="All 2 branches missed.">                .filter(channels -&gt; channels != null)</span>
+<span class="nc bnc" id="L523" title="All 2 branches missed.">                .filter(channels -&gt; channels != null)</span>
                 // convert &quot;stream of set of channels&quot; to &quot;stream of channels&quot;
-<span class="nc" id="L523">                .flatMap(Collection::stream)</span>
+<span class="nc" id="L525">                .flatMap(Collection::stream)</span>
                 // no need to list same channel twise
-<span class="nc" id="L525">                .distinct()</span>
+<span class="nc" id="L527">                .distinct()</span>
                 // clean subscriptions
-<span class="nc" id="L527">                .forEach(channel -&gt; {</span>
-<span class="nc" id="L528">                    this.unsubscribe(channel, wsSessions);</span>
-<span class="nc" id="L529">                });</span>
+<span class="nc" id="L529">                .forEach(channel -&gt; {</span>
+<span class="nc" id="L530">                    this.unsubscribe(channel, wsSessions);</span>
+<span class="nc" id="L531">                });</span>
         }
 
-<span class="fc" id="L532">        this.httpSessionToWsSessions.remove(httpSessionId);</span>
-<span class="fc" id="L533">    }</span>
+<span class="fc" id="L534">        this.httpSessionToWsSessions.remove(httpSessionId);</span>
+<span class="fc" id="L535">    }</span>
 
     /**
      * Clean subscription on session close
@@ -538,14 +540,14 @@ import org.slf4j.LoggerFactory;
      * @param session websocket session to clean subscription for
      */
     public void unsubscribeFromAll(Session session) {
-<span class="fc" id="L541">        Set&lt;WebsocketEffectiveChannel&gt; set = this.wsSessionMap.get(session);</span>
-<span class="pc bpc" id="L542" title="1 of 2 branches missed.">        if (set != null) {</span>
-<span class="fc" id="L543">            Set&lt;Session&gt; setOfSession = Set.of(session);</span>
-<span class="fc" id="L544">            set.forEach(channel -&gt; {</span>
-<span class="fc" id="L545">                unsubscribe(channel, setOfSession);</span>
-<span class="fc" id="L546">            });</span>
-<span class="fc" id="L547">            this.wsSessionMap.remove(session);</span>
+<span class="fc" id="L543">        Set&lt;WebsocketEffectiveChannel&gt; set = this.wsSessionMap.get(session);</span>
+<span class="pc bpc" id="L544" title="1 of 2 branches missed.">        if (set != null) {</span>
+<span class="fc" id="L545">            Set&lt;Session&gt; setOfSession = Set.of(session);</span>
+<span class="fc" id="L546">            set.forEach(channel -&gt; {</span>
+<span class="fc" id="L547">                unsubscribe(channel, setOfSession);</span>
+<span class="fc" id="L548">            });</span>
+<span class="fc" id="L549">            this.wsSessionMap.remove(session);</span>
         }
-<span class="fc" id="L549">    }</span>
+<span class="fc" id="L551">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
