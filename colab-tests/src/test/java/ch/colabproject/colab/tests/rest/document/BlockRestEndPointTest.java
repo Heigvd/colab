@@ -26,14 +26,12 @@ public class BlockRestEndPointTest extends AbstractArquillianTest {
     public void testCreateTextDataBlock() {
         Long documentId = client.documentRestEndPoint.createDocument(new BlockDocument());
 
-        int index = (int) (Math.random() * 100);
         String mimeType = "text/markdown";
         String content = "Here is some texte to explain how it is important to say things "
                 + ((int) (Math.random() * 1000));
 
         TextDataBlock block = new TextDataBlock();
         block.setDocumentId(documentId);
-        block.setIndex(index);
         block.setMimeType(mimeType);
         block.setTextData(content);
 
@@ -43,7 +41,7 @@ public class BlockRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedBlock);
         Assertions.assertNotNull(persistedBlock.getId());
         Assertions.assertEquals(blockId, persistedBlock.getId());
-        Assertions.assertEquals(index, persistedBlock.getIndex());
+        Assertions.assertEquals(0, persistedBlock.getIndex());
 
         Assertions.assertTrue(persistedBlock instanceof TextDataBlock);
         TextDataBlock persistedTextDataBlock = (TextDataBlock) persistedBlock;

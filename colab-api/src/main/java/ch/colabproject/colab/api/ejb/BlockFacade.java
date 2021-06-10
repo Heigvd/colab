@@ -13,6 +13,8 @@ import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.persistence.document.BlockDao;
 import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.List;
+import java.util.Optional;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,6 +32,11 @@ public class BlockFacade {
 
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(BlockFacade.class);
+
+    /**
+     * Default room between indexes
+     */
+    private static final int DEFAULT_INDEX_INC = 1000;
 
     // *********************************************************************************************
     // injections
@@ -75,7 +82,46 @@ public class BlockFacade {
         securityFacade.assertCanCreateBlock(blockDocument);
 
         block.setDocument(blockDocument);
-        blockDocument.getBlocks().add(block);
+        List<Block> blocks = blockDocument.getBlocks();
+        if (blocks.isEmpty()) {
+            block.setIndex(0);
+        } else {
+            Optional<Block> endBlock = blocks.stream().max((a, b) -> {
+                if (a != null) {
+                    if (b != null) {
+                        return Math.max(a.getIndex(), b.getIndex());
+                    } else {
+                        // a is not null, b is null
+                        return -1;
+                    }
+                } else if (b != null) {
+                    // a is null, not b
+                    return 1;
+                }
+                //both are null
+                return 0;
+            });
+            if (endBlock.isPresent()) {
+                Block end = endBlock.get();
+                if (end.getIndex() > Long.MAX_VALUE - DEFAULT_INDEX_INC) {
+                    block.setIndex(end.getIndex() + DEFAULT_INDEX_INC);
+                } else {
+                    // MAX INDEX reached -> reset all indexes
+                    // TODO: current behaviour is not that robust...
+                    // it will crash when there is more than (MAX_LONG / 1000) blocks
+                    // anyway, such a document must be quite unreadable...
+                    int index = 0;
+                    for (Block b : blocks) {
+                        b.setIndex(index);
+                        index += DEFAULT_INDEX_INC;
+                    }
+                    block.setIndex(index);
+                }
+            } else {
+                block.setIndex(0);
+            }
+        }
+        blocks.add(block);
 
         return blockDao.persistBlock(block);
     }
