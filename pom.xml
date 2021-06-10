@@ -47,6 +47,7 @@
     </licenses>
 
     <modules>
+        <module>html-report-maven-plugin</module>
         <module>client-generator-model</module>
         <module>client-generator-plugin</module>
         <module>build-tools</module>
@@ -536,6 +537,12 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>3.0.0</version>
+                </plugin>
+                <!-- to embed jest html reports -->
+                <plugin>
+                    <groupId>ch.albasim.html-report-maven-plugin</groupId>
+                    <artifactId>html-report-maven-plugin</artifactId>
+                    <version>0.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>

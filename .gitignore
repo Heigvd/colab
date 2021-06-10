@@ -33,3 +33,6 @@ nbproject
 .vscode
 /colab-webapp/src/main/webapp/app/dist/
 /colab-webapp/colab.properties
+/colab-webapp/src/main/webapp/app/coverage/
+/colab-webapp/src/main/webapp/app/reports/
+/colab-webapp/src/main/webapp/app/test-report/
