@@ -602,7 +602,8 @@
 <a name='L543'></a><a href='#L543'>543</a>
 <a name='L544'></a><a href='#L544'>544</a>
 <a name='L545'></a><a href='#L545'>545</a>
-<a name='L546'></a><a href='#L546'>546</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L546'></a><a href='#L546'>546</a>
+<a name='L547'></a><a href='#L547'>547</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -610,6 +611,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1168,13 +1170,14 @@
   Document,
   BlockDocument,
   Block,
+  AbstractCardType,
 } from 'colab-rest-client';
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import { getStore, ColabState } from '../store/store';</span>
+<span class="cstat-no" title="statement not covered" >import {getStore, ColabState} from '../store/store';</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import { addError } from '../store/error';</span>
-<span class="cstat-no" title="statement not covered" >import { hashPassword } from '../SecurityHelper';</span>
-<span class="cstat-no" title="statement not covered" >import { createAsyncThunk } from '@reduxjs/toolkit';</span>
+<span class="cstat-no" title="statement not covered" >import {addError} from '../store/error';</span>
+<span class="cstat-no" title="statement not covered" >import {hashPassword} from '../SecurityHelper';</span>
+<span class="cstat-no" title="statement not covered" >import {createAsyncThunk} from '@reduxjs/toolkit';</span>
 &nbsp;
 const restClient = <span class="cstat-no" title="statement not covered" >ColabClient('', <span class="fstat-no" title="function not covered" >error </span>=&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  if (entityIs(error, 'HttpException')) {</span>
@@ -1242,7 +1245,7 @@ export const <span class="cstat-no" title="statement not covered" >getLoggerLeve
 &nbsp;
 export const <span class="cstat-no" title="statement not covered" >changeLoggerLevel = createAsyncThunk(</span>
   'admin/setLoggerLevel',
-<span class="fstat-no" title="function not covered" >  async </span>(payload: { loggerName: string; loggerLevel: string }, thunkApi) =&gt; {
+<span class="fstat-no" title="function not covered" >  async </span>(payload: {loggerName: string; loggerLevel: string}, thunkApi) =&gt; {
 <span class="cstat-no" title="statement not covered" >    await restClient.MonitoringRestEndpoint.changeLoggerLevel(</span>
       payload.loggerName,
       payload.loggerLevel,
@@ -1258,7 +1261,7 @@ export const <span class="cstat-no" title="statement not covered" >changeLoggerL
 &nbsp;
 export const <span class="cstat-no" title="statement not covered" >requestPasswordReset = createAsyncThunk(</span>
   'auth/restPassword',
-<span class="fstat-no" title="function not covered" >  async </span>(a: { email: string }) =&gt; {
+<span class="fstat-no" title="function not covered" >  async </span>(a: {email: string}) =&gt; {
 <span class="cstat-no" title="statement not covered" >    await restClient.UserRestEndpoint.requestPasswordReset(a.email);</span>
   },
 );
@@ -1288,7 +1291,7 @@ export const <span class="cstat-no" title="statement not covered" >signInWithLoc
 &nbsp;
 export const <span class="cstat-no" title="statement not covered" >updateLocalAccountPassword = createAsyncThunk(</span>
   'user/updatePassword',
-<span class="fstat-no" title="function not covered" >  async </span>(a: { email: string; password: string }) =&gt; {
+<span class="fstat-no" title="function not covered" >  async </span>(a: {email: string; password: string}) =&gt; {
     // first, fetch the authenatication method fot the account
     const authMethod = <span class="cstat-no" title="statement not covered" >await restClient.UserRestEndpoint.getAuthMethod(a.email);</span>
 &nbsp;
@@ -1332,7 +1335,7 @@ export const <span class="cstat-no" title="statement not covered" >signUp = crea
 <span class="cstat-no" title="statement not covered" >    await restClient.UserRestEndpoint.signUp(signUpInfo);</span>
 &nbsp;
     // go back to login page
-<span class="cstat-no" title="statement not covered" >    thunkApi.dispatch(signInWithLocalAccount({ identifier: a.email, password: a.password }));</span>
+<span class="cstat-no" title="statement not covered" >    thunkApi.dispatch(signInWithLocalAccount({identifier: a.email, password: a.password}));</span>
   },
 );
 &nbsp;
@@ -1364,7 +1367,7 @@ export const <span class="cstat-no" title="statement not covered" >reloadCurrent
         });
       }
     }
-<span class="cstat-no" title="statement not covered" >    return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };</span>
+<span class="cstat-no" title="statement not covered" >    return {currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts};</span>
   },
 );
 &nbsp;
@@ -1470,7 +1473,7 @@ export const <span class="cstat-no" title="statement not covered" >getProjectTea
 &nbsp;
 export const <span class="cstat-no" title="statement not covered" >sendInvitation = createAsyncThunk(</span>
   'project/team/invite',
-<span class="fstat-no" title="function not covered" >  async </span>(payload: { projectId: number; recipient: string }, thunkApi) =&gt; {
+<span class="fstat-no" title="function not covered" >  async </span>(payload: {projectId: number; recipient: string}, thunkApi) =&gt; {
 <span class="cstat-no" title="statement not covered" >    if (payload.recipient) {</span>
 <span class="cstat-no" title="statement not covered" >      await restClient.ProjectRestEndpoint.inviteSomeone(payload.projectId, payload.recipient);</span>
 <span class="cstat-no" title="statement not covered" >      thunkApi.dispatch(getProjectTeam(payload.projectId));</span>
@@ -1526,7 +1529,7 @@ export const <span class="cstat-no" title="statement not covered" >getAllGlobalC
 <span class="cstat-no" title="statement not covered" >  return await restClient.CardTypeRestEndpoint.getAllGlobalCardTypes();</span>
 });
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >getCardType = createAsyncThunk('cardType/get', <span class="fstat-no" title="function not covered" >async </span>(id: number) =&gt; {</span>
+export const <span class="cstat-no" title="statement not covered" >getCardType = createAsyncThunk&lt;AbstractCardType, number&gt;('cardType/get', <span class="fstat-no" title="function not covered" >async </span>(id: number) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  return await restClient.CardTypeRestEndpoint.getCardType(id);</span>
 });
 &nbsp;
@@ -1565,7 +1568,7 @@ export const <span class="cstat-no" title="statement not covered" >createCard = 
 &nbsp;
 export const <span class="cstat-no" title="statement not covered" >createSubCard = createAsyncThunk(</span>
   'card/createSubCard',
-<span class="fstat-no" title="function not covered" >  async </span>({ parent, cardTypeId }: { parent: CardContent; cardTypeId: number }) =&gt; {
+<span class="fstat-no" title="function not covered" >  async </span>({parent, cardTypeId}: {parent: CardContent; cardTypeId: number}) =&gt; {
 <span class="cstat-no" title="statement not covered" >    if (parent.id != null) {</span>
       const card = <span class="cstat-no" title="statement not covered" >await restClient.CardRestEndpoint.createNewCard(parent.id, cardTypeId);</span>
       const contents = <span class="cstat-no" title="statement not covered" >await restClient.CardRestEndpoint.getContentVariantsOfCard(card.id!);</span>
@@ -1648,7 +1651,7 @@ export const <span class="cstat-no" title="statement not covered" >getSubCards =
 // Documents
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >getDocument = createAsyncThunk('document/get', <span class="fstat-no" title="function not covered" >async </span>(id: number) =&gt; {</span>
+export const <span class="cstat-no" title="statement not covered" >getDocument = createAsyncThunk&lt;Document, number&gt;('document/get', <span class="fstat-no" title="function not covered" >async </span>(id: number) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >  return await restClient.DocumentRestEndPoint.getDocument(id);</span>
 });
 &nbsp;
@@ -1671,7 +1674,7 @@ export const <span class="cstat-no" title="statement not covered" >getDocumentBl
 &nbsp;
 export const <span class="cstat-no" title="statement not covered" >createBlock = createAsyncThunk(</span>
   'block/create',
-<span class="fstat-no" title="function not covered" >  async </span>(payload: { document: BlockDocument; block: Block }) =&gt; {
+<span class="fstat-no" title="function not covered" >  async </span>(payload: {document: BlockDocument; block: Block}) =&gt; {
 <span class="cstat-no" title="statement not covered" >    return await restClient.BlockRestEndPoint.createBlock({</span>
       ...payload.block,
       documentId: payload.document.id,
@@ -1699,7 +1702,7 @@ export const <span class="cstat-no" title="statement not covered" >deleteBlock =
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jun 10 2021 14:53:29 GMT+0000 (Coordinated Universal Time)
+                at Fri Jun 11 2021 08:18:27 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>
