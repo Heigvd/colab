@@ -53,3 +53,12 @@ export const buildLinkWithQueryParam = (
     );
   }
 };
+
+export const removeAllItems = (array: unknown[], items: unknown[]): void => {
+  items.forEach(item => {
+    const index = array.indexOf(item);
+    if (index >= 0) {
+      array.splice(index, 1);
+    }
+  });
+};

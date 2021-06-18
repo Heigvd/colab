@@ -4,11 +4,20 @@
  *
  * Licensed under the MIT License
  */
-import { WsUpdateMessage, WsChannelUpdate, entityIs, IndexEntry, TypeMap } from 'colab-rest-client';
+import {
+  WsUpdateMessage,
+  WsChannelUpdate,
+  entityIs,
+  IndexEntry,
+  TypeMap,
+  WsDeleteChangeMessage,
+  WsUpdateChangeMessage,
+} from 'colab-rest-client';
 import { dispatch } from '../store/store';
 import * as AdminActions from '../store/admin';
 import * as ErrorActions from '../store/error';
 import * as BlockActions from '../store/block';
+import * as ChangeActions from '../store/change';
 import * as ProjectActions from '../store/project';
 import * as DocumentActions from '../store/document';
 import * as CardActions from '../store/card';
@@ -92,6 +101,18 @@ const onChannelUpdate = (message: WsChannelUpdate) => {
   dispatch(AdminActions.channelUpdate(message));
 };
 
+function onLiveUpdate(message: WsUpdateChangeMessage) {
+  if (message.payload != null) {
+    dispatch(ChangeActions.updateChanges(message.payload));
+  }
+}
+
+function onLiveDelete(message: WsDeleteChangeMessage) {
+  if (message.payload != null) {
+    dispatch(ChangeActions.deleteChanges(message.payload));
+  }
+}
+
 //export function send(channel: string, payload: {}) {
 //  connection.send(JSON.stringify({
 //    channel,
@@ -124,6 +145,10 @@ function createConnection(onCloseCb: () => void) {
         onUpdate(message);
       } else if (entityIs(message, 'WsChannelUpdate')) {
         onChannelUpdate(message);
+      } else if (entityIs(message, 'WsUpdateChangeMessage')) {
+        onLiveUpdate(message);
+      } else if (entityIs(message, 'WsDeleteChangeMessage')) {
+        onLiveDelete(message);
       } else {
         //If next line is erroneous, it means a type of WsMessage is not handled
         checkUnreachable(message);

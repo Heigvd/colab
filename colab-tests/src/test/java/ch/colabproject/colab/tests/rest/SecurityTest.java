@@ -84,6 +84,9 @@ public class SecurityTest extends AbstractArquillianTest {
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.websocketRestEndpoint.getExistingChannels();
         });
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
+            client.blockRestEndPoint.deletePendingChanges(0L);
+        });
     }
 
     /**

@@ -4,16 +4,28 @@
  *
  * Licensed under the MIT License
  */
-import 'easymde/dist/easymde.min.css';
-
 import * as React from 'react';
 
-import { TextDataBlock } from 'colab-rest-client';
+import 'codemirror/lib/codemirror.css';
+import '@toast-ui/editor/dist/toastui-editor.css';
 
-export interface BlockEditorProps {
-  block: TextDataBlock;
+import { Viewer } from '@toast-ui/react-editor';
+import logger from '../../../logger';
+
+export interface MarkdownViewerProps {
+  md: string;
 }
 
-export function BlockEditorWrapper({ block }: BlockEditorProps): JSX.Element {
-  return <div>{block.textData}</div>;
+export default function MarkdownViewer({ md }: MarkdownViewerProps): JSX.Element {
+  const viewerRef = React.createRef<Viewer>();
+
+  React.useEffect(() => {
+    if (viewerRef.current != null) {
+      viewerRef.current.getInstance().setMarkdown(md);
+    } else {
+      logger.error('Viewer ref is null');
+    }
+  }, [md, viewerRef]);
+
+  return <Viewer ref={viewerRef} initialValue={md} />;
 }

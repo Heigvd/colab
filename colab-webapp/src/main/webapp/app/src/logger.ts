@@ -6,6 +6,10 @@
  */
 
 export default {
+  trace: (...params: unknown[]): void => {
+    // eslint-disable-next-line no-console
+    console.trace(...params);
+  },
   info: (...params: unknown[]): void => {
     // eslint-disable-next-line no-console
     console.info(...params);

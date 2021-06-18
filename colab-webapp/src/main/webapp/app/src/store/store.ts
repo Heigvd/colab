@@ -12,6 +12,7 @@ import adminReducer from './admin';
 import blockReducer from './block';
 import cardReducer from './card';
 import cardTypeReducer from './cardtype';
+import changeReducer from './change';
 import documentReducer from './document';
 import errorReducer from './error';
 import projectReducer from './project';
@@ -21,14 +22,15 @@ import { configureStore } from '@reduxjs/toolkit';
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  users: userReducer,
   admin: adminReducer,
-  errors: errorReducer,
   projects: projectReducer,
-  cards: cardReducer,
   cardtype: cardTypeReducer,
+  cards: cardReducer,
   document: documentReducer,
   block: blockReducer,
-  users: userReducer,
+  change: changeReducer,
+  errors: errorReducer,
   websockets: websocketReducer,
 });
 

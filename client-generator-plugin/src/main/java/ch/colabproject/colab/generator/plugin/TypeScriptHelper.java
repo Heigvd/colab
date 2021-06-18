@@ -52,7 +52,7 @@ public class TypeScriptHelper {
         if (WithJsonDiscriminator.class.isAssignableFrom(javaClass)) {
             return WithJsonDiscriminator.getJsonDiscriminator(javaClass);
         } else {
-            Logger.warn("Consider to implement WithJsonDiscriminator: {}"
+            Logger.warn("Consider to implement WithJsonDiscriminator: "
                 + javaClass.getSimpleName());
             return javaClass.getSimpleName();
         }
@@ -173,8 +173,11 @@ public class TypeScriptHelper {
                 }
                 sb.append("*/\n");
 
-                sb.append("export interface ").append(name).append("{\n").append("  '@class': '")
-                    .append(name).append("';\n");
+                sb.append("export interface ").append(name).append("{\n");
+
+                if (WithJsonDiscriminator.class.isAssignableFrom(javaClass)) {
+                    sb.append("  '@class': '").append(name).append("';\n");
+                }
 
                 try {
                     Object newInstance = javaClass.getConstructor().newInstance();

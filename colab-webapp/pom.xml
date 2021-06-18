@@ -87,6 +87,22 @@
                                     </arguments>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>yarn lint</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>yarn</executable>
+                                    <arguments>
+                                        <argument>--cwd</argument>
+                                        <argument>${project.basedir}/src/main/webapp/app/</argument>
+                                        <argument>run</argument>
+                                        <argument>lint</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
 
                         </executions>
                     </plugin>

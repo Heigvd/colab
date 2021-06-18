@@ -6,9 +6,11 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.microchanges.live.LiveManager;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
 import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +20,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author maxence
  */
-@ApplicationScoped
+@Singleton
+@Startup
 public class CdiBridgeSingleton {
 
     /**
@@ -27,30 +30,22 @@ public class CdiBridgeSingleton {
     private static final Logger logger = LoggerFactory.getLogger(CdiBridgeSingleton.class);
 
     /**
-     * Expose application-scoped instance to non-CDI world
-     */
-    private static CdiBridgeSingleton self;
-
-    /**
      * Websockets
      */
     @Inject
     private WebsocketFacade websocketFacade;
 
     /**
+     * LiveManager
+     */
+    @Inject
+    private LiveManager liveManager;
+
+    /**
      * Initialize the non-CDI bean
      */
     public void init() {
-        CdiBridgeSingleton.self = this;
-    }
-
-    /**
-     * Give non-CDI world access to this bean
-     *
-     * @return singleton instance
-     */
-    public static CdiBridgeSingleton getInstance() {
-        return CdiBridgeSingleton.self;
+        /* no iop */
     }
 
     /**
@@ -62,4 +57,29 @@ public class CdiBridgeSingleton {
         logger.debug("Get bridged Subscriptions");
         return websocketFacade.getSubscrciptionsCount();
     }
+
+    /**
+     * Bridge to {@link LiveManager#cancelDebounce(java.lang.Long) }
+     * <p>
+     * Cancel any debounce call related to the given blockId
+     *
+     * @param id id of the block
+     *
+     * @return true if there was something to cancel
+     */
+    public Boolean cancelDebounce(Long id) {
+        return liveManager.cancelDebounce(id);
+    }
+
+    /**
+     * Bridge to {@link LiveManager#process(java.lang.Long) }.
+     * <p>
+     * Process all pending changes and save new value to database.
+     *
+     * @param id id of the block to process
+     */
+    public void processMicroChanges(Long id) {
+        liveManager.process(id);
+    }
+
 }
