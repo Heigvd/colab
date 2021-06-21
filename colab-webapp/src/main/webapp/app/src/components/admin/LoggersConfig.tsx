@@ -11,10 +11,12 @@ import { getLoggerLevels, changeLoggerLevel } from '../../API/api';
 import InlineLoading from '../common/InlineLoading';
 import { css, cx } from '@emotion/css';
 import { linkStyle } from '../styling/style';
-import { faSync, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSync, faSearch, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
 import IconButton from '../common/IconButton';
 
 const LEVELS = ['OFF', 'ERROR', 'WARN', 'INFO', 'DEBUG', 'TRACE'];
+
+import { levels as clientLevels } from '../../logger';
 
 const levelStyle = css({});
 
@@ -36,9 +38,34 @@ export default function (): JSX.Element {
   const levels = useAppSelector(state => state.admin.loggers, shallowEqual);
   const dispatch = useAppDispatch();
 
+  const keys = Object.keys(clientLevels) as (keyof typeof levelState)[];
+
   const [search, setSearch] = React.useState('');
 
-  const title = <h3>Loggers</h3>;
+  const [levelState, setClientLevels] = React.useState(clientLevels);
+
+  const serverTitle = <h3>Server Loggers</h3>;
+  const clientLoggers = (
+    <div>
+      <h3>Client Loggers</h3>
+      <ul>
+        {keys.map(level => (
+          <li key={level}>
+            <IconButton
+              title={level}
+              icon={levelState[level] ? faCheck : faTimes}
+              onClick={() => {
+                setClientLevels({ ...levelState, [level]: !levelState[level] });
+                levelState[level] = !levelState[level];
+              }}
+            >
+              {level}
+            </IconButton>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 
   if (levels === undefined) {
     // not yet initialized
@@ -48,10 +75,11 @@ export default function (): JSX.Element {
   if (levels == null) {
     return (
       <div>
-        {title}
+        {serverTitle}
         <div>
           <InlineLoading />
         </div>
+        {clientLoggers}
       </div>
     );
   } else {
@@ -60,7 +88,7 @@ export default function (): JSX.Element {
       .sort();
     return (
       <div>
-        {title}
+        {serverTitle}
         <IconButton
           icon={faSync}
           onClick={() => {
@@ -142,6 +170,7 @@ export default function (): JSX.Element {
             }
           })}
         </div>
+        {clientLoggers}
       </div>
     );
   }
