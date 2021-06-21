@@ -29,7 +29,8 @@ import logger from './logger';
 //};
 
 /**
- * compute µchanges between previous and current
+ * compute µchanges between previous and current.
+ * µChange indexes correspond to those of the previous version.
  */
 export const getMicroChange = (previous: string, current: string): MicroChange[] => {
   logger.trace('Previous:', previous);
@@ -48,15 +49,17 @@ export const getMicroChange = (previous: string, current: string): MicroChange[]
         o: currentOffset,
         v: current.value,
       });
+      //currentOffset += current.count || 0;
     } else if (current.removed) {
       changes.push({
         t: 'D',
         o: currentOffset,
         l: current.count || 0,
       });
+      currentOffset += current.count || 0;
+    } else {
+      currentOffset += current.count || 0;
     }
-
-    currentOffset += current.count || 0;
   }
 
   logger.trace('Changeset: ', changes);
@@ -393,6 +396,7 @@ export const process = (
       currentRevision = change.revision;
       logger.trace('Current revision is ', currentRevision);
     } else {
+      logger.error('Changes: ', changes);
       throw new Error('Inconsistent changset: missing ' + currentRevision + ' children');
     }
   }
