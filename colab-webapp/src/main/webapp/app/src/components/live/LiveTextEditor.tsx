@@ -20,12 +20,10 @@ import InlineLoading from '../common/InlineLoading';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import { css } from '@emotion/css';
 import ChangeTree from './ChangeTree';
-//import NewMarkdownEditor from "../blocks/markdown/NewMarkdownEditor";
 import { ToastClsMarkdownEditor } from '../blocks/markdown/ToastClsMarkdownEditor';
 
 type State = {
   status: 'SET' | 'EDITING';
-  currentValue: string;
 };
 
 interface Props {
@@ -55,6 +53,10 @@ export default function LiveTextEditor({ atClass, atId, value, onChange }: Props
   const changesState = useChanges(atClass, atId);
   const dispatch = useAppDispatch();
 
+  const [state, setState] = React.useState<State>({
+    status: 'SET',
+  });
+
   React.useEffect(() => {
     if (changesState.status === 'UNSET') {
       dispatch(API.getBlockPendingChanges(atId));
@@ -64,101 +66,107 @@ export default function LiveTextEditor({ atClass, atId, value, onChange }: Props
   const changes = changesState.changes;
 
   // value based on changes knonw by the server
-  const veryValue = applyChanges(value, changes);
-
-  logger.info('VeryValue ' + veryValue.revision + ' -> ' + veryValue.value);
-
-  const [state, setState] = React.useState<State>({
-    status: 'SET',
-    currentValue: veryValue.value || '',
-  });
+  const serverValue = applyChanges(value, changes);
+  logger.info('ServerValue ' + serverValue.revision + ' -> ' + serverValue.value);
 
   // initial saved value is
-  const savedValue = React.useRef<{
-    content: string;
+  const valueRef = React.useRef<{
+    /**
+     * The current base text is the one to compute changes angainst
+     */
+    base: string;
+    /**
+     * Base revision number
+     */
     revision: string;
+    /**
+     * Current version of the text
+     */
+    current: string;
     /**
      * already sent to the server, maybe not yet in props.changes
      */
     localChanges: Change[];
-    myCounter: number;
-  }>({ content: veryValue.value, revision: '0', localChanges: [], myCounter: 0 });
+    revCounter: number;
+  }>({
+    base: serverValue.value,
+    current: serverValue.value,
+    revision: '0',
+    localChanges: [],
+    revCounter: 0,
+  });
 
-  logger.info('LiveSession: ' + liveSession);
-  logger.info('MyCounter: ' + savedValue.current.myCounter);
-  logger.info('SavedValue: ' + savedValue.current.revision + ' -> ' + savedValue.current.content);
+  logger.info('LiveSession: ', liveSession, ' ::', valueRef.current.revCounter);
+  logger.info('SavedValue: ' + valueRef.current.revision + ' -> ' + valueRef.current.base);
+  logger.info('CurrentValue: ' + valueRef.current.current);
   logger.info('SavedChanges ', changes);
-  logger.info('LocalChange: ', savedValue.current.localChanges);
+  logger.info('LocalChange: ', valueRef.current.localChanges);
 
-  const effectiveChanges = LiveHelper.merge(changes, savedValue.current.localChanges);
+  // µchanges + local µchange (those already sent to the server but not yet received)
+  const effectiveChanges = LiveHelper.merge(changes, valueRef.current.localChanges);
 
   if (effectiveChanges.duplicates && effectiveChanges.duplicates.length > 0) {
+    // When local changes are received back, the stand in both changes and localChanges
     // if there is duplicates, we can saflety removed them from localChanges
-    savedValue.current.localChanges = savedValue.current.localChanges.filter(
+    valueRef.current.localChanges = valueRef.current.localChanges.filter(
       c => !effectiveChanges.duplicates.find(dc => c.revision === dc.revision),
     );
   }
 
-  const baseValue = applyChanges(value, effectiveChanges.changes);
+  /*
+   * baseValue = ServerValue + local Microchanges
+   */
+  const computedBaseValue = applyChanges(value, effectiveChanges.changes);
+  valueRef.current.revision = computedBaseValue.revision;
 
-  logger.info('Base value: ' + baseValue.revision + ' -> ' + baseValue.value);
+  logger.info('Local value: ' + computedBaseValue.value + ' @' + computedBaseValue.revision);
 
-  /* make sure to set myCounter */
+  /* make sure to set myCounter to a correct value*/
   React.useEffect(() => {
-    if (liveSession != null && savedValue.current.myCounter === 0) {
+    if (liveSession != null && valueRef.current.revCounter === 0) {
       const counter = findCounterValue(liveSession, changes);
-      savedValue.current.myCounter = counter + 1;
+      valueRef.current.revCounter = counter + 1;
     }
   }, [changes, liveSession]);
 
-  // todo: useEffect here!!!!!!
-  React.useEffect(() => {
-    if (baseValue.value !== savedValue.current.content) {
-      // rebase internal values
-      const diff = LiveHelper.getMicroChange(savedValue.current.content, state.currentValue);
+  if (computedBaseValue.value !== valueRef.current.base) {
+    // The base just changed
 
-      if (diff.length > 0) {
-        const currentChange = [
-          ...effectiveChanges.changes,
-          {
-            atClass: atClass,
-            atId: atId,
-            microchanges: diff,
-            basedOn: savedValue.current.revision,
-            liveSession: 'internal',
-            revision: 'internal.temp',
-          },
-        ];
+    logger.info('currentSavedValue: ', valueRef.current.base);
+    logger.info('currentValue: ', valueRef.current.current);
 
-        const currentValue = LiveHelper.process(value, currentChange);
-        logger.info('New currentValue: ' + currentValue.revision + ' -> ' + currentValue.value);
+    // is there any pending changes from the previous base ?
+    const diff = LiveHelper.getMicroChange(valueRef.current.base, valueRef.current.current);
 
-        savedValue.current.content = baseValue.value;
-        savedValue.current.revision = baseValue.revision;
+    if (diff.length > 0) {
+      // some pending change exists
+      const currentChange = [
+        ...effectiveChanges.changes,
+        {
+          atClass: atClass,
+          atId: atId,
+          microchanges: diff,
+          basedOn: valueRef.current.revision,
+          liveSession: 'internal',
+          revision: 'internal.temp',
+        },
+      ];
 
-        setState(state => ({
-          ...state,
-          currentValue: currentValue.value,
-        }));
-      } else {
-        savedValue.current.content = baseValue.value;
-        savedValue.current.revision = baseValue.revision;
+      // apply pending change on new base to get up-to-date current value
+      const newCurrentValue = LiveHelper.process(value, currentChange);
 
-        setState(state => ({
-          ...state,
-          currentValue: baseValue.value,
-        }));
-      }
+      logger.info('Current currentValue: ', valueRef.current.current);
+      logger.info('New currentValue: ', newCurrentValue.value, ' #@', newCurrentValue.revision);
+
+      valueRef.current.current = newCurrentValue.value;
+    } else {
+      logger.info('Effect branch2 nothing to do: ', computedBaseValue.value);
+      valueRef.current.current = computedBaseValue.value;
     }
-  }, [
-    baseValue.value,
-    baseValue.revision,
-    value,
-    effectiveChanges.changes,
-    atClass,
-    atId,
-    state.currentValue,
-  ]);
+
+    // switch to new base
+    valueRef.current.base = computedBaseValue.value;
+  }
 
   /**
    * Memoize the throttle method
@@ -167,23 +175,29 @@ export default function LiveTextEditor({ atClass, atId, value, onChange }: Props
     logger.info('Rebuild a throttle method');
     return throttle(
       (value: string) => {
-        logger.info('Throttled');
-        const previous = savedValue.current.content;
+        // send change to the server
+        const previous = valueRef.current.base;
         const next = value;
-        const count = savedValue.current.myCounter + 1;
+        const count = valueRef.current.revCounter + 1;
+
+        logger.info('Throttled from', previous, 'to', next);
+
+        // compute change from current base to current version
         const change: Change = {
           atClass: atClass,
           atId: atId,
           microchanges: LiveHelper.getMicroChange(previous, next),
-          basedOn: savedValue.current.revision,
+          basedOn: valueRef.current.revision,
           liveSession: liveSession || '',
           revision: liveSession + '::' + count,
         };
+        logger.trace(' => µChanges: ', change.microchanges);
+
         if (change.microchanges.length > 0) {
-          savedValue.current.content = value;
-          savedValue.current.myCounter = count;
-          savedValue.current.localChanges.push(change);
-          savedValue.current.revision = change.revision;
+          valueRef.current.base = value;
+          valueRef.current.revCounter = count;
+          valueRef.current.localChanges.push(change);
+          valueRef.current.revision = change.revision;
 
           logger.info('Send change');
           onChange(change);
@@ -192,20 +206,13 @@ export default function LiveTextEditor({ atClass, atId, value, onChange }: Props
       500,
       { trailing: true },
     );
-  }, [savedValue, liveSession, onChange, atClass, atId]);
+  }, [valueRef, liveSession, onChange, atClass, atId]);
 
   const onInternalChange = React.useCallback(
     (value: string) => {
+      logger.info('editor onChange: ', value);
+      valueRef.current.current = value;
       throttledOnChange(value);
-      setState(state => ({ ...state, currentValue: value }));
-    },
-    [throttledOnChange],
-  );
-
-  const onTextareaInternalChange = React.useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      throttledOnChange(e.target.value);
-      setState(state => ({ ...state, currentValue: e.target.value }));
     },
     [throttledOnChange],
   );
@@ -220,7 +227,7 @@ export default function LiveTextEditor({ atClass, atId, value, onChange }: Props
         <div>
           <i>disconnected...</i>
         </div>
-        <MarkdownViewer md={veryValue.value} />
+        <MarkdownViewer md={serverValue.value} />
       </div>
     );
   }
@@ -233,7 +240,7 @@ export default function LiveTextEditor({ atClass, atId, value, onChange }: Props
           onClick={() => setState({ ...state, status: 'EDITING' })}
           icon={faPen}
         />
-        <MarkdownViewer md={state.currentValue} />
+        <MarkdownViewer md={valueRef.current.current} />
       </div>
     );
   } else if (state.status === 'EDITING') {
@@ -247,9 +254,8 @@ export default function LiveTextEditor({ atClass, atId, value, onChange }: Props
           },
         })}
       >
-        <ToastClsMarkdownEditor value={state.currentValue} onChange={onInternalChange} />
-        <textarea value={state.currentValue} onChange={onTextareaInternalChange} />
-        <MarkdownViewer md={state.currentValue} />
+        <ToastClsMarkdownEditor value={valueRef.current.current} onChange={onInternalChange} />
+        <MarkdownViewer md={valueRef.current.current} />
         <ChangeTree atClass={atClass} atId={atId} />
       </div>
     );
