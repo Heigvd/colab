@@ -39,7 +39,7 @@ export default function MarkdownEditor({ value, onChange }: MarkdownEditorProps)
     } else {
       logger.error('Editor.onChange ref is null');
     }
-  }, [theEditor]);
+  }, [theEditor, onChange]);
 
   return (
     <Editor

@@ -16,13 +16,22 @@ export interface Props {
 export function Destroyer({ onDelete, title }: Props): JSX.Element {
   const [waitDeleteConfirm, setConfirm] = React.useState(false);
 
+  const askConfirm = React.useCallback(() => {
+    setConfirm(false);
+  }, []);
+
+  const confirmedCb = React.useCallback(() => {
+    setConfirm(false);
+    onDelete();
+  }, [onDelete]);
+
   return (
     <div title={title || 'destroy'}>
       {waitDeleteConfirm ? (
         <div>
           <IconButton icon={faTrashAlt} />:
-          <IconButton title={`cancel ${title}`} icon={faTimes} onClick={() => setConfirm(false)} />
-          <IconButton title={`confirm ${title}`} icon={faCheck} onClick={() => onDelete()} />
+          <IconButton title={`cancel ${title}`} icon={faTimes} onClick={askConfirm} />
+          <IconButton title={`confirm ${title}`} icon={faCheck} onClick={confirmedCb} />
         </div>
       ) : (
         <div>

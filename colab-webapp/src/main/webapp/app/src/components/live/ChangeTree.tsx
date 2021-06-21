@@ -53,7 +53,7 @@ const border = css({
 
 function TreeDisplay({ tree }: { tree: Tree }): JSX.Element {
   return (
-    <div className={css({ margin: '5px' })}>
+    <div className={css({ marginLeft: '2px' })}>
       <div className={border}>{tree.comp}</div>
       <div
         className={css({
