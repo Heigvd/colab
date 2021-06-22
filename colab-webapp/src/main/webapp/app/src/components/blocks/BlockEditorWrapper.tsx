@@ -11,7 +11,6 @@ import * as API from '../../API/api';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import LiveTextEditor from '../live/LiveTextEditor';
-import { ToastMarkdownEditor } from './markdown/ToastMarkdownEditor';
 
 export interface BlockEditorProps {
   blockId: number;
@@ -49,8 +48,6 @@ export function BlockEditorWrapper({ blockId }: BlockEditorProps): JSX.Element {
               onChange={onChangeCb}
             />
           );
-        case 'text/markdown-raw':
-          return <ToastMarkdownEditor block={block} />;
         default:
           return <span>unkwnon MIME type: {block.mimeType}</span>;
       }

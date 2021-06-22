@@ -143,7 +143,7 @@ function applyChange(buffer: string, mu: MicroChange): string {
   }
 }
 
-interface Offsets {
+export interface Offsets {
   [index: number]: number;
 }
 
@@ -157,7 +157,7 @@ function modifyOffsets(offsets: Offsets, index: number, value: number) {
   for (const sKey in offsets) {
     const key = +sKey;
     if (key > index && key < index + value) {
-      logger.error('Conflict');
+      logger.error('Conflict modifying offsets: ', offsets, 'index: ', index, 'value: ', value);
     }
     if (key > index) {
       // current offset if after the new offset
@@ -185,11 +185,11 @@ function modifyOffsets(offsets: Offsets, index: number, value: number) {
   }
 }
 
-function computeOffsets(change: Change): Offsets {
+export function computeOffsets(microchanges: MicroChange[]): Offsets {
   const offsets: Offsets = {};
 
-  for (let i = change.microchanges.length - 1; i >= 0; i--) {
-    const mu = change.microchanges[i]!;
+  for (let i = microchanges.length - 1; i >= 0; i--) {
+    const mu = microchanges[i]!;
     if (mu.t === 'D') {
       if (mu.l != null) {
         modifyOffsets(offsets, mu.o + mu.l, -mu.l);
@@ -324,7 +324,7 @@ function propagateOffsets(changes: Change[], parent: Change, offsets: Offsets, f
 function rebase(allChanges: Change[], newBase: Change, change: Change) {
   if (newBase.basedOn === change.basedOn) {
     // Rebase siebling
-    const offsets = computeOffsets(newBase);
+    const offsets = computeOffsets(newBase.microchanges);
 
     logger.trace('Rebase Sieblings: ', change, ' on ', newBase, ' with offset ', offsets);
 
@@ -335,13 +335,13 @@ function rebase(allChanges: Change[], newBase: Change, change: Change) {
     logger.trace('Rebase done: ', change, ' on ', newBase, ' with offset ', offsets);
   } else if (newBase.basedOn === change.revision) {
     logger.trace('Inverse hierachy : ', change, ' on ', newBase);
-    const offsets = computeOffsets(newBase);
+    const offsets = computeOffsets(newBase.microchanges);
 
     newBase.basedOn = change.basedOn;
     change.basedOn = newBase.revision;
 
     shift(newBase, offsets, false);
-    const newBaseOffsets = computeOffsets(newBase);
+    const newBaseOffsets = computeOffsets(newBase.microchanges);
     shift(change, newBaseOffsets, true);
   } else {
     logger.error('Changes must be sieblings or newBase must be a child of change');

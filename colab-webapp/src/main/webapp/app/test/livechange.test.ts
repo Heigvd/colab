@@ -11,6 +11,7 @@ import * as LiveHelper from '../src/LiveHelper';
 function createChange(session: string, basedOn: string, newRevision: string, ...mu: MicroChange[]): Change {
 
   return {
+    "@class": 'Change',
     atClass: "@test",
     atId: 1,
     liveSession: session,

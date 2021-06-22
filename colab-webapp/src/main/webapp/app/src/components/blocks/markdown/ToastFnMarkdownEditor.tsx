@@ -17,8 +17,14 @@ export interface MarkdownEditorProps {
   onChange: (value: string) => void;
 }
 
-export default function MarkdownEditor({ value, onChange }: MarkdownEditorProps): JSX.Element {
-  const editorRef = React.createRef<Editor>();
+/**
+ * Do not understand why the ref does not work
+ */
+export default function ToastFnMarkdownEditor({
+  value,
+  onChange,
+}: MarkdownEditorProps): JSX.Element {
+  const editorRef = React.useRef<Editor>(null);
 
   const theEditor = editorRef.current;
 

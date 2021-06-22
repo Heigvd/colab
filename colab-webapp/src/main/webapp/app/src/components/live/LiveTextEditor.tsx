@@ -15,15 +15,29 @@ import { Change } from 'colab-rest-client';
 import { useChanges } from '../../selectors/changeSelector';
 import logger from '../../logger';
 import IconButton from '../common/IconButton';
-import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faProjectDiagram, faTimes } from '@fortawesome/free-solid-svg-icons';
 import InlineLoading from '../common/InlineLoading';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import { css } from '@emotion/css';
 import ChangeTree from './ChangeTree';
-import { ToastClsMarkdownEditor } from '../blocks/markdown/ToastClsMarkdownEditor';
+import CleverTextarea from '../common/CleverTextarea';
+//import ToastFnMarkdownEditor from '../blocks/markdown/ToastFnMarkdownEditor';
+import OpenClose from '../common/OpenClose';
+//import {ToastClsMarkdownEditor} from '../blocks/markdown/ToastClsMarkdownEditor';
+
+const shrink = css({
+  flexGrow: 0,
+  flexShrink: 1,
+});
+
+const grow = css({
+  flexGrow: 1,
+  flexShrink: 1,
+  flexBasis: '1px',
+});
 
 type State = {
-  status: 'SET' | 'EDITING';
+  status: 'VIEW' | 'EDIT';
 };
 
 interface Props {
@@ -54,7 +68,7 @@ export default function LiveTextEditor({ atClass, atId, value, onChange }: Props
   const dispatch = useAppDispatch();
 
   const [state, setState] = React.useState<State>({
-    status: 'SET',
+    status: 'VIEW',
   });
 
   React.useEffect(() => {
@@ -67,7 +81,6 @@ export default function LiveTextEditor({ atClass, atId, value, onChange }: Props
 
   // value based on changes knonw by the server
   const serverValue = applyChanges(value, changes);
-  logger.info('ServerValue ' + serverValue.revision + ' -> ' + serverValue.value);
 
   // initial saved value is
   const valueRef = React.useRef<{
@@ -97,9 +110,11 @@ export default function LiveTextEditor({ atClass, atId, value, onChange }: Props
   });
 
   logger.info('LiveSession: ', liveSession, ' ::', valueRef.current.revCounter);
+  logger.info('Value: ', value);
+  logger.info('ServerChanges ', changes);
+  logger.info('ServerValue ' + serverValue.revision + ' -> ' + serverValue.value);
   logger.info('SavedValue: ' + valueRef.current.revision + ' -> ' + valueRef.current.base);
   logger.info('CurrentValue: ' + valueRef.current.current);
-  logger.info('SavedChanges ', changes);
   logger.info('LocalChange: ', valueRef.current.localChanges);
 
   // µchanges + local µchange (those already sent to the server but not yet received)
@@ -140,9 +155,10 @@ export default function LiveTextEditor({ atClass, atId, value, onChange }: Props
 
     if (diff.length > 0) {
       // some pending change exists
-      const currentChange = [
+      const currentChange: Change[] = [
         ...effectiveChanges.changes,
         {
+          '@class': 'Change',
           atClass: atClass,
           atId: atId,
           microchanges: diff,
@@ -184,6 +200,7 @@ export default function LiveTextEditor({ atClass, atId, value, onChange }: Props
 
         // compute change from current base to current version
         const change: Change = {
+          '@class': 'Change',
           atClass: atClass,
           atId: atId,
           microchanges: LiveHelper.getMicroChange(previous, next),
@@ -232,31 +249,43 @@ export default function LiveTextEditor({ atClass, atId, value, onChange }: Props
     );
   }
 
-  if (state.status === 'SET') {
+  if (state.status === 'VIEW') {
     return (
       <div>
         <IconButton
           title="Click to edit"
-          onClick={() => setState({ ...state, status: 'EDITING' })}
+          onClick={() => setState({ ...state, status: 'EDIT' })}
           icon={faPen}
         />
         <MarkdownViewer md={valueRef.current.current} />
       </div>
     );
-  } else if (state.status === 'EDITING') {
+  } else if (state.status === 'EDIT') {
     return (
       <div
         className={css({
           display: 'flex',
           flexDirection: 'row',
-          '& > *': {
-            flexGrow: 1,
-          },
         })}
       >
-        <ToastClsMarkdownEditor value={valueRef.current.current} onChange={onInternalChange} />
-        <MarkdownViewer md={valueRef.current.current} />
-        <ChangeTree atClass={atClass} atId={atId} />
+        {/*<ToastClsMarkdownEditor value={valueRef.current.current} onChange={onInternalChange} />*/}
+        <CleverTextarea
+          className={grow}
+          value={valueRef.current.current}
+          onChange={onInternalChange}
+        />
+        <MarkdownViewer className={grow} md={valueRef.current.current} />
+        <div className={shrink}>
+          <OpenClose collaspedChildren={<IconButton icon={faProjectDiagram} />}>
+            <ChangeTree atClass={atClass} atId={atId} />
+          </OpenClose>
+        </div>
+        <IconButton
+          title="close editor"
+          className={shrink}
+          onClick={() => setState({ ...state, status: 'VIEW' })}
+          icon={faTimes}
+        />
       </div>
     );
   }

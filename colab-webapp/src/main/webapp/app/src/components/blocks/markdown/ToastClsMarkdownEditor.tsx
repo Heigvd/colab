@@ -36,10 +36,9 @@ export class ToastClsMarkdownEditor extends React.Component<MarkdownEditorProps>
   componentDidUpdate = (): void => {
     const editor = this.editorRef.current;
     if (editor != null) {
-      const currentValue = editor.getInstance().getMarkdown();
+      const instance = editor.getInstance();
+      const currentValue = instance.getMarkdown();
       if (currentValue !== this.props.value) {
-        const range = editor.getInstance().getRange();
-        logger.info('Range: ', range);
         logger.info(
           'Set MarkdownValue old: ',
           JSON.stringify(currentValue),
