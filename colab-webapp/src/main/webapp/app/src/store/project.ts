@@ -4,10 +4,11 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Project, TeamMember } from 'colab-rest-client';
 import * as API from '../API/api';
 import { mapById } from '../helper';
+import { processMessage } from '../ws/wsThunkActions';
 
 /**
  * NOT_SET: the state is not fully set. It may contain some data (received by websocket) but there
@@ -58,51 +59,69 @@ const getOrCreateTeamState = (state: ProjectState, projectId: number): TeamState
   }
 };
 
+const updateProject = (state: ProjectState, project: Project) => {
+  if (project.id != null) {
+    state.projects[project.id] = project;
+  }
+};
+const removeProject = (state: ProjectState, projectId: number) => {
+  const mineIndex = state.mine.indexOf(projectId);
+  if (mineIndex >= 0) {
+    state.mine.splice(mineIndex, 1);
+  }
+
+  delete state.projects[projectId];
+};
+const updateTeamMember = (state: ProjectState, member: TeamMember) => {
+  const projectId = member.projectId;
+  const mId = member.id;
+
+  const userId = member.userId;
+  if (projectId != null && userId != null && userId === state.currentUserId) {
+    if (state.mine.indexOf(projectId) == -1) {
+      state.mine.push(projectId);
+    }
+  }
+
+  if (projectId != null && mId != null) {
+    const team = state.teams[projectId];
+    if (team != null && team.status === 'INITIALIZED') {
+      team.members[mId] = member;
+    }
+  }
+};
+const removeTeamMember = (state: ProjectState, memberId: number) => {
+  Object.values(state.teams).forEach(team => {
+    if (team.members[memberId]) {
+      delete team.members[memberId];
+    }
+  });
+};
+
 const projectsSlice = createSlice({
   name: 'projects',
   initialState,
-  reducers: {
-    updateProject: (state, action: PayloadAction<Project>) => {
-      if (action.payload.id != null) {
-        state.projects[action.payload.id] = action.payload;
-      }
-    },
-    removeProject: (state, action: PayloadAction<number>) => {
-      const mineIndex = state.mine.indexOf(action.payload);
-      if (mineIndex >= 0) {
-        state.mine.splice(mineIndex, 1);
-      }
-
-      delete state.projects[action.payload];
-    },
-    updateTeamMember: (state, action: PayloadAction<TeamMember>) => {
-      const projectId = action.payload.projectId;
-      const mId = action.payload.id;
-
-      const userId = action.payload.userId;
-      if (projectId != null && userId != null && userId === state.currentUserId) {
-        if (state.mine.indexOf(projectId) == -1) {
-          state.mine.push(projectId);
-        }
-      }
-
-      if (projectId != null && mId != null) {
-        const team = state.teams[projectId];
-        if (team != null && team.status === 'INITIALIZED') {
-          team.members[mId] = action.payload;
-        }
-      }
-    },
-    removeTeamMember: (state, action: PayloadAction<number>) => {
-      Object.values(state.teams).forEach(team => {
-        if (team.members[action.payload]) {
-          delete team.members[action.payload];
-        }
-      });
-    },
-  },
+  reducers: {},
   extraReducers: builder =>
     builder
+      .addCase(processMessage.fulfilled, (state, action) => {
+        action.payload.projects.updated.forEach(item => {
+          updateProject(state, item);
+        });
+        action.payload.projects.deleted.forEach(entry => {
+          if (entry.id != null) {
+            removeProject(state, entry.id);
+          }
+        });
+        action.payload.members.updated.forEach(item => {
+          updateTeamMember(state, item);
+        });
+        action.payload.projects.deleted.forEach(entry => {
+          if (entry.id != null) {
+            removeTeamMember(state, entry.id);
+          }
+        });
+      })
       .addCase(API.reloadCurrentUser.fulfilled, (state, action) => {
         // hack: to build state.mine projects, currentUserId must be known
         state.currentUserId = action.payload.currentUser
@@ -163,8 +182,5 @@ const projectsSlice = createSlice({
         state.editingStatus = 'NOT_EDITING';
       }),
 });
-
-export const { updateProject, removeProject, updateTeamMember, removeTeamMember } =
-  projectsSlice.actions;
 
 export default projectsSlice.reducer;

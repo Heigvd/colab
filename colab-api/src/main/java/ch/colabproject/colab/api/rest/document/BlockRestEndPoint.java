@@ -119,7 +119,7 @@ public class BlockRestEndPoint {
     @Path("/{id}/dropChanges")
     @AdminResource
     public void deletePendingChanges(@PathParam("id") Long id) {
-        liveManager.deletePendingChanges(id);
+        liveManager.deletePendingChangesAndPropagate(id);
     }
 
     /**

@@ -6,8 +6,9 @@
  */
 
 import * as API from '../API/api';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Change } from 'colab-rest-client';
+import { createSlice } from '@reduxjs/toolkit';
+import { Change, entityIs } from 'colab-rest-client';
+import { processMessage } from '../ws/wsThunkActions';
 
 export type Status = 'UNSET' | 'LOADING' | 'READY';
 
@@ -47,7 +48,7 @@ export const getObjectState = (
 /**
  * Insert new change by mutating the state
  */
-export const updateChange = (state: ChangeState, change: Change): ChangeState => {
+const update = (state: ChangeState, change: Change): ChangeState => {
   if (change.atClass != null && change.atId != null) {
     const oState = getOrCreateObjectState(state, change.atClass, change.atId);
 
@@ -68,7 +69,7 @@ export const updateChange = (state: ChangeState, change: Change): ChangeState =>
 /**
  * Remove change by mutating the state
  */
-export const removeChange = (state: ChangeState, change: Change): ChangeState => {
+const remove = (state: ChangeState, change: Change): ChangeState => {
   if (change.atClass != null && change.atId != null) {
     const objectState = getObjectState(state, change.atClass, change.atId);
 
@@ -88,16 +89,17 @@ export const removeChange = (state: ChangeState, change: Change): ChangeState =>
 const changeSlice = createSlice({
   name: 'changes',
   initialState,
-  reducers: {
-    updateChanges: (state, action: PayloadAction<Change[]>) => {
-      action.payload.forEach(change => updateChange(state, change));
-    },
-    deleteChanges: (state, action: PayloadAction<Change[]>) => {
-      action.payload.forEach(change => removeChange(state, change));
-    },
-  },
+  reducers: {},
   extraReducers: builder =>
     builder
+      .addCase(processMessage.fulfilled, (state, action) => {
+        action.payload.changes.updated.forEach(change => update(state, change));
+        action.payload.changes.deleted.forEach(entry => {
+          if (entityIs(entry.payload, 'Change')) {
+            remove(state, entry.payload);
+          }
+        });
+      })
       .addCase(API.getBlockPendingChanges.pending, (state, action) => {
         const objectState = getOrCreateObjectState(state, 'TextDataBlock', action.meta.arg);
         objectState.status = 'LOADING';
@@ -105,7 +107,7 @@ const changeSlice = createSlice({
       .addCase(API.getBlockPendingChanges.fulfilled, (state, action) => {
         const objectState = getOrCreateObjectState(state, 'TextDataBlock', action.meta.arg);
         objectState.status = 'READY';
-        action.payload.forEach(change => updateChange(state, change));
+        action.payload.forEach(change => update(state, change));
       })
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;
@@ -114,7 +116,5 @@ const changeSlice = createSlice({
         return initialState;
       }),
 });
-
-export const { updateChanges, deleteChanges } = changeSlice.actions;
 
 export default changeSlice.reducer;

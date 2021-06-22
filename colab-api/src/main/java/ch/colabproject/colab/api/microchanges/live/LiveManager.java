@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.microchanges.live;
 
+import ch.colabproject.colab.api.ejb.TransactionManager;
 import ch.colabproject.colab.api.ejb.WebsocketFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.microchanges.model.Change;
@@ -13,12 +14,10 @@ import ch.colabproject.colab.api.microchanges.tools.CancelDebounce;
 import ch.colabproject.colab.api.microchanges.tools.Debouncer;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.document.BlockDao;
 import ch.colabproject.colab.api.persistence.user.UserDao;
-import ch.colabproject.colab.api.ws.WebsocketHelper;
-import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
-import ch.colabproject.colab.api.ws.message.WsDeleteChangeMessage;
-import ch.colabproject.colab.api.ws.message.WsUpdateChangeMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import com.hazelcast.cluster.Member;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IExecutorService;
@@ -37,7 +36,6 @@ import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.websocket.EncodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,6 +75,9 @@ public class LiveManager implements Serializable {
     /** Hazelcast instance. */
     @Inject
     private HazelcastInstance hzInstance;
+
+    @Inject
+    private TransactionManager transactionManager;
 
     /**
      * Get the lock for the given block id
@@ -167,19 +168,27 @@ public class LiveManager implements Serializable {
                 if (!parentExists) {
                     patch.setBasedOn("0");
                 }
+                Project project = block.getProject();
+
+                if (project != null) {
+                    patch.setProjectId(project.getId());
+                } else {
+                    throw HttpErrorMessage.relatedObjectNotFoundError();
+                }
 
                 changes.add(patch);
                 cache.put(id, get);
                 this.scheduleSaveMicroChanges(id);
 
-                WsUpdateChangeMessage message = WsUpdateChangeMessage.build(List.of(patch));
+                transactionManager.registerUpdate(patch);
+//                WsUpdateChangeMessage message = WsUpdateChangeMessage.build(List.of(patch));
 
-                try {
-                    PrecomputedWsMessages msg = WebsocketHelper.prepareWsMessage(userDao, block.getChannels(), message);
-                    websocketFacade.propagate(msg);
-                } catch (EncodeException ex) {
-                    logger.error("Live update error: precompute failed");
-                }
+//                try {
+//                    PrecomputedWsMessages msg = WebsocketHelper.prepareWsMessage(userDao, block.getChannels(), message);
+//                    websocketFacade.propagate(msg);
+//                } catch (EncodeException ex) {
+//                    logger.error("Live update error: precompute failed");
+//                }
             } finally {
                 this.unlock(id);
             }
@@ -221,7 +230,7 @@ public class LiveManager implements Serializable {
                         String newValue = get.process(false);
                         txtBlock.setTextData(newValue);
                         blockDao.updateBlock(block);
-                        this.deletePendingChanges(blockId);
+                        this.deletePendingChangesAndPropagate(blockId);
                     } catch (RuntimeException ex) {
                         logger.error("Process failed", ex);
                         throw ex;
@@ -240,21 +249,22 @@ public class LiveManager implements Serializable {
      *
      * @param id id of the block
      */
-    public void deletePendingChanges(Long id) {
+    public void deletePendingChangesAndPropagate(Long id) {
         logger.debug("Delete pending changes");
         Block block = blockDao.findBlock(id);
         if (block != null) {
             List<Change> changes = getPendingChanges(id);
             cache.remove(id);
 
-            WsDeleteChangeMessage message = WsDeleteChangeMessage.build(changes);
-
-            try {
-                PrecomputedWsMessages msg = WebsocketHelper.prepareWsMessage(userDao, block.getChannels(), message);
-                websocketFacade.propagate(msg);
-            } catch (EncodeException ex) {
-                logger.error("Live update error: precompute failed");
-            }
+            transactionManager.registerDeletion(changes);
+//            WsDeleteChangeMessage message = WsDeleteChangeMessage.build(changes);
+//
+//            try {
+//                PrecomputedWsMessages msg = WebsocketHelper.prepareWsMessage(userDao, block.getChannels(), message);
+//                websocketFacade.propagate(msg);
+//            } catch (EncodeException ex) {
+//                logger.error("Live update error: precompute failed");
+//            }
         }
     }
 

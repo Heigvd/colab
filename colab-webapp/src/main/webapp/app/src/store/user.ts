@@ -4,10 +4,11 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Account, User } from 'colab-rest-client';
 import * as API from '../API/api';
 import { mapById } from '../helper';
+import { processMessage } from '../ws/wsThunkActions';
 
 export interface UserState {
   users: {
@@ -24,29 +25,35 @@ const initialState: UserState = {
   accounts: {},
 };
 
+const updateUser = (state: UserState, user: User) => {
+  if (user.id != null) {
+    state.users[user.id] = user;
+  }
+};
+const removeUser = (state: UserState, userId: number) => {
+  delete state.users[userId];
+};
+const updateAccount = (state: UserState, account: Account) => {
+  if (account.id != null) {
+    state.accounts[account.id] = account;
+  }
+};
+const removeAccount = (state: UserState, accountId: number) => {
+  delete state.accounts[accountId];
+};
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {
-    updateUser: (state, action: PayloadAction<User>) => {
-      if (action.payload.id != null) {
-        state.users[action.payload.id] = action.payload;
-      }
-    },
-    removeUser: (state, action: PayloadAction<number>) => {
-      delete state.users[action.payload];
-    },
-    updateAccount: (state, action: PayloadAction<Account>) => {
-      if (action.payload.id != null) {
-        state.accounts[action.payload.id] = action.payload;
-      }
-    },
-    removeAccount: (state, action: PayloadAction<number>) => {
-      delete state.accounts[action.payload];
-    },
-  },
+  reducers: {},
   extraReducers: builder =>
     builder
+      .addCase(processMessage.fulfilled, (state, action) => {
+        action.payload.users.updated.forEach(user => updateUser(state, user));
+        action.payload.users.deleted.forEach(entry => removeUser(state, entry.id));
+        action.payload.accounts.updated.forEach(account => updateAccount(state, account));
+        action.payload.accounts.deleted.forEach(entry => removeAccount(state, entry.id));
+      })
       .addCase(API.reloadCurrentUser.fulfilled, (state, action) => {
         const user = action.payload.currentUser;
         const account = action.payload.currentAccount;
@@ -93,7 +100,5 @@ const userSlice = createSlice({
         return initialState;
       }),
 });
-
-export const { updateUser, removeUser, updateAccount, removeAccount } = userSlice.actions;
 
 export default userSlice.reducer;

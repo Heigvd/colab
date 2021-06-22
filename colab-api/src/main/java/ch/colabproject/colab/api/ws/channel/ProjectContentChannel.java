@@ -77,15 +77,27 @@ public class ProjectContentChannel implements WebsocketEffectiveChannel {
     }
 
     /**
-     * get the channel dedicated to the given projectId.
+     * get the channel dedicated to the given project.
      *
-     * @param project the projectId
+     * @param project the project
      *
-     * @return the projectId very own channel
+     * @return the project very own channel
      */
     public static ProjectContentChannel build(Project project) {
+        return build(project.getId());
+    }
+
+
+    /**
+     * get the channel dedicated to the project having the given id.
+     *
+     * @param projectId id of the project
+     *
+     * @return the project very own channel
+     */
+    public static ProjectContentChannel build(Long projectId) {
         ProjectContentChannel channel = new ProjectContentChannel();
-        channel.setProjectId(project.getId());
+        channel.setProjectId(projectId);
         return channel;
     }
 }

@@ -1,4 +1,5 @@
 import { User, WithId } from 'colab-rest-client';
+import logger from './logger';
 
 /*
  * The coLAB project
@@ -62,3 +63,7 @@ export const removeAllItems = (array: unknown[], items: unknown[]): void => {
     }
   });
 };
+
+export function checkUnreachable(x: never) {
+  logger.error(x);
+}

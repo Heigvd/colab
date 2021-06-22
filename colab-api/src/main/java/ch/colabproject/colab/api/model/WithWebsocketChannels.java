@@ -28,4 +28,13 @@ public interface WithWebsocketChannels extends WithId {
     @JsonbTransient
     Set<WebsocketChannel> getChannels();
 
+    /**
+     * Get the payload to embed within an IndexEntry
+     *
+     * @return the payload
+     */
+    @JsonbTransient
+    default Object getIndexEntryPayload() {
+        return null;
+    }
 }

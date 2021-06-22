@@ -6,9 +6,14 @@
  */
 package ch.colabproject.colab.api.microchanges.model;
 
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -16,7 +21,9 @@ import javax.validation.constraints.NotNull;
  *
  * @author maxence
  */
-public class Change implements Serializable {
+public class Change implements Serializable, WithWebsocketChannels {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * JsonDiscriminator to fetch the class this change targets
@@ -53,6 +60,18 @@ public class Change implements Serializable {
      */
     @NotNull
     private List<MicroChange> microchanges = new ArrayList<>();
+
+    /**
+     * Id of the project this change belongs to
+     */
+    @NotNull
+    @JsonbTransient
+    private Long projectId;
+
+    @Override
+    public Long getId() {
+        return atId;
+    }
 
     /**
      * Get microchanges
@@ -160,6 +179,34 @@ public class Change implements Serializable {
      */
     public void setLiveSession(String liveSession) {
         this.liveSession = liveSession;
+    }
+
+    /**
+     * Get the project id
+     *
+     * @return id of the project
+     */
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    @Override
+    public Object getIndexEntryPayload() {
+        return this;
+    }
+
+    /**
+     * Set project id
+     *
+     * @param projectId the id
+     */
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        return Set.of(ProjectContentChannel.build(projectId));
     }
 
     @Override

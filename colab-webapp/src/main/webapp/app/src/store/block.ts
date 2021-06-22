@@ -4,10 +4,11 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Block } from 'colab-rest-client';
 import * as API from '../API/api';
 import { mapById } from '../helper';
+import { processMessage } from '../ws/wsThunkActions';
 //import {mapById} from '../helper';
 
 export type Status = 'UNSET' | 'LOADING' | 'READY';
@@ -25,53 +26,55 @@ const initialState: BlockState = {
   blocks: {},
 };
 
+const updateBlock = (state: BlockState, block: Block) => {
+  if (block.id != null) {
+    state.blocks[block.id] = block;
+    if (block.documentId != null) {
+      // make sure the document references the block
+      const docBlocks = state.documents[block.documentId];
+      if (docBlocks != null) {
+        if (docBlocks.indexOf(block.id) < 0) {
+          docBlocks.push(block.id);
+        }
+      }
+    }
+  }
+};
+
+const removeBlock = (state: BlockState, blockId: number) => {
+  const block = state.blocks[blockId];
+
+  if (block != null) {
+    if (block.documentId != null) {
+      // unregister the block from its document
+      const docBlocks = state.documents[block.documentId];
+      if (docBlocks != null) {
+        const index = docBlocks.indexOf(blockId);
+        if (index >= 0) {
+          docBlocks.splice(index, 1);
+        }
+      }
+    }
+    // drop the block
+    delete state.blocks[blockId];
+  }
+};
+
 const blocksSlice = createSlice({
   name: 'blocks',
   initialState,
-  reducers: {
-    updateBlock: (state, action: PayloadAction<Block>) => {
-      if (action.payload.id != null) {
-        state.blocks[action.payload.id] = action.payload;
-        if (action.payload.documentId != null) {
-          // make sure the document references the block
-          const docBlocks = state.documents[action.payload.documentId];
-          if (docBlocks != null) {
-            if (docBlocks.indexOf(action.payload.id) < 0) {
-              docBlocks.push(action.payload.id);
-            }
-          }
-        }
-      }
-    },
-    removeBlock: (state, action: PayloadAction<number>) => {
-      const blockId = action.payload;
-      const block = state.blocks[blockId];
-
-      if (block != null) {
-        if (block.documentId != null) {
-          // unregister the block from its document
-          const docBlocks = state.documents[block.documentId];
-          if (docBlocks != null) {
-            const index = docBlocks.indexOf(blockId);
-            if (index >= 0) {
-              docBlocks.splice(index, 1);
-            }
-          }
-        }
-        // drop the block
-        delete state.blocks[blockId];
-      }
-    },
-  },
+  reducers: {},
   extraReducers: builder =>
     builder
+      .addCase(processMessage.fulfilled, (state, action) => {
+        action.payload.blocks.updated.forEach(block => updateBlock(state, block));
+        action.payload.blocks.deleted.forEach(entry => removeBlock(state, entry.id));
+      })
       .addCase(API.getBlock.pending, (state, action) => {
         state.blocks[action.meta.arg] = null;
       })
       .addCase(API.getBlock.fulfilled, (state, action) => {
-        if (action.payload.id) {
-          state.blocks[action.payload.id] = action.payload;
-        }
+        updateBlock(state, action.payload);
       })
       .addCase(API.getDocumentBlocks.pending, (state, action) => {
         if (action.meta.arg.id != null) {
@@ -94,7 +97,5 @@ const blocksSlice = createSlice({
         return initialState;
       }),
 });
-
-export const { updateBlock, removeBlock } = blocksSlice.actions;
 
 export default blocksSlice.reducer;

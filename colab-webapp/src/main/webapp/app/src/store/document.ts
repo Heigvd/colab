@@ -4,9 +4,10 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Document } from 'colab-rest-client';
 import * as API from '../API/api';
+import { processMessage } from '../ws/wsThunkActions';
 //import {mapById} from '../helper';
 
 export type Status = 'UNSET' | 'LOADING' | 'READY';
@@ -20,21 +21,25 @@ const initialState: DocumentState = {
   documents: {},
 };
 
+const updateDocument = (state: DocumentState, document: Document) => {
+  if (document.id != null) {
+    state.documents[document.id] = document;
+  }
+};
+const removeDocument = (state: DocumentState, documentId: number) => {
+  delete state.documents[documentId];
+};
+
 const documentsSlice = createSlice({
   name: 'documents',
   initialState,
-  reducers: {
-    updateDocument: (state, action: PayloadAction<Document>) => {
-      if (action.payload.id != null) {
-        state.documents[action.payload.id] = action.payload;
-      }
-    },
-    removeDocument: (state, action: PayloadAction<number>) => {
-      delete state.documents[action.payload];
-    },
-  },
+  reducers: {},
   extraReducers: builder =>
     builder
+      .addCase(processMessage.fulfilled, (state, action) => {
+        action.payload.documents.updated.forEach(document => updateDocument(state, document));
+        action.payload.documents.deleted.forEach(entry => removeDocument(state, entry.id));
+      })
       .addCase(API.getDocument.pending, (state, action) => {
         state.documents[action.meta.arg] = null;
       })
@@ -50,7 +55,5 @@ const documentsSlice = createSlice({
         return initialState;
       }),
 });
-
-export const { updateDocument, removeDocument } = documentsSlice.actions;
 
 export default documentsSlice.reducer;

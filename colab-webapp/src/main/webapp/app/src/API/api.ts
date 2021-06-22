@@ -57,7 +57,7 @@ const restClient = ColabClient('', error => {
 /**
  * First access to the API client.
  * Such direct allows direct calls to the API, bypassing thunk/redux action. It's not that normal.
- * to do such calls but may be usefull in some edge-cades whene using the redux state is useless.
+ * to do such calls but may be usefull in some edge-cases whene using the redux state is useless.
  * EG. token processing
  */
 export const getRestClient = (): typeof restClient => restClient;

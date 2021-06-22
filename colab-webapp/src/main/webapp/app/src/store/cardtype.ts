@@ -4,10 +4,11 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { AbstractCardType } from 'colab-rest-client';
 import * as API from '../API/api';
 import { mapById } from '../helper';
+import { processMessage } from '../ws/wsThunkActions';
 
 export interface CardTypeState {
   // are all types used by the current project known or not ?
@@ -29,21 +30,26 @@ const initialState: CardTypeState = {
   cardtypes: {},
 };
 
+const updateCardType = (state: CardTypeState, cardType: AbstractCardType) => {
+  if (cardType.id != null) {
+    state.cardtypes[cardType.id] = cardType;
+  }
+};
+
+const removeCardType = (state: CardTypeState, cardTypeId: number) => {
+  delete state.cardtypes[cardTypeId];
+};
+
 const cardsSlice = createSlice({
   name: 'cardtypes',
   initialState,
-  reducers: {
-    updateCardType: (state, action: PayloadAction<AbstractCardType>) => {
-      if (action.payload.id != null) {
-        state.cardtypes[action.payload.id] = action.payload;
-      }
-    },
-    removeCardType: (state, action: PayloadAction<number>) => {
-      delete state.cardtypes[action.payload];
-    },
-  },
+  reducers: {},
   extraReducers: builder =>
     builder
+      .addCase(processMessage.fulfilled, (state, action) => {
+        action.payload.types.updated.forEach(cardType => updateCardType(state, cardType));
+        action.payload.types.deleted.forEach(entry => removeCardType(state, entry.id));
+      })
       .addCase(API.getProjectCardTypes.pending, state => {
         state.currentProjectStatus = 'LOADING';
       })
@@ -80,7 +86,5 @@ const cardsSlice = createSlice({
         return initialState;
       }),
 });
-
-export const { updateCardType, removeCardType } = cardsSlice.actions;
 
 export default cardsSlice.reducer;

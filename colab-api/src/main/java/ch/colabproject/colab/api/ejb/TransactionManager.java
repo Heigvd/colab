@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.ws.WebsocketHelper;
 import ch.colabproject.colab.api.ws.message.IndexEntry;
 import ch.colabproject.colab.api.ws.message.PrecomputedWsMessages;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -91,11 +92,33 @@ public class TransactionManager implements Serializable {
     }
 
     /**
+     * Register updated objects within the WS JTA synchronizer.
+     *
+     * @param c collection of objects to register
+     */
+    public void registerUpdates(Collection<WithWebsocketChannels> c) {
+        updated.addAll(c);
+        logger.trace("UpdatedSet: {}", updated);
+    }
+
+    /**
+     * Register deleted objects within the WS JTA synchronizer
+     *
+     * @param c just deleted objects
+     */
+    public void registerDeletion(Collection<? extends WithWebsocketChannels> c) {
+        c.stream()
+            .map(IndexEntry::build)
+            .forEach(deleted::add);
+        logger.trace("Deleted set: {}", deleted);
+    }
+
+    /**
      * Register deleted object within the WS JTA synchronizer
      *
      * @param o just deleted object
      */
-    public void registerDelete(WithWebsocketChannels o) {
+    public void registerDeletion(WithWebsocketChannels o) {
         deleted.add(IndexEntry.build(o));
         logger.trace("Deleted set: {}", deleted);
     }
@@ -105,13 +128,11 @@ public class TransactionManager implements Serializable {
      */
     private void precomputeMessage() throws EncodeException {
         logger.debug("Precompute messages; Update:{}, Deletes:{}", updated, deleted);
+        // filter updateds to keep only those who haven't been deleted
         Set<WithWebsocketChannels> filtered = updated.stream()
             .filter(
                 (u) -> !deleted.stream()
-                    .anyMatch(
-                        (d) -> d.getId().equals(u.getId())
-                        && d.getType().equals(u.getJsonDiscriminator())
-                    )
+                    .anyMatch((d) -> d.equals(u))
             ).collect(Collectors.toSet());
 
         this.precomputed = true;
