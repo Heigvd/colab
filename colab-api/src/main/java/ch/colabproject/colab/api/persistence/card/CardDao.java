@@ -8,7 +8,6 @@ package ch.colabproject.colab.api.persistence.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -100,11 +99,6 @@ public class CardDao {
         logger.debug("delete card #{}", id);
         // TODO: move to recycle bin first
         Card card = this.getCard(id);
-        if (card.getRootCardProject() != null) {
-            // no way to delete the root card
-            throw HttpErrorMessage.badRequest();
-        }
-        card.getParent().getSubCards().remove(card);
         em.remove(card);
         return card;
     }

@@ -127,6 +127,20 @@ public class CardFacade {
     }
 
     /**
+     * Delete the card type
+     * @param cardTypeId the id of the card type to delete
+     */
+    public CardType deleteCardType(Long cardTypeId) {
+        logger.debug("delete card type {}", cardTypeId);
+        CardType cardType = cardTypeDao.getCardType(cardTypeId);
+
+        cardType.getProject().getElementsToBeDefined().remove(cardType);
+        return cardTypeDao.deleteCardType(cardTypeId);
+    }
+
+    // TODO delete AbstractCardType / CardTypeRef
+
+    /**
      * Expand project own types.
      *
      * @param project type owner
@@ -233,6 +247,27 @@ public class CardFacade {
         Card card = initNewCard(parent, cardType);
 
         return cardDao.createCard(card);
+    }
+
+    /**
+     * Delete the card
+     *
+     * @param cardId the id of the card to delete
+     * @return the freshly deleted card
+     */
+    public Card deleteCard(Long cardId) {
+        Card card = cardDao.getCard(cardId);
+
+        if (card != null) {
+            if (card.getRootCardProject() != null) {
+                // no way to delete the root card
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+
+            card.getParent().getSubCards().remove(card);
+        }
+
+        return cardDao.deleteCard(cardId);
     }
 
     /**
@@ -418,6 +453,22 @@ public class CardFacade {
         CardContent cardContent = initNewCardContent(card);
 
         return cardContentDao.createCardContent(cardContent);
+    }
+
+
+    /**
+     * Delete the card content
+     *
+     * @param cardContentId the id of the card content to delete
+     * @return the freshly deleted card content
+     */
+    public CardContent deleteCardContent(Long cardContentId) {
+        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+        if (cardContent != null) {
+            cardContent.getCard().getContentVariants().remove(cardContent);
+        }
+
+        return cardContentDao.deleteCardContent(cardContentId);
     }
 
     /**
