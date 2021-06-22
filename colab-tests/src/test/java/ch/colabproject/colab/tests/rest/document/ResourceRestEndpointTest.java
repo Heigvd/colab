@@ -1,13 +1,11 @@
 package ch.colabproject.colab.tests.rest.document;
 
-import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.ExternalDocLink;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
+import ch.colabproject.colab.tests.tests.ColabFactory;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
@@ -103,40 +101,22 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
     private void helper(Access resourceSpace, Set<ResourceState> resourceState,
             Set<Access> accessToResource) {
         // creation of the context : project, 2 card types, card, sub card
-        Long projectId = client.projectRestEndpoint.createProject(new Project());
-        Project project = client.projectRestEndpoint.getProject(projectId);
+        Project project = ColabFactory.createProject(client, "testResource");
+        Long projectId = project.getId();
 
-        Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());
-        Long rootCardId = rootCard.getId();
+        Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
 
-        List<CardContent> rootCardContents = client.cardRestEndpoint
-                .getContentVariantsOfCard(rootCardId);
-        Long rootCardContentId = rootCardContents.get(0).getId();
+        Long cardTypeId = ColabFactory.createCardType(client, projectId).getId();
 
-        CardType cardType = new CardType();
-        cardType.setProjectId(projectId);
-        Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardType);
+        Long cardId = ColabFactory.createNewCard(client, rootCardContentId, cardTypeId).getId();
 
-        Card card = client.cardRestEndpoint.createNewCard(rootCardContentId, cardTypeId);
-        Long cardId = card.getId();
+        Long cardContentId = client.cardRestEndpoint.getContentVariantsOfCard(cardId).get(0).getId();
 
-        List<CardContent> cardContents = client.cardRestEndpoint.getContentVariantsOfCard(cardId);
-        Assertions.assertNotNull(cardContents);
-        Assertions.assertEquals(1, cardContents.size());
-        Assertions.assertNotNull(cardContents.get(0));
-        Long cardContentId = cardContents.get(0).getId();
+        Long subCardTypeId = ColabFactory.createCardType(client, projectId).getId();
 
-        CardType subCardType = new CardType();
-        subCardType.setProjectId(projectId);
+        Long subCardId = ColabFactory.createNewCard(client, cardContentId, subCardTypeId).getId();
 
-        Long subCardTypeId = client.cardTypeRestEndpoint.createCardType(subCardType);
-
-        Card subCard = client.cardRestEndpoint.createNewCard(cardContentId, subCardTypeId);
-        Long subCardId = subCard.getId();
-
-        CardContent subCardContent = client.cardRestEndpoint.getContentVariantsOfCard(subCardId)
-                .get(0);
-        Long subCardContentId = subCardContent.getId();
+        Long subCardContentId  = client.cardRestEndpoint.getContentVariantsOfCard(subCardId).get(0).getId();
 
         // creation of a resource
 
@@ -331,4 +311,5 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
             Assertions.assertEquals(0, persistedSubCardContentResources.size());
         }
     }
+
 }

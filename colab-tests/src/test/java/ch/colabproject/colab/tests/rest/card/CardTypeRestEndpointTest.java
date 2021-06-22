@@ -9,7 +9,6 @@ package ch.colabproject.colab.tests.rest.card;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
-import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
 import ch.colabproject.colab.api.model.project.Project;
@@ -40,7 +39,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testCreateCardType() {
-        Long projectId = client.projectRestEndpoint.createProject(new Project());
+        Long projectId = ColabFactory.createProject(client, "testCreateCardType").getId();
         CardType cardType = ColabFactory.createCardType(client, projectId);
 
         Assertions.assertNotNull(cardType);
@@ -109,9 +108,9 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Long parentId = ColabFactory.getRootContent(client, projectOne).getId();
 
         // create a card based on a global type
-        Card card = client.cardRestEndpoint.createNewCard(parentId, globalType.getId());
+        ColabFactory.createNewCard(client, parentId, globalType.getId());
 
-        // assert the proejct now contains a CardTypeRef to the global type
+        // assert the project now contains a CardTypeRef to the global type
         types = client.projectRestEndpoint.getCardTypesOfProject(projectOne.getId());
         // One concrete type
         List<CardType> concrete = TestHelper.filterAndAssert(types, 1, CardType.class);
@@ -133,9 +132,9 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         parentId = ColabFactory.getRootContent(client, projectTwo).getId();
 
         // create a card based on projectOne type
-        card = client.cardRestEndpoint.createNewCard(parentId, projectOneRef.getId());
+        ColabFactory.createNewCard(client, parentId, projectOneRef.getId());
 
-        // assert the proejct now contains a CardTypeRef to the project one type
+        // assert the project now contains a CardTypeRef to the project one type
         types = client.projectRestEndpoint.getCardTypesOfProject(projectTwo.getId());
         // One concrete type
         concrete = TestHelper.filterAndAssert(types, 1, CardType.class);
@@ -214,7 +213,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
         // create a card based on the type
         Long projectOneRootContentId = ColabFactory.getRootContent(client, projectOne).getId();
-        client.cardRestEndpoint.createNewCard(projectOneRootContentId, projectOneType.getId());
+        ColabFactory.createNewCard(client, projectOneRootContentId, projectOneType.getId());
 
         // consume websocket message
         TestHelper.waitForMessagesAndAssert(wsClient, 1, 5, WsUpdateMessage.class).get(0);
@@ -258,7 +257,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
         // goulash create a card in projectTwo based on the projectOne type
         Long projectTwoRootContentId = ColabFactory.getRootContent(client, projectTwo).getId();
-        client.cardRestEndpoint.createNewCard(projectTwoRootContentId, projectOneType.getId());
+        ColabFactory.createNewCard(client, projectTwoRootContentId, projectOneType.getId());
         // consume websocket messages (overview update; project 1 update; project 2 update)
         TestHelper.waitForMessagesAndAssert(wsClient, 3, 5, WsUpdateMessage.class).get(0);
         // consume websocket messages (overview update; project 2 update)
@@ -294,7 +293,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testUpdateCardType() {
-        Long projectId = client.projectRestEndpoint.createProject(new Project());
+        Long projectId = ColabFactory.createProject(client, "testUpdateCardType").getId();
 
         // String uniqueId = String.valueOf(new Date().getTime() + ((long)(Math.random()
         // * 1000)));
@@ -326,24 +325,27 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testGetAllCardTypes() {
-        Long projectId = client.projectRestEndpoint.createProject(new Project());
+        Long projectId = ColabFactory.createProject(client, "testGetAllCardTypes").getId();
         int initialSize = client.cardTypeRestEndpoint.getAllCardTypes().size();
 
         CardType cardType1 = ColabFactory.createCardType(client, projectId);
         cardType1.setTitle("Game design " + ((int) (Math.random() * 1000)));
         client.cardTypeRestEndpoint.updateCardType(cardType1);
 
+        List<CardType> cardTypes = client.cardTypeRestEndpoint.getAllCardTypes();
+        Assertions.assertEquals(initialSize + 1, cardTypes.size());
+
         CardType cardType2 = ColabFactory.createCardType(client, projectId);
         cardType2.setTitle("Game rules " + ((int) (Math.random() * 1000)));
         client.cardTypeRestEndpoint.updateCardType(cardType2);
 
-        List<CardType> cardTypes = client.cardTypeRestEndpoint.getAllCardTypes();
+        cardTypes = client.cardTypeRestEndpoint.getAllCardTypes();
         Assertions.assertEquals(initialSize + 2, cardTypes.size());
     }
 
     @Test
     public void testDeleteCardType() {
-        Long projectId = client.projectRestEndpoint.createProject(new Project());
+        Long projectId = ColabFactory.createProject(client, "testDeleteCardType").getId();
 
         CardType cardType = ColabFactory.createCardType(client, projectId);
         Long cardTypeId = cardType.getId();
@@ -373,5 +375,11 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(cardTypesOfProject);
         Assertions.assertEquals(1, cardTypesOfProject.size());
         Assertions.assertEquals(cardTypeId, cardTypesOfProject.iterator().next().getId());
+
+        client.cardTypeRestEndpoint.deleteCardType(cardTypeId);
+
+        cardTypesOfProject = client.projectRestEndpoint.getCardTypesOfProject(projectId);
+        Assertions.assertNotNull(cardTypesOfProject);
+        Assertions.assertEquals(0, cardTypesOfProject.size());
     }
 }
