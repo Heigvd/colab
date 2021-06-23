@@ -490,7 +490,7 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L490">                        messages.forEach(message -&gt; {</span>
                             try {
 <span class="fc" id="L492">                                logger.debug(&quot;Send {} to {}&quot;, message, session.getId());</span>
-<span class="fc bfc" id="L493" title="All 2 branches covered.">                                if (session.isOpen()) {</span>
+<span class="pc bpc" id="L493" title="1 of 2 branches missed.">                                if (session.isOpen()) {</span>
 <span class="fc" id="L494">                                    session.getBasicRemote().sendText(message);</span>
                                 }
 <span class="nc" id="L496">                            } catch (IOException ex) {</span>

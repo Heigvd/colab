@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.microchanges.live;
 
 import ch.colabproject.colab.api.ejb.TransactionManager;
-import ch.colabproject.colab.api.ejb.WebsocketFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.microchanges.tools.CancelDebounce;
@@ -16,7 +15,6 @@ import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.document.BlockDao;
-import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import com.hazelcast.cluster.Member;
 import com.hazelcast.core.HazelcastInstance;
@@ -46,15 +44,15 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 @Lock(LockType.READ)
-<span class="nc" id="L49">public class LiveManager implements Serializable {</span>
+<span class="nc" id="L47">public class LiveManager implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
     /** logger */
-<span class="nc" id="L54">    private static final Logger logger = LoggerFactory.getLogger(LiveManager.class);</span>
+<span class="nc" id="L52">    private static final Logger logger = LoggerFactory.getLogger(LiveManager.class);</span>
 
     /** delayed process call */
-<span class="nc" id="L57">    private final Map&lt;Long, Future&lt;Void&gt;&gt; debounces = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L55">    private final Map&lt;Long, Future&lt;Void&gt;&gt; debounces = new HashMap&lt;&gt;();</span>
 
     /** Shared cache of microchanges */
     @Inject
@@ -64,18 +62,13 @@ import org.slf4j.LoggerFactory;
     @Inject
     private BlockDao blockDao;
 
-    /** user DAO */
-    @Inject
-    private UserDao userDao;
-
-    /** Websocket Facade */
-    @Inject
-    private WebsocketFacade websocketFacade;
-
     /** Hazelcast instance. */
     @Inject
     private HazelcastInstance hzInstance;
 
+    /**
+     * To register changes as updated object
+     */
     @Inject
     private TransactionManager transactionManager;
 
@@ -87,7 +80,7 @@ import org.slf4j.LoggerFactory;
      * @return the lock
      */
     private FencedLock getLock(Long id) {
-<span class="nc" id="L90">        return hzInstance.getCPSubsystem().getLock(&quot;Block&quot; + id);</span>
+<span class="nc" id="L83">        return hzInstance.getCPSubsystem().getLock(&quot;Block&quot; + id);</span>
     }
 
     /**
@@ -96,9 +89,9 @@ import org.slf4j.LoggerFactory;
      * @param id id of the block to lock
      */
     private void lock(Long id) {
-<span class="nc" id="L99">        logger.trace(&quot;Lock block #{}&quot;, id);</span>
-<span class="nc" id="L100">        getLock(id).lock();</span>
-<span class="nc" id="L101">    }</span>
+<span class="nc" id="L92">        logger.trace(&quot;Lock block #{}&quot;, id);</span>
+<span class="nc" id="L93">        getLock(id).lock();</span>
+<span class="nc" id="L94">    }</span>
 
     /**
      * Unlock the block
@@ -106,9 +99,9 @@ import org.slf4j.LoggerFactory;
      * @param id id of the block to unlock
      */
     private void unlock(Long id) {
-<span class="nc" id="L109">        logger.trace(&quot;Unlock block #{}&quot;, id);</span>
-<span class="nc" id="L110">        getLock(id).unlock();</span>
-<span class="nc" id="L111">    }</span>
+<span class="nc" id="L102">        logger.trace(&quot;Unlock block #{}&quot;, id);</span>
+<span class="nc" id="L103">        getLock(id).unlock();</span>
+<span class="nc" id="L104">    }</span>
 
     /**
      * Get pendings updates for the given block
@@ -118,31 +111,31 @@ import org.slf4j.LoggerFactory;
      * @return LiveUpdate object
      */
     private LiveUpdates get(Long id) {
-<span class="nc" id="L121">        logger.debug(&quot;Get LiveUpdates for block #{}&quot;, id);</span>
+<span class="nc" id="L114">        logger.debug(&quot;Get LiveUpdates for block #{}&quot;, id);</span>
         try {
-<span class="nc" id="L123">            this.lock(id);</span>
-<span class="nc" id="L124">            LiveUpdates get = cache.get(id);</span>
-<span class="nc bnc" id="L125" title="All 2 branches missed.">            if (get != null) {</span>
-<span class="nc" id="L126">                logger.trace(&quot;Get existing {}&quot;, get);</span>
-<span class="nc" id="L127">                return get;</span>
+<span class="nc" id="L116">            this.lock(id);</span>
+<span class="nc" id="L117">            LiveUpdates get = cache.get(id);</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (get != null) {</span>
+<span class="nc" id="L119">                logger.trace(&quot;Get existing {}&quot;, get);</span>
+<span class="nc" id="L120">                return get;</span>
             } else {
-<span class="nc" id="L129">                LiveUpdates l = new LiveUpdates();</span>
+<span class="nc" id="L122">                LiveUpdates l = new LiveUpdates();</span>
 
-<span class="nc" id="L131">                Block block = blockDao.findBlock(id);</span>
-<span class="nc bnc" id="L132" title="All 2 branches missed.">                if (block instanceof TextDataBlock) {</span>
-<span class="nc" id="L133">                    TextDataBlock txtBlock = (TextDataBlock) block;</span>
-<span class="nc" id="L134">                    l.setContent(txtBlock.getTextData());</span>
+<span class="nc" id="L124">                Block block = blockDao.findBlock(id);</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">                if (block instanceof TextDataBlock) {</span>
+<span class="nc" id="L126">                    TextDataBlock txtBlock = (TextDataBlock) block;</span>
+<span class="nc" id="L127">                    l.setContent(txtBlock.getTextData());</span>
 
                     //l.setRevision(txtBlock.getRevision());
-<span class="nc" id="L137">                    l.setTargetClass(block.getJsonDiscriminator());</span>
-<span class="nc" id="L138">                    l.setTargetId(block.getId());</span>
+<span class="nc" id="L130">                    l.setTargetClass(block.getJsonDiscriminator());</span>
+<span class="nc" id="L131">                    l.setTargetId(block.getId());</span>
                 }
 
-<span class="nc" id="L141">                logger.trace(&quot;new empty LiveUpdates  {}&quot;, l);</span>
-<span class="nc" id="L142">                return l;</span>
+<span class="nc" id="L134">                logger.trace(&quot;new empty LiveUpdates  {}&quot;, l);</span>
+<span class="nc" id="L135">                return l;</span>
             }
         } finally {
-<span class="nc" id="L145">            this.unlock(id);</span>
+<span class="nc" id="L138">            this.unlock(id);</span>
         }
     }
 
@@ -154,33 +147,33 @@ import org.slf4j.LoggerFactory;
      * @param patch the patch to apply
      */
     public void patchBlock(Long id, Change patch) {
-<span class="nc" id="L157">        logger.debug(&quot;Patch block #{} with {}&quot;, id, patch);</span>
-<span class="nc" id="L158">        Block block = blockDao.findBlock(id);</span>
-<span class="nc bnc" id="L159" title="All 2 branches missed.">        if (block != null) {</span>
+<span class="nc" id="L150">        logger.debug(&quot;Patch block #{} with {}&quot;, id, patch);</span>
+<span class="nc" id="L151">        Block block = blockDao.findBlock(id);</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        if (block != null) {</span>
             try {
-<span class="nc" id="L161">                this.lock(id);</span>
-<span class="nc" id="L162">                LiveUpdates get = get(id);</span>
-<span class="nc" id="L163">                List&lt;Change&gt; changes = get.getPendingChanges();</span>
+<span class="nc" id="L154">                this.lock(id);</span>
+<span class="nc" id="L155">                LiveUpdates get = get(id);</span>
+<span class="nc" id="L156">                List&lt;Change&gt; changes = get.getPendingChanges();</span>
 
-<span class="nc" id="L165">                String basedOn = patch.getBasedOn();</span>
+<span class="nc" id="L158">                String basedOn = patch.getBasedOn();</span>
 
-<span class="nc" id="L167">                boolean parentExists = changes.stream().filter(change -&gt; change.getRevision().equals(basedOn)).findFirst().isPresent();</span>
-<span class="nc bnc" id="L168" title="All 2 branches missed.">                if (!parentExists) {</span>
-<span class="nc" id="L169">                    patch.setBasedOn(&quot;0&quot;);</span>
+<span class="nc" id="L160">                boolean parentExists = changes.stream().filter(change -&gt; change.getRevision().equals(basedOn)).findFirst().isPresent();</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">                if (!parentExists) {</span>
+<span class="nc" id="L162">                    patch.setBasedOn(&quot;0&quot;);</span>
                 }
-<span class="nc" id="L171">                Project project = block.getProject();</span>
+<span class="nc" id="L164">                Project project = block.getProject();</span>
 
-<span class="nc bnc" id="L173" title="All 2 branches missed.">                if (project != null) {</span>
-<span class="nc" id="L174">                    patch.setProjectId(project.getId());</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">                if (project != null) {</span>
+<span class="nc" id="L167">                    patch.setProjectId(project.getId());</span>
                 } else {
-<span class="nc" id="L176">                    throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L169">                    throw HttpErrorMessage.relatedObjectNotFoundError();</span>
                 }
 
-<span class="nc" id="L179">                changes.add(patch);</span>
-<span class="nc" id="L180">                cache.put(id, get);</span>
-<span class="nc" id="L181">                this.scheduleSaveMicroChanges(id);</span>
+<span class="nc" id="L172">                changes.add(patch);</span>
+<span class="nc" id="L173">                cache.put(id, get);</span>
+<span class="nc" id="L174">                this.scheduleSaveMicroChanges(id);</span>
 
-<span class="nc" id="L183">                transactionManager.registerUpdate(patch);</span>
+<span class="nc" id="L176">                transactionManager.registerUpdate(patch);</span>
 //                WsUpdateChangeMessage message = WsUpdateChangeMessage.build(List.of(patch));
 
 //                try {
@@ -190,10 +183,10 @@ import org.slf4j.LoggerFactory;
 //                    logger.error(&quot;Live update error: precompute failed&quot;);
 //                }
             } finally {
-<span class="nc" id="L193">                this.unlock(id);</span>
+<span class="nc" id="L186">                this.unlock(id);</span>
             }
         }
-<span class="nc" id="L196">    }</span>
+<span class="nc" id="L189">    }</span>
 
     /**
      * Get all pending changes for the given block
@@ -203,11 +196,11 @@ import org.slf4j.LoggerFactory;
      * @return list of changes
      */
     public List&lt;Change&gt; getPendingChanges(Long id) {
-<span class="nc" id="L206">        LiveUpdates get = cache.get(id);</span>
-<span class="nc bnc" id="L207" title="All 2 branches missed.">        if (get != null) {</span>
-<span class="nc" id="L208">            return get.getPendingChanges();</span>
+<span class="nc" id="L199">        LiveUpdates get = cache.get(id);</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">        if (get != null) {</span>
+<span class="nc" id="L201">            return get.getPendingChanges();</span>
         } else {
-<span class="nc" id="L210">            return new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L203">            return new ArrayList&lt;&gt;();</span>
         }
     }
 
@@ -218,31 +211,31 @@ import org.slf4j.LoggerFactory;
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void process(Long blockId) {
-<span class="nc" id="L221">        logger.debug(&quot;Process changes for #{}&quot;, blockId);</span>
+<span class="nc" id="L214">        logger.debug(&quot;Process changes for #{}&quot;, blockId);</span>
         try {
-<span class="nc" id="L223">            this.lock(blockId);</span>
-<span class="nc" id="L224">            Block block = blockDao.findBlock(blockId);</span>
-<span class="nc bnc" id="L225" title="All 2 branches missed.">            if (block instanceof TextDataBlock) {</span>
-<span class="nc" id="L226">                TextDataBlock txtBlock = (TextDataBlock) block;</span>
-<span class="nc" id="L227">                LiveUpdates get = this.cache.get(blockId);</span>
-<span class="nc bnc" id="L228" title="All 2 branches missed.">                if (get != null) {</span>
+<span class="nc" id="L216">            this.lock(blockId);</span>
+<span class="nc" id="L217">            Block block = blockDao.findBlock(blockId);</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">            if (block instanceof TextDataBlock) {</span>
+<span class="nc" id="L219">                TextDataBlock txtBlock = (TextDataBlock) block;</span>
+<span class="nc" id="L220">                LiveUpdates get = this.cache.get(blockId);</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">                if (get != null) {</span>
                     try {
-<span class="nc" id="L230">                        String newValue = get.process(false);</span>
-<span class="nc" id="L231">                        txtBlock.setTextData(newValue);</span>
-<span class="nc" id="L232">                        blockDao.updateBlock(block);</span>
-<span class="nc" id="L233">                        this.deletePendingChangesAndPropagate(blockId);</span>
-<span class="nc" id="L234">                    } catch (RuntimeException ex) {</span>
-<span class="nc" id="L235">                        logger.error(&quot;Process failed&quot;, ex);</span>
-<span class="nc" id="L236">                        throw ex;</span>
-<span class="nc" id="L237">                    } catch (ColabMergeException ex) {</span>
-<span class="nc" id="L238">                        logger.error(&quot;Fails to save block&quot;, ex);</span>
-<span class="nc" id="L239">                    }</span>
+<span class="nc" id="L223">                        String newValue = get.process(false);</span>
+<span class="nc" id="L224">                        txtBlock.setTextData(newValue);</span>
+<span class="nc" id="L225">                        blockDao.updateBlock(block);</span>
+<span class="nc" id="L226">                        this.deletePendingChangesAndPropagate(blockId);</span>
+<span class="nc" id="L227">                    } catch (RuntimeException ex) {</span>
+<span class="nc" id="L228">                        logger.error(&quot;Process failed&quot;, ex);</span>
+<span class="nc" id="L229">                        throw ex;</span>
+<span class="nc" id="L230">                    } catch (ColabMergeException ex) {</span>
+<span class="nc" id="L231">                        logger.error(&quot;Fails to save block&quot;, ex);</span>
+<span class="nc" id="L232">                    }</span>
                 }
             }
         } finally {
-<span class="nc" id="L243">            this.unlock(blockId);</span>
+<span class="nc" id="L236">            this.unlock(blockId);</span>
         }
-<span class="nc" id="L245">    }</span>
+<span class="nc" id="L238">    }</span>
 
     /**
      * Clear pending changes
@@ -250,13 +243,13 @@ import org.slf4j.LoggerFactory;
      * @param id id of the block
      */
     public void deletePendingChangesAndPropagate(Long id) {
-<span class="nc" id="L253">        logger.debug(&quot;Delete pending changes&quot;);</span>
-<span class="nc" id="L254">        Block block = blockDao.findBlock(id);</span>
-<span class="nc bnc" id="L255" title="All 2 branches missed.">        if (block != null) {</span>
-<span class="nc" id="L256">            List&lt;Change&gt; changes = getPendingChanges(id);</span>
-<span class="nc" id="L257">            cache.remove(id);</span>
+<span class="nc" id="L246">        logger.debug(&quot;Delete pending changes&quot;);</span>
+<span class="nc" id="L247">        Block block = blockDao.findBlock(id);</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">        if (block != null) {</span>
+<span class="nc" id="L249">            List&lt;Change&gt; changes = getPendingChanges(id);</span>
+<span class="nc" id="L250">            cache.remove(id);</span>
 
-<span class="nc" id="L259">            transactionManager.registerDeletion(changes);</span>
+<span class="nc" id="L252">            transactionManager.registerDeletion(changes);</span>
 //            WsDeleteChangeMessage message = WsDeleteChangeMessage.build(changes);
 //
 //            try {
@@ -266,7 +259,7 @@ import org.slf4j.LoggerFactory;
 //                logger.error(&quot;Live update error: precompute failed&quot;);
 //            }
         }
-<span class="nc" id="L269">    }</span>
+<span class="nc" id="L262">    }</span>
 
     /**
      * Cancel any debounce call related to the given blockId
@@ -276,12 +269,12 @@ import org.slf4j.LoggerFactory;
      * @return true if there was something to cancel
      */
     public boolean cancelDebounce(Long blockId) {
-<span class="nc" id="L279">        logger.debug(&quot;Cancel debounce #{}&quot;, blockId);</span>
-<span class="nc" id="L280">        Future&lt;Void&gt; remove = this.debounces.remove(blockId);</span>
-<span class="nc bnc" id="L281" title="All 2 branches missed.">        if (remove != null) {</span>
-<span class="nc" id="L282">            return remove.cancel(true);</span>
+<span class="nc" id="L272">        logger.debug(&quot;Cancel debounce #{}&quot;, blockId);</span>
+<span class="nc" id="L273">        Future&lt;Void&gt; remove = this.debounces.remove(blockId);</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">        if (remove != null) {</span>
+<span class="nc" id="L275">            return remove.cancel(true);</span>
         }
-<span class="nc" id="L284">        return false;</span>
+<span class="nc" id="L277">        return false;</span>
     }
 
     /**
@@ -292,23 +285,23 @@ import org.slf4j.LoggerFactory;
      * @param blockId id of the block
      */
     public void scheduleSaveMicroChanges(Long blockId) {
-<span class="nc" id="L295">        IExecutorService executorService = hzInstance.getExecutorService(&quot;COLAB_LIVE&quot;);</span>
-<span class="nc" id="L296">        Map&lt;Member, Future&lt;Boolean&gt;&gt; cancelCalls = executorService.submitToAllMembers(new CancelDebounce(blockId));</span>
+<span class="nc" id="L288">        IExecutorService executorService = hzInstance.getExecutorService(&quot;COLAB_LIVE&quot;);</span>
+<span class="nc" id="L289">        Map&lt;Member, Future&lt;Boolean&gt;&gt; cancelCalls = executorService.submitToAllMembers(new CancelDebounce(blockId));</span>
 
-<span class="nc" id="L298">        logger.debug(&quot;Schedule processing #{}&quot;, blockId);</span>
+<span class="nc" id="L291">        logger.debug(&quot;Schedule processing #{}&quot;, blockId);</span>
 
         // cancel all pending debounce calls
-<span class="nc" id="L301">        cancelCalls.values().forEach(cancelCall -&gt; {</span>
+<span class="nc" id="L294">        cancelCalls.values().forEach(cancelCall -&gt; {</span>
             try {
-<span class="nc" id="L303">                cancelCall.get();</span>
-<span class="nc" id="L304">            } catch (InterruptedException | ExecutionException ex) {</span>
-<span class="nc" id="L305">                logger.error(&quot;Fails to cancel&quot;, ex);</span>
-<span class="nc" id="L306">            }</span>
-<span class="nc" id="L307">        });</span>
+<span class="nc" id="L296">                cancelCall.get();</span>
+<span class="nc" id="L297">            } catch (InterruptedException | ExecutionException ex) {</span>
+<span class="nc" id="L298">                logger.error(&quot;Fails to cancel&quot;, ex);</span>
+<span class="nc" id="L299">            }</span>
+<span class="nc" id="L300">        });</span>
 
         // schedule a new one
-<span class="nc" id="L310">        Future&lt;Void&gt; call = executorService.submit(new Debouncer(blockId));</span>
-<span class="nc" id="L311">        this.debounces.put(blockId, call);</span>
-<span class="nc" id="L312">    }</span>
+<span class="nc" id="L303">        Future&lt;Void&gt; call = executorService.submit(new Debouncer(blockId));</span>
+<span class="nc" id="L304">        this.debounces.put(blockId, call);</span>
+<span class="nc" id="L305">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
