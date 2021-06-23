@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/21</span>
+                <span class='fraction'>0/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/8</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/20</span>
+                <span class='fraction'>0/23</span>
             </div>
         
             
@@ -121,7 +121,10 @@
 <a name='L62'></a><a href='#L62'>62</a>
 <a name='L63'></a><a href='#L63'>63</a>
 <a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -134,7 +137,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -145,11 +148,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -161,12 +159,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -198,40 +204,43 @@
 <span class="cstat-no" title="statement not covered" >import '@toast-ui/editor/dist/toastui-editor.css';</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >import { Editor } from '@toast-ui/react-editor';</span>
+<span class="cstat-no" title="statement not covered" >import logger from '../../../logger';</span>
 &nbsp;
 export interface MarkdownEditorProps {
   value: string;
   onChange: (value: string) =&gt; void;
 }
 &nbsp;
-export interface MarkdownEditorState {
-  value: string;
-}
-&nbsp;
-<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export class T</span></span>oastClsMarkdownEditor extends React.Component&lt;
-  MarkdownEditorProps,
-  MarkdownEditorState
-&gt; {
+/**
+ * Class Comp because FuncComp seems buggy when using a React.createRef
+ */
+<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >export class T</span></span>oastClsMarkdownEditor extends React.Component&lt;MarkdownEditorProps&gt; {
 <span class="cstat-no" title="statement not covered" >  editorRef = React.createRef&lt;Editor&gt;();</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >  state: MarkdownEditorState = { value: this.props.value };</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  onChange = <span class="fstat-no" title="function not covered" >(): void =</span>&gt; {</span>
     const editor = <span class="cstat-no" title="statement not covered" >this.editorRef.current;</span>
 <span class="cstat-no" title="statement not covered" >    if (editor != null) {</span>
       const value = <span class="cstat-no" title="statement not covered" >editor.getInstance().getMarkdown();</span>
-<span class="cstat-no" title="statement not covered" >      if (value !== this.state.value) {</span>
-<span class="cstat-no" title="statement not covered" >        this.props.onChange(value);</span>
-      }
+<span class="cstat-no" title="statement not covered" >      logger.info('Onchange MdValue: ', JSON.stringify(value));</span>
+<span class="cstat-no" title="statement not covered" >      this.props.onChange(value);</span>
     }
   };
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  componentDidUpdate = <span class="fstat-no" title="function not covered" >(): void =</span>&gt; {</span>
     const editor = <span class="cstat-no" title="statement not covered" >this.editorRef.current;</span>
 <span class="cstat-no" title="statement not covered" >    if (editor != null) {</span>
-<span class="cstat-no" title="statement not covered" >      if (this.state.value != this.props.value) {</span>
-<span class="cstat-no" title="statement not covered" >        this.setState(<span class="fstat-no" title="function not covered" >state </span>=&gt; (<span class="cstat-no" title="statement not covered" >{ ...state, value: this.props.value })</span>);</span>
+      const instance = <span class="cstat-no" title="statement not covered" >editor.getInstance();</span>
+      const currentValue = <span class="cstat-no" title="statement not covered" >instance.getMarkdown();</span>
+<span class="cstat-no" title="statement not covered" >      if (currentValue !== this.props.value) {</span>
+<span class="cstat-no" title="statement not covered" >        logger.info(</span>
+          'Set MarkdownValue old: ',
+          JSON.stringify(currentValue),
+          ' new ',
+          JSON.stringify(this.props.value),
+        );
 <span class="cstat-no" title="statement not covered" >        editor.getInstance().setMarkdown(this.props.value);</span>
+      } else {
+<span class="cstat-no" title="statement not covered" >        logger.info('MdEditor: skip update same value');</span>
       }
     }
   };
@@ -242,7 +251,7 @@ export interface MarkdownEditorState {
         usageStatistics={false}
         initialEditType="wysiwyg"
         previewStyle="vertical"
-        initialValue={this.state.value}
+        initialValue={this.props.value}
         onChange={this.onChange}
         ref={this.editorRef}
       /&gt;
@@ -256,7 +265,7 @@ export interface MarkdownEditorState {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jun 11 2021 08:18:27 GMT+0000 (Coordinated Universal Time)
+                at Wed Jun 23 2021 07:41:15 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

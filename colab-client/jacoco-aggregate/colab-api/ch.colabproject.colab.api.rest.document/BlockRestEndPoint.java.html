@@ -8,9 +8,13 @@ package ch.colabproject.colab.api.rest.document;
 
 import ch.colabproject.colab.api.ejb.BlockFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.microchanges.live.LiveManager;
+import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.persistence.document.BlockDao;
+import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -33,10 +37,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L36">public class BlockRestEndPoint {</span>
+<span class="nc" id="L40">public class BlockRestEndPoint {</span>
 
     /** logger */
-<span class="nc" id="L39">    private static final Logger logger = LoggerFactory.getLogger(BlockRestEndPoint.class);</span>
+<span class="nc" id="L43">    private static final Logger logger = LoggerFactory.getLogger(BlockRestEndPoint.class);</span>
 
     /**
      * The block persistence manager
@@ -50,6 +54,10 @@ import org.slf4j.LoggerFactory;
     @Inject
     private BlockFacade blockFacade;
 
+    /** Live changes manager */
+    @Inject
+    private LiveManager liveManager;
+
     /**
      * Get the block identified by the given id
      *
@@ -60,8 +68,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public Block getBlock(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L63">        logger.debug(&quot;get block #{}&quot;, id);</span>
-<span class="nc" id="L64">        return blockDao.findBlock(id);</span>
+<span class="nc" id="L71">        logger.debug(&quot;get block #{}&quot;, id);</span>
+<span class="nc" id="L72">        return blockDao.findBlock(id);</span>
     }
 
     /**
@@ -73,9 +81,46 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateBlock(Block block) throws ColabMergeException {
-<span class="nc" id="L76">        logger.debug(&quot;update block {}&quot;, block);</span>
-<span class="nc" id="L77">        blockDao.updateBlock(block);</span>
-<span class="nc" id="L78">    }</span>
+<span class="nc" id="L84">        logger.debug(&quot;update block {}&quot;, block);</span>
+<span class="nc" id="L85">        blockDao.updateBlock(block);</span>
+<span class="nc" id="L86">    }</span>
+
+    /**
+     * Get all pending changes for given block.
+     *
+     * @param id id of the block
+     *
+     * @return list of changes.
+     */
+    @GET
+    @Path(&quot;/{id}/changes&quot;)
+    public List&lt;Change&gt; getChanges(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L98">        return liveManager.getPendingChanges(id);</span>
+    }
+
+    /**
+     * Patch a block with a change
+     *
+     * @param id     id of the block
+     * @param change change
+     */
+    @PUT
+    @Path(&quot;/{id}&quot;)
+    public void patchBlock(@PathParam(&quot;id&quot;) Long id, Change change) {
+<span class="nc" id="L110">        liveManager.patchBlock(id, change);</span>
+<span class="nc" id="L111">    }</span>
+
+    /**
+     * Patch a block with a change
+     *
+     * @param id     id of the block
+     */
+    @PUT
+    @Path(&quot;/{id}/dropChanges&quot;)
+    @AdminResource
+    public void deletePendingChanges(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L122">        liveManager.deletePendingChangesAndPropagate(id);</span>
+<span class="nc" id="L123">    }</span>
 
     /**
      * Persist the block
@@ -86,8 +131,8 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createBlock(Block block) {
-<span class="nc" id="L89">        logger.debug(&quot;create block {}&quot;, block);</span>
-<span class="nc" id="L90">        return blockFacade.persistBlock(block).getId();</span>
+<span class="nc" id="L134">        logger.debug(&quot;create block {}&quot;, block);</span>
+<span class="nc" id="L135">        return blockFacade.persistBlock(block).getId();</span>
     }
 
     /**
@@ -100,8 +145,8 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;newTextData/{documentId}&quot;)
     public Block createNewTextDataBlock(@PathParam(&quot;documentId&quot;) Long documentId) {
-<span class="nc" id="L103">        logger.debug(&quot;create new text data block for document #{}&quot;, documentId);</span>
-<span class="nc" id="L104">        return blockFacade.createNewTextDataBlock(documentId);</span>
+<span class="nc" id="L148">        logger.debug(&quot;create new text data block for document #{}&quot;, documentId);</span>
+<span class="nc" id="L149">        return blockFacade.createNewTextDataBlock(documentId);</span>
     }
 
     /**
@@ -112,9 +157,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteBlock(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L115">        logger.debug(&quot;delete block #{}&quot;, id);</span>
-<span class="nc" id="L116">        blockDao.deleteBlock(id);</span>
-<span class="nc" id="L117">    }</span>
+<span class="nc" id="L160">        logger.debug(&quot;delete block #{}&quot;, id);</span>
+<span class="nc" id="L161">        blockDao.deleteBlock(id);</span>
+<span class="nc" id="L162">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

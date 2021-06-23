@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/100</span>
+                <span class='fraction'>0/111</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/25</span>
+                <span class='fraction'>0/30</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/98</span>
+                <span class='fraction'>0/105</span>
             </div>
         
             
@@ -280,7 +280,14 @@
 <a name='L221'></a><a href='#L221'>221</a>
 <a name='L222'></a><a href='#L222'>222</a>
 <a name='L223'></a><a href='#L223'>223</a>
-<a name='L224'></a><a href='#L224'>224</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L224'></a><a href='#L224'>224</a>
+<a name='L225'></a><a href='#L225'>225</a>
+<a name='L226'></a><a href='#L226'>226</a>
+<a name='L227'></a><a href='#L227'>227</a>
+<a name='L228'></a><a href='#L228'>228</a>
+<a name='L229'></a><a href='#L229'>229</a>
+<a name='L230'></a><a href='#L230'>230</a>
+<a name='L231'></a><a href='#L231'>231</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -289,6 +296,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -345,10 +353,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -385,6 +389,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -412,16 +417,27 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -499,8 +515,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
@@ -509,9 +523,10 @@
  *
  * Licensed under the MIT License
  */
-<span class="cstat-no" title="statement not covered" >import { createSlice, PayloadAction } from '@reduxjs/toolkit';</span>
+<span class="cstat-no" title="statement not covered" >import { createSlice } from '@reduxjs/toolkit';</span>
 import { Card, CardContent } from 'colab-rest-client';
 <span class="cstat-no" title="statement not covered" >import * as API from '../API/api';</span>
+<span class="cstat-no" title="statement not covered" >import { processMessage } from '../ws/wsThunkActions';</span>
 &nbsp;
 export interface CardDetail {
   card: Card | null;
@@ -567,83 +582,91 @@ const getOrCreateCardContentState = <span class="cstat-no" title="statement not 
   }
 };
 &nbsp;
+const updateCard = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(s</span>tate: CardState, card: Card) =&gt; {</span>
+  const cardId = <span class="cstat-no" title="statement not covered" >card.id;</span>
+<span class="cstat-no" title="statement not covered" >  if (cardId != null) {</span>
+    const cardState = <span class="cstat-no" title="statement not covered" >getOrCreateCardState(state, cardId);</span>
+<span class="cstat-no" title="statement not covered" >    cardState.card = card;</span>
+&nbsp;
+    const parentId = <span class="cstat-no" title="statement not covered" >card.parentId;</span>
+<span class="cstat-no" title="statement not covered" >    if (parentId != null) {</span>
+      // parent state is knonw, make sure the card is registered
+      const parentState = <span class="cstat-no" title="statement not covered" >state.contents[parentId];</span>
+<span class="cstat-no" title="statement not covered" >      if (parentState != null) {</span>
+<span class="cstat-no" title="statement not covered" >        if (parentState.subs != null &amp;&amp; parentState.subs.indexOf(cardId) &lt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >          parentState.subs.push(cardId);</span>
+        }
+      }
+    }
+  }
+};
+&nbsp;
+const removeCard = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(s</span>tate: CardState, cardId: number) =&gt; {</span>
+  const cardState = <span class="cstat-no" title="statement not covered" >state.cards[cardId];</span>
+<span class="cstat-no" title="statement not covered" >  if (cardState) {</span>
+<span class="cstat-no" title="statement not covered" >    if (cardState.card) {</span>
+<span class="cstat-no" title="statement not covered" >      if (cardState.card.parentId) {</span>
+        const parentState = <span class="cstat-no" title="statement not covered" >state.contents[cardState.card.parentId];</span>
+<span class="cstat-no" title="statement not covered" >        if (parentState != null &amp;&amp; parentState.subs != null) {</span>
+          const index = <span class="cstat-no" title="statement not covered" >parentState.subs.indexOf(cardId);</span>
+<span class="cstat-no" title="statement not covered" >          if (index &gt;= 0) {</span>
+<span class="cstat-no" title="statement not covered" >            parentState.subs.splice(index, 1);</span>
+          }
+        }
+      }
+    }
+  }
+<span class="cstat-no" title="statement not covered" >  delete state.cards[cardId];</span>
+};
+&nbsp;
+const updateContent = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(s</span>tate: CardState, content: CardContent) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  if (content.id != null &amp;&amp; content.cardId != null) {</span>
+    const cardState = <span class="cstat-no" title="statement not covered" >state.cards[content.cardId];</span>
+&nbsp;
+    // do not create card detail
+<span class="cstat-no" title="statement not covered" >    if (cardState != null) {</span>
+<span class="cstat-no" title="statement not covered" >      if (cardState.contents != null) {</span>
+        const index = <span class="cstat-no" title="statement not covered" >cardState.contents.indexOf(content.id);</span>
+<span class="cstat-no" title="statement not covered" >        if (index &lt; 0) {</span>
+<span class="cstat-no" title="statement not covered" >          cardState.contents.push(content.id);</span>
+        }
+      }
+    }
+<span class="cstat-no" title="statement not covered" >    if (content.id) {</span>
+      const contentState = <span class="cstat-no" title="statement not covered" >getOrCreateCardContentState(state, content.id);</span>
+<span class="cstat-no" title="statement not covered" >      contentState.content = content;</span>
+    }
+  }
+};
+&nbsp;
+const removeContent = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(s</span>tate: CardState, contentId: number) =&gt; {</span>
+  const card = <span class="cstat-no" title="statement not covered" >findCardByContentId(contentId, state);</span>
+<span class="cstat-no" title="statement not covered" >  if (card != null &amp;&amp; card.id != null) {</span>
+    const cardState = <span class="cstat-no" title="statement not covered" >state.cards[card.id];</span>
+<span class="cstat-no" title="statement not covered" >    if (cardState != null) {</span>
+<span class="cstat-no" title="statement not covered" >      if (cardState.contents != null) {</span>
+        const index = <span class="cstat-no" title="statement not covered" >cardState.contents.indexOf(contentId);</span>
+<span class="cstat-no" title="statement not covered" >        if (index &gt;= 0) {</span>
+<span class="cstat-no" title="statement not covered" >          cardState.contents.splice(index, 1);</span>
+        }
+      }
+    }
+  }
+<span class="cstat-no" title="statement not covered" >  delete state.contents[contentId];</span>
+};
+&nbsp;
 const cardsSlice = <span class="cstat-no" title="statement not covered" >createSlice({</span>
   name: 'cards',
   initialState,
-  reducers: {
-    updateCard: <span class="fstat-no" title="function not covered" >(s</span>tate, action: PayloadAction&lt;Card&gt;) =&gt; {
-      const cardId = <span class="cstat-no" title="statement not covered" >action.payload.id;</span>
-<span class="cstat-no" title="statement not covered" >      if (cardId != null) {</span>
-        const cardState = <span class="cstat-no" title="statement not covered" >getOrCreateCardState(state, cardId);</span>
-<span class="cstat-no" title="statement not covered" >        cardState.card = action.payload;</span>
-&nbsp;
-        const parentId = <span class="cstat-no" title="statement not covered" >action.payload.parentId;</span>
-<span class="cstat-no" title="statement not covered" >        if (parentId != null) {</span>
-          // parent state is knonw, make sure the card is registered
-          const parentState = <span class="cstat-no" title="statement not covered" >state.contents[parentId];</span>
-<span class="cstat-no" title="statement not covered" >          if (parentState != null) {</span>
-<span class="cstat-no" title="statement not covered" >            if (parentState.subs != null &amp;&amp; parentState.subs.indexOf(cardId) &lt; 0) {</span>
-<span class="cstat-no" title="statement not covered" >              parentState.subs.push(cardId);</span>
-            }
-          }
-        }
-      }
-    },
-    removeCard: <span class="fstat-no" title="function not covered" >(s</span>tate, action: PayloadAction&lt;number&gt;) =&gt; {
-      const cardId = <span class="cstat-no" title="statement not covered" >action.payload;</span>
-      const cardState = <span class="cstat-no" title="statement not covered" >state.cards[cardId];</span>
-<span class="cstat-no" title="statement not covered" >      if (cardState) {</span>
-<span class="cstat-no" title="statement not covered" >        if (cardState.card) {</span>
-<span class="cstat-no" title="statement not covered" >          if (cardState.card.parentId) {</span>
-            const parentState = <span class="cstat-no" title="statement not covered" >state.contents[cardState.card.parentId];</span>
-<span class="cstat-no" title="statement not covered" >            if (parentState != null &amp;&amp; parentState.subs != null) {</span>
-              const index = <span class="cstat-no" title="statement not covered" >parentState.subs.indexOf(cardId);</span>
-<span class="cstat-no" title="statement not covered" >              if (index &gt;= 0) {</span>
-<span class="cstat-no" title="statement not covered" >                parentState.subs.splice(index, 1);</span>
-              }
-            }
-          }
-        }
-      }
-<span class="cstat-no" title="statement not covered" >      delete state.cards[cardId];</span>
-    },
-    updateContent: <span class="fstat-no" title="function not covered" >(s</span>tate, action: PayloadAction&lt;CardContent&gt;) =&gt; {
-<span class="cstat-no" title="statement not covered" >      if (action.payload.id != null &amp;&amp; action.payload.cardId != null) {</span>
-        const cardState = <span class="cstat-no" title="statement not covered" >state.cards[action.payload.cardId];</span>
-&nbsp;
-        // do not create card detail
-<span class="cstat-no" title="statement not covered" >        if (cardState != null) {</span>
-<span class="cstat-no" title="statement not covered" >          if (cardState.contents != null) {</span>
-            const index = <span class="cstat-no" title="statement not covered" >cardState.contents.indexOf(action.payload.id);</span>
-<span class="cstat-no" title="statement not covered" >            if (index &lt; 0) {</span>
-<span class="cstat-no" title="statement not covered" >              cardState.contents.push(action.payload.id);</span>
-            }
-          }
-        }
-<span class="cstat-no" title="statement not covered" >        if (action.payload.id) {</span>
-          const contentState = <span class="cstat-no" title="statement not covered" >getOrCreateCardContentState(state, action.payload.id);</span>
-<span class="cstat-no" title="statement not covered" >          contentState.content = action.payload;</span>
-        }
-      }
-    },
-    removeContent: <span class="fstat-no" title="function not covered" >(s</span>tate, action: PayloadAction&lt;number&gt;) =&gt; {
-      const card = <span class="cstat-no" title="statement not covered" >findCardByContentId(action.payload, state);</span>
-<span class="cstat-no" title="statement not covered" >      if (card != null &amp;&amp; card.id != null) {</span>
-        const cardState = <span class="cstat-no" title="statement not covered" >state.cards[card.id];</span>
-<span class="cstat-no" title="statement not covered" >        if (cardState != null) {</span>
-<span class="cstat-no" title="statement not covered" >          if (cardState.contents != null) {</span>
-            const index = <span class="cstat-no" title="statement not covered" >cardState.contents.indexOf(action.payload);</span>
-<span class="cstat-no" title="statement not covered" >            if (index &gt;= 0) {</span>
-<span class="cstat-no" title="statement not covered" >              cardState.contents.splice(index, 1);</span>
-            }
-          }
-        }
-      }
-<span class="cstat-no" title="statement not covered" >      delete state.contents[action.payload];</span>
-    },
-  },
+  reducers: {},
   extraReducers: <span class="fstat-no" title="function not covered" >builder </span>=&gt;
 <span class="cstat-no" title="statement not covered" >    builder</span>
+      .addCase(processMessage.fulfilled, <span class="fstat-no" title="function not covered" >(s</span>tate, action) =&gt; {
+<span class="cstat-no" title="statement not covered" >        action.payload.cards.updated.forEach(<span class="fstat-no" title="function not covered" >card </span>=&gt; <span class="cstat-no" title="statement not covered" >updateCard(state, card))</span>;</span>
+<span class="cstat-no" title="statement not covered" >        action.payload.blocks.deleted.forEach(<span class="fstat-no" title="function not covered" >entry </span>=&gt; <span class="cstat-no" title="statement not covered" >removeCard(state, entry.id))</span>;</span>
+<span class="cstat-no" title="statement not covered" >        action.payload.contents.updated.forEach(<span class="fstat-no" title="function not covered" >content </span>=&gt; <span class="cstat-no" title="statement not covered" >updateContent(state, content))</span>;</span>
+<span class="cstat-no" title="statement not covered" >        action.payload.contents.deleted.forEach(<span class="fstat-no" title="function not covered" >entry </span>=&gt; <span class="cstat-no" title="statement not covered" >removeContent(state, entry.id))</span>;</span>
+      })
       .addCase(API.initCards.fulfilled, <span class="fstat-no" title="function not covered" >(s</span>tate, action) =&gt; {
         const newCards = <span class="cstat-no" title="statement not covered" >action.payload.reduce&lt;CardState['cards']&gt;(<span class="fstat-no" title="function not covered" >(a</span>cc, current) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >          if (current.id) {</span>
@@ -723,8 +746,6 @@ const cardsSlice = <span class="cstat-no" title="statement not covered" >createS
       }),
 });
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >{ updateCard, removeCard, updateContent, removeContent } = c</span>ardsSlice.actions;
-&nbsp;
 <span class="cstat-no" title="statement not covered" >export default cardsSlice.reducer;</span>
 &nbsp;</pre></td></tr></table></pre>
 
@@ -733,7 +754,7 @@ export const <span class="cstat-no" title="statement not covered" >{ updateCard,
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jun 11 2021 08:18:27 GMT+0000 (Coordinated Universal Time)
+                at Wed Jun 23 2021 07:41:15 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

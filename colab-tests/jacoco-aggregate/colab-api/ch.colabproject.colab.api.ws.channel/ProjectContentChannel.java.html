@@ -77,16 +77,28 @@ import java.util.Objects;
     }
 
     /**
-     * get the channel dedicated to the given projectId.
+     * get the channel dedicated to the given project.
      *
-     * @param project the projectId
+     * @param project the project
      *
-     * @return the projectId very own channel
+     * @return the project very own channel
      */
     public static ProjectContentChannel build(Project project) {
-<span class="fc" id="L87">        ProjectContentChannel channel = new ProjectContentChannel();</span>
-<span class="fc" id="L88">        channel.setProjectId(project.getId());</span>
-<span class="fc" id="L89">        return channel;</span>
+<span class="fc" id="L87">        return build(project.getId());</span>
+    }
+
+
+    /**
+     * get the channel dedicated to the project having the given id.
+     *
+     * @param projectId id of the project
+     *
+     * @return the project very own channel
+     */
+    public static ProjectContentChannel build(Long projectId) {
+<span class="fc" id="L99">        ProjectContentChannel channel = new ProjectContentChannel();</span>
+<span class="fc" id="L100">        channel.setProjectId(projectId);</span>
+<span class="fc" id="L101">        return channel;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

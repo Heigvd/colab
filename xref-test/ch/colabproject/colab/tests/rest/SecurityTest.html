@@ -92,70 +92,73 @@
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -&gt; {
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>              client.websocketRestEndpoint.getExistingChannels();
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>          });
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>      }
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>  
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">     * Analyze {@link #assertAccessDenied() } method source-code and check all resource are tested.</em>
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>  <em class="jxr_javadoccomment">     * @throws NoSuchMethodException not expected</em>
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">     * @throws IOException           not expected</em>
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L95" href="#L95">95</a>      @Test
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> assertAllExistingAdminResourceAreTested() <strong class="jxr_keyword">throws</strong> NoSuchMethodException, IOException {
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>          <em class="jxr_comment">// First, parse this file to analyse sourceCode</em>
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>          Path file = Path.of(<span class="jxr_string">"src/test/java/ch/colabproject/colab/tests/rest/SecurityTest.java"</span>);
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>          CompilationUnit compilationUnit = StaticJavaParser.parse(file);
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>         Optional&lt;ClassOrInterfaceDeclaration&gt; classByName = compilationUnit
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>             .getClassByName(<span class="jxr_string">"SecurityTest"</span>);
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>         ClassOrInterfaceDeclaration get = classByName.get();
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>         List&lt;MethodDeclaration&gt; methodsByName = get.getMethodsByName(<span class="jxr_string">"assertAccessDenied"</span>);
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>         BlockStmt body = methodsByName.get(0).getBody().get();
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>         <em class="jxr_comment">// and keep only assertAccessDenied source code</em>
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>         String sourceCode = body.toString();
-<a class="jxr_linenumber" name="L107" href="#L107">107</a> 
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>         <em class="jxr_comment">// Then, use client generator to find all annotated class/methods</em>
-<a class="jxr_linenumber" name="L109" href="#L109">109</a>         List&lt;String&gt; missings = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -&gt; {
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>              client.blockRestEndPoint.deletePendingChanges(0L);
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          });
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      }
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>  
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">     * Analyze {@link #assertAccessDenied() } method source-code and check all resource are tested.</em>
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>  <em class="jxr_javadoccomment">     * @throws NoSuchMethodException not expected</em>
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>  <em class="jxr_javadoccomment">     * @throws IOException           not expected</em>
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>      @Test
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> assertAllExistingAdminResourceAreTested() <strong class="jxr_keyword">throws</strong> NoSuchMethodException, IOException {
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>         <em class="jxr_comment">// First, parse this file to analyse sourceCode</em>
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>         Path file = Path.of(<span class="jxr_string">"src/test/java/ch/colabproject/colab/tests/rest/SecurityTest.java"</span>);
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>         CompilationUnit compilationUnit = StaticJavaParser.parse(file);
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>         Optional&lt;ClassOrInterfaceDeclaration&gt; classByName = compilationUnit
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>             .getClassByName(<span class="jxr_string">"SecurityTest"</span>);
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         ClassOrInterfaceDeclaration get = classByName.get();
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>         List&lt;MethodDeclaration&gt; methodsByName = get.getMethodsByName(<span class="jxr_string">"assertAccessDenied"</span>);
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>         BlockStmt body = methodsByName.get(0).getBody().get();
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>         <em class="jxr_comment">// and keep only assertAccessDenied source code</em>
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>         String sourceCode = body.toString();
 <a class="jxr_linenumber" name="L110" href="#L110">110</a> 
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>         String[] pkgs = {<span class="jxr_string">"ch.colabproject.colab.api"</span>};
-<a class="jxr_linenumber" name="L112" href="#L112">112</a>         Generator generator = <strong class="jxr_keyword">new</strong> Generator(pkgs);
-<a class="jxr_linenumber" name="L113" href="#L113">113</a>         generator.processPackages();
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>         Set&lt;RestEndpoint&gt; restEndpoints = generator.getRestEndpoints();
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>         restEndpoints.forEach(controller -&gt; {
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>             <strong class="jxr_keyword">boolean</strong> isAdminResource = controller.isAdminResource();
-<a class="jxr_linenumber" name="L117" href="#L117">117</a> 
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>             String simpleClassName = controller.getSimpleClassName();
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>             String fieldName = simpleClassName.substring(0, 1).toLowerCase() + simpleClassName
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>                 .substring(1);
-<a class="jxr_linenumber" name="L121" href="#L121">121</a> 
-<a class="jxr_linenumber" name="L122" href="#L122">122</a>             controller.getRestMethods().forEach((RestMethod method) -&gt; {
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>                 <strong class="jxr_keyword">if</strong> (isAdminResource || method.isAdminResource()) {
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>                     String check = <span class="jxr_string">".*TestHelper.assertThrows&#92;&#92;(&#92;&#92;s*"</span>
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>                         + <span class="jxr_string">"HttpErrorMessage.MessageCode.ACCESS_DENIED, &#92;&#92;(&#92;&#92;) -&gt; "</span>
-<a class="jxr_linenumber" name="L126" href="#L126">126</a>                         + <span class="jxr_string">"&#92;&#92;{&#92;&#92;s*client."</span> + fieldName + <span class="jxr_string">"."</span>
-<a class="jxr_linenumber" name="L127" href="#L127">127</a>                         + method.getName() + <span class="jxr_string">"&#92;&#92;(.*?&#92;&#92;);&#92;&#92;s*&#92;&#92;}&#92;&#92;);.*"</span>;
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>                     Pattern regex = Pattern.compile(check, Pattern.DOTALL);
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>                     <strong class="jxr_keyword">if</strong> (!regex.matcher(sourceCode).matches()) {
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>                         logger.error(<span class="jxr_string">"\&quot;{}\&quot; not found in \&quot;{}\&quot;"</span>, check, sourceCode);
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>                         missings.add(<span class="jxr_string">"Missing check for client."</span> + fieldName + <span class="jxr_string">"."</span> + method
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>                             .getName());
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>                     }
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>                 }
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>             });
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>         });
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>         Assertions.assertEquals(0, missings.size(), missings.toString());
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>     }
-<a class="jxr_linenumber" name="L139" href="#L139">139</a> 
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L141" href="#L141">141</a> <em class="jxr_javadoccomment">     * Make sure non-admin user cannot access admin resources</em>
-<a class="jxr_linenumber" name="L142" href="#L142">142</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>     @Test
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> assertAdminResourceAccesIsDeniedToStandardUsers() {
-<a class="jxr_linenumber" name="L145" href="#L145">145</a>         <a name="TestUser" href="../../../../../ch/colabproject/colab/tests/tests/TestUser.html#TestUser">TestUser</a> lambdaUser = <strong class="jxr_keyword">this</strong>.signup(<span class="jxr_string">"lambda"</span>, <span class="jxr_string">"henri@croivet-batton.xvi"</span>, <span class="jxr_string">"Louis 16 soupapes"</span>);
-<a class="jxr_linenumber" name="L146" href="#L146">146</a> 
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>         <strong class="jxr_keyword">this</strong>.signIn(lambdaUser);
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>         <strong class="jxr_keyword">this</strong>.assertAccessDenied();
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>     }
-<a class="jxr_linenumber" name="L150" href="#L150">150</a> }
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>         <em class="jxr_comment">// Then, use client generator to find all annotated class/methods</em>
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>         List&lt;String&gt; missings = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;();
+<a class="jxr_linenumber" name="L113" href="#L113">113</a> 
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>         String[] pkgs = {<span class="jxr_string">"ch.colabproject.colab.api"</span>};
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>         Generator generator = <strong class="jxr_keyword">new</strong> Generator(pkgs);
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>         generator.processPackages();
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>         Set&lt;RestEndpoint&gt; restEndpoints = generator.getRestEndpoints();
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>         restEndpoints.forEach(controller -&gt; {
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>             <strong class="jxr_keyword">boolean</strong> isAdminResource = controller.isAdminResource();
+<a class="jxr_linenumber" name="L120" href="#L120">120</a> 
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>             String simpleClassName = controller.getSimpleClassName();
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>             String fieldName = simpleClassName.substring(0, 1).toLowerCase() + simpleClassName
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>                 .substring(1);
+<a class="jxr_linenumber" name="L124" href="#L124">124</a> 
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>             controller.getRestMethods().forEach((RestMethod method) -&gt; {
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>                 <strong class="jxr_keyword">if</strong> (isAdminResource || method.isAdminResource()) {
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>                     String check = <span class="jxr_string">".*TestHelper.assertThrows&#92;&#92;(&#92;&#92;s*"</span>
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>                         + <span class="jxr_string">"HttpErrorMessage.MessageCode.ACCESS_DENIED, &#92;&#92;(&#92;&#92;) -&gt; "</span>
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>                         + <span class="jxr_string">"&#92;&#92;{&#92;&#92;s*client."</span> + fieldName + <span class="jxr_string">"."</span>
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>                         + method.getName() + <span class="jxr_string">"&#92;&#92;(.*?&#92;&#92;);&#92;&#92;s*&#92;&#92;}&#92;&#92;);.*"</span>;
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>                     Pattern regex = Pattern.compile(check, Pattern.DOTALL);
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>                     <strong class="jxr_keyword">if</strong> (!regex.matcher(sourceCode).matches()) {
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>                         logger.error(<span class="jxr_string">"\&quot;{}\&quot; not found in \&quot;{}\&quot;"</span>, check, sourceCode);
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>                         missings.add(<span class="jxr_string">"Missing check for client."</span> + fieldName + <span class="jxr_string">"."</span> + method
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>                             .getName());
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>                     }
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>                 }
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>             });
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>         });
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>         Assertions.assertEquals(0, missings.size(), missings.toString());
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>     }
+<a class="jxr_linenumber" name="L142" href="#L142">142</a> 
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L144" href="#L144">144</a> <em class="jxr_javadoccomment">     * Make sure non-admin user cannot access admin resources</em>
+<a class="jxr_linenumber" name="L145" href="#L145">145</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>     @Test
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> assertAdminResourceAccesIsDeniedToStandardUsers() {
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>         <a name="TestUser" href="../../../../../ch/colabproject/colab/tests/tests/TestUser.html#TestUser">TestUser</a> lambdaUser = <strong class="jxr_keyword">this</strong>.signup(<span class="jxr_string">"lambda"</span>, <span class="jxr_string">"henri@croivet-batton.xvi"</span>, <span class="jxr_string">"Louis 16 soupapes"</span>);
+<a class="jxr_linenumber" name="L149" href="#L149">149</a> 
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>         <strong class="jxr_keyword">this</strong>.signIn(lambdaUser);
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>         <strong class="jxr_keyword">this</strong>.assertAccessDenied();
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>     }
+<a class="jxr_linenumber" name="L153" href="#L153">153</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

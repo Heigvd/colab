@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Change.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.microchanges.model</a> &gt; <span class="el_source">Change.java</span></div><h1>Change.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.microchanges.model;
+
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.validation.constraints.NotNull;
+
+/**
+ * A change is an atomic set of microchanges.
+ *
+ * @author maxence
+ */
+<span class="fc" id="L24">public class Change implements Serializable, WithWebsocketChannels {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * JsonDiscriminator to fetch the class this change targets
+     */
+    @NotNull
+    private String atClass;
+
+    /**
+     * Id of the object this change targets
+     */
+    @NotNull
+    private Long atId;
+
+    /**
+     * Revision this change is based on. 0 (zero) means root change
+     */
+    @NotNull
+    private String basedOn;
+
+    /**
+     * new revision
+     */
+    @NotNull
+    private String revision;
+
+    /**
+     * aka websocket sessionId
+     */
+    @NotNull
+    private String liveSession;
+
+    /**
+     * List of micro microchanges which compose this change
+     */
+<span class="fc" id="L61">    @NotNull</span>
+    private List&lt;MicroChange&gt; microchanges = new ArrayList&lt;&gt;();
+
+    /**
+     * Id of the project this change belongs to
+     */
+    @NotNull
+    @JsonbTransient
+    private Long projectId;
+
+    @Override
+    public Long getId() {
+<span class="nc" id="L73">        return atId;</span>
+    }
+
+    /**
+     * Get microchanges
+     *
+     * @return set of microchanges
+     */
+    public List&lt;MicroChange&gt; getMicrochanges() {
+<span class="fc" id="L82">        return microchanges;</span>
+    }
+
+    /**
+     * Set microchanges
+     *
+     * @param microchanges microchanges
+     */
+    public void setMicrochanges(List&lt;MicroChange&gt; microchanges) {
+<span class="nc" id="L91">        this.microchanges = microchanges;</span>
+<span class="nc" id="L92">    }</span>
+
+    /**
+     * Get the JSON discriminator
+     *
+     * @return JSON discriminator
+     */
+    public String getAtClass() {
+<span class="nc" id="L100">        return atClass;</span>
+    }
+
+    /**
+     * Set the JSON discriminator
+     *
+     * @param atClass new discriminator
+     */
+    public void setAtClass(String atClass) {
+<span class="nc" id="L109">        this.atClass = atClass;</span>
+<span class="nc" id="L110">    }</span>
+
+    /**
+     * The object id.
+     *
+     * @return the id of the object
+     */
+    public Long getAtId() {
+<span class="nc" id="L118">        return atId;</span>
+    }
+
+    /**
+     * set object id
+     *
+     * @param atId object id
+     */
+    public void setAtId(Long atId) {
+<span class="nc" id="L127">        this.atId = atId;</span>
+<span class="nc" id="L128">    }</span>
+
+    /**
+     * Get the revision hash this change is based on
+     *
+     * @return the revision hash
+     */
+    public String getBasedOn() {
+<span class="fc" id="L136">        return basedOn;</span>
+    }
+
+    /**
+     * Set the revision this change is based on
+     *
+     * @param basedOn the revision hash
+     */
+    public void setBasedOn(String basedOn) {
+<span class="fc" id="L145">        this.basedOn = basedOn;</span>
+<span class="fc" id="L146">    }</span>
+
+    /**
+     * the review to which this change leads.
+     *
+     * @return the revision hash
+     */
+    public String getRevision() {
+<span class="fc" id="L154">        return revision;</span>
+    }
+
+    /**
+     * Set the revision to which this change leads
+     *
+     * @param revision revision hash
+     */
+    public void setRevision(String revision) {
+<span class="fc" id="L163">        this.revision = revision;</span>
+<span class="fc" id="L164">    }</span>
+
+    /**
+     * The live session who authored this change
+     *
+     * @return live session id (ie. websocket session id)
+     */
+    public String getLiveSession() {
+<span class="fc" id="L172">        return liveSession;</span>
+    }
+
+    /**
+     * Set the live session who authored this change
+     *
+     * @param liveSession the live session id
+     */
+    public void setLiveSession(String liveSession) {
+<span class="fc" id="L181">        this.liveSession = liveSession;</span>
+<span class="fc" id="L182">    }</span>
+
+    /**
+     * Get the project id
+     *
+     * @return id of the project
+     */
+    public Long getProjectId() {
+<span class="nc" id="L190">        return projectId;</span>
+    }
+
+    @Override
+    public Object getIndexEntryPayload() {
+<span class="nc" id="L195">        return this;</span>
+    }
+
+    /**
+     * Set project id
+     *
+     * @param projectId the id
+     */
+    public void setProjectId(Long projectId) {
+<span class="nc" id="L204">        this.projectId = projectId;</span>
+<span class="nc" id="L205">    }</span>
+
+    @Override
+    public Set&lt;WebsocketChannel&gt; getChannels() {
+<span class="nc" id="L209">        return Set.of(ProjectContentChannel.build(projectId));</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L214">        return &quot;Patch{rev@&quot; + this.basedOn + &quot; &quot; + this.microchanges + &quot; =&gt; @&quot; + this.revision + &quot;}&quot;;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

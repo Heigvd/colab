@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>LiveUpdates.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.microchanges.live</a> &gt; <span class="el_source">LiveUpdates.java</span></div><h1>LiveUpdates.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.microchanges.live;
+
+import ch.colabproject.colab.api.microchanges.model.Change;
+import ch.colabproject.colab.api.microchanges.model.MicroChange;
+import ch.colabproject.colab.api.microchanges.model.MicroChange.Type;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Set of pending changes.
+ *
+ * @author maxence
+ */
+<span class="fc" id="L26">public class LiveUpdates implements Serializable {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    /** Logger */
+<span class="fc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(LiveUpdates.class);</span>
+
+    /**
+     * JsonDiscriminator to fetch the class this change targets
+     */
+    private String targetClass;
+
+    /**
+     * Id of the object this change targets
+     */
+    private Long targetId;
+
+    /**
+     * TODO is that really useful ?
+     */
+    private Long revision;
+
+    /**
+     * root content
+     */
+    private String content;
+
+    /**
+     * List of pending changes
+     */
+<span class="fc" id="L56">    private List&lt;Change&gt; pendingChanges = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Get the JSON discriminator
+     *
+     * @return JSON discriminator
+     */
+    public String getTargetClass() {
+<span class="nc" id="L64">        return targetClass;</span>
+    }
+
+    /**
+     * Set the JSON discriminator
+     *
+     * @param targetClass new discriminator
+     */
+    public void setTargetClass(String targetClass) {
+<span class="fc" id="L73">        this.targetClass = targetClass;</span>
+<span class="fc" id="L74">    }</span>
+
+    /**
+     * The object id.
+     *
+     * @return the id of the object
+     */
+    public Long getTargetId() {
+<span class="nc" id="L82">        return targetId;</span>
+    }
+
+    /**
+     * set object id
+     *
+     * @param targetId object id
+     */
+    public void setTargetId(Long targetId) {
+<span class="fc" id="L91">        this.targetId = targetId;</span>
+<span class="fc" id="L92">    }</span>
+
+    /**
+     * Get the revision
+     *
+     * @return the revision
+     *
+     * @deprecated seems unused
+     */
+    @Deprecated
+    public Long getRevision() {
+<span class="nc" id="L103">        return revision;</span>
+    }
+
+    /**
+     * Set the revision
+     *
+     * @param revision the revision
+     */
+    public void setRevision(Long revision) {
+<span class="fc" id="L112">        this.revision = revision;</span>
+<span class="fc" id="L113">    }</span>
+
+    /**
+     * Get initial &quot;root&quot; content
+     *
+     * @return the root content
+     */
+    public String getContent() {
+<span class="nc" id="L121">        return content;</span>
+    }
+
+    /**
+     * Set initial content
+     *
+     * @param content the content
+     */
+    public void setContent(String content) {
+<span class="fc" id="L130">        this.content = content;</span>
+<span class="fc" id="L131">    }</span>
+
+    /**
+     * Get the list of pending changes
+     *
+     * @return changes
+     */
+    public List&lt;Change&gt; getPendingChanges() {
+<span class="fc" id="L139">        return pendingChanges;</span>
+    }
+
+    /**
+     * set the list of pending changes
+     *
+     * @param pendingChanges changes
+     */
+    public void setPendingChanges(List&lt;Change&gt; pendingChanges) {
+<span class="fc" id="L148">        this.pendingChanges = pendingChanges;</span>
+<span class="fc" id="L149">    }</span>
+
+    /**
+     * Get changes which are direct children of given parent
+     *
+     * @param changes all changes
+     * @param basedOn parent id
+     *
+     * @return all changes which are based on the given parentId
+     */
+    public List&lt;Change&gt; getByParent(List&lt;Change&gt; changes, String basedOn) {
+<span class="fc" id="L160">        List&lt;Change&gt; collect = changes.stream()</span>
+<span class="fc" id="L161">            .filter(ch -&gt; ch.getBasedOn().equals(basedOn))</span>
+<span class="fc" id="L162">            .collect(Collectors.toList());</span>
+<span class="fc" id="L163">        return new ArrayList&lt;Change&gt;(collect);</span>
+    }
+
+    /**
+     * Get changes which are direct children of the given parent, authored by the same live-session.
+     * This method is used to detect if a live session has diverged.
+     *
+     * @param changes list of changes
+     * @param parent  parent
+     *
+     * @return children of parent if they are authored by the same person
+     */
+    public List&lt;Change&gt; getByParentAndSession(List&lt;Change&gt; changes, Change parent) {
+<span class="fc" id="L176">        logger.trace(&quot;Get Children By Parent And Session&quot;);</span>
+
+<span class="fc" id="L178">        List&lt;Change&gt; collect = changes.stream()</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">            .filter(ch -&gt; ch.getBasedOn().equals(parent.getRevision())</span>
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">            &amp;&amp; ch.getLiveSession().equals(parent.getLiveSession()))</span>
+<span class="fc" id="L181">            .collect(Collectors.toList());</span>
+<span class="fc" id="L182">        return new ArrayList&lt;Change&gt;(collect);</span>
+    }
+
+    /**
+     * Include new offset within the map.
+     *
+     * @param offsets offsets mapped by indexes
+     * @param index   new offset index
+     * @param value   new offset value
+     */
+    private void modifyOffset(Map&lt;Integer, Integer&gt; offsets, Integer index, Integer value) {
+<span class="fc" id="L193">        Integer currentOffset = offsets.get(index);</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        if (currentOffset == null) {</span>
+<span class="fc" id="L195">            currentOffset = 0;</span>
+        }
+<span class="fc" id="L197">        currentOffset += value;</span>
+<span class="fc" id="L198">        logger.trace(&quot;  modOffset.start &quot; + offsets);</span>
+
+<span class="fc" id="L200">        offsets.put(index, currentOffset);</span>
+
+<span class="fc" id="L202">        logger.trace(&quot;  modOffset.second &quot; + offsets);</span>
+
+<span class="fc" id="L204">        Map&lt;Integer, Integer&gt; modified = new HashMap&lt;&gt;();</span>
+
+        // shift offsets after current index
+<span class="fc bfc" id="L207" title="All 2 branches covered.">        for (var entry : offsets.entrySet()) {</span>
+<span class="fc" id="L208">            Integer key = entry.getKey();</span>
+
+<span class="pc bpc" id="L210" title="3 of 4 branches missed.">            if (key &gt; index &amp;&amp; key &lt; index + value) {</span>
+<span class="nc" id="L211">                logger.trace(&quot;CONFLIT&quot;);</span>
+            }
+<span class="pc bpc" id="L213" title="1 of 2 branches missed.">            if (key &gt; index) {</span>
+                // move offset to new index
+<span class="nc" id="L215">                Integer v = entry.getValue();</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">                if (v != null) {</span>
+<span class="nc" id="L217">                    int newKey = key + value;</span>
+<span class="nc" id="L218">                    int newValue = v;</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">                    if (offsets.containsKey(newKey)) {</span>
+<span class="nc" id="L220">                        newValue = offsets.get(newKey) + newValue;</span>
+                    }
+<span class="nc" id="L222">                    modified.put(key, 0);</span>
+<span class="nc" id="L223">                    modified.put(newKey, newValue);</span>
+                }
+            }
+<span class="fc" id="L226">        }</span>
+
+<span class="fc" id="L228">        logger.trace(&quot;  modOffset.third &quot; + modified);</span>
+
+        // merge shifted offsets
+<span class="pc bpc" id="L231" title="1 of 2 branches missed.">        for (var entry : modified.entrySet()) {</span>
+<span class="nc" id="L232">            Integer key = entry.getKey();</span>
+<span class="nc" id="L233">            int current = entry.getValue();</span>
+<span class="nc" id="L234">            offsets.put(key, current);</span>
+<span class="nc" id="L235">        }</span>
+
+<span class="fc" id="L237">        logger.trace(&quot; mod Offsets.done &quot; + offsets);</span>
+<span class="fc" id="L238">    }</span>
+
+    /**
+     * Apply microchange to the buffer
+     *
+     * @param buffer the buffet
+     * @param mu     the patch
+     */
+    private void applyChange(StringBuilder buffer, MicroChange mu) {
+<span class="fc" id="L247">        logger.trace(&quot;Apply {} to {}&quot;, mu, buffer);</span>
+<span class="fc bfc" id="L248" title="All 2 branches covered.">        if (mu.getT() == MicroChange.Type.D) {</span>
+<span class="pc bpc" id="L249" title="1 of 2 branches missed.">            if (mu.getO() &lt; buffer.length()) {</span>
+<span class="fc" id="L250">                buffer.length();</span>
+<span class="fc" id="L251">                buffer.delete(mu.getO(), mu.getO() + mu.getL());</span>
+            } else {
+<span class="nc" id="L253">                logger.trace(&quot;Skip micro change&quot;);</span>
+            }
+<span class="pc bpc" id="L255" title="1 of 2 branches missed.">        } else if (mu.getT() == MicroChange.Type.I) {</span>
+<span class="fc bfc" id="L256" title="All 2 branches covered.">            if (mu.getO() &gt;= buffer.length()) {</span>
+<span class="fc" id="L257">                buffer.append(mu.getV());</span>
+            } else {
+<span class="fc" id="L259">                buffer.insert(mu.getO(), mu.getV());</span>
+            }
+        }
+<span class="fc" id="L262">    }</span>
+
+    /**
+     * Compute offset the set of microchanges will generate.
+     * &lt;li&gt;2:20 means 20 characters are added at index 2
+     * &lt;li&gt;5:-10 means 10 characters are removed from index 5
+     *
+     * @param change set of microchanges
+     *
+     * @return offset mapped by index
+     */
+    private Map&lt;Integer, Integer&gt; computeOffset(Change change) {
+<span class="fc" id="L274">        Map&lt;Integer, Integer&gt; offsets = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L276">        List&lt;MicroChange&gt; muChanges = change.getMicrochanges();</span>
+<span class="fc bfc" id="L277" title="All 2 branches covered.">        for (int i = muChanges.size() - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L278">            MicroChange mu = muChanges.get(i);</span>
+<span class="fc bfc" id="L279" title="All 2 branches covered.">            if (mu.getT() == MicroChange.Type.D) {</span>
+<span class="fc" id="L280">                modifyOffset(offsets, mu.getO() + mu.getL(), -mu.getL());</span>
+<span class="pc bpc" id="L281" title="1 of 2 branches missed.">            } else if (mu.getT() == MicroChange.Type.I) {</span>
+<span class="fc" id="L282">                modifyOffset(offsets, mu.getO(), mu.getV().length());</span>
+            }
+        }
+
+<span class="fc" id="L286">        return offsets;</span>
+    }
+
+    /**
+     * Modify microchange to reflect given offsets
+     *
+     * @param change  changes to update
+     * @param offsets offsets, mapped by indexes
+     * @param forward shif if true, unshift otherwise
+     *
+     * @return true if operation was successful, false if there ws some conflict
+     */
+    private boolean shift(Change change, Map&lt;Integer, Integer&gt; offsets, boolean forward) {
+<span class="fc" id="L299">        boolean conflictFree = true;</span>
+<span class="pc bpc" id="L300" title="1 of 2 branches missed.">        if (forward == false) {</span>
+<span class="nc" id="L301">            logger.warn(&quot;TODO: implement backward shift&quot;);</span>
+        }
+        //int way = forward ? 1 : -1; // TODO
+
+<span class="fc" id="L305">        logger.trace(&quot;Shift offsets: {}&quot;, change);</span>
+<span class="fc" id="L306">        List&lt;MicroChange&gt; microchanges = change.getMicrochanges();</span>
+<span class="fc bfc" id="L307" title="All 2 branches covered.">        for (int i = 0; i &lt; microchanges.size(); i++) {</span>
+<span class="fc" id="L308">            MicroChange mu = microchanges.get(i);</span>
+
+<span class="fc bfc" id="L310" title="All 2 branches covered.">            for (Map.Entry&lt;Integer, Integer&gt; entry : offsets.entrySet()) {</span>
+<span class="fc" id="L311">                Integer offsetValue = entry.getValue();</span>
+<span class="fc" id="L312">                Integer offsetIndex = entry.getKey();</span>
+
+<span class="fc" id="L314">                int muStart = mu.getO();</span>
+
+<span class="fc bfc" id="L316" title="All 4 branches covered.">                if (offsetValue &gt; 0 &amp;&amp; mu.getT().equals(Type.I)) {</span>
+                    // both are insetion
+<span class="fc bfc" id="L318" title="All 2 branches covered.">                    if (mu.getO() &gt;= offsetIndex) {</span>
+                        // changes is after the first insertion =&gt; shift it
+<span class="fc" id="L320">                        mu.setO(mu.getO() + offsetValue);</span>
+                    }
+<span class="fc bfc" id="L322" title="All 4 branches covered.">                } else if (offsetValue &lt; 0 &amp;&amp; mu.getT().equals(Type.D)) {</span>
+                    // both are deletion
+<span class="fc" id="L324">                    int deleteFromIndex = offsetIndex + offsetValue;</span>
+<span class="fc" id="L325">                    int deleteToIndex = offsetIndex;</span>
+<span class="fc" id="L326">                    int muEnd = muStart + mu.getL();</span>
+
+                    // nothing to do if mu is complely before offset
+<span class="fc bfc" id="L329" title="All 2 branches covered.">                    if (muEnd &gt;= deleteFromIndex) {</span>
+                        // mu is completely before offset
+                        // nothing to do
+<span class="fc bfc" id="L332" title="All 2 branches covered.">                        if (muStart &gt; deleteToIndex) {</span>
+                            // mu is completely after offset
+                            // just shift mu
+<span class="fc" id="L335">                            mu.setO(mu.getO() + offsetValue);</span>
+                        } else {
+                            // deletions overlap
+<span class="fc bfc" id="L338" title="All 4 branches covered.">                            if (muStart &lt;= deleteFromIndex &amp;&amp; muEnd &gt;= deleteToIndex) {</span>
+                                // mu wraps offset
+                                // off          |---|
+                                // mu       |---------|
+                                // new mu   |---     -|
+<span class="fc" id="L343">                                mu.setL(mu.getL() + offsetValue);</span>
+<span class="fc bfc" id="L344" title="All 4 branches covered.">                            } else if (muStart &gt;= deleteFromIndex &amp;&amp; muEnd &lt;= deleteToIndex) {</span>
+                                // offset wraps mu =&gt; mus is useless
+                                // off       |---------|
+                                // mu          |---|
+                                // new mu    canceled
+<span class="fc" id="L349">                                microchanges.remove(i);</span>
+<span class="fc" id="L350">                                i--;</span>
+<span class="pc bpc" id="L351" title="1 of 4 branches missed.">                            } else if (muStart &lt;= deleteFromIndex &amp;&amp; muEnd &lt;= deleteToIndex) {</span>
+                                // partial overlap
+                                // off       |-----|
+                                // mu     |-----|
+                                // new mu |--|
+<span class="fc" id="L356">                                mu.setL(deleteFromIndex - muStart);</span>
+<span class="pc bpc" id="L357" title="2 of 4 branches missed.">                            } else if (muStart &gt;= deleteFromIndex &amp;&amp; muEnd &gt;= deleteToIndex) {</span>
+                                // partial overlap
+                                // off    |-----|
+                                // mu        |-----|
+                                // new mu       |--| shifted at offsetStart
+<span class="fc" id="L362">                                mu.setL(muEnd - deleteToIndex);</span>
+<span class="fc" id="L363">                                mu.setO(deleteFromIndex);</span>
+                            } else {
+<span class="nc" id="L365">                                logger.error(&quot;Unhandled case offset{}:{}, mu:{}&quot;,</span>
+<span class="nc" id="L366">                                    deleteFromIndex, offsetValue, mu);</span>
+                            }
+                        }
+                    }
+<span class="pc bpc" id="L370" title="1 of 4 branches missed.">                } else if (offsetValue &lt; 0 &amp;&amp; mu.getT().equals(Type.I)) {</span>
+                    // offset is deletion, mu is addition
+<span class="fc" id="L372">                    int deleteFromIndex = offsetIndex + offsetValue;</span>
+<span class="fc" id="L373">                    int deleteToIndex = offsetIndex;</span>
+
+<span class="fc bfc" id="L375" title="All 2 branches covered.">                    if (muStart &gt;= deleteToIndex) {</span>
+                        // off    |-----|
+                        // mu               |+++++|
+                        // just shift to the left
+<span class="fc" id="L379">                        mu.setO(mu.getO() + offsetValue);</span>
+<span class="fc bfc" id="L380" title="All 2 branches covered.">                    } else if (muStart &gt; deleteFromIndex) {</span>
+                        // off         |-----|
+                        // mu            |+|
+                        // mu          |+|
+<span class="fc" id="L384">                        mu.setO(deleteFromIndex);</span>
+//                    } else {
+                        // mu is before offset
+                        // off         |-----|
+                        // mu     |+|
+                        // nothing to do
+                    }
+<span class="pc bpc" id="L391" title="2 of 4 branches missed.">                } else if (offsetValue &gt; 0 &amp;&amp; mu.getT().equals(Type.D)) {</span>
+                    // offset is addition, mu is deletion
+<span class="fc" id="L393">                    int muEnd = muStart + mu.getL();</span>
+
+                    // nothing to do if mu is completely before offset
+<span class="fc bfc" id="L396" title="All 2 branches covered.">                    if (muEnd &gt;= offsetIndex) {</span>
+<span class="fc bfc" id="L397" title="All 2 branches covered.">                        if (muStart &gt; offsetIndex) {</span>
+                            // off   |+|
+                            // mu         |---|
+                            // new mu : shift
+<span class="fc" id="L401">                            mu.setO(mu.getO() + offsetValue);</span>
+                        } else {
+                            // off        |+|
+                            // mu      |--------|
+                            // new v1  |--|  |--|
+                            // split mu to preserve addition
+<span class="fc" id="L407">                            Integer totalLength = mu.getL();</span>
+<span class="fc" id="L408">                            mu.setL(offsetIndex - muStart);</span>
+<span class="fc" id="L409">                            MicroChange newMu = new MicroChange();</span>
+<span class="fc" id="L410">                            newMu.setT(Type.D);</span>
+<span class="fc" id="L411">                            newMu.setO(offsetIndex + offsetValue);</span>
+<span class="fc" id="L412">                            newMu.setL(totalLength - mu.getL());</span>
+<span class="fc" id="L413">                            microchanges.add(i + 1, newMu);</span>
+<span class="fc" id="L414">                            i++;</span>
+                        }
+                    }
+                }
+<span class="fc" id="L418">            }</span>
+        }
+
+<span class="fc" id="L421">        logger.trace(</span>
+            &quot;Shift done: {}&quot;, change);
+
+<span class="fc" id="L424">        return conflictFree;</span>
+    }
+
+    /**
+     * Propagate offset to children
+     *
+     * @param parent  starting point
+     * @param offsets offset to propagate
+     *
+     * @return conflict free propagation or not
+     */
+    private boolean propagateOffsets(List&lt;Change&gt; changes, Change parent, Map&lt;Integer, Integer&gt; offsets, boolean forward) {
+<span class="fc" id="L436">        boolean conflictFree = true;</span>
+
+<span class="fc bfc" id="L438" title="All 2 branches covered.">        for (Change child : getByParentAndSession(changes, parent)) {</span>
+            // should propagate to children from same LiveSession only
+<span class="fc" id="L440">            boolean shiftFree = this.shift(child, offsets, forward);</span>
+<span class="fc" id="L441">            boolean pFree = this.propagateOffsets(changes, child, offsets, forward);</span>
+<span class="pc bpc" id="L442" title="3 of 6 branches missed.">            conflictFree = conflictFree &amp;&amp; shiftFree &amp;&amp; pFree;</span>
+<span class="fc" id="L443">        }</span>
+<span class="fc" id="L444">        return conflictFree;</span>
+    }
+
+    /**
+     * Move a change to a new base.
+     *
+     * @param newBase
+     * @param change
+     * @param offsets
+     *
+     * @return true if rebase has been done without conflict
+     */
+    private boolean rebase(Change newBase, Change change) {
+<span class="pc bpc" id="L457" title="1 of 2 branches missed.">        if (newBase.getBasedOn().equals(change.getBasedOn())) {</span>
+<span class="fc" id="L458">            Map&lt;Integer, Integer&gt; offsets = computeOffset(newBase);</span>
+<span class="fc" id="L459">            boolean conflictFree = true;</span>
+
+<span class="fc" id="L461">            logger.trace(&quot;Rebase Sieblings: &quot; + change + &quot; on &quot; + newBase</span>
+                + &quot; with offset &quot; + offsets);
+
+<span class="fc" id="L464">            change.setBasedOn(newBase.getRevision());</span>
+
+<span class="pc bpc" id="L466" title="2 of 4 branches missed.">            conflictFree = shift(change, offsets, true) &amp;&amp; conflictFree;</span>
+<span class="pc bpc" id="L467" title="2 of 4 branches missed.">            conflictFree = propagateOffsets(pendingChanges, change,</span>
+                offsets, true) &amp;&amp; conflictFree;
+<span class="fc" id="L469">            logger.trace(&quot; -&gt; &quot; + change);</span>
+<span class="fc" id="L470">            return conflictFree;</span>
+<span class="nc bnc" id="L471" title="All 2 branches missed.">        } else if (newBase.getBasedOn().equals(change.getRevision())) {</span>
+<span class="nc" id="L472">            logger.trace(&quot;Inverse hierachy : &quot; + change + &quot; on &quot; + newBase);</span>
+            // [x] -&gt; change -&gt; newBase
+            // ==&gt;[x] -&gt;  newBase -&gt; change
+
+<span class="nc" id="L476">            boolean conflictFree = true;</span>
+
+<span class="nc" id="L478">            Map&lt;Integer, Integer&gt; changeOffsets = computeOffset(change);</span>
+
+<span class="nc" id="L480">            newBase.setBasedOn(change.getBasedOn());</span>
+<span class="nc" id="L481">            change.setBasedOn(newBase.getRevision());</span>
+
+<span class="nc bnc" id="L483" title="All 4 branches missed.">            conflictFree = shift(newBase, changeOffsets, false) &amp;&amp; conflictFree;</span>
+
+<span class="nc" id="L485">            Map&lt;Integer, Integer&gt; newBaseOffsets = computeOffset(newBase);</span>
+<span class="nc bnc" id="L486" title="All 4 branches missed.">            conflictFree = shift(change, newBaseOffsets, true) &amp;&amp; conflictFree;</span>
+
+<span class="nc" id="L488">            logger.trace(&quot; with offsets &quot; + changeOffsets + &quot; and &quot; + newBaseOffsets);</span>
+<span class="nc" id="L489">            logger.trace(&quot; -&gt; &quot; + change);</span>
+
+<span class="nc" id="L491">            return conflictFree;</span>
+        } else {
+<span class="nc" id="L493">            logger.error(&quot;Changes must be sieblings or newBase must be a child of change&quot;);</span>
+<span class="nc" id="L494">            return false;</span>
+        }
+    }
+
+    /**
+     * FIlter list of change and return only those which match the given live session
+     *
+     * @param changes list of changes
+     * @param author  live-session id
+     *
+     * @return list of changes authored by the given author
+     */
+    public List&lt;Change&gt; filterByAuthor(List&lt;Change&gt; changes, String author) {
+<span class="nc" id="L507">        return changes.stream()</span>
+<span class="nc" id="L508">            .filter(child</span>
+<span class="nc" id="L509">                -&gt; child.getLiveSession().equals(author))</span>
+<span class="nc" id="L510">            .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * Apply all changes.
+     *
+     * @param strict to be implemented: fail when there is some conflicts or not
+     *
+     * @return up-to date content
+     */
+    public String process(boolean strict) {
+<span class="fc" id="L521">        StringBuilder buffer = new StringBuilder();</span>
+<span class="pc bpc" id="L522" title="1 of 2 branches missed.">        if (this.content != null) {</span>
+<span class="fc" id="L523">            buffer.append(this.content);</span>
+        }
+
+<span class="fc" id="L526">        logger.trace(&quot;Process: {}&quot;, this);</span>
+
+<span class="fc" id="L528">        String currentRevision = &quot;0&quot;;</span>
+
+<span class="fc" id="L530">        List&lt;Change&gt; changes = this.getPendingChanges();</span>
+
+<span class="fc bfc" id="L532" title="All 2 branches covered.">        while (!changes.isEmpty()) {</span>
+            // fetch all changes based on the current revision
+<span class="fc" id="L534">            List&lt;Change&gt; children = getByParent(changes, currentRevision);</span>
+<span class="pc bpc" id="L535" title="1 of 2 branches missed.">            if (!children.isEmpty()) {</span>
+                //Map&lt;Integer, Integer&gt; offsets = new HashMap&lt;&gt;();
+                //logger.trace(&quot;new empty offsets &quot; + offsets);
+
+                // apply first child only
+<span class="fc" id="L540">                Change change = children.remove(0);</span>
+<span class="fc" id="L541">                changes.remove(change);</span>
+
+<span class="fc" id="L543">                logger.trace(&quot;Process: {}&quot;, change);</span>
+
+<span class="fc" id="L545">                List&lt;MicroChange&gt; muChanges = change.getMicrochanges();</span>
+<span class="fc bfc" id="L546" title="All 2 branches covered.">                for (int i = muChanges.size() - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L547">                    applyChange(buffer, muChanges.get(i));</span>
+<span class="fc" id="L548">                    logger.trace(&quot;  &quot; + i + &quot;)&quot; + buffer);</span>
+                }
+
+<span class="fc" id="L551">                logger.trace(&quot; -&gt; {}&quot;, buffer);</span>
+                //logger.trace(&quot;Offsets&quot; + offsets);
+                // rebase others children
+
+<span class="fc" id="L555">                changes.removeAll(children);</span>
+<span class="fc bfc" id="L556" title="All 2 branches covered.">                for (int i = children.size() - 1; i &gt;= 0; i--) {</span>
+<span class="fc" id="L557">                    Change child = children.remove(i);</span>
+<span class="pc bpc" id="L558" title="3 of 4 branches missed.">                    if (!rebase(change, child) &amp;&amp; strict) {</span>
+                        // todo throw ?
+<span class="nc" id="L560">                        logger.error(&quot;Conflict&quot;);</span>
+                    }
+<span class="fc" id="L562">                    changes.add(0, child);</span>
+                }
+<span class="fc" id="L564">                currentRevision = change.getRevision();</span>
+
+<span class="fc" id="L566">            } else {</span>
+<span class="nc" id="L567">                logger.error(&quot;Some children without any parents left: &quot;, changes);</span>
+            }
+<span class="fc" id="L569">        }</span>
+
+<span class="fc" id="L571">        return buffer.toString();</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L576">        return &quot;LiveUpdates{&quot; + &quot;targetClass=&quot; + targetClass + &quot;, targetId=&quot; + targetId + &quot;, revision=&quot; + revision + &quot;, content=&quot; + content + &quot;, pendingChanges=&quot; + pendingChanges + '}';</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

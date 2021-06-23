@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
@@ -43,7 +44,7 @@ import javax.persistence.Transient;
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 //FIXME see if is needed or not. It was implemented for test purpose at first
 @NamedQuery(name = &quot;Document.findAll&quot;, query = &quot;SELECT d FROM Document d&quot;)
-<span class="fc" id="L46">public abstract class Document implements ColabEntity , WithWebsocketChannels {</span>
+<span class="fc" id="L47">public abstract class Document implements ColabEntity , WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -115,43 +116,43 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L118">        return id;</span>
+<span class="fc" id="L119">        return id;</span>
     }
 
     /**
      * @param id the document id
      */
     public void setId(Long id) {
-<span class="fc" id="L125">        this.id = id;</span>
-<span class="fc" id="L126">    }</span>
+<span class="fc" id="L126">        this.id = id;</span>
+<span class="fc" id="L127">    }</span>
 
     /**
      * @return the title
      */
     public String getTitle() {
-<span class="fc" id="L132">        return title;</span>
+<span class="fc" id="L133">        return title;</span>
     }
 
     /**
      * @param title the title to set
      */
     public void setTitle(String title) {
-<span class="fc" id="L139">        this.title = title;</span>
-<span class="fc" id="L140">    }</span>
+<span class="fc" id="L140">        this.title = title;</span>
+<span class="fc" id="L141">    }</span>
 
     /**
      * @return the abstract / teaser of the content of the document
      */
     public String getTeaser() {
-<span class="fc" id="L146">        return teaser;</span>
+<span class="fc" id="L147">        return teaser;</span>
     }
 
     /**
      * @param teaser the abstract / teaser of the content of the document
      */
     public void setTeaser(String teaser) {
-<span class="fc" id="L153">        this.teaser = teaser;</span>
-<span class="fc" id="L154">    }</span>
+<span class="fc" id="L154">        this.teaser = teaser;</span>
+<span class="fc" id="L155">    }</span>
 
     /**
      * @return the authority holder : is it belonging to
@@ -161,7 +162,7 @@ import javax.persistence.Transient;
      *         &lt;/ul&gt;
      */
     public ConcretizationCategory getAuthorityHolder() {
-<span class="fc" id="L164">        return authorityHolder;</span>
+<span class="fc" id="L165">        return authorityHolder;</span>
     }
 
     /**
@@ -172,14 +173,14 @@ import javax.persistence.Transient;
      *                        &lt;/ul&gt;
      */
     public void setAuthorityHolder(ConcretizationCategory authorityHolder) {
-<span class="fc" id="L175">        this.authorityHolder = authorityHolder;</span>
-<span class="fc" id="L176">    }</span>
+<span class="fc" id="L176">        this.authorityHolder = authorityHolder;</span>
+<span class="fc" id="L177">    }</span>
 
     /**
      * @return the card content for which this document is the deliverable
      */
     public CardContent getDeliverableCardContent() {
-<span class="nc" id="L182">        return deliverableCardContent;</span>
+<span class="nc" id="L183">        return deliverableCardContent;</span>
     }
 
     /**
@@ -187,8 +188,8 @@ import javax.persistence.Transient;
      *                               set
      */
     public void setDeliverableCardContent(CardContent deliverableCardContent) {
-<span class="fc" id="L190">        this.deliverableCardContent = deliverableCardContent;</span>
-<span class="fc" id="L191">    }</span>
+<span class="fc" id="L191">        this.deliverableCardContent = deliverableCardContent;</span>
+<span class="fc" id="L192">    }</span>
 
     /**
      * get the id of the card content for which this document is the deliverable. To be sent to
@@ -197,10 +198,10 @@ import javax.persistence.Transient;
      * @return the id of the card content
      */
     public Long getDeliverableCardContentId() {
-<span class="fc bfc" id="L200" title="All 2 branches covered.">        if (this.deliverableCardContent != null) {</span>
-<span class="fc" id="L201">            return deliverableCardContent.getId();</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">        if (this.deliverableCardContent != null) {</span>
+<span class="fc" id="L202">            return deliverableCardContent.getId();</span>
         } else {
-<span class="fc" id="L203">            return deliverableCardContentId;</span>
+<span class="fc" id="L204">            return deliverableCardContentId;</span>
         }
     }
 
@@ -211,29 +212,29 @@ import javax.persistence.Transient;
      * @param deliverableCardContentId the id of the card contentto set
      */
     public void setDeliverableCardContentId(Long deliverableCardContentId) {
-<span class="fc" id="L214">        this.deliverableCardContentId = deliverableCardContentId;</span>
-<span class="fc" id="L215">    }</span>
+<span class="fc" id="L215">        this.deliverableCardContentId = deliverableCardContentId;</span>
+<span class="fc" id="L216">    }</span>
 
     /**
      * @return True if there is a linked deliverable card content
      */
     public boolean hasDeliverableCardContent() {
-<span class="pc bpc" id="L221" title="2 of 4 branches missed.">        return deliverableCardContent != null || deliverableCardContentId != null;</span>
+<span class="pc bpc" id="L222" title="2 of 4 branches missed.">        return deliverableCardContent != null || deliverableCardContentId != null;</span>
     }
 
     /**
      * @return the resource representing this document
      */
     public Resource getResource() {
-<span class="nc" id="L228">        return resource;</span>
+<span class="nc" id="L229">        return resource;</span>
     }
 
     /**
      * @param resource the resource representing this document
      */
     public void setResource(Resource resource) {
-<span class="fc" id="L235">        this.resource = resource;</span>
-<span class="fc" id="L236">    }</span>
+<span class="fc" id="L236">        this.resource = resource;</span>
+<span class="fc" id="L237">    }</span>
 
     /**
      * get the id of resource representing this document. To be sent to client
@@ -241,10 +242,10 @@ import javax.persistence.Transient;
      * @return the id of the resource representing this document
      */
     public Long getResourceId() {
-<span class="fc bfc" id="L244" title="All 2 branches covered.">        if (this.resource != null) {</span>
-<span class="fc" id="L245">            return resource.getId();</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        if (this.resource != null) {</span>
+<span class="fc" id="L246">            return resource.getId();</span>
         } else {
-<span class="fc" id="L247">            return resourceId;</span>
+<span class="fc" id="L248">            return resourceId;</span>
         }
     }
 
@@ -254,14 +255,32 @@ import javax.persistence.Transient;
      * @param resourceId the id of the resource representing this document
      */
     public void setResourceId(Long resourceId) {
-<span class="fc" id="L257">        this.resourceId = resourceId;</span>
-<span class="fc" id="L258">    }</span>
+<span class="fc" id="L258">        this.resourceId = resourceId;</span>
+<span class="fc" id="L259">    }</span>
 
     /**
      * @return True if there is a linked resource
      */
     public boolean hasResource() {
-<span class="pc bpc" id="L264" title="2 of 4 branches missed.">       return resource != null || resourceId != null;</span>
+<span class="pc bpc" id="L265" title="2 of 4 branches missed.">       return resource != null || resourceId != null;</span>
+    }
+
+    /**
+     * Get the project this block belongs to
+     *
+     * @return block owner
+     */
+    public Project getProject() {
+<span class="fc bfc" id="L274" title="All 2 branches covered.">        if (this.deliverableCardContent != null) {</span>
+            // The document is the deliverable of a card content
+<span class="fc" id="L276">            return this.deliverableCardContent.getProject();</span>
+//        } else if (this.resource != null) {
+            // The document is a resource
+//            return this.resource.getProject();
+        } else {
+            // such an orphan shouldn't exist...
+<span class="fc" id="L282">            return null;</span>
+        }
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -270,39 +289,39 @@ import javax.persistence.Transient;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L273" title="1 of 2 branches missed.">        if (other instanceof Document) {</span>
-<span class="fc" id="L274">            Document o = (Document) other;</span>
-<span class="fc" id="L275">            this.setTitle(o.getTitle());</span>
-<span class="fc" id="L276">            this.setTeaser(o.getTeaser());</span>
-<span class="fc" id="L277">            this.setAuthorityHolder(o.getAuthorityHolder());</span>
-<span class="fc" id="L278">        } else {</span>
-<span class="nc" id="L279">            throw new ColabMergeException(this, other);</span>
+<span class="pc bpc" id="L292" title="1 of 2 branches missed.">        if (other instanceof Document) {</span>
+<span class="fc" id="L293">            Document o = (Document) other;</span>
+<span class="fc" id="L294">            this.setTitle(o.getTitle());</span>
+<span class="fc" id="L295">            this.setTeaser(o.getTeaser());</span>
+<span class="fc" id="L296">            this.setAuthorityHolder(o.getAuthorityHolder());</span>
+<span class="fc" id="L297">        } else {</span>
+<span class="nc" id="L298">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L281">    }</span>
+<span class="fc" id="L300">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="fc bfc" id="L285" title="All 2 branches covered.">        if (this.deliverableCardContent != null) {</span>
+<span class="fc bfc" id="L304" title="All 2 branches covered.">        if (this.deliverableCardContent != null) {</span>
             // The document is the deliverable of a card content
-<span class="fc" id="L287">            return this.deliverableCardContent.getChannels();</span>
+<span class="fc" id="L306">            return this.deliverableCardContent.getChannels();</span>
 //        } else if (this.resource != null) {
             // The document is a resource
 //            return this.resource.getChannels();
         } else {
             // such an orphan shouldn't exist...
-<span class="fc" id="L293">            return Set.of();</span>
+<span class="fc" id="L312">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L299">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L318">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L305">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L324">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
@@ -312,7 +331,7 @@ import javax.persistence.Transient;
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-<span class="nc" id="L315">        return &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, teaser=&quot; + teaser + &quot;, authorityHolder=&quot;</span>
+<span class="nc" id="L334">        return &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, teaser=&quot; + teaser + &quot;, authorityHolder=&quot;</span>
             + authorityHolder;
     }
 

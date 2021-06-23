@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/15</span>
+                <span class='fraction'>0/21</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/15</span>
+                <span class='fraction'>0/19</span>
             </div>
         
             
@@ -113,7 +113,10 @@
 <a name='L54'></a><a href='#L54'>54</a>
 <a name='L55'></a><a href='#L55'>55</a>
 <a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -122,6 +125,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -136,21 +140,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -158,6 +148,24 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -165,8 +173,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
@@ -175,9 +181,10 @@
  *
  * Licensed under the MIT License
  */
-<span class="cstat-no" title="statement not covered" >import { createSlice, PayloadAction } from '@reduxjs/toolkit';</span>
+<span class="cstat-no" title="statement not covered" >import { createSlice } from '@reduxjs/toolkit';</span>
 import { Document } from 'colab-rest-client';
 <span class="cstat-no" title="statement not covered" >import * as API from '../API/api';</span>
+<span class="cstat-no" title="statement not covered" >import { processMessage } from '../ws/wsThunkActions';</span>
 //import {mapById} from '../helper';
 &nbsp;
 export type Status = 'UNSET' | 'LOADING' | 'READY';
@@ -191,21 +198,25 @@ const initialState: DocumentState = <span class="cstat-no" title="statement not 
   documents: {},
 };
 &nbsp;
+const updateDocument = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(s</span>tate: DocumentState, document: Document) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  if (document.id != null) {</span>
+<span class="cstat-no" title="statement not covered" >    state.documents[document.id] = document;</span>
+  }
+};
+const removeDocument = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(s</span>tate: DocumentState, documentId: number) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  delete state.documents[documentId];</span>
+};
+&nbsp;
 const documentsSlice = <span class="cstat-no" title="statement not covered" >createSlice({</span>
   name: 'documents',
   initialState,
-  reducers: {
-    updateDocument: <span class="fstat-no" title="function not covered" >(s</span>tate, action: PayloadAction&lt;Document&gt;) =&gt; {
-<span class="cstat-no" title="statement not covered" >      if (action.payload.id != null) {</span>
-<span class="cstat-no" title="statement not covered" >        state.documents[action.payload.id] = action.payload;</span>
-      }
-    },
-    removeDocument: <span class="fstat-no" title="function not covered" >(s</span>tate, action: PayloadAction&lt;number&gt;) =&gt; {
-<span class="cstat-no" title="statement not covered" >      delete state.documents[action.payload];</span>
-    },
-  },
+  reducers: {},
   extraReducers: <span class="fstat-no" title="function not covered" >builder </span>=&gt;
 <span class="cstat-no" title="statement not covered" >    builder</span>
+      .addCase(processMessage.fulfilled, <span class="fstat-no" title="function not covered" >(s</span>tate, action) =&gt; {
+<span class="cstat-no" title="statement not covered" >        action.payload.documents.updated.forEach(<span class="fstat-no" title="function not covered" >document </span>=&gt; <span class="cstat-no" title="statement not covered" >updateDocument(state, document))</span>;</span>
+<span class="cstat-no" title="statement not covered" >        action.payload.documents.deleted.forEach(<span class="fstat-no" title="function not covered" >entry </span>=&gt; <span class="cstat-no" title="statement not covered" >removeDocument(state, entry.id))</span>;</span>
+      })
       .addCase(API.getDocument.pending, <span class="fstat-no" title="function not covered" >(s</span>tate, action) =&gt; {
 <span class="cstat-no" title="statement not covered" >        state.documents[action.meta.arg] = null;</span>
       })
@@ -222,8 +233,6 @@ const documentsSlice = <span class="cstat-no" title="statement not covered" >cre
       }),
 });
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >{ updateDocument, removeDocument } = d</span>ocumentsSlice.actions;
-&nbsp;
 <span class="cstat-no" title="statement not covered" >export default documentsSlice.reducer;</span>
 &nbsp;</pre></td></tr></table></pre>
 
@@ -232,7 +241,7 @@ export const <span class="cstat-no" title="statement not covered" >{ updateDocum
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Jun 11 2021 08:18:27 GMT+0000 (Coordinated Universal Time)
+                at Wed Jun 23 2021 07:41:15 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

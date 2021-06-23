@@ -29,6 +29,13 @@ import javax.validation.constraints.NotNull;
      */
     @NotNull
     private Long id;
+
+    /**
+     * Some extra data
+     */
+    @NotNull
+    private Object payload;
+
     /**
      * Get the channels this entity shall be sent through.
      */
@@ -39,7 +46,7 @@ import javax.validation.constraints.NotNull;
      * @return index entry type
      */
     public String getType() {
-<span class="nc" id="L42">        return type;</span>
+<span class="nc" id="L49">        return type;</span>
     }
 
     /**
@@ -48,14 +55,14 @@ import javax.validation.constraints.NotNull;
      * @param type type of the indexed object
      */
     public void setType(String type) {
-<span class="nc" id="L51">        this.type = type;</span>
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L58">        this.type = type;</span>
+<span class="nc" id="L59">    }</span>
 
     /**
      * @return object id
      */
     public Long getId() {
-<span class="nc" id="L58">        return id;</span>
+<span class="nc" id="L65">        return id;</span>
     }
 
     /**
@@ -64,8 +71,26 @@ import javax.validation.constraints.NotNull;
      * @param id id of object
      */
     public void setId(Long id) {
-<span class="nc" id="L67">        this.id = id;</span>
-<span class="nc" id="L68">    }</span>
+<span class="nc" id="L74">        this.id = id;</span>
+<span class="nc" id="L75">    }</span>
+
+    /**
+     * Get payload
+     *
+     * @return the payload
+     */
+    public Object getPayload() {
+<span class="nc" id="L83">        return payload;</span>
+    }
+
+    /**
+     * Set the payload
+     *
+     * @param payload set extra data
+     */
+    public void setPayload(Object payload) {
+<span class="nc" id="L92">        this.payload = payload;</span>
+<span class="nc" id="L93">    }</span>
 
     /**
      * get channels
@@ -73,7 +98,7 @@ import javax.validation.constraints.NotNull;
      * @return channels
      */
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc" id="L76">        return channels;</span>
+<span class="nc" id="L101">        return channels;</span>
     }
 
     /**
@@ -82,8 +107,8 @@ import javax.validation.constraints.NotNull;
      * @param channels new channels
      */
     public void setChannels(Set&lt;WebsocketChannel&gt; channels) {
-<span class="nc" id="L85">        this.channels = channels;</span>
-<span class="nc" id="L86">    }</span>
+<span class="nc" id="L110">        this.channels = channels;</span>
+<span class="nc" id="L111">    }</span>
 
     /**
      * Create an new index entry based on the given wihId object
@@ -93,13 +118,14 @@ import javax.validation.constraints.NotNull;
      * @return index entry which represent the object
      */
     public static IndexEntry build(WithWebsocketChannels object) {
-<span class="nc" id="L96">        IndexEntry entry = new IndexEntry();</span>
+<span class="nc" id="L121">        IndexEntry entry = new IndexEntry();</span>
 
-<span class="nc" id="L98">        entry.type = object.getJsonDiscriminator();</span>
-<span class="nc" id="L99">        entry.id = object.getId();</span>
-<span class="nc" id="L100">        entry.channels = object.getChannels();</span>
+<span class="nc" id="L123">        entry.type = object.getJsonDiscriminator();</span>
+<span class="nc" id="L124">        entry.id = object.getId();</span>
+<span class="nc" id="L125">        entry.payload = object.getIndexEntryPayload();</span>
+<span class="nc" id="L126">        entry.channels = object.getChannels();</span>
 
-<span class="nc" id="L102">        return entry;</span>
+<span class="nc" id="L128">        return entry;</span>
     }
 
 }

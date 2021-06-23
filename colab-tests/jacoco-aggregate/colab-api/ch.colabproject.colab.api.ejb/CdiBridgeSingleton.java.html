@@ -6,9 +6,11 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.microchanges.live.LiveManager;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
 import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,18 +20,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author maxence
  */
-@ApplicationScoped
-<span class="fc" id="L22">public class CdiBridgeSingleton {</span>
+@Singleton
+@Startup
+<span class="fc" id="L25">public class CdiBridgeSingleton {</span>
 
     /**
      * Logger. Default level, set in logback.xml, is INFO
      */
-<span class="fc" id="L27">    private static final Logger logger = LoggerFactory.getLogger(CdiBridgeSingleton.class);</span>
-
-    /**
-     * Expose application-scoped instance to non-CDI world
-     */
-    private static CdiBridgeSingleton self;
+<span class="fc" id="L30">    private static final Logger logger = LoggerFactory.getLogger(CdiBridgeSingleton.class);</span>
 
     /**
      * Websockets
@@ -38,20 +36,17 @@ import org.slf4j.LoggerFactory;
     private WebsocketFacade websocketFacade;
 
     /**
+     * LiveManager
+     */
+    @Inject
+    private LiveManager liveManager;
+
+    /**
      * Initialize the non-CDI bean
      */
     public void init() {
-<span class="fc" id="L44">        CdiBridgeSingleton.self = this;</span>
-<span class="fc" id="L45">    }</span>
-
-    /**
-     * Give non-CDI world access to this bean
-     *
-     * @return singleton instance
-     */
-    public static CdiBridgeSingleton getInstance() {
-<span class="nc" id="L53">        return CdiBridgeSingleton.self;</span>
-    }
+        /* no iop */
+<span class="fc" id="L49">    }</span>
 
     /**
      * Bridge to {@link WebsocketFacade#getSubscrciptionsCount() }
@@ -59,8 +54,33 @@ import org.slf4j.LoggerFactory;
      * @return the list of channels and the number of sessions subscribed to each of them
      */
     public Map&lt;WebsocketEffectiveChannel, Integer&gt; getSubscrciptionsCount() {
-<span class="nc" id="L62">        logger.debug(&quot;Get bridged Subscriptions&quot;);</span>
-<span class="nc" id="L63">        return websocketFacade.getSubscrciptionsCount();</span>
+<span class="nc" id="L57">        logger.debug(&quot;Get bridged Subscriptions&quot;);</span>
+<span class="nc" id="L58">        return websocketFacade.getSubscrciptionsCount();</span>
     }
+
+    /**
+     * Bridge to {@link LiveManager#cancelDebounce(java.lang.Long) }
+     * &lt;p&gt;
+     * Cancel any debounce call related to the given blockId
+     *
+     * @param id id of the block
+     *
+     * @return true if there was something to cancel
+     */
+    public Boolean cancelDebounce(Long id) {
+<span class="nc" id="L71">        return liveManager.cancelDebounce(id);</span>
+    }
+
+    /**
+     * Bridge to {@link LiveManager#process(java.lang.Long) }.
+     * &lt;p&gt;
+     * Process all pending changes and save new value to database.
+     *
+     * @param id id of the block to process
+     */
+    public void processMicroChanges(Long id) {
+<span class="nc" id="L82">        liveManager.process(id);</span>
+<span class="nc" id="L83">    }</span>
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

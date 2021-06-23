@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
     public void onDestroy(Object o) {
 <span class="nc bnc" id="L55" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
 <span class="nc" id="L56">            logger.trace(&quot;Destroy {}&quot;, o);</span>
-<span class="nc" id="L57">            transactionManager.registerDelete((WithWebsocketChannels) o);</span>
+<span class="nc" id="L57">            transactionManager.registerDeletion((WithWebsocketChannels) o);</span>
         }
 <span class="nc" id="L59">    }</span>
 }

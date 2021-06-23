@@ -3,6 +3,9 @@ ch.colabproject.colab.api
 ch.colabproject.colab.api.ejb
 ch.colabproject.colab.api.ejb.monitoring
 ch.colabproject.colab.api.exceptions
+ch.colabproject.colab.api.microchanges.live
+ch.colabproject.colab.api.microchanges.model
+ch.colabproject.colab.api.microchanges.tools
 ch.colabproject.colab.api.model
 ch.colabproject.colab.api.model.card
 ch.colabproject.colab.api.model.document
