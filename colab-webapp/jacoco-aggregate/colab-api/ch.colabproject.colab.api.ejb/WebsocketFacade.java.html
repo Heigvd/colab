@@ -489,7 +489,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L489">                    subscribers.forEach(session -&gt; {</span>
 <span class="nc" id="L490">                        messages.forEach(message -&gt; {</span>
                             try {
-<span class="nc" id="L492">                                logger.debug(&quot;Send {} to {}&quot;, message, session.getId());</span>
+<span class="nc" id="L492">                                logger.debug(&quot;Send {} to {} ({})&quot;, message, session.getId(), channel);</span>
 <span class="nc bnc" id="L493" title="All 2 branches missed.">                                if (session.isOpen()) {</span>
 <span class="nc" id="L494">                                    session.getBasicRemote().sendText(message);</span>
                                 }

@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.team.Role;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
@@ -43,7 +44,7 @@ import javax.persistence.Transient;
 @NamedQuery(
     name = &quot;Project.findProjectByUser&quot;,
     query = &quot;SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId&quot;)
-<span class="nc" id="L46">public class Project implements ColabEntity, WithWebsocketChannels {</span>
+<span class="nc" id="L47">public class Project implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -87,16 +88,23 @@ import javax.persistence.Transient;
     private Long rootCardId;
 
     /**
+     * Roles
+     */
+    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List&lt;Role&gt; roles;
+
+    /**
      * List of team members
      */
-<span class="nc" id="L92">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L100">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;TeamMember&gt; teamMembers = new ArrayList&lt;&gt;();
 
     /**
      * List of elements to be defined within the cards
      */
-<span class="nc" id="L99">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="nc" id="L107">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;AbstractCardType&gt; elementsToBeDefined = new ArrayList&lt;&gt;();
 
@@ -108,22 +116,22 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L111">        return id;</span>
+<span class="nc" id="L119">        return id;</span>
     }
 
     /**
      * @param id the project ID
      */
     public void setId(Long id) {
-<span class="nc" id="L118">        this.id = id;</span>
-<span class="nc" id="L119">    }</span>
+<span class="nc" id="L126">        this.id = id;</span>
+<span class="nc" id="L127">    }</span>
 
     /**
      *
      * @return the project name
      */
     public String getName() {
-<span class="nc" id="L126">        return name;</span>
+<span class="nc" id="L134">        return name;</span>
     }
 
     /**
@@ -132,50 +140,50 @@ import javax.persistence.Transient;
      * @param name the project name
      */
     public void setName(String name) {
-<span class="nc" id="L135">        this.name = name;</span>
-<span class="nc" id="L136">    }</span>
+<span class="nc" id="L143">        this.name = name;</span>
+<span class="nc" id="L144">    }</span>
 
     /**
      * @return the description
      */
     public String getDescription() {
-<span class="nc" id="L142">        return description;</span>
+<span class="nc" id="L150">        return description;</span>
     }
 
     /**
      * @param description the description to set
      */
     public void setDescription(String description) {
-<span class="nc" id="L149">        this.description = description;</span>
-<span class="nc" id="L150">    }</span>
+<span class="nc" id="L157">        this.description = description;</span>
+<span class="nc" id="L158">    }</span>
 
     /**
      * @return the concretization type : is it a concrete project or an abstract model
      */
     public ConcretizationCategory getConcretizationCategory() {
-<span class="nc" id="L156">        return concretizationCategory;</span>
+<span class="nc" id="L164">        return concretizationCategory;</span>
     }
 
     /**
      * @param category the concretization type : is it a concrete project or an abstract model
      */
     public void setConcretizationCategory(ConcretizationCategory category) {
-<span class="nc" id="L163">        this.concretizationCategory = category;</span>
-<span class="nc" id="L164">    }</span>
+<span class="nc" id="L171">        this.concretizationCategory = category;</span>
+<span class="nc" id="L172">    }</span>
 
     /**
      * @return the root card of the project that contains every other cards
      */
     public Card getRootCard() {
-<span class="nc" id="L170">        return rootCard;</span>
+<span class="nc" id="L178">        return rootCard;</span>
     }
 
     /**
      * @param rootCard the root card of the project that contains every other cards
      */
     public void setRootCard(Card rootCard) {
-<span class="nc" id="L177">        this.rootCard = rootCard;</span>
-<span class="nc" id="L178">    }</span>
+<span class="nc" id="L185">        this.rootCard = rootCard;</span>
+<span class="nc" id="L186">    }</span>
 
     /**
      * get the id of the root card. To be sent to client
@@ -183,10 +191,10 @@ import javax.persistence.Transient;
      * @return id of the root card or null
      */
     public Long getRootCardId() {
-<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (this.getRootCard() != null) {</span>
-<span class="nc" id="L187">            return this.getRootCard().getId();</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (this.getRootCard() != null) {</span>
+<span class="nc" id="L195">            return this.getRootCard().getId();</span>
         } else {
-<span class="nc" id="L189">            return rootCardId;</span>
+<span class="nc" id="L197">            return rootCardId;</span>
         }
     }
 
@@ -196,8 +204,8 @@ import javax.persistence.Transient;
      * @param rootCardId the rootCardId to set
      */
     public void setRootCardId(Long rootCardId) {
-<span class="nc" id="L199">        this.rootCardId = rootCardId;</span>
-<span class="nc" id="L200">    }</span>
+<span class="nc" id="L207">        this.rootCardId = rootCardId;</span>
+<span class="nc" id="L208">    }</span>
 
     /**
      * get team members
@@ -205,7 +213,7 @@ import javax.persistence.Transient;
      * @return members
      */
     public List&lt;TeamMember&gt; getTeamMembers() {
-<span class="nc" id="L208">        return teamMembers;</span>
+<span class="nc" id="L216">        return teamMembers;</span>
     }
 
     /**
@@ -214,22 +222,58 @@ import javax.persistence.Transient;
      * @param teamMembers list of members
      */
     public void setTeamMembers(List&lt;TeamMember&gt; teamMembers) {
-<span class="nc" id="L217">        this.teamMembers = teamMembers;</span>
-<span class="nc" id="L218">    }</span>
+<span class="nc" id="L225">        this.teamMembers = teamMembers;</span>
+<span class="nc" id="L226">    }</span>
+
+    /**
+     * Get the value of roles
+     *
+     * @return the value of roles
+     */
+    public List&lt;Role&gt; getRoles() {
+<span class="nc" id="L234">        return roles;</span>
+    }
+
+    /**
+     * Get a role by its name
+     *
+     * @param name name of the role
+     *
+     * @return the role or null
+     */
+    public Role getRoleByName(String name) {
+<span class="nc bnc" id="L245" title="All 2 branches missed.">        if (name != null) {</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">            for (Role r : this.roles) {</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">                if (name.equals(r.getName())) {</span>
+<span class="nc" id="L248">                    return r;</span>
+                }
+<span class="nc" id="L250">            }</span>
+        }
+<span class="nc" id="L252">        return null;</span>
+    }
+
+    /**
+     * Set the value of roles
+     *
+     * @param roles new value of roles
+     */
+    public void setRoles(List&lt;Role&gt; roles) {
+<span class="nc" id="L261">        this.roles = roles;</span>
+<span class="nc" id="L262">    }</span>
 
     /**
      * @return the elementsToDefine
      */
     public List&lt;AbstractCardType&gt; getElementsToBeDefined() {
-<span class="nc" id="L224">        return elementsToBeDefined;</span>
+<span class="nc" id="L268">        return elementsToBeDefined;</span>
     }
 
     /**
      * @param elements the elementsToDefine to set
      */
     public void setElementsToBeDefined(List&lt;AbstractCardType&gt; elements) {
-<span class="nc" id="L231">        this.elementsToBeDefined = elements;</span>
-<span class="nc" id="L232">    }</span>
+<span class="nc" id="L275">        this.elementsToBeDefined = elements;</span>
+<span class="nc" id="L276">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -239,15 +283,15 @@ import javax.persistence.Transient;
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L242" title="All 2 branches missed.">        if (other instanceof Project) {</span>
-<span class="nc" id="L243">            Project o = (Project) other;</span>
-<span class="nc" id="L244">            this.setName(o.getName());</span>
-<span class="nc" id="L245">            this.setDescription(o.getDescription());</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">        if (other instanceof Project) {</span>
+<span class="nc" id="L287">            Project o = (Project) other;</span>
+<span class="nc" id="L288">            this.setName(o.getName());</span>
+<span class="nc" id="L289">            this.setDescription(o.getDescription());</span>
             // TODO see if concretizationCategory should be there
-<span class="nc" id="L247">        } else {</span>
-<span class="nc" id="L248">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L291">        } else {</span>
+<span class="nc" id="L292">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L250">    }</span>
+<span class="nc" id="L294">    }</span>
 
     /**
      * Project if propagated through its own overview channel.
@@ -256,24 +300,24 @@ import javax.persistence.Transient;
      */
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc" id="L259">        return Set.of(ProjectOverviewChannel.build(this));</span>
+<span class="nc" id="L303">        return Set.of(ProjectOverviewChannel.build(this));</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L264">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L308">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L270">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L314">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L275">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, descr=&quot; + description + &quot;, category=&quot;</span>
-<span class="nc" id="L276">            + concretizationCategory + &quot;, rootCardId=&quot; + getRootCardId() + '}';</span>
+<span class="nc" id="L319">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, descr=&quot; + description + &quot;, category=&quot;</span>
+<span class="nc" id="L320">            + concretizationCategory + &quot;, rootCardId=&quot; + getRootCardId() + '}';</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

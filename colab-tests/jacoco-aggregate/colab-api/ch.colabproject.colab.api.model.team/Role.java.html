@@ -8,24 +8,37 @@ package ch.colabproject.colab.api.model.team;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotBlank;
 
 /**
  * Not used yet
  *
  * @author maxence
  */
-//@Entity
-<span class="nc" id="L21">public class Role implements ColabEntity {</span>
+@Entity
+<span class="fc" id="L35">public class Role implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Role ID.
      */
@@ -34,20 +47,46 @@ import javax.persistence.Id;
     private Long id;
 
     /**
-     * Name of the role
+     * Name of the role. Can not be null or blank
      */
+    @NotBlank
     private String name;
+
+    /**
+     * The project
+     */
+    @ManyToOne
+    @JsonbTransient
+    private Project project;
+
+    /**
+     * The project ID (serialization sugar)
+     */
+    @Transient
+    private Long projectId;
+
+    /**
+     * List of members who are part of this role
+     */
+    @ManyToMany
+    @JsonbTransient
+    private List&lt;TeamMember&gt; members;
+
+    /**
+     * Id of the members, For deserialization only
+     */
+    @Transient
+    private List&lt;Long&gt; memberIds;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the project ID
      */
     @Override
     public Long getId() {
-<span class="nc" id="L50">        return id;</span>
+<span class="fc" id="L89">        return id;</span>
     }
 
     /**
@@ -56,8 +95,8 @@ import javax.persistence.Id;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L59">        this.id = id;</span>
-<span class="nc" id="L60">    }</span>
+<span class="fc" id="L98">        this.id = id;</span>
+<span class="fc" id="L99">    }</span>
 
     /**
      * Get role name
@@ -65,7 +104,7 @@ import javax.persistence.Id;
      * @return the name
      */
     public String getName() {
-<span class="nc" id="L68">        return name;</span>
+<span class="fc" id="L107">        return name;</span>
     }
 
     /**
@@ -74,17 +113,122 @@ import javax.persistence.Id;
      * @param name new role name
      */
     public void setName(String name) {
-<span class="nc" id="L77">        this.name = name;</span>
-<span class="nc" id="L78">    }</span>
+<span class="fc" id="L116">        this.name = name;</span>
+<span class="fc" id="L117">    }</span>
+
+    /**
+     * @return the project
+     */
+    public Project getProject() {
+<span class="fc" id="L123">        return project;</span>
+    }
+
+    /**
+     * @param project the project
+     */
+    public void setProject(Project project) {
+<span class="fc" id="L130">        this.project = project;</span>
+<span class="fc" id="L131">    }</span>
+
+    /**
+     * get the project id. To be sent to client
+     *
+     * @return id of the project or null
+     */
+    public Long getProjectId() {
+<span class="fc bfc" id="L139" title="All 2 branches covered.">        if (this.project != null) {</span>
+<span class="fc" id="L140">            return this.project.getId();</span>
+        } else {
+<span class="fc" id="L142">            return projectId;</span>
+        }
+    }
+
+    /**
+     * set the project id. For serialization only
+     *
+     * @param id the id of the project
+     */
+    public void setProjectId(Long id) {
+<span class="fc" id="L152">        this.projectId = id;</span>
+<span class="fc" id="L153">    }</span>
+
+    /**
+     * Get members
+     *
+     * @return members
+     */
+    public List&lt;TeamMember&gt; getMembers() {
+<span class="fc" id="L161">        return members;</span>
+    }
+
+    /**
+     * Set the list of members
+     *
+     * @param members list of members
+     */
+    public void setMembers(List&lt;TeamMember&gt; members) {
+<span class="nc" id="L170">        this.members = members;</span>
+<span class="nc" id="L171">    }</span>
+
+    /**
+     * Get ids of the teammembers
+     *
+     * @return list of ids
+     */
+    public List&lt;Long&gt; getMemberIds() {
+<span class="fc bfc" id="L179" title="All 2 branches covered.">        if (this.members != null) {</span>
+<span class="fc" id="L180">            return members.stream()</span>
+<span class="fc" id="L181">                .map(member -&gt; member.getId())</span>
+<span class="fc" id="L182">                .collect(Collectors.toList());</span>
+        }
+<span class="fc" id="L184">        return memberIds;</span>
+    }
+
+    /**
+     * The the list of memberId
+     *
+     * @param memberIds id of members
+     */
+    public void setMemberIds(List&lt;Long&gt; memberIds) {
+<span class="fc" id="L193">        this.memberIds = memberIds;</span>
+<span class="fc" id="L194">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        /* no-op */
-<span class="nc" id="L87">    }</span>
+<span class="nc bnc" id="L201" title="All 2 branches missed.">        if (other instanceof Role) {</span>
+<span class="nc" id="L202">            Role o = (Role) other;</span>
+<span class="nc" id="L203">            this.setName(o.getName());</span>
+<span class="nc" id="L204">        } else {</span>
+<span class="nc" id="L205">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L207">    }</span>
 
+    @Override
+    public Set&lt;WebsocketChannel&gt; getChannels() {
+<span class="pc bpc" id="L211" title="1 of 2 branches missed.">        if (this.getProject() != null) {</span>
+<span class="fc" id="L212">            return Set.of(ProjectContentChannel.build(project));</span>
+        } else {
+<span class="nc" id="L214">            return Set.of();</span>
+        }
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L220">        return EntityHelper.hashCode(this);</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
+    public boolean equals(Object obj) {
+<span class="fc" id="L226">        return EntityHelper.equals(this, obj);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L231">        return &quot;Role{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, project=&quot; + project + &quot;, projectId=&quot; + projectId + &quot;, members=&quot; + members + '}';</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

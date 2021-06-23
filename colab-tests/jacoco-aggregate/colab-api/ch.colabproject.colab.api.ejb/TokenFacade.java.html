@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
      * to create team member
      */
     @Inject
-    private ProjectFacade projectFacade;
+    private TeamFacade teamFacade;
 
     /**
      * To check access rights
@@ -254,36 +254,39 @@ import org.slf4j.LoggerFactory;
      *
      * @param project   the project to join
      * @param recipient email address to send invitation to
+     *
+     * @return the pending teamMember of null if none was sent
      */
-    public void sendMembershipInvitation(Project project, String recipient) {
-<span class="fc" id="L259">        User currentUser = securityFacade.assertAndGetCurrentUser();</span>
+    public TeamMember sendMembershipInvitation(Project project, String recipient) {
+<span class="fc" id="L261">        User currentUser = securityFacade.assertAndGetCurrentUser();</span>
         // user must have write right on the project
-<span class="fc" id="L261">        securityFacade.assertProjectWriteRight(project);</span>
+<span class="fc" id="L263">        securityFacade.assertProjectWriteRight(project);</span>
 
-<span class="fc" id="L263">        InvitationToken token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);</span>
-<span class="pc bpc" id="L264" title="1 of 2 branches missed.">        if (token == null) {</span>
+<span class="fc" id="L265">        InvitationToken token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);</span>
+<span class="pc bpc" id="L266" title="1 of 2 branches missed.">        if (token == null) {</span>
             // create a member and link it to the project, but do not link it to any user
             // this link will be set during token consumtion
-<span class="fc" id="L267">            TeamMember newMember = projectFacade.addMember(project, null);</span>
-<span class="fc" id="L268">            token = new InvitationToken();</span>
+<span class="fc" id="L269">            TeamMember newMember = teamFacade.addMember(project, null);</span>
+<span class="fc" id="L270">            token = new InvitationToken();</span>
 
-<span class="fc" id="L270">            token.setTeamMember(newMember);</span>
+<span class="fc" id="L272">            token.setTeamMember(newMember);</span>
             // never expire
-<span class="fc" id="L272">            token.setExpirationDate(null);</span>
-<span class="fc" id="L273">            token.setAuthenticationRequired(Boolean.TRUE);</span>
-<span class="fc" id="L274">            token.setRecipient(recipient);</span>
+<span class="fc" id="L274">            token.setExpirationDate(null);</span>
+<span class="fc" id="L275">            token.setAuthenticationRequired(Boolean.TRUE);</span>
+<span class="fc" id="L276">            token.setRecipient(recipient);</span>
 
-<span class="fc" id="L276">            tokenDao.persistToken(token);</span>
+<span class="fc" id="L278">            tokenDao.persistToken(token);</span>
         }
 
-<span class="fc" id="L279">        token.setSender(currentUser.getDisplayName());</span>
+<span class="fc" id="L281">        token.setSender(currentUser.getDisplayName());</span>
         try {
-<span class="fc" id="L281">            sendTokenByEmail(token, recipient);</span>
-<span class="nc" id="L282">        } catch (MessagingException ex) {</span>
-<span class="nc" id="L283">            logger.error(&quot;Failed to send pssword reset email&quot;, ex);</span>
-<span class="nc" id="L284">            throw HttpErrorMessage.smtpError();</span>
-<span class="fc" id="L285">        }</span>
-<span class="fc" id="L286">    }</span>
+<span class="fc" id="L283">            sendTokenByEmail(token, recipient);</span>
+<span class="nc" id="L284">        } catch (MessagingException ex) {</span>
+<span class="nc" id="L285">            logger.error(&quot;Failed to send pssword reset email&quot;, ex);</span>
+<span class="nc" id="L286">            throw HttpErrorMessage.smtpError();</span>
+<span class="fc" id="L287">        }</span>
+<span class="fc" id="L288">        return token.getTeamMember();</span>
+    }
 
     /**
      * Fetch token with given id from DAO. If it's outdated, it will be destroyed and null will be
@@ -294,12 +297,12 @@ import org.slf4j.LoggerFactory;
      * @return token if it exists and is not outdated, null otherwise
      */
     public Token getNotExpiredToken(Long id) {
-<span class="fc" id="L297">        Token token = tokenDao.getToken(id);</span>
-<span class="pc bpc" id="L298" title="2 of 4 branches missed.">        if (token != null &amp;&amp; token.isOutdated()) {</span>
-<span class="nc" id="L299">            tokenDao.deleteToken(token);</span>
-<span class="nc" id="L300">            return null;</span>
+<span class="fc" id="L300">        Token token = tokenDao.getToken(id);</span>
+<span class="pc bpc" id="L301" title="2 of 4 branches missed.">        if (token != null &amp;&amp; token.isOutdated()) {</span>
+<span class="nc" id="L302">            tokenDao.deleteToken(token);</span>
+<span class="nc" id="L303">            return null;</span>
         } else {
-<span class="fc" id="L302">            return token;</span>
+<span class="fc" id="L305">            return token;</span>
         }
     }
 }

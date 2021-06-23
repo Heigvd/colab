@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TeamFacade.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.ejb</a> &gt; <span class="el_source">TeamFacade.java</span></div><h1>TeamFacade.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.ejb;
+
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.Role;
+import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.project.ProjectDao;
+import ch.colabproject.colab.api.persistence.project.TeamDao;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.List;
+import java.util.Objects;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Some logic to manage project teams
+ *
+ * @author maxence
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L31">public class TeamFacade {</span>
+
+    /** logger */
+<span class="nc" id="L34">    private static final Logger logger = LoggerFactory.getLogger(TeamFacade.class);</span>
+
+    /** * Project persistence */
+    @Inject
+    private ProjectDao projectDao;
+
+    /** Team persistence */
+    @Inject
+    private TeamDao teamDao;
+
+    /** * Token Facade */
+    @Inject
+    private TokenFacade tokenFacade;
+
+    // *********************************************************************************************
+    // team members
+    // *********************************************************************************************
+    /**
+     * Add given user to the project teams
+     *
+     * @param project the project
+     * @param user    the user
+     *
+     * @return the brand new member
+     */
+    public TeamMember addMember(Project project, User user) {
+<span class="nc" id="L60">        logger.debug(&quot;Add member {} in {}&quot;, user, project);</span>
+<span class="nc" id="L61">        TeamMember teamMember = new TeamMember();</span>
+
+        // todo check if user is already member of the team
+<span class="nc" id="L64">        teamMember.setUser(user);</span>
+<span class="nc" id="L65">        teamMember.setProject(project);</span>
+<span class="nc" id="L66">        project.getTeamMembers().add(teamMember);</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (user != null) {</span>
+<span class="nc" id="L68">            user.getTeamMembers().add(teamMember);</span>
+        }
+<span class="nc" id="L70">        return teamMember;</span>
+    }
+
+    /**
+     * Get all members of the given project
+     *
+     * @param id id of the project
+     *
+     * @return all members of the project team
+     */
+    public List&lt;TeamMember&gt; getTeamMembers(Long id) {
+<span class="nc" id="L81">        Project project = projectDao.getProject(id);</span>
+<span class="nc" id="L82">        logger.debug(&quot;Get team members: {}&quot;, project);</span>
+<span class="nc" id="L83">        return project.getTeamMembers();</span>
+    }
+
+    /**
+     * Send invitation
+     *
+     * @param projectId if of the project
+     * @param email     send invitation to this address
+     *
+     * @return the pending new teamMember
+     */
+    public TeamMember invite(Long projectId, String email) {
+<span class="nc" id="L95">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L96">        logger.debug(&quot;Invite {} to join {}&quot;, email, project);</span>
+<span class="nc" id="L97">        return tokenFacade.sendMembershipInvitation(project, email);</span>
+    }
+
+    // *********************************************************************************************
+    // Roles
+    // *********************************************************************************************
+    /**
+     * Get all the roles defined in the given project
+     *
+     * @param id the project
+     *
+     * @return list of roles
+     */
+    public List&lt;Role&gt; getProjectRoles(Long id) {
+<span class="nc" id="L111">        Project project = projectDao.getProject(id);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (project != null) {</span>
+<span class="nc" id="L113">            return project.getRoles();</span>
+        } else {
+<span class="nc" id="L115">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+    }
+
+    /**
+     * Create a role. The role must have a projectId set.
+     *
+     * @param role role to create
+     *
+     * @return the brand new persisted role
+     */
+    public Role createRole(Role role) {
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        if (role.getProjectId() != null) {</span>
+<span class="nc" id="L128">            Project project = projectDao.getProject(role.getProjectId());</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">            if (project != null</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">                &amp;&amp; project.getRoleByName(role.getName()) == null) {</span>
+<span class="nc" id="L131">                project.getRoles().add(role);</span>
+<span class="nc" id="L132">                role.setProject(project);</span>
+<span class="nc" id="L133">                return role;</span>
+            }
+        }
+<span class="nc" id="L136">        throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+    }
+
+    /**
+     * Give a role to someone. The role and the member must belong to the very same project.
+     *
+     * @param roleId   id of the role
+     * @param memberId id of the teamMember
+     */
+    public void giveRole(Long roleId, Long memberId) {
+<span class="nc" id="L146">        Role role = teamDao.findRole(roleId);</span>
+<span class="nc" id="L147">        TeamMember member = teamDao.findTeamMember(memberId);</span>
+<span class="nc bnc" id="L148" title="All 4 branches missed.">        if (role != null &amp;&amp; member != null) {</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">            if (Objects.equals(role.getProject(), member.getProject())) {</span>
+<span class="nc" id="L150">                List&lt;TeamMember&gt; members = role.getMembers();</span>
+<span class="nc" id="L151">                List&lt;Role&gt; roles = member.getRoles();</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">                if (!members.contains(member)) {</span>
+<span class="nc" id="L153">                    members.add(member);</span>
+                }
+<span class="nc bnc" id="L155" title="All 2 branches missed.">                if (!roles.contains(role)) {</span>
+<span class="nc" id="L156">                    roles.add(role);</span>
+                }
+<span class="nc" id="L158">            } else {</span>
+<span class="nc" id="L159">                throw HttpErrorMessage.badRequest();</span>
+            }
+        }
+<span class="nc" id="L162">    }</span>
+
+    /**
+     * Remove a role from someone.
+     *
+     * @param roleId   id of the role
+     * @param memberId id of the member
+     */
+    public void removeRole(Long roleId, Long memberId) {
+<span class="nc" id="L171">        Role role = teamDao.findRole(roleId);</span>
+<span class="nc" id="L172">        TeamMember member = teamDao.findTeamMember(memberId);</span>
+<span class="nc bnc" id="L173" title="All 4 branches missed.">        if (role != null &amp;&amp; member != null) {</span>
+<span class="nc" id="L174">            List&lt;TeamMember&gt; members = role.getMembers();</span>
+<span class="nc" id="L175">            List&lt;Role&gt; roles = member.getRoles();</span>
+<span class="nc" id="L176">            members.remove(member);</span>
+<span class="nc" id="L177">            roles.remove(role);</span>
+        }
+<span class="nc" id="L179">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -13,12 +13,15 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
@@ -34,7 +37,7 @@ import javax.persistence.Transient;
         query = &quot;SELECT true FROM TeamMember a &quot;
                 + &quot;JOIN TeamMember b ON a.project.id = b.project.id &quot;
                 + &quot;WHERE a.user.id = :aUserId AND b.user.id = :bUserId&quot;)
-<span class="fc" id="L37">public class TeamMember implements ColabEntity, WithWebsocketChannels {</span>
+<span class="fc" id="L40">public class TeamMember implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -69,6 +72,20 @@ import javax.persistence.Transient;
     @JsonbTransient
     private Project project;
 
+
+    /**
+     * The roles
+     */
+    @ManyToMany
+    @JsonbTransient
+    private List&lt;Role&gt; roles;
+
+    /**
+     * Id of the roles. For deserialization only
+     */
+    @Transient
+    private List&lt;Long&gt; roleIds;
+
     /**
      * The project ID (serialization sugar)
      */
@@ -84,29 +101,29 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L87">        return id;</span>
+<span class="fc" id="L104">        return id;</span>
     }
 
     /**
      * @param id the member ID
      */
     public void setId(Long id) {
-<span class="fc" id="L94">        this.id = id;</span>
-<span class="fc" id="L95">    }</span>
+<span class="fc" id="L111">        this.id = id;</span>
+<span class="fc" id="L112">    }</span>
 
     /**
      * @return the user
      */
     public User getUser() {
-<span class="fc" id="L101">        return user;</span>
+<span class="fc" id="L118">        return user;</span>
     }
 
     /**
      * @param user the user
      */
     public void setUser(User user) {
-<span class="fc" id="L108">        this.user = user;</span>
-<span class="fc" id="L109">    }</span>
+<span class="fc" id="L125">        this.user = user;</span>
+<span class="fc" id="L126">    }</span>
 
     /**
      * get the user id. To be sent to client
@@ -114,10 +131,10 @@ import javax.persistence.Transient;
      * @return id of the user or null
      */
     public Long getUserId() {
-<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (this.user != null) {</span>
-<span class="fc" id="L118">            return this.user.getId();</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">        if (this.user != null) {</span>
+<span class="fc" id="L135">            return this.user.getId();</span>
         } else {
-<span class="fc" id="L120">            return userId;</span>
+<span class="fc" id="L137">            return userId;</span>
         }
     }
 
@@ -127,22 +144,22 @@ import javax.persistence.Transient;
      * @param id the id of the user
      */
     public void setUserId(Long id) {
-<span class="fc" id="L130">        this.userId = id;</span>
-<span class="fc" id="L131">    }</span>
+<span class="fc" id="L147">        this.userId = id;</span>
+<span class="fc" id="L148">    }</span>
 
     /**
      * @return the project
      */
     public Project getProject() {
-<span class="fc" id="L137">        return project;</span>
+<span class="fc" id="L154">        return project;</span>
     }
 
     /**
      * @param project the project
      */
     public void setProject(Project project) {
-<span class="fc" id="L144">        this.project = project;</span>
-<span class="fc" id="L145">    }</span>
+<span class="fc" id="L161">        this.project = project;</span>
+<span class="fc" id="L162">    }</span>
 
     /**
      * get the project id. To be sent to client
@@ -150,10 +167,10 @@ import javax.persistence.Transient;
      * @return id of the project or null
      */
     public Long getProjectId() {
-<span class="fc bfc" id="L153" title="All 2 branches covered.">        if (this.project != null) {</span>
-<span class="fc" id="L154">            return this.project.getId();</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">        if (this.project != null) {</span>
+<span class="fc" id="L171">            return this.project.getId();</span>
         } else {
-<span class="fc" id="L156">            return projectId;</span>
+<span class="fc" id="L173">            return projectId;</span>
         }
     }
 
@@ -163,8 +180,50 @@ import javax.persistence.Transient;
      * @param id the id of the project
      */
     public void setProjectId(Long id) {
-<span class="fc" id="L166">        this.projectId = id;</span>
-<span class="fc" id="L167">    }</span>
+<span class="fc" id="L183">        this.projectId = id;</span>
+<span class="fc" id="L184">    }</span>
+
+    /**
+     * Get roles
+     *
+     * @return roles
+     */
+    public List&lt;Role&gt; getRoles() {
+<span class="fc" id="L192">        return roles;</span>
+    }
+
+    /**
+     * Set the list of roles
+     *
+     * @param roles list of roles
+     */
+    public void setRoles(List&lt;Role&gt; roles) {
+<span class="nc" id="L201">        this.roles = roles;</span>
+<span class="nc" id="L202">    }</span>
+
+    /**
+     * Get ids of the roles.
+     *
+     * @return list of ids
+     */
+    public List&lt;Long&gt; getRoleIds() {
+<span class="fc bfc" id="L210" title="All 2 branches covered.">        if (this.roles != null) {</span>
+<span class="fc" id="L211">            return roles.stream()</span>
+<span class="fc" id="L212">                .map(role -&gt; role.getId())</span>
+<span class="fc" id="L213">                .collect(Collectors.toList());</span>
+        }
+<span class="fc" id="L215">        return roleIds;</span>
+    }
+
+    /**
+     * The the list of roleId
+     *
+     * @param roleIds id of roles
+     */
+    public void setRoleIds(List&lt;Long&gt; roleIds) {
+<span class="fc" id="L224">        this.roleIds = roleIds;</span>
+<span class="fc" id="L225">    }</span>
+
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -173,32 +232,32 @@ import javax.persistence.Transient;
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         /* no-op */
-<span class="nc" id="L176">    }</span>
+<span class="nc" id="L235">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="pc bpc" id="L180" title="1 of 2 branches missed.">        if (this.project != null) {</span>
-<span class="fc" id="L181">            return this.project.getChannels();</span>
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">        if (this.project != null) {</span>
+<span class="fc" id="L240">            return this.project.getChannels();</span>
         } else {
-<span class="nc" id="L183">            return Set.of();</span>
+<span class="nc" id="L242">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L189">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L248">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L195">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L254">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L200">        return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + getUserId() + &quot;, projectId=&quot;</span>
-<span class="fc" id="L201">                + getProjectId() + &quot;}&quot;;</span>
+<span class="fc" id="L259">        return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + getUserId() + &quot;, projectId=&quot;</span>
+<span class="fc" id="L260">                + getProjectId() + &quot;}&quot;;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
