@@ -489,7 +489,7 @@ public class WebsocketFacade {
                     subscribers.forEach(session -> {
                         messages.forEach(message -> {
                             try {
-                                logger.debug("Send {} to {}", message, session.getId());
+                                logger.debug("Send {} to {} ({})", message, session.getId(), channel);
                                 if (session.isOpen()) {
                                     session.getBasicRemote().sendText(message);
                                 }

@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.tests.rest.card;
 
+import ch.colabproject.colab.api.ejb.WebsocketFacade;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
@@ -30,6 +31,8 @@ import java.util.Set;
 import javax.websocket.DeploymentException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 /**
  * Testing of card type controller from a client point of view
@@ -193,7 +196,6 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         // wait for propagation
         TestHelper.waitForMessagesAndAssert(wsClient, 1, 5, WsUpdateMessage.class).get(0);
 
-
         // -----
         // Create type in project one
         // -----
@@ -204,7 +206,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         // project channel
         List<WsUpdateMessage> wsUpdate = TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class);
         // combine messages
-        Set<WithWebsocketChannels>  updated = new HashSet<>();
+        Set<WithWebsocketChannels> updated = new HashSet<>();
         updated.addAll(wsUpdate.get(0).getUpdated());
         updated.addAll(wsUpdate.get(1).getUpdated());
 
@@ -237,7 +239,6 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         // consume 2 websocket messages (new invitation; new team member)
         TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class).get(0);
         this.client.websocketRestEndpoint.subscribeToProjectChannel(projectTwo.getId(), wsClient.getSessionId());
-
 
         // pizza consume 1 websocket message (new team member)
         TestHelper.waitForMessagesAndAssert(pizzaWsClient, 1, 5, WsUpdateMessage.class).get(0);
@@ -276,12 +277,12 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         client.cardTypeRestEndpoint.updateCardType(projectOneType);
 
         // both goulash and pizzaiolo should receive the update through websocket
-        WsUpdateMessage goulashMessage = TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class).get(0);
+        // goulahs consume thrww websocket messages: (overview update; project 1 update; project 2 update)
+        WsUpdateMessage goulashMessage = TestHelper.waitForMessagesAndAssert(wsClient, 3, 5, WsUpdateMessage.class).get(0);
         // (as type in project is not published, it's not propagated to Pizza, this only one message is sent)
         WsUpdateMessage pizzaMessage = TestHelper.waitForMessagesAndAssert(pizzaWsClient, 1, 5, WsUpdateMessage.class).get(0);
 
-
-        List<CardType>  pizzaList = TestHelper.filterAndAssert(pizzaMessage.getUpdated(), 1, CardType.class);
+        List<CardType> pizzaList = TestHelper.filterAndAssert(pizzaMessage.getUpdated(), 1, CardType.class);
         CardType pizzaType = pizzaList.get(0);
 
         List<CardType> goulashList = TestHelper.filterAndAssert(goulashMessage.getUpdated(), 1, CardType.class);
