@@ -6,9 +6,11 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
@@ -25,10 +27,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="fc" id="L28">public class DocumentFacade {</span>
+<span class="fc" id="L30">public class DocumentFacade {</span>
 
     /** logger */
-<span class="fc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(DocumentFacade.class);</span>
+<span class="fc" id="L33">    private static final Logger logger = LoggerFactory.getLogger(DocumentFacade.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -40,8 +42,62 @@ import org.slf4j.LoggerFactory;
     @Inject
     private DocumentDao documentDao;
 
+    /**
+     * Card content persistence handling
+     */
+    @Inject
+    private CardContentDao cardContentDao;
+
     // *********************************************************************************************
-    // block document stuff
+    // general document
+    // *********************************************************************************************
+
+    /**
+     * Create a document
+     *
+     * @param document the document
+     *
+     * @return the freshly created document
+     */
+    public Document createDocument(Document document) {
+<span class="fc" id="L63">        logger.debug(&quot;create document {}&quot;, document);</span>
+
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (document.getDeliverableCardContentId() != null) {</span>
+<span class="nc" id="L66">            CardContent cardContent = cardContentDao</span>
+<span class="nc" id="L67">                    .getCardContent(document.getDeliverableCardContentId());</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">            if (cardContent == null) {</span>
+<span class="nc" id="L69">                throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+            }
+
+<span class="nc" id="L72">            cardContent.setDeliverable(document);</span>
+        }
+
+<span class="fc" id="L75">        return documentDao.persistDocument(document);</span>
+    }
+
+    /**
+     * Delete a document
+     *
+     * @param documentId the id of the document
+     *
+     * @return the freshly deleted document
+     */
+    public Document deleteDocument(Long documentId) {
+<span class="fc" id="L86">        logger.debug(&quot;delete document #{}&quot;, documentId);</span>
+
+<span class="fc" id="L88">        Document document = documentDao.findDocument(documentId);</span>
+<span class="fc" id="L89">        CardContent cardContent = document.getDeliverableCardContent();</span>
+
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (cardContent != null) {</span>
+<span class="fc" id="L92">            cardContent.setDeliverable(null);</span>
+        }
+
+<span class="fc" id="L95">        return documentDao.deleteDocument(documentId);</span>
+
+    }
+
+    // *********************************************************************************************
+    // block document
     // *********************************************************************************************
 
     /**
@@ -52,14 +108,14 @@ import org.slf4j.LoggerFactory;
      * @return all blocks of the document
      */
     public List&lt;Block&gt; getBlocksOfDocument(Long documentId) {
-<span class="fc" id="L55">        logger.debug(&quot;get blocks of document #{}&quot;, documentId);</span>
+<span class="fc" id="L111">        logger.debug(&quot;get blocks of document #{}&quot;, documentId);</span>
 
-<span class="fc" id="L57">        Document document = documentDao.findDocument(documentId);</span>
-<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (!(document instanceof BlockDocument)) {</span>
-<span class="nc" id="L59">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L113">        Document document = documentDao.findDocument(documentId);</span>
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">        if (!(document instanceof BlockDocument)) {</span>
+<span class="nc" id="L115">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="fc" id="L62">        return ((BlockDocument) document).getBlocks();</span>
+<span class="fc" id="L118">        return ((BlockDocument) document).getBlocks();</span>
     }
 
 }

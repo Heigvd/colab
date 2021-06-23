@@ -83,7 +83,7 @@ import javax.persistence.Transient;
      * The card content for which this document is the deliverable
      */
     // TODO see where to prevent that a document is used by several card contents
-    @OneToOne(mappedBy = &quot;deliverable&quot;, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = &quot;deliverable&quot;, cascade = {})
     @JsonbTransient
     private CardContent deliverableCardContent;
 

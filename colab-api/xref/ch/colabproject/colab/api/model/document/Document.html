@@ -91,7 +91,7 @@
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  <em class="jxr_javadoccomment">     * The card content for which this document is the deliverable</em>
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      <em class="jxr_comment">// TODO see where to prevent that a document is used by several card contents</em>
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      @OneToOne(mappedBy = <span class="jxr_string">"deliverable"</span>, cascade = CascadeType.ALL)
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      @OneToOne(mappedBy = <span class="jxr_string">"deliverable"</span>, cascade = {})
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>      @JsonbTransient
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      <strong class="jxr_keyword">private</strong> <a name="CardContent" href="../../../../../../ch/colabproject/colab/api/model/card/CardContent.html#CardContent">CardContent</a> deliverableCardContent;
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  

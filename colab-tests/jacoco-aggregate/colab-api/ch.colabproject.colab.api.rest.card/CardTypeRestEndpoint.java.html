@@ -178,7 +178,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id}&quot;)
     public void deleteCardType(@PathParam(&quot;id&quot;) Long id) {
 <span class="fc" id="L180">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
-<span class="fc" id="L181">        cardTypeDao.deleteCardType(id);</span>
+<span class="fc" id="L181">        cardFacade.deleteCardType(id);</span>
 <span class="fc" id="L182">    }</span>
 
     /**

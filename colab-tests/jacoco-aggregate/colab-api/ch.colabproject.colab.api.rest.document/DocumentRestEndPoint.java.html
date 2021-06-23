@@ -110,7 +110,7 @@ import org.slf4j.LoggerFactory;
     @POST
     public Long createDocument(Document document) {
 <span class="fc" id="L112">        logger.debug(&quot;create document {}&quot;, document);</span>
-<span class="fc" id="L113">        return documentDao.persistDocument(document).getId();</span>
+<span class="fc" id="L113">        return documentFacade.createDocument(document).getId();</span>
     }
 
     /**
@@ -122,7 +122,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id}&quot;)
     public void deleteDocument(@PathParam(&quot;id&quot;) Long id) {
 <span class="fc" id="L124">        logger.debug(&quot;delete document #{}&quot;, id);</span>
-<span class="fc" id="L125">        documentDao.deleteDocument(id);</span>
+<span class="fc" id="L125">        documentFacade.deleteDocument(id);</span>
 <span class="fc" id="L126">    }</span>
 
     // *********************************************************************************************
