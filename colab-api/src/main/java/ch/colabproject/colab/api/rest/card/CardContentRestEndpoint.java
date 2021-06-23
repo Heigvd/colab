@@ -143,7 +143,7 @@ public class CardContentRestEndpoint {
     @Path("{id}")
     public void deleteCardContent(@PathParam("id") Long id) {
         logger.debug("Delete card #{}", id);
-        cardContentDao.deleteCardContent(id);
+        cardFacade.deleteCardContent(id);
     }
 
     /**

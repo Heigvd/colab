@@ -100,7 +100,6 @@ public class CardContentDao {
         logger.debug("delete card content #{}", id);
         // TODO: move to recycle bin first
         CardContent cardContent = this.getCardContent(id);
-        cardContent.getCard().getContentVariants().remove(cardContent);
         em.remove(cardContent);
         return cardContent;
     }

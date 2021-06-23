@@ -6,9 +6,11 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
@@ -40,8 +42,62 @@ public class DocumentFacade {
     @Inject
     private DocumentDao documentDao;
 
+    /**
+     * Card content persistence handling
+     */
+    @Inject
+    private CardContentDao cardContentDao;
+
     // *********************************************************************************************
-    // block document stuff
+    // general document
+    // *********************************************************************************************
+
+    /**
+     * Create a document
+     *
+     * @param document the document
+     *
+     * @return the freshly created document
+     */
+    public Document createDocument(Document document) {
+        logger.debug("create document {}", document);
+
+        if (document.getDeliverableCardContentId() != null) {
+            CardContent cardContent = cardContentDao
+                    .getCardContent(document.getDeliverableCardContentId());
+            if (cardContent == null) {
+                throw HttpErrorMessage.relatedObjectNotFoundError();
+            }
+
+            cardContent.setDeliverable(document);
+        }
+
+        return documentDao.persistDocument(document);
+    }
+
+    /**
+     * Delete a document
+     *
+     * @param documentId the id of the document
+     *
+     * @return the freshly deleted document
+     */
+    public Document deleteDocument(Long documentId) {
+        logger.debug("delete document #{}", documentId);
+
+        Document document = documentDao.findDocument(documentId);
+        CardContent cardContent = document.getDeliverableCardContent();
+
+        if (cardContent != null) {
+            cardContent.setDeliverable(null);
+        }
+
+        return documentDao.deleteDocument(documentId);
+
+    }
+
+    // *********************************************************************************************
+    // block document
     // *********************************************************************************************
 
     /**

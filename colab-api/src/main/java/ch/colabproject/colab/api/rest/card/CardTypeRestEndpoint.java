@@ -178,7 +178,7 @@ public class CardTypeRestEndpoint {
     @Path("{id}")
     public void deleteCardType(@PathParam("id") Long id) {
         logger.debug("delete card type #{}", id);
-        cardTypeDao.deleteCardType(id);
+        cardFacade.deleteCardType(id);
     }
 
     /**

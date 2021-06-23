@@ -50,6 +50,37 @@ public class ColabFactory {
     }
 
     /**
+     * Create a brand new card in the given parent with the given type
+     *
+     * @param client     rest client to execute HTTP requests
+     * @param parentId   id of the card content the card will belong to
+     * @param cardTypeId id of the card type
+     *
+     * @return the newly created card
+     */
+    public static Card createNewCard(ColabClient client, Long parentId, Long cardTypeId) {
+        return client.cardRestEndpoint.createNewCard(parentId, cardTypeId);
+    }
+
+    /**
+     * Create a brand new card in the given project just under the root card and with a new card
+     * type
+     *
+     * @param client  rest client to execute HTTP requests
+     * @param project project in which the card is
+     *
+     * @return the newly created card
+     */
+    public static Card createNewCard(ColabClient client, Project project) {
+        CardType cardType = ColabFactory.createCardType(client, project.getId());
+        Long cardTypeId = cardType.getId();
+
+        Long parentId = ColabFactory.getRootContent(client, project).getId();
+
+        return ColabFactory.createNewCard(client, parentId, cardTypeId);
+    }
+
+    /**
      * Create a brand new project.
      *
      * @param client rest client to execute HTTP requests

@@ -110,7 +110,7 @@ public class DocumentRestEndPoint {
     @POST
     public Long createDocument(Document document) {
         logger.debug("create document {}", document);
-        return documentDao.persistDocument(document).getId();
+        return documentFacade.createDocument(document).getId();
     }
 
     /**
@@ -122,7 +122,7 @@ public class DocumentRestEndPoint {
     @Path("{id}")
     public void deleteDocument(@PathParam("id") Long id) {
         logger.debug("delete document #{}", id);
-        documentDao.deleteDocument(id);
+        documentFacade.deleteDocument(id);
     }
 
     // *********************************************************************************************

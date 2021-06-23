@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
 import java.util.List;
@@ -25,14 +26,15 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testCreateCard() {
-        Long projectId = client.projectRestEndpoint.createProject(new Project());
-        Project project = client.projectRestEndpoint.getProject(projectId);
+        Project project = ColabFactory.createProject(client, "testCreateCard");
+        Long projectId = project.getId();
 
         CardType cardType = ColabFactory.createCardType(client, projectId);
-        Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardType);
+        Long cardTypeId = cardType.getId();
+
         Long parentId = ColabFactory.getRootContent(client, project).getId();
 
-        Card card = client.cardRestEndpoint.createNewCard(parentId, cardTypeId);
+        Card card = ColabFactory.createNewCard(client, parentId, cardTypeId);
         Long cardId = card.getId();
 
         Assertions.assertNotNull(card);
@@ -51,15 +53,9 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testUpdateCard() {
-        Long projectId = client.projectRestEndpoint.createProject(new Project());
-        Project project = client.projectRestEndpoint.getProject(projectId);
+        Project project = ColabFactory.createProject(client, "testUpdateCard");
 
-        CardType cardType = ColabFactory.createCardType(client, projectId);
-        Long cardTypeId = cardType.getId();
-
-        Long parentId = ColabFactory.getRootContent(client, project).getId();
-
-        Card card = client.cardRestEndpoint.createNewCard(parentId, cardTypeId);
+        Card card = ColabFactory.createNewCard(client, project);
         Long cardId = card.getId();
 
         Assertions.assertNull(card.getColor());
@@ -79,44 +75,32 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testGetAllCards() {
-        Long projectId = client.projectRestEndpoint.createProject(new Project());
-        Project project = client.projectRestEndpoint.getProject(projectId);
-
-        CardType cardType1 = ColabFactory.createCardType(client, projectId);
-        Long cardType1Id = cardType1.getId();
-
-        CardType cardType2 = ColabFactory.createCardType(client, projectId);
-        Long cardType2Id = cardType2.getId();
-
-        Long parentId = ColabFactory.getRootContent(client, project).getId();
+        Project project = ColabFactory.createProject(client, "testGetAllCards");
 
         int initialSize = client.cardRestEndpoint.getAllCards().size();
 
-        Card card1 = client.cardRestEndpoint.createNewCard(parentId, cardType1Id);
+        Card card1 = ColabFactory.createNewCard(client, project);
         card1.setIndex(1337);
         card1.setColor("red");
         client.cardRestEndpoint.updateCard(card1);
 
-        Card card2 = client.cardRestEndpoint.createNewCard(parentId, cardType2Id);
+        List<Card> cards = client.cardRestEndpoint.getAllCards();
+        Assertions.assertEquals(initialSize + 1, cards.size());
+
+        Card card2 = ColabFactory.createNewCard(client, project);
         card2.setIndex(42);
         card2.setColor("yellow");
         client.cardRestEndpoint.updateCard(card2);
 
-        List<Card> cards = client.cardRestEndpoint.getAllCards();
+        cards = client.cardRestEndpoint.getAllCards();
         Assertions.assertEquals(initialSize + 2, cards.size());
     }
 
     @Test
     public void testDeleteCard() {
-        Long projectId = client.projectRestEndpoint.createProject(new Project());
-        Project project = client.projectRestEndpoint.getProject(projectId);
+        Project project = ColabFactory.createProject(client, "testDeleteCard");
 
-        CardType cardType = ColabFactory.createCardType(client, projectId);
-        Long cardTypeId = cardType.getId();
-
-        Long parentId = ColabFactory.getRootContent(client, project).getId();
-
-        Card card = client.cardRestEndpoint.createNewCard(parentId, cardTypeId);
+        Card card = ColabFactory.createNewCard(client, project);
         Long cardId = card.getId();
 
         Card persistedCard = client.cardRestEndpoint.getCard(cardId);
@@ -130,15 +114,15 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testSubCardAccess() {
-        Long projectId = client.projectRestEndpoint.createProject(new Project());
-        Project project = client.projectRestEndpoint.getProject(projectId);
+        Project project = ColabFactory.createProject(client, "testSubCardAccess");
+        Long projectId = project.getId();
 
         CardType cardType = ColabFactory.createCardType(client, projectId);
         Long cardTypeId = cardType.getId();
 
         Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
 
-        Card card = client.cardRestEndpoint.createNewCard(rootCardContentId, cardTypeId);
+        Card card = ColabFactory.createNewCard(client, rootCardContentId, cardTypeId);
         Long cardId = card.getId();
 
         Assertions.assertEquals(rootCardContentId, card.getParentId());
@@ -147,32 +131,49 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(subCards);
         Assertions.assertEquals(1, subCards.size());
         Assertions.assertEquals(cardId, subCards.get(0).getId());
+
+        client.cardRestEndpoint.deleteCard(cardId);
+
+        subCards = client.cardContentRestEndpoint.getSubCards(rootCardContentId);
+        Assertions.assertNotNull(subCards);
+        Assertions.assertEquals(0, subCards.size());
     }
 
     @Test
     public void testCardTypeAccess() {
-        Long projectId = client.projectRestEndpoint.createProject(new Project());
-        Project project = client.projectRestEndpoint.getProject(projectId);
+        Project project = ColabFactory.createProject(client, "testCardTypeAccess");
+        Long projectId = project.getId();
 
         CardType cardType = ColabFactory.createCardType(client, projectId);
         Long cardTypeId = cardType.getId();
 
         Long parentId = ColabFactory.getRootContent(client, project).getId();
 
-        Card card = client.cardRestEndpoint.createNewCard(parentId, cardTypeId);
+        Card card = ColabFactory.createNewCard(client, parentId, cardTypeId);
 
         Assertions.assertEquals(cardTypeId, card.getCardTypeId());
-
     }
 
     @Test
     public void testProjectRootCardAccess() {
-        Long projectId = client.projectRestEndpoint.createProject(new Project());
-        Project project = client.projectRestEndpoint.getProject(projectId);
+        Project project = ColabFactory.createProject(client, "testProjectRootCardAccess");
+        Long projectId = project.getId();
 
         Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());
+        Long rootCardId = rootCard.getId();
 
         Assertions.assertEquals(projectId, rootCard.getRootCardProjectId());
+
+        try {
+            client.cardRestEndpoint.deleteCard(rootCardId);
+        } catch (HttpErrorMessage hem) {
+            // expected way
+            Assertions.assertEquals(HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE,
+                hem.getMessageCode());
+            return;
+        }
+
+        Assertions.fail();
     }
 
 }
