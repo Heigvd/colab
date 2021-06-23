@@ -128,7 +128,10 @@ public class CardFacade {
 
     /**
      * Delete the card type
+     *
      * @param cardTypeId the id of the card type to delete
+     *
+     * @return the freshly deleted card
      */
     public CardType deleteCardType(Long cardTypeId) {
         logger.debug("delete card type {}", cardTypeId);
