@@ -56,7 +56,13 @@ public class TestHelper {
         Assertions.fail("Did not thown anything");
     }
 
-    public static void assertSetsEquals(Set a, Set b) {
+    /**
+     * Assert both collection are not null and contain the same set of items.
+     *
+     * @param a first collection
+     * @param b second collection
+     */
+    public static void assertEquals(Collection a, Collection b) {
         Assertions.assertNotNull(a);
         Assertions.assertNotNull(b);
 

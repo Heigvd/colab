@@ -6,15 +6,15 @@
  */
 import * as React from 'react';
 
-import { useAppSelector, useAppDispatch, customColabStateEquals } from '../../store/hooks';
-import { Project, TeamMember } from 'colab-rest-client';
-import { StateStatus } from '../../store/project';
+import {useAppSelector, useAppDispatch} from '../../store/hooks';
+import {Project, Role, TeamMember} from 'colab-rest-client';
 import InlineLoading from '../common/InlineLoading';
-import { getProjectTeam, getUser, sendInvitation } from '../../API/api';
-import { getDisplayName } from '../../helper';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { linkStyle } from '../styling/style';
+import {getProjectRoles, getProjectTeam, getUser, sendInvitation} from '../../API/api';
+import {getDisplayName} from '../../helper';
+import {faPaperPlane} from '@fortawesome/free-solid-svg-icons';
+import {linkStyle} from '../styling/style';
 import IconButton from '../common/IconButton';
+import {useRoles, useTeamMembers} from '../../selectors/projectSelector';
 
 export interface MemberProps {
   member: TeamMember;
@@ -48,44 +48,59 @@ const Member = (props: MemberProps) => {
   }
 };
 
+
+export interface RoleProps {
+  role: Role;
+}
+
+const RoleDisplay = (props: RoleProps) => {
+  return <li>{props.role.name}</li>;
+};
+
 export interface Props {
   project: Project;
 }
 
 export default (props: Props): JSX.Element => {
   const dispatch = useAppDispatch();
+  const projectId = props.project.id;
 
-  const { members, status } = useAppSelector(state => {
-    const r: { members: TeamMember[]; status: StateStatus } = {
-      members: [],
-      status: 'NOT_INITIALIZED',
-    };
-    const projectId = props.project.id;
-    if (projectId != null) {
-      const team = state.projects.teams[projectId];
-      if (team) {
-        r.status = team.status;
-        r.members = Object.values(team.members);
-      }
-    }
-
-    return r;
-  }, customColabStateEquals);
+  const {members, status: memberStatus} = useTeamMembers(projectId);
+  const {roles, status: roleStatus} = useRoles(projectId);
 
   const [invite, setInvite] = React.useState('');
 
-  if (status === 'NOT_INITIALIZED') {
-    // Load team members from server
-    if (props.project.id != null) {
-      dispatch(getProjectTeam(props.project.id));
+  React.useEffect(() => {
+    if (memberStatus === 'NOT_INITIALIZED') {
+      // Load team members from server
+      if (props.project.id != null) {
+        dispatch(getProjectTeam(props.project.id));
+      }
     }
-  }
-  const title = <h3>Team Members</h3>;
+  }, [projectId, memberStatus])
 
-  if (status === 'INITIALIZED') {
+  React.useEffect(() => {
+    if (roleStatus === 'NOT_INITIALIZED') {
+      // Load team members from server
+      if (props.project.id != null) {
+        dispatch(getProjectRoles(props.project.id));
+      }
+    }
+  }, [projectId, roleStatus])
+
+  const title = <h3>Team</h3>;
+
+  if (memberStatus === 'INITIALIZED' && roleStatus === 'INITIALIZED') {
     return (
       <div>
         {title}
+        <h3>Roles</h3>
+        <ul>
+          {roles.map(role => (
+            <RoleDisplay key={role.id} role={role} />
+          ))}
+        </ul>
+        <h3>Members</h3>
         <ul>
           {members.map(member => (
             <Member key={member.id} member={member} />

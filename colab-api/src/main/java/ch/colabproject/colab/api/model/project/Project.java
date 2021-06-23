@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.team.Role;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
@@ -85,6 +86,13 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     @Transient
     private Long rootCardId;
+
+    /**
+     * Roles
+     */
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<Role> roles;
 
     /**
      * List of team members
@@ -215,6 +223,42 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     public void setTeamMembers(List<TeamMember> teamMembers) {
         this.teamMembers = teamMembers;
+    }
+
+    /**
+     * Get the value of roles
+     *
+     * @return the value of roles
+     */
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    /**
+     * Get a role by its name
+     *
+     * @param name name of the role
+     *
+     * @return the role or null
+     */
+    public Role getRoleByName(String name) {
+        if (name != null) {
+            for (Role r : this.roles) {
+                if (name.equals(r.getName())) {
+                    return r;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Set the value of roles
+     *
+     * @param roles new value of roles
+     */
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     /**

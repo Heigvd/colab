@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 
-import { Project } from 'colab-rest-client';
-import { StateStatus } from '../store/project';
-import { useAppSelector, shallowEqual } from '../store/hooks';
+import {Project, Role, TeamMember} from 'colab-rest-client';
+import {StateStatus} from '../store/project';
+import {useAppSelector, shallowEqual, customColabStateEquals} from '../store/hooks';
 
 export interface UsedProject {
   project: Project | null | undefined;
@@ -61,3 +61,46 @@ export const useProjectBeingEdited = (): {
     }
   }, shallowEqual);
 };
+
+
+export const useTeamMembers = (projectId: number | undefined | null): {
+  members: TeamMember[],
+  status: StateStatus,
+} => {
+  return useAppSelector(state => {
+    const r: {members: TeamMember[]; status: StateStatus} = {
+      members: [],
+      status: 'NOT_INITIALIZED',
+    };
+    if (projectId != null) {
+      const team = state.projects.teams[projectId];
+      if (team) {
+        r.status = team.status;
+        r.members = Object.values(team.members);
+      }
+    }
+
+    return r;
+  }, customColabStateEquals);
+}
+
+export const useRoles = (projectId: number | undefined|null): {
+  roles: Role[],
+  status: StateStatus,
+} => {
+  return useAppSelector(state => {
+    const r: {roles: Role[]; status: StateStatus} = {
+      roles: [],
+      status: 'NOT_INITIALIZED',
+    };
+    if (projectId != null) {
+      const team = state.projects.teams[projectId];
+      if (team) {
+        r.status = team.status;
+        r.roles = Object.values(team.roles);
+      }
+    }
+
+    return r;
+  }, customColabStateEquals);
+}

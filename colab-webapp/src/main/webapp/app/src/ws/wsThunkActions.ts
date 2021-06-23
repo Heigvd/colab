@@ -20,6 +20,7 @@ import {
   Change,
   TypeMap,
   IndexEntry,
+  Role,
 } from 'colab-rest-client';
 
 import { ColabError } from '../store/error';
@@ -43,6 +44,7 @@ interface Updates<T> {
 interface EntityBag {
   projects: Updates<Project>;
   members: Updates<TeamMember>;
+  roles: Updates<Role>;
   cards: Updates<Card>;
   contents: Updates<CardContent>;
   types: Updates<AbstractCardType>;
@@ -58,6 +60,7 @@ function createBag(): EntityBag {
   return {
     projects: { updated: [], deleted: [] },
     members: { updated: [], deleted: [] },
+    roles: { updated: [], deleted: [] },
     cards: { updated: [], deleted: [] },
     contents: { updated: [], deleted: [] },
     types: { updated: [], deleted: [] },
@@ -80,6 +83,8 @@ export const processMessage = createAsyncThunk(
         bag.projects.deleted.push(item);
       } else if (indexEntryIs(item, 'TeamMember')) {
         bag.members.deleted.push(item);
+      } else if (indexEntryIs(item, 'Role')) {
+        bag.roles.deleted.push(item);
       } else if (indexEntryIs(item, 'Card')) {
         bag.cards.deleted.push(item);
       } else if (indexEntryIs(item, 'AbstractCardType')) {
@@ -110,6 +115,8 @@ export const processMessage = createAsyncThunk(
         bag.projects.updated.push(item);
       } else if (entityIs(item, 'TeamMember')) {
         bag.members.updated.push(item);
+      } else if (entityIs(item, 'Role')) {
+        bag.roles.updated.push(item);
       } else if (entityIs(item, 'Card')) {
         bag.cards.updated.push(item);
       } else if (entityIs(item, 'CardContent')) {

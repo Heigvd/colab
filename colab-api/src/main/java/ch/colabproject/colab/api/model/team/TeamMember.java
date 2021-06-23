@@ -13,12 +13,15 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
@@ -68,6 +71,20 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     @ManyToOne
     @JsonbTransient
     private Project project;
+
+
+    /**
+     * The roles
+     */
+    @ManyToMany
+    @JsonbTransient
+    private List<Role> roles;
+
+    /**
+     * Id of the roles. For deserialization only
+     */
+    @Transient
+    private List<Long> roleIds;
 
     /**
      * The project ID (serialization sugar)
@@ -165,6 +182,48 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     public void setProjectId(Long id) {
         this.projectId = id;
     }
+
+    /**
+     * Get roles
+     *
+     * @return roles
+     */
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    /**
+     * Set the list of roles
+     *
+     * @param roles list of roles
+     */
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+    /**
+     * Get ids of the roles.
+     *
+     * @return list of ids
+     */
+    public List<Long> getRoleIds() {
+        if (this.roles != null) {
+            return roles.stream()
+                .map(role -> role.getId())
+                .collect(Collectors.toList());
+        }
+        return roleIds;
+    }
+
+    /**
+     * The the list of roleId
+     *
+     * @param roleIds id of roles
+     */
+    public void setRoleIds(List<Long> roleIds) {
+        this.roleIds = roleIds;
+    }
+
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class

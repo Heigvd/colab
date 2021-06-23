@@ -46,7 +46,7 @@ public class TokenFacade {
      * to create team member
      */
     @Inject
-    private ProjectFacade projectFacade;
+    private TeamFacade teamFacade;
 
     /**
      * To check access rights
@@ -254,8 +254,10 @@ public class TokenFacade {
      *
      * @param project   the project to join
      * @param recipient email address to send invitation to
+     *
+     * @return the pending teamMember of null if none was sent
      */
-    public void sendMembershipInvitation(Project project, String recipient) {
+    public TeamMember sendMembershipInvitation(Project project, String recipient) {
         User currentUser = securityFacade.assertAndGetCurrentUser();
         // user must have write right on the project
         securityFacade.assertProjectWriteRight(project);
@@ -264,7 +266,7 @@ public class TokenFacade {
         if (token == null) {
             // create a member and link it to the project, but do not link it to any user
             // this link will be set during token consumtion
-            TeamMember newMember = projectFacade.addMember(project, null);
+            TeamMember newMember = teamFacade.addMember(project, null);
             token = new InvitationToken();
 
             token.setTeamMember(newMember);
@@ -283,6 +285,7 @@ public class TokenFacade {
             logger.error("Failed to send pssword reset email", ex);
             throw HttpErrorMessage.smtpError();
         }
+        return token.getTeamMember();
     }
 
     /**

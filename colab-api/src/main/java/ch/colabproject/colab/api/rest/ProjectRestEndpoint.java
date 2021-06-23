@@ -7,9 +7,11 @@
 package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.ProjectFacade;
+import ch.colabproject.colab.api.ejb.TeamFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.Role;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
@@ -48,6 +50,10 @@ public class ProjectRestEndpoint {
      */
     @Inject
     private ProjectFacade projectFacade;
+
+    /** TeamMembers and roles management */
+    @Inject
+    private TeamFacade teamFacade;
 
     /**
      * The Project DAO
@@ -142,21 +148,22 @@ public class ProjectRestEndpoint {
     @Path("{id}/Members")
     public List<TeamMember> getMembers(@PathParam("id") Long id) {
         logger.debug("Get project #{} members", id);
-        return projectFacade.getTeamMembers(id);
+        return teamFacade.getTeamMembers(id);
     }
 
+
     /**
-     * Send invitation to someone.
+     * Get all roles defined in a project
      *
-     * @param projectId id of the project
-     * @param email     recipient address
+     * @param projectId projectId of the project
+     *
+     * @return list of roles
      */
-    @POST
-    @Path("Invite/{projectId: [0-9]+}/{email}")
-    public void inviteSomeone(@PathParam("projectId") Long projectId,
-        @PathParam("email") String email) {
-        logger.debug("Invite {} to joint project #{}", email, projectId);
-        projectFacade.invite(projectId, email);
+    @GET
+    @Path("{projectId: [0-9]+}/roles")
+    public List<Role> getRoles(@PathParam("projectId") Long projectId) {
+        logger.debug("Get project #{} members", projectId);
+        return teamFacade.getProjectRoles(projectId);
     }
 
     /**

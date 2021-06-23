@@ -9,7 +9,6 @@ package ch.colabproject.colab.api.ejb;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -45,22 +44,19 @@ public class ProjectFacade {
     @Inject
     private ProjectDao projectDao;
 
+    /** Team management */
+    @Inject
+    private TeamFacade teamFacade;
+
     /**
      * Cards-related logic
      */
     @Inject
     private CardFacade cardFacade;
 
-    /**
-     * Token Facade
-     */
-    @Inject
-    private TokenFacade tokenFacade;
-
     // *********************************************************************************************
     // pure projects
     // *********************************************************************************************
-
     /**
      * Get all projects the current user is member of
      *
@@ -85,68 +81,14 @@ public class ProjectFacade {
         rootCard.setRootCardProject(project);
 
         User user = securityFacade.assertAndGetCurrentUser();
-        this.addMember(project, user);
+        teamFacade.addMember(project, user);
 
         return projectDao.createProject(project);
     }
 
     // *********************************************************************************************
-    // team members
-    // *********************************************************************************************
-
-    /**
-     * Add given user to the project teams
-     *
-     * @param project the project
-     * @param user the user
-     *
-     * @return the brand new member
-     */
-    public TeamMember addMember(Project project, User user) {
-        logger.debug("Add member {} in {}", user, project);
-        TeamMember teamMember = new TeamMember();
-
-        // todo check if user is already member of the team
-        teamMember.setUser(user);
-        teamMember.setProject(project);
-        project.getTeamMembers().add(teamMember);
-        if (user != null) {
-            user.getTeamMembers().add(teamMember);
-        }
-        return teamMember;
-    }
-
-    /**
-     * Get all members of the given project
-     *
-     * @param id id of the project
-     *
-     * @return all members of the project team
-     */
-    public List<TeamMember> getTeamMembers(Long id) {
-        Project project = projectDao.getProject(id);
-        logger.debug("Get team members: {}", project);
-        securityFacade.assertIsMember(project);
-        return project.getTeamMembers();
-    }
-
-    /**
-     * Send invitation
-     *
-     * @param projectId if of the project
-     * @param email send invitation to this address
-     */
-    public void invite(Long projectId, String email) {
-        Project project = projectDao.getProject(projectId);
-        logger.debug("Invite {} to join {}", email, project);
-        securityFacade.assertProjectWriteRight(project);
-        tokenFacade.sendMembershipInvitation(project, email);
-    }
-
-    // *********************************************************************************************
     // cards
     // *********************************************************************************************
-
     /**
      * Get all card types of the given project
      *

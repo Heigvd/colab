@@ -4,11 +4,11 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice } from '@reduxjs/toolkit';
-import { Project, TeamMember } from 'colab-rest-client';
+import {createSlice} from '@reduxjs/toolkit';
+import {Project, Role, TeamMember} from 'colab-rest-client';
 import * as API from '../API/api';
-import { mapById } from '../helper';
-import { processMessage } from '../ws/wsThunkActions';
+import {mapById} from '../helper';
+import {processMessage} from '../ws/wsThunkActions';
 
 /**
  * NOT_SET: the state is not fully set. It may contain some data (received by websocket) but there
@@ -22,6 +22,9 @@ export interface TeamState {
   status: StateStatus;
   members: {
     [id: number]: TeamMember;
+  };
+  roles: {
+    [id: number]: Role;
   };
 }
 
@@ -53,7 +56,7 @@ const getOrCreateTeamState = (state: ProjectState, projectId: number): TeamState
   if (teamState) {
     return teamState;
   } else {
-    const ts: TeamState = { status: 'NOT_INITIALIZED', members: {} };
+    const ts: TeamState = {status: 'NOT_INITIALIZED', members: {}, roles: {}};
     state.teams[projectId] = ts;
     return ts;
   }
@@ -98,6 +101,27 @@ const removeTeamMember = (state: ProjectState, memberId: number) => {
   });
 };
 
+const updateRole = (state: ProjectState, role: Role) => {
+  const projectId = role.projectId;
+  const roleId = role.id;
+
+  if (projectId != null && roleId != null) {
+    const team = state.teams[projectId];
+    if (team != null && team.status === 'INITIALIZED') {
+      team.roles[roleId] = role;
+    }
+  }
+};
+const removeRole = (state: ProjectState, roleId: number) => {
+  Object.values(state.teams).forEach(team => {
+    if (team.roles[roleId]) {
+      delete team.roles[roleId];
+    }
+  });
+};
+
+
+
 const projectsSlice = createSlice({
   name: 'projects',
   initialState,
@@ -116,9 +140,17 @@ const projectsSlice = createSlice({
         action.payload.members.updated.forEach(item => {
           updateTeamMember(state, item);
         });
-        action.payload.projects.deleted.forEach(entry => {
+        action.payload.members.deleted.forEach(entry => {
           if (entry.id != null) {
             removeTeamMember(state, entry.id);
+          }
+        });
+        action.payload.roles.updated.forEach(item => {
+          updateRole(state, item);
+        });
+        action.payload.roles.deleted.forEach(entry => {
+          if (entry.id != null) {
+            removeRole(state, entry.id);
           }
         });
       })
@@ -134,7 +166,7 @@ const projectsSlice = createSlice({
       .addCase(API.getUserProjects.fulfilled, (state, action) => {
         state.status = 'INITIALIZED';
         state.mine = action.payload.flatMap(project => (project.id != null ? [project.id] : []));
-        state.projects = { ...state.projects, ...mapById(action.payload) };
+        state.projects = {...state.projects, ...mapById(action.payload)};
       })
       .addCase(API.getAllProjects.pending, state => {
         state.allStatus = 'LOADING';

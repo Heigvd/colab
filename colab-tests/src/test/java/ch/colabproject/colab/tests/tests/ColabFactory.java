@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.Role;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.client.ColabClient;
@@ -91,7 +92,7 @@ public class ColabFactory {
     public static void inviteAndJoin(ColabClient host, Project project,
         String emailAddress, ColabClient guest, MailhogClient mailClient
     ) {
-        host.projectRestEndpoint.inviteSomeone(project.getId(), emailAddress);
+        host.teamRestEndpoint.inviteSomeone(project.getId(), emailAddress);
         Message invitation = TestHelper.getMessageByRecipient(mailClient, emailAddress).get(0);
 
         Matcher matcher = TestHelper.extractToken(invitation);
@@ -108,5 +109,15 @@ public class ColabFactory {
         } else {
             Assertions.fail("Failed to parse token");
         }
+    }
+
+    public static Role createRole(ColabClient client, Project project, String name) {
+        Role role = new Role();
+        role.setProjectId(project.getId());
+        role.setName(name);
+
+        Long roleId = client.teamRestEndpoint.createRole(role);
+
+        return client.teamRestEndpoint.getRole(roleId);
     }
 }

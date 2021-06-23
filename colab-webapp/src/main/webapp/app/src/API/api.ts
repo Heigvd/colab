@@ -325,11 +325,17 @@ export const sendInvitation = createAsyncThunk(
   'project/team/invite',
   async (payload: { projectId: number; recipient: string }, thunkApi) => {
     if (payload.recipient) {
-      await restClient.ProjectRestEndpoint.inviteSomeone(payload.projectId, payload.recipient);
+      await restClient.TeamRestEndpoint.inviteSomeone(payload.projectId, payload.recipient);
       thunkApi.dispatch(getProjectTeam(payload.projectId));
     }
   },
 );
+
+export const getProjectRoles = createAsyncThunk('project/team/getRoles', async (projectId: number) => {
+  return await restClient.ProjectRestEndpoint.getRoles(projectId);
+});
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Card Types

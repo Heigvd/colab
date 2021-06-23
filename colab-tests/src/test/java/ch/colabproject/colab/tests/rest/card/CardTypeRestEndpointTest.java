@@ -268,7 +268,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Set<AbstractCardType> goulashTypes = client.projectRestEndpoint.getCardTypesOfProject(projectTwo.getId());
         Set<AbstractCardType> pizzaTypes = pizzaHttpClient.projectRestEndpoint.getCardTypesOfProject(projectTwo.getId());
 
-        TestHelper.assertSetsEquals(goulashTypes, pizzaTypes);
+        TestHelper.assertEquals(goulashTypes, pizzaTypes);
 
         // Update the projectOneType
         projectOneType.setTitle("My Favourite Recipes");

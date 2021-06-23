@@ -9,6 +9,7 @@ package ch.colabproject.colab.tests.rest;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.Role;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.Token;
@@ -18,14 +19,17 @@ import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.tests.mailhog.model.Message;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
+import ch.colabproject.colab.tests.tests.ColabFactory;
 import ch.colabproject.colab.tests.tests.TestHelper;
 import ch.colabproject.colab.tests.tests.TestUser;
 import ch.colabproject.colab.tests.ws.WebsocketClient;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import javax.websocket.DeploymentException;
+import org.apache.poi.hssf.record.formula.MemErrPtg;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -157,7 +161,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         // Goulash invites Georges
         ////////////////////////////////////////////////////////////////////////////////////////////
         mailClient.deleteAllMessages();
-        client.projectRestEndpoint.inviteSomeone(projectId, mateAddress);
+        client.teamRestEndpoint.inviteSomeone(projectId, mateAddress);
 
         // Invitation creates a TeamMember and touch the project;
         // The two objects are propagated to goulashsensei
@@ -242,5 +246,31 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.userRestEndpoint.getUserById(this.adminUserId);
         });
+    }
+
+    @Test
+    public void testRoleCreation() {
+        TestUser user = this.signup("goulashsensei", "goulash@test.local", "SoSecure");
+        this.signIn(user);
+
+        Project project = ColabFactory.createProject(client, "The Hitchhiker's Guide to the Serious-Game");
+        Role paranoidAndroid = ColabFactory.createRole(client, project, "paranoid android");
+        Role hitchhicker = ColabFactory.createRole(client, project, "Hitchhiker");
+
+        List<Role> roles = client.projectRestEndpoint.getRoles(project.getId());
+
+        TestHelper.assertEquals(roles, Set.of(paranoidAndroid, hitchhicker));
+
+        List<TeamMember> members = client.projectRestEndpoint.getMembers(project.getId());
+        TeamMember me = members.get(0);
+
+        Assertions.assertTrue(me.getRoleIds().isEmpty());
+        client.teamRestEndpoint.giveRole(hitchhicker.getId(), me.getId());
+
+        me = client.teamRestEndpoint.getTeamMember(me.getId());
+        hitchhicker = client.teamRestEndpoint.getRole(hitchhicker.getId());
+
+        TestHelper.assertEquals(Set.of(hitchhicker.getId()), me.getRoleIds());
+        TestHelper.assertEquals(Set.of(me.getId()), hitchhicker.getMemberIds());
     }
 }
