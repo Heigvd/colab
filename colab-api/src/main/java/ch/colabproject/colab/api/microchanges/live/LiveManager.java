@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.microchanges.live;
 
 import ch.colabproject.colab.api.ejb.TransactionManager;
-import ch.colabproject.colab.api.ejb.WebsocketFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.microchanges.tools.CancelDebounce;
@@ -16,7 +15,6 @@ import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.document.BlockDao;
-import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import com.hazelcast.cluster.Member;
 import com.hazelcast.core.HazelcastInstance;
@@ -64,18 +62,13 @@ public class LiveManager implements Serializable {
     @Inject
     private BlockDao blockDao;
 
-    /** user DAO */
-    @Inject
-    private UserDao userDao;
-
-    /** Websocket Facade */
-    @Inject
-    private WebsocketFacade websocketFacade;
-
     /** Hazelcast instance. */
     @Inject
     private HazelcastInstance hzInstance;
 
+    /**
+     * To register changes as updated object
+     */
     @Inject
     private TransactionManager transactionManager;
 

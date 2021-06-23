@@ -64,6 +64,6 @@ export const removeAllItems = (array: unknown[], items: unknown[]): void => {
   });
 };
 
-export function checkUnreachable(x: never) {
+export function checkUnreachable(x: never): void {
   logger.error(x);
 }
