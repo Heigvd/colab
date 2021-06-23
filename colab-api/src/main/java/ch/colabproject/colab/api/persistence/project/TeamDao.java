@@ -14,7 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 /**
- * Team persistence (Role & TeamMember)
+ * Team persistence (Role &amp; TeamMember)
  *
  * @author maxence
  */
