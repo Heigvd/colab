@@ -14,6 +14,7 @@ import { InlineLink } from '../common/Link';
 import { buildLinkWithQueryParam } from '../../helper';
 import Overlay from '../common/Overlay';
 import { useCurrentUser } from '../../selectors/userSelector';
+import logger from '../../logger';
 
 interface TokenProps {
   tokenId: string;
@@ -28,25 +29,28 @@ export default (props: TokenProps): JSX.Element => {
 
   const location = useLocation();
 
-  if (user === undefined) {
-    // authenticate state not known-> reload
-    dispatch(reloadCurrentUser());
-  }
-
   const [state, setState] = React.useState<STATE_TYPE>('LOADING');
   const [redirectTo, setRedirectTo] = React.useState('');
 
   React.useEffect(() => {
     // hack: nest API calls within this hook to avoid setting full token slice
-    if (user !== undefined) {
+    if (user.status === 'UNKNOWN') {
+      // authenticate state not known-> reload
+      dispatch(reloadCurrentUser());
+      logger.debug('reload current user');
+    } else if (user.status !== 'LOADING') {
       // null user means unauthenticated
       const loadToken = async () => {
+        logger.debug('load token #', props.tokenId);
         const token = await getRestClient().TokenRestEndpoint.getToken(+props.tokenId);
         if (token != null) {
+          logger.debug('Got token', token);
           setRedirectTo(token.redirectTo || '');
-          if (user === null && token.authenticationRequired) {
+          if (user.currentUser === null && token.authenticationRequired) {
+            logger.debug('Token requires authentication, current user is not');
             setState('AUTH_REQUIRED');
           } else {
+            logger.debug('Ready to process the token');
             try {
               await getRestClient().TokenRestEndpoint.consumeToken(+props.tokenId, props.token);
               // some token may change authentication status: force to reload current user/account
@@ -58,6 +62,7 @@ export default (props: TokenProps): JSX.Element => {
           }
         } else {
           // token not found
+          logger.debug('Got no token...');
           setState('NO_TOKEN');
         }
       };
