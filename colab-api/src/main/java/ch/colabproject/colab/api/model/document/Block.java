@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
@@ -40,7 +41,6 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * The block ID
      */
@@ -69,7 +69,6 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the block id
      */
@@ -135,11 +134,24 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels {
         this.documentId = id;
     }
 
+    /**
+     * Get the project this block belongs to
+     *
+     * @return block owner
+     */
+    public Project getProject() {
+        if (this.document != null) {
+            return this.document.getProject();
+        } else {
+            // such an orphan shouldn't exist...
+            return null;
+        }
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------
-
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof Block) {
@@ -180,5 +192,4 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels {
     protected String toPartialString() {
         return "id=" + id + ", index=" + index;
     }
-
 }

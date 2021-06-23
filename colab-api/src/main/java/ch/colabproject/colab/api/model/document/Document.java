@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
@@ -262,6 +263,24 @@ public abstract class Document implements ColabEntity , WithWebsocketChannels {
      */
     public boolean hasResource() {
        return resource != null || resourceId != null;
+    }
+
+    /**
+     * Get the project this block belongs to
+     *
+     * @return block owner
+     */
+    public Project getProject() {
+        if (this.deliverableCardContent != null) {
+            // The document is the deliverable of a card content
+            return this.deliverableCardContent.getProject();
+//        } else if (this.resource != null) {
+            // The document is a resource
+//            return this.resource.getProject();
+        } else {
+            // such an orphan shouldn't exist...
+            return null;
+        }
     }
 
     // ---------------------------------------------------------------------------------------------

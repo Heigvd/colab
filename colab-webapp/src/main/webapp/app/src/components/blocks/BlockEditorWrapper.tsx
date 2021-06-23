@@ -5,12 +5,12 @@
  * Licensed under the MIT License
  */
 
-import { entityIs } from 'colab-rest-client';
+import { Change, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
-import { ToastMarkdownEditor } from './markdown/ToastMarkdownEditor';
+import LiveTextEditor from '../live/LiveTextEditor';
 
 export interface BlockEditorProps {
   blockId: number;
@@ -23,6 +23,13 @@ export function BlockEditorWrapper({ blockId }: BlockEditorProps): JSX.Element {
     return state.block.blocks[blockId];
   });
 
+  const onChangeCb = React.useCallback(
+    (change: Change) => {
+      dispatch(API.patchBlock({ id: blockId, change: change }));
+    },
+    [dispatch, blockId],
+  );
+
   if (block == undefined && blockId != null) {
     dispatch(API.getBlock(blockId));
   }
@@ -33,7 +40,14 @@ export function BlockEditorWrapper({ blockId }: BlockEditorProps): JSX.Element {
     if (entityIs(block, 'TextDataBlock')) {
       switch (block.mimeType) {
         case 'text/markdown':
-          return <ToastMarkdownEditor block={block} />;
+          return (
+            <LiveTextEditor
+              atClass={block['@class']}
+              atId={blockId}
+              value={block.textData || ''}
+              onChange={onChangeCb}
+            />
+          );
         default:
           return <span>unkwnon MIME type: {block.mimeType}</span>;
       }

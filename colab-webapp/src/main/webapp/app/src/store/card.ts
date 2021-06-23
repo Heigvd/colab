@@ -4,9 +4,10 @@
  *
  * Licensed under the MIT License
  */
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { Card, CardContent } from 'colab-rest-client';
 import * as API from '../API/api';
+import { processMessage } from '../ws/wsThunkActions';
 
 export interface CardDetail {
   card: Card | null;
@@ -62,83 +63,91 @@ const getOrCreateCardContentState = (
   }
 };
 
+const updateCard = (state: CardState, card: Card) => {
+  const cardId = card.id;
+  if (cardId != null) {
+    const cardState = getOrCreateCardState(state, cardId);
+    cardState.card = card;
+
+    const parentId = card.parentId;
+    if (parentId != null) {
+      // parent state is knonw, make sure the card is registered
+      const parentState = state.contents[parentId];
+      if (parentState != null) {
+        if (parentState.subs != null && parentState.subs.indexOf(cardId) < 0) {
+          parentState.subs.push(cardId);
+        }
+      }
+    }
+  }
+};
+
+const removeCard = (state: CardState, cardId: number) => {
+  const cardState = state.cards[cardId];
+  if (cardState) {
+    if (cardState.card) {
+      if (cardState.card.parentId) {
+        const parentState = state.contents[cardState.card.parentId];
+        if (parentState != null && parentState.subs != null) {
+          const index = parentState.subs.indexOf(cardId);
+          if (index >= 0) {
+            parentState.subs.splice(index, 1);
+          }
+        }
+      }
+    }
+  }
+  delete state.cards[cardId];
+};
+
+const updateContent = (state: CardState, content: CardContent) => {
+  if (content.id != null && content.cardId != null) {
+    const cardState = state.cards[content.cardId];
+
+    // do not create card detail
+    if (cardState != null) {
+      if (cardState.contents != null) {
+        const index = cardState.contents.indexOf(content.id);
+        if (index < 0) {
+          cardState.contents.push(content.id);
+        }
+      }
+    }
+    if (content.id) {
+      const contentState = getOrCreateCardContentState(state, content.id);
+      contentState.content = content;
+    }
+  }
+};
+
+const removeContent = (state: CardState, contentId: number) => {
+  const card = findCardByContentId(contentId, state);
+  if (card != null && card.id != null) {
+    const cardState = state.cards[card.id];
+    if (cardState != null) {
+      if (cardState.contents != null) {
+        const index = cardState.contents.indexOf(contentId);
+        if (index >= 0) {
+          cardState.contents.splice(index, 1);
+        }
+      }
+    }
+  }
+  delete state.contents[contentId];
+};
+
 const cardsSlice = createSlice({
   name: 'cards',
   initialState,
-  reducers: {
-    updateCard: (state, action: PayloadAction<Card>) => {
-      const cardId = action.payload.id;
-      if (cardId != null) {
-        const cardState = getOrCreateCardState(state, cardId);
-        cardState.card = action.payload;
-
-        const parentId = action.payload.parentId;
-        if (parentId != null) {
-          // parent state is knonw, make sure the card is registered
-          const parentState = state.contents[parentId];
-          if (parentState != null) {
-            if (parentState.subs != null && parentState.subs.indexOf(cardId) < 0) {
-              parentState.subs.push(cardId);
-            }
-          }
-        }
-      }
-    },
-    removeCard: (state, action: PayloadAction<number>) => {
-      const cardId = action.payload;
-      const cardState = state.cards[cardId];
-      if (cardState) {
-        if (cardState.card) {
-          if (cardState.card.parentId) {
-            const parentState = state.contents[cardState.card.parentId];
-            if (parentState != null && parentState.subs != null) {
-              const index = parentState.subs.indexOf(cardId);
-              if (index >= 0) {
-                parentState.subs.splice(index, 1);
-              }
-            }
-          }
-        }
-      }
-      delete state.cards[cardId];
-    },
-    updateContent: (state, action: PayloadAction<CardContent>) => {
-      if (action.payload.id != null && action.payload.cardId != null) {
-        const cardState = state.cards[action.payload.cardId];
-
-        // do not create card detail
-        if (cardState != null) {
-          if (cardState.contents != null) {
-            const index = cardState.contents.indexOf(action.payload.id);
-            if (index < 0) {
-              cardState.contents.push(action.payload.id);
-            }
-          }
-        }
-        if (action.payload.id) {
-          const contentState = getOrCreateCardContentState(state, action.payload.id);
-          contentState.content = action.payload;
-        }
-      }
-    },
-    removeContent: (state, action: PayloadAction<number>) => {
-      const card = findCardByContentId(action.payload, state);
-      if (card != null && card.id != null) {
-        const cardState = state.cards[card.id];
-        if (cardState != null) {
-          if (cardState.contents != null) {
-            const index = cardState.contents.indexOf(action.payload);
-            if (index >= 0) {
-              cardState.contents.splice(index, 1);
-            }
-          }
-        }
-      }
-      delete state.contents[action.payload];
-    },
-  },
+  reducers: {},
   extraReducers: builder =>
     builder
+      .addCase(processMessage.fulfilled, (state, action) => {
+        action.payload.cards.updated.forEach(card => updateCard(state, card));
+        action.payload.blocks.deleted.forEach(entry => removeCard(state, entry.id));
+        action.payload.contents.updated.forEach(content => updateContent(state, content));
+        action.payload.contents.deleted.forEach(entry => removeContent(state, entry.id));
+      })
       .addCase(API.initCards.fulfilled, (state, action) => {
         const newCards = action.payload.reduce<CardState['cards']>((acc, current) => {
           if (current.id) {
@@ -217,7 +226,5 @@ const cardsSlice = createSlice({
         return initialState;
       }),
 });
-
-export const { updateCard, removeCard, updateContent, removeContent } = cardsSlice.actions;
 
 export default cardsSlice.reducer;

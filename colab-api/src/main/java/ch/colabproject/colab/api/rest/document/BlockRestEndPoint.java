@@ -8,9 +8,13 @@ package ch.colabproject.colab.api.rest.document;
 
 import ch.colabproject.colab.api.ejb.BlockFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.microchanges.live.LiveManager;
+import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.persistence.document.BlockDao;
+import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -50,6 +54,10 @@ public class BlockRestEndPoint {
     @Inject
     private BlockFacade blockFacade;
 
+    /** Live changes manager */
+    @Inject
+    private LiveManager liveManager;
+
     /**
      * Get the block identified by the given id
      *
@@ -75,6 +83,43 @@ public class BlockRestEndPoint {
     public void updateBlock(Block block) throws ColabMergeException {
         logger.debug("update block {}", block);
         blockDao.updateBlock(block);
+    }
+
+    /**
+     * Get all pending changes for given block.
+     *
+     * @param id id of the block
+     *
+     * @return list of changes.
+     */
+    @GET
+    @Path("/{id}/changes")
+    public List<Change> getChanges(@PathParam("id") Long id) {
+        return liveManager.getPendingChanges(id);
+    }
+
+    /**
+     * Patch a block with a change
+     *
+     * @param id     id of the block
+     * @param change change
+     */
+    @PUT
+    @Path("/{id}")
+    public void patchBlock(@PathParam("id") Long id, Change change) {
+        liveManager.patchBlock(id, change);
+    }
+
+    /**
+     * Patch a block with a change
+     *
+     * @param id     id of the block
+     */
+    @PUT
+    @Path("/{id}/dropChanges")
+    @AdminResource
+    public void deletePendingChanges(@PathParam("id") Long id) {
+        liveManager.deletePendingChangesAndPropagate(id);
     }
 
     /**

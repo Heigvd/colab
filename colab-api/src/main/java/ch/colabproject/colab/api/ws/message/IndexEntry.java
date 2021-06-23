@@ -29,6 +29,13 @@ public class IndexEntry implements WithJsonDiscriminator {
      */
     @NotNull
     private Long id;
+
+    /**
+     * Some extra data
+     */
+    @NotNull
+    private Object payload;
+
     /**
      * Get the channels this entity shall be sent through.
      */
@@ -68,6 +75,24 @@ public class IndexEntry implements WithJsonDiscriminator {
     }
 
     /**
+     * Get payload
+     *
+     * @return the payload
+     */
+    public Object getPayload() {
+        return payload;
+    }
+
+    /**
+     * Set the payload
+     *
+     * @param payload set extra data
+     */
+    public void setPayload(Object payload) {
+        this.payload = payload;
+    }
+
+    /**
      * get channels
      *
      * @return channels
@@ -97,6 +122,7 @@ public class IndexEntry implements WithJsonDiscriminator {
 
         entry.type = object.getJsonDiscriminator();
         entry.id = object.getId();
+        entry.payload = object.getIndexEntryPayload();
         entry.channels = object.getChannels();
 
         return entry;

@@ -54,7 +54,7 @@ public class EntityListener {
     public void onDestroy(Object o) {
         if (o instanceof WithWebsocketChannels) {
             logger.trace("Destroy {}", o);
-            transactionManager.registerDelete((WithWebsocketChannels) o);
+            transactionManager.registerDeletion((WithWebsocketChannels) o);
         }
     }
 }

@@ -216,4 +216,30 @@ public class WebsocketHelper {
         return PrecomputedWsMessages.build(messagesByChannel);
     }
 
+    /**
+     * Prepare one message for many channels
+     *
+     * @param userDao  provide userDao to resolve meta channels
+     * @param channels the channel set
+     * @param message  the message
+     *
+     * @return the precomputedMessage
+     *
+     * @throws EncodeException if json-encoding failed
+     */
+    public static PrecomputedWsMessages prepareWsMessage(
+        UserDao userDao, Collection<WebsocketChannel> channels, WsMessage message
+    ) throws EncodeException {
+
+        Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
+
+        channels.forEach(channel -> {
+            forEachDistinctEffectiveChannel(Set.of(channel), userDao, (effectiveChannel) -> {
+                messagesByChannel.put(effectiveChannel, List.of(message));
+            });
+        });
+
+        return PrecomputedWsMessages.build(messagesByChannel);
+    }
+
 }

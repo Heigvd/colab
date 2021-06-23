@@ -10,6 +10,8 @@ import ch.colabproject.colab.api.model.user.HashMethod;
 import java.security.SecureRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 /**
  * Some global helper methods
@@ -151,5 +153,20 @@ public class Helper {
             // prefix all uppercase char preceded by something with an underscore
             .replaceAll("(?<!^)[A-Z](?!$)", "_$0")
             .toLowerCase();
+    }
+
+    /**
+     * Lookup instances
+     *
+     * @param <T> class to lookup
+     * @param klass class to lookup
+     *
+     * @return instance of <code>klass</code>
+     *
+     * @throws NamingException if lookup failed
+     */
+    public static <T> T lookup(Class<T> klass) throws NamingException {
+        return (T) new InitialContext().lookup(
+            "java:global/colab-webapp-0.1/" + klass.getSimpleName() + "!" + klass.getName());
     }
 }

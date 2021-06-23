@@ -10,6 +10,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import IconButton from './IconButton';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import Clickable from './Clickable';
+import { css } from '@emotion/css';
 
 type State = {
   status: 'COLLAPSED' | 'EXPANDED';
@@ -20,6 +21,16 @@ export interface Props {
   collaspedChildren: JSX.Element;
   children: JSX.Element;
 }
+
+const relative = css({
+  position: 'relative',
+});
+
+const topRightAbs = css({
+  position: 'absolute',
+  top: 0,
+  right: 0,
+});
 
 export default function OpenClose({
   collaspedChildren,
@@ -32,9 +43,10 @@ export default function OpenClose({
 
   if (state.status === 'EXPANDED') {
     return (
-      <>
+      <div className={relative}>
         {children}
         <IconButton
+          className={topRightAbs}
           icon={closeIcon}
           title="close"
           onClick={() => {
@@ -43,7 +55,7 @@ export default function OpenClose({
             });
           }}
         />
-      </>
+      </div>
     );
   } else {
     return (

@@ -6,6 +6,7 @@
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HttpException } from 'colab-rest-client';
+import { processMessage } from '../ws/wsThunkActions';
 //import * as API from '../API/api';
 
 export interface ColabError {
@@ -29,11 +30,10 @@ const errorsSlice = createSlice({
       }
     },
   },
-  //  extraReducers: builder =>
-  //    builder
-  //      .addCase(API.signOut.fulfilled, () => {
-  //        return initialState;
-  //      })
+  extraReducers: builder =>
+    builder.addCase(processMessage.fulfilled, (state, action) => {
+      action.payload.errors.forEach(error => state.push(error));
+    }),
 });
 
 export const { addError, closeError } = errorsSlice.actions;
