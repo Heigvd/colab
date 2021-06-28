@@ -11,9 +11,11 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.document.ResourceDao;
 import ch.colabproject.colab.api.persistence.document.ResourceRefDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -35,10 +37,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L38">public class ResourceRestEndpoint {</span>
+<span class="nc" id="L40">public class ResourceRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L41">    private static final Logger logger = LoggerFactory.getLogger(ResourceRestEndpoint.class);</span>
+<span class="nc" id="L43">    private static final Logger logger = LoggerFactory.getLogger(ResourceRestEndpoint.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -76,8 +78,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public Resource getResource(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L79">        logger.debug(&quot;get resource #{}&quot;, id);</span>
-<span class="nc" id="L80">        return resourceDao.findResource(id);</span>
+<span class="nc" id="L81">        logger.debug(&quot;get resource #{}&quot;, id);</span>
+<span class="nc" id="L82">        return resourceDao.findResource(id);</span>
     }
 
     /**
@@ -90,8 +92,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;ref/{id}&quot;)
     public ResourceRef getResourceReference(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L93">        logger.debug(&quot;get resource reference #{}&quot;, id);</span>
-<span class="nc" id="L94">        return resourceRefDao.findResourceRef(id);</span>
+<span class="nc" id="L95">        logger.debug(&quot;get resource reference #{}&quot;, id);</span>
+<span class="nc" id="L96">        return resourceRefDao.findResourceRef(id);</span>
     }
 
     /**
@@ -103,9 +105,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateResource(Resource resource) throws ColabMergeException {
-<span class="nc" id="L106">        logger.debug(&quot;update resource {}&quot;, resource);</span>
-<span class="nc" id="L107">        resourceDao.updateResource(resource);</span>
-<span class="nc" id="L108">    }</span>
+<span class="nc" id="L108">        logger.debug(&quot;update resource {}&quot;, resource);</span>
+<span class="nc" id="L109">        resourceDao.updateResource(resource);</span>
+<span class="nc" id="L110">    }</span>
 
     /**
      * Save changes to database
@@ -117,9 +119,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;ref&quot;)
     public void updateResourceRef(ResourceRef resourceRef) throws ColabMergeException {
-<span class="nc" id="L120">        logger.debug(&quot;update resource reference {}&quot;, resourceRef);</span>
-<span class="nc" id="L121">        resourceRefDao.updateResourceRef(resourceRef);</span>
-<span class="nc" id="L122">    }</span>
+<span class="nc" id="L122">        logger.debug(&quot;update resource reference {}&quot;, resourceRef);</span>
+<span class="nc" id="L123">        resourceRefDao.updateResourceRef(resourceRef);</span>
+<span class="nc" id="L124">    }</span>
 
     // *********************************************************************************************
     // create a resource for a document
@@ -137,10 +139,10 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;createForCardType/{cardTypeId}&quot;)
     public Resource createResourceForCardType(@PathParam(&quot;cardTypeId&quot;) Long cardTypeId,
-            Document document) {
-<span class="nc" id="L141">        logger.debug(&quot;create resource for document {} and card type #{}&quot;, document,</span>
+        Document document) {
+<span class="nc" id="L143">        logger.debug(&quot;create resource for document {} and card type #{}&quot;, document,</span>
             cardTypeId);
-<span class="nc" id="L143">        return resourceFacade.createResourceForCardType(document, cardTypeId);</span>
+<span class="nc" id="L145">        return resourceFacade.createResourceForCardType(document, cardTypeId);</span>
     }
 
     /**
@@ -155,8 +157,8 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;createForCard/{cardId}&quot;)
     public Resource createResourceForCard(@PathParam(&quot;cardId&quot;) Long cardId, Document document) {
-<span class="nc" id="L158">        logger.debug(&quot;create resource for document {} and cardId #{}&quot;, document, cardId);</span>
-<span class="nc" id="L159">        return resourceFacade.createResourceForCard(document, cardId);</span>
+<span class="nc" id="L160">        logger.debug(&quot;create resource for document {} and cardId #{}&quot;, document, cardId);</span>
+<span class="nc" id="L161">        return resourceFacade.createResourceForCard(document, cardId);</span>
     }
 
     /**
@@ -171,10 +173,28 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;createForCardContent/{cardContentId}&quot;)
     public Resource createResourceForCardContent(@PathParam(&quot;cardContentId&quot;) Long cardContentId,
-            Document document) {
-<span class="nc" id="L175">        logger.debug(&quot;create resource for document {} and card content #{}&quot;, document,</span>
+        Document document) {
+<span class="nc" id="L177">        logger.debug(&quot;create resource for document {} and card content #{}&quot;, document,</span>
             cardContentId);
-<span class="nc" id="L177">        return resourceFacade.createResourceForCardContent(document, cardContentId);</span>
+<span class="nc" id="L179">        return resourceFacade.createResourceForCardContent(document, cardContentId);</span>
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    /**
+     * Get all sticky note links where the resource / reference is the source
+     *
+     * @param resourceOrRefId the id of the resource / reference
+     *
+     * @return list of links
+     */
+    @GET
+    @Path(&quot;{id}/StickyNoteLinks&quot;)
+    public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long resourceOrRefId) {
+<span class="nc" id="L196">        logger.debug(&quot;Get sticky note links to abstract resource #{} as source&quot;, resourceOrRefId);</span>
+<span class="nc" id="L197">        return resourceFacade.getStickyNoteLinkAsSrc(resourceOrRefId);</span>
     }
 
     // *********************************************************************************************

@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
@@ -38,10 +39,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L41">public class CardFacade {</span>
+<span class="nc" id="L42">public class CardFacade {</span>
 
     /** logger */
-<span class="nc" id="L44">    private static final Logger logger = LoggerFactory.getLogger(CardFacade.class);</span>
+<span class="nc" id="L45">    private static final Logger logger = LoggerFactory.getLogger(CardFacade.class);</span>
 
     /**
      * Minimal completion level
@@ -51,7 +52,7 @@ import org.slf4j.LoggerFactory;
     /**
      * Initial card status
      */
-<span class="nc" id="L54">    private static final CardContentStatus CARD_CONTENT_INITIAL_STATUS = CardContentStatus.ACTIVE;</span>
+<span class="nc" id="L55">    private static final CardContentStatus CARD_CONTENT_INITIAL_STATUS = CardContentStatus.ACTIVE;</span>
 
     // *********************************************************************************************
     // injections
@@ -96,34 +97,34 @@ import org.slf4j.LoggerFactory;
     // card type stuff
     // *********************************************************************************************
     /**
-     * Create a new card type. The new type will be a global type if the type is not bound to
-     * any project.
+     * Create a new card type. The new type will be a global type if the type is not bound to any
+     * project.
      *
      * @param cardType the type to create
      *
      * @return a new, persisted card type
      */
     public CardType createNewCardType(CardType cardType) {
-<span class="nc" id="L107">        Long projectId = cardType.getProjectId();</span>
-<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (projectId != null) {</span>
-<span class="nc" id="L109">            logger.debug(&quot;create a new card type in the project #{}&quot;, projectId);</span>
-<span class="nc" id="L110">            Project project = projectDao.getProject(projectId);</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">            if (project == null) {</span>
-<span class="nc" id="L112">                throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L108">        Long projectId = cardType.getProjectId();</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (projectId != null) {</span>
+<span class="nc" id="L110">            logger.debug(&quot;create a new card type in the project #{}&quot;, projectId);</span>
+<span class="nc" id="L111">            Project project = projectDao.getProject(projectId);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            if (project == null) {</span>
+<span class="nc" id="L113">                throw HttpErrorMessage.relatedObjectNotFoundError();</span>
             }
-<span class="nc" id="L114">            securityFacade.assertCanCreateCardType(project);</span>
-<span class="nc" id="L115">            project.getElementsToBeDefined().add(cardType);</span>
-<span class="nc" id="L116">            cardType.setProject(project);</span>
-<span class="nc" id="L117">        } else {</span>
-<span class="nc" id="L118">            logger.debug(&quot;create a new global card type&quot;);</span>
-<span class="nc" id="L119">            securityFacade.assertCurrentUserIsAdmin();</span>
-<span class="nc" id="L120">            cardType.setProject(null);</span>
+<span class="nc" id="L115">            securityFacade.assertCanCreateCardType(project);</span>
+<span class="nc" id="L116">            project.getElementsToBeDefined().add(cardType);</span>
+<span class="nc" id="L117">            cardType.setProject(project);</span>
+<span class="nc" id="L118">        } else {</span>
+<span class="nc" id="L119">            logger.debug(&quot;create a new global card type&quot;);</span>
+<span class="nc" id="L120">            securityFacade.assertCurrentUserIsAdmin();</span>
+<span class="nc" id="L121">            cardType.setProject(null);</span>
         }
 
-<span class="nc" id="L123">        initNewCardType(cardType);</span>
-<span class="nc" id="L124">        cardTypeDao.createCardType(cardType);</span>
+<span class="nc" id="L124">        initNewCardType(cardType);</span>
+<span class="nc" id="L125">        cardTypeDao.createCardType(cardType);</span>
 
-<span class="nc" id="L126">        return cardType;</span>
+<span class="nc" id="L127">        return cardType;</span>
     }
 
     /**
@@ -134,11 +135,11 @@ import org.slf4j.LoggerFactory;
      * @return the freshly deleted card
      */
     public CardType deleteCardType(Long cardTypeId) {
-<span class="nc" id="L137">        logger.debug(&quot;delete card type {}&quot;, cardTypeId);</span>
-<span class="nc" id="L138">        CardType cardType = cardTypeDao.getCardType(cardTypeId);</span>
+<span class="nc" id="L138">        logger.debug(&quot;delete card type {}&quot;, cardTypeId);</span>
+<span class="nc" id="L139">        CardType cardType = cardTypeDao.getCardType(cardTypeId);</span>
 
-<span class="nc" id="L140">        cardType.getProject().getElementsToBeDefined().remove(cardType);</span>
-<span class="nc" id="L141">        return cardTypeDao.deleteCardType(cardTypeId);</span>
+<span class="nc" id="L141">        cardType.getProject().getElementsToBeDefined().remove(cardType);</span>
+<span class="nc" id="L142">        return cardTypeDao.deleteCardType(cardTypeId);</span>
     }
 
     // TODO delete AbstractCardType / CardTypeRef
@@ -151,7 +152,7 @@ import org.slf4j.LoggerFactory;
      * @return set of concrete types and all transitive ref to reach them
      */
     public Set&lt;AbstractCardType&gt; getExpandedProjectType(Project project) {
-<span class="nc" id="L154">        return this.expand(project.getElementsToBeDefined());</span>
+<span class="nc" id="L155">        return this.expand(project.getElementsToBeDefined());</span>
     }
 
     /**
@@ -160,7 +161,7 @@ import org.slf4j.LoggerFactory;
      * @return set of concrete types and all transitive ref to reach them
      */
     public Set&lt;AbstractCardType&gt; getExpandedPublishedTypes() {
-<span class="nc" id="L163">        return this.expand(cardTypeDao.getPublishedProjectsCardType());</span>
+<span class="nc" id="L164">        return this.expand(cardTypeDao.getPublishedProjectsCardType());</span>
     }
 
     /**
@@ -171,12 +172,12 @@ import org.slf4j.LoggerFactory;
      * @return all types
      */
     public Set&lt;AbstractCardType&gt; expand(List&lt;AbstractCardType&gt; types) {
-<span class="nc" id="L174">        Set&lt;AbstractCardType&gt; allTypes = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L175">        types.forEach(type -&gt; {</span>
-<span class="nc" id="L176">            allTypes.addAll(type.expand());</span>
-<span class="nc" id="L177">        });</span>
+<span class="nc" id="L175">        Set&lt;AbstractCardType&gt; allTypes = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L176">        types.forEach(type -&gt; {</span>
+<span class="nc" id="L177">            allTypes.addAll(type.expand());</span>
+<span class="nc" id="L178">        });</span>
 
-<span class="nc" id="L179">        return allTypes;</span>
+<span class="nc" id="L180">        return allTypes;</span>
     }
 
     /**
@@ -184,7 +185,7 @@ import org.slf4j.LoggerFactory;
      */
     private CardType initNewCardType(CardType cardType) {
         // see if uniqueId must be initialized
-<span class="nc" id="L187">        return cardType;</span>
+<span class="nc" id="L188">        return cardType;</span>
     }
 
     /**
@@ -195,12 +196,12 @@ import org.slf4j.LoggerFactory;
      * @return all abstract resources directly linked to the card type
      */
     public List&lt;AbstractResource&gt; getDirectAbstractResourcesOfCardType(Long cardTypeId) {
-<span class="nc" id="L198">        logger.debug(&quot;get abstract resources directly linked to card type #{}&quot;, cardTypeId);</span>
-<span class="nc" id="L199">        CardType cardType = cardTypeDao.getCardType(cardTypeId);</span>
-<span class="nc bnc" id="L200" title="All 2 branches missed.">        if (cardType == null) {</span>
-<span class="nc" id="L201">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L199">        logger.debug(&quot;get abstract resources directly linked to card type #{}&quot;, cardTypeId);</span>
+<span class="nc" id="L200">        CardType cardType = cardTypeDao.getCardType(cardTypeId);</span>
+<span class="nc bnc" id="L201" title="All 2 branches missed.">        if (cardType == null) {</span>
+<span class="nc" id="L202">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
-<span class="nc" id="L203">        return cardType.getDirectAbstractResources();</span>
+<span class="nc" id="L204">        return cardType.getDirectAbstractResources();</span>
     }
 
     // *********************************************************************************************
@@ -214,12 +215,12 @@ import org.slf4j.LoggerFactory;
      * @return a new card dedicated to be the root card of a project
      */
     public Card initNewRootCard() {
-<span class="nc" id="L217">        logger.debug(&quot;initialize a new root card&quot;);</span>
+<span class="nc" id="L218">        logger.debug(&quot;initialize a new root card&quot;);</span>
 
-<span class="nc" id="L219">        Card rootCard = initNewCard();</span>
-<span class="nc" id="L220">        rootCard.setIndex(0);</span>
+<span class="nc" id="L220">        Card rootCard = initNewCard();</span>
+<span class="nc" id="L221">        rootCard.setIndex(0);</span>
 
-<span class="nc" id="L222">        return rootCard;</span>
+<span class="nc" id="L223">        return rootCard;</span>
     }
 
     /**
@@ -231,46 +232,47 @@ import org.slf4j.LoggerFactory;
      * @return a new, initialized and persisted card
      */
     public Card createNewCard(Long parentId, Long cardTypeId) {
-<span class="nc" id="L234">        logger.debug(&quot;create a new sub card of #{} with the type of #{}&quot;, parentId,</span>
+<span class="nc" id="L235">        logger.debug(&quot;create a new sub card of #{} with the type of #{}&quot;, parentId,</span>
             cardTypeId);
 
-<span class="nc" id="L237">        CardContent parent = cardContentDao.getCardContent(parentId);</span>
-<span class="nc bnc" id="L238" title="All 2 branches missed.">        if (parent == null) {</span>
-<span class="nc" id="L239">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L238">        CardContent parent = cardContentDao.getCardContent(parentId);</span>
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        if (parent == null) {</span>
+<span class="nc" id="L240">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L242">        AbstractCardType cardType = cardTypeDao.getAbstractCardType(cardTypeId);</span>
-<span class="nc bnc" id="L243" title="All 2 branches missed.">        if (cardType == null) {</span>
-<span class="nc" id="L244">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L243">        AbstractCardType cardType = cardTypeDao.getAbstractCardType(cardTypeId);</span>
+<span class="nc bnc" id="L244" title="All 2 branches missed.">        if (cardType == null) {</span>
+<span class="nc" id="L245">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
         // check type read access and parent write right
-<span class="nc" id="L248">        securityFacade.assertCanCreateCard(parent, cardType);</span>
+<span class="nc" id="L249">        securityFacade.assertCanCreateCard(parent, cardType);</span>
 
-<span class="nc" id="L250">        Card card = initNewCard(parent, cardType);</span>
+<span class="nc" id="L251">        Card card = initNewCard(parent, cardType);</span>
 
-<span class="nc" id="L252">        return cardDao.createCard(card);</span>
+<span class="nc" id="L253">        return cardDao.createCard(card);</span>
     }
 
     /**
      * Delete the card
      *
      * @param cardId the id of the card to delete
+     *
      * @return the freshly deleted card
      */
     public Card deleteCard(Long cardId) {
-<span class="nc" id="L262">        Card card = cardDao.getCard(cardId);</span>
+<span class="nc" id="L264">        Card card = cardDao.getCard(cardId);</span>
 
-<span class="nc bnc" id="L264" title="All 2 branches missed.">        if (card != null) {</span>
-<span class="nc bnc" id="L265" title="All 2 branches missed.">            if (card.getRootCardProject() != null) {</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">        if (card != null) {</span>
+<span class="nc bnc" id="L267" title="All 2 branches missed.">            if (card.getRootCardProject() != null) {</span>
                 // no way to delete the root card
-<span class="nc" id="L267">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L269">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
 
-<span class="nc" id="L270">            card.getParent().getSubCards().remove(card);</span>
+<span class="nc" id="L272">            card.getParent().getSubCards().remove(card);</span>
         }
 
-<span class="nc" id="L273">        return cardDao.deleteCard(cardId);</span>
+<span class="nc" id="L275">        return cardDao.deleteCard(cardId);</span>
     }
 
     /**
@@ -282,20 +284,20 @@ import org.slf4j.LoggerFactory;
      * @return the reference
      */
     private CardTypeRef createReference(AbstractCardType cardType, Project project) {
-<span class="nc" id="L285">        CardTypeRef ref = new CardTypeRef();</span>
-<span class="nc" id="L286">        ref.setProject(project);</span>
+<span class="nc" id="L287">        CardTypeRef ref = new CardTypeRef();</span>
+<span class="nc" id="L288">        ref.setProject(project);</span>
 
-<span class="nc" id="L288">        ref.setAbstractCardType(cardType);</span>
-<span class="nc" id="L289">        cardType.getReferences().add(ref);</span>
+<span class="nc" id="L290">        ref.setAbstractCardType(cardType);</span>
+<span class="nc" id="L291">        cardType.getReferences().add(ref);</span>
 
         // TODO: copy deprecated state or do never deprecate just created types?
         //ref.setDeprecated(cardType.isDeprecated());
-<span class="nc" id="L293">        ref.setDeprecated(false);</span>
-<span class="nc" id="L294">        ref.setPublished(false);</span>
+<span class="nc" id="L295">        ref.setDeprecated(false);</span>
+<span class="nc" id="L296">        ref.setPublished(false);</span>
 
-<span class="nc" id="L296">        cardTypeDao.createCardType(ref);</span>
-<span class="nc" id="L297">        project.getElementsToBeDefined().add(ref);</span>
-<span class="nc" id="L298">        return ref;</span>
+<span class="nc" id="L298">        cardTypeDao.createCardType(ref);</span>
+<span class="nc" id="L299">        project.getElementsToBeDefined().add(ref);</span>
+<span class="nc" id="L300">        return ref;</span>
     }
 
     /**
@@ -308,61 +310,61 @@ import org.slf4j.LoggerFactory;
      * @return a new card containing a new card content with cardType
      */
     private Card initNewCard(CardContent parent, AbstractCardType cardType) {
-<span class="nc" id="L311">        Card card = initNewCard();</span>
+<span class="nc" id="L313">        Card card = initNewCard();</span>
 
-<span class="nc" id="L313">        card.setParent(parent);</span>
-<span class="nc" id="L314">        parent.getSubCards().add(card);</span>
+<span class="nc" id="L315">        card.setParent(parent);</span>
+<span class="nc" id="L316">        parent.getSubCards().add(card);</span>
 
-<span class="nc" id="L316">        Project project = parent.getProject();</span>
+<span class="nc" id="L318">        Project project = parent.getProject();</span>
 
-<span class="nc bnc" id="L318" title="All 2 branches missed.">        if (project != null) {</span>
-<span class="nc" id="L319">            AbstractCardType effectiveType = null;</span>
-<span class="nc bnc" id="L320" title="All 2 branches missed.">            if (project.equals(cardType.getProject())) {</span>
+<span class="nc bnc" id="L320" title="All 2 branches missed.">        if (project != null) {</span>
+<span class="nc" id="L321">            AbstractCardType effectiveType = null;</span>
+<span class="nc bnc" id="L322" title="All 2 branches missed.">            if (project.equals(cardType.getProject())) {</span>
                 //Given type belongs to the project
                 // it can be used as-is
-<span class="nc" id="L323">                effectiveType = cardType;</span>
+<span class="nc" id="L325">                effectiveType = cardType;</span>
             } else {
                 // second case: cardType belongs to another project
 
                 // shall we check something to prevent extending same type several times?
                 //
                 // Check if the project already got a direct reference the super-type
-<span class="nc" id="L330">                Optional&lt;AbstractCardType&gt; findFirst = project.getElementsToBeDefined().stream()</span>
-<span class="nc" id="L331">                    .filter(type -&gt; {</span>
-<span class="nc" id="L332">                        return this.isDirectRef(type, cardType);</span>
-<span class="nc" id="L333">                    }).findFirst();</span>
+<span class="nc" id="L332">                Optional&lt;AbstractCardType&gt; findFirst = project.getElementsToBeDefined().stream()</span>
+<span class="nc" id="L333">                    .filter(type -&gt; {</span>
+<span class="nc" id="L334">                        return this.isDirectRef(type, cardType);</span>
+<span class="nc" id="L335">                    }).findFirst();</span>
 
-<span class="nc bnc" id="L335" title="All 2 branches missed.">                if (findFirst.isPresent()) {</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">                if (findFirst.isPresent()) {</span>
                     // direct ref found, reuse it
-<span class="nc" id="L337">                    effectiveType = findFirst.get();</span>
+<span class="nc" id="L339">                    effectiveType = findFirst.get();</span>
                 } else {
                     // no direct ref. Create one.
-<span class="nc" id="L340">                    effectiveType = createReference(cardType, project);</span>
+<span class="nc" id="L342">                    effectiveType = createReference(cardType, project);</span>
                 }
             }
 
-<span class="nc bnc" id="L344" title="All 2 branches missed.">            if (effectiveType != null) {</span>
-<span class="nc" id="L345">                card.setCardType(effectiveType);</span>
-<span class="nc" id="L346">                effectiveType.getImplementingCards().add(card);</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">            if (effectiveType != null) {</span>
+<span class="nc" id="L347">                card.setCardType(effectiveType);</span>
+<span class="nc" id="L348">                effectiveType.getImplementingCards().add(card);</span>
 
             } else {
-<span class="nc" id="L349">                logger.error(&quot;Unable to find effective type for {}&quot;, cardType);</span>
-<span class="nc" id="L350">                throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L351">                logger.error(&quot;Unable to find effective type for {}&quot;, cardType);</span>
+<span class="nc" id="L352">                throw HttpErrorMessage.relatedObjectNotFoundError();</span>
             }
         }
 
-<span class="nc" id="L354">        return card;</span>
+<span class="nc" id="L356">        return card;</span>
     }
 
     /**
      * @return a new card containing a new card content
      */
     private Card initNewCard() {
-<span class="nc" id="L361">        Card card = new Card();</span>
+<span class="nc" id="L363">        Card card = new Card();</span>
 
-<span class="nc" id="L363">        initNewCardContent(card);</span>
+<span class="nc" id="L365">        initNewCardContent(card);</span>
 
-<span class="nc" id="L365">        return card;</span>
+<span class="nc" id="L367">        return card;</span>
     }
 
     /**
@@ -374,12 +376,12 @@ import org.slf4j.LoggerFactory;
      * @return true if child is a direct reference to the parent
      */
     public boolean isDirectRef(AbstractCardType child, AbstractCardType parent) {
-<span class="nc bnc" id="L377" title="All 2 branches missed.">        if (child instanceof CardTypeRef) {</span>
-<span class="nc" id="L378">            CardTypeRef ref = (CardTypeRef) child;</span>
-<span class="nc" id="L379">            AbstractCardType refTarget = ref.getAbstractCardType();</span>
-<span class="nc bnc" id="L380" title="All 4 branches missed.">            return parent != null &amp;&amp; parent.equals(refTarget);</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">        if (child instanceof CardTypeRef) {</span>
+<span class="nc" id="L380">            CardTypeRef ref = (CardTypeRef) child;</span>
+<span class="nc" id="L381">            AbstractCardType refTarget = ref.getAbstractCardType();</span>
+<span class="nc bnc" id="L382" title="All 4 branches missed.">            return parent != null &amp;&amp; parent.equals(refTarget);</span>
         }
-<span class="nc" id="L382">        return false;</span>
+<span class="nc" id="L384">        return false;</span>
     }
 
     /**
@@ -391,14 +393,14 @@ import org.slf4j.LoggerFactory;
      * @return true if child is a ref and if ancestor is an ancestor of the ref
      */
     public boolean isTransitiveRef(AbstractCardType child, AbstractCardType ancestor) {
-<span class="nc bnc" id="L394" title="All 2 branches missed.">        if (isDirectRef(child, ancestor)) {</span>
-<span class="nc" id="L395">            return true;</span>
-<span class="nc bnc" id="L396" title="All 2 branches missed.">        } else if (child instanceof CardTypeRef) {</span>
-<span class="nc" id="L397">            AbstractCardType parent = ((CardTypeRef) child).getAbstractCardType();</span>
-<span class="nc" id="L398">            return this.isTransitiveRef(parent, ancestor);</span>
+<span class="nc bnc" id="L396" title="All 2 branches missed.">        if (isDirectRef(child, ancestor)) {</span>
+<span class="nc" id="L397">            return true;</span>
+<span class="nc bnc" id="L398" title="All 2 branches missed.">        } else if (child instanceof CardTypeRef) {</span>
+<span class="nc" id="L399">            AbstractCardType parent = ((CardTypeRef) child).getAbstractCardType();</span>
+<span class="nc" id="L400">            return this.isTransitiveRef(parent, ancestor);</span>
         }
 
-<span class="nc" id="L401">        return false;</span>
+<span class="nc" id="L403">        return false;</span>
     }
 
     /**
@@ -409,12 +411,12 @@ import org.slf4j.LoggerFactory;
      * @return all card contents of the card
      */
     public List&lt;CardContent&gt; getContentVariants(Long cardId) {
-<span class="nc" id="L412">        logger.debug(&quot;Get card contents of card #{}&quot;, cardId);</span>
-<span class="nc" id="L413">        Card card = cardDao.getCard(cardId);</span>
-<span class="nc bnc" id="L414" title="All 2 branches missed.">        if (card == null) {</span>
-<span class="nc" id="L415">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L414">        logger.debug(&quot;Get card contents of card #{}&quot;, cardId);</span>
+<span class="nc" id="L415">        Card card = cardDao.getCard(cardId);</span>
+<span class="nc bnc" id="L416" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L417">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
-<span class="nc" id="L417">        return card.getContentVariants();</span>
+<span class="nc" id="L419">        return card.getContentVariants();</span>
     }
 
     /**
@@ -425,12 +427,44 @@ import org.slf4j.LoggerFactory;
      * @return all abstract resources directly linked to the card
      */
     public List&lt;AbstractResource&gt; getDirectAbstractResourcesOfCard(Long cardId) {
-<span class="nc" id="L428">        logger.debug(&quot;get abstract resources directly linked to card #{}&quot;, cardId);</span>
-<span class="nc" id="L429">        Card card = cardDao.getCard(cardId);</span>
-<span class="nc bnc" id="L430" title="All 2 branches missed.">        if (card == null) {</span>
-<span class="nc" id="L431">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L430">        logger.debug(&quot;get abstract resources directly linked to card #{}&quot;, cardId);</span>
+<span class="nc" id="L431">        Card card = cardDao.getCard(cardId);</span>
+<span class="nc bnc" id="L432" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L433">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
-<span class="nc" id="L433">        return card.getDirectAbstractResources();</span>
+<span class="nc" id="L435">        return card.getDirectAbstractResources();</span>
+    }
+
+    /**
+     * Get all sticky note links of which the given card is the destination
+     *
+     * @param cardId the id of the card
+     *
+     * @return all sticky note links linked from the card
+     */
+    public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsDest(Long cardId) {
+<span class="nc" id="L446">        logger.debug(&quot;get sticky note links where the card #{} is the destination&quot;, cardId);</span>
+<span class="nc" id="L447">        Card card = cardDao.getCard(cardId);</span>
+<span class="nc bnc" id="L448" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L449">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+<span class="nc" id="L451">        return card.getStickyNoteLinksAsDest();</span>
+    }
+
+    /**
+     * Get all sticky note links of which the given card is the source
+     *
+     * @param cardId the id of the card
+     *
+     * @return all sticky note links linked to the card
+     */
+    public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrcCard(Long cardId) {
+<span class="nc" id="L462">        logger.debug(&quot;get sticky note links where the card #{} is the source&quot;, cardId);</span>
+<span class="nc" id="L463">        Card card = cardDao.getCard(cardId);</span>
+<span class="nc bnc" id="L464" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L465">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+<span class="nc" id="L467">        return card.getStickyNoteLinksAsSrc();</span>
     }
 
     // *********************************************************************************************
@@ -445,33 +479,33 @@ import org.slf4j.LoggerFactory;
      * @return a new, initialized and persisted card content
      */
     public CardContent createNewCardContent(Long cardId) {
-<span class="nc" id="L448">        logger.debug(&quot;create a new card content for the card #{}&quot;, cardId);</span>
+<span class="nc" id="L482">        logger.debug(&quot;create a new card content for the card #{}&quot;, cardId);</span>
 
-<span class="nc" id="L450">        Card card = cardDao.getCard(cardId);</span>
-<span class="nc bnc" id="L451" title="All 2 branches missed.">        if (card == null) {</span>
-<span class="nc" id="L452">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L484">        Card card = cardDao.getCard(cardId);</span>
+<span class="nc bnc" id="L485" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L486">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
-<span class="nc" id="L454">        securityFacade.assertCanCreateCardContent(card);</span>
+<span class="nc" id="L488">        securityFacade.assertCanCreateCardContent(card);</span>
 
-<span class="nc" id="L456">        CardContent cardContent = initNewCardContent(card);</span>
+<span class="nc" id="L490">        CardContent cardContent = initNewCardContent(card);</span>
 
-<span class="nc" id="L458">        return cardContentDao.createCardContent(cardContent);</span>
+<span class="nc" id="L492">        return cardContentDao.createCardContent(cardContent);</span>
     }
-
 
     /**
      * Delete the card content
      *
      * @param cardContentId the id of the card content to delete
+     *
      * @return the freshly deleted card content
      */
     public CardContent deleteCardContent(Long cardContentId) {
-<span class="nc" id="L469">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
-<span class="nc bnc" id="L470" title="All 2 branches missed.">        if (cardContent != null) {</span>
-<span class="nc" id="L471">            cardContent.getCard().getContentVariants().remove(cardContent);</span>
+<span class="nc" id="L503">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
+<span class="nc bnc" id="L504" title="All 2 branches missed.">        if (cardContent != null) {</span>
+<span class="nc" id="L505">            cardContent.getCard().getContentVariants().remove(cardContent);</span>
         }
 
-<span class="nc" id="L474">        return cardContentDao.deleteCardContent(cardContentId);</span>
+<span class="nc" id="L508">        return cardContentDao.deleteCardContent(cardContentId);</span>
     }
 
     /**
@@ -480,12 +514,12 @@ import org.slf4j.LoggerFactory;
      * @return a new, initialized card content
      */
     private CardContent initNewCardContent(Card card) {
-<span class="nc" id="L483">        CardContent cardContent = new CardContent();</span>
-<span class="nc" id="L484">        cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);</span>
-<span class="nc" id="L485">        cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);</span>
-<span class="nc" id="L486">        cardContent.setCard(card);</span>
-<span class="nc" id="L487">        card.getContentVariants().add(cardContent);</span>
-<span class="nc" id="L488">        return cardContent;</span>
+<span class="nc" id="L517">        CardContent cardContent = new CardContent();</span>
+<span class="nc" id="L518">        cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);</span>
+<span class="nc" id="L519">        cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);</span>
+<span class="nc" id="L520">        cardContent.setCard(card);</span>
+<span class="nc" id="L521">        card.getContentVariants().add(cardContent);</span>
+<span class="nc" id="L522">        return cardContent;</span>
     }
 
     /**
@@ -496,12 +530,12 @@ import org.slf4j.LoggerFactory;
      * @return all cards of the card content
      */
     public List&lt;Card&gt; getSubCards(Long cardContentId) {
-<span class="nc" id="L499">        logger.debug(&quot;get sub cards of card content #{}&quot;, cardContentId);</span>
-<span class="nc" id="L500">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
-<span class="nc bnc" id="L501" title="All 2 branches missed.">        if (cardContent == null) {</span>
-<span class="nc" id="L502">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L533">        logger.debug(&quot;get sub cards of card content #{}&quot;, cardContentId);</span>
+<span class="nc" id="L534">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
+<span class="nc bnc" id="L535" title="All 2 branches missed.">        if (cardContent == null) {</span>
+<span class="nc" id="L536">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
-<span class="nc" id="L504">        return cardContent.getSubCards();</span>
+<span class="nc" id="L538">        return cardContent.getSubCards();</span>
     }
 
     /**
@@ -513,31 +547,31 @@ import org.slf4j.LoggerFactory;
      * @return the newly created document
      */
     public Document assignDeliverable(Long cardContentId, Document document) {
-<span class="nc" id="L516">        logger.debug(&quot;set deliverable {} to card content #{}&quot;, document, cardContentId);</span>
+<span class="nc" id="L550">        logger.debug(&quot;set deliverable {} to card content #{}&quot;, document, cardContentId);</span>
 
-<span class="nc bnc" id="L518" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L519">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L552" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L553">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
         // A document can be related at max to one card content
-<span class="nc bnc" id="L523" title="All 2 branches missed.">        if (document.hasDeliverableCardContent()) {</span>
-<span class="nc" id="L524">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L557" title="All 2 branches missed.">        if (document.hasDeliverableCardContent()) {</span>
+<span class="nc" id="L558">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L527">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
-<span class="nc bnc" id="L528" title="All 2 branches missed.">        if (cardContent == null) {</span>
-<span class="nc" id="L529">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L561">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
+<span class="nc bnc" id="L562" title="All 2 branches missed.">        if (cardContent == null) {</span>
+<span class="nc" id="L563">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
         // TODO: check if the content already got a document
-<span class="nc" id="L533">        securityFacade.assertCanCreateDeliverable(document, cardContent);</span>
+<span class="nc" id="L567">        securityFacade.assertCanCreateDeliverable(document, cardContent);</span>
 
-<span class="nc" id="L535">        cardContent.setDeliverable(document);</span>
-<span class="nc" id="L536">        document.setDeliverableCardContent(cardContent);</span>
+<span class="nc" id="L569">        cardContent.setDeliverable(document);</span>
+<span class="nc" id="L570">        document.setDeliverableCardContent(cardContent);</span>
 
-<span class="nc" id="L538">        Document persistedDocument = documentDao.persistDocument(document);</span>
+<span class="nc" id="L572">        Document persistedDocument = documentDao.persistDocument(document);</span>
 
-<span class="nc" id="L540">        return persistedDocument;</span>
+<span class="nc" id="L574">        return persistedDocument;</span>
     }
 
     /**
@@ -548,12 +582,29 @@ import org.slf4j.LoggerFactory;
      * @return all abstract resources directly linked to the card content
      */
     public List&lt;AbstractResource&gt; getDirectAbstractResourcesOfCardContent(Long cardContentId) {
-<span class="nc" id="L551">        logger.debug(&quot;get abstract resources directly linked to card content #{}&quot;, cardContentId);</span>
-<span class="nc" id="L552">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
-<span class="nc bnc" id="L553" title="All 2 branches missed.">        if (cardContent == null) {</span>
-<span class="nc" id="L554">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L585">        logger.debug(&quot;get abstract resources directly linked to card content #{}&quot;, cardContentId);</span>
+<span class="nc" id="L586">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
+<span class="nc bnc" id="L587" title="All 2 branches missed.">        if (cardContent == null) {</span>
+<span class="nc" id="L588">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
-<span class="nc" id="L556">        return cardContent.getDirectAbstractResources();</span>
+<span class="nc" id="L590">        return cardContent.getDirectAbstractResources();</span>
+    }
+
+    /**
+     * Get all sticky note links of which the given card content is the source
+     *
+     * @param cardContentId the id of the card content
+     *
+     * @return all sticky note links linked to the card content
+     */
+    public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrcCardContent(Long cardContentId) {
+<span class="nc" id="L601">        logger.debug(&quot;get sticky note links where the card content #{} is the source&quot;,</span>
+            cardContentId);
+<span class="nc" id="L603">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
+<span class="nc bnc" id="L604" title="All 2 branches missed.">        if (cardContent == null) {</span>
+<span class="nc" id="L605">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+<span class="nc" id="L607">        return cardContent.getStickyNoteLinksAsSrc();</span>
     }
 
 }

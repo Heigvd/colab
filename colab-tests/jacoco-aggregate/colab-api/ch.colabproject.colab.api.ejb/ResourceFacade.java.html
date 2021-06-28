@@ -13,9 +13,11 @@ import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.api.persistence.card.CardTypeDao;
+import ch.colabproject.colab.api.persistence.document.AbstractResourceDao;
 //import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.api.persistence.document.ResourceDao;
 import ch.colabproject.colab.api.persistence.document.ResourceRefDao;
@@ -37,10 +39,10 @@ import org.slf4j.LoggerFactory;
 // TODO requestingForGlory handling
 @Stateless
 @LocalBean
-<span class="fc" id="L40">public class ResourceFacade {</span>
+<span class="fc" id="L42">public class ResourceFacade {</span>
 
     /** logger */
-<span class="fc" id="L43">    private static final Logger logger = LoggerFactory.getLogger(ResourceFacade.class);</span>
+<span class="fc" id="L45">    private static final Logger logger = LoggerFactory.getLogger(ResourceFacade.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -57,6 +59,12 @@ import org.slf4j.LoggerFactory;
      */
     @Inject
     private ResourceRefDao resourceRefDao;
+
+    /**
+     * Resource / reference persistence handling
+     */
+    @Inject
+    private AbstractResourceDao resourceOrRefDao;
 
     /**
      * Card type persistence handling
@@ -96,14 +104,14 @@ import org.slf4j.LoggerFactory;
      * @return all resources that match
      */
     public List&lt;Resource&gt; getAvailableActiveResourcesLinkedToCardType(Long cardTypeId) {
-<span class="fc" id="L99">        logger.debug(&quot;Get available active resources linked to car type #{}&quot;, cardTypeId);</span>
+<span class="fc" id="L107">        logger.debug(&quot;Get available active resources linked to car type #{}&quot;, cardTypeId);</span>
 
-<span class="fc" id="L101">        CardType cardType = cardTypeDao.getCardType(cardTypeId);</span>
-<span class="pc bpc" id="L102" title="1 of 2 branches missed.">        if (cardType == null) {</span>
-<span class="nc" id="L103">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L109">        CardType cardType = cardTypeDao.getCardType(cardTypeId);</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        if (cardType == null) {</span>
+<span class="nc" id="L111">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="fc" id="L106">        return findAvailableAndActiveTargetResource(cardType.getDirectAbstractResources());</span>
+<span class="fc" id="L114">        return findAvailableAndActiveTargetResource(cardType.getDirectAbstractResources());</span>
     }
 
     /**
@@ -116,14 +124,14 @@ import org.slf4j.LoggerFactory;
      * @return all resources that match
      */
     public List&lt;Resource&gt; getAvailableActiveResourcesLinkedToCard(Long cardId) {
-<span class="fc" id="L119">        logger.debug(&quot;Get available active resources linked to card #{}&quot;, cardId);</span>
+<span class="fc" id="L127">        logger.debug(&quot;Get available active resources linked to card #{}&quot;, cardId);</span>
 
-<span class="fc" id="L121">        Card card = cardDao.getCard(cardId);</span>
-<span class="pc bpc" id="L122" title="1 of 2 branches missed.">        if (card == null) {</span>
-<span class="nc" id="L123">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L129">        Card card = cardDao.getCard(cardId);</span>
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L131">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="fc" id="L126">        return findAvailableAndActiveTargetResource(card.getDirectAbstractResources());</span>
+<span class="fc" id="L134">        return findAvailableAndActiveTargetResource(card.getDirectAbstractResources());</span>
     }
 
     /**
@@ -136,14 +144,14 @@ import org.slf4j.LoggerFactory;
      * @return all resources that match
      */
     public List&lt;Resource&gt; getAvailableActiveResourcesLinkedToCardContent(Long cardContentId) {
-<span class="fc" id="L139">        logger.debug(&quot;Get available active resources linked to card content #{}&quot;, cardContentId);</span>
+<span class="fc" id="L147">        logger.debug(&quot;Get available active resources linked to card content #{}&quot;, cardContentId);</span>
 
-<span class="fc" id="L141">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
-<span class="pc bpc" id="L142" title="1 of 2 branches missed.">        if (cardContent == null) {</span>
-<span class="nc" id="L143">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L149">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">        if (cardContent == null) {</span>
+<span class="nc" id="L151">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="fc" id="L146">        return findAvailableAndActiveTargetResource(cardContent.getDirectAbstractResources());</span>
+<span class="fc" id="L154">        return findAvailableAndActiveTargetResource(cardContent.getDirectAbstractResources());</span>
     }
 
     /**
@@ -156,17 +164,17 @@ import org.slf4j.LoggerFactory;
      * @return the resources that match
      */
     private List&lt;Resource&gt; findAvailableAndActiveTargetResource(
-            List&lt;AbstractResource&gt; baseAbstractResources) {
-<span class="fc" id="L160">        List&lt;Resource&gt; result = new ArrayList&lt;&gt;();</span>
+        List&lt;AbstractResource&gt; baseAbstractResources) {
+<span class="fc" id="L168">        List&lt;Resource&gt; result = new ArrayList&lt;&gt;();</span>
 
-<span class="fc bfc" id="L162" title="All 2 branches covered.">        for (AbstractResource abstractResource : baseAbstractResources) {</span>
-<span class="fc" id="L163">            Resource resource = getAvailableActiveResource(abstractResource);</span>
-<span class="fc bfc" id="L164" title="All 2 branches covered.">            if (resource != null) {</span>
-<span class="fc" id="L165">                result.add(resource);</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">        for (AbstractResource abstractResource : baseAbstractResources) {</span>
+<span class="fc" id="L171">            Resource resource = getAvailableActiveResource(abstractResource);</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">            if (resource != null) {</span>
+<span class="fc" id="L173">                result.add(resource);</span>
             }
-<span class="fc" id="L167">        }</span>
+<span class="fc" id="L175">        }</span>
 
-<span class="fc" id="L169">        return result;</span>
+<span class="fc" id="L177">        return result;</span>
     }
 
     /**
@@ -180,18 +188,18 @@ import org.slf4j.LoggerFactory;
      *         active
      */
     private Resource getAvailableActiveResource(AbstractResource abstractResource) {
-<span class="fc bfc" id="L183" title="All 2 branches covered.">        if (abstractResource instanceof Resource) {</span>
-<span class="fc" id="L184">            return (Resource) abstractResource;</span>
-<span class="pc bpc" id="L185" title="1 of 2 branches missed.">        } else if (abstractResource instanceof ResourceRef) {</span>
-<span class="fc bfc" id="L186" title="All 2 branches covered.">            if (isResourceAvailableAndActive((ResourceRef) abstractResource)) {</span>
-<span class="fc" id="L187">                return getAvailableActiveResource(</span>
-<span class="fc" id="L188">                    ((ResourceRef) abstractResource).getTargetAbstractResource());</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">        if (abstractResource instanceof Resource) {</span>
+<span class="fc" id="L192">            return (Resource) abstractResource;</span>
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">        } else if (abstractResource instanceof ResourceRef) {</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">            if (isResourceAvailableAndActive((ResourceRef) abstractResource)) {</span>
+<span class="fc" id="L195">                return getAvailableActiveResource(</span>
+<span class="fc" id="L196">                    ((ResourceRef) abstractResource).getTargetAbstractResource());</span>
             }
         } else {
-<span class="nc" id="L191">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L199">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L194">        return null;</span>
+<span class="fc" id="L202">        return null;</span>
     }
 
     /**
@@ -207,13 +215,13 @@ import org.slf4j.LoggerFactory;
      * @return whether the resource can be taken into account or not
      */
     private boolean isResourceAvailableAndActive(ResourceRef resourceRef) {
-<span class="fc" id="L210">        AbstractResource target = resourceRef.getTargetAbstractResource();</span>
-<span class="fc bfc" id="L211" title="All 4 branches covered.">        if (resourceRef.hasCard() &amp;&amp; target.hasCardContent()</span>
-<span class="fc bfc" id="L212" title="All 2 branches covered.">                &amp;&amp; !resourceRef.resolve().isPublished()) {</span>
-<span class="fc" id="L213">            return false;</span>
+<span class="fc" id="L218">        AbstractResource target = resourceRef.getTargetAbstractResource();</span>
+<span class="fc bfc" id="L219" title="All 4 branches covered.">        if (resourceRef.hasCard() &amp;&amp; target.hasCardContent()</span>
+<span class="fc bfc" id="L220" title="All 2 branches covered.">            &amp;&amp; !resourceRef.resolve().isPublished()) {</span>
+<span class="fc" id="L221">            return false;</span>
         }
 
-<span class="pc bpc" id="L216" title="1 of 2 branches missed.">        return !resourceRef.isRefused();</span>
+<span class="pc bpc" id="L224" title="1 of 2 branches missed.">        return !resourceRef.isRefused();</span>
     }
 
     // *********************************************************************************************
@@ -232,36 +240,36 @@ import org.slf4j.LoggerFactory;
      * @return the brand new resource
      */
     public Resource createResourceForCardType(Document document, Long cardTypeId) {
-<span class="fc" id="L235">        logger.debug(&quot;create a resource for document {} and card type #{}&quot;, document,</span>
+<span class="fc" id="L243">        logger.debug(&quot;create a resource for document {} and card type #{}&quot;, document,</span>
             cardTypeId);
 
-<span class="pc bpc" id="L238" title="1 of 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L239">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="pc bpc" id="L246" title="1 of 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L247">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
         // A document can be related at max to one resource
-<span class="pc bpc" id="L243" title="1 of 2 branches missed.">        if (document.hasResource()) {</span>
-<span class="nc" id="L244">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="pc bpc" id="L251" title="1 of 2 branches missed.">        if (document.hasResource()) {</span>
+<span class="nc" id="L252">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L247">        CardType cardType = cardTypeDao.getCardType(cardTypeId);</span>
-<span class="pc bpc" id="L248" title="1 of 2 branches missed.">        if (cardType == null) {</span>
-<span class="nc" id="L249">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L255">        CardType cardType = cardTypeDao.getCardType(cardTypeId);</span>
+<span class="pc bpc" id="L256" title="1 of 2 branches missed.">        if (cardType == null) {</span>
+<span class="nc" id="L257">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="fc" id="L252">        securityFacade.assertCanCreateResource(document, cardType);</span>
+<span class="fc" id="L260">        securityFacade.assertCanCreateResource(document, cardType);</span>
 
-<span class="fc" id="L254">        Resource resource = Resource.initNewResource();</span>
-<span class="fc" id="L255">        resource.setAbstractCardType(cardType);</span>
-<span class="fc" id="L256">        cardType.getDirectAbstractResources().add(resource);</span>
-<span class="fc" id="L257">        resource.setDocument(document);</span>
-<span class="fc" id="L258">        document.setResource(resource);</span>
+<span class="fc" id="L262">        Resource resource = Resource.initNewResource();</span>
+<span class="fc" id="L263">        resource.setAbstractCardType(cardType);</span>
+<span class="fc" id="L264">        cardType.getDirectAbstractResources().add(resource);</span>
+<span class="fc" id="L265">        resource.setDocument(document);</span>
+<span class="fc" id="L266">        document.setResource(resource);</span>
 
-<span class="fc" id="L260">        resource = resourceDao.persistResource(resource);</span>
+<span class="fc" id="L268">        resource = resourceDao.persistResource(resource);</span>
 
-<span class="fc" id="L262">        createResourceRefForChildren(cardType, resource);</span>
+<span class="fc" id="L270">        createResourceRefForChildren(cardType, resource);</span>
 
-<span class="fc" id="L264">        return resource;</span>
+<span class="fc" id="L272">        return resource;</span>
     }
 
     /**
@@ -276,35 +284,35 @@ import org.slf4j.LoggerFactory;
      * @return the brand new resource
      */
     public Resource createResourceForCard(Document document, Long cardId) {
-<span class="fc" id="L279">        logger.debug(&quot;create a resource for document {} and card #{}&quot;, document, cardId);</span>
+<span class="fc" id="L287">        logger.debug(&quot;create a resource for document {} and card #{}&quot;, document, cardId);</span>
 
-<span class="pc bpc" id="L281" title="1 of 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L282">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="pc bpc" id="L289" title="1 of 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L290">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
         // A document can be related at max to one resource
-<span class="pc bpc" id="L286" title="1 of 2 branches missed.">        if (document.hasResource()) {</span>
-<span class="nc" id="L287">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="pc bpc" id="L294" title="1 of 2 branches missed.">        if (document.hasResource()) {</span>
+<span class="nc" id="L295">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L290">        Card card = cardDao.getCard(cardId);</span>
-<span class="pc bpc" id="L291" title="1 of 2 branches missed.">        if (card == null) {</span>
-<span class="nc" id="L292">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L298">        Card card = cardDao.getCard(cardId);</span>
+<span class="pc bpc" id="L299" title="1 of 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L300">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="fc" id="L295">        securityFacade.assertCanCreateResource(document, card);</span>
+<span class="fc" id="L303">        securityFacade.assertCanCreateResource(document, card);</span>
 
-<span class="fc" id="L297">        Resource resource = Resource.initNewResource();</span>
-<span class="fc" id="L298">        resource.setCard(card);</span>
-<span class="fc" id="L299">        card.getDirectAbstractResources().add(resource);</span>
-<span class="fc" id="L300">        resource.setDocument(document);</span>
-<span class="fc" id="L301">        document.setResource(resource);</span>
+<span class="fc" id="L305">        Resource resource = Resource.initNewResource();</span>
+<span class="fc" id="L306">        resource.setCard(card);</span>
+<span class="fc" id="L307">        card.getDirectAbstractResources().add(resource);</span>
+<span class="fc" id="L308">        resource.setDocument(document);</span>
+<span class="fc" id="L309">        document.setResource(resource);</span>
 
-<span class="fc" id="L303">        resource = resourceDao.persistResource(resource);</span>
+<span class="fc" id="L311">        resource = resourceDao.persistResource(resource);</span>
 
-<span class="fc" id="L305">        createResourceRefForChildren(card, resource);</span>
+<span class="fc" id="L313">        createResourceRefForChildren(card, resource);</span>
 
-<span class="fc" id="L307">        return resource;</span>
+<span class="fc" id="L315">        return resource;</span>
     }
 
     /**
@@ -319,36 +327,36 @@ import org.slf4j.LoggerFactory;
      * @return the brand new resource
      */
     public Resource createResourceForCardContent(Document document, Long cardContentId) {
-<span class="fc" id="L322">        logger.debug(&quot;create a resource for document {} and card content #{}&quot;, document,</span>
+<span class="fc" id="L330">        logger.debug(&quot;create a resource for document {} and card content #{}&quot;, document,</span>
             cardContentId);
 
-<span class="pc bpc" id="L325" title="1 of 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L326">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="pc bpc" id="L333" title="1 of 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L334">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
         // A document can be related at max to one resource
-<span class="pc bpc" id="L330" title="1 of 2 branches missed.">        if (document.hasResource()) {</span>
-<span class="nc" id="L331">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="pc bpc" id="L338" title="1 of 2 branches missed.">        if (document.hasResource()) {</span>
+<span class="nc" id="L339">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L334">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
-<span class="pc bpc" id="L335" title="1 of 2 branches missed.">        if (cardContent == null) {</span>
-<span class="nc" id="L336">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L342">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
+<span class="pc bpc" id="L343" title="1 of 2 branches missed.">        if (cardContent == null) {</span>
+<span class="nc" id="L344">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="fc" id="L339">        securityFacade.assertCanCreateResource(document, cardContent);</span>
+<span class="fc" id="L347">        securityFacade.assertCanCreateResource(document, cardContent);</span>
 
-<span class="fc" id="L341">        Resource resource = Resource.initNewResource();</span>
-<span class="fc" id="L342">        resource.setCardContent(cardContent);</span>
-<span class="fc" id="L343">        cardContent.getDirectAbstractResources().add(resource);</span>
-<span class="fc" id="L344">        resource.setDocument(document);</span>
-<span class="fc" id="L345">        document.setResource(resource);</span>
+<span class="fc" id="L349">        Resource resource = Resource.initNewResource();</span>
+<span class="fc" id="L350">        resource.setCardContent(cardContent);</span>
+<span class="fc" id="L351">        cardContent.getDirectAbstractResources().add(resource);</span>
+<span class="fc" id="L352">        resource.setDocument(document);</span>
+<span class="fc" id="L353">        document.setResource(resource);</span>
 
-<span class="fc" id="L347">        resource = resourceDao.persistResource(resource);</span>
+<span class="fc" id="L355">        resource = resourceDao.persistResource(resource);</span>
 
-<span class="fc" id="L349">        createResourceRefForChildren(cardContent, resource);</span>
+<span class="fc" id="L357">        createResourceRefForChildren(cardContent, resource);</span>
 
-<span class="fc" id="L351">        return resource;</span>
+<span class="fc" id="L359">        return resource;</span>
     }
 
     /**
@@ -358,18 +366,18 @@ import org.slf4j.LoggerFactory;
      * @param resource the resource we are linking
      */
     private void createResourceRefForChildren(CardType cardType, AbstractResource resource) {
-<span class="fc bfc" id="L361" title="All 2 branches covered.">        for (Card card : cardType.getImplementingCards()) {</span>
-<span class="fc" id="L362">            ResourceRef resourceRef = ResourceRef.initNewResourceRef();</span>
-<span class="fc" id="L363">            resourceRef.setTargetAbstractResource(resource);</span>
-<span class="fc" id="L364">            resource.getSourceResourceRefs().add(resourceRef);</span>
-<span class="fc" id="L365">            resourceRef.setCard(card);</span>
-<span class="fc" id="L366">            card.getDirectAbstractResources().add(resourceRef);</span>
+<span class="fc bfc" id="L369" title="All 2 branches covered.">        for (Card card : cardType.getImplementingCards()) {</span>
+<span class="fc" id="L370">            ResourceRef resourceRef = ResourceRef.initNewResourceRef();</span>
+<span class="fc" id="L371">            resourceRef.setTargetAbstractResource(resource);</span>
+<span class="fc" id="L372">            resource.getSourceResourceRefs().add(resourceRef);</span>
+<span class="fc" id="L373">            resourceRef.setCard(card);</span>
+<span class="fc" id="L374">            card.getDirectAbstractResources().add(resourceRef);</span>
 
-<span class="fc" id="L368">            resourceRefDao.persistResourceRef(resourceRef);</span>
+<span class="fc" id="L376">            resourceRefDao.persistResourceRef(resourceRef);</span>
 
-<span class="fc" id="L370">            createResourceRefForChildren(card, resourceRef);</span>
-<span class="fc" id="L371">        }</span>
-<span class="fc" id="L372">    }</span>
+<span class="fc" id="L378">            createResourceRefForChildren(card, resourceRef);</span>
+<span class="fc" id="L379">        }</span>
+<span class="fc" id="L380">    }</span>
 
     /**
      * Each child of the card acquires a reference to the resource.
@@ -378,18 +386,18 @@ import org.slf4j.LoggerFactory;
      * @param resource the resource we are linking
      */
     private void createResourceRefForChildren(Card card, AbstractResource resource) {
-<span class="fc bfc" id="L381" title="All 2 branches covered.">        for (CardContent cardContent : card.getContentVariants()) {</span>
-<span class="fc" id="L382">            ResourceRef resourceRef = ResourceRef.initNewResourceRef();</span>
-<span class="fc" id="L383">            resourceRef.setTargetAbstractResource(resource);</span>
-<span class="fc" id="L384">            resource.getSourceResourceRefs().add(resourceRef);</span>
-<span class="fc" id="L385">            resourceRef.setCardContent(cardContent);</span>
-<span class="fc" id="L386">            cardContent.getDirectAbstractResources().add(resourceRef);</span>
+<span class="fc bfc" id="L389" title="All 2 branches covered.">        for (CardContent cardContent : card.getContentVariants()) {</span>
+<span class="fc" id="L390">            ResourceRef resourceRef = ResourceRef.initNewResourceRef();</span>
+<span class="fc" id="L391">            resourceRef.setTargetAbstractResource(resource);</span>
+<span class="fc" id="L392">            resource.getSourceResourceRefs().add(resourceRef);</span>
+<span class="fc" id="L393">            resourceRef.setCardContent(cardContent);</span>
+<span class="fc" id="L394">            cardContent.getDirectAbstractResources().add(resourceRef);</span>
 
-<span class="fc" id="L388">            resourceRefDao.persistResourceRef(resourceRef);</span>
+<span class="fc" id="L396">            resourceRefDao.persistResourceRef(resourceRef);</span>
 
-<span class="fc" id="L390">            createResourceRefForChildren(cardContent, resourceRef);</span>
-<span class="fc" id="L391">        }</span>
-<span class="fc" id="L392">    }</span>
+<span class="fc" id="L398">            createResourceRefForChildren(cardContent, resourceRef);</span>
+<span class="fc" id="L399">        }</span>
+<span class="fc" id="L400">    }</span>
 
     /**
      * Each child of the card content acquires a reference to the resource.
@@ -398,18 +406,43 @@ import org.slf4j.LoggerFactory;
      * @param resource    the resource we are linking
      */
     private void createResourceRefForChildren(CardContent cardContent, AbstractResource resource) {
-<span class="fc bfc" id="L401" title="All 2 branches covered.">        for (Card card : cardContent.getSubCards()) {</span>
-<span class="fc" id="L402">            ResourceRef resourceRef = ResourceRef.initNewResourceRef();</span>
-<span class="fc" id="L403">            resourceRef.setTargetAbstractResource(resource);</span>
-<span class="fc" id="L404">            resource.getSourceResourceRefs().add(resourceRef);</span>
-<span class="fc" id="L405">            resourceRef.setCard(card);</span>
-<span class="fc" id="L406">            card.getDirectAbstractResources().add(resourceRef);</span>
+<span class="fc bfc" id="L409" title="All 2 branches covered.">        for (Card card : cardContent.getSubCards()) {</span>
+<span class="fc" id="L410">            ResourceRef resourceRef = ResourceRef.initNewResourceRef();</span>
+<span class="fc" id="L411">            resourceRef.setTargetAbstractResource(resource);</span>
+<span class="fc" id="L412">            resource.getSourceResourceRefs().add(resourceRef);</span>
+<span class="fc" id="L413">            resourceRef.setCard(card);</span>
+<span class="fc" id="L414">            card.getDirectAbstractResources().add(resourceRef);</span>
 
-<span class="fc" id="L408">            resourceRefDao.persistResourceRef(resourceRef);</span>
+<span class="fc" id="L416">            resourceRefDao.persistResourceRef(resourceRef);</span>
 
-<span class="fc" id="L410">            createResourceRefForChildren(card, resourceRef);</span>
-<span class="fc" id="L411">        }</span>
-<span class="fc" id="L412">    }</span>
+<span class="fc" id="L418">            createResourceRefForChildren(card, resourceRef);</span>
+<span class="fc" id="L419">        }</span>
+<span class="fc" id="L420">    }</span>
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    /**
+     * Get all sticky note links of which the given resource / reference is the source
+     *
+     * @param resourceOrRefId the id of the resource / reference
+     *
+     * @return all sticky note links linked to the resource / reference
+     */
+    public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrc(Long resourceOrRefId) {
+<span class="fc" id="L434">        logger.debug(&quot;get sticky note links where the abstract resource #{} is the source&quot;,</span>
+            resourceOrRefId);
+<span class="fc" id="L436">        AbstractResource resource = resourceOrRefDao.findResourceOrRef(resourceOrRefId);</span>
+<span class="pc bpc" id="L437" title="1 of 2 branches missed.">        if (resource == null) {</span>
+<span class="nc" id="L438">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+<span class="fc" id="L440">        return resource.getStickyNoteLinksAsSrc();</span>
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

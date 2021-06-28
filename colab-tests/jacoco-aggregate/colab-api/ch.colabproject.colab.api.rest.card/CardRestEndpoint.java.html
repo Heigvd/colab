@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -39,10 +40,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="fc" id="L42">public class CardRestEndpoint {</span>
+<span class="fc" id="L43">public class CardRestEndpoint {</span>
 
     /** logger */
-<span class="fc" id="L45">    private static final Logger logger = LoggerFactory.getLogger(CardRestEndpoint.class);</span>
+<span class="fc" id="L46">    private static final Logger logger = LoggerFactory.getLogger(CardRestEndpoint.class);</span>
 
     /**
      * The card persistence manager
@@ -73,8 +74,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;Card&gt; getAllCards() {
-<span class="fc" id="L76">        logger.debug(&quot;get all cards&quot;);</span>
-<span class="fc" id="L77">        return cardDao.getAllCard();</span>
+<span class="fc" id="L77">        logger.debug(&quot;get all cards&quot;);</span>
+<span class="fc" id="L78">        return cardDao.getAllCard();</span>
     }
 
     /**
@@ -87,8 +88,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public Card getCard(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L90">        logger.debug(&quot;get card #{}&quot;, id);</span>
-<span class="fc" id="L91">        return cardDao.getCard(id);</span>
+<span class="fc" id="L91">        logger.debug(&quot;get card #{}&quot;, id);</span>
+<span class="fc" id="L92">        return cardDao.getCard(id);</span>
     }
 
     /**
@@ -103,8 +104,8 @@ import org.slf4j.LoggerFactory;
     @Deprecated
     @POST
     public Long createCard(Card card) {
-<span class="nc" id="L106">        logger.debug(&quot;create card {}&quot;, card);</span>
-<span class="nc" id="L107">        return cardDao.createCard(card).getId();</span>
+<span class="nc" id="L107">        logger.debug(&quot;create card {}&quot;, card);</span>
+<span class="nc" id="L108">        return cardDao.createCard(card).getId();</span>
     }
 
     /**
@@ -118,10 +119,10 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;create/{parentId}/{cardTypeId}&quot;)
     public Card createNewCard(@PathParam(&quot;parentId&quot;) Long parentId,
-            @PathParam(&quot;cardTypeId&quot;) Long cardTypeId) {
-<span class="fc" id="L122">        logger.debug(&quot;create a new card for the parent #{} and the type #{}&quot;, parentId,</span>
+        @PathParam(&quot;cardTypeId&quot;) Long cardTypeId) {
+<span class="fc" id="L123">        logger.debug(&quot;create a new card for the parent #{} and the type #{}&quot;, parentId,</span>
             cardTypeId);
-<span class="fc" id="L124">        return cardFacade.createNewCard(parentId, cardTypeId);</span>
+<span class="fc" id="L125">        return cardFacade.createNewCard(parentId, cardTypeId);</span>
     }
 
     /**
@@ -133,9 +134,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCard(Card card) throws ColabMergeException {
-<span class="fc" id="L136">        logger.debug(&quot;update card {}&quot;, card);</span>
-<span class="fc" id="L137">        cardDao.updateCard(card);</span>
-<span class="fc" id="L138">    }</span>
+<span class="fc" id="L137">        logger.debug(&quot;update card {}&quot;, card);</span>
+<span class="fc" id="L138">        cardDao.updateCard(card);</span>
+<span class="fc" id="L139">    }</span>
 
     /**
      * Permanently delete a card
@@ -145,9 +146,23 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteCard(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L148">        logger.debug(&quot;delete card #{}&quot;, id);</span>
-<span class="fc" id="L149">        cardFacade.deleteCard(id);</span>
-<span class="fc" id="L150">    }</span>
+<span class="fc" id="L149">        logger.debug(&quot;delete card #{}&quot;, id);</span>
+<span class="fc" id="L150">        cardFacade.deleteCard(id);</span>
+<span class="fc" id="L151">    }</span>
+
+    /**
+     * Get all card content variants of a card
+     *
+     * @param cardId Card id of the searched content variants
+     *
+     * @return list of card contents
+     */
+    @GET
+    @Path(&quot;{id}/CardContents&quot;)
+    public List&lt;CardContent&gt; getContentVariantsOfCard(@PathParam(&quot;id&quot;) Long cardId) {
+<span class="fc" id="L163">        logger.debug(&quot;Get card #{} content variants&quot;, cardId);</span>
+<span class="fc" id="L164">        return cardFacade.getContentVariants(cardId);</span>
+    }
 
     /**
      * Get the available active resources linked to a card
@@ -159,8 +174,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/Resources&quot;)
     public List&lt;Resource&gt; getAvailableActiveLinkedResources(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="fc" id="L162">        logger.debug(&quot;get available and active resources linked to card #{}&quot;, cardId);</span>
-<span class="fc" id="L163">        return resourceFacade.getAvailableActiveResourcesLinkedToCard(cardId);</span>
+<span class="fc" id="L177">        logger.debug(&quot;get available and active resources linked to card #{}&quot;, cardId);</span>
+<span class="fc" id="L178">        return resourceFacade.getAvailableActiveResourcesLinkedToCard(cardId);</span>
     }
 
     /**
@@ -173,22 +188,36 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/AbstractResources&quot;)
     public List&lt;AbstractResource&gt; getDirectAbstractResourcesOfCard(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L176">        logger.debug(&quot;get direct abstract resources linked to card #{}&quot;, cardId);</span>
-<span class="nc" id="L177">        return cardFacade.getDirectAbstractResourcesOfCard(cardId);</span>
+<span class="nc" id="L191">        logger.debug(&quot;get direct abstract resources linked to card #{}&quot;, cardId);</span>
+<span class="nc" id="L192">        return cardFacade.getDirectAbstractResourcesOfCard(cardId);</span>
     }
 
     /**
-     * Get all card content variants of a card
+     * Get all sticky note links of which the card is the destination
      *
-     * @param cardId Card id of the searched content variants
+     * @param cardId Card id of the searched links
      *
-     * @return list of card contents
+     * @return list of links
      */
     @GET
-    @Path(&quot;{id}/CardContents&quot;)
-    public List&lt;CardContent&gt; getContentVariantsOfCard(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="fc" id="L190">        logger.debug(&quot;Get card #{} content variants&quot;, cardId);</span>
-<span class="fc" id="L191">        return cardFacade.getContentVariants(cardId);</span>
+    @Path(&quot;{id}/StickyNoteLinksDestinationCard&quot;)
+    public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsDest(@PathParam(&quot;id&quot;) Long cardId) {
+<span class="fc" id="L205">        logger.debug(&quot;Get sticky note links to card #{} as destination&quot;, cardId);</span>
+<span class="fc" id="L206">        return cardFacade.getStickyNoteLinkAsDest(cardId);</span>
+    }
+
+    /**
+     * Get all sticky note links of which the card is the source
+     *
+     * @param cardId Card id of the searched links
+     *
+     * @return list of links
+     */
+    @GET
+    @Path(&quot;{id}/StickyNoteLinksSrcCard&quot;)
+    public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long cardId) {
+<span class="fc" id="L219">        logger.debug(&quot;Get sticky note links to card #{} as source&quot;, cardId);</span>
+<span class="fc" id="L220">        return cardFacade.getStickyNoteLinkAsSrcCard(cardId);</span>
     }
 
 }

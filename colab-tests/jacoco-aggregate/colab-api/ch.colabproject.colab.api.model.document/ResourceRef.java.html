@@ -92,8 +92,8 @@ import javax.persistence.Transient;
      * @return id of the abstract resource or null
      */
     public Long getTargetAbstractResourceId() {
-<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (targetAbstractResource != null) {</span>
-<span class="nc" id="L96">            return targetAbstractResource.getId();</span>
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">        if (targetAbstractResource != null) {</span>
+<span class="fc" id="L96">            return targetAbstractResource.getId();</span>
         } else {
 <span class="nc" id="L98">            return targetAbstractResourceId;</span>
         }
@@ -105,8 +105,8 @@ import javax.persistence.Transient;
      * @param targetAbstractResourceId the id of the abstract resource
      */
     public void setTargetAbstractResourceId(Long targetAbstractResourceId) {
-<span class="nc" id="L108">        this.targetAbstractResourceId = targetAbstractResourceId;</span>
-<span class="nc" id="L109">    }</span>
+<span class="fc" id="L108">        this.targetAbstractResourceId = targetAbstractResourceId;</span>
+<span class="fc" id="L109">    }</span>
 
     /**
      * @return if the target resource is not useful for that card/cardDef/cardContent
@@ -119,8 +119,8 @@ import javax.persistence.Transient;
      * @param refused if the target resource is not useful for that card/cardDef/cardContent
      */
     public void setRefused(boolean refused) {
-<span class="nc" id="L122">        this.refused = refused;</span>
-<span class="nc" id="L123">    }</span>
+<span class="fc" id="L122">        this.refused = refused;</span>
+<span class="fc" id="L123">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -148,7 +148,7 @@ import javax.persistence.Transient;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L151">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L151">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override

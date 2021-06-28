@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2021 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 23,
+      <title>File: 26,
              Errors: 0,
-             Warnings: 59,
+             Warnings: 62,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -53,6 +53,20 @@ under the License.
                 </td>
                 <td>
                   3
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.card.CardContent.java">ch/colabproject/colab/api/model/card/CardContent.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -88,105 +102,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.ApplicationLifecycleFacade.java">ch/colabproject/colab/api/ejb/ApplicationLifecycleFacade.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.DocumentDao.java">ch/colabproject/colab/api/persistence/document/DocumentDao.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.albasim.html.report.HtmlReport.java">ch/albasim/html/report/HtmlReport.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  12
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.TransactionManager.java">ch/colabproject/colab/api/ejb/TransactionManager.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.card.CardContentRestEndpoint.java">ch/colabproject/colab/api/rest/card/CardContentRestEndpoint.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.live.LiveUpdates.java">ch/colabproject/colab/api/microchanges/live/LiveUpdates.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  8
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.card.CardContentDao.java">ch/colabproject/colab/api/persistence/card/CardContentDao.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.ResourceDao.java">ch/colabproject/colab/api/persistence/document/ResourceDao.java</a>
                 </td>
                 <td>
                   0
@@ -214,34 +130,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.BlockDao.java">ch/colabproject/colab/api/persistence/document/BlockDao.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.Document.java">ch/colabproject/colab/api/model/document/Document.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  4
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.card.CardType.java">ch/colabproject/colab/api/model/card/CardType.java</a>
                 </td>
                 <td>
@@ -249,34 +137,6 @@ under the License.
                 </td>
                 <td>
                   3
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.live.LiveManager.java">ch/colabproject/colab/api/microchanges/live/LiveManager.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.AbstractResource.java">ch/colabproject/colab/api/model/document/AbstractResource.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
                 </td>
                 <td>
                   0
@@ -340,6 +200,188 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.ResourceRefDao.java">ch/colabproject/colab/api/persistence/document/ResourceRefDao.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.link.StickyNoteLink.java">ch/colabproject/colab/api/model/link/StickyNoteLink.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.Block.java">ch/colabproject/colab/api/model/document/Block.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.ApplicationLifecycleFacade.java">ch/colabproject/colab/api/ejb/ApplicationLifecycleFacade.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.albasim.html.report.HtmlReport.java">ch/albasim/html/report/HtmlReport.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  12
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.TransactionManager.java">ch/colabproject/colab/api/ejb/TransactionManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.live.LiveUpdates.java">ch/colabproject/colab/api/microchanges/live/LiveUpdates.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.card.CardContentDao.java">ch/colabproject/colab/api/persistence/card/CardContentDao.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.ResourceDao.java">ch/colabproject/colab/api/persistence/document/ResourceDao.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.BlockDao.java">ch/colabproject/colab/api/persistence/document/BlockDao.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.Document.java">ch/colabproject/colab/api/model/document/Document.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.live.LiveManager.java">ch/colabproject/colab/api/microchanges/live/LiveManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.AbstractResource.java">ch/colabproject/colab/api/model/document/AbstractResource.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.card.CardTypeRestEndpoint.java">ch/colabproject/colab/api/rest/card/CardTypeRestEndpoint.java</a>
                 </td>
                 <td>
@@ -354,7 +396,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.ResourceRefDao.java">ch/colabproject/colab/api/persistence/document/ResourceRefDao.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.link.StickyNoteLinkDao.java">ch/colabproject/colab/api/persistence/link/StickyNoteLinkDao.java</a>
                 </td>
                 <td>
                   0
