@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.microchanges.live.LiveManager;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.document.BlockDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -113,7 +114,7 @@ public class BlockRestEndPoint {
     /**
      * Patch a block with a change
      *
-     * @param id     id of the block
+     * @param id id of the block
      */
     @PUT
     @Path("/{id}/dropChanges")
@@ -160,5 +161,27 @@ public class BlockRestEndPoint {
         logger.debug("delete block #{}", id);
         blockDao.deleteBlock(id);
     }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    /**
+     * Get all sticky note links where the block is the source
+     *
+     * @param blockId the id of the block
+     *
+     * @return list of links
+     */
+    @GET
+    @Path("{id}/StickyNoteLinks")
+    public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long blockId) {
+        logger.debug("Get sticky note links where block #{} is the source", blockId);
+        return blockFacade.getStickyNoteLinkAsSrc(blockId);
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 
 }

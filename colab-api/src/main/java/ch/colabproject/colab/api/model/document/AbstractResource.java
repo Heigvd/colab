@@ -10,6 +10,8 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
@@ -41,7 +43,8 @@ import javax.persistence.Transient;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public abstract class AbstractResource implements ColabEntity/* , WithWebsocketChannels */ {
+public abstract class AbstractResource
+    implements ColabEntity/* , WithWebsocketChannels */, StickyNoteSourceable {
 
     private static final long serialVersionUID = 1L;
 
@@ -102,6 +105,13 @@ public abstract class AbstractResource implements ColabEntity/* , WithWebsocketC
     @OneToMany(mappedBy = "targetAbstractResource", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<ResourceRef> sourceResourceRefs = new ArrayList<>();
+
+    /**
+     * The list of sticky note links of which the resource is the source
+     */
+    @OneToMany(mappedBy = "srcResourceOrRef", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -267,6 +277,21 @@ public abstract class AbstractResource implements ColabEntity/* , WithWebsocketC
      */
     public void setSourceResourceRefs(List<ResourceRef> sourceResourceRef) {
         this.sourceResourceRefs = sourceResourceRef;
+    }
+
+    /**
+     * @return the list of sticky note links of which the resource is the source
+     */
+    @Override
+    public List<StickyNoteLink> getStickyNoteLinksAsSrc() {
+        return stickyNoteLinksAsSrc;
+    }
+
+    /**
+     * @param stickyNoteLinksAsSrc the list of sticky note links of which the resource is the source
+     */
+    public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
+        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
     }
 
     // ---------------------------------------------------------------------------------------------

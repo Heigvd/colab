@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -170,9 +171,24 @@ public class CardContentRestEndpoint {
      */
     @GET
     @Path("{id}/AbstractResources")
-    public List<AbstractResource> getDirectAbstractResourcesOfCardContent(@PathParam("id") Long cardContentId) {
+    public List<AbstractResource> getDirectAbstractResourcesOfCardContent(
+        @PathParam("id") Long cardContentId) {
         logger.debug("get direct abstract resources linked to card content #{}", cardContentId);
         return cardFacade.getDirectAbstractResourcesOfCardContent(cardContentId);
+    }
+
+    /**
+     * Get all sticky note links where the card content is the source
+     *
+     * @param cardContentId the id of the card content
+     *
+     * @return list of links
+     */
+    @GET
+    @Path("{id}/StickyNoteLinks")
+    public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long cardContentId) {
+        logger.debug("Get sticky note links where card #{} is the source", cardContentId);
+        return cardFacade.getStickyNoteLinkAsSrcCardContent(cardContentId);
     }
 
     /**

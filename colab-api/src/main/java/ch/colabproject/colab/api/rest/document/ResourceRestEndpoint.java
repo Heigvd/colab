@@ -11,9 +11,11 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.document.ResourceDao;
 import ch.colabproject.colab.api.persistence.document.ResourceRefDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -137,7 +139,7 @@ public class ResourceRestEndpoint {
     @POST
     @Path("createForCardType/{cardTypeId}")
     public Resource createResourceForCardType(@PathParam("cardTypeId") Long cardTypeId,
-            Document document) {
+        Document document) {
         logger.debug("create resource for document {} and card type #{}", document,
             cardTypeId);
         return resourceFacade.createResourceForCardType(document, cardTypeId);
@@ -171,10 +173,28 @@ public class ResourceRestEndpoint {
     @POST
     @Path("createForCardContent/{cardContentId}")
     public Resource createResourceForCardContent(@PathParam("cardContentId") Long cardContentId,
-            Document document) {
+        Document document) {
         logger.debug("create resource for document {} and card content #{}", document,
             cardContentId);
         return resourceFacade.createResourceForCardContent(document, cardContentId);
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    /**
+     * Get all sticky note links where the resource / reference is the source
+     *
+     * @param resourceOrRefId the id of the resource / reference
+     *
+     * @return list of links
+     */
+    @GET
+    @Path("{id}/StickyNoteLinks")
+    public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long resourceOrRefId) {
+        logger.debug("Get sticky note links to abstract resource #{} as source", resourceOrRefId);
+        return resourceFacade.getStickyNoteLinkAsSrc(resourceOrRefId);
     }
 
     // *********************************************************************************************

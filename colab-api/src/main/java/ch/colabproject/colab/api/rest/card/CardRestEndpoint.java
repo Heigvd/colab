@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -118,7 +119,7 @@ public class CardRestEndpoint {
     @POST
     @Path("create/{parentId}/{cardTypeId}")
     public Card createNewCard(@PathParam("parentId") Long parentId,
-            @PathParam("cardTypeId") Long cardTypeId) {
+        @PathParam("cardTypeId") Long cardTypeId) {
         logger.debug("create a new card for the parent #{} and the type #{}", parentId,
             cardTypeId);
         return cardFacade.createNewCard(parentId, cardTypeId);
@@ -150,6 +151,20 @@ public class CardRestEndpoint {
     }
 
     /**
+     * Get all card content variants of a card
+     *
+     * @param cardId Card id of the searched content variants
+     *
+     * @return list of card contents
+     */
+    @GET
+    @Path("{id}/CardContents")
+    public List<CardContent> getContentVariantsOfCard(@PathParam("id") Long cardId) {
+        logger.debug("Get card #{} content variants", cardId);
+        return cardFacade.getContentVariants(cardId);
+    }
+
+    /**
      * Get the available active resources linked to a card
      *
      * @param cardId id of the card
@@ -178,17 +193,31 @@ public class CardRestEndpoint {
     }
 
     /**
-     * Get all card content variants of a card
+     * Get all sticky note links of which the card is the destination
      *
-     * @param cardId Card id of the searched content variants
+     * @param cardId Card id of the searched links
      *
-     * @return list of card contents
+     * @return list of links
      */
     @GET
-    @Path("{id}/CardContents")
-    public List<CardContent> getContentVariantsOfCard(@PathParam("id") Long cardId) {
-        logger.debug("Get card #{} content variants", cardId);
-        return cardFacade.getContentVariants(cardId);
+    @Path("{id}/StickyNoteLinksDestinationCard")
+    public List<StickyNoteLink> getStickyNoteLinksAsDest(@PathParam("id") Long cardId) {
+        logger.debug("Get sticky note links to card #{} as destination", cardId);
+        return cardFacade.getStickyNoteLinkAsDest(cardId);
+    }
+
+    /**
+     * Get all sticky note links of which the card is the source
+     *
+     * @param cardId Card id of the searched links
+     *
+     * @return list of links
+     */
+    @GET
+    @Path("{id}/StickyNoteLinksSrcCard")
+    public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long cardId) {
+        logger.debug("Get sticky note links to card #{} as source", cardId);
+        return cardFacade.getStickyNoteLinkAsSrcCard(cardId);
     }
 
 }

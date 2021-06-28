@@ -9,6 +9,8 @@ package ch.colabproject.colab.tests.tests;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.document.BlockDocument;
+import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.Role;
 import ch.colabproject.colab.api.model.token.InvitationToken;
@@ -151,4 +153,21 @@ public class ColabFactory {
 
         return client.teamRestEndpoint.getRole(roleId);
     }
+
+    /**
+     * Create a resource block document for test purpose
+     *
+     * @param client rest client to execute HTTP requests
+     * @param cardId the id of the card the resource belongs to
+     * @param title  title of the document
+     *
+     * @return the freshly created document
+     */
+    public static Resource createCardResource(ColabClient client, Long cardId, String title) {
+        BlockDocument doc = new BlockDocument();
+        doc.setTitle(title);
+
+        return client.resourceRestEndpoint.createResourceForCard(cardId, doc);
+    }
+
 }

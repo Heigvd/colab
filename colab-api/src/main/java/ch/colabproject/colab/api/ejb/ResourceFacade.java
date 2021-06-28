@@ -13,9 +13,11 @@ import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.api.persistence.card.CardTypeDao;
+import ch.colabproject.colab.api.persistence.document.AbstractResourceDao;
 //import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.api.persistence.document.ResourceDao;
 import ch.colabproject.colab.api.persistence.document.ResourceRefDao;
@@ -57,6 +59,12 @@ public class ResourceFacade {
      */
     @Inject
     private ResourceRefDao resourceRefDao;
+
+    /**
+     * Resource / reference persistence handling
+     */
+    @Inject
+    private AbstractResourceDao resourceOrRefDao;
 
     /**
      * Card type persistence handling
@@ -156,7 +164,7 @@ public class ResourceFacade {
      * @return the resources that match
      */
     private List<Resource> findAvailableAndActiveTargetResource(
-            List<AbstractResource> baseAbstractResources) {
+        List<AbstractResource> baseAbstractResources) {
         List<Resource> result = new ArrayList<>();
 
         for (AbstractResource abstractResource : baseAbstractResources) {
@@ -209,7 +217,7 @@ public class ResourceFacade {
     private boolean isResourceAvailableAndActive(ResourceRef resourceRef) {
         AbstractResource target = resourceRef.getTargetAbstractResource();
         if (resourceRef.hasCard() && target.hasCardContent()
-                && !resourceRef.resolve().isPublished()) {
+            && !resourceRef.resolve().isPublished()) {
             return false;
         }
 
@@ -410,5 +418,30 @@ public class ResourceFacade {
             createResourceRefForChildren(card, resourceRef);
         }
     }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    /**
+     * Get all sticky note links of which the given resource / reference is the source
+     *
+     * @param resourceOrRefId the id of the resource / reference
+     *
+     * @return all sticky note links linked to the resource / reference
+     */
+    public List<StickyNoteLink> getStickyNoteLinkAsSrc(Long resourceOrRefId) {
+        logger.debug("get sticky note links where the abstract resource #{} is the source",
+            resourceOrRefId);
+        AbstractResource resource = resourceOrRefDao.findResourceOrRef(resourceOrRefId);
+        if (resource == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return resource.getStickyNoteLinksAsSrc();
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 
 }
