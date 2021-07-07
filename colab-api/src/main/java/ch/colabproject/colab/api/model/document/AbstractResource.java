@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.model.document;
 
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
@@ -97,6 +98,11 @@ public abstract class AbstractResource
      */
     @Transient
     private Long cardContentId;
+
+    /**
+     * The category to classify the resource
+     */
+    private String category;
 
     // TODO see if useful
     /**
@@ -266,6 +272,20 @@ public abstract class AbstractResource
     }
 
     /**
+     * @return the category to classify the resource
+     */
+    public String getCategory() {
+        return category;
+    }
+
+    /**
+     * @param category the category to classify the resource
+     */
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    /**
      * @return the list of resource references that link to this abstract resource
      */
     public List<ResourceRef> getSourceResourceRefs() {
@@ -305,7 +325,15 @@ public abstract class AbstractResource
      */
     public abstract Resource resolve();
 
-    // no need for merge operation
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+        if (other instanceof AbstractResource) {
+            AbstractResource o = (AbstractResource) other;
+            this.setCategory(o.getCategory());
+        } else {
+            throw new ColabMergeException(this, other);
+        }
+    }
 
 //    @Override
 //    public Set<WebsocketChannel> getChannels() {
@@ -340,7 +368,7 @@ public abstract class AbstractResource
      */
     protected String toPartialString() {
         return "id=" + id + ", abstractCardTypeId=" + abstractCardTypeId + ", cardId=" + cardId
-            + ", cardContentId=" + cardContentId;
+            + ", cardContentId=" + cardContentId + ", category=" + category;
     }
 
 }

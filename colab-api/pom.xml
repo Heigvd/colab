@@ -96,6 +96,12 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+        
+        <!-- Utility classes for java.lang package -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
 
         <!-- PostgreSQL JDBC Driver Postgresq -->
         <dependency>

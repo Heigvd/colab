@@ -140,6 +140,7 @@ public class ResourceRef extends AbstractResource {
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof ResourceRef) {
             ResourceRef o = (ResourceRef) other;
+            super.merge(o);
             this.setRefused(o.isRefused());
         } else {
             throw new ColabMergeException(this, other);

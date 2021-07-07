@@ -180,13 +180,122 @@ public class ResourceRestEndpoint {
     }
 
     // *********************************************************************************************
-    //
+    // category
     // *********************************************************************************************
 
     /**
-     * Get all sticky note links where the resource / reference is the source
+     * Set the category of the resource
      *
-     * @param resourceOrRefId the id of the resource / reference
+     * @param resourceOrRefId the id of the resource / resource reference
+     * @param categoryName    the name of the category that apply to the resource / resource
+     *                        reference
+     */
+    @PUT
+    @Path("setCategory/{resourceOrRefId}")
+    public void setCategory(@PathParam("resourceOrRefId") Long resourceOrRefId,
+        String categoryName) {
+        logger.debug("add resource/ref #{} to category {}", resourceOrRefId, categoryName);
+        resourceFacade.setCategory(resourceOrRefId, categoryName);
+    }
+
+    /**
+     * Set the category of a list of resources
+     *
+     * @param resourceOrRefIds the id of the resources / resource references
+     * @param categoryName     the name of the category that apply to the resource / resource
+     *                         reference
+     */
+    // Note : Sandra : I would have preferred to send the ids in the path
+    @PUT
+    @Path("setCategory/list/{newName}")
+    public void setCategoryForList(@PathParam("newName") String categoryName,
+        List<Long> resourceOrRefIds) {
+        logger.debug("add resource/ref #{} to category {}", resourceOrRefIds, categoryName);
+        resourceFacade.setCategory(resourceOrRefIds, categoryName);
+    }
+
+    /**
+     * Remove the category of the resource / resource reference
+     *
+     * @param resourceOrRefId the id of the resource / resource reference
+     */
+    @PUT
+    @Path("removeCategory/{resourceOrRefId}")
+    public void removeCategory(@PathParam("resourceOrRefId") Long resourceOrRefId) {
+        logger.debug("remove category from resource/ref #{}", resourceOrRefId);
+        resourceFacade.removeCategory(resourceOrRefId);
+    }
+
+    /**
+     * Remove the category of a list of resources / resource references
+     *
+     * @param resourceOrRefIds the id of the resources / resource references
+     */
+    // Note : Sandra : I would have preferred to send the ids in the path
+    @PUT
+    @Path("removeCategory/list")
+    public void removeCategoryForList(List<Long> resourceOrRefIds) {
+        logger.debug("remove category from resource/ref #{}", resourceOrRefIds);
+        resourceFacade.removeCategory(resourceOrRefIds);
+    }
+
+    /**
+     * Rename the category in a card type / card type reference
+     *
+     * @param cardTypeOrRefId the id of the card type / card type reference (scope of the renaming)
+     * @param projectId       the id of the project concerned (scope of the renaming)
+     * @param oldName         the old name of the category
+     * @param newName         the new name of the category
+     */
+    @PUT
+    @Path("renameCategory/cardType/{projectId}/{cardTypeId}/{oldName}")
+    public void renameCategoryForCardType(@PathParam("projectId") Long projectId,
+        @PathParam("cardTypeId") Long cardTypeOrRefId, @PathParam("oldName") String oldName,
+        String newName) {
+        logger.debug("rename category {} to {} for card type #{} in the project {}", oldName,
+            newName, cardTypeOrRefId, projectId);
+        resourceFacade.renameCategoryInCardType(cardTypeOrRefId, projectId, oldName, newName);
+    }
+
+    /**
+     * Rename the category in a card
+     *
+     * @param cardId  the id of the card
+     * @param oldName the old name of the category
+     * @param newName the new name of the category
+     */
+    @PUT
+    @Path("renameCategory/card/{cardId}/{oldName}")
+    public void renameCategoryForCard(@PathParam("cardId") Long cardId,
+        @PathParam("oldName") String oldName, String newName) {
+        logger.debug("rename category {} to {} for card #{}", oldName, newName, cardId);
+        resourceFacade.renameCategoryInCard(cardId, oldName, newName);
+    }
+
+    /**
+     * Rename the category in a card content
+     *
+     * @param cardContentId the id of the card content
+     * @param oldName       the old name of the category
+     * @param newName       the new name of the category
+     */
+    @PUT
+    @Path("renameCategory/cardContent/{cardContentId}/{oldName}")
+    public void renameCategoryForCardContent(@PathParam("cardContentId") Long cardContentId,
+        @PathParam("oldName") String oldName, String newName) {
+        logger.debug("rename category {} to {} for card content #{}", oldName, newName,
+            cardContentId);
+        resourceFacade.renameCategoryInCardContent(cardContentId, oldName, newName);
+    }
+
+    // *********************************************************************************************
+    // links
+    // *********************************************************************************************
+
+    /**
+     * Get all sticky note links where the resource / resource reference is the source
+     *
+     * @param resourceOrRefId the id of the resource / resource reference
      *
      * @return list of links
      */
@@ -201,4 +310,7 @@ public class ResourceRestEndpoint {
     //
     // *********************************************************************************************
 
+    // TODO smart propagation handling
+
+    // TODO see if we could have a light handling of cards + type + content on client side
 }
