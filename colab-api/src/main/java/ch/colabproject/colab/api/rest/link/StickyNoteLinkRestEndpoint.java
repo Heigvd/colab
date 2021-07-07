@@ -138,7 +138,7 @@ public class StickyNoteLinkRestEndpoint {
     }
 
     /**
-     * Change the source for a resource / reference
+     * Change the source for a resource / resource reference
      *
      * @param linkId          the id of the link to update
      * @param resourceOrRefId the id of the new source object
@@ -146,7 +146,7 @@ public class StickyNoteLinkRestEndpoint {
     @PUT
     @Path("changeSrc/{linkId}/ResourceOrRef")
     public void changeSrcWithResourceOrRef(@PathParam("linkId") Long linkId, Long resourceOrRefId) {
-        logger.debug("change link #{} with new resource / reference source #{}", linkId,
+        logger.debug("change link #{} with new abstract resource source #{}", linkId,
             resourceOrRefId);
         linkFacade.changeStickyNoteLinkSource(linkId, SrcType.RESOURCE_OR_REF, resourceOrRefId);
     }

@@ -81,14 +81,14 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
     private Long srcCardContentId;
 
     /**
-     * The resource / reference, source of the sticky note
+     * The resource / resource reference, source of the sticky note
      */
     @ManyToOne
     @JsonbTransient
     private AbstractResource srcResourceOrRef;
 
     /**
-     * The ID of the source resource / reference (serialization sugar)
+     * The ID of the source resource / resource reference (serialization sugar)
      */
     @Transient
     private Long srcResourceOrRefId;
@@ -235,23 +235,23 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
     }
 
     /**
-     * @return the resource / reference, source of the sticky note
+     * @return the resource / resource reference, source of the sticky note
      */
     public AbstractResource getSrcResourceOrRef() {
         return srcResourceOrRef;
     }
 
     /**
-     * @param srcResourceOrRef the resource / reference, source of the sticky note
+     * @param srcResourceOrRef the resource / resource reference, source of the sticky note
      */
     public void setSrcResourceOrRef(AbstractResource srcResourceOrRef) {
         this.srcResourceOrRef = srcResourceOrRef;
     }
 
     /**
-     * get the id of the source resource / reference. To be sent to client
+     * get the id of the source resource / resource reference. To be sent to client
      *
-     * @return the id of source resource / reference
+     * @return the id of source resource / resource reference
      */
     public Long getSrcResourceOrRefId() {
         if (this.srcResourceOrRef != null) {
@@ -262,16 +262,16 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
     }
 
     /**
-     * set the id of the source resource / reference. For serialization only
+     * set the id of the source resource / resource reference. For serialization only
      *
-     * @param srcResourceOrRefId the id of the source resource / reference
+     * @param srcResourceOrRefId the id of the source resource / resource reference
      */
     public void setSrcResourceOrRefId(Long srcResourceOrRefId) {
         this.srcResourceOrRefId = srcResourceOrRefId;
     }
 
     /**
-     * @return True if the source is a resource / reference
+     * @return True if the source is a resource / resource reference
      */
     public boolean isSrcResourceOrRef() {
         return this.srcResourceOrRef != null || this.srcResourceOrRefId != null;

@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Resource / reference persistence
+ * Resource and resource reference persistence
  *
  * @author sandra
  */
@@ -34,10 +34,10 @@ public class AbstractResourceDao {
     private EntityManager em;
 
     /**
-     * @param id the id of the resource / reference to fetch
+     * @param id the id of the resource / resource reference to fetch
      *
-     * @return the resource / reference with the given id or null if such a resource / reference
-     *         does not exists
+     * @return the resource / resource reference with the given id or null if such a resource /
+     *         resource reference does not exists
      */
     public AbstractResource findResourceOrRef(Long id) {
         try {

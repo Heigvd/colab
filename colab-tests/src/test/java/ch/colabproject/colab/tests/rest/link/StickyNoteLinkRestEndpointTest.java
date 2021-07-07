@@ -76,8 +76,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long cardId = ColabFactory.createNewCard(client, project).getId();
 
-        Long cardContentId = client.cardRestEndpoint.getContentVariantsOfCard(cardId).get(0)
-            .getId();
+        Long cardContentId = ColabFactory.getCardContent(client, cardId).getId();
 
         StickyNoteLink link = new StickyNoteLink();
         link.setSrcCardContentId(cardContentId);
@@ -151,8 +150,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long cardId = ColabFactory.createNewCard(client, project).getId();
 
-        Long cardContentId = client.cardRestEndpoint.getContentVariantsOfCard(cardId).get(0)
-            .getId();
+        Long cardContentId = ColabFactory.getCardContent(client, cardId).getId();
 
         ColabFactory.createCardResource(client, cardId, "soft cakes").getId();
 
@@ -307,8 +305,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long cardId = ColabFactory.createNewCard(client, project).getId();
 
-        Long cardContentId = client.cardRestEndpoint.getContentVariantsOfCard(cardId).get(0)
-            .getId();
+        Long cardContentId = ColabFactory.getCardContent(client, cardId).getId();
 
         StickyNoteLink link = new StickyNoteLink();
         link.setSrcCardId(cardId);
@@ -363,8 +360,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long cardId = ColabFactory.createNewCard(client, project).getId();
 
-        Long cardContentId = client.cardRestEndpoint.getContentVariantsOfCard(cardId).get(0)
-            .getId();
+        Long cardContentId = ColabFactory.getCardContent(client, cardId).getId();
 
         StickyNoteLink link = new StickyNoteLink();
         link.setSrcCardContentId(cardContentId);

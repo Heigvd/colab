@@ -103,7 +103,7 @@ public class CardTypeRef extends AbstractCardType {
 
     @Override
     public List<AbstractCardType> expand() {
-        List list = new ArrayList<>();
+        List<AbstractCardType> list = new ArrayList<>();
 
         list.add(this);
         if (this.abstractCardType != null) {
