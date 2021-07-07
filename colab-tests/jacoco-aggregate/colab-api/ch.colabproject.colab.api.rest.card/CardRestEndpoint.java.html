@@ -188,8 +188,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/AbstractResources&quot;)
     public List&lt;AbstractResource&gt; getDirectAbstractResourcesOfCard(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L191">        logger.debug(&quot;get direct abstract resources linked to card #{}&quot;, cardId);</span>
-<span class="nc" id="L192">        return cardFacade.getDirectAbstractResourcesOfCard(cardId);</span>
+<span class="fc" id="L191">        logger.debug(&quot;get direct abstract resources linked to card #{}&quot;, cardId);</span>
+<span class="fc" id="L192">        return cardFacade.getDirectAbstractResourcesOfCard(cardId);</span>
     }
 
     /**

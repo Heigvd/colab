@@ -81,14 +81,14 @@ import javax.persistence.Transient;
     private Long srcCardContentId;
 
     /**
-     * The resource / reference, source of the sticky note
+     * The resource / resource reference, source of the sticky note
      */
     @ManyToOne
     @JsonbTransient
     private AbstractResource srcResourceOrRef;
 
     /**
-     * The ID of the source resource / reference (serialization sugar)
+     * The ID of the source resource / resource reference (serialization sugar)
      */
     @Transient
     private Long srcResourceOrRefId;
@@ -235,23 +235,23 @@ import javax.persistence.Transient;
     }
 
     /**
-     * @return the resource / reference, source of the sticky note
+     * @return the resource / resource reference, source of the sticky note
      */
     public AbstractResource getSrcResourceOrRef() {
 <span class="nc" id="L241">        return srcResourceOrRef;</span>
     }
 
     /**
-     * @param srcResourceOrRef the resource / reference, source of the sticky note
+     * @param srcResourceOrRef the resource / resource reference, source of the sticky note
      */
     public void setSrcResourceOrRef(AbstractResource srcResourceOrRef) {
 <span class="nc" id="L248">        this.srcResourceOrRef = srcResourceOrRef;</span>
 <span class="nc" id="L249">    }</span>
 
     /**
-     * get the id of the source resource / reference. To be sent to client
+     * get the id of the source resource / resource reference. To be sent to client
      *
-     * @return the id of source resource / reference
+     * @return the id of source resource / resource reference
      */
     public Long getSrcResourceOrRefId() {
 <span class="nc bnc" id="L257" title="All 2 branches missed.">        if (this.srcResourceOrRef != null) {</span>
@@ -262,16 +262,16 @@ import javax.persistence.Transient;
     }
 
     /**
-     * set the id of the source resource / reference. For serialization only
+     * set the id of the source resource / resource reference. For serialization only
      *
-     * @param srcResourceOrRefId the id of the source resource / reference
+     * @param srcResourceOrRefId the id of the source resource / resource reference
      */
     public void setSrcResourceOrRefId(Long srcResourceOrRefId) {
 <span class="nc" id="L270">        this.srcResourceOrRefId = srcResourceOrRefId;</span>
 <span class="nc" id="L271">    }</span>
 
     /**
-     * @return True if the source is a resource / reference
+     * @return True if the source is a resource / resource reference
      */
     public boolean isSrcResourceOrRef() {
 <span class="nc bnc" id="L277" title="All 4 branches missed.">        return this.srcResourceOrRef != null || this.srcResourceOrRefId != null;</span>

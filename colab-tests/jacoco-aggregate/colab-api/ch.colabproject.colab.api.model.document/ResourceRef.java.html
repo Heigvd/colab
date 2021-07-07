@@ -140,26 +140,27 @@ import javax.persistence.Transient;
     public void merge(ColabEntity other) throws ColabMergeException {
 <span class="nc bnc" id="L141" title="All 2 branches missed.">        if (other instanceof ResourceRef) {</span>
 <span class="nc" id="L142">            ResourceRef o = (ResourceRef) other;</span>
-<span class="nc" id="L143">            this.setRefused(o.isRefused());</span>
-<span class="nc" id="L144">        } else {</span>
-<span class="nc" id="L145">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L143">            super.merge(o);</span>
+<span class="nc" id="L144">            this.setRefused(o.isRefused());</span>
+<span class="nc" id="L145">        } else {</span>
+<span class="nc" id="L146">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L147">    }</span>
+<span class="nc" id="L148">    }</span>
 
     @Override
     public int hashCode() {
-<span class="fc" id="L151">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L152">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L157">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L158">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L162">        return &quot;ResourceRef{&quot; + toPartialString() + &quot;, targetAbstractResourceId=&quot;</span>
+<span class="nc" id="L163">        return &quot;ResourceRef{&quot; + toPartialString() + &quot;, targetAbstractResourceId=&quot;</span>
             + targetAbstractResourceId + &quot;, refused=&quot; + refused + &quot;}&quot;;
     }
 

@@ -427,12 +427,12 @@ import org.slf4j.LoggerFactory;
      * @return all abstract resources directly linked to the card
      */
     public List&lt;AbstractResource&gt; getDirectAbstractResourcesOfCard(Long cardId) {
-<span class="nc" id="L430">        logger.debug(&quot;get abstract resources directly linked to card #{}&quot;, cardId);</span>
-<span class="nc" id="L431">        Card card = cardDao.getCard(cardId);</span>
-<span class="nc bnc" id="L432" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="fc" id="L430">        logger.debug(&quot;get abstract resources directly linked to card #{}&quot;, cardId);</span>
+<span class="fc" id="L431">        Card card = cardDao.getCard(cardId);</span>
+<span class="pc bpc" id="L432" title="1 of 2 branches missed.">        if (card == null) {</span>
 <span class="nc" id="L433">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
-<span class="nc" id="L435">        return card.getDirectAbstractResources();</span>
+<span class="fc" id="L435">        return card.getDirectAbstractResources();</span>
     }
 
     /**

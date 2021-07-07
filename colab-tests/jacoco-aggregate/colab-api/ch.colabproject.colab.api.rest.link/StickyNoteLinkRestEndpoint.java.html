@@ -138,7 +138,7 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L138">    }</span>
 
     /**
-     * Change the source for a resource / reference
+     * Change the source for a resource / resource reference
      *
      * @param linkId          the id of the link to update
      * @param resourceOrRefId the id of the new source object
@@ -146,7 +146,7 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeSrc/{linkId}/ResourceOrRef&quot;)
     public void changeSrcWithResourceOrRef(@PathParam(&quot;linkId&quot;) Long linkId, Long resourceOrRefId) {
-<span class="fc" id="L149">        logger.debug(&quot;change link #{} with new resource / reference source #{}&quot;, linkId,</span>
+<span class="fc" id="L149">        logger.debug(&quot;change link #{} with new abstract resource source #{}&quot;, linkId,</span>
             resourceOrRefId);
 <span class="fc" id="L151">        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.RESOURCE_OR_REF, resourceOrRefId);</span>
 <span class="fc" id="L152">    }</span>

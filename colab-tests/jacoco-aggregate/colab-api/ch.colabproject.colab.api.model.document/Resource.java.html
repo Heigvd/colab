@@ -170,28 +170,29 @@ import javax.persistence.Transient;
     public void merge(ColabEntity other) throws ColabMergeException {
 <span class="pc bpc" id="L171" title="1 of 2 branches missed.">        if (other instanceof Resource) {</span>
 <span class="fc" id="L172">            Resource o = (Resource) other;</span>
-<span class="fc" id="L173">            this.setPublished(o.isPublished());</span>
-<span class="fc" id="L174">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
-<span class="fc" id="L175">            this.setDeprecated(o.isDeprecated());</span>
-<span class="fc" id="L176">        } else {</span>
-<span class="nc" id="L177">            throw new ColabMergeException(this, other);</span>
+<span class="fc" id="L173">            super.merge(o);</span>
+<span class="fc" id="L174">            this.setPublished(o.isPublished());</span>
+<span class="fc" id="L175">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
+<span class="fc" id="L176">            this.setDeprecated(o.isDeprecated());</span>
+<span class="fc" id="L177">        } else {</span>
+<span class="nc" id="L178">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L179">    }</span>
+<span class="fc" id="L180">    }</span>
 
     @Override
     public int hashCode() {
-<span class="fc" id="L183">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L184">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L189">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L190">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L194">        return &quot;Resource{&quot; + toPartialString() + &quot;, documentId=&quot; + documentId + &quot;, published=&quot;</span>
+<span class="nc" id="L195">        return &quot;Resource{&quot; + toPartialString() + &quot;, documentId=&quot; + documentId + &quot;, published=&quot;</span>
             + published + &quot;, requestingForGlory=&quot; + requestingForGlory + &quot;, deprecated=&quot;
             + deprecated + &quot;}&quot;;
     }

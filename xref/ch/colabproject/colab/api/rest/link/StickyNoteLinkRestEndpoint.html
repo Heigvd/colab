@@ -146,7 +146,7 @@
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>     }
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> 
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L141" href="#L141">141</a> <em class="jxr_javadoccomment">     * Change the source for a resource / reference</em>
+<a class="jxr_linenumber" name="L141" href="#L141">141</a> <em class="jxr_javadoccomment">     * Change the source for a resource / resource reference</em>
 <a class="jxr_linenumber" name="L142" href="#L142">142</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L143" href="#L143">143</a> <em class="jxr_javadoccomment">     * @param linkId          the id of the link to update</em>
 <a class="jxr_linenumber" name="L144" href="#L144">144</a> <em class="jxr_javadoccomment">     * @param resourceOrRefId the id of the new source object</em>
@@ -154,7 +154,7 @@
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>     @PUT
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>     @Path(<span class="jxr_string">"changeSrc/{linkId}/ResourceOrRef"</span>)
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> changeSrcWithResourceOrRef(@PathParam(<span class="jxr_string">"linkId"</span>) Long linkId, Long resourceOrRefId) {
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>         logger.debug(<span class="jxr_string">"change link #{} with new resource / reference source #{}"</span>, linkId,
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>         logger.debug(<span class="jxr_string">"change link #{} with new abstract resource source #{}"</span>, linkId,
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>             resourceOrRefId);
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>         linkFacade.changeStickyNoteLinkSource(linkId, SrcType.RESOURCE_OR_REF, resourceOrRefId);
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>     }

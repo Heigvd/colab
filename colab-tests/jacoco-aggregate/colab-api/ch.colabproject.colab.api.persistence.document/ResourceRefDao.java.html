@@ -42,8 +42,8 @@ import org.slf4j.LoggerFactory;
      */
     public ResourceRef findResourceRef(Long id) {
         try {
-<span class="nc" id="L45">            logger.debug(&quot;find resource reference #{}&quot;, id);</span>
-<span class="nc" id="L46">            return em.find(ResourceRef.class, id);</span>
+<span class="fc" id="L45">            logger.debug(&quot;find resource reference #{}&quot;, id);</span>
+<span class="fc" id="L46">            return em.find(ResourceRef.class, id);</span>
 <span class="nc" id="L47">        } catch (IllegalArgumentException ex) {</span>
 <span class="nc" id="L48">            return null;</span>
         }
