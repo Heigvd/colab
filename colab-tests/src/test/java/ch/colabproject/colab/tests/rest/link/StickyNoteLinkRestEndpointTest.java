@@ -25,12 +25,12 @@ import org.junit.jupiter.api.Test;
 public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
     @Test
-    public void testCreateStickyNoteLinkFromCard() {
+    public void testCreateStickyNoteLinkSrcCard() {
         String teaser = "remember me #" + ((int) (Math.random() * 1000));
         String explanation = "This resource explains exactly how to do a nice report #"
             + ((int) (Math.random() * 1000));
 
-        Project project = ColabFactory.createProject(client, "testCreateStickyNoteLinkFromCard");
+        Project project = ColabFactory.createProject(client, "testCreateStickyNoteLinkSrcCard");
 
         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 
@@ -64,13 +64,13 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testCreateStickyNoteLinkFromCardContent() {
+    public void testCreateStickyNoteLinkSrcCardContent() {
         String teaser = "remember me #" + ((int) (Math.random() * 1000));
         String explanation = "This resource explains exactly how to do a nice report #"
             + ((int) (Math.random() * 1000));
 
         Project project = ColabFactory.createProject(client,
-            "testCreateStickyNoteLinkFromCardContent");
+            "testCreateStickyNoteLinkSrcCardContent");
 
         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 
@@ -101,13 +101,13 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testCreateStickyNoteLinkFromResource() {
+    public void testCreateStickyNoteLinkSrcResource() {
         String teaser = "remember me #" + ((int) (Math.random() * 1000));
         String explanation = "This resource explains exactly how to do a nice report #"
             + ((int) (Math.random() * 1000));
 
         Project project = ColabFactory.createProject(client,
-            "testCreateStickyNoteLinkFromResource");
+            "testCreateStickyNoteLinkSrcResource");
 
         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 
@@ -138,13 +138,13 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testCreateStickyNoteLinkFromResourceReference() {
+    public void testCreateStickyNoteLinkSrcResourceReference() {
         String teaser = "remember me #" + ((int) (Math.random() * 1000));
         String explanation = "This resource explains exactly how to do a nice report #"
             + ((int) (Math.random() * 1000));
 
         Project project = ColabFactory.createProject(client,
-            "testCreateStickyNoteLinkFromResource");
+            "testCreateStickyNoteLinkSrcResourceReference");
 
         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 
@@ -181,12 +181,12 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testCreateStickyNoteLinkFromBlock() {
+    public void testCreateStickyNoteLinkSrcBlock() {
         String teaser = "remember me #" + ((int) (Math.random() * 1000));
         String explanation = "This resource explains exactly how to do a nice report #"
             + ((int) (Math.random() * 1000));
 
-        Project project = ColabFactory.createProject(client, "testCreateStickyNoteLinkFromBlock");
+        Project project = ColabFactory.createProject(client, "testCreateStickyNoteLinkSrcBlock");
 
         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 
@@ -221,7 +221,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testUpdateStickyNoteLink() {
-        Project project = ColabFactory.createProject(client, "testCreateStickyNoteLinkFromCard");
+        Project project = ColabFactory.createProject(client, "testUpdateStickyNoteLink");
 
         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 
@@ -254,7 +254,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testDeleteStickyNoteLink() {
-        Project project = ColabFactory.createProject(client, "testCreateStickyNoteLinkFromCard");
+        Project project = ColabFactory.createProject(client, "testDeleteStickyNoteLink");
 
         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 
@@ -298,8 +298,8 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testChangeStickyNoteLinkFromCard() {
-        Project project = ColabFactory.createProject(client, "testChangeStickyNoteLinkFromCard");
+    public void testChangeStickyNoteLinkSrcCard() {
+        Project project = ColabFactory.createProject(client, "testChangeStickyNoteLinkSrcCard");
 
         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 
@@ -352,9 +352,9 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testChangeStickyNoteLinkFromCardContent() {
+    public void testChangeStickyNoteLinkSrcCardContent() {
         Project project = ColabFactory.createProject(client,
-            "testChangeStickyNoteLinkFromCardContent");
+            "testChangeStickyNoteLinkSrcCardContent");
 
         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 
@@ -407,9 +407,9 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testChangeStickyNoteLinkFromResource() {
+    public void testChangeStickyNoteLinkSrcResource() {
         Project project = ColabFactory.createProject(client,
-            "testChangeStickyNoteLinkFromResource");
+            "testChangeStickyNoteLinkSrcResource");
 
         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 
@@ -464,8 +464,8 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testChangeStickyNoteLinkFromBlock() {
-        Project project = ColabFactory.createProject(client, "testChangeStickyNoteLinkFromBlock");
+    public void testChangeStickyNoteLinkSrcBlock() {
+        Project project = ColabFactory.createProject(client, "testChangeStickyNoteLinkSrcBlock");
 
         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 
@@ -518,6 +518,50 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(resourceLinks);
         Assertions.assertEquals(1, resourceLinks.size());
         Assertions.assertEquals(linkId, resourceLinks.get(0).getId());
+    }
+
+    @Test
+    public void testChangeStickyNoteLinkDestination() {
+        Project project = ColabFactory.createProject(client, "testChangeStickyNoteLinkDestination");
+
+        Long workCardId = ColabFactory.createNewCard(client, project).getId();
+
+        Long cardId = ColabFactory.createNewCard(client, project).getId();
+
+        StickyNoteLink link = new StickyNoteLink();
+        link.setSrcCardId(cardId);
+        link.setDestinationCardId(workCardId);
+
+        Long linkId = client.stickyNoteLinkRestEndpoint.createLink(link);
+
+        StickyNoteLink persistedLink = client.stickyNoteLinkRestEndpoint.getLink(linkId);
+        Assertions.assertNotNull(persistedLink);
+        Assertions.assertEquals(workCardId, persistedLink.getDestinationCardId());
+
+        List<StickyNoteLink> cardLinks = client.cardRestEndpoint
+            .getStickyNoteLinksAsDest(workCardId);
+        Assertions.assertNotNull(cardLinks);
+        Assertions.assertEquals(1, cardLinks.size());
+        Assertions.assertEquals(linkId, cardLinks.get(0).getId());
+
+        Long anotherWorkCardId = ColabFactory.createNewCard(client, project).getId();
+
+        client.stickyNoteLinkRestEndpoint.changeDestination(persistedLink.getId(),
+            anotherWorkCardId);
+
+        persistedLink = client.stickyNoteLinkRestEndpoint.getLink(linkId);
+        Assertions.assertNotNull(persistedLink);
+        Assertions.assertEquals(anotherWorkCardId, persistedLink.getDestinationCardId());
+
+        cardLinks = client.cardRestEndpoint.getStickyNoteLinksAsDest(workCardId);
+        Assertions.assertNotNull(cardLinks);
+        Assertions.assertEquals(0, cardLinks.size());
+
+        List<StickyNoteLink> otherCardLinks = client.cardRestEndpoint
+            .getStickyNoteLinksAsDest(anotherWorkCardId);
+        Assertions.assertNotNull(otherCardLinks);
+        Assertions.assertEquals(1, otherCardLinks.size());
+        Assertions.assertEquals(linkId, otherCardLinks.get(0).getId());
     }
 
 }
