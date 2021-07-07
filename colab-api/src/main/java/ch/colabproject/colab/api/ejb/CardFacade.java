@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
@@ -465,6 +466,38 @@ public class CardFacade {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
         return card.getStickyNoteLinksAsSrc();
+    }
+
+    /**
+     * Get all activity flow links of which the given card is the previous one
+     *
+     * @param cardId the id of the card
+     *
+     * @return all activity flow links linked to the card
+     */
+    public List<ActivityFlowLink> getActivityFlowLinkAsPrevious(Long cardId) {
+        logger.debug("get activity flow links where the card #{} is the previous one", cardId);
+        Card card = cardDao.getCard(cardId);
+        if (card == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return card.getActivityFlowLinksAsPrevious();
+    }
+
+    /**
+     * Get all activity flow links of which the given card is the next one
+     *
+     * @param cardId the id of the card
+     *
+     * @return all activity flow links linked from the card
+     */
+    public List<ActivityFlowLink> getActivityFlowLinkAsNext(Long cardId) {
+        logger.debug("get activity flow links where the card #{} is the next one", cardId);
+        Card card = cardDao.getCard(cardId);
+        if (card == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return card.getActivityFlowLinksAsNext();
     }
 
     // *********************************************************************************************

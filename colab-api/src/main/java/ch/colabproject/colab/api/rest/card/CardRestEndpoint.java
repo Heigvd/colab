@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
@@ -218,6 +219,34 @@ public class CardRestEndpoint {
     public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long cardId) {
         logger.debug("Get sticky note links to card #{} as source", cardId);
         return cardFacade.getStickyNoteLinkAsSrcCard(cardId);
+    }
+
+    /**
+     * Get all activity flow links of which the card is the previous one
+     *
+     * @param cardId Card id of the searched links
+     *
+     * @return list of links
+     */
+    @GET
+    @Path("{id}/ActivityFlowLinksPreviousCard")
+    public List<ActivityFlowLink> getActivityFlowLinksAsPrevious(@PathParam("id") Long cardId) {
+        logger.debug("Get activity flow links to card #{} as previous", cardId);
+        return cardFacade.getActivityFlowLinkAsPrevious(cardId);
+    }
+
+    /**
+     * Get all activity flow links of which the card is the next one
+     *
+     * @param cardId Card id of the searched links
+     *
+     * @return list of links
+     */
+    @GET
+    @Path("{id}/ActivityFlowLinksNextCard")
+    public List<ActivityFlowLink> getActivityFlowLinksAsNext(@PathParam("id") Long cardId) {
+        logger.debug("Get activity flow links to card #{} as next", cardId);
+        return cardFacade.getActivityFlowLinkAsNext(cardId);
     }
 
 }

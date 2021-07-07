@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.document.AbstractResource;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.project.Project;
@@ -141,6 +142,20 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     @OneToMany(mappedBy = "destinationCard", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<StickyNoteLink> stickyNoteLinksAsDest = new ArrayList<>();
+
+    /**
+     * The list of activity flow links of which the card is the previous one
+     */
+    @OneToMany(mappedBy = "previousCard", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<ActivityFlowLink> activityFlowLinksAsPrevious = new ArrayList<>();
+
+    /**
+     * The list of activity flow links of which the card is the next one
+     */
+    @OneToMany(mappedBy = "nextCard", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<ActivityFlowLink> activityFlowLinksAsNext = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -337,10 +352,10 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     }
 
     /**
-     * @param stickyNoteLinksAsSrc the list of sticky note links of which the card is the source
+     * @param links the list of sticky note links of which the card is the source
      */
-    public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
-        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
+    public void setStickyNoteLinksAsSrc(List<StickyNoteLink> links) {
+        this.stickyNoteLinksAsSrc = links;
     }
 
     /**
@@ -351,11 +366,38 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     }
 
     /**
-     * @param stickyNoteLinksAsDest the list of sticky note links of which the card is the
-     *                              destination
+     * @param links the list of sticky note links of which the card is the destination
      */
-    public void setStickyNoteLinksAsDest(List<StickyNoteLink> stickyNoteLinksAsDest) {
-        this.stickyNoteLinksAsDest = stickyNoteLinksAsDest;
+    public void setStickyNoteLinksAsDest(List<StickyNoteLink> links) {
+        this.stickyNoteLinksAsDest = links;
+    }
+
+    /**
+     * @return the list of activity flow links of which the card is the previous one
+     */
+    public List<ActivityFlowLink> getActivityFlowLinksAsPrevious() {
+        return activityFlowLinksAsPrevious;
+    }
+
+    /**
+     * @param links list of activity flow links of which the card is the previous one
+     */
+    public void setActivityFlowLinksAsPrevious(List<ActivityFlowLink> links) {
+        this.activityFlowLinksAsPrevious = links;
+    }
+
+    /**
+     * @return the list of activity flow links of which the card is the next one
+     */
+    public List<ActivityFlowLink> getActivityFlowLinksAsNext() {
+        return activityFlowLinksAsNext;
+    }
+
+    /**
+     * @param links the list of activity flow links of which the card is the next one
+     */
+    public void setActivityFlowLinksAsNext(List<ActivityFlowLink> links) {
+        this.activityFlowLinksAsNext = links;
     }
 
     // ---------------------------------------------------------------------------------------------
