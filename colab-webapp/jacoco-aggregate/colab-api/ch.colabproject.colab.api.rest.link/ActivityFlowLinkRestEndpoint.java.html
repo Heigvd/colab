@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ActivityFlowLinkRestEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.link</a> &gt; <span class="el_source">ActivityFlowLinkRestEndpoint.java</span></div><h1>ActivityFlowLinkRestEndpoint.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.link;
+
+import ch.colabproject.colab.api.ejb.ActivityFlowLinkFacade;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.persistence.link.ActivityFlowLinkDao;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * REST activity flow link controller
+ *
+ * @author sandra
+ */
+@Path(&quot;activityFlowLinks&quot;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@AuthenticationRequired
+<span class="nc" id="L35">public class ActivityFlowLinkRestEndpoint {</span>
+
+    /** logger */
+<span class="nc" id="L38">    private static final Logger logger = LoggerFactory</span>
+<span class="nc" id="L39">        .getLogger(ActivityFlowLinkRestEndpoint.class);</span>
+
+    // *********************************************************************************************
+    // injections
+    // *********************************************************************************************
+
+    /**
+     * The activity flow link persistence manager
+     */
+    @Inject
+    private ActivityFlowLinkDao linkDao;
+
+    /**
+     * The activity flow link related logic
+     */
+    @Inject
+    private ActivityFlowLinkFacade linkFacade;
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    /**
+     * Get link identified by the given id
+     *
+     * @param id id of the link to fetch
+     *
+     * @return the link or null
+     */
+    @GET
+    @Path(&quot;{id}&quot;)
+    public ActivityFlowLink getLink(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L71">        logger.debug(&quot;get activity flow link #{}&quot;, id);</span>
+<span class="nc" id="L72">        return linkDao.findActivityFlowLink(id);</span>
+    }
+
+//    /**
+//     * Save changes to database
+//     *
+//     * @param link link to update
+//     *
+//     * @throws ColabMergeException if the merge is not possible
+//     */
+//    @PUT
+//    public void updateLink(ActivityFlowLink link) throws ColabMergeException {
+//        logger.debug(&quot;update activity flow link {}&quot;, link);
+//        linkDao.updateActivityFlowLink(link);
+//    }
+
+    /**
+     * Persist the link
+     *
+     * @param link the link to persist
+     *
+     * @return id of the persisted new link
+     */
+    @POST
+    public Long createLink(ActivityFlowLink link) {
+<span class="nc" id="L97">        logger.debug(&quot;create activity flow link {}&quot;, link);</span>
+<span class="nc" id="L98">        return linkFacade.createActivityFlowLink(link).getId();</span>
+    }
+
+    /**
+     * Permanently delete a link
+     *
+     * @param id id of the link to delete
+     */
+    @DELETE
+    @Path(&quot;{id}&quot;)
+    public void deleteLink(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L109">        logger.debug(&quot;delete activity flow link #{}&quot;, id);</span>
+<span class="nc" id="L110">        linkFacade.deleteActivityFlowLink(id);</span>
+<span class="nc" id="L111">    }</span>
+
+    /**
+     * Change the previous card
+     *
+     * @param linkId the id of the link to update
+     * @param cardId the id of the new previous card
+     */
+    @PUT
+    @Path(&quot;changePrevious/{linkId}&quot;)
+    public void changePreviousCard(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
+<span class="nc" id="L122">        logger.debug(&quot;change activity flow link #{} previous card to #{}&quot;, linkId, cardId);</span>
+<span class="nc" id="L123">        linkFacade.changeActivityFlowLinkPrevious(linkId, cardId);</span>
+<span class="nc" id="L124">    }</span>
+
+    /**
+     * Change the next card
+     *
+     * @param linkId the id of the link to update
+     * @param cardId the id of the new next card
+     */
+    @PUT
+    @Path(&quot;changeNext/{linkId}&quot;)
+    public void changeNextCard(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
+<span class="nc" id="L135">        logger.debug(&quot;change activity flow link #{} next card to #{}&quot;, linkId, cardId);</span>
+<span class="nc" id="L136">        linkFacade.changeActivityFlowLinkNext(linkId, cardId);</span>
+<span class="nc" id="L137">    }</span>
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

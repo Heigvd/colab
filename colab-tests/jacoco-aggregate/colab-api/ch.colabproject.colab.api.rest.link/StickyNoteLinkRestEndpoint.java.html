@@ -173,9 +173,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeDest/{linkId}&quot;)
     public void changeDestination(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
-<span class="nc" id="L176">        logger.debug(&quot;change link #{} with new destination card #{}&quot;, linkId, cardId);</span>
-<span class="nc" id="L177">        linkFacade.changeStickyNoteLinkDestination(linkId, cardId);</span>
-<span class="nc" id="L178">    }</span>
+<span class="fc" id="L176">        logger.debug(&quot;change link #{} with new destination card #{}&quot;, linkId, cardId);</span>
+<span class="fc" id="L177">        linkFacade.changeStickyNoteLinkDestination(linkId, cardId);</span>
+<span class="fc" id="L178">    }</span>
 
     // *********************************************************************************************
     //

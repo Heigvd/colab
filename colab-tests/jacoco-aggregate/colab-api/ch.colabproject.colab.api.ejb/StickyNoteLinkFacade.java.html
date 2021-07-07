@@ -191,30 +191,30 @@ import org.slf4j.LoggerFactory;
      * @param newDestId the id of the new destination card
      */
     public void changeStickyNoteLinkDestination(Long linkId, Long newDestId) {
-<span class="nc" id="L194">        logger.debug(&quot;change destination of link #{} with #{}&quot;, linkId, newDestId);</span>
+<span class="fc" id="L194">        logger.debug(&quot;change destination of link #{} with #{}&quot;, linkId, newDestId);</span>
 
         // firstly fetch all objects and so ensure that they exist
-<span class="nc" id="L197">        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);</span>
-<span class="nc bnc" id="L198" title="All 2 branches missed.">        if (link == null) {</span>
+<span class="fc" id="L197">        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);</span>
+<span class="pc bpc" id="L198" title="1 of 2 branches missed.">        if (link == null) {</span>
 <span class="nc" id="L199">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L202">        Card oldDest = cardDao.getCard(link.getDestinationCardId());</span>
-<span class="nc bnc" id="L203" title="All 2 branches missed.">        if (oldDest == null) {</span>
+<span class="fc" id="L202">        Card oldDest = cardDao.getCard(link.getDestinationCardId());</span>
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">        if (oldDest == null) {</span>
 <span class="nc" id="L204">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L207">        Card newDestination = cardDao.getCard(newDestId);</span>
-<span class="nc bnc" id="L208" title="All 2 branches missed.">        if (newDestination == null) {</span>
+<span class="fc" id="L207">        Card newDestination = cardDao.getCard(newDestId);</span>
+<span class="pc bpc" id="L208" title="1 of 2 branches missed.">        if (newDestination == null) {</span>
 <span class="nc" id="L209">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
         // secondly make the modifications
-<span class="nc" id="L213">        oldDest.getStickyNoteLinksAsDest().remove(link);</span>
+<span class="fc" id="L213">        oldDest.getStickyNoteLinksAsDest().remove(link);</span>
 
-<span class="nc" id="L215">        link.setDestinationCard(newDestination);</span>
-<span class="nc" id="L216">        newDestination.getStickyNoteLinksAsDest().add(link);</span>
-<span class="nc" id="L217">    }</span>
+<span class="fc" id="L215">        link.setDestinationCard(newDestination);</span>
+<span class="fc" id="L216">        newDestination.getStickyNoteLinksAsDest().add(link);</span>
+<span class="fc" id="L217">    }</span>
 
     /**
      * Get the source object corresponding to the given type and id.

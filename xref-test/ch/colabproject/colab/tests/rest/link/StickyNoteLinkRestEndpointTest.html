@@ -33,12 +33,12 @@
 <a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="StickyNoteLinkRestEndpointTest" href="../../../../../../ch/colabproject/colab/tests/rest/link/StickyNoteLinkRestEndpointTest.html#StickyNoteLinkRestEndpointTest">StickyNoteLinkRestEndpointTest</a> <strong class="jxr_keyword">extends</strong> <a name="AbstractArquillianTest" href="../../../../../../ch/colabproject/colab/tests/tests/AbstractArquillianTest.html#AbstractArquillianTest">AbstractArquillianTest</a> {
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>      @Test
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateStickyNoteLinkFromCard() {
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateStickyNoteLinkSrcCard() {
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>          String teaser = <span class="jxr_string">"remember me #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>          String explanation = <span class="jxr_string">"This resource explains exactly how to do a nice report #"</span>
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>              + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L32" href="#L32">32</a>  
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>          Project project = ColabFactory.createProject(client, <span class="jxr_string">"testCreateStickyNoteLinkFromCard"</span>);
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          Project project = ColabFactory.createProject(client, <span class="jxr_string">"testCreateStickyNoteLinkSrcCard"</span>);
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>          Long workCardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  
@@ -72,13 +72,13 @@
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      }
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>  
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      @Test
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateStickyNoteLinkFromCardContent() {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateStickyNoteLinkSrcCardContent() {
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          String teaser = <span class="jxr_string">"remember me #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          String explanation = <span class="jxr_string">"This resource explains exactly how to do a nice report #"</span>
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>              + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          Project project = ColabFactory.createProject(client,
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>              <span class="jxr_string">"testCreateStickyNoteLinkFromCardContent"</span>);
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>              <span class="jxr_string">"testCreateStickyNoteLinkSrcCardContent"</span>);
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>  
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          Long workCardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>  
@@ -109,13 +109,13 @@
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>     }
 <a class="jxr_linenumber" name="L102" href="#L102">102</a> 
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>     @Test
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateStickyNoteLinkFromResource() {
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateStickyNoteLinkSrcResource() {
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>         String teaser = <span class="jxr_string">"remember me #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         String explanation = <span class="jxr_string">"This resource explains exactly how to do a nice report #"</span>
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>             + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L108" href="#L108">108</a> 
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>         Project project = ColabFactory.createProject(client,
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>             <span class="jxr_string">"testCreateStickyNoteLinkFromResource"</span>);
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>             <span class="jxr_string">"testCreateStickyNoteLinkSrcResource"</span>);
 <a class="jxr_linenumber" name="L111" href="#L111">111</a> 
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L113" href="#L113">113</a> 
@@ -146,13 +146,13 @@
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>     }
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> 
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>     @Test
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateStickyNoteLinkFromResourceReference() {
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateStickyNoteLinkSrcResourceReference() {
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         String teaser = <span class="jxr_string">"remember me #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>         String explanation = <span class="jxr_string">"This resource explains exactly how to do a nice report #"</span>
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>             + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L145" href="#L145">145</a> 
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>         Project project = ColabFactory.createProject(client,
-<a class="jxr_linenumber" name="L147" href="#L147">147</a>             <span class="jxr_string">"testCreateStickyNoteLinkFromResource"</span>);
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>             <span class="jxr_string">"testCreateStickyNoteLinkSrcResourceReference"</span>);
 <a class="jxr_linenumber" name="L148" href="#L148">148</a> 
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L150" href="#L150">150</a> 
@@ -189,12 +189,12 @@
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>     }
 <a class="jxr_linenumber" name="L182" href="#L182">182</a> 
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>     @Test
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateStickyNoteLinkFromBlock() {
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateStickyNoteLinkSrcBlock() {
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>         String teaser = <span class="jxr_string">"remember me #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>         String explanation = <span class="jxr_string">"This resource explains exactly how to do a nice report #"</span>
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>             + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L188" href="#L188">188</a> 
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testCreateStickyNoteLinkFromBlock"</span>);
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testCreateStickyNoteLinkSrcBlock"</span>);
 <a class="jxr_linenumber" name="L190" href="#L190">190</a> 
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L192" href="#L192">192</a> 
@@ -229,7 +229,7 @@
 <a class="jxr_linenumber" name="L221" href="#L221">221</a> 
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>     @Test
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateStickyNoteLink() {
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testCreateStickyNoteLinkFromCard"</span>);
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testUpdateStickyNoteLink"</span>);
 <a class="jxr_linenumber" name="L225" href="#L225">225</a> 
 <a class="jxr_linenumber" name="L226" href="#L226">226</a>         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L227" href="#L227">227</a> 
@@ -262,7 +262,7 @@
 <a class="jxr_linenumber" name="L254" href="#L254">254</a> 
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>     @Test
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDeleteStickyNoteLink() {
-<a class="jxr_linenumber" name="L257" href="#L257">257</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testCreateStickyNoteLinkFromCard"</span>);
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testDeleteStickyNoteLink"</span>);
 <a class="jxr_linenumber" name="L258" href="#L258">258</a> 
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L260" href="#L260">260</a> 
@@ -306,8 +306,8 @@
 <a class="jxr_linenumber" name="L298" href="#L298">298</a>     }
 <a class="jxr_linenumber" name="L299" href="#L299">299</a> 
 <a class="jxr_linenumber" name="L300" href="#L300">300</a>     @Test
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testChangeStickyNoteLinkFromCard() {
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testChangeStickyNoteLinkFromCard"</span>);
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testChangeStickyNoteLinkSrcCard() {
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testChangeStickyNoteLinkSrcCard"</span>);
 <a class="jxr_linenumber" name="L303" href="#L303">303</a> 
 <a class="jxr_linenumber" name="L304" href="#L304">304</a>         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L305" href="#L305">305</a> 
@@ -360,9 +360,9 @@
 <a class="jxr_linenumber" name="L352" href="#L352">352</a>     }
 <a class="jxr_linenumber" name="L353" href="#L353">353</a> 
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>     @Test
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testChangeStickyNoteLinkFromCardContent() {
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testChangeStickyNoteLinkSrcCardContent() {
 <a class="jxr_linenumber" name="L356" href="#L356">356</a>         Project project = ColabFactory.createProject(client,
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>             <span class="jxr_string">"testChangeStickyNoteLinkFromCardContent"</span>);
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>             <span class="jxr_string">"testChangeStickyNoteLinkSrcCardContent"</span>);
 <a class="jxr_linenumber" name="L358" href="#L358">358</a> 
 <a class="jxr_linenumber" name="L359" href="#L359">359</a>         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L360" href="#L360">360</a> 
@@ -415,9 +415,9 @@
 <a class="jxr_linenumber" name="L407" href="#L407">407</a>     }
 <a class="jxr_linenumber" name="L408" href="#L408">408</a> 
 <a class="jxr_linenumber" name="L409" href="#L409">409</a>     @Test
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testChangeStickyNoteLinkFromResource() {
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testChangeStickyNoteLinkSrcResource() {
 <a class="jxr_linenumber" name="L411" href="#L411">411</a>         Project project = ColabFactory.createProject(client,
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>             <span class="jxr_string">"testChangeStickyNoteLinkFromResource"</span>);
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>             <span class="jxr_string">"testChangeStickyNoteLinkSrcResource"</span>);
 <a class="jxr_linenumber" name="L413" href="#L413">413</a> 
 <a class="jxr_linenumber" name="L414" href="#L414">414</a>         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L415" href="#L415">415</a> 
@@ -472,8 +472,8 @@
 <a class="jxr_linenumber" name="L464" href="#L464">464</a>     }
 <a class="jxr_linenumber" name="L465" href="#L465">465</a> 
 <a class="jxr_linenumber" name="L466" href="#L466">466</a>     @Test
-<a class="jxr_linenumber" name="L467" href="#L467">467</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testChangeStickyNoteLinkFromBlock() {
-<a class="jxr_linenumber" name="L468" href="#L468">468</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testChangeStickyNoteLinkFromBlock"</span>);
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testChangeStickyNoteLinkSrcBlock() {
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testChangeStickyNoteLinkSrcBlock"</span>);
 <a class="jxr_linenumber" name="L469" href="#L469">469</a> 
 <a class="jxr_linenumber" name="L470" href="#L470">470</a>         Long workCardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L471" href="#L471">471</a> 
@@ -528,7 +528,51 @@
 <a class="jxr_linenumber" name="L520" href="#L520">520</a>         Assertions.assertEquals(linkId, resourceLinks.get(0).getId());
 <a class="jxr_linenumber" name="L521" href="#L521">521</a>     }
 <a class="jxr_linenumber" name="L522" href="#L522">522</a> 
-<a class="jxr_linenumber" name="L523" href="#L523">523</a> }
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>     @Test
+<a class="jxr_linenumber" name="L524" href="#L524">524</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testChangeStickyNoteLinkDestination() {
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testChangeStickyNoteLinkDestination"</span>);
+<a class="jxr_linenumber" name="L526" href="#L526">526</a> 
+<a class="jxr_linenumber" name="L527" href="#L527">527</a>         Long workCardId = ColabFactory.createNewCard(client, project).getId();
+<a class="jxr_linenumber" name="L528" href="#L528">528</a> 
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>         Long cardId = ColabFactory.createNewCard(client, project).getId();
+<a class="jxr_linenumber" name="L530" href="#L530">530</a> 
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>         StickyNoteLink link = <strong class="jxr_keyword">new</strong> StickyNoteLink();
+<a class="jxr_linenumber" name="L532" href="#L532">532</a>         link.setSrcCardId(cardId);
+<a class="jxr_linenumber" name="L533" href="#L533">533</a>         link.setDestinationCardId(workCardId);
+<a class="jxr_linenumber" name="L534" href="#L534">534</a> 
+<a class="jxr_linenumber" name="L535" href="#L535">535</a>         Long linkId = client.stickyNoteLinkRestEndpoint.createLink(link);
+<a class="jxr_linenumber" name="L536" href="#L536">536</a> 
+<a class="jxr_linenumber" name="L537" href="#L537">537</a>         StickyNoteLink persistedLink = client.stickyNoteLinkRestEndpoint.getLink(linkId);
+<a class="jxr_linenumber" name="L538" href="#L538">538</a>         Assertions.assertNotNull(persistedLink);
+<a class="jxr_linenumber" name="L539" href="#L539">539</a>         Assertions.assertEquals(workCardId, persistedLink.getDestinationCardId());
+<a class="jxr_linenumber" name="L540" href="#L540">540</a> 
+<a class="jxr_linenumber" name="L541" href="#L541">541</a>         List&lt;StickyNoteLink&gt; cardLinks = client.cardRestEndpoint
+<a class="jxr_linenumber" name="L542" href="#L542">542</a>             .getStickyNoteLinksAsDest(workCardId);
+<a class="jxr_linenumber" name="L543" href="#L543">543</a>         Assertions.assertNotNull(cardLinks);
+<a class="jxr_linenumber" name="L544" href="#L544">544</a>         Assertions.assertEquals(1, cardLinks.size());
+<a class="jxr_linenumber" name="L545" href="#L545">545</a>         Assertions.assertEquals(linkId, cardLinks.get(0).getId());
+<a class="jxr_linenumber" name="L546" href="#L546">546</a> 
+<a class="jxr_linenumber" name="L547" href="#L547">547</a>         Long anotherWorkCardId = ColabFactory.createNewCard(client, project).getId();
+<a class="jxr_linenumber" name="L548" href="#L548">548</a> 
+<a class="jxr_linenumber" name="L549" href="#L549">549</a>         client.stickyNoteLinkRestEndpoint.changeDestination(persistedLink.getId(),
+<a class="jxr_linenumber" name="L550" href="#L550">550</a>             anotherWorkCardId);
+<a class="jxr_linenumber" name="L551" href="#L551">551</a> 
+<a class="jxr_linenumber" name="L552" href="#L552">552</a>         persistedLink = client.stickyNoteLinkRestEndpoint.getLink(linkId);
+<a class="jxr_linenumber" name="L553" href="#L553">553</a>         Assertions.assertNotNull(persistedLink);
+<a class="jxr_linenumber" name="L554" href="#L554">554</a>         Assertions.assertEquals(anotherWorkCardId, persistedLink.getDestinationCardId());
+<a class="jxr_linenumber" name="L555" href="#L555">555</a> 
+<a class="jxr_linenumber" name="L556" href="#L556">556</a>         cardLinks = client.cardRestEndpoint.getStickyNoteLinksAsDest(workCardId);
+<a class="jxr_linenumber" name="L557" href="#L557">557</a>         Assertions.assertNotNull(cardLinks);
+<a class="jxr_linenumber" name="L558" href="#L558">558</a>         Assertions.assertEquals(0, cardLinks.size());
+<a class="jxr_linenumber" name="L559" href="#L559">559</a> 
+<a class="jxr_linenumber" name="L560" href="#L560">560</a>         List&lt;StickyNoteLink&gt; otherCardLinks = client.cardRestEndpoint
+<a class="jxr_linenumber" name="L561" href="#L561">561</a>             .getStickyNoteLinksAsDest(anotherWorkCardId);
+<a class="jxr_linenumber" name="L562" href="#L562">562</a>         Assertions.assertNotNull(otherCardLinks);
+<a class="jxr_linenumber" name="L563" href="#L563">563</a>         Assertions.assertEquals(1, otherCardLinks.size());
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>         Assertions.assertEquals(linkId, otherCardLinks.get(0).getId());
+<a class="jxr_linenumber" name="L565" href="#L565">565</a>     }
+<a class="jxr_linenumber" name="L566" href="#L566">566</a> 
+<a class="jxr_linenumber" name="L567" href="#L567">567</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

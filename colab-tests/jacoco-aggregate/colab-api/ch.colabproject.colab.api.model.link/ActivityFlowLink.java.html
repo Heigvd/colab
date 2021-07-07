@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ActivityFlowLink.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.link</a> &gt; <span class="el_source">ActivityFlowLink.java</span></div><h1>ActivityFlowLink.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.link;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
+/**
+ * Link to show that a card must be handled before another one.
+ *
+ * @author sandra
+ */
+@Entity
+<span class="fc" id="L28">public class ActivityFlowLink implements ColabEntity/* , WithWebsocketChannels */ {</span>
+
+    /**
+     * Serial version UID
+     */
+    private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Link ID
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /**
+     * The card to handle before
+     */
+    @NotNull
+    @ManyToOne
+    @JsonbTransient
+    private Card previousCard;
+
+    /**
+     * The ID of the card to handle before (serialization sugar)
+     */
+    @Transient
+    private Long previousCardId;
+
+    /**
+     * The card to handle after
+     */
+    @NotNull
+    @ManyToOne
+    @JsonbTransient
+    private Card nextCard;
+
+    /**
+     * The ID of the card to handle after (serialization sugar)
+     */
+    @Transient
+    private Long nextCardId;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the link id
+     */
+    @Override
+    public Long getId() {
+<span class="fc" id="L83">        return id;</span>
+    }
+
+    /**
+     * @param id the link id
+     */
+    public void setId(Long id) {
+<span class="fc" id="L90">        this.id = id;</span>
+<span class="fc" id="L91">    }</span>
+
+    /**
+     * @return the card to handle before
+     */
+    public Card getPreviousCard() {
+<span class="fc" id="L97">        return previousCard;</span>
+    }
+
+    /**
+     * @param previousCard the card to handle before
+     */
+    public void setPreviousCard(Card previousCard) {
+<span class="fc" id="L104">        this.previousCard = previousCard;</span>
+<span class="fc" id="L105">    }</span>
+
+    /**
+     * get the id of the card to handle before. To be sent to client
+     *
+     * @return the id of the card to handle before
+     */
+    public Long getPreviousCardId() {
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (this.previousCard != null) {</span>
+<span class="fc" id="L114">            return this.previousCard.getId();</span>
+        } else {
+<span class="fc" id="L116">            return previousCardId;</span>
+        }
+    }
+
+    /**
+     * set the id of the card to handle before. For serialization only
+     *
+     * @param previousCardId the id of the card to handle before
+     */
+    public void setPreviousCardId(Long previousCardId) {
+<span class="fc" id="L126">        this.previousCardId = previousCardId;</span>
+<span class="fc" id="L127">    }</span>
+
+    /**
+     * @return the card to handle after
+     */
+    public Card getNextCard() {
+<span class="fc" id="L133">        return nextCard;</span>
+    }
+
+    /**
+     * @param nextCard the card to handle after
+     */
+    public void setNextCard(Card nextCard) {
+<span class="fc" id="L140">        this.nextCard = nextCard;</span>
+<span class="fc" id="L141">    }</span>
+
+    /**
+     * get the id of the card to handle after. To be sent to client
+     *
+     * @return the id of the card to handle after
+     */
+    public Long getNextCardId() {
+<span class="fc bfc" id="L149" title="All 2 branches covered.">        if (this.nextCard != null) {</span>
+<span class="fc" id="L150">            return this.nextCard.getId();</span>
+        } else {
+<span class="fc" id="L152">            return nextCardId;</span>
+        }
+    }
+
+    /**
+     * set the id of the card to handle after. For serialization only
+     *
+     * @param nextCardId the id of the card to handle after
+     */
+    public void setNextCardId(Long nextCardId) {
+<span class="fc" id="L162">        this.nextCardId = nextCardId;</span>
+<span class="fc" id="L163">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+//        if (other instanceof ActivityFlowLink) {
+        // ActivityFlowLink o = (ActivityFlowLink) other;
+        // previousCard is managed separately in the Facade
+        // nextCard is managed separately in the Facade
+//        } else {
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (!(other instanceof ActivityFlowLink)) {</span>
+<span class="nc" id="L180">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L182">    }</span>
+
+//    @Override
+//    public Set&lt;WebsocketChannel&gt; getChannels() {
+//        if (this.nextCard != null) {
+//            return this.nextCard.getChannels();
+//        } else {
+//        return Set.of();
+//        }
+//    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L195">        return EntityHelper.hashCode(this);</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
+    public boolean equals(Object obj) {
+<span class="fc" id="L201">        return EntityHelper.equals(this, obj);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L206">        return &quot;ActivityFlowLink{&quot; + &quot;id=&quot; + id + &quot;, previousCardId=&quot; + getPreviousCardId()</span>
+<span class="nc" id="L207">            + &quot;, nextCardId=&quot; + getNextCardId() + &quot;}&quot;;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
