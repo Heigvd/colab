@@ -127,6 +127,25 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L127">        return blockDao.persistBlock(block);</span>
     }
 
+    /**
+     * Delete the given block
+     *
+     * @param blockId the id of the block to delete
+     */
+    public void deleteBlock(Long blockId) {
+<span class="fc" id="L136">        logger.debug(&quot;delete the block #{}&quot;, blockId);</span>
+
+<span class="fc" id="L138">        Block block = blockDao.findBlock(blockId);</span>
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">        if (block == null) {</span>
+<span class="nc" id="L140">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+
+<span class="fc" id="L143">        BlockDocument blockDoc = block.getDocument();</span>
+<span class="fc" id="L144">        blockDoc.getBlocks().remove(block);</span>
+
+<span class="fc" id="L146">        blockDao.deleteBlock(blockId);</span>
+<span class="fc" id="L147">    }</span>
+
     // *********************************************************************************************
     // text data block stuff
     // *********************************************************************************************
@@ -139,21 +158,21 @@ import org.slf4j.LoggerFactory;
      * @return a new, initialized and persisted text data block
      */
     public Block createNewTextDataBlock(Long documentId) {
-<span class="fc" id="L142">        logger.debug(&quot;create a new block for the document #{}&quot;, documentId);</span>
+<span class="fc" id="L161">        logger.debug(&quot;create a new block for the document #{}&quot;, documentId);</span>
 
-<span class="fc" id="L144">        Document document = documentDao.findDocument(documentId);</span>
-<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if (!(document instanceof BlockDocument)) {</span>
-<span class="nc" id="L146">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L163">        Document document = documentDao.findDocument(documentId);</span>
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">        if (!(document instanceof BlockDocument)) {</span>
+<span class="nc" id="L165">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
-<span class="fc" id="L148">        BlockDocument blockDocument = (BlockDocument) document;</span>
-<span class="fc" id="L149">        securityFacade.assertCanCreateBlock(blockDocument);</span>
+<span class="fc" id="L167">        BlockDocument blockDocument = (BlockDocument) document;</span>
+<span class="fc" id="L168">        securityFacade.assertCanCreateBlock(blockDocument);</span>
 
-<span class="fc" id="L151">        Block block = new TextDataBlock();</span>
+<span class="fc" id="L170">        Block block = new TextDataBlock();</span>
 
-<span class="fc" id="L153">        block.setDocument(blockDocument);</span>
-<span class="fc" id="L154">        (blockDocument).getBlocks().add(block);</span>
+<span class="fc" id="L172">        block.setDocument(blockDocument);</span>
+<span class="fc" id="L173">        (blockDocument).getBlocks().add(block);</span>
 
-<span class="fc" id="L156">        return blockDao.persistBlock(block);</span>
+<span class="fc" id="L175">        return blockDao.persistBlock(block);</span>
     }
 
     // *********************************************************************************************
@@ -168,12 +187,12 @@ import org.slf4j.LoggerFactory;
      * @return all sticky note links linked to the block
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrc(Long cardBlockId) {
-<span class="fc" id="L171">        logger.debug(&quot;get sticky note links where the block #{} is the source&quot;, cardBlockId);</span>
-<span class="fc" id="L172">        Block block = blockDao.findBlock(cardBlockId);</span>
-<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        if (block == null) {</span>
-<span class="nc" id="L174">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L190">        logger.debug(&quot;get sticky note links where the block #{} is the source&quot;, cardBlockId);</span>
+<span class="fc" id="L191">        Block block = blockDao.findBlock(cardBlockId);</span>
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">        if (block == null) {</span>
+<span class="nc" id="L193">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
-<span class="fc" id="L176">        return block.getStickyNoteLinksAsSrc();</span>
+<span class="fc" id="L195">        return block.getStickyNoteLinksAsSrc();</span>
     }
 
     // *********************************************************************************************

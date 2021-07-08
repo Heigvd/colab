@@ -80,7 +80,12 @@ import org.slf4j.LoggerFactory;
     public List&lt;TeamMember&gt; getTeamMembers(Long id) {
 <span class="fc" id="L81">        Project project = projectDao.getProject(id);</span>
 <span class="fc" id="L82">        logger.debug(&quot;Get team members: {}&quot;, project);</span>
-<span class="fc" id="L83">        return project.getTeamMembers();</span>
+
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        if (project == null) {</span>
+<span class="fc" id="L85">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+
+<span class="fc" id="L88">        return project.getTeamMembers();</span>
     }
 
     /**
@@ -92,9 +97,9 @@ import org.slf4j.LoggerFactory;
      * @return the pending new teamMember
      */
     public TeamMember invite(Long projectId, String email) {
-<span class="fc" id="L95">        Project project = projectDao.getProject(projectId);</span>
-<span class="fc" id="L96">        logger.debug(&quot;Invite {} to join {}&quot;, email, project);</span>
-<span class="fc" id="L97">        return tokenFacade.sendMembershipInvitation(project, email);</span>
+<span class="fc" id="L100">        Project project = projectDao.getProject(projectId);</span>
+<span class="fc" id="L101">        logger.debug(&quot;Invite {} to join {}&quot;, email, project);</span>
+<span class="fc" id="L102">        return tokenFacade.sendMembershipInvitation(project, email);</span>
     }
 
     // *********************************************************************************************
@@ -108,11 +113,11 @@ import org.slf4j.LoggerFactory;
      * @return list of roles
      */
     public List&lt;Role&gt; getProjectRoles(Long id) {
-<span class="fc" id="L111">        Project project = projectDao.getProject(id);</span>
-<span class="pc bpc" id="L112" title="1 of 2 branches missed.">        if (project != null) {</span>
-<span class="fc" id="L113">            return project.getRoles();</span>
+<span class="fc" id="L116">        Project project = projectDao.getProject(id);</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">        if (project != null) {</span>
+<span class="fc" id="L118">            return project.getRoles();</span>
         } else {
-<span class="nc" id="L115">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L120">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
     }
 
@@ -124,16 +129,16 @@ import org.slf4j.LoggerFactory;
      * @return the brand new persisted role
      */
     public Role createRole(Role role) {
-<span class="pc bpc" id="L127" title="1 of 2 branches missed.">        if (role.getProjectId() != null) {</span>
-<span class="fc" id="L128">            Project project = projectDao.getProject(role.getProjectId());</span>
-<span class="pc bpc" id="L129" title="1 of 2 branches missed.">            if (project != null</span>
-<span class="pc bpc" id="L130" title="1 of 2 branches missed.">                &amp;&amp; project.getRoleByName(role.getName()) == null) {</span>
-<span class="fc" id="L131">                project.getRoles().add(role);</span>
-<span class="fc" id="L132">                role.setProject(project);</span>
-<span class="fc" id="L133">                return role;</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        if (role.getProjectId() != null) {</span>
+<span class="fc" id="L133">            Project project = projectDao.getProject(role.getProjectId());</span>
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">            if (project != null</span>
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">                &amp;&amp; project.getRoleByName(role.getName()) == null) {</span>
+<span class="fc" id="L136">                project.getRoles().add(role);</span>
+<span class="fc" id="L137">                role.setProject(project);</span>
+<span class="fc" id="L138">                return role;</span>
             }
         }
-<span class="nc" id="L136">        throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L141">        throw HttpErrorMessage.relatedObjectNotFoundError();</span>
     }
 
     /**
@@ -143,23 +148,23 @@ import org.slf4j.LoggerFactory;
      * @param memberId id of the teamMember
      */
     public void giveRole(Long roleId, Long memberId) {
-<span class="fc" id="L146">        Role role = teamDao.findRole(roleId);</span>
-<span class="fc" id="L147">        TeamMember member = teamDao.findTeamMember(memberId);</span>
-<span class="pc bpc" id="L148" title="2 of 4 branches missed.">        if (role != null &amp;&amp; member != null) {</span>
-<span class="pc bpc" id="L149" title="1 of 2 branches missed.">            if (Objects.equals(role.getProject(), member.getProject())) {</span>
-<span class="fc" id="L150">                List&lt;TeamMember&gt; members = role.getMembers();</span>
-<span class="fc" id="L151">                List&lt;Role&gt; roles = member.getRoles();</span>
-<span class="pc bpc" id="L152" title="1 of 2 branches missed.">                if (!members.contains(member)) {</span>
-<span class="fc" id="L153">                    members.add(member);</span>
+<span class="fc" id="L151">        Role role = teamDao.findRole(roleId);</span>
+<span class="fc" id="L152">        TeamMember member = teamDao.findTeamMember(memberId);</span>
+<span class="pc bpc" id="L153" title="2 of 4 branches missed.">        if (role != null &amp;&amp; member != null) {</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">            if (Objects.equals(role.getProject(), member.getProject())) {</span>
+<span class="fc" id="L155">                List&lt;TeamMember&gt; members = role.getMembers();</span>
+<span class="fc" id="L156">                List&lt;Role&gt; roles = member.getRoles();</span>
+<span class="pc bpc" id="L157" title="1 of 2 branches missed.">                if (!members.contains(member)) {</span>
+<span class="fc" id="L158">                    members.add(member);</span>
                 }
-<span class="pc bpc" id="L155" title="1 of 2 branches missed.">                if (!roles.contains(role)) {</span>
-<span class="fc" id="L156">                    roles.add(role);</span>
+<span class="pc bpc" id="L160" title="1 of 2 branches missed.">                if (!roles.contains(role)) {</span>
+<span class="fc" id="L161">                    roles.add(role);</span>
                 }
-<span class="fc" id="L158">            } else {</span>
-<span class="nc" id="L159">                throw HttpErrorMessage.badRequest();</span>
+<span class="fc" id="L163">            } else {</span>
+<span class="nc" id="L164">                throw HttpErrorMessage.badRequest();</span>
             }
         }
-<span class="fc" id="L162">    }</span>
+<span class="fc" id="L167">    }</span>
 
     /**
      * Remove a role from someone.
@@ -168,15 +173,15 @@ import org.slf4j.LoggerFactory;
      * @param memberId id of the member
      */
     public void removeRole(Long roleId, Long memberId) {
-<span class="nc" id="L171">        Role role = teamDao.findRole(roleId);</span>
-<span class="nc" id="L172">        TeamMember member = teamDao.findTeamMember(memberId);</span>
-<span class="nc bnc" id="L173" title="All 4 branches missed.">        if (role != null &amp;&amp; member != null) {</span>
-<span class="nc" id="L174">            List&lt;TeamMember&gt; members = role.getMembers();</span>
-<span class="nc" id="L175">            List&lt;Role&gt; roles = member.getRoles();</span>
-<span class="nc" id="L176">            members.remove(member);</span>
-<span class="nc" id="L177">            roles.remove(role);</span>
+<span class="nc" id="L176">        Role role = teamDao.findRole(roleId);</span>
+<span class="nc" id="L177">        TeamMember member = teamDao.findTeamMember(memberId);</span>
+<span class="nc bnc" id="L178" title="All 4 branches missed.">        if (role != null &amp;&amp; member != null) {</span>
+<span class="nc" id="L179">            List&lt;TeamMember&gt; members = role.getMembers();</span>
+<span class="nc" id="L180">            List&lt;Role&gt; roles = member.getRoles();</span>
+<span class="nc" id="L181">            members.remove(member);</span>
+<span class="nc" id="L182">            roles.remove(role);</span>
         }
-<span class="nc" id="L179">    }</span>
+<span class="nc" id="L184">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

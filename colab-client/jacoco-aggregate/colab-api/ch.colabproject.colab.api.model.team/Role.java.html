@@ -68,7 +68,7 @@ import javax.validation.constraints.NotBlank;
     /**
      * List of members who are part of this role
      */
-    @ManyToMany
+    @ManyToMany(mappedBy = &quot;roles&quot;)
     @JsonbTransient
     private List&lt;TeamMember&gt; members;
 

@@ -167,7 +167,7 @@
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>     @Path(<span class="jxr_string">"{id}"</span>)
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> deleteBlock(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>         logger.debug(<span class="jxr_string">"delete block #{}"</span>, id);
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>         blockDao.deleteBlock(id);
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>         blockFacade.deleteBlock(id);
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>     }
 <a class="jxr_linenumber" name="L164" href="#L164">164</a> 
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>     <em class="jxr_comment">// *********************************************************************************************</em>

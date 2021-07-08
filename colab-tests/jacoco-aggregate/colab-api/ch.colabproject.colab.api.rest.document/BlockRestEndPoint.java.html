@@ -159,7 +159,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id}&quot;)
     public void deleteBlock(@PathParam(&quot;id&quot;) Long id) {
 <span class="fc" id="L161">        logger.debug(&quot;delete block #{}&quot;, id);</span>
-<span class="fc" id="L162">        blockDao.deleteBlock(id);</span>
+<span class="fc" id="L162">        blockFacade.deleteBlock(id);</span>
 <span class="fc" id="L163">    }</span>
 
     // *********************************************************************************************
