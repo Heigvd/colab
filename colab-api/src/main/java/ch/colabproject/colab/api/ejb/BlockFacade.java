@@ -127,6 +127,25 @@ public class BlockFacade {
         return blockDao.persistBlock(block);
     }
 
+    /**
+     * Delete the given block
+     *
+     * @param blockId the id of the block to delete
+     */
+    public void deleteBlock(Long blockId) {
+        logger.debug("delete the block #{}", blockId);
+
+        Block block = blockDao.findBlock(blockId);
+        if (block == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        BlockDocument blockDoc = block.getDocument();
+        blockDoc.getBlocks().remove(block);
+
+        blockDao.deleteBlock(blockId);
+    }
+
     // *********************************************************************************************
     // text data block stuff
     // *********************************************************************************************

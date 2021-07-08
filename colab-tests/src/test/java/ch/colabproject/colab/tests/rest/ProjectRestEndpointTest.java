@@ -29,18 +29,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import javax.websocket.DeploymentException;
-import org.apache.poi.hssf.record.formula.MemErrPtg;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- *
  * @author maxence
  */
 public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
     @Test
-    public void testCreateProject() {
+    public void testCreateDeleteProject() {
         TestUser user = this.signup("goulashsensei", "goulash@test.local", "SoSecure");
         this.signIn(user);
 
@@ -49,17 +47,18 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         Project project = new Project();
 
         Long projectId = client.projectRestEndpoint.createProject(project);
-        Project persistedProject = client.projectRestEndpoint.getProject(projectId);
 
+        Project persistedProject = client.projectRestEndpoint.getProject(projectId);
         Assertions.assertNotNull(persistedProject);
         Assertions.assertNotNull(persistedProject.getId());
-
         Assertions.assertEquals(persistedProject.getId(), projectId);
 
         Assertions.assertNotNull(persistedProject.getRootCardId());
-        Card rootCard = client.cardRestEndpoint.getCard(persistedProject.getRootCardId());
+        Long rootCardId = persistedProject.getRootCardId();
+        Card rootCard = client.cardRestEndpoint.getCard(rootCardId);
         Assertions.assertNotNull(rootCard);
-        List<CardContent> rootCardContents = client.cardRestEndpoint.getContentVariantsOfCard(rootCard.getId());
+        List<CardContent> rootCardContents = client.cardRestEndpoint
+            .getContentVariantsOfCard(rootCard.getId());
         Assertions.assertNotNull(rootCardContents);
         Assertions.assertEquals(1, rootCardContents.size());
 
@@ -69,6 +68,39 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         TeamMember me = members.get(0);
         Assertions.assertEquals(currentUser.getId(), me.getUserId());
         Assertions.assertEquals(projectId, me.getProjectId());
+
+        // delete it
+        client.projectRestEndpoint.deleteProject(projectId);
+
+        persistedProject = client.projectRestEndpoint.getProject(projectId);
+        Assertions.assertNull(persistedProject);
+
+        rootCard = client.cardRestEndpoint.getCard(rootCardId);
+        Assertions.assertNull(rootCard);
+
+        boolean wasError = false;
+        try {
+            rootCardContents = client.cardRestEndpoint.getContentVariantsOfCard(rootCardId);
+        } catch (HttpErrorMessage hem) {
+            Assertions.assertEquals(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND,
+                hem.getMessageCode());
+            wasError = true;
+        }
+        if (!wasError) {
+            Assertions.fail();
+        }
+
+        wasError = false;
+        try {
+            members = client.projectRestEndpoint.getMembers(projectId);
+        } catch (HttpErrorMessage hem) {
+            Assertions.assertEquals(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND,
+                hem.getMessageCode());
+            wasError = true;
+        }
+        if (!wasError) {
+            Assertions.fail();
+        }
     }
 
     @Test
@@ -102,21 +134,8 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testDeleteProject() {
-        Project project = new Project();
-        Long projectId = client.projectRestEndpoint.createProject(project);
-        Project persistedProject = client.projectRestEndpoint.getProject(projectId);
-
-        Assertions.assertNotNull(persistedProject);
-
-        client.projectRestEndpoint.deleteProject(projectId);
-        persistedProject = client.projectRestEndpoint.getProject(projectId);
-
-        Assertions.assertNull(persistedProject);
-    }
-
-    @Test
-    public void testInvite() throws URISyntaxException, DeploymentException, IOException, InterruptedException {
+    public void testInvite()
+        throws URISyntaxException, DeploymentException, IOException, InterruptedException {
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketHelper.class), Level.TRACE);
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketClient.class), Level.TRACE);
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketFacade.class), Level.TRACE);
@@ -140,10 +159,13 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
         Long projectId = client.projectRestEndpoint.createProject(p);
 
-        // Goulash receives the project, the user (ie himself) and the teamMmeber linking the project to the user
-        WsUpdateMessage wsProjectUpdate = TestHelper.waitForMessagesAndAssert(wsGoulashClient, 1, 5, WsUpdateMessage.class).get(0);
+        // Goulash receives the project, the user (ie himself) and the teamMmeber linking the
+        // project to the user
+        WsUpdateMessage wsProjectUpdate = TestHelper
+            .waitForMessagesAndAssert(wsGoulashClient, 1, 5, WsUpdateMessage.class).get(0);
         // project, teamMember, user
-        Assertions.assertEquals(3, wsProjectUpdate.getUpdated().size(), "Got " + wsProjectUpdate.getUpdated());
+        Assertions.assertEquals(3, wsProjectUpdate.getUpdated().size(),
+            "Got " + wsProjectUpdate.getUpdated());
 
         Project project = TestHelper.findFirst(wsProjectUpdate.getUpdated(), Project.class);
         TeamMember member = TestHelper.findFirst(wsProjectUpdate.getUpdated(), TeamMember.class);
@@ -217,13 +239,16 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
         WsUpdateMessage goulashTeamUpdate = TestHelper.waitForMessagesAndAssert(
             wsGoulashClient, 1, 5, WsUpdateMessage.class).get(0);
-        WsUpdateMessage borschTeamUpdate = TestHelper.waitForMessagesAndAssert(wsBorschClient, 1, 5, WsUpdateMessage.class).get(0);
+        WsUpdateMessage borschTeamUpdate = TestHelper
+            .waitForMessagesAndAssert(wsBorschClient, 1, 5, WsUpdateMessage.class).get(0);
 
         Assertions.assertEquals(2, goulashTeamUpdate.getUpdated().size());
         Assertions.assertEquals(2, borschTeamUpdate.getUpdated().size());
 
-        TeamMember gTeamMemeber = TestHelper.findFirst(goulashTeamUpdate.getUpdated(), TeamMember.class);
-        TeamMember bTeamMember = TestHelper.findFirst(borschTeamUpdate.getUpdated(), TeamMember.class);
+        TeamMember gTeamMemeber = TestHelper.findFirst(goulashTeamUpdate.getUpdated(),
+            TeamMember.class);
+        TeamMember bTeamMember = TestHelper.findFirst(borschTeamUpdate.getUpdated(),
+            TeamMember.class);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // They both reload the team from REST method
@@ -236,7 +261,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         List<TeamMember> members = client.projectRestEndpoint.getMembers(projectId);
         Assertions.assertEquals(2, members.size());
 
-        //assert currentUser can read user of teammate
+        // assert currentUser can read user of teammate
         members.forEach((TeamMember member) -> {
             User u = client.userRestEndpoint.getUserById(member.getUserId());
             Assertions.assertNotNull(u);
@@ -253,7 +278,8 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         TestUser user = this.signup("goulashsensei", "goulash@test.local", "SoSecure");
         this.signIn(user);
 
-        Project project = ColabFactory.createProject(client, "The Hitchhiker's Guide to the Serious-Game");
+        Project project = ColabFactory.createProject(client,
+            "The Hitchhiker's Guide to the Serious-Game");
         Role paranoidAndroid = ColabFactory.createRole(client, project, "paranoid android");
         Role hitchhicker = ColabFactory.createRole(client, project, "Hitchhiker");
 

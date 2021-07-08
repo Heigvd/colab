@@ -264,14 +264,14 @@ public class CardFacade {
     public Card deleteCard(Long cardId) {
         Card card = cardDao.getCard(cardId);
 
-        if (card != null) {
-            if (card.getRootCardProject() != null) {
-                // no way to delete the root card
-                throw HttpErrorMessage.dataIntegrityFailure();
-            }
-
-            card.getParent().getSubCards().remove(card);
+        if (card.getRootCardProject() != null) {
+            // no way to delete the root card
+            throw HttpErrorMessage.dataIntegrityFailure();
         }
+
+        card.getParent().getSubCards().remove(card);
+
+        card.getCardType().getImplementingCards().remove(card);
 
         return cardDao.deleteCard(cardId);
     }
@@ -534,8 +534,14 @@ public class CardFacade {
      */
     public CardContent deleteCardContent(Long cardContentId) {
         CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+
         if (cardContent != null) {
             cardContent.getCard().getContentVariants().remove(cardContent);
+
+            Long deliverableId = cardContent.getDeliverableId();
+            if (deliverableId != null) {
+                documentDao.deleteDocument(deliverableId);
+            }
         }
 
         return cardContentDao.deleteCardContent(cardContentId);

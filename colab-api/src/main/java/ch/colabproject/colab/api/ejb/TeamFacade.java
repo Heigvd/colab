@@ -80,6 +80,11 @@ public class TeamFacade {
     public List<TeamMember> getTeamMembers(Long id) {
         Project project = projectDao.getProject(id);
         logger.debug("Get team members: {}", project);
+
+        if (project == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
         return project.getTeamMembers();
     }
 

@@ -159,7 +159,7 @@ public class BlockRestEndPoint {
     @Path("{id}")
     public void deleteBlock(@PathParam("id") Long id) {
         logger.debug("delete block #{}", id);
-        blockDao.deleteBlock(id);
+        blockFacade.deleteBlock(id);
     }
 
     // *********************************************************************************************

@@ -86,14 +86,15 @@ public class DocumentFacade {
         logger.debug("delete document #{}", documentId);
 
         Document document = documentDao.findDocument(documentId);
-        CardContent cardContent = document.getDeliverableCardContent();
 
+        CardContent cardContent = document.getDeliverableCardContent();
         if (cardContent != null) {
             cardContent.setDeliverable(null);
         }
 
-        return documentDao.deleteDocument(documentId);
+        // to check : resource handling
 
+        return documentDao.deleteDocument(documentId);
     }
 
     // *********************************************************************************************

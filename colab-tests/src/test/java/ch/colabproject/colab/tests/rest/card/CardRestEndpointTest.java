@@ -152,6 +152,8 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Card card = ColabFactory.createNewCard(client, parentId, cardTypeId);
 
         Assertions.assertEquals(cardTypeId, card.getCardTypeId());
+
+        client.cardRestEndpoint.deleteCard(card.getId());
     }
 
     @Test
