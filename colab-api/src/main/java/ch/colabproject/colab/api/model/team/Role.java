@@ -68,7 +68,7 @@ public class Role implements ColabEntity, WithWebsocketChannels {
     /**
      * List of members who are part of this role
      */
-    @ManyToMany
+    @ManyToMany(mappedBy = "roles")
     @JsonbTransient
     private List<TeamMember> members;
 
