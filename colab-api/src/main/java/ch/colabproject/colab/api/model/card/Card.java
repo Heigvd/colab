@@ -10,6 +10,9 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.document.AbstractResource;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
@@ -32,15 +35,14 @@ import javax.persistence.Transient;
 /**
  * Card
  * <p>
- * It is defined by a cardType. The content is stored in one or several
- * CardContent.
+ * It is defined by a cardType. The content is stored in one or several CardContent.
  *
  * @author sandra
  */
 // TODO review accurate constraints when stabilized
 @Entity
 @NamedQuery(name = "Card.findAll", query = "SELECT c FROM Card c")
-public class Card implements ColabEntity, WithWebsocketChannels {
+public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {
 
     /**
      * Serial version UID
@@ -127,6 +129,34 @@ public class Card implements ColabEntity, WithWebsocketChannels {
     @JsonbTransient
     private List<AbstractResource> directAbstractResources = new ArrayList<>();
 
+    /**
+     * The list of sticky note links of which the card is the source
+     */
+    @OneToMany(mappedBy = "srcCard", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
+
+    /**
+     * The list of sticky note links of which the card is the destination
+     */
+    @OneToMany(mappedBy = "destinationCard", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<StickyNoteLink> stickyNoteLinksAsDest = new ArrayList<>();
+
+    /**
+     * The list of activity flow links of which the card is the previous one
+     */
+    @OneToMany(mappedBy = "previousCard", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<ActivityFlowLink> activityFlowLinksAsPrevious = new ArrayList<>();
+
+    /**
+     * The list of activity flow links of which the card is the next one
+     */
+    @OneToMany(mappedBy = "nextCard", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<ActivityFlowLink> activityFlowLinksAsNext = new ArrayList<>();
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
@@ -210,8 +240,7 @@ public class Card implements ColabEntity, WithWebsocketChannels {
     /**
      * @return the parent card content
      *         <p>
-     *         A card can either be the root card of a project or be within a card
-     *         content
+     *         A card can either be the root card of a project or be within a card content
      */
     public CardContent getParent() {
         return parent;
@@ -312,6 +341,63 @@ public class Card implements ColabEntity, WithWebsocketChannels {
      */
     public void setDirectAbstractResources(List<AbstractResource> abstractResources) {
         this.directAbstractResources = abstractResources;
+    }
+
+    /**
+     * @return the list of sticky note links of which the card is the source
+     */
+    @Override
+    public List<StickyNoteLink> getStickyNoteLinksAsSrc() {
+        return stickyNoteLinksAsSrc;
+    }
+
+    /**
+     * @param links the list of sticky note links of which the card is the source
+     */
+    public void setStickyNoteLinksAsSrc(List<StickyNoteLink> links) {
+        this.stickyNoteLinksAsSrc = links;
+    }
+
+    /**
+     * @return the list of sticky note links of which the card is the destination
+     */
+    public List<StickyNoteLink> getStickyNoteLinksAsDest() {
+        return stickyNoteLinksAsDest;
+    }
+
+    /**
+     * @param links the list of sticky note links of which the card is the destination
+     */
+    public void setStickyNoteLinksAsDest(List<StickyNoteLink> links) {
+        this.stickyNoteLinksAsDest = links;
+    }
+
+    /**
+     * @return the list of activity flow links of which the card is the previous one
+     */
+    public List<ActivityFlowLink> getActivityFlowLinksAsPrevious() {
+        return activityFlowLinksAsPrevious;
+    }
+
+    /**
+     * @param links list of activity flow links of which the card is the previous one
+     */
+    public void setActivityFlowLinksAsPrevious(List<ActivityFlowLink> links) {
+        this.activityFlowLinksAsPrevious = links;
+    }
+
+    /**
+     * @return the list of activity flow links of which the card is the next one
+     */
+    public List<ActivityFlowLink> getActivityFlowLinksAsNext() {
+        return activityFlowLinksAsNext;
+    }
+
+    /**
+     * @param links the list of activity flow links of which the card is the next one
+     */
+    public void setActivityFlowLinksAsNext(List<ActivityFlowLink> links) {
+        this.activityFlowLinksAsNext = links;
     }
 
     // ---------------------------------------------------------------------------------------------

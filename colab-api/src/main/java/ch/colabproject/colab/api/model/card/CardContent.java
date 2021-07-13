@@ -11,6 +11,8 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
@@ -41,7 +43,7 @@ import javax.validation.constraints.Min;
 //TODO review accurate constraints when stabilized
 @Entity
 @NamedQuery(name = "CardContent.findAll", query = "SELECT c FROM CardContent c")
-public class CardContent implements ColabEntity, WithWebsocketChannels {
+public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {
 
     /**
      * Serial version UID
@@ -123,6 +125,13 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
     @OneToMany(mappedBy = "cardContent", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<AbstractResource> directAbstractResources = new ArrayList<>();
+
+    /**
+     * The list of sticky note links of which the card content is the source
+     */
+    @OneToMany(mappedBy = "srcCardContent", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -296,6 +305,22 @@ public class CardContent implements ColabEntity, WithWebsocketChannels {
      */
     public void setDirectAbstractResources(List<AbstractResource> abstractResources) {
         this.directAbstractResources = abstractResources;
+    }
+
+    /**
+     * @return the list of sticky note links of which the card content is the source
+     */
+    @Override
+    public List<StickyNoteLink> getStickyNoteLinksAsSrc() {
+        return stickyNoteLinksAsSrc;
+    }
+
+    /**
+     * @param stickyNoteLinksAsSrc the list of sticky note links of which the card content is the
+     *                             source
+     */
+    public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
+        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
     }
 
     // ---------------------------------------------------------------------------------------------

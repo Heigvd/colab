@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
@@ -13,18 +14,21 @@ import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.api.persistence.card.CardTypeDao;
-//import ch.colabproject.colab.api.persistence.document.DocumentDao;
+import ch.colabproject.colab.api.persistence.document.AbstractResourceDao;
 import ch.colabproject.colab.api.persistence.document.ResourceDao;
 import ch.colabproject.colab.api.persistence.document.ResourceRefDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +61,12 @@ public class ResourceFacade {
      */
     @Inject
     private ResourceRefDao resourceRefDao;
+
+    /**
+     * Resource / resource reference persistence handling
+     */
+    @Inject
+    private AbstractResourceDao resourceOrRefDao;
 
     /**
      * Card type persistence handling
@@ -156,7 +166,7 @@ public class ResourceFacade {
      * @return the resources that match
      */
     private List<Resource> findAvailableAndActiveTargetResource(
-            List<AbstractResource> baseAbstractResources) {
+        List<AbstractResource> baseAbstractResources) {
         List<Resource> result = new ArrayList<>();
 
         for (AbstractResource abstractResource : baseAbstractResources) {
@@ -209,7 +219,7 @@ public class ResourceFacade {
     private boolean isResourceAvailableAndActive(ResourceRef resourceRef) {
         AbstractResource target = resourceRef.getTargetAbstractResource();
         if (resourceRef.hasCard() && target.hasCardContent()
-                && !resourceRef.resolve().isPublished()) {
+            && !resourceRef.resolve().isPublished()) {
             return false;
         }
 
@@ -259,7 +269,7 @@ public class ResourceFacade {
 
         resource = resourceDao.persistResource(resource);
 
-        createResourceRefForChildren(cardType, resource);
+        createResourceRefForChildren(cardType, resource); // see if propagate to card type ref also
 
         return resource;
     }
@@ -410,5 +420,247 @@ public class ResourceFacade {
             createResourceRefForChildren(card, resourceRef);
         }
     }
+
+    // *********************************************************************************************
+    // Category stuff
+    // *********************************************************************************************
+
+    /**
+     * Set the category of the resource
+     *
+     * @param resourceOrRefId the id of the resource / resource reference
+     * @param categoryName    the name of the category that apply to the resource / resource
+     *                        reference
+     */
+    public void setCategory(Long resourceOrRefId, String categoryName) {
+        logger.debug("set category {} to abstract resource #{}", categoryName, resourceOrRefId);
+
+        if (StringUtils.isBlank(categoryName)) {
+            removeCategory(resourceOrRefId);
+        } else {
+            AbstractResource resourceOrRef = resourceOrRefDao.findResourceOrRef(resourceOrRefId);
+            if (resourceOrRef == null) {
+                throw HttpErrorMessage.relatedObjectNotFoundError();
+            }
+
+            resourceOrRef.setCategory(categoryName);
+        }
+    }
+
+    /**
+     * Set the category of a list of resources
+     *
+     * @param resourceOrRefIds the id of the resources / resource references
+     * @param categoryName     the name of the category that apply to the resource / resource
+     *                         reference
+     */
+    public void setCategory(List<Long> resourceOrRefIds, String categoryName) {
+        logger.debug("set category {} to abstract resources #{}", categoryName, resourceOrRefIds);
+
+        if (StringUtils.isBlank(categoryName)) {
+            removeCategory(resourceOrRefIds);
+        } else {
+            if (resourceOrRefIds == null) {
+                throw HttpErrorMessage.relatedObjectNotFoundError();
+            }
+
+            resourceOrRefIds.stream().forEach(resOrRefId -> setCategory(resOrRefId, categoryName));
+        }
+    }
+
+    /**
+     * Remove the category of the resource / resource reference
+     *
+     * @param resourceOrRefId the id of the resource / resource reference
+     */
+    public void removeCategory(Long resourceOrRefId) {
+        logger.debug("remove category of abstract resource #{}", resourceOrRefId);
+
+        AbstractResource resourceOrRef = resourceOrRefDao.findResourceOrRef(resourceOrRefId);
+        if (resourceOrRef == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        resourceOrRef.setCategory(null);
+    }
+
+    /**
+     * Remove the category of a list of resources / resource references
+     *
+     * @param resourceOrRefIds the id of the resources / resource references
+     */
+    public void removeCategory(List<Long> resourceOrRefIds) {
+        logger.debug("remove category to abstract resources #{}", resourceOrRefIds);
+
+        if (resourceOrRefIds == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        resourceOrRefIds.stream().forEach(resOrRefId -> removeCategory(resOrRefId));
+    }
+
+    /**
+     * Rename the category in a card type / card type reference
+     *
+     * @param cardTypeOrRefId the id of the card type / card type reference (scope of the renaming)
+     * @param projectId       the id of the project concerned (scope of the renaming)
+     * @param oldName         the old name of the category
+     * @param newName         the new name of the category
+     */
+    public void renameCategoryInCardType(Long cardTypeOrRefId, Long projectId, String oldName,
+        String newName) {
+        logger.debug("rename category {} to {} in the abstract card type #{}", oldName, newName,
+            cardTypeOrRefId);
+
+        AbstractCardType cardTypeOrRef = cardTypeDao.getAbstractCardType(cardTypeOrRefId);
+        if (cardTypeOrRef == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        Long effectiveProjectId = projectId;
+        if (projectId == null) {
+            effectiveProjectId = cardTypeOrRef.getProjectId();
+        }
+
+        renameCategory(cardTypeOrRef, effectiveProjectId, oldName, newName);
+    }
+
+    /**
+     * Rename the category in a card
+     *
+     * @param cardId  the id of the card
+     * @param oldName the old name of the category
+     * @param newName the new name of the category
+     */
+    public void renameCategoryInCard(Long cardId, String oldName, String newName) {
+        logger.debug("rename category {} to {} in the card #{}", oldName, newName, cardId);
+
+        Card card = cardDao.getCard(cardId);
+        if (card == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        renameCategory(card, oldName, newName);
+    }
+
+    /**
+     * Rename the category in a card content
+     *
+     * @param cardContentId the id of the card content
+     * @param oldName       the old name of the category
+     * @param newName       the new name of the category
+     */
+    public void renameCategoryInCardContent(Long cardContentId, String oldName, String newName) {
+        logger.debug("rename category {} to {} in the card content #{}", oldName, newName,
+            cardContentId);
+
+        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+        if (cardContent == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        renameCategory(cardContent, oldName, newName);
+    }
+
+    // Note : the sub cards card type / card type reference are not changed. Should they ?
+
+
+    /**
+     * Rename the category in a card type / card type reference<br>
+     * And do it also for the implementing cards as long as they are of the same project
+     *
+     * @param cardTypeOrRef the card type / card type reference (scope of the renaming)
+     * @param projectId     the id of the project concerned (scope of the renaming)
+     * @param oldName       the old name of the category
+     * @param newName       the new name of the category
+     */
+    private void renameCategory(AbstractCardType cardTypeOrRef, Long projectId, String oldName,
+        String newName) {
+        cardTypeOrRef.getDirectAbstractResources().stream()
+            .forEach(resourceOrRef -> renameCategoryIfMatch(resourceOrRef, oldName, newName));
+
+        cardTypeOrRef.getImplementingCards().stream()
+            .filter(card -> Objects.equals(projectId, card.getProject().getId()))
+            .forEach(card -> renameCategory(card, oldName, newName));
+
+        cardTypeOrRef.getReferences().stream()
+            .forEach(cardRef -> renameCategory(cardRef, projectId, oldName, newName));
+    }
+
+    /**
+     * Rename the category in a card<br>
+     * And do it also for each card's variants
+     *
+     * @param card    the card (scope of the renaming)
+     * @param oldName the old name of the category
+     * @param newName the new name of the category
+     */
+    private void renameCategory(Card card, String oldName, String newName) {
+        card.getDirectAbstractResources().stream()
+            .forEach(resourceOrRef -> renameCategoryIfMatch(resourceOrRef, oldName, newName));
+
+        card.getContentVariants().stream()
+            .forEach(cardContent -> renameCategory(cardContent, oldName, newName));
+    }
+
+    /**
+     * Rename the category in a card content<br>
+     * And do it also for each sub cards
+     *
+     * @param cardContent the card content (scope of the renaming)
+     * @param oldName     the old name of the category
+     * @param newName     the new name of the category
+     */
+    private void renameCategory(CardContent cardContent, String oldName, String newName) {
+        cardContent.getDirectAbstractResources().stream()
+            .forEach(resourceOrRef -> renameCategoryIfMatch(resourceOrRef, oldName, newName));
+
+        cardContent.getSubCards().stream().forEach(card -> renameCategory(card, oldName, newName));
+    }
+
+    // Note : a "CardPropagator" could be easily done with the methods here. See if useful
+
+    /**
+     * Replace the category of the resource if it matches the oldName
+     *
+     * @param resourceOrRef the resource or resource reference
+     * @param oldName       the old name of the category
+     * @param newName       the new name of the category
+     */
+    private void renameCategoryIfMatch(AbstractResource resourceOrRef, String oldName,
+        String newName) {
+        if (Objects.equals(resourceOrRef.getCategory(), oldName)) {
+            if (StringUtils.isBlank(newName)) {
+                resourceOrRef.setCategory(null);
+            } else {
+                resourceOrRef.setCategory(StringUtils.trim(newName));
+            }
+        }
+    }
+
+    // *********************************************************************************************
+    // Links stuff
+    // *********************************************************************************************
+
+    /**
+     * Get all sticky note links of which the given resource / resource reference is the source
+     *
+     * @param resourceOrRefId the id of the resource / resource reference
+     *
+     * @return all sticky note links linked to the resource / resource reference
+     */
+    public List<StickyNoteLink> getStickyNoteLinkAsSrc(Long resourceOrRefId) {
+        logger.debug("get sticky note links where the abstract resource #{} is the source",
+            resourceOrRefId);
+        AbstractResource resource = resourceOrRefDao.findResourceOrRef(resourceOrRefId);
+        if (resource == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return resource.getStickyNoteLinksAsSrc();
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 
 }

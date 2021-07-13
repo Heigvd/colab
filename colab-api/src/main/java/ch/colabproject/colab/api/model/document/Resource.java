@@ -170,6 +170,7 @@ public class Resource extends AbstractResource {
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof Resource) {
             Resource o = (Resource) other;
+            super.merge(o);
             this.setPublished(o.isPublished());
             this.setRequestingForGlory(o.isRequestingForGlory());
             this.setDeprecated(o.isDeprecated());

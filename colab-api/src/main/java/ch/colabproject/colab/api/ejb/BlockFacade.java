@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.document.BlockDao;
 import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -126,6 +127,25 @@ public class BlockFacade {
         return blockDao.persistBlock(block);
     }
 
+    /**
+     * Delete the given block
+     *
+     * @param blockId the id of the block to delete
+     */
+    public void deleteBlock(Long blockId) {
+        logger.debug("delete the block #{}", blockId);
+
+        Block block = blockDao.findBlock(blockId);
+        if (block == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        BlockDocument blockDoc = block.getDocument();
+        blockDoc.getBlocks().remove(block);
+
+        blockDao.deleteBlock(blockId);
+    }
+
     // *********************************************************************************************
     // text data block stuff
     // *********************************************************************************************
@@ -155,5 +175,29 @@ public class BlockFacade {
 
         return blockDao.persistBlock(block);
     }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    /**
+     * Get all sticky note links of which the given block is the source
+     *
+     * @param cardBlockId the id of the block
+     *
+     * @return all sticky note links linked to the block
+     */
+    public List<StickyNoteLink> getStickyNoteLinkAsSrc(Long cardBlockId) {
+        logger.debug("get sticky note links where the block #{} is the source", cardBlockId);
+        Block block = blockDao.findBlock(cardBlockId);
+        if (block == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return block.getStickyNoteLinksAsSrc();
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 
 }

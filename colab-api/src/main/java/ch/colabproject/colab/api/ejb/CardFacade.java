@@ -14,6 +14,8 @@ import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
@@ -96,8 +98,8 @@ public class CardFacade {
     // card type stuff
     // *********************************************************************************************
     /**
-     * Create a new card type. The new type will be a global type if the type is not bound to
-     * any project.
+     * Create a new card type. The new type will be a global type if the type is not bound to any
+     * project.
      *
      * @param cardType the type to create
      *
@@ -256,19 +258,20 @@ public class CardFacade {
      * Delete the card
      *
      * @param cardId the id of the card to delete
+     *
      * @return the freshly deleted card
      */
     public Card deleteCard(Long cardId) {
         Card card = cardDao.getCard(cardId);
 
-        if (card != null) {
-            if (card.getRootCardProject() != null) {
-                // no way to delete the root card
-                throw HttpErrorMessage.dataIntegrityFailure();
-            }
-
-            card.getParent().getSubCards().remove(card);
+        if (card.getRootCardProject() != null) {
+            // no way to delete the root card
+            throw HttpErrorMessage.dataIntegrityFailure();
         }
+
+        card.getParent().getSubCards().remove(card);
+
+        card.getCardType().getImplementingCards().remove(card);
 
         return cardDao.deleteCard(cardId);
     }
@@ -433,6 +436,70 @@ public class CardFacade {
         return card.getDirectAbstractResources();
     }
 
+    /**
+     * Get all sticky note links of which the given card is the destination
+     *
+     * @param cardId the id of the card
+     *
+     * @return all sticky note links linked from the card
+     */
+    public List<StickyNoteLink> getStickyNoteLinkAsDest(Long cardId) {
+        logger.debug("get sticky note links where the card #{} is the destination", cardId);
+        Card card = cardDao.getCard(cardId);
+        if (card == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return card.getStickyNoteLinksAsDest();
+    }
+
+    /**
+     * Get all sticky note links of which the given card is the source
+     *
+     * @param cardId the id of the card
+     *
+     * @return all sticky note links linked to the card
+     */
+    public List<StickyNoteLink> getStickyNoteLinkAsSrcCard(Long cardId) {
+        logger.debug("get sticky note links where the card #{} is the source", cardId);
+        Card card = cardDao.getCard(cardId);
+        if (card == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return card.getStickyNoteLinksAsSrc();
+    }
+
+    /**
+     * Get all activity flow links of which the given card is the previous one
+     *
+     * @param cardId the id of the card
+     *
+     * @return all activity flow links linked to the card
+     */
+    public List<ActivityFlowLink> getActivityFlowLinkAsPrevious(Long cardId) {
+        logger.debug("get activity flow links where the card #{} is the previous one", cardId);
+        Card card = cardDao.getCard(cardId);
+        if (card == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return card.getActivityFlowLinksAsPrevious();
+    }
+
+    /**
+     * Get all activity flow links of which the given card is the next one
+     *
+     * @param cardId the id of the card
+     *
+     * @return all activity flow links linked from the card
+     */
+    public List<ActivityFlowLink> getActivityFlowLinkAsNext(Long cardId) {
+        logger.debug("get activity flow links where the card #{} is the next one", cardId);
+        Card card = cardDao.getCard(cardId);
+        if (card == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return card.getActivityFlowLinksAsNext();
+    }
+
     // *********************************************************************************************
     // card content stuff
     // *********************************************************************************************
@@ -458,17 +525,23 @@ public class CardFacade {
         return cardContentDao.createCardContent(cardContent);
     }
 
-
     /**
      * Delete the card content
      *
      * @param cardContentId the id of the card content to delete
+     *
      * @return the freshly deleted card content
      */
     public CardContent deleteCardContent(Long cardContentId) {
         CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+
         if (cardContent != null) {
             cardContent.getCard().getContentVariants().remove(cardContent);
+
+            Long deliverableId = cardContent.getDeliverableId();
+            if (deliverableId != null) {
+                documentDao.deleteDocument(deliverableId);
+            }
         }
 
         return cardContentDao.deleteCardContent(cardContentId);
@@ -554,6 +627,23 @@ public class CardFacade {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
         return cardContent.getDirectAbstractResources();
+    }
+
+    /**
+     * Get all sticky note links of which the given card content is the source
+     *
+     * @param cardContentId the id of the card content
+     *
+     * @return all sticky note links linked to the card content
+     */
+    public List<StickyNoteLink> getStickyNoteLinkAsSrcCardContent(Long cardContentId) {
+        logger.debug("get sticky note links where the card content #{} is the source",
+            cardContentId);
+        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+        if (cardContent == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return cardContent.getStickyNoteLinksAsSrc();
     }
 
 }

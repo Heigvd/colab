@@ -28,7 +28,7 @@ public class BlockRestEndPointTest extends AbstractArquillianTest {
 
         String mimeType = "text/markdown";
         String content = "Here is some texte to explain how it is important to say things "
-                + ((int) (Math.random() * 1000));
+            + ((int) (Math.random() * 1000));
 
         TextDataBlock block = new TextDataBlock();
         block.setDocumentId(documentId);
@@ -128,42 +128,50 @@ public class BlockRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertNull(persistedBlock);
     }
 
-  @Test
-  public void testDocumentAccess() {
-      String title = "Random ideas #" + ((int) (Math.random() * 1000));
+    @Test
+    public void testDocumentAccess() {
+        String title = "Random ideas #" + ((int) (Math.random() * 1000));
 
-      BlockDocument doc = new BlockDocument();
-      doc.setTitle(title);
-      Long documentId = client.documentRestEndPoint.createDocument(doc);
+        BlockDocument doc = new BlockDocument();
+        doc.setTitle(title);
+        Long documentId = client.documentRestEndPoint.createDocument(doc);
 
-      Document persistedDoc = client.documentRestEndPoint.getDocument(documentId);
-      Assertions.assertTrue(persistedDoc instanceof BlockDocument);
+        Document persistedDoc = client.documentRestEndPoint.getDocument(documentId);
+        Assertions.assertTrue(persistedDoc instanceof BlockDocument);
 
-      int index = (int) (Math.random() * 100);
-      String mimeType = "text/plain";
-      String content = "The dinosaurs history is absolutely amazing # "
-              + ((int) (Math.random() * 1000));
+        int index = (int) (Math.random() * 100);
+        String mimeType = "text/plain";
+        String content = "The dinosaurs history is absolutely amazing # "
+            + ((int) (Math.random() * 1000));
 
-      TextDataBlock block1 = new TextDataBlock();
-      block1.setDocumentId(documentId);
-      block1.setIndex(index);
-      block1.setMimeType(mimeType);
-      block1.setTextData(content);
-      Long block1Id = client.blockRestEndPoint.createBlock(block1);
+        TextDataBlock block1 = new TextDataBlock();
+        block1.setDocumentId(documentId);
+        block1.setIndex(index);
+        block1.setMimeType(mimeType);
+        block1.setTextData(content);
+        Long block1Id = client.blockRestEndPoint.createBlock(block1);
 
-      Block persistedBlock = client.blockRestEndPoint.getBlock(block1Id);
-      Assertions.assertNotNull(persistedBlock);
-      Assertions.assertEquals(documentId, persistedBlock.getDocumentId());
+        Block persistedBlock = client.blockRestEndPoint.getBlock(block1Id);
+        Assertions.assertNotNull(persistedBlock);
+        Assertions.assertEquals(documentId, persistedBlock.getDocumentId());
 
-      Block block2 = client.blockRestEndPoint.createNewTextDataBlock(documentId);
-      Assertions.assertNotNull(block2);
-      Assertions.assertEquals(documentId, block2.getDocumentId());
-      Long block2Id = block2.getId();
+        Block block2 = client.blockRestEndPoint.createNewTextDataBlock(documentId);
+        Assertions.assertNotNull(block2);
+        Assertions.assertEquals(documentId, block2.getDocumentId());
+        Long block2Id = block2.getId();
 
-      List<Block> blocksOfDocument = client.documentRestEndPoint.getBlocksOfDocument(documentId);
-      Assertions.assertNotNull(blocksOfDocument);
-      Assertions.assertEquals(2, blocksOfDocument.size());
-      Assertions.assertTrue(block1Id.equals(blocksOfDocument.get(0).getId()) || block1Id.equals(blocksOfDocument.get(1).getId()));
-      Assertions.assertTrue(block2Id.equals(blocksOfDocument.get(0).getId()) || block2Id.equals(blocksOfDocument.get(1).getId()));
-  }
+        List<Block> blocksOfDocument = client.documentRestEndPoint.getBlocksOfDocument(documentId);
+        Assertions.assertNotNull(blocksOfDocument);
+        Assertions.assertEquals(2, blocksOfDocument.size());
+        Assertions.assertTrue(block1Id.equals(blocksOfDocument.get(0).getId())
+            || block1Id.equals(blocksOfDocument.get(1).getId()));
+        Assertions.assertTrue(block2Id.equals(blocksOfDocument.get(0).getId())
+            || block2Id.equals(blocksOfDocument.get(1).getId()));
+
+        client.blockRestEndPoint.deleteBlock(persistedBlock.getId());
+        blocksOfDocument = client.documentRestEndPoint.getBlocksOfDocument(documentId);
+        Assertions.assertNotNull(blocksOfDocument);
+        Assertions.assertEquals(1, blocksOfDocument.size());
+        Assertions.assertTrue(block2Id.equals(blocksOfDocument.get(0).getId()));
+    }
 }

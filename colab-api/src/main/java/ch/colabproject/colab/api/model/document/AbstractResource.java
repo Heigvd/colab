@@ -6,10 +6,13 @@
  */
 package ch.colabproject.colab.api.model.document;
 
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
@@ -41,7 +44,8 @@ import javax.persistence.Transient;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public abstract class AbstractResource implements ColabEntity/* , WithWebsocketChannels */ {
+public abstract class AbstractResource
+    implements ColabEntity/* , WithWebsocketChannels */, StickyNoteSourceable {
 
     private static final long serialVersionUID = 1L;
 
@@ -95,6 +99,11 @@ public abstract class AbstractResource implements ColabEntity/* , WithWebsocketC
     @Transient
     private Long cardContentId;
 
+    /**
+     * The category to classify the resource
+     */
+    private String category;
+
     // TODO see if useful
     /**
      * The list of resource references that link to this abstract resource
@@ -102,6 +111,13 @@ public abstract class AbstractResource implements ColabEntity/* , WithWebsocketC
     @OneToMany(mappedBy = "targetAbstractResource", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<ResourceRef> sourceResourceRefs = new ArrayList<>();
+
+    /**
+     * The list of sticky note links of which the resource is the source
+     */
+    @OneToMany(mappedBy = "srcResourceOrRef", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -256,6 +272,20 @@ public abstract class AbstractResource implements ColabEntity/* , WithWebsocketC
     }
 
     /**
+     * @return the category to classify the resource
+     */
+    public String getCategory() {
+        return category;
+    }
+
+    /**
+     * @param category the category to classify the resource
+     */
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    /**
      * @return the list of resource references that link to this abstract resource
      */
     public List<ResourceRef> getSourceResourceRefs() {
@@ -269,6 +299,21 @@ public abstract class AbstractResource implements ColabEntity/* , WithWebsocketC
         this.sourceResourceRefs = sourceResourceRef;
     }
 
+    /**
+     * @return the list of sticky note links of which the resource is the source
+     */
+    @Override
+    public List<StickyNoteLink> getStickyNoteLinksAsSrc() {
+        return stickyNoteLinksAsSrc;
+    }
+
+    /**
+     * @param stickyNoteLinksAsSrc the list of sticky note links of which the resource is the source
+     */
+    public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
+        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -280,7 +325,15 @@ public abstract class AbstractResource implements ColabEntity/* , WithWebsocketC
      */
     public abstract Resource resolve();
 
-    // no need for merge operation
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+        if (other instanceof AbstractResource) {
+            AbstractResource o = (AbstractResource) other;
+            this.setCategory(o.getCategory());
+        } else {
+            throw new ColabMergeException(this, other);
+        }
+    }
 
 //    @Override
 //    public Set<WebsocketChannel> getChannels() {
@@ -315,7 +368,7 @@ public abstract class AbstractResource implements ColabEntity/* , WithWebsocketC
      */
     protected String toPartialString() {
         return "id=" + id + ", abstractCardTypeId=" + abstractCardTypeId + ", cardId=" + cardId
-            + ", cardContentId=" + cardContentId;
+            + ", cardContentId=" + cardContentId + ", category=" + category;
     }
 
 }

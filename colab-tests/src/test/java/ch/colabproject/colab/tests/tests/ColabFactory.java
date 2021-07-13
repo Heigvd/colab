@@ -9,6 +9,8 @@ package ch.colabproject.colab.tests.tests;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.document.BlockDocument;
+import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.Role;
 import ch.colabproject.colab.api.model.token.InvitationToken;
@@ -16,7 +18,6 @@ import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
 import ch.colabproject.colab.tests.mailhog.model.Message;
-import java.util.List;
 import java.util.regex.Matcher;
 import org.junit.jupiter.api.Assertions;
 
@@ -104,11 +105,19 @@ public class ColabFactory {
      * @return the root card content of project
      */
     public static CardContent getRootContent(ColabClient client, Project project) {
-        Card card = client.cardRestEndpoint.getCard(project.getRootCardId());
-        List<CardContent> rootCardContents = client.cardRestEndpoint
-            .getContentVariantsOfCard(card.getId());
+        return getCardContent(client, project.getRootCardId());
+    }
 
-        return rootCardContents.get(0);
+    /**
+     * Retrieve the card content of the given card
+     *
+     * @param client rest client to execute HTTP requests
+     * @param cardId the id of the card containing the content
+     *
+     * @return the card content of the given card
+     */
+    public static CardContent getCardContent(ColabClient client, Long cardId) {
+        return client.cardRestEndpoint.getContentVariantsOfCard(cardId).get(0);
     }
 
     /**
@@ -151,4 +160,21 @@ public class ColabFactory {
 
         return client.teamRestEndpoint.getRole(roleId);
     }
+
+    /**
+     * Create a resource block document for test purpose
+     *
+     * @param client rest client to execute HTTP requests
+     * @param cardId the id of the card the resource belongs to
+     * @param title  title of the document
+     *
+     * @return the freshly created document
+     */
+    public static Resource createCardResource(ColabClient client, Long cardId, String title) {
+        BlockDocument doc = new BlockDocument();
+        doc.setTitle(title);
+
+        return client.resourceRestEndpoint.createResourceForCard(cardId, doc);
+    }
+
 }

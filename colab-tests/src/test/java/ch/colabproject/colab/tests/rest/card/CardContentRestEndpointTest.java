@@ -166,11 +166,32 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Document persistedDocument = client.documentRestEndPoint.getDocument(docId);
         Assertions.assertEquals(persistedDoc, persistedDocument);
 
+        // delete document
+
         client.documentRestEndPoint.deleteDocument(persistedDocument.getId());
 
         persistedCardContent = client.cardContentRestEndpoint.getCardContent(cardContentId);
         Assertions.assertNotNull(persistedCardContent);
         Assertions.assertNull(persistedCardContent.getDeliverableId());
+
+        // delete card content
+
+        newDoc = new BlockDocument();
+        newDoc.setTitle(title);
+
+        persistedDoc = client.cardContentRestEndpoint.assignDeliverable(cardContentId, newDoc);
+        Assertions.assertNotNull(persistedDoc);
+        Assertions.assertNotNull(persistedDoc.getId());
+        Long doc2Id = persistedDoc.getId();
+
+        persistedCardContent = client.cardContentRestEndpoint.getCardContent(cardContentId);
+        Assertions.assertNotNull(persistedCardContent);
+        Assertions.assertEquals(doc2Id, persistedCardContent.getDeliverableId());
+
+        client.cardContentRestEndpoint.deleteCardContent(cardContentId);
+
+        persistedDocument = client.documentRestEndPoint.getDocument(persistedDoc.getId());
+        Assertions.assertNull(persistedDocument);
     }
 
 }
