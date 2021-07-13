@@ -24,9 +24,11 @@ export default (): JSX.Element => {
 
   const title = <h3>Users</h3>;
 
-  if (status === 'NOT_INITIALIZED') {
-    dispatch(getAllUsers());
-  }
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED') {
+      dispatch(getAllUsers());
+    }
+  }, [status]);
 
   return (
     <div>

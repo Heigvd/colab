@@ -16,7 +16,7 @@ export const pictoColours = css({
   '--pictoGrey': '#9AA4B1', // center colour
 });
 
-export const darkMode = css({
+export const darkModeColors = css({
   '--bgColor': '#444',
   '--fgColor': 'white',
   '--hoverBgColor': '#555',
@@ -25,11 +25,17 @@ export const darkMode = css({
   '--linkHoverColor': 'white',
   '--linkHoverBgColor': '#555',
   '--focusColor': 'var(--pictoSteelBlue)',
-  backgroundColor: 'var(--bgColor)',
-  color: 'var(--fgColor)',
 });
 
-export const semiDarkMode = css({
+export const darkMode = cx(
+  darkModeColors,
+  css({
+    backgroundColor: 'var(--bgColor)',
+    color: 'var(--fgColor)',
+  }),
+);
+
+export const semiDarkModeColors = css({
   '--bgColor': '#d7d7d7',
   '--fgColor': '#333',
   '--hoverBgColor': '#FFF0',
@@ -38,11 +44,17 @@ export const semiDarkMode = css({
   '--linkHoverColor': 'var(--pictoBlue)',
   '--linkHoverBgColor': '#FFF0',
   '--focusColor': 'var(--pictoSteelBlue)',
-  backgroundColor: 'var(--bgColor)',
-  color: 'var(--fgColor)',
 });
 
-export const lightMode = css({
+export const semiDarkMode = cx(
+  semiDarkModeColors,
+  css({
+    backgroundColor: 'var(--bgColor)',
+    color: 'var(--fgColor)',
+  }),
+);
+
+export const lightModeColors = css({
   '--bgColor': 'white',
   '--fgColor': '#333333',
   '--hoverBgColor': '#FFF0',
@@ -51,9 +63,15 @@ export const lightMode = css({
   '--linkHoverColor': 'var(--pictoBlue)',
   '--linkHoverBgColor': '#FFF0',
   '--focusColor': 'var(--pictoSteelBlue)',
-  backgroundColor: 'var(--bgColor)',
-  color: 'var(--fgColor)',
 });
+
+export const lightMode = cx(
+  lightModeColors,
+  css({
+    backgroundColor: 'var(--bgColor)',
+    color: 'var(--fgColor)',
+  }),
+);
 
 export const fullPageStyle = cx(
   pictoColours,

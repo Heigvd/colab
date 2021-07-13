@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import javax.websocket.DeploymentException;
-import org.apache.poi.hssf.record.formula.MemErrPtg;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -265,7 +264,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         TeamMember me = members.get(0);
 
         Assertions.assertTrue(me.getRoleIds().isEmpty());
-        client.teamRestEndpoint.giveRole(hitchhicker.getId(), me.getId());
+        client.teamRestEndpoint.giveRoleTo(hitchhicker.getId(), me.getId());
 
         me = client.teamRestEndpoint.getTeamMember(me.getId());
         hitchhicker = client.teamRestEndpoint.getRole(hitchhicker.getId());

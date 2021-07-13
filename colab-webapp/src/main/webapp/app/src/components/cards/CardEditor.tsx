@@ -69,12 +69,14 @@ export default function CardEditor({
           <FitSpace direction="row">
             <>
               <OpenClose collaspedChildren={<span className={sideTabButton}>sticky notes</span>}>
-                <div>
-                  <h3>Sticky Notes</h3>
-                  <p>
-                    <i>show block to card relationship</i>
-                  </p>
-                </div>
+                {() => (
+                  <div>
+                    <h3>Sticky Notes</h3>
+                    <p>
+                      <i>show block to card relationship</i>
+                    </p>
+                  </div>
+                )}
               </OpenClose>
 
               <CardLayout card={card} variant={variant} variants={variants}>
@@ -100,14 +102,23 @@ export default function CardEditor({
                         </span>
                       }
                     >
-                      <TwitterPicker
-                        colors={['#EDD3EC', '#EAC2C2', '#CCEFD4', '#E1F2F9', '#F9F5D6', '#F6F1F1']}
-                        color={card.color || 'white'}
-                        triangle="hide"
-                        onChangeComplete={newColor => {
-                          dispatch(API.updateCard({ ...card, color: newColor.hex }));
-                        }}
-                      />
+                      {() => (
+                        <TwitterPicker
+                          colors={[
+                            '#EDD3EC',
+                            '#EAC2C2',
+                            '#CCEFD4',
+                            '#E1F2F9',
+                            '#F9F5D6',
+                            '#F6F1F1',
+                          ]}
+                          color={card.color || 'white'}
+                          triangle="hide"
+                          onChangeComplete={newColor => {
+                            dispatch(API.updateCard({ ...card, color: newColor.hex }));
+                          }}
+                        />
+                      )}
                     </OpenClose>
                   </div>
 
@@ -134,20 +145,22 @@ export default function CardEditor({
                 </div>
               </CardLayout>
               <OpenClose collaspedChildren={<span className={sideTabButton}>Resources</span>}>
-                <div>
-                  <h3>Resources</h3>
-                  <ul>
-                    <li>Acces ressources "héritées"</li>
-                    <li>
-                      Ajouter une ressource
-                      <ul>
-                        <li>Pour cette variante uniquement</li>
-                        <li>Pour toutes les variantes de la carte</li>
-                        <li>Pour toutes les cartes de ce type</li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
+                {() => (
+                  <div>
+                    <h3>Resources</h3>
+                    <ul>
+                      <li>Acces ressources "héritées"</li>
+                      <li>
+                        Ajouter une ressource
+                        <ul>
+                          <li>Pour cette variante uniquement</li>
+                          <li>Pour toutes les variantes de la carte</li>
+                          <li>Pour toutes les cartes de ce type</li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                )}
               </OpenClose>
             </>
           </FitSpace>

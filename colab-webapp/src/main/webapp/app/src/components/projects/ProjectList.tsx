@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as API from '../../API/api';
 
-import { faPlus, faUsers, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { Project } from 'colab-rest-client';
 import { css, cx } from '@emotion/css';
 import { useAppDispatch, useAppSelector, shallowEqual } from '../../store/hooks';
@@ -80,9 +80,6 @@ const ProjectDisplay = ({ project }: Props) => {
           <IconButton title="Edit project" iconColor="var(--fgColor)" icon={faEdit} />
         </InlineLink>
 
-        <InlineLink to={`/team/${project.id}`}>
-          <IconButton title="Manage team" iconColor="var(--fgColor)" icon={faUsers} />
-        </InlineLink>
         <Destroyer
           onDelete={() => {
             dispatch(API.deleteProject(project));
@@ -103,8 +100,13 @@ interface ProjectListProps {
 function ProjectList({ projects, status, reload }: ProjectListProps) {
   const dispatch = useAppDispatch();
 
+  React.useEffect(() => {
+    if (status === 'NOT_INITIALIZED') {
+      dispatch(reload());
+    }
+  }, [status, dispatch]);
+
   if (status === 'NOT_INITIALIZED') {
-    dispatch(reload());
     return <InlineLoading />;
   } else if (status === 'LOADING') {
     return <InlineLoading />;

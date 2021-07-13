@@ -97,8 +97,8 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
         ) : null}
 
         <WithToolbar
-          toolbarPosition="RIGHT_TOP"
-          offsetX="-8px"
+          toolbarPosition="TOP_RIGHT"
+          //          offsetX={-1}
           toolbar={
             <IconButton
               icon={faWindowRestore}

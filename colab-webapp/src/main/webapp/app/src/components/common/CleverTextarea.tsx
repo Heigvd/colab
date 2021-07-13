@@ -26,7 +26,7 @@ function computeSelectionOffsets(offsets: LiveHelper.Offsets, node: HTMLTextArea
     start: startIndex,
     end: endIndex,
   };
-  logger.info('Move selection ', startIndex, ':', endIndex, ' according to offsets: ', offsets);
+  logger.trace('Move selection ', startIndex, ':', endIndex, ' according to offsets: ', offsets);
 
   for (const sKey in offsets) {
     const key = +sKey;
@@ -39,7 +39,7 @@ function computeSelectionOffsets(offsets: LiveHelper.Offsets, node: HTMLTextArea
     }
   }
 
-  logger.info('New Range: ', newRange);
+  logger.trace('New Range: ', newRange);
   return newRange;
 }
 

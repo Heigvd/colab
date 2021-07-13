@@ -19,10 +19,10 @@ import { removeAllItems } from '../../helper';
 
 function ChangeDisplay({
   change,
-  showBasedOn = false,
+  verbosity = 'AVERAGE',
 }: {
   change: Change;
-  showBasedOn?: boolean;
+  verbosity?: 'SMALL' | 'AVERAGE' | 'FULL';
 }): JSX.Element {
   const rev = change.basedOn.startsWith(change.liveSession)
     ? change.basedOn.replace(change.liveSession, '')
@@ -31,7 +31,16 @@ function ChangeDisplay({
   return (
     <div>
       {change.revision}
-      {showBasedOn ? ` on ${rev}` : null}
+      {verbosity !== 'SMALL' ? ` on ${rev}` : null}
+      {verbosity === 'FULL'
+        ? change.microchanges.map((mu, i) => {
+            return (
+              <span key={i}>
+                {mu.t === 'I' ? ` insert '${mu.v}'@${mu.o}` : ` delete ${mu.l}@${mu.o}`}{' '}
+              </span>
+            );
+          })
+        : null}
     </div>
   );
 }
@@ -39,6 +48,7 @@ function ChangeDisplay({
 interface Props {
   atClass: string;
   atId: number;
+  revision: string;
 }
 
 interface Tree {
@@ -69,25 +79,28 @@ function TreeDisplay({ tree }: { tree: Tree }): JSX.Element {
   );
 }
 
-export default function ChangeTree({ atClass, atId }: Props): JSX.Element {
-  const changesState = useChanges(atClass, atId);
-  const dispatch = useAppDispatch();
+export interface ChangeTreeProps {
+  changes: Change[];
+  revision: string;
+  onDelete?: () => void;
+  verbosity?: 'SMALL' | 'AVERAGE' | 'FULL';
+}
 
+export function ChangeTreeRaw({
+  changes,
+  revision,
+  onDelete,
+  verbosity = 'AVERAGE',
+}: ChangeTreeProps): JSX.Element {
   const [treeState, setTree] = React.useState<{ tree: Tree; orphans: Change[] }>();
 
   React.useEffect(() => {
-    if (changesState.status === 'UNSET') {
-      dispatch(API.getBlockPendingChanges(atId));
-    }
-  }, [changesState.status, atId, dispatch]);
-
-  React.useEffect(() => {
-    const toProcess = [...changesState.changes];
+    const toProcess = [...changes];
 
     const treeMap: { [rev: string]: Tree } = {};
-    treeMap['0'] = { revision: '0', comp: <span>root</span>, children: [] };
+    treeMap[revision] = { revision: revision, comp: <span>{revision}</span>, children: [] };
 
-    const queue: string[] = ['0'];
+    const queue: string[] = [revision];
 
     while (queue.length > 0) {
       // process children of current revision
@@ -99,7 +112,7 @@ export default function ChangeTree({ atClass, atId }: Props): JSX.Element {
         queue.push(child.revision);
         treeMap[child.revision] = {
           revision: child.revision,
-          comp: <ChangeDisplay change={child} showBasedOn />,
+          comp: <ChangeDisplay change={child} verbosity={verbosity} />,
           children: [],
         };
         currentTree.children.push(treeMap[child.revision]!);
@@ -108,25 +121,42 @@ export default function ChangeTree({ atClass, atId }: Props): JSX.Element {
       removeAllItems(toProcess, children);
     }
 
-    setTree({ tree: treeMap['0'], orphans: toProcess });
-  }, [changesState.changes]);
-
-  const deleteCb = React.useCallback(() => {
-    dispatch(API.deletePendingChanges(atId));
-  }, [dispatch, atId]);
+    setTree({ tree: treeMap[revision]!, orphans: toProcess });
+  }, [changes, revision]);
 
   if (treeState != null) {
     return (
       <div>
         <h4>Tree</h4>
-        <IconButton icon={faTrash} onClick={deleteCb} />
+        {onDelete ? <IconButton icon={faTrash} onClick={onDelete} /> : null}
         <TreeDisplay tree={treeState.tree} />
         <h4>Orphans</h4>
         {treeState.orphans.map(change => (
-          <ChangeDisplay key={change.revision} change={change} showBasedOn />
+          <ChangeDisplay key={change.revision} change={change} verbosity={verbosity} />
         ))}
       </div>
     );
+  } else {
+    return <InlineLoading />;
+  }
+}
+
+export default function ChangeTree({ atClass, atId, revision }: Props): JSX.Element {
+  const changesState = useChanges(atClass, atId);
+  const dispatch = useAppDispatch();
+
+  React.useEffect(() => {
+    if (changesState.status === 'UNSET') {
+      dispatch(API.getBlockPendingChanges(atId));
+    }
+  }, [changesState.status, atId, dispatch]);
+
+  const deleteCb = React.useCallback(() => {
+    dispatch(API.deletePendingChanges(atId));
+  }, [dispatch, atId]);
+
+  if (changesState.status === 'READY') {
+    return <ChangeTreeRaw changes={changesState.changes} revision={revision} onDelete={deleteCb} />;
   } else {
     return <InlineLoading />;
   }

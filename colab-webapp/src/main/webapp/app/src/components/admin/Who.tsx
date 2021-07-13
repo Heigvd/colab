@@ -23,14 +23,19 @@ export default function Who(): JSX.Element {
 
   const users = useAppSelector(state => state.users.users, shallowEqual);
 
-  if (usersStatus === 'NOT_INITIALIZED') {
-    dispatch(getAllUsers());
-  }
+  React.useEffect(() => {
+    if (usersStatus === 'NOT_INITIALIZED') {
+      dispatch(getAllUsers());
+    }
+  }, [usersStatus]);
 
-  if (channels === 'LOADING' || channels === 'NOT_INITIALIZED') {
+  React.useEffect(() => {
     if (channels === 'NOT_INITIALIZED') {
       dispatch(getOccupiedChannels());
     }
+  }, [channels]);
+
+  if (channels === 'LOADING' || channels === 'NOT_INITIALIZED') {
     return (
       <div>
         <h3>Online Users</h3>

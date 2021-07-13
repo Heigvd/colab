@@ -22,10 +22,15 @@ export function CreateBlockButton({ doc }: BlockDocProps): JSX.Element {
   const createBlock = React.useCallback(() => {
     const block: TextDataBlock = {
       '@class': 'TextDataBlock',
+      revision: '0',
       mimeType: 'text/markdown',
     };
     dispatch(API.createBlock({ document: doc, block: block }));
   }, [doc, dispatch]);
 
-  return <IconButton icon={faPlus} onClick={createBlock} />;
+  return (
+    <IconButton icon={faPlus} onClick={createBlock}>
+      Create a new block
+    </IconButton>
+  );
 }

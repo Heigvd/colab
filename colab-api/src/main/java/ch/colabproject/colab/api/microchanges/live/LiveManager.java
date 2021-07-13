@@ -124,6 +124,7 @@ public class LiveManager implements Serializable {
                 Block block = blockDao.findBlock(id);
                 if (block instanceof TextDataBlock) {
                     TextDataBlock txtBlock = (TextDataBlock) block;
+                    l.setRevision(txtBlock.getRevision());
                     l.setContent(txtBlock.getTextData());
 
                     //l.setRevision(txtBlock.getRevision());
@@ -148,8 +149,9 @@ public class LiveManager implements Serializable {
      */
     public void patchBlock(Long id, Change patch) {
         logger.debug("Patch block #{} with {}", id, patch);
-        Block block = blockDao.findBlock(id);
-        if (block != null) {
+        Block aBlock = blockDao.findBlock(id);
+        if (aBlock instanceof TextDataBlock) {
+            TextDataBlock block = (TextDataBlock) aBlock;
             try {
                 this.lock(id);
                 LiveUpdates get = get(id);
@@ -157,9 +159,15 @@ public class LiveManager implements Serializable {
 
                 String basedOn = patch.getBasedOn();
 
-                boolean parentExists = changes.stream().filter(change -> change.getRevision().equals(basedOn)).findFirst().isPresent();
+                boolean parentExists = block.getRevision().equals(basedOn)
+                    || changes.stream()
+                        .filter(change -> change.getRevision().equals(basedOn))
+                        .findFirst().isPresent();
+
                 if (!parentExists) {
-                    patch.setBasedOn("0");
+                    logger.trace("Change is based on non-existing parent");
+                    logger.trace("TODO: keep it in a temp bag the time his parent is known");
+                    //patch.setBasedOn("0");
                 }
                 Project project = block.getProject();
 
@@ -173,6 +181,7 @@ public class LiveManager implements Serializable {
                 cache.put(id, get);
                 this.scheduleSaveMicroChanges(id);
 
+                logger.trace("Registered change is {}", patch);
                 transactionManager.registerUpdate(patch);
 //                WsUpdateChangeMessage message = WsUpdateChangeMessage.build(List.of(patch));
 
@@ -220,8 +229,10 @@ public class LiveManager implements Serializable {
                 LiveUpdates get = this.cache.get(blockId);
                 if (get != null) {
                     try {
-                        String newValue = get.process(false);
-                        txtBlock.setTextData(newValue);
+                        LiveResult result = get.process(false);
+                        txtBlock.setTextData(result.getContent());
+                        txtBlock.setRevision(result.getRevision());
+
                         blockDao.updateBlock(block);
                         this.deletePendingChangesAndPropagate(blockId);
                     } catch (RuntimeException ex) {

@@ -30,6 +30,7 @@ export default function MarkdownViewer({ md, className }: MarkdownViewerProps): 
 
   return (
     <div className={className}>
+      {md === '' ? <i>empty</i> : null}
       <Viewer ref={viewerRef} initialValue={md} />
     </div>
   );

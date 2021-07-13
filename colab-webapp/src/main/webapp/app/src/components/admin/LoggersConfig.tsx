@@ -44,6 +44,13 @@ export default function (): JSX.Element {
 
   const [levelState, setClientLevels] = React.useState(clientLevels);
 
+  React.useEffect(() => {
+    if (levels === undefined) {
+      // not yet initialized
+      dispatch(getLoggerLevels());
+    }
+  }, [levels]);
+
   const serverTitle = <h3>Server Loggers</h3>;
   const clientLoggers = (
     <div>
@@ -67,11 +74,6 @@ export default function (): JSX.Element {
     </div>
   );
 
-  if (levels === undefined) {
-    // not yet initialized
-    dispatch(getLoggerLevels());
-  }
-
   if (levels == null) {
     return (
       <div>
@@ -88,6 +90,7 @@ export default function (): JSX.Element {
       .sort();
     return (
       <div>
+        {clientLoggers}
         {serverTitle}
         <IconButton
           icon={faSync}
@@ -170,7 +173,6 @@ export default function (): JSX.Element {
             }
           })}
         </div>
-        {clientLoggers}
       </div>
     );
   }

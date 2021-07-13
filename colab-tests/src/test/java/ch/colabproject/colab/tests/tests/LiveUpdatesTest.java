@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.tests.tests;
 
+import ch.colabproject.colab.api.microchanges.live.LiveResult;
 import ch.colabproject.colab.api.microchanges.live.LiveUpdates;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.tests.ChangeBuilder;
@@ -39,7 +40,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -54,9 +55,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session1, session1 + "::2", "3")
             .ins(12, "pains").build());
 
-        String process = lu.process(false);
-        Assertions.assertEquals("Salut les copains", process);
-        System.out.println("LU: " + process);
+        LiveResult result = lu.process(false);
+        Assertions.assertEquals("Salut les copains", result.getContent());
+        System.out.println("LU: " + result.getContent());
 
     }
 
@@ -68,7 +69,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("apple apricot banana bean cucumber");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -83,9 +84,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session2, "0", "2")
             .del(21, 5).build());
 
-        String process = lu.process(false);
-        Assertions.assertEquals("apricot banana cucumber", process);
-        System.out.println("LU: " + process);
+        LiveResult result = lu.process(false);
+        Assertions.assertEquals("apricot banana cucumber", result.getContent());
+        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -96,7 +97,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("apple apricot banana bean cucumber");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -111,9 +112,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session2, "0", "2")
             .del(5, 20).build());
 
-        String process = lu.process(false);
-        Assertions.assertEquals("apple cucumber", process);
-        System.out.println("LU: " + process);
+        LiveResult result = lu.process(false);
+        Assertions.assertEquals("apple cucumber", result.getContent());
+        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -124,7 +125,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("apple apricot banana bean cucumber");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -139,9 +140,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session2, "0", "1")
             .del(14, 7).build());
 
-        String process = lu.process(false);
-        Assertions.assertEquals("apple cucumber", process);
-        System.out.println("LU: " + process);
+        LiveResult result = lu.process(false);
+        Assertions.assertEquals("apple cucumber", result.getContent());
+        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -152,7 +153,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("apple apricot banana bean cucumber");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -167,9 +168,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session2, "0", "1")
             .del(14, 11).build());
 
-        String process = lu.process(false);
-        Assertions.assertEquals("apple cucumber", process);
-        System.out.println("LU: " + process);
+        LiveResult result = lu.process(false);
+        Assertions.assertEquals("apple cucumber", result.getContent());
+        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -180,7 +181,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("apple apricot banana bean cucumber");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -195,9 +196,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session2, "0", "1")
             .del(6, 15).build());
 
-        String process = lu.process(false);
-        Assertions.assertEquals("apple cucumber", process);
-        System.out.println("LU: " + process);
+        LiveResult result = lu.process(false);
+        Assertions.assertEquals("apple cucumber", result.getContent());
+        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -208,7 +209,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("apple apricot banana cucumber");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -223,9 +224,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session2, "0", "1")
             .ins(30, " daikon").build());
 
-        String process = lu.process(false);
-        Assertions.assertEquals("apple banana cucumber daikon", process);
-        System.out.println("LU: " + process);
+        LiveResult result = lu.process(false);
+        Assertions.assertEquals("apple banana cucumber daikon", result.getContent());
+        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -236,7 +237,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("apple banana cucumber carrot daikon");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -251,9 +252,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session2, "0", "1")
             .ins(5, " bean").build());
 
-        String process = lu.process(false);
-        Assertions.assertEquals("apple bean banana cucumber daikon", process);
-        System.out.println("LU: " + process);
+        LiveResult result = lu.process(false);
+        Assertions.assertEquals("apple bean banana cucumber daikon", result.getContent());
+        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -264,7 +265,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("apple banana cucumber carrot daikon");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -279,9 +280,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session2, "0", "1")
             .ins(12, " bean").build());
 
-        String process = lu.process(false);
-        Assertions.assertEquals("apple bean daikon", process);
-        System.out.println("LU: " + process);
+        LiveResult result = lu.process(false);
+        Assertions.assertEquals("apple bean daikon", result.getContent());
+        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -292,7 +293,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("apple banana cucumber");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -307,9 +308,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session2, "0", "1")
             .del(5, 7).build());
 
-        String process = lu.process(false);
-        Assertions.assertEquals("apple cucumber daikon", process);
-        System.out.println("LU: " + process);
+        LiveResult result = lu.process(false);
+        Assertions.assertEquals("apple cucumber daikon", result.getContent());
+        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -320,7 +321,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("apple banana daikon eggplant");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -335,9 +336,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session2, "0", "1")
             .del(5, 14).build());
 
-        String process = lu.process(false);
-        Assertions.assertEquals("apple cucumber eggplant", process);
-        System.out.println("LU: " + process);
+        LiveResult result = lu.process(false);
+        Assertions.assertEquals("apple cucumber eggplant", result.getContent());
+        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -348,7 +349,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -372,9 +373,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session1, session1 + "::2", "3")
             .ins(12, " carrot").build());
 
-        String process = lu.process(false);
+        LiveResult result = lu.process(false);
 
-        Assertions.assertEquals("apple broccoli carrot", process);
+        Assertions.assertEquals("apple broccoli carrot", result.getContent());
     }
 
     @Test
@@ -385,7 +386,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -414,9 +415,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session1, session1 + "::2", "3")
             .ins(12, " carrot").build());
 
-        String process = lu.process(false);
+        LiveResult result = lu.process(false);
 
-        Assertions.assertEquals("apple, broccoli carrot,", process);
+        Assertions.assertEquals("apple, broccoli carrot,", result.getContent());
     }
 
     @Test
@@ -428,7 +429,7 @@ public class LiveUpdatesTest {
 
         lu.setContent("apple banana cherry durian\n"
             + "asparagus broccoli carrot daikon");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -462,10 +463,10 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session2, session2 + "::2", "3")
             .ins(delta + 30, " eggplant").build());
 
-        String process = lu.process(false);
+        LiveResult result = lu.process(false);
 
         Assertions.assertEquals("apricot blueberry cherry durian elderberry\n"
-            + "asparagus bean cucumber daikon eggplant", process);
+            + "asparagus bean cucumber daikon eggplant", result.getContent());
     }
 
     @Test
@@ -476,7 +477,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -501,9 +502,9 @@ public class LiveUpdatesTest {
             .del(7, 5)
             .ins(12, "lueberry").build());
 
-        String process = lu.process(false);
+        LiveResult result = lu.process(false);
 
-        Assertions.assertEquals("apple blilueberry carrot", process);
+        Assertions.assertEquals("apple blilueberry carrot", result.getContent());
     }
 
     /**
@@ -517,7 +518,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -542,9 +543,9 @@ public class LiveUpdatesTest {
             .del(7, 5)
             .ins(12, "lueberry").build());
 
-        String process = lu.process(true);
+        LiveResult result = lu.process(true);
 
-        Assertions.assertEquals("apple blilueberry carrot", process);
+        Assertions.assertEquals("apple blilueberry carrot", result.getContent());
     }
 
     @Test
@@ -554,7 +555,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -569,9 +570,9 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session1, session1 + "::1", "2")
             .ins(15, " banana").build());
 
-        String process = lu.process(true);
+        LiveResult result = lu.process(true);
 
-        Assertions.assertEquals("apple banana", process);
+        Assertions.assertEquals("apple banana", result.getContent());
     }
 
     @Test
@@ -583,7 +584,7 @@ public class LiveUpdatesTest {
         LiveUpdates lu = new LiveUpdates();
 
         lu.setContent("apple bean banana");
-        lu.setRevision(0l);
+        lu.setRevision("0");
         lu.setTargetClass("@test");
         lu.setTargetId(0l);
 
@@ -598,8 +599,8 @@ public class LiveUpdatesTest {
         chs.add(ChangeBuilder.create(session2, "0", "1")
             .del(5, 5).build());
 
-        String process = lu.process(true);
+        LiveResult result = lu.process(true);
 
-        Assertions.assertEquals("apple banana", process);
+        Assertions.assertEquals("apple banana", result.getContent());
     }
 }

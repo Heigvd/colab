@@ -41,9 +41,9 @@ public class LiveUpdates implements Serializable {
     private Long targetId;
 
     /**
-     * TODO is that really useful ?
+     * initial revision of content
      */
-    private Long revision;
+    private String revision;
 
     /**
      * root content
@@ -95,11 +95,8 @@ public class LiveUpdates implements Serializable {
      * Get the revision
      *
      * @return the revision
-     *
-     * @deprecated seems unused
      */
-    @Deprecated
-    public Long getRevision() {
+    public String getRevision() {
         return revision;
     }
 
@@ -108,7 +105,7 @@ public class LiveUpdates implements Serializable {
      *
      * @param revision the revision
      */
-    public void setRevision(Long revision) {
+    public void setRevision(String revision) {
         this.revision = revision;
     }
 
@@ -425,6 +422,36 @@ public class LiveUpdates implements Serializable {
     }
 
     /**
+     * Compute shifed offset by reflecting changes.
+     *
+     * @param offsets original offsets
+     * @param change  change
+     *
+     * @return new map of shifted offsets
+     */
+    private Map<Integer, Integer> shiftOffsets(Map<Integer, Integer> offsets, Change change) {
+        Map<Integer, Integer> shifted = new HashMap<>();
+
+        for (Map.Entry<Integer, Integer> entry : offsets.entrySet()) {
+            Integer offsetIndex = entry.getKey();
+            Integer offsetValue = entry.getValue();
+
+            List<MicroChange> muChanges = change.getMicrochanges();
+            for (int i = muChanges.size() - 1; i >= 0; i--) {
+                MicroChange mu = muChanges.get(i);
+                if (mu.getT() == MicroChange.Type.D) {
+                    offsetIndex -= mu.getL();
+                } else if (mu.getT() == MicroChange.Type.I) {
+                    offsetIndex += mu.getV().length();
+                }
+            }
+            shifted.put(offsetIndex, offsetValue);
+        }
+
+        return shifted;
+    }
+
+    /**
      * Propagate offset to children
      *
      * @param parent  starting point
@@ -438,7 +465,8 @@ public class LiveUpdates implements Serializable {
         for (Change child : getByParentAndSession(changes, parent)) {
             // should propagate to children from same LiveSession only
             boolean shiftFree = this.shift(child, offsets, forward);
-            boolean pFree = this.propagateOffsets(changes, child, offsets, forward);
+            Map<Integer, Integer> shiftedOffsets = shiftOffsets(offsets, child);
+            boolean pFree = this.propagateOffsets(changes, child, shiftedOffsets, forward);
             conflictFree = conflictFree && shiftFree && pFree;
         }
         return conflictFree;
@@ -517,7 +545,7 @@ public class LiveUpdates implements Serializable {
      *
      * @return up-to date content
      */
-    public String process(boolean strict) {
+    public LiveResult process(boolean strict) {
         StringBuilder buffer = new StringBuilder();
         if (this.content != null) {
             buffer.append(this.content);
@@ -525,7 +553,7 @@ public class LiveUpdates implements Serializable {
 
         logger.trace("Process: {}", this);
 
-        String currentRevision = "0";
+        String currentRevision = this.revision;
 
         List<Change> changes = this.getPendingChanges();
 
@@ -564,11 +592,12 @@ public class LiveUpdates implements Serializable {
                 currentRevision = change.getRevision();
 
             } else {
-                logger.error("Some children without any parents left: ", changes);
+                logger.error("Some children without any parents left: {}", changes);
+                break;
             }
         }
 
-        return buffer.toString();
+        return LiveResult.build(buffer.toString(), currentRevision);
     }
 
     @Override

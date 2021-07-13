@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.Role;
 import ch.colabproject.colab.api.model.team.TeamMember;
@@ -134,6 +135,46 @@ public class TeamFacade {
             }
         }
         throw HttpErrorMessage.relatedObjectNotFoundError();
+    }
+
+    /**
+     * Update role
+     *
+     * @param role role to update
+     *
+     * @return the managed and updated role
+     */
+    public Role updateRole(Role role) throws ColabMergeException {
+        if (role != null) {
+            Role managedRole = teamDao.findRole(role.getId());
+            if (managedRole != null){
+                managedRole.merge(role);
+                return managedRole;
+            }
+        }
+        throw HttpErrorMessage.relatedObjectNotFoundError();
+    }
+
+    /**
+     * Delete role
+     *
+     * @param roleId id of the role to delete
+     */
+    public void deleteRole(Long roleId) {
+        Role role = teamDao.findRole(roleId);
+        if (role != null) {
+            Project project = role.getProject();
+            if (project != null) {
+                project.getRoles().remove(role);
+            }
+            role.getMembers().forEach(member -> {
+                List<Role> roles = member.getRoles();
+                if (roles != null) {
+                    roles.remove(role);
+                }
+            });
+            teamDao.removeRole(role);
+        }
     }
 
     /**

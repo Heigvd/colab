@@ -19,13 +19,13 @@ export default {
   trace: (...params: unknown[]): void => {
     if (levels.trace) {
       // eslint-disable-next-line no-console
-      console.trace(...params);
+      console.info(...params);
     }
   },
   debug: (...params: unknown[]): void => {
     if (levels.debug) {
       // eslint-disable-next-line no-console
-      console.debug(...params);
+      console.info(...params);
     }
   },
   info: (...params: unknown[]): void => {

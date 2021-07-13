@@ -30,9 +30,11 @@ export function BlockEditorWrapper({ blockId }: BlockEditorProps): JSX.Element {
     [dispatch, blockId],
   );
 
-  if (block == undefined && blockId != null) {
-    dispatch(API.getBlock(blockId));
-  }
+  React.useEffect(() => {
+    if (block == undefined && blockId != null) {
+      dispatch(API.getBlock(blockId));
+    }
+  }, [block, blockId]);
 
   if (block == null) {
     return <InlineLoading />;
@@ -45,6 +47,7 @@ export function BlockEditorWrapper({ blockId }: BlockEditorProps): JSX.Element {
               atClass={block['@class']}
               atId={blockId}
               value={block.textData || ''}
+              revision={block.revision}
               onChange={onChangeCb}
             />
           );

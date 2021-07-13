@@ -38,7 +38,7 @@ export default function CardLayout({ card, variant, variants, children }: Props)
 
     return (
       <WithToolbar
-        offsetY="-10px"
+        offsetY={-0.5}
         toolbar={
           <>
             <IconButton

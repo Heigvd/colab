@@ -36,19 +36,32 @@ export default function CardCreator({ parent }: Props): JSX.Element {
   const [state, setState] = React.useState<'COLLAPSED' | 'EXPANDED' | 'PENDING'>('COLLAPSED');
   const [selectedType, setSelectedType] = React.useState<number | undefined>();
   const { project } = useProjectBeingEdited();
+  const cardTypes = useProjectCardTypes();
+
+  React.useEffect(() => {
+    if (state !== 'EXPANDED') {
+      if (cardTypes.projectStatus === 'UNSET') {
+        if (project != null) {
+          dispatch(API.getProjectCardTypes(project));
+        }
+      }
+      if (cardTypes.publishedStatus === 'UNSET') {
+        // published type from other project or global types not yet knonw
+        dispatch(API.getPublishedCardTypes());
+      }
+    }
+  }, [cardTypes.projectStatus, cardTypes.publishedStatus, dispatch]);
 
   const onSelect = React.useCallback((id: number) => {
     setSelectedType(id);
   }, []);
-
-  const cardTypes = useProjectCardTypes();
 
   if (state === 'COLLAPSED') {
     return (
       <div>
         <IconButton
           icon={faPlus}
-          title="Add sub-card"
+          title="Add card"
           onClick={() => {
             setState('EXPANDED');
           }}
@@ -56,15 +69,6 @@ export default function CardCreator({ parent }: Props): JSX.Element {
       </div>
     );
   } else {
-    if (cardTypes.projectStatus === 'UNSET') {
-      if (project != null) {
-        dispatch(API.getProjectCardTypes(project));
-      }
-    }
-    if (cardTypes.publishedStatus === 'UNSET') {
-      // published type from other project or global types not yet knonw
-      dispatch(API.getPublishedCardTypes());
-    }
     if (
       cardTypes.projectStatus !== 'READY' ||
       cardTypes.publishedStatus !== 'READY' ||

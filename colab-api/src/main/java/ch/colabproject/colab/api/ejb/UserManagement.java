@@ -24,7 +24,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import liquibase.pro.packaged.ch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

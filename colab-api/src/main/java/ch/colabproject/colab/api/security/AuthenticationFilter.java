@@ -24,7 +24,6 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-import liquibase.pro.packaged.ch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

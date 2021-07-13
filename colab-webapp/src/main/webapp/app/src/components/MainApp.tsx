@@ -31,13 +31,13 @@ import Admin from './admin/Admin';
 import { MainMenuLink, InlineLink } from './common/Link';
 import ForgotPassword from './public/ForgotPassword';
 import { getDisplayName } from '../helper';
-import Team from './projects/Team';
 import InlineLoading from './common/InlineLoading';
 import Overlay from './common/Overlay';
 import Editor from './projects/edition/Editor';
 import IconButton from './common/IconButton';
 import { useProjectBeingEdited, useProject } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
+import Debugger from './debugger/debugger';
 
 /**
  * To read parameters from hash
@@ -58,10 +58,13 @@ const EditorWrapper = () => {
     }
   }, [dispatch, editingStatus, editedProject, project, id]);
 
-  if (project === undefined) {
-    if (status === 'NOT_INITIALIZED') {
+  React.useEffect(() => {
+    if (project === undefined && status === 'NOT_INITIALIZED') {
       dispatch(API.getUserProjects());
     }
+  }, [project, status, dispatch]);
+
+  if (project === undefined) {
     return <InlineLoading />;
   } else if (project == null) {
     return <div>The project does not exists</div>;
@@ -71,27 +74,6 @@ const EditorWrapper = () => {
     } else {
       return <Editor />;
     }
-  }
-};
-
-/**
- * To read parameters from hash
- */
-const TeamWrapper = () => {
-  const { id } = useParams<{ id: string }>();
-
-  const dispatch = useAppDispatch();
-  const { project, status } = useProject(+id);
-
-  if (project === undefined) {
-    if (status === 'NOT_INITIALIZED') {
-      dispatch(API.getUserProjects());
-    }
-    return <InlineLoading />;
-  } else if (project == null) {
-    return <div>The project does not exists</div>;
-  } else {
-    return <Team project={project} />;
   }
 };
 
@@ -114,6 +96,13 @@ export default function MainApp(): JSX.Element {
     dispatch(API.signOut());
   }, [dispatch]);
 
+  React.useEffect(() => {
+    if (currentUserStatus == 'UNKNOWN') {
+      // user is not known. Reload state from API
+      dispatch(API.reloadCurrentUser());
+    }
+  }, [currentUserStatus, dispatch]);
+
   const reconnecting =
     socketId == null ? (
       <Overlay>
@@ -131,8 +120,6 @@ export default function MainApp(): JSX.Element {
   const query = useQuery();
 
   if (currentUserStatus == 'UNKNOWN') {
-    // user is not known. Reload state from API
-    dispatch(API.reloadCurrentUser());
     return <Loading />;
   } else if (currentUserStatus == 'LOADING') {
     return <Loading />;
@@ -199,6 +186,7 @@ export default function MainApp(): JSX.Element {
                 </MainMenuLink>
               ) : null}
               <MainMenuLink to="/settings">Settings</MainMenuLink>
+              {currentUser.admin ? <MainMenuLink to="/debug">debug</MainMenuLink> : null}
               {currentUser.admin ? <MainMenuLink to="/admin">Admin</MainMenuLink> : null}
             </nav>
             <div
@@ -236,8 +224,8 @@ export default function MainApp(): JSX.Element {
               <Route path="/editor/:id">
                 <EditorWrapper />
               </Route>
-              <Route path="/team/:id">
-                <TeamWrapper />
+              <Route path="/debug">
+                <Debugger />
               </Route>
               <Route>
                 {/* no matching route, redirect to projects */}

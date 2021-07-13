@@ -28,6 +28,7 @@ import CardTypeList from '../../cards/cardtypes/CardTypeList';
 import WithToolbar from '../../common/WithToolbar';
 import CardCreator from '../../cards/CardCreator';
 import FitSpace from '../../common/FitSpace';
+import Team from '../Team';
 
 const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   const history = useHistory();
@@ -149,9 +150,11 @@ export default function Editor(): JSX.Element {
     }
   });
 
-  if (root != null && root.id != null && rootContent === undefined) {
-    dispatch(API.getCardContents(root.id));
-  }
+  React.useEffect(() => {
+    if (root != null && root.id != null && rootContent === undefined) {
+      dispatch(API.getCardContents(root.id));
+    }
+  }, [dispatch, root, root?.id, rootContent]);
 
   if (status == 'LOADING') {
     return <InlineLoading />;
@@ -187,6 +190,7 @@ export default function Editor(): JSX.Element {
               </SecondLevelLink>
               <SecondLevelLink to="/hierarchy">Hierarchy</SecondLevelLink>
               <SecondLevelLink to="/defs">Card Types</SecondLevelLink>
+              <SecondLevelLink to={'/team'}>Team</SecondLevelLink>
             </nav>
             <IconButton
               iconSize="2x"
@@ -201,6 +205,9 @@ export default function Editor(): JSX.Element {
           </div>
           <FitSpace>
             <Switch>
+              <Route path="/team">
+                <Team project={project} />
+              </Route>
               <Route exact path="/hierarchy">
                 <Hierachy rootId={root.id} />
               </Route>

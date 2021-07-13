@@ -130,7 +130,7 @@ public class DatabaseTools {
              Statement statement = connection.createStatement()) {
             String query = "SELECT "
                 + "  setval(sequencename::regclass, "
-                + "  (last_value + ceil(random()*1000))::int, "
+                + "  (coalesce(last_value, 0) + ceil(random()*1000))::int, "
                 + "  true) "
                 + "FROM pg_sequences;";
 

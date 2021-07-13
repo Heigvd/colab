@@ -9,6 +9,7 @@ import * as React from 'react';
 import { debounce } from 'lodash';
 import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
 import IconButton from './IconButton';
+import WithToolbar from './WithToolbar';
 
 type State = {
   status: 'EDIT' | 'DISPLAY';
@@ -61,6 +62,14 @@ export default function AutoSaveInput({
     [debouncedOnChange],
   );
 
+  const editCb = React.useCallback(() => {
+    setState(state => ({ ...state, status: 'EDIT' }));
+  }, []);
+
+  const displayCb = React.useCallback(() => {
+    setState(state => ({ ...state, status: 'DISPLAY' }));
+  }, []);
+
   if (state.status === 'EDIT') {
     return (
       <div>
@@ -81,34 +90,22 @@ export default function AutoSaveInput({
           )}
         </label>
 
-        <IconButton
-          icon={faTimes}
-          title="stop edition"
-          onClick={() => {
-            setState({
-              ...state,
-              status: 'DISPLAY',
-            });
-          }}
-        />
+        <IconButton icon={faTimes} title="stop edition" onClick={displayCb} />
       </div>
     );
   } else {
     return (
-      <div>
-        <label>{label}</label>
-        {state.currentValue ? state.currentValue : <i>{placeholder}</i>}
-        <IconButton
-          icon={faPen}
-          title="edit"
-          onClick={() => {
-            setState({
-              ...state,
-              status: 'EDIT',
-            });
-          }}
-        />
-      </div>
+      <WithToolbar
+        toolbarPosition="RIGHT_MIDDLE"
+        toolbarClassName=""
+        offsetY={0.5}
+        toolbar={<IconButton icon={faPen} title="edit" onClick={editCb} />}
+      >
+        <>
+          <label>{label}</label>
+          {state.currentValue ? state.currentValue : <i>{placeholder}</i>}
+        </>
+      </WithToolbar>
     );
   }
 }

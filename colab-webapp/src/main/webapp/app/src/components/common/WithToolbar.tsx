@@ -8,22 +8,29 @@
 import * as React from 'react';
 import { css, cx } from '@emotion/css';
 import { semiDarkMode } from '../styling/style';
-import FitSpace from './FitSpace';
+//import FitSpace from './FitSpace';
 
 interface Props {
   children: JSX.Element;
   toolbar?: React.ReactNode;
   toolbarPosition?:
     | 'TOP_LEFT'
+    | 'TOP_MIDDLE'
     | 'TOP_RIGHT'
     | 'BOTTOM_LEFT'
+    | 'BOTTOM_MIDDLE'
     | 'BOTTOM_RIGHT'
     | 'LEFT_TOP'
+    | 'LEFT_MIDDLE'
     | 'LEFT_BOTTOM'
     | 'RIGHT_TOP'
+    | 'RIGHT_MIDDLE'
     | 'RIGHT_BOTTOM';
-  offsetX?: string;
-  offsetY?: string;
+  toolbarClassName?: string;
+  // 1 means width of the toolbar
+  offsetX?: number;
+  // 1 means height of the toolbar
+  offsetY?: number;
 }
 
 const cssPos = (
@@ -48,6 +55,14 @@ const cssPos = (
           left: `calc(0px - ${deltaX})`,
         },
       };
+    case 'TOP_MIDDLE':
+      return {
+        orientation: 'row',
+        pos: {
+          bottom: `calc(100% + ${deltaY})`,
+          left: `calc(50% - ${deltaX})`,
+        },
+      };
     case 'TOP_RIGHT':
       return {
         orientation: 'row',
@@ -62,6 +77,14 @@ const cssPos = (
         pos: {
           top: `calc(100% + ${deltaY})`,
           left: `calc(0px - ${deltaX})`,
+        },
+      };
+    case 'BOTTOM_MIDDLE':
+      return {
+        orientation: 'row',
+        pos: {
+          top: `calc(100% + ${deltaY})`,
+          left: `calc(50% - ${deltaX})`,
         },
       };
     case undefined:
@@ -81,6 +104,14 @@ const cssPos = (
           right: `calc(100% + ${deltaX})`,
         },
       };
+    case 'LEFT_MIDDLE':
+      return {
+        orientation: 'column',
+        pos: {
+          top: `calc(50% - ${deltaY})`,
+          right: `calc(100% + ${deltaX})`,
+        },
+      };
     case 'LEFT_BOTTOM':
       return {
         orientation: 'column',
@@ -94,6 +125,14 @@ const cssPos = (
         orientation: 'column',
         pos: {
           top: `calc(0px - ${deltaY})`,
+          left: `calc(100% + ${deltaX})`,
+        },
+      };
+    case 'RIGHT_MIDDLE':
+      return {
+        orientation: 'column',
+        pos: {
+          top: `calc(50% - ${deltaY})`,
           left: `calc(100% + ${deltaX})`,
         },
       };
@@ -116,21 +155,48 @@ export default function WithToolbar({
   children,
   toolbar,
   toolbarPosition = 'BOTTOM_RIGHT',
-  offsetX = '0px',
-  offsetY = '0px',
+  toolbarClassName = semiDarkMode,
+  offsetX = 0,
+  offsetY = 0,
 }: Props): JSX.Element {
-  const cssPosition = cssPos(toolbarPosition, offsetX, offsetY);
+  const toolbarRef = React.useRef<HTMLDivElement>(null);
+
+  const [offsets, setOffsets] = React.useState({ x: '0px', y: '0px' });
+
+  const cssPosition = cssPos(toolbarPosition, offsets.x, offsets.y);
 
   const [hoverToolbar, setHoverToolbar] = React.useState(false);
 
+  const hoverTrueCb = React.useCallback(() => {
+    setHoverToolbar(true);
+  }, []);
+
+  const hoverFalseCb = React.useCallback(() => {
+    setHoverToolbar(false);
+  }, []);
+
+  const posCb = React.useCallback(() => {
+    if (toolbarRef.current != null && toolbarRef.current.offsetParent != null) {
+      if (toolbarRef.current != null && toolbarRef.current.offsetParent != null) {
+        const newOffsets = {
+          x: `${toolbarRef.current.clientWidth * offsetX}px`,
+          y: `${toolbarRef.current.clientHeight * offsetY}px`,
+        };
+        setOffsets(newOffsets);
+      }
+    }
+  }, [offsetX, offsetY, toolbarRef]);
+
   return (
     <div
+      onMouseEnter={posCb}
       className={cx(
         hoverToolbar ? hoverStyle : undefined,
         css({
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
+          width: 'max-content',
           position: 'relative',
           ':hover > .toolbar': {
             display: 'flex',
@@ -140,15 +206,12 @@ export default function WithToolbar({
     >
       {toolbar ? (
         <div
-          onMouseEnter={() => {
-            setHoverToolbar(true);
-          }}
-          onMouseLeave={() => {
-            setHoverToolbar(false);
-          }}
+          ref={toolbarRef}
+          onMouseEnter={hoverTrueCb}
+          onMouseLeave={hoverFalseCb}
           className={cx(
             'toolbar',
-            semiDarkMode,
+            toolbarClassName,
             css({
               zIndex: 99,
               display: 'none',
@@ -163,7 +226,7 @@ export default function WithToolbar({
           {toolbar}
         </div>
       ) : null}
-      <FitSpace>{children}</FitSpace>
+      {children}
     </div>
   );
 }

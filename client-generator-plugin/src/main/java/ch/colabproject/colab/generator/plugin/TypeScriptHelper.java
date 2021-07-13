@@ -29,6 +29,8 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
 import javax.json.stream.JsonParser;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import org.apache.maven.plugin.MojoFailureException;
 import org.reflections.Reflections;
@@ -199,7 +201,10 @@ public class TypeScriptHelper {
                             Field field = getField(javaClass, key);
 
                             if (field != null) {
-                                optional = field.getAnnotation(NotNull.class) == null;
+                                optional
+                                    = (field.getAnnotation(NotNull.class) == null)
+                                    && (field.getAnnotation(NotEmpty.class) == null)
+                                    && (field.getAnnotation(NotBlank.class) == null);
                                 propertyType = field.getGenericType();
                             } else {
                                 // unable to find a field, rely on method

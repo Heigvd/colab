@@ -147,7 +147,8 @@ public class BlockFacade {
         BlockDocument blockDocument = (BlockDocument) document;
         securityFacade.assertCanCreateBlock(blockDocument);
 
-        Block block = new TextDataBlock();
+        TextDataBlock block = new TextDataBlock();
+        block.setRevision("0");
 
         block.setDocument(blockDocument);
         (blockDocument).getBlocks().add(block);

@@ -35,9 +35,11 @@ export default function GlobalCardTypeList(): JSX.Element {
     );
   }, [dispatch]);
 
-  if (cardTypes.status === 'UNSET') {
-    dispatch(API.getAllGlobalCardTypes());
-  }
+  React.useEffect(() => {
+    if (cardTypes.status === 'UNSET') {
+      dispatch(API.getAllGlobalCardTypes());
+    }
+  }, [cardTypes.status, dispatch]);
 
   if (cardTypes.status !== 'READY') {
     return <InlineLoading />;

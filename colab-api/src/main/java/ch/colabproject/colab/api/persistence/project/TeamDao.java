@@ -49,4 +49,13 @@ public class TeamDao {
     public TeamMember findTeamMember(Long memberId) {
         return em.find(TeamMember.class, memberId);
     }
+
+    /**
+     * Remove role from database
+     *
+     * @param role the role to delete
+     */
+    public void removeRole(Role role) {
+        em.remove(role);
+    }
 }

@@ -16,7 +16,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import liquibase.pro.packaged.ch;
 
 /**
  * API to fetch an consume tokens sent by e-mail

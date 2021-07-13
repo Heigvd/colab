@@ -4,11 +4,11 @@
  *
  * Licensed under the MIT License
  */
-import {createSlice} from '@reduxjs/toolkit';
-import {Project, Role, TeamMember} from 'colab-rest-client';
+import { createSlice } from '@reduxjs/toolkit';
+import { Project, Role, TeamMember } from 'colab-rest-client';
 import * as API from '../API/api';
-import {mapById} from '../helper';
-import {processMessage} from '../ws/wsThunkActions';
+import { mapById } from '../helper';
+import { processMessage } from '../ws/wsThunkActions';
 
 /**
  * NOT_SET: the state is not fully set. It may contain some data (received by websocket) but there
@@ -56,7 +56,7 @@ const getOrCreateTeamState = (state: ProjectState, projectId: number): TeamState
   if (teamState) {
     return teamState;
   } else {
-    const ts: TeamState = {status: 'NOT_INITIALIZED', members: {}, roles: {}};
+    const ts: TeamState = { status: 'NOT_INITIALIZED', members: {}, roles: {} };
     state.teams[projectId] = ts;
     return ts;
   }
@@ -120,8 +120,6 @@ const removeRole = (state: ProjectState, roleId: number) => {
   });
 };
 
-
-
 const projectsSlice = createSlice({
   name: 'projects',
   initialState,
@@ -166,7 +164,7 @@ const projectsSlice = createSlice({
       .addCase(API.getUserProjects.fulfilled, (state, action) => {
         state.status = 'INITIALIZED';
         state.mine = action.payload.flatMap(project => (project.id != null ? [project.id] : []));
-        state.projects = {...state.projects, ...mapById(action.payload)};
+        state.projects = { ...state.projects, ...mapById(action.payload) };
       })
       .addCase(API.getAllProjects.pending, state => {
         state.allStatus = 'LOADING';
@@ -188,7 +186,8 @@ const projectsSlice = createSlice({
           const ts = getOrCreateTeamState(state, projectId);
           ts.status = 'INITIALIZED';
           if (action.payload) {
-            ts.members = mapById(action.payload);
+            ts.members = mapById(action.payload.members);
+            ts.roles = mapById(action.payload.roles);
           }
         }
       })

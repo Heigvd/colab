@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.validation.constraints.NotBlank;
 
 /**
  * Piece of a block document containing text data
@@ -28,7 +29,6 @@ public class TextDataBlock extends Block {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * The mime type of the information
      */
@@ -40,10 +40,15 @@ public class TextDataBlock extends Block {
     @Lob
     private String textData;
 
+    /**
+     * Current revision hash
+     */
+    @NotBlank
+    private String revision;
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the mime type of the information
      */
@@ -72,10 +77,27 @@ public class TextDataBlock extends Block {
         this.textData = data;
     }
 
+    /**
+     * Get the value of revision
+     *
+     * @return the value of revision
+     */
+    public String getRevision() {
+        return revision;
+    }
+
+    /**
+     * Set the value of revision
+     *
+     * @param revision new value of revision
+     */
+    public void setRevision(String revision) {
+        this.revision = revision;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof TextDataBlock) {

@@ -19,7 +19,7 @@ type State = {
 export interface Props {
   closeIcon?: IconProp;
   collaspedChildren: JSX.Element;
-  children: JSX.Element;
+  children: (collapse: () => void) => JSX.Element;
 }
 
 const relative = css({
@@ -41,10 +41,14 @@ export default function OpenClose({
     status: 'COLLAPSED',
   });
 
+  const collapse = React.useCallback(() => {
+    setState({ status: 'COLLAPSED' });
+  }, []);
+
   if (state.status === 'EXPANDED') {
     return (
       <div className={relative}>
-        {children}
+        {children(collapse)}
         <IconButton
           className={topRightAbs}
           icon={closeIcon}

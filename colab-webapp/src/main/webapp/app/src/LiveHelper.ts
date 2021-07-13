@@ -71,6 +71,9 @@ export interface ChangesWithOffset {
   offset: number;
 }
 
+/**
+ * What is that ?
+ */
 export const getMicroChangeReduce = (previous: string, current: string): MicroChange[] => {
   logger.trace('Previous:', previous);
   logger.trace('New:', current);
@@ -171,6 +174,7 @@ function modifyOffsets(offsets: Offsets, index: number, value: number) {
           newValue = newOffset + newValue;
         }
         modified[key] = 0;
+        delete modified[key];
         modified[newKey] = newValue;
       }
     }
@@ -203,8 +207,39 @@ export function computeOffsets(microchanges: MicroChange[]): Offsets {
   return offsets;
 }
 
+export function shiftOffsets(offsets: Offsets, change: Change): Offsets {
+  const shifted: Offsets = {};
+  const microchanges = change.microchanges;
+
+  for (const offsetStringIndex in Object.keys(offsets)) {
+    let offsetIndex = +offsetStringIndex;
+    const offsetValue = offsets[offsetStringIndex] || 0;
+
+    for (let i = microchanges.length - 1; i >= 0; i--) {
+      const mu = microchanges[i]!;
+
+      if (mu.o <= offsetIndex) {
+        if (mu.t === 'D') {
+          if (mu.l != null) {
+            if (mu.l != null) {
+              offsetIndex -= mu.l;
+            }
+          }
+        } else {
+          if (mu.v != null) {
+            offsetIndex += mu.v.length;
+          }
+        }
+      }
+    }
+    shifted[offsetIndex] = offsetValue;
+  }
+  return shifted;
+}
+
 function shift(change: Change, offsets: Offsets, _forward: boolean) {
   //const way = forward ? 1 : -1; //TODO
+  logger.trace('Shift ', change, ' with offsets: ', offsets);
   for (let i = 0; i < change.microchanges.length; i++) {
     const mu = change.microchanges[i]!;
 
@@ -308,6 +343,7 @@ function shift(change: Change, offsets: Offsets, _forward: boolean) {
       }
     }
   }
+  logger.trace('Shifted ', change);
 }
 
 function propagateOffsets(changes: Change[], parent: Change, offsets: Offsets, forward: boolean) {
@@ -317,7 +353,9 @@ function propagateOffsets(changes: Change[], parent: Change, offsets: Offsets, f
 
   for (const child of children) {
     shift(child, offsets, forward);
-    propagateOffsets(changes, child, offsets, forward);
+    const shiftedOffets = shiftOffsets(offsets, child);
+    logger.trace('Shifted Offsets: ', shiftedOffets);
+    propagateOffsets(changes, child, shiftedOffets, forward);
   }
 }
 
@@ -327,12 +365,10 @@ function rebase(allChanges: Change[], newBase: Change, change: Change) {
     const offsets = computeOffsets(newBase.microchanges);
 
     logger.trace('Rebase Sieblings: ', change, ' on ', newBase, ' with offset ', offsets);
-
     change.basedOn = newBase.revision;
     shift(change, offsets, true);
-    propagateOffsets(allChanges, change, offsets, true);
-
     logger.trace('Rebase done: ', change, ' on ', newBase, ' with offset ', offsets);
+    propagateOffsets(allChanges, change, offsets, true);
   } else if (newBase.basedOn === change.revision) {
     logger.trace('Inverse hierachy : ', change, ' on ', newBase);
     const offsets = computeOffsets(newBase.microchanges);
@@ -353,6 +389,7 @@ function rebase(allChanges: Change[], newBase: Change, change: Change) {
  */
 export const process = (
   content: string,
+  revision: string,
   changeset: Change[],
 ): {
   value: string;
@@ -360,14 +397,14 @@ export const process = (
 } => {
   let buffer = content;
 
-  let currentRevision: string = '0';
+  let currentRevision: string = revision;
   // clone changset so they are mutable
   const changes = changeset.map(c => ({
     ...c,
     microchanges: c.microchanges.map(mu => ({ ...mu })),
   }));
 
-  logger.trace('Changes to apply: ', changes);
+  logger.trace('Apply: ', ...changes, ' to ', content);
   while (changes.length > 0) {
     // fetch all changes based on the current revision
     const children = changes.filter(change => change.basedOn === currentRevision);
@@ -394,11 +431,17 @@ export const process = (
       }
 
       currentRevision = change.revision;
-      logger.trace('Current revision is ', currentRevision);
     } else {
-      logger.error('Changes: ', changes);
+      logger.error(
+        'Inconsistent changes Changes: no children for @',
+        currentRevision,
+        ' in ',
+        changes,
+      );
       throw new Error('Inconsistent changset: missing ' + currentRevision + ' children');
+      //break;
     }
+    logger.trace('Processed revision is ', currentRevision);
   }
 
   return {

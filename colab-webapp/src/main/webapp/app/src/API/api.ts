@@ -21,6 +21,7 @@ import {
   Block,
   AbstractCardType,
   Change,
+  Role,
 } from 'colab-rest-client';
 
 import { getStore, ColabState } from '../store/store';
@@ -318,7 +319,13 @@ export const closeCurrentProject = createAsyncThunk(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const getProjectTeam = createAsyncThunk('project/team/get', async (projectId: number) => {
-  return await restClient.ProjectRestEndpoint.getMembers(projectId);
+  const waitMembers = restClient.ProjectRestEndpoint.getMembers(projectId);
+  const waitRoles = restClient.ProjectRestEndpoint.getRoles(projectId);
+
+  return {
+    members: await waitMembers,
+    roles: await waitRoles,
+  };
 });
 
 export const sendInvitation = createAsyncThunk(
@@ -331,11 +338,35 @@ export const sendInvitation = createAsyncThunk(
   },
 );
 
-export const getProjectRoles = createAsyncThunk('project/team/getRoles', async (projectId: number) => {
-  return await restClient.ProjectRestEndpoint.getRoles(projectId);
+export const createRole = createAsyncThunk(
+  'project/team/createRole',
+  async (payload: { project: Project; role: Role }) => {
+    const r: Role = { ...payload.role, projectId: payload.project.id };
+    return await restClient.TeamRestEndpoint.createRole(r);
+  },
+);
+
+export const updateRole = createAsyncThunk('project/role/update', async (role: Role) => {
+  return await restClient.TeamRestEndpoint.updateRole(role);
 });
 
+export const deleteRole = createAsyncThunk('project/role/delete', async (roleId: number) => {
+  return await restClient.TeamRestEndpoint.deleteRole(roleId);
+});
 
+export const giveRole = createAsyncThunk(
+  'project/team/give',
+  async ({ roleId, memberId }: { roleId: number; memberId: number }) => {
+    return await restClient.TeamRestEndpoint.giveRoleTo(roleId, memberId);
+  },
+);
+
+export const removeRole = createAsyncThunk(
+  'project/team/remove',
+  async ({ roleId, memberId }: { roleId: number; memberId: number }) => {
+    return await restClient.TeamRestEndpoint.removeRoleFrom(roleId, memberId);
+  },
+);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Card Types
