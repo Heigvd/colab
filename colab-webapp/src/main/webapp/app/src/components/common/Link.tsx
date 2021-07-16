@@ -5,8 +5,8 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
 import { css, cx } from '@emotion/css';
+import * as React from 'react';
 import { NavLink, NavLinkProps } from 'react-router-dom';
 
 const linkStyle = css({

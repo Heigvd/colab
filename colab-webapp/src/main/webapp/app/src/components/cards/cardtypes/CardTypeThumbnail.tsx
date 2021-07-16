@@ -5,10 +5,9 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-
-import { CardType } from 'colab-rest-client';
 import { css, cx } from '@emotion/css';
+import { CardType } from 'colab-rest-client';
+import * as React from 'react';
 import Thumbnail from '../../common/Thumbnail';
 
 interface Props {

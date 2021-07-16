@@ -5,8 +5,8 @@
  * Licensed under the MIT License
  */
 
-import { TypedUseSelectorHook, useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { ColabState, AppDispatch } from './store';
+import { shallowEqual, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, ColabState } from './store';
 
 export { shallowEqual } from 'react-redux';
 

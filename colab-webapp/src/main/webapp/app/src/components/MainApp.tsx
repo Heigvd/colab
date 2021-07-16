@@ -4,40 +4,37 @@
  *
  * Licensed under the MIT License
  */
-import * as React from 'react';
-
-import Logo from './styling//WhiteLogo';
-
-import * as API from '../API/api';
 import { css, cx } from '@emotion/css';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import { UserProjects } from './projects/ProjectList';
-import SignInForm from './public/SignIn';
-import SignUpForm from './public/SignUp';
-import { fullPageStyle, darkMode } from './styling/style';
-import Loading from './common/Loading';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-
+import * as React from 'react';
 import {
   HashRouter as Router,
-  Switch,
-  Route,
-  useParams,
   Redirect,
+  Route,
+  Switch,
   useLocation,
+  useParams,
 } from 'react-router-dom';
-import Settings from './settings/Settings';
-import Admin from './admin/Admin';
-import { MainMenuLink, InlineLink } from './common/Link';
-import ForgotPassword from './public/ForgotPassword';
+import * as API from '../API/api';
 import { getDisplayName } from '../helper';
-import InlineLoading from './common/InlineLoading';
-import Overlay from './common/Overlay';
-import Editor from './projects/edition/Editor';
-import IconButton from './common/IconButton';
-import { useProjectBeingEdited, useProject } from '../selectors/projectSelector';
+import { useProject, useProjectBeingEdited } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import Admin from './admin/Admin';
+import IconButton from './common/IconButton';
+import InlineLoading from './common/InlineLoading';
+import { InlineLink, MainMenuLink } from './common/Link';
+import Loading from './common/Loading';
+import Overlay from './common/Overlay';
 import Debugger from './debugger/debugger';
+import Editor from './projects/edition/Editor';
+import { UserProjects } from './projects/ProjectList';
+import ForgotPassword from './public/ForgotPassword';
+import SignInForm from './public/SignIn';
+import SignUpForm from './public/SignUp';
+import Settings from './settings/Settings';
+import Logo from './styling//WhiteLogo';
+import { darkMode, fullPageStyle } from './styling/style';
 
 /**
  * To read parameters from hash

@@ -5,14 +5,13 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
+import { faCaretLeft, faCaretRight, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
+import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-
-import { Card, CardContent, entityIs } from 'colab-rest-client';
-import { css } from '@emotion/css';
-import { useAppDispatch, useAppSelector, shallowEqual } from '../../store/hooks';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import IconButton from '../common/IconButton';
-import { faCaretLeft, faCaretRight, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 import WithToolbar from '../common/WithToolbar';
 
 interface Props {

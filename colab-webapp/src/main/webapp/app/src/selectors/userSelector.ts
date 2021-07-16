@@ -5,8 +5,8 @@
  * Licensed under the MIT License
  */
 import { User } from 'colab-rest-client';
+import { shallowEqual, useAppSelector } from '../store/hooks';
 import { ColabState } from '../store/store';
-import { useAppSelector, shallowEqual } from '../store/hooks';
 
 export const useCurrentUser = (): {
   currentUser: User | null;

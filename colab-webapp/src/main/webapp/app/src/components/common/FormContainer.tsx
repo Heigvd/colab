@@ -5,12 +5,10 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
 import { css, cx } from '@emotion/css';
-
+import * as React from 'react';
+import { darkMode, fullPageStyle } from '../styling/style';
 import Logo from '../styling/WhiteLogo';
-
-import { fullPageStyle, darkMode } from '../styling/style';
 
 interface Props {
   children: React.ReactNode;

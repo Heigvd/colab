@@ -6,7 +6,6 @@
  */
 
 import * as React from 'react';
-
 import { useProject } from '../../selectors/projectSelector';
 
 interface Props {

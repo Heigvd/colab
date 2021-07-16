@@ -5,26 +5,28 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
+import { faPen, faProjectDiagram, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Change } from 'colab-rest-client';
+import { throttle } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { throttle } from 'lodash';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-
 import * as LiveHelper from '../../LiveHelper';
-import { Change } from 'colab-rest-client';
+import getLogger from '../../logger';
 import { useChanges } from '../../selectors/changeSelector';
-import logger from '../../logger';
-import IconButton from '../common/IconButton';
-import { faPen, faProjectDiagram, faTimes } from '@fortawesome/free-solid-svg-icons';
-import InlineLoading from '../common/InlineLoading';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
-import { css } from '@emotion/css';
-import ChangeTree from './ChangeTree';
 import CleverTextarea from '../common/CleverTextarea';
+import IconButton from '../common/IconButton';
+import InlineLoading from '../common/InlineLoading';
 //import ToastFnMarkdownEditor from '../blocks/markdown/ToastFnMarkdownEditor';
 import OpenClose from '../common/OpenClose';
 import WithToolbar from '../common/WithToolbar';
+import ChangeTree from './ChangeTree';
+
 //import {ToastClsMarkdownEditor} from '../blocks/markdown/ToastClsMarkdownEditor';
+
+const logger = getLogger('LiveChanges');
 
 const shrink = css({
   flexGrow: 0,
@@ -100,7 +102,7 @@ export default function LiveTextEditor({
     /**
      * Base revision number
      */
-    baseRevision: string;
+    baseRevision: string[];
     /**
      * Current version of the text
      */
@@ -114,7 +116,7 @@ export default function LiveTextEditor({
     initialRevision: revision,
     baseValue: value, // was serverValue.value
     currentValue: value, // was serverValue.value
-    baseRevision: revision,
+    baseRevision: [revision],
     localChanges: [],
     revCounter: 0,
   });
@@ -123,7 +125,7 @@ export default function LiveTextEditor({
     // start new changetree
     logger.info('Revision changed');
     valueRef.current.initialRevision = revision;
-    valueRef.current.baseRevision = revision;
+    valueRef.current.baseRevision = [revision];
     valueRef.current.currentValue = value;
     valueRef.current.localChanges = [];
   }
@@ -158,7 +160,7 @@ export default function LiveTextEditor({
           valueRef.current.revCounter = count;
           valueRef.current.localChanges.push(change);
           valueRef.current.baseValue = throttledValue;
-          valueRef.current.baseRevision = change.revision;
+          valueRef.current.baseRevision = [change.revision];
 
           logger.trace('Send change', change);
           onChange(change);
@@ -205,7 +207,7 @@ export default function LiveTextEditor({
   }
   logger.trace('CleanLocalChange: ', valueRef.current.localChanges);
 
-  // value based on changes knonw by the server
+  // value based on changes known by the server
   const serverValue = applyChanges(value, revision, changes);
   if (serverValue != null) {
     logger.trace('ServerValue ' + serverValue.revision + ' -> ' + serverValue.value);
@@ -221,10 +223,10 @@ export default function LiveTextEditor({
     if (computedBaseValue != null) {
       logger.trace('Local value: ' + computedBaseValue.value + ' @' + computedBaseValue.revision);
 
-      if (effectiveChanges.changes.length === 0) {
-        logger.trace('Restart new change tree, starting @', revision);
-        valueRef.current.baseRevision = revision;
-      }
+      //      if (effectiveChanges.changes.length === 0) {
+      //        logger.trace('Restart new change tree, starting @', revision);
+      //        valueRef.current.baseRevision = revision;
+      //      }
 
       if (computedBaseValue.value !== valueRef.current.baseValue) {
         // The base just changed
@@ -329,7 +331,7 @@ export default function LiveTextEditor({
         <MarkdownViewer className={grow} md={valueRef.current.currentValue} />
         <div className={shrink}>
           <OpenClose collaspedChildren={<IconButton icon={faProjectDiagram} />}>
-            {() => <ChangeTree atClass={atClass} atId={atId} revision={revision} />}
+            {() => <ChangeTree atClass={atClass} atId={atId} value={value} revision={revision} />}
           </OpenClose>
         </div>
         <IconButton

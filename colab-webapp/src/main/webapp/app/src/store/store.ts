@@ -4,11 +4,11 @@
  *
  * Licensed under the MIT License
  */
+import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import thunk from 'redux-thunk';
-
-import authReducer from './auth';
 import adminReducer from './admin';
+import authReducer from './auth';
 import blockReducer from './block';
 import cardReducer from './card';
 import cardTypeReducer from './cardtype';
@@ -18,7 +18,6 @@ import errorReducer from './error';
 import projectReducer from './project';
 import userReducer from './user';
 import websocketReducer from './websocket';
-import { configureStore } from '@reduxjs/toolkit';
 
 const rootReducer = combineReducers({
   auth: authReducer,

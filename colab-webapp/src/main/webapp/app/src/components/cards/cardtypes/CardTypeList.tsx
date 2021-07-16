@@ -5,18 +5,17 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import * as API from '../../../API/api';
-
-import { css } from '@emotion/css';
-import { useAppDispatch } from '../../../store/hooks';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useProjectCardTypes } from '../../../selectors/cardTypeSelector';
-import InlineLoading from '../../common/InlineLoading';
+import { useProjectBeingEdited } from '../../../selectors/projectSelector';
+import { useAppDispatch } from '../../../store/hooks';
 import IconButton from '../../common/IconButton';
-import CardTypeEditor from './CardTypeEditor';
+import InlineLoading from '../../common/InlineLoading';
 import CardTypeDisplay from './CardTypeDisplay';
+import CardTypeEditor from './CardTypeEditor';
 
 const flexWrap = css({
   display: 'flex',

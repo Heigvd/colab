@@ -1,5 +1,5 @@
 import { User, WithId } from 'colab-rest-client';
-import logger from './logger';
+import { logger } from './logger';
 
 /*
  * The coLAB project

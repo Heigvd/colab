@@ -5,14 +5,13 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-
 import { css } from '@emotion/css';
+import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
 import { CardType } from 'colab-rest-client';
-import { cardShadow } from '../../styling/style';
+import * as React from 'react';
 import IconButton from '../../common/IconButton';
-import { faSquare, faCheckSquare } from '@fortawesome/free-regular-svg-icons';
 import { ProjectName } from '../../projects/ProjectName';
+import { cardShadow } from '../../styling/style';
 
 interface DisplayProps {
   cardType: CardType;

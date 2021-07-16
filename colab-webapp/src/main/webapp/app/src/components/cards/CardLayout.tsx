@@ -5,19 +5,18 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import * as API from '../../API/api';
-
-import { Card, CardContent } from 'colab-rest-client';
 import { css, cx } from '@emotion/css';
-import { Destroyer } from '../common/Destroyer';
-import { useAppDispatch } from '../../store/hooks';
-import IconButton from '../common/IconButton';
 import { faPen, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { Card, CardContent } from 'colab-rest-client';
+import * as React from 'react';
 import { useHistory } from 'react-router-dom';
+import * as API from '../../API/api';
+import { useAppDispatch } from '../../store/hooks';
+import { Destroyer } from '../common/Destroyer';
+import IconButton from '../common/IconButton';
 import WithToolbar from '../common/WithToolbar';
-import CardCreator from './CardCreator';
 import { cardShadow, cardStyle } from '../styling/style';
+import CardCreator from './CardCreator';
 
 interface Props {
   card: Card;

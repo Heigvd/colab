@@ -4,8 +4,8 @@
  *
  * Licensed under the MIT License
  */
-import * as React from 'react';
 import { css, cx } from '@emotion/css';
+import * as React from 'react';
 import { fullPageOverlayStyle } from '../styling/style';
 
 interface Props {

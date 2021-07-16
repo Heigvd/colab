@@ -6,15 +6,15 @@
  */
 
 import * as React from 'react';
-import Loading from '../common/Loading';
-import { getRestClient, reloadCurrentUser } from '../../API/api';
-import { useAppDispatch } from '../../store/hooks';
 import { Redirect, useLocation } from 'react-router-dom';
-import { InlineLink } from '../common/Link';
+import { getRestClient, reloadCurrentUser } from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
-import Overlay from '../common/Overlay';
+import { logger } from '../../logger';
 import { useCurrentUser } from '../../selectors/userSelector';
-import logger from '../../logger';
+import { useAppDispatch } from '../../store/hooks';
+import { InlineLink } from '../common/Link';
+import Loading from '../common/Loading';
+import Overlay from '../common/Overlay';
 
 interface TokenProps {
   tokenId: string;
@@ -97,13 +97,13 @@ export default (props: TokenProps): JSX.Element => {
   } else if (state == 'NO_TOKEN') {
     return (
       <Overlay>
-        <div>Token does not exists</div>
+        <div>Token does not exist</div>
       </Overlay>
     );
   } else {
     return (
       <Overlay>
-        <div> Error while processing token </div>;
+        <div>Error while processing token</div>;
       </Overlay>
     );
   }

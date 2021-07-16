@@ -34,7 +34,7 @@ export function BlockEditorWrapper({ blockId }: BlockEditorProps): JSX.Element {
     if (block == undefined && blockId != null) {
       dispatch(API.getBlock(blockId));
     }
-  }, [block, blockId]);
+  }, [block, blockId, dispatch]);
 
   if (block == null) {
     return <InlineLoading />;

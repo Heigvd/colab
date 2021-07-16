@@ -5,13 +5,13 @@
  * Licensed under the MIT License
  */
 
+import { BlockDocument } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
-import { BlockDocument } from 'colab-rest-client';
-import AutoSaveInput from '../../common/AutoSaveInput';
-import { useAppDispatch, useAppSelector, shallowEqual } from '../../../store/hooks';
-import InlineLoading from '../../common/InlineLoading';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
+import AutoSaveInput from '../../common/AutoSaveInput';
+import InlineLoading from '../../common/InlineLoading';
 import { CreateBlockButton } from './CreateBlockButton';
 
 export interface BlockDocProps {

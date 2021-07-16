@@ -5,12 +5,12 @@
  * Licensed under the MIT License
  */
 
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { BlockDocument, TextDataBlock } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
-import { BlockDocument, TextDataBlock } from 'colab-rest-client';
 import { useAppDispatch } from '../../../store/hooks';
 import IconButton from '../../common/IconButton';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 export interface BlockDocProps {
   doc: BlockDocument;

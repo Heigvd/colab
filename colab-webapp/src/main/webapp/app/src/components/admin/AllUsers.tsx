@@ -6,8 +6,8 @@
  */
 
 import * as React from 'react';
-import { useAppSelector, useAppDispatch, shallowEqual } from '../../store/hooks';
 import { getAllUsers } from '../../API/api';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import UserList from './UserList';
 
@@ -28,7 +28,7 @@ export default (): JSX.Element => {
     if (status === 'NOT_INITIALIZED') {
       dispatch(getAllUsers());
     }
-  }, [status]);
+  }, [status, dispatch]);
 
   return (
     <div>

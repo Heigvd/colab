@@ -7,7 +7,7 @@
 
 import { Card, CardContent } from 'colab-rest-client';
 import { CardContentDetail } from '../store/card';
-import { useAppSelector, shallowEqual } from '../store/hooks';
+import { shallowEqual, useAppSelector } from '../store/hooks';
 
 export const useCard = (id: number): Card | 'LOADING' | undefined => {
   return useAppSelector(state => {

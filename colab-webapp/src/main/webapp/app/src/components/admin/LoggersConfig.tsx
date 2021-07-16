@@ -5,18 +5,18 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import { useAppSelector, useAppDispatch, shallowEqual } from '../../store/hooks';
-import { getLoggerLevels, changeLoggerLevel } from '../../API/api';
-import InlineLoading from '../common/InlineLoading';
 import { css, cx } from '@emotion/css';
-import { linkStyle } from '../styling/style';
-import { faSync, faSearch, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faSync } from '@fortawesome/free-solid-svg-icons';
+import { LevelDescriptor } from 'colab-rest-client';
+import * as React from 'react';
+import { changeLoggerLevel, getLoggerLevels } from '../../API/api';
+import getLogger, { LoggerLevel, loggers as clientLoggers } from '../../logger';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import IconButton from '../common/IconButton';
+import InlineLoading from '../common/InlineLoading';
+import { linkStyle } from '../styling/style';
 
 const LEVELS = ['OFF', 'ERROR', 'WARN', 'INFO', 'DEBUG', 'TRACE'];
-
-import { levels as clientLevels } from '../../logger';
 
 const levelStyle = css({});
 
@@ -34,50 +34,143 @@ const selectedStyle = cx(
   }),
 );
 
-export default function (): JSX.Element {
-  const levels = useAppSelector(state => state.admin.loggers, shallowEqual);
-  const dispatch = useAppDispatch();
+interface LoggerGridProps {
+  title: string;
+  levels: Record<string, LevelDescriptor>;
+  changeLevel: (loggerName: string, level: string) => void;
+}
 
-  const keys = Object.keys(clientLevels) as (keyof typeof levelState)[];
-
+function LoggerGrid({ title, levels, changeLevel }: LoggerGridProps) {
   const [search, setSearch] = React.useState('');
 
-  const [levelState, setClientLevels] = React.useState(clientLevels);
+  const keys = Object.keys(levels)
+    .filter(logger => !search || logger.includes(search))
+    .sort();
+
+  return (
+    <>
+      <h3>{title}</h3>
+      <div>
+        <label>
+          <IconButton icon={faSearch} />
+          <input type="text" onChange={e => setSearch(e.target.value)} />
+        </label>
+      </div>
+      <div
+        className={css({
+          display: 'grid',
+          gridTemplateColumns: 'repeat(7, max-content)',
+          '& div div': {
+            paddingRight: '10px',
+          },
+        })}
+      >
+        {keys.map(loggerName => {
+          const level = levels[loggerName];
+          if (level != null) {
+            return (
+              <div
+                key={loggerName}
+                className={css({
+                  display: 'contents',
+                  ':hover': {
+                    color: 'var(--hoverFgColor)',
+                    '& > div:first-child': {
+                      textDecoration: 'underline',
+                    },
+                  },
+                })}
+              >
+                <div>{loggerName}</div>
+                {LEVELS.map(lvl => {
+                  const item = (
+                    <span
+                      onClick={() => changeLevel(loggerName, lvl)}
+                      className={cx(linkStyle, css({ marginLeft: '5px' }))}
+                    >
+                      {lvl}
+                    </span>
+                  );
+                  if (level.effectiveLevel !== lvl) {
+                    return (
+                      <div key={lvl} className={levelStyle}>
+                        {item}
+                      </div>
+                    );
+                  } else if (level.effectiveLevel === level.level) {
+                    return (
+                      <div key={lvl} className={selectedStyle}>
+                        {item}
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div key={lvl} className={effectiveStyle}>
+                        {item}
+                      </div>
+                    );
+                  }
+                })}
+              </div>
+            );
+          } else {
+            return null;
+          }
+        })}
+      </div>
+    </>
+  );
+}
+
+function isClientLevel(level: number): level is LoggerLevel {
+  return level >= 0 && level <= 5;
+}
+
+function computeClientState(): { [key: string]: LevelDescriptor } {
+  const state: Record<string, LevelDescriptor> = {};
+
+  Object.entries(clientLoggers).forEach(([name, logger]) => {
+    const currentLevel = LEVELS[logger.getLevel()];
+    if (currentLevel != undefined) {
+      state[name] = {
+        level: currentLevel,
+        effectiveLevel: currentLevel,
+      };
+    }
+  });
+  return state;
+}
+
+export default function (): JSX.Element {
+  const serverLevels = useAppSelector(state => state.admin.loggers, shallowEqual);
+  const dispatch = useAppDispatch();
+
+  const [clientsState, setClientLoggers] = React.useState(computeClientState());
 
   React.useEffect(() => {
-    if (levels === undefined) {
+    if (serverLevels === undefined) {
       // not yet initialized
       dispatch(getLoggerLevels());
     }
-  }, [levels]);
+  }, [serverLevels, dispatch]);
 
-  const serverTitle = <h3>Server Loggers</h3>;
   const clientLoggers = (
-    <div>
-      <h3>Client Loggers</h3>
-      <ul>
-        {keys.map(level => (
-          <li key={level}>
-            <IconButton
-              title={level}
-              icon={levelState[level] ? faCheck : faTimes}
-              onClick={() => {
-                setClientLevels({ ...levelState, [level]: !levelState[level] });
-                levelState[level] = !levelState[level];
-              }}
-            >
-              {level}
-            </IconButton>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <LoggerGrid
+      title="Client Loggers"
+      levels={clientsState}
+      changeLevel={(loggerName, level) => {
+        const index = LEVELS.indexOf(level);
+        if (isClientLevel(index)) {
+          getLogger(loggerName).setLevel(index);
+          setClientLoggers(computeClientState());
+        }
+      }}
+    />
   );
 
-  if (levels == null) {
+  if (serverLevels == null) {
     return (
       <div>
-        {serverTitle}
         <div>
           <InlineLoading />
         </div>
@@ -85,94 +178,28 @@ export default function (): JSX.Element {
       </div>
     );
   } else {
-    const keys = Object.keys(levels)
-      .filter(logger => !search || logger.includes(search))
-      .sort();
     return (
       <div>
-        {clientLoggers}
-        {serverTitle}
+        <h2>Loggers Config</h2>
         <IconButton
           icon={faSync}
           onClick={() => {
             dispatch(getLoggerLevels());
           }}
         />
-        <div>
-          <label>
-            <IconButton icon={faSearch} />
-            <input type="text" onChange={e => setSearch(e.target.value)} />
-          </label>
-        </div>
-        <div
-          className={css({
-            display: 'grid',
-            gridTemplateColumns: 'repeat(7, max-content)',
-            '& div div': {
-              paddingRight: '10px',
-            },
-          })}
-        >
-          {keys.map(loggerName => {
-            const level = levels[loggerName];
-            if (level != null) {
-              return (
-                <div
-                  key={loggerName}
-                  className={css({
-                    display: 'contents',
-                    ':hover': {
-                      color: 'var(--hoverFgColor)',
-                      '& > div:first-child': {
-                        textDecoration: 'underline',
-                      },
-                    },
-                  })}
-                >
-                  <div>{loggerName}</div>
-                  {LEVELS.map(lvl => {
-                    const item = (
-                      <span
-                        onClick={() => {
-                          dispatch(
-                            changeLoggerLevel({
-                              loggerName: loggerName,
-                              loggerLevel: lvl,
-                            }),
-                          );
-                        }}
-                        className={cx(linkStyle, css({ marginLeft: '5px' }))}
-                      >
-                        {lvl}
-                      </span>
-                    );
-                    if (level.effectiveLevel !== lvl) {
-                      return (
-                        <div key={lvl} className={levelStyle}>
-                          {item}
-                        </div>
-                      );
-                    } else if (level.effectiveLevel === level.level) {
-                      return (
-                        <div key={lvl} className={selectedStyle}>
-                          {item}
-                        </div>
-                      );
-                    } else {
-                      return (
-                        <div key={lvl} className={effectiveStyle}>
-                          {item}
-                        </div>
-                      );
-                    }
-                  })}
-                </div>
-              );
-            } else {
-              return null;
-            }
-          })}
-        </div>
+        {clientLoggers}
+        <LoggerGrid
+          title="Server Loggers"
+          levels={serverLevels}
+          changeLevel={(loggerName, level) => {
+            dispatch(
+              changeLoggerLevel({
+                loggerName: loggerName,
+                loggerLevel: level,
+              }),
+            );
+          }}
+        />
       </div>
     );
   }

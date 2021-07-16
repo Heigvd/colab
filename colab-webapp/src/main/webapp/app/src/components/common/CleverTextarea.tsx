@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as LiveHelper from '../../LiveHelper';
-import logger from '../../logger';
+import { logger } from '../../logger';
 
 export interface Props {
   value: string;

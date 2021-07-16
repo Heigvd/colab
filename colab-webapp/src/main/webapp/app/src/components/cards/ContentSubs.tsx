@@ -5,13 +5,12 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-
-import { CardContent } from 'colab-rest-client';
-import { useAppSelector, useAppDispatch, shallowEqual } from '../../store/hooks';
-import InlineLoading from '../common/InlineLoading';
-import { getSubCards } from '../../API/api';
 import { css, cx } from '@emotion/css';
+import { CardContent } from 'colab-rest-client';
+import * as React from 'react';
+import { getSubCards } from '../../API/api';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
+import InlineLoading from '../common/InlineLoading';
 import CardThumbWithSelector from './CardThumbWithSelector';
 
 interface Props {

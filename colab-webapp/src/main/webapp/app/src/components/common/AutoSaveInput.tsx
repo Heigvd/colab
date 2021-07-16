@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import { debounce } from 'lodash';
 import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { debounce } from 'lodash';
+import * as React from 'react';
 import IconButton from './IconButton';
 import WithToolbar from './WithToolbar';
 

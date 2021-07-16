@@ -5,9 +5,8 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-
 import { css, cx } from '@emotion/css';
+import * as React from 'react';
 import Clickable from './Clickable';
 
 interface Props {

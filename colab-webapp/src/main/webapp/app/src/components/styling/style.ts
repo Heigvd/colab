@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-import { css, keyframes, cx } from '@emotion/css';
+import { css, cx, keyframes } from '@emotion/css';
 
 export const pictoColours = css({
   '--pictoBlue': '#50BFD5', // main blue

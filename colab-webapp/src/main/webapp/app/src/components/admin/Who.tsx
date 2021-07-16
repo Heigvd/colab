@@ -5,14 +5,14 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import { useAppSelector, useAppDispatch, shallowEqual } from '../../store/hooks';
-import InlineLoading from '../common/InlineLoading';
-import { getOccupiedChannels, getAllUsers } from '../../API/api';
-import { UserChannel, ProjectContentChannel, entityIs } from 'colab-rest-client';
 import { faSync } from '@fortawesome/free-solid-svg-icons';
-import UserList from './UserList';
+import { entityIs, ProjectContentChannel, UserChannel } from 'colab-rest-client';
+import * as React from 'react';
+import { getAllUsers, getOccupiedChannels } from '../../API/api';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import IconButton from '../common/IconButton';
+import InlineLoading from '../common/InlineLoading';
+import UserList from './UserList';
 
 export default function Who(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -27,13 +27,13 @@ export default function Who(): JSX.Element {
     if (usersStatus === 'NOT_INITIALIZED') {
       dispatch(getAllUsers());
     }
-  }, [usersStatus]);
+  }, [usersStatus, dispatch]);
 
   React.useEffect(() => {
     if (channels === 'NOT_INITIALIZED') {
       dispatch(getOccupiedChannels());
     }
-  }, [channels]);
+  }, [channels, dispatch]);
 
   if (channels === 'LOADING' || channels === 'NOT_INITIALIZED') {
     return (

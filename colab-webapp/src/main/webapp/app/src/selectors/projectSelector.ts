@@ -6,8 +6,8 @@
  */
 
 import { Project, Role, TeamMember } from 'colab-rest-client';
+import { customColabStateEquals, shallowEqual, useAppSelector } from '../store/hooks';
 import { StateStatus } from '../store/project';
-import { useAppSelector, shallowEqual, customColabStateEquals } from '../store/hooks';
 
 export interface UsedProject {
   project: Project | null | undefined;

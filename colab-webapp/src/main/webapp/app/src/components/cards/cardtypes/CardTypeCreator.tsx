@@ -5,15 +5,14 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
+import { faCheck, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
-
-import { css } from '@emotion/css';
-import IconButton from '../../common/IconButton';
-import { useAppDispatch } from '../../../store/hooks';
-import { faTimes, faPlus, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { entityIs } from 'colab-rest-client';
+import { useAppDispatch } from '../../../store/hooks';
+import IconButton from '../../common/IconButton';
 
 export interface Props {
   global?: boolean;

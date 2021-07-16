@@ -5,13 +5,13 @@
  * Licensed under the MIT License
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import * as API from '../API/api';
 import {
-  LevelDescriptor,
   ChannelOverview,
-  WebsocketEffectiveChannel,
   entityIs,
+  LevelDescriptor,
+  WebsocketEffectiveChannel,
 } from 'colab-rest-client';
+import * as API from '../API/api';
 
 export interface AdminState {
   loggers: { [key: string]: LevelDescriptor } | undefined | null;

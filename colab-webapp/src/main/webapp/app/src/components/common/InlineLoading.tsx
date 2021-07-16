@@ -4,10 +4,10 @@
  *
  * Licensed under the MIT License
  */
-import * as React from 'react';
-import PictoBw from '../styling/PictoBw';
-import Picto from '../styling/Picto';
 import { css, cx } from '@emotion/css';
+import * as React from 'react';
+import Picto from '../styling/Picto';
+import PictoBw from '../styling/PictoBw';
 import { pulseEase } from '../styling/style';
 
 interface Props {

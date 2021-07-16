@@ -6,8 +6,11 @@
  */
 import { Change, MicroChange } from 'colab-rest-client';
 import * as Diff from 'diff';
-//import {removeAllItems} from "./helper";
-import logger from './logger';
+import { removeAllItems } from './helper';
+import getLogger from './logger';
+
+const logger = getLogger('LiveChanges');
+logger.setLevel(4);
 
 //export const mapChangesByObject = (changes: Change[]): ChangeState => {
 //  return changes.reduce<ChangeState>(
@@ -211,24 +214,23 @@ export function shiftOffsets(offsets: Offsets, change: Change): Offsets {
   const shifted: Offsets = {};
   const microchanges = change.microchanges;
 
-  for (const offsetStringIndex in Object.keys(offsets)) {
-    let offsetIndex = +offsetStringIndex;
-    const offsetValue = offsets[offsetStringIndex] || 0;
+  logger.trace('ShiftOffsets ', offsets, ' according to ', change);
 
+  for (const offsetStringIndex in offsets) {
+    let offsetIndex = +offsetStringIndex;
+    const offsetValue = offsets[offsetIndex] || 0;
+
+    logger.trace('Process ', offsetIndex, '=', offsetValue);
     for (let i = microchanges.length - 1; i >= 0; i--) {
       const mu = microchanges[i]!;
 
       if (mu.o <= offsetIndex) {
         if (mu.t === 'D') {
           if (mu.l != null) {
-            if (mu.l != null) {
-              offsetIndex -= mu.l;
-            }
+            offsetIndex -= mu.l;
           }
-        } else {
-          if (mu.v != null) {
-            offsetIndex += mu.v.length;
-          }
+        } else if (mu.v != null) {
+          offsetIndex += mu.v.length;
         }
       }
     }
@@ -346,39 +348,109 @@ function shift(change: Change, offsets: Offsets, _forward: boolean) {
   logger.trace('Shifted ', change);
 }
 
-function propagateOffsets(changes: Change[], parent: Change, offsets: Offsets, forward: boolean) {
-  const children = changes.filter(
-    ch => ch.basedOn === parent.revision && ch.liveSession === parent.liveSession,
-  );
+function propagateOffsets(
+  changes: Change[],
+  parent: Change,
+  offsets: Offsets,
+  forward: boolean,
+  offsetFromRev: string,
+) {
+  const children = changes.filter(ch => ch.basedOn.indexOf(parent.revision) >= 0);
 
   for (const child of children) {
-    shift(child, offsets, forward);
-    const shiftedOffets = shiftOffsets(offsets, child);
-    logger.trace('Shifted Offsets: ', shiftedOffets);
-    propagateOffsets(changes, child, shiftedOffets, forward);
+    const childDep = getAllDependencies(changes, child);
+    if (childDep.indexOf(offsetFromRev) < 0) {
+      logger.debug('PropagateOffset ', offsets, '@', offsetFromRev, ' to ', child);
+      shift(child, offsets, forward);
+      logger.debug('PropagateOffsetAfterShift ', offsets);
+      const shiftedOffets = shiftOffsets(offsets, child);
+      logger.debug('Shifted Offsets: ', shiftedOffets);
+      propagateOffsets(changes, child, shiftedOffets, forward, offsetFromRev);
+    } else {
+      // merge has been done
+      logger.error('Do not go deeper than ', child);
+      const index = child.basedOn.indexOf(offsetFromRev);
+      if (index >= 0) {
+        child.basedOn.splice(index, 1);
+      }
+    }
   }
 }
 
-function rebase(allChanges: Change[], newBase: Change, change: Change) {
-  if (newBase.basedOn === change.basedOn) {
-    // Rebase siebling
-    const offsets = computeOffsets(newBase.microchanges);
+function getByRevision(changes: Change[], revision: string) {
+  return changes.find(ch => ch.revision === revision);
+}
 
-    logger.trace('Rebase Sieblings: ', change, ' on ', newBase, ' with offset ', offsets);
-    change.basedOn = newBase.revision;
+function getAllDependencies(changes: Change[], change: Change): string[] {
+  const deps: { [key: string]: boolean } = {};
+
+  const queue: Change[] = [];
+  queue.push(change);
+
+  while (queue.length > 0) {
+    const ch = queue.shift();
+
+    if (ch != null) {
+      ch.basedOn.forEach(dep => {
+        if (!deps[dep]) {
+          deps[dep] = true;
+          const parent = getByRevision(changes, dep);
+          if (parent != null && queue.indexOf(parent) < 0) {
+            queue.push(parent);
+          }
+        }
+      });
+    }
+  }
+
+  return Object.keys(deps);
+}
+
+function containsAll(list: unknown[], sublist: unknown[]): boolean {
+  for (const item of sublist) {
+    if (list.indexOf(item) < 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function setsEqual(a: string[], b: string[]) {
+  if (a.length != b.length) {
+    return false;
+  }
+
+  return containsAll(a, b);
+}
+
+function rebase(allChanges: Change[], newBase: Change, change: Change) {
+  const baseDeps = getAllDependencies(allChanges, newBase);
+  const changeDeps = getAllDependencies(allChanges, change);
+
+  if (setsEqual(baseDeps, changeDeps)) {
+    // exact same set of dependencies: changes are sieblings
+    const offsets = computeOffsets(newBase.microchanges);
+    const newBaseRev = newBase.revision;
+
+    logger.debug('Rebase Sieblings: ', change, ' on ', newBase, ' with offset ', offsets);
     shift(change, offsets, true);
-    logger.trace('Rebase done: ', change, ' on ', newBase, ' with offset ', offsets);
-    propagateOffsets(allChanges, change, offsets, true);
-  } else if (newBase.basedOn === change.revision) {
-    logger.trace('Inverse hierachy : ', change, ' on ', newBase);
+    logger.debug('Rebase done: ', change, ' on ', newBase, ' with offset ', offsets);
+    propagateOffsets(allChanges, change, offsets, true, newBaseRev);
+
+    change.basedOn = [newBaseRev];
+  } else if (setsEqual([change.revision], newBase.basedOn)) {
+    logger.debug('Inverse hierachy : ', change, ' on ', newBase);
     const offsets = computeOffsets(newBase.microchanges);
 
     newBase.basedOn = change.basedOn;
-    change.basedOn = newBase.revision;
+    change.basedOn = [newBase.revision];
 
     shift(newBase, offsets, false);
     const newBaseOffsets = computeOffsets(newBase.microchanges);
     shift(change, newBaseOffsets, true);
+  } else if (containsAll(changeDeps, baseDeps)) {
+    logger.info('Nothing to do: change includes all base parents');
   } else {
     logger.error('Changes must be sieblings or newBase must be a child of change');
   }
@@ -393,7 +465,7 @@ export const process = (
   changeset: Change[],
 ): {
   value: string;
-  revision: string;
+  revision: string[];
 } => {
   let buffer = content;
 
@@ -402,42 +474,58 @@ export const process = (
   const changes = changeset.map(c => ({
     ...c,
     microchanges: c.microchanges.map(mu => ({ ...mu })),
+    basedOn: [...c.basedOn]
   }));
+  const appliedChanges: string[] = [];
 
-  logger.trace('Apply: ', ...changes, ' to ', content);
+  const deps: string[] = [currentRevision];
+
+  logger.debug('Process: ', ...changes, ' to ', content);
   while (changes.length > 0) {
+    appliedChanges.push(currentRevision);
     // fetch all changes based on the current revision
-    const children = changes.filter(change => change.basedOn === currentRevision);
+    const children = changes.filter(change => change.basedOn.indexOf(currentRevision) >= 0);
+
     if (children.length > 0) {
-      // apply first child
-      const change = children.shift()!;
-      changes.splice(changes.indexOf(change), 1);
+      logger.debug("All @", currentRevision, " children: ", children);
+      // find a child which depends only only already applied changes
+      // This may be the case when changes order is quite messed up due to network asyncness
+      const change = children.filter(ch => containsAll(appliedChanges, ch.basedOn))[0];
 
-      const muChanges = [...change.microchanges];
-      muChanges.reverse();
+      if (change != null) {
+        const originalChange = getByRevision(changeset, change.revision);
+        if (originalChange != null) {
+          deps.push(change.revision);
+          removeAllItems(deps, originalChange.basedOn);
+        }
 
-      logger.trace('Buffer: ', buffer);
-      for (const mu of muChanges) {
-        buffer = applyChange(buffer, mu);
+        changes.splice(changes.indexOf(change), 1);
+        children.splice(children.indexOf(change), 1);
+
+        const muChanges = [...change.microchanges];
+        muChanges.reverse();
+
+        logger.debug('Process: ', change);
+        for (const mu of muChanges) {
+          buffer = applyChange(buffer, mu);
+        }
+        logger.debug(' -> ', buffer);
+
+        // rebase sieblings
+        children.reverse();
+        for (const child of children) {
+          changes.splice(changes.indexOf(child), 1);
+          rebase(changes, change, child);
+          changes.unshift(child);
+        }
+
+        currentRevision = change.revision;
+      } else {
+        logger.error('Inconsistent changes: all children have unapplied parent ', children);
+        throw new Error('Inconsistent changset: unapplied parent ' + children);
       }
-      logger.trace('Buffer: ', buffer);
-
-      // rebase sieblings
-      children.reverse();
-      for (const child of children) {
-        changes.splice(changes.indexOf(child), 1);
-        rebase(changes, change, child);
-        changes.unshift(child);
-      }
-
-      currentRevision = change.revision;
     } else {
-      logger.error(
-        'Inconsistent changes Changes: no children for @',
-        currentRevision,
-        ' in ',
-        changes,
-      );
+      logger.error('Inconsistent changes: no children for @', currentRevision, ' in ', changes);
       throw new Error('Inconsistent changset: missing ' + currentRevision + ' children');
       //break;
     }
@@ -446,7 +534,7 @@ export const process = (
 
   return {
     value: buffer,
-    revision: currentRevision,
+    revision: deps,
   };
 };
 

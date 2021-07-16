@@ -5,21 +5,21 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import { useAppDispatch } from '../../store/hooks';
-import { grantAdminRight, revokeAdminRight } from '../../API/api';
 import { css } from '@emotion/css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faSearch,
-  faTimes,
   faCheck,
-  faSortAlphaUp,
+  faSearch,
   faSortAlphaDown,
+  faSortAlphaUp,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { User } from 'colab-rest-client';
-import IconButton from '../common/IconButton';
+import * as React from 'react';
+import { grantAdminRight, revokeAdminRight } from '../../API/api';
 import { useCurrentUser } from '../../selectors/userSelector';
+import { useAppDispatch } from '../../store/hooks';
+import IconButton from '../common/IconButton';
 
 const UserComp = ({ user }: { user: User }) => {
   const dispatch = useAppDispatch();

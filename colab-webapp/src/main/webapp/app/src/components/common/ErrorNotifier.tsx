@@ -4,12 +4,11 @@
  *
  * Licensed under the MIT License
  */
-import * as React from 'react';
 import { css } from '@emotion/css';
-
-import { HttpErrorMessage, HttpException, entityIs } from 'colab-rest-client';
-import { useAppDispatch, useAppSelector, shallowEqual } from '../../store/hooks';
+import { entityIs, HttpErrorMessage, HttpException } from 'colab-rest-client';
+import * as React from 'react';
 import { closeError } from '../../store/error';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 
 function prettyPrintError(error: HttpException | string): string {
   if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage')) {

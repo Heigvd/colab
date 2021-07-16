@@ -11,9 +11,14 @@ import ch.colabproject.colab.api.microchanges.model.MicroChange;
 import ch.colabproject.colab.api.microchanges.model.MicroChange.Type;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,6 +151,21 @@ public class LiveUpdates implements Serializable {
     }
 
     /**
+     * Get change by revision
+     *
+     * @param changes  all changes
+     * @param revision
+     *
+     * @return the change wich the given revision or null if such a change does not exist
+     */
+    public Change getByRevision(List<Change> changes, String revision) {
+        Optional<Change> findAny = changes.stream()
+            .filter(ch -> ch.getRevision().equals(revision))
+            .findAny();
+        return findAny.isPresent() ? findAny.get() : null;
+    }
+
+    /**
      * Get changes which are direct children of given parent
      *
      * @param changes all changes
@@ -155,9 +175,9 @@ public class LiveUpdates implements Serializable {
      */
     public List<Change> getByParent(List<Change> changes, String basedOn) {
         List<Change> collect = changes.stream()
-            .filter(ch -> ch.getBasedOn().equals(basedOn))
+            .filter(ch -> ch.getBasedOn().contains(basedOn))
             .collect(Collectors.toList());
-        return new ArrayList<Change>(collect);
+        return new ArrayList<>(collect);
     }
 
     /**
@@ -173,10 +193,10 @@ public class LiveUpdates implements Serializable {
         logger.trace("Get Children By Parent And Session");
 
         List<Change> collect = changes.stream()
-            .filter(ch -> ch.getBasedOn().equals(parent.getRevision())
+            .filter(ch -> ch.getBasedOn().contains(parent.getRevision())
             && ch.getLiveSession().equals(parent.getLiveSession()))
             .collect(Collectors.toList());
-        return new ArrayList<Change>(collect);
+        return new ArrayList<>(collect);
     }
 
     /**
@@ -201,9 +221,8 @@ public class LiveUpdates implements Serializable {
         Map<Integer, Integer> modified = new HashMap<>();
 
         // shift offsets after current index
-        for (var entry : offsets.entrySet()) {
+        offsets.entrySet().forEach(entry -> {
             Integer key = entry.getKey();
-
             if (key > index && key < index + value) {
                 logger.trace("CONFLIT");
             }
@@ -220,16 +239,16 @@ public class LiveUpdates implements Serializable {
                     modified.put(newKey, newValue);
                 }
             }
-        }
+        });
 
         logger.trace("  modOffset.third " + modified);
 
         // merge shifted offsets
-        for (var entry : modified.entrySet()) {
+        modified.entrySet().forEach(entry -> {
             Integer key = entry.getKey();
             int current = entry.getValue();
             offsets.put(key, current);
-        }
+        });
 
         logger.trace(" mod Offsets.done " + offsets);
     }
@@ -422,7 +441,7 @@ public class LiveUpdates implements Serializable {
     }
 
     /**
-     * Compute shifed offset by reflecting changes.
+     * Compute shifted offset by reflecting changes.
      *
      * @param offsets original offsets
      * @param change  change
@@ -432,21 +451,23 @@ public class LiveUpdates implements Serializable {
     private Map<Integer, Integer> shiftOffsets(Map<Integer, Integer> offsets, Change change) {
         Map<Integer, Integer> shifted = new HashMap<>();
 
-        for (Map.Entry<Integer, Integer> entry : offsets.entrySet()) {
+        offsets.entrySet().forEach(entry -> {
             Integer offsetIndex = entry.getKey();
             Integer offsetValue = entry.getValue();
 
             List<MicroChange> muChanges = change.getMicrochanges();
             for (int i = muChanges.size() - 1; i >= 0; i--) {
                 MicroChange mu = muChanges.get(i);
-                if (mu.getT() == MicroChange.Type.D) {
-                    offsetIndex -= mu.getL();
-                } else if (mu.getT() == MicroChange.Type.I) {
-                    offsetIndex += mu.getV().length();
+                if (mu.getO() <= offsetIndex) {
+                    if (mu.getT() == MicroChange.Type.D) {
+                        offsetIndex -= mu.getL();
+                    } else if (mu.getT() == MicroChange.Type.I) {
+                        offsetIndex += mu.getV().length();
+                    }
                 }
             }
             shifted.put(offsetIndex, offsetValue);
-        }
+        });
 
         return shifted;
     }
@@ -459,17 +480,82 @@ public class LiveUpdates implements Serializable {
      *
      * @return conflict free propagation or not
      */
-    private boolean propagateOffsets(List<Change> changes, Change parent, Map<Integer, Integer> offsets, boolean forward) {
+    private boolean propagateOffsets(List<Change> changes, Change parent, Map<Integer, Integer> offsets, boolean forward, String offsetFromRev) {
         boolean conflictFree = true;
 
-        for (Change child : getByParentAndSession(changes, parent)) {
-            // should propagate to children from same LiveSession only
-            boolean shiftFree = this.shift(child, offsets, forward);
-            Map<Integer, Integer> shiftedOffsets = shiftOffsets(offsets, child);
-            boolean pFree = this.propagateOffsets(changes, child, shiftedOffsets, forward);
-            conflictFree = conflictFree && shiftFree && pFree;
+        for (Change child : getByParent(changes, parent.getRevision())) {
+            Set<String> childDeps = getAllDependencies(changes, child);
+            if (!childDeps.contains(offsetFromRev)) {
+                logger.debug("PropagateOffset {}@{} to {}", offsets, offsetFromRev, child);
+                // should propagate to children which are not based on the offsetsFromRev
+                boolean shiftFree = this.shift(child, offsets, forward);
+                Map<Integer, Integer> shiftedOffsets = shiftOffsets(offsets, child);
+                logger.debug("Shifted Offsets: {}", shiftedOffsets);
+                boolean pFree = this.propagateOffsets(changes, child, shiftedOffsets, forward, offsetFromRev);
+                conflictFree = conflictFree && shiftFree && pFree;
+            } else {
+                //merge has been done
+                HashSet<String> newDeps = new HashSet<>(child.getBasedOn());
+                newDeps.remove(offsetFromRev);
+                logger.error("Do not go deeper than {}, now based on {}", child, newDeps);
+                child.setBasedOn(newDeps);
+                //child.getBasedOn().remove(offsetFromRev);
+            }
         }
         return conflictFree;
+    }
+
+    /**
+     * Get the full set of revision the given change depends on
+     *
+     * @param changes full set of changes
+     * @param change  the change
+     *
+     * @return set of dependencies
+     */
+    private Set<String> getAllDependencies(List<Change> changes, Change change) {
+        Set<String> deps = new HashSet<>();
+
+        List<Change> queue = new LinkedList<>();
+        queue.add(change);
+
+        while (!queue.isEmpty()) {
+            Change ch = queue.remove(0);
+            ch.getBasedOn().forEach(dep -> {
+                if (!deps.contains(dep)) {
+                    deps.add(dep);
+                    Change parent = getByRevision(changes, dep);
+                    if (parent != null && !queue.contains(parent)) {
+                        queue.add(parent);
+                    }
+                }
+            });
+        }
+
+        return deps;
+    }
+
+    /**
+     * Do sets equals?
+     *
+     * @param a first set
+     * @param b second set
+     *
+     * @return true if sets equal
+     */
+    private boolean setsEqual(Set<String> a, Set<String> b) {
+        if (a == null && b == null) {
+            // both null equals
+            return true;
+        } else if (a == null || b == null) {
+            // only one is null
+            return false;
+        } else {
+            if (a.size() != b.size()) {
+                return false;
+            }
+            return a.containsAll(b);
+        }
     }
 
     /**
@@ -481,23 +567,29 @@ public class LiveUpdates implements Serializable {
      *
      * @return true if rebase has been done without conflict
      */
-    private boolean rebase(Change newBase, Change change) {
-        if (newBase.getBasedOn().equals(change.getBasedOn())) {
+    private boolean rebase(List<Change> changes, Change newBase, Change change) {
+        Set<String> baseDeps = getAllDependencies(changes, newBase);
+        Set<String> changeDeps = getAllDependencies(changes, change);
+
+        if (setsEqual(baseDeps, changeDeps)) {
+            // exact same set of dependencies: changes are sieblings
             Map<Integer, Integer> offsets = computeOffset(newBase);
             boolean conflictFree = true;
+            String newBaseRev = newBase.getRevision();
 
-            logger.trace("Rebase Sieblings: " + change + " on " + newBase
+            logger.debug("Rebase Sieblings: " + change + " on " + newBase
                 + " with offset " + offsets);
 
-            change.setBasedOn(newBase.getRevision());
-
             conflictFree = shift(change, offsets, true) && conflictFree;
-            conflictFree = propagateOffsets(pendingChanges, change,
-                offsets, true) && conflictFree;
+            conflictFree = propagateOffsets(changes, change,
+                offsets, true, newBaseRev) && conflictFree;
+
+            // Update parents after rebase/propagation step
+            change.setBasedOn(Set.of(newBase.getRevision()));
             logger.trace(" -> " + change);
             return conflictFree;
-        } else if (newBase.getBasedOn().equals(change.getRevision())) {
-            logger.trace("Inverse hierachy : " + change + " on " + newBase);
+        } else if (setsEqual(Set.of(change.getRevision()), newBase.getBasedOn())) {
+            logger.debug("Inverse hierachy : " + change + " on " + newBase);
             // [x] -> change -> newBase
             // ==>[x] ->  newBase -> change
 
@@ -506,7 +598,7 @@ public class LiveUpdates implements Serializable {
             Map<Integer, Integer> changeOffsets = computeOffset(change);
 
             newBase.setBasedOn(change.getBasedOn());
-            change.setBasedOn(newBase.getRevision());
+            change.setBasedOn(Set.of(newBase.getRevision()));
 
             conflictFree = shift(newBase, changeOffsets, false) && conflictFree;
 
@@ -517,8 +609,12 @@ public class LiveUpdates implements Serializable {
             logger.trace(" -> " + change);
 
             return conflictFree;
+        } else if (changeDeps.containsAll(baseDeps)) {
+            // nothing to do as all deps are already known
+            logger.info("Nothing to do: change includes all base parents");
+            return true;
         } else {
-            logger.error("Changes must be sieblings or newBase must be a child of change");
+            logger.error("Not yet implemented: Changes: {} Change: {} NewBase: {} BaseDeps: {} ChangeDeps: {}", changes, change.getRevision(), newBase.getRevision(), baseDeps, changeDeps);
             return false;
         }
     }
@@ -538,6 +634,10 @@ public class LiveUpdates implements Serializable {
             .collect(Collectors.toList());
     }
 
+    private List<String> mapChangesRevision(Collection<Change> changes) {
+        return changes.stream().map(Change::getRevision).collect(Collectors.toList());
+    }
+
     /**
      * Apply all changes.
      *
@@ -555,41 +655,58 @@ public class LiveUpdates implements Serializable {
 
         String currentRevision = this.revision;
 
-        List<Change> changes = this.getPendingChanges();
+        List<Change> allChanges = this.getPendingChanges();
+        List<Change> changes = new ArrayList<>(allChanges);
+
+        Set<String> appliedChanges = new HashSet<>();
 
         while (!changes.isEmpty()) {
+            appliedChanges.add(currentRevision);
             // fetch all changes based on the current revision
             List<Change> children = getByParent(changes, currentRevision);
             if (!children.isEmpty()) {
                 //Map<Integer, Integer> offsets = new HashMap<>();
                 //logger.trace("new empty offsets " + offsets);
+                logger.debug("All @{} children: {}", currentRevision, mapChangesRevision(children));
 
-                // apply first child only
-                Change change = children.remove(0);
-                changes.remove(change);
+                // find a child which depends only only already applied changes
+                // NB: as I understand the algorithm, I can't figure out a case
+                //     such a child-with-unapplied-parent may event exists...
+                Optional<Change> optChange = children.stream()
+                    .filter(ch -> appliedChanges.containsAll(ch.getBasedOn()))
+                    .findFirst();
+                if (optChange.isPresent()) {
+                    Change change = optChange.get();
+                    // clean lists
+                    changes.remove(change);
+                    children.remove(change);
 
-                logger.trace("Process: {}", change);
+                    logger.debug("Process: {}", change);
 
-                List<MicroChange> muChanges = change.getMicrochanges();
-                for (int i = muChanges.size() - 1; i >= 0; i--) {
-                    applyChange(buffer, muChanges.get(i));
-                    logger.trace("  " + i + ")" + buffer);
-                }
-
-                logger.trace(" -> {}", buffer);
-                //logger.trace("Offsets" + offsets);
-                // rebase others children
-
-                changes.removeAll(children);
-                for (int i = children.size() - 1; i >= 0; i--) {
-                    Change child = children.remove(i);
-                    if (!rebase(change, child) && strict) {
-                        // todo throw ?
-                        logger.error("Conflict");
+                    List<MicroChange> muChanges = change.getMicrochanges();
+                    for (int i = muChanges.size() - 1; i >= 0; i--) {
+                        applyChange(buffer, muChanges.get(i));
+                        logger.trace("  " + i + ")" + buffer);
                     }
-                    changes.add(0, child);
+
+                    logger.debug(" -> {}", buffer);
+                    //logger.trace("Offsets" + offsets);
+                    // rebase others children
+
+                    changes.removeAll(children);
+                    for (int i = children.size() - 1; i >= 0; i--) {
+                        Change child = children.remove(i);
+                        if (!rebase(allChanges, change, child) && strict) {
+                            // todo throw ?
+                            logger.error("Conflict");
+                        }
+                        changes.add(0, child);
+                    }
+                    currentRevision = change.getRevision();
+                } else {
+                    logger.error("No child found in {}", children);
+                    break;
                 }
-                currentRevision = change.getRevision();
 
             } else {
                 logger.error("Some children without any parents left: {}", changes);

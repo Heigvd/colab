@@ -4,9 +4,9 @@
  *
  * Licensed under the MIT License
  */
-import { Component, ErrorInfo, ReactNode } from 'react';
 import * as React from 'react';
-import logger from '../../logger';
+import { Component, ErrorInfo, ReactNode } from 'react';
+import { logger } from '../../logger';
 
 interface Props {
   children: ReactNode;

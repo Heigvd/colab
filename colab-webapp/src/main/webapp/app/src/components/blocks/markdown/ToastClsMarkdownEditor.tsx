@@ -5,13 +5,11 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-
-import 'codemirror/lib/codemirror.css';
 import '@toast-ui/editor/dist/toastui-editor.css';
-
 import { Editor } from '@toast-ui/react-editor';
-import logger from '../../../logger';
+import 'codemirror/lib/codemirror.css';
+import * as React from 'react';
+import { logger } from '../../../logger';
 
 export interface MarkdownEditorProps {
   value: string;

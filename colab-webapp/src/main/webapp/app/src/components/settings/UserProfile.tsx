@@ -5,11 +5,11 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import { useAppDispatch } from '../../store/hooks';
-import { User } from 'colab-rest-client';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
+import { User } from 'colab-rest-client';
+import * as React from 'react';
 import { updateUser } from '../../API/api';
+import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/IconButton';
 
 interface UserProfileProps {

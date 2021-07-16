@@ -5,12 +5,12 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { faSave } from '@fortawesome/free-regular-svg-icons';
-import PasswordStrengthBar from 'react-password-strength-bar';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import * as React from 'react';
+import PasswordStrengthBar from 'react-password-strength-bar';
 import { updateLocalAccountPassword } from '../../API/api';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import IconButton from '../common/IconButton';
 import { linkStyle } from '../styling/style';
 

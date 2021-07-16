@@ -5,16 +5,15 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
+import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
+import { CardType } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
-
-import { css } from '@emotion/css';
 import { useAppDispatch } from '../../../store/hooks';
-import { CardType } from 'colab-rest-client';
 import AutoSaveInput from '../../common/AutoSaveInput';
-import { cardShadow } from '../../styling/style';
 import IconButton from '../../common/IconButton';
-import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
+import { cardShadow } from '../../styling/style';
 
 interface DisplayProps {
   cardType: CardType;

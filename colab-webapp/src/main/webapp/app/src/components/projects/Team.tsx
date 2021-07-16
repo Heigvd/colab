@@ -4,22 +4,21 @@
  *
  * Licensed under the MIT License
  */
-import * as React from 'react';
-
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { css } from '@emotion/css';
+import { faCheck, faPaperPlane, faPlus, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Project, Role, TeamMember } from 'colab-rest-client';
-import InlineLoading from '../common/InlineLoading';
+import * as React from 'react';
 import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
-import { faCheck, faPaperPlane, faPlus, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { linkStyle } from '../styling/style';
-import IconButton from '../common/IconButton';
 import { useProjectTeam } from '../../selectors/projectSelector';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { Destroyer } from '../common/Destroyer';
+import IconButton from '../common/IconButton';
+import InlineInput from '../common/InlineInput';
+import InlineLoading from '../common/InlineLoading';
 import OpenClose from '../common/OpenClose';
 import WithToolbar from '../common/WithToolbar';
-import { Destroyer } from '../common/Destroyer';
-import { css } from '@emotion/css';
-import InlineInput from '../common/InlineInput';
+import { linkStyle } from '../styling/style';
 
 const gridNewLine = css({
   gridColumnStart: 1,

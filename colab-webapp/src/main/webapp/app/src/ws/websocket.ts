@@ -5,14 +5,17 @@
  * Licensed under the MIT License
  */
 
-import { WsChannelUpdate, entityIs } from 'colab-rest-client';
-import { dispatch } from '../store/store';
+import { entityIs, WsChannelUpdate } from 'colab-rest-client';
+import { initSocketId } from '../API/api';
+import { checkUnreachable } from '../helper';
+import getLogger from '../logger';
 import * as AdminActions from '../store/admin';
 import * as ErrorActions from '../store/error';
-import { initSocketId } from '../API/api';
-import logger from '../logger';
-import { checkUnreachable } from '../helper';
+import { dispatch } from '../store/store';
 import { processMessage } from './wsThunkActions';
+
+const logger = getLogger('WebSocket');
+logger.setLevel(3);
 
 const onChannelUpdate = (message: WsChannelUpdate) => {
   dispatch(AdminActions.channelUpdate(message));

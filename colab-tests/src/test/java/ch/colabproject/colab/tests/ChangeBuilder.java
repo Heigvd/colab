@@ -8,6 +8,7 @@ package ch.colabproject.colab.tests;
 
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.microchanges.model.MicroChange;
+import java.util.Set;
 
 /**
  *
@@ -17,10 +18,10 @@ public class ChangeBuilder {
 
     private Change change;
 
-    public static ChangeBuilder create(String liveSession, String basedOn, String newRevision) {
+    public static ChangeBuilder create(String liveSession, String newRevision, String... basedOn) {
         ChangeBuilder cb = new ChangeBuilder();
         cb.change = new Change();
-        cb.change.setBasedOn(basedOn);
+        cb.change.setBasedOn(Set.of((String[]) basedOn));
         cb.change.setLiveSession(liveSession);
         cb.change.setRevision(liveSession + "::" + newRevision);
 

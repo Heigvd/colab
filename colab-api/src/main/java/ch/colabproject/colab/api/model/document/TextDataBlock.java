@@ -44,7 +44,7 @@ public class TextDataBlock extends Block {
      * Current revision hash
      */
     @NotBlank
-    private String revision;
+    private String revision = "0";
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters

@@ -5,11 +5,11 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import IconButton from './IconButton';
 import { css } from '@emotion/css';
-import logger from '../../logger';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import * as React from 'react';
+import { logger } from '../../logger';
+import IconButton from './IconButton';
 
 export interface Props {
   label?: string;

@@ -4,15 +4,14 @@
  *
  * Licensed under the MIT License
  */
-import * as React from 'react';
 import { css, cx } from '@emotion/css';
-
-import FormContainer from '../common/FormContainer';
-import { darkMode, linkStyle } from '../styling/style';
+import * as React from 'react';
 import { requestPasswordReset } from '../../API/api';
-import { useAppDispatch } from '../../store/hooks';
-import { InlineLink } from '../common/Link';
 import { buildLinkWithQueryParam } from '../../helper';
+import { useAppDispatch } from '../../store/hooks';
+import FormContainer from '../common/FormContainer';
+import { InlineLink } from '../common/Link';
+import { darkMode, linkStyle } from '../styling/style';
 
 interface Props {
   redirectTo: string | null;

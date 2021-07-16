@@ -6,13 +6,13 @@
  */
 
 import * as React from 'react';
-import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import { SecondLevelLink } from '../common/Link';
-import LoggersConfig from './LoggersConfig';
-import { AllProjects } from '../projects/ProjectList';
-import Who from './Who';
-import AllUsers from './AllUsers';
+import { HashRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import GlobalCardTypeList from '../cards/cardtypes/GlobalCardTypeList';
+import { SecondLevelLink } from '../common/Link';
+import { AllProjects } from '../projects/ProjectList';
+import AllUsers from './AllUsers';
+import LoggersConfig from './LoggersConfig';
+import Who from './Who';
 
 export default (): JSX.Element => {
   return (

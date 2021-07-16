@@ -5,15 +5,14 @@
  * Licensed under the MIT License
  */
 
+import { Account, entityIs } from 'colab-rest-client';
 import * as React from 'react';
-
-import { HashRouter as Router, Switch, Route, useParams } from 'react-router-dom';
-import UserProfile from './UserProfile';
-import { SecondLevelLink } from '../common/Link';
-import { useAppSelector, shallowEqual } from '../../store/hooks';
-import { entityIs, Account } from 'colab-rest-client';
-import LocalAccount from './LocalAccount';
+import { HashRouter as Router, Route, Switch, useParams } from 'react-router-dom';
 import { useCurrentUser } from '../../selectors/userSelector';
+import { shallowEqual, useAppSelector } from '../../store/hooks';
+import { SecondLevelLink } from '../common/Link';
+import LocalAccount from './LocalAccount';
+import UserProfile from './UserProfile';
 
 function accountTitle(account: Account) {
   if (entityIs(account, 'LocalAccount')) {

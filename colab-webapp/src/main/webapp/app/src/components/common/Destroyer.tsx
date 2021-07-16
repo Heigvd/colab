@@ -5,8 +5,8 @@
  * Licensed under the MIT License
  */
 
+import { faCheck, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import { faTimes, faCheck, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import IconButton from './IconButton';
 
 export interface Props {

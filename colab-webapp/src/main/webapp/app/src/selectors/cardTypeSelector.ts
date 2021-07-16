@@ -5,8 +5,8 @@
  * Licensed under the MIT License
  */
 
-import { useAppSelector, customColabStateEquals } from '../store/hooks';
 import { CardType, CardTypeRef, entityIs } from 'colab-rest-client';
+import { customColabStateEquals, useAppSelector } from '../store/hooks';
 import { ColabState } from '../store/store';
 
 export interface CardTypeState {

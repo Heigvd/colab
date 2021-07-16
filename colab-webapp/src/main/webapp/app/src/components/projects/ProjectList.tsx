@@ -5,20 +5,19 @@
  * Licensed under the MIT License
  */
 
+import { css, cx } from '@emotion/css';
+import { faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { AsyncThunk } from '@reduxjs/toolkit';
+import { Project } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-
-import { faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
-import { Project } from 'colab-rest-client';
-import { css, cx } from '@emotion/css';
-import { useAppDispatch, useAppSelector, shallowEqual } from '../../store/hooks';
-import InlineLoading from '../common/InlineLoading';
-import { Destroyer } from '../common/Destroyer';
-import { InlineLink } from '../common/Link';
-import { AsyncThunk } from '@reduxjs/toolkit';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import { StateStatus } from '../../store/project';
 import AutoSaveInput from '../common/AutoSaveInput';
+import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/IconButton';
+import InlineLoading from '../common/InlineLoading';
+import { InlineLink } from '../common/Link';
 import { cardStyle } from '../styling/style';
 
 interface Props {
@@ -104,7 +103,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
     if (status === 'NOT_INITIALIZED') {
       dispatch(reload());
     }
-  }, [status, dispatch]);
+  }, [status, reload, dispatch]);
 
   if (status === 'NOT_INITIALIZED') {
     return <InlineLoading />;

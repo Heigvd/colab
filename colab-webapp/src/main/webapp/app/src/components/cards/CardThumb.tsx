@@ -5,12 +5,11 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-
-import { Card, CardContent } from 'colab-rest-client';
 import { css } from '@emotion/css';
-import ContentSubs from './ContentSubs';
+import { Card, CardContent } from 'colab-rest-client';
+import * as React from 'react';
 import CardLayout from './CardLayout';
+import ContentSubs from './ContentSubs';
 
 interface Props {
   card: Card;

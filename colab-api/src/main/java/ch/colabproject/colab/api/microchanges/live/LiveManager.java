@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.cache.Cache;
@@ -157,11 +158,15 @@ public class LiveManager implements Serializable {
                 LiveUpdates get = get(id);
                 List<Change> changes = get.getPendingChanges();
 
-                String basedOn = patch.getBasedOn();
+                Set<String> basedOn = patch.getBasedOn();
 
-                boolean parentExists = block.getRevision().equals(basedOn)
+                boolean parentExists = basedOn.contains(block.getRevision())
                     || changes.stream()
-                        .filter(change -> change.getRevision().equals(basedOn))
+                        .filter(change
+                            -> basedOn.stream()
+                            .filter(rev -> change.getRevision().equals(rev))
+                            .findFirst().isPresent()
+                        )
                         .findFirst().isPresent();
 
                 if (!parentExists) {

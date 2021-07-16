@@ -5,30 +5,28 @@
  * Licensed under the MIT License
  */
 
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
-  ColabClient,
+  AbstractCardType,
   AuthInfo,
-  SignUpInfo,
-  Project,
+  Block,
+  BlockDocument,
   Card,
-  entityIs,
-  User,
-  WsSessionIdentifier,
   CardContent,
   CardType,
-  Document,
-  BlockDocument,
-  Block,
-  AbstractCardType,
   Change,
+  ColabClient,
+  Document,
+  entityIs,
+  Project,
   Role,
+  SignUpInfo,
+  User,
+  WsSessionIdentifier,
 } from 'colab-rest-client';
-
-import { getStore, ColabState } from '../store/store';
-
-import { addError } from '../store/error';
 import { hashPassword } from '../SecurityHelper';
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { addError } from '../store/error';
+import { ColabState, getStore } from '../store/store';
 
 const restClient = ColabClient('', error => {
   if (entityIs(error, 'HttpException')) {

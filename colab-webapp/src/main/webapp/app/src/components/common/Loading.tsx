@@ -4,8 +4,8 @@
  *
  * Licensed under the MIT License
  */
-import * as React from 'react';
 import { css } from '@emotion/css';
+import * as React from 'react';
 import { fullPageStyle } from '../styling/style';
 import InlineLoading from './InlineLoading';
 

@@ -5,22 +5,21 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import * as API from '../../API/api';
-
-import { Card, CardContent } from 'colab-rest-client';
 import { css } from '@emotion/css';
-import ContentSubs from './ContentSubs';
-import CardLayout from './CardLayout';
+import { faCheck, faPalette } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Card, CardContent } from 'colab-rest-client';
+import * as React from 'react';
+import { TwitterPicker } from 'react-color';
+import * as API from '../../API/api';
+import { useCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AutoSaveInput from '../common/AutoSaveInput';
-import { TwitterPicker } from 'react-color';
-import OpenClose from '../common/OpenClose';
-import { faCheck, faPalette } from '@fortawesome/free-solid-svg-icons';
 import FitSpace from '../common/FitSpace';
-import { useCardType } from '../../selectors/cardTypeSelector';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import OpenClose from '../common/OpenClose';
 import { DocumentEditorWrapper } from '../documents/DocumentEditorWrapper';
+import CardLayout from './CardLayout';
+import ContentSubs from './ContentSubs';
 
 interface Props {
   card: Card;

@@ -5,8 +5,8 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
 import { css } from '@emotion/css';
+import * as React from 'react';
 
 export interface Props {
   children: JSX.Element;

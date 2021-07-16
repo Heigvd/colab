@@ -5,21 +5,20 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
+import { Card } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
-
+import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import {
+  customColabStateEquals,
+  shallowEqual,
   useAppDispatch,
   useAppSelector,
-  shallowEqual,
-  customColabStateEquals,
 } from '../../../store/hooks';
-import { css } from '@emotion/css';
-import InlineLoading from '../../common/InlineLoading';
-import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { Card } from 'colab-rest-client';
-import { cardShadow } from '../../styling/style';
 import CardCreator from '../../cards/CardCreator';
+import InlineLoading from '../../common/InlineLoading';
+import { cardShadow } from '../../styling/style';
 
 const flexRow = css({
   display: 'flex',

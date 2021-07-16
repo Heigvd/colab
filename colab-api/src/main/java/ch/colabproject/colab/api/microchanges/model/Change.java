@@ -38,10 +38,10 @@ public class Change implements Serializable, WithWebsocketChannels {
     private Long atId;
 
     /**
-     * Revision this change is based on. 0 (zero) means root change
+     * Revision this change is based on.
      */
     @NotNull
-    private String basedOn;
+    private Set<String> basedOn;
 
     /**
      * new revision
@@ -132,16 +132,16 @@ public class Change implements Serializable, WithWebsocketChannels {
      *
      * @return the revision hash
      */
-    public String getBasedOn() {
+    public Set<String> getBasedOn() {
         return basedOn;
     }
 
     /**
      * Set the revision this change is based on
      *
-     * @param basedOn the revision hash
+     * @param basedOn list of revision hash
      */
-    public void setBasedOn(String basedOn) {
+    public void setBasedOn(Set<String> basedOn) {
         this.basedOn = basedOn;
     }
 
@@ -211,7 +211,8 @@ public class Change implements Serializable, WithWebsocketChannels {
 
     @Override
     public String toString() {
-        return "Patch{rev@" + this.basedOn + " " + this.microchanges + " => @" + this.revision + "}";
+        return "Patch{rev@" + this.revision
+            + " basedOn@" + this.basedOn + " µ: "
+            + this.microchanges + "}";
     }
-
 }

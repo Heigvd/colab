@@ -4,18 +4,17 @@
  *
  * Licensed under the MIT License
  */
-import * as React from 'react';
 import { css } from '@emotion/css';
-
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
-import FormContainer from '../common/FormContainer';
-import { buttonStyle } from '../styling/style';
-import { signInWithLocalAccount } from '../../API/api';
-import { useAppDispatch } from '../../store/hooks';
-import { InlineLink } from '../common/Link';
-import IconButton from '../common/IconButton';
-import { buildLinkWithQueryParam } from '../../helper';
+import * as React from 'react';
 import { useHistory } from 'react-router-dom';
+import { signInWithLocalAccount } from '../../API/api';
+import { buildLinkWithQueryParam } from '../../helper';
+import { useAppDispatch } from '../../store/hooks';
+import FormContainer from '../common/FormContainer';
+import IconButton from '../common/IconButton';
+import { InlineLink } from '../common/Link';
+import { buttonStyle } from '../styling/style';
 
 interface Props {
   redirectTo: string | null;

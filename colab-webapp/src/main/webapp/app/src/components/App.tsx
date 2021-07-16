@@ -8,14 +8,14 @@
 import * as React from 'react';
 import { Suspense } from 'react';
 import { render } from 'react-dom';
-import { init } from '../ws/websocket';
 import { Provider } from 'react-redux';
+import { HashRouter as Router, Route, Switch, useParams } from 'react-router-dom';
 import { getStore } from '../store/store';
+import { init } from '../ws/websocket';
 import ErrorBoundary from './common/ErrorBoundary';
-import MainApp from './MainApp';
-import Loading from './common/Loading';
 import ErrorNotifier from './common/ErrorNotifier';
-import { HashRouter as Router, Switch, Route, useParams } from 'react-router-dom';
+import Loading from './common/Loading';
+import MainApp from './MainApp';
 import Token from './token/Token';
 
 /**

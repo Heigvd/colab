@@ -5,21 +5,20 @@
  * Licensed under the MIT License
  */
 
+import { css, cx } from '@emotion/css';
+import { faCheck, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-
-import { CardContent } from 'colab-rest-client';
-import IconButton from '../common/IconButton';
-import { faPlus, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
-import Overlay from '../common/Overlay';
 import { useProjectCardTypes } from '../../selectors/cardTypeSelector';
-import Loading from '../common/Loading';
-import { useAppDispatch } from '../../store/hooks';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
-import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
-import CardTypeCreator from './cardtypes/CardTypeCreator';
-import { css, cx } from '@emotion/css';
+import { useAppDispatch } from '../../store/hooks';
+import IconButton from '../common/IconButton';
+import Loading from '../common/Loading';
+import Overlay from '../common/Overlay';
 import { lightMode } from '../styling/style';
+import CardTypeCreator from './cardtypes/CardTypeCreator';
+import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
 interface Props {
   parent: CardContent;
@@ -50,7 +49,7 @@ export default function CardCreator({ parent }: Props): JSX.Element {
         dispatch(API.getPublishedCardTypes());
       }
     }
-  }, [cardTypes.projectStatus, cardTypes.publishedStatus, dispatch]);
+  }, [cardTypes.projectStatus, cardTypes.publishedStatus, state, project, dispatch]);
 
   const onSelect = React.useCallback((id: number) => {
     setSelectedType(id);

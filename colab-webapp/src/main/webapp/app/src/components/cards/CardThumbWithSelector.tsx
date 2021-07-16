@@ -5,11 +5,10 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-
 import { Card } from 'colab-rest-client';
-import VariantSelector from './VariantSelector';
+import * as React from 'react';
 import CardThumb from './CardThumb';
+import VariantSelector from './VariantSelector';
 
 interface Props {
   card: Card;

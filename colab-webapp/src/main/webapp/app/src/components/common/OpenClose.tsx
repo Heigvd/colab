@@ -5,12 +5,12 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import IconButton from './IconButton';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import Clickable from './Clickable';
 import { css } from '@emotion/css';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import * as React from 'react';
+import Clickable from './Clickable';
+import IconButton from './IconButton';
 
 type State = {
   status: 'COLLAPSED' | 'EXPANDED';

@@ -5,11 +5,11 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import { iconButton, linkStyle, iconStyle } from '../styling/style';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
 import { cx } from '@emotion/css';
+import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import * as React from 'react';
+import { iconButton, iconStyle, linkStyle } from '../styling/style';
 import Clickable from './Clickable';
 
 export interface IconButtonProps {

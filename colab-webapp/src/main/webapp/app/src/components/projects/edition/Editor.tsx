@@ -5,30 +5,29 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import * as API from '../../../API/api';
-
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import IconButton from '../../common/IconButton';
-import { HashRouter as Router, Route, Switch, useHistory, useParams } from 'react-router-dom';
 import { css } from '@emotion/css';
-import InlineLoading from '../../common/InlineLoading';
-import ContentSubs from '../../cards/ContentSubs';
-import { useProjectBeingEdited } from '../../../selectors/projectSelector';
-import { SecondLevelLink } from '../../common/Link';
-import Hierachy from './Hierachy';
-import { useAncestors, useCard, Ancestor } from '../../../selectors/cardSelector';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Card, entityIs } from 'colab-rest-client';
-import Clickable from '../../common/Clickable';
-import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
-import CardEditor from '../../cards/CardEditor';
-import VariantSelector from '../../cards/VariantSelector';
-import CardTypeList from '../../cards/cardtypes/CardTypeList';
-import WithToolbar from '../../common/WithToolbar';
+import * as React from 'react';
+import { HashRouter as Router, Route, Switch, useHistory, useParams } from 'react-router-dom';
+import * as API from '../../../API/api';
+import { Ancestor, useAncestors, useCard } from '../../../selectors/cardSelector';
+import { useProjectBeingEdited } from '../../../selectors/projectSelector';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import CardCreator from '../../cards/CardCreator';
+import CardEditor from '../../cards/CardEditor';
+import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
+import CardTypeList from '../../cards/cardtypes/CardTypeList';
+import ContentSubs from '../../cards/ContentSubs';
+import VariantSelector from '../../cards/VariantSelector';
+import Clickable from '../../common/Clickable';
 import FitSpace from '../../common/FitSpace';
+import IconButton from '../../common/IconButton';
+import InlineLoading from '../../common/InlineLoading';
+import { SecondLevelLink } from '../../common/Link';
+import WithToolbar from '../../common/WithToolbar';
 import Team from '../Team';
+import Hierachy from './Hierachy';
 
 const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   const history = useHistory();

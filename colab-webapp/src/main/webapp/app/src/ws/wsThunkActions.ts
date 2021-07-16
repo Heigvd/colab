@@ -5,29 +5,29 @@
  * Licensed under the MIT License
  */
 
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
-  Project,
-  Card,
-  entityIs,
-  User,
-  CardContent,
-  Document,
-  WsUpdateMessage,
-  TeamMember,
-  Account,
   AbstractCardType,
+  Account,
   Block,
+  Card,
+  CardContent,
   Change,
-  TypeMap,
+  Document,
+  entityIs,
   IndexEntry,
+  Project,
   Role,
+  TeamMember,
+  TypeMap,
+  User,
+  WsUpdateMessage,
 } from 'colab-rest-client';
-
+import { checkUnreachable } from '../helper';
+import getLogger from '../logger';
 import { ColabError } from '../store/error';
 
-import { createAsyncThunk } from '@reduxjs/toolkit';
-import logger from '../logger';
-import { checkUnreachable } from '../helper';
+const logger = getLogger('WebSockets');
 
 /**
  * Does the given index entry represent the given type ?

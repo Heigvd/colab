@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
+import { faCheck, faPen } from '@fortawesome/free-solid-svg-icons';
 import { debounce } from 'lodash';
-import { faPen, faCheck } from '@fortawesome/free-solid-svg-icons';
+import * as React from 'react';
 import IconButton from './IconButton';
 
 type State = {

@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 
-import * as API from '../API/api';
 import { createSlice } from '@reduxjs/toolkit';
 import { Change, entityIs } from 'colab-rest-client';
+import * as API from '../API/api';
 import { processMessage } from '../ws/wsThunkActions';
 
 export type Status = 'UNSET' | 'LOADING' | 'READY';
