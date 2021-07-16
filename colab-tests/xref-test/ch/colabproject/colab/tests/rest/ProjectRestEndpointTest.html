@@ -299,7 +299,7 @@
 <a class="jxr_linenumber" name="L291" href="#L291">291</a>         TeamMember me = members.get(0);
 <a class="jxr_linenumber" name="L292" href="#L292">292</a> 
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>         Assertions.assertTrue(me.getRoleIds().isEmpty());
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>         client.teamRestEndpoint.giveRole(hitchhicker.getId(), me.getId());
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>         client.teamRestEndpoint.giveRoleTo(hitchhicker.getId(), me.getId());
 <a class="jxr_linenumber" name="L295" href="#L295">295</a> 
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>         me = client.teamRestEndpoint.getTeamMember(me.getId());
 <a class="jxr_linenumber" name="L297" href="#L297">297</a>         hitchhicker = client.teamRestEndpoint.getRole(hitchhicker.getId());

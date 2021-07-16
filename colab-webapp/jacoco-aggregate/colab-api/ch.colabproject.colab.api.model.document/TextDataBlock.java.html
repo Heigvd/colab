@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.validation.constraints.NotBlank;
 
 /**
  * Piece of a block document containing text data
@@ -21,14 +22,13 @@ import javax.persistence.Lob;
 // TODO adjust the constraints / indexes
 @Entity
 @DiscriminatorValue(&quot;TEXT_DATA&quot;)
-<span class="nc" id="L24">public class TextDataBlock extends Block {</span>
+<span class="nc" id="L25">public class TextDataBlock extends Block {</span>
 
     private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * The mime type of the information
      */
@@ -40,68 +40,90 @@ import javax.persistence.Lob;
     @Lob
     private String textData;
 
+    /**
+     * Current revision hash
+     */
+<span class="nc" id="L46">    @NotBlank</span>
+    private String revision = &quot;0&quot;;
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the mime type of the information
      */
     public String getMimeType() {
-<span class="nc" id="L51">        return mimeType;</span>
+<span class="nc" id="L56">        return mimeType;</span>
     }
 
     /**
      * @param mimeType the mime type of the information to set
      */
     public void setMimeType(String mimeType) {
-<span class="nc" id="L58">        this.mimeType = mimeType;</span>
-<span class="nc" id="L59">    }</span>
+<span class="nc" id="L63">        this.mimeType = mimeType;</span>
+<span class="nc" id="L64">    }</span>
 
     /**
      * @return the information contained
      */
     public String getTextData() {
-<span class="nc" id="L65">        return textData;</span>
+<span class="nc" id="L70">        return textData;</span>
     }
 
     /**
      * @param data the information contained to set
      */
     public void setTextData(String data) {
-<span class="nc" id="L72">        this.textData = data;</span>
-<span class="nc" id="L73">    }</span>
+<span class="nc" id="L77">        this.textData = data;</span>
+<span class="nc" id="L78">    }</span>
+
+    /**
+     * Get the value of revision
+     *
+     * @return the value of revision
+     */
+    public String getRevision() {
+<span class="nc" id="L86">        return revision;</span>
+    }
+
+    /**
+     * Set the value of revision
+     *
+     * @param revision new value of revision
+     */
+    public void setRevision(String revision) {
+<span class="nc" id="L95">        this.revision = revision;</span>
+<span class="nc" id="L96">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (other instanceof TextDataBlock) {</span>
-<span class="nc" id="L82">            TextDataBlock o = (TextDataBlock) other;</span>
-<span class="nc" id="L83">            super.merge(other);</span>
-<span class="nc" id="L84">            this.setMimeType(o.getMimeType());</span>
-<span class="nc" id="L85">            this.setTextData(o.getTextData());</span>
-<span class="nc" id="L86">        } else {</span>
-<span class="nc" id="L87">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (other instanceof TextDataBlock) {</span>
+<span class="nc" id="L104">            TextDataBlock o = (TextDataBlock) other;</span>
+<span class="nc" id="L105">            super.merge(other);</span>
+<span class="nc" id="L106">            this.setMimeType(o.getMimeType());</span>
+<span class="nc" id="L107">            this.setTextData(o.getTextData());</span>
+<span class="nc" id="L108">        } else {</span>
+<span class="nc" id="L109">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L89">    }</span>
+<span class="nc" id="L111">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L93">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L115">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L99">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L121">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L104">        return &quot;TextDataBlock{&quot; + super.toPartialString() + &quot;, mimeType=&quot; + mimeType + &quot;}&quot;;</span>
+<span class="nc" id="L126">        return &quot;TextDataBlock{&quot; + super.toPartialString() + &quot;, mimeType=&quot; + mimeType + &quot;}&quot;;</span>
     }
 
 }

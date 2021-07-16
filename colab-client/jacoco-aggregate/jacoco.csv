@@ -13,10 +13,10 @@ colab-client/colab-api,ch.colabproject.colab.api.rest.utils,EjbExceptionMapper,7
 colab-client/colab-api,ch.colabproject.colab.api.rest.utils,AbstractExceptionMapper,78,0,10,0,26,0,9,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.utils,RequestFilter,70,0,2,0,16,0,5,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,TokenFacade,328,0,24,0,97,0,22,0,10,0
-colab-client/colab-api,ch.colabproject.colab.api.ejb,BlockFacade,199,0,22,0,57,0,18,0,7,0
+colab-client/colab-api,ch.colabproject.colab.api.ejb,BlockFacade,202,0,22,0,58,0,18,0,7,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,ActivityFlowLinkFacade,224,0,30,0,64,0,22,0,7,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.ChannelType,34,0,0,0,4,0,1,0,1,0
-colab-client/colab-api,ch.colabproject.colab.api.ejb,TeamFacade,183,0,26,0,51,0,22,0,9,0
+colab-client/colab-api,ch.colabproject.colab.api.ejb,TeamFacade,237,0,36,0,69,0,30,0,12,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,StickyNoteLinkFacade,337,0,64,0,106,0,44,0,9,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,StickyNoteLinkFacade.SrcType,44,0,0,0,5,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest,71,0,0,0,24,0,13,0,13,0
@@ -32,8 +32,9 @@ colab-client/colab-api,ch.colabproject.colab.api.ejb,CardFacade,617,0,60,0,178,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,TransactionManager,175,0,10,0,48,0,16,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,RequestManager,78,0,8,0,26,0,16,0,12,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,DocumentFacade,72,0,8,0,21,0,9,0,5,0
-colab-client/colab-api,ch.colabproject.colab.api.microchanges.live,LiveUpdates,981,0,128,0,197,0,90,0,26,0
-colab-client/colab-api,ch.colabproject.colab.api.microchanges.live,LiveManager,332,0,20,0,93,0,24,0,14,0
+colab-client/colab-api,ch.colabproject.colab.api.microchanges.live,LiveUpdates,1307,0,158,0,267,0,116,0,37,0
+colab-client/colab-api,ch.colabproject.colab.api.microchanges.live,LiveResult,29,0,0,0,11,0,6,0,6,0
+colab-client/colab-api,ch.colabproject.colab.api.microchanges.live,LiveManager,369,0,24,0,104,0,27,0,15,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.utils,JsonDecoder,29,0,0,0,10,0,5,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.utils,JsonEncoder,22,0,0,0,8,0,5,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.utils,CallableGetChannel,14,0,2,0,5,0,3,0,2,0
@@ -82,13 +83,13 @@ colab-client/colab-api,ch.colabproject.colab.api.model.document,HostedDocLink,44
 colab-client/colab-api,ch.colabproject.colab.api.model.document,ResourceRef,90,0,8,0,28,0,17,0,13,0
 colab-client/colab-api,ch.colabproject.colab.api.model.document,ExternalDocLink,44,0,2,0,14,0,8,0,7,0
 colab-client/colab-api,ch.colabproject.colab.api.model.document,AbstractResource,171,0,20,0,51,0,38,0,28,0
-colab-client/colab-api,ch.colabproject.colab.api.model.document,TextDataBlock,55,0,2,0,18,0,10,0,9,0
+colab-client/colab-api,ch.colabproject.colab.api.model.document,TextDataBlock,65,0,2,0,22,0,12,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.model.document,Resource,99,0,4,0,32,0,19,0,17,0
 colab-client/colab-api,ch.colabproject.colab.api.model.document,Document,154,0,18,0,48,0,34,0,25,0
 colab-client/colab-api,ch.colabproject.colab.api.model.document,Block,99,0,8,0,34,0,21,0,17,0
 colab-client/colab-api,ch.colabproject.colab.api.model.document,BlockDocument,43,0,2,0,14,0,8,0,7,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.project,ProjectDao,59,0,0,0,15,0,7,0,7,0
-colab-client/colab-api,ch.colabproject.colab.api.persistence.project,TeamDao,17,0,0,0,3,0,3,0,3,0
+colab-client/colab-api,ch.colabproject.colab.api.persistence.project,TeamDao,22,0,0,0,5,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,MessageBuilder,77,0,0,0,22,0,12,0,12,0
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail.new Authenticator() {...},17,0,0,0,2,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Message,76,0,0,0,29,0,18,0,18,0
@@ -113,7 +114,7 @@ colab-client/colab-api,ch.colabproject.colab.api.rest,MonitoringRestEndpoint,15,
 colab-client/colab-api,ch.colabproject.colab.api.rest,WebsocketRestEndpoint,72,0,0,0,22,0,9,0,9,0
 colab-client/colab-api,ch.colabproject.colab.api.rest,ProjectRestEndpoint,87,0,0,0,22,0,11,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.rest,TokenRestEndpoint,15,0,0,0,4,0,3,0,3,0
-colab-client/colab-api,ch.colabproject.colab.api.rest,TeamRestEndpoint,70,0,0,0,17,0,8,0,8,0
+colab-client/colab-api,ch.colabproject.colab.api.rest,TeamRestEndpoint,89,0,0,0,23,0,10,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.rest,UserRestEndpoint,165,0,2,0,51,0,20,0,19,0
 colab-client/colab-api,ch.colabproject.colab.api.model.tools,EntityListener,33,0,4,0,10,0,6,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.model.tools,JpaNameMappingCustomizer,44,0,2,0,13,0,7,0,6,0
@@ -135,7 +136,7 @@ colab-client/colab-api,ch.colabproject.colab.api.rest.link,ActivityFlowLinkRestE
 colab-client/colab-api,ch.colabproject.colab.api.rest.link,StickyNoteLinkRestEndpoint,104,0,0,0,27,0,11,0,11,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,HelpMojo,802,0,110,0,159,0,71,0,16,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,Logger,49,0,8,0,18,0,11,0,7,0
-colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,TypeScriptHelper,586,0,94,0,156,0,61,0,14,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,TypeScriptHelper,594,0,98,0,159,0,63,0,14,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,FileHelper,24,0,0,0,7,0,2,0,2,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,GeneratorPlugin,70,0,2,0,20,0,5,0,4,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,Generator,529,0,20,0,137,0,31,0,21,0

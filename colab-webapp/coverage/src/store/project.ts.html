@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/91</span>
+                <span class='fraction'>0/92</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/90</span>
+                <span class='fraction'>0/91</span>
             </div>
         
             
@@ -274,8 +274,7 @@
 <a name='L215'></a><a href='#L215'>215</a>
 <a name='L216'></a><a href='#L216'>216</a>
 <a name='L217'></a><a href='#L217'>217</a>
-<a name='L218'></a><a href='#L218'>218</a>
-<a name='L219'></a><a href='#L219'>219</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L218'></a><a href='#L218'>218</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -397,8 +396,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -460,6 +457,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -499,11 +497,11 @@
  *
  * Licensed under the MIT License
  */
-<span class="cstat-no" title="statement not covered" >import {createSlice} from '@reduxjs/toolkit';</span>
-import {Project, Role, TeamMember} from 'colab-rest-client';
+<span class="cstat-no" title="statement not covered" >import { createSlice } from '@reduxjs/toolkit';</span>
+import { Project, Role, TeamMember } from 'colab-rest-client';
 <span class="cstat-no" title="statement not covered" >import * as API from '../API/api';</span>
-<span class="cstat-no" title="statement not covered" >import {mapById} from '../helper';</span>
-<span class="cstat-no" title="statement not covered" >import {processMessage} from '../ws/wsThunkActions';</span>
+<span class="cstat-no" title="statement not covered" >import { mapById } from '../helper';</span>
+<span class="cstat-no" title="statement not covered" >import { processMessage } from '../ws/wsThunkActions';</span>
 &nbsp;
 /**
  * NOT_SET: the state is not fully set. It may contain some data (received by websocket) but there
@@ -551,7 +549,7 @@ const getOrCreateTeamState = <span class="cstat-no" title="statement not covered
 <span class="cstat-no" title="statement not covered" >  if (teamState) {</span>
 <span class="cstat-no" title="statement not covered" >    return teamState;</span>
   } else {
-    const ts: TeamState = <span class="cstat-no" title="statement not covered" >{status: 'NOT_INITIALIZED', members: {}, roles: {}};</span>
+    const ts: TeamState = <span class="cstat-no" title="statement not covered" >{ status: 'NOT_INITIALIZED', members: {}, roles: {} };</span>
 <span class="cstat-no" title="statement not covered" >    state.teams[projectId] = ts;</span>
 <span class="cstat-no" title="statement not covered" >    return ts;</span>
   }
@@ -615,8 +613,6 @@ const removeRole = <span class="cstat-no" title="statement not covered" ><span c
   });
 };
 &nbsp;
-&nbsp;
-&nbsp;
 const projectsSlice = <span class="cstat-no" title="statement not covered" >createSlice({</span>
   name: 'projects',
   initialState,
@@ -661,7 +657,7 @@ const projectsSlice = <span class="cstat-no" title="statement not covered" >crea
       .addCase(API.getUserProjects.fulfilled, <span class="fstat-no" title="function not covered" >(s</span>tate, action) =&gt; {
 <span class="cstat-no" title="statement not covered" >        state.status = 'INITIALIZED';</span>
 <span class="cstat-no" title="statement not covered" >        state.mine = action.payload.flatMap(<span class="fstat-no" title="function not covered" >project </span>=&gt; (<span class="cstat-no" title="statement not covered" >project.id != null ? [project.id] : [])</span>);</span>
-<span class="cstat-no" title="statement not covered" >        state.projects = {...state.projects, ...mapById(action.payload)};</span>
+<span class="cstat-no" title="statement not covered" >        state.projects = { ...state.projects, ...mapById(action.payload) };</span>
       })
       .addCase(API.getAllProjects.pending, <span class="fstat-no" title="function not covered" >state </span>=&gt; {
 <span class="cstat-no" title="statement not covered" >        state.allStatus = 'LOADING';</span>
@@ -683,7 +679,8 @@ const projectsSlice = <span class="cstat-no" title="statement not covered" >crea
           const ts = <span class="cstat-no" title="statement not covered" >getOrCreateTeamState(state, projectId);</span>
 <span class="cstat-no" title="statement not covered" >          ts.status = 'INITIALIZED';</span>
 <span class="cstat-no" title="statement not covered" >          if (action.payload) {</span>
-<span class="cstat-no" title="statement not covered" >            ts.members = mapById(action.payload);</span>
+<span class="cstat-no" title="statement not covered" >            ts.members = mapById(action.payload.members);</span>
+<span class="cstat-no" title="statement not covered" >            ts.roles = mapById(action.payload.roles);</span>
           }
         }
       })
@@ -718,7 +715,7 @@ const projectsSlice = <span class="cstat-no" title="statement not covered" >crea
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jul 08 2021 10:41:01 GMT+0000 (Coordinated Universal Time)
+                at Fri Jul 16 2021 15:30:53 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

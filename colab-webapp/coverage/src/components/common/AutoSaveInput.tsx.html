@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/24</span>
+                <span class='fraction'>0/29</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>0/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/22</span>
+                <span class='fraction'>0/25</span>
             </div>
         
             
@@ -168,16 +168,14 @@
 <a name='L109'></a><a href='#L109'>109</a>
 <a name='L110'></a><a href='#L110'>110</a>
 <a name='L111'></a><a href='#L111'>111</a>
-<a name='L112'></a><a href='#L112'>112</a>
-<a name='L113'></a><a href='#L113'>113</a>
-<a name='L114'></a><a href='#L114'>114</a>
-<a name='L115'></a><a href='#L115'>115</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L112'></a><a href='#L112'>112</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -238,6 +236,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -264,18 +270,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -292,10 +286,11 @@
  * Licensed under the MIT License
  */
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import * as React from 'react';</span>
-<span class="cstat-no" title="statement not covered" >import { debounce } from 'lodash';</span>
 <span class="cstat-no" title="statement not covered" >import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';</span>
+<span class="cstat-no" title="statement not covered" >import { debounce } from 'lodash';</span>
+<span class="cstat-no" title="statement not covered" >import * as React from 'react';</span>
 <span class="cstat-no" title="statement not covered" >import IconButton from './IconButton';</span>
+<span class="cstat-no" title="statement not covered" >import WithToolbar from './WithToolbar';</span>
 &nbsp;
 type State = {
   status: 'EDIT' | 'DISPLAY';
@@ -348,6 +343,14 @@ export interface Props {
     [debouncedOnChange],
   );
 &nbsp;
+  const editCb = <span class="cstat-no" title="statement not covered" >React.useCallback(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    setState(<span class="fstat-no" title="function not covered" >state </span>=&gt; (<span class="cstat-no" title="statement not covered" >{ ...state, status: 'EDIT' })</span>);</span>
+  }, []);
+&nbsp;
+  const displayCb = <span class="cstat-no" title="statement not covered" >React.useCallback(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    setState(<span class="fstat-no" title="function not covered" >state </span>=&gt; (<span class="cstat-no" title="statement not covered" >{ ...state, status: 'DISPLAY' })</span>);</span>
+  }, []);
+&nbsp;
 <span class="cstat-no" title="statement not covered" >  if (state.status === 'EDIT') {</span>
 <span class="cstat-no" title="statement not covered" >    return (</span>
       &lt;div&gt;
@@ -368,34 +371,22 @@ export interface Props {
           )}
         &lt;/label&gt;
 &nbsp;
-        &lt;IconButton
-          icon={faTimes}
-          title="stop edition"
-          onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >            setState({</span>
-              ...state,
-              status: 'DISPLAY',
-            });
-          }}
-        /&gt;
+        &lt;IconButton icon={faTimes} title="stop edition" onClick={displayCb} /&gt;
       &lt;/div&gt;
     );
   } else {
 <span class="cstat-no" title="statement not covered" >    return (</span>
-      &lt;div&gt;
-        &lt;label&gt;{label}&lt;/label&gt;
-        {state.currentValue ? state.currentValue : &lt;i&gt;{placeholder}&lt;/i&gt;}
-        &lt;IconButton
-          icon={faPen}
-          title="edit"
-          onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >            setState({</span>
-              ...state,
-              status: 'EDIT',
-            });
-          }}
-        /&gt;
-      &lt;/div&gt;
+      &lt;WithToolbar
+        toolbarPosition="RIGHT_MIDDLE"
+        toolbarClassName=""
+        offsetY={0.5}
+        toolbar={&lt;IconButton icon={faPen} title="edit" onClick={editCb} /&gt;}
+      &gt;
+        &lt;&gt;
+          &lt;label&gt;{label}&lt;/label&gt;
+          {state.currentValue ? state.currentValue : &lt;i&gt;{placeholder}&lt;/i&gt;}
+        &lt;/&gt;
+      &lt;/WithToolbar&gt;
     );
   }
 }
@@ -406,7 +397,7 @@ export interface Props {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jul 08 2021 10:41:01 GMT+0000 (Coordinated Universal Time)
+                at Fri Jul 16 2021 15:30:53 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>

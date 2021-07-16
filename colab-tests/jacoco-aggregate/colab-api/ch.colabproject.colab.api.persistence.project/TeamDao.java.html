@@ -49,5 +49,14 @@ import javax.persistence.PersistenceContext;
     public TeamMember findTeamMember(Long memberId) {
 <span class="fc" id="L50">        return em.find(TeamMember.class, memberId);</span>
     }
+
+    /**
+     * Remove role from database
+     *
+     * @param role the role to delete
+     */
+    public void removeRole(Role role) {
+<span class="nc" id="L59">        em.remove(role);</span>
+<span class="nc" id="L60">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

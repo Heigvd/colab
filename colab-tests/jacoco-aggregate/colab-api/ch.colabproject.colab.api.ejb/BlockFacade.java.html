@@ -167,12 +167,13 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L167">        BlockDocument blockDocument = (BlockDocument) document;</span>
 <span class="fc" id="L168">        securityFacade.assertCanCreateBlock(blockDocument);</span>
 
-<span class="fc" id="L170">        Block block = new TextDataBlock();</span>
+<span class="fc" id="L170">        TextDataBlock block = new TextDataBlock();</span>
+<span class="fc" id="L171">        block.setRevision(&quot;0&quot;);</span>
 
-<span class="fc" id="L172">        block.setDocument(blockDocument);</span>
-<span class="fc" id="L173">        (blockDocument).getBlocks().add(block);</span>
+<span class="fc" id="L173">        block.setDocument(blockDocument);</span>
+<span class="fc" id="L174">        (blockDocument).getBlocks().add(block);</span>
 
-<span class="fc" id="L175">        return blockDao.persistBlock(block);</span>
+<span class="fc" id="L176">        return blockDao.persistBlock(block);</span>
     }
 
     // *********************************************************************************************
@@ -187,12 +188,12 @@ import org.slf4j.LoggerFactory;
      * @return all sticky note links linked to the block
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrc(Long cardBlockId) {
-<span class="fc" id="L190">        logger.debug(&quot;get sticky note links where the block #{} is the source&quot;, cardBlockId);</span>
-<span class="fc" id="L191">        Block block = blockDao.findBlock(cardBlockId);</span>
-<span class="pc bpc" id="L192" title="1 of 2 branches missed.">        if (block == null) {</span>
-<span class="nc" id="L193">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L191">        logger.debug(&quot;get sticky note links where the block #{} is the source&quot;, cardBlockId);</span>
+<span class="fc" id="L192">        Block block = blockDao.findBlock(cardBlockId);</span>
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">        if (block == null) {</span>
+<span class="nc" id="L194">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
-<span class="fc" id="L195">        return block.getStickyNoteLinksAsSrc();</span>
+<span class="fc" id="L196">        return block.getStickyNoteLinksAsSrc();</span>
     }
 
     // *********************************************************************************************

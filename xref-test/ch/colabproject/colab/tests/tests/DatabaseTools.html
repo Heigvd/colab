@@ -138,7 +138,7 @@
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>              Statement statement = connection.createStatement()) {
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>             String query = <span class="jxr_string">"SELECT "</span>
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>                 + <span class="jxr_string">"  setval(sequencename::regclass, "</span>
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>                 + <span class="jxr_string">"  (last_value + ceil(random()*1000))::int, "</span>
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>                 + <span class="jxr_string">"  (coalesce(last_value, 0) + ceil(random()*1000))::int, "</span>
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>                 + <span class="jxr_string">"  true) "</span>
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>                 + <span class="jxr_string">"FROM pg_sequences;"</span>;
 <a class="jxr_linenumber" name="L136" href="#L136">136</a> 

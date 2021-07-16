@@ -7,12 +7,14 @@
 package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.TeamFacade;
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.team.Role;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.persistence.project.TeamDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -32,10 +34,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="fc" id="L35">public class TeamRestEndpoint {</span>
+<span class="fc" id="L37">public class TeamRestEndpoint {</span>
 
     /** logger */
-<span class="fc" id="L38">    private static final Logger logger = LoggerFactory.getLogger(TeamRestEndpoint.class);</span>
+<span class="fc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(TeamRestEndpoint.class);</span>
 
     /** * Team facade */
     @Inject
@@ -60,8 +62,8 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;Invite/{projectId: [0-9]+}/{email}&quot;)
     public TeamMember inviteSomeone(@PathParam(&quot;projectId&quot;) Long projectId,
         @PathParam(&quot;email&quot;) String email) {
-<span class="fc" id="L63">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
-<span class="fc" id="L64">        return teamFacade.invite(projectId, email);</span>
+<span class="fc" id="L65">        logger.debug(&quot;Invite {} to joint project #{}&quot;, email, projectId);</span>
+<span class="fc" id="L66">        return teamFacade.invite(projectId, email);</span>
     }
 
     /**
@@ -74,8 +76,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;member/{memberId: [0-9]+}&quot;)
     public TeamMember getTeamMember(@PathParam(&quot;memberId&quot;) Long memberId) {
-<span class="fc" id="L77">        logger.debug(&quot;Get member #{}&quot;, memberId);</span>
-<span class="fc" id="L78">        return teamDao.findTeamMember(memberId);</span>
+<span class="fc" id="L79">        logger.debug(&quot;Get member #{}&quot;, memberId);</span>
+<span class="fc" id="L80">        return teamDao.findTeamMember(memberId);</span>
     }
 
     // *********************************************************************************************
@@ -88,12 +90,12 @@ import org.slf4j.LoggerFactory;
      *
      * @return id of the new role
      */
-    @PUT
+    @POST
     @Path(&quot;role&quot;)
     public Long createRole(Role role) {
-<span class="fc" id="L94">        logger.debug(&quot;Create role {}&quot;, role);</span>
-<span class="fc" id="L95">        teamFacade.createRole(role);</span>
-<span class="fc" id="L96">        return role.getId();</span>
+<span class="fc" id="L96">        logger.debug(&quot;Create role {}&quot;, role);</span>
+<span class="fc" id="L97">        teamFacade.createRole(role);</span>
+<span class="fc" id="L98">        return role.getId();</span>
     }
 
     /**
@@ -106,9 +108,39 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;role/{roleId: [0-9]+}&quot;)
     public Role getRole(@PathParam(&quot;roleId&quot;) Long roleId) {
-<span class="fc" id="L109">        logger.debug(&quot;Get Role #{}&quot;, roleId);</span>
-<span class="fc" id="L110">        return teamDao.findRole(roleId);</span>
+<span class="fc" id="L111">        logger.debug(&quot;Get Role #{}&quot;, roleId);</span>
+<span class="fc" id="L112">        return teamDao.findRole(roleId);</span>
     }
+
+    /**
+     * Update a role.This will only affect the role name.
+     *
+     * @param role the role to update
+     *
+     * @throws ch.colabproject.colab.api.exceptions.ColabMergeException if update failed
+     *
+     */
+    @PUT
+    @Path(&quot;role&quot;)
+    public void updateRole(Role role) throws ColabMergeException {
+<span class="nc" id="L126">        logger.debug(&quot;Update role {}&quot;, role);</span>
+<span class="nc" id="L127">        teamFacade.updateRole(role);</span>
+<span class="nc" id="L128">    }</span>
+
+    /**
+     * Delete a role
+     * &lt;p&gt;
+     * TODO: shall we allow to delete non-empty roles?
+     *
+     * @param roleId id of the role to delete id of the role to delete
+     *
+     */
+    @DELETE
+    @Path(&quot;role/{roleId: [0-9]+}&quot;)
+    public void deleteRole(@PathParam(&quot;roleId&quot;) Long roleId) {
+<span class="nc" id="L141">        logger.debug(&quot;Delete role #{}&quot;, roleId);</span>
+<span class="nc" id="L142">        teamFacade.deleteRole(roleId);</span>
+<span class="nc" id="L143">    }</span>
 
     /**
      * Give a role to a member. Member and role must belong to the same project. CurrentUser must
@@ -119,13 +151,13 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     @Path(&quot;role/{roleId: [0-9]+}/giveto/{memberId : [0-9]+}&quot;)
-    public void giveRole(
+    public void giveRoleTo(
         @PathParam(&quot;roleId&quot;) Long roleId,
         @PathParam(&quot;memberId&quot;) Long memberId
     ) {
-<span class="fc" id="L126">        logger.debug(&quot;Give role #{} to member#{}&quot;, roleId, memberId);</span>
-<span class="fc" id="L127">        teamFacade.giveRole(roleId, memberId);</span>
-<span class="fc" id="L128">    }</span>
+<span class="fc" id="L158">        logger.debug(&quot;Give role #{} to member#{}&quot;, roleId, memberId);</span>
+<span class="fc" id="L159">        teamFacade.giveRole(roleId, memberId);</span>
+<span class="fc" id="L160">    }</span>
 
     /**
      * Remove a role from some team member. CurrentUser must have the right to edit the role.
@@ -134,13 +166,13 @@ import org.slf4j.LoggerFactory;
      * @param memberId id of the team member
      */
     @PUT
-    @Path(&quot;role/{roleId: [0-9]+}/removefrom/{memberId : [0-9]+}&quot;)
-    public void removeRole(
+    @Path(&quot;role/{roleId: [0-9]+}/removeto/{memberId : [0-9]+}&quot;)
+    public void removeRoleFrom(
         @PathParam(&quot;roleId&quot;) Long roleId,
         @PathParam(&quot;memberId&quot;) Long memberId
     ) {
-<span class="nc" id="L142">        logger.debug(&quot;Give role #{} to member#{}&quot;, roleId, memberId);</span>
-<span class="nc" id="L143">        teamFacade.removeRole(roleId, memberId);</span>
-<span class="nc" id="L144">    }</span>
+<span class="nc" id="L174">        logger.debug(&quot;Remove role #{} to member#{}&quot;, roleId, memberId);</span>
+<span class="nc" id="L175">        teamFacade.removeRole(roleId, memberId);</span>
+<span class="nc" id="L176">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

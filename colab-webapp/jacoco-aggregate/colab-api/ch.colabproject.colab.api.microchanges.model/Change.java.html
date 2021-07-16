@@ -38,10 +38,10 @@ import javax.validation.constraints.NotNull;
     private Long atId;
 
     /**
-     * Revision this change is based on. 0 (zero) means root change
+     * Revision this change is based on.
      */
     @NotNull
-    private String basedOn;
+    private Set&lt;String&gt; basedOn;
 
     /**
      * new revision
@@ -132,16 +132,16 @@ import javax.validation.constraints.NotNull;
      *
      * @return the revision hash
      */
-    public String getBasedOn() {
+    public Set&lt;String&gt; getBasedOn() {
 <span class="nc" id="L136">        return basedOn;</span>
     }
 
     /**
      * Set the revision this change is based on
      *
-     * @param basedOn the revision hash
+     * @param basedOn list of revision hash
      */
-    public void setBasedOn(String basedOn) {
+    public void setBasedOn(Set&lt;String&gt; basedOn) {
 <span class="nc" id="L145">        this.basedOn = basedOn;</span>
 <span class="nc" id="L146">    }</span>
 
@@ -211,8 +211,9 @@ import javax.validation.constraints.NotNull;
 
     @Override
     public String toString() {
-<span class="nc" id="L214">        return &quot;Patch{rev@&quot; + this.basedOn + &quot; &quot; + this.microchanges + &quot; =&gt; @&quot; + this.revision + &quot;}&quot;;</span>
+<span class="nc" id="L214">        return &quot;Patch{rev@&quot; + this.revision</span>
+            + &quot; basedOn@&quot; + this.basedOn + &quot; µ: &quot;
+            + this.microchanges + &quot;}&quot;;
     }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

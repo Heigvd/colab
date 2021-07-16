@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/88</span>
+                <span class='fraction'>0/90</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>0/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/88</span>
+                <span class='fraction'>0/90</span>
             </div>
         
             
@@ -303,7 +303,13 @@
 <a name='L244'></a><a href='#L244'>244</a>
 <a name='L245'></a><a href='#L245'>245</a>
 <a name='L246'></a><a href='#L246'>246</a>
-<a name='L247'></a><a href='#L247'>247</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a>
+<a name='L250'></a><a href='#L250'>250</a>
+<a name='L251'></a><a href='#L251'>251</a>
+<a name='L252'></a><a href='#L252'>252</a>
+<a name='L253'></a><a href='#L253'>253</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -312,7 +318,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -456,6 +462,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -498,8 +506,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -556,29 +568,29 @@
  * Licensed under the MIT License
  */
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import * as React from 'react';</span>
-<span class="cstat-no" title="statement not covered" >import * as API from '../../../API/api';</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >import { useAppDispatch, useAppSelector } from '../../../store/hooks';</span>
-<span class="cstat-no" title="statement not covered" >import { faTimes } from '@fortawesome/free-solid-svg-icons';</span>
-<span class="cstat-no" title="statement not covered" >import IconButton from '../../common/IconButton';</span>
-<span class="cstat-no" title="statement not covered" >import { HashRouter as Router, Route, Switch, useHistory, useParams } from 'react-router-dom';</span>
 <span class="cstat-no" title="statement not covered" >import { css } from '@emotion/css';</span>
-<span class="cstat-no" title="statement not covered" >import InlineLoading from '../../common/InlineLoading';</span>
-<span class="cstat-no" title="statement not covered" >import ContentSubs from '../../cards/ContentSubs';</span>
-<span class="cstat-no" title="statement not covered" >import { useProjectBeingEdited } from '../../../selectors/projectSelector';</span>
-<span class="cstat-no" title="statement not covered" >import { SecondLevelLink } from '../../common/Link';</span>
-<span class="cstat-no" title="statement not covered" >import Hierachy from './Hierachy';</span>
-<span class="cstat-no" title="statement not covered" >import { useAncestors, useCard, Ancestor } from '../../../selectors/cardSelector';</span>
+<span class="cstat-no" title="statement not covered" >import { faTimes } from '@fortawesome/free-solid-svg-icons';</span>
 <span class="cstat-no" title="statement not covered" >import { Card, entityIs } from 'colab-rest-client';</span>
-<span class="cstat-no" title="statement not covered" >import Clickable from '../../common/Clickable';</span>
-<span class="cstat-no" title="statement not covered" >import CardThumbWithSelector from '../../cards/CardThumbWithSelector';</span>
-<span class="cstat-no" title="statement not covered" >import CardEditor from '../../cards/CardEditor';</span>
-<span class="cstat-no" title="statement not covered" >import VariantSelector from '../../cards/VariantSelector';</span>
-<span class="cstat-no" title="statement not covered" >import CardTypeList from '../../cards/cardtypes/CardTypeList';</span>
-<span class="cstat-no" title="statement not covered" >import WithToolbar from '../../common/WithToolbar';</span>
+<span class="cstat-no" title="statement not covered" >import * as React from 'react';</span>
+<span class="cstat-no" title="statement not covered" >import { HashRouter as Router, Route, Switch, useHistory, useParams } from 'react-router-dom';</span>
+<span class="cstat-no" title="statement not covered" >import * as API from '../../../API/api';</span>
+<span class="cstat-no" title="statement not covered" >import { Ancestor, useAncestors, useCard } from '../../../selectors/cardSelector';</span>
+<span class="cstat-no" title="statement not covered" >import { useProjectBeingEdited } from '../../../selectors/projectSelector';</span>
+<span class="cstat-no" title="statement not covered" >import { useAppDispatch, useAppSelector } from '../../../store/hooks';</span>
 <span class="cstat-no" title="statement not covered" >import CardCreator from '../../cards/CardCreator';</span>
+<span class="cstat-no" title="statement not covered" >import CardEditor from '../../cards/CardEditor';</span>
+<span class="cstat-no" title="statement not covered" >import CardThumbWithSelector from '../../cards/CardThumbWithSelector';</span>
+<span class="cstat-no" title="statement not covered" >import CardTypeList from '../../cards/cardtypes/CardTypeList';</span>
+<span class="cstat-no" title="statement not covered" >import ContentSubs from '../../cards/ContentSubs';</span>
+<span class="cstat-no" title="statement not covered" >import VariantSelector from '../../cards/VariantSelector';</span>
+<span class="cstat-no" title="statement not covered" >import Clickable from '../../common/Clickable';</span>
 <span class="cstat-no" title="statement not covered" >import FitSpace from '../../common/FitSpace';</span>
+<span class="cstat-no" title="statement not covered" >import IconButton from '../../common/IconButton';</span>
+<span class="cstat-no" title="statement not covered" >import InlineLoading from '../../common/InlineLoading';</span>
+<span class="cstat-no" title="statement not covered" >import { SecondLevelLink } from '../../common/Link';</span>
+<span class="cstat-no" title="statement not covered" >import WithToolbar from '../../common/WithToolbar';</span>
+<span class="cstat-no" title="statement not covered" >import Team from '../Team';</span>
+<span class="cstat-no" title="statement not covered" >import Hierachy from './Hierachy';</span>
 &nbsp;
 const Ancestor = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span> card, content }: Ancestor): JSX.Element =&gt; {</span>
   const history = <span class="cstat-no" title="statement not covered" >useHistory();</span>
@@ -700,9 +712,11 @@ const CardWrapper = <span class="cstat-no" title="statement not covered" ><span 
     }
   });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (root != null &amp;&amp; root.id != null &amp;&amp; rootContent === undefined) {</span>
-<span class="cstat-no" title="statement not covered" >    dispatch(API.getCardContents(root.id));</span>
-  }
+<span class="cstat-no" title="statement not covered" >  React.useEffect(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (root != null &amp;&amp; root.id != null &amp;&amp; rootContent === undefined) {</span>
+<span class="cstat-no" title="statement not covered" >      dispatch(API.getCardContents(root.id));</span>
+    }
+  }, [dispatch, root, root?.id, rootContent]);
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  if (status == 'LOADING') {</span>
 <span class="cstat-no" title="statement not covered" >    return &lt;InlineLoading /&gt;;</span>
@@ -738,6 +752,7 @@ const CardWrapper = <span class="cstat-no" title="statement not covered" ><span 
               &lt;/SecondLevelLink&gt;
               &lt;SecondLevelLink to="/hierarchy"&gt;Hierarchy&lt;/SecondLevelLink&gt;
               &lt;SecondLevelLink to="/defs"&gt;Card Types&lt;/SecondLevelLink&gt;
+              &lt;SecondLevelLink to={'/team'}&gt;Team&lt;/SecondLevelLink&gt;
             &lt;/nav&gt;
             &lt;IconButton
               iconSize="2x"
@@ -752,6 +767,9 @@ const CardWrapper = <span class="cstat-no" title="statement not covered" ><span 
           &lt;/div&gt;
           &lt;FitSpace&gt;
             &lt;Switch&gt;
+              &lt;Route path="/team"&gt;
+                &lt;Team project={project} /&gt;
+              &lt;/Route&gt;
               &lt;Route exact path="/hierarchy"&gt;
                 &lt;Hierachy rootId={root.id} /&gt;
               &lt;/Route&gt;
@@ -802,7 +820,7 @@ const CardWrapper = <span class="cstat-no" title="statement not covered" ><span 
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jul 08 2021 10:41:01 GMT+0000 (Coordinated Universal Time)
+                at Fri Jul 16 2021 15:30:53 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

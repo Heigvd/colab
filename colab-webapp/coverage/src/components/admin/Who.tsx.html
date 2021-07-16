@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/37</span>
+                <span class='fraction'>0/39</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/8</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/34</span>
+                <span class='fraction'>0/36</span>
             </div>
         
             
@@ -150,7 +150,12 @@
 <a name='L91'></a><a href='#L91'>91</a>
 <a name='L92'></a><a href='#L92'>92</a>
 <a name='L93'></a><a href='#L93'>93</a>
-<a name='L94'></a><a href='#L94'>94</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -177,12 +182,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -250,14 +260,14 @@
  * Licensed under the MIT License
  */
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import * as React from 'react';</span>
-<span class="cstat-no" title="statement not covered" >import { useAppSelector, useAppDispatch, shallowEqual } from '../../store/hooks';</span>
-<span class="cstat-no" title="statement not covered" >import InlineLoading from '../common/InlineLoading';</span>
-<span class="cstat-no" title="statement not covered" >import { getOccupiedChannels, getAllUsers } from '../../API/api';</span>
-<span class="cstat-no" title="statement not covered" >import { UserChannel, ProjectContentChannel, entityIs } from 'colab-rest-client';</span>
 <span class="cstat-no" title="statement not covered" >import { faSync } from '@fortawesome/free-solid-svg-icons';</span>
-<span class="cstat-no" title="statement not covered" >import UserList from './UserList';</span>
+<span class="cstat-no" title="statement not covered" >import { entityIs, ProjectContentChannel, UserChannel } from 'colab-rest-client';</span>
+<span class="cstat-no" title="statement not covered" >import * as React from 'react';</span>
+<span class="cstat-no" title="statement not covered" >import { getAllUsers, getOccupiedChannels } from '../../API/api';</span>
+<span class="cstat-no" title="statement not covered" >import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';</span>
 <span class="cstat-no" title="statement not covered" >import IconButton from '../common/IconButton';</span>
+<span class="cstat-no" title="statement not covered" >import InlineLoading from '../common/InlineLoading';</span>
+<span class="cstat-no" title="statement not covered" >import UserList from './UserList';</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >export default function <span class="fstat-no" title="function not covered" >W</span>ho(</span>): JSX.Element {
   const dispatch = <span class="cstat-no" title="statement not covered" >useAppDispatch();</span>
@@ -268,14 +278,19 @@
 &nbsp;
   const users = <span class="cstat-no" title="statement not covered" >useAppSelector(<span class="fstat-no" title="function not covered" >state </span>=&gt; <span class="cstat-no" title="statement not covered" >state.users.users,</span> shallowEqual);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (usersStatus === 'NOT_INITIALIZED') {</span>
-<span class="cstat-no" title="statement not covered" >    dispatch(getAllUsers());</span>
-  }
+<span class="cstat-no" title="statement not covered" >  React.useEffect(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    if (usersStatus === 'NOT_INITIALIZED') {</span>
+<span class="cstat-no" title="statement not covered" >      dispatch(getAllUsers());</span>
+    }
+  }, [usersStatus, dispatch]);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (channels === 'LOADING' || channels === 'NOT_INITIALIZED') {</span>
+<span class="cstat-no" title="statement not covered" >  React.useEffect(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (channels === 'NOT_INITIALIZED') {</span>
 <span class="cstat-no" title="statement not covered" >      dispatch(getOccupiedChannels());</span>
     }
+  }, [channels, dispatch]);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  if (channels === 'LOADING' || channels === 'NOT_INITIALIZED') {</span>
 <span class="cstat-no" title="statement not covered" >    return (</span>
       &lt;div&gt;
         &lt;h3&gt;Online Users&lt;/h3&gt;
@@ -343,7 +358,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jul 08 2021 10:41:01 GMT+0000 (Coordinated Universal Time)
+                at Fri Jul 16 2021 15:30:53 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>
