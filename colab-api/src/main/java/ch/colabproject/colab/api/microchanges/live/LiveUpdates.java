@@ -154,9 +154,9 @@ public class LiveUpdates implements Serializable {
      * Get change by revision
      *
      * @param changes  all changes
-     * @param revision
+     * @param revision the revision tag
      *
-     * @return the change wich the given revision or null if such a change does not exist
+     * @return the change which the given revision or null if such a change does not exist
      */
     public Change getByRevision(List<Change> changes, String revision) {
         Optional<Change> findAny = changes.stream()

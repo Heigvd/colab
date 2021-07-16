@@ -35,7 +35,7 @@ function mapArgs(...args: unknown[]): unknown[] {
   });
 }
 
-export default function getLogger(name: string) {
+export default function getLogger(name: string) : Logger {
   const logger = loggers[name];
   if (logger == null) {
     let currentLevel: LoggerLevel = WARN;

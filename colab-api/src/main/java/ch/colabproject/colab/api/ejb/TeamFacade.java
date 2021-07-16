@@ -148,11 +148,13 @@ public class TeamFacade {
      * @param role role to update
      *
      * @return the managed and updated role
+     *
+     * @throws ch.colabproject.colab.api.exceptions.ColabMergeException if merge failed
      */
     public Role updateRole(Role role) throws ColabMergeException {
         if (role != null) {
             Role managedRole = teamDao.findRole(role.getId());
-            if (managedRole != null){
+            if (managedRole != null) {
                 managedRole.merge(role);
                 return managedRole;
             }
