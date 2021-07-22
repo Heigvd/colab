@@ -18,6 +18,7 @@ import {
   IndexEntry,
   Project,
   Role,
+  StickyNoteLink,
   TeamMember,
   TypeMap,
   User,
@@ -50,6 +51,7 @@ interface EntityBag {
   types: Updates<AbstractCardType>;
   documents: Updates<Document>;
   blocks: Updates<Block>;
+  stickynotelinks: Updates<StickyNoteLink>;
   users: Updates<User>;
   accounts: Updates<Account>;
   changes: Updates<Change>;
@@ -66,6 +68,7 @@ function createBag(): EntityBag {
     types: { updated: [], deleted: [] },
     documents: { updated: [], deleted: [] },
     blocks: { updated: [], deleted: [] },
+    stickynotelinks: { updated: [], deleted: []},
     users: { updated: [], deleted: [] },
     accounts: { updated: [], deleted: [] },
     changes: { updated: [], deleted: [] },
@@ -94,6 +97,8 @@ export const processMessage = createAsyncThunk(
       } else if (indexEntryIs(item, 'Block')) {
         bag.blocks.deleted.push(item);
       } else if (indexEntryIs(item, 'CardContent')) {
+        bag.contents.deleted.push(item);
+      } else if (indexEntryIs(item, 'StickyNoteLink')) {
         bag.contents.deleted.push(item);
       } else if (indexEntryIs(item, 'User')) {
         bag.users.deleted.push(item);
@@ -127,6 +132,8 @@ export const processMessage = createAsyncThunk(
         bag.documents.updated.push(item);
       } else if (entityIs(item, 'Block')) {
         bag.blocks.updated.push(item);
+      } else if (entityIs(item, 'StickyNoteLink')) {
+        bag.stickynotelinks.updated.push(item);
       } else if (entityIs(item, 'User')) {
         bag.users.updated.push(item);
       } else if (entityIs(item, 'Account')) {

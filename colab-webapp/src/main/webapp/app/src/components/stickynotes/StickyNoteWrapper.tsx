@@ -1,0 +1,51 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+
+import * as React from 'react';
+import * as API from '../../API/api';
+import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
+import { useAppDispatch } from '../../store/hooks';
+import InlineLoading from '../common/InlineLoading';
+import StickyNoteList from './StickyNoteList';
+
+/**
+ * In this component, we load the sticky note links if necessary and display the StickyNoteList
+ */
+
+interface StickyNoteWrapperProps {
+  cardDestId: number;
+  showSrc?: boolean;
+  showDest?: boolean;
+  // TODO complete with srcCardId, srcCardContentId, srcResourceId, srcBlockId
+}
+
+export default function StickyNoteWrapper({
+  cardDestId,
+  showSrc,
+  showDest,
+}: StickyNoteWrapperProps): JSX.Element {
+  const dispatch = useAppDispatch();
+
+  const { stickyNotes: stickyNotesForDest, status } = useStickyNoteLinksForDest(cardDestId!);
+  const allStickyNotes = stickyNotesForDest; // to concat with StickyNotesForSrc...
+
+  React.useEffect(() => {
+    if (status == 'NOT_INITIALIZED' && cardDestId) {
+      dispatch(API.getStickyNoteLinkAsDest(cardDestId));
+    }
+  }, [status, dispatch, cardDestId]);
+
+  if (status == 'NOT_INITIALIZED') {
+    return <InlineLoading />;
+  } else if (status == 'LOADING') {
+    return <InlineLoading />;
+  } else if (allStickyNotes == null) {
+    return <div>no sticky notes list, no display</div>;
+  } else {
+    return <StickyNoteList stickyNotes={allStickyNotes} showSrc={showSrc} showDest={showDest} />;
+  }
+}

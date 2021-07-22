@@ -18,6 +18,7 @@ import AutoSaveInput from '../common/AutoSaveInput';
 import FitSpace from '../common/FitSpace';
 import OpenClose from '../common/OpenClose';
 import { DocumentEditorWrapper } from '../documents/DocumentEditorWrapper';
+import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import CardLayout from './CardLayout';
 import ContentSubs from './ContentSubs';
 
@@ -69,12 +70,9 @@ export default function CardEditor({
             <>
               <OpenClose collaspedChildren={<span className={sideTabButton}>sticky notes</span>}>
                 {() => (
-                  <div>
-                    <h3>Sticky Notes</h3>
-                    <p>
-                      <i>show block to card relationship</i>
-                    </p>
-                  </div>
+                  <>
+                    {card.id && <StickyNoteWrapper cardDestId= {card.id} showSrc />}
+                  </>
                 )}
               </OpenClose>
 

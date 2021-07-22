@@ -21,6 +21,7 @@ import {
   Project,
   Role,
   SignUpInfo,
+  // StickyNoteLink,
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
@@ -603,4 +604,18 @@ export const deleteBlock = createAsyncThunk('block/delete', async (block: Block)
   if (block.id != null) {
     return await restClient.BlockRestEndPoint.deleteBlock(block.id);
   }
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sticky Note Links
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//export const getStickyNoteLink = createAsyncThunk('stickyNoteLinks/get', async (id: number) => {
+//  return await restClient.StickyNoteLinkRestEndpoint.getLink(id);
+//});
+
+// TODO see if it belongs to stickyNoteLinks or to cards. Make your choice !
+export const getStickyNoteLinkAsDest = createAsyncThunk('stickyNoteLinks/getAsDest', 
+  async (cardId: number) => {
+    return await restClient.CardRestEndpoint.getStickyNoteLinksAsDest(cardId);
 });

@@ -16,6 +16,7 @@ import changeReducer from './change';
 import documentReducer from './document';
 import errorReducer from './error';
 import projectReducer from './project';
+import stickyNoteLinkReducer from './stickynotelink';
 import userReducer from './user';
 import websocketReducer from './websocket';
 
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   cards: cardReducer,
   document: documentReducer,
   block: blockReducer,
+  stickynotelinks: stickyNoteLinkReducer,
   change: changeReducer,
   errors: errorReducer,
   websockets: websocketReducer,
@@ -45,3 +47,5 @@ export const dispatch = store.dispatch;
 
 export type ColabState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export type loadingStatus = 'NOT_INITIALIZED' | 'LOADING' | 'READY';
