@@ -27,7 +27,7 @@ import InlineLoading from '../../common/InlineLoading';
 import { SecondLevelLink } from '../../common/Link';
 import WithToolbar from '../../common/WithToolbar';
 import Team from '../Team';
-import Hierachy from './Hierachy';
+import Hierarchy from './Hierarchy';
 
 const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   const history = useHistory();
@@ -208,7 +208,7 @@ export default function Editor(): JSX.Element {
                 <Team project={project} />
               </Route>
               <Route exact path="/hierarchy">
-                <Hierachy rootId={root.id} />
+                <Hierarchy rootId={root.id} />
               </Route>
               <Route exact path="/defs">
                 <CardTypeList />

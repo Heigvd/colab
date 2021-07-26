@@ -589,7 +589,7 @@ public class LiveUpdates implements Serializable {
             logger.trace(" -> " + change);
             return conflictFree;
         } else if (setsEqual(Set.of(change.getRevision()), newBase.getBasedOn())) {
-            logger.debug("Inverse hierachy : " + change + " on " + newBase);
+            logger.debug("Inverse hierarchy : " + change + " on " + newBase);
             // [x] -> change -> newBase
             // ==>[x] ->  newBase -> change
 
