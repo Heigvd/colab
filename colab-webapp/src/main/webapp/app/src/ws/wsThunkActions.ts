@@ -90,16 +90,16 @@ export const processMessage = createAsyncThunk(
         bag.roles.deleted.push(item);
       } else if (indexEntryIs(item, 'Card')) {
         bag.cards.deleted.push(item);
+      } else if (indexEntryIs(item, 'CardContent')) {
+        bag.contents.deleted.push(item);
       } else if (indexEntryIs(item, 'AbstractCardType')) {
         bag.types.deleted.push(item);
       } else if (indexEntryIs(item, 'Document')) {
         bag.documents.deleted.push(item);
       } else if (indexEntryIs(item, 'Block')) {
         bag.blocks.deleted.push(item);
-      } else if (indexEntryIs(item, 'CardContent')) {
-        bag.contents.deleted.push(item);
       } else if (indexEntryIs(item, 'StickyNoteLink')) {
-        bag.contents.deleted.push(item);
+        bag.stickynotelinks.deleted.push(item);
       } else if (indexEntryIs(item, 'User')) {
         bag.users.deleted.push(item);
       } else if (indexEntryIs(item, 'Account')) {

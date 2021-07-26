@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 import { css, cx, keyframes } from '@emotion/css';
+import { faCheck, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 export const pictoColours = css({
   '--pictoBlue': '#50BFD5', // main blue
@@ -156,3 +157,9 @@ export const cardStyle = cx(
     borderRadius: '5px',
   }),
 );
+
+export const addIcon = faPlus;
+
+export const cancelIcon = faTimes;
+
+export const createIcon = faCheck;

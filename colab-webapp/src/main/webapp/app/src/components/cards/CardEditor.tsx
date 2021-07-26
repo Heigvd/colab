@@ -69,11 +69,7 @@ export default function CardEditor({
           <FitSpace direction="row">
             <>
               <OpenClose collaspedChildren={<span className={sideTabButton}>sticky notes</span>}>
-                {() => (
-                  <>
-                    {card.id && <StickyNoteWrapper cardDestId= {card.id} showSrc />}
-                  </>
-                )}
+                {() => <>{card.id && <StickyNoteWrapper destCardId={card.id} showSrc />}</>}
               </OpenClose>
 
               <CardLayout card={card} variant={variant} variants={variants}>

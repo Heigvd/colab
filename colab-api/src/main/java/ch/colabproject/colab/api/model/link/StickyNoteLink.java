@@ -8,12 +8,15 @@ package ch.colabproject.colab.api.model.link;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,7 +39,7 @@ import javax.persistence.Transient;
  * @author sandra
  */
 @Entity
-public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ {
+public class StickyNoteLink implements ColabEntity , WithWebsocketChannels {
 
     /**
      * Serial version UID
@@ -473,14 +476,14 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
         }
     }
 
-//    @Override
-//    public Set<WebsocketChannel> getChannels() {
-//        if (this.destinationCard != null) {
-//            return this.destinationCard.getChannels();
-//        } else {
-//        return Set.of();
-//        }
-//    }
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.destinationCard != null) {
+            return this.destinationCard.getChannels();
+        } else {
+        return Set.of();
+        }
+    }
 
     @Override
     public int hashCode() {

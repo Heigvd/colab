@@ -12,6 +12,7 @@ import * as API from '../../API/api';
 import { useCard } from '../../selectors/cardSelector';
 import { useAppDispatch } from '../../store/hooks';
 import CardThumbWithSelector from '../cards/CardThumbWithSelector';
+import AutoSaveInput from '../common/AutoSaveInput';
 import FitSpace from '../common/FitSpace';
 
 // TODO replace <CardThumbWithSelector for something easy and without actions
@@ -76,8 +77,22 @@ export default function StickyNoteDisplay({
 
       <FitSpace>
         <div className={stickyNoteOwnDataStyle}>
-          {stickyNote.teaser && <div className={teaserStyle}>{stickyNote.teaser}</div>}
-          {stickyNote.explanation && <div>{stickyNote.explanation}</div>}
+          <div className={teaserStyle}>
+            <AutoSaveInput
+              value={stickyNote.teaser || ''}
+              placeholder="add a teaser"
+              onChange={newValue =>
+                dispatch(API.updateStickyNote({ ...stickyNote, teaser: newValue }))
+              }
+            />
+          </div>
+          <AutoSaveInput
+            value={stickyNote.explanation || ''}
+            placeholder="add an explanation"
+            onChange={newValue =>
+              dispatch(API.updateStickyNote({ ...stickyNote, explanation: newValue }))
+            }
+          />
         </div>
       </FitSpace>
 
