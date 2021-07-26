@@ -38,31 +38,33 @@ export default function StickyNoteList({
       <>
         <h3>Sticky notes</h3>
         <div>
-          {stickyNotes.map(stickyNote =>
-            stickyNote == null ? (
-              <InlineLoading />
-            ) : (
-              <WithToolbar
-                toolbarPosition="RIGHT_BOTTOM"
-                offsetY={-0.5}
-                toolbar={
-                  <Destroyer
-                    title="Delete this sticky note"
-                    onDelete={() => {
-                      dispatch(API.deleteStickyNote(stickyNote));
-                    }}
+          {stickyNotes
+            .sort((a, b) => (a.id || 0) - (b.id || 0))
+            .map(stickyNote =>
+              stickyNote == null ? (
+                <InlineLoading />
+              ) : (
+                <WithToolbar
+                  toolbarPosition="RIGHT_BOTTOM"
+                  offsetY={-0.5}
+                  toolbar={
+                    <Destroyer
+                      title="Delete this sticky note"
+                      onDelete={() => {
+                        dispatch(API.deleteStickyNote(stickyNote));
+                      }}
+                    />
+                  }
+                >
+                  <StickyNoteDisplay
+                    key={stickyNote.id}
+                    stickyNote={stickyNote}
+                    showSrc={showSrc}
+                    showDest={showDest}
                   />
-                }
-              >
-                <StickyNoteDisplay
-                  key={stickyNote.id}
-                  stickyNote={stickyNote}
-                  showSrc={showSrc}
-                  showDest={showDest}
-                />
-              </WithToolbar>
-            ),
-          )}
+                </WithToolbar>
+              ),
+            )}
         </div>
         <div>
           <StickyNoteCreator destCardId={destCardId} />
