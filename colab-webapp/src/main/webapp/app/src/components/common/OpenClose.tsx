@@ -18,7 +18,7 @@ type State = {
 
 export interface Props {
   closeIcon?: IconProp;
-  collaspedChildren: JSX.Element;
+  collapsedChildren: JSX.Element;
   children: (collapse: () => void) => JSX.Element;
 }
 
@@ -33,7 +33,7 @@ const topRightAbs = css({
 });
 
 export default function OpenClose({
-  collaspedChildren,
+  collapsedChildren,
   children,
   closeIcon = faTimes,
 }: Props): JSX.Element {
@@ -71,7 +71,7 @@ export default function OpenClose({
             });
           }}
         >
-          {collaspedChildren}
+          {collapsedChildren}
         </Clickable>
       </div>
     );

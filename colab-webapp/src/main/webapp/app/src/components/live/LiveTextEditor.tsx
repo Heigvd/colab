@@ -330,7 +330,7 @@ export default function LiveTextEditor({
         />
         <MarkdownViewer className={grow} md={valueRef.current.currentValue} />
         <div className={shrink}>
-          <OpenClose collaspedChildren={<IconButton icon={faProjectDiagram} />}>
+          <OpenClose collapsedChildren={<IconButton icon={faProjectDiagram} />}>
             {() => <ChangeTree atClass={atClass} atId={atId} value={value} revision={revision} />}
           </OpenClose>
         </div>

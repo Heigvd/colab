@@ -68,7 +68,7 @@ export default function CardEditor({
         <>
           <FitSpace direction="row">
             <>
-              <OpenClose collaspedChildren={<span className={sideTabButton}>sticky notes</span>}>
+              <OpenClose collapsedChildren={<span className={sideTabButton}>sticky notes</span>}>
                 {() => <>{card.id && <StickyNoteWrapper destCardId={card.id} showSrc />}</>}
               </OpenClose>
 
@@ -89,7 +89,7 @@ export default function CardEditor({
                     <h5>Card settings</h5>
                     <OpenClose
                       closeIcon={faCheck}
-                      collaspedChildren={
+                      collapsedChildren={
                         <span>
                           <FontAwesomeIcon icon={faPalette} />
                         </span>
@@ -137,7 +137,7 @@ export default function CardEditor({
                   ) : null}
                 </div>
               </CardLayout>
-              <OpenClose collaspedChildren={<span className={sideTabButton}>Resources</span>}>
+              <OpenClose collapsedChildren={<span className={sideTabButton}>Resources</span>}>
                 {() => (
                   <div>
                     <h3>Resources</h3>
