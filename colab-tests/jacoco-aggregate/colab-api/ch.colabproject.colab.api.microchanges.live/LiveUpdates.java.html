@@ -589,7 +589,7 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L589">            logger.trace(&quot; -&gt; &quot; + change);</span>
 <span class="fc" id="L590">            return conflictFree;</span>
 <span class="nc bnc" id="L591" title="All 2 branches missed.">        } else if (setsEqual(Set.of(change.getRevision()), newBase.getBasedOn())) {</span>
-<span class="nc" id="L592">            logger.debug(&quot;Inverse hierachy : &quot; + change + &quot; on &quot; + newBase);</span>
+<span class="nc" id="L592">            logger.debug(&quot;Inverse hierarchy : &quot; + change + &quot; on &quot; + newBase);</span>
             // [x] -&gt; change -&gt; newBase
             // ==&gt;[x] -&gt;  newBase -&gt; change
 

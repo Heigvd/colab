@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
@@ -130,7 +130,9 @@
 <a name='L71'></a><a href='#L71'>71</a>
 <a name='L72'></a><a href='#L72'>72</a>
 <a name='L73'></a><a href='#L73'>73</a>
-<a name='L74'></a><a href='#L74'>74</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -170,6 +172,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -243,31 +247,33 @@ export interface StickyNoteListProps {
       &lt;&gt;
         &lt;h3&gt;Sticky notes&lt;/h3&gt;
         &lt;div&gt;
-          {stickyNotes.map(<span class="fstat-no" title="function not covered" >stickyNote </span>=&gt;
-<span class="cstat-no" title="statement not covered" >            stickyNote == null ? (</span>
-              &lt;InlineLoading /&gt;
-            ) : (
-              &lt;WithToolbar
-                toolbarPosition="RIGHT_BOTTOM"
-                offsetY={-0.5}
-                toolbar={
-                  &lt;Destroyer
-                    title="Delete this sticky note"
-                    onDelete={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >                      dispatch(API.deleteStickyNote(stickyNote));</span>
-                    }}
+          {stickyNotes
+            .sort(<span class="fstat-no" title="function not covered" >(a</span>, b) =&gt; <span class="cstat-no" title="statement not covered" >(a.id || 0) - (b.id || 0))</span>
+            .map(<span class="fstat-no" title="function not covered" >stickyNote </span>=&gt;
+<span class="cstat-no" title="statement not covered" >              stickyNote == null ? (</span>
+                &lt;InlineLoading /&gt;
+              ) : (
+                &lt;WithToolbar
+                  toolbarPosition="RIGHT_BOTTOM"
+                  offsetY={-0.5}
+                  toolbar={
+                    &lt;Destroyer
+                      title="Delete this sticky note"
+                      onDelete={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
+<span class="cstat-no" title="statement not covered" >                        dispatch(API.deleteStickyNote(stickyNote));</span>
+                      }}
+                    /&gt;
+                  }
+                &gt;
+                  &lt;StickyNoteDisplay
+                    key={stickyNote.id}
+                    stickyNote={stickyNote}
+                    showSrc={showSrc}
+                    showDest={showDest}
                   /&gt;
-                }
-              &gt;
-                &lt;StickyNoteDisplay
-                  key={stickyNote.id}
-                  stickyNote={stickyNote}
-                  showSrc={showSrc}
-                  showDest={showDest}
-                /&gt;
-              &lt;/WithToolbar&gt;
-            ),
-          )}
+                &lt;/WithToolbar&gt;
+              ),
+            )}
         &lt;/div&gt;
         &lt;div&gt;
           &lt;StickyNoteCreator destCardId={destCardId} /&gt;
@@ -283,7 +289,7 @@ export interface StickyNoteListProps {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Jul 26 2021 12:14:33 GMT+0000 (Coordinated Universal Time)
+                at Mon Jul 26 2021 16:32:27 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>

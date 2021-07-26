@@ -597,7 +597,7 @@
 <a class="jxr_linenumber" name="L589" href="#L589">589</a>             logger.trace(<span class="jxr_string">" -&gt; "</span> + change);
 <a class="jxr_linenumber" name="L590" href="#L590">590</a>             <strong class="jxr_keyword">return</strong> conflictFree;
 <a class="jxr_linenumber" name="L591" href="#L591">591</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (setsEqual(Set.of(change.getRevision()), newBase.getBasedOn())) {
-<a class="jxr_linenumber" name="L592" href="#L592">592</a>             logger.debug(<span class="jxr_string">"Inverse hierachy : "</span> + change + <span class="jxr_string">" on "</span> + newBase);
+<a class="jxr_linenumber" name="L592" href="#L592">592</a>             logger.debug(<span class="jxr_string">"Inverse hierarchy : "</span> + change + <span class="jxr_string">" on "</span> + newBase);
 <a class="jxr_linenumber" name="L593" href="#L593">593</a>             <em class="jxr_comment">// [x] -&gt; change -&gt; newBase</em>
 <a class="jxr_linenumber" name="L594" href="#L594">594</a>             <em class="jxr_comment">// ==&gt;[x] -&gt;  newBase -&gt; change</em>
 <a class="jxr_linenumber" name="L595" href="#L595">595</a> 
