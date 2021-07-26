@@ -127,7 +127,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsChannelUpdate,29,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,PrecomputedWsMessages,75,0,6,0,18,0,8,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,IndexEntry,53,0,0,0,19,0,10,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsMessage,3,0,0,0,1,0,1,0,1,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.link,StickyNoteLink,314,0,46,0,104,0,61,0,38,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.link,StickyNoteLink,323,0,48,0,107,0,63,0,39,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.link,ActivityFlowLink,77,0,6,0,27,0,18,0,15,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,Change,75,0,0,0,27,0,19,0,19,0
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange,47,0,2,0,16,0,11,0,10,0

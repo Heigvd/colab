@@ -8,12 +8,15 @@ package ch.colabproject.colab.api.model.link;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,7 +39,7 @@ import javax.persistence.Transient;
  * @author sandra
  */
 @Entity
-<span class="fc" id="L39">public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ {</span>
+<span class="fc" id="L42">public class StickyNoteLink implements ColabEntity , WithWebsocketChannels {</span>
 
     /**
      * Serial version UID
@@ -138,29 +141,29 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L141">        return id;</span>
+<span class="fc" id="L144">        return id;</span>
     }
 
     /**
      * @param id the link id
      */
     public void setId(Long id) {
-<span class="fc" id="L148">        this.id = id;</span>
-<span class="fc" id="L149">    }</span>
+<span class="fc" id="L151">        this.id = id;</span>
+<span class="fc" id="L152">    }</span>
 
     /**
      * @return the card, source of the sticky note
      */
     public Card getSrcCard() {
-<span class="nc" id="L155">        return srcCard;</span>
+<span class="nc" id="L158">        return srcCard;</span>
     }
 
     /**
      * @param srcCard the card, source of the sticky note
      */
     public void setSrcCard(Card srcCard) {
-<span class="fc" id="L162">        this.srcCard = srcCard;</span>
-<span class="fc" id="L163">    }</span>
+<span class="fc" id="L165">        this.srcCard = srcCard;</span>
+<span class="fc" id="L166">    }</span>
 
     /**
      * get the id of the source card. To be sent to client
@@ -168,10 +171,10 @@ import javax.persistence.Transient;
      * @return the id of source card
      */
     public Long getSrcCardId() {
-<span class="fc bfc" id="L171" title="All 2 branches covered.">        if (this.srcCard != null) {</span>
-<span class="fc" id="L172">            return this.srcCard.getId();</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">        if (this.srcCard != null) {</span>
+<span class="fc" id="L175">            return this.srcCard.getId();</span>
         } else {
-<span class="fc" id="L174">            return srcCardId;</span>
+<span class="fc" id="L177">            return srcCardId;</span>
         }
     }
 
@@ -181,29 +184,29 @@ import javax.persistence.Transient;
      * @param srcCardId the id of the source card
      */
     public void setSrcCardId(Long srcCardId) {
-<span class="fc" id="L184">        this.srcCardId = srcCardId;</span>
-<span class="fc" id="L185">    }</span>
+<span class="fc" id="L187">        this.srcCardId = srcCardId;</span>
+<span class="fc" id="L188">    }</span>
 
     /**
      * @return True if the source is a card
      */
     public boolean isSrcCard() {
-<span class="fc bfc" id="L191" title="All 4 branches covered.">        return this.srcCard != null || this.srcCardId != null;</span>
+<span class="fc bfc" id="L194" title="All 4 branches covered.">        return this.srcCard != null || this.srcCardId != null;</span>
     }
 
     /**
      * @return the card content, source of the sticky note
      */
     public CardContent getSrcCardContent() {
-<span class="nc" id="L198">        return srcCardContent;</span>
+<span class="nc" id="L201">        return srcCardContent;</span>
     }
 
     /**
      * @param srcCardContent the card content, source of the sticky note
      */
     public void setSrcCardContent(CardContent srcCardContent) {
-<span class="fc" id="L205">        this.srcCardContent = srcCardContent;</span>
-<span class="fc" id="L206">    }</span>
+<span class="fc" id="L208">        this.srcCardContent = srcCardContent;</span>
+<span class="fc" id="L209">    }</span>
 
     /**
      * get the id of the source card content. To be sent to client
@@ -211,10 +214,10 @@ import javax.persistence.Transient;
      * @return the id of source card content
      */
     public Long getSrcCardContentId() {
-<span class="fc bfc" id="L214" title="All 2 branches covered.">        if (this.srcCardContent != null) {</span>
-<span class="fc" id="L215">            return this.srcCardContent.getId();</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">        if (this.srcCardContent != null) {</span>
+<span class="fc" id="L218">            return this.srcCardContent.getId();</span>
         } else {
-<span class="fc" id="L217">            return srcCardContentId;</span>
+<span class="fc" id="L220">            return srcCardContentId;</span>
         }
     }
 
@@ -224,29 +227,29 @@ import javax.persistence.Transient;
      * @param srcCardContentId the id of the source card content
      */
     public void setSrcCardContentId(Long srcCardContentId) {
-<span class="fc" id="L227">        this.srcCardContentId = srcCardContentId;</span>
-<span class="fc" id="L228">    }</span>
+<span class="fc" id="L230">        this.srcCardContentId = srcCardContentId;</span>
+<span class="fc" id="L231">    }</span>
 
     /**
      * @return True if the source is a card content
      */
     public boolean isSrcCardContent() {
-<span class="fc bfc" id="L234" title="All 4 branches covered.">        return this.srcCardContent != null || this.srcCardContentId != null;</span>
+<span class="fc bfc" id="L237" title="All 4 branches covered.">        return this.srcCardContent != null || this.srcCardContentId != null;</span>
     }
 
     /**
      * @return the resource / resource reference, source of the sticky note
      */
     public AbstractResource getSrcResourceOrRef() {
-<span class="nc" id="L241">        return srcResourceOrRef;</span>
+<span class="nc" id="L244">        return srcResourceOrRef;</span>
     }
 
     /**
      * @param srcResourceOrRef the resource / resource reference, source of the sticky note
      */
     public void setSrcResourceOrRef(AbstractResource srcResourceOrRef) {
-<span class="fc" id="L248">        this.srcResourceOrRef = srcResourceOrRef;</span>
-<span class="fc" id="L249">    }</span>
+<span class="fc" id="L251">        this.srcResourceOrRef = srcResourceOrRef;</span>
+<span class="fc" id="L252">    }</span>
 
     /**
      * get the id of the source resource / resource reference. To be sent to client
@@ -254,10 +257,10 @@ import javax.persistence.Transient;
      * @return the id of source resource / resource reference
      */
     public Long getSrcResourceOrRefId() {
-<span class="fc bfc" id="L257" title="All 2 branches covered.">        if (this.srcResourceOrRef != null) {</span>
-<span class="fc" id="L258">            return this.srcResourceOrRef.getId();</span>
+<span class="fc bfc" id="L260" title="All 2 branches covered.">        if (this.srcResourceOrRef != null) {</span>
+<span class="fc" id="L261">            return this.srcResourceOrRef.getId();</span>
         } else {
-<span class="fc" id="L260">            return srcResourceOrRefId;</span>
+<span class="fc" id="L263">            return srcResourceOrRefId;</span>
         }
     }
 
@@ -267,29 +270,29 @@ import javax.persistence.Transient;
      * @param srcResourceOrRefId the id of the source resource / resource reference
      */
     public void setSrcResourceOrRefId(Long srcResourceOrRefId) {
-<span class="fc" id="L270">        this.srcResourceOrRefId = srcResourceOrRefId;</span>
-<span class="fc" id="L271">    }</span>
+<span class="fc" id="L273">        this.srcResourceOrRefId = srcResourceOrRefId;</span>
+<span class="fc" id="L274">    }</span>
 
     /**
      * @return True if the source is a resource / resource reference
      */
     public boolean isSrcResourceOrRef() {
-<span class="fc bfc" id="L277" title="All 4 branches covered.">        return this.srcResourceOrRef != null || this.srcResourceOrRefId != null;</span>
+<span class="fc bfc" id="L280" title="All 4 branches covered.">        return this.srcResourceOrRef != null || this.srcResourceOrRefId != null;</span>
     }
 
     /**
      * @return the block, source of the sticky note
      */
     public Block getSrcBlock() {
-<span class="nc" id="L284">        return srcBlock;</span>
+<span class="nc" id="L287">        return srcBlock;</span>
     }
 
     /**
      * @param srcBlock the block, source of the sticky note
      */
     public void setSrcBlock(Block srcBlock) {
-<span class="fc" id="L291">        this.srcBlock = srcBlock;</span>
-<span class="fc" id="L292">    }</span>
+<span class="fc" id="L294">        this.srcBlock = srcBlock;</span>
+<span class="fc" id="L295">    }</span>
 
     /**
      * get the id of the source block. To be sent to client
@@ -297,10 +300,10 @@ import javax.persistence.Transient;
      * @return the id of source block
      */
     public Long getSrcBlockId() {
-<span class="fc bfc" id="L300" title="All 2 branches covered.">        if (this.srcBlock != null) {</span>
-<span class="fc" id="L301">            return this.srcBlock.getId();</span>
+<span class="fc bfc" id="L303" title="All 2 branches covered.">        if (this.srcBlock != null) {</span>
+<span class="fc" id="L304">            return this.srcBlock.getId();</span>
         } else {
-<span class="fc" id="L303">            return srcBlockId;</span>
+<span class="fc" id="L306">            return srcBlockId;</span>
         }
     }
 
@@ -310,29 +313,29 @@ import javax.persistence.Transient;
      * @param srcBlockId the id of the source block
      */
     public void setSrcBlockId(Long srcBlockId) {
-<span class="fc" id="L313">        this.srcBlockId = srcBlockId;</span>
-<span class="fc" id="L314">    }</span>
+<span class="fc" id="L316">        this.srcBlockId = srcBlockId;</span>
+<span class="fc" id="L317">    }</span>
 
     /**
      * @return True if the source is a block
      */
     public boolean isSrcBlock() {
-<span class="fc bfc" id="L320" title="All 4 branches covered.">        return this.srcBlock != null || this.srcBlockId != null;</span>
+<span class="fc bfc" id="L323" title="All 4 branches covered.">        return this.srcBlock != null || this.srcBlockId != null;</span>
     }
 
     /**
      * @return the card where the information is useful
      */
     public Card getDestinationCard() {
-<span class="fc" id="L327">        return destinationCard;</span>
+<span class="fc" id="L330">        return destinationCard;</span>
     }
 
     /**
      * @param destinationCard the card where the information is useful
      */
     public void setDestinationCard(Card destinationCard) {
-<span class="fc" id="L334">        this.destinationCard = destinationCard;</span>
-<span class="fc" id="L335">    }</span>
+<span class="fc" id="L337">        this.destinationCard = destinationCard;</span>
+<span class="fc" id="L338">    }</span>
 
     /**
      * get the id of the destination card. To be sent to client
@@ -340,10 +343,10 @@ import javax.persistence.Transient;
      * @return the id of destination card
      */
     public Long getDestinationCardId() {
-<span class="fc bfc" id="L343" title="All 2 branches covered.">        if (this.destinationCard != null) {</span>
-<span class="fc" id="L344">            return this.destinationCard.getId();</span>
+<span class="fc bfc" id="L346" title="All 2 branches covered.">        if (this.destinationCard != null) {</span>
+<span class="fc" id="L347">            return this.destinationCard.getId();</span>
         } else {
-<span class="fc" id="L346">            return destinationCardId;</span>
+<span class="fc" id="L349">            return destinationCardId;</span>
         }
     }
 
@@ -353,36 +356,36 @@ import javax.persistence.Transient;
      * @param destinationCardId the id of the destination card
      */
     public void setDestinationCardId(Long destinationCardId) {
-<span class="fc" id="L356">        this.destinationCardId = destinationCardId;</span>
-<span class="fc" id="L357">    }</span>
+<span class="fc" id="L359">        this.destinationCardId = destinationCardId;</span>
+<span class="fc" id="L360">    }</span>
 
     /**
      * @return the short description
      */
     public String getTeaser() {
-<span class="fc" id="L363">        return teaser;</span>
+<span class="fc" id="L366">        return teaser;</span>
     }
 
     /**
      * @param teaser the short description
      */
     public void setTeaser(String teaser) {
-<span class="fc" id="L370">        this.teaser = teaser;</span>
-<span class="fc" id="L371">    }</span>
+<span class="fc" id="L373">        this.teaser = teaser;</span>
+<span class="fc" id="L374">    }</span>
 
     /**
      * @return the long description
      */
     public String getExplanation() {
-<span class="fc" id="L377">        return explanation;</span>
+<span class="fc" id="L380">        return explanation;</span>
     }
 
     /**
      * @param explanation the long description
      */
     public void setExplanation(String explanation) {
-<span class="fc" id="L384">        this.explanation = explanation;</span>
-<span class="fc" id="L385">    }</span>
+<span class="fc" id="L387">        this.explanation = explanation;</span>
+<span class="fc" id="L388">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // helpers
@@ -393,65 +396,65 @@ import javax.persistence.Transient;
      */
     @JsonbTransient
     public StickyNoteSourceable getSrc() {
-<span class="pc bpc" id="L396" title="1 of 2 branches missed.">        if (this.srcCard != null) {</span>
-<span class="fc" id="L397">            return this.srcCard;</span>
+<span class="pc bpc" id="L399" title="1 of 2 branches missed.">        if (this.srcCard != null) {</span>
+<span class="fc" id="L400">            return this.srcCard;</span>
         }
-<span class="nc bnc" id="L399" title="All 2 branches missed.">        if (this.srcCardContent != null) {</span>
-<span class="nc" id="L400">            return this.srcCardContent;</span>
+<span class="nc bnc" id="L402" title="All 2 branches missed.">        if (this.srcCardContent != null) {</span>
+<span class="nc" id="L403">            return this.srcCardContent;</span>
         }
-<span class="nc bnc" id="L402" title="All 2 branches missed.">        if (this.srcResourceOrRef != null) {</span>
-<span class="nc" id="L403">            return this.srcResourceOrRef;</span>
+<span class="nc bnc" id="L405" title="All 2 branches missed.">        if (this.srcResourceOrRef != null) {</span>
+<span class="nc" id="L406">            return this.srcResourceOrRef;</span>
         }
-<span class="nc bnc" id="L405" title="All 2 branches missed.">        if (this.srcBlock != null) {</span>
-<span class="nc" id="L406">            return this.srcBlock;</span>
+<span class="nc bnc" id="L408" title="All 2 branches missed.">        if (this.srcBlock != null) {</span>
+<span class="nc" id="L409">            return this.srcBlock;</span>
         }
-<span class="nc" id="L408">        throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L411">        throw HttpErrorMessage.dataIntegrityFailure();</span>
     }
 
     /**
      * @param src the source of the link
      */
     public void setSrc(StickyNoteSourceable src) {
-<span class="pc bpc" id="L415" title="1 of 2 branches missed.">        if (src == null) {</span>
-<span class="nc" id="L416">            resetSrc();</span>
-<span class="nc" id="L417">            return;</span>
+<span class="pc bpc" id="L418" title="1 of 2 branches missed.">        if (src == null) {</span>
+<span class="nc" id="L419">            resetSrc();</span>
+<span class="nc" id="L420">            return;</span>
         }
-<span class="fc bfc" id="L419" title="All 2 branches covered.">        if (src instanceof Card) {</span>
-<span class="fc" id="L420">            resetSrc();</span>
-<span class="fc" id="L421">            setSrcCard((Card) src);</span>
-<span class="fc" id="L422">            return;</span>
+<span class="fc bfc" id="L422" title="All 2 branches covered.">        if (src instanceof Card) {</span>
+<span class="fc" id="L423">            resetSrc();</span>
+<span class="fc" id="L424">            setSrcCard((Card) src);</span>
+<span class="fc" id="L425">            return;</span>
         }
-<span class="fc bfc" id="L424" title="All 2 branches covered.">        if (src instanceof CardContent) {</span>
-<span class="fc" id="L425">            resetSrc();</span>
-<span class="fc" id="L426">            setSrcCardContent((CardContent) src);</span>
-<span class="fc" id="L427">            return;</span>
+<span class="fc bfc" id="L427" title="All 2 branches covered.">        if (src instanceof CardContent) {</span>
+<span class="fc" id="L428">            resetSrc();</span>
+<span class="fc" id="L429">            setSrcCardContent((CardContent) src);</span>
+<span class="fc" id="L430">            return;</span>
         }
-<span class="fc bfc" id="L429" title="All 2 branches covered.">        if (src instanceof AbstractResource) {</span>
-<span class="fc" id="L430">            resetSrc();</span>
-<span class="fc" id="L431">            setSrcResourceOrRef((AbstractResource) src);</span>
-<span class="fc" id="L432">            return;</span>
+<span class="fc bfc" id="L432" title="All 2 branches covered.">        if (src instanceof AbstractResource) {</span>
+<span class="fc" id="L433">            resetSrc();</span>
+<span class="fc" id="L434">            setSrcResourceOrRef((AbstractResource) src);</span>
+<span class="fc" id="L435">            return;</span>
         }
-<span class="pc bpc" id="L434" title="1 of 2 branches missed.">        if (src instanceof Block) {</span>
-<span class="fc" id="L435">            resetSrc();</span>
-<span class="fc" id="L436">            setSrcBlock((Block) src);</span>
-<span class="fc" id="L437">            return;</span>
+<span class="pc bpc" id="L437" title="1 of 2 branches missed.">        if (src instanceof Block) {</span>
+<span class="fc" id="L438">            resetSrc();</span>
+<span class="fc" id="L439">            setSrcBlock((Block) src);</span>
+<span class="fc" id="L440">            return;</span>
         }
-<span class="nc" id="L439">        throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L442">        throw HttpErrorMessage.dataIntegrityFailure();</span>
     }
 
     /**
      * Set every source to null
      */
     private void resetSrc() {
-<span class="fc" id="L446">        setSrcCard(null);</span>
-<span class="fc" id="L447">        setSrcCardId(null);</span>
-<span class="fc" id="L448">        setSrcCardContent(null);</span>
-<span class="fc" id="L449">        setSrcCardContentId(null);</span>
-<span class="fc" id="L450">        setSrcResourceOrRef(null);</span>
-<span class="fc" id="L451">        setSrcResourceOrRefId(null);</span>
-<span class="fc" id="L452">        setSrcBlock(null);</span>
-<span class="fc" id="L453">        setSrcBlockId(null);</span>
-<span class="fc" id="L454">    }</span>
+<span class="fc" id="L449">        setSrcCard(null);</span>
+<span class="fc" id="L450">        setSrcCardId(null);</span>
+<span class="fc" id="L451">        setSrcCardContent(null);</span>
+<span class="fc" id="L452">        setSrcCardContentId(null);</span>
+<span class="fc" id="L453">        setSrcResourceOrRef(null);</span>
+<span class="fc" id="L454">        setSrcResourceOrRefId(null);</span>
+<span class="fc" id="L455">        setSrcBlock(null);</span>
+<span class="fc" id="L456">        setSrcBlockId(null);</span>
+<span class="fc" id="L457">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -462,42 +465,42 @@ import javax.persistence.Transient;
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L465" title="1 of 2 branches missed.">        if (other instanceof StickyNoteLink) {</span>
-<span class="fc" id="L466">            StickyNoteLink o = (StickyNoteLink) other;</span>
+<span class="pc bpc" id="L468" title="1 of 2 branches missed.">        if (other instanceof StickyNoteLink) {</span>
+<span class="fc" id="L469">            StickyNoteLink o = (StickyNoteLink) other;</span>
             // srcXxx is managed separately in the Facade
             // destinationYyy is managed separately in the Facade
-<span class="fc" id="L469">            this.setTeaser(o.getTeaser());</span>
-<span class="fc" id="L470">            this.setExplanation(o.getExplanation());</span>
-<span class="fc" id="L471">        } else {</span>
-<span class="nc" id="L472">            throw new ColabMergeException(this, other);</span>
+<span class="fc" id="L472">            this.setTeaser(o.getTeaser());</span>
+<span class="fc" id="L473">            this.setExplanation(o.getExplanation());</span>
+<span class="fc" id="L474">        } else {</span>
+<span class="nc" id="L475">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L474">    }</span>
+<span class="fc" id="L477">    }</span>
 
-//    @Override
-//    public Set&lt;WebsocketChannel&gt; getChannels() {
-//        if (this.destinationCard != null) {
-//            return this.destinationCard.getChannels();
-//        } else {
-//        return Set.of();
-//        }
-//    }
+    @Override
+    public Set&lt;WebsocketChannel&gt; getChannels() {
+<span class="pc bpc" id="L481" title="1 of 2 branches missed.">        if (this.destinationCard != null) {</span>
+<span class="fc" id="L482">            return this.destinationCard.getChannels();</span>
+        } else {
+<span class="nc" id="L484">        return Set.of();</span>
+        }
+    }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L487">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L490">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L493">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L496">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L498">        return &quot;StickyNoteLink{&quot; + &quot;id=&quot; + id + &quot;, srcCardId=&quot; + getSrcCardId()</span>
-<span class="nc" id="L499">            + &quot;, srcCardContentId=&quot; + getSrcCardContentId() + &quot;, srcResourceOrRefId=&quot;</span>
-<span class="nc" id="L500">            + getSrcResourceOrRefId() + &quot;, srcBlockId=&quot; + getSrcBlockId() + &quot;, destination=&quot;</span>
+<span class="nc" id="L501">        return &quot;StickyNoteLink{&quot; + &quot;id=&quot; + id + &quot;, srcCardId=&quot; + getSrcCardId()</span>
+<span class="nc" id="L502">            + &quot;, srcCardContentId=&quot; + getSrcCardContentId() + &quot;, srcResourceOrRefId=&quot;</span>
+<span class="nc" id="L503">            + getSrcResourceOrRefId() + &quot;, srcBlockId=&quot; + getSrcBlockId() + &quot;, destination=&quot;</span>
             + destinationCard + &quot;, teaser=&quot; + teaser + &quot;, explanation=&quot; + explanation + &quot;}&quot;;
     }
 

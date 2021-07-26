@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/195</span>
+                <span class='fraction'>0/202</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/56</span>
+                <span class='fraction'>0/58</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/62</span>
+                <span class='fraction'>0/65</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/193</span>
+                <span class='fraction'>0/200</span>
             </div>
         
             
@@ -678,7 +678,32 @@
 <a name='L619'></a><a href='#L619'>619</a>
 <a name='L620'></a><a href='#L620'>620</a>
 <a name='L621'></a><a href='#L621'>621</a>
-<a name='L622'></a><a href='#L622'>622</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L622'></a><a href='#L622'>622</a>
+<a name='L623'></a><a href='#L623'>623</a>
+<a name='L624'></a><a href='#L624'>624</a>
+<a name='L625'></a><a href='#L625'>625</a>
+<a name='L626'></a><a href='#L626'>626</a>
+<a name='L627'></a><a href='#L627'>627</a>
+<a name='L628'></a><a href='#L628'>628</a>
+<a name='L629'></a><a href='#L629'>629</a>
+<a name='L630'></a><a href='#L630'>630</a>
+<a name='L631'></a><a href='#L631'>631</a>
+<a name='L632'></a><a href='#L632'>632</a>
+<a name='L633'></a><a href='#L633'>633</a>
+<a name='L634'></a><a href='#L634'>634</a>
+<a name='L635'></a><a href='#L635'>635</a>
+<a name='L636'></a><a href='#L636'>636</a>
+<a name='L637'></a><a href='#L637'>637</a>
+<a name='L638'></a><a href='#L638'>638</a>
+<a name='L639'></a><a href='#L639'>639</a>
+<a name='L640'></a><a href='#L640'>640</a>
+<a name='L641'></a><a href='#L641'>641</a>
+<a name='L642'></a><a href='#L642'>642</a>
+<a name='L643'></a><a href='#L643'>643</a>
+<a name='L644'></a><a href='#L644'>644</a>
+<a name='L645'></a><a href='#L645'>645</a>
+<a name='L646'></a><a href='#L646'>646</a>
+<a name='L647'></a><a href='#L647'>647</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1297,7 +1322,32 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * The coLAB project
@@ -1322,7 +1372,7 @@
   Project,
   Role,
   SignUpInfo,
-  // StickyNoteLink,
+  StickyNoteLink,
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
@@ -1916,10 +1966,35 @@ export const <span class="cstat-no" title="statement not covered" >deleteBlock =
 //});
 &nbsp;
 // TODO see if it belongs to stickyNoteLinks or to cards. Make your choice !
-export const <span class="cstat-no" title="statement not covered" >getStickyNoteLinkAsDest = createAsyncThunk('stickyNoteLinks/getAsDest', </span>
+export const <span class="cstat-no" title="statement not covered" >getStickyNoteLinkAsDest = createAsyncThunk(</span>
+  'stickyNoteLinks/getAsDest',
 <span class="fstat-no" title="function not covered" >  async </span>(cardId: number) =&gt; {
 <span class="cstat-no" title="statement not covered" >    return await restClient.CardRestEndpoint.getStickyNoteLinksAsDest(cardId);</span>
-});
+  },
+);
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >createStickyNote = createAsyncThunk(</span>
+  'stickyNoteLinks/create',
+<span class="fstat-no" title="function not covered" >  async </span>(stickyNote: StickyNoteLink) =&gt; {
+<span class="cstat-no" title="statement not covered" >    return await restClient.StickyNoteLinkRestEndpoint.createLink(stickyNote);</span>
+  },
+);
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >updateStickyNote = createAsyncThunk(</span>
+  'stickyNoteLinks/update',
+<span class="fstat-no" title="function not covered" >  async </span>(stickyNote: StickyNoteLink) =&gt; {
+<span class="cstat-no" title="statement not covered" >    return await restClient.StickyNoteLinkRestEndpoint.updateLink(stickyNote);</span>
+  },
+);
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >deleteStickyNote = createAsyncThunk(</span>
+  'stickyNoteLinks/delete',
+<span class="fstat-no" title="function not covered" >  async </span>(stickyNote: StickyNoteLink) =&gt; {
+<span class="cstat-no" title="statement not covered" >    if (stickyNote.id != null) {</span>
+<span class="cstat-no" title="statement not covered" >      return await restClient.StickyNoteLinkRestEndpoint.deleteLink(stickyNote.id);</span>
+    }
+  },
+);
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -1927,7 +2002,7 @@ export const <span class="cstat-no" title="statement not covered" >getStickyNote
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Jul 22 2021 12:34:25 GMT+0000 (Coordinated Universal Time)
+                at Mon Jul 26 2021 12:14:33 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

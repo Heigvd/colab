@@ -127,7 +127,7 @@ colab-tests/colab-api,ch.colabproject.colab.api.ws.message,WsChannelUpdate,0,29,
 colab-tests/colab-api,ch.colabproject.colab.api.ws.message,PrecomputedWsMessages,4,71,1,5,1,17,2,6,1,4
 colab-tests/colab-api,ch.colabproject.colab.api.ws.message,IndexEntry,16,37,0,0,8,11,4,6,4,6
 colab-tests/colab-api,ch.colabproject.colab.api.ws.message,WsMessage,0,3,0,0,0,1,0,1,0,1
-colab-tests/colab-api,ch.colabproject.colab.api.model.link,StickyNoteLink,61,253,10,36,18,86,12,49,5,33
+colab-tests/colab-api,ch.colabproject.colab.api.model.link,StickyNoteLink,63,260,11,37,19,88,13,50,5,34
 colab-tests/colab-api,ch.colabproject.colab.api.model.link,ActivityFlowLink,18,59,2,4,5,22,3,15,2,13
 colab-tests/colab-api,ch.colabproject.colab.api.microchanges.model,Change,38,37,0,0,15,12,11,8,11,8
 colab-tests/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange,0,47,0,2,0,16,0,11,0,10
@@ -147,9 +147,9 @@ colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEn
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.MonitoringRestEndpointClientImpl,41,38,0,0,6,5,1,3,1,3
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient,0,91,0,0,0,16,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.BlockRestEndPointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
@@ -178,10 +178,10 @@ colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEn
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ProjectRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},0,6,0,0,0,1,0,1,0,1
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl.new GenericType() {...},6,0,0,0,1,0,1,0,1,0
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,JsonbProvider,0,15,0,0,0,5,0,3,0,3
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,PolymorphicDeserializer,0,84,1,3,0,20,1,6,0,5
 colab-tests/client-generator-model,ch.colabproject.colab.generator.model.tools,JavaDocExtractor,278,14,26,0,68,5,21,1,8,1
