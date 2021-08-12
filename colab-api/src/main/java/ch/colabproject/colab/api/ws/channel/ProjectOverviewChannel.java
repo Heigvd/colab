@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel;
 
+import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import java.util.HashSet;
@@ -54,7 +55,7 @@ public class ProjectOverviewChannel implements WebsocketMetaChannel {
      * @return set of USerChannel, one for each project member
      */
     @Override
-    public Set<WebsocketEffectiveChannel> resolve(UserDao userDao) {
+    public Set<WebsocketEffectiveChannel> resolve(UserDao userDao, RequestManager requestManager) {
         Set<WebsocketEffectiveChannel> channels = new HashSet<>();
         if (this.project != null) {
             // get channel of each team member
@@ -67,7 +68,7 @@ public class ProjectOverviewChannel implements WebsocketMetaChannel {
         }
 
         // add all admin user channels
-        channels.addAll((new AdminChannel()).resolve(userDao));
+        channels.addAll((new AdminChannel()).resolve(userDao, requestManager));
 
         return channels;
     }

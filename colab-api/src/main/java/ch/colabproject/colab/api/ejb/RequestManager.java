@@ -10,8 +10,11 @@ import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.security.HttpSession;
+import java.util.concurrent.Callable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * Request sidekick.
@@ -20,6 +23,12 @@ import javax.inject.Inject;
  */
 @RequestScoped
 public class RequestManager {
+
+    /**
+     * Access to the persistence unit
+     */
+    @PersistenceContext(unitName = "COLAB_PU")
+    private EntityManager em;
 
     /**
      * User-related business logic
@@ -47,6 +56,16 @@ public class RequestManager {
      * Base url request URL
      */
     private String baseUrl;
+
+    /**
+     * Id of the current user account
+     */
+    private Long currentAccountId;
+
+    /**
+     * Indicates if current user can act as an admin
+     */
+    private boolean sudoAsAdmin = false;
 
     /**
      * Get request base url
@@ -95,6 +114,8 @@ public class RequestManager {
     public Account getCurrentAccount() {
         if (this.httpSession != null) {
             return userDao.findAccount(this.httpSession.getAccountId());
+        } else if (this.currentAccountId != null) {
+            return userDao.findAccount(this.currentAccountId);
         }
         return null;
     }
@@ -148,14 +169,69 @@ public class RequestManager {
      * @param account new current account
      */
     public void login(Account account) {
-        this.getHttpSession().setAccountId(account.getId());
+        HttpSession session = this.getHttpSession();
+        if (session != null) {
+            session.setAccountId(account.getId());
+        }
+        this.currentAccountId = account.getId();
     }
 
     /**
      * Clear current account and unsubscribe from all websocket channels.
      */
     public void logout() {
-        this.getHttpSession().setAccountId(null);
-        websocketFacade.signoutAndUnsubscribeFromAll(this.getHttpSession().getSessionId());
+        HttpSession session = this.getHttpSession();
+        this.currentAccountId = null;
+        if (session != null) {
+            session.setAccountId(null);
+            websocketFacade.signoutAndUnsubscribeFromAll(this.getHttpSession().getSessionId());
+        }
+    }
+
+    /**
+     * Execute some piece of code with admin privileges.
+     *
+     * @param action code to execute with admin privileges
+     */
+    public void sudo(Runnable action) {
+        // make sure to flush to check every pending changes before granting admin rights
+        em.flush();
+        this.sudoAsAdmin = true;
+        action.run();
+        // make sure to flush to apply all pending changes with admin rights
+        em.flush();
+        this.sudoAsAdmin = false;
+    }
+
+    /**
+     * Execute some piece of code with admin privileges and return something.
+     *
+     * @param <R>    return type
+     * @param action code to execute with admin privileges
+     *
+     * @return action result
+     *
+     * @throws java.lang.Exception if something is thrown during the call
+     */
+    public <R> R sudo(Callable<R> action) throws Exception {
+        // make sure to flush to check every pending changes before granting admin rights
+        em.flush();
+        this.sudoAsAdmin = true;
+        R result = action.call();
+        // make sure to flush to apply all pending changes with admin rights
+        em.flush();
+        this.sudoAsAdmin = false;
+
+        return result;
+    }
+
+    /**
+     * Is the currentUser is an admin or sudo as an admin ?
+     *
+     * @return true if current user can act as an admin
+     */
+    public boolean isAdmin() {
+        User currentUser = this.getCurrentUser();
+        return sudoAsAdmin || (currentUser != null && currentUser.isAdmin());
     }
 }

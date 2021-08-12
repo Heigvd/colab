@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.api.ejb;
 
-import ch.colabproject.colab.api.exceptions.ColabRollbackException;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.ws.WebsocketHelper;
@@ -60,6 +59,12 @@ public class TransactionManager implements Serializable {
      */
     @Inject
     private UserDao userDao;
+
+    /**
+     * TO sudo
+     */
+    @Inject
+    private RequestManager requestManager;
 
     /**
      * set of updated entities to be propagated
@@ -126,18 +131,22 @@ public class TransactionManager implements Serializable {
     /**
      * Pre compute the message.
      */
-    private void precomputeMessage() throws EncodeException {
-        logger.debug("Precompute messages; Update:{}, Deletes:{}", updated, deleted);
-        // filter updateds to keep only those who haven't been deleted
-        Set<WithWebsocketChannels> filtered = updated.stream()
-            .filter(
-                (u) -> !deleted.stream()
-                    .anyMatch((d) -> d.equals(u))
-            ).collect(Collectors.toSet());
+    private void precomputeMessage() {
+        try {
+            logger.debug("Precompute messages; Update:{}, Deletes:{}", updated, deleted);
+            // filter updateds to keep only those who haven't been deleted
+            Set<WithWebsocketChannels> filtered = updated.stream()
+                .filter(
+                    (u) -> !deleted.stream()
+                        .anyMatch((d) -> d.equals(u))
+                ).collect(Collectors.toSet());
 
-        this.precomputed = true;
-        this.message = WebsocketHelper.prepareWsMessage(userDao, filtered, deleted);
-        logger.trace("Precomputed: {}", message);
+            this.precomputed = true;
+            this.message = WebsocketHelper.prepareWsMessage(userDao, requestManager, filtered, deleted);
+            logger.trace("Precomputed: {}", message);
+        } catch (EncodeException ex) {
+            logger.error("Failed to precompute websocket messages");
+        }
     }
 
     /**
@@ -149,12 +158,7 @@ public class TransactionManager implements Serializable {
         em.flush();
         logger.info(
             "Before transactionCompletion: This method is not called for each transaction, why ???");
-        try {
-            this.precomputeMessage();
-        } catch (EncodeException ex) {
-            //throw runtime error to rollback
-            throw new ColabRollbackException(ex);
-        }
+        this.precomputeMessage();
     }
 
     /**
@@ -170,11 +174,7 @@ public class TransactionManager implements Serializable {
                 logger.info("Messages were not precomputed @BeforeCompletion!!!");
                 // ,essage shall be precomputed during the "before completion" phase, but the
                 // dedicated method is never called, and I do not understand the reason...
-                try {
-                    this.precomputeMessage();
-                } catch (EncodeException ex) {
-                    logger.error("Failed to precompute websocket messages");
-                }
+                this.precomputeMessage();
             }
             if (message != null && !message.getMessages().isEmpty()) {
                 logger.info("Send messages");

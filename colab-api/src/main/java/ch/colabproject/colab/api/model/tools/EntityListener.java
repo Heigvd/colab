@@ -6,9 +6,12 @@
  */
 package ch.colabproject.colab.api.model.tools;
 
+import ch.colabproject.colab.api.ejb.SecurityFacade;
 import ch.colabproject.colab.api.ejb.TransactionManager;
+import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import javax.inject.Inject;
+import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
 import javax.persistence.PreRemove;
@@ -32,15 +35,55 @@ public class EntityListener {
     private TransactionManager transactionManager;
 
     /**
-     * Track all updates and insert
+     * Security check
+     */
+    @Inject
+    private SecurityFacade securityFacade;
+
+    /**
+     * Track all reads from database
      *
-     * @param o updated or just persisted object
+     * @param o just loaded object
+     */
+    @PostLoad
+    public void onLoad(Object o) {
+        logger.trace("Load {}", o);
+        if (o instanceof WithPermission) {
+            securityFacade.assertReadPermission((WithPermission) o);
+        }
+    }
+
+    /**
+     * Track all insertions
+     *
+     * @param o just persisted object
      */
     @PostPersist
+    public void onPersist(Object o) {
+        logger.trace("Persist {}", o);
+
+        if (o instanceof WithPermission) {
+            securityFacade.assertCreatePermission((WithPermission) o);
+        }
+
+        if (o instanceof WithWebsocketChannels) {
+            transactionManager.registerUpdate((WithWebsocketChannels) o);
+        }
+    }
+
+    /**
+     * Track all updated
+     *
+     * @param o just updated object
+     */
     @PostUpdate
     public void onUpdate(Object o) {
+        logger.trace("Update {}", o);
+        if (o instanceof WithPermission) {
+            securityFacade.assertUpdatePermission((WithPermission) o);
+        }
+
         if (o instanceof WithWebsocketChannels) {
-            logger.trace("Update {}", o);
             transactionManager.registerUpdate((WithWebsocketChannels) o);
         }
     }
@@ -52,8 +95,12 @@ public class EntityListener {
      */
     @PreRemove
     public void onDestroy(Object o) {
+        logger.trace("Destroy {}", o);
+        if (o instanceof WithPermission) {
+            securityFacade.assertDeletePermission((WithPermission) o);
+        }
+
         if (o instanceof WithWebsocketChannels) {
-            logger.trace("Destroy {}", o);
             transactionManager.registerDeletion((WithWebsocketChannels) o);
         }
     }

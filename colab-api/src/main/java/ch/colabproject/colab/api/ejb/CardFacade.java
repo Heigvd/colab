@@ -88,12 +88,6 @@ public class CardFacade {
     @Inject
     private DocumentDao documentDao;
 
-    /**
-     * To check access rights
-     */
-    @Inject
-    private SecurityFacade securityFacade;
-
     // *********************************************************************************************
     // card type stuff
     // *********************************************************************************************
@@ -113,12 +107,10 @@ public class CardFacade {
             if (project == null) {
                 throw HttpErrorMessage.relatedObjectNotFoundError();
             }
-            securityFacade.assertCanCreateCardType(project);
             project.getElementsToBeDefined().add(cardType);
             cardType.setProject(project);
         } else {
             logger.debug("create a new global card type");
-            securityFacade.assertCurrentUserIsAdmin();
             cardType.setProject(null);
         }
 
@@ -245,9 +237,6 @@ public class CardFacade {
         if (cardType == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
-
-        // check type read access and parent write right
-        securityFacade.assertCanCreateCard(parent, cardType);
 
         Card card = initNewCard(parent, cardType);
 
@@ -518,8 +507,6 @@ public class CardFacade {
         if (card == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
-        securityFacade.assertCanCreateCardContent(card);
-
         CardContent cardContent = initNewCardContent(card);
 
         return cardContentDao.createCardContent(cardContent);
@@ -601,9 +588,6 @@ public class CardFacade {
         if (cardContent == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
-
-        // TODO: check if the content already got a document
-        securityFacade.assertCanCreateDeliverable(document, cardContent);
 
         cardContent.setDeliverable(document);
         document.setDeliverableCardContent(cardContent);

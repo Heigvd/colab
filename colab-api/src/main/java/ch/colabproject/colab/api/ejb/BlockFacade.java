@@ -55,12 +55,6 @@ public class BlockFacade {
     @Inject
     private DocumentDao documentDao;
 
-    /**
-     * To check access rights
-     */
-    @Inject
-    private SecurityFacade securityFacade;
-
     // *********************************************************************************************
     // general block stuff
     // *********************************************************************************************
@@ -80,7 +74,6 @@ public class BlockFacade {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
         BlockDocument blockDocument = (BlockDocument) document;
-        securityFacade.assertCanCreateBlock(blockDocument);
 
         block.setDocument(blockDocument);
         List<Block> blocks = blockDocument.getBlocks();
@@ -165,7 +158,6 @@ public class BlockFacade {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
         BlockDocument blockDocument = (BlockDocument) document;
-        securityFacade.assertCanCreateBlock(blockDocument);
 
         TextDataBlock block = new TextDataBlock();
         block.setRevision("0");

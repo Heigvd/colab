@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.tests.rest.card;
 
-import ch.colabproject.colab.api.ejb.WebsocketFacade;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
@@ -30,8 +29,6 @@ import java.util.Set;
 import javax.websocket.DeploymentException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 /**
  * Testing of card type controller from a client point of view
@@ -201,7 +198,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         CardType projectOneType = ColabFactory.createCardType(client, projectOne.getId());
 
         // user should have receive two message. One contains the project and has been sent through
-        // the user own channel. Second message contains the type and has been send through the
+        // the user own channel. Second message contains the type and has been sent through the
         // project channel
         List<WsUpdateMessage> wsUpdate = TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class);
         // combine messages

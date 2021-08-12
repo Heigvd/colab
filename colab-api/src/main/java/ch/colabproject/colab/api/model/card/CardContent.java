@@ -15,6 +15,7 @@ import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -88,7 +90,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
     /**
      * The card to which this content belongs
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Card card;
 
@@ -102,7 +104,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
      * The deliverable of this card content
      */
     // TODO challenge the cascade
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Document deliverable;
 
@@ -354,6 +356,16 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
             return this.card.getProject();
         }
         return null;
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        if (this.card != null) {
+            return this.card.getUpdateCondition();
+        } else {
+            // orphan content should neven happen
+            return Conditions.alwaysTrue;
+        }
     }
 
     @Override

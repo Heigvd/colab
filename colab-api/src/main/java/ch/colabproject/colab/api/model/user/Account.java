@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.user;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
@@ -16,6 +17,7 @@ import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,7 +43,6 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Account unique ID IDs are unique within all account class hierarchy
      */
@@ -52,7 +53,7 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     /**
      * An account belongs to an user
      */
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonbTransient
     private User user;
 
@@ -65,7 +66,6 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return account id
      */
@@ -124,13 +124,38 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     @Override
     public Set<WebsocketChannel> getChannels() {
         if (this.user != null) {
             return Set.of(this.user.getEffectiveChannel(), new AdminChannel());
         } else {
             return Set.of(new AdminChannel());
+        }
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+        // anyone can create an account
+        return Conditions.alwaysTrue;
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+        return new Conditions.Or(
+            // unauthenticated users shall read account data to authenticate
+            new Conditions.Not(new Conditions.IsAuthenticated()),
+            new Conditions.IsCurrentUserThisUser(this.user)
+        );
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        if (this.user != null) {
+            return this.user.getUpdateCondition();
+        } else {
+            return Conditions.alwaysFalse;
         }
     }
 

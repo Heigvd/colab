@@ -10,10 +10,12 @@ import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.text.MessageFormat;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
@@ -24,7 +26,6 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @Entity
-
 @NamedQuery(
     name = "InvitationToken.findByProjectAndRecipient",
     query = "SELECT t from InvitationToken t "
@@ -43,7 +44,7 @@ public class InvitationToken extends Token {
      * The member of the project
      */
     @NotNull
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private TeamMember teamMember;
 
@@ -113,9 +114,13 @@ public class InvitationToken extends Token {
 
     @Override
     public String getRedirectTo() {
-        Project project = getProject();
-        if (project != null && project.getId() != null) {
-            return "/project/" + getId();
+        if (this.teamMember != null && this.teamMember.getUser() != null) {
+            // if link from user to project is not set, do not even try to read the project
+            // as it will lead to an access denied exception
+            Project project = getProject();
+            if (project != null && project.getId() != null) {
+                return "/project/" + getId();
+            }
         }
         return "";
     }
@@ -139,6 +144,7 @@ public class InvitationToken extends Token {
      *
      * @return the project
      */
+    @JsonbTransient
     private Project getProject() {
         if (teamMember != null) {
             return teamMember.getProject();
@@ -166,8 +172,15 @@ public class InvitationToken extends Token {
     }
 
     @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+        return new Conditions.IsCurrentUserMemberOfProject(getProject());
+    }
+
+    @Override
     public String toString() {
-        return "InvitationToken{" + "id=" + getId() + ", teamMember"
-            + teamMember + '}';
+        return "InvitationToken{" + "id=" + getId()
+            + ", teamMemberId:" + teamMember.getId()
+            + '}';
     }
 }

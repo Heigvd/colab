@@ -42,9 +42,13 @@ public class UserDao {
      * @return the account if it exists; null otherwise
      */
     public Account findAccount(Long accountId) {
-        try {
-            return em.find(Account.class, accountId);
-        } catch (IllegalArgumentException ex) {
+        if (accountId != null) {
+            try {
+                return em.find(Account.class, accountId);
+            } catch (IllegalArgumentException ex) {
+                return null;
+            }
+        } else {
             return null;
         }
     }

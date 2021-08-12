@@ -9,7 +9,9 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import java.util.List;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -152,6 +154,16 @@ public class CardType extends AbstractCardType {
             // this.setAuthorityHolder(o.getAuthorityHolder());
         } else {
             throw new ColabMergeException(this, other);
+        }
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+        if (this.getProject() != null){
+            return new Conditions.IsCurrentUserMemberOfProject(this.getProject());
+        } else {
+            return Conditions.alwaysFalse;
         }
     }
 

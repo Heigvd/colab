@@ -86,12 +86,6 @@ public class ResourceFacade {
     @Inject
     private CardContentDao cardContentDao;
 
-    /**
-     * To check access rights
-     */
-    @Inject
-    private SecurityFacade securityFacade;
-
     // *********************************************************************************************
     // resource access stuff
     // *********************************************************************************************
@@ -259,8 +253,6 @@ public class ResourceFacade {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        securityFacade.assertCanCreateResource(document, cardType);
-
         Resource resource = Resource.initNewResource();
         resource.setAbstractCardType(cardType);
         cardType.getDirectAbstractResources().add(resource);
@@ -301,8 +293,6 @@ public class ResourceFacade {
         if (card == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
-
-        securityFacade.assertCanCreateResource(document, card);
 
         Resource resource = Resource.initNewResource();
         resource.setCard(card);
@@ -345,8 +335,6 @@ public class ResourceFacade {
         if (cardContent == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
-
-        securityFacade.assertCanCreateResource(document, cardContent);
 
         Resource resource = Resource.initNewResource();
         resource.setCardContent(cardContent);

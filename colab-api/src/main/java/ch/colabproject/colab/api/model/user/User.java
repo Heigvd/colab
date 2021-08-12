@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
 import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
 import ch.colabproject.colab.api.ws.channel.UserChannel;
@@ -57,7 +58,6 @@ public class User implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * User unique id
      */
@@ -266,7 +266,6 @@ public class User implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // helpers
     // ---------------------------------------------------------------------------------------------
-
     /**
      * get most preferred name to display.
      *
@@ -296,7 +295,6 @@ public class User implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // init
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Set lastSeenAt to now
      */
@@ -307,7 +305,6 @@ public class User implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     /**
      * {@inheritDoc }
      */
@@ -355,6 +352,29 @@ public class User implements ColabEntity, WithWebsocketChannels {
         // all admin
         channels.add(new AdminChannel());
         return channels;
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+        // anyone can create a user
+        return Conditions.alwaysTrue;
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+        return new Conditions.Or(
+            // unauthenticated users shall read user data to authenticate
+            new Conditions.Not(new Conditions.IsAuthenticated()),
+            new Conditions.IsCurrentUserThisUser(this),
+            new Conditions.IsCurrentUserTeamMateOfUser(this)
+        );
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        return new Conditions.IsCurrentUserThisUser(this);
     }
 
     @Override

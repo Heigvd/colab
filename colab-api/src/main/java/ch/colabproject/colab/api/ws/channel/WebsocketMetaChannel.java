@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel;
 
+import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.Set;
@@ -23,9 +24,10 @@ public interface WebsocketMetaChannel extends WebsocketChannel {
     /**
      * Resolve the meta channel to a list of effective channels.
      *
-     * @param userDao some resolver may need to fetch user from DB
+     * @param userDao        some resolver may need to fetch user from DB
+     * @param requestManager some resolver may need to access the request state
      *
      * @return list of effective channels
      */
-    Set<WebsocketEffectiveChannel> resolve(UserDao userDao);
+    Set<WebsocketEffectiveChannel> resolve(UserDao userDao, RequestManager requestManager);
 }

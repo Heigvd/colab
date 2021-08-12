@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.rest.utils;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
 import javax.ejb.EJBException;
+import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
@@ -54,12 +55,19 @@ public class AbstractExceptionMapper {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(constraintViolation.toString())
                 .build();
-        } else {
-            logger.error("Unknown Internal Error", exception);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity(exception.toString())
-                .build();
+        } else if (exception instanceof PersistenceException) {
+            PersistenceException e = (PersistenceException) exception;
+
+            Throwable cause = e.getCause();
+            if (cause instanceof Exception) {
+                return processException((Exception) cause);
+            }
         }
+
+        logger.error("Unknown Internal Error", exception);
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+            .entity(exception.toString())
+            .build();
     }
 
 }

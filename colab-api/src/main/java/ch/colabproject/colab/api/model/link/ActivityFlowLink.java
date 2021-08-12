@@ -10,8 +10,10 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,7 +27,8 @@ import javax.validation.constraints.NotNull;
  * @author sandra
  */
 @Entity
-public class ActivityFlowLink implements ColabEntity/* , WithWebsocketChannels */ {
+public class ActivityFlowLink implements ColabEntity/* ,
+ * WithWebsocketChannels */ {
 
     /**
      * Serial version UID
@@ -35,7 +38,6 @@ public class ActivityFlowLink implements ColabEntity/* , WithWebsocketChannels *
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Link ID
      */
@@ -47,7 +49,7 @@ public class ActivityFlowLink implements ColabEntity/* , WithWebsocketChannels *
      * The card to handle before
      */
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Card previousCard;
 
@@ -61,7 +63,7 @@ public class ActivityFlowLink implements ColabEntity/* , WithWebsocketChannels *
      * The card to handle after
      */
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Card nextCard;
 
@@ -74,7 +76,6 @@ public class ActivityFlowLink implements ColabEntity/* , WithWebsocketChannels *
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the link id
      */
@@ -165,7 +166,6 @@ public class ActivityFlowLink implements ColabEntity/* , WithWebsocketChannels *
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     /**
      * {@inheritDoc }
      */
@@ -189,6 +189,22 @@ public class ActivityFlowLink implements ColabEntity/* , WithWebsocketChannels *
 //        return Set.of();
 //        }
 //    }
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+        return new Conditions.Or(
+            this.previousCard.getReadCondition(),
+            this.nextCard.getReadCondition()
+        );
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        return new Conditions.And(
+            this.previousCard.getUpdateCondition(),
+            this.nextCard.getUpdateCondition()
+        );
+    }
 
     @Override
     public int hashCode() {

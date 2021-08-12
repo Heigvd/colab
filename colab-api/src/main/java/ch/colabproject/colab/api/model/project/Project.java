@@ -15,6 +15,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.team.Role;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -77,7 +79,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     /**
      * The root card of the project containing all other cards
      */
-    @OneToOne(cascade = CascadeType.ALL) // , optional=false)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY) // , optional=false)
     @JsonbTransient
     private Card rootCard;
 
@@ -304,6 +306,28 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+
+        List<Conditions.Condition> orList = new ArrayList<>();
+
+        orList.add(new Conditions.IsCurrentUserMemberOfProject(this));
+
+        this.elementsToBeDefined.stream().forEach(type -> {
+            // anyone who has access to a type may read the project too
+            orList.add(type.getReadCondition());
+        });
+
+        return new Conditions.Or(orList.toArray(
+            new Conditions.Condition[orList.size()]));
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        return new Conditions.IsCurrentUserMemberOfProject(this);
+    }
+
+    @Override
     public int hashCode() {
         return EntityHelper.hashCode(this);
     }
@@ -317,6 +341,6 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     @Override
     public String toString() {
         return "Project{" + "id=" + id + ", name=" + name + ", descr=" + description + ", category="
-            + concretizationCategory + ", rootCardId=" + getRootCardId() + '}';
+            + concretizationCategory + '}';
     }
 }

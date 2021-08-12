@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -63,7 +65,7 @@ public abstract class AbstractResource
     /**
      * The card type / card type reference to which the abstract resource is linked
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private AbstractCardType abstractCardType;
 
@@ -76,7 +78,7 @@ public abstract class AbstractResource
     /**
      * The card to which the abstract resource is linked
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Card card;
 
@@ -89,7 +91,7 @@ public abstract class AbstractResource
     /**
      * The card content to which the abstract resource is linked
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private CardContent cardContent;
 
@@ -317,7 +319,6 @@ public abstract class AbstractResource
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Resolve to concrete Resource
      *
@@ -351,6 +352,24 @@ public abstract class AbstractResource
 //            return Set.of();
 //        }
 //    }
+
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        if (this.abstractCardType != null) {
+            // the abstract resource is linked to a card type / card type reference
+            return this.abstractCardType.getUpdateCondition();
+        } else if (this.card != null) {
+            // the abstract resource is linked to a card
+            return this.card.getUpdateCondition();
+        } else if (this.cardContent != null) {
+            // the abstract resource is linked to a card content
+            return this.cardContent.getUpdateCondition();
+        } else {
+            // such an orphan shouldn't exist...
+            return Conditions.alwaysTrue;
+        }
+    }
 
     @Override
     public int hashCode() {

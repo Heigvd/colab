@@ -131,8 +131,10 @@ public class TokenFacade {
                 throw HttpErrorMessage.authenticationRequired();
             } else {
                 if (token.checkHash(plainToken)) {
-                    token.consume(requestManager);
-                    tokenDao.deleteToken(token);
+                    requestManager.sudo(() -> {
+                        token.consume(requestManager);
+                        tokenDao.deleteToken(token);
+                    });
                     return token;
                 } else {
                     logger.debug("Provided plain-token does not match");
@@ -259,8 +261,6 @@ public class TokenFacade {
      */
     public TeamMember sendMembershipInvitation(Project project, String recipient) {
         User currentUser = securityFacade.assertAndGetCurrentUser();
-        // user must have write right on the project
-        securityFacade.assertProjectWriteRight(project);
 
         InvitationToken token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);
         if (token == null) {
@@ -299,7 +299,7 @@ public class TokenFacade {
     public Token getNotExpiredToken(Long id) {
         Token token = tokenDao.getToken(id);
         if (token != null && token.isOutdated()) {
-            tokenDao.deleteToken(token);
+            requestManager.sudo(() -> tokenDao.deleteToken(token));
             return null;
         } else {
             return token;

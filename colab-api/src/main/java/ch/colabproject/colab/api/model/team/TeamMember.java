@@ -12,12 +12,14 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,10 +35,10 @@ import javax.persistence.Transient;
  */
 @Entity
 @NamedQuery(name = "TeamMember.areUserTeammate",
-        // SELECT true FROM TeamMember a, TeamMember b WHERE ...
-        query = "SELECT true FROM TeamMember a "
-                + "JOIN TeamMember b ON a.project.id = b.project.id "
-                + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
+    // SELECT true FROM TeamMember a, TeamMember b WHERE ...
+    query = "SELECT true FROM TeamMember a "
+    + "JOIN TeamMember b ON a.project.id = b.project.id "
+    + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
 public class TeamMember implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
@@ -44,7 +46,6 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Member ID
      */
@@ -55,7 +56,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     /**
      * The user
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private User user;
 
@@ -68,10 +69,9 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     /**
      * The project
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Project project;
-
 
     /**
      * The roles
@@ -95,7 +95,6 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the member ID
      */
@@ -224,11 +223,9 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
         this.roleIds = roleIds;
     }
 
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         /* no-op */
@@ -240,6 +237,16 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
             return this.project.getChannels();
         } else {
             return Set.of();
+        }
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        if (this.user != null && this.project != null) {
+            return new Conditions.IsCurrentUserMemberOfProject(project);
+        } else {
+            // anyone can read pedning invitation
+            return Conditions.alwaysTrue;
         }
     }
 
@@ -256,7 +263,11 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public String toString() {
-        return "TeamMember{" + "id=" + id + ", userId=" + getUserId() + ", projectId="
+        if (user == null) {
+            return "TeamMember{pending}";
+        } else {
+            return "TeamMember{" + "id=" + id + ", userId=" + getUserId() + ", projectId="
                 + getProjectId() + "}";
+        }
     }
 }

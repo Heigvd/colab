@@ -8,10 +8,9 @@ package ch.colabproject.colab.tests.tests;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.ejb.UserManagement;
-import ch.colabproject.colab.api.model.card.CardType;
-import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
+import ch.colabproject.colab.api.model.tools.EntityListener;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
@@ -22,7 +21,6 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
-import ch.colabproject.colab.tests.mailhog.model.Message;
 import ch.colabproject.colab.tests.ws.WebsocketClient;
 import java.io.File;
 import java.io.IOException;
@@ -33,8 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -58,6 +54,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Root class for Arquillian Based test.
@@ -97,6 +94,9 @@ public abstract class AbstractArquillianTest {
      */
     @Inject
     private UserManagement userManagement;
+
+    @Inject
+    private TestFacade testFacade;
 
     /**
      * User persistence
@@ -308,7 +308,6 @@ public abstract class AbstractArquillianTest {
         });
     }
 
-
     /**
      * Sign the current user out
      */
@@ -335,6 +334,8 @@ public abstract class AbstractArquillianTest {
      */
     protected void initDatabaseOnce() throws SQLException {
         if (!hasDbBeenInitialized) {
+
+            TestHelper.setLoggerLevel(getLogger(EntityListener.class), org.slf4j.event.Level.TRACE);
             hasDbBeenInitialized = true;
             logger.info("Randomize sequences");
             DatabaseTools.randomizeSequences(colabDataSource);
@@ -406,7 +407,7 @@ public abstract class AbstractArquillianTest {
             User adminUser = userDao.findUserByUsername("admin");
             this.adminUserId = adminUser.getId();
 
-            userManagement.grantAdminRight(adminUser.getId());
+            testFacade.grantAdminRight(adminUser.getId());
 
             signIn(admin);
 

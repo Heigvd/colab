@@ -58,6 +58,10 @@ public class RequestFilter implements ContainerRequestFilter, ContainerResponseF
             requestContext.getUriInfo().getBaseUri().toString()
                 .replaceFirst("/api/$", "")
         );
+
+        log.info("START {} {}",
+            requestContext.getRequest().getMethod(),
+            requestContext.getUriInfo().getPath());
     }
 
     /**

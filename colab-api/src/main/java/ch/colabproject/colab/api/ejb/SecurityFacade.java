@@ -6,21 +6,17 @@
  */
 package ch.colabproject.colab.api.ejb;
 
-import ch.colabproject.colab.api.model.card.AbstractCardType;
-import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.card.CardType;
-import ch.colabproject.colab.api.model.document.BlockDocument;
-import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * To check access rights.
@@ -30,6 +26,9 @@ import javax.persistence.TypedQuery;
 @Stateless
 @LocalBean
 public class SecurityFacade {
+
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(SecurityFacade.class);
 
     /**
      * Access to the persistence unit
@@ -42,85 +41,6 @@ public class SecurityFacade {
      */
     @Inject
     private RequestManager requestManager;
-
-    // *********************************************************************************************
-    // user stuff
-    // *********************************************************************************************
-    /**
-     * Is the current authenticated user an administrator ?
-     *
-     * @return true if the current authenticate is an admin, false otherwise
-     */
-    public boolean isAdmin() {
-        if (requestManager.isAuthenticated()) {
-            return requestManager.getCurrentUser().isAdmin();
-        }
-        return false;
-    }
-
-    /**
-     * Is the current authenticated user the given one ?
-     *
-     * @param user user to check current user against
-     *
-     * @return true if the current user equals given one
-     */
-    public boolean isUser(User user) {
-        if (user != null && requestManager.isAuthenticated()) {
-            return user.equals(requestManager.getCurrentUser());
-        }
-        return false;
-    }
-
-    /**
-     * Assert the current user has write access to the given user
-     *
-     * @param user user the currentUser want to edit
-     *
-     * @throws HttpErrorMessage bad request if user id null; authRequired if currentUser is not
-     *                          authenticated; forbidden if current user is authenticated but has
-     *                          not right to edit given user
-     *
-     */
-    public void assertCanWrite(User user) {
-        if (user == null) {
-            throw HttpErrorMessage.badRequest();
-        } else {
-            User currentUser = requestManager.getCurrentUser();
-            if (currentUser == null) {
-                throw HttpErrorMessage.authenticationRequired();
-            } else {
-                if (!currentUser.isAdmin() && !currentUser.equals(user)) {
-                    throw HttpErrorMessage.forbidden();
-                }
-            }
-        }
-    }
-
-    /**
-     * Assert the current user has read access to the given user
-     *
-     * @param user user the currentUser want to read
-     *
-     * @throws HttpErrorMessage bad request if user id null; authRequired if currentUser is not
-     *                          authenticated; forbidden if current user is authenticated but has
-     *                          not right to read given user
-     *
-     */
-    public void assertCanRead(User user) {
-        if (user == null) {
-            throw HttpErrorMessage.badRequest();
-        } else {
-            User currentUser = requestManager.getCurrentUser();
-            if (currentUser == null) {
-                throw HttpErrorMessage.authenticationRequired();
-            } else {
-                if (!currentUser.isAdmin() && !this.areUserTeammate(currentUser, user)) {
-                    throw HttpErrorMessage.forbidden();
-                }
-            }
-        }
-    }
 
     /**
      * Get the current user if it exists.
@@ -139,229 +59,81 @@ public class SecurityFacade {
     }
 
     /**
-     * Assert the current user is admin.
+     * Assert the given condition is true
      *
-     * @throws HttpErrorMessage authRequired if currentUser is not authenticated;forbidden is
-     *                          current user is not an admin
+     * @param condition the condition to check
+     * @param message   message to log in case the assertion failed
+     *
+     * @throws HttpErrorMessage <ul>
+     * <li>with authenticationRequired if assertion fails and current user is not authenticated;
+     * <li>with forbidden if the authenticated user does not have enough permission
+     * </ul>
      */
-    public void assertCurrentUserIsAdmin() {
-        User user = this.assertAndGetCurrentUser();
-        if (!user.isAdmin()) {
-            throw HttpErrorMessage.forbidden();
-        }
-    }
-
-    // *********************************************************************************************
-    // project stuff
-    // *********************************************************************************************
-    /**
-     * Check if the user is member of the team of the project.
-     *
-     * @param user    a user
-     * @param project a project
-     *
-     * @return true if the user is member of the project
-     */
-    public boolean isUserMemebrOfProject(User user, Project project) {
-        if (user != null && project != null) {
-            return project.getTeamMembers().stream()
-                .filter(member -> user.equals(member.getUser()))
-                .findFirst().isPresent();
-        }
-        return false;
-    }
-
-    /**
-     * Check is user have at least one common team
-     *
-     * @param a a user
-     * @param b other user
-     *
-     * @return true if both users are member of the same team
-     */
-    public boolean areUserTeammate(User a, User b) {
-        TypedQuery<Boolean> query = em.createNamedQuery(
-            "TeamMember.areUserTeammate",
-            Boolean.class);
-        query.setParameter("aUserId", a.getId());
-        query.setParameter("bUserId", b.getId());
-
-        // if the query returns something, users are teammates
-        return !query.getResultList().isEmpty();
-    }
-
-    /**
-     * Make sure the current user has right to edit the project
-     *
-     * @param project project to edit
-     *
-     * @throws HttpErrorMessage forbidden
-     */
-    public void assertProjectWriteRight(Project project) {
-        User currentUser = assertAndGetCurrentUser();
-        if (!currentUser.isAdmin() && !this.isUserMemebrOfProject(currentUser, project)) {
-            throw HttpErrorMessage.forbidden();
+    public void assertCondition(Condition condition, String message) {
+        if (!requestManager.isAdmin() && !condition.eval(requestManager, em)) {
+            logger.error(message);
+            if (requestManager.isAuthenticated()) {
+                throw HttpErrorMessage.forbidden();
+            } else {
+                throw HttpErrorMessage.authenticationRequired();
+            }
         }
     }
 
     /**
-     * Make sure the current user has right to edit the project
+     * Assert the given condition is true.If the current user is an admin, this assertion will never
+     * fail
      *
-     * @param project project to edit
+     * @param condition the condition to evaluate
      *
-     * @throws HttpErrorMessage forbidden
+     * @throws HttpErrorMessage <li>with authenticationRequired if assertion fails and current user
+     *                          is not authenticated; <li>with forbidden if the authenticated user
+     *                          does not have enough permission
      */
-    public void assertIsMember(Project project) {
-        User currentUser = assertAndGetCurrentUser();
-        if (!this.isUserMemebrOfProject(currentUser, project)) {
-            throw HttpErrorMessage.forbidden();
+    private void assertCondition(Condition condition, String message, WithPermission o) {
+        if (!requestManager.isAdmin() && !condition.eval(requestManager, em)) {
+            logger.error("{} Permission denied: {} ({}) currentUser: {}", message, o, condition, requestManager.getCurrentUser());
+            if (requestManager.isAuthenticated()) {
+                throw HttpErrorMessage.forbidden();
+            } else {
+                throw HttpErrorMessage.authenticationRequired();
+            }
         }
     }
 
-    // *********************************************************************************************
-    // card (+ type + content) stuff
-    // *********************************************************************************************
     /**
-     * Make sure the current user has the right to read the card type
+     * Assert the currentUser has right to create the given object
      *
-     * @param cardType card type to read
+     * @param o object the user want to create
      */
-    public void assertCanReadCardType(AbstractCardType cardType) {
-        // TODO
+    public void assertCreatePermission(WithPermission o) {
+        this.assertCondition(o.getCreateCondition(), "Create", o);
     }
 
     /**
-     * Make sure the current user has the right to read the card
+     * Assert the currentUser has right to read the given object
      *
-     * @param card card to read
+     * @param o object the user want to read
      */
-    public void assertCanReadCard(Card card) {
-        // TODO
+    public void assertReadPermission(WithPermission o) {
+        this.assertCondition(o.getReadCondition(), "Read", o);
     }
 
     /**
-     * Make sure the current user has the right to read the card content
+     * Assert the currentUser has right to update the given object
      *
-     * @param cardContent card content to read
+     * @param o object the user want to update
      */
-    public void assertCanReadCardContent(CardContent cardContent) {
-        // TODO
+    public void assertUpdatePermission(WithPermission o) {
+        this.assertCondition(o.getUpdateCondition(), "Update", o);
     }
 
     /**
-     * Make sure the current user has the right to edit the card type
+     * Assert the currentUser has right to update the given object
      *
-     * @param cardType card type to edit
+     * @param o object the user want to delete
      */
-    public void assertCanWriteCardType(CardType cardType) {
-        // TODO
+    public void assertDeletePermission(WithPermission o) {
+        this.assertCondition(o.getDeleteCondition(), "Delete", o);
     }
-
-    /**
-     * Make sure the current user has the right to edit the card
-     *
-     * @param card card to edit
-     */
-    public void assertCanWriteCard(Card card) {
-        // TODO
-    }
-
-    /**
-     * Make sure the current user has the right to edit the card content
-     *
-     * @param cardContent card content to edit
-     */
-    public void assertCanWriteCardContent(CardContent cardContent) {
-        // TODO
-    }
-
-    /**
-     * Make sure the current user has the right to create a card type
-     *
-     * @param project the project the new card type will belong to
-     */
-    public void assertCanCreateCardType(Project project) {
-        // TODO
-    }
-
-    /**
-     * Make sure the current user has the right to create a card
-     *
-     * @param cardContent the card content the new card will belong to
-     * @param cardType    the card type the new card will refer to
-     */
-    public void assertCanCreateCard(CardContent cardContent, AbstractCardType cardType) {
-        this.assertCanReadCardType(cardType);
-        this.assertCanWriteCardContent(cardContent);
-    }
-
-    /**
-     * Make sure the current user has the right to create a card content
-     *
-     * @param card the card the new card content will be part of
-     */
-    public void assertCanCreateCardContent(Card card) {
-        // TODO
-    }
-
-    /**
-     * Make sure the current user has the right to create a deliverable for this document and this
-     * card content
-     *
-     * @param document    the document the deliverable
-     * @param cardContent the card content the resource will be linked to
-     */
-    public void assertCanCreateDeliverable(Document document, CardContent cardContent) {
-        // TODO
-    }
-
-    // *********************************************************************************************
-    // block document stuff
-    // *********************************************************************************************
-
-    /**
-     * Make sure the current user has the right to create a block in a document
-     *
-     * @param blockDocument the document the new block will be part of
-     */
-    public void assertCanCreateBlock(BlockDocument blockDocument) {
-        // TODO
-    }
-
-    // *********************************************************************************************
-    // resource stuff
-    // *********************************************************************************************
-
-    /**
-     * Make sure the current user has the right to create a resource for this document and this card
-     * type / card type reference
-     *
-     * @param document         the document the resource will represent
-     * @param abstractCardType the card type / card type reference the resource will be linked to
-     */
-    public void assertCanCreateResource(Document document, AbstractCardType abstractCardType) {
-        // TODO
-    }
-
-    /**
-     * Make sure the current user has the right to create a resource for this document and this card
-     *
-     * @param document the document the resource will represent
-     * @param card     the card the resource will be linked to
-     */
-    public void assertCanCreateResource(Document document, Card card) {
-        // TODO
-    }
-
-    /**
-     * Make sure the current user has the right to create a resource for this document and this card
-     * content
-     *
-     * @param document    the document the resource will represent
-     * @param cardContent the card content the resource will be linked to
-     */
-    public void assertCanCreateResource(Document document, CardContent cardContent) {
-        // TODO
-    }
-
 }

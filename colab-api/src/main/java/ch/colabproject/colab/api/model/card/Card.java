@@ -15,6 +15,7 @@ import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -72,7 +74,7 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     /**
      * The card type defining what is it for
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private AbstractCardType cardType;
 
@@ -85,7 +87,7 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     /**
      * The project this card is root of. may be null
      */
-    @OneToOne(mappedBy = "rootCard")
+    @OneToOne(mappedBy = "rootCard", fetch = FetchType.LAZY)
     @JsonbTransient
     private Project rootCardProject;
 
@@ -100,7 +102,7 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
      * <p>
      * A card can either be the root card of a project or be within a card content
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private CardContent parent;
 
@@ -450,6 +452,11 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
             return this.parent.getProject();
         }
         return null;
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        return new Conditions.IsCurrentUserMemberOfProject(getProject());
     }
 
     @Override

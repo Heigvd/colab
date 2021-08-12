@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel;
 
+import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,14 +24,21 @@ public class AdminChannel implements WebsocketMetaChannel {
     /**
      * Admin channel resolve to the set of {@link UserChannel}.
      *
-     * @param userDao used to load all admin from database
+     * @param userDao        used to load all admin from database
+     * @param requestManager must sudo to fetch admins
      *
      * @return list of UserChannel for all admin
      */
     @Override
-    public Set<WebsocketEffectiveChannel> resolve(UserDao userDao) {
-        return userDao.findAllAdmin().stream()
-            .map(user -> user.getEffectiveChannel())
-            .collect(Collectors.toSet());
+    public Set<WebsocketEffectiveChannel> resolve(UserDao userDao, RequestManager requestManager) {
+        try {
+        return requestManager.sudo(() -> {
+            return userDao.findAllAdmin().stream()
+                .map(user -> user.getEffectiveChannel())
+                .collect(Collectors.toSet());
+        });
+        } catch (Exception e){
+            return Set.of();
+        }
     }
 }

@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws;
 
+import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
@@ -131,6 +132,7 @@ public class WebsocketHelper {
      */
     private static void forEachDistinctEffectiveChannel(Set<WebsocketChannel> channels,
         UserDao userDao,
+        RequestManager requestManager,
         Consumer<WebsocketEffectiveChannel> action
     ) {
         logger.trace("Flatten Channels {}", channels);
@@ -140,7 +142,7 @@ public class WebsocketHelper {
                 return Stream.of((WebsocketEffectiveChannel) channel);
             } else if (channel instanceof WebsocketMetaChannel) {
                 Set<WebsocketEffectiveChannel> resolved
-                    = ((WebsocketMetaChannel) channel).resolve(userDao);
+                    = ((WebsocketMetaChannel) channel).resolve(userDao, requestManager);
                 if (logger.isTraceEnabled()) {
                     logger.trace(" -> {}", resolved);
                 }
@@ -159,9 +161,10 @@ public class WebsocketHelper {
     /**
      * Prepare all WsUpdateMessage.
      *
-     * @param userDao provide userDao to resolve meta channels
-     * @param updated set of created/updated entities
-     * @param deleted set of just destroyed-entities index entry
+     * @param userDao        provide userDao to resolve meta channels
+     * @param requestManager the request manager
+     * @param updated        set of created/updated entities
+     * @param deleted        set of just destroyed-entities index entry
      *
      * @return the precomputed messagesByChannels
      *
@@ -169,6 +172,7 @@ public class WebsocketHelper {
      */
     public static PrecomputedWsMessages prepareWsMessage(
         UserDao userDao,
+        RequestManager requestManager,
         Set<WithWebsocketChannels> updated,
         Set<IndexEntry> deleted
     ) throws EncodeException {
@@ -177,14 +181,14 @@ public class WebsocketHelper {
 
         updated.forEach(entity -> {
             logger.trace("Process updated entity {}", entity);
-            forEachDistinctEffectiveChannel(entity.getChannels(), userDao, channel -> {
+            forEachDistinctEffectiveChannel(entity.getChannels(), userDao, requestManager, channel -> {
                 add(messagesByChannel, channel, entity);
             });
         });
 
         deleted.forEach(entity -> {
             logger.trace("Process deleted entry {}", entity);
-            forEachDistinctEffectiveChannel(entity.getChannels(), userDao, channel -> {
+            forEachDistinctEffectiveChannel(entity.getChannels(), userDao, requestManager, channel -> {
                 add(messagesByChannel, channel, entity);
             });
         });
@@ -195,21 +199,23 @@ public class WebsocketHelper {
     /**
      * Prepare one message for one channel
      *
-     * @param userDao provide userDao to resolve meta channels
-     * @param channel the channel
-     * @param message the message
+     * @param userDao        provide userDao to resolve meta channels
+     * @param requestManager the request manager
+     * @param channel        the channel
+     * @param message        the message
      *
      * @return the precomputedMessage
      *
      * @throws EncodeException if json-encoding failed
      */
     public static PrecomputedWsMessages prepareWsMessage(
-        UserDao userDao, WebsocketChannel channel, WsMessage message
+        UserDao userDao, RequestManager requestManager,
+        WebsocketChannel channel, WsMessage message
     ) throws EncodeException {
 
         Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
 
-        forEachDistinctEffectiveChannel(Set.of(channel), userDao, (effectiveChannel) -> {
+        forEachDistinctEffectiveChannel(Set.of(channel), userDao, requestManager, (effectiveChannel) -> {
             messagesByChannel.put(effectiveChannel, List.of(message));
         });
 
@@ -219,22 +225,24 @@ public class WebsocketHelper {
     /**
      * Prepare one message for many channels
      *
-     * @param userDao  provide userDao to resolve meta channels
-     * @param channels the channel set
-     * @param message  the message
+     * @param userDao        provide userDao to resolve meta channels
+     * @param requestManager the request manager
+     * @param channels       the channel set
+     * @param message        the message
      *
      * @return the precomputedMessage
      *
      * @throws EncodeException if json-encoding failed
      */
     public static PrecomputedWsMessages prepareWsMessage(
-        UserDao userDao, Collection<WebsocketChannel> channels, WsMessage message
+        UserDao userDao, RequestManager requestManager,
+        Collection<WebsocketChannel> channels, WsMessage message
     ) throws EncodeException {
 
         Map<WebsocketEffectiveChannel, List<WsMessage>> messagesByChannel = new HashMap<>();
 
         channels.forEach(channel -> {
-            forEachDistinctEffectiveChannel(Set.of(channel), userDao, (effectiveChannel) -> {
+            forEachDistinctEffectiveChannel(Set.of(channel), userDao, requestManager, (effectiveChannel) -> {
                 messagesByChannel.put(effectiveChannel, List.of(message));
             });
         });

@@ -16,7 +16,7 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
  * @author maxence
  */
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public interface ColabEntity extends WithId {
+public interface ColabEntity extends WithId, WithPermission {
 
     /**
      * Update this object according to values provided by other

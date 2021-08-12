@@ -10,7 +10,7 @@ import { removeAllItems } from './helper';
 import getLogger from './logger';
 
 const logger = getLogger('LiveChanges');
-logger.setLevel(4);
+logger.setLevel(3);
 
 //export const mapChangesByObject = (changes: Change[]): ChangeState => {
 //  return changes.reduce<ChangeState>(

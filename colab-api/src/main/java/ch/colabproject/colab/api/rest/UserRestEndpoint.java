@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.api.ejb.SecurityFacade;
 import ch.colabproject.colab.api.ejb.UserManagement;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
@@ -66,12 +65,6 @@ public class UserRestEndpoint {
     private RequestManager requestManager;
 
     /**
-     * to control access
-     */
-    @Inject
-    private SecurityFacade securityFacade;
-
-    /**
      * Get the authentication method and its parameters a user shall use to authenticate with the
      * given email address.
      *
@@ -107,6 +100,7 @@ public class UserRestEndpoint {
      */
     @GET
     @Path("{id : [0-9]*}")
+    @AuthenticationRequired
     public User getUserById(@PathParam("id") Long id) {
         logger.debug("get user #{}", id);
         return userManagement.getUserById(id);
@@ -202,7 +196,6 @@ public class UserRestEndpoint {
     @AuthenticationRequired
     public void updateUser(User user) throws ColabMergeException {
         logger.debug("update user profile: {}", user);
-        securityFacade.assertCanWrite(user);
         userDao.updateUser(user);
     }
 

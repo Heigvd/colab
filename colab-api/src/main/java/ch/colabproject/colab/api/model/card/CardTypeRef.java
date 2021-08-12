@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
@@ -32,7 +33,7 @@ public class CardTypeRef extends AbstractCardType {
     /**
      * The type this reference references
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private AbstractCardType abstractCardType;
 

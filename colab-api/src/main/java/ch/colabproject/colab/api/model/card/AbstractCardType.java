@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
 import ch.colabproject.colab.api.ws.channel.BroadcastChannel;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
@@ -22,10 +23,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -59,9 +62,9 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     private Long id;
 
     /**
-     * The project it belongs to
+     * The project it belongs to. If project is null, it means the type is a global type
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Project project;
 
@@ -228,8 +231,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     }
 
     /**
-     * Resolve to concrete CardType
-     * Get references
+     * Resolve to concrete CardType Get references
      *
      * @return list of references
      */
@@ -262,6 +264,19 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
      * @return concrete type and transitive references
      */
     public abstract List<AbstractCardType> expand();
+
+    /**
+     * Retrieve the complete transitive set of references to this abstract type.
+     *
+     * @return all references
+     */
+    public List<CardTypeRef> getAllReferences() {
+        List<CardTypeRef> all = new ArrayList<>();
+        all.addAll(this.references);
+        this.references.stream().forEach(ref -> all.addAll(ref.getAllReferences()));
+
+        return all;
+    }
 
     /**
      * JPA post-load callback. Used to keep trace of the initial value of the <code>published</code>
@@ -312,6 +327,63 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
         }
 
         return channels;
+    }
+
+    /**
+     * Get the read condition for this very type, ignoring references.
+     *
+     * @return the read condition
+     */
+    @JsonbTransient
+    public Conditions.Condition getSelfReadCondition() {
+        if (this.project != null) {
+            return new Conditions.IsCurrentUserMemberOfProject(this.project);
+        } else {
+            if (this.isPublished()) {
+                // Everybody can read published global types
+                return Conditions.alwaysTrue;
+            } else {
+                return Conditions.alwaysFalse;
+            }
+        }
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+        if (this.project != null) {
+            // type belongs to a project
+            List<Conditions.Condition> orList = new ArrayList<>();
+
+            // members of the project which defined the type may read the type
+            // members of project which reference this type may read it too
+            orList.addAll(this.expand().stream()
+                .map(ref -> ref.getSelfReadCondition()).collect(Collectors.toList()));
+
+            // any type which references this one grant permission too
+            orList.addAll(this.getAllReferences().stream()
+                .map(ref -> ref.getSelfReadCondition()).collect(Collectors.toList()));
+            return new Conditions.Or(orList.toArray(
+                new Conditions.Condition[orList.size()]));
+        } else {
+            if (this.isPublished()) {
+                // Everybody can read published global types
+                return Conditions.alwaysTrue;
+            } else {
+                return Conditions.alwaysFalse;
+            }
+        }
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        if (this.project != null) {
+            // type belongs to a project
+            return this.project.getUpdateCondition();
+        } else {
+            // only admin can edit global types
+            return Conditions.alwaysFalse;
+        }
     }
 
     @Override

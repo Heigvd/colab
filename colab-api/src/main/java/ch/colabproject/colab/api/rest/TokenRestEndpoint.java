@@ -55,6 +55,8 @@ public class TokenRestEndpoint {
      * @param id         if of the token to consume
      * @param plainToken plain token as receive by e-mail
      *
+     * @return the consumed token
+     *
      * @throws ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage <ul>
      * <li>notFound if the token does not exists;
      * <li>bad request if token does not match;
@@ -63,10 +65,10 @@ public class TokenRestEndpoint {
      */
     @PUT
     @Path("{id}/{token: [a-fA-F0-9]+}")
-    public void consumeToken(
+    public Token consumeToken(
         @PathParam("id") Long id,
         @PathParam("token") String plainToken
     ) {
-        tokenFacade.consume(id, plainToken);
+        return tokenFacade.consume(id, plainToken);
     }
 }

@@ -13,9 +13,11 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,7 +38,8 @@ import javax.persistence.Transient;
  * @author sandra
  */
 @Entity
-public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ {
+public class StickyNoteLink implements ColabEntity/* ,
+ * WithWebsocketChannels */ {
 
     /**
      * Serial version UID
@@ -46,7 +49,6 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Link ID
      */
@@ -57,7 +59,7 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
     /**
      * The card, source of the sticky note
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Card srcCard;
 
@@ -70,7 +72,7 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
     /**
      * The card content, source of the sticky note
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private CardContent srcCardContent;
 
@@ -83,7 +85,7 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
     /**
      * The resource / resource reference, source of the sticky note
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private AbstractResource srcResourceOrRef;
 
@@ -96,7 +98,7 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
     /**
      * The block, source of the sticky note
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Block srcBlock;
 
@@ -109,7 +111,7 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
     /**
      * The card where the information is useful
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Card destinationCard;
 
@@ -132,7 +134,6 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the link id
      */
@@ -387,7 +388,6 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
     // ---------------------------------------------------------------------------------------------
     // helpers
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the source of the link
      */
@@ -456,7 +456,6 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     /**
      * {@inheritDoc }
      */
@@ -481,6 +480,19 @@ public class StickyNoteLink implements ColabEntity/* , WithWebsocketChannels */ 
 //        return Set.of();
 //        }
 //    }
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+        return new Conditions.Or(
+            this.getSrc().getReadCondition(),
+            this.getDestinationCard().getReadCondition()
+        );
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        return this.getSrc().getUpdateCondition();
+    }
 
     @Override
     public int hashCode() {

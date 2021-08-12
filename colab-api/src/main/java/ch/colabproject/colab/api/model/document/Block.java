@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -62,7 +64,7 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
     /**
      * The document it is part of
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private BlockDocument document;
 
@@ -199,6 +201,18 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
             return Set.of();
         }
     }
+
+    @Override
+    public Conditions.Condition getUpdateCondition(){
+        if (this.document != null) {
+            return this.document.getUpdateCondition();
+        } else {
+            // such an orphan shouldn't exist...
+            return Conditions.alwaysTrue;
+        }
+    }
+
+
 
     @Override
     public int hashCode() {

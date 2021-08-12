@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.WebsocketEndpoint;
 import ch.colabproject.colab.api.ws.WebsocketHelper;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
@@ -224,6 +225,8 @@ public class WebsocketFacade {
      */
     public void unsubscribeFromBroadcastChannel(WsSessionIdentifier sessionId) {
         logger.debug("Session {} want to unsubscribe from the broadcast channel", sessionId);
+        // assert current user is authenticated
+        securityFacade.assertAndGetCurrentUser();
         SubscriptionRequest request = SubscriptionRequest.build(
             SubscriptionRequest.SubscriptionType.UNSUBSCRIBE,
             SubscriptionRequest.ChannelType.BROADCAST,
@@ -279,7 +282,8 @@ public class WebsocketFacade {
         logger.debug("Session {} want to subscribe to Project#{}", sessionId, projectId);
         Project project = projectDao.getProject(projectId);
         if (project != null) {
-            securityFacade.assertIsMember(project);
+            securityFacade.assertCondition(project.getUpdateCondition(),
+                "Subscribe to project channel: Permision denied");
             SubscriptionRequest request = SubscriptionRequest.build(
                 SubscriptionRequest.SubscriptionType.SUBSCRIBE,
                 SubscriptionRequest.ChannelType.PROJECT,
@@ -304,7 +308,7 @@ public class WebsocketFacade {
         logger.debug("Session {} want to unsubscribe from Project#{}", sessionId, projectId);
         Project project = projectDao.getProject(projectId);
         if (project != null) {
-            securityFacade.assertIsMember(project);
+            securityFacade.assertCondition(new Conditions.IsCurrentUserMemberOfProject(project), "Subscribe to project channel: Permision denied");
             SubscriptionRequest request = SubscriptionRequest.build(
                 SubscriptionRequest.SubscriptionType.UNSUBSCRIBE,
                 SubscriptionRequest.ChannelType.PROJECT,
@@ -325,51 +329,54 @@ public class WebsocketFacade {
      */
     public void processSubscription(
         @Observes @Inbound(eventName = WS_SUBSCRIPTION_EVENT_CHANNEL) SubscriptionRequest request) {
-        logger.debug("Channel subscription request: {}", request);
-        Session session = WebsocketEndpoint.getSession(request.getWsSessionId());
-        if (session != null) {
-            logger.debug("Process channel subscription request: {}", request);
+        // all security check have be done before fire the subscription event
+        requestManager.sudo(() -> {
+            logger.debug("Channel subscription request: {}", request);
+            Session session = WebsocketEndpoint.getSession(request.getWsSessionId());
+            if (session != null) {
+                logger.debug("Process channel subscription request: {}", request);
 
-            // first determine the effective channel
-            WebsocketEffectiveChannel channel = getChannel(request);
-            if (channel != null) {
-                // make sure the http session has its own set of wsSessions
-                if (!httpSessionToWsSessions.containsKey(request.getColabSessionId())) {
-                    httpSessionToWsSessions.put(request.getColabSessionId(), new HashSet<>());
-                }
-                // and  make sure the websocket session is linked to the http session
-                httpSessionToWsSessions.get(request.getColabSessionId()).add(session);
-
-                // make sure to link wsSession to its Http session
-                wsSessionToHttpSession.put(session, request.getColabSessionId());
-
-                if (request.getType() == SubscriptionRequest.SubscriptionType.SUBSCRIBE) {
-                    // make sure the http session has its own list of channels
-                    if (!wsSessionMap.containsKey(session)) {
-                        wsSessionMap.put(session, new HashSet<>());
+                // first determine the effective channel
+                WebsocketEffectiveChannel channel = getChannel(request);
+                if (channel != null) {
+                    // make sure the http session has its own set of wsSessions
+                    if (!httpSessionToWsSessions.containsKey(request.getColabSessionId())) {
+                        httpSessionToWsSessions.put(request.getColabSessionId(), new HashSet<>());
                     }
-                    // keep wsSession to channel registry up-to date
-                    wsSessionMap.get(session).add(channel);
+                    // and  make sure the websocket session is linked to the http session
+                    httpSessionToWsSessions.get(request.getColabSessionId()).add(session);
 
-                    // subscribe to channel
-                    subscribe(channel, session);
-                } else {
-                    // Remove the channel from the set of channel linked to the wsSession
-                    if (wsSessionMap.containsKey(session)) {
-                        Set<WebsocketEffectiveChannel> channels = wsSessionMap.get(session);
-                        channels.remove(channel);
-                        if (channels.isEmpty()) {
-                            wsSessionMap.remove(session);
+                    // make sure to link wsSession to its Http session
+                    wsSessionToHttpSession.put(session, request.getColabSessionId());
+
+                    if (request.getType() == SubscriptionRequest.SubscriptionType.SUBSCRIBE) {
+                        // make sure the http session has its own list of channels
+                        if (!wsSessionMap.containsKey(session)) {
+                            wsSessionMap.put(session, new HashSet<>());
                         }
+                        // keep wsSession to channel registry up-to date
+                        wsSessionMap.get(session).add(channel);
+
+                        // subscribe to channel
+                        subscribe(channel, session);
+                    } else {
+                        // Remove the channel from the set of channel linked to the wsSession
+                        if (wsSessionMap.containsKey(session)) {
+                            Set<WebsocketEffectiveChannel> channels = wsSessionMap.get(session);
+                            channels.remove(channel);
+                            if (channels.isEmpty()) {
+                                wsSessionMap.remove(session);
+                            }
+                        }
+                        unsubscribe(channel, Set.of(session));
                     }
-                    unsubscribe(channel, Set.of(session));
+                } else {
+                    logger.debug("Failed to resolve {} to an effective channel", request);
                 }
             } else {
-                logger.debug("Failed to resolve {} to an effective channel", request);
+                logger.debug("Ignore channel subscription: {}", request);
             }
-        } else {
-            logger.debug("Ignore channel subscription: {}", request);
-        }
+        });
     }
 
     /**
@@ -426,6 +433,7 @@ public class WebsocketFacade {
         try {
             PrecomputedWsMessages prepareWsMessage = WebsocketHelper.prepareWsMessage(
                 userDao,
+                requestManager,
                 new AdminChannel(),
                 WsChannelUpdate.build(channel, diff)
             );

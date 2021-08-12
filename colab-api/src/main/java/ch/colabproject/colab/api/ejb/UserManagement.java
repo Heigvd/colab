@@ -63,12 +63,6 @@ public class UserManagement {
     private UserDao userDao;
 
     /**
-     * To check permission
-     */
-    @Inject
-    private SecurityFacade securityFacade;
-
-    /**
      * Access to the persistence unit
      */
     @PersistenceContext(unitName = "COLAB_PU")
@@ -83,7 +77,6 @@ public class UserManagement {
      */
     public User getUserById(Long id) {
         User user = userDao.findUser(id);
-        securityFacade.assertCanRead(user);
         return user;
     }
 
@@ -105,19 +98,25 @@ public class UserManagement {
      * @throws HttpErrorMessage badRequest if there is no identifier
      */
     public AuthMethod getAuthenticationMethod(String identifier) {
-        if (identifier == null || identifier.isBlank()) {
-            throw HttpErrorMessage.badRequest();
-        } else {
-            LocalAccount account = userDao.findLocalAccountByIdentifier(identifier);
+        try {
+            return requestManager.sudo(() -> {
+                if (identifier == null || identifier.isBlank()) {
+                    throw HttpErrorMessage.badRequest();
+                } else {
+                    LocalAccount account = userDao.findLocalAccountByIdentifier(identifier);
 
-            if (account != null) {
-                return new AuthMethod(account.getCurrentClientHashMethod(), account.getClientSalt(),
-                    account.getNextClientHashMethod(), account.getNewClientSalt());
-            } else {
-                // no account found, reeturn random method
-                // TODO: store it in a tmp cache
-                return this.getDefaultRandomAuthenticationMethod();
-            }
+                    if (account != null) {
+                        return new AuthMethod(account.getCurrentClientHashMethod(), account.getClientSalt(),
+                            account.getNextClientHashMethod(), account.getNewClientSalt());
+                    } else {
+                        // no account found, reeturn random method
+                        // TODO: store it in a tmp cache
+                        return this.getDefaultRandomAuthenticationMethod();
+                    }
+                }
+            });
+        } catch (Exception e) {
+            return this.getDefaultRandomAuthenticationMethod();
         }
     }
 
@@ -132,7 +131,7 @@ public class UserManagement {
     }
 
     /**
-     * Create a brand new user, which can authenticate with a {@link LocalAccount}. First,
+     * Create a brand new user, which can authenticate with a {@link LocalAccount}.First,
      * plainPassword will be hashed as any client should do. Then the
      * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo)  signup} method is called.
      *
@@ -192,6 +191,17 @@ public class UserManagement {
      */
     public User createAdminUser(String username, String email, String plainPassword) {
         User admin = this.createUser(username, email, plainPassword);
+        LocalAccount account = (LocalAccount) admin.getAccounts().get(0);
+
+        AuthInfo authInfo = new AuthInfo();
+        authInfo.setIdentifier(username);
+        authInfo.setMandatoryHash(
+            Helper.bytesToHex(
+                account.getCurrentClientHashMethod().hash(
+                    plainPassword,
+                    account.getClientSalt())));
+        this.authenticate(authInfo);
+
         this.grantAdminRight(admin.getId());
         return admin;
     }
@@ -289,7 +299,7 @@ public class UserManagement {
 
                 // Spotbugs reports a timing attack vulnerability using:
                 //  if (Arrays.equals(hash, account.getHashedPassword())) {
-                // doing a a fullcomparison of arrays makes it happy:
+                // doing a fullcomparison of arrays makes it happy:
                 if (this.constantTimeArrayEquals(hash, account.getHashedPassword())) {
                     // authentication succeed
                     /////////////////////////////////
@@ -347,7 +357,6 @@ public class UserManagement {
         LocalAccount account = userDao.findLocalAccountByIdentifier(authInfo.getIdentifier());
 
         if (account != null) {
-            securityFacade.assertCanWrite(account.getUser());
             String mandatoryHash = authInfo.getMandatoryHash();
 
             if (mandatoryHash != null) {
@@ -492,7 +501,6 @@ public class UserManagement {
         throws ColabMergeException {
         logger.debug("Update LocalAccount email address: {}", account);
         LocalAccount managedAccount = (LocalAccount) userDao.findAccount(account.getId());
-        securityFacade.assertCanWrite(managedAccount.getUser());
 
         String currentEmail = managedAccount.getEmail();
         String newEmail = account.getEmail();

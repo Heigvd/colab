@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.Set;
@@ -22,6 +23,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,14 +46,13 @@ import javax.persistence.Transient;
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 //FIXME see if is needed or not. It was implemented for test purpose at first
 @NamedQuery(name = "Document.findAll", query = "SELECT d FROM Document d")
-public abstract class Document implements ColabEntity , WithWebsocketChannels {
+public abstract class Document implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Document ID
      */
@@ -83,7 +84,7 @@ public abstract class Document implements ColabEntity , WithWebsocketChannels {
      * The card content for which this document is the deliverable
      */
     // TODO see where to prevent that a document is used by several card contents
-    @OneToOne(mappedBy = "deliverable", cascade = {})
+    @OneToOne(mappedBy = "deliverable", cascade = {}, fetch = FetchType.LAZY)
     @JsonbTransient
     private CardContent deliverableCardContent;
 
@@ -97,7 +98,7 @@ public abstract class Document implements ColabEntity , WithWebsocketChannels {
      * The resource representing this document
      */
     // TODO see where to prevent that a document is represented by several resources
-    @OneToOne(mappedBy = "document", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "document", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonbTransient
     private Resource resource;
 
@@ -110,7 +111,6 @@ public abstract class Document implements ColabEntity , WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the document id
      */
@@ -156,10 +156,10 @@ public abstract class Document implements ColabEntity , WithWebsocketChannels {
 
     /**
      * @return the authority holder : is it belonging to
-     *         <ul>
-     *         <li>a concrete project and behave for itself</li>
-     *         <li>a shared abstract model</li>
-     *         </ul>
+     * <ul>
+     * <li>a concrete project and behave for itself</li>
+     * <li>a shared abstract model</li>
+     * </ul>
      */
     public ConcretizationCategory getAuthorityHolder() {
         return authorityHolder;
@@ -167,10 +167,10 @@ public abstract class Document implements ColabEntity , WithWebsocketChannels {
 
     /**
      * @param authorityHolder the authority holder : is it belonging to
-     *                        <ul>
-     *                        <li>a concrete project and behave for itself</li>
-     *                        <li>a shared abstract model</li>
-     *                        </ul>
+     * <ul>
+     * <li>a concrete project and behave for itself</li>
+     * <li>a shared abstract model</li>
+     * </ul>
      */
     public void setAuthorityHolder(ConcretizationCategory authorityHolder) {
         this.authorityHolder = authorityHolder;
@@ -262,7 +262,7 @@ public abstract class Document implements ColabEntity , WithWebsocketChannels {
      * @return True if there is a linked resource
      */
     public boolean hasResource() {
-       return resource != null || resourceId != null;
+        return resource != null || resourceId != null;
     }
 
     /**
@@ -286,7 +286,6 @@ public abstract class Document implements ColabEntity , WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof Document) {
@@ -296,6 +295,20 @@ public abstract class Document implements ColabEntity , WithWebsocketChannels {
             this.setAuthorityHolder(o.getAuthorityHolder());
         } else {
             throw new ColabMergeException(this, other);
+        }
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        if (this.deliverableCardContent != null) {
+            // The document is the deliverable of a card content
+            return this.deliverableCardContent.getUpdateCondition();
+        } else if (this.resource != null) {
+            // The document is a resource
+            return this.resource.getUpdateCondition();
+        } else {
+            // such an orphan shouldn't exist...
+            return Conditions.alwaysTrue;
         }
     }
 

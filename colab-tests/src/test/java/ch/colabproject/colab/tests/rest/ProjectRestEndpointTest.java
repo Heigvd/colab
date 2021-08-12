@@ -208,7 +208,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         this.mailClient.deleteMessage(invitation.getId());
 
         ////////////////////////////////////////////////////////////////////////////////////////////
-        // With is own http client 'borschClient', Georges fetch the token
+        // With its own http client 'borschClient', Georges fetch the token
         ////////////////////////////////////////////////////////////////////////////////////////////
         ColabClient borschClient = this.createRestClient();
         Token token = borschClient.tokenRestEndpoint.getToken(tokenId);

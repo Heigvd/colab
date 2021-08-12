@@ -52,7 +52,8 @@ export default (props: TokenProps): JSX.Element => {
           } else {
             logger.debug('Ready to process the token');
             try {
-              await getRestClient().TokenRestEndpoint.consumeToken(+props.tokenId, props.token);
+              const processedToken = await getRestClient().TokenRestEndpoint.consumeToken(+props.tokenId, props.token);
+              setRedirectTo(processedToken.redirectTo || '');
               // some token may change authentication status: force to reload current user/account
               dispatch(reloadCurrentUser());
               setState('DONE');

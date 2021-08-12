@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.HashMethod;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.time.OffsetDateTime;
@@ -226,6 +227,12 @@ public abstract class Token implements ColabEntity {
             return this.expirationDate.isBefore(OffsetDateTime.now());
         }
         return false;
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        //TODO: decide what to do
+        return Conditions.alwaysTrue;
     }
 
     @Override

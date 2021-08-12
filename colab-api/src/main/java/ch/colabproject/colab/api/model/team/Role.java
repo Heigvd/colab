@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -55,7 +57,7 @@ public class Role implements ColabEntity, WithWebsocketChannels {
     /**
      * The project
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Project project;
 
@@ -212,6 +214,16 @@ public class Role implements ColabEntity, WithWebsocketChannels {
             return Set.of(ProjectContentChannel.build(project));
         } else {
             return Set.of();
+        }
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        if (this.project != null) {
+            return project.getUpdateCondition();
+        } else {
+            // should not exist
+            return Conditions.alwaysTrue;
         }
     }
 

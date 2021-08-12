@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -40,7 +41,7 @@ public class ResourceRef extends AbstractResource {
     /**
      * The abstract resource this reference aims at
      */
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private AbstractResource targetAbstractResource;
 
