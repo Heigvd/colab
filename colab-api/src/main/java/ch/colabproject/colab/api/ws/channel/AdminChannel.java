@@ -31,14 +31,8 @@ public class AdminChannel implements WebsocketMetaChannel {
      */
     @Override
     public Set<WebsocketEffectiveChannel> resolve(UserDao userDao, RequestManager requestManager) {
-        try {
-        return requestManager.sudo(() -> {
-            return userDao.findAllAdmin().stream()
-                .map(user -> user.getEffectiveChannel())
-                .collect(Collectors.toSet());
-        });
-        } catch (Exception e){
-            return Set.of();
-        }
+        return userDao.findAllAdmin().stream()
+            .map(user -> user.getEffectiveChannel())
+            .collect(Collectors.toSet());
     }
 }

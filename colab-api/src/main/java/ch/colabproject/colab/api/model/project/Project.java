@@ -233,6 +233,8 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      * Get all members with given position
      *
      * @param position the needle
+     *
+     * @return list of team member with the given position
      */
     public List<TeamMember> getTeamMembersByPosition(HierarchicalPosition position) {
         return this.teamMembers.stream()
@@ -317,7 +319,6 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     public Set<WebsocketChannel> getChannels() {
         return Set.of(ProjectOverviewChannel.build(this));
     }
-
 
     @Override
     @JsonbTransient

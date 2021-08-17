@@ -17,6 +17,8 @@ import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +63,28 @@ public class SecurityFacade {
         }
     }
 
+    private void inSecurityTx(Runnable action) {
+        requestManager.setInSecurityTx(true);
+        action.run();
+        requestManager.setInSecurityTx(false);
+    }
+
+    /**
+     * Assert the given condition is true
+     *
+     * @param condition the condition to check
+     * @param message   message to log in case the assertion failed
+     *
+     * @throws HttpErrorMessage <ul>
+     * <li>with authenticationRequired if assertion fails and current user is not authenticated;
+     * <li>with forbidden if the authenticated user does not have enough permission
+     * </ul>
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertConditionTx(Condition condition, String message) {
+        inSecurityTx(() -> this.assertCondition(condition, message));
+    }
+
     /**
      * Assert the given condition is true
      *
@@ -73,13 +97,17 @@ public class SecurityFacade {
      * </ul>
      */
     public void assertCondition(Condition condition, String message) {
-        if (!requestManager.isAdmin() && !condition.eval(requestManager, this)) {
-            logger.error(message);
-            if (requestManager.isAuthenticated()) {
-                throw HttpErrorMessage.forbidden();
-            } else {
-                throw HttpErrorMessage.authenticationRequired();
-            }
+        if (!requestManager.isAdmin()) {
+            requestManager.sudo(() -> {
+                if (!condition.eval(requestManager, this)) {
+                    logger.error(message);
+                    if (requestManager.isAuthenticated()) {
+                        throw HttpErrorMessage.forbidden();
+                    } else {
+                        throw HttpErrorMessage.authenticationRequired();
+                    }
+                }
+            });
         }
     }
 
@@ -94,14 +122,28 @@ public class SecurityFacade {
      *                          does not have enough permission
      */
     private void assertCondition(Condition condition, String message, WithPermission o) {
-        if (!requestManager.isAdmin() && !condition.eval(requestManager, this)) {
-            logger.error("{} Permission denied: {} ({}) currentUser: {}", message, o, condition, requestManager.getCurrentUser());
-            if (requestManager.isAuthenticated()) {
-                throw HttpErrorMessage.forbidden();
-            } else {
-                throw HttpErrorMessage.authenticationRequired();
-            }
+        if (!requestManager.isAdmin()) {
+            requestManager.sudo(() -> {
+                if (!condition.eval(requestManager, this)) {
+                    logger.error("{} Permission denied: {} ({}) currentUser: {}", message, o, condition, requestManager.getCurrentUser());
+                    if (requestManager.isAuthenticated()) {
+                        throw HttpErrorMessage.forbidden();
+                    } else {
+                        throw HttpErrorMessage.authenticationRequired();
+                    }
+                }
+            });
         }
+    }
+
+    /**
+     * Assert the currentUser has right to create the given object
+     *
+     * @param o object the user want to create
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertCreatePermissionTx(WithPermission o) {
+        inSecurityTx(() -> this.assertCreatePermission(o));
     }
 
     /**
@@ -118,6 +160,16 @@ public class SecurityFacade {
      *
      * @param o object the user want to read
      */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertReadPermissionTx(WithPermission o) {
+        inSecurityTx(() -> this.assertReadPermission(o));
+    }
+
+    /**
+     * Assert the currentUser has right to read the given object
+     *
+     * @param o object the user want to read
+     */
     public void assertReadPermission(WithPermission o) {
         this.assertCondition(o.getReadCondition(), "Read", o);
     }
@@ -127,8 +179,28 @@ public class SecurityFacade {
      *
      * @param o object the user want to update
      */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertUpdatePermissionTx(WithPermission o) {
+        inSecurityTx(() -> this.assertUpdatePermission(o));
+    }
+
+    /**
+     * Assert the currentUser has right to update the given object
+     *
+     * @param o object the user want to update
+     */
     public void assertUpdatePermission(WithPermission o) {
         this.assertCondition(o.getUpdateCondition(), "Update", o);
+    }
+
+    /**
+     * Assert the currentUser has right to update the given object
+     *
+     * @param o object the user want to delete
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertDeletePermissionTx(WithPermission o) {
+        inSecurityTx(() -> this.assertDeletePermission(o));
     }
 
     /**
@@ -153,12 +225,11 @@ public class SecurityFacade {
     }
 
     /**
-     * Has the current user readwrite access to the
+     * Has the current user readwrite access to the given card
      *
-     * @param card
-     * @param member
+     * @param card the card
      *
-     * @return
+     * @return true if current user can write the card
      */
     public boolean hasReadWriteAccess(Card card) {
         User currentUser = requestManager.getCurrentUser();
@@ -173,10 +244,9 @@ public class SecurityFacade {
     /**
      * Has the current user the right to read the given card ?
      *
-     * @param card   the card to read
-     * @param member
+     * @param card the card to read
      *
-     * @return
+     * @return true if current user can read the card
      */
     public boolean hasReadAccess(Card card) {
 

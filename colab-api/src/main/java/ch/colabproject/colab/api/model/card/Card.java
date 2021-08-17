@@ -99,7 +99,7 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     private Project rootCardProject;
 
     /**
-     * Assignees & other access-control
+     * Assignees and other access-control
      */
     @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonbTransient

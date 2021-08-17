@@ -20,7 +20,7 @@ public enum HierarchicalPosition {
      */
     INTERN(InvolvementLevel.INFORMED_READWRITE),
     /**
-     * like Intern but can manage team & roles.
+     * like Intern but can manage team and roles.
      */
     LEAD(InvolvementLevel.INFORMED_READWRITE),
     /**

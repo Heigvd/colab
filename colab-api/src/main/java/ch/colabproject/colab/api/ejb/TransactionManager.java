@@ -23,7 +23,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.websocket.EncodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,10 +141,12 @@ public class TransactionManager implements Serializable {
                 ).collect(Collectors.toSet());
 
             this.precomputed = true;
-            this.message = WebsocketHelper.prepareWsMessage(userDao, requestManager, filtered, deleted);
+            requestManager.sudo(() -> {
+                return this.message = WebsocketHelper.prepareWsMessage(userDao, requestManager, filtered, deleted);
+            });
             logger.trace("Precomputed: {}", message);
-        } catch (EncodeException ex) {
-            logger.error("Failed to precompute websocket messages");
+        } catch (Exception ex) {
+            logger.error("Failed to precompute websocket messages", ex);
         }
     }
 
@@ -170,6 +171,7 @@ public class TransactionManager implements Serializable {
     public void afterCompletion(boolean successful) {
         logger.debug("After transaction completion : {}; messages: {}", successful, message);
         if (successful) {
+            requestManager.setTxDone(true);
             if (!precomputed) {
                 logger.info("Messages were not precomputed @BeforeCompletion!!!");
                 // ,essage shall be precomputed during the "before completion" phase, but the

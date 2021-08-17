@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.user.User;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
@@ -64,9 +65,9 @@ public class TeamDao {
     }
 
     /**
-     * Remove role from database
+     * Remove access control
      *
-     * @param role the role to delete
+     * @param ac access control to remove
      */
     public void removeAccessControl(AccessControl ac) {
         if (ac.getMember() != null) {
@@ -77,7 +78,7 @@ public class TeamDao {
             ac.getRole().getAccessControl().remove(ac);
         }
 
-        if (ac.getCard()!= null) {
+        if (ac.getCard() != null) {
             ac.getCard().getAccessControlList().remove(ac);
         }
 
@@ -93,12 +94,16 @@ public class TeamDao {
      * @return the teamMember or null
      */
     public TeamMember findMemberByUserAndProject(Project project, User user) {
-        TypedQuery<TeamMember> query = em.createNamedQuery("TeamMember.findByUserAndProject", TeamMember.class);
+        try {
+            TypedQuery<TeamMember> query = em.createNamedQuery("TeamMember.findByUserAndProject", TeamMember.class);
 
-        query.setParameter("projectId", project.getId());
-        query.setParameter("userId", user.getId());
+            query.setParameter("projectId", project.getId());
+            query.setParameter("userId", user.getId());
 
-        return query.getSingleResult();
+            return query.getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
     }
 
     /**

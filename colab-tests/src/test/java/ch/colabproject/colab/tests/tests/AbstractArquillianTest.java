@@ -7,6 +7,7 @@
 package ch.colabproject.colab.tests.tests;
 
 import ch.colabproject.colab.api.Helper;
+import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.ejb.UserManagement;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
@@ -16,6 +17,7 @@ import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.tools.JsonbProvider;
@@ -54,7 +56,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Root class for Arquillian Based test.
@@ -335,7 +336,9 @@ public abstract class AbstractArquillianTest {
     protected void initDatabaseOnce() throws SQLException {
         if (!hasDbBeenInitialized) {
 
-            //TestHelper.setLoggerLevel(getLogger(EntityListener.class), org.slf4j.event.Level.TRACE);
+//            TestHelper.setLoggerLevel(LoggerFactory.getLogger(EntityListener.class), org.slf4j.event.Level.TRACE);
+//            TestHelper.setLoggerLevel(LoggerFactory.getLogger(Conditions.class), org.slf4j.event.Level.TRACE);
+//            TestHelper.setLoggerLevel(LoggerFactory.getLogger(RequestManager.class), org.slf4j.event.Level.TRACE);
             hasDbBeenInitialized = true;
             logger.info("Randomize sequences");
             DatabaseTools.randomizeSequences(colabDataSource);

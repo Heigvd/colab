@@ -366,7 +366,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
     public Conditions.Condition getReadCondition() {
         return new Conditions.Or(
             // unauthenticated users shall read user data to authenticate
-            new Conditions.Not(new Conditions.IsAuthenticated()),
+            new Conditions.Not(Conditions.authenticated),
             new Conditions.IsCurrentUserThisUser(this),
             new Conditions.IsCurrentUserTeamMateOfUser(this)
         );

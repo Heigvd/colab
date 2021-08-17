@@ -48,27 +48,35 @@ public class ApplicationLifecycleFacade {
     private UserManagement userManagement;
 
     /**
+     * request manager
+     */
+    @Inject
+    private RequestManager requestManager;
+
+    /**
      * Create a default admin user if there is no admin at all.
      */
     public void createDefaultAdminIfNone() {
-        if (userDao.findAllAdmin().isEmpty()) {
-            try {
-                logger.info("No admin exists, create one");
-                //make sure to create the user within a brand new transaction
-                User admin = userManagement.createAdminUserTx(
-                    ColabConfiguration.getDefaultAdminUsername(),
-                    ColabConfiguration.getDefaultAdminEmail(),
-                    ColabConfiguration.getDefaultAdminPassword()
-                );
-                logger.info("New admin user: {}", admin);
-            } catch (HttpErrorMessage ex) {
-                logger.error(
-                    "Fails to create default amdin user. Does non-admin user exists with same username or email address");
-            } catch (RuntimeException ex) {
-                logger.error(
-                    "Fails to create default amdin user for some unknown reason. Please check config",
-                    ex);
+        requestManager.sudo(() -> {
+            if (userDao.findAllAdmin().isEmpty()) {
+                try {
+                    logger.info("No admin exists, create one");
+                    //make sure to create the user within a brand new transaction
+                    User admin = userManagement.createAdminUserTx(
+                        ColabConfiguration.getDefaultAdminUsername(),
+                        ColabConfiguration.getDefaultAdminEmail(),
+                        ColabConfiguration.getDefaultAdminPassword()
+                    );
+                    logger.info("New admin user: {}", admin);
+                } catch (HttpErrorMessage ex) {
+                    logger.error(
+                        "Fails to create default amdin user. Does non-admin user exists with same username or email address");
+                } catch (RuntimeException ex) {
+                    logger.error(
+                        "Fails to create default amdin user for some unknown reason. Please check config",
+                        ex);
+                }
             }
-        }
+        });
     }
 }

@@ -63,8 +63,9 @@ public class TeamFacade {
     /**
      * Add given user to the project teams
      *
-     * @param project the project
-     * @param user    the user
+     * @param project  the project
+     * @param user     the user
+     * @param position hierarchical position of the user
      *
      * @return the brand new member
      */
@@ -407,9 +408,11 @@ public class TeamFacade {
     /**
      * Get access control list for the given card
      *
-     * @param cardId
+     * @param cardId id of the card
      *
-     * @return
+     * @return the of access control for the given card
+     *
+     * @throws HttpErrorMessage 404 if the card does not exist
      */
     public List<AccessControl> getAccessControlList(Long cardId) {
         Card card = cardDao.getCard(cardId);
@@ -444,7 +447,7 @@ public class TeamFacade {
      *
      * @param project the project to check
      *
-     * @throw HttpErrorMessage id team is broken
+     * @throws HttpErrorMessage id team is broken
      */
     public void assertTeamIntegrity(Project project) {
 

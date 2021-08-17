@@ -10,11 +10,16 @@ import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.security.HttpSession;
+import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Request sidekick.
@@ -23,6 +28,9 @@ import javax.persistence.PersistenceContext;
  */
 @RequestScoped
 public class RequestManager {
+
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(RequestManager.class);
 
     /**
      * Access to the persistence unit
@@ -63,9 +71,24 @@ public class RequestManager {
     private Long currentAccountId;
 
     /**
-     * Indicates if current user can act as an admin
+     * To store condition which have already been evaluated
      */
-    private boolean sudoAsAdmin = false;
+    private final Map<Condition, Boolean> conditionCache = new HashMap<>();
+
+    /**
+     * Indicates if current user can act as an admin. 0 = no sudo greater than 0 => sudo
+     */
+    private int sudoAsAdmin = 0;
+
+    /**
+     * is the thread run in the so-called security transaction ?
+     */
+    private boolean inSecurityTx = false;
+
+    /**
+     * Is the current transaction already completed ?
+     */
+    private boolean txDone = false;
 
     /**
      * Get request base url
@@ -188,19 +211,32 @@ public class RequestManager {
         }
     }
 
+    private boolean txExists() {
+        return !this.txDone;
+    }
+
     /**
      * Execute some piece of code with admin privileges.
      *
      * @param action code to execute with admin privileges
      */
     public void sudo(Runnable action) {
-        // make sure to flush to check every pending changes before granting admin rights
-        em.flush();
-        this.sudoAsAdmin = true;
+        if (txExists()) {
+            // make sure to flush to check every pending changes before granting admin rights
+            em.flush();
+        }
+
+        this.sudoAsAdmin++;
+        logger.trace("Sudo #{}", this.sudoAsAdmin);
         action.run();
-        // make sure to flush to apply all pending changes with admin rights
-        em.flush();
-        this.sudoAsAdmin = false;
+        if (txExists()) {
+            // make sure to flush to apply all pending changes with admin rights
+            em.flush();
+        }
+
+        logger.trace("EndOfSudo #{}", this.sudoAsAdmin);
+
+        this.sudoAsAdmin--;
     }
 
     /**
@@ -214,13 +250,19 @@ public class RequestManager {
      * @throws java.lang.Exception if something is thrown during the call
      */
     public <R> R sudo(Callable<R> action) throws Exception {
-        // make sure to flush to check every pending changes before granting admin rights
-        em.flush();
-        this.sudoAsAdmin = true;
+        if (txExists()) {
+            // make sure to flush to check every pending changes before granting admin rights
+            em.flush();
+        }
+        this.sudoAsAdmin++;
+        logger.trace("Sudo #{}", this.sudoAsAdmin);
         R result = action.call();
-        // make sure to flush to apply all pending changes with admin rights
-        em.flush();
-        this.sudoAsAdmin = false;
+        if (txExists()) {
+            // make sure to flush to apply all pending changes with admin rights
+            em.flush();
+        }
+        logger.trace("EndOfSudo #{}", this.sudoAsAdmin);
+        this.sudoAsAdmin--;
 
         return result;
     }
@@ -232,6 +274,54 @@ public class RequestManager {
      */
     public boolean isAdmin() {
         User currentUser = this.getCurrentUser();
-        return sudoAsAdmin || (currentUser != null && currentUser.isAdmin());
+        return sudoAsAdmin > 0 || (currentUser != null && currentUser.isAdmin());
+    }
+
+    /**
+     * Register condition result
+     *
+     * @param condition the condition
+     * @param result    the result
+     */
+    public void registerConditionResult(Condition condition, Boolean result) {
+        this.conditionCache.put(condition, result);
+    }
+
+    /**
+     * Get the cached condition result
+     *
+     * @param condition condition
+     *
+     * @return true or false if the condition is cached, null if the condition has not been
+     *         evaluated yet
+     */
+    public Boolean getConditionResult(Condition condition) {
+        return this.conditionCache.get(condition);
+    }
+
+    /**
+     * Is the thread run in a transaction dedicated to security condition evaluation
+     *
+     * @return true/false
+     */
+    public boolean isInSecurityTx() {
+        return inSecurityTx;
+    }
+
+    /**
+     * Change the inSecurityTx flag
+     *
+     * @param inSecurityTx new flag
+     */
+    public void setInSecurityTx(boolean inSecurityTx) {
+        this.inSecurityTx = inSecurityTx;
+    }
+
+    public boolean isTxDone() {
+        return txDone;
+    }
+
+    public void setTxDone(boolean txDone) {
+        this.txDone = txDone;
     }
 }
