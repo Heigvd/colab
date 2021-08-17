@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 /**
  *
@@ -34,7 +32,6 @@ public class LiveUpdatesTest {
 //    }
     @Test
     public void testProcess() {
-        TestHelper.setLoggerLevel(LoggerFactory.getLogger(LiveUpdates.class), Level.TRACE);
         String session1 = "s1";
 
         LiveUpdates lu = new LiveUpdates();
@@ -57,8 +54,6 @@ public class LiveUpdatesTest {
 
         LiveResult result = lu.process(false);
         Assertions.assertEquals("Salut les copains", result.getContent());
-        System.out.println("LU: " + result.getContent());
-
     }
 
     @Test
@@ -86,7 +81,6 @@ public class LiveUpdatesTest {
 
         LiveResult result = lu.process(false);
         Assertions.assertEquals("apricot banana cucumber", result.getContent());
-        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -114,7 +108,6 @@ public class LiveUpdatesTest {
 
         LiveResult result = lu.process(false);
         Assertions.assertEquals("apple cucumber", result.getContent());
-        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -142,7 +135,6 @@ public class LiveUpdatesTest {
 
         LiveResult result = lu.process(false);
         Assertions.assertEquals("apple cucumber", result.getContent());
-        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -170,7 +162,6 @@ public class LiveUpdatesTest {
 
         LiveResult result = lu.process(false);
         Assertions.assertEquals("apple cucumber", result.getContent());
-        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -198,7 +189,6 @@ public class LiveUpdatesTest {
 
         LiveResult result = lu.process(false);
         Assertions.assertEquals("apple cucumber", result.getContent());
-        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -226,7 +216,6 @@ public class LiveUpdatesTest {
 
         LiveResult result = lu.process(false);
         Assertions.assertEquals("apple banana cucumber daikon", result.getContent());
-        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -254,7 +243,6 @@ public class LiveUpdatesTest {
 
         LiveResult result = lu.process(false);
         Assertions.assertEquals("apple bean banana cucumber daikon", result.getContent());
-        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -282,7 +270,6 @@ public class LiveUpdatesTest {
 
         LiveResult result = lu.process(false);
         Assertions.assertEquals("apple bean daikon", result.getContent());
-        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -310,7 +297,6 @@ public class LiveUpdatesTest {
 
         LiveResult result = lu.process(false);
         Assertions.assertEquals("apple cucumber daikon", result.getContent());
-        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -338,7 +324,6 @@ public class LiveUpdatesTest {
 
         LiveResult result = lu.process(false);
         Assertions.assertEquals("apple cucumber eggplant", result.getContent());
-        System.out.println("LU: " + result.getContent());
     }
 
     @Test
@@ -422,7 +407,6 @@ public class LiveUpdatesTest {
 
     @Test
     public void testDeepBranch() {
-        TestHelper.setLoggerLevel(LoggerFactory.getLogger(LiveUpdates.class), Level.DEBUG);
         String session1 = "s1";
         String session2 = "s2";
 
@@ -472,7 +456,6 @@ public class LiveUpdatesTest {
 
     @Test
     public void testDeepBranch2() {
-        TestHelper.setLoggerLevel(LoggerFactory.getLogger(LiveUpdates.class), Level.DEBUG);
         String session1 = "s1";
         String session2 = "s2";
 

@@ -12,8 +12,9 @@ import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.team.Role;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
@@ -21,6 +22,7 @@ import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -94,7 +96,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @JsonbTransient
-    private List<Role> roles;
+    private List<TeamRole> roles;
 
     /**
      * List of team members
@@ -228,11 +230,22 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
+     * Get all members with given position
+     *
+     * @param position the needle
+     */
+    public List<TeamMember> getTeamMembersByPosition(HierarchicalPosition position) {
+        return this.teamMembers.stream()
+            .filter(member -> member.getPosition() == position)
+            .collect(Collectors.toList());
+    }
+
+    /**
      * Get the value of roles
      *
      * @return the value of roles
      */
-    public List<Role> getRoles() {
+    public List<TeamRole> getRoles() {
         return roles;
     }
 
@@ -243,9 +256,9 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      *
      * @return the role or null
      */
-    public Role getRoleByName(String name) {
+    public TeamRole getRoleByName(String name) {
         if (name != null) {
-            for (Role r : this.roles) {
+            for (TeamRole r : this.roles) {
                 if (name.equals(r.getName())) {
                     return r;
                 }
@@ -259,7 +272,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      *
      * @param roles new value of roles
      */
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<TeamRole> roles) {
         this.roles = roles;
     }
 
@@ -303,6 +316,14 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     @Override
     public Set<WebsocketChannel> getChannels() {
         return Set.of(ProjectOverviewChannel.build(this));
+    }
+
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+        // anybody can create a project
+        return Conditions.alwaysTrue;
     }
 
     @Override

@@ -12,7 +12,7 @@ import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.Role;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.client.ColabClient;
@@ -151,8 +151,8 @@ public class ColabFactory {
         }
     }
 
-    public static Role createRole(ColabClient client, Project project, String name) {
-        Role role = new Role();
+    public static TeamRole createRole(ColabClient client, Project project, String name) {
+        TeamRole role = new TeamRole();
         role.setProjectId(project.getId());
         role.setName(name);
 

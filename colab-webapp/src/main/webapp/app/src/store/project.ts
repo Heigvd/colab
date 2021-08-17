@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import { createSlice } from '@reduxjs/toolkit';
-import { Project, Role, TeamMember } from 'colab-rest-client';
+import { Project, TeamRole, TeamMember } from 'colab-rest-client';
 import * as API from '../API/api';
 import { mapById } from '../helper';
 import { processMessage } from '../ws/wsThunkActions';
@@ -24,7 +24,7 @@ export interface TeamState {
     [id: number]: TeamMember;
   };
   roles: {
-    [id: number]: Role;
+    [id: number]: TeamRole;
   };
 }
 
@@ -101,7 +101,7 @@ const removeTeamMember = (state: ProjectState, memberId: number) => {
   });
 };
 
-const updateRole = (state: ProjectState, role: Role) => {
+const updateRole = (state: ProjectState, role: TeamRole) => {
   const projectId = role.projectId;
   const roleId = role.id;
 

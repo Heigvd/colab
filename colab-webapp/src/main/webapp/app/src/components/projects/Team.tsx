@@ -6,7 +6,7 @@
  */
 import { css } from '@emotion/css';
 import { faCheck, faPaperPlane, faPlus, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Project, Role, TeamMember } from 'colab-rest-client';
+import { Project, TeamRole, TeamMember } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
@@ -26,7 +26,7 @@ const gridNewLine = css({
 
 export interface MemberProps {
   member: TeamMember;
-  roles: Role[];
+  roles: TeamRole[];
 }
 
 const Member = (props: MemberProps) => {
@@ -104,7 +104,7 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
                 API.createRole({
                   project: project,
                   role: {
-                    '@class': 'Role',
+                    '@class': 'TeamRole',
                     projectId: project.id,
                     name: name,
                   },
@@ -122,7 +122,7 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
 }
 
 export interface RoleProps {
-  role: Role;
+  role: TeamRole;
 }
 
 const RoleDisplay = ({ role }: RoleProps) => {

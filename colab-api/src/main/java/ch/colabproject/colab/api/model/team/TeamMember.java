@@ -9,7 +9,9 @@ package ch.colabproject.colab.api.model.team;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -18,7 +20,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,7 +31,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 /**
  * A member is a {@link User user} which work on a {@link Project project}
@@ -34,11 +41,18 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
-@NamedQuery(name = "TeamMember.areUserTeammate",
+@NamedQuery(
+    name = "TeamMember.areUserTeammate",
     // SELECT true FROM TeamMember a, TeamMember b WHERE ...
     query = "SELECT true FROM TeamMember a "
     + "JOIN TeamMember b ON a.project.id = b.project.id "
     + "WHERE a.user.id = :aUserId AND b.user.id = :bUserId")
+@NamedQuery(
+    name = "TeamMember.findByUserAndProject",
+    query = "SELECT m FROM TeamMember m "
+    + "WHERE m.project.id = :projectId "
+    + "AND m.user IS NOT NULL AND m.user.id = :userId"
+)
 public class TeamMember implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
@@ -78,7 +92,14 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      */
     @ManyToMany
     @JsonbTransient
-    private List<Role> roles;
+    private List<TeamRole> roles;
+
+    /**
+     * List of access control relative to this member
+     */
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<AccessControl> accessControlList;
 
     /**
      * Id of the roles. For deserialization only
@@ -91,6 +112,13 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      */
     @Transient
     private Long projectId;
+
+    /**
+     * Hierarchical position of the member
+     */
+    @NotNull
+    @Enumerated(value = EnumType.STRING)
+    private HierarchicalPosition position = HierarchicalPosition.INTERN;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -187,7 +215,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      *
      * @return roles
      */
-    public List<Role> getRoles() {
+    public List<TeamRole> getRoles() {
         return roles;
     }
 
@@ -196,7 +224,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      *
      * @param roles list of roles
      */
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<TeamRole> roles) {
         this.roles = roles;
     }
 
@@ -223,6 +251,42 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
         this.roleIds = roleIds;
     }
 
+    /**
+     * Get the list of access control
+     *
+     * @return access control list
+     */
+    public List<AccessControl> getAccessControlList() {
+        return accessControlList;
+    }
+
+    /**
+     * Set the list of access control
+     *
+     * @param accessControlList new list of access control
+     */
+    public void setAccessControlList(List<AccessControl> accessControlList) {
+        this.accessControlList = accessControlList;
+    }
+
+    /**
+     * Get the hierarchical position of the member
+     *
+     * @return member's position
+     */
+    public HierarchicalPosition getPosition() {
+        return position;
+    }
+
+    /**
+     * Set hierarchical position of member
+     *
+     * @param position new position
+     */
+    public void setPosition(HierarchicalPosition position) {
+        this.position = position;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -241,9 +305,36 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+        if (this.user != null && this.project != null) {
+            // any "intern" may invite somebody
+            return new Conditions.IsCurrentUserInternToProject(project);
+        } else {
+            // anyone can read pedning invitation
+            return Conditions.alwaysTrue;
+        }
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+        if (this.user != null && this.project != null) {
+            return new Conditions.IsCurrentUserInternToProject(project);
+        } else {
+            // anyone can read a pending invitation
+            return Conditions.alwaysTrue;
+        }
+    }
+
+    @Override
     public Conditions.Condition getUpdateCondition() {
         if (this.user != null && this.project != null) {
-            return new Conditions.IsCurrentUserMemberOfProject(project);
+            if (this.position == HierarchicalPosition.OWNER) {
+                return new Conditions.IsCurrentUserOwnerOfProject(project);
+            } else {
+                return new Conditions.IsCurrentUserLeaderOfProject(project);
+            }
         } else {
             // anyone can read pedning invitation
             return Conditions.alwaysTrue;

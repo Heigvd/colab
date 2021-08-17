@@ -9,21 +9,28 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamRole;
+import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -90,6 +97,19 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     @OneToOne(mappedBy = "rootCard", fetch = FetchType.LAZY)
     @JsonbTransient
     private Project rootCardProject;
+
+    /**
+     * Assignees & other access-control
+     */
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<AccessControl> accessControlList;
+
+    /**
+     * CAIRO level (RACI + out_of_the_loop)
+     */
+    @Enumerated(value = EnumType.STRING)
+    private InvolvementLevel defaultInvolvementLevel;
 
     /**
      * The id of the project for root cards (serialization sugar)
@@ -206,6 +226,70 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     }
 
     /**
+     * Get access-control list
+     *
+     * @return ACL
+     */
+    public List<AccessControl> getAccessControlList() {
+        return accessControlList;
+    }
+
+    /**
+     * Set the access-control list
+     *
+     * @param accessControlList new list
+     */
+    public void setAccessControlList(List<AccessControl> accessControlList) {
+        this.accessControlList = accessControlList;
+    }
+
+    /**
+     * Get the access control which match the given member
+     *
+     * @param member the member
+     *
+     * @return the access-control which match the member or null
+     */
+    public AccessControl getAcByMember(TeamMember member) {
+        Optional<AccessControl> optAc = this.getAccessControlList().stream()
+            .filter(acl -> acl.getMember().equals(member)).findFirst();
+
+        return optAc.isPresent() ? optAc.get() : null;
+    }
+
+    /**
+     * Get the access control which match the given role
+     *
+     * @param role the role
+     *
+     * @return the access-control which match the role or null
+     */
+    public AccessControl getAcByRole(TeamRole role) {
+        Optional<AccessControl> optAc = this.getAccessControlList().stream()
+            .filter(acl -> acl.getRole().equals(role)).findFirst();
+
+        return optAc.isPresent() ? optAc.get() : null;
+    }
+
+    /**
+     * Get default involvement level.
+     *
+     * @return the default involvement level
+     */
+    public InvolvementLevel getDefaultInvolvementLevel() {
+        return defaultInvolvementLevel;
+    }
+
+    /**
+     * Set the default involvement level
+     *
+     * @param defaultInvolvementLevel default level to set
+     */
+    public void setDefaultInvolvementLevel(InvolvementLevel defaultInvolvementLevel) {
+        this.defaultInvolvementLevel = defaultInvolvementLevel;
+    }
+
+    /**
      * @return the card type defining what is it for
      */
     public AbstractCardType getCardType() {
@@ -241,8 +325,8 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
 
     /**
      * @return the parent card content
-     *         <p>
-     *         A card can either be the root card of a project or be within a card content
+     * <p>
+     * A card can either be the root card of a project or be within a card content
      */
     public CardContent getParent() {
         return parent;
@@ -414,6 +498,7 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
             Card o = (Card) other;
             this.setIndex(o.getIndex());
             this.setColor(o.getColor());
+            this.setDefaultInvolvementLevel(o.getDefaultInvolvementLevel());
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -455,8 +540,18 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     }
 
     @Override
-    public Conditions.Condition getUpdateCondition() {
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+        // genuine hack inside
+        // any member can read any cards of the project
+        // if a member lacks the read right on a card, it will not be able to read card contents,
+        // resources and so on, but it will still be able to view the card "from the outside"
         return new Conditions.IsCurrentUserMemberOfProject(getProject());
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        return new Conditions.HasCardWriteRight(this);
     }
 
     @Override

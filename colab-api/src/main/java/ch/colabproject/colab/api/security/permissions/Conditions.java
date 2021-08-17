@@ -7,11 +7,11 @@
 package ch.colabproject.colab.api.security.permissions;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.ejb.SecurityFacade;
+import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 
 /**
  * Utility class to build conditions
@@ -51,11 +51,11 @@ public final class Conditions {
          * Evaluation the condition
          *
          * @param requestManager the request Manager
-         * @param em             the entity manager
+         * @param teamFacade     the teamFacade
          *
          * @return evaluation result
          */
-        public abstract boolean eval(RequestManager requestManager, EntityManager em);
+        public abstract boolean eval(RequestManager requestManager, SecurityFacade securityFacade);
     }
 
     /**
@@ -64,7 +64,7 @@ public final class Conditions {
     private static class AlwaysTrue extends Condition {
 
         @Override
-        public boolean eval(RequestManager requestManager, EntityManager em) {
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
             return true;
         }
 
@@ -80,7 +80,7 @@ public final class Conditions {
     private static class AlwaysFalse extends Condition {
 
         @Override
-        public boolean eval(RequestManager requestManager, EntityManager em) {
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
             return false;
         }
 
@@ -108,9 +108,9 @@ public final class Conditions {
         }
 
         @Override
-        public boolean eval(RequestManager requestManager, EntityManager em) {
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
             for (Condition c : conditions) {
-                if (!c.eval(requestManager, em)) {
+                if (!c.eval(requestManager, securityFacade)) {
                     // not all conditions are true => false
                     return false;
                 }
@@ -143,9 +143,9 @@ public final class Conditions {
         }
 
         @Override
-        public boolean eval(RequestManager requestManager, EntityManager em) {
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
             for (Condition c : conditions) {
-                if (c.eval(requestManager, em)) {
+                if (c.eval(requestManager, securityFacade)) {
                     // at least on sub condition is true => true
                     return true;
                 }
@@ -178,9 +178,9 @@ public final class Conditions {
         }
 
         @Override
-        public boolean eval(RequestManager requestManager, EntityManager em) {
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
             // just invert the given sub-conditions
-            return !condition.eval(requestManager, em);
+            return !condition.eval(requestManager, securityFacade);
         }
 
         @Override
@@ -196,7 +196,7 @@ public final class Conditions {
     private static class IsCurrentUserAdmin extends Condition {
 
         @Override
-        public boolean eval(RequestManager requestManager, EntityManager em) {
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
             User currentUser = requestManager.getCurrentUser();
             return currentUser != null && currentUser.isAdmin();
         }
@@ -225,7 +225,7 @@ public final class Conditions {
         }
 
         @Override
-        public boolean eval(RequestManager requestManager, EntityManager em) {
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
             User currentUser = requestManager.getCurrentUser();
             return currentUser != null && currentUser.equals(user);
         }
@@ -237,7 +237,7 @@ public final class Conditions {
     }
 
     /**
-     * The current user must be currentUser member of the given project
+     * The current user must be member of the given project team
      */
     public static class IsCurrentUserMemberOfProject extends Condition {
 
@@ -254,20 +254,97 @@ public final class Conditions {
         }
 
         @Override
-        public boolean eval(RequestManager requestManager, EntityManager em) {
-            User user = requestManager.getCurrentUser();
-
-            if (user != null && project != null) {
-                return user.getTeamMembers().stream()
-                    .filter((member) -> project.equals(member.getProject()))
-                    .findFirst().isPresent();
-            }
-            return false;
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
+            return securityFacade.isCurrentUserMemberOfTheProjectTeam(project);
         }
 
         @Override
         public String toString() {
             return "IsMemberOf(" + project + ")";
+        }
+    }
+
+    /**
+     * The current user must be owner of the given project team
+     */
+    public static class IsCurrentUserOwnerOfProject extends Condition {
+
+        /** the project */
+        private final Project project;
+
+        /**
+         * Create a "Is current user owner of this project" statement
+         *
+         * @param project the project to check if the current user is member of
+         */
+        public IsCurrentUserOwnerOfProject(Project project) {
+            this.project = project;
+        }
+
+        @Override
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
+            return securityFacade.isCurrentUserOwnerOfTheProject(project);
+        }
+
+        @Override
+        public String toString() {
+            return "IsOwnerOf(" + project + ")";
+        }
+    }
+
+    /**
+     * The current user must be leader of the given project team
+     */
+    public static class IsCurrentUserLeaderOfProject extends Condition {
+
+        /** the project */
+        private final Project project;
+
+        /**
+         * Create a "Is current user leader of this project" statement
+         *
+         * @param project the project to check if the current user is member of
+         */
+        public IsCurrentUserLeaderOfProject(Project project) {
+            this.project = project;
+        }
+
+        @Override
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
+            return securityFacade.isCurrentUserLeaderOfTheProject(project);
+        }
+
+        @Override
+        public String toString() {
+            return "IsLeaderOf(" + project + ")";
+        }
+    }
+
+    /**
+     * The current user must be, at least, intern to given project team
+     */
+    public static class IsCurrentUserInternToProject extends Condition {
+
+        /** the project */
+        private final Project project;
+
+        /**
+         * Create a "Is current user leader of this project" statement
+         *
+         * @param project the project to check if the current user is member of
+         */
+        public IsCurrentUserInternToProject(Project project) {
+            this.project = project;
+        }
+
+        @Override
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
+            return securityFacade.isCurrentUserInternToProject(project);
+        }
+
+        @Override
+        public String toString() {
+            return "IsLeaderOf(" + project + ")";
         }
     }
 
@@ -289,16 +366,9 @@ public final class Conditions {
         }
 
         @Override
-        public boolean eval(RequestManager requestManager, EntityManager em) {
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
             User currentUser = requestManager.getCurrentUser();
-            TypedQuery<Boolean> query = em.createNamedQuery(
-                "TeamMember.areUserTeammate",
-                Boolean.class);
-            query.setParameter("aUserId", currentUser.getId());
-            query.setParameter("bUserId", user.getId());
-
-            // if the query returns something, users are teammates
-            return !query.getResultList().isEmpty();
+            return securityFacade.areUserTeammate(currentUser, this.user);
         }
 
         @Override
@@ -313,7 +383,7 @@ public final class Conditions {
     public static class IsAuthenticated extends Condition {
 
         @Override
-        public boolean eval(RequestManager requestManager, EntityManager em) {
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
             return requestManager.isAuthenticated();
         }
 
@@ -322,4 +392,61 @@ public final class Conditions {
             return "IsAuthenticated";
         }
     }
+
+    /**
+     * Has the current user write access to a card ?
+     */
+    public static class HasCardWriteRight extends Condition {
+
+        /** The card * */
+        private final Card card;
+
+        /**
+         * Create a has write access statement
+         *
+         * @param card the card
+         */
+        public HasCardWriteRight(Card card) {
+            this.card = card;
+        }
+
+        @Override
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
+            return securityFacade.hasReadWriteAccess(card);
+        }
+
+        @Override
+        public String toString() {
+            return "HasCardWriteRight(" + card + ")";
+        }
+    }
+
+    /**
+     * Has the current user access to a card ?
+     */
+    public static class HasCardReadRight extends Condition {
+
+        /** The card * */
+        private final Card card;
+
+        /**
+         * Create a has write access statement
+         *
+         * @param card the card
+         */
+        public HasCardReadRight(Card card) {
+            this.card = card;
+        }
+
+        @Override
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
+            return securityFacade.hasReadWriteAccess(card);
+        }
+
+        @Override
+        public String toString() {
+            return "HasCardReadRight(" + card + ")";
+        }
+    }
+
 }

@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import {createAsyncThunk} from '@reduxjs/toolkit';
 import {
   AbstractCardType,
   Account,
@@ -17,16 +17,16 @@ import {
   entityIs,
   IndexEntry,
   Project,
-  Role,
+  TeamRole,
   StickyNoteLink,
   TeamMember,
   TypeMap,
   User,
   WsUpdateMessage,
 } from 'colab-rest-client';
-import { checkUnreachable } from '../helper';
+import {checkUnreachable} from '../helper';
 import getLogger from '../logger';
-import { ColabError } from '../store/error';
+import {ColabError} from '../store/error';
 
 const logger = getLogger('WebSockets');
 
@@ -34,7 +34,7 @@ const logger = getLogger('WebSockets');
  * Does the given index entry represent the given type ?
  */
 const indexEntryIs = <T extends keyof TypeMap>(entry: IndexEntry, klass: T) => {
-  return entityIs({ '@class': entry.type, id: entry.id }, klass);
+  return entityIs({'@class': entry.type, id: entry.id}, klass);
 };
 
 interface Updates<T> {
@@ -45,7 +45,7 @@ interface Updates<T> {
 interface EntityBag {
   projects: Updates<Project>;
   members: Updates<TeamMember>;
-  roles: Updates<Role>;
+  roles: Updates<TeamRole>;
   cards: Updates<Card>;
   contents: Updates<CardContent>;
   types: Updates<AbstractCardType>;
@@ -60,18 +60,18 @@ interface EntityBag {
 
 function createBag(): EntityBag {
   return {
-    projects: { updated: [], deleted: [] },
-    members: { updated: [], deleted: [] },
-    roles: { updated: [], deleted: [] },
-    cards: { updated: [], deleted: [] },
-    contents: { updated: [], deleted: [] },
-    types: { updated: [], deleted: [] },
-    documents: { updated: [], deleted: [] },
-    blocks: { updated: [], deleted: [] },
-    stickynotelinks: { updated: [], deleted: []},
-    users: { updated: [], deleted: [] },
-    accounts: { updated: [], deleted: [] },
-    changes: { updated: [], deleted: [] },
+    projects: {updated: [], deleted: []},
+    members: {updated: [], deleted: []},
+    roles: {updated: [], deleted: []},
+    cards: {updated: [], deleted: []},
+    contents: {updated: [], deleted: []},
+    types: {updated: [], deleted: []},
+    documents: {updated: [], deleted: []},
+    blocks: {updated: [], deleted: []},
+    stickynotelinks: {updated: [], deleted: []},
+    users: {updated: [], deleted: []},
+    accounts: {updated: [], deleted: []},
+    changes: {updated: [], deleted: []},
     errors: [],
   };
 }
@@ -86,8 +86,10 @@ export const processMessage = createAsyncThunk(
         bag.projects.deleted.push(item);
       } else if (indexEntryIs(item, 'TeamMember')) {
         bag.members.deleted.push(item);
-      } else if (indexEntryIs(item, 'Role')) {
+      } else if (indexEntryIs(item, 'TeamRole')) {
         bag.roles.deleted.push(item);
+      } else if (indexEntryIs(item, 'AccessControl')) {
+        // TODO
       } else if (indexEntryIs(item, 'Card')) {
         bag.cards.deleted.push(item);
       } else if (indexEntryIs(item, 'AbstractCardType')) {
@@ -120,8 +122,10 @@ export const processMessage = createAsyncThunk(
         bag.projects.updated.push(item);
       } else if (entityIs(item, 'TeamMember')) {
         bag.members.updated.push(item);
-      } else if (entityIs(item, 'Role')) {
+      } else if (entityIs(item, 'TeamRole')) {
         bag.roles.updated.push(item);
+      } else if (entityIs(item, 'AccessControl')) {
+        // TODO
       } else if (entityIs(item, 'Card')) {
         bag.cards.updated.push(item);
       } else if (entityIs(item, 'CardContent')) {

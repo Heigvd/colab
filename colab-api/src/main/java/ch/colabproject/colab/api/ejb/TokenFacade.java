@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.ejb;
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
 import ch.colabproject.colab.api.model.token.Token;
@@ -266,7 +267,8 @@ public class TokenFacade {
         if (token == null) {
             // create a member and link it to the project, but do not link it to any user
             // this link will be set during token consumtion
-            TeamMember newMember = teamFacade.addMember(project, null);
+            TeamMember newMember = teamFacade.addMember(project, null,
+                HierarchicalPosition.INTERN);
             token = new InvitationToken();
 
             token.setTeamMember(newMember);

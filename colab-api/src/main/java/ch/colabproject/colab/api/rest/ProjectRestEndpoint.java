@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.ejb.TeamFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.Role;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
@@ -161,7 +161,7 @@ public class ProjectRestEndpoint {
      */
     @GET
     @Path("{projectId: [0-9]+}/roles")
-    public List<Role> getRoles(@PathParam("projectId") Long projectId) {
+    public List<TeamRole> getRoles(@PathParam("projectId") Long projectId) {
         logger.debug("Get project #{} members", projectId);
         return teamFacade.getProjectRoles(projectId);
     }

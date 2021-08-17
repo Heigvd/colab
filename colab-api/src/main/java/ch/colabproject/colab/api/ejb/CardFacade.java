@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -136,7 +137,6 @@ public class CardFacade {
     }
 
     // TODO delete AbstractCardType / CardTypeRef
-
     /**
      * Expand project own types.
      *
@@ -492,7 +492,6 @@ public class CardFacade {
     // *********************************************************************************************
     // card content stuff
     // *********************************************************************************************
-
     /**
      * Create a new card content variant for the card
      *
@@ -630,4 +629,20 @@ public class CardFacade {
         return cardContent.getStickyNoteLinksAsSrc();
     }
 
+    /**
+     * Retrieve the list of access-control for the given card
+     *
+     * @param cardId id of the card
+     *
+     * @return list of access-control
+     */
+    public List<AccessControl> getAcls(Long cardId) {
+        logger.debug("Get Card #{} access-control list", cardId);
+        Card card = cardDao.getCard(cardId);
+        if (card != null) {
+            return card.getAccessControlList();
+        } else {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+    }
 }

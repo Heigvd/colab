@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.ejb;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -37,6 +38,12 @@ public class ProjectFacade {
      */
     @Inject
     private SecurityFacade securityFacade;
+
+    /**
+     * To control access
+     */
+    @Inject
+    private RequestManager requestManager;
 
     /**
      * Project persistence
@@ -75,15 +82,23 @@ public class ProjectFacade {
      * @return the new persisted project
      */
     public Project createNewProject(Project project) {
-        logger.debug("Create new project: {}", project);
-        Card rootCard = cardFacade.initNewRootCard();
-        project.setRootCard(rootCard);
-        rootCard.setRootCardProject(project);
+        try {
+            return requestManager.sudo(() -> {
+                logger.debug("Create new project: {}", project);
+                Card rootCard = cardFacade.initNewRootCard();
+                project.setRootCard(rootCard);
+                rootCard.setRootCardProject(project);
 
-        User user = securityFacade.assertAndGetCurrentUser();
-        teamFacade.addMember(project, user);
+                User user = securityFacade.assertAndGetCurrentUser();
+                teamFacade.addMember(project, user, HierarchicalPosition.OWNER);
 
-        return projectDao.createProject(project);
+                return projectDao.createProject(project);
+            });
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     // *********************************************************************************************

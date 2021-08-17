@@ -54,7 +54,6 @@ public abstract class AbstractResource
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Abstract resource ID
      */
@@ -124,7 +123,6 @@ public abstract class AbstractResource
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the abstract resource id
      */
@@ -353,6 +351,23 @@ public abstract class AbstractResource
 //        }
 //    }
 
+    @JsonbTransient
+    @Override
+    public Conditions.Condition getReadCondition() {
+        if (this.abstractCardType != null) {
+            // the abstract resource is linked to a card type / card type reference
+            return this.abstractCardType.getReadCondition();
+        } else if (this.card != null) {
+            // the abstract resource is linked to a card
+            return new Conditions.HasCardReadRight(this.card);
+        } else if (this.cardContent != null) {
+            // the abstract resource is linked to a card content
+            return this.cardContent.getReadCondition();
+        } else {
+            // such an orphan shouldn't exist...
+            return Conditions.alwaysTrue;
+        }
+    }
 
     @Override
     public Conditions.Condition getUpdateCondition() {

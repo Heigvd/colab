@@ -8,10 +8,14 @@ package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.TeamFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.team.Role;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.persistence.project.TeamDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -80,6 +84,21 @@ public class TeamRestEndpoint {
         return teamDao.findTeamMember(memberId);
     }
 
+    /**
+     * Update hierarchical position of a member
+     *
+     * @param memberId id of the member
+     * @param position new hierarchical position
+     */
+    @PUT
+    @Path("member/{memberId: [0-9]+}/{position}")
+    public void changeMemberPosition(
+        @PathParam("memberId") Long memberId,
+        @PathParam("position") HierarchicalPosition position
+    ) {
+        teamFacade.updatePosition(memberId, position);
+    }
+
     // *********************************************************************************************
     // Roles
     // *********************************************************************************************
@@ -92,7 +111,7 @@ public class TeamRestEndpoint {
      */
     @POST
     @Path("role")
-    public Long createRole(Role role) {
+    public Long createRole(TeamRole role) {
         logger.debug("Create role {}", role);
         teamFacade.createRole(role);
         return role.getId();
@@ -107,7 +126,7 @@ public class TeamRestEndpoint {
      */
     @GET
     @Path("role/{roleId: [0-9]+}")
-    public Role getRole(@PathParam("roleId") Long roleId) {
+    public TeamRole getRole(@PathParam("roleId") Long roleId) {
         logger.debug("Get Role #{}", roleId);
         return teamDao.findRole(roleId);
     }
@@ -122,7 +141,7 @@ public class TeamRestEndpoint {
      */
     @PUT
     @Path("role")
-    public void updateRole(Role role) throws ColabMergeException {
+    public void updateRole(TeamRole role) throws ColabMergeException {
         logger.debug("Update role {}", role);
         teamFacade.updateRole(role);
     }
@@ -173,5 +192,52 @@ public class TeamRestEndpoint {
     ) {
         logger.debug("Remove role #{} to member#{}", roleId, memberId);
         teamFacade.removeRole(roleId, memberId);
+    }
+
+    /**
+     * Get ACL for the card
+     *
+     * @param cardId id of the card
+     *
+     * @return access control list
+     */
+    @GET
+    @Path("acl/{cardId: [0-9]+}")
+    public List<AccessControl> getAcl(@PathParam("cardId") Long cardId) {
+        return teamFacade.getAccessControlList(cardId);
+    }
+
+    /**
+     * Update access control for a member
+     *
+     * @param cardId   id of the card
+     * @param memberId id of the team member
+     * @param level    involvement level
+     */
+    @PUT
+    @Path("acl/{cardId: [0-9]+}/member/{memberId : [0-9]+}/{level}")
+    public void setMemberInvolvement(
+        @PathParam("cardId") Long cardId,
+        @PathParam("memberId") Long memberId,
+        @PathParam("level") InvolvementLevel level
+    ) {
+        teamFacade.setInvolvmentLevelForMember(cardId, memberId, level);
+    }
+
+    /**
+     * Update access control for a role
+     *
+     * @param cardId id of the card
+     * @param roleId id of the role
+     * @param level  involvement level
+     */
+    @PUT
+    @Path("acl/{cardId: [0-9]+}/role/{roleId : [0-9]+}/{level}")
+    public void setRoleInvolvement(
+        @PathParam("cardId") Long cardId,
+        @PathParam("coleId") Long roleId,
+        @PathParam("level") InvolvementLevel level
+    ) {
+        teamFacade.setInvolvmentLevelForRole(cardId, roleId, level);
     }
 }

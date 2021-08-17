@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.rest.card;
 import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.ejb.ResourceFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
@@ -249,4 +250,17 @@ public class CardRestEndpoint {
         return cardFacade.getActivityFlowLinkAsNext(cardId);
     }
 
+    /**
+     * Retrieve the list of access-control for the given card
+     *
+     * @param cardId id of the card
+     *
+     * @return list of access-control
+     */
+    @GET
+    @Path("{cardId}/ACLs")
+    public List<AccessControl> getAcls(@PathParam("cardId") Long cardId) {
+        logger.debug("Get Card #{} access-control list", cardId);
+        return cardFacade.getAcls(cardId);
+    }
 }

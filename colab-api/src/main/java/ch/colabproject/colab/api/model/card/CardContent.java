@@ -359,6 +359,17 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
     }
 
     @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+        if (this.card != null) {
+            return new Conditions.HasCardReadRight(this.card);
+        } else {
+            // orphan content should neven happen
+            return Conditions.alwaysTrue;
+        }
+    }
+
+    @Override
     public Conditions.Condition getUpdateCondition() {
         if (this.card != null) {
             return this.card.getUpdateCondition();

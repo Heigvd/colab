@@ -299,6 +299,21 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+        if (this.deliverableCardContent != null) {
+            // The document is the deliverable of a card content
+            return this.deliverableCardContent.getReadCondition();
+        } else if (this.resource != null) {
+            // The document is a resource
+            return this.resource.getReadCondition();
+        } else {
+            // such an orphan shouldn't exist...
+            return Conditions.alwaysTrue;
+        }
+    }
+
+    @Override
     public Conditions.Condition getUpdateCondition() {
         if (this.deliverableCardContent != null) {
             // The document is the deliverable of a card content

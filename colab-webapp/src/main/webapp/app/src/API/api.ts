@@ -19,7 +19,7 @@ import {
   Document,
   entityIs,
   Project,
-  Role,
+  TeamRole,
   SignUpInfo,
   // StickyNoteLink,
   User,
@@ -339,13 +339,13 @@ export const sendInvitation = createAsyncThunk(
 
 export const createRole = createAsyncThunk(
   'project/team/createRole',
-  async (payload: { project: Project; role: Role }) => {
-    const r: Role = { ...payload.role, projectId: payload.project.id };
+  async (payload: { project: Project; role: TeamRole }) => {
+    const r: TeamRole = { ...payload.role, projectId: payload.project.id };
     return await restClient.TeamRestEndpoint.createRole(r);
   },
 );
 
-export const updateRole = createAsyncThunk('project/role/update', async (role: Role) => {
+export const updateRole = createAsyncThunk('project/role/update', async (role: TeamRole) => {
   return await restClient.TeamRestEndpoint.updateRole(role);
 });
 

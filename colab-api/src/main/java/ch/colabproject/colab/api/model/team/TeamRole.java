@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.team;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -25,6 +26,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 
@@ -34,7 +36,7 @@ import javax.validation.constraints.NotBlank;
  * @author maxence
  */
 @Entity
-public class Role implements ColabEntity, WithWebsocketChannels {
+public class TeamRole implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,7 +44,7 @@ public class Role implements ColabEntity, WithWebsocketChannels {
     // fields
     // ---------------------------------------------------------------------------------------------
     /**
-     * Role ID.
+     * TeamRole ID.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,6 +75,13 @@ public class Role implements ColabEntity, WithWebsocketChannels {
     @ManyToMany(mappedBy = "roles")
     @JsonbTransient
     private List<TeamMember> members;
+
+    /**
+     * List of access control relative to this role
+     */
+    @OneToMany(mappedBy = "role")
+    @JsonbTransient
+    private List<AccessControl> accessControl;
 
     /**
      * Id of the members, For deserialization only
@@ -195,13 +204,31 @@ public class Role implements ColabEntity, WithWebsocketChannels {
         this.memberIds = memberIds;
     }
 
+    /**
+     * Get the list of access control
+     *
+     * @return access control list
+     */
+    public List<AccessControl> getAccessControl() {
+        return accessControl;
+    }
+
+    /**
+     * Set the list of access control
+     *
+     * @param accessControl new list of access control
+     */
+    public void setAccessControl(List<AccessControl> accessControl) {
+        this.accessControl = accessControl;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof Role) {
-            Role o = (Role) other;
+        if (other instanceof TeamRole) {
+            TeamRole o = (TeamRole) other;
             this.setName(o.getName());
         } else {
             throw new ColabMergeException(this, other);
@@ -218,9 +245,20 @@ public class Role implements ColabEntity, WithWebsocketChannels {
     }
 
     @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+        if (this.project != null) {
+            return new Conditions.IsCurrentUserMemberOfProject(this.project);
+        } else {
+            // should not exist
+            return Conditions.alwaysTrue;
+        }
+    }
+
+    @Override
     public Conditions.Condition getUpdateCondition() {
         if (this.project != null) {
-            return project.getUpdateCondition();
+            return new Conditions.IsCurrentUserLeaderOfProject(this.project);
         } else {
             // should not exist
             return Conditions.alwaysTrue;

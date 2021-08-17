@@ -9,7 +9,7 @@ package ch.colabproject.colab.tests.rest;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.Role;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.Token;
@@ -280,10 +280,10 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
         Project project = ColabFactory.createProject(client,
             "The Hitchhiker's Guide to the Serious-Game");
-        Role paranoidAndroid = ColabFactory.createRole(client, project, "paranoid android");
-        Role hitchhicker = ColabFactory.createRole(client, project, "Hitchhiker");
+        TeamRole paranoidAndroid = ColabFactory.createRole(client, project, "paranoid android");
+        TeamRole hitchhicker = ColabFactory.createRole(client, project, "Hitchhiker");
 
-        List<Role> roles = client.projectRestEndpoint.getRoles(project.getId());
+        List<TeamRole> roles = client.projectRestEndpoint.getRoles(project.getId());
 
         TestHelper.assertEquals(roles, Set.of(paranoidAndroid, hitchhicker));
 

@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { Project, Role, TeamMember } from 'colab-rest-client';
+import { Project, TeamRole, TeamMember } from 'colab-rest-client';
 import { customColabStateEquals, shallowEqual, useAppSelector } from '../store/hooks';
 import { StateStatus } from '../store/project';
 
@@ -66,11 +66,11 @@ export const useProjectTeam = (
   projectId: number | undefined | null,
 ): {
   members: TeamMember[];
-  roles: Role[];
+  roles: TeamRole[];
   status: StateStatus;
 } => {
   return useAppSelector(state => {
-    const r: { members: TeamMember[]; roles: Role[]; status: StateStatus } = {
+    const r: { members: TeamMember[]; roles: TeamRole[]; status: StateStatus } = {
       members: [],
       roles: [],
       status: 'NOT_INITIALIZED',

@@ -335,7 +335,7 @@ public abstract class AbstractArquillianTest {
     protected void initDatabaseOnce() throws SQLException {
         if (!hasDbBeenInitialized) {
 
-            TestHelper.setLoggerLevel(getLogger(EntityListener.class), org.slf4j.event.Level.TRACE);
+            //TestHelper.setLoggerLevel(getLogger(EntityListener.class), org.slf4j.event.Level.TRACE);
             hasDbBeenInitialized = true;
             logger.info("Randomize sequences");
             DatabaseTools.randomizeSequences(colabDataSource);
