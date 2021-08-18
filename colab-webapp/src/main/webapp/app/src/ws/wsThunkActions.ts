@@ -8,6 +8,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   AbstractCardType,
+  AbstractResource,
   Account,
   Block,
   Card,
@@ -43,35 +44,37 @@ interface Updates<T> {
 }
 
 interface EntityBag {
-  projects: Updates<Project>;
-  members: Updates<TeamMember>;
-  roles: Updates<Role>;
-  cards: Updates<Card>;
-  contents: Updates<CardContent>;
-  types: Updates<AbstractCardType>;
-  documents: Updates<Document>;
-  blocks: Updates<Block>;
-  stickynotelinks: Updates<StickyNoteLink>;
-  users: Updates<User>;
   accounts: Updates<Account>;
+  blocks: Updates<Block>;
+  cards: Updates<Card>;
   changes: Updates<Change>;
+  contents: Updates<CardContent>;
+  documents: Updates<Document>;
+  members: Updates<TeamMember>;
+  projects: Updates<Project>;
+  resources: Updates<AbstractResource>;
+  roles: Updates<Role>;
+  stickynotelinks: Updates<StickyNoteLink>;
+  types: Updates<AbstractCardType>;
+  users: Updates<User>;
   errors: ColabError[];
 }
 
 function createBag(): EntityBag {
   return {
-    projects: { updated: [], deleted: [] },
-    members: { updated: [], deleted: [] },
-    roles: { updated: [], deleted: [] },
-    cards: { updated: [], deleted: [] },
-    contents: { updated: [], deleted: [] },
-    types: { updated: [], deleted: [] },
-    documents: { updated: [], deleted: [] },
-    blocks: { updated: [], deleted: [] },
-    stickynotelinks: { updated: [], deleted: []},
-    users: { updated: [], deleted: [] },
     accounts: { updated: [], deleted: [] },
+    blocks: { updated: [], deleted: [] },
+    cards: { updated: [], deleted: [] },
     changes: { updated: [], deleted: [] },
+    contents: { updated: [], deleted: [] },
+    documents: { updated: [], deleted: [] },
+    members: { updated: [], deleted: [] },
+    projects: { updated: [], deleted: [] },
+    resources: { updated: [], deleted: [] },
+    roles: { updated: [], deleted: [] },
+    stickynotelinks: { updated: [], deleted: [] },
+    types: { updated: [], deleted: [] },
+    users: { updated: [], deleted: [] },
     errors: [],
   };
 }
@@ -82,30 +85,32 @@ export const processMessage = createAsyncThunk(
     const bag = createBag();
     logger.info('Delete: ', event.deleted);
     for (const item of event.deleted) {
-      if (indexEntryIs(item, 'Project')) {
-        bag.projects.deleted.push(item);
-      } else if (indexEntryIs(item, 'TeamMember')) {
-        bag.members.deleted.push(item);
-      } else if (indexEntryIs(item, 'Role')) {
-        bag.roles.deleted.push(item);
-      } else if (indexEntryIs(item, 'Card')) {
-        bag.cards.deleted.push(item);
-      } else if (indexEntryIs(item, 'CardContent')) {
-        bag.contents.deleted.push(item);
-      } else if (indexEntryIs(item, 'AbstractCardType')) {
-        bag.types.deleted.push(item);
-      } else if (indexEntryIs(item, 'Document')) {
-        bag.documents.deleted.push(item);
+      if (indexEntryIs(item, 'Account')) {
+        bag.accounts.deleted.push(item);
       } else if (indexEntryIs(item, 'Block')) {
         bag.blocks.deleted.push(item);
-      } else if (indexEntryIs(item, 'StickyNoteLink')) {
-        bag.stickynotelinks.deleted.push(item);
-      } else if (indexEntryIs(item, 'User')) {
-        bag.users.deleted.push(item);
-      } else if (indexEntryIs(item, 'Account')) {
-        bag.accounts.deleted.push(item);
+      } else if (indexEntryIs(item, 'Card')) {
+        bag.cards.deleted.push(item);
       } else if (indexEntryIs(item, 'Change')) {
         bag.changes.deleted.push(item);
+      } else if (indexEntryIs(item, 'CardContent')) {
+        bag.contents.deleted.push(item);
+      } else if (indexEntryIs(item, 'Document')) {
+        bag.documents.deleted.push(item);
+      } else if (indexEntryIs(item, 'TeamMember')) {
+        bag.members.deleted.push(item);
+      } else if (indexEntryIs(item, 'Project')) {
+        bag.projects.deleted.push(item);
+      } else if (indexEntryIs(item, 'AbstractResource')) {
+        bag.resources.deleted.push(item);
+      } else if (indexEntryIs(item, 'Role')) {
+        bag.roles.deleted.push(item);
+      } else if (indexEntryIs(item, 'StickyNoteLink')) {
+        bag.stickynotelinks.deleted.push(item);
+      } else if (indexEntryIs(item, 'AbstractCardType')) {
+        bag.types.deleted.push(item);
+      } else if (indexEntryIs(item, 'User')) {
+        bag.users.deleted.push(item);
       } else {
         bag.errors.push({
           status: 'OPEN',
@@ -116,30 +121,32 @@ export const processMessage = createAsyncThunk(
 
     logger.info('Update: ', event.updated);
     for (const item of event.updated) {
-      if (entityIs(item, 'Project')) {
-        bag.projects.updated.push(item);
-      } else if (entityIs(item, 'TeamMember')) {
-        bag.members.updated.push(item);
-      } else if (entityIs(item, 'Role')) {
-        bag.roles.updated.push(item);
-      } else if (entityIs(item, 'Card')) {
-        bag.cards.updated.push(item);
-      } else if (entityIs(item, 'CardContent')) {
-        bag.contents.updated.push(item);
-      } else if (entityIs(item, 'AbstractCardType')) {
-        bag.types.updated.push(item);
-      } else if (entityIs(item, 'Document')) {
-        bag.documents.updated.push(item);
+      if (entityIs(item, 'Account')) {
+        bag.accounts.updated.push(item);
       } else if (entityIs(item, 'Block')) {
         bag.blocks.updated.push(item);
-      } else if (entityIs(item, 'StickyNoteLink')) {
-        bag.stickynotelinks.updated.push(item);
-      } else if (entityIs(item, 'User')) {
-        bag.users.updated.push(item);
-      } else if (entityIs(item, 'Account')) {
-        bag.accounts.updated.push(item);
+      } else if (entityIs(item, 'Card')) {
+        bag.cards.updated.push(item);
       } else if (entityIs(item, 'Change')) {
         bag.changes.updated.push(item);
+      } else if (entityIs(item, 'CardContent')) {
+        bag.contents.updated.push(item);
+      } else if (entityIs(item, 'Document')) {
+        bag.documents.updated.push(item);
+      } else if (entityIs(item, 'TeamMember')) {
+        bag.members.updated.push(item);
+      } else if (entityIs(item, 'Project')) {
+        bag.projects.updated.push(item);
+      } else if (entityIs(item, 'AbstractResource')) {
+        bag.resources.updated.push(item);
+      } else if (entityIs(item, 'Role')) {
+        bag.roles.updated.push(item);
+      } else if (entityIs(item, 'StickyNoteLink')) {
+        bag.stickynotelinks.updated.push(item);
+      } else if (entityIs(item, 'AbstractCardType')) {
+        bag.types.updated.push(item);
+      } else if (entityIs(item, 'User')) {
+        bag.users.updated.push(item);
       } else {
         //If next line is erroneous, it means a type of WsMessage is not handled
         checkUnreachable(item);

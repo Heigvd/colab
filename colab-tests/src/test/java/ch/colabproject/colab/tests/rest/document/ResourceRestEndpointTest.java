@@ -1,5 +1,6 @@
 package ch.colabproject.colab.tests.rest.document;
 
+import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.ExternalDocLink;
 import ch.colabproject.colab.api.model.document.Resource;
@@ -19,74 +20,57 @@ import org.junit.jupiter.api.Test;
  * @author sandra
  */
 // TODO refuse stuff
+// TODO publish / requestForGlory / deprecated stuff
 public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
     @Test
-    public void testOnCardType() {
-        helper(Access.CARD_TYPE,
-            Set.of(),
-            Set.of(Access.CARD_TYPE, Access.CARD, Access.CARD_CONTENT));
+    public void testOnGlobalCardType() {
+        doTest(Access.GLOBAL_CARD_TYPE,
+            Set.of(Access.CARD_TYPE_REF, Access.CARD, Access.CARD_CONTENT,
+                Access.SUB_CARD, Access.SUB_CARD_CONTENT));
     }
 
     @Test
-    public void testOnCardTypePublished() {
-        helper(Access.CARD_TYPE,
-            Set.of(ResourceState.PUBLISHED),
-            Set.of(Access.CARD_TYPE, Access.CARD, Access.CARD_CONTENT,
+    public void testOnCardTypeRef() {
+        doTest(Access.CARD_TYPE_REF,
+            Set.of(Access.CARD, Access.CARD_CONTENT,
                 Access.SUB_CARD, Access.SUB_CARD_CONTENT));
     }
 
     @Test
     public void testOnCard() {
-        helper(Access.CARD,
-            Set.of(),
-            Set.of(Access.CARD, Access.CARD_CONTENT));
-    }
-
-    @Test
-    public void testOnCardPublished() {
-        helper(Access.CARD,
-            Set.of(ResourceState.PUBLISHED),
-            Set.of(Access.CARD, Access.CARD_CONTENT, Access.SUB_CARD, Access.SUB_CARD_CONTENT));
+        doTest(Access.CARD,
+            Set.of(Access.CARD_CONTENT,
+                Access.SUB_CARD, Access.SUB_CARD_CONTENT));
     }
 
     @Test
     public void testOnCardContent() {
-        helper(Access.CARD_CONTENT,
-            Set.of(),
-            Set.of(Access.CARD_CONTENT));
-    }
-
-    @Test
-    public void testOnCardContentPublished() {
-        helper(Access.CARD_CONTENT,
-            Set.of(ResourceState.PUBLISHED),
-            Set.of(Access.CARD_CONTENT, Access.SUB_CARD, Access.SUB_CARD_CONTENT));
-    }
-
-    @Test
-    public void testOnSubCardType() {
-        helper(Access.SUB_CARD_TYPE,
-            Set.of(),
-            Set.of(Access.SUB_CARD_TYPE, Access.SUB_CARD, Access.SUB_CARD_CONTENT));
-    }
-
-    @Test
-    public void testOnSubCard() {
-        helper(Access.SUB_CARD,
-            Set.of(),
+        doTest(Access.CARD_CONTENT,
             Set.of(Access.SUB_CARD, Access.SUB_CARD_CONTENT));
     }
 
     @Test
-    public void testOnSubCardContent() {
-        helper(Access.SUB_CARD_CONTENT,
-            Set.of(),
+    public void testOnSubCardType() {
+        doTest(Access.SUB_CARD_TYPE,
+            Set.of(Access.SUB_CARD, Access.SUB_CARD_CONTENT));
+    }
+
+    @Test
+    public void testOnSubCard() {
+        doTest(Access.SUB_CARD,
             Set.of(Access.SUB_CARD_CONTENT));
     }
 
+    @Test
+    public void testOnSubCardContent() {
+        doTest(Access.SUB_CARD_CONTENT,
+            Set.of());
+    }
+
     private enum Access {
-        CARD_TYPE,
+        GLOBAL_CARD_TYPE,
+        CARD_TYPE_REF,
         CARD,
         CARD_CONTENT,
         SUB_CARD_TYPE,
@@ -94,23 +78,19 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         SUB_CARD_CONTENT;
     }
 
-    private enum ResourceState {
-        PUBLISHED,
-        REQUESTING_FOR_GLORY,
-        DEPRECATED;
-    }
-
-    private void helper(Access resourceSpace, Set<ResourceState> resourceState,
-        Set<Access> accessToResource) {
-        // creation of the context : project, 2 card types, card, sub card
+    private void doTest(Access resourceLoc, Set<Access> accessToResourceRef) {
+        // creation of the context : project, global card type, card type, card, sub card
         Project project = ColabFactory.createProject(client, "testResource");
         Long projectId = project.getId();
 
         Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
 
-        Long cardTypeId = ColabFactory.createCardType(client, projectId).getId();
+        Long globalCardTypeId = ColabFactory.createCardType(client, null).getId();
 
-        Long cardId = ColabFactory.createNewCard(client, rootCardContentId, cardTypeId).getId();
+        Long cardId = ColabFactory.createNewCard(client, rootCardContentId, globalCardTypeId)
+            .getId();
+
+        Long cardTypeRefId = client.cardRestEndpoint.getCard(cardId).getCardTypeId();
 
         Long cardContentId = ColabFactory.getCardContent(client, cardId).getId();
 
@@ -133,10 +113,14 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         Resource persistedResource;
 
-        switch (resourceSpace) {
-            case CARD_TYPE:
+        switch (resourceLoc) {
+            case GLOBAL_CARD_TYPE:
                 persistedResource = client.resourceRestEndpoint
-                    .createResourceForCardType(cardTypeId, doc);
+                    .createResourceForAbstractCardType(globalCardTypeId, doc);
+                break;
+            case CARD_TYPE_REF:
+                persistedResource = client.resourceRestEndpoint
+                    .createResourceForAbstractCardType(cardTypeRefId, doc);
                 break;
             case CARD:
                 persistedResource = client.resourceRestEndpoint.createResourceForCard(cardId, doc);
@@ -147,7 +131,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
                 break;
             case SUB_CARD_TYPE:
                 persistedResource = client.resourceRestEndpoint
-                    .createResourceForCardType(subCardTypeId, doc);
+                    .createResourceForAbstractCardType(subCardTypeId, doc);
                 break;
             case SUB_CARD:
                 persistedResource = client.resourceRestEndpoint.createResourceForCard(subCardId,
@@ -163,29 +147,19 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
                 break;
         }
 
-        if (!resourceState.isEmpty()) {
-            if (resourceState.contains(ResourceState.PUBLISHED)) {
-                persistedResource.setPublished(true);
-            }
-
-            if (resourceState.contains(ResourceState.REQUESTING_FOR_GLORY)) {
-                persistedResource.setRequestingForGlory(true);
-            }
-
-            if (resourceState.contains(ResourceState.DEPRECATED)) {
-                persistedResource.setDeprecated(true);
-            }
-
-            client.resourceRestEndpoint.updateResource(persistedResource);
-
-            persistedResource = client.resourceRestEndpoint.getResource(persistedResource.getId());
-        }
+        // check the abstract card type / card / card content link with the resource
 
         Assertions.assertNotNull(persistedResource);
         Assertions.assertNotNull(persistedResource.getId());
-        switch (resourceSpace) {
-            case CARD_TYPE:
-                Assertions.assertEquals(cardTypeId, persistedResource.getAbstractCardTypeId());
+        switch (resourceLoc) {
+            case GLOBAL_CARD_TYPE:
+                Assertions.assertEquals(globalCardTypeId,
+                    persistedResource.getAbstractCardTypeId());
+                Assertions.assertNull(persistedResource.getCardId());
+                Assertions.assertNull(persistedResource.getCardContentId());
+                break;
+            case CARD_TYPE_REF:
+                Assertions.assertEquals(cardTypeRefId, persistedResource.getAbstractCardTypeId());
                 Assertions.assertNull(persistedResource.getCardId());
                 Assertions.assertNull(persistedResource.getCardContentId());
                 break;
@@ -217,13 +191,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
             default:
                 Assertions.fail();
         }
-        Assertions.assertTrue(
-            resourceState.contains(ResourceState.PUBLISHED) == persistedResource.isPublished());
-        Assertions.assertTrue(resourceState.contains(
-            ResourceState.REQUESTING_FOR_GLORY) == persistedResource.isRequestingForGlory());
-        Assertions.assertTrue(
-            resourceState.contains(ResourceState.DEPRECATED) == persistedResource.isDeprecated());
-        Assertions.assertNotNull(persistedResource.getDocumentId());
+
+        // check the document
 
         Long documentId = persistedResource.getDocumentId();
         Document persistedDocument = client.documentRestEndPoint.getDocument(documentId);
@@ -234,85 +203,198 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(persistedDocument instanceof ExternalDocLink);
         ExternalDocLink persistedExtDocLink = (ExternalDocLink) persistedDocument;
         Assertions.assertEquals(url, persistedExtDocLink.getUrl());
+        Assertions.assertEquals(persistedResource.getId(), persistedDocument.getResourceId());
 
-        if (accessToResource.contains(Access.CARD_TYPE)) {
-            List<Resource> persistedCardTypeResources = client.cardTypeRestEndpoint
-                .getAvailableActiveLinkedResources(cardTypeId);
-            Assertions.assertNotNull(persistedCardTypeResources);
-            Assertions.assertEquals(1, persistedCardTypeResources.size());
-            Assertions.assertEquals(persistedResource, persistedCardTypeResources.get(0));
+        // check the resource references
+
+        AbstractResource persistedGlobalCardTypeAbstractResource = null;
+        List<AbstractResource> persistedGlobalCardTypeResources = client.cardTypeRestEndpoint
+            .getDirectAbstractResourcesOfAbstractCardType(globalCardTypeId);
+        if (resourceLoc == Access.GLOBAL_CARD_TYPE) {
+            Assertions.assertNotNull(persistedGlobalCardTypeResources);
+            Assertions.assertEquals(1, persistedGlobalCardTypeResources.size());
+            Assertions.assertTrue(persistedGlobalCardTypeResources.get(0) instanceof Resource);
+            persistedGlobalCardTypeAbstractResource = persistedGlobalCardTypeResources.get(0);
+            Assertions.assertEquals(persistedResource, persistedGlobalCardTypeAbstractResource);
         } else {
-            List<Resource> persistedCardTypeResources = client.cardTypeRestEndpoint
-                .getAvailableActiveLinkedResources(cardTypeId);
-            Assertions.assertNotNull(persistedCardTypeResources);
-            Assertions.assertEquals(0, persistedCardTypeResources.size());
+            Assertions.assertNotNull(persistedGlobalCardTypeResources);
+            Assertions.assertEquals(0, persistedGlobalCardTypeResources.size());
         }
 
-        if (accessToResource.contains(Access.CARD)) {
-            List<Resource> persistedCardResources = client.cardRestEndpoint
-                .getAvailableActiveLinkedResources(cardId);
+        AbstractResource persistedCardTypeRefAbstractResource = null;
+        List<AbstractResource> persistedCardTypeRefResources = client.cardTypeRestEndpoint
+            .getDirectAbstractResourcesOfAbstractCardType(cardTypeRefId);
+        if (resourceLoc == Access.CARD_TYPE_REF) {
+            Assertions.assertNotNull(persistedCardTypeRefResources);
+            Assertions.assertEquals(1, persistedCardTypeRefResources.size());
+            Assertions.assertTrue(persistedCardTypeRefResources.get(0) instanceof Resource);
+            persistedCardTypeRefAbstractResource = persistedCardTypeRefResources.get(0);
+            Assertions.assertEquals(persistedResource, persistedCardTypeRefAbstractResource);
+        } else if (accessToResourceRef.contains(Access.CARD_TYPE_REF)) {
+            Assertions.assertNotNull(persistedCardTypeRefResources);
+            Assertions.assertEquals(1, persistedCardTypeRefResources.size());
+            Assertions.assertTrue(persistedCardTypeRefResources.get(0) instanceof ResourceRef);
+            persistedCardTypeRefAbstractResource = persistedCardTypeRefResources
+                .get(0);
+            Assertions.assertNotNull(persistedGlobalCardTypeAbstractResource);
+            Assertions.assertEquals(persistedGlobalCardTypeAbstractResource.getId(),
+                ((ResourceRef) persistedCardTypeRefAbstractResource).getTargetId());
+        } else {
+            Assertions.assertNotNull(persistedCardTypeRefResources);
+            Assertions.assertEquals(0, persistedCardTypeRefResources.size());
+        }
+
+        AbstractResource persistedCardAbstractResource = null;
+        List<AbstractResource> persistedCardResources = client.cardRestEndpoint
+            .getDirectAbstractResourcesOfCard(cardId);
+        if (resourceLoc == Access.CARD) {
             Assertions.assertNotNull(persistedCardResources);
             Assertions.assertEquals(1, persistedCardResources.size());
-            Assertions.assertEquals(persistedResource, persistedCardResources.get(0));
+            Assertions.assertTrue(persistedCardResources.get(0) instanceof Resource);
+            persistedCardAbstractResource = persistedCardResources.get(0);
+            Assertions.assertEquals(persistedResource, persistedCardAbstractResource);
+        } else if (accessToResourceRef.contains(Access.CARD)) {
+            Assertions.assertNotNull(persistedCardResources);
+            Assertions.assertEquals(1, persistedCardResources.size());
+            Assertions.assertTrue(persistedCardResources.get(0) instanceof ResourceRef);
+            persistedCardAbstractResource = persistedCardResources.get(0);
+            Assertions.assertNotNull(persistedCardTypeRefAbstractResource);
+            Assertions.assertEquals(persistedCardTypeRefAbstractResource.getId(),
+                ((ResourceRef) persistedCardAbstractResource).getTargetId());
         } else {
-            List<Resource> persistedCardResources = client.cardRestEndpoint
-                .getAvailableActiveLinkedResources(cardId);
             Assertions.assertNotNull(persistedCardResources);
             Assertions.assertEquals(0, persistedCardResources.size());
         }
 
-        if (accessToResource.contains(Access.CARD_CONTENT)) {
-            List<Resource> persistedCardContentResources = client.cardContentRestEndpoint
-                .getAvailableActiveLinkedResources(cardContentId);
+        AbstractResource persistedCardContentAbstractResource = null;
+        List<AbstractResource> persistedCardContentResources = client.cardContentRestEndpoint
+            .getDirectAbstractResourcesOfCardContent(cardContentId);
+        if (resourceLoc == Access.CARD_CONTENT) {
             Assertions.assertNotNull(persistedCardContentResources);
             Assertions.assertEquals(1, persistedCardContentResources.size());
-            Assertions.assertEquals(persistedResource, persistedCardContentResources.get(0));
+            Assertions.assertTrue(persistedCardContentResources.get(0) instanceof Resource);
+            persistedCardContentAbstractResource = persistedCardContentResources.get(0);
+            Assertions.assertEquals(persistedResource, persistedCardContentAbstractResource);
+        } else if (accessToResourceRef.contains(Access.CARD_CONTENT)) {
+            Assertions.assertNotNull(persistedCardContentResources);
+            Assertions.assertEquals(1, persistedCardContentResources.size());
+            Assertions.assertTrue(persistedCardContentResources.get(0) instanceof ResourceRef);
+            persistedCardContentAbstractResource = persistedCardContentResources
+                .get(0);
+            Assertions.assertNotNull(persistedCardAbstractResource);
+            Assertions.assertEquals(persistedCardAbstractResource.getId(),
+                ((ResourceRef) persistedCardContentAbstractResource).getTargetId());
         } else {
-            List<Resource> persistedCardContentResources = client.cardContentRestEndpoint
-                .getAvailableActiveLinkedResources(cardContentId);
             Assertions.assertNotNull(persistedCardContentResources);
             Assertions.assertEquals(0, persistedCardContentResources.size());
         }
 
-        if (accessToResource.contains(Access.SUB_CARD_TYPE)) {
-            List<Resource> persistedCardTypeResources = client.cardTypeRestEndpoint
-                .getAvailableActiveLinkedResources(subCardTypeId);
-            Assertions.assertNotNull(persistedCardTypeResources);
-            Assertions.assertEquals(1, persistedCardTypeResources.size());
-            Assertions.assertEquals(persistedResource, persistedCardTypeResources.get(0));
+        AbstractResource persistedSubCardTypeAbstractResource = null;
+        List<AbstractResource> persistedSubCardTypeResources = client.cardTypeRestEndpoint
+            .getDirectAbstractResourcesOfAbstractCardType(subCardTypeId);
+        if (resourceLoc == Access.SUB_CARD_TYPE) {
+            Assertions.assertNotNull(persistedSubCardTypeResources);
+            Assertions.assertEquals(1, persistedSubCardTypeResources.size());
+            Assertions.assertTrue(persistedSubCardTypeResources.get(0) instanceof Resource);
+            persistedSubCardTypeAbstractResource = persistedSubCardTypeResources.get(0);
+            Assertions.assertEquals(persistedResource, persistedSubCardTypeAbstractResource);
+        } else if (accessToResourceRef.contains(Access.SUB_CARD_TYPE)) {
+            Assertions.fail("not handled in current example");
         } else {
-            List<Resource> persistedCardTypeResources = client.cardTypeRestEndpoint
-                .getAvailableActiveLinkedResources(subCardTypeId);
-            Assertions.assertNotNull(persistedCardTypeResources);
-            Assertions.assertEquals(0, persistedCardTypeResources.size());
+            Assertions.assertNotNull(persistedSubCardTypeResources);
+            Assertions.assertEquals(0, persistedSubCardTypeResources.size());
         }
 
-        if (accessToResource.contains(Access.SUB_CARD)) {
-            List<Resource> persistedSubCardResources = client.cardRestEndpoint
-                .getAvailableActiveLinkedResources(subCardId);
+        AbstractResource persistedSubCardResourceRef = null;
+        List<AbstractResource> persistedSubCardResources = client.cardRestEndpoint
+            .getDirectAbstractResourcesOfCard(subCardId);
+        if (resourceLoc == Access.SUB_CARD) {
             Assertions.assertNotNull(persistedSubCardResources);
             Assertions.assertEquals(1, persistedSubCardResources.size());
-            Assertions.assertEquals(persistedResource, persistedSubCardResources.get(0));
+            Assertions.assertTrue(persistedSubCardResources.get(0) instanceof Resource);
+            persistedSubCardResourceRef = persistedSubCardResources.get(0);
+            Assertions.assertEquals(persistedResource, persistedSubCardResourceRef);
+        } else if (accessToResourceRef.contains(Access.SUB_CARD)) {
+            Assertions.assertNotNull(persistedSubCardResources);
+            Assertions.assertEquals(1, persistedSubCardResources.size());
+            Assertions.assertTrue(persistedSubCardResources.get(0) instanceof ResourceRef);
+            persistedSubCardResourceRef = persistedSubCardResources.get(0);
+            Assertions.assertTrue(persistedCardContentAbstractResource != null
+                || persistedSubCardTypeAbstractResource != null);
+            if (persistedCardContentAbstractResource != null) {
+                Assertions.assertEquals(persistedCardContentAbstractResource.getId(),
+                    ((ResourceRef) persistedSubCardResourceRef).getTargetId());
+            } else if (persistedSubCardTypeAbstractResource != null) {
+                Assertions.assertEquals(persistedSubCardTypeAbstractResource.getId(),
+                    ((ResourceRef) persistedSubCardResourceRef).getTargetId());
+            } else {
+                Assertions.fail(
+                    "a sub card resource reference must be linked to its card type reference or to its parent card content reference ");
+            }
         } else {
-            List<Resource> persistedSubCardResources = client.cardRestEndpoint
-                .getAvailableActiveLinkedResources(subCardId);
             Assertions.assertNotNull(persistedSubCardResources);
             Assertions.assertEquals(0, persistedSubCardResources.size());
         }
 
-        if (accessToResource.contains(Access.SUB_CARD_CONTENT)) {
-            List<Resource> persistedSubCardContentResources = client.cardContentRestEndpoint
-                .getAvailableActiveLinkedResources(subCardContentId);
+        AbstractResource persistedSubCardContentResourceRef = null;
+        List<AbstractResource> persistedSubCardContentResources = client.cardContentRestEndpoint
+            .getDirectAbstractResourcesOfCardContent(subCardContentId);
+        if (resourceLoc == Access.SUB_CARD_CONTENT) {
             Assertions.assertNotNull(persistedSubCardContentResources);
             Assertions.assertEquals(1, persistedSubCardContentResources.size());
+            Assertions.assertTrue(persistedSubCardContentResources.get(0) instanceof Resource);
             Assertions.assertEquals(persistedResource, persistedSubCardContentResources.get(0));
+            persistedSubCardContentResourceRef = persistedSubCardContentResources.get(0);
+            Assertions.assertEquals(persistedResource, persistedSubCardContentResourceRef);
+        } else if (accessToResourceRef.contains(Access.SUB_CARD_CONTENT)) {
+            Assertions.assertNotNull(persistedSubCardContentResources);
+            Assertions.assertEquals(1, persistedSubCardContentResources.size());
+            Assertions.assertTrue(persistedSubCardContentResources.get(0) instanceof ResourceRef);
+            persistedSubCardContentResourceRef = persistedSubCardContentResources
+                .get(0);
+            Assertions.assertNotNull(persistedSubCardResourceRef);
+            Assertions.assertEquals(persistedSubCardResourceRef.getId(),
+                ((ResourceRef) persistedSubCardContentResourceRef).getTargetId());
         } else {
-            List<Resource> persistedSubCardContentResources = client.cardContentRestEndpoint
-                .getAvailableActiveLinkedResources(subCardContentId);
             Assertions.assertNotNull(persistedSubCardContentResources);
             Assertions.assertEquals(0, persistedSubCardContentResources.size());
         }
     }
+
+    // old stuff when using getAvailableActiveLinkedResources
+
+//    private enum ResourceState {
+//        PUBLISHED,
+//        REQUESTING_FOR_GLORY,
+//        DEPRECATED;
+//    }
+
+//    if (!resourceStatus.isEmpty()) {
+//        if (resourceStatus.contains(ResourceState.PUBLISHED)) {
+//            persistedResource.setPublished(true);
+//        }
+//
+//        if (resourceStatus.contains(ResourceState.REQUESTING_FOR_GLORY)) {
+//            persistedResource.setRequestingForGlory(true);
+//        }
+//
+//        if (resourceStatus.contains(ResourceState.DEPRECATED)) {
+//            persistedResource.setDeprecated(true);
+//        }
+//
+//        client.resourceRestEndpoint.updateResource(persistedResource);
+//
+//        persistedResource = (Resource) client.resourceRestEndpoint
+//            .getAbstractResource(persistedResource.getId());
+//    }
+
+//    Assertions.assertTrue(
+//        resourceStatus.contains(ResourceState.PUBLISHED) == persistedResource.isPublished());
+//    Assertions.assertTrue(resourceStatus.contains(
+//        ResourceState.REQUESTING_FOR_GLORY) == persistedResource.isRequestingForGlory());
+//    Assertions.assertTrue(
+//        resourceStatus.contains(ResourceState.DEPRECATED) == persistedResource.isDeprecated());
+//    Assertions.assertNotNull(persistedResource.getDocumentId());
 
     // *********************************************************************************************
     // Category
@@ -326,11 +408,11 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         Long cardTypeId = ColabFactory.createCardType(client, projectId).getId();
 
-        Resource persistedResource1 = createResourceForCardType(cardTypeId);
+        Resource persistedResource1 = createResourceForAbstractCardType(cardTypeId);
         Long resource1Id = persistedResource1.getId();
         Assertions.assertNull(persistedResource1.getCategory());
 
-        Resource persistedResource2 = createResourceForCardType(cardTypeId);
+        Resource persistedResource2 = createResourceForAbstractCardType(cardTypeId);
         Long resource2Id = persistedResource2.getId();
         Assertions.assertNull(persistedResource2.getCategory());
 
@@ -339,54 +421,70 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
             + ((int) (Math.random() * 1000));
 
         client.resourceRestEndpoint.setCategory(resource1Id, categoryNameA);
-        persistedResource1 = client.resourceRestEndpoint.getResource(resource1Id);
-        persistedResource2 = client.resourceRestEndpoint.getResource(resource2Id);
+        persistedResource1 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource1Id);
+        persistedResource2 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource2Id);
         Assertions.assertEquals(categoryNameA, persistedResource1.getCategory());
         Assertions.assertNull(persistedResource2.getCategory());
 
         client.resourceRestEndpoint.setCategory(resource2Id, categoryNameA);
-        persistedResource1 = client.resourceRestEndpoint.getResource(resource1Id);
-        persistedResource2 = client.resourceRestEndpoint.getResource(resource2Id);
+        persistedResource1 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource1Id);
+        persistedResource2 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource2Id);
         Assertions.assertEquals(categoryNameA, persistedResource1.getCategory());
         Assertions.assertEquals(categoryNameA, persistedResource2.getCategory());
 
         client.resourceRestEndpoint.setCategoryForList("   ",
             Lists.newArrayList(resource1Id, resource2Id));
-        persistedResource1 = client.resourceRestEndpoint.getResource(resource1Id);
-        persistedResource2 = client.resourceRestEndpoint.getResource(resource2Id);
+        persistedResource1 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource1Id);
+        persistedResource2 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource2Id);
         Assertions.assertNull(persistedResource1.getCategory());
         Assertions.assertNull(persistedResource2.getCategory());
 
         client.resourceRestEndpoint.setCategoryForList(categoryNameA,
             Lists.newArrayList(resource1Id, resource2Id));
-        persistedResource1 = client.resourceRestEndpoint.getResource(resource1Id);
-        persistedResource2 = client.resourceRestEndpoint.getResource(resource2Id);
+        persistedResource1 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource1Id);
+        persistedResource2 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource2Id);
         Assertions.assertEquals(categoryNameA, persistedResource1.getCategory());
         Assertions.assertEquals(categoryNameA, persistedResource2.getCategory());
 
         client.resourceRestEndpoint
             .removeCategoryForList(Lists.newArrayList(resource1Id, resource2Id));
-        persistedResource1 = client.resourceRestEndpoint.getResource(resource1Id);
-        persistedResource2 = client.resourceRestEndpoint.getResource(resource2Id);
+        persistedResource1 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource1Id);
+        persistedResource2 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource2Id);
         Assertions.assertNull(persistedResource1.getCategory());
         Assertions.assertNull(persistedResource2.getCategory());
 
         client.resourceRestEndpoint.setCategoryForList(categoryNameA,
             Lists.newArrayList(resource1Id, resource2Id));
-        persistedResource1 = client.resourceRestEndpoint.getResource(resource1Id);
-        persistedResource2 = client.resourceRestEndpoint.getResource(resource2Id);
+        persistedResource1 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource1Id);
+        persistedResource2 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource2Id);
         Assertions.assertEquals(categoryNameA, persistedResource1.getCategory());
         Assertions.assertEquals(categoryNameA, persistedResource2.getCategory());
 
         client.resourceRestEndpoint.setCategory(resource1Id, categoryNameB);
-        persistedResource1 = client.resourceRestEndpoint.getResource(resource1Id);
-        persistedResource2 = client.resourceRestEndpoint.getResource(resource2Id);
+        persistedResource1 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource1Id);
+        persistedResource2 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource2Id);
         Assertions.assertEquals(categoryNameB, persistedResource1.getCategory());
         Assertions.assertEquals(categoryNameA, persistedResource2.getCategory());
 
         client.resourceRestEndpoint.removeCategory(resource1Id);
-        persistedResource1 = client.resourceRestEndpoint.getResource(resource1Id);
-        persistedResource2 = client.resourceRestEndpoint.getResource(resource2Id);
+        persistedResource1 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource1Id);
+        persistedResource2 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource2Id);
         Assertions.assertNull(persistedResource1.getCategory());
         Assertions.assertEquals(categoryNameA, persistedResource2.getCategory());
     }
@@ -423,7 +521,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 //            .getId();
 
         // set and retrieve the resources / resources references
-        Resource resourceOfCardType1 = createResourceForCardType(cardType1Id);
+        Resource resourceOfCardType1 = createResourceForAbstractCardType(cardType1Id);
         Long resourceOfCardType1Id = resourceOfCardType1.getId();
         Assertions.assertNull(resourceOfCardType1.getCategory());
 
@@ -444,7 +542,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 //        ResourceRef resourceRefOfCardII = retrieveResourceRefForCard(cardIIId);
 //        Long resourceRefOfCardIIId = resourceRefOfCardII.getId();
 
-        Resource persistedResource3 = createResourceForCardType(cardType1Id);
+        Resource persistedResource3 = createResourceForAbstractCardType(cardType1Id);
         Long resource3Id = persistedResource3.getId();
         Assertions.assertNull(persistedResource3.getCategory());
 
@@ -460,7 +558,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         String categoryNameO = "work files #" + ((int) (Math.random() * 1000));
 
         client.resourceRestEndpoint.setCategory(resource3Id, categoryNameO);
-        persistedResource3 = client.resourceRestEndpoint.getResource(resource3Id);
+        persistedResource3 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource3Id);
         Assertions.assertEquals(categoryNameO, persistedResource3.getCategory());
 
         // set categoryNameA for each
@@ -468,142 +567,152 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         client.resourceRestEndpoint.setCategoryForList(categoryNameA,
             Lists.newArrayList(resourceOfCardType1Id,
                 resourceRefOfCard1Id, resourceRefOfCardContent1Id,
-                resourceRefOfSubCard2Id//,
+                resourceRefOfSubCard2Id// ,
 //                resourceRefOfCardIIId
-                ));
+            ));
         // no category for resourceRefOfSubCardContent2Id
 
-        resourceOfCardType1 = client.resourceRestEndpoint.getResource(resourceOfCardType1Id);
+        resourceOfCardType1 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resourceOfCardType1Id);
         Assertions.assertEquals(categoryNameA, resourceOfCardType1.getCategory());
-        resourceRefOfCard1 = client.resourceRestEndpoint.getResourceReference(resourceRefOfCard1Id);
+        resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfCard1Id);
         Assertions.assertEquals(categoryNameA, resourceRefOfCard1.getCategory());
-        resourceRefOfCardContent1 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfCardContent1Id);
+        resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfCardContent1Id);
         Assertions.assertEquals(categoryNameA, resourceRefOfCardContent1.getCategory());
-        resourceRefOfSubCard2 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfSubCard2Id);
+        resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfSubCard2Id);
         Assertions.assertEquals(categoryNameA, resourceRefOfSubCard2.getCategory());
-        resourceRefOfSubCardContent2 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfSubCardContent2Id);
+        resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfSubCardContent2Id);
         Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());
-//        resourceRefOfCardII = client.resourceRestEndpoint.getResource(resourceRefOfCardIIId);
+//        resourceRefOfCardII = client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);
 //        Assertions.assertEquals(categoryNameA, resourceRefOfCardII.getCategory());
 
         // rename category A -> B at card type level
         client.resourceRestEndpoint.renameCategoryForCardType(project.getId(), cardType1Id,
             categoryNameA, categoryNameB);
 
-        resourceOfCardType1 = client.resourceRestEndpoint.getResource(resourceOfCardType1Id);
+        resourceOfCardType1 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resourceOfCardType1Id);
         Assertions.assertEquals(categoryNameB, resourceOfCardType1.getCategory());
-        resourceRefOfCard1 = client.resourceRestEndpoint.getResourceReference(resourceRefOfCard1Id);
+        resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfCard1Id);
         Assertions.assertEquals(categoryNameB, resourceRefOfCard1.getCategory());
-        resourceRefOfCardContent1 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfCardContent1Id);
+        resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfCardContent1Id);
         Assertions.assertEquals(categoryNameB, resourceRefOfCardContent1.getCategory());
-        resourceRefOfSubCard2 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfSubCard2Id);
+        resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfSubCard2Id);
         Assertions.assertEquals(categoryNameB, resourceRefOfSubCard2.getCategory());
-        resourceRefOfSubCardContent2 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfSubCardContent2Id);
+        resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfSubCardContent2Id);
         Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());
         // in another project, stay category A
-//        resourceRefOfCardII = client.resourceRestEndpoint.getResource(resourceRefOfCardIIId);
+//        resourceRefOfCardII = client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);
 //        Assertions.assertEquals(categoryNameA, resourceRefOfCardII.getCategory());
 
         // rename category B -> C at card 1 level
         client.resourceRestEndpoint.renameCategoryForCard(card1Id, categoryNameB,
             categoryNameC);
 
-        resourceOfCardType1 = client.resourceRestEndpoint.getResource(resourceOfCardType1Id);
+        resourceOfCardType1 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resourceOfCardType1Id);
         Assertions.assertEquals(categoryNameB, resourceOfCardType1.getCategory());
-        resourceRefOfCard1 = client.resourceRestEndpoint.getResourceReference(resourceRefOfCard1Id);
+        resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfCard1Id);
         Assertions.assertEquals(categoryNameC, resourceRefOfCard1.getCategory());
-        resourceRefOfCardContent1 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfCardContent1Id);
+        resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfCardContent1Id);
         Assertions.assertEquals(categoryNameC, resourceRefOfCardContent1.getCategory());
-        resourceRefOfSubCard2 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfSubCard2Id);
+        resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfSubCard2Id);
         Assertions.assertEquals(categoryNameC, resourceRefOfSubCard2.getCategory());
-        resourceRefOfSubCardContent2 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfSubCardContent2Id);
+        resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfSubCardContent2Id);
         Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());
 
         // rename category C -> D at card content 1 level
         client.resourceRestEndpoint.renameCategoryForCardContent(cardContent1Id, categoryNameC,
             categoryNameD);
 
-        resourceRefOfCard1 = client.resourceRestEndpoint.getResourceReference(resourceRefOfCard1Id);
+        resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfCard1Id);
         Assertions.assertEquals(categoryNameC, resourceRefOfCard1.getCategory());
-        resourceRefOfCardContent1 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfCardContent1Id);
+        resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfCardContent1Id);
         Assertions.assertEquals(categoryNameD, resourceRefOfCardContent1.getCategory());
-        resourceRefOfSubCard2 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfSubCard2Id);
+        resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfSubCard2Id);
         Assertions.assertEquals(categoryNameD, resourceRefOfSubCard2.getCategory());
-        resourceRefOfSubCardContent2 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfSubCardContent2Id);
+        resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfSubCardContent2Id);
         Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());
 
         // rename category D -> E at sub card 2 level
         client.resourceRestEndpoint.renameCategoryForCard(subCard2Id, categoryNameD,
             categoryNameE);
 
-        resourceRefOfCardContent1 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfCardContent1Id);
+        resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfCardContent1Id);
         Assertions.assertEquals(categoryNameD, resourceRefOfCardContent1.getCategory());
-        resourceRefOfSubCard2 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfSubCard2Id);
+        resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfSubCard2Id);
         Assertions.assertEquals(categoryNameE, resourceRefOfSubCard2.getCategory());
-        resourceRefOfSubCardContent2 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfSubCardContent2Id);
+        resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfSubCardContent2Id);
         Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());
 
         // recapitulation at this point
-//        resourceRefOfCardII = client.resourceRestEndpoint.getResource(resourceRefOfCardIIId);
+//        resourceRefOfCardII = client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);
 //        Assertions.assertEquals(categoryNameA, resourceRefOfCardII.getCategory());
-        resourceOfCardType1 = client.resourceRestEndpoint.getResource(resourceOfCardType1Id);
+        resourceOfCardType1 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resourceOfCardType1Id);
         Assertions.assertEquals(categoryNameB, resourceOfCardType1.getCategory());
-        resourceRefOfCard1 = client.resourceRestEndpoint.getResourceReference(resourceRefOfCard1Id);
+        resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfCard1Id);
         Assertions.assertEquals(categoryNameC, resourceRefOfCard1.getCategory());
-        resourceRefOfCardContent1 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfCardContent1Id);
+        resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfCardContent1Id);
         Assertions.assertEquals(categoryNameD, resourceRefOfCardContent1.getCategory());
-        resourceRefOfSubCard2 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfSubCard2Id);
+        resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfSubCard2Id);
         Assertions.assertEquals(categoryNameE, resourceRefOfSubCard2.getCategory());
-        resourceRefOfSubCardContent2 = client.resourceRestEndpoint
-            .getResourceReference(resourceRefOfSubCardContent2Id);
+        resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+            .getAbstractResource(resourceRefOfSubCardContent2Id);
         Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());
-        persistedResource3 = client.resourceRestEndpoint.getResource(resource3Id);
+        persistedResource3 = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resource3Id);
         Assertions.assertEquals(categoryNameO, persistedResource3.getCategory());
 
         // rename category A -> B at card type level
 //        client.resourceRestEndpoint.renameCategoryForCardType(projectII.getId(), cardType1Id,
 //            categoryNameA, categoryNameF);
 //
-//        resourceRefOfCardII = client.resourceRestEndpoint.getResource(resourceRefOfCardIIId);
+//        resourceRefOfCardII = (ResourceRef) client.resourceRestEndpoint.getAbstractResource(resourceRefOfCardIIId);
 //        Assertions.assertEquals(categoryNameF, resourceRefOfCardII.getCategory());
-//        resourceOfCardType1 = client.resourceRestEndpoint.getResource(resourceOfCardType1Id);
+//        resourceOfCardType1 = (ResourceRef) client.resourceRestEndpoint.getAbstractResource(resourceOfCardType1Id);
 //        Assertions.assertEquals(categoryNameB, resourceOfCardType1.getCategory());
-//        resourceRefOfCard1 = client.resourceRestEndpoint.getResource(resourceRefOfCard1Id);
+//        resourceRefOfCard1 = (ResourceRef) client.resourceRestEndpoint.getAbstractResource(resourceRefOfCard1Id);
 //        Assertions.assertEquals(categoryNameC, resourceRefOfCard1.getCategory());
-//        resourceRefOfCardContent1 = client.resourceRestEndpoint
-//            .getResource(resourceRefOfCardContent1Id);
+//        resourceRefOfCardContent1 = (ResourceRef) client.resourceRestEndpoint
+//            .getAbstractResource(resourceRefOfCardContent1Id);
 //        Assertions.assertEquals(categoryNameD, resourceRefOfCardContent1.getCategory());
-//        resourceRefOfSubCard2 = client.resourceRestEndpoint
-//            .getResource(resourceRefOfSubCard2Id);
+//        resourceRefOfSubCard2 = (ResourceRef) client.resourceRestEndpoint
+//            .getAbstractResource(resourceRefOfSubCard2Id);
 //        Assertions.assertEquals(categoryNameE, resourceRefOfSubCard2.getCategory());
-//        resourceRefOfSubCardContent2 = client.resourceRestEndpoint
-//            .getResource(resourceRefOfSubCardContent2Id);
+//        resourceRefOfSubCardContent2 = (ResourceRef) client.resourceRestEndpoint
+//            .getAbstractResource(resourceRefOfSubCardContent2Id);
 //        Assertions.assertNull(resourceRefOfSubCardContent2.getCategory());
-//        persistedResource3 = client.resourceRestEndpoint.getResource(resource3Id);
+//        persistedResource3 = (ResourceRef) client.resourceRestEndpoint.getAbstractResource(resource3Id);
 //        Assertions.assertEquals(categoryNameO, persistedResource3.getCategory());
     }
 
     // TODO check propagation with particular attention with multiple projects / sub card / card +
     // type + content consistency
 
-    private Resource createResourceForCardType(Long cardTypeId) {
+    private Resource createResourceForAbstractCardType(Long cardTypeId) {
         String title = "All you need to know part #" + ((int) (Math.random() * 1000));
         String teaser = "and even more #" + ((int) (Math.random() * 1000));
         String url = "http://www.123soleil.chameau/Allyouneed.pdf";
@@ -613,7 +722,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         doc2.setTeaser(teaser + "2");
         doc2.setUrl(url + "/2");
 
-        return client.resourceRestEndpoint.createResourceForCardType(cardTypeId, doc2);
+        return client.resourceRestEndpoint.createResourceForAbstractCardType(cardTypeId, doc2);
     }
 
     private ResourceRef retrieveResourceRefForCard(Long cardId) {
@@ -626,4 +735,5 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
             .getDirectAbstractResourcesOfCardContent(cardContentId).get(0);
     }
 
+    // TODO delete test
 }

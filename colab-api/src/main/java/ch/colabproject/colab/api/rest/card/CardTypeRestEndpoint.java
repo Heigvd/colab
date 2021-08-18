@@ -101,10 +101,9 @@ public class CardTypeRestEndpoint {
         return cardTypeDao.getPublishedGlobalCardType();
     }
 
-
     /**
-     * Retrieve the list of published card types accessible to current user.
-     * It means all the published types of project the current user is member of.
+     * Retrieve the list of published card types accessible to current user. It means all the
+     * published types of project the current user is member of.
      *
      * @return all published card types
      */
@@ -182,31 +181,35 @@ public class CardTypeRestEndpoint {
     }
 
     /**
-     * Get the available active resources linked to a card definition
+     * Get the available active resources linked to a card type
      *
-     * @param cardDefId id of the card definition
+     * @param abstractCardTypeId id of the card type or card type reference
      *
      * @return list of matching resources
      */
     @GET
     @Path("{id}/Resources")
-    public List<Resource> getAvailableActiveLinkedResources(@PathParam("id") Long cardDefId) {
-        logger.debug("get available and active resources linked to card definition #{}", cardDefId);
-        return resourceFacade.getAvailableActiveResourcesLinkedToCardType(cardDefId);
+    public List<Resource> getAvailableActiveLinkedResources(
+        @PathParam("id") Long abstractCardTypeId) {
+        logger.debug("get available and active resources linked to abstract card type #{}",
+            abstractCardTypeId);
+        return resourceFacade.getAvailableActiveResourcesLinkedToAbstractCardType(abstractCardTypeId);
     }
 
     /**
-     * Get all abstract resources directly linked to the card definition
+     * Get all abstract resources directly linked to the card type
      *
-     * @param cardDefId the id of the card definition
+     * @param abstractCardTypeId the id of the card type or card type reference
      *
      * @return list of directly linked abstract resources
      */
     @GET
     @Path("{id}/AbstractResources")
-    public List<AbstractResource> getDirectAbstractResourcesOfCardDef(@PathParam("id") Long cardDefId) {
-        logger.debug("get direct abstract resources linked to card definition #{}", cardDefId);
-        return cardFacade.getDirectAbstractResourcesOfCardType(cardDefId);
+    public List<AbstractResource> getDirectAbstractResourcesOfAbstractCardType(
+        @PathParam("id") Long abstractCardTypeId) {
+        logger.debug("get direct abstract resources linked to card definition #{}",
+            abstractCardTypeId);
+        return cardFacade.getDirectAbstractResourcesOfAbstractCardType(abstractCardTypeId);
     }
 
 }

@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author sandra
  */
-// TODO obtain something consistent with AbstractResourceDao / ResourceDao / ResourceRefDao
 @Stateless
 @LocalBean
 public class AbstractResourceDao {

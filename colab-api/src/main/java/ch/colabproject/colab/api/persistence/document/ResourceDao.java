@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author sandra
  */
-// TODO see if we collapse into an AbstractResourceRef
 @Stateless
 @LocalBean
 public class ResourceDao {
@@ -39,7 +38,7 @@ public class ResourceDao {
      *
      * @return the resource with the given id or null if such a resource does not exists
      */
-    public Resource findResource(Long id) {
+    private Resource findResource(Long id) {
         try {
             logger.debug("find resource #{}", id);
             return em.find(Resource.class, id);

@@ -192,17 +192,19 @@ public class CardFacade {
     /**
      * Get all abstract resources of a given card type.
      *
-     * @param cardTypeId the id of the card type
+     * @param abstractCardTypeId the id of the card type
      *
      * @return all abstract resources directly linked to the card type
      */
-    public List<AbstractResource> getDirectAbstractResourcesOfCardType(Long cardTypeId) {
-        logger.debug("get abstract resources directly linked to card type #{}", cardTypeId);
-        CardType cardType = cardTypeDao.getCardType(cardTypeId);
-        if (cardType == null) {
+    public List<AbstractResource> getDirectAbstractResourcesOfAbstractCardType(
+        Long abstractCardTypeId) {
+        logger.debug("get abstract resources directly linked to abstract card type #{}",
+            abstractCardTypeId);
+        AbstractCardType abstractCardType = cardTypeDao.getAbstractCardType(abstractCardTypeId);
+        if (abstractCardType == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
-        return cardType.getDirectAbstractResources();
+        return abstractCardType.getDirectAbstractResources();
     }
 
     // *********************************************************************************************
@@ -292,7 +294,7 @@ public class CardFacade {
         cardType.getReferences().add(ref);
 
         // TODO: copy deprecated state or do never deprecate just created types?
-        //ref.setDeprecated(cardType.isDeprecated());
+        // ref.setDeprecated(cardType.isDeprecated());
         ref.setDeprecated(false);
         ref.setPublished(false);
 
@@ -321,7 +323,7 @@ public class CardFacade {
         if (project != null) {
             AbstractCardType effectiveType = null;
             if (project.equals(cardType.getProject())) {
-                //Given type belongs to the project
+                // Given type belongs to the project
                 // it can be used as-is
                 effectiveType = cardType;
             } else {
