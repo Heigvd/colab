@@ -175,8 +175,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/Resources&quot;)
     public List&lt;Resource&gt; getAvailableActiveLinkedResources(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="fc" id="L178">        logger.debug(&quot;get available and active resources linked to card #{}&quot;, cardId);</span>
-<span class="fc" id="L179">        return resourceFacade.getAvailableActiveResourcesLinkedToCard(cardId);</span>
+<span class="nc" id="L178">        logger.debug(&quot;get available and active resources linked to card #{}&quot;, cardId);</span>
+<span class="nc" id="L179">        return resourceFacade.getAvailableActiveResourcesLinkedToCard(cardId);</span>
     }
 
     /**

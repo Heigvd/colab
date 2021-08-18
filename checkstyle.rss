@@ -186,7 +186,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.link.ActivityFlowLinkDao.java">ch/colabproject/colab/api/persistence/link/ActivityFlowLinkDao.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.WebsocketFacade.java">ch/colabproject/colab/api/ejb/WebsocketFacade.java</a>
                 </td>
                 <td>
                   0
@@ -214,7 +214,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.WebsocketFacade.java">ch/colabproject/colab/api/ejb/WebsocketFacade.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.link.ActivityFlowLinkDao.java">ch/colabproject/colab/api/persistence/link/ActivityFlowLinkDao.java</a>
                 </td>
                 <td>
                   0
@@ -249,6 +249,20 @@ under the License.
                 </td>
                 <td>
                   2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.document.ResourceRestEndpoint.java">ch/colabproject/colab/api/rest/document/ResourceRestEndpoint.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -403,20 +417,6 @@ under the License.
                 </td>
                 <td>
                   6
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.AbstractResource.java">ch/colabproject/colab/api/model/document/AbstractResource.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
                 </td>
                 <td>
                   0

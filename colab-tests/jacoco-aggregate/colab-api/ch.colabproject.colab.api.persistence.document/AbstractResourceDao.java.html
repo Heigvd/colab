@@ -19,13 +19,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author sandra
  */
-// TODO obtain something consistent with AbstractResourceDao / ResourceDao / ResourceRefDao
 @Stateless
 @LocalBean
-<span class="fc" id="L25">public class AbstractResourceDao {</span>
+<span class="fc" id="L24">public class AbstractResourceDao {</span>
 
     /** logger */
-<span class="fc" id="L28">    private static final Logger logger = LoggerFactory.getLogger(AbstractResourceDao.class);</span>
+<span class="fc" id="L27">    private static final Logger logger = LoggerFactory.getLogger(AbstractResourceDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -41,10 +40,10 @@ import org.slf4j.LoggerFactory;
      */
     public AbstractResource findResourceOrRef(Long id) {
         try {
-<span class="fc" id="L44">            logger.debug(&quot;find abstract resource #{}&quot;, id);</span>
-<span class="fc" id="L45">            return em.find(AbstractResource.class, id);</span>
-<span class="nc" id="L46">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L47">            return null;</span>
+<span class="fc" id="L43">            logger.debug(&quot;find abstract resource #{}&quot;, id);</span>
+<span class="fc" id="L44">            return em.find(AbstractResource.class, id);</span>
+<span class="nc" id="L45">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L46">            return null;</span>
         }
     }
 
