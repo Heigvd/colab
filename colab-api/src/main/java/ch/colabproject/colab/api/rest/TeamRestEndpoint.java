@@ -225,6 +225,21 @@ public class TeamRestEndpoint {
     }
 
     /**
+     * Clear access control for a member
+     *
+     * @param cardId   id of the card
+     * @param memberId id of the team member
+     */
+    @DELETE
+    @Path("acl/{cardId: [0-9]+}/member/{memberId : [0-9]+}")
+    public void cleanMemberInvolvement(
+        @PathParam("cardId") Long cardId,
+        @PathParam("memberId") Long memberId
+    ) {
+        teamFacade.setInvolvmentLevelForMember(cardId, memberId, null);
+    }
+
+    /**
      * Update access control for a role
      *
      * @param cardId id of the card
@@ -239,5 +254,20 @@ public class TeamRestEndpoint {
         @PathParam("level") InvolvementLevel level
     ) {
         teamFacade.setInvolvmentLevelForRole(cardId, roleId, level);
+    }
+
+    /**
+     * Clear access control for a role
+     *
+     * @param cardId   id of the card
+     * @param memberId id of the role
+     */
+    @DELETE
+    @Path("acl/{cardId: [0-9]+}/role/{role : [0-9]+}")
+    public void clearRoleInvolvement(
+        @PathParam("cardId") Long cardId,
+        @PathParam("roleId") Long roleId
+    ) {
+        teamFacade.setInvolvmentLevelForRole(cardId, roleId, null);
     }
 }
