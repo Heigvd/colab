@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.user;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
@@ -16,6 +17,7 @@ import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -49,6 +51,12 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * creation &amp; modification tracking data
+     */
+    @Embedded
+    private Tracking trackingData;
 
     /**
      * An account belongs to an user
@@ -119,6 +127,26 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
      */
     public void setUserId(Long id) {
         this.userId = id;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     // ---------------------------------------------------------------------------------------------

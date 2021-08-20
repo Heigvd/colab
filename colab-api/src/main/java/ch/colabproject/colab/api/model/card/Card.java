@@ -19,6 +19,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
@@ -28,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -67,6 +69,12 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * creation &amp; modification tracking data
+     */
+    @Embedded
+    private Tracking trackingData;
 
     /**
      * The index of the card within its parent
@@ -484,6 +492,26 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
      */
     public void setActivityFlowLinksAsNext(List<ActivityFlowLink> links) {
         this.activityFlowLinksAsNext = links;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     // ---------------------------------------------------------------------------------------------

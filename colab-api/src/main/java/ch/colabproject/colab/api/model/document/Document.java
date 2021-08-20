@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
@@ -20,6 +21,7 @@ import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -59,6 +61,13 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
+
+    /**
+     * creation &amp; modification tracking data
+     */
+    @Embedded
+    private Tracking trackingData;
+
 
     /**
      * Title
@@ -281,6 +290,27 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
             // such an orphan shouldn't exist...
             return null;
         }
+    }
+
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     // ---------------------------------------------------------------------------------------------

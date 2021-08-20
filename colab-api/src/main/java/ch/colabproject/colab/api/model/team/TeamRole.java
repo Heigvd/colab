@@ -12,13 +12,16 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,6 +32,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * Not used yet
@@ -49,6 +53,12 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * creation &amp; modification tracking data
+     */
+    @Embedded
+    private Tracking trackingData;
 
     /**
      * Name of the role. Can not be null or blank
@@ -86,8 +96,9 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
     /**
      * Id of the members, For deserialization only
      */
+    @NotNull
     @Transient
-    private List<Long> memberIds;
+    private List<Long> memberIds = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -220,6 +231,26 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
      */
     public void setAccessControl(List<AccessControl> accessControl) {
         this.accessControl = accessControl;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     // ---------------------------------------------------------------------------------------------

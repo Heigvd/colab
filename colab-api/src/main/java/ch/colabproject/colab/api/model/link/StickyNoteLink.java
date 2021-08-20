@@ -13,9 +13,11 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -55,6 +57,12 @@ public class StickyNoteLink implements ColabEntity/* ,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * creation &amp; modification tracking data
+     */
+    @Embedded
+    private Tracking trackingData;
 
     /**
      * The card, source of the sticky note
@@ -383,6 +391,26 @@ public class StickyNoteLink implements ColabEntity/* ,
      */
     public void setExplanation(String explanation) {
         this.explanation = explanation;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     // ---------------------------------------------------------------------------------------------

@@ -250,7 +250,7 @@ public class TeamRestEndpoint {
     @Path("acl/{cardId: [0-9]+}/role/{roleId : [0-9]+}/{level}")
     public void setRoleInvolvement(
         @PathParam("cardId") Long cardId,
-        @PathParam("coleId") Long roleId,
+        @PathParam("roleId") Long roleId,
         @PathParam("level") InvolvementLevel level
     ) {
         teamFacade.setInvolvmentLevelForRole(cardId, roleId, level);

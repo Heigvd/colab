@@ -9,13 +9,16 @@ package ch.colabproject.colab.api.model.tools;
 import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.ejb.SecurityFacade;
 import ch.colabproject.colab.api.ejb.TransactionManager;
+import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import javax.inject.Inject;
 import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
+import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
+import javax.persistence.PreUpdate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,6 +107,19 @@ public class EntityListener {
 
         if (o instanceof WithWebsocketChannels) {
             transactionManager.registerUpdate((WithWebsocketChannels) o);
+        }
+    }
+
+    /**
+     * Before persist and before update, update tracking data
+     *
+     * @param o object to track
+     */
+    @PrePersist
+    @PreUpdate
+    public void touch(Object o) {
+        if (o instanceof ColabEntity) {
+            ((ColabEntity) o).touch(requestManager.getCurrentUser());
         }
     }
 

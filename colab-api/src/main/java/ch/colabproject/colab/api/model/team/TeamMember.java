@@ -13,14 +13,17 @@ import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -68,6 +71,12 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     private Long id;
 
     /**
+     * creation &amp; modification tracking data
+     */
+    @Embedded
+    private Tracking trackingData;
+
+    /**
      * The user
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -104,8 +113,9 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     /**
      * Id of the roles. For deserialization only
      */
+    @NotNull
     @Transient
-    private List<Long> roleIds;
+    private List<Long> roleIds = new ArrayList<>();
 
     /**
      * The project ID (serialization sugar)
@@ -285,6 +295,26 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      */
     public void setPosition(HierarchicalPosition position) {
         this.position = position;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
     }
 
     // ---------------------------------------------------------------------------------------------

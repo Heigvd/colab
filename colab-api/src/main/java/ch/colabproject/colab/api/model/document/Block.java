@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
@@ -22,6 +23,7 @@ import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -55,6 +57,12 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * creation &amp; modification tracking data
+     */
+    @Embedded
+    private Tracking trackingData;
 
     /**
      * The index to define the place in the document
@@ -178,6 +186,26 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
         this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
     }
 
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -203,7 +231,7 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
     }
 
     @Override
-    public Conditions.Condition getUpdateCondition(){
+    public Conditions.Condition getUpdateCondition() {
         if (this.document != null) {
             return this.document.getUpdateCondition();
         } else {
@@ -211,8 +239,6 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
             return Conditions.alwaysTrue;
         }
     }
-
-
 
     @Override
     public int hashCode() {
