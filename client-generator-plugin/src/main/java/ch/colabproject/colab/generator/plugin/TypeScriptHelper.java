@@ -123,7 +123,14 @@ public class TypeScriptHelper {
             StringBuilder sb = new StringBuilder();
 
             int modifiers = javaClass.getModifiers();
-            if (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers)) {
+
+            if (javaClass.isEnum()){
+                String joinType = Arrays.stream(javaClass.getEnumConstants())
+                    .map(item -> "'" + item.toString() + "'")
+                    .collect(Collectors.joining(" | "));
+                sb.append("export type ").append(name).append(" = ")
+                    .append(joinType).append(";\n");
+            } else if (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers)) {
                 // abstract class
                 // Type X = directSubCLass | otherdirectsubclass
 
@@ -298,10 +305,10 @@ public class TypeScriptHelper {
                 return "void";
             } else if (isArrayLike(javaClass)) {
                 return "unknown[]";
-            } else if (javaClass.isEnum()) {
-                return Arrays.stream(javaClass.getEnumConstants())
-                    .map(item -> "'" + item.toString() + "'")
-                    .collect(Collectors.joining(" | "));
+//            } else if (javaClass.isEnum()) {
+//                return Arrays.stream(javaClass.getEnumConstants())
+//                    .map(item -> "'" + item.toString() + "'")
+//                    .collect(Collectors.joining(" | "));
             } else {
                 String name = getTsTypeName(javaClass);
                 if (!customTypes.containsKey(name)) {

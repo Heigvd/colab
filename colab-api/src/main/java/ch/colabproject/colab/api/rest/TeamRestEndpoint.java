@@ -232,7 +232,7 @@ public class TeamRestEndpoint {
      */
     @DELETE
     @Path("acl/{cardId: [0-9]+}/member/{memberId : [0-9]+}")
-    public void cleanMemberInvolvement(
+    public void clearMemberInvolvement(
         @PathParam("cardId") Long cardId,
         @PathParam("memberId") Long memberId
     ) {
@@ -263,7 +263,7 @@ public class TeamRestEndpoint {
      * @param memberId id of the role
      */
     @DELETE
-    @Path("acl/{cardId: [0-9]+}/role/{role : [0-9]+}")
+    @Path("acl/{cardId: [0-9]+}/role/{roleId : [0-9]+}")
     public void clearRoleInvolvement(
         @PathParam("cardId") Long cardId,
         @PathParam("roleId") Long roleId

@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 import { createSlice } from '@reduxjs/toolkit';
-import { Project, TeamRole, TeamMember } from 'colab-rest-client';
+import { Project, TeamMember, TeamRole } from 'colab-rest-client';
 import * as API from '../API/api';
 import { mapById } from '../helper';
 import { processMessage } from '../ws/wsThunkActions';
@@ -20,12 +20,8 @@ export type StateStatus = 'NOT_INITIALIZED' | 'LOADING' | 'INITIALIZED';
 
 export interface TeamState {
   status: StateStatus;
-  members: {
-    [id: number]: TeamMember;
-  };
-  roles: {
-    [id: number]: TeamRole;
-  };
+  members: Record<number, TeamMember>;
+  roles: Record<number, TeamRole>;
 }
 
 export interface ProjectState {

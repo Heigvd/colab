@@ -6,9 +6,9 @@
  */
 
 import { css } from '@emotion/css';
-import { faCheck, faPalette } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faPalette, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Card, CardContent } from 'colab-rest-client';
+import { Card, CardContent, InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import { TwitterPicker } from 'react-color';
 import * as API from '../../API/api';
@@ -19,8 +19,10 @@ import FitSpace from '../common/FitSpace';
 import OpenClose from '../common/OpenClose';
 import { DocumentEditorWrapper } from '../documents/DocumentEditorWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
+import CardACL from './CardACL';
 import CardLayout from './CardLayout';
 import ContentSubs from './ContentSubs';
+import InvolvemenetSelector from './InvolvementSelector';
 
 interface Props {
   card: Card;
@@ -60,6 +62,13 @@ export default function CardEditor({
     }
   }, [cardTypeFull, cardType, dispatch, card.cardTypeId]);
 
+  const updateDefInvolvementLevel = React.useCallback(
+    (value: InvolvementLevel | null) => {
+      dispatch(API.updateCard({ ...card, defaultInvolvementLevel: value }));
+    },
+    [card, dispatch],
+  );
+
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
@@ -69,11 +78,7 @@ export default function CardEditor({
           <FitSpace direction="row">
             <>
               <OpenClose collaspedChildren={<span className={sideTabButton}>sticky notes</span>}>
-                {() => (
-                  <>
-                    {card.id && <StickyNoteWrapper cardDestId= {card.id} showSrc />}
-                  </>
-                )}
+                {() => <>{card.id && <StickyNoteWrapper cardDestId={card.id} showSrc />}</>}
               </OpenClose>
 
               <CardLayout card={card} variant={variant} variants={variants}>
@@ -91,6 +96,21 @@ export default function CardEditor({
 
                   <div>
                     <h5>Card settings</h5>
+                    <InvolvemenetSelector
+                      self={card.defaultInvolvementLevel}
+                      onChange={updateDefInvolvementLevel}
+                    />
+                    <OpenClose
+                      closeIcon={faCheck}
+                      collaspedChildren={
+                        <span>
+                          <FontAwesomeIcon icon={faUsers} />
+                        </span>
+                      }
+                    >
+                      {() => <CardACL card={card} />}
+                    </OpenClose>
+
                     <OpenClose
                       closeIcon={faCheck}
                       collaspedChildren={

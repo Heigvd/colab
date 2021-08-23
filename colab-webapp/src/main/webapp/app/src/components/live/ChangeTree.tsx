@@ -5,15 +5,15 @@
  * Licensed under the MIT License
  */
 
-import {css} from '@emotion/css';
-import {faTrash} from '@fortawesome/free-solid-svg-icons';
-import {Change} from 'colab-rest-client';
+import { css } from '@emotion/css';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Change } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import {removeAllItems} from '../../helper';
+import { removeAllItems } from '../../helper';
 import * as LiveHelper from '../../LiveHelper';
-import {useChanges} from '../../selectors/changeSelector';
-import {useAppDispatch} from '../../store/hooks';
+import { useChanges } from '../../selectors/changeSelector';
+import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 
@@ -25,10 +25,10 @@ type DivRefType = Record<string, Element>;
 
 const defs = (
   <defs>
-    <marker orient="auto" refY="0.0" refX="0.0" id="triangleStart" style={{overflow: 'visible'}}>
+    <marker orient="auto" refY="0.0" refX="0.0" id="triangleStart" style={{ overflow: 'visible' }}>
       <path id="triangle_start_path" d="M 8.5,5 L 0,0 L 8.5,-5 L 8.5,5 z " />
     </marker>
-    <marker orient="auto" refY="0.0" refX="0.0" id="triangleEnd" style={{overflow: 'visible'}}>
+    <marker orient="auto" refY="0.0" refX="0.0" id="triangleEnd" style={{ overflow: 'visible' }}>
       <path id="triangle_end_path" d="M 0,0.0 L -8,5.0 L -8,-5.0 L 0,0.0 z " />
     </marker>
   </defs>
@@ -40,7 +40,7 @@ const pathStyle = css({
   markerEnd: ' url(#triangleEnd)',
 });
 
-function Arrow({id, divRefs}: {id: string; divRefs: DivRefType}): JSX.Element {
+function Arrow({ id, divRefs }: { id: string; divRefs: DivRefType }): JSX.Element {
   return (
     <svg
       ref={ref => {
@@ -81,7 +81,7 @@ function ChangeDisplay({
   const rev = change.basedOn.map(truncateRevision).join(' & ');
 
   return (
-    <div className={css({padding: '5px', margin: '5px'})}>
+    <div className={css({ padding: '5px', margin: '5px' })}>
       <div
         ref={ref => {
           if (ref != null) {
@@ -90,18 +90,17 @@ function ChangeDisplay({
             delete divRefs[change.revision];
           }
         }}
-        className={css({padding: '5px', margin: '5px'})}
+        className={css({ padding: '5px', margin: '5px' })}
       >
-        [{truncateRevision(change.revision)}]
-        {displayDeps ? ` on ${truncateRevision(rev)}` : null}
+        [{truncateRevision(change.revision)}]{displayDeps ? ` on ${truncateRevision(rev)}` : null}
         {displayChanges
           ? change.microchanges.map((mu, i) => {
-            return (
-              <span key={i}>
-                {mu.t === 'I' ? ` insert '${mu.v}'@${mu.o}` : ` delete ${mu.l}@${mu.o}`}{' '}
-              </span>
-            );
-          })
+              return (
+                <span key={i}>
+                  {mu.t === 'I' ? ` insert '${mu.v}'@${mu.o}` : ` delete ${mu.l}@${mu.o}`}{' '}
+                </span>
+              );
+            })
           : null}
         <div>
           {change.basedOn.map(dep => (
@@ -265,14 +264,14 @@ export function ChangeTreeRaw({
         })}
       >
         {lines.map((line, i) => (
-          <div key={i} className={css({width: 'max-content'})}>
+          <div key={i} className={css({ width: 'max-content' })}>
             {line}
           </div>
         ))}
       </div>
       <h4>Orphans</h4>
       {toProcess.map(change => {
-        <ChangeDisplay key={change.revision} change={change} divRefs={divRefs.current} />
+        <ChangeDisplay key={change.revision} change={change} divRefs={divRefs.current} />;
       })}
       <h4>Result</h4>
       <div>
@@ -282,7 +281,7 @@ export function ChangeTreeRaw({
   );
 }
 
-export default function ChangeTree({atClass, atId, value, revision}: Props): JSX.Element {
+export default function ChangeTree({ atClass, atId, value, revision }: Props): JSX.Element {
   const changesState = useChanges(atClass, atId);
   const dispatch = useAppDispatch();
 
@@ -297,7 +296,14 @@ export default function ChangeTree({atClass, atId, value, revision}: Props): JSX
   }, [dispatch, atId]);
 
   if (changesState.status === 'READY') {
-    return <ChangeTreeRaw value={value} changes={changesState.changes} revision={revision} onDelete={deleteCb} />;
+    return (
+      <ChangeTreeRaw
+        value={value}
+        changes={changesState.changes}
+        revision={revision}
+        onDelete={deleteCb}
+      />
+    );
   } else {
     return <InlineLoading />;
   }

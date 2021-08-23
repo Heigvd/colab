@@ -18,9 +18,11 @@ import {
   ColabClient,
   Document,
   entityIs,
+  HierarchicalPosition,
+  InvolvementLevel,
   Project,
-  TeamRole,
   SignUpInfo,
+  TeamRole,
   // StickyNoteLink,
   User,
   WsSessionIdentifier,
@@ -367,6 +369,57 @@ export const removeRole = createAsyncThunk(
   },
 );
 
+export const setMemberPosition = createAsyncThunk(
+  'project/member/position',
+  async ({ memberId, position }: { memberId: number; position: HierarchicalPosition }) => {
+    await restClient.TeamRestEndpoint.changeMemberPosition(memberId, position);
+  },
+);
+
+export const setMemberInvolvement = createAsyncThunk(
+  'project/member/involvement',
+  async ({
+    memberId,
+    involvement,
+    cardId,
+  }: {
+    memberId: number;
+    involvement: InvolvementLevel;
+    cardId: number;
+  }) => {
+    await restClient.TeamRestEndpoint.setMemberInvolvement(cardId, memberId, involvement);
+  },
+);
+
+export const clearMemberInvolvement = createAsyncThunk(
+  'project/role/clearInvolvement',
+  async ({ memberId, cardId }: { memberId: number; cardId: number }) => {
+    await restClient.TeamRestEndpoint.clearMemberInvolvement(cardId, memberId);
+  },
+);
+
+export const setRoleInvolvement = createAsyncThunk(
+  'project/role/involvement',
+  async ({
+    roleId,
+    involvement,
+    cardId,
+  }: {
+    roleId: number;
+    involvement: InvolvementLevel;
+    cardId: number;
+  }) => {
+    await restClient.TeamRestEndpoint.setRoleInvolvement(cardId, roleId, involvement);
+  },
+);
+
+export const clearRoleInvolvement = createAsyncThunk(
+  'project/role/clearInvolvement',
+  async ({ roleId, cardId }: { roleId: number; cardId: number }) => {
+    await restClient.TeamRestEndpoint.clearRoleInvolvement(cardId, roleId);
+  },
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Card Types
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -483,6 +536,14 @@ export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => 
   if (card.id) {
     await restClient.CardRestEndpoint.deleteCard(card.id);
   }
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Access Control List
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getACL = createAsyncThunk('acl/get', async (cardId: number) => {
+  return await restClient.CardRestEndpoint.getAcls(cardId);
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -615,7 +676,9 @@ export const deleteBlock = createAsyncThunk('block/delete', async (block: Block)
 //});
 
 // TODO see if it belongs to stickyNoteLinks or to cards. Make your choice !
-export const getStickyNoteLinkAsDest = createAsyncThunk('stickyNoteLinks/getAsDest', 
+export const getStickyNoteLinkAsDest = createAsyncThunk(
+  'stickyNoteLinks/getAsDest',
   async (cardId: number) => {
     return await restClient.CardRestEndpoint.getStickyNoteLinksAsDest(cardId);
-});
+  },
+);

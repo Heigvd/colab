@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model.link;
 
-import ch.colabproject.colab.api.model.WithPermission;
+import ch.colabproject.colab.api.model.ColabEntity;
 import java.util.List;
 
 /**
@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author sandra
  */
-public interface StickyNoteSourceable extends WithPermission {
+public interface StickyNoteSourceable extends ColabEntity {
 
     /**
      * @return the list of sticky note links of which the card is the source

@@ -34,9 +34,27 @@ export default (props: Props): JSX.Element => {
     password: '',
   });
 
+  const signUpCb = React.useCallback(() => {
+    dispatch(signUp(credentials)).then(action => {
+      // is that a hack or not ???
+      if (props.redirectTo && action.meta.requestStatus === 'fulfilled') {
+        history.push(props.redirectTo);
+      }
+    });
+  }, [dispatch, credentials, props.redirectTo, history]);
+
+  const onEnterSignUpCb = React.useCallback(
+    (event: React.KeyboardEvent<HTMLElement>) => {
+      if (event.key === 'Enter') {
+        signUpCb();
+      }
+    },
+    [signUpCb],
+  );
+
   return (
     <FormContainer>
-      <div>
+      <div onKeyDown={onEnterSignUpCb}>
         <div>
           <label>
             username
@@ -77,18 +95,7 @@ export default (props: Props): JSX.Element => {
           </React.Suspense>
         </div>
         <div>
-          <IconButton
-            className={buttonStyle}
-            icon={faSignInAlt}
-            onClick={() => {
-              dispatch(signUp(credentials)).then(action => {
-                // is that a hack or not ???
-                if (props.redirectTo && action.meta.requestStatus === 'fulfilled') {
-                  history.push(props.redirectTo);
-                }
-              });
-            }}
-          >
+          <IconButton className={buttonStyle} icon={faSignInAlt} onClick={signUpCb}>
             Sign up
           </IconButton>
           <InlineLink to={buildLinkWithQueryParam('/SignIn', { redirectTo: props.redirectTo })}>

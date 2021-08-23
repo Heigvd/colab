@@ -30,12 +30,12 @@ export const loggers: Record<string, Logger> = {};
 
 function mapArgs(...args: unknown[]): unknown[] {
   return args.map(arg => {
-    const argP = typeof arg === 'function' ?  arg() : arg;
+    const argP = typeof arg === 'function' ? arg() : arg;
     return typeof argP === 'object' ? JSON.stringify(argP) : arg;
   });
 }
 
-export default function getLogger(name: string) : Logger {
+export default function getLogger(name: string): Logger {
   const logger = loggers[name];
   if (logger == null) {
     let currentLevel: LoggerLevel = WARN;
@@ -81,3 +81,4 @@ export default function getLogger(name: string) : Logger {
 }
 
 export const logger = getLogger('default');
+logger.setLevel(INFO);

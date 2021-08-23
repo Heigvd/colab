@@ -474,7 +474,7 @@ export const process = (
   const changes = changeset.map(c => ({
     ...c,
     microchanges: c.microchanges.map(mu => ({ ...mu })),
-    basedOn: [...c.basedOn]
+    basedOn: [...c.basedOn],
   }));
   const appliedChanges: string[] = [];
 
@@ -487,7 +487,7 @@ export const process = (
     const children = changes.filter(change => change.basedOn.indexOf(currentRevision) >= 0);
 
     if (children.length > 0) {
-      logger.debug("All @", currentRevision, " children: ", children);
+      logger.debug('All @', currentRevision, ' children: ', children);
       // find a child which depends only only already applied changes
       // This may be the case when changes order is quite messed up due to network asyncness
       const change = children.filter(ch => containsAll(appliedChanges, ch.basedOn))[0];

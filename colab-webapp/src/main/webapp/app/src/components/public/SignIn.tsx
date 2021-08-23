@@ -30,9 +30,28 @@ export default function SignInForm(props: Props): JSX.Element {
     password: '',
   });
 
+  const signInCb = React.useCallback(() => {
+    dispatch(signInWithLocalAccount(credentials)).then(action => {
+      // is that a hack or not ???
+      if (props.redirectTo && action.meta.requestStatus === 'fulfilled') {
+        history.push(props.redirectTo);
+      }
+    });
+  }, [dispatch, credentials, props.redirectTo, history]);
+
+  const onEnterSignInCb = React.useCallback(
+    (event: React.KeyboardEvent<HTMLElement>) => {
+      if (event.key === 'Enter') {
+        signInCb();
+      }
+    },
+    [signInCb],
+  );
+
   return (
     <FormContainer>
       <div
+        onKeyDown={onEnterSignInCb}
         className={css({
           display: 'flex',
           flexDirection: 'column',
@@ -54,18 +73,7 @@ export default function SignInForm(props: Props): JSX.Element {
         </label>
       </div>
 
-      <IconButton
-        className={buttonStyle}
-        icon={faSignInAlt}
-        onClick={() => {
-          dispatch(signInWithLocalAccount(credentials)).then(action => {
-            // is that a hack or not ???
-            if (props.redirectTo && action.meta.requestStatus === 'fulfilled') {
-              history.push(props.redirectTo);
-            }
-          });
-        }}
-      >
+      <IconButton className={buttonStyle} icon={faSignInAlt} onClick={signInCb}>
         Sign in
       </IconButton>
       <span> </span>

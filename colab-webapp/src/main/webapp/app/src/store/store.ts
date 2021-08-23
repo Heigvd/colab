@@ -7,6 +7,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import thunk from 'redux-thunk';
+import aclReducer from './acl';
 import adminReducer from './admin';
 import authReducer from './auth';
 import blockReducer from './block';
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   projects: projectReducer,
   cardtype: cardTypeReducer,
   cards: cardReducer,
+  acl: aclReducer,
   document: documentReducer,
   block: blockReducer,
   stickynotelinks: stickyNoteLinkReducer,

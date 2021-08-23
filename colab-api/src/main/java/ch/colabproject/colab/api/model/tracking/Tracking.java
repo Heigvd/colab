@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model.tracking;
 
-import java.io.Serializable;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import java.time.OffsetDateTime;
 import javax.json.bind.annotation.JsonbDateFormat;
 import javax.persistence.Embeddable;
@@ -17,7 +17,7 @@ import javax.persistence.Embeddable;
  * @author maxence
  */
 @Embeddable
-public class Tracking implements Serializable {
+public class Tracking implements WithJsonDiscriminator {
 
     private static final long serialVersionUID = 1L;
 

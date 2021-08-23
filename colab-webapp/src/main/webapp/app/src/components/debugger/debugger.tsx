@@ -5,21 +5,92 @@
  * Licensed under the MIT License
  */
 
-import {Change} from 'colab-rest-client';
+import { Change } from 'colab-rest-client';
 import * as React from 'react';
-import {ChangeTreeRaw} from '../live/ChangeTree';
+import { ChangeTreeRaw } from '../live/ChangeTree';
 
 export default function Debugger(): JSX.Element {
   const revision = 'ws-468379789217693697::12';
 
   const changes: Change[] = [
-    {"@class": "Change", "atClass": "TextDataBlock", "atId": 1, "basedOn": ["ws-468379789217693697::12"], "id": 1, "liveSession": "ws-468379789217693697", "microchanges": [{"o": 21, "t": "I", "v": " "}], "revision": "ws-468379789217693697::13"},
-    {"@class": "Change", "atClass": "TextDataBlock", "atId": 1, "basedOn": ["ws-468379789217693697::13"], "id": 1, "liveSession": "ws-468379789217759233", "microchanges": [{"o": 42, "t": "I", "v": " "}], "revision": "ws-468379789217759233::7"},
-    {"@class": "Change", "atClass": "TextDataBlock", "atId": 1, "basedOn": ["ws-468379789217693697::13"], "id": 1, "liveSession": "ws-468379789217693697", "microchanges": [{"o": 22, "t": "I", "v": "quatre cinq sizt"}], "revision": "ws-468379789217693697::14"},
-    {"@class": "Change", "atClass": "TextDataBlock", "atId": 1, "basedOn": ["ws-468379789217693697::14"], "id": 1, "liveSession": "ws-468379789217693697", "microchanges": [{"o": 24, "t": "I", "v": "trqu"}], "revision": "ws-468379789217693697::15"},
-    {"@class": "Change", "atClass": "TextDataBlock", "atId": 1, "basedOn": ["ws-468379789217693697::14"], "id": 1, "liveSession": "ws-468379789217759233", "microchanges": [{"o": 59, "t": "I", "v": "mercredi jeudi"}], "revision": "ws-468379789217759233::8"},
-    {"@class": "Change", "atClass": "TextDataBlock", "atId": 1, "basedOn": ["ws-468379789217693697::15", "ws-468379789217759233::8", "ws-468379789217759233::7"], "id": 1, "liveSession": "ws-468379789217693697", "microchanges": [{"o": 26, "t": "I", "v": "e"}], "revision": "ws-468379789217693697::16"},
-    {"@class": "Change", "atClass": "TextDataBlock", "atId": 1, "basedOn": ["ws-468379789217693697::15", "ws-468379789217693697::16", "ws-468379789217759233::7"], "id": 1, "liveSession": "ws-468379789217693697", "microchanges": [{"o": 27, "t": "I", "v": " "}], "revision": "ws-468379789217693697::17"}
+    {
+      '@class': 'Change',
+      atClass: 'TextDataBlock',
+      atId: 1,
+      basedOn: ['ws-468379789217693697::12'],
+      id: 1,
+      liveSession: 'ws-468379789217693697',
+      microchanges: [{ o: 21, t: 'I', v: ' ' }],
+      revision: 'ws-468379789217693697::13',
+    },
+    {
+      '@class': 'Change',
+      atClass: 'TextDataBlock',
+      atId: 1,
+      basedOn: ['ws-468379789217693697::13'],
+      id: 1,
+      liveSession: 'ws-468379789217759233',
+      microchanges: [{ o: 42, t: 'I', v: ' ' }],
+      revision: 'ws-468379789217759233::7',
+    },
+    {
+      '@class': 'Change',
+      atClass: 'TextDataBlock',
+      atId: 1,
+      basedOn: ['ws-468379789217693697::13'],
+      id: 1,
+      liveSession: 'ws-468379789217693697',
+      microchanges: [{ o: 22, t: 'I', v: 'quatre cinq sizt' }],
+      revision: 'ws-468379789217693697::14',
+    },
+    {
+      '@class': 'Change',
+      atClass: 'TextDataBlock',
+      atId: 1,
+      basedOn: ['ws-468379789217693697::14'],
+      id: 1,
+      liveSession: 'ws-468379789217693697',
+      microchanges: [{ o: 24, t: 'I', v: 'trqu' }],
+      revision: 'ws-468379789217693697::15',
+    },
+    {
+      '@class': 'Change',
+      atClass: 'TextDataBlock',
+      atId: 1,
+      basedOn: ['ws-468379789217693697::14'],
+      id: 1,
+      liveSession: 'ws-468379789217759233',
+      microchanges: [{ o: 59, t: 'I', v: 'mercredi jeudi' }],
+      revision: 'ws-468379789217759233::8',
+    },
+    {
+      '@class': 'Change',
+      atClass: 'TextDataBlock',
+      atId: 1,
+      basedOn: [
+        'ws-468379789217693697::15',
+        'ws-468379789217759233::8',
+        'ws-468379789217759233::7',
+      ],
+      id: 1,
+      liveSession: 'ws-468379789217693697',
+      microchanges: [{ o: 26, t: 'I', v: 'e' }],
+      revision: 'ws-468379789217693697::16',
+    },
+    {
+      '@class': 'Change',
+      atClass: 'TextDataBlock',
+      atId: 1,
+      basedOn: [
+        'ws-468379789217693697::15',
+        'ws-468379789217693697::16',
+        'ws-468379789217759233::7',
+      ],
+      id: 1,
+      liveSession: 'ws-468379789217693697',
+      microchanges: [{ o: 27, t: 'I', v: ' ' }],
+      revision: 'ws-468379789217693697::17',
+    },
   ];
 
   return (

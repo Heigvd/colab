@@ -282,7 +282,7 @@ public class WebsocketFacade {
         logger.debug("Session {} want to subscribe to Project#{}", sessionId, projectId);
         Project project = projectDao.getProject(projectId);
         if (project != null) {
-            securityFacade.assertCondition(project.getUpdateCondition(),
+            securityFacade.assertConditionTx(new Conditions.IsCurrentUserMemberOfProject(project),
                 "Subscribe to project channel: Permision denied");
             SubscriptionRequest request = SubscriptionRequest.build(
                 SubscriptionRequest.SubscriptionType.SUBSCRIBE,
@@ -308,7 +308,8 @@ public class WebsocketFacade {
         logger.debug("Session {} want to unsubscribe from Project#{}", sessionId, projectId);
         Project project = projectDao.getProject(projectId);
         if (project != null) {
-            securityFacade.assertCondition(new Conditions.IsCurrentUserMemberOfProject(project), "Subscribe to project channel: Permision denied");
+            securityFacade.assertConditionTx(new Conditions.IsCurrentUserMemberOfProject(project),
+                "Subscribe to project channel: Permision denied");
             SubscriptionRequest request = SubscriptionRequest.build(
                 SubscriptionRequest.SubscriptionType.UNSUBSCRIBE,
                 SubscriptionRequest.ChannelType.PROJECT,

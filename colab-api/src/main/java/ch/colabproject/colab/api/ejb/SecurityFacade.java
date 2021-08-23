@@ -125,7 +125,8 @@ public class SecurityFacade {
         if (!requestManager.isAdmin()) {
             requestManager.sudo(() -> {
                 if (!condition.eval(requestManager, this)) {
-                    logger.error("{} Permission denied: {} ({}) currentUser: {}", message, o, condition, requestManager.getCurrentUser());
+                    logger.error("{} Permission denied: {} ({}) currentUser: {}",
+                        message, o, condition, requestManager.getCurrentUser());
                     if (requestManager.isAuthenticated()) {
                         throw HttpErrorMessage.forbidden();
                     } else {

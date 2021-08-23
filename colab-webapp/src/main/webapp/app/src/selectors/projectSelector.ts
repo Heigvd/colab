@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { Project, TeamRole, TeamMember } from 'colab-rest-client';
+import { Project, TeamMember, TeamRole } from 'colab-rest-client';
 import { customColabStateEquals, shallowEqual, useAppSelector } from '../store/hooks';
 import { StateStatus } from '../store/project';
 

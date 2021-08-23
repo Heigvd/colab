@@ -259,10 +259,13 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
      * @return the access-control which match the member or null
      */
     public AccessControl getAcByMember(TeamMember member) {
-        Optional<AccessControl> optAc = this.getAccessControlList().stream()
-            .filter(acl -> acl.getMember().equals(member)).findFirst();
-
-        return optAc.isPresent() ? optAc.get() : null;
+        if (member != null) {
+            Optional<AccessControl> optAc = this.getAccessControlList().stream()
+                .filter(acl -> member.equals(acl.getMember())).findFirst();
+            return optAc.isPresent() ? optAc.get() : null;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -273,10 +276,14 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
      * @return the access-control which match the role or null
      */
     public AccessControl getAcByRole(TeamRole role) {
+        if (role != null){
         Optional<AccessControl> optAc = this.getAccessControlList().stream()
-            .filter(acl -> acl.getRole().equals(role)).findFirst();
+            .filter(acl -> role.equals(acl.getRole())).findFirst();
 
         return optAc.isPresent() ? optAc.get() : null;
+        } else {
+            return null;
+        }
     }
 
     /**

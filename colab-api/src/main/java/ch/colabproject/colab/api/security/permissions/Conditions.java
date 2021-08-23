@@ -27,11 +27,6 @@ public final class Conditions {
     private static final Logger logger = LoggerFactory.getLogger(Conditions.class);
 
     /**
-     * A ready-to-use is Admin condition.
-     */
-    public static final Condition checkIfCurrentUserIsAdmin = new IsCurrentUserAdmin();
-
-    /**
      * An always true condition
      */
     public static final Condition alwaysTrue = new AlwaysTrue();
@@ -277,35 +272,6 @@ public final class Conditions {
         @Override
         public int hashCode() {
             int hash = 7 * 37;
-            return hash;
-        }
-    }
-
-    /**
-     * Is the current user an admin ? Please use {@link Conditions#checkIfCurrentUserIsAdmin }
-     * object!
-     */
-    private static class IsCurrentUserAdmin extends Condition {
-
-        @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
-            User currentUser = requestManager.getCurrentUser();
-            return currentUser != null && currentUser.isAdmin();
-        }
-
-        @Override
-        public String toString() {
-            return "IsAdmin";
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj instanceof IsCurrentUserAdmin;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7 * 433;
             return hash;
         }
     }
@@ -730,7 +696,7 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
-            return securityFacade.hasReadWriteAccess(card);
+            return securityFacade.hasReadAccess(card);
         }
 
         @Override
