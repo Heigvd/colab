@@ -8,7 +8,7 @@ import { useProjectBeingEdited, useProjectTeam } from '../../selectors/projectSe
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import Flex from '../common/FlexRow';
 import InlineLoading from '../common/InlineLoading';
-import InvolvemenetSelector from './InvolvementSelector';
+import InvolvementSelector from './InvolvementSelector';
 
 export function RoleACL({ role, acl }: { role: TeamRole; acl: CardAcl }): JSX.Element {
   const self = acl.self.roles[role.id || -1];
@@ -38,7 +38,7 @@ export function RoleACL({ role, acl }: { role: TeamRole; acl: CardAcl }): JSX.El
   return (
     <Flex>
       {role.name}:{' '}
-      <InvolvemenetSelector
+      <InvolvementSelector
         self={self}
         effectives={effective ? [effective] : []}
         onChange={onChangeCb}
@@ -92,7 +92,7 @@ export function MemberACL({ member, acl }: { member: TeamMember; acl: CardAcl })
   return (
     <Flex>
       {user != null ? getDisplayName(user) : member.id}:{' '}
-      <InvolvemenetSelector self={self} effectives={effective} onChange={onChangeCb} />
+      <InvolvementSelector self={self} effectives={effective} onChange={onChangeCb} />
     </Flex>
   );
 }

@@ -49,7 +49,7 @@ const options = [
   buildOption('OUT_OF_THE_LOOP'),
 ];
 
-export default function InvolvemenetSelector({
+export default function InvolvementSelector({
   self,
   effectives,
   onChange,

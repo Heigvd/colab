@@ -221,7 +221,7 @@ public class TeamRestEndpoint {
         @PathParam("memberId") Long memberId,
         @PathParam("level") InvolvementLevel level
     ) {
-        teamFacade.setInvolvmentLevelForMember(cardId, memberId, level);
+        teamFacade.setInvolvementLevelForMember(cardId, memberId, level);
     }
 
     /**
@@ -236,7 +236,7 @@ public class TeamRestEndpoint {
         @PathParam("cardId") Long cardId,
         @PathParam("memberId") Long memberId
     ) {
-        teamFacade.setInvolvmentLevelForMember(cardId, memberId, null);
+        teamFacade.setInvolvementLevelForMember(cardId, memberId, null);
     }
 
     /**
@@ -253,7 +253,7 @@ public class TeamRestEndpoint {
         @PathParam("roleId") Long roleId,
         @PathParam("level") InvolvementLevel level
     ) {
-        teamFacade.setInvolvmentLevelForRole(cardId, roleId, level);
+        teamFacade.setInvolvementLevelForRole(cardId, roleId, level);
     }
 
     /**
@@ -268,6 +268,6 @@ public class TeamRestEndpoint {
         @PathParam("cardId") Long cardId,
         @PathParam("roleId") Long roleId
     ) {
-        teamFacade.setInvolvmentLevelForRole(cardId, roleId, null);
+        teamFacade.setInvolvementLevelForRole(cardId, roleId, null);
     }
 }

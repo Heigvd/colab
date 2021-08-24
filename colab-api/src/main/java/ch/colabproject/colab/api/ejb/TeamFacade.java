@@ -272,7 +272,7 @@ public class TeamFacade {
      * @param memberId id of the member
      * @param level    the level
      */
-    public void setInvolvmentLevelForMember(Long cardId, Long memberId, InvolvementLevel level) {
+    public void setInvolvementLevelForMember(Long cardId, Long memberId, InvolvementLevel level) {
         Card card = cardDao.getCard(cardId);
         TeamMember member = teamDao.findTeamMember(memberId);
         if (card != null && member != null) {
@@ -306,7 +306,7 @@ public class TeamFacade {
      * @param roleId id of the role
      * @param level  the level
      */
-    public void setInvolvmentLevelForRole(Long cardId, Long roleId, InvolvementLevel level) {
+    public void setInvolvementLevelForRole(Long cardId, Long roleId, InvolvementLevel level) {
         Card card = cardDao.getCard(cardId);
         TeamRole role = teamDao.findRole(roleId);
         if (card != null && role != null) {
@@ -343,7 +343,7 @@ public class TeamFacade {
      */
     public InvolvementLevel getEffectiveInvolvementLevel(Card card, TeamMember member) {
 
-        // First, try to fetch involvemenet level fron the very card itself
+        // First, try to fetch involvement level from the very card itself
         AccessControl byMember = card.getAcByMember(member);
         if (byMember != null) {
             // There is one level for this member
@@ -363,16 +363,16 @@ public class TeamFacade {
         }).findFirst();
 
         if (first.isPresent()) {
-            // AC which give the greatest involment is retained
+            // AC which give the greatest involvement is retained
             AccessControl ac = first.get();
-            // The greatest involvemenet give readonly access
+            // The greatest involvement give readonly access
             // but there is a lower involvement which give readwrite access
             if (!ac.getCairoLevel().isRw()
                 && roleStream.anyMatch(rac -> rac.getCairoLevel().isRw())
                 && ac.getCairoLevel() == InvolvementLevel.CONSULTED_READONLY) {
                 // Actually, there is only one case: the member inherit
                 // CONSULTED_READONLY & INFORMED_READWRITE from two different roles
-                // Effective involvemenet is CONSULTED_READWRITE
+                // Effective involvement is CONSULTED_READWRITE
                 //
                 // There is no other special case (natural order of levels is fine)
                 return InvolvementLevel.CONSULTED_READWRITE;
@@ -381,7 +381,7 @@ public class TeamFacade {
             return ac.getCairoLevel();
         }
 
-        // no involvement found, neither for the memeber, nor for any of its roles
+        // no involvement found, neither for the member, nor for any of its roles
         // Is the a default one for the card?
         if (card.getDefaultInvolvementLevel()
             != null) {
@@ -392,7 +392,7 @@ public class TeamFacade {
         // No involvement found, neither for the member, nor its roles, nor a default one
         if (card.getParent()
             != null) {
-            // the card is a sub-card, let's fetch inherit invoilvement from the card parent
+            // the card is a sub-card, let's fetch inherit involvement from the card parent
             Card parentCard = card.getParent().getCard();
             if (parentCard != null) {
                 return getEffectiveInvolvementLevel(parentCard, member);
@@ -402,7 +402,7 @@ public class TeamFacade {
         // No involvement at all
         // default level is driven by member hierarchical position
         return member.getPosition()
-            .getDefaultInvolvemenet();
+            .getDefaultInvolvement();
     }
 
     /**

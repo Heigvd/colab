@@ -46,7 +46,7 @@ public enum InvolvementLevel {
     private final boolean rw;
 
     /**
-     * Importance level. Lower values are more important than graters
+     * Importance level. Lower values are more important than greater
      */
     private final int order;
 
@@ -73,7 +73,7 @@ public enum InvolvementLevel {
     /**
      * Is this level give read-write access ?
      *
-     * @return true if write acces is granted, false otherwise
+     * @return true if write access is granted, false otherwise
      */
     public boolean isRw() {
         return rw;

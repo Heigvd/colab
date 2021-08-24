@@ -341,7 +341,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
             // any "intern" may invite somebody
             return new Conditions.IsCurrentUserInternToProject(project);
         } else {
-            // anyone can read pedning invitation
+            // anyone can read a pending invitation
             return Conditions.alwaysTrue;
         }
     }
@@ -366,7 +366,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
                 return new Conditions.IsCurrentUserLeaderOfProject(project);
             }
         } else {
-            // anyone can read pedning invitation
+            // anyone can read a pending invitation
             return Conditions.alwaysTrue;
         }
     }

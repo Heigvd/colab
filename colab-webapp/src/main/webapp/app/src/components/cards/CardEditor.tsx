@@ -22,7 +22,7 @@ import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import CardACL from './CardACL';
 import CardLayout from './CardLayout';
 import ContentSubs from './ContentSubs';
-import InvolvemenetSelector from './InvolvementSelector';
+import InvolvementSelector from './InvolvementSelector';
 
 interface Props {
   card: Card;
@@ -96,7 +96,7 @@ export default function CardEditor({
 
                   <div>
                     <h5>Card settings</h5>
-                    <InvolvemenetSelector
+                    <InvolvementSelector
                       self={card.defaultInvolvementLevel}
                       onChange={updateDefInvolvementLevel}
                     />
