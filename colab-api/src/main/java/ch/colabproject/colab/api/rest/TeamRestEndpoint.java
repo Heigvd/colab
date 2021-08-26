@@ -137,7 +137,6 @@ public class TeamRestEndpoint {
      * @param role the role to update
      *
      * @throws ch.colabproject.colab.api.exceptions.ColabMergeException if update failed
-     *
      */
     @PUT
     @Path("role")
@@ -152,7 +151,6 @@ public class TeamRestEndpoint {
      * TODO: shall we allow to delete non-empty roles?
      *
      * @param roleId id of the role to delete id of the role to delete
-     *
      */
     @DELETE
     @Path("role/{roleId: [0-9]+}")
@@ -221,7 +219,7 @@ public class TeamRestEndpoint {
         @PathParam("memberId") Long memberId,
         @PathParam("level") InvolvementLevel level
     ) {
-        teamFacade.setInvolvmentLevelForMember(cardId, memberId, level);
+        teamFacade.setInvolvementLevelForMember(cardId, memberId, level);
     }
 
     /**
@@ -236,7 +234,7 @@ public class TeamRestEndpoint {
         @PathParam("cardId") Long cardId,
         @PathParam("memberId") Long memberId
     ) {
-        teamFacade.setInvolvmentLevelForMember(cardId, memberId, null);
+        teamFacade.setInvolvementLevelForMember(cardId, memberId, null);
     }
 
     /**
@@ -253,14 +251,14 @@ public class TeamRestEndpoint {
         @PathParam("roleId") Long roleId,
         @PathParam("level") InvolvementLevel level
     ) {
-        teamFacade.setInvolvmentLevelForRole(cardId, roleId, level);
+        teamFacade.setInvolvementLevelForRole(cardId, roleId, level);
     }
 
     /**
      * Clear access control for a role
      *
-     * @param cardId   id of the card
-     * @param memberId id of the role
+     * @param cardId id of the card
+     * @param roleId id of the role
      */
     @DELETE
     @Path("acl/{cardId: [0-9]+}/role/{roleId : [0-9]+}")
@@ -268,6 +266,6 @@ public class TeamRestEndpoint {
         @PathParam("cardId") Long cardId,
         @PathParam("roleId") Long roleId
     ) {
-        teamFacade.setInvolvmentLevelForRole(cardId, roleId, null);
+        teamFacade.setInvolvementLevelForRole(cardId, roleId, null);
     }
 }

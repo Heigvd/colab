@@ -38,7 +38,7 @@ public class CardTypeRef extends AbstractCardType {
     private AbstractCardType abstractCardType;
 
     /**
-     * The id of the project (serialization sugar)
+     * The id of the type this reference references (serialization sugar)
      */
     @Transient
     private Long cardTypeId;
@@ -116,8 +116,7 @@ public class CardTypeRef extends AbstractCardType {
     @Override
     public String toString() {
         return "CardTypeRef{"
-            + "id=" + this.getId()
-            + ", cardType=" + abstractCardType
+            + "id=" + getId()
             + ", cardTypeId=" + cardTypeId + '}';
     }
 }

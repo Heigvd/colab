@@ -80,7 +80,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
      * The id of the project (serialization sugar)
      */
     @Transient
-    private Long projectId;
+    protected Long projectId;
 
     /**
      * Is this type available to other projects?

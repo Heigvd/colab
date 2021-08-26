@@ -171,7 +171,7 @@ public class CardType extends AbstractCardType {
     public String toString() {
         return "CardType{" + "id=" + getId() + ", uniqueId=" + uniqueId + ", title=" + title
             + ", purpose=" + purpose + ", authorityHolder=" + authorityHolder + ", projectId="
-            + getProjectId() + "}";
+            + projectId + "}";
     }
 
 }

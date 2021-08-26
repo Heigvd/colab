@@ -47,7 +47,7 @@ public enum HierarchicalPosition {
      *
      * @return the level
      */
-    public InvolvementLevel getDefaultInvolvemenet() {
+    public InvolvementLevel getDefaultInvolvement() {
         return this.defaultLevel;
     }
 }

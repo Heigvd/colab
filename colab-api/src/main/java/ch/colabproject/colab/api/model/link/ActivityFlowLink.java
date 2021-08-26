@@ -247,8 +247,8 @@ public class ActivityFlowLink implements ColabEntity/* ,
 
     @Override
     public String toString() {
-        return "ActivityFlowLink{" + "id=" + id + ", previousCardId=" + getPreviousCardId()
-            + ", nextCardId=" + getNextCardId() + "}";
+        return "ActivityFlowLink{" + "id=" + id + ", previousCardId=" + previousCardId
+            + ", nextCardId=" + nextCardId + "}";
     }
 
 }

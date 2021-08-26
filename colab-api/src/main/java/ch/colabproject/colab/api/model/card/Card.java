@@ -111,7 +111,7 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
      */
     @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonbTransient
-    private List<AccessControl> accessControlList;
+    private List<AccessControl> accessControlList = new ArrayList<>();
 
     /**
      * CAIRO level (RACI + out_of_the_loop)
@@ -276,11 +276,11 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
      * @return the access-control which match the role or null
      */
     public AccessControl getAcByRole(TeamRole role) {
-        if (role != null){
-        Optional<AccessControl> optAc = this.getAccessControlList().stream()
-            .filter(acl -> role.equals(acl.getRole())).findFirst();
+        if (role != null) {
+            Optional<AccessControl> optAc = this.getAccessControlList().stream()
+                .filter(acl -> role.equals(acl.getRole())).findFirst();
 
-        return optAc.isPresent() ? optAc.get() : null;
+            return optAc.isPresent() ? optAc.get() : null;
         } else {
             return null;
         }
@@ -340,8 +340,8 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
 
     /**
      * @return the parent card content
-     * <p>
-     * A card can either be the root card of a project or be within a card content
+     *         <p>
+     *         A card can either be the root card of a project or be within a card content
      */
     public CardContent getParent() {
         return parent;
@@ -567,7 +567,11 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
         if (this.rootCardProject != null) {
             // this card is a root card
             return this.rootCardProject;
+        } else if (this.cardType != null) {
+            // the card type has a direct access to project
+            return this.cardType.getProject();
         } else if (this.parent != null) {
+            // should never come here
             // this card is a sub-card
             return this.parent.getProject();
         }
@@ -603,7 +607,7 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     @Override
     public String toString() {
         return "Card{" + "id=" + id + ", index=" + index + ", color=" + color + ", cardTypeId="
-            + getCardTypeId() + ", parentId=" + getParentId() + "}";
+            + cardTypeId + ", parentId=" + parentId + "}";
     }
 
 }

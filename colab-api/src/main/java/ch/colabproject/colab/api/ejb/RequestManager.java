@@ -273,8 +273,14 @@ public class RequestManager {
      * @return true if current user can act as an admin
      */
     public boolean isAdmin() {
+        // the sudoAsAdmin is done at first,
+        // so we do not need to get the current user if this condition is fulfilled
+        if (sudoAsAdmin > 0) {
+            return true;
+        }
+
         User currentUser = this.getCurrentUser();
-        return sudoAsAdmin > 0 || (currentUser != null && currentUser.isAdmin());
+        return currentUser != null && currentUser.isAdmin();
     }
 
     /**

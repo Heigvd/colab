@@ -24,7 +24,7 @@ public interface ColabEntity extends WithId, WithPermission {
     /**
      * Get the tracking data
      *
-     * @return
+     * @return the tracking data
      */
     Tracking getTrackingData();
 
