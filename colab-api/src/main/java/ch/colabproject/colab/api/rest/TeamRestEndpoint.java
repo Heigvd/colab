@@ -137,7 +137,6 @@ public class TeamRestEndpoint {
      * @param role the role to update
      *
      * @throws ch.colabproject.colab.api.exceptions.ColabMergeException if update failed
-     *
      */
     @PUT
     @Path("role")
@@ -152,7 +151,6 @@ public class TeamRestEndpoint {
      * TODO: shall we allow to delete non-empty roles?
      *
      * @param roleId id of the role to delete id of the role to delete
-     *
      */
     @DELETE
     @Path("role/{roleId: [0-9]+}")
@@ -259,8 +257,8 @@ public class TeamRestEndpoint {
     /**
      * Clear access control for a role
      *
-     * @param cardId   id of the card
-     * @param memberId id of the role
+     * @param cardId id of the card
+     * @param roleId id of the role
      */
     @DELETE
     @Path("acl/{cardId: [0-9]+}/role/{roleId : [0-9]+}")

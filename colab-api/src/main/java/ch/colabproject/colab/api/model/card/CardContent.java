@@ -392,7 +392,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
         if (this.card != null) {
             return new Conditions.HasCardReadRight(this.card);
         } else {
-            // orphan content should neven happen
+            // orphan content should never happen
             return Conditions.alwaysTrue;
         }
     }
@@ -402,7 +402,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
         if (this.card != null) {
             return this.card.getUpdateCondition();
         } else {
-            // orphan content should neven happen
+            // orphan content should never happen
             return Conditions.alwaysTrue;
         }
     }
@@ -431,7 +431,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
     public String toString() {
         return "CardContent{" + "id=" + id + ", title=" + title + ", status=" + status
             + ", completion=" + completionLevel + ", completionMode=" + completionMode
-            + ", card=" + card + "}";
+            + ", cardId=" + cardId + "}";
     }
 
 }

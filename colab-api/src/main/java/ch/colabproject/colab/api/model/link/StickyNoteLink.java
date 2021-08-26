@@ -535,10 +535,10 @@ public class StickyNoteLink implements ColabEntity/* ,
 
     @Override
     public String toString() {
-        return "StickyNoteLink{" + "id=" + id + ", srcCardId=" + getSrcCardId()
-            + ", srcCardContentId=" + getSrcCardContentId() + ", srcResourceOrRefId="
-            + getSrcResourceOrRefId() + ", srcBlockId=" + getSrcBlockId() + ", destination="
-            + destinationCard + ", teaser=" + teaser + ", explanation=" + explanation + "}";
+        return "StickyNoteLink{" + "id=" + id + ", srcCardId=" + srcCardId
+            + ", srcCardContentId=" + srcCardContentId + ", srcResourceOrRefId="
+            + srcResourceOrRefId + ", srcBlockId=" + srcBlockId + ", destinationCardId="
+            + destinationCardId + ", teaser=" + teaser + ", explanation=" + explanation + "}";
     }
 
 }

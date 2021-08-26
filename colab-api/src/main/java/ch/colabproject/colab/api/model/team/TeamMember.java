@@ -350,7 +350,7 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
         if (this.user != null && this.project != null) {
-            return new Conditions.IsCurrentUserInternToProject(project);
+            return new Conditions.IsCurrentUserMemberOfProject(project);
         } else {
             // anyone can read a pending invitation
             return Conditions.alwaysTrue;
@@ -387,8 +387,8 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
         if (user == null) {
             return "TeamMember{pending}";
         } else {
-            return "TeamMember{" + "id=" + id + ", userId=" + getUserId() + ", projectId="
-                + getProjectId() + "}";
+            return "TeamMember{" + "id=" + id + ", userId=" + userId + ", projectId="
+                + projectId + "}";
         }
     }
 }

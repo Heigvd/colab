@@ -29,8 +29,7 @@ import javax.validation.constraints.NotNull;
 @NamedQuery(
     name = "InvitationToken.findByProjectAndRecipient",
     query = "SELECT t from InvitationToken t "
-    + "WHERE t.teamMember.project.id = :projectId AND t.recipient =:recipient"
-)
+        + "WHERE t.teamMember.project.id = :projectId AND t.recipient =:recipient")
 public class InvitationToken extends Token {
 
     private static final long serialVersionUID = 1L;
@@ -179,8 +178,6 @@ public class InvitationToken extends Token {
 
     @Override
     public String toString() {
-        return "InvitationToken{" + "id=" + getId()
-            + ", teamMemberId:" + teamMember.getId()
-            + '}';
+        return "InvitationToken{" + "id=" + getId() + '}';
     }
 }

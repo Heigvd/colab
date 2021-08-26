@@ -91,7 +91,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
      */
     @OneToMany(mappedBy = "role")
     @JsonbTransient
-    private List<AccessControl> accessControl;
+    private List<AccessControl> accessControl = new ArrayList<>();
 
     /**
      * Id of the members, For deserialization only
@@ -309,6 +309,6 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public String toString() {
-        return "Role{" + "id=" + id + ", name=" + name + ", project=" + project + ", projectId=" + projectId + ", members=" + members + '}';
+        return "Role{" + "id=" + id + ", name=" + name + ", projectId=" + projectId + '}';
     }
 }

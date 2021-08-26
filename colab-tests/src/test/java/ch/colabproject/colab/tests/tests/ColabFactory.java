@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.Token;
@@ -48,6 +49,24 @@ public class ColabFactory {
 
         Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardType);
         return (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
+    }
+
+    /**
+     * Create a brand new card type in the given project.
+     * <p>
+     * The card type is published
+     *
+     * @param client    rest client to execute HTTP requests
+     * @param projectId id of the project the card type will belongs to. If this id is null the type
+     *                  will be a global type
+     *
+     * @return the CardType
+     */
+    public static CardType createPublishedCardType(ColabClient client, Long projectId) {
+        CardType cardType = createCardType(client, projectId);
+        cardType.setPublished(true);
+        client.cardTypeRestEndpoint.updateCardType(cardType);
+        return (CardType) client.cardTypeRestEndpoint.getCardType(cardType.getId());
     }
 
     /**
@@ -128,11 +147,13 @@ public class ColabFactory {
      * @param emailAddress email address to send the message to
      * @param guest        authenticated rest client, not yet member of the project
      * @param mailClient   mailhost client to fetch the invitation
+     *
+     * @return the brand new team member
      */
-    public static void inviteAndJoin(ColabClient host, Project project,
+    public static TeamMember inviteAndJoin(ColabClient host, Project project,
         String emailAddress, ColabClient guest, MailhogClient mailClient
     ) {
-        host.teamRestEndpoint.inviteSomeone(project.getId(), emailAddress);
+        TeamMember teamMember = host.teamRestEndpoint.inviteSomeone(project.getId(), emailAddress);
         Message invitation = TestHelper.getMessageByRecipient(mailClient, emailAddress).get(0);
 
         Matcher matcher = TestHelper.extractToken(invitation);
@@ -149,6 +170,8 @@ public class ColabFactory {
         } else {
             Assertions.fail("Failed to parse token");
         }
+
+        return teamMember;
     }
 
     public static TeamRole createRole(ColabClient client, Project project, String name) {
