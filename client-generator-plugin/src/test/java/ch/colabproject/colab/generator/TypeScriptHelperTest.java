@@ -66,7 +66,7 @@ public class TypeScriptHelperTest {
         Assertions.assertEquals("number",
             TypeScriptHelper.convertType(Short.class, customTypes));
 
-        Assertions.assertEquals("'ITEM_1' | 'ITEM_2'",
+        Assertions.assertEquals("TestEnum",
             TypeScriptHelper.convertType(TestEnum.class, customTypes));
 
         Assertions.assertEquals("unknown[]",
