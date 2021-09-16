@@ -9,9 +9,9 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/IconButton';
-import Loading from '../common/Loading';
+import OpenClose from '../common/OpenClose';
 import Overlay from '../common/Overlay';
-import { addIcon, cancelIcon, createIcon } from '../styling/style';
+import { addIcon, cancelIcon, createIcon, reinitIcon } from '../styling/defaultIcons';
 
 interface StickyNoteCreatorProps {
   destCardId: number;
@@ -20,24 +20,21 @@ interface StickyNoteCreatorProps {
 export default function StickyNoteCreator({ destCardId }: StickyNoteCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const [state, setState] = React.useState<'CLOSED' | 'EXPANDED' | 'PENDING'>('CLOSED');
-
   const [teaser, setTeaser] = React.useState('');
   const [explanation, setExplanation] = React.useState('');
   const [src, setSrc] = React.useState('');
 
-  if (state === 'CLOSED') {
-    return (
-      <div>
-        <IconButton icon={addIcon} title="add a sticky note" onClick={() => setState('EXPANDED')} />
-      </div>
-    );
-  } else if (state === 'PENDING') {
-    return <Loading />;
-  } else {
-    return (
-      <Overlay>
-        <>
+  function resetInputs() {
+    setTeaser('');
+    setExplanation('');
+    setSrc('');
+    // must be the same as the default values of the states
+  }
+
+  return (
+    <OpenClose collapsedChildren={<IconButton icon={addIcon} title="add a sticky note" />}>
+      {collapse => (
+        <Overlay>
           <h2>Create a new sticky note</h2>
           <p>
             {'Title : '}
@@ -64,22 +61,23 @@ export default function StickyNoteCreator({ destCardId }: StickyNoteCreatorProps
                   teaser: teaser,
                   explanation: explanation,
                 }),
-              );
-              setTeaser('');
-              setExplanation('');
-              setSrc('');
-              setState('CLOSED');
+              ).then(() => {
+                resetInputs();
+                collapse();
+              });
             }}
           />
+          <IconButton icon={reinitIcon} title="reinit" onClick={() => resetInputs()} />
           <IconButton
             icon={cancelIcon}
             title="cancel"
             onClick={() => {
-              setState('CLOSED');
+              // see if it is better to reset the values or not
+              collapse();
             }}
           />
-        </>
-      </Overlay>
-    );
-  }
+        </Overlay>
+      )}
+    </OpenClose>
+  );
 }

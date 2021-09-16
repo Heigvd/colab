@@ -8,13 +8,14 @@ import { createSlice } from '@reduxjs/toolkit';
 import { Document } from 'colab-rest-client';
 import * as API from '../API/api';
 import { processMessage } from '../ws/wsThunkActions';
+import { LoadingStatus } from './store';
 //import {mapById} from '../helper';
 
 export type Status = 'UNSET' | 'LOADING' | 'READY';
 
 export interface DocumentState {
   // resourcesStatus: Record<number, Status>
-  documents: Record<number, Document | null>;
+  documents: Record<number, Document | LoadingStatus>;
 }
 
 const initialState: DocumentState = {
@@ -41,7 +42,7 @@ const documentsSlice = createSlice({
         action.payload.documents.deleted.forEach(entry => removeDocument(state, entry.id));
       })
       .addCase(API.getDocument.pending, (state, action) => {
-        state.documents[action.meta.arg] = null;
+        state.documents[action.meta.arg] = 'LOADING';
       })
       .addCase(API.getDocument.fulfilled, (state, action) => {
         if (action.payload.id) {

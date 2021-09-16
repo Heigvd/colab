@@ -47,4 +47,19 @@ public class AbstractResourceDao {
         }
     }
 
+    /**
+     * Delete a resource / resource reference from database. This can't be undone
+     *
+     * @param id the id of the resource / resource reference to delete
+     *
+     * @return just deleted resource / resource reference
+     */
+    public AbstractResource deleteResourceOrRef(Long id) {
+        logger.debug("delete abstract resource reference #{}", id);
+        // TODO: move to recycle bin first
+        AbstractResource resourceRef = this.findResourceOrRef(id);
+        em.remove(resourceRef);
+        return resourceRef;
+    }
+
 }

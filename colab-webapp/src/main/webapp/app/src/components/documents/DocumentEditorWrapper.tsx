@@ -11,7 +11,7 @@ import * as API from '../../API/api';
 import { useDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
-import { BlockDocumentEditor } from './blockdoc/BlockDocumentEditor';
+import { DocumentEditorDisplay } from './DocumentEditorDisplay';
 
 export interface DocEditorProps {
   docId: number;
@@ -30,29 +30,9 @@ export function DocumentEditorWrapper({ docId }: DocEditorProps): JSX.Element {
 
   if (doc == null || doc == 'LOADING') {
     return <InlineLoading />;
+  } else if (entityIs(doc, 'Document')) {
+    return <DocumentEditorDisplay document={doc} />;
   } else {
-    if (entityIs(doc, 'BlockDocument')) {
-      return <BlockDocumentEditor doc={doc} />;
-    } else if (entityIs(doc, 'HostedDocLink')) {
-      return (
-        <div>
-          {' '}
-          <i>HostedDocLink not yet implemented (upload new document)</i>{' '}
-        </div>
-      );
-    } else if (entityIs(doc, 'ExternalDocLink')) {
-      return (
-        <div>
-          {' '}
-          <i>ExternalDocLink not yet implemented (url thumbnail, url editor)</i>{' '}
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <i>Unknown document</i>{' '}
-        </div>
-      );
-    }
+    return <InlineLoading />;
   }
 }

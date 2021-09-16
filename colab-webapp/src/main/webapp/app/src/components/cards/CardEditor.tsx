@@ -18,7 +18,10 @@ import AutoSaveInput from '../common/AutoSaveInput';
 import FitSpace from '../common/FitSpace';
 import OpenClose from '../common/OpenClose';
 import { DocumentEditorWrapper } from '../documents/DocumentEditorWrapper';
+import { ResourceContextScope } from '../resources/ResourceCommonType';
+import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
+import { sideTabButton } from '../styling/style';
 import CardLayout from './CardLayout';
 import ContentSubs from './ContentSubs';
 
@@ -28,12 +31,6 @@ interface Props {
   variants: CardContent[];
   showSubcards?: boolean;
 }
-
-const sideTabButton = css({
-  writingMode: 'sideways-lr',
-  textOrientation: 'sideways',
-  width: '24px',
-});
 
 export default function CardEditor({
   card,
@@ -80,13 +77,13 @@ export default function CardEditor({
                   })}
                 >
                   <div>
-                    <h5>Card Type</h5>
+                    <h5>Card Type #{cardType?.id}</h5>
                     <div>Type: {cardType?.title || ''}</div>
                     <div>Purpose: {cardType?.purpose || ''}</div>
                   </div>
 
                   <div>
-                    <h5>Card settings</h5>
+                    <h5>Card settings #{card.id}</h5>
                     <OpenClose
                       closeIcon={faCheck}
                       collapsedChildren={
@@ -117,7 +114,7 @@ export default function CardEditor({
 
                   {variant != null ? (
                     <div>
-                      <h5>Card Content</h5>
+                      <h5>Card Content #{variant.id}</h5>
                       <div>
                         Title:
                         <AutoSaveInput
@@ -139,20 +136,15 @@ export default function CardEditor({
               </CardLayout>
               <OpenClose collapsedChildren={<span className={sideTabButton}>Resources</span>}>
                 {() => (
-                  <div>
-                    <h3>Resources</h3>
-                    <ul>
-                      <li>Acces ressources "héritées"</li>
-                      <li>
-                        Ajouter une ressource
-                        <ul>
-                          <li>Pour cette variante uniquement</li>
-                          <li>Pour toutes les variantes de la carte</li>
-                          <li>Pour toutes les cartes de ce type</li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </div>
+                  <>
+                    {card.id && variant?.id && (
+                      <ResourcesWrapper
+                        kind={ResourceContextScope.CardOrCardContent}
+                        cardId={card.id}
+                        cardContentId={variant.id}
+                      />
+                    )}
+                  </>
                 )}
               </OpenClose>
             </>

@@ -77,19 +77,4 @@ public class ResourceRefDao {
         return resourceRef;
     }
 
-    /**
-     * Delete an resource reference from database. This can't be undone
-     *
-     * @param id the id of the resource reference to delete
-     *
-     * @return just deleted resource reference
-     */
-    public ResourceRef deleteResourceRef(Long id) {
-        logger.debug("delete resource reference #{}", id);
-        // TODO: move to recycle bin first
-        ResourceRef resourceRef = this.findResourceRef(id);
-        em.remove(resourceRef);
-        return resourceRef;
-    }
-
 }

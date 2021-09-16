@@ -8,6 +8,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   AbstractCardType,
+  AbstractResource,
   AuthInfo,
   Block,
   BlockDocument,
@@ -19,12 +20,15 @@ import {
   Document,
   entityIs,
   Project,
+  Resource,
+  ResourceRef,
   Role,
   SignUpInfo,
   StickyNoteLink,
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
+import { CreationScope, CreationScopeKind } from '../components/resources/ResourceCommonType';
 import { hashPassword } from '../SecurityHelper';
 import { addError } from '../store/error';
 import { ColabState, getStore } from '../store/store';
@@ -533,6 +537,110 @@ export const getSubCards = createAsyncThunk(
   'cardcontent/getSubs',
   async (cardContentId: number) => {
     return await restClient.CardContentRestEndpoint.getSubCards(cardContentId);
+  },
+);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Resources
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getAbstractResource = createAsyncThunk<AbstractResource, number>(
+  'resource/getAbstractResource',
+  async (id: number) => {
+    return await restClient.ResourceRestEndpoint.getAbstractResource(id);
+  },
+);
+
+export const getResourceChainForAbstractCardTypeId = createAsyncThunk(
+  'resource/getForCardTypeId',
+  async (cardTypeId: number) => {
+    return await restClient.ResourceRestEndpoint.getResourceChainForAbstractCardType(cardTypeId);
+  },
+);
+
+export const getResourceChainForCardContentId = createAsyncThunk(
+  'resource/getForCardContentId',
+  async (cardContentId: number) => {
+    return await restClient.ResourceRestEndpoint.getResourceChainForCardContent(cardContentId);
+  },
+);
+
+export const updateResource = createAsyncThunk(
+  'resource/updateResource',
+  async (resource: Resource) => {
+    return await restClient.ResourceRestEndpoint.updateResource(resource);
+  },
+);
+
+export const updateResourceRef = createAsyncThunk(
+  'resource/updateResourceRef',
+  async (resourceRef: ResourceRef) => {
+    return await restClient.ResourceRestEndpoint.updateResourceRef(resourceRef);
+  },
+);
+
+export const createResource = createAsyncThunk(
+  'resource/create',
+  async ({
+    document,
+    creationScope,
+    category,
+  }: {
+    document: Document;
+    creationScope: CreationScope;
+    category?: string;
+  }) => {
+    // TODO add category -> createResourceForXxx(id, document, category)
+    if (category) {
+      //
+    }
+
+    if (creationScope.kind === CreationScopeKind.CardType) {
+      if (creationScope.cardTypeId != null) {
+        return await restClient.ResourceRestEndpoint.createResourceForAbstractCardType(
+          creationScope.cardTypeId,
+          document,
+          /* category, */
+        );
+      }
+    } else if (creationScope.kind === CreationScopeKind.Card) {
+      if (creationScope.cardId != null) {
+        return await restClient.ResourceRestEndpoint.createResourceForCard(
+          creationScope.cardId,
+          document,
+          /* category, */
+        );
+      }
+    } else if (creationScope.kind === CreationScopeKind.CardContent) {
+      if (creationScope.cardContentId != null) {
+        return await restClient.ResourceRestEndpoint.createResourceForCardContent(
+          creationScope.cardContentId,
+          document,
+          /* category, */
+        );
+      }
+    }
+
+    // nothing good happened
+    // TODO see how to say it
+  },
+);
+
+export const deleteResource = createAsyncThunk('resource/delete', async (resource: Resource) => {
+  if (resource.id) {
+    return await restClient.ResourceRestEndpoint.deleteResource(resource.id);
+  }
+});
+
+export const removeAccessToResource = createAsyncThunk(
+  'resourceOrRef/refuse',
+  async (resourceRef: ResourceRef) => {
+    if (resourceRef) {
+      return await restClient.ResourceRestEndpoint.updateResourceRef({
+        ...resourceRef,
+        refused: true,
+      });
+    }
   },
 );
 

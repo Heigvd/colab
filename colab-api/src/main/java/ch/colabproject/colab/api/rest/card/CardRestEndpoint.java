@@ -11,7 +11,6 @@ import ch.colabproject.colab.api.ejb.ResourceFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
@@ -177,20 +176,6 @@ public class CardRestEndpoint {
     public List<Resource> getAvailableActiveLinkedResources(@PathParam("id") Long cardId) {
         logger.debug("get available and active resources linked to card #{}", cardId);
         return resourceFacade.getAvailableActiveResourcesLinkedToCard(cardId);
-    }
-
-    /**
-     * Get all abstract resources directly linked to the card
-     *
-     * @param cardId the id of the card
-     *
-     * @return list of directly linked abstract resources
-     */
-    @GET
-    @Path("{id}/AbstractResources")
-    public List<AbstractResource> getDirectAbstractResourcesOfCard(@PathParam("id") Long cardId) {
-        logger.debug("get direct abstract resources linked to card #{}", cardId);
-        return cardFacade.getDirectAbstractResourcesOfCard(cardId);
     }
 
     /**

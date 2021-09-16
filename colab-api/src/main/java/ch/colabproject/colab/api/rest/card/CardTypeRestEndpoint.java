@@ -11,7 +11,6 @@ import ch.colabproject.colab.api.ejb.ResourceFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
-import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.persistence.card.CardTypeDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
@@ -194,22 +193,6 @@ public class CardTypeRestEndpoint {
         logger.debug("get available and active resources linked to abstract card type #{}",
             abstractCardTypeId);
         return resourceFacade.getAvailableActiveResourcesLinkedToAbstractCardType(abstractCardTypeId);
-    }
-
-    /**
-     * Get all abstract resources directly linked to the card type
-     *
-     * @param abstractCardTypeId the id of the card type or card type reference
-     *
-     * @return list of directly linked abstract resources
-     */
-    @GET
-    @Path("{id}/AbstractResources")
-    public List<AbstractResource> getDirectAbstractResourcesOfAbstractCardType(
-        @PathParam("id") Long abstractCardTypeId) {
-        logger.debug("get direct abstract resources linked to card definition #{}",
-            abstractCardTypeId);
-        return cardFacade.getDirectAbstractResourcesOfAbstractCardType(abstractCardTypeId);
     }
 
 }

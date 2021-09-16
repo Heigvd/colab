@@ -14,19 +14,9 @@ import { useAppDispatch } from '../../store/hooks';
 import CardThumbWithSelector from '../cards/CardThumbWithSelector';
 import AutoSaveInput from '../common/AutoSaveInput';
 import FitSpace from '../common/FitSpace';
+import { defaultRowContainerStyle } from '../styling/style';
 
 // TODO replace <CardThumbWithSelector for something easy and without actions
-
-const containerStyle = css({
-  margin: '10px 20px',
-  padding: '10px',
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  border: '1 px solid lightgrey',
-  boxShadow: '0px 0px 7px rgba(0, 0, 0, 0.2)',
-  borderRadius: '5px',
-});
 
 const stickyNoteOwnDataStyle = css({
   padding: '10px',
@@ -66,7 +56,7 @@ export default function StickyNoteDisplay({
   }, [showDest, stickyNote.destinationCardId, destCard, dispatch]);
 
   return (
-    <div className={containerStyle}>
+    <div className={defaultRowContainerStyle}>
       {showSrc && (
         <div>
           {srcCard && typeof srcCard === 'object' && (

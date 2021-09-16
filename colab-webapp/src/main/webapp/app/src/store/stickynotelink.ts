@@ -9,11 +9,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { StickyNoteLink } from 'colab-rest-client';
 import * as API from '../API/api';
 import { processMessage } from '../ws/wsThunkActions';
-import { loadingStatus } from './store';
+import { LoadingStatus } from './store';
 
 export interface StickyNoteLinkState {
-  stickyNotes: Record<number, { stickyNote: StickyNoteLink }>;
-  byCardDest: Record<number, { stickyNoteIds: number[]; status: loadingStatus }>;
+  stickyNotes: Record<number, StickyNoteLink>;
+  byCardDest: Record<number, { stickyNoteIds: number[]; status: LoadingStatus }>;
 }
 
 const initialState: StickyNoteLinkState = {
@@ -34,15 +34,15 @@ const updateStickyNote = (state: StickyNoteLinkState, stickyNote: StickyNoteLink
       }
     }
 
-    state.stickyNotes[stickyNote.id] = { stickyNote };
+    state.stickyNotes[stickyNote.id] = stickyNote;
   }
 };
 
 const removeStickyNote = (state: StickyNoteLinkState, stickyNoteId: number) => {
   const stickyNoteState = state.stickyNotes[stickyNoteId];
 
-  if (stickyNoteState && stickyNoteState.stickyNote.destinationCardId) {
-    const stateForDestCard = state.byCardDest[stickyNoteState.stickyNote.destinationCardId];
+  if (stickyNoteState && stickyNoteState.destinationCardId) {
+    const stateForDestCard = state.byCardDest[stickyNoteState.destinationCardId];
     if (stateForDestCard) {
       const index = stateForDestCard.stickyNoteIds.indexOf(stickyNoteId);
       if (index >= 0) {
@@ -85,7 +85,7 @@ const stickyNoteLinksSlice = createSlice({
 
         action.payload.forEach(stickyNote => {
           if (stickyNote && stickyNote.id) {
-            state.stickyNotes[stickyNote.id] = { stickyNote };
+            state.stickyNotes[stickyNote.id] = stickyNote;
           }
         });
       })

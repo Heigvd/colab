@@ -76,19 +76,4 @@ public class ResourceDao {
         return resource;
     }
 
-    /**
-     * Delete an resource from database. This can't be undone
-     *
-     * @param id the id of the resource to delete
-     *
-     * @return just deleted resource
-     */
-    public Resource deleteResource(Long id) {
-        logger.debug("delete resource #{}", id);
-        // TODO: move to recycle bin first
-        Resource resource = this.findResource(id);
-        em.remove(resource);
-        return resource;
-    }
-
 }

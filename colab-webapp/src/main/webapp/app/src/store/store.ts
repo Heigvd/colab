@@ -16,22 +16,24 @@ import changeReducer from './change';
 import documentReducer from './document';
 import errorReducer from './error';
 import projectReducer from './project';
+import resourceReducer from './resource';
 import stickyNoteLinkReducer from './stickynotelink';
 import userReducer from './user';
 import websocketReducer from './websocket';
 
 const rootReducer = combineReducers({
-  auth: authReducer,
-  users: userReducer,
   admin: adminReducer,
-  projects: projectReducer,
-  cardtype: cardTypeReducer,
-  cards: cardReducer,
-  document: documentReducer,
+  auth: authReducer,
   block: blockReducer,
-  stickynotelinks: stickyNoteLinkReducer,
+  cards: cardReducer,
+  cardtype: cardTypeReducer,
   change: changeReducer,
+  document: documentReducer,
   errors: errorReducer,
+  projects: projectReducer,
+  resources: resourceReducer,
+  stickynotelinks: stickyNoteLinkReducer,
+  users: userReducer,
   websockets: websocketReducer,
 });
 
@@ -48,4 +50,4 @@ export const dispatch = store.dispatch;
 export type ColabState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-export type loadingStatus = 'NOT_INITIALIZED' | 'LOADING' | 'READY';
+export type LoadingStatus = 'NOT_INITIALIZED' | 'LOADING' | 'READY';

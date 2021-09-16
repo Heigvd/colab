@@ -7,8 +7,11 @@
 
 import { Document } from 'colab-rest-client';
 import { useAppSelector } from '../store/hooks';
+import { LoadingStatus } from '../store/store';
 
-export const useDocument = (id: number): Document | 'LOADING' | undefined => {
+export const useDocument = (
+  id: number | null | undefined,
+): Document | LoadingStatus | undefined => {
   return useAppSelector(state => {
     if (id != null) {
       const docDetail = state.document.documents[id];

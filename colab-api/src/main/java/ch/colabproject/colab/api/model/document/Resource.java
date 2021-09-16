@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
@@ -164,6 +165,11 @@ public class Resource extends AbstractResource {
     @Override
     public Resource resolve() {
         return this;
+    }
+
+    @Override
+    public List<AbstractResource> expand() {
+        return List.of(this);
     }
 
     @Override

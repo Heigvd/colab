@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
@@ -329,6 +330,13 @@ public abstract class AbstractResource
      */
     public abstract Resource resolve();
 
+    /**
+     * Resolve to concrete resource and return all transitive references too.
+     *
+     * @return concrete resource and transitive references
+     */
+    public abstract List<AbstractResource> expand();
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof AbstractResource) {
@@ -336,6 +344,28 @@ public abstract class AbstractResource
             this.setCategory(o.getCategory());
         } else {
             throw new ColabMergeException(this, other);
+        }
+    }
+
+    /**
+     * Get the project this content belongs to
+     *
+     * @return content owner
+     */
+    @JsonbTransient
+    public Project getProject() {
+        if (this.abstractCardType != null) {
+            // the abstract resource is linked to a card type / card type reference
+            return this.abstractCardType.getProject();
+        } else if (this.card != null) {
+            // the abstract resource is linked to a card
+            return this.card.getProject();
+        } else if (this.cardContent != null) {
+            // the abstract resource is linked to a card content
+            return this.cardContent.getProject();
+        } else {
+            // such an orphan shouldn't exist...
+            return null;
         }
     }
 

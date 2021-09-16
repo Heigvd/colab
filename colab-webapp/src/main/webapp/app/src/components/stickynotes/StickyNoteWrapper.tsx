@@ -16,7 +16,7 @@ import StickyNoteList from './StickyNoteList';
  * In this component, we load the sticky note links if necessary and display the StickyNoteList
  */
 
-interface StickyNoteWrapperProps {
+export interface StickyNoteWrapperProps {
   destCardId: number;
   showSrc?: boolean;
   showDest?: boolean;
@@ -30,7 +30,7 @@ export default function StickyNoteWrapper({
 }: StickyNoteWrapperProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const { stickyNotes: stickyNotesForDest, status } = useStickyNoteLinksForDest(destCardId);
+  const { stickyNotesForDest, status } = useStickyNoteLinksForDest(destCardId);
   const allStickyNotes = stickyNotesForDest; // to concat with StickyNotesForSrc...
 
   React.useEffect(() => {

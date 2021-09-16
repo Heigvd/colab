@@ -9,6 +9,8 @@ package ch.colabproject.colab.api.model.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import java.util.ArrayList;
+import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -136,6 +138,17 @@ public class ResourceRef extends AbstractResource {
             return ((ResourceRef) target).resolve();
         }
         return null;
+    }
+
+    @Override
+    public List<AbstractResource> expand() {
+        List<AbstractResource> list = new ArrayList<>();
+
+        list.add(this);
+        if (this.target != null) {
+            list.addAll(this.target.expand());
+        }
+        return list;
     }
 
     @Override
