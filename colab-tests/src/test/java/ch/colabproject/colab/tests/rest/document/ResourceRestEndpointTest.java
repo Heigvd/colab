@@ -26,15 +26,15 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
     @Test
     public void testOnGlobalCardType() {
         doTest(Access.GLOBAL_CARD_TYPE,
-            Set.of(Access.CARD_TYPE_REF, Access.CARD, Access.CARD_CONTENT,
-                Access.SUB_CARD, Access.SUB_CARD_CONTENT));
+            Set.of(Access.CARD_TYPE_REF, Access.CARD, Access.CARD_CONTENT));
+        // the resources on a card type are not accessible from the sub cards
     }
 
     @Test
     public void testOnCardTypeRef() {
         doTest(Access.CARD_TYPE_REF,
-            Set.of(Access.CARD, Access.CARD_CONTENT,
-                Access.SUB_CARD, Access.SUB_CARD_CONTENT));
+            Set.of(Access.CARD, Access.CARD_CONTENT));
+        // the resources on a card type reference are not accessible from the sub cards
     }
 
     @Test
@@ -578,9 +578,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         Long cardContent1Id = ColabFactory.getCardContent(client, card1Id).getId();
 
-        Long subCardType2Id = ColabFactory.createCardType(client, projectId).getId();
-
-        Long subCard2Id = ColabFactory.createNewCard(client, cardContent1Id, subCardType2Id)
+        Long subCard2Id = ColabFactory.createNewCard(client, cardContent1Id, cardType1Id)
             .getId();
 
         Long subCardContent2Id = ColabFactory.getCardContent(client, subCard2Id).getId();

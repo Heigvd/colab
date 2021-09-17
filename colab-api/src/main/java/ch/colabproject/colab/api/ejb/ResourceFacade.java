@@ -535,17 +535,27 @@ public class ResourceFacade {
         }
 
         for (Card card : cardTypeOrRef.getImplementingCards()) {
-            ResourceRef resourceRef = ResourceRef.initNewResourceRef();
+            ResourceRef cardResourceRef = ResourceRef.initNewResourceRef();
 
-            resourceRef.setTarget(resource);
-            resource.getDirectReferences().add(resourceRef);
+            cardResourceRef.setTarget(resource);
+            resource.getDirectReferences().add(cardResourceRef);
 
-            resourceRef.setCard(card);
-            card.getDirectAbstractResources().add(resourceRef);
+            cardResourceRef.setCard(card);
+            card.getDirectAbstractResources().add(cardResourceRef);
 
-            resourceRefDao.persistResourceRef(resourceRef);
+            resourceRefDao.persistResourceRef(cardResourceRef);
 
-            createResourceRefForChildren(card, resourceRef);
+            for (CardContent cardContent : card.getContentVariants()) {
+                ResourceRef cardContentResourceRef = ResourceRef.initNewResourceRef();
+
+                cardContentResourceRef.setTarget(cardResourceRef);
+                cardResourceRef.getDirectReferences().add(cardContentResourceRef);
+
+                cardContentResourceRef.setCardContent(cardContent);
+                cardContent.getDirectAbstractResources().add(cardContentResourceRef);
+
+                resourceRefDao.persistResourceRef(cardContentResourceRef);
+            }
         }
     }
 
