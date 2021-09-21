@@ -154,8 +154,8 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         ColabFactory.createCardResource(client, cardId, "soft cakes").getId();
 
-        List<AbstractResource> resourceRefs = client.cardContentRestEndpoint
-            .getDirectAbstractResourcesOfCardContent(cardContentId);
+        List<AbstractResource> resourceRefs = client.resourceRestEndpoint
+            .getResourceChainForCardContent(cardContentId).get(0);
         Long resourceRefId = resourceRefs.get(0).getId();
 
         StickyNoteLink link = new StickyNoteLink();
@@ -194,7 +194,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long resourceId = ColabFactory.createCardResource(client, cardId, "soft cakes").getId();
 
-        Resource resource = client.resourceRestEndpoint.getResource(resourceId);
+        Resource resource = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
         Block block = client.blockRestEndPoint.createNewTextDataBlock(resource.getDocumentId());
         Long blockId = block.getId();
 
@@ -417,7 +417,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long resourceId = ColabFactory.createCardResource(client, cardId, "soft cakes").getId();
 
-        Resource resource = client.resourceRestEndpoint.getResource(resourceId);
+        Resource resource = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
         Block block = client.blockRestEndPoint.createNewTextDataBlock(resource.getDocumentId());
         Long blockId = block.getId();
 
@@ -473,7 +473,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long resourceId = ColabFactory.createCardResource(client, cardId, "soft cakes").getId();
 
-        Resource resource = client.resourceRestEndpoint.getResource(resourceId);
+        Resource resource = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
         Block block = client.blockRestEndPoint.createNewTextDataBlock(resource.getDocumentId());
         Long blockId = block.getId();
 

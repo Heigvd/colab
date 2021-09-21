@@ -440,7 +440,7 @@ function rebase(allChanges: Change[], newBase: Change, change: Change) {
 
     change.basedOn = [newBaseRev];
   } else if (setsEqual([change.revision], newBase.basedOn)) {
-    logger.debug('Inverse hierachy : ', change, ' on ', newBase);
+    logger.debug('Inverse hierarchy : ', change, ' on ', newBase);
     const offsets = computeOffsets(newBase.microchanges);
 
     newBase.basedOn = change.basedOn;

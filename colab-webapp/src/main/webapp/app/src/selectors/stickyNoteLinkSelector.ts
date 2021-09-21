@@ -7,7 +7,7 @@
 
 import { StickyNoteLink } from 'colab-rest-client';
 import { useAppSelector } from '../store/hooks';
-import { loadingStatus } from '../store/store';
+import { LoadingStatus } from '../store/store';
 
 //export const useStickyNoteLink = (id: number): StickyNoteLink | 'LOADING' | undefined => {
 //  return useAppSelector(state => {
@@ -27,8 +27,8 @@ import { loadingStatus } from '../store/store';
 export const useStickyNoteLinksForDest = (
   cardDestId: number,
 ): {
-  stickyNotes: StickyNoteLink[];
-  status: loadingStatus;
+  stickyNotesForDest: StickyNoteLink[];
+  status: LoadingStatus;
 } => {
   return useAppSelector(state => {
     if (cardDestId != null) {
@@ -36,7 +36,7 @@ export const useStickyNoteLinksForDest = (
 
       if (dataInStore === undefined) {
         return {
-          stickyNotes: [],
+          stickyNotesForDest: [],
           status: 'NOT_INITIALIZED',
         };
       } else {
@@ -44,14 +44,14 @@ export const useStickyNoteLinksForDest = (
 
         if (status == 'LOADING') {
           return {
-            stickyNotes: [],
+            stickyNotesForDest: [],
             status: 'LOADING',
           };
         } else {
           return {
-            stickyNotes: stickyNoteIds.flatMap(snId => {
+            stickyNotesForDest: stickyNoteIds.flatMap(snId => {
               const sn = state.stickynotelinks.stickyNotes[snId];
-              return sn ? [sn.stickyNote] : [];
+              return sn ? [sn] : [];
             }),
             status: 'READY',
           };
@@ -59,7 +59,7 @@ export const useStickyNoteLinksForDest = (
       }
     }
 
-    return { stickyNotes: [], status: 'NOT_INITIALIZED' };
+    return { stickyNotesForDest: [], status: 'NOT_INITIALIZED' };
   });
 };
 

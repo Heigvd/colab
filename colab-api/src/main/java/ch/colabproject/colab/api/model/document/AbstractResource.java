@@ -8,17 +8,21 @@ package ch.colabproject.colab.api.model.document;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
@@ -37,11 +41,11 @@ import javax.persistence.Transient;
 /**
  * A resource is a document provided to help the users to fulfill their goals.
  * <p>
- * An abstract resource is either a resource directly representing a document or a reference to an
- * abstract resource.
+ * An abstract resource is either a resource directly representing a document or a reference to
+ * another abstract resource.
  * <p>
- * An abstract resource can be linked to a card type / card type reference, a card or a card
- * content.
+ * An abstract resource can be linked either to a card type / card type reference, or to a card or
+ * to a card content.
  *
  * @author sandra
  */
@@ -49,7 +53,7 @@ import javax.persistence.Transient;
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public abstract class AbstractResource
-    implements ColabEntity/* , WithWebsocketChannels */, StickyNoteSourceable {
+    implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {
 
     private static final long serialVersionUID = 1L;
 
@@ -117,9 +121,9 @@ public abstract class AbstractResource
     /**
      * The list of resource references that link to this abstract resource
      */
-    @OneToMany(mappedBy = "targetAbstractResource", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
     @JsonbTransient
-    private List<ResourceRef> sourceResourceRefs = new ArrayList<>();
+    private List<ResourceRef> directReferences = new ArrayList<>();
 
     /**
      * The list of sticky note links of which the resource is the source
@@ -294,17 +298,18 @@ public abstract class AbstractResource
     }
 
     /**
-     * @return the list of resource references that link to this abstract resource
+     * @return the list of resource references that directly link to this abstract resource
      */
-    public List<ResourceRef> getSourceResourceRefs() {
-        return sourceResourceRefs;
+    public List<ResourceRef> getDirectReferences() {
+        return directReferences;
     }
 
     /**
-     * @param sourceResourceRef the list of resource references that link to this abstract resource
+     * @param directReferences the list of resource references that directly link to this abstract
+     *                         resource
      */
-    public void setSourceResourceRefs(List<ResourceRef> sourceResourceRef) {
-        this.sourceResourceRefs = sourceResourceRef;
+    public void setDirectReferences(List<ResourceRef> directReferences) {
+        this.directReferences = directReferences;
     }
 
     /**
@@ -352,6 +357,13 @@ public abstract class AbstractResource
      */
     public abstract Resource resolve();
 
+    /**
+     * Resolve to concrete resource and return all transitive references too.
+     *
+     * @return concrete resource and transitive references
+     */
+    public abstract List<AbstractResource> expand();
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof AbstractResource) {
@@ -362,22 +374,7 @@ public abstract class AbstractResource
         }
     }
 
-//    @Override
-//    public Set<WebsocketChannel> getChannels() {
-//        if (this.abstractCardType != null) {
-//            // the abstract resource is linked to a card type / card type reference
-//            return this.abstractCardType.getChannels();
-//        } else if (this.card != null) {
-//            // the abstract resource is linked to a card
-//            return this.card.getChannels();
-//        } else if (this.cardContent != null) {
-//            // the abstract resource is linked to a card content
-//            return this.cardContent.getChannels();
-//        } else {
-//            // such an orphan shouldn't exist...
-//            return Set.of();
-//        }
-//    }
+
     @JsonbTransient
     @Override
     public Conditions.Condition getReadCondition() {
@@ -393,6 +390,29 @@ public abstract class AbstractResource
         } else {
             // such an orphan shouldn't exist...
             return Conditions.alwaysTrue;
+        }
+    }
+
+
+    /**
+     * Get the project this content belongs to
+     *
+     * @return content owner
+     */
+    @JsonbTransient
+    public Project getProject() {
+        if (this.abstractCardType != null) {
+            // the abstract resource is linked to a card type / card type reference
+            return this.abstractCardType.getProject();
+        } else if (this.card != null) {
+            // the abstract resource is linked to a card
+            return this.card.getProject();
+        } else if (this.cardContent != null) {
+            // the abstract resource is linked to a card content
+            return this.cardContent.getProject();
+        } else {
+            // such an orphan shouldn't exist...
+            return null;
         }
     }
 
@@ -413,6 +433,23 @@ public abstract class AbstractResource
         }
     }
 
+
+    public Set<WebsocketChannel> getChannels() {
+        if (this.abstractCardType != null) {
+            // the abstract resource is linked to a card type / card type reference
+            return this.abstractCardType.getChannels();
+        } else if (this.card != null) {
+            // the abstract resource is linked to a card
+            return this.card.getChannels();
+        } else if (this.cardContent != null) {
+            // the abstract resource is linked to a card content
+            return this.cardContent.getChannels();
+        } else {
+            // such an orphan shouldn't exist...
+            return Set.of();
+        }
+    }
+
     @Override
     public int hashCode() {
         return EntityHelper.hashCode(this);
@@ -428,8 +465,9 @@ public abstract class AbstractResource
      * @return string representation of its fields
      */
     protected String toPartialString() {
-        return "id=" + id + ", abstractCardTypeId=" + abstractCardTypeId + ", cardId=" + cardId
-            + ", cardContentId=" + cardContentId + ", category=" + category;
+        return "id=" + id + ", abstractCardTypeId=" + getAbstractCardTypeId()
+            + ", cardId=" + getCardId() + ", cardContentId=" + getCardContentId()
+            + ", category=" + category;
     }
 
 }

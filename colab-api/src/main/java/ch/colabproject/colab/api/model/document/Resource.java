@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
@@ -168,6 +169,11 @@ public class Resource extends AbstractResource {
     }
 
     @Override
+    public List<AbstractResource> expand() {
+        return List.of(this);
+    }
+
+    @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof Resource) {
             Resource o = (Resource) other;
@@ -193,9 +199,9 @@ public class Resource extends AbstractResource {
 
     @Override
     public String toString() {
-        return "Resource{" + toPartialString() + ", documentId=" + documentId + ", published="
-            + published + ", requestingForGlory=" + requestingForGlory + ", deprecated="
-            + deprecated + "}";
+        return "Resource{" + toPartialString() + ", documentId=" + getDocumentId()
+            + ", published=" + published + ", requestingForGlory=" + requestingForGlory
+            + ", deprecated=" + deprecated + "}";
     }
 
 }

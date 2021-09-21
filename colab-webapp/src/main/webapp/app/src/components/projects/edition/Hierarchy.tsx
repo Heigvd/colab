@@ -69,7 +69,7 @@ interface HierarchyDisplayProps {
 /**
  *
  */
-const Hierachy = (props: HierarchyDisplayProps): JSX.Element => {
+const Hierarchy = (props: HierarchyDisplayProps): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const { project, status } = useProjectBeingEdited();
@@ -176,7 +176,7 @@ const Hierachy = (props: HierarchyDisplayProps): JSX.Element => {
               const subcards = subs[cardContent.content.id];
               if (subcards != null) {
                 children = subcards.flatMap(subcard =>
-                  subcard && subcard.id ? [<Hierachy key={subcard.id} rootId={subcard.id} />] : [],
+                  subcard && subcard.id ? [<Hierarchy key={subcard.id} rootId={subcard.id} />] : [],
                 );
               }
             }
@@ -211,4 +211,4 @@ const Hierachy = (props: HierarchyDisplayProps): JSX.Element => {
   }
 };
 
-export default Hierachy;
+export default Hierarchy;

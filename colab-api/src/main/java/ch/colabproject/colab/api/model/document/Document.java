@@ -283,9 +283,9 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
         if (this.deliverableCardContent != null) {
             // The document is the deliverable of a card content
             return this.deliverableCardContent.getProject();
-//        } else if (this.resource != null) {
+        } else if (this.resource != null) {
             // The document is a resource
-//            return this.resource.getProject();
+            return this.resource.getProject();
         } else {
             // such an orphan shouldn't exist...
             return null;
@@ -362,9 +362,9 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
         if (this.deliverableCardContent != null) {
             // The document is the deliverable of a card content
             return this.deliverableCardContent.getChannels();
-//        } else if (this.resource != null) {
+        } else if (this.resource != null) {
             // The document is a resource
-//            return this.resource.getChannels();
+            return this.resource.getChannels();
         } else {
             // such an orphan shouldn't exist...
             return Set.of();

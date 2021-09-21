@@ -146,6 +146,12 @@ export const buttonStyle = cx(
 
 export const disabledIconStyle = iconStyle;
 
+export const sideTabButton = css({
+  writingMode: 'sideways-lr',
+  textOrientation: 'sideways',
+  width: '24px',
+});
+
 export const cardShadow = '0px 0px 7px rgba(0, 0, 0, 0.2)';
 
 export const cardStyle = cx(
@@ -154,5 +160,30 @@ export const cardStyle = cx(
     border: `1px solid lightgrey`,
     boxShadow: cardShadow,
     borderRadius: '5px',
+  }),
+);
+
+const defaultContainerStyle = css({
+  margin: '5px',
+  padding: '10px',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  border: '1 px solid lightgrey',
+  boxShadow: '0px 0px 7px rgba(0, 0, 0, 0.2)',
+  borderRadius: '5px',
+});
+
+export const defaultRowContainerStyle = cx(
+  defaultContainerStyle,
+  css({
+    flexDirection: 'row',
+  }),
+);
+
+export const defaultColumnContainerStyle = cx(
+  defaultContainerStyle,
+  css({
+    flexDirection: 'column',
   }),
 );

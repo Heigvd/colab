@@ -9,7 +9,6 @@ package ch.colabproject.colab.api.ejb;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
@@ -22,6 +21,7 @@ import ch.colabproject.colab.api.persistence.document.AbstractResourceDao;
 import ch.colabproject.colab.api.persistence.document.ResourceDao;
 import ch.colabproject.colab.api.persistence.document.ResourceRefDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 // TODO refine the publish / deprecated / refused effect
 // TODO requestingForGlory handling
+// TODO !!!! deal with abstract card type
 @Stateless
 @LocalBean
 public class ResourceFacade {
@@ -69,7 +70,7 @@ public class ResourceFacade {
     private AbstractResourceDao resourceOrRefDao;
 
     /**
-     * Card type persistence handling
+     * Card type and card type reference persistence handling
      */
     @Inject
     private CardTypeDao cardTypeDao;
@@ -95,19 +96,21 @@ public class ResourceFacade {
      * <p>
      * The resources must be active and available for the card type.
      *
-     * @param cardTypeId the id of the card type
+     * @param abstractCardTypeId the id of the card type or card type reference
      *
      * @return all resources that match
      */
-    public List<Resource> getAvailableActiveResourcesLinkedToCardType(Long cardTypeId) {
-        logger.debug("Get available active resources linked to car type #{}", cardTypeId);
+    public List<Resource> getAvailableActiveResourcesLinkedToAbstractCardType(
+        Long abstractCardTypeId) {
+        logger.debug("Get available active resources linked to abstract card type #{}",
+            abstractCardTypeId);
 
-        CardType cardType = cardTypeDao.getCardType(cardTypeId);
-        if (cardType == null) {
+        AbstractCardType cardTypeOrRef = cardTypeDao.getAbstractCardType(abstractCardTypeId);
+        if (cardTypeOrRef == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        return findAvailableAndActiveTargetResource(cardType.getDirectAbstractResources());
+        return findAvailableAndActiveTargetResource(cardTypeOrRef.getDirectAbstractResources());
     }
 
     /**
@@ -189,7 +192,7 @@ public class ResourceFacade {
         } else if (abstractResource instanceof ResourceRef) {
             if (isResourceAvailableAndActive((ResourceRef) abstractResource)) {
                 return getAvailableActiveResource(
-                    ((ResourceRef) abstractResource).getTargetAbstractResource());
+                    ((ResourceRef) abstractResource).getTarget());
             }
         } else {
             throw HttpErrorMessage.dataIntegrityFailure();
@@ -211,7 +214,7 @@ public class ResourceFacade {
      * @return whether the resource can be taken into account or not
      */
     private boolean isResourceAvailableAndActive(ResourceRef resourceRef) {
-        AbstractResource target = resourceRef.getTargetAbstractResource();
+        AbstractResource target = resourceRef.getTarget();
         if (resourceRef.hasCard() && target.hasCardContent()
             && !resourceRef.resolve().isPublished()) {
             return false;
@@ -220,24 +223,150 @@ public class ResourceFacade {
         return !resourceRef.isRefused();
     }
 
+    /**
+     * Get all abstract resources of a given card type.
+     *
+     * @param abstractCardTypeId the id of the card type
+     *
+     * @return all abstract resources directly linked to the card type
+     */
+    public List<AbstractResource> getDirectAbstractResourcesOfAbstractCardType(
+        Long abstractCardTypeId) {
+        logger.debug("get abstract resources directly linked to abstract card type #{}",
+            abstractCardTypeId);
+        AbstractCardType abstractCardType = cardTypeDao.getAbstractCardType(abstractCardTypeId);
+        if (abstractCardType == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return abstractCardType.getDirectAbstractResources();
+    }
+
+    /**
+     * Get all abstract resources of a given card.
+     *
+     * @param cardId the id of the card
+     *
+     * @return all abstract resources directly linked to the card
+     */
+    public List<AbstractResource> getDirectAbstractResourcesOfCard(Long cardId) {
+        logger.debug("get abstract resources directly linked to card #{}", cardId);
+        Card card = cardDao.getCard(cardId);
+        if (card == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return card.getDirectAbstractResources();
+    }
+
+    /**
+     * Get all abstract resources of a given card content.
+     *
+     * @param cardContentId the id of the card content
+     *
+     * @return all abstract resources directly linked to the card content
+     */
+    public List<AbstractResource> getDirectAbstractResourcesOfCardContent(Long cardContentId) {
+        logger.debug("get abstract resources directly linked to card content #{}", cardContentId);
+        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+        if (cardContent == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        return cardContent.getDirectAbstractResources();
+    }
+
+    /**
+     * Retrieve the abstract resources directly linked to an abstract card type and all the chain of
+     * references to the concrete resource
+     *
+     * @param cardTypeOrRefId The id of the card type or reference
+     *
+     * @return For each abstract resource, the chain of abstract resources to the resource
+     */
+    public List<List<AbstractResource>> getResourceChainForAbstractCardType(Long cardTypeOrRefId) {
+        logger.debug("get resource chain linked to abstract card type #{}", cardTypeOrRefId);
+
+        AbstractCardType cardTypeOrRef = cardTypeDao.getAbstractCardType(cardTypeOrRefId);
+        if (cardTypeOrRef == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        List<AbstractResource> directResourceOrRefs = cardTypeOrRef.getDirectAbstractResources();
+
+        return expandCompleteChain(directResourceOrRefs);
+    }
+
+    /**
+     * Retrieve the abstract resources directly linked to a card and all the chain of references to
+     * the concrete resource
+     *
+     * @param cardId The id of the card
+     *
+     * @return For each abstract resource, the chain of abstract resources until the resource
+     */
+    public List<List<AbstractResource>> getResourceChainForCard(Long cardId) {
+        logger.debug("get resource chain linked to card #{}", cardId);
+
+        Card card = cardDao.getCard(cardId);
+        if (card == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        List<AbstractResource> directResourceOrRefs = card.getDirectAbstractResources();
+
+        return expandCompleteChain(directResourceOrRefs);
+    }
+
+    /**
+     * Retrieve the abstract resources directly linked to a card content and all the chain of
+     * references to the concrete resource
+     *
+     * @param cardContentId The id of the card content
+     *
+     * @return For each abstract resource, the chain of abstract resources until the resource
+     */
+    public List<List<AbstractResource>> getResourceChainForCardContent(Long cardContentId) {
+        logger.debug("get resource chain linked to card content #{}", cardContentId);
+
+        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+        if (cardContent == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        List<AbstractResource> directResourceOrRefs = cardContent.getDirectAbstractResources();
+
+        return expandCompleteChain(directResourceOrRefs);
+    }
+
+    private List<List<AbstractResource>> expandCompleteChain(
+        List<AbstractResource> directResourceOrRefs) {
+        List<List<AbstractResource>> allResults = new ArrayList<>();
+        directResourceOrRefs.forEach(resourceOrRef -> {
+            allResults.add(resourceOrRef.expand());
+        });
+
+        return allResults;
+    }
+
     // *********************************************************************************************
     // resource creation stuff
     // *********************************************************************************************
 
     /**
-     * Create a new resource for the document linked to the card type
+     * Create a new resource for the document linked to the card type (or card type reference).
      * <p>
      * Every child of the card type (recursively) acquires a reference to that resource or, for the
-     * grandchildren, to a reference to that resource
+     * grandchildren, to a reference to that resource.
      *
      * @param document   the document the resource represents
      * @param cardTypeId the id of the card type the resource must be linked to
+     * @param category   the category of the resource (for organization purpose)
      *
      * @return the brand new resource
      */
-    public Resource createResourceForCardType(Document document, Long cardTypeId) {
-        logger.debug("create a resource for document {} and card type #{}", document,
-            cardTypeId);
+    public Resource createResourceForAbstractCardType(Document document, Long cardTypeId,
+        String category) {
+        logger.debug(
+            "create a resource for document {} and an abstract card type #{} with category {}",
+            document, cardTypeId, category);
 
         if (document == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
@@ -248,20 +377,26 @@ public class ResourceFacade {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        CardType cardType = cardTypeDao.getCardType(cardTypeId);
-        if (cardType == null) {
+        AbstractCardType abstractCardType = cardTypeDao.getAbstractCardType(cardTypeId);
+        if (abstractCardType == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
         Resource resource = Resource.initNewResource();
-        resource.setAbstractCardType(cardType);
-        cardType.getDirectAbstractResources().add(resource);
+
+        resource.setAbstractCardType(abstractCardType);
+        abstractCardType.getDirectAbstractResources().add(resource);
+
         resource.setDocument(document);
         document.setResource(resource);
 
+        if (!Strings.isNullOrEmpty(category)) {
+            resource.setCategory(category);
+        }
+
         resource = resourceDao.persistResource(resource);
 
-        createResourceRefForChildren(cardType, resource); // see if propagate to card type ref also
+        createResourceRefForChildren(abstractCardType, resource);
 
         return resource;
     }
@@ -274,11 +409,13 @@ public class ResourceFacade {
      *
      * @param document the document the resource represents
      * @param cardId   the id of the card the resource must be linked to
+     * @param category the category of the resource (for organization purpose)
      *
      * @return the brand new resource
      */
-    public Resource createResourceForCard(Document document, Long cardId) {
-        logger.debug("create a resource for document {} and card #{}", document, cardId);
+    public Resource createResourceForCard(Document document, Long cardId, String category) {
+        logger.debug("create a resource for document {} and card #{} with category {}",
+            document, cardId, category);
 
         if (document == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
@@ -295,10 +432,16 @@ public class ResourceFacade {
         }
 
         Resource resource = Resource.initNewResource();
+
         resource.setCard(card);
         card.getDirectAbstractResources().add(resource);
+
         resource.setDocument(document);
         document.setResource(resource);
+
+        if (!Strings.isNullOrEmpty(category)) {
+            resource.setCategory(category);
+        }
 
         resource = resourceDao.persistResource(resource);
 
@@ -315,12 +458,14 @@ public class ResourceFacade {
      *
      * @param document      the document the resource represents
      * @param cardContentId the id of the card content the resource must be linked to
+     * @param category      the category of the resource (for organization purpose)
      *
      * @return the brand new resource
      */
-    public Resource createResourceForCardContent(Document document, Long cardContentId) {
-        logger.debug("create a resource for document {} and card content #{}", document,
-            cardContentId);
+    public Resource createResourceForCardContent(Document document, Long cardContentId,
+        String category) {
+        logger.debug("create a resource for document {} and card content #{} with category",
+            document, cardContentId, category);
 
         if (document == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
@@ -337,10 +482,16 @@ public class ResourceFacade {
         }
 
         Resource resource = Resource.initNewResource();
+
         resource.setCardContent(cardContent);
         cardContent.getDirectAbstractResources().add(resource);
+
         resource.setDocument(document);
         document.setResource(resource);
+
+        if (!Strings.isNullOrEmpty(category)) {
+            resource.setCategory(category);
+        }
 
         resource = resourceDao.persistResource(resource);
 
@@ -352,20 +503,47 @@ public class ResourceFacade {
     /**
      * Each child of the card type acquires a reference to the resource.
      *
-     * @param cardType the card type
+     * @param cardTypeOrRef the card type or card type reference
      * @param resource the resource we are linking
      */
-    private void createResourceRefForChildren(CardType cardType, AbstractResource resource) {
-        for (Card card : cardType.getImplementingCards()) {
+    private void createResourceRefForChildren(AbstractCardType cardTypeOrRef,
+        AbstractResource resource) {
+        for (AbstractCardType cardTypeRef : cardTypeOrRef.getReferences()) {
             ResourceRef resourceRef = ResourceRef.initNewResourceRef();
-            resourceRef.setTargetAbstractResource(resource);
-            resource.getSourceResourceRefs().add(resourceRef);
-            resourceRef.setCard(card);
-            card.getDirectAbstractResources().add(resourceRef);
+
+            resourceRef.setTarget(resource);
+            resource.getDirectReferences().add(resourceRef);
+
+            resourceRef.setAbstractCardType(cardTypeRef);
+            cardTypeRef.getDirectAbstractResources().add(resourceRef);
 
             resourceRefDao.persistResourceRef(resourceRef);
 
-            createResourceRefForChildren(card, resourceRef);
+            createResourceRefForChildren(cardTypeRef, resourceRef);
+        }
+
+        for (Card card : cardTypeOrRef.getImplementingCards()) {
+            ResourceRef cardResourceRef = ResourceRef.initNewResourceRef();
+
+            cardResourceRef.setTarget(resource);
+            resource.getDirectReferences().add(cardResourceRef);
+
+            cardResourceRef.setCard(card);
+            card.getDirectAbstractResources().add(cardResourceRef);
+
+            resourceRefDao.persistResourceRef(cardResourceRef);
+
+            for (CardContent cardContent : card.getContentVariants()) {
+                ResourceRef cardContentResourceRef = ResourceRef.initNewResourceRef();
+
+                cardContentResourceRef.setTarget(cardResourceRef);
+                cardResourceRef.getDirectReferences().add(cardContentResourceRef);
+
+                cardContentResourceRef.setCardContent(cardContent);
+                cardContent.getDirectAbstractResources().add(cardContentResourceRef);
+
+                resourceRefDao.persistResourceRef(cardContentResourceRef);
+            }
         }
     }
 
@@ -378,8 +556,10 @@ public class ResourceFacade {
     private void createResourceRefForChildren(Card card, AbstractResource resource) {
         for (CardContent cardContent : card.getContentVariants()) {
             ResourceRef resourceRef = ResourceRef.initNewResourceRef();
-            resourceRef.setTargetAbstractResource(resource);
-            resource.getSourceResourceRefs().add(resourceRef);
+
+            resourceRef.setTarget(resource);
+            resource.getDirectReferences().add(resourceRef);
+
             resourceRef.setCardContent(cardContent);
             cardContent.getDirectAbstractResources().add(resourceRef);
 
@@ -398,8 +578,10 @@ public class ResourceFacade {
     private void createResourceRefForChildren(CardContent cardContent, AbstractResource resource) {
         for (Card card : cardContent.getSubCards()) {
             ResourceRef resourceRef = ResourceRef.initNewResourceRef();
-            resourceRef.setTargetAbstractResource(resource);
-            resource.getSourceResourceRefs().add(resourceRef);
+
+            resourceRef.setTarget(resource);
+            resource.getDirectReferences().add(resourceRef);
+
             resourceRef.setCard(card);
             card.getDirectAbstractResources().add(resourceRef);
 
@@ -407,6 +589,62 @@ public class ResourceFacade {
 
             createResourceRefForChildren(card, resourceRef);
         }
+    }
+
+    // *********************************************************************************************
+    // deletion
+    // *********************************************************************************************
+
+    /**
+     * Delete a resource
+     *
+     * @param resourceId the id of the resource to delete
+     */
+    public void deleteResource(Long resourceId) {
+        logger.debug("delete resource #{}", resourceId);
+
+        AbstractResource resource = resourceOrRefDao.findResourceOrRef(resourceId);
+        if (resource == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+            // or just return. see what is best
+        }
+
+        if (!(resource instanceof Resource)) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        deleteResourceAndRefs(resource);
+
+        // Note : the document is deleted by cascade
+    }
+
+    /**
+     * Delete each reference pointing at the given resourceOrRef
+     *
+     * @param resourceOrRef The initial abstract resource to delete
+     */
+    private void deleteResourceAndRefs(AbstractResource resourceOrRef) {
+        List<ResourceRef> references = resourceOrRef.getDirectReferences();
+        if (references != null) {
+            references.stream().forEach(ref -> deleteResourceAndRefs(ref));
+        }
+
+        if (resourceOrRef.hasAbstractCardType()) {
+            AbstractCardType cardTypeOrRef = resourceOrRef.getAbstractCardType();
+            cardTypeOrRef.getDirectAbstractResources().remove(resourceOrRef);
+        }
+
+        if (resourceOrRef.hasCard()) {
+            Card card = resourceOrRef.getCard();
+            card.getDirectAbstractResources().remove(resourceOrRef);
+        }
+
+        if (resourceOrRef.hasCardContent()) {
+            CardContent cardContent = resourceOrRef.getCardContent();
+            cardContent.getDirectAbstractResources().remove(resourceOrRef);
+        }
+
+        resourceOrRefDao.deleteResourceOrRef(resourceOrRef.getId());
     }
 
     // *********************************************************************************************
@@ -551,7 +789,6 @@ public class ResourceFacade {
     }
 
     // Note : the sub cards card type / card type reference are not changed. Should they ?
-
 
     /**
      * Rename the category in a card type / card type reference<br>

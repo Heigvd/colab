@@ -11,7 +11,6 @@ import ch.colabproject.colab.api.ejb.ResourceFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
-import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.persistence.card.CardTypeDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
@@ -101,10 +100,9 @@ public class CardTypeRestEndpoint {
         return cardTypeDao.getPublishedGlobalCardType();
     }
 
-
     /**
-     * Retrieve the list of published card types accessible to current user.
-     * It means all the published types of project the current user is member of.
+     * Retrieve the list of published card types accessible to current user. It means all the
+     * published types of project the current user is member of.
      *
      * @return all published card types
      */
@@ -182,31 +180,19 @@ public class CardTypeRestEndpoint {
     }
 
     /**
-     * Get the available active resources linked to a card definition
+     * Get the available active resources linked to a card type
      *
-     * @param cardDefId id of the card definition
+     * @param abstractCardTypeId id of the card type or card type reference
      *
      * @return list of matching resources
      */
     @GET
     @Path("{id}/Resources")
-    public List<Resource> getAvailableActiveLinkedResources(@PathParam("id") Long cardDefId) {
-        logger.debug("get available and active resources linked to card definition #{}", cardDefId);
-        return resourceFacade.getAvailableActiveResourcesLinkedToCardType(cardDefId);
-    }
-
-    /**
-     * Get all abstract resources directly linked to the card definition
-     *
-     * @param cardDefId the id of the card definition
-     *
-     * @return list of directly linked abstract resources
-     */
-    @GET
-    @Path("{id}/AbstractResources")
-    public List<AbstractResource> getDirectAbstractResourcesOfCardDef(@PathParam("id") Long cardDefId) {
-        logger.debug("get direct abstract resources linked to card definition #{}", cardDefId);
-        return cardFacade.getDirectAbstractResourcesOfCardType(cardDefId);
+    public List<Resource> getAvailableActiveLinkedResources(
+        @PathParam("id") Long abstractCardTypeId) {
+        logger.debug("get available and active resources linked to abstract card type #{}",
+            abstractCardTypeId);
+        return resourceFacade.getAvailableActiveResourcesLinkedToAbstractCardType(abstractCardTypeId);
     }
 
 }

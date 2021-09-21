@@ -16,36 +16,43 @@ import StickyNoteList from './StickyNoteList';
  * In this component, we load the sticky note links if necessary and display the StickyNoteList
  */
 
-interface StickyNoteWrapperProps {
-  cardDestId: number;
+export interface StickyNoteWrapperProps {
+  destCardId: number;
   showSrc?: boolean;
   showDest?: boolean;
   // TODO complete with srcCardId, srcCardContentId, srcResourceId, srcBlockId
 }
 
 export default function StickyNoteWrapper({
-  cardDestId,
+  destCardId,
   showSrc,
   showDest,
 }: StickyNoteWrapperProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const { stickyNotes: stickyNotesForDest, status } = useStickyNoteLinksForDest(cardDestId!);
+  const { stickyNotesForDest, status } = useStickyNoteLinksForDest(destCardId);
   const allStickyNotes = stickyNotesForDest; // to concat with StickyNotesForSrc...
 
   React.useEffect(() => {
-    if (status == 'NOT_INITIALIZED' && cardDestId) {
-      dispatch(API.getStickyNoteLinkAsDest(cardDestId));
+    if (status === 'NOT_INITIALIZED' && destCardId) {
+      dispatch(API.getStickyNoteLinkAsDest(destCardId));
     }
-  }, [status, dispatch, cardDestId]);
+  }, [status, dispatch, destCardId]);
 
-  if (status == 'NOT_INITIALIZED') {
+  if (status === 'NOT_INITIALIZED') {
     return <InlineLoading />;
-  } else if (status == 'LOADING') {
+  } else if (status === 'LOADING') {
     return <InlineLoading />;
   } else if (allStickyNotes == null) {
     return <div>no sticky notes list, no display</div>;
   } else {
-    return <StickyNoteList stickyNotes={allStickyNotes} showSrc={showSrc} showDest={showDest} />;
+    return (
+      <StickyNoteList
+        stickyNotes={allStickyNotes}
+        destCardId={destCardId}
+        showSrc={showSrc}
+        showDest={showDest}
+      />
+    );
   }
 }

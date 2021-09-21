@@ -63,13 +63,7 @@ const userSlice = createSlice({
           state.users[user.id] = user;
         }
         if (accounts != null) {
-          const map: { [id: number]: Account } = {};
-          accounts.forEach(a => {
-            if (a && a.id) {
-              map[a.id] = a;
-            }
-          });
-          state.accounts = { ...state.accounts, ...map };
+          state.accounts = { ...state.accounts, ...mapById(accounts) };
         }
         if (account && account.id != null) {
           state.accounts[account.id] = account;

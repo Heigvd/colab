@@ -8,16 +8,19 @@ package ch.colabproject.colab.api.rest.document;
 
 import ch.colabproject.colab.api.ejb.ResourceFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import ch.colabproject.colab.api.persistence.document.AbstractResourceDao;
 import ch.colabproject.colab.api.persistence.document.ResourceDao;
 import ch.colabproject.colab.api.persistence.document.ResourceRefDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -47,6 +50,12 @@ public class ResourceRestEndpoint {
     // *********************************************************************************************
 
     /**
+     * The abstract resource persistence manager
+     */
+    @Inject
+    private AbstractResourceDao abstractResourceDao;
+
+    /**
      * The resource persistence manager
      */
     @Inject
@@ -59,42 +68,109 @@ public class ResourceRestEndpoint {
     private ResourceRefDao resourceRefDao;
 
     /**
-     * The resource-related logic
+     * The resource and resource reference related logic
      */
     @Inject
     private ResourceFacade resourceFacade;
 
     // *********************************************************************************************
-    // RU
+    // read
     // *********************************************************************************************
 
     /**
-     * Get the resource identified by the given id
+     * Get the resource or resource reference identified by the given id
      *
-     * @param id the id of the resource to fetch
+     * @param id the id of the resource or resource reference to fetch
      *
-     * @return the resource or null
+     * @return the resource or resource reference or null
      */
     @GET
     @Path("{id}")
-    public Resource getResource(@PathParam("id") Long id) {
-        logger.debug("get resource #{}", id);
-        return resourceDao.findResource(id);
+    public AbstractResource getAbstractResource(@PathParam("id") Long id) {
+        logger.debug("get abstract resource #{}", id);
+        return abstractResourceDao.findResourceOrRef(id);
+    }
+
+//    /**
+//     * Get the resource identified by the given id
+//     *
+//     * @param id the id of the resource to fetch
+//     *
+//     * @return the resource or null
+//     */
+//    @GET
+//    @Path("{id}")
+//    public Resource getResource(@PathParam("id") Long id) {
+//        logger.debug("get resource #{}", id);
+//        return resourceDao.findResource(id);
+//    }
+//
+//    /**
+//     * Get the resource reference identified by the given id
+//     *
+//     * @param id the id of the resource reference to fetch
+//     *
+//     * @return the resource reference or null
+//     */
+//    @GET
+//    @Path("ref/{id}")
+//    public ResourceRef getResourceReference(@PathParam("id") Long id) {
+//        logger.debug("get resource reference #{}", id);
+//        return resourceRefDao.findResourceRef(id);
+//    }
+
+    /**
+     * Get the resources linked to the card type or reference. With a list of resource references to
+     * retrieve each resource.
+     *
+     * @param cardTypeOrRefId the id of the abstract card type for which we look for the linked
+     *                        resources
+     *
+     * @return The targeted resource and a list of the references to get it
+     */
+    @GET
+    @Path("fromCardType/{cardTypeOrRefId}")
+    public List<List<AbstractResource>> getResourceChainForAbstractCardType(
+        @PathParam("cardTypeOrRefId") Long cardTypeOrRefId) {
+        logger.debug("get resource chain for card content #{}", cardTypeOrRefId);
+        return resourceFacade.getResourceChainForAbstractCardType(cardTypeOrRefId);
     }
 
     /**
-     * Get the resource reference identified by the given id
+     * Get the resources linked to the card. With a list of resource references to retrieve each
+     * resource.
      *
-     * @param id the id of the resource reference to fetch
+     * @param cardId the id of the card for which we look for the linked resources
      *
-     * @return the resource reference or null
+     * @return The targeted resource and a list of the references to get it
      */
     @GET
-    @Path("ref/{id}")
-    public ResourceRef getResourceReference(@PathParam("id") Long id) {
-        logger.debug("get resource reference #{}", id);
-        return resourceRefDao.findResourceRef(id);
+    @Path("fromCard/{cardId}")
+    public List<List<AbstractResource>> getResourceChainForCard(
+        @PathParam("cardId") Long cardId) {
+        logger.debug("get resource chain for card content #{}", cardId);
+        return resourceFacade.getResourceChainForCard(cardId);
     }
+
+    /**
+     * Get the resources linked to the card content. With a list of resource references to retrieve
+     * each resource.
+     *
+     * @param cardContentId the id of the card content for which we look for the linked resources
+     *
+     * @return The targeted resources and a list of the references to get them
+     */
+    @GET
+    @Path("fromCardContent/{cardContentId}")
+    public List<List<AbstractResource>> getResourceChainForCardContent(
+        @PathParam("cardContentId") Long cardContentId) {
+        logger.debug("get resource chain for card content #{}", cardContentId);
+        return resourceFacade.getResourceChainForCardContent(cardContentId);
+    }
+
+    // *********************************************************************************************
+    // update
+    // *********************************************************************************************
 
     /**
      * Save changes to database
@@ -108,6 +184,8 @@ public class ResourceRestEndpoint {
         logger.debug("update resource {}", resource);
         resourceDao.updateResource(resource);
     }
+
+    // TODO see if updateResourceOrRef(AbstractResource resource)
 
     /**
      * Save changes to database
@@ -128,25 +206,50 @@ public class ResourceRestEndpoint {
     // *********************************************************************************************
 
     /**
-     * Create a resource to link the document and the card type and create a reference to that new
-     * resource for each child (recursively)
+     * Create a resource to link the document and the card type (or card type reference). Also
+     * create a reference to that new resource for each child (recursively)
      *
-     * @param document   the document represented by the new resource
-     * @param cardTypeId the id of the card type the resource must be linked to
+     * @param document           the document represented by the new resource
+     * @param abstractCardTypeId the id of the card type (or card type reference) the resource must
+     *                           be linked to
      *
      * @return id of the persisted new resource
      */
     @POST
-    @Path("createForCardType/{cardTypeId}")
-    public Resource createResourceForCardType(@PathParam("cardTypeId") Long cardTypeId,
+    @Path("createForAbstractCardType/{abstractCardTypeId}")
+    public Resource createResourceForAbstractCardType(
+        @PathParam("abstractCardTypeId") Long abstractCardTypeId,
         Document document) {
-        logger.debug("create resource for document {} and card type #{}", document,
-            cardTypeId);
-        return resourceFacade.createResourceForCardType(document, cardTypeId);
+        logger.debug("create resource for document {} and abstract card type #{}",
+            document, abstractCardTypeId);
+        return resourceFacade.createResourceForAbstractCardType(document, abstractCardTypeId,
+            null);
     }
 
     /**
-     * Create a resource to link the document and the card and create a reference to that new
+     * Create a resource to link the document and the card type (or card type reference). Also
+     * create a reference to that new resource for each child (recursively)
+     *
+     * @param document           the document represented by the new resource
+     * @param abstractCardTypeId the id of the card type (or card type reference) the resource must
+     *                           be linked to
+     * @param category           the category of the resource (for organization purpose)
+     *
+     * @return id of the persisted new resource
+     */
+    @POST
+    @Path("createForAbstractCardTypeWithCategory/{abstractCardTypeId}/{category}")
+    public Resource createResourceForAbstractCardTypeWithCategory(
+        @PathParam("abstractCardTypeId") Long abstractCardTypeId,
+        @PathParam("category") String category, Document document) {
+        logger.debug("create resource for document {} and abstract card type #{} with category {}",
+            document, abstractCardTypeId, category);
+        return resourceFacade.createResourceForAbstractCardType(document, abstractCardTypeId,
+            category);
+    }
+
+    /**
+     * Create a resource to link the document and the card. Also create a reference to that new
      * resource for each child (recursively)
      *
      * @param document the document represented by the new resource
@@ -156,13 +259,33 @@ public class ResourceRestEndpoint {
      */
     @POST
     @Path("createForCard/{cardId}")
-    public Resource createResourceForCard(@PathParam("cardId") Long cardId, Document document) {
+    public Resource createResourceForCard(@PathParam("cardId") Long cardId,
+        Document document) {
         logger.debug("create resource for document {} and cardId #{}", document, cardId);
-        return resourceFacade.createResourceForCard(document, cardId);
+        return resourceFacade.createResourceForCard(document, cardId, null);
     }
 
     /**
-     * Create a resource to link the document and the card content and create a reference to that
+     * Create a resource to link the document and the card. Also create a reference to that new
+     * resource for each child (recursively)
+     *
+     * @param document the document represented by the new resource
+     * @param cardId   the id of the card the resource must be linked to
+     * @param category the category of the resource (for organization purpose)
+     *
+     * @return id of the persisted new resource
+     */
+    @POST
+    @Path("createForCardWithCategory/{cardId}/{category}")
+    public Resource createResourceForCardWithCategory(@PathParam("cardId") Long cardId,
+        @PathParam("category") String category, Document document) {
+        logger.debug("create resource for document {} and cardId #{} with category {}", document,
+            cardId, category);
+        return resourceFacade.createResourceForCard(document, cardId, category);
+    }
+
+    /**
+     * Create a resource to link the document and the card content. Also create a reference to that
      * new resource for each child (recursively)
      *
      * @param document      the document represented by the new resource
@@ -176,7 +299,43 @@ public class ResourceRestEndpoint {
         Document document) {
         logger.debug("create resource for document {} and card content #{}", document,
             cardContentId);
-        return resourceFacade.createResourceForCardContent(document, cardContentId);
+        return resourceFacade.createResourceForCardContent(document, cardContentId, null);
+    }
+
+    /**
+     * Create a resource to link the document and the card content. Also create a reference to that
+     * new resource for each child (recursively)
+     *
+     * @param document      the document represented by the new resource
+     * @param cardContentId the id of the card content the resource must be linked to
+     * @param category      the category of the resource (for organization purpose)
+     *
+     * @return id of the persisted new resource
+     */
+    @POST
+    @Path("createForCardContentWithCategory/{cardContentId}/{category}")
+    public Resource createResourceForCardContentWithCategory(
+        @PathParam("cardContentId") Long cardContentId,
+        @PathParam("category") String category, Document document) {
+        logger.debug("create resource for document {} and card content #{} with category {}",
+            document, cardContentId, category);
+        return resourceFacade.createResourceForCardContent(document, cardContentId, category);
+    }
+
+    // *********************************************************************************************
+    // deletion
+    // *********************************************************************************************
+
+    /**
+     * Permanently delete a resource
+     *
+     * @param id the id of the resource to delete
+     */
+    @DELETE
+    @Path("{id}")
+    public void deleteResource(@PathParam("id") Long id) {
+        logger.debug("delete resource #{}", id);
+        resourceFacade.deleteResource(id);
     }
 
     // *********************************************************************************************

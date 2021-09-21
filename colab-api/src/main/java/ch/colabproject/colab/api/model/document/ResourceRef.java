@@ -9,6 +9,8 @@ package ch.colabproject.colab.api.model.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import java.util.ArrayList;
+import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -43,13 +45,13 @@ public class ResourceRef extends AbstractResource {
      */
     @OneToOne(fetch = FetchType.LAZY)
     @JsonbTransient
-    private AbstractResource targetAbstractResource;
+    private AbstractResource target;
 
     /**
      * The abstract resource id (serialization sugar)
      */
     @Transient
-    private Long targetAbstractResourceId;
+    private Long targetId;
 
     /**
      * If the target resource is not useful for that card/cardDef/cardContent
@@ -74,50 +76,52 @@ public class ResourceRef extends AbstractResource {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * @return the abstract resource this reference aims at
+     * @return the resource (or resource reference) this reference aims at
      */
-    public AbstractResource getTargetAbstractResource() {
-        return targetAbstractResource;
+    public AbstractResource getTarget() {
+        return target;
     }
 
     /**
-     * @param targetAbstractResource the abstract resource this reference aims at
+     * @param target the resource (or resource reference) this reference aims at
      */
-    public void setTargetAbstractResource(AbstractResource targetAbstractResource) {
-        this.targetAbstractResource = targetAbstractResource;
+    public void setTarget(AbstractResource target) {
+        this.target = target;
     }
 
     /**
-     * get the id of the abstract resource this reference aims at. To be sent to client
+     * get the id of the resource (or resource reference) this reference aims at. To be sent to
+     * client
      *
      * @return id of the abstract resource or null
      */
-    public Long getTargetAbstractResourceId() {
-        if (targetAbstractResource != null) {
-            return targetAbstractResource.getId();
+    public Long getTargetId() {
+        if (target != null) {
+            return target.getId();
         } else {
-            return targetAbstractResourceId;
+            return targetId;
         }
     }
 
     /**
-     * set the id of the abstract resource this reference aims at. For serialization only
+     * set the id of the resource (or resource reference) this reference aims at. For serialization
+     * only
      *
-     * @param targetAbstractResourceId the id of the abstract resource
+     * @param targetId the id of the resource or resource reference
      */
-    public void setTargetAbstractResourceId(Long targetAbstractResourceId) {
-        this.targetAbstractResourceId = targetAbstractResourceId;
+    public void setTargetId(Long targetId) {
+        this.targetId = targetId;
     }
 
     /**
-     * @return if the target resource is not useful for that card/cardDef/cardContent
+     * @return if the targeted resource is not useful for that card/cardDef/cardContent
      */
     public boolean isRefused() {
         return refused;
     }
 
     /**
-     * @param refused if the target resource is not useful for that card/cardDef/cardContent
+     * @param refused if the targeted resource is not useful for that card/cardDef/cardContent
      */
     public void setRefused(boolean refused) {
         this.refused = refused;
@@ -129,12 +133,23 @@ public class ResourceRef extends AbstractResource {
 
     @Override
     public Resource resolve() {
-        if (this.targetAbstractResource instanceof Resource) {
-            return (Resource) this.targetAbstractResource;
-        } else if (this.targetAbstractResource instanceof ResourceRef) {
-            return ((ResourceRef) targetAbstractResource).resolve();
+        if (this.target instanceof Resource) {
+            return (Resource) this.target;
+        } else if (this.target instanceof ResourceRef) {
+            return ((ResourceRef) target).resolve();
         }
         return null;
+    }
+
+    @Override
+    public List<AbstractResource> expand() {
+        List<AbstractResource> list = new ArrayList<>();
+
+        list.add(this);
+        if (this.target != null) {
+            list.addAll(this.target.expand());
+        }
+        return list;
     }
 
     @Override
@@ -161,8 +176,8 @@ public class ResourceRef extends AbstractResource {
 
     @Override
     public String toString() {
-        return "ResourceRef{" + toPartialString() + ", targetAbstractResourceId="
-            + targetAbstractResourceId + ", refused=" + refused + "}";
+        return "ResourceRef{" + toPartialString() + ", targetId=" + getTargetId()
+            + ", refused=" + refused + "}";
     }
 
 }

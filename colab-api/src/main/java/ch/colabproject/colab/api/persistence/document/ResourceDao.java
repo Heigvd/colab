@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author sandra
  */
-// TODO see if we collapse into an AbstractResourceRef
 @Stateless
 @LocalBean
 public class ResourceDao {
@@ -39,7 +38,7 @@ public class ResourceDao {
      *
      * @return the resource with the given id or null if such a resource does not exists
      */
-    public Resource findResource(Long id) {
+    private Resource findResource(Long id) {
         try {
             logger.debug("find resource #{}", id);
             return em.find(Resource.class, id);
@@ -74,21 +73,6 @@ public class ResourceDao {
     public Resource persistResource(Resource resource) {
         logger.debug("persist resource {}", resource);
         em.persist(resource);
-        return resource;
-    }
-
-    /**
-     * Delete an resource from database. This can't be undone
-     *
-     * @param id the id of the resource to delete
-     *
-     * @return just deleted resource
-     */
-    public Resource deleteResource(Long id) {
-        logger.debug("delete resource #{}", id);
-        // TODO: move to recycle bin first
-        Resource resource = this.findResource(id);
-        em.remove(resource);
         return resource;
     }
 

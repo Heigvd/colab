@@ -153,7 +153,7 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
   }, []);
 
   return (
-    <OpenClose collaspedChildren={<IconButton icon={faPlus} />}>
+    <OpenClose collapsedChildren={<IconButton icon={faPlus} />}>
       {collapse => (
         <>
           <input onChange={onChange} value={name} />

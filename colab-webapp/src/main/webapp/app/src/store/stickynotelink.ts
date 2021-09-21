@@ -8,11 +8,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { StickyNoteLink } from 'colab-rest-client';
 import * as API from '../API/api';
-import { loadingStatus } from './store';
+import { processMessage } from '../ws/wsThunkActions';
+import { LoadingStatus } from './store';
 
 export interface StickyNoteLinkState {
-  stickyNotes: Record<number, { stickyNote: StickyNoteLink }>;
-  byCardDest: Record<number, { stickyNoteIds: number[]; status: loadingStatus }>;
+  stickyNotes: Record<number, StickyNoteLink>;
+  byCardDest: Record<number, { stickyNoteIds: number[]; status: LoadingStatus }>;
 }
 
 const initialState: StickyNoteLinkState = {
@@ -20,18 +21,38 @@ const initialState: StickyNoteLinkState = {
   byCardDest: {},
 };
 
-// TODO handle every change
+// To handle when possible : destination change
+const updateStickyNote = (state: StickyNoteLinkState, stickyNote: StickyNoteLink) => {
+  if (stickyNote.id != null) {
+    if (stickyNote.destinationCardId) {
+      const stateForDestCard = state.byCardDest[stickyNote.destinationCardId];
+      if (stateForDestCard) {
+        // new sticky note handling
+        if (!stateForDestCard.stickyNoteIds.includes(stickyNote.id)) {
+          stateForDestCard.stickyNoteIds.push(stickyNote.id);
+        }
+      }
+    }
 
-//const updateLink = (state: StickyNoteLinkState, link: StickyNoteLink) => {
-//  if (link.id != null) {
-//    state.stickyNotes[link.id] = { link };
-//  }
-//};
+    state.stickyNotes[stickyNote.id] = stickyNote;
+  }
+};
 
-// TODO handle everything
-//const removeLink = (state: StickyNoteLinkState, linkId: number) => {
-//  delete state.stickyNotes[linkId];
-//};
+const removeStickyNote = (state: StickyNoteLinkState, stickyNoteId: number) => {
+  const stickyNoteState = state.stickyNotes[stickyNoteId];
+
+  if (stickyNoteState && stickyNoteState.destinationCardId) {
+    const stateForDestCard = state.byCardDest[stickyNoteState.destinationCardId];
+    if (stateForDestCard) {
+      const index = stateForDestCard.stickyNoteIds.indexOf(stickyNoteId);
+      if (index >= 0) {
+        stateForDestCard.stickyNoteIds.splice(index, 1);
+      }
+    }
+  }
+
+  delete state.stickyNotes[stickyNoteId];
+};
 
 const stickyNoteLinksSlice = createSlice({
   name: 'stickynotelinks',
@@ -39,10 +60,12 @@ const stickyNoteLinksSlice = createSlice({
   reducers: {},
   extraReducers: builder =>
     builder
-      //.addCase(processMessage.fulfilled, (state, action) => {
-      //  action.payload.stickynotelinks.updated.forEach(link => updateLink(state, link));
-      //  action.payload.stickynotelinks.deleted.forEach(entry => removeLink(state, entry.id));
-      //})
+      .addCase(processMessage.fulfilled, (state, action) => {
+        action.payload.stickynotelinks.updated.forEach(sn => updateStickyNote(state, sn));
+        action.payload.stickynotelinks.deleted.forEach(indexEntry =>
+          removeStickyNote(state, indexEntry.id),
+        );
+      })
       //.addCase(API.getStickyNoteLink.pending, (state, action) => {
       //  state.links[action.meta.arg] = null;
       //})
@@ -62,7 +85,7 @@ const stickyNoteLinksSlice = createSlice({
 
         action.payload.forEach(stickyNote => {
           if (stickyNote && stickyNote.id) {
-            state.stickyNotes[stickyNote.id] = { stickyNote };
+            state.stickyNotes[stickyNote.id] = stickyNote;
           }
         });
       })
