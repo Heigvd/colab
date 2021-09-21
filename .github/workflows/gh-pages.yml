@@ -39,4 +39,4 @@ jobs:
     - name: Install no tests
       run: mvn -Dreporting -B -DskipTests install
     - name: Build Site
-      run: mvn -Dreporting -B site site:stage
+      run: mvn -Dreporting -B -pl colab-api site site:stage
