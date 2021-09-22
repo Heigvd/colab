@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.microchanges.live;
 
+import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.ejb.TransactionManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.microchanges.model.Change;
@@ -66,6 +67,9 @@ public class LiveManager implements Serializable {
     /** Hazelcast instance. */
     @Inject
     private HazelcastInstance hzInstance;
+
+    @Inject
+    private RequestManager requestManager;
 
     /**
      * To register changes as updated object
@@ -225,32 +229,34 @@ public class LiveManager implements Serializable {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void process(Long blockId) {
-        logger.debug("Process changes for #{}", blockId);
-        try {
-            this.lock(blockId);
-            Block block = blockDao.findBlock(blockId);
-            if (block instanceof TextDataBlock) {
-                TextDataBlock txtBlock = (TextDataBlock) block;
-                LiveUpdates get = this.cache.get(blockId);
-                if (get != null) {
-                    try {
-                        LiveResult result = get.process(false);
-                        txtBlock.setTextData(result.getContent());
-                        txtBlock.setRevision(result.getRevision());
+        requestManager.sudo(() -> {
+            logger.debug("Process changes for #{}", blockId);
+            try {
+                this.lock(blockId);
+                Block block = blockDao.findBlock(blockId);
+                if (block instanceof TextDataBlock) {
+                    TextDataBlock txtBlock = (TextDataBlock) block;
+                    LiveUpdates get = this.cache.get(blockId);
+                    if (get != null) {
+                        try {
+                            LiveResult result = get.process(false);
+                            txtBlock.setTextData(result.getContent());
+                            txtBlock.setRevision(result.getRevision());
 
-                        blockDao.updateBlock(block);
-                        this.deletePendingChangesAndPropagate(blockId);
-                    } catch (RuntimeException ex) {
-                        logger.error("Process failed", ex);
-                        throw ex;
-                    } catch (ColabMergeException ex) {
-                        logger.error("Fails to save block", ex);
+                            blockDao.updateBlock(block);
+                            this.deletePendingChangesAndPropagate(blockId);
+                        } catch (RuntimeException ex) {
+                            logger.error("Process failed", ex);
+                            throw ex;
+                        } catch (ColabMergeException ex) {
+                            logger.error("Fails to save block", ex);
+                        }
                     }
                 }
+            } finally {
+                this.unlock(blockId);
             }
-        } finally {
-            this.unlock(blockId);
-        }
+        });
     }
 
     /**
