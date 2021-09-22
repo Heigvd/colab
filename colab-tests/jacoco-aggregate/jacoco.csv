@@ -42,7 +42,7 @@ colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.
 colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.HasCardWriteRight,12,44,4,4,5,13,5,4,1,4
 colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.AlwaysFalse,19,0,0,0,6,0,4,0,4,0
 colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.AlwaysTrue,5,14,0,0,2,4,2,2,2,2
-colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserOwnerOfProject,33,23,8,0,11,7,6,3,2,3
+colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserOwnerOfProject,21,35,5,3,7,11,5,4,1,4
 colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.HasCardReadRight,33,23,8,0,11,7,6,3,2,3
 colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.Condition,0,35,0,2,0,9,0,3,0,2
 colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserInternToProject,50,6,8,0,15,3,8,1,4,1
