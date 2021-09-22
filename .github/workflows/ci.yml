@@ -30,6 +30,10 @@ jobs:
           - 8025:8025
     steps:
     - uses: actions/checkout@v2
+    - name: Setup Maven
+      uses: stCarolas/setup-maven@v4.2
+      with:
+        maven-version: 3.8.1
     - name: Cache local Maven repository
       uses: actions/cache@v2
       with:
