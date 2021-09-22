@@ -29,11 +29,8 @@ module.exports = {
         path: path.resolve(__dirname, 'dist')
     },
     devServer: {
-        stats: 'errors-warnings',
         host: '0.0.0.0',
         port: 3004,
-        overlay: true,
-        publicPath: '/dist',
         proxy: {
             '/favicon_128.png': 'http://localhost:8080',
             '/api': 'http://localhost:8080',
@@ -41,6 +38,21 @@ module.exports = {
                 target: 'ws://localhost:8080',
                 ws: true
             }
+        },
+        client:{
+            overlay: true,
+            webSocketURL: {
+                hostname: "0.0.0.0",
+                pathname: "/webpackws",
+                port: 0,
+            },
+        },
+        devMiddleware: {
+            stats: 'errors-warnings',
+            publicPath: '/dist',
+        },
+        webSocketServer: {
+            options: {path: '/webpackws'}
         }
     }
 };
