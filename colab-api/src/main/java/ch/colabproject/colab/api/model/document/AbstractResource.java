@@ -434,6 +434,7 @@ public abstract class AbstractResource
     }
 
 
+    @Override
     public Set<WebsocketChannel> getChannels() {
         if (this.abstractCardType != null) {
             // the abstract resource is linked to a card type / card type reference
