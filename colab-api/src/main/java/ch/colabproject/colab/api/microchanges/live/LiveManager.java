@@ -68,6 +68,7 @@ public class LiveManager implements Serializable {
     @Inject
     private HazelcastInstance hzInstance;
 
+    /** The request manager */
     @Inject
     private RequestManager requestManager;
 
