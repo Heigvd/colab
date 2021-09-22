@@ -16,7 +16,7 @@ colab-tests/colab-api,ch.colabproject.colab.api.ejb,StickyNoteLinkFacade,50,287,
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,StickyNoteLinkFacade.SrcType,0,44,0,0,0,5,0,1,0,1
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest,12,59,0,0,1,23,1,12,1,12
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,CdiBridgeSingleton,18,8,0,0,5,3,3,3,3,3
-colab-tests/colab-api,ch.colabproject.colab.api.ejb,UserManagement,115,420,25,29,37,114,25,25,5,18
+colab-tests/colab-api,ch.colabproject.colab.api.ejb,UserManagement,115,420,24,30,37,114,24,26,5,18
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,70,299,36,30,14,67,29,33,1,28
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.SubscriptionType,0,24,0,0,0,3,0,1,0,1
 colab-tests/colab-api,ch.colabproject.colab.api.ejb,ApplicationLifecycleFacade,10,34,1,1,4,13,1,4,0,4
@@ -42,7 +42,7 @@ colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.
 colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.HasCardWriteRight,12,44,4,4,5,13,5,4,1,4
 colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.AlwaysFalse,19,0,0,0,6,0,4,0,4,0
 colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.AlwaysTrue,5,14,0,0,2,4,2,2,2,2
-colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserOwnerOfProject,21,35,5,3,7,11,5,4,1,4
+colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserOwnerOfProject,33,23,8,0,11,7,6,3,2,3
 colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.HasCardReadRight,33,23,8,0,11,7,6,3,2,3
 colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.Condition,0,35,0,2,0,9,0,3,0,2
 colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserInternToProject,50,6,8,0,15,3,8,1,4,1
@@ -50,7 +50,7 @@ colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.
 colab-tests/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserMemberOfProject,8,48,4,4,4,14,4,5,0,5
 colab-tests/colab-api,ch.colabproject.colab.api.microchanges.live,LiveUpdates,305,1002,57,101,58,209,54,62,10,27
 colab-tests/colab-api,ch.colabproject.colab.api.microchanges.live,LiveResult,3,26,0,0,1,10,1,5,1,5
-colab-tests/colab-api,ch.colabproject.colab.api.microchanges.live,LiveManager,357,12,24,0,101,3,25,2,13,2
+colab-tests/colab-api,ch.colabproject.colab.api.microchanges.live,LiveManager,364,12,24,0,103,3,26,2,14,2
 colab-tests/colab-api,ch.colabproject.colab.api.ws.utils,JsonDecoder,3,26,0,0,2,8,0,5,0,5
 colab-tests/colab-api,ch.colabproject.colab.api.ws.utils,JsonEncoder,8,14,0,0,2,6,0,5,0,5
 colab-tests/colab-api,ch.colabproject.colab.api.ws.utils,CallableGetChannel,14,0,2,0,5,0,3,0,2,0
