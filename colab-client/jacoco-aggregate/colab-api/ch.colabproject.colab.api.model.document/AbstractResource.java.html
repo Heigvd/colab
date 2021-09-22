@@ -434,39 +434,40 @@ import javax.persistence.Transient;
     }
 
 
+    @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L438" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
+<span class="nc bnc" id="L439" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
             // the abstract resource is linked to a card type / card type reference
-<span class="nc" id="L440">            return this.abstractCardType.getChannels();</span>
-<span class="nc bnc" id="L441" title="All 2 branches missed.">        } else if (this.card != null) {</span>
+<span class="nc" id="L441">            return this.abstractCardType.getChannels();</span>
+<span class="nc bnc" id="L442" title="All 2 branches missed.">        } else if (this.card != null) {</span>
             // the abstract resource is linked to a card
-<span class="nc" id="L443">            return this.card.getChannels();</span>
-<span class="nc bnc" id="L444" title="All 2 branches missed.">        } else if (this.cardContent != null) {</span>
+<span class="nc" id="L444">            return this.card.getChannels();</span>
+<span class="nc bnc" id="L445" title="All 2 branches missed.">        } else if (this.cardContent != null) {</span>
             // the abstract resource is linked to a card content
-<span class="nc" id="L446">            return this.cardContent.getChannels();</span>
+<span class="nc" id="L447">            return this.cardContent.getChannels();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L449">            return Set.of();</span>
+<span class="nc" id="L450">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L455">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L456">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L461">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L462">        return EntityHelper.equals(this, obj);</span>
     }
 
     /**
      * @return string representation of its fields
      */
     protected String toPartialString() {
-<span class="nc" id="L468">        return &quot;id=&quot; + id + &quot;, abstractCardTypeId=&quot; + getAbstractCardTypeId()</span>
-<span class="nc" id="L469">            + &quot;, cardId=&quot; + getCardId() + &quot;, cardContentId=&quot; + getCardContentId()</span>
+<span class="nc" id="L469">        return &quot;id=&quot; + id + &quot;, abstractCardTypeId=&quot; + getAbstractCardTypeId()</span>
+<span class="nc" id="L470">            + &quot;, cardId=&quot; + getCardId() + &quot;, cardContentId=&quot; + getCardContentId()</span>
             + &quot;, category=&quot; + category;
     }
 
