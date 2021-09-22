@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TeamRole.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.team</a> &gt; <span class="el_source">TeamRole.java</span></div><h1>TeamRole.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.team;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.model.tracking.Tracking;
+import ch.colabproject.colab.api.security.permissions.Conditions;
+import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+/**
+ * Not used yet
+ *
+ * @author maxence
+ */
+@Entity
+<span class="fc" id="L43">public class TeamRole implements ColabEntity, WithWebsocketChannels {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+    /**
+     * TeamRole ID.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /**
+     * creation &amp;amp; modification tracking data
+     */
+    @Embedded
+    private Tracking trackingData;
+
+    /**
+     * Name of the role. Can not be null or blank
+     */
+    @NotBlank
+    private String name;
+
+    /**
+     * The project
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonbTransient
+    private Project project;
+
+    /**
+     * The project ID (serialization sugar)
+     */
+    @Transient
+    private Long projectId;
+
+    /**
+     * List of members who are part of this role
+     */
+    @ManyToMany(mappedBy = &quot;roles&quot;)
+    @JsonbTransient
+    private List&lt;TeamMember&gt; members;
+
+    /**
+     * List of access control relative to this role
+     */
+<span class="fc" id="L92">    @OneToMany(mappedBy = &quot;role&quot;)</span>
+    @JsonbTransient
+    private List&lt;AccessControl&gt; accessControl = new ArrayList&lt;&gt;();
+
+    /**
+     * Id of the members, For deserialization only
+     */
+<span class="fc" id="L99">    @NotNull</span>
+    @Transient
+    private List&lt;Long&gt; memberIds = new ArrayList&lt;&gt;();
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+    /**
+     * @return the project ID
+     */
+    @Override
+    public Long getId() {
+<span class="fc" id="L111">        return id;</span>
+    }
+
+    /**
+     * Set id
+     *
+     * @param id id
+     */
+    public void setId(Long id) {
+<span class="fc" id="L120">        this.id = id;</span>
+<span class="fc" id="L121">    }</span>
+
+    /**
+     * Get role name
+     *
+     * @return the name
+     */
+    public String getName() {
+<span class="fc" id="L129">        return name;</span>
+    }
+
+    /**
+     * Set the name
+     *
+     * @param name new role name
+     */
+    public void setName(String name) {
+<span class="fc" id="L138">        this.name = name;</span>
+<span class="fc" id="L139">    }</span>
+
+    /**
+     * @return the project
+     */
+    public Project getProject() {
+<span class="fc" id="L145">        return project;</span>
+    }
+
+    /**
+     * @param project the project
+     */
+    public void setProject(Project project) {
+<span class="fc" id="L152">        this.project = project;</span>
+<span class="fc" id="L153">    }</span>
+
+    /**
+     * get the project id. To be sent to client
+     *
+     * @return id of the project or null
+     */
+    public Long getProjectId() {
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        if (this.project != null) {</span>
+<span class="fc" id="L162">            return this.project.getId();</span>
+        } else {
+<span class="fc" id="L164">            return projectId;</span>
+        }
+    }
+
+    /**
+     * set the project id. For serialization only
+     *
+     * @param id the id of the project
+     */
+    public void setProjectId(Long id) {
+<span class="fc" id="L174">        this.projectId = id;</span>
+<span class="fc" id="L175">    }</span>
+
+    /**
+     * Get members
+     *
+     * @return members
+     */
+    public List&lt;TeamMember&gt; getMembers() {
+<span class="fc" id="L183">        return members;</span>
+    }
+
+    /**
+     * Set the list of members
+     *
+     * @param members list of members
+     */
+    public void setMembers(List&lt;TeamMember&gt; members) {
+<span class="nc" id="L192">        this.members = members;</span>
+<span class="nc" id="L193">    }</span>
+
+    /**
+     * Get ids of the teammembers
+     *
+     * @return list of ids
+     */
+    public List&lt;Long&gt; getMemberIds() {
+<span class="fc bfc" id="L201" title="All 2 branches covered.">        if (this.members != null) {</span>
+<span class="fc" id="L202">            return members.stream()</span>
+<span class="fc" id="L203">                .map(member -&gt; member.getId())</span>
+<span class="fc" id="L204">                .collect(Collectors.toList());</span>
+        }
+<span class="fc" id="L206">        return memberIds;</span>
+    }
+
+    /**
+     * The the list of memberId
+     *
+     * @param memberIds id of members
+     */
+    public void setMemberIds(List&lt;Long&gt; memberIds) {
+<span class="fc" id="L215">        this.memberIds = memberIds;</span>
+<span class="fc" id="L216">    }</span>
+
+    /**
+     * Get the list of access control
+     *
+     * @return access control list
+     */
+    public List&lt;AccessControl&gt; getAccessControl() {
+<span class="nc" id="L224">        return accessControl;</span>
+    }
+
+    /**
+     * Set the list of access control
+     *
+     * @param accessControl new list of access control
+     */
+    public void setAccessControl(List&lt;AccessControl&gt; accessControl) {
+<span class="nc" id="L233">        this.accessControl = accessControl;</span>
+<span class="nc" id="L234">    }</span>
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+<span class="fc" id="L243">        return trackingData;</span>
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+<span class="fc" id="L253">        this.trackingData = trackingData;</span>
+<span class="fc" id="L254">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+<span class="nc bnc" id="L261" title="All 2 branches missed.">        if (other instanceof TeamRole) {</span>
+<span class="nc" id="L262">            TeamRole o = (TeamRole) other;</span>
+<span class="nc" id="L263">            this.setName(o.getName());</span>
+<span class="nc" id="L264">        } else {</span>
+<span class="nc" id="L265">            throw new ColabMergeException(this, other);</span>
+        }
+<span class="nc" id="L267">    }</span>
+
+    @Override
+    public Set&lt;WebsocketChannel&gt; getChannels() {
+<span class="pc bpc" id="L271" title="1 of 2 branches missed.">        if (this.getProject() != null) {</span>
+<span class="fc" id="L272">            return Set.of(ProjectContentChannel.build(project));</span>
+        } else {
+<span class="nc" id="L274">            return Set.of();</span>
+        }
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+<span class="pc bpc" id="L281" title="1 of 2 branches missed.">        if (this.project != null) {</span>
+<span class="fc" id="L282">            return new Conditions.IsCurrentUserMemberOfProject(this.project);</span>
+        } else {
+            // should not exist
+<span class="nc" id="L285">            return Conditions.alwaysTrue;</span>
+        }
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+<span class="pc bpc" id="L291" title="1 of 2 branches missed.">        if (this.project != null) {</span>
+<span class="fc" id="L292">            return new Conditions.IsCurrentUserLeaderOfProject(this.project);</span>
+        } else {
+            // should not exist
+<span class="nc" id="L295">            return Conditions.alwaysTrue;</span>
+        }
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L301">        return EntityHelper.hashCode(this);</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
+    public boolean equals(Object obj) {
+<span class="fc" id="L307">        return EntityHelper.equals(this, obj);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L312">        return &quot;Role{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, projectId=&quot; + projectId + '}';</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

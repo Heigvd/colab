@@ -6,21 +6,26 @@
  */
 package ch.colabproject.colab.api.persistence.project;
 
-import ch.colabproject.colab.api.model.team.Role;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.user.User;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
- * Team persistence (Role &amp;amp; TeamMember)
+ * Team persistence (TeamRole &amp;amp; TeamMember)
  *
  * @author maxence
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L23">public class TeamDao {</span>
+<span class="nc" id="L28">public class TeamDao {</span>
 
     /**
      * Access to the persistence unit
@@ -29,14 +34,14 @@ import javax.persistence.PersistenceContext;
     private EntityManager em;
 
     /**
-     * Find a Role by id
+     * Find a TeamRole by id
      *
      * @param roleId id of the role
      *
      * @return the role or null if it does no exist
      */
-    public Role findRole(Long roleId) {
-<span class="nc" id="L39">        return em.find(Role.class, roleId);</span>
+    public TeamRole findRole(Long roleId) {
+<span class="nc" id="L44">        return em.find(TeamRole.class, roleId);</span>
     }
 
     /**
@@ -47,7 +52,7 @@ import javax.persistence.PersistenceContext;
      * @return the member or null if it does no exist
      */
     public TeamMember findTeamMember(Long memberId) {
-<span class="nc" id="L50">        return em.find(TeamMember.class, memberId);</span>
+<span class="nc" id="L55">        return em.find(TeamMember.class, memberId);</span>
     }
 
     /**
@@ -55,8 +60,73 @@ import javax.persistence.PersistenceContext;
      *
      * @param role the role to delete
      */
-    public void removeRole(Role role) {
-<span class="nc" id="L59">        em.remove(role);</span>
-<span class="nc" id="L60">    }</span>
+    public void removeRole(TeamRole role) {
+<span class="nc" id="L64">        em.remove(role);</span>
+<span class="nc" id="L65">    }</span>
+
+    /**
+     * Remove access control
+     *
+     * @param ac access control to remove
+     */
+    public void removeAccessControl(AccessControl ac) {
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (ac.getMember() != null) {</span>
+<span class="nc" id="L74">            ac.getMember().getAccessControlList().remove(ac);</span>
+        }
+
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (ac.getRole() != null) {</span>
+<span class="nc" id="L78">            ac.getRole().getAccessControl().remove(ac);</span>
+        }
+
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (ac.getCard() != null) {</span>
+<span class="nc" id="L82">            ac.getCard().getAccessControlList().remove(ac);</span>
+        }
+
+<span class="nc" id="L85">        em.remove(ac);</span>
+<span class="nc" id="L86">    }</span>
+
+    /**
+     * Find the teamMember who match the given project and the given user.
+     *
+     * @param project the project
+     * @param user    the user
+     *
+     * @return the teamMember or null
+     */
+    public TeamMember findMemberByUserAndProject(Project project, User user) {
+        try {
+<span class="nc" id="L98">            TypedQuery&lt;TeamMember&gt; query = em.createNamedQuery(&quot;TeamMember.findByUserAndProject&quot;, TeamMember.class);</span>
+
+<span class="nc" id="L100">            query.setParameter(&quot;projectId&quot;, project.getId());</span>
+<span class="nc" id="L101">            query.setParameter(&quot;userId&quot;, user.getId());</span>
+
+<span class="nc" id="L103">            return query.getSingleResult();</span>
+<span class="nc" id="L104">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L105">            return null;</span>
+        }
+    }
+
+    /**
+     * Are two user teammate?
+     *
+     * @param a a user
+     * @param b another user
+     *
+     * @return true if both user are both member of the same team
+     */
+    public boolean areUserTeammate(User a, User b) {
+<span class="nc" id="L118">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
+            &quot;TeamMember.areUserTeammate&quot;,
+            Boolean.class);
+
+<span class="nc" id="L122">        query.setParameter(</span>
+<span class="nc" id="L123">            &quot;aUserId&quot;, a.getId());</span>
+<span class="nc" id="L124">        query.setParameter(</span>
+<span class="nc" id="L125">            &quot;bUserId&quot;, b.getId());</span>
+
+        // if the query returns something, users are teammates
+<span class="nc" id="L128">        return !query.getResultList()</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">            .isEmpty();</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

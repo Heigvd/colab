@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel;
 
+import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,22 +17,23 @@ import java.util.stream.Collectors;
  *
  * @author maxence
  */
-<span class="fc" id="L19">public class AdminChannel implements WebsocketMetaChannel {</span>
+<span class="fc" id="L20">public class AdminChannel implements WebsocketMetaChannel {</span>
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Admin channel resolve to the set of {@link UserChannel}.
      *
-     * @param userDao used to load all admin from database
+     * @param userDao        used to load all admin from database
+     * @param requestManager must sudo to fetch admins
      *
      * @return list of UserChannel for all admin
      */
     @Override
-    public Set&lt;WebsocketEffectiveChannel&gt; resolve(UserDao userDao) {
-<span class="fc" id="L32">        return userDao.findAllAdmin().stream()</span>
-<span class="fc" id="L33">            .map(user -&gt; user.getEffectiveChannel())</span>
-<span class="fc" id="L34">            .collect(Collectors.toSet());</span>
+    public Set&lt;WebsocketEffectiveChannel&gt; resolve(UserDao userDao, RequestManager requestManager) {
+<span class="fc" id="L34">        return userDao.findAllAdmin().stream()</span>
+<span class="fc" id="L35">            .map(user -&gt; user.getEffectiveChannel())</span>
+<span class="fc" id="L36">            .collect(Collectors.toSet());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

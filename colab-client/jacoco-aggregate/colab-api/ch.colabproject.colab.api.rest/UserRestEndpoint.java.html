@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.rest;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.api.ejb.SecurityFacade;
 import ch.colabproject.colab.api.ejb.UserManagement;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
@@ -42,10 +41,10 @@ import org.slf4j.LoggerFactory;
 @Path(&quot;users&quot;)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-<span class="nc" id="L45">public class UserRestEndpoint {</span>
+<span class="nc" id="L44">public class UserRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L48">    private static final Logger logger = LoggerFactory.getLogger(UserRestEndpoint.class);</span>
+<span class="nc" id="L47">    private static final Logger logger = LoggerFactory.getLogger(UserRestEndpoint.class);</span>
 
     /**
      * Users related business logic
@@ -66,12 +65,6 @@ import org.slf4j.LoggerFactory;
     private RequestManager requestManager;
 
     /**
-     * to control access
-     */
-    @Inject
-    private SecurityFacade securityFacade;
-
-    /**
      * Get the authentication method and its parameters a user shall use to authenticate with the
      * given email address.
      *
@@ -82,8 +75,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;AuthMethod/{identifier : [^/]*}&quot;)
     public AuthMethod getAuthMethod(@PathParam(&quot;identifier&quot;) String identifier) {
-<span class="nc" id="L85">        logger.debug(&quot;get auth method for {}&quot;, identifier);</span>
-<span class="nc" id="L86">        return userManagement.getAuthenticationMethod(identifier);</span>
+<span class="nc" id="L78">        logger.debug(&quot;get auth method for {}&quot;, identifier);</span>
+<span class="nc" id="L79">        return userManagement.getAuthenticationMethod(identifier);</span>
     }
 
     /**
@@ -94,8 +87,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;User&gt; getAllUsers() {
-<span class="nc" id="L97">        logger.debug(&quot;get all users&quot;);</span>
-<span class="nc" id="L98">        return userDao.getAllUsers();</span>
+<span class="nc" id="L90">        logger.debug(&quot;get all users&quot;);</span>
+<span class="nc" id="L91">        return userDao.getAllUsers();</span>
     }
 
     /**
@@ -107,9 +100,10 @@ import org.slf4j.LoggerFactory;
      */
     @GET
     @Path(&quot;{id : [0-9]*}&quot;)
+    @AuthenticationRequired
     public User getUserById(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L111">        logger.debug(&quot;get user #{}&quot;, id);</span>
-<span class="nc" id="L112">        return userManagement.getUserById(id);</span>
+<span class="nc" id="L105">        logger.debug(&quot;get user #{}&quot;, id);</span>
+<span class="nc" id="L106">        return userManagement.getUserById(id);</span>
     }
 
     /**
@@ -120,8 +114,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;CurrentUser&quot;)
     public User getCurrentUser() {
-<span class="nc" id="L123">        logger.debug(&quot;get current user&quot;);</span>
-<span class="nc" id="L124">        return requestManager.getCurrentUser();</span>
+<span class="nc" id="L117">        logger.debug(&quot;get current user&quot;);</span>
+<span class="nc" id="L118">        return requestManager.getCurrentUser();</span>
     }
 
     /**
@@ -132,8 +126,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;CurrentAccount&quot;)
     public Account getCurrentAccount() {
-<span class="nc" id="L135">        logger.debug(&quot;get current account&quot;);</span>
-<span class="nc" id="L136">        return requestManager.getCurrentAccount();</span>
+<span class="nc" id="L129">        logger.debug(&quot;get current account&quot;);</span>
+<span class="nc" id="L130">        return requestManager.getCurrentAccount();</span>
     }
 
     /**
@@ -144,12 +138,12 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;AllCurrentUserAccount&quot;)
     public List&lt;Account&gt; getAllCurrentUserAccounts() {
-<span class="nc" id="L147">        logger.debug(&quot;get all accounts of current user&quot;);</span>
-<span class="nc" id="L148">        User user = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L149" title="All 2 branches missed.">        if (user != null) {</span>
-<span class="nc" id="L150">            return user.getAccounts();</span>
+<span class="nc" id="L141">        logger.debug(&quot;get all accounts of current user&quot;);</span>
+<span class="nc" id="L142">        User user = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (user != null) {</span>
+<span class="nc" id="L144">            return user.getAccounts();</span>
         } else {
-<span class="nc" id="L152">            return List.of();</span>
+<span class="nc" id="L146">            return List.of();</span>
         }
     }
 
@@ -163,9 +157,9 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;SignUp&quot;)
     public void signUp(SignUpInfo signup) {
-<span class="nc" id="L166">        logger.debug(&quot;sign-up {}&quot;, signup);</span>
-<span class="nc" id="L167">        userManagement.signup(signup);</span>
-<span class="nc" id="L168">    }</span>
+<span class="nc" id="L160">        logger.debug(&quot;sign-up {}&quot;, signup);</span>
+<span class="nc" id="L161">        userManagement.signup(signup);</span>
+<span class="nc" id="L162">    }</span>
 
     /**
      * Authenticate with local-account credentials.
@@ -177,9 +171,9 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;SignIn&quot;)
     public void signIn(AuthInfo authInfo) {
-<span class="nc" id="L180">        logger.debug(&quot;sign-in {}&quot;, authInfo);</span>
-<span class="nc" id="L181">        userManagement.authenticate(authInfo);</span>
-<span class="nc" id="L182">    }</span>
+<span class="nc" id="L174">        logger.debug(&quot;sign-in {}&quot;, authInfo);</span>
+<span class="nc" id="L175">        userManagement.authenticate(authInfo);</span>
+<span class="nc" id="L176">    }</span>
 
     /**
      * Sign out.
@@ -187,9 +181,9 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;SignOut&quot;)
     public void signOut() {
-<span class="nc" id="L190">        logger.debug(&quot;sign-out&quot;);</span>
-<span class="nc" id="L191">        userManagement.logout();</span>
-<span class="nc" id="L192">    }</span>
+<span class="nc" id="L184">        logger.debug(&quot;sign-out&quot;);</span>
+<span class="nc" id="L185">        userManagement.logout();</span>
+<span class="nc" id="L186">    }</span>
 
     /**
      * Update user names.
@@ -201,10 +195,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @AuthenticationRequired
     public void updateUser(User user) throws ColabMergeException {
-<span class="nc" id="L204">        logger.debug(&quot;update user profile: {}&quot;, user);</span>
-<span class="nc" id="L205">        securityFacade.assertCanWrite(user);</span>
-<span class="nc" id="L206">        userDao.updateUser(user);</span>
-<span class="nc" id="L207">    }</span>
+<span class="nc" id="L198">        logger.debug(&quot;update user profile: {}&quot;, user);</span>
+<span class="nc" id="L199">        userDao.updateUser(user);</span>
+<span class="nc" id="L200">    }</span>
 
     /**
      * Grant admin right to user identified by given id.
@@ -215,9 +208,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id : [1-9][0-9]*}/GrantAdminRight&quot;)
     @AdminResource
     public void grantAdminRight(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L218">        logger.debug(&quot;Grant admin right to user #{}&quot;, id);</span>
-<span class="nc" id="L219">        userManagement.grantAdminRight(id);</span>
-<span class="nc" id="L220">    }</span>
+<span class="nc" id="L211">        logger.debug(&quot;Grant admin right to user #{}&quot;, id);</span>
+<span class="nc" id="L212">        userManagement.grantAdminRight(id);</span>
+<span class="nc" id="L213">    }</span>
 
     /**
      *  remove admin right to user identified by given id.
@@ -228,9 +221,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id : [1-9][0-9]*}/GrantAdminRight&quot;)
     @AdminResource
     public void revokeAdminRight(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L231">        logger.debug(&quot;Grant admin right to user #{}&quot;, id);</span>
-<span class="nc" id="L232">        userManagement.revokeAdminRight(id);</span>
-<span class="nc" id="L233">    }</span>
+<span class="nc" id="L224">        logger.debug(&quot;Grant admin right to user #{}&quot;, id);</span>
+<span class="nc" id="L225">        userManagement.revokeAdminRight(id);</span>
+<span class="nc" id="L226">    }</span>
 
     /**
      * Update password of a localAccount. The password MUST be hasehd a first time by the client.
@@ -242,9 +235,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;/UpdatePassword&quot;)
     public void updateLocalAccountPassword(AuthInfo authInfo) {
-<span class="nc" id="L245">        logger.debug(&quot;Update local account \&quot;{}\&quot; password&quot;, authInfo.getIdentifier());</span>
-<span class="nc" id="L246">        userManagement.updatePassword(authInfo);</span>
-<span class="nc" id="L247">    }</span>
+<span class="nc" id="L238">        logger.debug(&quot;Update local account \&quot;{}\&quot; password&quot;, authInfo.getIdentifier());</span>
+<span class="nc" id="L239">        userManagement.updatePassword(authInfo);</span>
+<span class="nc" id="L240">    }</span>
 
     /**
      * Request a local account password reset. This method always returns 204 no content
@@ -255,9 +248,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;/RequestPasswordReset/{email}&quot;)
     public void requestPasswordReset(@PathParam(&quot;email&quot;) String email) {
-<span class="nc" id="L258">        logger.debug(&quot;Request password reset token {}&quot;, email);</span>
-<span class="nc" id="L259">        userManagement.requestPasswordReset(email);</span>
-<span class="nc" id="L260">    }</span>
+<span class="nc" id="L251">        logger.debug(&quot;Request password reset token {}&quot;, email);</span>
+<span class="nc" id="L252">        userManagement.requestPasswordReset(email);</span>
+<span class="nc" id="L253">    }</span>
 
     /**
      * Update local account
@@ -270,9 +263,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;/ChangeEmail&quot;)
     @AuthenticationRequired
     public void updateLocalAccountEmailAddress(LocalAccount account) throws ColabMergeException {
-<span class="nc" id="L273">        logger.debug(&quot;Update local account email address: {}&quot;, account);</span>
-<span class="nc" id="L274">        userManagement.updateLocalAccountEmailAddress(account);</span>
-<span class="nc" id="L275">    }</span>
+<span class="nc" id="L266">        logger.debug(&quot;Update local account email address: {}&quot;, account);</span>
+<span class="nc" id="L267">        userManagement.updateLocalAccountEmailAddress(account);</span>
+<span class="nc" id="L268">    }</span>
 
     /**
      * ask the user to switch to new hash method on next sign-in.
@@ -283,9 +276,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id : [1-9][0-9]*}/SwitchClientHashMethod&quot;)
     @AdminResource
     public void switchClientHashMethod(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L286">        logger.debug(&quot;Switch client hash method for account #{}&quot;, id);</span>
-<span class="nc" id="L287">        userManagement.switchClientHashMethod(id);</span>
-<span class="nc" id="L288">    }</span>
+<span class="nc" id="L279">        logger.debug(&quot;Switch client hash method for account #{}&quot;, id);</span>
+<span class="nc" id="L280">        userManagement.switchClientHashMethod(id);</span>
+<span class="nc" id="L281">    }</span>
 
     /**
      * stage new server hash method.
@@ -296,9 +289,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id : [1-9][0-9]*}/SwitchServerHashMethod&quot;)
     @AdminResource
     public void switchServerHashMethod(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L299">        logger.debug(&quot;Switch server hash method for account #{}&quot;, id);</span>
-<span class="nc" id="L300">        userManagement.switchServerHashMethod(id);</span>
-<span class="nc" id="L301">    }</span>
+<span class="nc" id="L292">        logger.debug(&quot;Switch server hash method for account #{}&quot;, id);</span>
+<span class="nc" id="L293">        userManagement.switchServerHashMethod(id);</span>
+<span class="nc" id="L294">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

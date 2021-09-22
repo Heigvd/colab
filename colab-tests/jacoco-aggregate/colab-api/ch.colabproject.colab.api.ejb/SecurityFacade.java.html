@@ -6,21 +6,22 @@
  */
 package ch.colabproject.colab.api.ejb;
 
-import ch.colabproject.colab.api.model.card.AbstractCardType;
+import ch.colabproject.colab.api.model.WithPermission;
+import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.card.CardType;
-import ch.colabproject.colab.api.model.document.BlockDocument;
-import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * To check access rights.
@@ -29,13 +30,10 @@ import javax.persistence.TypedQuery;
  */
 @Stateless
 @LocalBean
-<span class="fc" id="L32">public class SecurityFacade {</span>
+<span class="fc" id="L33">public class SecurityFacade {</span>
 
-    /**
-     * Access to the persistence unit
-     */
-    @PersistenceContext(unitName = &quot;COLAB_PU&quot;)
-    private EntityManager em;
+    /** logger */
+<span class="fc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(SecurityFacade.class);</span>
 
     /**
      * As check are done against current authenticated user, we need access to the requestManager:
@@ -43,84 +41,11 @@ import javax.persistence.TypedQuery;
     @Inject
     private RequestManager requestManager;
 
-    // *********************************************************************************************
-    // user stuff
-    // *********************************************************************************************
     /**
-     * Is the current authenticated user an administrator ?
-     *
-     * @return true if the current authenticate is an admin, false otherwise
+     * To check membership-ness
      */
-    public boolean isAdmin() {
-<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (requestManager.isAuthenticated()) {</span>
-<span class="nc" id="L56">            return requestManager.getCurrentUser().isAdmin();</span>
-        }
-<span class="nc" id="L58">        return false;</span>
-    }
-
-    /**
-     * Is the current authenticated user the given one ?
-     *
-     * @param user user to check current user against
-     *
-     * @return true if the current user equals given one
-     */
-    public boolean isUser(User user) {
-<span class="nc bnc" id="L69" title="All 4 branches missed.">        if (user != null &amp;&amp; requestManager.isAuthenticated()) {</span>
-<span class="nc" id="L70">            return user.equals(requestManager.getCurrentUser());</span>
-        }
-<span class="nc" id="L72">        return false;</span>
-    }
-
-    /**
-     * Assert the current user has write access to the given user
-     *
-     * @param user user the currentUser want to edit
-     *
-     * @throws HttpErrorMessage bad request if user id null; authRequired if currentUser is not
-     *                          authenticated; forbidden if current user is authenticated but has
-     *                          not right to edit given user
-     *
-     */
-    public void assertCanWrite(User user) {
-<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        if (user == null) {</span>
-<span class="nc" id="L87">            throw HttpErrorMessage.badRequest();</span>
-        } else {
-<span class="fc" id="L89">            User currentUser = requestManager.getCurrentUser();</span>
-<span class="pc bpc" id="L90" title="1 of 2 branches missed.">            if (currentUser == null) {</span>
-<span class="nc" id="L91">                throw HttpErrorMessage.authenticationRequired();</span>
-            } else {
-<span class="fc bfc" id="L93" title="All 4 branches covered.">                if (!currentUser.isAdmin() &amp;&amp; !currentUser.equals(user)) {</span>
-<span class="fc" id="L94">                    throw HttpErrorMessage.forbidden();</span>
-                }
-            }
-        }
-<span class="fc" id="L98">    }</span>
-
-    /**
-     * Assert the current user has read access to the given user
-     *
-     * @param user user the currentUser want to read
-     *
-     * @throws HttpErrorMessage bad request if user id null; authRequired if currentUser is not
-     *                          authenticated; forbidden if current user is authenticated but has
-     *                          not right to read given user
-     *
-     */
-    public void assertCanRead(User user) {
-<span class="pc bpc" id="L111" title="1 of 2 branches missed.">        if (user == null) {</span>
-<span class="nc" id="L112">            throw HttpErrorMessage.badRequest();</span>
-        } else {
-<span class="fc" id="L114">            User currentUser = requestManager.getCurrentUser();</span>
-<span class="pc bpc" id="L115" title="1 of 2 branches missed.">            if (currentUser == null) {</span>
-<span class="nc" id="L116">                throw HttpErrorMessage.authenticationRequired();</span>
-            } else {
-<span class="pc bpc" id="L118" title="1 of 4 branches missed.">                if (!currentUser.isAdmin() &amp;&amp; !this.areUserTeammate(currentUser, user)) {</span>
-<span class="fc" id="L119">                    throw HttpErrorMessage.forbidden();</span>
-                }
-            }
-        }
-<span class="fc" id="L123">    }</span>
+    @Inject
+    private TeamFacade teamFacade;
 
     /**
      * Get the current user if it exists.
@@ -130,239 +55,275 @@ import javax.persistence.TypedQuery;
      * @throws HttpErrorMessage authRequired if currentUser is not authenticated
      */
     public User assertAndGetCurrentUser() {
-<span class="fc" id="L133">        User user = requestManager.getCurrentUser();</span>
-<span class="pc bpc" id="L134" title="1 of 2 branches missed.">        if (user != null) {</span>
-<span class="fc" id="L135">            return user;</span>
+<span class="fc" id="L58">        User user = requestManager.getCurrentUser();</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (user != null) {</span>
+<span class="fc" id="L60">            return user;</span>
         } else {
-<span class="nc" id="L137">            throw HttpErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L62">            throw HttpErrorMessage.authenticationRequired();</span>
         }
     }
 
+    private void inSecurityTx(Runnable action) {
+<span class="fc" id="L67">        requestManager.setInSecurityTx(true);</span>
+<span class="fc" id="L68">        action.run();</span>
+<span class="fc" id="L69">        requestManager.setInSecurityTx(false);</span>
+<span class="fc" id="L70">    }</span>
+
     /**
-     * Assert the current user is admin.
+     * Assert the given condition is true
      *
-     * @throws HttpErrorMessage authRequired if currentUser is not authenticated;forbidden is
-     *                          current user is not an admin
+     * @param condition the condition to check
+     * @param message   message to log in case the assertion failed
+     *
+     * @throws HttpErrorMessage &lt;ul&gt;
+     * &lt;li&gt;with authenticationRequired if assertion fails and current user is not authenticated;
+     * &lt;li&gt;with forbidden if the authenticated user does not have enough permission
+     * &lt;/ul&gt;
      */
-    public void assertCurrentUserIsAdmin() {
-<span class="fc" id="L148">        User user = this.assertAndGetCurrentUser();</span>
-<span class="pc bpc" id="L149" title="1 of 2 branches missed.">        if (!user.isAdmin()) {</span>
-<span class="nc" id="L150">            throw HttpErrorMessage.forbidden();</span>
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertConditionTx(Condition condition, String message) {
+<span class="fc" id="L85">        inSecurityTx(() -&gt; this.assertCondition(condition, message));</span>
+<span class="fc" id="L86">    }</span>
+
+    /**
+     * Assert the given condition is true
+     *
+     * @param condition the condition to check
+     * @param message   message to log in case the assertion failed
+     *
+     * @throws HttpErrorMessage &lt;ul&gt;
+     * &lt;li&gt;with authenticationRequired if assertion fails and current user is not authenticated;
+     * &lt;li&gt;with forbidden if the authenticated user does not have enough permission
+     * &lt;/ul&gt;
+     */
+    public void assertCondition(Condition condition, String message) {
+<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if (!requestManager.isAdmin()) {</span>
+<span class="fc" id="L101">            requestManager.sudo(() -&gt; {</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">                if (!condition.eval(requestManager, this)) {</span>
+<span class="nc" id="L103">                    logger.error(message);</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">                    if (requestManager.isAuthenticated()) {</span>
+<span class="nc" id="L105">                        throw HttpErrorMessage.forbidden();</span>
+                    } else {
+<span class="nc" id="L107">                        throw HttpErrorMessage.authenticationRequired();</span>
+                    }
+                }
+<span class="fc" id="L110">            });</span>
         }
-<span class="fc" id="L152">    }</span>
+<span class="fc" id="L112">    }</span>
 
-    // *********************************************************************************************
-    // project stuff
-    // *********************************************************************************************
     /**
-     * Check if the user is member of the team of the project.
+     * Assert the given condition is true.If the current user is an admin, this assertion will never
+     * fail
      *
-     * @param user    a user
-     * @param project a project
+     * @param condition the condition to evaluate
      *
-     * @return true if the user is member of the project
+     * @throws HttpErrorMessage &lt;li&gt;with authenticationRequired if assertion fails and current user
+     *                          is not authenticated; &lt;li&gt;with forbidden if the authenticated user
+     *                          does not have enough permission
      */
-    public boolean isUserMemebrOfProject(User user, Project project) {
-<span class="pc bpc" id="L166" title="2 of 4 branches missed.">        if (user != null &amp;&amp; project != null) {</span>
-<span class="fc" id="L167">            return project.getTeamMembers().stream()</span>
-<span class="fc" id="L168">                .filter(member -&gt; user.equals(member.getUser()))</span>
-<span class="fc" id="L169">                .findFirst().isPresent();</span>
+    private void assertCondition(Condition condition, String message, WithPermission o) {
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        if (!requestManager.isAdmin()) {</span>
+<span class="fc" id="L126">            requestManager.sudo(() -&gt; {</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">                if (!condition.eval(requestManager, this)) {</span>
+<span class="fc" id="L128">                    logger.error(&quot;{} Permission denied: {} ({}) currentUser: {}&quot;,</span>
+<span class="fc" id="L129">                        message, o, condition, requestManager.getCurrentUser());</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">                    if (requestManager.isAuthenticated()) {</span>
+<span class="fc" id="L131">                        throw HttpErrorMessage.forbidden();</span>
+                    } else {
+<span class="fc" id="L133">                        throw HttpErrorMessage.authenticationRequired();</span>
+                    }
+                }
+<span class="fc" id="L136">            });</span>
         }
-<span class="nc" id="L171">        return false;</span>
-    }
+<span class="fc" id="L138">    }</span>
 
     /**
-     * Check is user have at least one common team
+     * Assert the currentUser has right to create the given object
      *
-     * @param a a user
-     * @param b other user
-     *
-     * @return true if both users are member of the same team
+     * @param o object the user want to create
      */
-    public boolean areUserTeammate(User a, User b) {
-<span class="fc" id="L183">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
-            &quot;TeamMember.areUserTeammate&quot;,
-            Boolean.class);
-<span class="fc" id="L186">        query.setParameter(&quot;aUserId&quot;, a.getId());</span>
-<span class="fc" id="L187">        query.setParameter(&quot;bUserId&quot;, b.getId());</span>
-
-        // if the query returns something, users are teammates
-<span class="fc bfc" id="L190" title="All 2 branches covered.">        return !query.getResultList().isEmpty();</span>
-    }
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertCreatePermissionTx(WithPermission o) {
+<span class="fc" id="L147">        inSecurityTx(() -&gt; this.assertCreatePermission(o));</span>
+<span class="fc" id="L148">    }</span>
 
     /**
-     * Make sure the current user has right to edit the project
+     * Assert the currentUser has right to create the given object
      *
-     * @param project project to edit
-     *
-     * @throws HttpErrorMessage forbidden
+     * @param o object the user want to create
      */
-    public void assertProjectWriteRight(Project project) {
-<span class="fc" id="L201">        User currentUser = assertAndGetCurrentUser();</span>
-<span class="pc bpc" id="L202" title="2 of 4 branches missed.">        if (!currentUser.isAdmin() &amp;&amp; !this.isUserMemebrOfProject(currentUser, project)) {</span>
-<span class="nc" id="L203">            throw HttpErrorMessage.forbidden();</span>
-        }
+    public void assertCreatePermission(WithPermission o) {
+<span class="fc" id="L156">        this.assertCondition(o.getCreateCondition(), &quot;Create&quot;, o);</span>
+<span class="fc" id="L157">    }</span>
+
+    /**
+     * Assert the currentUser has right to read the given object
+     *
+     * @param o object the user want to read
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertReadPermissionTx(WithPermission o) {
+<span class="fc" id="L166">        inSecurityTx(() -&gt; this.assertReadPermission(o));</span>
+<span class="fc" id="L167">    }</span>
+
+    /**
+     * Assert the currentUser has right to read the given object
+     *
+     * @param o object the user want to read
+     */
+    public void assertReadPermission(WithPermission o) {
+<span class="fc" id="L175">        this.assertCondition(o.getReadCondition(), &quot;Read&quot;, o);</span>
+<span class="fc" id="L176">    }</span>
+
+    /**
+     * Assert the currentUser has right to update the given object
+     *
+     * @param o object the user want to update
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertUpdatePermissionTx(WithPermission o) {
+<span class="fc" id="L185">        inSecurityTx(() -&gt; this.assertUpdatePermission(o));</span>
+<span class="fc" id="L186">    }</span>
+
+    /**
+     * Assert the currentUser has right to update the given object
+     *
+     * @param o object the user want to update
+     */
+    public void assertUpdatePermission(WithPermission o) {
+<span class="fc" id="L194">        this.assertCondition(o.getUpdateCondition(), &quot;Update&quot;, o);</span>
+<span class="fc" id="L195">    }</span>
+
+    /**
+     * Assert the currentUser has right to update the given object
+     *
+     * @param o object the user want to delete
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertDeletePermissionTx(WithPermission o) {
+<span class="fc" id="L204">        inSecurityTx(() -&gt; this.assertDeletePermission(o));</span>
 <span class="fc" id="L205">    }</span>
 
     /**
-     * Make sure the current user has right to edit the project
+     * Assert the currentUser has right to update the given object
      *
-     * @param project project to edit
-     *
-     * @throws HttpErrorMessage forbidden
+     * @param o object the user want to delete
      */
-    public void assertIsMember(Project project) {
-<span class="fc" id="L215">        User currentUser = assertAndGetCurrentUser();</span>
-<span class="pc bpc" id="L216" title="1 of 2 branches missed.">        if (!this.isUserMemebrOfProject(currentUser, project)) {</span>
-<span class="nc" id="L217">            throw HttpErrorMessage.forbidden();</span>
+    public void assertDeletePermission(WithPermission o) {
+<span class="fc" id="L213">        this.assertCondition(o.getDeleteCondition(), &quot;Delete&quot;, o);</span>
+<span class="fc" id="L214">    }</span>
+
+    /**
+     * Are two user teammate?
+     *
+     * @param a a user
+     * @param b another user
+     *
+     * @return true if both user are both member of the same team
+     */
+    public boolean areUserTeammate(User a, User b) {
+<span class="fc" id="L225">        return teamFacade.areUserTeammate(a, b);</span>
+    }
+
+    /**
+     * Has the current user readwrite access to the given card
+     *
+     * @param card the card
+     *
+     * @return true if current user can write the card
+     */
+    public boolean hasReadWriteAccess(Card card) {
+<span class="fc" id="L236">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="pc bpc" id="L237" title="2 of 4 branches missed.">        if (card == null || currentUser == null) {</span>
+<span class="nc" id="L238">            return false;</span>
         }
-<span class="fc" id="L219">    }</span>
-
-    // *********************************************************************************************
-    // card (+ type + content) stuff
-    // *********************************************************************************************
-    /**
-     * Make sure the current user has the right to read the card type
-     *
-     * @param cardType card type to read
-     */
-    public void assertCanReadCardType(AbstractCardType cardType) {
-        // TODO
-<span class="fc" id="L231">    }</span>
+<span class="fc" id="L240">        TeamMember member = teamFacade.findMemberByUserAndProject(card.getProject(), currentUser);</span>
+<span class="pc bpc" id="L241" title="2 of 4 branches missed.">        return member != null &amp;&amp; (member.getPosition() == HierarchicalPosition.OWNER</span>
+<span class="pc bnc" id="L242" title="All 2 branches missed.">            || teamFacade.getEffectiveInvolvementLevel(card, member).isRw());</span>
+    }
 
     /**
-     * Make sure the current user has the right to read the card
+     * Has the current user the right to read the given card ?
      *
-     * @param card card to read
+     * @param card the card to read
+     *
+     * @return true if current user can read the card
      */
-    public void assertCanReadCard(Card card) {
-        // TODO
-<span class="nc" id="L240">    }</span>
+    public boolean hasReadAccess(Card card) {
+
+<span class="fc" id="L254">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="pc bpc" id="L255" title="2 of 4 branches missed.">        if (card == null || currentUser == null) {</span>
+<span class="nc" id="L256">            return false;</span>
+        }
+<span class="fc" id="L258">        TeamMember member = teamFacade.findMemberByUserAndProject(card.getProject(), currentUser);</span>
+<span class="pc bpc" id="L259" title="2 of 4 branches missed.">        return member != null &amp;&amp; (member.getPosition() == HierarchicalPosition.OWNER</span>
+<span class="pc bnc" id="L260" title="All 2 branches missed.">            || teamFacade.getEffectiveInvolvementLevel(card, member)</span>
+            != InvolvementLevel.OUT_OF_THE_LOOP);
+    }
 
     /**
-     * Make sure the current user has the right to read the card content
+     * Is the current user member of the team of the given project?
      *
-     * @param cardContent card content to read
+     * @param project the project
+     *
+     * @return true if the user if member of the project team
      */
-    public void assertCanReadCardContent(CardContent cardContent) {
-        // TODO
-<span class="nc" id="L249">    }</span>
+    public boolean isCurrentUserMemberOfTheProjectTeam(Project project) {
+<span class="fc" id="L272">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="pc bpc" id="L273" title="1 of 4 branches missed.">        if (project == null || currentUser == null) {</span>
+<span class="fc" id="L274">            return false;</span>
+        }
+<span class="fc" id="L276">        TeamMember member = teamFacade.findMemberByUserAndProject(project, currentUser);</span>
+<span class="fc bfc" id="L277" title="All 2 branches covered.">        return member != null;</span>
+    }
 
     /**
-     * Make sure the current user has the right to edit the card type
+     * Is the current user the project owner ?
      *
-     * @param cardType card type to edit
+     * @param project the project
+     *
+     * @return true if the current user is owner of the project
      */
-    public void assertCanWriteCardType(CardType cardType) {
-        // TODO
-<span class="nc" id="L258">    }</span>
+    public boolean isCurrentUserOwnerOfTheProject(Project project) {
+<span class="fc" id="L288">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="pc bpc" id="L289" title="2 of 4 branches missed.">        if (project == null || currentUser == null) {</span>
+<span class="nc" id="L290">            return false;</span>
+        }
+<span class="fc" id="L292">        TeamMember member = teamFacade.findMemberByUserAndProject(project, currentUser);</span>
+<span class="pc bpc" id="L293" title="2 of 4 branches missed.">        return member != null &amp;&amp; member.getPosition() == HierarchicalPosition.OWNER;</span>
+    }
 
     /**
-     * Make sure the current user has the right to edit the card
+     * Is the current user the project leader?
      *
-     * @param card card to edit
+     * @param project the project
+     *
+     * @return true if the current user is owner of the project
      */
-    public void assertCanWriteCard(Card card) {
-        // TODO
-<span class="nc" id="L267">    }</span>
+    public boolean isCurrentUserLeaderOfTheProject(Project project) {
+<span class="fc" id="L304">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="pc bpc" id="L305" title="2 of 4 branches missed.">        if (project == null || currentUser == null) {</span>
+<span class="nc" id="L306">            return false;</span>
+        }
+<span class="fc" id="L308">        TeamMember member = teamFacade.findMemberByUserAndProject(project, currentUser);</span>
+<span class="pc bpc" id="L309" title="2 of 4 branches missed.">        return member != null &amp;&amp; (member.getPosition() == HierarchicalPosition.OWNER</span>
+<span class="pc bnc" id="L310" title="All 2 branches missed.">            || member.getPosition() == HierarchicalPosition.LEAD);</span>
+    }
 
     /**
-     * Make sure the current user has the right to edit the card content
+     * Is the current user intern to the project team?
      *
-     * @param cardContent card content to edit
-     */
-    public void assertCanWriteCardContent(CardContent cardContent) {
-        // TODO
-<span class="fc" id="L276">    }</span>
-
-    /**
-     * Make sure the current user has the right to create a card type
+     * @param project the project
      *
-     * @param project the project the new card type will belong to
+     * @return true if the current user is intern to the project
      */
-    public void assertCanCreateCardType(Project project) {
-        // TODO
-<span class="fc" id="L285">    }</span>
-
-    /**
-     * Make sure the current user has the right to create a card
-     *
-     * @param cardContent the card content the new card will belong to
-     * @param cardType    the card type the new card will refer to
-     */
-    public void assertCanCreateCard(CardContent cardContent, AbstractCardType cardType) {
-<span class="fc" id="L294">        this.assertCanReadCardType(cardType);</span>
-<span class="fc" id="L295">        this.assertCanWriteCardContent(cardContent);</span>
-<span class="fc" id="L296">    }</span>
-
-    /**
-     * Make sure the current user has the right to create a card content
-     *
-     * @param card the card the new card content will be part of
-     */
-    public void assertCanCreateCardContent(Card card) {
-        // TODO
-<span class="fc" id="L305">    }</span>
-
-    /**
-     * Make sure the current user has the right to create a deliverable for this document and this
-     * card content
-     *
-     * @param document    the document the deliverable
-     * @param cardContent the card content the resource will be linked to
-     */
-    public void assertCanCreateDeliverable(Document document, CardContent cardContent) {
-        // TODO
-<span class="fc" id="L316">    }</span>
-
-    // *********************************************************************************************
-    // block document stuff
-    // *********************************************************************************************
-
-    /**
-     * Make sure the current user has the right to create a block in a document
-     *
-     * @param blockDocument the document the new block will be part of
-     */
-    public void assertCanCreateBlock(BlockDocument blockDocument) {
-        // TODO
-<span class="fc" id="L329">    }</span>
-
-    // *********************************************************************************************
-    // resource stuff
-    // *********************************************************************************************
-
-    /**
-     * Make sure the current user has the right to create a resource for this document and this card
-     * type / card type reference
-     *
-     * @param document         the document the resource will represent
-     * @param abstractCardType the card type / card type reference the resource will be linked to
-     */
-    public void assertCanCreateResource(Document document, AbstractCardType abstractCardType) {
-        // TODO
-<span class="fc" id="L344">    }</span>
-
-    /**
-     * Make sure the current user has the right to create a resource for this document and this card
-     *
-     * @param document the document the resource will represent
-     * @param card     the card the resource will be linked to
-     */
-    public void assertCanCreateResource(Document document, Card card) {
-        // TODO
-<span class="fc" id="L354">    }</span>
-
-    /**
-     * Make sure the current user has the right to create a resource for this document and this card
-     * content
-     *
-     * @param document    the document the resource will represent
-     * @param cardContent the card content the resource will be linked to
-     */
-    public void assertCanCreateResource(Document document, CardContent cardContent) {
-        // TODO
-<span class="fc" id="L365">    }</span>
-
+    public boolean isCurrentUserInternToProject(Project project) {
+<span class="nc" id="L321">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L322" title="All 4 branches missed.">        if (project == null || currentUser == null) {</span>
+<span class="nc" id="L323">            return false;</span>
+        }
+<span class="nc" id="L325">        TeamMember member = teamFacade.findMemberByUserAndProject(project, currentUser);</span>
+<span class="nc bnc" id="L326" title="All 4 branches missed.">        return member != null &amp;&amp; member.getPosition() != HierarchicalPosition.EXTERN;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

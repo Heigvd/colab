@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/28</span>
+                <span class='fraction'>0/25</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/28</span>
+                <span class='fraction'>0/25</span>
             </div>
         
             
@@ -140,9 +140,7 @@
 <a name='L81'></a><a href='#L81'>81</a>
 <a name='L82'></a><a href='#L82'>82</a>
 <a name='L83'></a><a href='#L83'>83</a>
-<a name='L84'></a><a href='#L84'>84</a>
-<a name='L85'></a><a href='#L85'>85</a>
-<a name='L86'></a><a href='#L86'>86</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L84'></a><a href='#L84'>84</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -165,23 +163,20 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -211,9 +206,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -238,9 +234,9 @@
 <span class="cstat-no" title="statement not covered" >import * as API from '../../API/api';</span>
 <span class="cstat-no" title="statement not covered" >import { useAppDispatch } from '../../store/hooks';</span>
 <span class="cstat-no" title="statement not covered" >import IconButton from '../common/IconButton';</span>
-<span class="cstat-no" title="statement not covered" >import Loading from '../common/Loading';</span>
+<span class="cstat-no" title="statement not covered" >import OpenClose from '../common/OpenClose';</span>
 <span class="cstat-no" title="statement not covered" >import Overlay from '../common/Overlay';</span>
-<span class="cstat-no" title="statement not covered" >import { addIcon, cancelIcon, createIcon } from '../styling/style';</span>
+<span class="cstat-no" title="statement not covered" >import { addIcon, cancelIcon, createIcon, reinitIcon } from '../styling/defaultIcons';</span>
 &nbsp;
 interface StickyNoteCreatorProps {
   destCardId: number;
@@ -249,24 +245,21 @@ interface StickyNoteCreatorProps {
 <span class="cstat-no" title="statement not covered" >export default function <span class="fstat-no" title="function not covered" >S</span>tickyNoteCreator(</span>{ destCardId }: StickyNoteCreatorProps): JSX.Element {
   const dispatch = <span class="cstat-no" title="statement not covered" >useAppDispatch();</span>
 &nbsp;
-  const [state, setState] = <span class="cstat-no" title="statement not covered" >React.useState&lt;'CLOSED' | 'EXPANDED' | 'PENDING'&gt;('CLOSED');</span>
-&nbsp;
   const [teaser, setTeaser] = <span class="cstat-no" title="statement not covered" >React.useState('');</span>
   const [explanation, setExplanation] = <span class="cstat-no" title="statement not covered" >React.useState('');</span>
   const [src, setSrc] = <span class="cstat-no" title="statement not covered" >React.useState('');</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  if (state === 'CLOSED') {</span>
-<span class="cstat-no" title="statement not covered" >    return (</span>
-      &lt;div&gt;
-        &lt;IconButton icon={addIcon} title="add a sticky note" onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >setState('EXPANDED')}</span> /&gt;
-      &lt;/div&gt;
-    );
-  } else <span class="cstat-no" title="statement not covered" >if (state === 'PENDING') {</span>
-<span class="cstat-no" title="statement not covered" >    return &lt;Loading /&gt;;</span>
-  } else {
-<span class="cstat-no" title="statement not covered" >    return (</span>
-      &lt;Overlay&gt;
-        &lt;&gt;
+  function <span class="fstat-no" title="function not covered" >resetInputs(</span>) {
+<span class="cstat-no" title="statement not covered" >    setTeaser('');</span>
+<span class="cstat-no" title="statement not covered" >    setExplanation('');</span>
+<span class="cstat-no" title="statement not covered" >    setSrc('');</span>
+    // must be the same as the default values of the states
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return (</span>
+    &lt;OpenClose collapsedChildren={&lt;IconButton icon={addIcon} title="add a sticky note" /&gt;}&gt;
+      {<span class="fstat-no" title="function not covered" >collapse </span>=&gt; (
+<span class="cstat-no" title="statement not covered" >        &lt;Overlay&gt;</span>
           &lt;h2&gt;Create a new sticky note&lt;/h2&gt;
           &lt;p&gt;
             {'Title : '}
@@ -293,24 +286,25 @@ interface StickyNoteCreatorProps {
                   teaser: teaser,
                   explanation: explanation,
                 }),
-              );
-<span class="cstat-no" title="statement not covered" >              setTeaser('');</span>
-<span class="cstat-no" title="statement not covered" >              setExplanation('');</span>
-<span class="cstat-no" title="statement not covered" >              setSrc('');</span>
-<span class="cstat-no" title="statement not covered" >              setState('CLOSED');</span>
+              ).then(<span class="fstat-no" title="function not covered" >() =</span>&gt; {
+<span class="cstat-no" title="statement not covered" >                resetInputs();</span>
+<span class="cstat-no" title="statement not covered" >                collapse();</span>
+              });
             }}
           /&gt;
+          &lt;IconButton icon={reinitIcon} title="reinit" onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >resetInputs()}</span> /&gt;
           &lt;IconButton
             icon={cancelIcon}
             title="cancel"
             onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >              setState('CLOSED');</span>
+              // see if it is better to reset the values or not
+<span class="cstat-no" title="statement not covered" >              collapse();</span>
             }}
           /&gt;
-        &lt;/&gt;
-      &lt;/Overlay&gt;
-    );
-  }
+        &lt;/Overlay&gt;
+      )}
+    &lt;/OpenClose&gt;
+  );
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -319,7 +313,7 @@ interface StickyNoteCreatorProps {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Aug 18 2021 14:35:46 GMT+0000 (Coordinated Universal Time)
+                at Wed Sep 22 2021 07:25:04 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>

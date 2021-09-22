@@ -11,8 +11,10 @@ ch.colabproject.colab.api.model.document
 ch.colabproject.colab.api.model.link
 ch.colabproject.colab.api.model.project
 ch.colabproject.colab.api.model.team
+ch.colabproject.colab.api.model.team.acl
 ch.colabproject.colab.api.model.token
 ch.colabproject.colab.api.model.tools
+ch.colabproject.colab.api.model.tracking
 ch.colabproject.colab.api.model.user
 ch.colabproject.colab.api.persistence.card
 ch.colabproject.colab.api.persistence.document
@@ -26,6 +28,7 @@ ch.colabproject.colab.api.rest.document
 ch.colabproject.colab.api.rest.link
 ch.colabproject.colab.api.rest.utils
 ch.colabproject.colab.api.security
+ch.colabproject.colab.api.security.permissions
 ch.colabproject.colab.api.service.smtp
 ch.colabproject.colab.api.setup
 ch.colabproject.colab.api.ws

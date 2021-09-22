@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/26</span>
+                <span class='fraction'>0/30</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>0/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/25</span>
+                <span class='fraction'>0/29</span>
             </div>
         
             
@@ -158,7 +158,14 @@
 <a name='L99'></a><a href='#L99'>99</a>
 <a name='L100'></a><a href='#L100'>100</a>
 <a name='L101'></a><a href='#L101'>101</a>
-<a name='L102'></a><a href='#L102'>102</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -195,6 +202,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -234,17 +259,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -295,9 +309,27 @@ const PasswordStrengthBar = <span class="cstat-no" title="statement not covered"
     password: '',
   });
 &nbsp;
+  const signUpCb = <span class="cstat-no" title="statement not covered" >React.useCallback(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    dispatch(signUp(credentials)).then(<span class="fstat-no" title="function not covered" >action </span>=&gt; {</span>
+      // is that a hack or not ???
+<span class="cstat-no" title="statement not covered" >      if (props.redirectTo &amp;&amp; action.meta.requestStatus === 'fulfilled') {</span>
+<span class="cstat-no" title="statement not covered" >        history.push(props.redirectTo);</span>
+      }
+    });
+  }, [dispatch, credentials, props.redirectTo, history]);
+&nbsp;
+  const onEnterSignUpCb = <span class="cstat-no" title="statement not covered" >React.useCallback(</span>
+<span class="fstat-no" title="function not covered" >    (e</span>vent: React.KeyboardEvent&lt;HTMLElement&gt;) =&gt; {
+<span class="cstat-no" title="statement not covered" >      if (event.key === 'Enter') {</span>
+<span class="cstat-no" title="statement not covered" >        signUpCb();</span>
+      }
+    },
+    [signUpCb],
+  );
+&nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;FormContainer&gt;
-      &lt;div&gt;
+      &lt;div onKeyDown={onEnterSignUpCb}&gt;
         &lt;div&gt;
           &lt;label&gt;
             username
@@ -338,18 +370,7 @@ const PasswordStrengthBar = <span class="cstat-no" title="statement not covered"
           &lt;/React.Suspense&gt;
         &lt;/div&gt;
         &lt;div&gt;
-          &lt;IconButton
-            className={buttonStyle}
-            icon={faSignInAlt}
-            onClick={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >              dispatch(signUp(credentials)).then(<span class="fstat-no" title="function not covered" >action </span>=&gt; {</span>
-                // is that a hack or not ???
-<span class="cstat-no" title="statement not covered" >                if (props.redirectTo &amp;&amp; action.meta.requestStatus === 'fulfilled') {</span>
-<span class="cstat-no" title="statement not covered" >                  history.push(props.redirectTo);</span>
-                }
-              });
-            }}
-          &gt;
+          &lt;IconButton className={buttonStyle} icon={faSignInAlt} onClick={signUpCb}&gt;
             Sign up
           &lt;/IconButton&gt;
           &lt;InlineLink to={buildLinkWithQueryParam('/SignIn', { redirectTo: props.redirectTo })}&gt;
@@ -367,7 +388,7 @@ const PasswordStrengthBar = <span class="cstat-no" title="statement not covered"
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Aug 18 2021 14:35:46 GMT+0000 (Coordinated Universal Time)
+                at Wed Sep 22 2021 07:25:04 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>

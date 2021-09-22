@@ -1,0 +1,734 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Conditions.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.security.permissions</a> &gt; <span class="el_source">Conditions.java</span></div><h1>Conditions.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.security.permissions;
+
+import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.ejb.SecurityFacade;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.user.User;
+import java.util.List;
+import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Utility class to build conditions
+ *
+ * @author maxence
+ */
+public final class Conditions {
+
+    /** logger */
+<span class="nc" id="L27">    private static final Logger logger = LoggerFactory.getLogger(Conditions.class);</span>
+
+    /**
+     * An always true condition
+     */
+<span class="nc" id="L32">    public static final Condition alwaysTrue = new AlwaysTrue();</span>
+
+    /**
+     * A always false condition
+     */
+<span class="nc" id="L37">    public static final Condition alwaysFalse = new AlwaysFalse();</span>
+
+    /**
+     * Is the current authenticated condition
+     */
+<span class="nc" id="L42">    public static final Condition authenticated = new IsAuthenticated();</span>
+
+    /**
+     * Private constructor prevents instantiation
+     */
+<span class="nc" id="L47">    private Conditions() {</span>
+<span class="nc" id="L48">        throw new UnsupportedOperationException(&quot;This is a utility class&quot;);</span>
+    }
+
+    /**
+     * Abstract condition. To rule them all
+     */
+<span class="nc" id="L54">    public static abstract class Condition {</span>
+
+        /**
+         * Evaluate the condition
+         *
+         * @param requestManager the request Manager
+         * @param securityFacade the security facade
+         *
+         * @return evaluation result
+         */
+        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc" id="L65">            Boolean cachedResult = requestManager.getConditionResult(this);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">            if (cachedResult != null) {</span>
+<span class="nc" id="L67">                logger.trace(&quot;Condition {} is cached and {}&quot;, this, cachedResult);</span>
+<span class="nc" id="L68">                return cachedResult;</span>
+            } else {
+<span class="nc" id="L70">                boolean result = this.internalEval(requestManager, securityFacade);</span>
+<span class="nc" id="L71">                logger.trace(&quot;Condition {} is not cached and {}&quot;, this, result);</span>
+<span class="nc" id="L72">                requestManager.registerConditionResult(this, result);</span>
+<span class="nc" id="L73">                return result;</span>
+            }
+        }
+
+        /**
+         * Evaluate the condition
+         *
+         * @param requestManager the request Manager
+         * @param securityFacade the security facade
+         *
+         * @return evaluation result
+         */
+        protected abstract boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade);
+    }
+
+    /**
+     * Always true statement
+     */
+    private static class AlwaysTrue extends Condition {
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc" id="L95">            return true;</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L100">            return &quot;true&quot;;</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc" id="L105">            return obj instanceof AlwaysTrue;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L110">            int hash = 7;</span>
+<span class="nc" id="L111">            hash = 31 * hash + Objects.hashCode(true);</span>
+<span class="nc" id="L112">            return hash;</span>
+        }
+    }
+
+    /**
+     * Always false statement
+     */
+    private static class AlwaysFalse extends Condition {
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc" id="L123">            return false;</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L128">            return &quot;false&quot;;</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc" id="L133">            return obj instanceof AlwaysFalse;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L138">            int hash = 7;</span>
+<span class="nc" id="L139">            hash = 31 * hash + Objects.hashCode(true);</span>
+<span class="nc" id="L140">            return hash;</span>
+        }
+
+    }
+
+    /**
+     * AND condition
+     */
+    public static class And extends Condition {
+
+        /** Sub conditions */
+        private Condition[] conditions;
+
+        /**
+         * Build an AND statement
+         *
+         * @param conditions list of all conditions that should be true
+         */
+<span class="nc" id="L158">        public And(Condition... conditions) {</span>
+<span class="nc" id="L159">            this.conditions = conditions;</span>
+<span class="nc" id="L160">        }</span>
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc bnc" id="L164" title="All 2 branches missed.">            for (Condition c : conditions) {</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">                if (!c.eval(requestManager, securityFacade)) {</span>
+                    // not all conditions are true =&gt; false
+<span class="nc" id="L167">                    return false;</span>
+                }
+            }
+            // no falsy condition found =&gt; true
+<span class="nc" id="L171">            return true;</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L176">            return &quot;And(&quot; + List.of(conditions) + ')';</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            // same object only
+<span class="nc bnc" id="L182" title="All 2 branches missed.">            return obj == this;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L187">            int hash = 7 * 31;</span>
+<span class="nc" id="L188">            return hash;</span>
+        }
+    }
+
+    /**
+     * OR condition
+     */
+    public static class Or extends Condition {
+
+        /** Sub conditions */
+        private Condition[] conditions;
+
+        /**
+         * Build an OR statement
+         *
+         * @param conditions list of all conditions that should be true
+         */
+<span class="nc" id="L205">        public Or(Condition... conditions) {</span>
+<span class="nc" id="L206">            this.conditions = conditions;</span>
+<span class="nc" id="L207">        }</span>
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc bnc" id="L211" title="All 2 branches missed.">            for (Condition c : conditions) {</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">                if (c.eval(requestManager, securityFacade)) {</span>
+                    // at least on sub condition is true =&gt; true
+<span class="nc" id="L214">                    return true;</span>
+                }
+            }
+            // no true condition found =&gt; false
+<span class="nc" id="L218">            return false;</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L223">            return &quot;Or(&quot; + List.of(conditions) + ')';</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            // same object only
+<span class="nc bnc" id="L229" title="All 2 branches missed.">            return obj == this;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L234">            return 7 * 59;</span>
+        }
+    }
+
+    /**
+     * NOT
+     */
+    public static class Not extends Condition {
+
+        /** the condition to negate */
+        private final Condition condition;
+
+        /**
+         * Build currentUser NOT statement
+         *
+         * @param condition the condition to negate
+         */
+<span class="nc" id="L251">        public Not(Condition condition) {</span>
+<span class="nc" id="L252">            this.condition = condition;</span>
+<span class="nc" id="L253">        }</span>
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+            // just invert the given sub-conditions
+<span class="nc bnc" id="L258" title="All 2 branches missed.">            return !condition.eval(requestManager, securityFacade);</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L263">            return &quot;Not(&quot; + condition + ')';</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            // same object only
+<span class="nc bnc" id="L269" title="All 2 branches missed.">            return obj == this;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L274">            int hash = 7 * 37;</span>
+<span class="nc" id="L275">            return hash;</span>
+        }
+    }
+
+    /**
+     * Is the current user the given one ?
+     */
+    public static class IsCurrentUserThisUser extends Condition {
+
+        /** user to check against */
+        private final User user;
+
+        /**
+         * Check who the current user is
+         *
+         * @param user user to check currentUser against
+         */
+<span class="nc" id="L292">        public IsCurrentUserThisUser(User user) {</span>
+<span class="nc" id="L293">            this.user = user;</span>
+<span class="nc" id="L294">        }</span>
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc" id="L298">            User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L299" title="All 4 branches missed.">            return currentUser != null &amp;&amp; currentUser.equals(user);</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L304">            return &quot;IsUser(&quot; + user + &quot;)&quot;;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L309">            int hash = 5;</span>
+<span class="nc" id="L310">            hash = 73 * hash + Objects.hashCode(this.user);</span>
+<span class="nc" id="L311">            return hash;</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc bnc" id="L316" title="All 2 branches missed.">            if (this == obj) {</span>
+<span class="nc" id="L317">                return true;</span>
+            }
+<span class="nc bnc" id="L319" title="All 2 branches missed.">            if (obj == null) {</span>
+<span class="nc" id="L320">                return false;</span>
+            }
+<span class="nc bnc" id="L322" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L323">                return false;</span>
+            }
+<span class="nc" id="L325">            final IsCurrentUserThisUser other = (IsCurrentUserThisUser) obj;</span>
+<span class="nc bnc" id="L326" title="All 2 branches missed.">            if (!Objects.equals(this.user, other.user)) {</span>
+<span class="nc" id="L327">                return false;</span>
+            }
+<span class="nc" id="L329">            return true;</span>
+        }
+    }
+
+    /**
+     * The current user must be member of the given project team
+     */
+    public static class IsCurrentUserMemberOfProject extends Condition {
+
+        /** the project */
+        private final Project project;
+
+        /**
+         * Create a &quot;Is current user member of this project&quot; statement
+         *
+         * @param project the project to check if the current user is member of
+         */
+<span class="nc" id="L346">        public IsCurrentUserMemberOfProject(Project project) {</span>
+<span class="nc" id="L347">            this.project = project;</span>
+<span class="nc" id="L348">        }</span>
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc" id="L352">            return securityFacade.isCurrentUserMemberOfTheProjectTeam(project);</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L357">            return &quot;IsMemberOf(&quot; + project + &quot;)&quot;;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L362">            int hash = 7;</span>
+<span class="nc" id="L363">            hash = 37 * hash + Objects.hashCode(this.project);</span>
+<span class="nc" id="L364">            return hash;</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc bnc" id="L369" title="All 2 branches missed.">            if (this == obj) {</span>
+<span class="nc" id="L370">                return true;</span>
+            }
+<span class="nc bnc" id="L372" title="All 2 branches missed.">            if (obj == null) {</span>
+<span class="nc" id="L373">                return false;</span>
+            }
+<span class="nc bnc" id="L375" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L376">                return false;</span>
+            }
+<span class="nc" id="L378">            final IsCurrentUserMemberOfProject other = (IsCurrentUserMemberOfProject) obj;</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">            if (!Objects.equals(this.project, other.project)) {</span>
+<span class="nc" id="L380">                return false;</span>
+            }
+<span class="nc" id="L382">            return true;</span>
+        }
+    }
+
+    /**
+     * The current user must be owner of the given project team
+     */
+    public static class IsCurrentUserOwnerOfProject extends Condition {
+
+        /** the project */
+        private final Project project;
+
+        /**
+         * Create a &quot;Is current user owner of this project&quot; statement
+         *
+         * @param project the project to check if the current user is member of
+         */
+<span class="nc" id="L399">        public IsCurrentUserOwnerOfProject(Project project) {</span>
+<span class="nc" id="L400">            this.project = project;</span>
+<span class="nc" id="L401">        }</span>
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc" id="L405">            return securityFacade.isCurrentUserOwnerOfTheProject(project);</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L410">            return &quot;IsOwnerOf(&quot; + project + &quot;)&quot;;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L415">            int hash = 3;</span>
+<span class="nc" id="L416">            hash = 23 * hash + Objects.hashCode(this.project);</span>
+<span class="nc" id="L417">            return hash;</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc bnc" id="L422" title="All 2 branches missed.">            if (this == obj) {</span>
+<span class="nc" id="L423">                return true;</span>
+            }
+<span class="nc bnc" id="L425" title="All 2 branches missed.">            if (obj == null) {</span>
+<span class="nc" id="L426">                return false;</span>
+            }
+<span class="nc bnc" id="L428" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L429">                return false;</span>
+            }
+<span class="nc" id="L431">            final IsCurrentUserOwnerOfProject other = (IsCurrentUserOwnerOfProject) obj;</span>
+<span class="nc bnc" id="L432" title="All 2 branches missed.">            if (!Objects.equals(this.project, other.project)) {</span>
+<span class="nc" id="L433">                return false;</span>
+            }
+<span class="nc" id="L435">            return true;</span>
+        }
+    }
+
+    /**
+     * The current user must be leader of the given project team
+     */
+    public static class IsCurrentUserLeaderOfProject extends Condition {
+
+        /** the project */
+        private final Project project;
+
+        /**
+         * Create a &quot;Is current user leader of this project&quot; statement
+         *
+         * @param project the project to check if the current user is member of
+         */
+<span class="nc" id="L452">        public IsCurrentUserLeaderOfProject(Project project) {</span>
+<span class="nc" id="L453">            this.project = project;</span>
+<span class="nc" id="L454">        }</span>
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc" id="L458">            return securityFacade.isCurrentUserLeaderOfTheProject(project);</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L463">            return &quot;IsLeaderOf(&quot; + project + &quot;)&quot;;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L468">            int hash = 3;</span>
+<span class="nc" id="L469">            hash = 83 * hash + Objects.hashCode(this.project);</span>
+<span class="nc" id="L470">            return hash;</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc bnc" id="L475" title="All 2 branches missed.">            if (this == obj) {</span>
+<span class="nc" id="L476">                return true;</span>
+            }
+<span class="nc bnc" id="L478" title="All 2 branches missed.">            if (obj == null) {</span>
+<span class="nc" id="L479">                return false;</span>
+            }
+<span class="nc bnc" id="L481" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L482">                return false;</span>
+            }
+<span class="nc" id="L484">            final IsCurrentUserLeaderOfProject other = (IsCurrentUserLeaderOfProject) obj;</span>
+<span class="nc bnc" id="L485" title="All 2 branches missed.">            if (!Objects.equals(this.project, other.project)) {</span>
+<span class="nc" id="L486">                return false;</span>
+            }
+<span class="nc" id="L488">            return true;</span>
+        }
+    }
+
+    /**
+     * The current user must be, at least, intern to given project team
+     */
+    public static class IsCurrentUserInternToProject extends Condition {
+
+        /** the project */
+        private final Project project;
+
+        /**
+         * Create a &quot;Is current user leader of this project&quot; statement
+         *
+         * @param project the project to check if the current user is member of
+         */
+<span class="nc" id="L505">        public IsCurrentUserInternToProject(Project project) {</span>
+<span class="nc" id="L506">            this.project = project;</span>
+<span class="nc" id="L507">        }</span>
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc" id="L511">            return securityFacade.isCurrentUserInternToProject(project);</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L516">            return &quot;IsLeaderOf(&quot; + project + &quot;)&quot;;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L521">            int hash = 7;</span>
+<span class="nc" id="L522">            hash = 67 * hash + Objects.hashCode(this.project);</span>
+<span class="nc" id="L523">            return hash;</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc bnc" id="L528" title="All 2 branches missed.">            if (this == obj) {</span>
+<span class="nc" id="L529">                return true;</span>
+            }
+<span class="nc bnc" id="L531" title="All 2 branches missed.">            if (obj == null) {</span>
+<span class="nc" id="L532">                return false;</span>
+            }
+<span class="nc bnc" id="L534" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L535">                return false;</span>
+            }
+<span class="nc" id="L537">            final IsCurrentUserInternToProject other = (IsCurrentUserInternToProject) obj;</span>
+<span class="nc bnc" id="L538" title="All 2 branches missed.">            if (!Objects.equals(this.project, other.project)) {</span>
+<span class="nc" id="L539">                return false;</span>
+            }
+<span class="nc" id="L541">            return true;</span>
+        }
+    }
+
+    /**
+     * Are current and given users teammate ?
+     */
+    public static class IsCurrentUserTeamMateOfUser extends Condition {
+
+        /** the other user */
+        private final User user;
+
+        /**
+         * Create a are teammate statement
+         *
+         * @param user the user to check against
+         */
+<span class="nc" id="L558">        public IsCurrentUserTeamMateOfUser(User user) {</span>
+<span class="nc" id="L559">            this.user = user;</span>
+<span class="nc" id="L560">        }</span>
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc" id="L564">            User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc" id="L565">            return securityFacade.areUserTeammate(currentUser, this.user);</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L570">            return &quot;IsTeamMateOf(&quot; + user + &quot;)&quot;;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L575">            int hash = 3;</span>
+<span class="nc" id="L576">            hash = 31 * hash + Objects.hashCode(this.user);</span>
+<span class="nc" id="L577">            return hash;</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc bnc" id="L582" title="All 2 branches missed.">            if (this == obj) {</span>
+<span class="nc" id="L583">                return true;</span>
+            }
+<span class="nc bnc" id="L585" title="All 2 branches missed.">            if (obj == null) {</span>
+<span class="nc" id="L586">                return false;</span>
+            }
+<span class="nc bnc" id="L588" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L589">                return false;</span>
+            }
+<span class="nc" id="L591">            final IsCurrentUserTeamMateOfUser other = (IsCurrentUserTeamMateOfUser) obj;</span>
+<span class="nc bnc" id="L592" title="All 2 branches missed.">            if (!Objects.equals(this.user, other.user)) {</span>
+<span class="nc" id="L593">                return false;</span>
+            }
+<span class="nc" id="L595">            return true;</span>
+        }
+    }
+
+    /**
+     * Is the current user authenticated ?
+     */
+    private static class IsAuthenticated extends Condition {
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc" id="L606">            return requestManager.isAuthenticated();</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L611">            return &quot;IsAuthenticated&quot;;</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc" id="L616">            return obj instanceof IsAuthenticated;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L621">            int hash = 7;</span>
+<span class="nc" id="L622">            hash = 83 * hash;</span>
+<span class="nc" id="L623">            return hash;</span>
+        }
+    }
+
+    /**
+     * Has the current user write access to a card ?
+     */
+    public static class HasCardWriteRight extends Condition {
+
+        /** The card * */
+        private final Card card;
+
+        /**
+         * Create a has write access statement
+         *
+         * @param card the card
+         */
+<span class="nc" id="L640">        public HasCardWriteRight(Card card) {</span>
+<span class="nc" id="L641">            this.card = card;</span>
+<span class="nc" id="L642">        }</span>
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc" id="L646">            return securityFacade.hasReadWriteAccess(card);</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L651">            return &quot;HasCardWriteRight(&quot; + card + &quot;)&quot;;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L656">            int hash = 7;</span>
+<span class="nc" id="L657">            hash = 47 * hash + Objects.hashCode(this.card);</span>
+<span class="nc" id="L658">            return hash;</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc bnc" id="L663" title="All 2 branches missed.">            if (this == obj) {</span>
+<span class="nc" id="L664">                return true;</span>
+            }
+<span class="nc bnc" id="L666" title="All 2 branches missed.">            if (obj == null) {</span>
+<span class="nc" id="L667">                return false;</span>
+            }
+<span class="nc bnc" id="L669" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L670">                return false;</span>
+            }
+<span class="nc" id="L672">            final HasCardWriteRight other = (HasCardWriteRight) obj;</span>
+<span class="nc bnc" id="L673" title="All 2 branches missed.">            if (!Objects.equals(this.card, other.card)) {</span>
+<span class="nc" id="L674">                return false;</span>
+            }
+<span class="nc" id="L676">            return true;</span>
+        }
+    }
+
+    /**
+     * Has the current user access to a card ?
+     */
+    public static class HasCardReadRight extends Condition {
+
+        /** The card * */
+        private final Card card;
+
+        /**
+         * Create a has write access statement
+         *
+         * @param card the card
+         */
+<span class="nc" id="L693">        public HasCardReadRight(Card card) {</span>
+<span class="nc" id="L694">            this.card = card;</span>
+<span class="nc" id="L695">        }</span>
+
+        @Override
+        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+<span class="nc" id="L699">            return securityFacade.hasReadAccess(card);</span>
+        }
+
+        @Override
+        public String toString() {
+<span class="nc" id="L704">            return &quot;HasCardReadRight(&quot; + card + &quot;)&quot;;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L709">            int hash = 3;</span>
+<span class="nc" id="L710">            hash = 71 * hash + Objects.hashCode(this.card);</span>
+<span class="nc" id="L711">            return hash;</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc bnc" id="L716" title="All 2 branches missed.">            if (this == obj) {</span>
+<span class="nc" id="L717">                return true;</span>
+            }
+<span class="nc bnc" id="L719" title="All 2 branches missed.">            if (obj == null) {</span>
+<span class="nc" id="L720">                return false;</span>
+            }
+<span class="nc bnc" id="L722" title="All 2 branches missed.">            if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L723">                return false;</span>
+            }
+<span class="nc" id="L725">            final HasCardReadRight other = (HasCardReadRight) obj;</span>
+<span class="nc bnc" id="L726" title="All 2 branches missed.">            if (!Objects.equals(this.card, other.card)) {</span>
+<span class="nc" id="L727">                return false;</span>
+            }
+<span class="nc" id="L729">            return true;</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

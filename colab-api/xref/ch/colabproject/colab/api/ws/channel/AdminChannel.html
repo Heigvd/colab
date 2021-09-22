@@ -14,34 +14,36 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.ws.channel;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.user.UserDao;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * A meta channel which will be resolved into a set of {@link UserChannel}, one for each admin</em>
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * {@link ch.colabproject.colab.api.model.user.User user}.</em>
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> * @author maxence</em>
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AdminChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/AdminChannel.html#AdminChannel">AdminChannel</a> <strong class="jxr_keyword">implements</strong> <a name="WebsocketMetaChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/WebsocketMetaChannel.html#WebsocketMetaChannel">WebsocketMetaChannel</a> {
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment">     * Admin channel resolve to the set of {@link UserChannel}.</em>
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment">     * @param userDao used to load all admin from database</em>
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">     * @return list of UserChannel for all admin</em>
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>      @Override
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>      <strong class="jxr_keyword">public</strong> Set&lt;WebsocketEffectiveChannel&gt; resolve(<a name="UserDao" href="../../../../../../ch/colabproject/colab/api/persistence/user/UserDao.html#UserDao">UserDao</a> userDao) {
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>          <strong class="jxr_keyword">return</strong> userDao.findAllAdmin().stream()
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>              .map(user -&gt; user.getEffectiveChannel())
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>              .collect(Collectors.toSet());
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      }
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>  }
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.RequestManager;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.user.UserDao;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.util.stream.Collectors;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * A meta channel which will be resolved into a set of {@link UserChannel}, one for each admin</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> * {@link ch.colabproject.colab.api.model.user.User user}.</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * @author maxence</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="AdminChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/AdminChannel.html#AdminChannel">AdminChannel</a> <strong class="jxr_keyword">implements</strong> <a name="WebsocketMetaChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/WebsocketMetaChannel.html#WebsocketMetaChannel">WebsocketMetaChannel</a> {
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">long</strong> serialVersionUID = 1L;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment">     * Admin channel resolve to the set of {@link UserChannel}.</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment">     * @param userDao        used to load all admin from database</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">     * @param requestManager must sudo to fetch admins</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment">     * @return list of UserChannel for all admin</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      @Override
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">public</strong> Set&lt;WebsocketEffectiveChannel&gt; resolve(<a name="UserDao" href="../../../../../../ch/colabproject/colab/api/persistence/user/UserDao.html#UserDao">UserDao</a> userDao, <a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager) {
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>          <strong class="jxr_keyword">return</strong> userDao.findAllAdmin().stream()
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>              .map(user -&gt; user.getEffectiveChannel())
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>              .collect(Collectors.toSet());
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      }
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

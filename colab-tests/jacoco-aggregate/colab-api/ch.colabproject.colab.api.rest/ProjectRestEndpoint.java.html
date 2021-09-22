@@ -11,7 +11,7 @@ import ch.colabproject.colab.api.ejb.TeamFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.Role;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
@@ -161,7 +161,7 @@ import org.slf4j.LoggerFactory;
      */
     @GET
     @Path(&quot;{projectId: [0-9]+}/roles&quot;)
-    public List&lt;Role&gt; getRoles(@PathParam(&quot;projectId&quot;) Long projectId) {
+    public List&lt;TeamRole&gt; getRoles(@PathParam(&quot;projectId&quot;) Long projectId) {
 <span class="fc" id="L165">        logger.debug(&quot;Get project #{} members&quot;, projectId);</span>
 <span class="fc" id="L166">        return teamFacade.getProjectRoles(projectId);</span>
     }

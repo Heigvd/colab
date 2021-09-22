@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AccessControl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.team.acl</a> &gt; <span class="el_source">AccessControl.java</span></div><h1>AccessControl.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.team.acl;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.team.TeamRole;
+import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.tracking.Tracking;
+import ch.colabproject.colab.api.security.permissions.Conditions;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.Set;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+
+/**
+ * Define access-level user or role have to cards
+ *
+ * @author maxence
+ */
+@Entity
+<span class="nc" id="L37">public class AccessControl implements ColabEntity, WithWebsocketChannels {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+    /**
+     * Project ID
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    /**
+     * creation &amp;amp; modification tracking data
+     */
+    @Embedded
+    private Tracking trackingData;
+
+    /**
+     * The role this access control is for
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonbTransient
+    private TeamRole role;
+
+    /**
+     * The member this access control is for
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonbTransient
+    private TeamMember member;
+
+    /**
+     * CAIRO level (RACI + out_of_the_loop)
+     */
+    @NotNull
+    @Enumerated(value = EnumType.STRING)
+    private InvolvementLevel cairoLevel;
+
+    /**
+     * the card this access control is related to
+     */
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonbTransient
+    private Card card;
+
+// ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+    /**
+     * @return the project ID
+     */
+    @Override
+    public Long getId() {
+<span class="nc" id="L94">        return id;</span>
+    }
+
+    /**
+     * @param id the project ID
+     */
+    public void setId(Long id) {
+<span class="nc" id="L101">        this.id = id;</span>
+<span class="nc" id="L102">    }</span>
+
+    /**
+     * Get the value of member
+     *
+     * @return the value of member
+     */
+    public TeamMember getMember() {
+<span class="nc" id="L110">        return member;</span>
+    }
+
+    /**
+     * Get id of the member, for serialization only
+     *
+     * @return id of the member
+     */
+    public Long getMemberId() {
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (this.member != null) {</span>
+<span class="nc" id="L120">            return member.getId();</span>
+        } else {
+<span class="nc" id="L122">            return null;</span>
+        }
+    }
+
+    /**
+     * Set the value of member
+     *
+     * @param member new value of member
+     */
+    public void setMember(TeamMember member) {
+<span class="nc" id="L132">        this.member = member;</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (member != null) {</span>
+<span class="nc" id="L134">            this.setRole(null);</span>
+        }
+<span class="nc" id="L136">    }</span>
+
+    /**
+     * Get the value of role
+     *
+     * @return the value of role
+     */
+    public TeamRole getRole() {
+<span class="nc" id="L144">        return role;</span>
+    }
+
+    /**
+     * Set the value of role
+     *
+     * @param role new value of role
+     */
+    public void setRole(TeamRole role) {
+<span class="nc" id="L153">        this.role = role;</span>
+
+<span class="nc bnc" id="L155" title="All 2 branches missed.">        if (role != null) {</span>
+<span class="nc" id="L156">            this.setMember(null);</span>
+        }
+<span class="nc" id="L158">    }</span>
+
+    /**
+     * Get id of the role, for serialization only
+     *
+     * @return id of the role
+     */
+    public Long getRoleId() {
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        if (this.role != null) {</span>
+<span class="nc" id="L167">            return role.getId();</span>
+        } else {
+<span class="nc" id="L169">            return null;</span>
+        }
+    }
+
+    /**
+     * Get the value of InvolvementLevel
+     *
+     * @return the value of InvolvementLevel
+     */
+    public InvolvementLevel getCairoLevel() {
+<span class="nc" id="L179">        return cairoLevel;</span>
+    }
+
+    /**
+     * Set the value of InvolvementLevel
+     *
+     * @param cairoLevel new value of InvolvementLevel
+     */
+    public void setCairoLevel(InvolvementLevel cairoLevel) {
+<span class="nc" id="L188">        this.cairoLevel = cairoLevel;</span>
+<span class="nc" id="L189">    }</span>
+
+    /**
+     * Get the card
+     *
+     * @return the card
+     */
+    public Card getCard() {
+<span class="nc" id="L197">        return card;</span>
+    }
+
+    /**
+     * Set the card
+     *
+     * @param card the card
+     */
+    public void setCard(Card card) {
+<span class="nc" id="L206">        this.card = card;</span>
+<span class="nc" id="L207">    }</span>
+
+    /**
+     * Get id of the card, for serialization only
+     *
+     * @return id of the card
+     */
+    public Long getCardId() {
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L216">            return card.getId();</span>
+        } else {
+<span class="nc" id="L218">            return null;</span>
+        }
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+<span class="nc" id="L229">        return trackingData;</span>
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+<span class="nc" id="L239">        this.trackingData = trackingData;</span>
+<span class="nc" id="L240">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+    @Override
+    public void merge(ColabEntity other) throws ColabMergeException {
+        // no-op
+<span class="nc" id="L248">    }</span>
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+<span class="nc bnc" id="L253" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L254">            return this.getCard().getReadCondition();</span>
+        } else {
+<span class="nc" id="L256">            return Conditions.alwaysTrue;</span>
+        }
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+<span class="nc bnc" id="L262" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L263">            return this.getCard().getUpdateCondition();</span>
+        } else {
+<span class="nc" id="L265">            return Conditions.alwaysTrue;</span>
+        }
+    }
+
+    @Override
+    public Set&lt;WebsocketChannel&gt; getChannels() {
+<span class="nc bnc" id="L271" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L272">            return this.getCard().getChannels();</span>
+        } else {
+<span class="nc" id="L274">            return Set.of();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>Tracking.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.tracking</a> &gt; <span class="el_source">Tracking.java</span></div><h1>Tracking.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.tracking;
+
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import java.time.OffsetDateTime;
+import javax.json.bind.annotation.JsonbDateFormat;
+import javax.persistence.Embeddable;
+
+/**
+ * To store the creation and modification dates as well as the user who initiate the action
+ *
+ * @author maxence
+ */
+@Embeddable
+<span class="nc" id="L20">public class Tracking implements WithJsonDiscriminator {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Creation date
+     */
+    @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
+    private OffsetDateTime creationDate;
+
+    /**
+     * Create by &quot;username&quot;
+     */
+    private String createdBy;
+
+    /**
+     * Modification date
+     */
+    @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
+    private OffsetDateTime modificationDate;
+
+    /**
+     * Modified by
+     */
+    private String modifiedBy;
+
+    public OffsetDateTime getCreationDate() {
+<span class="nc" id="L47">        return creationDate;</span>
+    }
+
+    public void setCreationDate(OffsetDateTime creationDate) {
+<span class="nc" id="L51">        this.creationDate = creationDate;</span>
+<span class="nc" id="L52">    }</span>
+
+    public String getCreatedBy() {
+<span class="nc" id="L55">        return createdBy;</span>
+    }
+
+    public void setCreatedBy(String createdBy) {
+<span class="nc" id="L59">        this.createdBy = createdBy;</span>
+<span class="nc" id="L60">    }</span>
+
+    public OffsetDateTime getModificationDate() {
+<span class="nc" id="L63">        return modificationDate;</span>
+    }
+
+    public void setModificationDate(OffsetDateTime modificationDate) {
+<span class="nc" id="L67">        this.modificationDate = modificationDate;</span>
+<span class="nc" id="L68">    }</span>
+
+    public String getModifiedBy() {
+<span class="nc" id="L71">        return modifiedBy;</span>
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+<span class="nc" id="L75">        this.modifiedBy = modifiedBy;</span>
+<span class="nc" id="L76">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

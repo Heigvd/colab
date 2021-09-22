@@ -76,20 +76,5 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L76">        return resource;</span>
     }
 
-    /**
-     * Delete an resource from database. This can't be undone
-     *
-     * @param id the id of the resource to delete
-     *
-     * @return just deleted resource
-     */
-    public Resource deleteResource(Long id) {
-<span class="nc" id="L87">        logger.debug(&quot;delete resource #{}&quot;, id);</span>
-        // TODO: move to recycle bin first
-<span class="nc" id="L89">        Resource resource = this.findResource(id);</span>
-<span class="nc" id="L90">        em.remove(resource);</span>
-<span class="nc" id="L91">        return resource;</span>
-    }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

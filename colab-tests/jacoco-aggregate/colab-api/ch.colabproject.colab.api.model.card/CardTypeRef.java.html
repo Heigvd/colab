@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
@@ -19,7 +20,7 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
-<span class="fc" id="L22">public class CardTypeRef extends AbstractCardType {</span>
+<span class="fc" id="L23">public class CardTypeRef extends AbstractCardType {</span>
 
     /**
      * Serial version UID
@@ -32,12 +33,12 @@ import javax.persistence.Transient;
     /**
      * The type this reference references
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private AbstractCardType abstractCardType;
 
     /**
-     * The id of the project (serialization sugar)
+     * The id of the type this reference references (serialization sugar)
      */
     @Transient
     private Long cardTypeId;
@@ -51,15 +52,15 @@ import javax.persistence.Transient;
      * @return the referenced type
      */
     public AbstractCardType getAbstractCardType() {
-<span class="nc" id="L54">        return this.abstractCardType;</span>
+<span class="nc" id="L55">        return this.abstractCardType;</span>
     }
 
     /**
      * @param cardType the new referenced type
      */
     public void setAbstractCardType(AbstractCardType cardType) {
-<span class="fc" id="L61">        this.abstractCardType = cardType;</span>
-<span class="fc" id="L62">    }</span>
+<span class="fc" id="L62">        this.abstractCardType = cardType;</span>
+<span class="fc" id="L63">    }</span>
 
     /**
      * get the cardType id. To be sent to client
@@ -67,10 +68,10 @@ import javax.persistence.Transient;
      * @return id of the abstractCardType or null
      */
     public Long getAbstractCardTypeId() {
-<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (this.abstractCardType != null) {</span>
-<span class="fc" id="L71">            return this.abstractCardType.getId();</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (this.abstractCardType != null) {</span>
+<span class="fc" id="L72">            return this.abstractCardType.getId();</span>
         } else {
-<span class="fc" id="L73">            return cardTypeId;</span>
+<span class="fc" id="L74">            return cardTypeId;</span>
         }
     }
 
@@ -80,8 +81,8 @@ import javax.persistence.Transient;
      * @param id the id of the abstractCardType
      */
     public void setAbstractCardTypeId(Long id) {
-<span class="fc" id="L83">        this.cardTypeId = id;</span>
-<span class="fc" id="L84">    }</span>
+<span class="fc" id="L84">        this.cardTypeId = id;</span>
+<span class="fc" id="L85">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -93,30 +94,29 @@ import javax.persistence.Transient;
      */
     @Override
     public CardType resolve() {
-<span class="nc bnc" id="L96" title="All 2 branches missed.">        if (this.abstractCardType instanceof CardType) {</span>
-<span class="nc" id="L97">            return (CardType) this.abstractCardType;</span>
-<span class="nc bnc" id="L98" title="All 2 branches missed.">        } else if (this.abstractCardType instanceof CardTypeRef) {</span>
-<span class="nc" id="L99">            return ((CardTypeRef) abstractCardType).resolve();</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (this.abstractCardType instanceof CardType) {</span>
+<span class="nc" id="L98">            return (CardType) this.abstractCardType;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        } else if (this.abstractCardType instanceof CardTypeRef) {</span>
+<span class="nc" id="L100">            return ((CardTypeRef) abstractCardType).resolve();</span>
         }
-<span class="nc" id="L101">        return null;</span>
+<span class="nc" id="L102">        return null;</span>
     }
 
     @Override
     public List&lt;AbstractCardType&gt; expand() {
-<span class="fc" id="L106">        List&lt;AbstractCardType&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L107">        List&lt;AbstractCardType&gt; list = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L108">        list.add(this);</span>
-<span class="pc bpc" id="L109" title="1 of 2 branches missed.">        if (this.abstractCardType != null) {</span>
-<span class="fc" id="L110">            list.addAll(this.abstractCardType.expand());</span>
+<span class="fc" id="L109">        list.add(this);</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        if (this.abstractCardType != null) {</span>
+<span class="fc" id="L111">            list.addAll(this.abstractCardType.expand());</span>
         }
-<span class="fc" id="L112">        return list;</span>
+<span class="fc" id="L113">        return list;</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L117">        return &quot;CardTypeRef{&quot;</span>
-<span class="fc" id="L118">            + &quot;id=&quot; + this.getId()</span>
-            + &quot;, cardType=&quot; + abstractCardType
+<span class="nc" id="L118">        return &quot;CardTypeRef{&quot;</span>
+<span class="nc" id="L119">            + &quot;id=&quot; + getId()</span>
             + &quot;, cardTypeId=&quot; + cardTypeId + '}';
     }
 }

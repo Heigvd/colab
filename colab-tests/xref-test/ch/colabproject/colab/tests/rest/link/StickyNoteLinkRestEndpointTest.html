@@ -162,8 +162,8 @@
 <a class="jxr_linenumber" name="L154" href="#L154">154</a> 
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>         ColabFactory.createCardResource(client, cardId, <span class="jxr_string">"soft cakes"</span>).getId();
 <a class="jxr_linenumber" name="L156" href="#L156">156</a> 
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>         List&lt;AbstractResource&gt; resourceRefs = client.cardContentRestEndpoint
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>             .getDirectAbstractResourcesOfCardContent(cardContentId);
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>         List&lt;AbstractResource&gt; resourceRefs = client.resourceRestEndpoint
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>             .getResourceChainForCardContent(cardContentId).get(0);
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>         Long resourceRefId = resourceRefs.get(0).getId();
 <a class="jxr_linenumber" name="L160" href="#L160">160</a> 
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>         StickyNoteLink link = <strong class="jxr_keyword">new</strong> StickyNoteLink();

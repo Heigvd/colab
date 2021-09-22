@@ -35,7 +35,7 @@ import org.eclipse.persistence.sessions.Session;
 <span class="fc" id="L35">            .forEachOrdered(directMapping -&gt; {</span>
                 // format: table_name.FIELD -&gt;[ tableNane, fieldName];
 <span class="fc" id="L37">                String[] names = directMapping.getFieldName().split(&quot;\\.&quot;);</span>
-<span class="pc bpc" id="L38" title="1 of 2 branches missed.">                if (names.length == 2) {</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">                if (names.length == 2) {</span>
 <span class="fc" id="L39">                    String newName = Helper.camelCaseToUnderscore(directMapping.getAttributeName());</span>
 <span class="fc" id="L40">                    directMapping.getField().setName(newName);</span>
                 }

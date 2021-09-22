@@ -361,7 +361,13 @@
 <a name='L302'></a><a href='#L302'>302</a>
 <a name='L303'></a><a href='#L303'>303</a>
 <a name='L304'></a><a href='#L304'>304</a>
-<a name='L305'></a><a href='#L305'>305</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L305'></a><a href='#L305'>305</a>
+<a name='L306'></a><a href='#L306'>306</a>
+<a name='L307'></a><a href='#L307'>307</a>
+<a name='L308'></a><a href='#L308'>308</a>
+<a name='L309'></a><a href='#L309'>309</a>
+<a name='L310'></a><a href='#L310'>310</a>
+<a name='L311'></a><a href='#L311'>311</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -458,7 +464,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -661,6 +666,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -672,15 +684,15 @@
  * Licensed under the MIT License
  */
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import {css} from '@emotion/css';</span>
-<span class="cstat-no" title="statement not covered" >import {faTrash} from '@fortawesome/free-solid-svg-icons';</span>
-import {Change} from 'colab-rest-client';
+<span class="cstat-no" title="statement not covered" >import { css } from '@emotion/css';</span>
+<span class="cstat-no" title="statement not covered" >import { faTrash } from '@fortawesome/free-solid-svg-icons';</span>
+import { Change } from 'colab-rest-client';
 <span class="cstat-no" title="statement not covered" >import * as React from 'react';</span>
 <span class="cstat-no" title="statement not covered" >import * as API from '../../API/api';</span>
-<span class="cstat-no" title="statement not covered" >import {removeAllItems} from '../../helper';</span>
+<span class="cstat-no" title="statement not covered" >import { removeAllItems } from '../../helper';</span>
 <span class="cstat-no" title="statement not covered" >import * as LiveHelper from '../../LiveHelper';</span>
-<span class="cstat-no" title="statement not covered" >import {useChanges} from '../../selectors/changeSelector';</span>
-<span class="cstat-no" title="statement not covered" >import {useAppDispatch} from '../../store/hooks';</span>
+<span class="cstat-no" title="statement not covered" >import { useChanges } from '../../selectors/changeSelector';</span>
+<span class="cstat-no" title="statement not covered" >import { useAppDispatch } from '../../store/hooks';</span>
 <span class="cstat-no" title="statement not covered" >import IconButton from '../common/IconButton';</span>
 <span class="cstat-no" title="statement not covered" >import InlineLoading from '../common/InlineLoading';</span>
 &nbsp;
@@ -692,10 +704,10 @@ type DivRefType = Record&lt;string, Element&gt;;
 &nbsp;
 const defs = (
 <span class="cstat-no" title="statement not covered" >  &lt;defs&gt;</span>
-    &lt;marker orient="auto" refY="0.0" refX="0.0" id="triangleStart" style={{overflow: 'visible'}}&gt;
+    &lt;marker orient="auto" refY="0.0" refX="0.0" id="triangleStart" style={{ overflow: 'visible' }}&gt;
       &lt;path id="triangle_start_path" d="M 8.5,5 L 0,0 L 8.5,-5 L 8.5,5 z " /&gt;
     &lt;/marker&gt;
-    &lt;marker orient="auto" refY="0.0" refX="0.0" id="triangleEnd" style={{overflow: 'visible'}}&gt;
+    &lt;marker orient="auto" refY="0.0" refX="0.0" id="triangleEnd" style={{ overflow: 'visible' }}&gt;
       &lt;path id="triangle_end_path" d="M 0,0.0 L -8,5.0 L -8,-5.0 L 0,0.0 z " /&gt;
     &lt;/marker&gt;
   &lt;/defs&gt;
@@ -707,7 +719,7 @@ const pathStyle = <span class="cstat-no" title="statement not covered" >css({</s
   markerEnd: ' url(#triangleEnd)',
 });
 &nbsp;
-function <span class="fstat-no" title="function not covered" >Arrow(</span>{id, divRefs}: {id: string; divRefs: DivRefType}): JSX.Element {
+function <span class="fstat-no" title="function not covered" >Arrow(</span>{ id, divRefs }: { id: string; divRefs: DivRefType }): JSX.Element {
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;svg
       ref={<span class="fstat-no" title="function not covered" >ref </span>=&gt; {
@@ -748,7 +760,7 @@ function <span class="fstat-no" title="function not covered" >ChangeDisplay(</sp
   const rev = <span class="cstat-no" title="statement not covered" >change.basedOn.map(truncateRevision).join(' &amp; ');</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
-    &lt;div className={css({padding: '5px', margin: '5px'})}&gt;
+    &lt;div className={css({ padding: '5px', margin: '5px' })}&gt;
       &lt;div
         ref={<span class="fstat-no" title="function not covered" >ref </span>=&gt; {
 <span class="cstat-no" title="statement not covered" >          if (ref != null) {</span>
@@ -757,18 +769,17 @@ function <span class="fstat-no" title="function not covered" >ChangeDisplay(</sp
 <span class="cstat-no" title="statement not covered" >            delete divRefs[change.revision];</span>
           }
         }}
-        className={css({padding: '5px', margin: '5px'})}
+        className={css({ padding: '5px', margin: '5px' })}
       &gt;
-        [{truncateRevision(change.revision)}]
-        {displayDeps ? ` on ${truncateRevision(rev)}` : null}
+        [{truncateRevision(change.revision)}]{displayDeps ? ` on ${truncateRevision(rev)}` : null}
         {displayChanges
           ? change.microchanges.map(<span class="fstat-no" title="function not covered" >(m</span>u, i) =&gt; {
-<span class="cstat-no" title="statement not covered" >            return (</span>
-              &lt;span key={i}&gt;
-                {mu.t === 'I' ? ` insert '${mu.v}'@${mu.o}` : ` delete ${mu.l}@${mu.o}`}{' '}
-              &lt;/span&gt;
-            );
-          })
+<span class="cstat-no" title="statement not covered" >              return (</span>
+                &lt;span key={i}&gt;
+                  {mu.t === 'I' ? ` insert '${mu.v}'@${mu.o}` : ` delete ${mu.l}@${mu.o}`}{' '}
+                &lt;/span&gt;
+              );
+            })
           : null}
         &lt;div&gt;
           {change.basedOn.map(<span class="fstat-no" title="function not covered" >dep </span>=&gt; (
@@ -932,14 +943,14 @@ export interface ChangeTreeProps {
         })}
       &gt;
         {lines.map(<span class="fstat-no" title="function not covered" >(l</span>ine, i) =&gt; (
-<span class="cstat-no" title="statement not covered" >          &lt;div key={i} className={css({width: 'max-content'})}&gt;</span>
+<span class="cstat-no" title="statement not covered" >          &lt;div key={i} className={css({ width: 'max-content' })}&gt;</span>
             {line}
           &lt;/div&gt;
         ))}
       &lt;/div&gt;
       &lt;h4&gt;Orphans&lt;/h4&gt;
       {toProcess.map(<span class="fstat-no" title="function not covered" >change </span>=&gt; {
-<span class="cstat-no" title="statement not covered" >        &lt;ChangeDisplay key={change.revision} change={change} divRefs={divRefs.current} /&gt;</span>
+<span class="cstat-no" title="statement not covered" >        &lt;ChangeDisplay key={change.revision} change={change} divRefs={divRefs.current} /&gt;;</span>
       })}
       &lt;h4&gt;Result&lt;/h4&gt;
       &lt;div&gt;
@@ -949,7 +960,7 @@ export interface ChangeTreeProps {
   );
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >export default function <span class="fstat-no" title="function not covered" >C</span>hangeTree(</span>{atClass, atId, value, revision}: Props): JSX.Element {
+<span class="cstat-no" title="statement not covered" >export default function <span class="fstat-no" title="function not covered" >C</span>hangeTree(</span>{ atClass, atId, value, revision }: Props): JSX.Element {
   const changesState = <span class="cstat-no" title="statement not covered" >useChanges(atClass, atId);</span>
   const dispatch = <span class="cstat-no" title="statement not covered" >useAppDispatch();</span>
 &nbsp;
@@ -964,7 +975,14 @@ export interface ChangeTreeProps {
   }, [dispatch, atId]);
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  if (changesState.status === 'READY') {</span>
-<span class="cstat-no" title="statement not covered" >    return &lt;ChangeTreeRaw value={value} changes={changesState.changes} revision={revision} onDelete={deleteCb} /&gt;;</span>
+<span class="cstat-no" title="statement not covered" >    return (</span>
+      &lt;ChangeTreeRaw
+        value={value}
+        changes={changesState.changes}
+        revision={revision}
+        onDelete={deleteCb}
+      /&gt;
+    );
   } else {
 <span class="cstat-no" title="statement not covered" >    return &lt;InlineLoading /&gt;;</span>
   }
@@ -976,7 +994,7 @@ export interface ChangeTreeProps {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Aug 18 2021 14:35:46 GMT+0000 (Coordinated Universal Time)
+                at Wed Sep 22 2021 07:25:04 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>

@@ -9,10 +9,12 @@ package ch.colabproject.colab.api.model.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -24,7 +26,7 @@ import javax.persistence.Transient;
 // TODO check if a constraint is needed for uniqueness link between a document and a resource
 @Entity
 @DiscriminatorValue(&quot;RESOURCE&quot;)
-<span class="fc" id="L27">public class Resource extends AbstractResource {</span>
+<span class="fc" id="L29">public class Resource extends AbstractResource {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -35,7 +37,7 @@ import javax.persistence.Transient;
     /**
      * The document
      */
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonbTransient
     private Document document;
 
@@ -72,7 +74,7 @@ import javax.persistence.Transient;
         // implicitly setPublished(false);
         // implicitly setRequestingForGlory(false);
         // implicitly setDeprecated(false);
-<span class="fc" id="L75">        return new Resource();</span>
+<span class="fc" id="L77">        return new Resource();</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -83,15 +85,15 @@ import javax.persistence.Transient;
      * @return the document
      */
     public Document getDocument() {
-<span class="nc" id="L86">        return document;</span>
+<span class="nc" id="L88">        return document;</span>
     }
 
     /**
      * @param document the document
      */
     public void setDocument(Document document) {
-<span class="fc" id="L93">        this.document = document;</span>
-<span class="fc" id="L94">    }</span>
+<span class="fc" id="L95">        this.document = document;</span>
+<span class="fc" id="L96">    }</span>
 
     /**
      * get the id of the document. To be sent to client.
@@ -99,10 +101,10 @@ import javax.persistence.Transient;
      * @return the id of the document
      */
     public Long getDocumentId() {
-<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (document != null) {</span>
-<span class="fc" id="L103">            return document.getId();</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        if (document != null) {</span>
+<span class="fc" id="L105">            return document.getId();</span>
         } else {
-<span class="fc" id="L105">            return documentId;</span>
+<span class="fc" id="L107">            return documentId;</span>
         }
     }
 
@@ -112,50 +114,50 @@ import javax.persistence.Transient;
      * @param documentId the id of the document
      */
     public void setDocumentId(Long documentId) {
-<span class="fc" id="L115">        this.documentId = documentId;</span>
-<span class="fc" id="L116">    }</span>
+<span class="fc" id="L117">        this.documentId = documentId;</span>
+<span class="fc" id="L118">    }</span>
 
     /**
      * @return if it is at the disposal of the inheritors
      */
     public boolean isPublished() {
-<span class="fc" id="L122">        return published;</span>
+<span class="fc" id="L124">        return published;</span>
     }
 
     /**
      * @param published if it is at the disposal of the inheritors
      */
     public void setPublished(boolean published) {
-<span class="fc" id="L129">        this.published = published;</span>
-<span class="fc" id="L130">    }</span>
+<span class="fc" id="L131">        this.published = published;</span>
+<span class="fc" id="L132">    }</span>
 
     /**
      * @return if it asks upper level(s) to integrate the resource
      */
     public boolean isRequestingForGlory() {
-<span class="fc" id="L136">        return requestingForGlory;</span>
+<span class="fc" id="L138">        return requestingForGlory;</span>
     }
 
     /**
      * @param requestingForGlory if it asks upper level(s) to integrate the resource
      */
     public void setRequestingForGlory(boolean requestingForGlory) {
-<span class="fc" id="L143">        this.requestingForGlory = requestingForGlory;</span>
-<span class="fc" id="L144">    }</span>
+<span class="fc" id="L145">        this.requestingForGlory = requestingForGlory;</span>
+<span class="fc" id="L146">    }</span>
 
     /**
      * @return if it should not be used anymore
      */
     public boolean isDeprecated() {
-<span class="fc" id="L150">        return deprecated;</span>
+<span class="fc" id="L152">        return deprecated;</span>
     }
 
     /**
      * @param deprecated if it should not be used anymore
      */
     public void setDeprecated(boolean deprecated) {
-<span class="fc" id="L157">        this.deprecated = deprecated;</span>
-<span class="fc" id="L158">    }</span>
+<span class="fc" id="L159">        this.deprecated = deprecated;</span>
+<span class="fc" id="L160">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -163,36 +165,41 @@ import javax.persistence.Transient;
 
     @Override
     public Resource resolve() {
-<span class="nc" id="L166">        return this;</span>
+<span class="nc" id="L168">        return this;</span>
+    }
+
+    @Override
+    public List&lt;AbstractResource&gt; expand() {
+<span class="fc" id="L173">        return List.of(this);</span>
     }
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L171" title="All 2 branches missed.">        if (other instanceof Resource) {</span>
-<span class="nc" id="L172">            Resource o = (Resource) other;</span>
-<span class="nc" id="L173">            super.merge(o);</span>
-<span class="nc" id="L174">            this.setPublished(o.isPublished());</span>
-<span class="nc" id="L175">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
-<span class="nc" id="L176">            this.setDeprecated(o.isDeprecated());</span>
-<span class="nc" id="L177">        } else {</span>
-<span class="nc" id="L178">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (other instanceof Resource) {</span>
+<span class="nc" id="L179">            Resource o = (Resource) other;</span>
+<span class="nc" id="L180">            super.merge(o);</span>
+<span class="nc" id="L181">            this.setPublished(o.isPublished());</span>
+<span class="nc" id="L182">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
+<span class="nc" id="L183">            this.setDeprecated(o.isDeprecated());</span>
+<span class="nc" id="L184">        } else {</span>
+<span class="nc" id="L185">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L180">    }</span>
+<span class="nc" id="L187">    }</span>
 
     @Override
     public int hashCode() {
-<span class="fc" id="L184">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L191">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L190">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L197">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L195">        return &quot;Resource{&quot; + toPartialString() + &quot;, documentId=&quot; + getDocumentId()</span>
+<span class="nc" id="L202">        return &quot;Resource{&quot; + toPartialString() + &quot;, documentId=&quot; + getDocumentId()</span>
             + &quot;, published=&quot; + published + &quot;, requestingForGlory=&quot; + requestingForGlory
             + &quot;, deprecated=&quot; + deprecated + &quot;}&quot;;
     }

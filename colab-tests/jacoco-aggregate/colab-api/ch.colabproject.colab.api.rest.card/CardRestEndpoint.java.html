@@ -9,9 +9,9 @@ package ch.colabproject.colab.api.rest.card;
 import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.ejb.ResourceFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
@@ -180,20 +180,6 @@ import org.slf4j.LoggerFactory;
     }
 
     /**
-     * Get all abstract resources directly linked to the card
-     *
-     * @param cardId the id of the card
-     *
-     * @return list of directly linked abstract resources
-     */
-    @GET
-    @Path(&quot;{id}/AbstractResources&quot;)
-    public List&lt;AbstractResource&gt; getDirectAbstractResourcesOfCard(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="fc" id="L192">        logger.debug(&quot;get direct abstract resources linked to card #{}&quot;, cardId);</span>
-<span class="fc" id="L193">        return cardFacade.getDirectAbstractResourcesOfCard(cardId);</span>
-    }
-
-    /**
      * Get all sticky note links of which the card is the destination
      *
      * @param cardId Card id of the searched links
@@ -203,8 +189,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/StickyNoteLinksDestinationCard&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsDest(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="fc" id="L206">        logger.debug(&quot;Get sticky note links to card #{} as destination&quot;, cardId);</span>
-<span class="fc" id="L207">        return cardFacade.getStickyNoteLinkAsDest(cardId);</span>
+<span class="fc" id="L192">        logger.debug(&quot;Get sticky note links to card #{} as destination&quot;, cardId);</span>
+<span class="fc" id="L193">        return cardFacade.getStickyNoteLinkAsDest(cardId);</span>
     }
 
     /**
@@ -217,8 +203,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/StickyNoteLinksSrcCard&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="fc" id="L220">        logger.debug(&quot;Get sticky note links to card #{} as source&quot;, cardId);</span>
-<span class="fc" id="L221">        return cardFacade.getStickyNoteLinkAsSrcCard(cardId);</span>
+<span class="fc" id="L206">        logger.debug(&quot;Get sticky note links to card #{} as source&quot;, cardId);</span>
+<span class="fc" id="L207">        return cardFacade.getStickyNoteLinkAsSrcCard(cardId);</span>
     }
 
     /**
@@ -231,8 +217,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/ActivityFlowLinksPreviousCard&quot;)
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsPrevious(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="fc" id="L234">        logger.debug(&quot;Get activity flow links to card #{} as previous&quot;, cardId);</span>
-<span class="fc" id="L235">        return cardFacade.getActivityFlowLinkAsPrevious(cardId);</span>
+<span class="fc" id="L220">        logger.debug(&quot;Get activity flow links to card #{} as previous&quot;, cardId);</span>
+<span class="fc" id="L221">        return cardFacade.getActivityFlowLinkAsPrevious(cardId);</span>
     }
 
     /**
@@ -245,9 +231,22 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/ActivityFlowLinksNextCard&quot;)
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsNext(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="fc" id="L248">        logger.debug(&quot;Get activity flow links to card #{} as next&quot;, cardId);</span>
-<span class="fc" id="L249">        return cardFacade.getActivityFlowLinkAsNext(cardId);</span>
+<span class="fc" id="L234">        logger.debug(&quot;Get activity flow links to card #{} as next&quot;, cardId);</span>
+<span class="fc" id="L235">        return cardFacade.getActivityFlowLinkAsNext(cardId);</span>
     }
 
+    /**
+     * Retrieve the list of access-control for the given card
+     *
+     * @param cardId id of the card
+     *
+     * @return list of access-control
+     */
+    @GET
+    @Path(&quot;{cardId}/ACLs&quot;)
+    public List&lt;AccessControl&gt; getAcls(@PathParam(&quot;cardId&quot;) Long cardId) {
+<span class="nc" id="L248">        logger.debug(&quot;Get Card #{} access-control list&quot;, cardId);</span>
+<span class="nc" id="L249">        return cardFacade.getAcls(cardId);</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

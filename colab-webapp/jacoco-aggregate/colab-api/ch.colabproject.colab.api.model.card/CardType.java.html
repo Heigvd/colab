@@ -9,7 +9,9 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.ConcretizationCategory;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import java.util.List;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -26,7 +28,7 @@ import javax.persistence.NamedQuery;
 @NamedQuery(name = &quot;CardType.findGlobals&quot;, query = &quot;SELECT c FROM CardType c WHERE c.project is NULL&quot;)
 @NamedQuery(name = &quot;CardType.findPublishedGlobals&quot;, query = &quot;SELECT c FROM CardType c WHERE c.project is NULL AND c.published = TRUE&quot;)
 @NamedQuery(name = &quot;CardType.findPublishedFromProjects&quot;, query = &quot;SELECT c FROM CardType c JOIN c.project project JOIN project.teamMembers teamMember WHERE c.published = TRUE AND teamMember.user.id = :userId&quot;)
-<span class="nc" id="L29">public class CardType extends AbstractCardType {</span>
+<span class="nc" id="L31">public class CardType extends AbstractCardType {</span>
 
     /**
      * Serial version UID
@@ -68,43 +70,43 @@ import javax.persistence.NamedQuery;
      * @return the unique identifier
      */
     public String getUniqueId() {
-<span class="nc" id="L71">        return uniqueId;</span>
+<span class="nc" id="L73">        return uniqueId;</span>
     }
 
     /**
      * @param uniqueId the unique identifier
      */
     public void setUniqueId(String uniqueId) {
-<span class="nc" id="L78">        this.uniqueId = uniqueId;</span>
-<span class="nc" id="L79">    }</span>
+<span class="nc" id="L80">        this.uniqueId = uniqueId;</span>
+<span class="nc" id="L81">    }</span>
 
     /**
      * @return the title
      */
     public String getTitle() {
-<span class="nc" id="L85">        return title;</span>
+<span class="nc" id="L87">        return title;</span>
     }
 
     /**
      * @param title the title
      */
     public void setTitle(String title) {
-<span class="nc" id="L92">        this.title = title;</span>
-<span class="nc" id="L93">    }</span>
+<span class="nc" id="L94">        this.title = title;</span>
+<span class="nc" id="L95">    }</span>
 
     /**
      * @return the purpose
      */
     public String getPurpose() {
-<span class="nc" id="L99">        return purpose;</span>
+<span class="nc" id="L101">        return purpose;</span>
     }
 
     /**
      * @param purpose the purpose
      */
     public void setPurpose(String purpose) {
-<span class="nc" id="L106">        this.purpose = purpose;</span>
-<span class="nc" id="L107">    }</span>
+<span class="nc" id="L108">        this.purpose = purpose;</span>
+<span class="nc" id="L109">    }</span>
 
     /**
      * @return Authority holder : is it belonging to
@@ -114,24 +116,24 @@ import javax.persistence.NamedQuery;
      * &lt;/ul&gt;
      */
     public ConcretizationCategory getAuthorityHolder() {
-<span class="nc" id="L117">        return authorityHolder;</span>
+<span class="nc" id="L119">        return authorityHolder;</span>
     }
 
     /**
      * @param authorityHolder the authority holder
      */
     public void setAuthorityHolder(ConcretizationCategory authorityHolder) {
-<span class="nc" id="L124">        this.authorityHolder = authorityHolder;</span>
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L126">        this.authorityHolder = authorityHolder;</span>
+<span class="nc" id="L127">    }</span>
 
     @Override
     public CardType resolve() {
-<span class="nc" id="L129">        return this;</span>
+<span class="nc" id="L131">        return this;</span>
     }
 
     @Override
     public List&lt;AbstractCardType&gt; expand() {
-<span class="nc" id="L134">        return List.of(this);</span>
+<span class="nc" id="L136">        return List.of(this);</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -142,24 +144,34 @@ import javax.persistence.NamedQuery;
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L145">        super.merge(other);</span>
+<span class="nc" id="L147">        super.merge(other);</span>
 
-<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (other instanceof CardType) {</span>
-<span class="nc" id="L148">            CardType o = (CardType) other;</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">        if (other instanceof CardType) {</span>
+<span class="nc" id="L150">            CardType o = (CardType) other;</span>
             // this.setUniqueId(o.getUniqueId());
-<span class="nc" id="L150">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L151">            this.setPurpose(o.getPurpose());</span>
+<span class="nc" id="L152">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L153">            this.setPurpose(o.getPurpose());</span>
             // this.setAuthorityHolder(o.getAuthorityHolder());
-<span class="nc" id="L153">        } else {</span>
-<span class="nc" id="L154">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L155">        } else {</span>
+<span class="nc" id="L156">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L156">    }</span>
+<span class="nc" id="L158">    }</span>
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        if (this.getProject() != null){</span>
+<span class="nc" id="L164">            return new Conditions.IsCurrentUserMemberOfProject(this.getProject());</span>
+        } else {
+<span class="nc" id="L166">            return Conditions.alwaysFalse;</span>
+        }
+    }
 
     @Override
     public String toString() {
-<span class="nc" id="L160">        return &quot;CardType{&quot; + &quot;id=&quot; + getId() + &quot;, uniqueId=&quot; + uniqueId + &quot;, title=&quot; + title</span>
+<span class="nc" id="L172">        return &quot;CardType{&quot; + &quot;id=&quot; + getId() + &quot;, uniqueId=&quot; + uniqueId + &quot;, title=&quot; + title</span>
             + &quot;, purpose=&quot; + purpose + &quot;, authorityHolder=&quot; + authorityHolder + &quot;, projectId=&quot;
-<span class="nc" id="L162">            + getProjectId() + &quot;}&quot;;</span>
+            + projectId + &quot;}&quot;;
     }
 
 }

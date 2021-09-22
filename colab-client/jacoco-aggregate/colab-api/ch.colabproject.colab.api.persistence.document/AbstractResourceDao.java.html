@@ -47,5 +47,20 @@ import org.slf4j.LoggerFactory;
         }
     }
 
+    /**
+     * Delete a resource / resource reference from database. This can't be undone
+     *
+     * @param id the id of the resource / resource reference to delete
+     *
+     * @return just deleted resource / resource reference
+     */
+    public AbstractResource deleteResourceOrRef(Long id) {
+<span class="nc" id="L58">        logger.debug(&quot;delete abstract resource reference #{}&quot;, id);</span>
+        // TODO: move to recycle bin first
+<span class="nc" id="L60">        AbstractResource resourceRef = this.findResourceOrRef(id);</span>
+<span class="nc" id="L61">        em.remove(resourceRef);</span>
+<span class="nc" id="L62">        return resourceRef;</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

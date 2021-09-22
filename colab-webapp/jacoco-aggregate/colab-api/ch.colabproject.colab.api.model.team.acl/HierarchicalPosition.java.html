@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>HierarchicalPosition.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model.team.acl</a> &gt; <span class="el_source">HierarchicalPosition.java</span></div><h1>HierarchicalPosition.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model.team.acl;
+
+/**
+ * Describe the hierarchical position of a team member
+ */
+//WARNING ! DO NOT CHANGE THE ENUM NAMES, THEY ARE USED AS KEYS IN DB !!
+<span class="nc" id="L13">public enum HierarchicalPosition {</span>
+    /**
+     * Externs do not have access to anything unless explicit authorization
+     */
+<span class="nc" id="L17">    EXTERN(InvolvementLevel.OUT_OF_THE_LOOP),</span>
+    /**
+     * Interns have default read/write access to everything but team/roles management
+     */
+<span class="nc" id="L21">    INTERN(InvolvementLevel.INFORMED_READWRITE),</span>
+    /**
+     * like Intern but can manage team and roles.
+     */
+<span class="nc" id="L25">    LEAD(InvolvementLevel.INFORMED_READWRITE),</span>
+    /**
+     * owners has full read/write access to the whole project, bypassing any access control
+     */
+<span class="nc" id="L29">    OWNER(InvolvementLevel.INFORMED_READWRITE);</span>
+
+    /**
+     * give read-write access ?
+     */
+    private final InvolvementLevel defaultLevel;
+
+    /**
+     * Build a Hierarchical position
+     *
+     * @param defaultLevel default level of involvements
+     */
+<span class="nc" id="L41">    /*private */ HierarchicalPosition(InvolvementLevel defaultLevel) {</span>
+<span class="nc" id="L42">        this.defaultLevel = defaultLevel;</span>
+<span class="nc" id="L43">    }</span>
+
+    /**
+     * Get the default involvement level.
+     *
+     * @return the level
+     */
+    public InvolvementLevel getDefaultInvolvement() {
+<span class="nc" id="L51">        return this.defaultLevel;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

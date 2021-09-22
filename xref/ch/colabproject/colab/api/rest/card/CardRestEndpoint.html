@@ -17,9 +17,9 @@
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.CardFacade;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.ResourceFacade;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.exceptions.ColabMergeException;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.Card;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.CardContent;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.AbstractResource;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.team.acl.AccessControl;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.Card;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.CardContent;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.Resource;
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.link.ActivityFlowLink;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.link.StickyNoteLink;
@@ -188,76 +188,75 @@
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>     }
 <a class="jxr_linenumber" name="L181" href="#L181">181</a> 
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L183" href="#L183">183</a> <em class="jxr_javadoccomment">     * Get all abstract resources directly linked to the card</em>
+<a class="jxr_linenumber" name="L183" href="#L183">183</a> <em class="jxr_javadoccomment">     * Get all sticky note links of which the card is the destination</em>
 <a class="jxr_linenumber" name="L184" href="#L184">184</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L185" href="#L185">185</a> <em class="jxr_javadoccomment">     * @param cardId the id of the card</em>
+<a class="jxr_linenumber" name="L185" href="#L185">185</a> <em class="jxr_javadoccomment">     * @param cardId Card id of the searched links</em>
 <a class="jxr_linenumber" name="L186" href="#L186">186</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L187" href="#L187">187</a> <em class="jxr_javadoccomment">     * @return list of directly linked abstract resources</em>
+<a class="jxr_linenumber" name="L187" href="#L187">187</a> <em class="jxr_javadoccomment">     * @return list of links</em>
 <a class="jxr_linenumber" name="L188" href="#L188">188</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>     @GET
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>     @Path(<span class="jxr_string">"{id}/AbstractResources"</span>)
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>     <strong class="jxr_keyword">public</strong> List&lt;AbstractResource&gt; getDirectAbstractResourcesOfCard(@PathParam(<span class="jxr_string">"id"</span>) Long cardId) {
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>         logger.debug(<span class="jxr_string">"get direct abstract resources linked to card #{}"</span>, cardId);
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>         <strong class="jxr_keyword">return</strong> cardFacade.getDirectAbstractResourcesOfCard(cardId);
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>     @Path(<span class="jxr_string">"{id}/StickyNoteLinksDestinationCard"</span>)
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>     <strong class="jxr_keyword">public</strong> List&lt;StickyNoteLink&gt; getStickyNoteLinksAsDest(@PathParam(<span class="jxr_string">"id"</span>) Long cardId) {
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>         logger.debug(<span class="jxr_string">"Get sticky note links to card #{} as destination"</span>, cardId);
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>         <strong class="jxr_keyword">return</strong> cardFacade.getStickyNoteLinkAsDest(cardId);
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>     }
 <a class="jxr_linenumber" name="L195" href="#L195">195</a> 
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L197" href="#L197">197</a> <em class="jxr_javadoccomment">     * Get all sticky note links of which the card is the destination</em>
+<a class="jxr_linenumber" name="L197" href="#L197">197</a> <em class="jxr_javadoccomment">     * Get all sticky note links of which the card is the source</em>
 <a class="jxr_linenumber" name="L198" href="#L198">198</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L199" href="#L199">199</a> <em class="jxr_javadoccomment">     * @param cardId Card id of the searched links</em>
 <a class="jxr_linenumber" name="L200" href="#L200">200</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L201" href="#L201">201</a> <em class="jxr_javadoccomment">     * @return list of links</em>
 <a class="jxr_linenumber" name="L202" href="#L202">202</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>     @GET
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>     @Path(<span class="jxr_string">"{id}/StickyNoteLinksDestinationCard"</span>)
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>     <strong class="jxr_keyword">public</strong> List&lt;StickyNoteLink&gt; getStickyNoteLinksAsDest(@PathParam(<span class="jxr_string">"id"</span>) Long cardId) {
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>         logger.debug(<span class="jxr_string">"Get sticky note links to card #{} as destination"</span>, cardId);
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>         <strong class="jxr_keyword">return</strong> cardFacade.getStickyNoteLinkAsDest(cardId);
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>     @Path(<span class="jxr_string">"{id}/StickyNoteLinksSrcCard"</span>)
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>     <strong class="jxr_keyword">public</strong> List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(<span class="jxr_string">"id"</span>) Long cardId) {
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>         logger.debug(<span class="jxr_string">"Get sticky note links to card #{} as source"</span>, cardId);
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>         <strong class="jxr_keyword">return</strong> cardFacade.getStickyNoteLinkAsSrcCard(cardId);
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>     }
 <a class="jxr_linenumber" name="L209" href="#L209">209</a> 
 <a class="jxr_linenumber" name="L210" href="#L210">210</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L211" href="#L211">211</a> <em class="jxr_javadoccomment">     * Get all sticky note links of which the card is the source</em>
+<a class="jxr_linenumber" name="L211" href="#L211">211</a> <em class="jxr_javadoccomment">     * Get all activity flow links of which the card is the previous one</em>
 <a class="jxr_linenumber" name="L212" href="#L212">212</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L213" href="#L213">213</a> <em class="jxr_javadoccomment">     * @param cardId Card id of the searched links</em>
 <a class="jxr_linenumber" name="L214" href="#L214">214</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L215" href="#L215">215</a> <em class="jxr_javadoccomment">     * @return list of links</em>
 <a class="jxr_linenumber" name="L216" href="#L216">216</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>     @GET
-<a class="jxr_linenumber" name="L218" href="#L218">218</a>     @Path(<span class="jxr_string">"{id}/StickyNoteLinksSrcCard"</span>)
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>     <strong class="jxr_keyword">public</strong> List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(<span class="jxr_string">"id"</span>) Long cardId) {
-<a class="jxr_linenumber" name="L220" href="#L220">220</a>         logger.debug(<span class="jxr_string">"Get sticky note links to card #{} as source"</span>, cardId);
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>         <strong class="jxr_keyword">return</strong> cardFacade.getStickyNoteLinkAsSrcCard(cardId);
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>     @Path(<span class="jxr_string">"{id}/ActivityFlowLinksPreviousCard"</span>)
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>     <strong class="jxr_keyword">public</strong> List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsPrevious(@PathParam(<span class="jxr_string">"id"</span>) Long cardId) {
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>         logger.debug(<span class="jxr_string">"Get activity flow links to card #{} as previous"</span>, cardId);
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>         <strong class="jxr_keyword">return</strong> cardFacade.getActivityFlowLinkAsPrevious(cardId);
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>     }
 <a class="jxr_linenumber" name="L223" href="#L223">223</a> 
 <a class="jxr_linenumber" name="L224" href="#L224">224</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L225" href="#L225">225</a> <em class="jxr_javadoccomment">     * Get all activity flow links of which the card is the previous one</em>
+<a class="jxr_linenumber" name="L225" href="#L225">225</a> <em class="jxr_javadoccomment">     * Get all activity flow links of which the card is the next one</em>
 <a class="jxr_linenumber" name="L226" href="#L226">226</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L227" href="#L227">227</a> <em class="jxr_javadoccomment">     * @param cardId Card id of the searched links</em>
 <a class="jxr_linenumber" name="L228" href="#L228">228</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L229" href="#L229">229</a> <em class="jxr_javadoccomment">     * @return list of links</em>
 <a class="jxr_linenumber" name="L230" href="#L230">230</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>     @GET
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>     @Path(<span class="jxr_string">"{id}/ActivityFlowLinksPreviousCard"</span>)
-<a class="jxr_linenumber" name="L233" href="#L233">233</a>     <strong class="jxr_keyword">public</strong> List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsPrevious(@PathParam(<span class="jxr_string">"id"</span>) Long cardId) {
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>         logger.debug(<span class="jxr_string">"Get activity flow links to card #{} as previous"</span>, cardId);
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>         <strong class="jxr_keyword">return</strong> cardFacade.getActivityFlowLinkAsPrevious(cardId);
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>     @Path(<span class="jxr_string">"{id}/ActivityFlowLinksNextCard"</span>)
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>     <strong class="jxr_keyword">public</strong> List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsNext(@PathParam(<span class="jxr_string">"id"</span>) Long cardId) {
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>         logger.debug(<span class="jxr_string">"Get activity flow links to card #{} as next"</span>, cardId);
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>         <strong class="jxr_keyword">return</strong> cardFacade.getActivityFlowLinkAsNext(cardId);
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>     }
 <a class="jxr_linenumber" name="L237" href="#L237">237</a> 
 <a class="jxr_linenumber" name="L238" href="#L238">238</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L239" href="#L239">239</a> <em class="jxr_javadoccomment">     * Get all activity flow links of which the card is the next one</em>
+<a class="jxr_linenumber" name="L239" href="#L239">239</a> <em class="jxr_javadoccomment">     * Retrieve the list of access-control for the given card</em>
 <a class="jxr_linenumber" name="L240" href="#L240">240</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L241" href="#L241">241</a> <em class="jxr_javadoccomment">     * @param cardId Card id of the searched links</em>
+<a class="jxr_linenumber" name="L241" href="#L241">241</a> <em class="jxr_javadoccomment">     * @param cardId id of the card</em>
 <a class="jxr_linenumber" name="L242" href="#L242">242</a> <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L243" href="#L243">243</a> <em class="jxr_javadoccomment">     * @return list of links</em>
+<a class="jxr_linenumber" name="L243" href="#L243">243</a> <em class="jxr_javadoccomment">     * @return list of access-control</em>
 <a class="jxr_linenumber" name="L244" href="#L244">244</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>     @GET
-<a class="jxr_linenumber" name="L246" href="#L246">246</a>     @Path(<span class="jxr_string">"{id}/ActivityFlowLinksNextCard"</span>)
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>     <strong class="jxr_keyword">public</strong> List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsNext(@PathParam(<span class="jxr_string">"id"</span>) Long cardId) {
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>         logger.debug(<span class="jxr_string">"Get activity flow links to card #{} as next"</span>, cardId);
-<a class="jxr_linenumber" name="L249" href="#L249">249</a>         <strong class="jxr_keyword">return</strong> cardFacade.getActivityFlowLinkAsNext(cardId);
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>     @Path(<span class="jxr_string">"{cardId}/ACLs"</span>)
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>     <strong class="jxr_keyword">public</strong> List&lt;AccessControl&gt; getAcls(@PathParam(<span class="jxr_string">"cardId"</span>) Long cardId) {
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>         logger.debug(<span class="jxr_string">"Get Card #{} access-control list"</span>, cardId);
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>         <strong class="jxr_keyword">return</strong> cardFacade.getAcls(cardId);
 <a class="jxr_linenumber" name="L250" href="#L250">250</a>     }
-<a class="jxr_linenumber" name="L251" href="#L251">251</a> 
-<a class="jxr_linenumber" name="L252" href="#L252">252</a> }
+<a class="jxr_linenumber" name="L251" href="#L251">251</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

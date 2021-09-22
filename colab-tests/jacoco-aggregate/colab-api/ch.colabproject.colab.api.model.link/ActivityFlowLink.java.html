@@ -10,8 +10,12 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.model.tracking.Tracking;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,7 +29,8 @@ import javax.validation.constraints.NotNull;
  * @author sandra
  */
 @Entity
-<span class="fc" id="L28">public class ActivityFlowLink implements ColabEntity/* , WithWebsocketChannels */ {</span>
+<span class="fc" id="L32">public class ActivityFlowLink implements ColabEntity/* ,</span>
+ * WithWebsocketChannels */ {
 
     /**
      * Serial version UID
@@ -35,7 +40,6 @@ import javax.validation.constraints.NotNull;
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Link ID
      */
@@ -44,10 +48,16 @@ import javax.validation.constraints.NotNull;
     private Long id;
 
     /**
+     * creation &amp;amp; modification tracking data
+     */
+    @Embedded
+    private Tracking trackingData;
+
+    /**
      * The card to handle before
      */
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Card previousCard;
 
@@ -61,7 +71,7 @@ import javax.validation.constraints.NotNull;
      * The card to handle after
      */
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Card nextCard;
 
@@ -74,35 +84,34 @@ import javax.validation.constraints.NotNull;
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the link id
      */
     @Override
     public Long getId() {
-<span class="fc" id="L83">        return id;</span>
+<span class="fc" id="L92">        return id;</span>
     }
 
     /**
      * @param id the link id
      */
     public void setId(Long id) {
-<span class="fc" id="L90">        this.id = id;</span>
-<span class="fc" id="L91">    }</span>
+<span class="fc" id="L99">        this.id = id;</span>
+<span class="fc" id="L100">    }</span>
 
     /**
      * @return the card to handle before
      */
     public Card getPreviousCard() {
-<span class="fc" id="L97">        return previousCard;</span>
+<span class="fc" id="L106">        return previousCard;</span>
     }
 
     /**
      * @param previousCard the card to handle before
      */
     public void setPreviousCard(Card previousCard) {
-<span class="fc" id="L104">        this.previousCard = previousCard;</span>
-<span class="fc" id="L105">    }</span>
+<span class="fc" id="L113">        this.previousCard = previousCard;</span>
+<span class="fc" id="L114">    }</span>
 
     /**
      * get the id of the card to handle before. To be sent to client
@@ -110,10 +119,10 @@ import javax.validation.constraints.NotNull;
      * @return the id of the card to handle before
      */
     public Long getPreviousCardId() {
-<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (this.previousCard != null) {</span>
-<span class="fc" id="L114">            return this.previousCard.getId();</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (this.previousCard != null) {</span>
+<span class="fc" id="L123">            return this.previousCard.getId();</span>
         } else {
-<span class="fc" id="L116">            return previousCardId;</span>
+<span class="fc" id="L125">            return previousCardId;</span>
         }
     }
 
@@ -123,22 +132,22 @@ import javax.validation.constraints.NotNull;
      * @param previousCardId the id of the card to handle before
      */
     public void setPreviousCardId(Long previousCardId) {
-<span class="fc" id="L126">        this.previousCardId = previousCardId;</span>
-<span class="fc" id="L127">    }</span>
+<span class="fc" id="L135">        this.previousCardId = previousCardId;</span>
+<span class="fc" id="L136">    }</span>
 
     /**
      * @return the card to handle after
      */
     public Card getNextCard() {
-<span class="fc" id="L133">        return nextCard;</span>
+<span class="fc" id="L142">        return nextCard;</span>
     }
 
     /**
      * @param nextCard the card to handle after
      */
     public void setNextCard(Card nextCard) {
-<span class="fc" id="L140">        this.nextCard = nextCard;</span>
-<span class="fc" id="L141">    }</span>
+<span class="fc" id="L149">        this.nextCard = nextCard;</span>
+<span class="fc" id="L150">    }</span>
 
     /**
      * get the id of the card to handle after. To be sent to client
@@ -146,10 +155,10 @@ import javax.validation.constraints.NotNull;
      * @return the id of the card to handle after
      */
     public Long getNextCardId() {
-<span class="fc bfc" id="L149" title="All 2 branches covered.">        if (this.nextCard != null) {</span>
-<span class="fc" id="L150">            return this.nextCard.getId();</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        if (this.nextCard != null) {</span>
+<span class="fc" id="L159">            return this.nextCard.getId();</span>
         } else {
-<span class="fc" id="L152">            return nextCardId;</span>
+<span class="fc" id="L161">            return nextCardId;</span>
         }
     }
 
@@ -159,13 +168,32 @@ import javax.validation.constraints.NotNull;
      * @param nextCardId the id of the card to handle after
      */
     public void setNextCardId(Long nextCardId) {
-<span class="fc" id="L162">        this.nextCardId = nextCardId;</span>
-<span class="fc" id="L163">    }</span>
+<span class="fc" id="L171">        this.nextCardId = nextCardId;</span>
+<span class="fc" id="L172">    }</span>
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+<span class="fc" id="L181">        return trackingData;</span>
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+<span class="fc" id="L191">        this.trackingData = trackingData;</span>
+<span class="fc" id="L192">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     /**
      * {@inheritDoc }
      */
@@ -176,10 +204,10 @@ import javax.validation.constraints.NotNull;
         // previousCard is managed separately in the Facade
         // nextCard is managed separately in the Facade
 //        } else {
-<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (!(other instanceof ActivityFlowLink)) {</span>
-<span class="nc" id="L180">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">        if (!(other instanceof ActivityFlowLink)) {</span>
+<span class="nc" id="L208">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L182">    }</span>
+<span class="nc" id="L210">    }</span>
 
 //    @Override
 //    public Set&lt;WebsocketChannel&gt; getChannels() {
@@ -189,22 +217,38 @@ import javax.validation.constraints.NotNull;
 //        return Set.of();
 //        }
 //    }
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+<span class="fc" id="L223">        return new Conditions.Or(</span>
+<span class="fc" id="L224">            this.previousCard.getReadCondition(),</span>
+<span class="fc" id="L225">            this.nextCard.getReadCondition()</span>
+        );
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+<span class="fc" id="L231">        return new Conditions.And(</span>
+<span class="fc" id="L232">            this.previousCard.getUpdateCondition(),</span>
+<span class="fc" id="L233">            this.nextCard.getUpdateCondition()</span>
+        );
+    }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L195">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L239">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L201">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L245">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L206">        return &quot;ActivityFlowLink{&quot; + &quot;id=&quot; + id + &quot;, previousCardId=&quot; + getPreviousCardId()</span>
-<span class="nc" id="L207">            + &quot;, nextCardId=&quot; + getNextCardId() + &quot;}&quot;;</span>
+<span class="nc" id="L250">        return &quot;ActivityFlowLink{&quot; + &quot;id=&quot; + id + &quot;, previousCardId=&quot; + previousCardId</span>
+            + &quot;, nextCardId=&quot; + nextCardId + &quot;}&quot;;
     }
 
 }

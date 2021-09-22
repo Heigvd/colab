@@ -48,28 +48,36 @@ import org.slf4j.LoggerFactory;
     private UserManagement userManagement;
 
     /**
+     * request manager
+     */
+    @Inject
+    private RequestManager requestManager;
+
+    /**
      * Create a default admin user if there is no admin at all.
      */
     public void createDefaultAdminIfNone() {
-<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (userDao.findAllAdmin().isEmpty()) {</span>
-            try {
-<span class="nc" id="L56">                logger.info(&quot;No admin exists, create one&quot;);</span>
-                //make sure to create the user within a brand new transaction
-<span class="nc" id="L58">                User admin = userManagement.createAdminUserTx(</span>
-<span class="nc" id="L59">                    ColabConfiguration.getDefaultAdminUsername(),</span>
-<span class="nc" id="L60">                    ColabConfiguration.getDefaultAdminEmail(),</span>
-<span class="nc" id="L61">                    ColabConfiguration.getDefaultAdminPassword()</span>
-                );
-<span class="nc" id="L63">                logger.info(&quot;New admin user: {}&quot;, admin);</span>
-<span class="nc" id="L64">            } catch (HttpErrorMessage ex) {</span>
-<span class="nc" id="L65">                logger.error(</span>
-                    &quot;Fails to create default amdin user. Does non-admin user exists with same username or email address&quot;);
-<span class="nc" id="L67">            } catch (RuntimeException ex) {</span>
-<span class="nc" id="L68">                logger.error(</span>
-                    &quot;Fails to create default amdin user for some unknown reason. Please check config&quot;,
-                    ex);
-<span class="nc" id="L71">            }</span>
-        }
-<span class="nc" id="L73">    }</span>
+<span class="nc" id="L60">        requestManager.sudo(() -&gt; {</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">            if (userDao.findAllAdmin().isEmpty()) {</span>
+                try {
+<span class="nc" id="L63">                    logger.info(&quot;No admin exists, create one&quot;);</span>
+                    //make sure to create the user within a brand new transaction
+<span class="nc" id="L65">                    User admin = userManagement.createAdminUserTx(</span>
+<span class="nc" id="L66">                        ColabConfiguration.getDefaultAdminUsername(),</span>
+<span class="nc" id="L67">                        ColabConfiguration.getDefaultAdminEmail(),</span>
+<span class="nc" id="L68">                        ColabConfiguration.getDefaultAdminPassword()</span>
+                    );
+<span class="nc" id="L70">                    logger.info(&quot;New admin user: {}&quot;, admin);</span>
+<span class="nc" id="L71">                } catch (HttpErrorMessage ex) {</span>
+<span class="nc" id="L72">                    logger.error(</span>
+                        &quot;Fails to create default amdin user. Does non-admin user exists with same username or email address&quot;);
+<span class="nc" id="L74">                } catch (RuntimeException ex) {</span>
+<span class="nc" id="L75">                    logger.error(</span>
+                        &quot;Fails to create default amdin user for some unknown reason. Please check config&quot;,
+                        ex);
+<span class="nc" id="L78">                }</span>
+            }
+<span class="nc" id="L80">        });</span>
+<span class="nc" id="L81">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

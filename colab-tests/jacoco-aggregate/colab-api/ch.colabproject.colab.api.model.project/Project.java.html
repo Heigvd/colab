@@ -12,19 +12,25 @@ import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.team.Role;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.model.tracking.Tracking;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,7 +50,7 @@ import javax.persistence.Transient;
 @NamedQuery(
     name = &quot;Project.findProjectByUser&quot;,
     query = &quot;SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId&quot;)
-<span class="fc" id="L47">public class Project implements ColabEntity, WithWebsocketChannels {</span>
+<span class="fc" id="L53">public class Project implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -57,6 +63,12 @@ import javax.persistence.Transient;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * creation &amp;amp; modification tracking data
+     */
+    @Embedded
+    private Tracking trackingData;
 
     /**
      * The name
@@ -77,7 +89,7 @@ import javax.persistence.Transient;
     /**
      * The root card of the project containing all other cards
      */
-    @OneToOne(cascade = CascadeType.ALL) // , optional=false)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY) // , optional=false)
     @JsonbTransient
     private Card rootCard;
 
@@ -92,19 +104,19 @@ import javax.persistence.Transient;
      */
     @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)
     @JsonbTransient
-    private List&lt;Role&gt; roles;
+    private List&lt;TeamRole&gt; roles;
 
     /**
      * List of team members
      */
-<span class="fc" id="L100">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="fc" id="L112">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;TeamMember&gt; teamMembers = new ArrayList&lt;&gt;();
 
     /**
      * List of elements to be defined within the cards
      */
-<span class="fc" id="L107">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
+<span class="fc" id="L119">    @OneToMany(mappedBy = &quot;project&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;AbstractCardType&gt; elementsToBeDefined = new ArrayList&lt;&gt;();
 
@@ -116,22 +128,22 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L119">        return id;</span>
+<span class="fc" id="L131">        return id;</span>
     }
 
     /**
      * @param id the project ID
      */
     public void setId(Long id) {
-<span class="fc" id="L126">        this.id = id;</span>
-<span class="fc" id="L127">    }</span>
+<span class="fc" id="L138">        this.id = id;</span>
+<span class="fc" id="L139">    }</span>
 
     /**
      *
      * @return the project name
      */
     public String getName() {
-<span class="fc" id="L134">        return name;</span>
+<span class="fc" id="L146">        return name;</span>
     }
 
     /**
@@ -140,50 +152,50 @@ import javax.persistence.Transient;
      * @param name the project name
      */
     public void setName(String name) {
-<span class="fc" id="L143">        this.name = name;</span>
-<span class="fc" id="L144">    }</span>
+<span class="fc" id="L155">        this.name = name;</span>
+<span class="fc" id="L156">    }</span>
 
     /**
      * @return the description
      */
     public String getDescription() {
-<span class="fc" id="L150">        return description;</span>
+<span class="fc" id="L162">        return description;</span>
     }
 
     /**
      * @param description the description to set
      */
     public void setDescription(String description) {
-<span class="fc" id="L157">        this.description = description;</span>
-<span class="fc" id="L158">    }</span>
+<span class="fc" id="L169">        this.description = description;</span>
+<span class="fc" id="L170">    }</span>
 
     /**
      * @return the concretization type : is it a concrete project or an abstract model
      */
     public ConcretizationCategory getConcretizationCategory() {
-<span class="fc" id="L164">        return concretizationCategory;</span>
+<span class="fc" id="L176">        return concretizationCategory;</span>
     }
 
     /**
      * @param category the concretization type : is it a concrete project or an abstract model
      */
     public void setConcretizationCategory(ConcretizationCategory category) {
-<span class="nc" id="L171">        this.concretizationCategory = category;</span>
-<span class="nc" id="L172">    }</span>
+<span class="nc" id="L183">        this.concretizationCategory = category;</span>
+<span class="nc" id="L184">    }</span>
 
     /**
      * @return the root card of the project that contains every other cards
      */
     public Card getRootCard() {
-<span class="fc" id="L178">        return rootCard;</span>
+<span class="fc" id="L190">        return rootCard;</span>
     }
 
     /**
      * @param rootCard the root card of the project that contains every other cards
      */
     public void setRootCard(Card rootCard) {
-<span class="fc" id="L185">        this.rootCard = rootCard;</span>
-<span class="fc" id="L186">    }</span>
+<span class="fc" id="L197">        this.rootCard = rootCard;</span>
+<span class="fc" id="L198">    }</span>
 
     /**
      * get the id of the root card. To be sent to client
@@ -191,10 +203,10 @@ import javax.persistence.Transient;
      * @return id of the root card or null
      */
     public Long getRootCardId() {
-<span class="fc bfc" id="L194" title="All 2 branches covered.">        if (this.getRootCard() != null) {</span>
-<span class="fc" id="L195">            return this.getRootCard().getId();</span>
+<span class="fc bfc" id="L206" title="All 2 branches covered.">        if (this.getRootCard() != null) {</span>
+<span class="fc" id="L207">            return this.getRootCard().getId();</span>
         } else {
-<span class="fc" id="L197">            return rootCardId;</span>
+<span class="fc" id="L209">            return rootCardId;</span>
         }
     }
 
@@ -204,8 +216,8 @@ import javax.persistence.Transient;
      * @param rootCardId the rootCardId to set
      */
     public void setRootCardId(Long rootCardId) {
-<span class="fc" id="L207">        this.rootCardId = rootCardId;</span>
-<span class="fc" id="L208">    }</span>
+<span class="fc" id="L219">        this.rootCardId = rootCardId;</span>
+<span class="fc" id="L220">    }</span>
 
     /**
      * get team members
@@ -213,7 +225,7 @@ import javax.persistence.Transient;
      * @return members
      */
     public List&lt;TeamMember&gt; getTeamMembers() {
-<span class="fc" id="L216">        return teamMembers;</span>
+<span class="fc" id="L228">        return teamMembers;</span>
     }
 
     /**
@@ -222,16 +234,29 @@ import javax.persistence.Transient;
      * @param teamMembers list of members
      */
     public void setTeamMembers(List&lt;TeamMember&gt; teamMembers) {
-<span class="nc" id="L225">        this.teamMembers = teamMembers;</span>
-<span class="nc" id="L226">    }</span>
+<span class="nc" id="L237">        this.teamMembers = teamMembers;</span>
+<span class="nc" id="L238">    }</span>
+
+    /**
+     * Get all members with given position
+     *
+     * @param position the needle
+     *
+     * @return list of team member with the given position
+     */
+    public List&lt;TeamMember&gt; getTeamMembersByPosition(HierarchicalPosition position) {
+<span class="nc" id="L248">        return this.teamMembers.stream()</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">            .filter(member -&gt; member.getPosition() == position)</span>
+<span class="nc" id="L250">            .collect(Collectors.toList());</span>
+    }
 
     /**
      * Get the value of roles
      *
      * @return the value of roles
      */
-    public List&lt;Role&gt; getRoles() {
-<span class="fc" id="L234">        return roles;</span>
+    public List&lt;TeamRole&gt; getRoles() {
+<span class="fc" id="L259">        return roles;</span>
     }
 
     /**
@@ -241,15 +266,15 @@ import javax.persistence.Transient;
      *
      * @return the role or null
      */
-    public Role getRoleByName(String name) {
-<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (name != null) {</span>
-<span class="fc bfc" id="L246" title="All 2 branches covered.">            for (Role r : this.roles) {</span>
-<span class="pc bpc" id="L247" title="1 of 2 branches missed.">                if (name.equals(r.getName())) {</span>
-<span class="nc" id="L248">                    return r;</span>
+    public TeamRole getRoleByName(String name) {
+<span class="pc bpc" id="L270" title="1 of 2 branches missed.">        if (name != null) {</span>
+<span class="fc bfc" id="L271" title="All 2 branches covered.">            for (TeamRole r : this.roles) {</span>
+<span class="pc bpc" id="L272" title="1 of 2 branches missed.">                if (name.equals(r.getName())) {</span>
+<span class="nc" id="L273">                    return r;</span>
                 }
-<span class="fc" id="L250">            }</span>
+<span class="fc" id="L275">            }</span>
         }
-<span class="fc" id="L252">        return null;</span>
+<span class="fc" id="L277">        return null;</span>
     }
 
     /**
@@ -257,23 +282,43 @@ import javax.persistence.Transient;
      *
      * @param roles new value of roles
      */
-    public void setRoles(List&lt;Role&gt; roles) {
-<span class="nc" id="L261">        this.roles = roles;</span>
-<span class="nc" id="L262">    }</span>
+    public void setRoles(List&lt;TeamRole&gt; roles) {
+<span class="nc" id="L286">        this.roles = roles;</span>
+<span class="nc" id="L287">    }</span>
 
     /**
      * @return the elementsToDefine
      */
     public List&lt;AbstractCardType&gt; getElementsToBeDefined() {
-<span class="fc" id="L268">        return elementsToBeDefined;</span>
+<span class="fc" id="L293">        return elementsToBeDefined;</span>
     }
 
     /**
      * @param elements the elementsToDefine to set
      */
     public void setElementsToBeDefined(List&lt;AbstractCardType&gt; elements) {
-<span class="nc" id="L275">        this.elementsToBeDefined = elements;</span>
-<span class="nc" id="L276">    }</span>
+<span class="nc" id="L300">        this.elementsToBeDefined = elements;</span>
+<span class="nc" id="L301">    }</span>
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+<span class="fc" id="L310">        return trackingData;</span>
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+<span class="fc" id="L320">        this.trackingData = trackingData;</span>
+<span class="fc" id="L321">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -283,15 +328,15 @@ import javax.persistence.Transient;
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L286" title="1 of 2 branches missed.">        if (other instanceof Project) {</span>
-<span class="fc" id="L287">            Project o = (Project) other;</span>
-<span class="fc" id="L288">            this.setName(o.getName());</span>
-<span class="fc" id="L289">            this.setDescription(o.getDescription());</span>
+<span class="pc bpc" id="L331" title="1 of 2 branches missed.">        if (other instanceof Project) {</span>
+<span class="fc" id="L332">            Project o = (Project) other;</span>
+<span class="fc" id="L333">            this.setName(o.getName());</span>
+<span class="fc" id="L334">            this.setDescription(o.getDescription());</span>
             // TODO see if concretizationCategory should be there
-<span class="fc" id="L291">        } else {</span>
-<span class="nc" id="L292">            throw new ColabMergeException(this, other);</span>
+<span class="fc" id="L336">        } else {</span>
+<span class="nc" id="L337">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L294">    }</span>
+<span class="fc" id="L339">    }</span>
 
     /**
      * Project if propagated through its own overview channel.
@@ -300,24 +345,53 @@ import javax.persistence.Transient;
      */
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="fc" id="L303">        return Set.of(ProjectOverviewChannel.build(this));</span>
+<span class="fc" id="L348">        return Set.of(ProjectOverviewChannel.build(this));</span>
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+        // anybody can create a project
+<span class="fc" id="L355">        return Conditions.alwaysTrue;</span>
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+
+<span class="fc" id="L362">        List&lt;Conditions.Condition&gt; orList = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L364">        orList.add(new Conditions.IsCurrentUserMemberOfProject(this));</span>
+
+<span class="fc" id="L366">        this.elementsToBeDefined.stream().forEach(type -&gt; {</span>
+            // anyone who has access to a type may read the project too
+<span class="fc" id="L368">            orList.add(type.getReadCondition());</span>
+<span class="fc" id="L369">        });</span>
+
+<span class="fc" id="L371">        return new Conditions.Or(orList.toArray(</span>
+<span class="fc" id="L372">            new Conditions.Condition[orList.size()]));</span>
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+<span class="fc" id="L377">        return new Conditions.IsCurrentUserMemberOfProject(this);</span>
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L308">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L382">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L314">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L388">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L319">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, descr=&quot; + description + &quot;, category=&quot;</span>
-<span class="fc" id="L320">            + concretizationCategory + &quot;, rootCardId=&quot; + getRootCardId() + '}';</span>
+<span class="fc" id="L393">        return &quot;Project{&quot; + &quot;id=&quot; + id + &quot;, name=&quot; + name + &quot;, descr=&quot; + description + &quot;, category=&quot;</span>
+            + concretizationCategory + '}';
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

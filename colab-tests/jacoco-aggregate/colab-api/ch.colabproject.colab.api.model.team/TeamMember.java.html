@@ -9,22 +9,34 @@ package ch.colabproject.colab.api.model.team;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 /**
  * A member is a {@link User user} which work on a {@link Project project}
@@ -32,19 +44,25 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
-@NamedQuery(name = &quot;TeamMember.areUserTeammate&quot;,
-        // SELECT true FROM TeamMember a, TeamMember b WHERE ...
-        query = &quot;SELECT true FROM TeamMember a &quot;
-                + &quot;JOIN TeamMember b ON a.project.id = b.project.id &quot;
-                + &quot;WHERE a.user.id = :aUserId AND b.user.id = :bUserId&quot;)
-<span class="fc" id="L40">public class TeamMember implements ColabEntity, WithWebsocketChannels {</span>
+@NamedQuery(
+    name = &quot;TeamMember.areUserTeammate&quot;,
+    // SELECT true FROM TeamMember a, TeamMember b WHERE ...
+    query = &quot;SELECT true FROM TeamMember a &quot;
+    + &quot;JOIN TeamMember b ON a.project.id = b.project.id &quot;
+    + &quot;WHERE a.user.id = :aUserId AND b.user.id = :bUserId&quot;)
+@NamedQuery(
+    name = &quot;TeamMember.findByUserAndProject&quot;,
+    query = &quot;SELECT m FROM TeamMember m &quot;
+    + &quot;WHERE m.project.id = :projectId &quot;
+    + &quot;AND m.user IS NOT NULL AND m.user.id = :userId&quot;
+)
+<span class="fc" id="L59">public class TeamMember implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Member ID
      */
@@ -53,9 +71,15 @@ import javax.persistence.Transient;
     private Long id;
 
     /**
+     * creation &amp;amp; modification tracking data
+     */
+    @Embedded
+    private Tracking trackingData;
+
+    /**
      * The user
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private User user;
 
@@ -68,23 +92,30 @@ import javax.persistence.Transient;
     /**
      * The project
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private Project project;
-
 
     /**
      * The roles
      */
     @ManyToMany
     @JsonbTransient
-    private List&lt;Role&gt; roles;
+    private List&lt;TeamRole&gt; roles;
+
+    /**
+     * List of access control relative to this member
+     */
+    @OneToMany(mappedBy = &quot;member&quot;, cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List&lt;AccessControl&gt; accessControlList;
 
     /**
      * Id of the roles. For deserialization only
      */
+<span class="fc" id="L116">    @NotNull</span>
     @Transient
-    private List&lt;Long&gt; roleIds;
+    private List&lt;Long&gt; roleIds = new ArrayList&lt;&gt;();
 
     /**
      * The project ID (serialization sugar)
@@ -92,38 +123,44 @@ import javax.persistence.Transient;
     @Transient
     private Long projectId;
 
+    /**
+     * Hierarchical position of the member
+     */
+<span class="fc" id="L129">    @NotNull</span>
+    @Enumerated(value = EnumType.STRING)
+    private HierarchicalPosition position = HierarchicalPosition.INTERN;
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the member ID
      */
     @Override
     public Long getId() {
-<span class="fc" id="L104">        return id;</span>
+<span class="fc" id="L141">        return id;</span>
     }
 
     /**
      * @param id the member ID
      */
     public void setId(Long id) {
-<span class="fc" id="L111">        this.id = id;</span>
-<span class="fc" id="L112">    }</span>
+<span class="fc" id="L148">        this.id = id;</span>
+<span class="fc" id="L149">    }</span>
 
     /**
      * @return the user
      */
     public User getUser() {
-<span class="fc" id="L118">        return user;</span>
+<span class="fc" id="L155">        return user;</span>
     }
 
     /**
      * @param user the user
      */
     public void setUser(User user) {
-<span class="fc" id="L125">        this.user = user;</span>
-<span class="fc" id="L126">    }</span>
+<span class="fc" id="L162">        this.user = user;</span>
+<span class="fc" id="L163">    }</span>
 
     /**
      * get the user id. To be sent to client
@@ -131,10 +168,10 @@ import javax.persistence.Transient;
      * @return id of the user or null
      */
     public Long getUserId() {
-<span class="fc bfc" id="L134" title="All 2 branches covered.">        if (this.user != null) {</span>
-<span class="fc" id="L135">            return this.user.getId();</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        if (this.user != null) {</span>
+<span class="fc" id="L172">            return this.user.getId();</span>
         } else {
-<span class="fc" id="L137">            return userId;</span>
+<span class="fc" id="L174">            return userId;</span>
         }
     }
 
@@ -144,22 +181,22 @@ import javax.persistence.Transient;
      * @param id the id of the user
      */
     public void setUserId(Long id) {
-<span class="fc" id="L147">        this.userId = id;</span>
-<span class="fc" id="L148">    }</span>
+<span class="fc" id="L184">        this.userId = id;</span>
+<span class="fc" id="L185">    }</span>
 
     /**
      * @return the project
      */
     public Project getProject() {
-<span class="fc" id="L154">        return project;</span>
+<span class="fc" id="L191">        return project;</span>
     }
 
     /**
      * @param project the project
      */
     public void setProject(Project project) {
-<span class="fc" id="L161">        this.project = project;</span>
-<span class="fc" id="L162">    }</span>
+<span class="fc" id="L198">        this.project = project;</span>
+<span class="fc" id="L199">    }</span>
 
     /**
      * get the project id. To be sent to client
@@ -167,10 +204,10 @@ import javax.persistence.Transient;
      * @return id of the project or null
      */
     public Long getProjectId() {
-<span class="fc bfc" id="L170" title="All 2 branches covered.">        if (this.project != null) {</span>
-<span class="fc" id="L171">            return this.project.getId();</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">        if (this.project != null) {</span>
+<span class="fc" id="L208">            return this.project.getId();</span>
         } else {
-<span class="fc" id="L173">            return projectId;</span>
+<span class="fc" id="L210">            return projectId;</span>
         }
     }
 
@@ -180,16 +217,16 @@ import javax.persistence.Transient;
      * @param id the id of the project
      */
     public void setProjectId(Long id) {
-<span class="fc" id="L183">        this.projectId = id;</span>
-<span class="fc" id="L184">    }</span>
+<span class="fc" id="L220">        this.projectId = id;</span>
+<span class="fc" id="L221">    }</span>
 
     /**
      * Get roles
      *
      * @return roles
      */
-    public List&lt;Role&gt; getRoles() {
-<span class="fc" id="L192">        return roles;</span>
+    public List&lt;TeamRole&gt; getRoles() {
+<span class="fc" id="L229">        return roles;</span>
     }
 
     /**
@@ -197,9 +234,9 @@ import javax.persistence.Transient;
      *
      * @param roles list of roles
      */
-    public void setRoles(List&lt;Role&gt; roles) {
-<span class="nc" id="L201">        this.roles = roles;</span>
-<span class="nc" id="L202">    }</span>
+    public void setRoles(List&lt;TeamRole&gt; roles) {
+<span class="nc" id="L238">        this.roles = roles;</span>
+<span class="nc" id="L239">    }</span>
 
     /**
      * Get ids of the roles.
@@ -207,12 +244,12 @@ import javax.persistence.Transient;
      * @return list of ids
      */
     public List&lt;Long&gt; getRoleIds() {
-<span class="fc bfc" id="L210" title="All 2 branches covered.">        if (this.roles != null) {</span>
-<span class="fc" id="L211">            return roles.stream()</span>
-<span class="fc" id="L212">                .map(role -&gt; role.getId())</span>
-<span class="fc" id="L213">                .collect(Collectors.toList());</span>
+<span class="fc bfc" id="L247" title="All 2 branches covered.">        if (this.roles != null) {</span>
+<span class="fc" id="L248">            return roles.stream()</span>
+<span class="fc" id="L249">                .map(role -&gt; role.getId())</span>
+<span class="fc" id="L250">                .collect(Collectors.toList());</span>
         }
-<span class="fc" id="L215">        return roleIds;</span>
+<span class="fc" id="L252">        return roleIds;</span>
     }
 
     /**
@@ -221,43 +258,138 @@ import javax.persistence.Transient;
      * @param roleIds id of roles
      */
     public void setRoleIds(List&lt;Long&gt; roleIds) {
-<span class="fc" id="L224">        this.roleIds = roleIds;</span>
-<span class="fc" id="L225">    }</span>
+<span class="fc" id="L261">        this.roleIds = roleIds;</span>
+<span class="fc" id="L262">    }</span>
 
+    /**
+     * Get the list of access control
+     *
+     * @return access control list
+     */
+    public List&lt;AccessControl&gt; getAccessControlList() {
+<span class="nc" id="L270">        return accessControlList;</span>
+    }
+
+    /**
+     * Set the list of access control
+     *
+     * @param accessControlList new list of access control
+     */
+    public void setAccessControlList(List&lt;AccessControl&gt; accessControlList) {
+<span class="nc" id="L279">        this.accessControlList = accessControlList;</span>
+<span class="nc" id="L280">    }</span>
+
+    /**
+     * Get the hierarchical position of the member
+     *
+     * @return member's position
+     */
+    public HierarchicalPosition getPosition() {
+<span class="fc" id="L288">        return position;</span>
+    }
+
+    /**
+     * Set hierarchical position of member
+     *
+     * @param position new position
+     */
+    public void setPosition(HierarchicalPosition position) {
+<span class="fc" id="L297">        this.position = position;</span>
+<span class="fc" id="L298">    }</span>
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+<span class="fc" id="L307">        return trackingData;</span>
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+<span class="fc" id="L317">        this.trackingData = trackingData;</span>
+<span class="fc" id="L318">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         /* no-op */
-<span class="nc" id="L235">    }</span>
+<span class="nc" id="L326">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="pc bpc" id="L239" title="1 of 2 branches missed.">        if (this.project != null) {</span>
-<span class="fc" id="L240">            return this.project.getChannels();</span>
+<span class="pc bpc" id="L330" title="1 of 2 branches missed.">        if (this.project != null) {</span>
+<span class="fc" id="L331">            return this.project.getChannels();</span>
         } else {
-<span class="nc" id="L242">            return Set.of();</span>
+<span class="nc" id="L333">            return Set.of();</span>
+        }
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getCreateCondition() {
+<span class="pc bpc" id="L340" title="1 of 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+            // any &quot;intern&quot; may invite somebody
+<span class="fc" id="L342">            return new Conditions.IsCurrentUserInternToProject(project);</span>
+        } else {
+            // anyone can read a pending invitation
+<span class="fc" id="L345">            return Conditions.alwaysTrue;</span>
+        }
+    }
+
+    @Override
+    @JsonbTransient
+    public Conditions.Condition getReadCondition() {
+<span class="pc bpc" id="L352" title="2 of 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="fc" id="L353">            return new Conditions.IsCurrentUserMemberOfProject(project);</span>
+        } else {
+            // anyone can read a pending invitation
+<span class="nc" id="L356">            return Conditions.alwaysTrue;</span>
+        }
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+<span class="pc bpc" id="L362" title="2 of 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="pc bpc" id="L363" title="1 of 2 branches missed.">            if (this.position == HierarchicalPosition.OWNER) {</span>
+<span class="fc" id="L364">                return new Conditions.IsCurrentUserOwnerOfProject(project);</span>
+            } else {
+<span class="nc" id="L366">                return new Conditions.IsCurrentUserLeaderOfProject(project);</span>
+            }
+        } else {
+            // anyone can read a pending invitation
+<span class="nc" id="L370">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L248">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L376">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L254">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L382">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L259">        return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + getUserId() + &quot;, projectId=&quot;</span>
-<span class="fc" id="L260">                + getProjectId() + &quot;}&quot;;</span>
+<span class="pc bpc" id="L387" title="1 of 2 branches missed.">        if (user == null) {</span>
+<span class="fc" id="L388">            return &quot;TeamMember{pending}&quot;;</span>
+        } else {
+<span class="nc" id="L390">            return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + userId + &quot;, projectId=&quot;</span>
+                + projectId + &quot;}&quot;;
+        }
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -10,8 +10,16 @@ import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.security.HttpSession;
+import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Request sidekick.
@@ -19,7 +27,16 @@ import javax.inject.Inject;
  * @author maxence
  */
 @RequestScoped
-<span class="nc" id="L22">public class RequestManager {</span>
+<span class="nc" id="L30">public class RequestManager {</span>
+
+    /** logger */
+<span class="nc" id="L33">    private static final Logger logger = LoggerFactory.getLogger(RequestManager.class);</span>
+
+    /**
+     * Access to the persistence unit
+     */
+    @PersistenceContext(unitName = &quot;COLAB_PU&quot;)
+    private EntityManager em;
 
     /**
      * User-related business logic
@@ -49,12 +66,37 @@ import javax.inject.Inject;
     private String baseUrl;
 
     /**
+     * Id of the current user account
+     */
+    private Long currentAccountId;
+
+    /**
+     * To store condition which have already been evaluated
+     */
+<span class="nc" id="L76">    private final Map&lt;Condition, Boolean&gt; conditionCache = new HashMap&lt;&gt;();</span>
+
+    /**
+     * Indicates if current user can act as an admin. 0 = no sudo greater than 0 =&gt; sudo
+     */
+<span class="nc" id="L81">    private int sudoAsAdmin = 0;</span>
+
+    /**
+     * is the thread run in the so-called security transaction ?
+     */
+<span class="nc" id="L86">    private boolean inSecurityTx = false;</span>
+
+    /**
+     * Is the current transaction already completed ?
+     */
+<span class="nc" id="L91">    private boolean txDone = false;</span>
+
+    /**
      * Get request base url
      *
      * @return url
      */
     public String getBaseUrl() {
-<span class="nc" id="L57">        return baseUrl;</span>
+<span class="nc" id="L99">        return baseUrl;</span>
     }
 
     /**
@@ -63,15 +105,15 @@ import javax.inject.Inject;
      * @param baseUrl request base url
      */
     public void setBaseUrl(String baseUrl) {
-<span class="nc" id="L66">        this.baseUrl = baseUrl;</span>
-<span class="nc" id="L67">    }</span>
+<span class="nc" id="L108">        this.baseUrl = baseUrl;</span>
+<span class="nc" id="L109">    }</span>
 
     /**
      *
      * @return the current http session
      */
     public HttpSession getHttpSession() {
-<span class="nc" id="L74">        return this.httpSession;</span>
+<span class="nc" id="L116">        return this.httpSession;</span>
     }
 
     /**
@@ -80,12 +122,12 @@ import javax.inject.Inject;
      * @param httpSession http session
      */
     public void setHttpSession(HttpSession httpSession) {
-<span class="nc" id="L83">        this.httpSession = httpSession;</span>
-<span class="nc" id="L84">        User currentUser = getCurrentUser();</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (currentUser != null) {</span>
-<span class="nc" id="L86">            currentUser.touchLastSeenAt();</span>
+<span class="nc" id="L125">        this.httpSession = httpSession;</span>
+<span class="nc" id="L126">        User currentUser = getCurrentUser();</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        if (currentUser != null) {</span>
+<span class="nc" id="L128">            currentUser.touchLastSeenAt();</span>
         }
-<span class="nc" id="L88">    }</span>
+<span class="nc" id="L130">    }</span>
 
     /**
      * Get the current authenticated account
@@ -93,10 +135,12 @@ import javax.inject.Inject;
      * @return the current account or null if none
      */
     public Account getCurrentAccount() {
-<span class="nc bnc" id="L96" title="All 2 branches missed.">        if (this.httpSession != null) {</span>
-<span class="nc" id="L97">            return userDao.findAccount(this.httpSession.getAccountId());</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (this.httpSession != null) {</span>
+<span class="nc" id="L139">            return userDao.findAccount(this.httpSession.getAccountId());</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        } else if (this.currentAccountId != null) {</span>
+<span class="nc" id="L141">            return userDao.findAccount(this.currentAccountId);</span>
         }
-<span class="nc" id="L99">        return null;</span>
+<span class="nc" id="L143">        return null;</span>
     }
 
     /**
@@ -105,12 +149,12 @@ import javax.inject.Inject;
      * @return the current user or null if none
      */
     public User getCurrentUser() {
-<span class="nc" id="L108">        Account account = this.getCurrentAccount();</span>
+<span class="nc" id="L152">        Account account = this.getCurrentAccount();</span>
 
-<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (account != null) {</span>
-<span class="nc" id="L111">            return account.getUser();</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (account != null) {</span>
+<span class="nc" id="L155">            return account.getUser();</span>
         } else {
-<span class="nc" id="L113">            return null;</span>
+<span class="nc" id="L157">            return null;</span>
         }
     }
 
@@ -121,8 +165,8 @@ import javax.inject.Inject;
      *
      */
     public void setStartTime(long timestamp) {
-<span class="nc" id="L124">        this.startTime = timestamp;</span>
-<span class="nc" id="L125">    }</span>
+<span class="nc" id="L168">        this.startTime = timestamp;</span>
+<span class="nc" id="L169">    }</span>
 
     /**
      * Return the time the request started
@@ -130,7 +174,7 @@ import javax.inject.Inject;
      * @return start time timestamp in ms
      */
     public long getStartTime() {
-<span class="nc" id="L133">        return startTime;</span>
+<span class="nc" id="L177">        return startTime;</span>
     }
 
     /**
@@ -139,7 +183,7 @@ import javax.inject.Inject;
      * @return true if the current user is fully authenticated
      */
     public Boolean isAuthenticated() {
-<span class="nc bnc" id="L142" title="All 2 branches missed.">        return this.getCurrentAccount() != null;</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        return this.getCurrentAccount() != null;</span>
     }
 
     /**
@@ -148,15 +192,143 @@ import javax.inject.Inject;
      * @param account new current account
      */
     public void login(Account account) {
-<span class="nc" id="L151">        this.getHttpSession().setAccountId(account.getId());</span>
-<span class="nc" id="L152">    }</span>
+<span class="nc" id="L195">        HttpSession session = this.getHttpSession();</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">        if (session != null) {</span>
+<span class="nc" id="L197">            session.setAccountId(account.getId());</span>
+        }
+<span class="nc" id="L199">        this.currentAccountId = account.getId();</span>
+<span class="nc" id="L200">    }</span>
 
     /**
      * Clear current account and unsubscribe from all websocket channels.
      */
     public void logout() {
-<span class="nc" id="L158">        this.getHttpSession().setAccountId(null);</span>
-<span class="nc" id="L159">        websocketFacade.signoutAndUnsubscribeFromAll(this.getHttpSession().getSessionId());</span>
-<span class="nc" id="L160">    }</span>
+<span class="nc" id="L206">        HttpSession session = this.getHttpSession();</span>
+<span class="nc" id="L207">        this.currentAccountId = null;</span>
+<span class="nc bnc" id="L208" title="All 2 branches missed.">        if (session != null) {</span>
+<span class="nc" id="L209">            session.setAccountId(null);</span>
+<span class="nc" id="L210">            websocketFacade.signoutAndUnsubscribeFromAll(this.getHttpSession().getSessionId());</span>
+        }
+<span class="nc" id="L212">    }</span>
+
+    private boolean txExists() {
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        return !this.txDone;</span>
+    }
+
+    /**
+     * Execute some piece of code with admin privileges.
+     *
+     * @param action code to execute with admin privileges
+     */
+    public void sudo(Runnable action) {
+<span class="nc bnc" id="L224" title="All 2 branches missed.">        if (txExists()) {</span>
+            // make sure to flush to check every pending changes before granting admin rights
+<span class="nc" id="L226">            em.flush();</span>
+        }
+
+<span class="nc" id="L229">        this.sudoAsAdmin++;</span>
+<span class="nc" id="L230">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="nc" id="L231">        action.run();</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">        if (txExists()) {</span>
+            // make sure to flush to apply all pending changes with admin rights
+<span class="nc" id="L234">            em.flush();</span>
+        }
+
+<span class="nc" id="L237">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
+
+<span class="nc" id="L239">        this.sudoAsAdmin--;</span>
+<span class="nc" id="L240">    }</span>
+
+    /**
+     * Execute some piece of code with admin privileges and return something.
+     *
+     * @param &lt;R&gt;    return type
+     * @param action code to execute with admin privileges
+     *
+     * @return action result
+     *
+     * @throws java.lang.Exception if something is thrown during the call
+     */
+    public &lt;R&gt; R sudo(Callable&lt;R&gt; action) throws Exception {
+<span class="nc bnc" id="L253" title="All 2 branches missed.">        if (txExists()) {</span>
+            // make sure to flush to check every pending changes before granting admin rights
+<span class="nc" id="L255">            em.flush();</span>
+        }
+<span class="nc" id="L257">        this.sudoAsAdmin++;</span>
+<span class="nc" id="L258">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="nc" id="L259">        R result = action.call();</span>
+<span class="nc bnc" id="L260" title="All 2 branches missed.">        if (txExists()) {</span>
+            // make sure to flush to apply all pending changes with admin rights
+<span class="nc" id="L262">            em.flush();</span>
+        }
+<span class="nc" id="L264">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="nc" id="L265">        this.sudoAsAdmin--;</span>
+
+<span class="nc" id="L267">        return result;</span>
+    }
+
+    /**
+     * Is the currentUser is an admin or sudo as an admin ?
+     *
+     * @return true if current user can act as an admin
+     */
+    public boolean isAdmin() {
+        // the sudoAsAdmin is done at first,
+        // so we do not need to get the current user if this condition is fulfilled
+<span class="nc bnc" id="L278" title="All 2 branches missed.">        if (sudoAsAdmin &gt; 0) {</span>
+<span class="nc" id="L279">            return true;</span>
+        }
+
+<span class="nc" id="L282">        User currentUser = this.getCurrentUser();</span>
+<span class="nc bnc" id="L283" title="All 4 branches missed.">        return currentUser != null &amp;&amp; currentUser.isAdmin();</span>
+    }
+
+    /**
+     * Register condition result
+     *
+     * @param condition the condition
+     * @param result    the result
+     */
+    public void registerConditionResult(Condition condition, Boolean result) {
+<span class="nc" id="L293">        this.conditionCache.put(condition, result);</span>
+<span class="nc" id="L294">    }</span>
+
+    /**
+     * Get the cached condition result
+     *
+     * @param condition condition
+     *
+     * @return true or false if the condition is cached, null if the condition has not been
+     *         evaluated yet
+     */
+    public Boolean getConditionResult(Condition condition) {
+<span class="nc" id="L305">        return this.conditionCache.get(condition);</span>
+    }
+
+    /**
+     * Is the thread run in a transaction dedicated to security condition evaluation
+     *
+     * @return true/false
+     */
+    public boolean isInSecurityTx() {
+<span class="nc" id="L314">        return inSecurityTx;</span>
+    }
+
+    /**
+     * Change the inSecurityTx flag
+     *
+     * @param inSecurityTx new flag
+     */
+    public void setInSecurityTx(boolean inSecurityTx) {
+<span class="nc" id="L323">        this.inSecurityTx = inSecurityTx;</span>
+<span class="nc" id="L324">    }</span>
+
+    public boolean isTxDone() {
+<span class="nc" id="L327">        return txDone;</span>
+    }
+
+    public void setTxDone(boolean txDone) {
+<span class="nc" id="L331">        this.txDone = txDone;</span>
+<span class="nc" id="L332">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

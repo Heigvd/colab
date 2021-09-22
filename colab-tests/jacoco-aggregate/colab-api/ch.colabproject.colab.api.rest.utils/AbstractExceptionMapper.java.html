@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.rest.utils;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
 import javax.ejb.EJBException;
+import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
@@ -21,10 +22,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author maxence
  */
-<span class="fc" id="L24">public class AbstractExceptionMapper {</span>
+<span class="fc" id="L25">public class AbstractExceptionMapper {</span>
 
     /** logger */
-<span class="fc" id="L27">    private static final Logger logger = LoggerFactory.getLogger(AbstractExceptionMapper.class);</span>
+<span class="fc" id="L28">    private static final Logger logger = LoggerFactory.getLogger(AbstractExceptionMapper.class);</span>
 
     /**
      *
@@ -33,33 +34,40 @@ import org.slf4j.LoggerFactory;
      * @return a HTTP response which wrap the exception
      */
     protected Response processException(Exception exception) {
-<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        if (exception == null) {</span>
-<span class="nc" id="L37">            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();</span>
-<span class="fc bfc" id="L38" title="All 2 branches covered.">        } else if (exception instanceof EJBException) {</span>
-<span class="fc" id="L39">            return processException(((EJBException) exception).getCausedByException());</span>
-<span class="pc bpc" id="L40" title="1 of 2 branches missed.">        } else if (exception instanceof HttpException) {</span>
-<span class="fc" id="L41">            return Response.status(((HttpException) exception).getHttpStatus())</span>
-<span class="fc" id="L42">                .type(MediaType.APPLICATION_JSON)</span>
-<span class="fc" id="L43">                .entity(exception)</span>
-<span class="fc" id="L44">                .build();</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">        } else if (exception instanceof NotFoundException) {</span>
-<span class="nc" id="L46">            return processException(HttpErrorMessage.notFound());</span>
-<span class="nc bnc" id="L47" title="All 2 branches missed.">        } else if (exception instanceof ConstraintViolationException) {</span>
-<span class="nc" id="L48">            ConstraintViolationException constraintViolation</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (exception == null) {</span>
+<span class="nc" id="L38">            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        } else if (exception instanceof EJBException) {</span>
+<span class="fc" id="L40">            return processException(((EJBException) exception).getCausedByException());</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        } else if (exception instanceof HttpException) {</span>
+<span class="fc" id="L42">            return Response.status(((HttpException) exception).getHttpStatus())</span>
+<span class="fc" id="L43">                .type(MediaType.APPLICATION_JSON)</span>
+<span class="fc" id="L44">                .entity(exception)</span>
+<span class="fc" id="L45">                .build();</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        } else if (exception instanceof NotFoundException) {</span>
+<span class="nc" id="L47">            return processException(HttpErrorMessage.notFound());</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">        } else if (exception instanceof ConstraintViolationException) {</span>
+<span class="nc" id="L49">            ConstraintViolationException constraintViolation</span>
                 = (ConstraintViolationException) exception;
-<span class="nc" id="L50">            logger.error(&quot;Constraint Violation Error&quot;);</span>
-<span class="nc" id="L51">            constraintViolation.getConstraintViolations().forEach(violation -&gt; {</span>
-<span class="nc" id="L52">                logger.error(&quot; Violation: {}&quot;, violation);</span>
-<span class="nc" id="L53">            });</span>
-<span class="nc" id="L54">            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)</span>
-<span class="nc" id="L55">                .entity(constraintViolation.toString())</span>
-<span class="nc" id="L56">                .build();</span>
-        } else {
-<span class="nc" id="L58">            logger.error(&quot;Unknown Internal Error&quot;, exception);</span>
-<span class="nc" id="L59">            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)</span>
-<span class="nc" id="L60">                .entity(exception.toString())</span>
-<span class="nc" id="L61">                .build();</span>
+<span class="nc" id="L51">            logger.error(&quot;Constraint Violation Error&quot;);</span>
+<span class="nc" id="L52">            constraintViolation.getConstraintViolations().forEach(violation -&gt; {</span>
+<span class="nc" id="L53">                logger.error(&quot; Violation: {}&quot;, violation);</span>
+<span class="nc" id="L54">            });</span>
+<span class="nc" id="L55">            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)</span>
+<span class="nc" id="L56">                .entity(constraintViolation.toString())</span>
+<span class="nc" id="L57">                .build();</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        } else if (exception instanceof PersistenceException) {</span>
+<span class="fc" id="L59">            PersistenceException e = (PersistenceException) exception;</span>
+
+<span class="fc" id="L61">            Throwable cause = e.getCause();</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">            if (cause instanceof Exception) {</span>
+<span class="fc" id="L63">                return processException((Exception) cause);</span>
+            }
         }
+
+<span class="nc" id="L67">        logger.error(&quot;Unknown Internal Error&quot;, exception);</span>
+<span class="nc" id="L68">        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)</span>
+<span class="nc" id="L69">            .entity(exception.toString())</span>
+<span class="nc" id="L70">            .build();</span>
     }
 
 }

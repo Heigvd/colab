@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.api.ejb;
 
-import ch.colabproject.colab.api.exceptions.ColabRollbackException;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.ws.WebsocketHelper;
@@ -24,7 +23,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.websocket.EncodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,12 +34,12 @@ import org.slf4j.LoggerFactory;
 @RequestScoped // one would use a TransactionScoped bean but such a scope is not compatible with
 //                the @AfterCompletion annotation
 @Stateful // Stateful beans allows to use Before and AfterCompletion annotations
-<span class="nc" id="L39">public class TransactionManager implements Serializable {</span>
+<span class="nc" id="L37">public class TransactionManager implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
     /** logger */
-<span class="nc" id="L44">    private static final Logger logger = LoggerFactory.getLogger(TransactionManager.class);</span>
+<span class="nc" id="L42">    private static final Logger logger = LoggerFactory.getLogger(TransactionManager.class);</span>
 
     /**
      * Access to the persistence unit
@@ -62,14 +60,20 @@ import org.slf4j.LoggerFactory;
     private UserDao userDao;
 
     /**
+     * TO sudo
+     */
+    @Inject
+    private RequestManager requestManager;
+
+    /**
      * set of updated entities to be propagated
      */
-<span class="nc" id="L67">    private Set&lt;WithWebsocketChannels&gt; updated = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L71">    private Set&lt;WithWebsocketChannels&gt; updated = new HashSet&lt;&gt;();</span>
 
     /**
      * set of entities which have been deleted during the transaction
      */
-<span class="nc" id="L72">    private Set&lt;IndexEntry&gt; deleted = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L76">    private Set&lt;IndexEntry&gt; deleted = new HashSet&lt;&gt;();</span>
 
     /**
      * store the prepared messages
@@ -79,7 +83,7 @@ import org.slf4j.LoggerFactory;
     /**
      * Is the message has been precomputed ?
      */
-<span class="nc" id="L82">    private boolean precomputed = false;</span>
+<span class="nc" id="L86">    private boolean precomputed = false;</span>
 
     /**
      * Register updated object within the WS JTA synchronizer.
@@ -87,9 +91,9 @@ import org.slf4j.LoggerFactory;
      * @param o object to register
      */
     public void registerUpdate(WithWebsocketChannels o) {
-<span class="nc" id="L90">        updated.add(o);</span>
-<span class="nc" id="L91">        logger.trace(&quot;UpdatedSet: {}&quot;, updated);</span>
-<span class="nc" id="L92">    }</span>
+<span class="nc" id="L94">        updated.add(o);</span>
+<span class="nc" id="L95">        logger.trace(&quot;UpdatedSet: {}&quot;, updated);</span>
+<span class="nc" id="L96">    }</span>
 
     /**
      * Register updated objects within the WS JTA synchronizer.
@@ -97,9 +101,9 @@ import org.slf4j.LoggerFactory;
      * @param c collection of objects to register
      */
     public void registerUpdates(Collection&lt;WithWebsocketChannels&gt; c) {
-<span class="nc" id="L100">        updated.addAll(c);</span>
-<span class="nc" id="L101">        logger.trace(&quot;UpdatedSet: {}&quot;, updated);</span>
-<span class="nc" id="L102">    }</span>
+<span class="nc" id="L104">        updated.addAll(c);</span>
+<span class="nc" id="L105">        logger.trace(&quot;UpdatedSet: {}&quot;, updated);</span>
+<span class="nc" id="L106">    }</span>
 
     /**
      * Register deleted objects within the WS JTA synchronizer
@@ -107,11 +111,11 @@ import org.slf4j.LoggerFactory;
      * @param c just deleted objects
      */
     public void registerDeletion(Collection&lt;? extends WithWebsocketChannels&gt; c) {
-<span class="nc" id="L110">        c.stream()</span>
-<span class="nc" id="L111">            .map(IndexEntry::build)</span>
-<span class="nc" id="L112">            .forEach(deleted::add);</span>
-<span class="nc" id="L113">        logger.trace(&quot;Deleted set: {}&quot;, deleted);</span>
-<span class="nc" id="L114">    }</span>
+<span class="nc" id="L114">        c.stream()</span>
+<span class="nc" id="L115">            .map(IndexEntry::build)</span>
+<span class="nc" id="L116">            .forEach(deleted::add);</span>
+<span class="nc" id="L117">        logger.trace(&quot;Deleted set: {}&quot;, deleted);</span>
+<span class="nc" id="L118">    }</span>
 
     /**
      * Register deleted object within the WS JTA synchronizer
@@ -119,26 +123,32 @@ import org.slf4j.LoggerFactory;
      * @param o just deleted object
      */
     public void registerDeletion(WithWebsocketChannels o) {
-<span class="nc" id="L122">        deleted.add(IndexEntry.build(o));</span>
-<span class="nc" id="L123">        logger.trace(&quot;Deleted set: {}&quot;, deleted);</span>
-<span class="nc" id="L124">    }</span>
+<span class="nc" id="L126">        deleted.add(IndexEntry.build(o));</span>
+<span class="nc" id="L127">        logger.trace(&quot;Deleted set: {}&quot;, deleted);</span>
+<span class="nc" id="L128">    }</span>
 
     /**
      * Pre compute the message.
      */
-    private void precomputeMessage() throws EncodeException {
-<span class="nc" id="L130">        logger.debug(&quot;Precompute messages; Update:{}, Deletes:{}&quot;, updated, deleted);</span>
-        // filter updateds to keep only those who haven't been deleted
-<span class="nc" id="L132">        Set&lt;WithWebsocketChannels&gt; filtered = updated.stream()</span>
-<span class="nc" id="L133">            .filter(</span>
-<span class="nc" id="L134">                (u) -&gt; !deleted.stream()</span>
-<span class="nc bnc" id="L135" title="All 2 branches missed.">                    .anyMatch((d) -&gt; d.equals(u))</span>
-<span class="nc" id="L136">            ).collect(Collectors.toSet());</span>
+    private void precomputeMessage() {
+        try {
+<span class="nc" id="L135">            logger.debug(&quot;Precompute messages; Update:{}, Deletes:{}&quot;, updated, deleted);</span>
+            // filter updateds to keep only those who haven't been deleted
+<span class="nc" id="L137">            Set&lt;WithWebsocketChannels&gt; filtered = updated.stream()</span>
+<span class="nc" id="L138">                .filter(</span>
+<span class="nc" id="L139">                    (u) -&gt; !deleted.stream()</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">                        .anyMatch((d) -&gt; d.equals(u))</span>
+<span class="nc" id="L141">                ).collect(Collectors.toSet());</span>
 
-<span class="nc" id="L138">        this.precomputed = true;</span>
-<span class="nc" id="L139">        this.message = WebsocketHelper.prepareWsMessage(userDao, filtered, deleted);</span>
-<span class="nc" id="L140">        logger.trace(&quot;Precomputed: {}&quot;, message);</span>
-<span class="nc" id="L141">    }</span>
+<span class="nc" id="L143">            this.precomputed = true;</span>
+<span class="nc" id="L144">            requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L145">                return this.message = WebsocketHelper.prepareWsMessage(userDao, requestManager, filtered, deleted);</span>
+            });
+<span class="nc" id="L147">            logger.trace(&quot;Precomputed: {}&quot;, message);</span>
+<span class="nc" id="L148">        } catch (Exception ex) {</span>
+<span class="nc" id="L149">            logger.error(&quot;Failed to precompute websocket messages&quot;, ex);</span>
+<span class="nc" id="L150">        }</span>
+<span class="nc" id="L151">    }</span>
 
     /**
      * Prepare websocket messages
@@ -146,16 +156,11 @@ import org.slf4j.LoggerFactory;
     @BeforeCompletion
     public void beforeCompletion() {
         //make sure to flush everything to database
-<span class="nc" id="L149">        em.flush();</span>
-<span class="nc" id="L150">        logger.info(</span>
+<span class="nc" id="L159">        em.flush();</span>
+<span class="nc" id="L160">        logger.info(</span>
             &quot;Before transactionCompletion: This method is not called for each transaction, why ???&quot;);
-        try {
-<span class="nc" id="L153">            this.precomputeMessage();</span>
-<span class="nc" id="L154">        } catch (EncodeException ex) {</span>
-            //throw runtime error to rollback
-<span class="nc" id="L156">            throw new ColabRollbackException(ex);</span>
-<span class="nc" id="L157">        }</span>
-<span class="nc" id="L158">    }</span>
+<span class="nc" id="L162">        this.precomputeMessage();</span>
+<span class="nc" id="L163">    }</span>
 
     /**
      * After commit, if the transaction was successful, send pre-computed messages.
@@ -164,23 +169,20 @@ import org.slf4j.LoggerFactory;
      */
     @AfterCompletion
     public void afterCompletion(boolean successful) {
-<span class="nc" id="L167">        logger.debug(&quot;After transaction completion : {}; messages: {}&quot;, successful, message);</span>
-<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (successful) {</span>
-<span class="nc bnc" id="L169" title="All 2 branches missed.">            if (!precomputed) {</span>
-<span class="nc" id="L170">                logger.info(&quot;Messages were not precomputed @BeforeCompletion!!!&quot;);</span>
+<span class="nc" id="L172">        logger.debug(&quot;After transaction completion : {}; messages: {}&quot;, successful, message);</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        if (successful) {</span>
+<span class="nc" id="L174">            requestManager.setTxDone(true);</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">            if (!precomputed) {</span>
+<span class="nc" id="L176">                logger.info(&quot;Messages were not precomputed @BeforeCompletion!!!&quot;);</span>
                 // ,essage shall be precomputed during the &quot;before completion&quot; phase, but the
                 // dedicated method is never called, and I do not understand the reason...
-                try {
-<span class="nc" id="L174">                    this.precomputeMessage();</span>
-<span class="nc" id="L175">                } catch (EncodeException ex) {</span>
-<span class="nc" id="L176">                    logger.error(&quot;Failed to precompute websocket messages&quot;);</span>
-<span class="nc" id="L177">                }</span>
+<span class="nc" id="L179">                this.precomputeMessage();</span>
             }
-<span class="nc bnc" id="L179" title="All 4 branches missed.">            if (message != null &amp;&amp; !message.getMessages().isEmpty()) {</span>
-<span class="nc" id="L180">                logger.info(&quot;Send messages&quot;);</span>
-<span class="nc" id="L181">                websocketFacade.propagate(message);</span>
+<span class="nc bnc" id="L181" title="All 4 branches missed.">            if (message != null &amp;&amp; !message.getMessages().isEmpty()) {</span>
+<span class="nc" id="L182">                logger.info(&quot;Send messages&quot;);</span>
+<span class="nc" id="L183">                websocketFacade.propagate(message);</span>
             }
         }
-<span class="nc" id="L184">    }</span>
+<span class="nc" id="L186">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
