@@ -80,7 +80,7 @@
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">     * @throws ColabMergeException if updating the project failed</em>
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>      <strong class="jxr_keyword">public</strong> <a name="Project" href<a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a>/../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> updateProject(<a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>      <strong class="jxr_keyword">public</strong> <a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> updateProject(<a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          <a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> managedProject = <strong class="jxr_keyword">this</strong>.getProject(project.getId());
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>          managedProject.merge(project);
@@ -95,7 +95,7 @@
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  <em class="jxr_javadoccomment">     * @return the new persisted project</em>
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">public</strong> <a name="Project" href<a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a>/../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> createProject(<a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project) {
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>      <strong class="jxr_keyword">public</strong> <a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> createProject(<a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project) {
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          em.persist(project);
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          <strong class="jxr_keyword">return</strong> project;
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>      }

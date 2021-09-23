@@ -72,7 +72,7 @@
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">     * @return the new persisted card</em>
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> <a name="Card" h<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a>"../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> createCard(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card) {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> createCard(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card) {
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          logger.debug(<span class="jxr_string">"create card {}"</span>, card);
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          em.persist(card);
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">return</strong> card;
@@ -87,7 +87,7 @@
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">     * @throws ColabMergeException if updating the card failed</em>
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>      <strong class="jxr_keyword">public</strong> <a name="Card" h<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a>"../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> updateCard(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      <strong class="jxr_keyword">public</strong> <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> updateCard(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          logger.debug(<span class="jxr_string">"update card {}"</span>, card);
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> mCard = <strong class="jxr_keyword">this</strong>.getCard(card.getId());
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  

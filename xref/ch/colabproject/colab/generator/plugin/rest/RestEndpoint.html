@@ -641,7 +641,7 @@
 <a class="jxr_linenumber" name="L633" href="#L633">633</a> <em class="jxr_javadoccomment">     * @param type    type of the parameter</em>
 <a class="jxr_linenumber" name="L634" href="#L634">634</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L635" href="#L635">635</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> addPathParameter(String name, String pathParamName, String javadoc, Type type) {
-<a class="jxr_linenumber" name="L636" href="#L636">636</a>         <a name="Param" href="../../../../../../ch/colabproject<a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>b/generator/plugin/rest/Param.html#Param">Param</a> param = <strong class="jxr_keyword">new</strong> <a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>();
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>         <a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a> param = <strong class="jxr_keyword">new</strong> <a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>();
 <a class="jxr_linenumber" name="L637" href="#L637">637</a>         param.setName(name);
 <a class="jxr_linenumber" name="L638" href="#L638">638</a>         param.setInAnnotationName(pathParamName);
 <a class="jxr_linenumber" name="L639" href="#L639">639</a>         param.setJavadoc(javadoc);
@@ -705,7 +705,7 @@
 <a class="jxr_linenumber" name="L697" href="#L697">697</a> <em class="jxr_javadoccomment">     * @return RestEndpoint instance, ready for code generation</em>
 <a class="jxr_linenumber" name="L698" href="#L698">698</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L699" href="#L699">699</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="RestEndpoint" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestEndpoint.html#RestEndpoint">RestEndpoint</a> build(Class&lt;?&gt; klass, String applicationPath) {
-<a class="jxr_linenumber" name="L700" href="#L700">700</a>         <a name="RestEndpoint" href="../../../../../../ch/colabproject/colab/<a name="RestEndpoint" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestEndpoint.html#RestEndpoint">RestEndpoint</a>ugin/rest/RestEndpoint.html#RestEndpoint">RestEndpoint</a> restEndpoint = <strong class="jxr_keyword">new</strong> <a name="RestEndpoint" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestEndpoint.html#RestEndpoint">RestEndpoint</a>();
+<a class="jxr_linenumber" name="L700" href="#L700">700</a>         <a name="RestEndpoint" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestEndpoint.html#RestEndpoint">RestEndpoint</a> restEndpoint = <strong class="jxr_keyword">new</strong> <a name="RestEndpoint" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestEndpoint.html#RestEndpoint">RestEndpoint</a>();
 <a class="jxr_linenumber" name="L701" href="#L701">701</a> 
 <a class="jxr_linenumber" name="L702" href="#L702">702</a>         restEndpoint.setAdminResource(klass.getAnnotation(AdminResource.<strong class="jxr_keyword">class</strong>) != <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L703" href="#L703">703</a>         restEndpoint.setAuthenticationRequired(
@@ -727,7 +727,7 @@
 <a class="jxr_linenumber" name="L719" href="#L719">719</a>                 HttpMethod httpMethodAnno = annotation.annotationType()
 <a class="jxr_linenumber" name="L720" href="#L720">720</a>                     .getAnnotation(HttpMethod.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L721" href="#L721">721</a>                 <strong class="jxr_keyword">if</strong> (httpMethodAnno != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L722" href="#L722">722</a>                     <a name="RestMethod" href="../../../../../../ch/colabproject/cola<a name="RestMethod" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestMethod.html#RestMethod">RestMethod</a>r/plugin/rest/RestMethod.html#RestMethod">RestMethod</a> restMethod = <strong class="jxr_keyword">new</strong> <a name="RestMethod" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestMethod.html#RestMethod">RestMethod</a>();
+<a class="jxr_linenumber" name="L722" href="#L722">722</a>                     <a name="RestMethod" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestMethod.html#RestMethod">RestMethod</a> restMethod = <strong class="jxr_keyword">new</strong> <a name="RestMethod" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/RestMethod.html#RestMethod">RestMethod</a>();
 <a class="jxr_linenumber" name="L723" href="#L723">723</a>                     restMethod.setName(method.getName());
 <a class="jxr_linenumber" name="L724" href="#L724">724</a>                     restEndpoint.registerMethod(restMethod);
 <a class="jxr_linenumber" name="L725" href="#L725">725</a> 
@@ -797,7 +797,7 @@
 <a class="jxr_linenumber" name="L789" href="#L789">789</a>                                 <em class="jxr_comment">// several body param ????</em>
 <a class="jxr_linenumber" name="L790" href="#L790">790</a>                                 Logger.warn(<span class="jxr_string">"Several body parameters ???"</span>);
 <a class="jxr_linenumber" name="L791" href="#L791">791</a>                             }
-<a class="jxr_linenumber" name="L792" href="#L792">792</a>                             <a name="Param" href="../../../../../../ch/colabproject/col<a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>nerator/plugin/rest/Param.html#Param">Param</a> bodyParam = <strong class="jxr_keyword">new</strong> <a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>();
+<a class="jxr_linenumber" name="L792" href="#L792">792</a>                             <a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a> bodyParam = <strong class="jxr_keyword">new</strong> <a name="Param" href="../../../../../../ch/colabproject/colab/generator/plugin/rest/Param.html#Param">Param</a>();
 <a class="jxr_linenumber" name="L793" href="#L793">793</a>                             bodyParam.setName(p.getName());
 <a class="jxr_linenumber" name="L794" href="#L794">794</a>                             bodyParam.setType(p.getParameterizedType());
 <a class="jxr_linenumber" name="L795" href="#L795">795</a>                             bodyParam.setJavadoc(<span class="jxr_string">"body payload"</span>);

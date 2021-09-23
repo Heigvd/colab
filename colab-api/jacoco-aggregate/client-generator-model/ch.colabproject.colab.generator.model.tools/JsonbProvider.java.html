@@ -34,12 +34,16 @@ import javax.ws.rs.ext.Provider;
      * @return an Jsonb object
      */
     public static Jsonb getJsonb() {
-<span class="nc" id="L37">        JsonbConfig config = new JsonbConfig()</span>
-<span class="nc" id="L38">            .withFormatting(false);</span>
-        // DO NEVER DO THAT EVER (sse PolymorphicDeserializer doc):
+<span class="nc" id="L37">        DateSerDe dateSerDe = new DateSerDe();</span>
+<span class="nc" id="L38">        JsonbConfig config = new JsonbConfig()</span>
+<span class="nc" id="L39">            .withFormatting(false)</span>
+<span class="nc" id="L40">            .withDeserializers(dateSerDe)</span>
+<span class="nc" id="L41">            .withSerializers(dateSerDe);</span>
+        
+        // DO NEVER DO THAT EVER (see PolymorphicDeserializer doc):
         //.withDeserializers(new PolymorphicDeserializer());
 
-<span class="nc" id="L42">        return JsonbBuilder.create(config);</span>
+<span class="nc" id="L46">        return JsonbBuilder.create(config);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

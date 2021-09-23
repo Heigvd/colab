@@ -76,7 +76,7 @@
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          <strong class="jxr_keyword">if</strong> (getClass() != obj.getClass()) {
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>              <strong class="jxr_keyword">return</strong> false;
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          }
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>          <strong class="jxr_keyword">final</strong> <a name="UserChannel"<a name="UserChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/UserChannel.html#UserChannel">UserChannel</a>./../../../../ch/colabproject/colab/api/ws/channel/UserChannel.html#UserChannel">UserChannel</a> other = (<a name="UserChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/UserChannel.html#UserChannel">UserChannel</a>) obj;
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>          <strong class="jxr_keyword">final</strong> <a name="UserChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/UserChannel.html#UserChannel">UserChannel</a> other = (<a name="UserChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/UserChannel.html#UserChannel">UserChannel</a>) obj;
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>          <strong class="jxr_keyword">return</strong> Objects.equals(<strong class="jxr_keyword">this</strong>.userId, other.userId);
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      }
@@ -94,7 +94,7 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  <em class="jxr_javadoccomment">     * @return the user very own channel</em>
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="UserChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/UserChannel.html#UserChannel">UserChannel</a> build(User user) {
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          <a name="UserChannel" href="../../../../../../ch/colabproject/c<a name="UserChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/UserChannel.html#UserChannel">UserChannel</a>/channel/UserChannel.html#UserChannel">UserChannel</a> channel = <strong class="jxr_keyword">new</strong> <a name="UserChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/UserChannel.html#UserChannel">UserChannel</a>();
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          <a name="UserChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/UserChannel.html#UserChannel">UserChannel</a> channel = <strong class="jxr_keyword">new</strong> <a name="UserChannel" href="../../../../../../ch/colabproject/colab/api/ws/channel/UserChannel.html#UserChannel">UserChannel</a>();
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>          channel.setUserId(user.getId());
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          <strong class="jxr_keyword">return</strong> channel;
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      }

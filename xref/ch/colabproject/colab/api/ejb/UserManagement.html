@@ -153,7 +153,7 @@
 <a class="jxr_linenumber" name="L145" href="#L145">145</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>     <strong class="jxr_keyword">public</strong> User createUser(String username, String email, String plainPassword) {
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>         <a name="AuthMethod" href="../../../../../ch/colabproject/colab/api/model/user/AuthMethod.html#AuthMethod">AuthMethod</a> method = getDefaultRandomAuthenticationMethod();
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>         <a name="SignUpInfo" href="../../../../../ch/colabproject/colab/a<a name="SignUpInfo" href="../../../../../ch/colabproject/colab/api/model/user/SignUpInfo.html#SignUpInfo">SignUpInfo</a>ser/SignUpInfo.html#SignUpInfo">SignUpInfo</a> signUpinfo = <strong class="jxr_keyword">new</strong> <a name="SignUpInfo" href="../../../../../ch/colabproject/colab/api/model/user/SignUpInfo.html#SignUpInfo">SignUpInfo</a>();
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>         <a name="SignUpInfo" href="../../../../../ch/colabproject/colab/api/model/user/SignUpInfo.html#SignUpInfo">SignUpInfo</a> signUpinfo = <strong class="jxr_keyword">new</strong> <a name="SignUpInfo" href="../../../../../ch/colabproject/colab/api/model/user/SignUpInfo.html#SignUpInfo">SignUpInfo</a>();
 <a class="jxr_linenumber" name="L149" href="#L149">149</a> 
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>         signUpinfo.setUsername(username);
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>         signUpinfo.setEmail(email);
@@ -201,7 +201,7 @@
 <a class="jxr_linenumber" name="L193" href="#L193">193</a>         User admin = <strong class="jxr_keyword">this</strong>.createUser(username, email, plainPassword);
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>         LocalAccount account = (LocalAccount) admin.getAccounts().get(0);
 <a class="jxr_linenumber" name="L195" href="#L195">195</a> 
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>         <a name="AuthInfo" href="../../../../../ch/colabproject/colab<a name="AuthInfo" href="../../../../../ch/colabproject/colab/api/model/user/AuthInfo.html#AuthInfo">AuthInfo</a>el/user/AuthInfo.html#AuthInfo">AuthInfo</a> authInfo = <strong class="jxr_keyword">new</strong> <a name="AuthInfo" href="../../../../../ch/colabproject/colab/api/model/user/AuthInfo.html#AuthInfo">AuthInfo</a>();
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>         <a name="AuthInfo" href="../../../../../ch/colabproject/colab/api/model/user/AuthInfo.html#AuthInfo">AuthInfo</a> authInfo = <strong class="jxr_keyword">new</strong> <a name="AuthInfo" href="../../../../../ch/colabproject/colab/api/model/user/AuthInfo.html#AuthInfo">AuthInfo</a>();
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>         authInfo.setIdentifier(username);
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>         authInfo.setMandatoryHash(
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>             Helper.bytesToHex(

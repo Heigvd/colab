@@ -430,7 +430,7 @@
 <a class="jxr_linenumber" name="L422" href="#L422">422</a>                             <em class="jxr_comment">// split mu to preserve addition</em>
 <a class="jxr_linenumber" name="L423" href="#L423">423</a>                             Integer totalLength = mu.getL();
 <a class="jxr_linenumber" name="L424" href="#L424">424</a>                             mu.setL(offsetIndex - muStart);
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>                             <a name="MicroChange" href="../../../../../../ch/colabproject<a name="MicroChange" href="../../../../../../ch/colabproject/colab/api/microchanges/model/MicroChange.html#MicroChange">MicroChange</a>microchanges/model/MicroChange.html#MicroChange">MicroChange</a> newMu = <strong class="jxr_keyword">new</strong> <a name="MicroChange" href="../../../../../../ch/colabproject/colab/api/microchanges/model/MicroChange.html#MicroChange">MicroChange</a>();
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>                             <a name="MicroChange" href="../../../../../../ch/colabproject/colab/api/microchanges/model/MicroChange.html#MicroChange">MicroChange</a> newMu = <strong class="jxr_keyword">new</strong> <a name="MicroChange" href="../../../../../../ch/colabproject/colab/api/microchanges/model/MicroChange.html#MicroChange">MicroChange</a>();
 <a class="jxr_linenumber" name="L426" href="#L426">426</a>                             newMu.setT(Type.D);
 <a class="jxr_linenumber" name="L427" href="#L427">427</a>                             newMu.setO(offsetIndex + offsetValue);
 <a class="jxr_linenumber" name="L428" href="#L428">428</a>                             newMu.setL(totalLength - mu.getL());
@@ -575,7 +575,7 @@
 <a class="jxr_linenumber" name="L567" href="#L567">567</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L568" href="#L568">568</a> <em class="jxr_javadoccomment">     * @return true if rebase has been done without conflict</em>
 <a class="jxr_linenumber" name="L569" href="#L569">569</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L570" href="#L570">570</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> rebase(List&lt;Change&gt; changes, <a name="Change"<a name="Change" href="../../../../../../ch/colabproject/colab/api/microchanges/model/Change.html#Change">Change</a>"../../../../../../ch/colabproject/colab/api/microchanges/model/Change.html#Change">Change</a> newBase, <a name="Change" href="../../../../../../ch/colabproject/colab/api/microchanges/model/Change.html#Change">Change</a> change) {
+<a class="jxr_linenumber" name="L570" href="#L570">570</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> rebase(List&lt;Change&gt; changes, <a name="Change" href="../../../../../../ch/colabproject/colab/api/microchanges/model/Change.html#Change">Change</a> newBase, <a name="Change" href="../../../../../../ch/colabproject/colab/api/microchanges/model/Change.html#Change">Change</a> change) {
 <a class="jxr_linenumber" name="L571" href="#L571">571</a>         Set&lt;String&gt; baseDeps = getAllDependencies(changes, newBase);
 <a class="jxr_linenumber" name="L572" href="#L572">572</a>         Set&lt;String&gt; changeDeps = getAllDependencies(changes, change);
 <a class="jxr_linenumber" name="L573" href="#L573">573</a> 
