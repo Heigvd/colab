@@ -8,6 +8,6 @@
   "private": true,
   "scripts": {},
   "workspaces": [
-    "src/main/webapp/app"
+    "src/main/node/app"
   ]
 }

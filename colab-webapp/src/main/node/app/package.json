@@ -3,12 +3,12 @@
     "version": "0.0.1",
     "description": "coLAB project client application",
     "repository": "http://www.github.com/Heigvd/colab.git",
-    "author": "Maxence Laurent <maxence.laurent@gmail.com>",
+    "author": "Albasim <albasim@heig-vd.ch>",
     "license": "MIT",
     "private": true,
     "main": "dist/index.js",
     "scripts": {
-        "clean": "rimraf dist && rimraf coverage && rimraf test-report",
+        "clean": "rimraf ../../../../target/coLAB/dist && rimraf ../../../../target/ts-coverage && rimraf ../../../../target/ts-test-report",
         "test": "jest",
         "lint": "eslint -c .eslintrc.js --ext .ts,.tsx ./src",
         "build": "webpack --mode=production",
@@ -17,6 +17,7 @@
     },
     "jest": {
         "collectCoverage": true,
+        "coverageDirectory": "../../../../target/ts-coverage",
         "collectCoverageFrom": [
             "src/**/*.{js,jsx,ts,tsx}",
             "!**/node_modules/**"
@@ -44,7 +45,7 @@
                 "jest-html-reporter",
                 {
                     "pageTitle": "Test Report",
-                    "outputPath": "test-report/index.html"
+                    "outputPath": "../../../../target/ts-test-report/index.html"
                 }
             ]
         ],

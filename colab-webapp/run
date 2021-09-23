@@ -6,7 +6,7 @@ HZ_CLUSTER_NAME="colabLocal_$(hostname)"
 
 HEAP=256M
 
-THE_WAR=./target/colab-webapp-0.1/
+THE_WAR=./target/coLAB/
 
 DEBUG_PORT=9009
 DEBUG="false"

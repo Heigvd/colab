@@ -26,7 +26,8 @@ module.exports = {
     },
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, '../../../../target/coLAB/dist'),
+        publicPath: './dist'
     },
     devServer: {
         host: '0.0.0.0',

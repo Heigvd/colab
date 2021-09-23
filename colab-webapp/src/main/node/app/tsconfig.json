@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
+    "outDir": "../../../../target/app-ts-dist/",
     "sourceMap": true,
     "noImplicitAny": true,
     "module": "esnext",
