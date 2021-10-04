@@ -2,11 +2,11 @@ import { Card, InvolvementLevel, TeamMember, TeamRole } from 'colab-rest-client'
 import * as React from 'react';
 import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
-import { logger } from '../../logger';
+import logger from '../../logger';
 import { CardAcl, useCardACL } from '../../selectors/cardSelector';
 import { useProjectBeingEdited, useProjectTeam } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import Flex from '../common/FlexRow';
+import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
 import InvolvementSelector from './InvolvementSelector';
 

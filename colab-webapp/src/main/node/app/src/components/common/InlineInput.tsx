@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import { logger } from '../../logger';
+import logger from '../../logger';
 import IconButton from './IconButton';
 
 export interface Props {

@@ -167,6 +167,6 @@ public class Helper {
      */
     public static <T> T lookup(Class<T> klass) throws NamingException {
         return (T) new InitialContext().lookup(
-            "java:global/colab-webapp-0.1/" + klass.getSimpleName() + "!" + klass.getName());
+            "java:global/coLAB/" + klass.getSimpleName() + "!" + klass.getName());
     }
 }

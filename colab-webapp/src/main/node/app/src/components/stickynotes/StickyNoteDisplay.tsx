@@ -13,7 +13,7 @@ import { useCard } from '../../selectors/cardSelector';
 import { useAppDispatch } from '../../store/hooks';
 import CardThumbWithSelector from '../cards/CardThumbWithSelector';
 import AutoSaveInput from '../common/AutoSaveInput';
-import FitSpace from '../common/FitSpace';
+import Flex from '../common/Flex';
 import { defaultRowContainerStyle } from '../styling/style';
 
 // TODO replace <CardThumbWithSelector for something easy and without actions
@@ -65,7 +65,7 @@ export default function StickyNoteDisplay({
         </div>
       )}
 
-      <FitSpace>
+      <Flex direction="column" grow={1}>
         <div className={stickyNoteOwnDataStyle}>
           <div className={teaserStyle}>
             <AutoSaveInput
@@ -84,7 +84,7 @@ export default function StickyNoteDisplay({
             }
           />
         </div>
-      </FitSpace>
+      </Flex>
 
       {showDest && (
         <div>

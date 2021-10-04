@@ -8,6 +8,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { Card, CardContent } from 'colab-rest-client';
 import * as API from '../API/api';
 import { processMessage } from '../ws/wsThunkActions';
+import { LoadingStatus } from './store';
 
 export interface CardDetail {
   card: Card | null;
@@ -20,13 +21,15 @@ export interface CardContentDetail {
 }
 
 export interface CardState {
-  status: 'UNSET' | 'LOADING' | 'READY';
+  status: LoadingStatus;
+  contentStatus: LoadingStatus;
   cards: Record<number, CardDetail>;
   contents: Record<number, CardContentDetail>;
 }
 
 const initialState: CardState = {
-  status: 'UNSET',
+  status: 'NOT_INITIALIZED',
+  contentStatus: 'NOT_INITIALIZED',
   cards: {},
   contents: {},
 };
@@ -67,6 +70,20 @@ const updateCard = (state: CardState, card: Card) => {
   const cardId = card.id;
   if (cardId != null) {
     const cardState = getOrCreateCardState(state, cardId);
+
+    const prevParentId = cardState.card?.parentId;
+    if (prevParentId != null && card.parentId != null && prevParentId != card.parentId) {
+      // card moved to a new parent
+      // remove from old one
+      const prevParentState = state.contents[prevParentId];
+      if (prevParentState?.subs) {
+        const index = prevParentState.subs.indexOf(cardId);
+        if (index >= 0) {
+          prevParentState.subs.splice(index, 1);
+        }
+      }
+    }
+
     cardState.card = card;
 
     const parentId = card.parentId;
@@ -148,15 +165,15 @@ const cardsSlice = createSlice({
         action.payload.contents.updated.forEach(content => updateContent(state, content));
         action.payload.contents.deleted.forEach(entry => removeContent(state, entry.id));
       })
-      .addCase(API.initCards.fulfilled, (state, action) => {
-        const newCards = action.payload.reduce<CardState['cards']>((acc, current) => {
-          if (current.id) {
-            acc[current.id] = { card: current };
-          }
-          return acc;
-        }, {});
-
-        state.cards = newCards;
+      .addCase(API.getAllProjectCards.pending, state => {
+        state.status = 'LOADING';
+      })
+      .addCase(API.getAllProjectCards.fulfilled, (state, action) => {
+        action.payload.forEach(card => {
+          const cardState = getOrCreateCardState(state, card.id!);
+          cardState.card = card;
+        });
+        state.status = 'READY';
       })
       .addCase(API.getCard.pending, (state, action) => {
         const cardState = getOrCreateCardState(state, action.meta.arg);
@@ -177,6 +194,31 @@ const cardsSlice = createSlice({
           const contentState = getOrCreateCardContentState(state, action.meta.arg);
           contentState.content = action.payload;
         }
+      })
+      .addCase(API.getAllProjectCardContents.pending, state => {
+        state.contentStatus = 'LOADING';
+      })
+      .addCase(API.getAllProjectCardContents.fulfilled, (state, action) => {
+        state.contentStatus = 'READY';
+        Object.values(state.cards).forEach(cardState => {
+          if (cardState.contents == null) {
+            cardState.contents = [];
+          }
+        });
+        action.payload.forEach(cc => {
+          if (cc.id) {
+            const contentState = getOrCreateCardContentState(state, cc.id);
+            contentState.content = cc;
+            const cardId = cc.cardId!;
+            const cardState = getOrCreateCardState(state, cardId);
+            if (cardState.contents == null) {
+              cardState.contents = [];
+            }
+            if (cardState.contents.indexOf(cc.id) < 0) {
+              cardState.contents.push(cc.id);
+            }
+          }
+        });
       })
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;

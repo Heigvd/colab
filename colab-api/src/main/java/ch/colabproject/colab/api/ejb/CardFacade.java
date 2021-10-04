@@ -24,9 +24,11 @@ import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -184,6 +186,39 @@ public class CardFacade {
     // card stuff
     // *********************************************************************************************
     /**
+     * Get a card and all cards within in one set.
+     *
+     * @param rootCard the first card
+     *
+     * @return the rootCard + all cards within
+     */
+    public Set<Card> getAllCards(Card rootCard) {
+        Set<Card> cards = new HashSet<>();
+        List<Card> queue = new LinkedList<>();
+        queue.add(rootCard);
+
+        while (!queue.isEmpty()) {
+            Card card = queue.remove(0);
+            cards.add(card);
+            card.getContentVariants().forEach(content -> queue.addAll(content.getSubCards()));
+        }
+        return cards;
+    }
+
+    /**
+     * Get all cardContents 
+     *
+     * @param rootCard the first card
+     *
+     * @return all cardContent in the card hierarchy
+     */
+    public Set<CardContent> getAllCardContents(Card rootCard) {
+        return this.getAllCards(rootCard).stream().flatMap(card ->{
+            return card.getContentVariants().stream();
+        }).collect(Collectors.toSet());
+    }
+
+    /**
      * Initialize a new root card. This card contains every other cards of a project.
      * <p>
      * No persistence stuff in there
@@ -327,6 +362,53 @@ public class CardFacade {
         }
 
         return card;
+    }
+
+    /**
+     * Move a card to a new parent
+     *
+     * @param cardId      id of the card to move
+     * @param newParentId id of the new parent
+     * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
+     */
+    public void moveCard(Long cardId, Long newParentId) {
+        this.moveCard(cardDao.getCard(cardId), cardContentDao.getCardContent(newParentId));
+    }
+
+    /**
+     * Move a card to a new parent
+     *
+     * @param card      the card to move
+     * @param newParent the new parent
+     * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
+     */
+    public void moveCard(Card card, CardContent newParent) {
+        if (card != null && newParent != null) {
+            if (card.getRootCardProject() != null) {
+                // Do never move root card
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+
+            CardContent previousParent = card.getParent();
+            if (previousParent != null) {
+                // check if newParent is a child of the card
+                Card c = newParent.getCard();
+                while (c != null) {
+                    if (c.equals(card)) {
+                        throw HttpErrorMessage.dataIntegrityFailure();
+                    }
+                    CardContent parent = c.getParent();
+                    if (parent != null) {
+                        c = parent.getCard();
+                    } else {
+                        c = null;
+                    }
+                }
+                previousParent.getSubCards().remove(card);
+                newParent.getSubCards().add(card);
+                card.setParent(newParent);
+            }
+        }
     }
 
     /**

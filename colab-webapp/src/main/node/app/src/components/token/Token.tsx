@@ -9,7 +9,7 @@ import * as React from 'react';
 import { Redirect, useLocation } from 'react-router-dom';
 import { getRestClient, reloadCurrentUser } from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
-import { logger } from '../../logger';
+import logger from '../../logger';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { InlineLink } from '../common/Link';

@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -137,6 +138,22 @@ public class CardRestEndpoint {
     public void updateCard(Card card) throws ColabMergeException {
         logger.debug("update card {}", card);
         cardDao.updateCard(card);
+    }
+
+    /**
+     * Move a card to a new parent
+     *
+     * @param cardId      id of the card to move
+     * @param newParentId id of the new parent
+     *
+     * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
+     */
+    @PUT
+    @Path("{cardId}/MoveTo/{newParentId}")
+    public void moveCard(
+        @PathParam("cardId") Long cardId,
+        @PathParam("newParentId") Long newParentId) throws HttpErrorMessage {
+        cardFacade.moveCard(cardId, newParentId);
     }
 
     /**

@@ -10,6 +10,8 @@ import ch.colabproject.colab.api.ejb.ProjectFacade;
 import ch.colabproject.colab.api.ejb.TeamFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
@@ -151,7 +153,6 @@ public class ProjectRestEndpoint {
         return teamFacade.getTeamMembers(id);
     }
 
-
     /**
      * Get all roles defined in a project
      *
@@ -178,5 +179,34 @@ public class ProjectRestEndpoint {
     public Set<AbstractCardType> getCardTypesOfProject(@PathParam("id") Long id) {
         logger.debug("Get project #{} card types", id);
         return projectFacade.getCardTypes(id);
+    }
+
+    /**
+     * Get all cards belonging to a project
+     *
+     * @param id ID of the project the cards belong to
+     *
+     * @return the cards linked to the project
+     */
+    @GET
+    @Path("{id}/Cards")
+    public Set<Card> getCardsOfProject(@PathParam("id") Long id) {
+        logger.debug("Get project #{} cards", id);
+        return projectFacade.getCards(id);
+    }
+
+
+    /**
+     * Get all cardContents belonging to a project
+     *
+     * @param id ID of the project the cardContents belong to
+     *
+     * @return the cardContents linked to the project
+     */
+    @GET
+    @Path("{id}/CardContents")
+    public Set<CardContent> getCardContentsOfProject(@PathParam("id") Long id) {
+        logger.debug("Get project #{} cards", id);
+        return projectFacade.getCardContents(id);
     }
 }

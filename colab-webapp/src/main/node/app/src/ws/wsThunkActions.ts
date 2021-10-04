@@ -8,8 +8,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   AbstractCardType,
-  AccessControl,
   AbstractResource,
+  AccessControl,
   Account,
   Block,
   Card,
@@ -27,8 +27,8 @@ import {
   WsUpdateMessage,
 } from 'colab-rest-client';
 import { checkUnreachable } from '../helper';
-import getLogger from '../logger';
-import { ColabError } from '../store/error';
+import { getLogger } from '../logger';
+import { ColabNotification } from '../store/notification';
 
 const logger = getLogger('WebSockets');
 
@@ -59,7 +59,7 @@ interface EntityBag {
   stickynotelinks: Updates<StickyNoteLink>;
   types: Updates<AbstractCardType>;
   users: Updates<User>;
-  errors: ColabError[];
+  notifications: ColabNotification[];
 }
 
 function createBag(): EntityBag {
@@ -78,7 +78,7 @@ function createBag(): EntityBag {
     stickynotelinks: { updated: [], deleted: [] },
     types: { updated: [], deleted: [] },
     users: { updated: [], deleted: [] },
-    errors: [],
+    notifications: [],
   };
 }
 
@@ -117,9 +117,10 @@ export const processMessage = createAsyncThunk(
       } else if (indexEntryIs(item, 'User')) {
         bag.users.deleted.push(item);
       } else {
-        bag.errors.push({
+        bag.notifications.push({
           status: 'OPEN',
-          error: `Unhandled deleted entity: ${item.type}#${item.id}`,
+          type: 'WARN',
+          message: `Unhandled deleted entity: ${item.type}#${item.id}`,
         });
       }
     }

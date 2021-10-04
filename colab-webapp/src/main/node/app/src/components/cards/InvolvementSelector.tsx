@@ -10,7 +10,7 @@ import { faEraser, faPen } from '@fortawesome/free-solid-svg-icons';
 import { InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
-import Flex from '../common/FlexRow';
+import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 
 function prettyPrint(level: InvolvementLevel) {

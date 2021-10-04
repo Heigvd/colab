@@ -8,7 +8,7 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
 import 'codemirror/lib/codemirror.css';
 import * as React from 'react';
-import { logger } from '../../../logger';
+import logger from '../../../logger';
 
 export interface MarkdownEditorProps {
   value: string;

@@ -8,9 +8,9 @@
 import { entityIs, WsChannelUpdate } from 'colab-rest-client';
 import { initSocketId } from '../API/api';
 import { checkUnreachable } from '../helper';
-import getLogger from '../logger';
+import { getLogger } from '../logger';
 import * as AdminActions from '../store/admin';
-import * as ErrorActions from '../store/error';
+import { addNotification } from '../store/notification';
 import { dispatch } from '../store/store';
 import { processMessage } from './wsThunkActions';
 
@@ -55,9 +55,10 @@ function createConnection(onCloseCb: () => void) {
       }
     } else {
       dispatch(
-        ErrorActions.addError({
+        addNotification({
           status: 'OPEN',
-          error: `Unhandled message type: ${message['@class']}`,
+          type: 'ERROR',
+          message: `Unhandled message type: ${message['@class']}`,
         }),
       );
     }

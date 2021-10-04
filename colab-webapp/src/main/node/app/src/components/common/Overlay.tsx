@@ -10,12 +10,46 @@ import { fullPageOverlayStyle } from '../styling/style';
 
 interface Props {
   children: React.ReactNode;
+  backgroundStyle?: string;
+  clickOutside?: () => void;
 }
 
-export default function Overlay({ children }: Props): JSX.Element {
+export default function Overlay({ children, backgroundStyle, clickOutside }: Props): JSX.Element {
+  const clickIn = React.useCallback((event: React.MouseEvent<HTMLDivElement> | undefined) => {
+    if (event != null) {
+      event.stopPropagation();
+    }
+  }, []);
+
+  const clickOut = React.useCallback(() => {
+    if (clickOutside) {
+      clickOutside();
+    }
+  }, [clickOutside]);
+
+  //  /**
+  //   * Pressing escape simulate clickOutside()
+  //   */
+  //  const keyDownCb = React.useCallback(
+  //    (event: React.KeyboardEvent<HTMLElement>) => {
+  //      if (clickOutside != null) {
+  //        if (event.code === 'Escape') {
+  //          clickOutside();
+  //        }
+  //      }
+  //    },
+  //    [clickOutside],
+  //  );
+
   return (
-    <div className={cx(fullPageOverlayStyle, css({ zIndex: 999 }))}>
+    <div
+      onClick={clickOut}
+      tabIndex={0}
+      //      onKeyDown={keyDownCb}
+      className={cx(fullPageOverlayStyle, css({ zIndex: 999 }), backgroundStyle)}
+    >
       <div
+        onClick={clickIn}
         className={css({
           margin: 'auto',
         })}

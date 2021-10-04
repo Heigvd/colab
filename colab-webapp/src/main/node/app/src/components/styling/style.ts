@@ -16,6 +16,22 @@ export const pictoColours = css({
   '--pictoGrey': '#9AA4B1', // center colour
 });
 
+export const errorColor = '#e51c23';
+export const warningColor = '#ff9800';
+export const successColor = '#4caf50';
+
+export const errorStyle = css({
+  color: 'var(--warningColor)',
+});
+
+export const warningStyle = css({
+  color: 'var(--warninggColor)',
+});
+
+export const successStyle = css({
+  color: 'var(--successColor)',
+});
+
 export const darkModeColors = css({
   '--bgColor': '#444',
   '--fgColor': 'white',
@@ -25,6 +41,9 @@ export const darkModeColors = css({
   '--linkHoverColor': 'white',
   '--linkHoverBgColor': '#555',
   '--focusColor': 'var(--pictoSteelBlue)',
+  '--successColor': successColor,
+  '--warningColor': warningColor,
+  '--errorColor': errorColor,
 });
 
 export const darkMode = cx(
@@ -44,6 +63,9 @@ export const semiDarkModeColors = css({
   '--linkHoverColor': 'var(--pictoBlue)',
   '--linkHoverBgColor': '#FFF0',
   '--focusColor': 'var(--pictoSteelBlue)',
+  '--successColor': successColor,
+  '--warningColor': warningColor,
+  '--errorColor': errorColor,
 });
 
 export const semiDarkMode = cx(
@@ -63,6 +85,9 @@ export const lightModeColors = css({
   '--linkHoverColor': 'var(--pictoBlue)',
   '--linkHoverBgColor': '#FFF0',
   '--focusColor': 'var(--pictoSteelBlue)',
+  '--successColor': successColor,
+  '--warningColor': warningColor,
+  '--errorColor': errorColor,
 });
 
 export const lightMode = cx(
@@ -144,6 +169,14 @@ export const buttonStyle = cx(
   }),
 );
 
+export const inactiveButtonStyle = cx(
+  buttonStyle,
+  css({
+    opacity: '0.5',
+    cursor: 'default',
+  }),
+);
+
 export const disabledIconStyle = iconStyle;
 
 export const sideTabButton = css({
@@ -157,9 +190,10 @@ export const cardShadow = '0px 0px 7px rgba(0, 0, 0, 0.2)';
 export const cardStyle = cx(
   lightMode,
   css({
-    border: `1px solid lightgrey`,
+    //    border: `1px solid lightgrey`,
     boxShadow: cardShadow,
     borderRadius: '5px',
+    //    overflow: 'hidden',
   }),
 );
 
@@ -185,5 +219,63 @@ export const defaultColumnContainerStyle = cx(
   defaultContainerStyle,
   css({
     flexDirection: 'column',
+  }),
+);
+
+export const mainHeaderHeight = '48px';
+
+export const mainMenuLink = css({
+  textDecoration: 'none',
+  color: 'var(--linkColor)',
+  textTransform: 'uppercase',
+  fontSize: '12px',
+  padding: '10px 20px 14px 5px',
+  ':focus': {
+    /*outlineStyle: 'inset',*/
+  },
+  ':hover': {
+    backgroundColor: '#e6e6e6',
+    color: 'var(--linkHoverColor)',
+  },
+});
+
+export const labelStyle = css({
+  fontWeight: 500,
+  textTransform: 'capitalize',
+});
+
+export const textareaStyle = css({
+  outline: 'none',
+  border: 'solid 1px #d7d7d7',
+  color: 'var(--secFgColor)',
+  backgroundColor: 'var(--secBgColor)',
+  borderRadius: '6px',
+  boxSizing: 'border-box',
+  //  margin: "2px 2px 2px 8px",
+  transition: '.8s',
+  padding: '0 24px',
+  lineHeight: '24px',
+  height: '144px',
+});
+
+export const inputStyle = css({
+  outline: 'none',
+  border: 'solid 1px #d7d7d7',
+  color: 'var(--secFgColor)',
+  backgroundColor: 'var(--secBgColor)',
+  borderRadius: '6px',
+  boxSizing: 'border-box',
+  //  margin: "2px 2px 2px 8px",
+  transition: '.8s',
+  padding: '0 24px',
+  lineHeight: '48px',
+});
+
+export const smallInputStyle = cx(
+  inputStyle,
+  css({
+    padding: '0 24px',
+    lineHeight: '24px',
+    borderRadius: '12px',
   }),
 );

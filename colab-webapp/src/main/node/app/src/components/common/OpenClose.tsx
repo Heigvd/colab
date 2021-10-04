@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
@@ -17,9 +17,11 @@ type State = {
 };
 
 export interface Props {
+  className?: string;
   closeIcon?: IconProp;
-  collapsedChildren: JSX.Element;
-  children: (collapse: () => void) => JSX.Element;
+  showCloseIcon?: 'ICON' | 'NONE' | 'KEEP_CHILD';
+  collapsedChildren: React.ReactNode;
+  children: (collapse: () => void) => React.ReactNode;
 }
 
 const relative = css({
@@ -33,9 +35,11 @@ const topRightAbs = css({
 });
 
 export default function OpenClose({
+  className,
   collapsedChildren,
   children,
   closeIcon = faTimes,
+  showCloseIcon = 'ICON',
 }: Props): JSX.Element {
   const [state, setState] = React.useState<State>({
     status: 'COLLAPSED',
@@ -47,33 +51,36 @@ export default function OpenClose({
 
   if (state.status === 'EXPANDED') {
     return (
-      <div className={relative}>
+      <div className={cx(relative, className)}>
+        {showCloseIcon == 'KEEP_CHILD' ? collapsedChildren : null}
         {children(collapse)}
-        <IconButton
-          className={topRightAbs}
-          icon={closeIcon}
-          title="close"
-          onClick={() => {
-            setState({
-              status: 'COLLAPSED',
-            });
-          }}
-        />
+        {showCloseIcon == 'ICON' ? (
+          <IconButton
+            className={topRightAbs}
+            icon={closeIcon}
+            title="close"
+            onClick={() => {
+              setState({
+                status: 'COLLAPSED',
+              });
+            }}
+          />
+        ) : null}
       </div>
     );
   } else {
     return (
-      <div>
-        <Clickable
-          onClick={() => {
-            setState({
-              status: 'EXPANDED',
-            });
-          }}
-        >
-          {collapsedChildren}
-        </Clickable>
-      </div>
+      <Clickable
+        className={className}
+        clickableClassName={className}
+        onClick={() => {
+          setState({
+            status: 'EXPANDED',
+          });
+        }}
+      >
+        {collapsedChildren}
+      </Clickable>
     );
   }
 }

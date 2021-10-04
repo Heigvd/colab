@@ -10,7 +10,7 @@ import { faSearch, faSync } from '@fortawesome/free-solid-svg-icons';
 import { LevelDescriptor } from 'colab-rest-client';
 import * as React from 'react';
 import { changeLoggerLevel, getLoggerLevels } from '../../API/api';
-import getLogger, { LoggerLevel, loggers as clientLoggers } from '../../logger';
+import { getLogger, LoggerLevel, loggers as clientLoggers } from '../../logger';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';

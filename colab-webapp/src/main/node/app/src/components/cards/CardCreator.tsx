@@ -20,7 +20,7 @@ import { lightMode } from '../styling/style';
 import CardTypeCreator from './cardtypes/CardTypeCreator';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
-interface Props {
+export interface CardCreatorProps {
   parent: CardContent;
 }
 
@@ -30,7 +30,7 @@ const listOfTypeStyle = css({
   flexWrap: 'wrap',
 });
 
-export default function CardCreator({ parent }: Props): JSX.Element {
+export default function CardCreator({ parent }: CardCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const [state, setState] = React.useState<'COLLAPSED' | 'EXPANDED' | 'PENDING'>('COLLAPSED');
   const [selectedType, setSelectedType] = React.useState<number | undefined>();

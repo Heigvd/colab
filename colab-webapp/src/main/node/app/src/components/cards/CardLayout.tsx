@@ -13,19 +13,51 @@ import { useHistory } from 'react-router-dom';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { Destroyer } from '../common/Destroyer';
+import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import WithToolbar from '../common/WithToolbar';
 import { cardShadow, cardStyle } from '../styling/style';
 import CardCreator from './CardCreator';
 
+const progressBarContainer = css({
+  height: '4px',
+  backgroundColor: '#c2c2c2',
+  width: '100%',
+});
+
+const progressBar = (width: number) =>
+  css({
+    width: `${width}%`,
+    height: 'inherit',
+    backgroundColor: '#2674AC',
+  });
+
+function ProgressBar({ variant }: { variant: CardContent | undefined }) {
+  const percent = variant != null ? variant.completionLevel : 0;
+  return (
+    <div className={progressBarContainer}>
+      <div className={progressBar(percent)}> </div>
+    </div>
+  );
+}
+
 interface Props {
   card: Card;
   variant: CardContent | undefined;
   variants: CardContent[];
-  children: JSX.Element;
+  children: React.ReactNode;
+  extraTools?: React.ReactNode;
+  showProgressBar?: boolean;
 }
 
-export default function CardLayout({ card, variant, variants, children }: Props): JSX.Element {
+export default function CardLayout({
+  card,
+  variant,
+  variants,
+  children,
+  extraTools,
+  showProgressBar = true,
+}: Props): JSX.Element {
   const dispatch = useAppDispatch();
 
   const history = useHistory();
@@ -40,6 +72,7 @@ export default function CardLayout({ card, variant, variants, children }: Props)
         offsetY={-0.5}
         toolbar={
           <>
+            {extraTools}
             <IconButton
               icon={faSearch}
               onClick={() => {
@@ -85,11 +118,13 @@ export default function CardLayout({ card, variant, variants, children }: Props)
           </>
         }
       >
-        <div
+        <Flex
+          grow={1}
+          direction="column"
+          justify="space-between"
           className={cx(
             cardStyle,
             css({
-              flexGrow: 1,
               backgroundColor: color,
               boxShadow:
                 variants.length > 1
@@ -99,7 +134,8 @@ export default function CardLayout({ card, variant, variants, children }: Props)
           )}
         >
           {children}
-        </div>
+          {showProgressBar ? <ProgressBar variant={variant} /> : null}
+        </Flex>
       </WithToolbar>
     );
   }
