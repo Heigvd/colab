@@ -443,7 +443,7 @@
 <a class="jxr_linenumber" name="L435" href="#L435">435</a>         <strong class="jxr_keyword">if</strong> (user != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L436" href="#L436">436</a>             User currentUser = requestManager.getCurrentUser();
 <a class="jxr_linenumber" name="L437" href="#L437">437</a>             <strong class="jxr_keyword">if</strong> (user.equals(currentUser)) {
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>                 <em class="jxr_comment">// user shall not remvoe admin right to itself</em>
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>                 <em class="jxr_comment">// user shall not remove admin right to itself</em>
 <a class="jxr_linenumber" name="L439" href="#L439">439</a>                 <strong class="jxr_keyword">throw</strong> HttpErrorMessage.badRequest();
 <a class="jxr_linenumber" name="L440" href="#L440">440</a>             } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L441" href="#L441">441</a>                 user.setAdmin(false);

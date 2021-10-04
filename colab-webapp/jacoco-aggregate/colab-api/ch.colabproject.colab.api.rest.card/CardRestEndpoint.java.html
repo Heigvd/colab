@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -41,10 +42,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L44">public class CardRestEndpoint {</span>
+<span class="nc" id="L45">public class CardRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L47">    private static final Logger logger = LoggerFactory.getLogger(CardRestEndpoint.class);</span>
+<span class="nc" id="L48">    private static final Logger logger = LoggerFactory.getLogger(CardRestEndpoint.class);</span>
 
     /**
      * The card persistence manager
@@ -75,8 +76,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;Card&gt; getAllCards() {
-<span class="nc" id="L78">        logger.debug(&quot;get all cards&quot;);</span>
-<span class="nc" id="L79">        return cardDao.getAllCard();</span>
+<span class="nc" id="L79">        logger.debug(&quot;get all cards&quot;);</span>
+<span class="nc" id="L80">        return cardDao.getAllCard();</span>
     }
 
     /**
@@ -89,8 +90,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public Card getCard(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L92">        logger.debug(&quot;get card #{}&quot;, id);</span>
-<span class="nc" id="L93">        return cardDao.getCard(id);</span>
+<span class="nc" id="L93">        logger.debug(&quot;get card #{}&quot;, id);</span>
+<span class="nc" id="L94">        return cardDao.getCard(id);</span>
     }
 
     /**
@@ -105,8 +106,8 @@ import org.slf4j.LoggerFactory;
     @Deprecated
     @POST
     public Long createCard(Card card) {
-<span class="nc" id="L108">        logger.debug(&quot;create card {}&quot;, card);</span>
-<span class="nc" id="L109">        return cardDao.createCard(card).getId();</span>
+<span class="nc" id="L109">        logger.debug(&quot;create card {}&quot;, card);</span>
+<span class="nc" id="L110">        return cardDao.createCard(card).getId();</span>
     }
 
     /**
@@ -121,9 +122,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;create/{parentId}/{cardTypeId}&quot;)
     public Card createNewCard(@PathParam(&quot;parentId&quot;) Long parentId,
         @PathParam(&quot;cardTypeId&quot;) Long cardTypeId) {
-<span class="nc" id="L124">        logger.debug(&quot;create a new card for the parent #{} and the type #{}&quot;, parentId,</span>
+<span class="nc" id="L125">        logger.debug(&quot;create a new card for the parent #{} and the type #{}&quot;, parentId,</span>
             cardTypeId);
-<span class="nc" id="L126">        return cardFacade.createNewCard(parentId, cardTypeId);</span>
+<span class="nc" id="L127">        return cardFacade.createNewCard(parentId, cardTypeId);</span>
     }
 
     /**
@@ -135,9 +136,25 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCard(Card card) throws ColabMergeException {
-<span class="nc" id="L138">        logger.debug(&quot;update card {}&quot;, card);</span>
-<span class="nc" id="L139">        cardDao.updateCard(card);</span>
-<span class="nc" id="L140">    }</span>
+<span class="nc" id="L139">        logger.debug(&quot;update card {}&quot;, card);</span>
+<span class="nc" id="L140">        cardDao.updateCard(card);</span>
+<span class="nc" id="L141">    }</span>
+
+    /**
+     * Move a card to a new parent
+     *
+     * @param cardId      id of the card to move
+     * @param newParentId id of the new parent
+     *
+     * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
+     */
+    @PUT
+    @Path(&quot;{cardId}/MoveTo/{newParentId}&quot;)
+    public void moveCard(
+        @PathParam(&quot;cardId&quot;) Long cardId,
+        @PathParam(&quot;newParentId&quot;) Long newParentId) throws HttpErrorMessage {
+<span class="nc" id="L156">        cardFacade.moveCard(cardId, newParentId);</span>
+<span class="nc" id="L157">    }</span>
 
     /**
      * Permanently delete a card
@@ -147,9 +164,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteCard(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L150">        logger.debug(&quot;delete card #{}&quot;, id);</span>
-<span class="nc" id="L151">        cardFacade.deleteCard(id);</span>
-<span class="nc" id="L152">    }</span>
+<span class="nc" id="L167">        logger.debug(&quot;delete card #{}&quot;, id);</span>
+<span class="nc" id="L168">        cardFacade.deleteCard(id);</span>
+<span class="nc" id="L169">    }</span>
 
     /**
      * Get all card content variants of a card
@@ -161,8 +178,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/CardContents&quot;)
     public List&lt;CardContent&gt; getContentVariantsOfCard(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L164">        logger.debug(&quot;Get card #{} content variants&quot;, cardId);</span>
-<span class="nc" id="L165">        return cardFacade.getContentVariants(cardId);</span>
+<span class="nc" id="L181">        logger.debug(&quot;Get card #{} content variants&quot;, cardId);</span>
+<span class="nc" id="L182">        return cardFacade.getContentVariants(cardId);</span>
     }
 
     /**
@@ -175,8 +192,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/Resources&quot;)
     public List&lt;Resource&gt; getAvailableActiveLinkedResources(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L178">        logger.debug(&quot;get available and active resources linked to card #{}&quot;, cardId);</span>
-<span class="nc" id="L179">        return resourceFacade.getAvailableActiveResourcesLinkedToCard(cardId);</span>
+<span class="nc" id="L195">        logger.debug(&quot;get available and active resources linked to card #{}&quot;, cardId);</span>
+<span class="nc" id="L196">        return resourceFacade.getAvailableActiveResourcesLinkedToCard(cardId);</span>
     }
 
     /**
@@ -189,8 +206,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/StickyNoteLinksDestinationCard&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsDest(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L192">        logger.debug(&quot;Get sticky note links to card #{} as destination&quot;, cardId);</span>
-<span class="nc" id="L193">        return cardFacade.getStickyNoteLinkAsDest(cardId);</span>
+<span class="nc" id="L209">        logger.debug(&quot;Get sticky note links to card #{} as destination&quot;, cardId);</span>
+<span class="nc" id="L210">        return cardFacade.getStickyNoteLinkAsDest(cardId);</span>
     }
 
     /**
@@ -203,8 +220,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/StickyNoteLinksSrcCard&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L206">        logger.debug(&quot;Get sticky note links to card #{} as source&quot;, cardId);</span>
-<span class="nc" id="L207">        return cardFacade.getStickyNoteLinkAsSrcCard(cardId);</span>
+<span class="nc" id="L223">        logger.debug(&quot;Get sticky note links to card #{} as source&quot;, cardId);</span>
+<span class="nc" id="L224">        return cardFacade.getStickyNoteLinkAsSrcCard(cardId);</span>
     }
 
     /**
@@ -217,8 +234,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/ActivityFlowLinksPreviousCard&quot;)
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsPrevious(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L220">        logger.debug(&quot;Get activity flow links to card #{} as previous&quot;, cardId);</span>
-<span class="nc" id="L221">        return cardFacade.getActivityFlowLinkAsPrevious(cardId);</span>
+<span class="nc" id="L237">        logger.debug(&quot;Get activity flow links to card #{} as previous&quot;, cardId);</span>
+<span class="nc" id="L238">        return cardFacade.getActivityFlowLinkAsPrevious(cardId);</span>
     }
 
     /**
@@ -231,8 +248,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/ActivityFlowLinksNextCard&quot;)
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsNext(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L234">        logger.debug(&quot;Get activity flow links to card #{} as next&quot;, cardId);</span>
-<span class="nc" id="L235">        return cardFacade.getActivityFlowLinkAsNext(cardId);</span>
+<span class="nc" id="L251">        logger.debug(&quot;Get activity flow links to card #{} as next&quot;, cardId);</span>
+<span class="nc" id="L252">        return cardFacade.getActivityFlowLinkAsNext(cardId);</span>
     }
 
     /**
@@ -245,8 +262,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{cardId}/ACLs&quot;)
     public List&lt;AccessControl&gt; getAcls(@PathParam(&quot;cardId&quot;) Long cardId) {
-<span class="nc" id="L248">        logger.debug(&quot;Get Card #{} access-control list&quot;, cardId);</span>
-<span class="nc" id="L249">        return cardFacade.getAcls(cardId);</span>
+<span class="nc" id="L265">        logger.debug(&quot;Get Card #{} access-control list&quot;, cardId);</span>
+<span class="nc" id="L266">        return cardFacade.getAcls(cardId);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

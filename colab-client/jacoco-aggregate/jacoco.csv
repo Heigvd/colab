@@ -1,7 +1,7 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 colab-client/colab-api,ch.colabproject.colab.api.model.card,CardContentStatus,44,0,0,0,5,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.model.card,AbstractCardType,291,0,26,0,84,0,46,0,33,0
-colab-client/colab-api,ch.colabproject.colab.api.model.card,Card,339,0,28,0,105,0,63,0,49,0
+colab-client/colab-api,ch.colabproject.colab.api.model.card,Card,350,0,28,0,109,0,65,0,51,0
 colab-client/colab-api,ch.colabproject.colab.api.model.card,CardTypeRef,68,0,8,0,21,0,12,0,8,0
 colab-client/colab-api,ch.colabproject.colab.api.model.card,CardContent,212,0,14,0,71,0,42,0,35,0
 colab-client/colab-api,ch.colabproject.colab.api.model.card,CardContentCompletionMode,34,0,0,0,4,0,1,0,1,0
@@ -22,8 +22,8 @@ colab-client/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.Subscri
 colab-client/colab-api,ch.colabproject.colab.api.ejb,ApplicationLifecycleFacade,44,0,2,0,17,0,5,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,WebsocketFacade,724,0,52,0,186,0,58,0,32,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,ResourceFacade,1065,0,108,0,271,0,101,0,47,0
-colab-client/colab-api,ch.colabproject.colab.api.ejb,ProjectFacade,79,0,2,0,21,0,7,0,6,0
-colab-client/colab-api,ch.colabproject.colab.api.ejb,CardFacade,564,0,56,0,163,0,58,0,30,0
+colab-client/colab-api,ch.colabproject.colab.api.ejb,ProjectFacade,117,0,6,0,31,0,11,0,8,0
+colab-client/colab-api,ch.colabproject.colab.api.ejb,CardFacade,686,0,74,0,197,0,73,0,36,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,TransactionManager,184,0,10,0,47,0,17,0,12,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,RequestManager,251,0,30,0,73,0,38,0,23,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,DocumentFacade,72,0,8,0,21,0,9,0,5,0
@@ -114,7 +114,7 @@ colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail.new Authe
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Message,76,0,0,0,29,0,18,0,18,0
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail,173,0,6,0,42,0,6,0,3,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,100,0,0,0,24,0,12,0,12,0
-colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,127,0,0,0,30,0,15,0,15,0
+colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,133,0,0,0,32,0,16,0,16,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardTypeRestEndpoint,83,0,0,0,22,0,11,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.exceptions,ColabMergeException,15,0,0,0,5,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.exceptions,ColabRollbackException,4,0,0,0,2,0,1,0,1,0
@@ -133,7 +133,7 @@ colab-client/colab-api,ch.colabproject.colab.api.persistence.link,ActivityFlowLi
 colab-client/colab-api,ch.colabproject.colab.api.persistence.link,StickyNoteLinkDao,59,0,0,0,17,0,6,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.rest,MonitoringRestEndpoint,15,0,0,0,5,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.rest,WebsocketRestEndpoint,72,0,0,0,22,0,9,0,9,0
-colab-client/colab-api,ch.colabproject.colab.api.rest,ProjectRestEndpoint,87,0,0,0,22,0,11,0,11,0
+colab-client/colab-api,ch.colabproject.colab.api.rest,ProjectRestEndpoint,105,0,0,0,26,0,13,0,13,0
 colab-client/colab-api,ch.colabproject.colab.api.rest,TokenRestEndpoint,14,0,0,0,3,0,3,0,3,0
 colab-client/colab-api,ch.colabproject.colab.api.rest,TeamRestEndpoint,128,0,0,0,34,0,16,0,16,0
 colab-client/colab-api,ch.colabproject.colab.api.rest,UserRestEndpoint,161,0,2,0,50,0,20,0,19,0

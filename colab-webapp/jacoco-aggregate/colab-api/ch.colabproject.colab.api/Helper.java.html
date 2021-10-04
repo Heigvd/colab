@@ -167,7 +167,7 @@ public class Helper {
      */
     public static &lt;T&gt; T lookup(Class&lt;T&gt; klass) throws NamingException {
 <span class="nc" id="L169">        return (T) new InitialContext().lookup(</span>
-<span class="nc" id="L170">            &quot;java:global/colab-webapp-0.1/&quot; + klass.getSimpleName() + &quot;!&quot; + klass.getName());</span>
+<span class="nc" id="L170">            &quot;java:global/coLAB/&quot; + klass.getSimpleName() + &quot;!&quot; + klass.getName());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

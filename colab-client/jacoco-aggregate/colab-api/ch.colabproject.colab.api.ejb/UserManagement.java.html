@@ -435,7 +435,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc bnc" id="L435" title="All 2 branches missed.">        if (user != null) {</span>
 <span class="nc" id="L436">            User currentUser = requestManager.getCurrentUser();</span>
 <span class="nc bnc" id="L437" title="All 2 branches missed.">            if (user.equals(currentUser)) {</span>
-                // user shall not remvoe admin right to itself
+                // user shall not remove admin right to itself
 <span class="nc" id="L439">                throw HttpErrorMessage.badRequest();</span>
             } else {
 <span class="nc" id="L441">                user.setAdmin(false);</span>
