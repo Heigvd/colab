@@ -199,7 +199,7 @@ public class Resource extends AbstractResource {
 
     @Override
     public String toString() {
-        return "Resource{" + toPartialString() + ", documentId=" + getDocumentId()
+        return "Resource{" + toPartialString() + ", documentId=" + documentId
             + ", published=" + published + ", requestingForGlory=" + requestingForGlory
             + ", deprecated=" + deprecated + "}";
     }

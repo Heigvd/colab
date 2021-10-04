@@ -176,7 +176,7 @@ public class ResourceRef extends AbstractResource {
 
     @Override
     public String toString() {
-        return "ResourceRef{" + toPartialString() + ", targetId=" + getTargetId()
+        return "ResourceRef{" + toPartialString() + ", targetId=" + targetId
             + ", refused=" + refused + "}";
     }
 

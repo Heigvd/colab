@@ -435,7 +435,7 @@ public class UserManagement {
         if (user != null) {
             User currentUser = requestManager.getCurrentUser();
             if (user.equals(currentUser)) {
-                // user shall not remvoe admin right to itself
+                // user shall not remove admin right to itself
                 throw HttpErrorMessage.badRequest();
             } else {
                 user.setAdmin(false);
