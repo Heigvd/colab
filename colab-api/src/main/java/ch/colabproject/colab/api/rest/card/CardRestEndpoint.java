@@ -152,7 +152,7 @@ public class CardRestEndpoint {
     @Path("{cardId}/MoveTo/{newParentId}")
     public void moveCard(
         @PathParam("cardId") Long cardId,
-        @PathParam("newParentId") Long newParentId) throws HttpErrorMessage {
+        @PathParam("newParentId") Long newParentId) {
         cardFacade.moveCard(cardId, newParentId);
     }
 
