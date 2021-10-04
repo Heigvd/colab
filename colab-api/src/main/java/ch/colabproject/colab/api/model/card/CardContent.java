@@ -38,6 +38,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * Card content
@@ -87,6 +88,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
     // TODO sandra : vérifier si contrainte 0 - 100 ok
     @Min(0)
     @Max(100)
+    @NotNull
     private int completionLevel;
 
     /**

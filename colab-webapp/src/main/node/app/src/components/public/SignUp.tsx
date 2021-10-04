@@ -5,104 +5,103 @@
  * Licensed under the MIT License
  */
 import { css } from '@emotion/css';
-import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
 import { signUp } from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
+import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
+import Form, { Field } from '../common/Form/Form';
 import FormContainer from '../common/FormContainer';
-import IconButton from '../common/IconButton';
-import InlineLoading from '../common/InlineLoading';
 import { InlineLink } from '../common/Link';
-import { buttonStyle } from '../styling/style';
 
 interface Props {
   redirectTo: string | null;
 }
 
-const PasswordStrengthBar = React.lazy(() => import('react-password-strength-bar'));
+interface Data {
+  username: string;
+  email: string;
+  password: string;
+  confirm: string;
+  passwordScore: number;
+}
+
+const defData: Data = {
+  username: '',
+  email: '',
+  password: '',
+  confirm: '',
+  passwordScore: 0,
+};
 
 export default (props: Props): JSX.Element => {
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const i18n = useTranslations();
 
-  const [credentials, setCredentials] = React.useState({
-    passwordScore: 0,
-    username: '',
-    email: '',
-    password: '',
-  });
-
-  const signUpCb = React.useCallback(() => {
-    dispatch(signUp(credentials)).then(action => {
-      // is that a hack or not ???
-      if (props.redirectTo && action.meta.requestStatus === 'fulfilled') {
-        history.push(props.redirectTo);
-      }
-    });
-  }, [dispatch, credentials, props.redirectTo, history]);
-
-  const onEnterSignUpCb = React.useCallback(
-    (event: React.KeyboardEvent<HTMLElement>) => {
-      if (event.key === 'Enter') {
-        signUpCb();
-      }
+  const fields: Field<Data>[] = [
+    {
+      key: 'email',
+      label: i18n.emailAddress,
+      placeholder: i18n.emailAddress,
+      isErroneous: value => value.email.match('.*@.*') == null,
+      errorMessage: i18n.emailAddressNotValid,
+      type: 'text',
+      isMandatory: true,
     },
-    [signUpCb],
+    {
+      key: 'password',
+      label: i18n.password,
+      placeholder: i18n.password,
+      type: 'password',
+      isMandatory: false,
+      isErroneous: data => data.passwordScore < 2,
+      errorMessage: i18n.weakPassword,
+      showStrenghBar: true,
+      strengthProp: 'passwordScore',
+    },
+    {
+      key: 'confirm',
+      type: 'password',
+      label: i18n.password_again,
+      placeholder: i18n.password_again,
+      isMandatory: true,
+      isErroneous: data => data.password !== data.confirm,
+      errorMessage: i18n.passwordsMismatch,
+      showStrenghBar: false,
+    },
+    {
+      key: 'username',
+      label: i18n.username,
+      placeholder: i18n.username,
+      type: 'text',
+      isMandatory: false,
+    },
+  ];
+
+  const signUpCb = React.useCallback(
+    credentials => {
+      dispatch(signUp(credentials)).then(action => {
+        // is that a hack or not ???
+        if (props.redirectTo && action.meta.requestStatus === 'fulfilled') {
+          history.push(props.redirectTo);
+        }
+      });
+    },
+    [dispatch, props.redirectTo, history],
   );
 
   return (
     <FormContainer>
-      <div onKeyDown={onEnterSignUpCb}>
-        <div>
-          <label>
-            username
-            <input
-              type="text"
-              onChange={e => setCredentials({ ...credentials, username: e.target.value })}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            email address
-            <input
-              type="text"
-              onChange={e => setCredentials({ ...credentials, email: e.target.value })}
-            />
-          </label>
-        </div>
-        <div>
-          <React.Suspense fallback={<InlineLoading />}>
-            <label>
-              password
-              <div
-                className={css({
-                  display: 'inline-block',
-                })}
-              >
-                <input
-                  type="password"
-                  onChange={e => setCredentials({ ...credentials, password: e.target.value })}
-                />
-                <PasswordStrengthBar
-                  onChangeScore={e => setCredentials({ ...credentials, passwordScore: e })}
-                  password={credentials.password}
-                />
-              </div>
-            </label>
-          </React.Suspense>
-        </div>
-        <div>
-          <IconButton className={buttonStyle} icon={faSignInAlt} onClick={signUpCb}>
-            Sign up
-          </IconButton>
-          <InlineLink to={buildLinkWithQueryParam('/SignIn', { redirectTo: props.redirectTo })}>
-            cancel
-          </InlineLink>
-        </div>
-      </div>
+      <Form fields={fields} value={defData} submitLabel={i18n.createAnAccount} onSubmit={signUpCb}>
+        <InlineLink
+          className={css({ alignSelf: 'flex-end' })}
+          to={buildLinkWithQueryParam('/SignIn', { redirectTo: props.redirectTo })}
+        >
+          {i18n.cancel}
+        </InlineLink>
+      </Form>
     </FormContainer>
   );
 };

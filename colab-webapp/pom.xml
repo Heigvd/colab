@@ -1,228 +1,251 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>ch.colab-project.colab</groupId>
-        <artifactId>colab</artifactId>
-        <version>0.1</version>
-    </parent>
+  <parent>
+    <groupId>ch.colab-project.colab</groupId>
+    <artifactId>colab</artifactId>
+    <version>0.1</version>
+  </parent>
 
-    <artifactId>colab-webapp</artifactId>
-    <packaging>war</packaging>
-    <name>colab-webapp</name>
+  <artifactId>colab-webapp</artifactId>
+  <packaging>war</packaging>
+  <name>colab-webapp</name>
 
-    <organization>
-        <name>AlbaSim, MEI, HEIG-VD, HES-SO</name>
-        <url>https://www.colab-project.ch</url>
-    </organization>
+  <organization>
+    <name>AlbaSim, MEI, HEIG-VD, HES-SO</name>
+    <url>https://www.colab-project.ch</url>
+  </organization>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <jakartaee.version>8.0</jakartaee.version>
-        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
-        <failOnMissingWebXml>false</failOnMissingWebXml>
-    </properties>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <jakartaee.version>8.0</jakartaee.version>
+    <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+  </properties>
 
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <property>
-                    <!-- Do not build production app if skipWebappYarn is set (mvn -DskipWebappYarn) -->
-                    <name>!skipWebappYarn</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>yarn install</id>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>yarn</executable>
-                                    <arguments>
-                                        <argument>--frozen-lockfile</argument>
-                                        <argument>install</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>yarn run build</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>yarn</executable>
-                                    <arguments>
-                                        <argument>workspaces</argument>
-                                        <argument>run</argument>
-                                        <argument>build</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>yarn test</id>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>yarn</executable>
-                                    <arguments>
-                                        <argument>workspaces</argument>
-                                        <argument>run</argument>
-                                        <argument>test</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>yarn lint</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>yarn</executable>
-                                    <arguments>
-                                        <argument>workspaces</argument>
-                                        <argument>run</argument>
-                                        <argument>lint</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>skip-webapp-yarn</id>
-            <activation>
-                <property>
-                    <name>skipWebappYarn</name>
-                </property>
-            </activation>
-        </profile>
-    </profiles>
-
-    <dependencies>
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>${jakartaee.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- include server API in the webapp -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>colab-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <!-- open source server runtimes for development projects
-        and containerized Jakarta EE and MicroProfile applications -->
-        <dependency>
-            <groupId>fish.payara.extras</groupId>
-            <artifactId>payara-micro</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <finalName>coLAB</finalName>
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <!-- Do not build production app if skipWebappYarn is set (mvn -DskipWebappYarn) -->
+          <name>!skipWebappYarn</name>
+        </property>
+      </activation>
+      <build>
         <plugins>
-            <!-- Download and copy Payara Micro artefact -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>fish.payara.extras</groupId>
-                                    <artifactId>payara-micro</artifactId>
-                                    <version>${payara.version}</version>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.basedir}/target/</outputDirectory>
-                                    <destFileName>payara-micro.current.jar</destFileName>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>yarn install</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                    <compilerArguments>
-                        <endorseddirs>${endorsed.dir}</endorseddirs>
-                    </compilerArguments>
+                  <executable>yarn</executable>
+                  <arguments>
+                    <argument>--frozen-lockfile</argument>
+                    <argument>install</argument>
+                  </arguments>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
+              </execution>
+              <execution>
+                <id>yarn run build</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
                 <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                  <executable>yarn</executable>
+                  <arguments>
+                    <argument>workspaces</argument>
+                    <argument>run</argument>
+                    <argument>build</argument>
+                  </arguments>
                 </configuration>
-            </plugin>
-
+              </execution>
+              <execution>
+                <id>yarn test</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>yarn</executable>
+                  <arguments>
+                    <argument>workspaces</argument>
+                    <argument>run</argument>
+                    <argument>test</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>yarn lint</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>yarn</executable>
+                  <arguments>
+                    <argument>workspaces</argument>
+                    <argument>run</argument>
+                    <argument>lint</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy static content from the node module</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${basedir}/target/coLAB/</outputDirectory>
+                    <resources>
+                        <resource>
+                          <directory>src/main/node/app/public</directory>
+                          <includes>
+                            <include>**</include>
+                          </includes>
+                        </resource>
+                    </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
-    </build>
+      </build>
+    </profile>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>ch.albasim.html-report-maven-plugin</groupId>
-                <artifactId>html-report-maven-plugin</artifactId>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>html-report</report>
-                        </reports>
-                        <configuration>
-                            <name>coverage</name>
-                            <description>Code coverage report</description>
-                            <htmlReportDirectory>${project.basedir}/target/ts-coverage/lcov-report</htmlReportDirectory>
-                            <index>index.html</index>
-                        </configuration>
-                    </reportSet>
-                    <reportSet>
-                        <reports>
-                            <report>html-report</report>
-                        </reports>
-                        <configuration>
-                            <name>tests</name>
-                            <description>test report</description>
-                            <htmlReportDirectory>${project.basedir}/target/ts-test-report</htmlReportDirectory>
-                            <index>index.html</index>
-                        </configuration>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-        </plugins>
-    </reporting>
+    <profile>
+      <id>skip-webapp-yarn</id>
+      <activation>
+        <property>
+          <name>skipWebappYarn</name>
+        </property>
+      </activation>
+    </profile>
+  </profiles>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+      <version>${jakartaee.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- include server API in the webapp -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>colab-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- open source server runtimes for development projects
+    and containerized Jakarta EE and MicroProfile applications -->
+    <dependency>
+      <groupId>fish.payara.extras</groupId>
+      <artifactId>payara-micro</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>coLAB</finalName>
+    <plugins>
+      <!-- Download and copy Payara Micro artefact -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>fish.payara.extras</groupId>
+                  <artifactId>payara-micro</artifactId>
+                  <version>${payara.version}</version>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.basedir}/target/</outputDirectory>
+                  <destFileName>payara-micro.current.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>11</source>
+          <target>11</target>
+          <compilerArguments>
+            <endorseddirs>${endorsed.dir}</endorseddirs>
+          </compilerArguments>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>ch.albasim.html-report-maven-plugin</groupId>
+        <artifactId>html-report-maven-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>html-report</report>
+            </reports>
+            <configuration>
+              <name>coverage</name>
+              <description>Code coverage report</description>
+              <htmlReportDirectory>${project.basedir}/target/ts-coverage/lcov-report</htmlReportDirectory>
+              <index>index.html</index>
+            </configuration>
+          </reportSet>
+          <reportSet>
+            <reports>
+              <report>html-report</report>
+            </reports>
+            <configuration>
+              <name>tests</name>
+              <description>test report</description>
+              <htmlReportDirectory>${project.basedir}/target/ts-test-report</htmlReportDirectory>
+              <index>index.html</index>
+            </configuration>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>

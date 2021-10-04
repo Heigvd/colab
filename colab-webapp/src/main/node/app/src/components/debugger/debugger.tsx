@@ -8,8 +8,9 @@
 import { Change } from 'colab-rest-client';
 import * as React from 'react';
 import { ChangeTreeRaw } from '../live/ChangeTree';
+import PlayJsPlumb from './PlayJsPlumb';
 
-export default function Debugger(): JSX.Element {
+export function DebugChangeTree(): JSX.Element {
   const revision = 'ws-468379789217693697::12';
 
   const changes: Change[] = [
@@ -96,6 +97,15 @@ export default function Debugger(): JSX.Element {
   return (
     <div>
       <ChangeTreeRaw value="Ligne1: deux trois quatre" changes={changes} revision={revision} />
+      <PlayJsPlumb />
+    </div>
+  );
+}
+
+export default function Debugger(): JSX.Element {
+  return (
+    <div>
+      <PlayJsPlumb />
     </div>
   );
 }

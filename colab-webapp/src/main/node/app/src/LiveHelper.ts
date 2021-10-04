@@ -7,7 +7,7 @@
 import { Change, MicroChange } from 'colab-rest-client';
 import * as Diff from 'diff';
 import { removeAllItems } from './helper';
-import getLogger from './logger';
+import { getLogger } from './logger';
 
 const logger = getLogger('LiveChanges');
 logger.setLevel(3);

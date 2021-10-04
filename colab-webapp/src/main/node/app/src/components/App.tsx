@@ -13,8 +13,8 @@ import { HashRouter as Router, Route, Switch, useParams } from 'react-router-dom
 import { getStore } from '../store/store';
 import { init } from '../ws/websocket';
 import ErrorBoundary from './common/ErrorBoundary';
-import ErrorNotifier from './common/ErrorNotifier';
 import Loading from './common/Loading';
+import Notifier from './common/Notifier';
 import MainApp from './MainApp';
 import Token from './token/Token';
 
@@ -32,7 +32,7 @@ function mount() {
     <ErrorBoundary>
       <Suspense fallback={<Loading />}>
         <Provider store={getStore()}>
-          <ErrorNotifier />
+          <Notifier />
           <Router>
             <Switch>
               <Route path="/token/:id/:token">

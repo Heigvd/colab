@@ -19,14 +19,14 @@ import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import CardTypeList from '../../cards/cardtypes/CardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
-import VariantSelector from '../../cards/VariantSelector';
 import Clickable from '../../common/Clickable';
-import FitSpace from '../../common/FitSpace';
+import Flex from '../../common/Flex';
 import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
 import { SecondLevelLink } from '../../common/Link';
 import WithToolbar from '../../common/WithToolbar';
 import Team from '../Team';
+import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
 
 const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
@@ -106,7 +106,9 @@ const CardWrapper = ({ children }: CardWrapperProps): JSX.Element => {
             <Ancestor key={x} card={ancestor.card} content={ancestor.content} />
           ))}
         </div>
-        <FitSpace>{children(card)}</FitSpace>
+        <Flex direction="column" grow={1}>
+          {children(card)}
+        </Flex>
       </>
     );
   }
@@ -188,6 +190,7 @@ export default function Editor(): JSX.Element {
                 Project
               </SecondLevelLink>
               <SecondLevelLink to="/hierarchy">Hierarchy</SecondLevelLink>
+              <SecondLevelLink to="/flow">Activity Flow</SecondLevelLink>
               <SecondLevelLink to="/defs">Card Types</SecondLevelLink>
               <SecondLevelLink to={'/team'}>Team</SecondLevelLink>
             </nav>
@@ -202,13 +205,16 @@ export default function Editor(): JSX.Element {
               icon={faTimes}
             />
           </div>
-          <FitSpace>
+          <Flex direction="column" grow={1}>
             <Switch>
               <Route path="/team">
                 <Team project={project} />
               </Route>
               <Route exact path="/hierarchy">
                 <Hierarchy rootId={root.id} />
+              </Route>
+              <Route exact path="/flow">
+                <ActivityFlowChart rootId={root.id} />
               </Route>
               <Route exact path="/defs">
                 <CardTypeList />
@@ -217,20 +223,7 @@ export default function Editor(): JSX.Element {
                 <CardWrapper>{card => <CardThumbWithSelector depth={2} card={card} />}</CardWrapper>
               </Route>
               <Route exact path="/edit/:id">
-                <CardWrapper>
-                  {card => (
-                    <VariantSelector card={card}>
-                      {(variant, list) => (
-                        <CardEditor
-                          card={card}
-                          variant={variant}
-                          variants={list}
-                          showSubcards={true}
-                        />
-                      )}
-                    </VariantSelector>
-                  )}
-                </CardWrapper>
+                <CardWrapper>{card => <CardEditor card={card} showSubcards={true} />}</CardWrapper>
               </Route>
               <Route>
                 <div>
@@ -244,7 +237,7 @@ export default function Editor(): JSX.Element {
                 </div>
               </Route>
             </Switch>
-          </FitSpace>
+          </Flex>
         </div>
       </Router>
     );

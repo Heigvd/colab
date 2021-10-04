@@ -4,63 +4,61 @@
  *
  * Licensed under the MIT License
  */
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import * as React from 'react';
 import { requestPasswordReset } from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
+import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
+import Form, { Field } from '../common/Form/Form';
 import FormContainer from '../common/FormContainer';
 import { InlineLink } from '../common/Link';
-import { darkMode, linkStyle } from '../styling/style';
 
 interface Props {
   redirectTo: string | null;
 }
 
+interface Data {
+  email: string;
+}
+
 export default (props: Props): JSX.Element => {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
-  const [credentials, setCredentials] = React.useState({
-    email: '',
-  });
+  const onSubmitCb = React.useCallback(
+    (data: Data) => {
+      dispatch(requestPasswordReset(data));
+    },
+    [dispatch],
+  );
+
+  const formFields: Field<Data>[] = [
+    {
+      key: 'email',
+      placeholder: i18n.emailAddress,
+      isErroneous: value => value.email.match('.*@.*') == null,
+      errorMessage: i18n.emailAddressNotValid,
+      type: 'text',
+      isMandatory: false,
+    },
+  ];
 
   return (
     <FormContainer>
-      <div
-        className={css({
-          display: 'flex',
-          flexDirection: 'column',
-        })}
+      <Form
+        onSubmit={onSubmitCb}
+        value={{ email: '' }}
+        fields={formFields}
+        submitLabel={i18n.sendMePassword}
       >
-        <label>
-          email address
-          <input type="text" onChange={e => setCredentials({ email: e.target.value })} />
-        </label>
-      </div>
-
-      <button
-        className={cx(
-          darkMode,
-          linkStyle,
-          css({
-            padding: '5px',
-            width: 'max-content',
-            margin: 'auto',
-          }),
-        )}
-        onClick={() => dispatch(requestPasswordReset(credentials))}
-      >
-        <span
-          className={css({
-            padding: '0 5px',
-          })}
+        <InlineLink
+          className={css({ alignSelf: 'center' })}
+          to={buildLinkWithQueryParam('/SignIn', { redirectTo: props.redirectTo })}
         >
-          Submit
-        </span>
-      </button>
-      <InlineLink to={buildLinkWithQueryParam('/SignIn', { redirectTo: props.redirectTo })}>
-        cancel
-      </InlineLink>
+          {i18n.cancel}
+        </InlineLink>
+      </Form>
     </FormContainer>
   );
 };

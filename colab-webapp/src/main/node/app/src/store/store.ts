@@ -15,7 +15,7 @@ import cardReducer from './card';
 import cardTypeReducer from './cardtype';
 import changeReducer from './change';
 import documentReducer from './document';
-import errorReducer from './error';
+import notifReducer from './notification';
 import projectReducer from './project';
 import resourceReducer from './resource';
 import stickyNoteLinkReducer from './stickynotelink';
@@ -23,15 +23,15 @@ import userReducer from './user';
 import websocketReducer from './websocket';
 
 const rootReducer = combineReducers({
-  admin: adminReducer,
-  cardtype: cardTypeReducer,
-  cards: cardReducer,
   acl: aclReducer,
-  document: documentReducer,
   auth: authReducer,
+  admin: adminReducer,
   block: blockReducer,
+  cards: cardReducer,
+  cardtype: cardTypeReducer,
   change: changeReducer,
-  errors: errorReducer,
+  document: documentReducer,
+  notifications: notifReducer,
   projects: projectReducer,
   resources: resourceReducer,
   stickynotelinks: stickyNoteLinkReducer,

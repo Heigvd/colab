@@ -12,7 +12,7 @@ import { throttle } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import * as LiveHelper from '../../LiveHelper';
-import getLogger from '../../logger';
+import { getLogger } from '../../logger';
 import { useChanges } from '../../selectors/changeSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';

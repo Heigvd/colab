@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
@@ -104,6 +105,42 @@ public class ProjectFacade {
     // *********************************************************************************************
     // cards
     // *********************************************************************************************
+    /**
+     * Get all cards of the given project
+     *
+     * @param projectId id of the project
+     *
+     * @return all cards of the project
+     */
+    public Set<Card> getCards(Long projectId) {
+        Project project = projectDao.getProject(projectId);
+        logger.debug("Get card types of project {}", project);
+        if (project == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return cardFacade.getAllCards(project.getRootCard());
+    }
+
+    /**
+     * Get all cardContents of the given project
+     *
+     * @param projectId id of the project
+     *
+     * @return all cards contents of the project
+     */
+    public Set<CardContent> getCardContents(Long projectId) {
+        Project project = projectDao.getProject(projectId);
+        logger.debug("Get card types of project {}", project);
+        if (project == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return cardFacade.getAllCardContents(project.getRootCard());
+    }
+
+
+
     /**
      * Get all card types of the given project
      *

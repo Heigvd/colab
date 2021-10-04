@@ -36,3 +36,4 @@ nbproject
 /colab-webapp/src/main/webapp/app/coverage/
 /colab-webapp/src/main/webapp/app/reports/
 /colab-webapp/src/main/webapp/app/test-report/
+/colab-webapp/src/main/node/app/yarn-error.log

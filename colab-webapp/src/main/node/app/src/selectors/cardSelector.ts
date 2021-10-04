@@ -7,9 +7,37 @@
 
 import { Card, CardContent, InvolvementLevel } from 'colab-rest-client';
 import { mapValues, uniq } from 'lodash';
-import { logger } from '../logger';
+import logger from '../logger';
 import { CardContentDetail, CardDetail } from '../store/card';
 import { customColabStateEquals, shallowEqual, useAppSelector } from '../store/hooks';
+
+export const useAllProjectCards = (): Card[] => {
+  return useAppSelector(state => {
+    const cards = Object.values(state.cards.cards)
+      .map(cd => cd.card)
+      .flatMap(c => (c != null ? [c] : []));
+    return cards;
+  });
+};
+
+export function useVariants(card: Card): CardContent[] | null | undefined {
+  return useAppSelector(state => {
+    if (card.id && state.cards.cards[card.id]) {
+      const cardState = state.cards.cards[card.id]!;
+      if (cardState.contents == null) {
+        return cardState.contents;
+      } else {
+        const contentState = state.cards.contents;
+        return cardState.contents.flatMap(contentId => {
+          const content = contentState[contentId];
+          return content && content.content ? [content.content] : [];
+        });
+      }
+    } else {
+      return null;
+    }
+  }, shallowEqual);
+}
 
 export const useCard = (id: number): Card | 'LOADING' | undefined => {
   return useAppSelector(state => {

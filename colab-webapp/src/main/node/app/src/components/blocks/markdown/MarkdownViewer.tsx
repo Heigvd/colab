@@ -7,7 +7,7 @@
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Viewer } from '@toast-ui/react-editor';
 import * as React from 'react';
-import { logger } from '../../../logger';
+import logger from '../../../logger';
 
 export interface MarkdownViewerProps {
   md: string;

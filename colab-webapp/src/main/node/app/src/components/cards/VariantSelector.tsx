@@ -10,7 +10,9 @@ import { faCaretLeft, faCaretRight, faWindowRestore } from '@fortawesome/free-so
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useVariants } from '../../selectors/cardSelector';
+import { useAppDispatch } from '../../store/hooks';
+import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import WithToolbar from '../common/WithToolbar';
 
@@ -19,7 +21,10 @@ interface Props {
   children: (variant: CardContent | undefined, list: CardContent[]) => JSX.Element;
 }
 
-const computeNav = (contents: CardContent[] | null | undefined, currentId: number | undefined) => {
+const computeNav = (
+  contents: CardContent[] | null | undefined,
+  currentId: number | null | undefined,
+) => {
   if (contents && contents.length) {
     const index = contents.findIndex(cc => cc.id == currentId);
     const effectiveIndex = index >= 0 ? index : 0;
@@ -30,6 +35,7 @@ const computeNav = (contents: CardContent[] | null | undefined, currentId: numbe
       current: contents[effectiveIndex]!,
       previous: contents[previous]!,
       next: contents[next]!,
+      index: index,
     };
   } else {
     return null;
@@ -41,22 +47,7 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
 
   const [displayedVariantId, setDisplayedVariantId] = React.useState<number | undefined>();
 
-  const contents = useAppSelector(state => {
-    if (card.id && state.cards.cards[card.id]) {
-      const cardState = state.cards.cards[card.id]!;
-      if (cardState.contents == null) {
-        return cardState.contents;
-      } else {
-        const contentState = state.cards.contents;
-        return cardState.contents.flatMap(contentId => {
-          const content = contentState[contentId];
-          return content && content.content ? [content.content] : [];
-        });
-      }
-    } else {
-      return null;
-    }
-  }, shallowEqual);
+  const contents = useVariants(card);
 
   React.useEffect(() => {
     if (contents === undefined && card.id != null) {
@@ -131,6 +122,91 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
           />
         ) : null}
       </div>
+    );
+  }
+}
+
+interface PagerProps {
+  card: Card;
+  onSelect: (variant: CardContent) => void;
+}
+
+export function VariantPager({ card, onSelect }: PagerProps): JSX.Element {
+  const dispatch = useAppDispatch();
+
+  const [displayedVariant, setDisplayedVariant] = React.useState<CardContent | undefined>();
+
+  const contents = useVariants(card);
+
+  React.useEffect(() => {
+    if (contents === undefined && card.id != null) {
+      dispatch(API.getCardContents(card.id));
+    }
+  }, [contents, card.id, dispatch]);
+
+  const variantPager = computeNav(contents, displayedVariant?.id);
+
+  React.useEffect(() => {
+    if (variantPager?.current != null && variantPager.current !== displayedVariant) {
+      setDisplayedVariant(variantPager.current);
+      onSelect(variantPager.current);
+    }
+  }, [variantPager, onSelect, displayedVariant]);
+
+  if (card.id == null) {
+    return <i>Card without id is invalid...</i>;
+  } else {
+    const cardId = card.id;
+
+    return (
+      <Flex>
+        {variantPager != null && variantPager.previous != variantPager.current ? (
+          <IconButton
+            icon={faCaretLeft}
+            iconSize="2x"
+            title={variantPager.previous.title || ''}
+            onClick={() => {
+              if (variantPager.previous.id) {
+                setDisplayedVariant(variantPager.previous);
+                onSelect(variantPager.previous);
+              }
+            }}
+          />
+        ) : null}
+
+        {variantPager != null ? `${variantPager.index + 1} / ${contents?.length || 0}` : null}
+
+        {variantPager != null && variantPager.next != variantPager.current ? (
+          <IconButton
+            icon={faCaretRight}
+            iconSize="2x"
+            title={variantPager.next.title || ''}
+            onClick={() => {
+              if (variantPager.next.id) {
+                setDisplayedVariant(variantPager.next);
+                onSelect(variantPager.next);
+              }
+            }}
+          />
+        ) : null}
+
+        <IconButton
+          icon={faWindowRestore}
+          title="Create new variant"
+          onClick={() => {
+            dispatch(API.createCardContentVariant(cardId)).then(payload => {
+              // TODO select and display new content
+              if (payload.meta.requestStatus === 'fulfilled') {
+                if (entityIs(payload.payload, 'CardContent')) {
+                  setDisplayedVariant(payload.payload || undefined);
+                }
+              }
+            });
+          }}
+        >
+          Create a new variant
+        </IconButton>
+      </Flex>
     );
   }
 }

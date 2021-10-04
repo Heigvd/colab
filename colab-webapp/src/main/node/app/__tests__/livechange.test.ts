@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+//import {test, expect} from '@jest/globals/';
 import {Change, MicroChange} from 'colab-rest-client';
 import * as LiveHelper from '../src/LiveHelper';
 //import getLogger, {DEBUG} from '../src/logger';

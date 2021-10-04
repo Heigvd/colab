@@ -10,6 +10,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { dispatch } from '../../store/store';
 import { Destroyer } from '../common/Destroyer';
+import Flex from '../common/Flex';
 import WithToolbar from '../common/WithToolbar';
 import { getKey, ResourceAndRef, ResourceCallContext } from './ResourceCommonType';
 import ResourceCreator from './ResourceCreator';
@@ -34,7 +35,7 @@ export default function ResourcesList({
   contextInfo,
 }: ResourcesListProps): JSX.Element {
   return (
-    <>
+    <Flex direction="column">
       <h3>Resources</h3>
       <div>
         {resourcesAndRefs.sort(sortResources).map(resourceAndRef => (
@@ -96,6 +97,6 @@ export default function ResourcesList({
       <div>
         <ResourceCreator contextInfo={contextInfo} />
       </div>
-    </>
+    </Flex>
   );
 }

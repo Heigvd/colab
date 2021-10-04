@@ -24,37 +24,40 @@ import {
   Project,
   Resource,
   ResourceRef,
-  TeamRole,
   SignUpInfo,
   StickyNoteLink,
+  TeamRole,
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
 import { CreationScope, CreationScopeKind } from '../components/resources/ResourceCommonType';
 import { hashPassword } from '../SecurityHelper';
-import { addError } from '../store/error';
+import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
 
 const restClient = ColabClient('', error => {
   if (entityIs(error, 'HttpException')) {
     getStore().dispatch(
-      addError({
+      addNotification({
         status: 'OPEN',
-        error: error,
+        type: 'ERROR',
+        message: error,
       }),
     );
   } else if (error instanceof Error) {
     getStore().dispatch(
-      addError({
+      addNotification({
         status: 'OPEN',
-        error: `${error.name}: ${error.message}`,
+        type: 'ERROR',
+        message: `${error.name}: ${error.message}`,
       }),
     );
   } else {
     getStore().dispatch(
-      addError({
+      addNotification({
         status: 'OPEN',
-        error: 'Something went wrong',
+        type: 'ERROR',
+        message: 'Something went wrong',
       }),
     );
   }
@@ -497,6 +500,9 @@ export const deleteCardType = createAsyncThunk('cardType/delete', async (cardTyp
 // Cards
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @deprecated
+ */
 export const initCards = createAsyncThunk('card/init', async () => {
   return await restClient.CardRestEndpoint.getAllCards();
 });
@@ -504,6 +510,20 @@ export const initCards = createAsyncThunk('card/init', async () => {
 export const getCard = createAsyncThunk('card/get', async (id: number) => {
   return await restClient.CardRestEndpoint.getCard(id);
 });
+
+export const getAllProjectCards = createAsyncThunk(
+  'card/getAllProjectCards',
+  async (id: number) => {
+    return await restClient.ProjectRestEndpoint.getCardsOfProject(id);
+  },
+);
+
+export const getAllProjectCardContents = createAsyncThunk(
+  'card/getAllProjectCardContents',
+  async (id: number) => {
+    return await restClient.ProjectRestEndpoint.getCardContentsOfProject(id);
+  },
+);
 
 export const createCard = createAsyncThunk('card/create', async (card: Card) => {
   return await restClient.CardRestEndpoint.createCard({
@@ -535,6 +555,13 @@ export const createSubCard = createAsyncThunk(
 export const updateCard = createAsyncThunk('card/update', async (card: Card) => {
   await restClient.CardRestEndpoint.updateCard(card);
 });
+
+export const moveCard = createAsyncThunk(
+  'card/move',
+  async ({ cardId, newParentId }: { cardId: number; newParentId: number }) => {
+    await restClient.CardRestEndpoint.moveCard(cardId, newParentId);
+  },
+);
 
 export const deleteCard = createAsyncThunk('card/delete', async (card: Card) => {
   if (card.id) {

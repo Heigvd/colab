@@ -87,6 +87,11 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     private String color;
 
     /**
+     * Card title
+     */
+    private String title;
+
+    /**
      * The card type defining what is it for
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -234,6 +239,24 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     }
 
     /**
+     * Get the value of title
+     *
+     * @return the value of title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Set the value of title
+     *
+     * @param title new value of title
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
      * Get access-control list
      *
      * @return ACL
@@ -340,8 +363,8 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
 
     /**
      * @return the parent card content
-     *         <p>
-     *         A card can either be the root card of a project or be within a card content
+     * <p>
+     * A card can either be the root card of a project or be within a card content
      */
     public CardContent getParent() {
         return parent;
@@ -533,6 +556,7 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
             Card o = (Card) other;
             this.setIndex(o.getIndex());
             this.setColor(o.getColor());
+            this.setTitle(o.getTitle());
             this.setDefaultInvolvementLevel(o.getDefaultInvolvementLevel());
         } else {
             throw new ColabMergeException(this, other);

@@ -8,6 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { NavLink, NavLinkProps } from 'react-router-dom';
+import { mainMenuLink } from '../styling/style';
 
 const linkStyle = css({
   textDecoration: 'none',
@@ -17,18 +18,6 @@ const linkStyle = css({
     color: 'var(--linkHoverColor)',
   },
 });
-
-const mainMenuLink = cx(
-  linkStyle,
-  css({
-    lineHeight: '44px',
-    display: 'inline-block',
-    padding: '8px 5px 0 5px',
-    ':focus': {
-      outlineStyle: 'inset',
-    },
-  }),
-);
 
 const mainLinkActiveClass = cx(
   css({
@@ -62,6 +51,7 @@ interface LinkProps {
   exact?: boolean;
   children: React.ReactNode;
   isActive?: NavLinkProps['isActive'];
+  className?: string;
 }
 
 export const MainMenuLink = ({ to, exact = false, children, isActive }: LinkProps): JSX.Element => {
@@ -97,9 +87,9 @@ export const SecondLevelLink = ({
   );
 };
 
-export const InlineLink = ({ to, exact = false, children }: LinkProps): JSX.Element => {
+export const InlineLink = ({ to, exact = false, children, className }: LinkProps): JSX.Element => {
   return (
-    <NavLink exact={exact} to={to} className={inlineLink}>
+    <NavLink exact={exact} to={to} className={cx(className, inlineLink)}>
       {children}
     </NavLink>
   );

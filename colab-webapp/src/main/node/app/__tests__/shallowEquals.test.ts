@@ -1,10 +1,11 @@
 import { customColabStateEquals, shallowEqual } from '../src/store/hooks';
+//import {test, expect} from '@jest/globals/';
 
 const empty: never[] = [];
 const array: number[] = [1, 2, 3, 4];
 const array2: number[] = [1, 2, 3, 4];
 
-test.each<[boolean, unknown, unknown]>([
+test.each([
   [true, 1, 1],
   [true, 'hello', 'hello'],
   [true, NaN, NaN],
@@ -39,7 +40,7 @@ test.each<[boolean, unknown, unknown]>([
   },
 );
 
-test.each<[boolean, unknown, unknown]>([
+test.each([
   [true, 1, 1],
   [true, 'hello', 'hello'],
   [true, NaN, NaN],

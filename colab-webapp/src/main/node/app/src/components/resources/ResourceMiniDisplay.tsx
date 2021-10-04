@@ -129,7 +129,7 @@ export default function ResourceMiniDisplay({
   const docId = targetResource.documentId;
   const document = useDocument(docId);
 
-// TODO see how the category is resolved
+  // TODO see how the category is resolved
   let effectiveCategory = targetResource.category;
   if (cardContentResourceRef?.category != null) {
     effectiveCategory = cardContentResourceRef.category;
