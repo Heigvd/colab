@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.card.CardContentStatus;
 import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
 import java.util.List;
@@ -103,8 +104,9 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Project project = ColabFactory.createProject(client, "testDeleteCardContent");
         Long cardId = ColabFactory.createNewCard(client, project).getId();
 
-        CardContent cardContent = client.cardContentRestEndpoint.createNewCardContent(cardId);
-        Long cardContentId = cardContent.getId();
+        // a new card content
+
+        Long cardContentId = client.cardContentRestEndpoint.createNewCardContent(cardId).getId();
 
         CardContent persistedCardContent = client.cardContentRestEndpoint
             .getCardContent(cardContentId);
@@ -114,6 +116,33 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
 
         persistedCardContent = client.cardContentRestEndpoint.getCardContent(cardContentId);
         Assertions.assertNull(persistedCardContent);
+
+        // the card content initially created with the card
+
+        List<CardContent> variants = client.cardRestEndpoint.getContentVariantsOfCard(cardId);
+        Assertions.assertEquals(1, variants.size());
+        Long initialCardContentId = variants.get(0).getId();
+
+        CardContent initialCardContent = client.cardContentRestEndpoint
+            .getCardContent(initialCardContentId);
+        Assertions.assertNotNull(initialCardContent);
+
+        boolean isErrorMessageThrown = false;
+        try {
+            client.cardContentRestEndpoint.deleteCardContent(initialCardContentId);
+        } catch (HttpErrorMessage hem) {
+
+            if (HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE == hem.getMessageCode()) {
+                isErrorMessageThrown = true;
+            }
+        }
+
+        if (!isErrorMessageThrown) {
+            Assertions.fail("We should not be allowed to delete the last card content");
+        }
+
+        initialCardContent = client.cardContentRestEndpoint.getCardContent(initialCardContentId);
+        Assertions.assertNotNull(initialCardContent);
     }
 
     @Test
@@ -147,19 +176,21 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Project project = ColabFactory.createProject(client, "testDeliverableAccess");
         Long cardId = ColabFactory.createNewCard(client, project).getId();
 
-        Long cardContentId = client.cardRestEndpoint.getContentVariantsOfCard(cardId).get(0).getId();
+        Long cardContentId = client.cardContentRestEndpoint.createNewCardContent(cardId).getId();
 
         Document newDoc = new BlockDocument();
         newDoc.setTitle(title);
 
-        Document persistedDoc = client.cardContentRestEndpoint.assignDeliverable(cardContentId, newDoc);
+        Document persistedDoc = client.cardContentRestEndpoint.assignDeliverable(cardContentId,
+            newDoc);
         Assertions.assertNotNull(persistedDoc);
         Assertions.assertNotNull(persistedDoc.getId());
         Long docId = persistedDoc.getId();
         Assertions.assertEquals(title, newDoc.getTitle());
         Assertions.assertEquals(cardContentId, persistedDoc.getDeliverableCardContentId());
 
-        CardContent persistedCardContent = client.cardContentRestEndpoint.getCardContent(cardContentId);
+        CardContent persistedCardContent = client.cardContentRestEndpoint
+            .getCardContent(cardContentId);
         Assertions.assertNotNull(persistedCardContent);
         Assertions.assertEquals(docId, persistedCardContent.getDeliverableId());
 

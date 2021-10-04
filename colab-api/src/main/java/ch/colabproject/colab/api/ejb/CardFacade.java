@@ -488,6 +488,11 @@ public class CardFacade {
     public CardContent deleteCardContent(Long cardContentId) {
         CardContent cardContent = cardContentDao.getCardContent(cardContentId);
 
+        // A card must have at least one card content
+        if (cardContent.getCard().getContentVariants().size() == 1) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
         if (cardContent != null) {
             cardContent.getCard().getContentVariants().remove(cardContent);
 
