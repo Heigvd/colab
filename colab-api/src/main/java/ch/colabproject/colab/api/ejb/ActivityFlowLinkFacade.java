@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.api.persistence.link.ActivityFlowLinkDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.Objects;
+import java.util.Optional;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,7 +34,6 @@ public class ActivityFlowLinkFacade {
     // *********************************************************************************************
     // injections
     // *********************************************************************************************
-
     /**
      * Activity flow link persistence handling
      */
@@ -49,7 +49,6 @@ public class ActivityFlowLinkFacade {
     // *********************************************************************************************
     //
     // *********************************************************************************************
-
     /**
      * Create a link
      *
@@ -76,16 +75,49 @@ public class ActivityFlowLinkFacade {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        // then make the modifications
-        link.setPreviousCard(previousCard);
-        link.setNextCard(nextCard);
+        if (!previousCard.getProject().equals(nextCard.getProject())) {
+            // prevent cross-project dependencies
+            throw HttpErrorMessage.badRequest();
+        }
 
-        ActivityFlowLink persistedLink = linkDao.persistActivityFlowLink(link);
+        ActivityFlowLink existingLink = getLink(previousCard, nextCard);
 
-        previousCard.getActivityFlowLinksAsPrevious().add(persistedLink);
-        nextCard.getActivityFlowLinksAsNext().add(persistedLink);
+        if (existingLink != null) {
+            // return pre-existing link silently
+            return existingLink;
+        } else {
+            // Such a link does not exist yet
+            // then make the modifications
+            link.setPreviousCard(previousCard);
+            link.setNextCard(nextCard);
 
-        return persistedLink;
+            ActivityFlowLink persistedLink = linkDao.persistActivityFlowLink(link);
+
+            previousCard.getActivityFlowLinksAsPrevious().add(persistedLink);
+            nextCard.getActivityFlowLinksAsNext().add(persistedLink);
+
+            return persistedLink;
+        }
+    }
+
+    /**
+     * Get any activity link from previous card to next card.
+     *
+     * @param previous link starting point
+     * @param next     link end point
+     *
+     * @return the link if it exists or null
+     */
+    private ActivityFlowLink getLink(Card previous, Card next) {
+        // make sur not to create same link twice
+        Optional<ActivityFlowLink> find = previous.getActivityFlowLinksAsPrevious().stream()
+            .filter(l -> l.getNextCard().equals(next))
+            .findFirst();
+        if (find.isEmpty()) {
+            return null;
+        } else {
+            return find.get();
+        }
     }
 
     /**
@@ -151,11 +183,18 @@ public class ActivityFlowLinkFacade {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        // then make the modifications
-        oldPreviousCard.getActivityFlowLinksAsPrevious().remove(link);
+        ActivityFlowLink existingLink = getLink(newPreviousCard, link.getNextCard());
+        if (existingLink != null) {
+            // such a link already exists
+            // preserve pre-existing and delete this one
+            deleteActivityFlowLink(link.getId());
+        } else {
+            // then make the modifications
+            oldPreviousCard.getActivityFlowLinksAsPrevious().remove(link);
 
-        link.setPreviousCard(newPreviousCard);
-        newPreviousCard.getActivityFlowLinksAsPrevious().add(link);
+            link.setPreviousCard(newPreviousCard);
+            newPreviousCard.getActivityFlowLinksAsPrevious().add(link);
+        }
     }
 
     /**
@@ -189,11 +228,18 @@ public class ActivityFlowLinkFacade {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        // then make the modifications
-        oldNext.getActivityFlowLinksAsNext().remove(link);
+        ActivityFlowLink existingLink = getLink(link.getPreviousCard(), newNext);
+        if (existingLink != null) {
+            // such a link already exists
+            // preserve pre-existing and delete this one
+            deleteActivityFlowLink(link.getId());
+        } else {
+            // then make the modifications
+            oldNext.getActivityFlowLinksAsNext().remove(link);
 
-        link.setNextCard(newNext);
-        newNext.getActivityFlowLinksAsNext().add(link);
+            link.setNextCard(newNext);
+            newNext.getActivityFlowLinksAsNext().add(link);
+        }
     }
 
     /**
@@ -211,5 +257,4 @@ public class ActivityFlowLinkFacade {
     // *********************************************************************************************
     //
     // *********************************************************************************************
-
 }

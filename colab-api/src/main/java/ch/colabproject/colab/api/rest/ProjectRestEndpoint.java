@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
@@ -195,7 +196,6 @@ public class ProjectRestEndpoint {
         return projectFacade.getCards(id);
     }
 
-
     /**
      * Get all cardContents belonging to a project
      *
@@ -206,7 +206,21 @@ public class ProjectRestEndpoint {
     @GET
     @Path("{id}/CardContents")
     public Set<CardContent> getCardContentsOfProject(@PathParam("id") Long id) {
-        logger.debug("Get project #{} cards", id);
+        logger.debug("Get project #{} cardContents", id);
         return projectFacade.getCardContents(id);
+    }
+
+    /**
+     * Get all activityflowlinks belonging to a project
+     *
+     * @param id ID of the project activityflowlinks belong to
+     *
+     * @return all activityFlowLinks linked to the project
+     */
+    @GET
+    @Path("{id}/ActivityFlowLink")
+    public Set<ActivityFlowLink> getActivityFlowLinks(@PathParam("id") Long id) {
+        logger.debug("Get project #{} activityflowlinks", id);
+        return projectFacade.getActivityFlowLinks(id);
     }
 }

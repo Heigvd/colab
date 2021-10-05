@@ -214,7 +214,7 @@ export default function Editor(): JSX.Element {
                 <Hierarchy rootId={root.id} />
               </Route>
               <Route exact path="/flow">
-                <ActivityFlowChart rootId={root.id} />
+                <ActivityFlowChart />
               </Route>
               <Route exact path="/defs">
                 <CardTypeList />

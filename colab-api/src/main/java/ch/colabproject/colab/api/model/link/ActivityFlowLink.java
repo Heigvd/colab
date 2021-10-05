@@ -8,10 +8,13 @@ package ch.colabproject.colab.api.model.link;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -29,8 +32,7 @@ import javax.validation.constraints.NotNull;
  * @author sandra
  */
 @Entity
-public class ActivityFlowLink implements ColabEntity/* ,
- * WithWebsocketChannels */ {
+public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
 
     /**
      * Serial version UID
@@ -209,14 +211,11 @@ public class ActivityFlowLink implements ColabEntity/* ,
         }
     }
 
-//    @Override
-//    public Set<WebsocketChannel> getChannels() {
-//        if (this.nextCard != null) {
-//            return this.nextCard.getChannels();
-//        } else {
-//        return Set.of();
-//        }
-//    }
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        return this.nextCard.getChannels();
+    }
+
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {

@@ -8,6 +8,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import aclReducer from './acl';
+import activityFlowLinkReducer from './activityflowlink';
 import adminReducer from './admin';
 import authReducer from './auth';
 import blockReducer from './block';
@@ -24,6 +25,7 @@ import websocketReducer from './websocket';
 
 const rootReducer = combineReducers({
   acl: aclReducer,
+  activityFlowLinks: activityFlowLinkReducer,
   auth: authReducer,
   admin: adminReducer,
   block: blockReducer,

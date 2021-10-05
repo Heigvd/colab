@@ -5,10 +5,11 @@
  * Licensed under the MIT License
  */
 
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import {createAsyncThunk} from '@reduxjs/toolkit';
 import {
   AbstractCardType,
   AbstractResource,
+  ActivityFlowLink,
   AuthInfo,
   Block,
   BlockDocument,
@@ -30,10 +31,10 @@ import {
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
-import { CreationScope, CreationScopeKind } from '../components/resources/ResourceCommonType';
-import { hashPassword } from '../SecurityHelper';
-import { addNotification } from '../store/notification';
-import { ColabState, getStore } from '../store/store';
+import {CreationScope, CreationScopeKind} from '../components/resources/ResourceCommonType';
+import {hashPassword} from '../SecurityHelper';
+import {addNotification} from '../store/notification';
+import {ColabState, getStore} from '../store/store';
 
 const restClient = ColabClient('', error => {
   if (entityIs(error, 'HttpException')) {
@@ -104,7 +105,7 @@ export const getLoggerLevels = createAsyncThunk('admin/getLoggerLevels', async (
 
 export const changeLoggerLevel = createAsyncThunk(
   'admin/setLoggerLevel',
-  async (payload: { loggerName: string; loggerLevel: string }, thunkApi) => {
+  async (payload: {loggerName: string; loggerLevel: string}, thunkApi) => {
     await restClient.MonitoringRestEndpoint.changeLoggerLevel(
       payload.loggerName,
       payload.loggerLevel,
@@ -120,7 +121,7 @@ export const changeLoggerLevel = createAsyncThunk(
 
 export const requestPasswordReset = createAsyncThunk(
   'auth/restPassword',
-  async (a: { email: string }) => {
+  async (a: {email: string}) => {
     await restClient.UserRestEndpoint.requestPasswordReset(a.email);
   },
 );
@@ -150,7 +151,7 @@ export const signInWithLocalAccount = createAsyncThunk(
 
 export const updateLocalAccountPassword = createAsyncThunk(
   'user/updatePassword',
-  async (a: { email: string; password: string }) => {
+  async (a: {email: string; password: string}) => {
     // first, fetch the authenatication method fot the account
     const authMethod = await restClient.UserRestEndpoint.getAuthMethod(a.email);
 
@@ -194,7 +195,7 @@ export const signUp = createAsyncThunk(
     await restClient.UserRestEndpoint.signUp(signUpInfo);
 
     // go back to login page
-    thunkApi.dispatch(signInWithLocalAccount({ identifier: a.email, password: a.password }));
+    thunkApi.dispatch(signInWithLocalAccount({identifier: a.email, password: a.password}));
   },
 );
 
@@ -226,7 +227,7 @@ export const reloadCurrentUser = createAsyncThunk(
         });
       }
     }
-    return { currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts };
+    return {currentUser: currentUser, currentAccount: currentAccount, accounts: allAccounts};
   },
 );
 
@@ -338,7 +339,7 @@ export const getProjectTeam = createAsyncThunk('project/team/get', async (projec
 
 export const sendInvitation = createAsyncThunk(
   'project/team/invite',
-  async (payload: { projectId: number; recipient: string }, thunkApi) => {
+  async (payload: {projectId: number; recipient: string}, thunkApi) => {
     if (payload.recipient) {
       await restClient.TeamRestEndpoint.inviteSomeone(payload.projectId, payload.recipient);
       thunkApi.dispatch(getProjectTeam(payload.projectId));
@@ -348,8 +349,8 @@ export const sendInvitation = createAsyncThunk(
 
 export const createRole = createAsyncThunk(
   'project/team/createRole',
-  async (payload: { project: Project; role: TeamRole }) => {
-    const r: TeamRole = { ...payload.role, projectId: payload.project.id };
+  async (payload: {project: Project; role: TeamRole}) => {
+    const r: TeamRole = {...payload.role, projectId: payload.project.id};
     return await restClient.TeamRestEndpoint.createRole(r);
   },
 );
@@ -364,21 +365,21 @@ export const deleteRole = createAsyncThunk('project/role/delete', async (roleId:
 
 export const giveRole = createAsyncThunk(
   'project/team/give',
-  async ({ roleId, memberId }: { roleId: number; memberId: number }) => {
+  async ({roleId, memberId}: {roleId: number; memberId: number}) => {
     return await restClient.TeamRestEndpoint.giveRoleTo(roleId, memberId);
   },
 );
 
 export const removeRole = createAsyncThunk(
   'project/team/remove',
-  async ({ roleId, memberId }: { roleId: number; memberId: number }) => {
+  async ({roleId, memberId}: {roleId: number; memberId: number}) => {
     return await restClient.TeamRestEndpoint.removeRoleFrom(roleId, memberId);
   },
 );
 
 export const setMemberPosition = createAsyncThunk(
   'project/member/position',
-  async ({ memberId, position }: { memberId: number; position: HierarchicalPosition }) => {
+  async ({memberId, position}: {memberId: number; position: HierarchicalPosition}) => {
     await restClient.TeamRestEndpoint.changeMemberPosition(memberId, position);
   },
 );
@@ -400,7 +401,7 @@ export const setMemberInvolvement = createAsyncThunk(
 
 export const clearMemberInvolvement = createAsyncThunk(
   'project/role/clearInvolvement',
-  async ({ memberId, cardId }: { memberId: number; cardId: number }) => {
+  async ({memberId, cardId}: {memberId: number; cardId: number}) => {
     await restClient.TeamRestEndpoint.clearMemberInvolvement(cardId, memberId);
   },
 );
@@ -422,7 +423,7 @@ export const setRoleInvolvement = createAsyncThunk(
 
 export const clearRoleInvolvement = createAsyncThunk(
   'project/role/clearInvolvement',
-  async ({ roleId, cardId }: { roleId: number; cardId: number }) => {
+  async ({roleId, cardId}: {roleId: number; cardId: number}) => {
     await restClient.TeamRestEndpoint.clearRoleInvolvement(cardId, roleId);
   },
 );
@@ -534,7 +535,7 @@ export const createCard = createAsyncThunk('card/create', async (card: Card) => 
 
 export const createSubCard = createAsyncThunk(
   'card/createSubCard',
-  async ({ parent, cardTypeId }: { parent: CardContent; cardTypeId: number }) => {
+  async ({parent, cardTypeId}: {parent: CardContent; cardTypeId: number}) => {
     if (parent.id != null) {
       const card = await restClient.CardRestEndpoint.createNewCard(parent.id, cardTypeId);
       const contents = await restClient.CardRestEndpoint.getContentVariantsOfCard(card.id!);
@@ -558,7 +559,7 @@ export const updateCard = createAsyncThunk('card/update', async (card: Card) => 
 
 export const moveCard = createAsyncThunk(
   'card/move',
-  async ({ cardId, newParentId }: { cardId: number; newParentId: number }) => {
+  async ({cardId, newParentId}: {cardId: number; newParentId: number}) => {
     await restClient.CardRestEndpoint.moveCard(cardId, newParentId);
   },
 );
@@ -762,7 +763,7 @@ export const getDocumentBlocks = createAsyncThunk(
 
 export const createBlock = createAsyncThunk(
   'block/create',
-  async (payload: { document: BlockDocument; block: Block }) => {
+  async (payload: {document: BlockDocument; block: Block}) => {
     return await restClient.BlockRestEndPoint.createBlock({
       ...payload.block,
       documentId: payload.document.id,
@@ -787,7 +788,7 @@ export const updateBlock = createAsyncThunk('block/update', async (block: Block)
 
 export const patchBlock = createAsyncThunk(
   'block/patch',
-  async (payload: { id: number; change: Change }) => {
+  async (payload: {id: number; change: Change}) => {
     return await restClient.BlockRestEndPoint.patchBlock(payload.id, payload.change);
   },
 );
@@ -840,3 +841,65 @@ export const deleteStickyNote = createAsyncThunk(
     }
   },
 );
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Activity-Flow Links
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getAllActivityFlowLinks = createAsyncThunk(
+  'activityFlow/getAll',
+  async (projectId: number) => {
+    return await restClient.ProjectRestEndpoint.getActivityFlowLinks(projectId);
+  },
+);
+
+export const getActivityFlowLinkFromCard = createAsyncThunk(
+  'activityFlow/getFromCard',
+  async (cardId: number) => {
+    return await restClient.CardRestEndpoint.getActivityFlowLinksAsPrevious(cardId);
+  },
+);
+
+export const getActivityFlowLinkToCard = createAsyncThunk(
+  'activityFlow/getToCard',
+  async (cardId: number) => {
+    return await restClient.CardRestEndpoint.getActivityFlowLinksAsNext(cardId);
+  },
+);
+
+
+export const createActivityFlowLink = createAsyncThunk(
+  'activityFlow/create',
+  async ({previousId, nextId}: {previousId: number, nextId: number}) => {
+    const link: ActivityFlowLink = {
+      "@class": 'ActivityFlowLink',
+      previousCardId: previousId,
+      nextCardId: nextId,
+    }
+    return await restClient.ActivityFlowLinkRestEndpoint.createLink(link);
+  },
+);
+
+export const changeActivityFlowLinkPreviousCard = createAsyncThunk(
+  'activityFlow/changePrevCard',
+  async ({linkId, cardId}: {linkId: number, cardId: number}) => {
+    return await restClient.ActivityFlowLinkRestEndpoint.changePreviousCard(linkId, cardId);
+  },
+);
+
+export const changeActivityFlowLinkNextCard = createAsyncThunk(
+  'activityFlow/changeNextCard',
+  async ({linkId, cardId}: {linkId: number, cardId: number}) => {
+    return await restClient.ActivityFlowLinkRestEndpoint.changeNextCard(linkId, cardId);
+  },
+);
+
+export const deleteActivityFlowLink = createAsyncThunk(
+  'activityFlow/delete',
+  async (id: number) => {
+    return await restClient.ActivityFlowLinkRestEndpoint.deleteLink(id);
+  },
+);
+

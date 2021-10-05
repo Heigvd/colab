@@ -36,11 +36,12 @@ export default function CardThumb({
             className={css({
               padding: '10px',
               display: 'flex',
-              flexDirection: 'row',
+              flexDirection: 'column',
               justifyContent: 'space-around',
             })}
           >
-            {variant?.title ? <span>{variant.title}</span> : <i>untitled</i>}
+            <div>{card.title}</div>
+            <div>{variants.length > 1 ? variant?.title ? <span>{variant.title}</span> : <i>untitled</i> : null}</div>
           </div>
           <div
             className={css({

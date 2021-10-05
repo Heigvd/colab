@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.ejb;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
@@ -16,6 +17,7 @@ import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -139,8 +141,6 @@ public class ProjectFacade {
         return cardFacade.getAllCardContents(project.getRootCard());
     }
 
-
-
     /**
      * Get all card types of the given project
      *
@@ -158,4 +158,24 @@ public class ProjectFacade {
         return cardFacade.getExpandedProjectType(project);
     }
 
+    /**
+     * Get all activityflowlinks belonging to a project
+     *
+     * @param projectId ID of the project activityflowlinks belong to
+     *
+     * @return all activityFlowLinks linked to the project
+     */
+    public Set<ActivityFlowLink> getActivityFlowLinks(Long projectId) {
+        Project project = projectDao.getProject(projectId);
+        logger.debug("Get activityflowlinks of project {}", project);
+        if (project == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return cardFacade
+            .getAllCards(project.getRootCard())
+            .stream().flatMap(card -> {
+                return card.getActivityFlowLinksAsPrevious().stream();
+            }).collect(Collectors.toSet());
+    }
 }

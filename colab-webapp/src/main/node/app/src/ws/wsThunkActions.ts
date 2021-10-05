@@ -5,12 +5,13 @@
  * Licensed under the MIT License
  */
 
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import {createAsyncThunk} from '@reduxjs/toolkit';
 import {
   AbstractCardType,
   AbstractResource,
   AccessControl,
   Account,
+  ActivityFlowLink,
   Block,
   Card,
   CardContent,
@@ -26,9 +27,9 @@ import {
   User,
   WsUpdateMessage,
 } from 'colab-rest-client';
-import { checkUnreachable } from '../helper';
-import { getLogger } from '../logger';
-import { ColabNotification } from '../store/notification';
+import {checkUnreachable} from '../helper';
+import {getLogger} from '../logger';
+import {ColabNotification} from '../store/notification';
 
 const logger = getLogger('WebSockets');
 
@@ -36,7 +37,7 @@ const logger = getLogger('WebSockets');
  * Does the given index entry represent the given type ?
  */
 const indexEntryIs = <T extends keyof TypeMap>(entry: IndexEntry, klass: T) => {
-  return entityIs({ '@class': entry.type, id: entry.id }, klass);
+  return entityIs({'@class': entry.type, id: entry.id}, klass);
 };
 
 interface Updates<T> {
@@ -47,6 +48,7 @@ interface Updates<T> {
 interface EntityBag {
   accounts: Updates<Account>;
   acl: Updates<AccessControl>;
+  activityFlowLinks: Updates<ActivityFlowLink>;
   blocks: Updates<Block>;
   cards: Updates<Card>;
   changes: Updates<Change>;
@@ -64,20 +66,21 @@ interface EntityBag {
 
 function createBag(): EntityBag {
   return {
-    accounts: { updated: [], deleted: [] },
-    acl: { updated: [], deleted: [] },
-    blocks: { updated: [], deleted: [] },
-    cards: { updated: [], deleted: [] },
-    changes: { updated: [], deleted: [] },
-    contents: { updated: [], deleted: [] },
-    documents: { updated: [], deleted: [] },
-    members: { updated: [], deleted: [] },
-    projects: { updated: [], deleted: [] },
-    resources: { updated: [], deleted: [] },
-    roles: { updated: [], deleted: [] },
-    stickynotelinks: { updated: [], deleted: [] },
-    types: { updated: [], deleted: [] },
-    users: { updated: [], deleted: [] },
+    accounts: {updated: [], deleted: []},
+    acl: {updated: [], deleted: []},
+    activityFlowLinks: {updated: [], deleted: []},
+    blocks: {updated: [], deleted: []},
+    cards: {updated: [], deleted: []},
+    changes: {updated: [], deleted: []},
+    contents: {updated: [], deleted: []},
+    documents: {updated: [], deleted: []},
+    members: {updated: [], deleted: []},
+    projects: {updated: [], deleted: []},
+    resources: {updated: [], deleted: []},
+    roles: {updated: [], deleted: []},
+    stickynotelinks: {updated: [], deleted: []},
+    types: {updated: [], deleted: []},
+    users: {updated: [], deleted: []},
     notifications: [],
   };
 }
@@ -92,6 +95,8 @@ export const processMessage = createAsyncThunk(
         bag.accounts.deleted.push(item);
       } else if (indexEntryIs(item, 'AccessControl')) {
         bag.acl.deleted.push(item);
+      } else if (indexEntryIs(item, 'ActivityFlowLink')) {
+        bag.activityFlowLinks.deleted.push(item);
       } else if (indexEntryIs(item, 'Block')) {
         bag.blocks.deleted.push(item);
       } else if (indexEntryIs(item, 'Card')) {
@@ -131,6 +136,8 @@ export const processMessage = createAsyncThunk(
         bag.accounts.updated.push(item);
       } else if (entityIs(item, 'AccessControl')) {
         bag.acl.updated.push(item);
+      } else if (entityIs(item, 'ActivityFlowLink')) {
+        bag.activityFlowLinks.updated.push(item);
       } else if (entityIs(item, 'Block')) {
         bag.blocks.updated.push(item);
       } else if (entityIs(item, 'Card')) {
