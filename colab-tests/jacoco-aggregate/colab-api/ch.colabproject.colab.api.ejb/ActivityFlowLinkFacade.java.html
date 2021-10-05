@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.api.persistence.link.ActivityFlowLinkDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.Objects;
+import java.util.Optional;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -25,15 +26,14 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="fc" id="L28">public class ActivityFlowLinkFacade {</span>
+<span class="fc" id="L29">public class ActivityFlowLinkFacade {</span>
 
     /** logger */
-<span class="fc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(ActivityFlowLinkFacade.class);</span>
+<span class="fc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(ActivityFlowLinkFacade.class);</span>
 
     // *********************************************************************************************
     // injections
     // *********************************************************************************************
-
     /**
      * Activity flow link persistence handling
      */
@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory;
     // *********************************************************************************************
     //
     // *********************************************************************************************
-
     /**
      * Create a link
      *
@@ -58,34 +57,67 @@ import org.slf4j.LoggerFactory;
      * @return the brand new link
      */
     public ActivityFlowLink createActivityFlowLink(ActivityFlowLink link) {
-<span class="fc" id="L61">        logger.debug(&quot;create activity flow link {}&quot;, link);</span>
+<span class="fc" id="L60">        logger.debug(&quot;create activity flow link {}&quot;, link);</span>
 
         // validation
-<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (!isValid(link.getPreviousCardId(), link.getNextCardId())) {</span>
-<span class="fc" id="L65">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (!isValid(link.getPreviousCardId(), link.getNextCardId())) {</span>
+<span class="fc" id="L64">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
         // fetch all objects and so ensure that they exist
-<span class="fc" id="L69">        Card previousCard = cardDao.getCard(link.getPreviousCardId());</span>
-<span class="pc bpc" id="L70" title="1 of 2 branches missed.">        if (previousCard == null) {</span>
-<span class="nc" id="L71">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L68">        Card previousCard = cardDao.getCard(link.getPreviousCardId());</span>
+<span class="pc bpc" id="L69" title="1 of 2 branches missed.">        if (previousCard == null) {</span>
+<span class="nc" id="L70">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="fc" id="L74">        Card nextCard = cardDao.getCard(link.getNextCardId());</span>
-<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (nextCard == null) {</span>
-<span class="nc" id="L76">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L73">        Card nextCard = cardDao.getCard(link.getNextCardId());</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        if (nextCard == null) {</span>
+<span class="nc" id="L75">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-        // then make the modifications
-<span class="fc" id="L80">        link.setPreviousCard(previousCard);</span>
-<span class="fc" id="L81">        link.setNextCard(nextCard);</span>
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (!previousCard.getProject().equals(nextCard.getProject())) {</span>
+            // prevent cross-project dependencies
+<span class="nc" id="L80">            throw HttpErrorMessage.badRequest();</span>
+        }
 
-<span class="fc" id="L83">        ActivityFlowLink persistedLink = linkDao.persistActivityFlowLink(link);</span>
+<span class="fc" id="L83">        ActivityFlowLink existingLink = getLink(previousCard, nextCard);</span>
 
-<span class="fc" id="L85">        previousCard.getActivityFlowLinksAsPrevious().add(persistedLink);</span>
-<span class="fc" id="L86">        nextCard.getActivityFlowLinksAsNext().add(persistedLink);</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        if (existingLink != null) {</span>
+            // return pre-existing link silently
+<span class="nc" id="L87">            return existingLink;</span>
+        } else {
+            // Such a link does not exist yet
+            // then make the modifications
+<span class="fc" id="L91">            link.setPreviousCard(previousCard);</span>
+<span class="fc" id="L92">            link.setNextCard(nextCard);</span>
 
-<span class="fc" id="L88">        return persistedLink;</span>
+<span class="fc" id="L94">            ActivityFlowLink persistedLink = linkDao.persistActivityFlowLink(link);</span>
+
+<span class="fc" id="L96">            previousCard.getActivityFlowLinksAsPrevious().add(persistedLink);</span>
+<span class="fc" id="L97">            nextCard.getActivityFlowLinksAsNext().add(persistedLink);</span>
+
+<span class="fc" id="L99">            return persistedLink;</span>
+        }
+    }
+
+    /**
+     * Get any activity link from previous card to next card.
+     *
+     * @param previous link starting point
+     * @param next     link end point
+     *
+     * @return the link if it exists or null
+     */
+    private ActivityFlowLink getLink(Card previous, Card next) {
+        // make sur not to create same link twice
+<span class="fc" id="L113">        Optional&lt;ActivityFlowLink&gt; find = previous.getActivityFlowLinksAsPrevious().stream()</span>
+<span class="fc" id="L114">            .filter(l -&gt; l.getNextCard().equals(next))</span>
+<span class="fc" id="L115">            .findFirst();</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">        if (find.isEmpty()) {</span>
+<span class="fc" id="L117">            return null;</span>
+        } else {
+<span class="nc" id="L119">            return find.get();</span>
+        }
     }
 
     /**
@@ -94,31 +126,31 @@ import org.slf4j.LoggerFactory;
      * @param linkId the id of the link to delete
      */
     public void deleteActivityFlowLink(Long linkId) {
-<span class="fc" id="L97">        logger.debug(&quot;delete activity flow link #{}&quot;, linkId);</span>
+<span class="fc" id="L129">        logger.debug(&quot;delete activity flow link #{}&quot;, linkId);</span>
 
         // fetch all objects and so ensure that they exist
-<span class="fc" id="L100">        ActivityFlowLink link = linkDao.findActivityFlowLink(linkId);</span>
-<span class="pc bpc" id="L101" title="1 of 2 branches missed.">        if (link == null) {</span>
-<span class="nc" id="L102">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L132">        ActivityFlowLink link = linkDao.findActivityFlowLink(linkId);</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">        if (link == null) {</span>
+<span class="nc" id="L134">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
             // or just return. see what is best
         }
 
-<span class="fc" id="L106">        Card previousCard = link.getPreviousCard();</span>
-<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        if (previousCard == null) {</span>
-<span class="nc" id="L108">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L138">        Card previousCard = link.getPreviousCard();</span>
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">        if (previousCard == null) {</span>
+<span class="nc" id="L140">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L111">        Card nextCard = link.getNextCard();</span>
-<span class="pc bpc" id="L112" title="1 of 2 branches missed.">        if (nextCard == null) {</span>
-<span class="nc" id="L113">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L143">        Card nextCard = link.getNextCard();</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (nextCard == null) {</span>
+<span class="nc" id="L145">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
         // then make the modifications
-<span class="fc" id="L117">        previousCard.getActivityFlowLinksAsPrevious().remove(link);</span>
-<span class="fc" id="L118">        nextCard.getActivityFlowLinksAsNext().remove(link);</span>
+<span class="fc" id="L149">        previousCard.getActivityFlowLinksAsPrevious().remove(link);</span>
+<span class="fc" id="L150">        nextCard.getActivityFlowLinksAsNext().remove(link);</span>
 
-<span class="fc" id="L120">        linkDao.deleteActivityFlowLink(linkId);</span>
-<span class="fc" id="L121">    }</span>
+<span class="fc" id="L152">        linkDao.deleteActivityFlowLink(linkId);</span>
+<span class="fc" id="L153">    }</span>
 
     /**
      * Change the previous card
@@ -127,36 +159,43 @@ import org.slf4j.LoggerFactory;
      * @param newPreviousCardId the id of the new previous card
      */
     public void changeActivityFlowLinkPrevious(Long linkId, Long newPreviousCardId) {
-<span class="fc" id="L130">        logger.debug(&quot;change previous card of activity flow link #{} with #{}&quot;, linkId,</span>
+<span class="fc" id="L162">        logger.debug(&quot;change previous card of activity flow link #{} with #{}&quot;, linkId,</span>
             newPreviousCardId);
 
         // fetch all objects and so ensure that they exist
-<span class="fc" id="L134">        ActivityFlowLink link = linkDao.findActivityFlowLink(linkId);</span>
-<span class="pc bpc" id="L135" title="1 of 2 branches missed.">        if (link == null) {</span>
-<span class="nc" id="L136">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L166">        ActivityFlowLink link = linkDao.findActivityFlowLink(linkId);</span>
+<span class="pc bpc" id="L167" title="1 of 2 branches missed.">        if (link == null) {</span>
+<span class="nc" id="L168">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
         // validation
-<span class="pc bpc" id="L140" title="1 of 2 branches missed.">        if (!isValid(newPreviousCardId, link.getNextCardId())) {</span>
-<span class="nc" id="L141">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">        if (!isValid(newPreviousCardId, link.getNextCardId())) {</span>
+<span class="nc" id="L173">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L144">        Card oldPreviousCard = cardDao.getCard(link.getPreviousCardId());</span>
-<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if (oldPreviousCard == null) {</span>
-<span class="nc" id="L146">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L176">        Card oldPreviousCard = cardDao.getCard(link.getPreviousCardId());</span>
+<span class="pc bpc" id="L177" title="1 of 2 branches missed.">        if (oldPreviousCard == null) {</span>
+<span class="nc" id="L178">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L149">        Card newPreviousCard = cardDao.getCard(newPreviousCardId);</span>
-<span class="pc bpc" id="L150" title="1 of 2 branches missed.">        if (newPreviousCard == null) {</span>
-<span class="nc" id="L151">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L181">        Card newPreviousCard = cardDao.getCard(newPreviousCardId);</span>
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">        if (newPreviousCard == null) {</span>
+<span class="nc" id="L183">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-        // then make the modifications
-<span class="fc" id="L155">        oldPreviousCard.getActivityFlowLinksAsPrevious().remove(link);</span>
+<span class="fc" id="L186">        ActivityFlowLink existingLink = getLink(newPreviousCard, link.getNextCard());</span>
+<span class="pc bpc" id="L187" title="1 of 2 branches missed.">        if (existingLink != null) {</span>
+            // such a link already exists
+            // preserve pre-existing and delete this one
+<span class="nc" id="L190">            deleteActivityFlowLink(link.getId());</span>
+        } else {
+            // then make the modifications
+<span class="fc" id="L193">            oldPreviousCard.getActivityFlowLinksAsPrevious().remove(link);</span>
 
-<span class="fc" id="L157">        link.setPreviousCard(newPreviousCard);</span>
-<span class="fc" id="L158">        newPreviousCard.getActivityFlowLinksAsPrevious().add(link);</span>
-<span class="fc" id="L159">    }</span>
+<span class="fc" id="L195">            link.setPreviousCard(newPreviousCard);</span>
+<span class="fc" id="L196">            newPreviousCard.getActivityFlowLinksAsPrevious().add(link);</span>
+        }
+<span class="fc" id="L198">    }</span>
 
     /**
      * Change the next card
@@ -165,36 +204,43 @@ import org.slf4j.LoggerFactory;
      * @param newNextCardId the id of the new next card
      */
     public void changeActivityFlowLinkNext(Long linkId, Long newNextCardId) {
-<span class="fc" id="L168">        logger.debug(&quot;change next card of activity flow link #{} with #{}&quot;, linkId,</span>
+<span class="fc" id="L207">        logger.debug(&quot;change next card of activity flow link #{} with #{}&quot;, linkId,</span>
             newNextCardId);
 
         // fetch all objects and so ensure that they exist
-<span class="fc" id="L172">        ActivityFlowLink link = linkDao.findActivityFlowLink(linkId);</span>
-<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        if (link == null) {</span>
-<span class="nc" id="L174">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L211">        ActivityFlowLink link = linkDao.findActivityFlowLink(linkId);</span>
+<span class="pc bpc" id="L212" title="1 of 2 branches missed.">        if (link == null) {</span>
+<span class="nc" id="L213">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
         // validation
-<span class="pc bpc" id="L178" title="1 of 2 branches missed.">        if (!isValid(link.getPreviousCardId(), newNextCardId)) {</span>
-<span class="nc" id="L179">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="pc bpc" id="L217" title="1 of 2 branches missed.">        if (!isValid(link.getPreviousCardId(), newNextCardId)) {</span>
+<span class="nc" id="L218">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L182">        Card oldNext = cardDao.getCard(link.getNextCardId());</span>
-<span class="pc bpc" id="L183" title="1 of 2 branches missed.">        if (oldNext == null) {</span>
-<span class="nc" id="L184">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L221">        Card oldNext = cardDao.getCard(link.getNextCardId());</span>
+<span class="pc bpc" id="L222" title="1 of 2 branches missed.">        if (oldNext == null) {</span>
+<span class="nc" id="L223">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L187">        Card newNext = cardDao.getCard(newNextCardId);</span>
-<span class="pc bpc" id="L188" title="1 of 2 branches missed.">        if (newNext == null) {</span>
-<span class="nc" id="L189">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L226">        Card newNext = cardDao.getCard(newNextCardId);</span>
+<span class="pc bpc" id="L227" title="1 of 2 branches missed.">        if (newNext == null) {</span>
+<span class="nc" id="L228">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-        // then make the modifications
-<span class="fc" id="L193">        oldNext.getActivityFlowLinksAsNext().remove(link);</span>
+<span class="fc" id="L231">        ActivityFlowLink existingLink = getLink(link.getPreviousCard(), newNext);</span>
+<span class="pc bpc" id="L232" title="1 of 2 branches missed.">        if (existingLink != null) {</span>
+            // such a link already exists
+            // preserve pre-existing and delete this one
+<span class="nc" id="L235">            deleteActivityFlowLink(link.getId());</span>
+        } else {
+            // then make the modifications
+<span class="fc" id="L238">            oldNext.getActivityFlowLinksAsNext().remove(link);</span>
 
-<span class="fc" id="L195">        link.setNextCard(newNext);</span>
-<span class="fc" id="L196">        newNext.getActivityFlowLinksAsNext().add(link);</span>
-<span class="fc" id="L197">    }</span>
+<span class="fc" id="L240">            link.setNextCard(newNext);</span>
+<span class="fc" id="L241">            newNext.getActivityFlowLinksAsNext().add(link);</span>
+        }
+<span class="fc" id="L243">    }</span>
 
     /**
      * Check if the link is valid
@@ -205,12 +251,11 @@ import org.slf4j.LoggerFactory;
      * @return
      */
     private boolean isValid(Long previousCardId, Long nextCardId) {
-<span class="fc bfc" id="L208" title="All 2 branches covered.">        return !Objects.equals(previousCardId, nextCardId);</span>
+<span class="fc bfc" id="L254" title="All 2 branches covered.">        return !Objects.equals(previousCardId, nextCardId);</span>
     }
 
     // *********************************************************************************************
     //
     // *********************************************************************************************
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

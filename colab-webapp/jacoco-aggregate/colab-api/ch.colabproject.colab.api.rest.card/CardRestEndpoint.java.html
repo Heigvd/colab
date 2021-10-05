@@ -152,7 +152,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{cardId}/MoveTo/{newParentId}&quot;)
     public void moveCard(
         @PathParam(&quot;cardId&quot;) Long cardId,
-        @PathParam(&quot;newParentId&quot;) Long newParentId) throws HttpErrorMessage {
+        @PathParam(&quot;newParentId&quot;) Long newParentId) {
 <span class="nc" id="L156">        cardFacade.moveCard(cardId, newParentId);</span>
 <span class="nc" id="L157">    }</span>
 

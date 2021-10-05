@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
@@ -42,10 +43,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="fc" id="L45">public class ProjectRestEndpoint {</span>
+<span class="fc" id="L46">public class ProjectRestEndpoint {</span>
 
     /** logger */
-<span class="fc" id="L48">    private static final Logger logger = LoggerFactory.getLogger(ProjectRestEndpoint.class);</span>
+<span class="fc" id="L49">    private static final Logger logger = LoggerFactory.getLogger(ProjectRestEndpoint.class);</span>
 
     /**
      * The Project business logic
@@ -71,8 +72,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;Project&gt; getAllProjects() {
-<span class="fc" id="L74">        logger.debug(&quot;Get all projects&quot;);</span>
-<span class="fc" id="L75">        return projectDao.getAllProject();</span>
+<span class="fc" id="L75">        logger.debug(&quot;Get all projects&quot;);</span>
+<span class="fc" id="L76">        return projectDao.getAllProject();</span>
     }
 
     /**
@@ -83,8 +84,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;MyOwn&quot;)
     public List&lt;Project&gt; getUserProjects() {
-<span class="nc" id="L86">        logger.debug(&quot;Get user projects&quot;);</span>
-<span class="nc" id="L87">        return projectFacade.getCurrentUserProject();</span>
+<span class="nc" id="L87">        logger.debug(&quot;Get user projects&quot;);</span>
+<span class="nc" id="L88">        return projectFacade.getCurrentUserProject();</span>
     }
 
     /**
@@ -97,8 +98,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;/{id}&quot;)
     public Project getProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L100">        logger.debug(&quot;Get project #{}&quot;, id);</span>
-<span class="fc" id="L101">        return projectDao.getProject(id);</span>
+<span class="fc" id="L101">        logger.debug(&quot;Get project #{}&quot;, id);</span>
+<span class="fc" id="L102">        return projectDao.getProject(id);</span>
     }
 
     /**
@@ -110,8 +111,8 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createProject(Project project) {
-<span class="fc" id="L113">        logger.debug(&quot;Create project {}&quot;, project);</span>
-<span class="fc" id="L114">        return projectFacade.createNewProject(project).getId();</span>
+<span class="fc" id="L114">        logger.debug(&quot;Create project {}&quot;, project);</span>
+<span class="fc" id="L115">        return projectFacade.createNewProject(project).getId();</span>
     }
 
     /**
@@ -123,9 +124,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateProject(Project project) throws ColabMergeException {
-<span class="fc" id="L126">        logger.debug(&quot;Update project {}&quot;, project);</span>
-<span class="fc" id="L127">        projectDao.updateProject(project);</span>
-<span class="fc" id="L128">    }</span>
+<span class="fc" id="L127">        logger.debug(&quot;Update project {}&quot;, project);</span>
+<span class="fc" id="L128">        projectDao.updateProject(project);</span>
+<span class="fc" id="L129">    }</span>
 
     /**
      * Permanently delete a project.
@@ -135,9 +136,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;/{id}&quot;)
     public void deleteProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L138">        logger.debug(&quot;Delete project #{}&quot;, id);</span>
-<span class="fc" id="L139">        projectDao.deleteProject(id);</span>
-<span class="fc" id="L140">    }</span>
+<span class="fc" id="L139">        logger.debug(&quot;Delete project #{}&quot;, id);</span>
+<span class="fc" id="L140">        projectDao.deleteProject(id);</span>
+<span class="fc" id="L141">    }</span>
 
     /**
      * Get all members of the project teams.
@@ -149,8 +150,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/Members&quot;)
     public List&lt;TeamMember&gt; getMembers(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L152">        logger.debug(&quot;Get project #{} members&quot;, id);</span>
-<span class="fc" id="L153">        return teamFacade.getTeamMembers(id);</span>
+<span class="fc" id="L153">        logger.debug(&quot;Get project #{} members&quot;, id);</span>
+<span class="fc" id="L154">        return teamFacade.getTeamMembers(id);</span>
     }
 
     /**
@@ -163,8 +164,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{projectId: [0-9]+}/roles&quot;)
     public List&lt;TeamRole&gt; getRoles(@PathParam(&quot;projectId&quot;) Long projectId) {
-<span class="fc" id="L166">        logger.debug(&quot;Get project #{} members&quot;, projectId);</span>
-<span class="fc" id="L167">        return teamFacade.getProjectRoles(projectId);</span>
+<span class="fc" id="L167">        logger.debug(&quot;Get project #{} members&quot;, projectId);</span>
+<span class="fc" id="L168">        return teamFacade.getProjectRoles(projectId);</span>
     }
 
     /**
@@ -177,8 +178,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/CardTypes&quot;)
     public Set&lt;AbstractCardType&gt; getCardTypesOfProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L180">        logger.debug(&quot;Get project #{} card types&quot;, id);</span>
-<span class="fc" id="L181">        return projectFacade.getCardTypes(id);</span>
+<span class="fc" id="L181">        logger.debug(&quot;Get project #{} card types&quot;, id);</span>
+<span class="fc" id="L182">        return projectFacade.getCardTypes(id);</span>
     }
 
     /**
@@ -191,10 +192,9 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/Cards&quot;)
     public Set&lt;Card&gt; getCardsOfProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L194">        logger.debug(&quot;Get project #{} cards&quot;, id);</span>
-<span class="nc" id="L195">        return projectFacade.getCards(id);</span>
+<span class="nc" id="L195">        logger.debug(&quot;Get project #{} cards&quot;, id);</span>
+<span class="nc" id="L196">        return projectFacade.getCards(id);</span>
     }
-
 
     /**
      * Get all cardContents belonging to a project
@@ -206,8 +206,22 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/CardContents&quot;)
     public Set&lt;CardContent&gt; getCardContentsOfProject(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L209">        logger.debug(&quot;Get project #{} cards&quot;, id);</span>
+<span class="nc" id="L209">        logger.debug(&quot;Get project #{} cardContents&quot;, id);</span>
 <span class="nc" id="L210">        return projectFacade.getCardContents(id);</span>
+    }
+
+    /**
+     * Get all activityflowlinks belonging to a project
+     *
+     * @param id ID of the project activityflowlinks belong to
+     *
+     * @return all activityFlowLinks linked to the project
+     */
+    @GET
+    @Path(&quot;{id}/ActivityFlowLink&quot;)
+    public Set&lt;ActivityFlowLink&gt; getActivityFlowLinks(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L223">        logger.debug(&quot;Get project #{} activityflowlinks&quot;, id);</span>
+<span class="nc" id="L224">        return projectFacade.getActivityFlowLinks(id);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

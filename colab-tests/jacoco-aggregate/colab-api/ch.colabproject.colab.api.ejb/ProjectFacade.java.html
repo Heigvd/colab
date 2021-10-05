@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.ejb;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
@@ -16,6 +17,7 @@ import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -29,10 +31,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="fc" id="L32">public class ProjectFacade {</span>
+<span class="fc" id="L34">public class ProjectFacade {</span>
 
     /** logger */
-<span class="fc" id="L35">    private static final Logger logger = LoggerFactory.getLogger(ProjectFacade.class);</span>
+<span class="fc" id="L37">    private static final Logger logger = LoggerFactory.getLogger(ProjectFacade.class);</span>
 
     /**
      * To control access
@@ -71,8 +73,8 @@ import org.slf4j.LoggerFactory;
      * @return list of projects
      */
     public List&lt;Project&gt; getCurrentUserProject() {
-<span class="nc" id="L74">        User user = securityFacade.assertAndGetCurrentUser();</span>
-<span class="nc" id="L75">        return projectDao.getUserProject(user.getId());</span>
+<span class="nc" id="L76">        User user = securityFacade.assertAndGetCurrentUser();</span>
+<span class="nc" id="L77">        return projectDao.getUserProject(user.getId());</span>
     }
 
     /**
@@ -84,21 +86,21 @@ import org.slf4j.LoggerFactory;
      */
     public Project createNewProject(Project project) {
         try {
-<span class="fc" id="L87">            return requestManager.sudo(() -&gt; {</span>
-<span class="fc" id="L88">                logger.debug(&quot;Create new project: {}&quot;, project);</span>
-<span class="fc" id="L89">                Card rootCard = cardFacade.initNewRootCard();</span>
-<span class="fc" id="L90">                project.setRootCard(rootCard);</span>
-<span class="fc" id="L91">                rootCard.setRootCardProject(project);</span>
+<span class="fc" id="L89">            return requestManager.sudo(() -&gt; {</span>
+<span class="fc" id="L90">                logger.debug(&quot;Create new project: {}&quot;, project);</span>
+<span class="fc" id="L91">                Card rootCard = cardFacade.initNewRootCard();</span>
+<span class="fc" id="L92">                project.setRootCard(rootCard);</span>
+<span class="fc" id="L93">                rootCard.setRootCardProject(project);</span>
 
-<span class="fc" id="L93">                User user = securityFacade.assertAndGetCurrentUser();</span>
-<span class="fc" id="L94">                teamFacade.addMember(project, user, HierarchicalPosition.OWNER);</span>
+<span class="fc" id="L95">                User user = securityFacade.assertAndGetCurrentUser();</span>
+<span class="fc" id="L96">                teamFacade.addMember(project, user, HierarchicalPosition.OWNER);</span>
 
-<span class="fc" id="L96">                return projectDao.createProject(project);</span>
+<span class="fc" id="L98">                return projectDao.createProject(project);</span>
             });
-<span class="nc" id="L98">        } catch (RuntimeException ex) {</span>
-<span class="nc" id="L99">            throw ex;</span>
-<span class="nc" id="L100">        } catch (Exception ex) {</span>
-<span class="nc" id="L101">            return null;</span>
+<span class="nc" id="L100">        } catch (RuntimeException ex) {</span>
+<span class="nc" id="L101">            throw ex;</span>
+<span class="nc" id="L102">        } catch (Exception ex) {</span>
+<span class="nc" id="L103">            return null;</span>
         }
     }
 
@@ -113,13 +115,13 @@ import org.slf4j.LoggerFactory;
      * @return all cards of the project
      */
     public Set&lt;Card&gt; getCards(Long projectId) {
-<span class="nc" id="L116">        Project project = projectDao.getProject(projectId);</span>
-<span class="nc" id="L117">        logger.debug(&quot;Get card types of project {}&quot;, project);</span>
-<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (project == null) {</span>
-<span class="nc" id="L119">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L118">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L119">        logger.debug(&quot;Get card types of project {}&quot;, project);</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (project == null) {</span>
+<span class="nc" id="L121">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L122">        return cardFacade.getAllCards(project.getRootCard());</span>
+<span class="nc" id="L124">        return cardFacade.getAllCards(project.getRootCard());</span>
     }
 
     /**
@@ -130,16 +132,14 @@ import org.slf4j.LoggerFactory;
      * @return all cards contents of the project
      */
     public Set&lt;CardContent&gt; getCardContents(Long projectId) {
-<span class="nc" id="L133">        Project project = projectDao.getProject(projectId);</span>
-<span class="nc" id="L134">        logger.debug(&quot;Get card types of project {}&quot;, project);</span>
-<span class="nc bnc" id="L135" title="All 2 branches missed.">        if (project == null) {</span>
-<span class="nc" id="L136">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L135">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L136">        logger.debug(&quot;Get card types of project {}&quot;, project);</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        if (project == null) {</span>
+<span class="nc" id="L138">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L139">        return cardFacade.getAllCardContents(project.getRootCard());</span>
+<span class="nc" id="L141">        return cardFacade.getAllCardContents(project.getRootCard());</span>
     }
-
-
 
     /**
      * Get all card types of the given project
@@ -158,5 +158,25 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L158">        return cardFacade.getExpandedProjectType(project);</span>
     }
 
+    /**
+     * Get all activityflowlinks belonging to a project
+     *
+     * @param projectId ID of the project activityflowlinks belong to
+     *
+     * @return all activityFlowLinks linked to the project
+     */
+    public Set&lt;ActivityFlowLink&gt; getActivityFlowLinks(Long projectId) {
+<span class="nc" id="L169">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L170">        logger.debug(&quot;Get activityflowlinks of project {}&quot;, project);</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">        if (project == null) {</span>
+<span class="nc" id="L172">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+
+<span class="nc" id="L175">        return cardFacade</span>
+<span class="nc" id="L176">            .getAllCards(project.getRootCard())</span>
+<span class="nc" id="L177">            .stream().flatMap(card -&gt; {</span>
+<span class="nc" id="L178">                return card.getActivityFlowLinksAsPrevious().stream();</span>
+<span class="nc" id="L179">            }).collect(Collectors.toSet());</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
