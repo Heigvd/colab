@@ -53,7 +53,7 @@ function getBgColor(notification: ColabNotification): string {
       return 'var(--warningColor)';
     case 'ERROR':
     default:
-      return 'var(--successColor)';
+      return 'var(--errorColor)';
   }
 }
 
