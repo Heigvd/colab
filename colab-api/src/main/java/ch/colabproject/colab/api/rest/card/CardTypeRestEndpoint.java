@@ -162,8 +162,8 @@ public class CardTypeRestEndpoint {
      * @throws ColabMergeException if the merge is not possible
      */
     @PUT
-    public void updateCardType(CardType cardType) throws ColabMergeException {
-        logger.debug("update card type {}", cardType);
+    public void updateCardType(AbstractCardType cardType) throws ColabMergeException {
+        logger.debug("update abstract card type {}", cardType);
         cardTypeDao.updateCardType(cardType);
     }
 

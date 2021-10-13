@@ -134,9 +134,9 @@ public class CardTypeDao {
      *
      * @throws ColabMergeException if updating the card type failed
      */
-    public CardType updateCardType(CardType cardType) throws ColabMergeException {
+    public AbstractCardType updateCardType(AbstractCardType cardType) throws ColabMergeException {
         logger.debug("update card type {}", cardType);
-        CardType mCardType = this.getCardType(cardType.getId());
+        AbstractCardType mCardType = this.getAbstractCardType(cardType.getId());
 
         mCardType.merge(cardType);
 
