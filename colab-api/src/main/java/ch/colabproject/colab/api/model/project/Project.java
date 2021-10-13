@@ -139,7 +139,6 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     *
      * @return the project name
      */
     public String getName() {
@@ -374,7 +373,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-        return new Conditions.IsCurrentUserMemberOfProject(this);
+        return new Conditions.IsCurrentUserInternToProject(this);
     }
 
     @Override

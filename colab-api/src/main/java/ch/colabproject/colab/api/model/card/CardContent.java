@@ -391,12 +391,11 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-        if (this.card != null) {
-            return new Conditions.HasCardReadRight(this.card);
-        } else {
-            // orphan content should never happen
-            return Conditions.alwaysTrue;
-        }
+        // genuine hack inside
+        // any member can read any card and card content of the project
+        // if a member lacks the read right on a card, it will not be able to read the deliverable,
+        // resources and so on, but it will still be able to view the card "from the outside"
+        return new Conditions.IsCurrentUserMemberOfProject(getProject());
     }
 
     @Override
@@ -405,7 +404,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
             return this.card.getUpdateCondition();
         } else {
             // orphan content should never happen
-            return Conditions.alwaysTrue;
+            return Conditions.defaultForOrphan;
         }
     }
 

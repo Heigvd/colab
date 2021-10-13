@@ -31,9 +31,7 @@ public interface WithPermission {
      * @return the condition
      */
     @JsonbTransient
-    default Condition getReadCondition() {
-        return getUpdateCondition();
-    }
+    Condition getReadCondition();
 
     /**
      * Get the condition required to update this entity

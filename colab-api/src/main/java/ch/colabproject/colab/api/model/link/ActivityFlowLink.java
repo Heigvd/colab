@@ -220,14 +220,15 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
         return new Conditions.Or(
-            this.previousCard.getReadCondition(),
-            this.nextCard.getReadCondition()
+            new Conditions.HasCardReadRight(this.previousCard),
+            new Conditions.HasCardReadRight(this.nextCard)
         );
     }
 
+    // TODO what is best : And / Or ?
     @Override
     public Conditions.Condition getUpdateCondition() {
-        return new Conditions.And(
+        return new Conditions.Or(
             this.previousCard.getUpdateCondition(),
             this.nextCard.getUpdateCondition()
         );

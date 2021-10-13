@@ -10,6 +10,7 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
 import javax.ejb.EJBException;
 import javax.persistence.PersistenceException;
+import javax.transaction.RollbackException;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
@@ -55,10 +56,8 @@ public class AbstractExceptionMapper {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(constraintViolation.toString())
                 .build();
-        } else if (exception instanceof PersistenceException) {
-            PersistenceException e = (PersistenceException) exception;
-
-            Throwable cause = e.getCause();
+        } else if (exception instanceof PersistenceException | exception instanceof RollbackException) {
+            Throwable cause = exception.getCause();
             if (cause instanceof Exception) {
                 return processException((Exception) cause);
             }

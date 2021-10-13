@@ -333,13 +333,13 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     public Conditions.Condition getReadCondition() {
         if (this.deliverableCardContent != null) {
             // The document is the deliverable of a card content
-            return this.deliverableCardContent.getReadCondition();
+            return new Conditions.HasCardReadRight(this.deliverableCardContent);
         } else if (this.resource != null) {
             // The document is a resource
             return this.resource.getReadCondition();
         } else {
             // such an orphan shouldn't exist...
-            return Conditions.alwaysTrue;
+            return Conditions.defaultForOrphan;
         }
     }
 
@@ -353,7 +353,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
             return this.resource.getUpdateCondition();
         } else {
             // such an orphan shouldn't exist...
-            return Conditions.alwaysTrue;
+            return Conditions.defaultForOrphan;
         }
     }
 

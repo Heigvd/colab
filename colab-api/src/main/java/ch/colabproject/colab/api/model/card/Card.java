@@ -9,15 +9,15 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
-import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.TeamRole;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -363,8 +363,8 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
 
     /**
      * @return the parent card content
-     * <p>
-     * A card can either be the root card of a project or be within a card content
+     *         <p>
+     *         A card can either be the root card of a project or be within a card content
      */
     public CardContent getParent() {
         return parent;
@@ -606,8 +606,8 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
         // genuine hack inside
-        // any member can read any cards of the project
-        // if a member lacks the read right on a card, it will not be able to read card contents,
+        // any member can read any card of the project
+        // if a member lacks the read right on a card, it will not be able to read the deliverable,
         // resources and so on, but it will still be able to view the card "from the outside"
         return new Conditions.IsCurrentUserMemberOfProject(getProject());
     }

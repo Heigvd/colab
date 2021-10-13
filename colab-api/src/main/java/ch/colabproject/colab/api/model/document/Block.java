@@ -231,12 +231,22 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
     }
 
     @Override
+    public Conditions.Condition getReadCondition() {
+        if (this.document != null) {
+            return this.document.getReadCondition();
+        } else {
+            // such an orphan shouldn't exist...
+            return Conditions.defaultForOrphan;
+        }
+    }
+
+    @Override
     public Conditions.Condition getUpdateCondition() {
         if (this.document != null) {
             return this.document.getUpdateCondition();
         } else {
             // such an orphan shouldn't exist...
-            return Conditions.alwaysTrue;
+            return Conditions.defaultForOrphan;
         }
     }
 

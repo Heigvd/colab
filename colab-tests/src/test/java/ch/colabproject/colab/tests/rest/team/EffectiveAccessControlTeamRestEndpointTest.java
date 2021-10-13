@@ -58,13 +58,13 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
 //            false /* can write card */);
 //    }
 
-    @Test
-    public void testHierarchicalPosition_extern() throws Exception {
-        doTest(HierarchicalPosition.EXTERN,
-            null /* role involvement level */,
-            false /* can read card */,
-            false /* can write card */);
-    }
+//    @Test
+//    public void testHierarchicalPosition_extern() throws Exception {
+//        doTest(HierarchicalPosition.EXTERN,
+//            null /* role involvement level */,
+//            false /* can read card */,
+//            false /* can write card */);
+//    }
 
 //    @Test
 //    public void testRoleInvolvementLevel_R() throws Exception {

@@ -9,10 +9,13 @@ package ch.colabproject.colab.api.security.permissions;
 import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.ejb.SecurityFacade;
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +38,11 @@ public final class Conditions {
      * A always false condition
      */
     public static final Condition alwaysFalse = new AlwaysFalse();
+
+    /**
+     * By default if the situation cannot happen
+     */
+    public static final Condition defaultForOrphan = alwaysTrue;
 
     /**
      * Is the current authenticated condition
@@ -82,7 +90,8 @@ public final class Conditions {
          *
          * @return evaluation result
          */
-        protected abstract boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade);
+        protected abstract boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade);
     }
 
     /**
@@ -91,7 +100,8 @@ public final class Conditions {
     private static class AlwaysTrue extends Condition {
 
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             return true;
         }
 
@@ -119,7 +129,8 @@ public final class Conditions {
     private static class AlwaysFalse extends Condition {
 
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             return false;
         }
 
@@ -160,7 +171,8 @@ public final class Conditions {
         }
 
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             for (Condition c : conditions) {
                 if (!c.eval(requestManager, securityFacade)) {
                     // not all conditions are true => false
@@ -177,15 +189,28 @@ public final class Conditions {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            // same object only
-            return obj == this;
+        public int hashCode() {
+            int hash = 3;
+            hash = 31 * hash + new HashCodeBuilder().append(this.conditions).toHashCode();
+            return hash;
         }
 
         @Override
-        public int hashCode() {
-            int hash = 7 * 31;
-            return hash;
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final And other = (And) obj;
+            if (!Objects.equals(this.conditions, other.conditions)) {
+                return false;
+            }
+            return true;
         }
     }
 
@@ -207,7 +232,8 @@ public final class Conditions {
         }
 
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             for (Condition c : conditions) {
                 if (c.eval(requestManager, securityFacade)) {
                     // at least on sub condition is true => true
@@ -224,14 +250,29 @@ public final class Conditions {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            // same object only
-            return obj == this;
+        public int hashCode() {
+            int hash = 3;
+            hash = 59 * hash + new HashCodeBuilder().append(this.conditions).toHashCode();
+            return hash;
         }
 
         @Override
-        public int hashCode() {
-            return 7 * 59;
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Or other = (Or) obj;
+            if (!new EqualsBuilder().append(this.conditions, other.conditions).isEquals()) {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 
@@ -244,7 +285,7 @@ public final class Conditions {
         private final Condition condition;
 
         /**
-         * Build currentUser NOT statement
+         * Build a NOT statement
          *
          * @param condition the condition to negate
          */
@@ -253,7 +294,8 @@ public final class Conditions {
         }
 
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             // just invert the given sub-conditions
             return !condition.eval(requestManager, securityFacade);
         }
@@ -264,15 +306,28 @@ public final class Conditions {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            // same object only
-            return obj == this;
+        public int hashCode() {
+            int hash = 5;
+            hash = 37 * hash + Objects.hashCode(this.condition);
+            return hash;
         }
 
         @Override
-        public int hashCode() {
-            int hash = 7 * 37;
-            return hash;
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Not other = (Not) obj;
+            if (!Objects.equals(this.condition, other.condition)) {
+                return false;
+            }
+            return true;
         }
     }
 
@@ -294,7 +349,8 @@ public final class Conditions {
         }
 
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             User currentUser = requestManager.getCurrentUser();
             return currentUser != null && currentUser.equals(user);
         }
@@ -348,7 +404,8 @@ public final class Conditions {
         }
 
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             return securityFacade.isCurrentUserMemberOfTheProjectTeam(project);
         }
 
@@ -401,7 +458,8 @@ public final class Conditions {
         }
 
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             return securityFacade.isCurrentUserOwnerOfTheProject(project);
         }
 
@@ -454,7 +512,8 @@ public final class Conditions {
         }
 
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             return securityFacade.isCurrentUserLeaderOfTheProject(project);
         }
 
@@ -507,13 +566,14 @@ public final class Conditions {
         }
 
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             return securityFacade.isCurrentUserInternToProject(project);
         }
 
         @Override
         public String toString() {
-            return "IsLeaderOf(" + project + ")";
+            return "IsInternTo(" + project + ")";
         }
 
         @Override
@@ -560,9 +620,10 @@ public final class Conditions {
         }
 
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             User currentUser = requestManager.getCurrentUser();
-            return securityFacade.areUserTeammate(currentUser, this.user);
+            return currentUser != null && securityFacade.areUserTeammate(currentUser, this.user);
         }
 
         @Override
@@ -602,7 +663,8 @@ public final class Conditions {
     private static class IsAuthenticated extends Condition {
 
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             return requestManager.isAuthenticated();
         }
 
@@ -642,7 +704,8 @@ public final class Conditions {
         }
 
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             return securityFacade.hasReadWriteAccess(card);
         }
 
@@ -686,7 +749,7 @@ public final class Conditions {
         private final Card card;
 
         /**
-         * Create a has write access statement
+         * Create a has read access statement
          *
          * @param card the card
          */
@@ -694,8 +757,18 @@ public final class Conditions {
             this.card = card;
         }
 
+        /**
+         * Create a has read access statement
+         *
+         * @param cardContent a card content
+         */
+        public HasCardReadRight(CardContent cardContent) {
+            this.card = cardContent.getCard();
+        }
+
         @Override
-        protected boolean internalEval(RequestManager requestManager, SecurityFacade securityFacade) {
+        protected boolean internalEval(RequestManager requestManager,
+            SecurityFacade securityFacade) {
             return securityFacade.hasReadAccess(card);
         }
 

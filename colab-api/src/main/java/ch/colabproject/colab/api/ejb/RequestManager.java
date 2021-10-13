@@ -207,6 +207,7 @@ public class RequestManager {
         this.currentAccountId = null;
         if (session != null) {
             session.setAccountId(null);
+            conditionCache.clear();
             websocketFacade.signoutAndUnsubscribeFromAll(this.getHttpSession().getSessionId());
         }
     }

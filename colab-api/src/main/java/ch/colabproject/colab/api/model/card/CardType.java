@@ -161,8 +161,9 @@ public class CardType extends AbstractCardType {
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         if (this.getProject() != null){
-            return new Conditions.IsCurrentUserMemberOfProject(this.getProject());
+            return new Conditions.IsCurrentUserInternToProject(this.getProject());
         } else {
+            // only admin can edit global types
             return Conditions.alwaysFalse;
         }
     }

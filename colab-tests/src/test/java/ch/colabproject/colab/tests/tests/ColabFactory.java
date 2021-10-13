@@ -9,8 +9,12 @@ package ch.colabproject.colab.tests.tests;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.BlockDocument;
+import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
@@ -140,6 +144,35 @@ public class ColabFactory {
     }
 
     /**
+     * Create a block document deliverable for the given card content
+     *
+     * @param client        rest client to execute HTTP requests
+     * @param cardContentId the id of the card content
+     *
+     * @return the new document
+     */
+    public static Document assignNewBlockDocumentDeliverable(ColabClient client,
+        Long cardContentId) {
+
+        Document newDoc = new BlockDocument();
+        newDoc.setTitle("a deliverable");
+
+        return client.cardContentRestEndpoint.assignDeliverable(cardContentId, newDoc);
+    }
+
+    /**
+     * Add a new block to a document
+     *
+     * @param client     rest client to execute HTTP requests
+     * @param documentId the id of a block document
+     *
+     * @return the new block
+     */
+    public static Block addBlockToDocument(ColabClient client, Long documentId) {
+        return client.blockRestEndPoint.createNewTextDataBlock(documentId);
+    }
+
+    /**
      * <code>host</code> invites <code>guest</code> in the project.
      *
      * @param host         authenticated rest client with write-access on project
@@ -185,6 +218,23 @@ public class ColabFactory {
     }
 
     /**
+     * Create a resource block document for a card type for test purpose
+     *
+     * @param client     rest client to execute HTTP requests
+     * @param cardTypeId the id of the card type the resource belongs to
+     * @param title      title of the document
+     *
+     * @return the freshly created document
+     */
+    public static Resource createCardTypeResourceBlockDoc(ColabClient client, Long cardTypeId,
+        String title) {
+        BlockDocument doc = new BlockDocument();
+        doc.setTitle(title);
+
+        return client.resourceRestEndpoint.createResourceForAbstractCardType(cardTypeId, doc);
+    }
+
+    /**
      * Create a resource block document for test purpose
      *
      * @param client rest client to execute HTTP requests
@@ -198,6 +248,42 @@ public class ColabFactory {
         doc.setTitle(title);
 
         return client.resourceRestEndpoint.createResourceForCard(cardId, doc);
+    }
+
+    /**
+     * Create a sticky note link between two cards
+     *
+     * @param client            rest client to execute HTTP requests
+     * @param srcCardId         the id of the source card
+     * @param destinationCardId the id of the destination card
+     *
+     * @return the id of the created link
+     */
+    public static Long createStickyNoteLink(ColabClient client, Long srcCardId,
+        Long destinationCardId) {
+        StickyNoteLink link = new StickyNoteLink();
+        link.setSrcCardId(srcCardId);
+        link.setDestinationCardId(destinationCardId);
+
+        return client.stickyNoteLinkRestEndpoint.createLink(link);
+    }
+
+    /**
+     * Create an activity flow link between two cards
+     *
+     * @param client         rest client to execute HTTP requests
+     * @param previousCardId the id of the previous card
+     * @param nextCardId     the id of the next card
+     *
+     * @return the id of the created link
+     */
+    public static Long createActivityFlowLink(ColabClient client, Long previousCardId,
+        Long nextCardId) {
+        ActivityFlowLink link = new ActivityFlowLink();
+        link.setPreviousCardId(previousCardId);
+        link.setNextCardId(nextCardId);
+
+        return client.activityFlowLinkRestEndpoint.createLink(link);
     }
 
 }

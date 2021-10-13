@@ -258,6 +258,11 @@ public abstract class Token implements ColabEntity {
     }
 
     @Override
+    public Conditions.Condition getReadCondition() {
+        return Conditions.alwaysTrue;
+    }
+
+    @Override
     public Conditions.Condition getUpdateCondition() {
         //TODO: decide what to do
         return Conditions.alwaysTrue;

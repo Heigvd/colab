@@ -298,6 +298,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
      *
      * @return all references
      */
+    @JsonbTransient
     public List<CardTypeRef> getAllReferences() {
         List<CardTypeRef> all = new ArrayList<>();
         all.addAll(this.references);
@@ -371,6 +372,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
                 // Everybody can read published global types
                 return Conditions.alwaysTrue;
             } else {
+                // only admin can edit global types
                 return Conditions.alwaysFalse;
             }
         }
@@ -391,6 +393,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
             // any type which references this one grant permission too
             orList.addAll(this.getAllReferences().stream()
                 .map(ref -> ref.getSelfReadCondition()).collect(Collectors.toList()));
+
             return new Conditions.Or(orList.toArray(
                 new Conditions.Condition[orList.size()]));
         } else {
@@ -398,6 +401,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
                 // Everybody can read published global types
                 return Conditions.alwaysTrue;
             } else {
+                // only admin can edit global types
                 return Conditions.alwaysFalse;
             }
         }
