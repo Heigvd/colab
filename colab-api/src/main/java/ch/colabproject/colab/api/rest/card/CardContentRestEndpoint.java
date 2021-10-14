@@ -190,6 +190,20 @@ public class CardContentRestEndpoint {
     }
 
     /**
+     * Get the deliverable of the card content
+     *
+     * @param cardContentId the id of the card content
+     *
+     * @return the deliverable linked to the card content
+     */
+    @GET
+    @Path("{id}/Deliverable")
+    public Document getDeliverableOfCardContent(@PathParam("id") Long cardContentId) {
+        logger.debug("Get deliverable of card content #{}", cardContentId);
+        return cardFacade.getDeliverableOfCardContent(cardContentId);
+    }
+
+    /**
      * Set the deliverable to the card content.
      *
      * @param cardContentId the id of the card content

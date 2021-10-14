@@ -629,6 +629,13 @@ export const getSubCards = createAsyncThunk(
   },
 );
 
+export const getDeliverableOfCardContent = createAsyncThunk<Document, number>(
+  'cardcontent/getDeliverable',
+  async (cardContentId: number) => { 
+    return await restClient.CardContentRestEndpoint.getDeliverableOfCardContent(cardContentId); 
+  },
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Resources
 ////////////////////////////////////////////////////////////////////////////////////////////////////

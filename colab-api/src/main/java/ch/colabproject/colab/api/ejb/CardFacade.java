@@ -206,7 +206,7 @@ public class CardFacade {
     }
 
     /**
-     * Get all cardContents 
+     * Get all cardContents
      *
      * @param rootCard the first card
      *
@@ -538,6 +538,23 @@ public class CardFacade {
         return card.getActivityFlowLinksAsNext();
     }
 
+    /**
+     * Retrieve the list of access-control for the given card
+     *
+     * @param cardId id of the card
+     *
+     * @return list of access-control
+     */
+    public List<AccessControl> getAcls(Long cardId) {
+        logger.debug("Get Card #{} access-control list", cardId);
+        Card card = cardDao.getCard(cardId);
+        if (card != null) {
+            return card.getAccessControlList();
+        } else {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+    }
+
     // *********************************************************************************************
     // card content stuff
     // *********************************************************************************************
@@ -618,6 +635,24 @@ public class CardFacade {
     }
 
     /**
+     * Get the deliverable of the card content
+     *
+     * @param cardContentId the id of the card content
+     *
+     * @return the deliverable linked to the card content
+     */
+    public Document getDeliverableOfCardContent(Long cardContentId) {
+        logger.debug("get deliverable of card content #{}", cardContentId);
+
+        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+        if (cardContent == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return cardContent.getDeliverable();
+    }
+
+    /**
      * Set the deliverable to the card content
      *
      * @param cardContentId the id of the card content
@@ -667,20 +702,7 @@ public class CardFacade {
         return cardContent.getStickyNoteLinksAsSrc();
     }
 
-    /**
-     * Retrieve the list of access-control for the given card
-     *
-     * @param cardId id of the card
-     *
-     * @return list of access-control
-     */
-    public List<AccessControl> getAcls(Long cardId) {
-        logger.debug("Get Card #{} access-control list", cardId);
-        Card card = cardDao.getCard(cardId);
-        if (card != null) {
-            return card.getAccessControlList();
-        } else {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
-    }
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 }

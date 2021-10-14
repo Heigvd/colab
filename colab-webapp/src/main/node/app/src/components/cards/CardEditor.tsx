@@ -18,7 +18,7 @@ import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import OpenClose from '../common/OpenClose';
 import OpenCloseModal from '../common/OpenCloseModal';
-import { DocumentEditorWrapper } from '../documents/DocumentEditorWrapper';
+import { DocumentEditorAsDeliverableWrapper } from '../documents/DocumentEditorWrapper';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
@@ -174,10 +174,10 @@ Props): JSX.Element {
                             dispatch(API.updateCardContent({ ...variant, title: newValue }))
                           }
                         />
-                        {variant.deliverableId != null ? (
-                          <DocumentEditorWrapper docId={variant.deliverableId} />
+                        {variant && variant.id ? (
+                          <DocumentEditorAsDeliverableWrapper cardContentId={variant.id} />
                         ) : (
-                          <span>please create a doc !!!!</span>
+                          <span>no deliverable available</span>
                         )}
                       </div>
                     </Flex>

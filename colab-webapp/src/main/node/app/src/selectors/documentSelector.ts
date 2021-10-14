@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { Document } from 'colab-rest-client';
+import { Document, entityIs } from 'colab-rest-client';
 import { useAppSelector } from '../store/hooks';
 import { LoadingStatus } from '../store/store';
 
@@ -24,4 +24,22 @@ export const useDocument = (
     }
     return undefined;
   }); // refEqual is fine
+};
+
+export const useDeliverable = (cardContentId: number | null | undefined): Document | undefined => {
+  return useAppSelector(state => {
+    let document = undefined;
+
+    if (cardContentId != null) {
+      Object.values(state.document.documents).forEach(doc => {
+        if (doc && entityIs(doc, 'Document')) {
+          if (doc.deliverableCardContentId === cardContentId) {
+            document = doc;
+          }
+        }
+      });
+    }
+
+    return document;
+  });
 };

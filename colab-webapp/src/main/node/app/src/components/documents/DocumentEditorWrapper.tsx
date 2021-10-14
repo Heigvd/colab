@@ -8,16 +8,16 @@
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useDocument } from '../../selectors/documentSelector';
+import { useDeliverable, useDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import { DocumentEditorDisplay } from './DocumentEditorDisplay';
 
-export interface DocEditorProps {
+export interface DocByIdWrapperProps {
   docId: number;
 }
 
-export function DocumentEditorWrapper({ docId }: DocEditorProps): JSX.Element {
+export function DocumentEditorWrapper({ docId }: DocByIdWrapperProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const doc = useDocument(docId);
@@ -29,6 +29,32 @@ export function DocumentEditorWrapper({ docId }: DocEditorProps): JSX.Element {
   }, [doc, docId, dispatch]);
 
   if (doc == null || doc == 'LOADING') {
+    return <InlineLoading />;
+  } else if (entityIs(doc, 'Document')) {
+    return <DocumentEditorDisplay document={doc} />;
+  } else {
+    return <InlineLoading />;
+  }
+}
+
+export interface DocAsDeliverableProps {
+  cardContentId: number;
+}
+
+export function DocumentEditorAsDeliverableWrapper({
+  cardContentId,
+}: DocAsDeliverableProps): JSX.Element {
+  const dispatch = useAppDispatch();
+
+  const doc = useDeliverable(cardContentId);
+
+  React.useEffect(() => {
+    if (doc == undefined && cardContentId != null) {
+      dispatch(API.getDeliverableOfCardContent(cardContentId));
+    }
+  }, [doc, cardContentId, dispatch]);
+
+  if (doc == null) {
     return <InlineLoading />;
   } else if (entityIs(doc, 'Document')) {
     return <DocumentEditorDisplay document={doc} />;
