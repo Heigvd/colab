@@ -391,47 +391,46 @@ import javax.validation.constraints.NotNull;
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="pc bpc" id="L394" title="1 of 2 branches missed.">        if (this.card != null) {</span>
-<span class="fc" id="L395">            return new Conditions.HasCardReadRight(this.card);</span>
-        } else {
-            // orphan content should never happen
-<span class="nc" id="L398">            return Conditions.alwaysTrue;</span>
-        }
+        // genuine hack inside
+        // any member can read any card and card content of the project
+        // if a member lacks the read right on a card, it will not be able to read the deliverable,
+        // resources and so on, but it will still be able to view the card &quot;from the outside&quot;
+<span class="fc" id="L398">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="pc bpc" id="L404" title="1 of 2 branches missed.">        if (this.card != null) {</span>
-<span class="fc" id="L405">            return this.card.getUpdateCondition();</span>
+<span class="pc bpc" id="L403" title="1 of 2 branches missed.">        if (this.card != null) {</span>
+<span class="fc" id="L404">            return this.card.getUpdateCondition();</span>
         } else {
             // orphan content should never happen
-<span class="nc" id="L408">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L407">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="pc bpc" id="L414" title="1 of 2 branches missed.">        if (this.card != null) {</span>
-<span class="fc" id="L415">            return this.card.getChannels();</span>
+<span class="pc bpc" id="L413" title="1 of 2 branches missed.">        if (this.card != null) {</span>
+<span class="fc" id="L414">            return this.card.getChannels();</span>
         } else {
-<span class="nc" id="L417">            return Set.of();</span>
+<span class="nc" id="L416">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L423">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L422">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L429">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L428">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L434">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
+<span class="fc" id="L433">        return &quot;CardContent{&quot; + &quot;id=&quot; + id + &quot;, title=&quot; + title + &quot;, status=&quot; + status</span>
             + &quot;, completion=&quot; + completionLevel + &quot;, completionMode=&quot; + completionMode
             + &quot;, cardId=&quot; + cardId + &quot;}&quot;;
     }

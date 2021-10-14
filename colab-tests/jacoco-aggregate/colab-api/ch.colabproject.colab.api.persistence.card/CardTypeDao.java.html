@@ -134,9 +134,9 @@ import org.slf4j.LoggerFactory;
      *
      * @throws ColabMergeException if updating the card type failed
      */
-    public CardType updateCardType(CardType cardType) throws ColabMergeException {
+    public AbstractCardType updateCardType(AbstractCardType cardType) throws ColabMergeException {
 <span class="fc" id="L138">        logger.debug(&quot;update card type {}&quot;, cardType);</span>
-<span class="fc" id="L139">        CardType mCardType = this.getCardType(cardType.getId());</span>
+<span class="fc" id="L139">        AbstractCardType mCardType = this.getAbstractCardType(cardType.getId());</span>
 
 <span class="fc" id="L141">        mCardType.merge(cardType);</span>
 

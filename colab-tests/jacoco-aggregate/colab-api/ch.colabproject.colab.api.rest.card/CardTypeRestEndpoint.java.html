@@ -162,8 +162,8 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if the merge is not possible
      */
     @PUT
-    public void updateCardType(CardType cardType) throws ColabMergeException {
-<span class="fc" id="L166">        logger.debug(&quot;update card type {}&quot;, cardType);</span>
+    public void updateCardType(AbstractCardType cardType) throws ColabMergeException {
+<span class="fc" id="L166">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
 <span class="fc" id="L167">        cardTypeDao.updateCardType(cardType);</span>
 <span class="fc" id="L168">    }</span>
 

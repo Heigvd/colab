@@ -31,9 +31,7 @@ public interface WithPermission {
      * @return the condition
      */
     @JsonbTransient
-    default Condition getReadCondition() {
-<span class="fc" id="L35">        return getUpdateCondition();</span>
-    }
+    Condition getReadCondition();
 
     /**
      * Get the condition required to update this entity
@@ -50,7 +48,7 @@ public interface WithPermission {
      */
     @JsonbTransient
     default Condition getDeleteCondition() {
-<span class="fc" id="L53">        return getUpdateCondition();</span>
+<span class="fc" id="L51">        return getUpdateCondition();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

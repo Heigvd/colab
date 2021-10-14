@@ -423,8 +423,8 @@ import org.slf4j.LoggerFactory;
      * @param id id of user who will not be an admin any longer
      */
     public void revokeAdminRight(Long id) {
-<span class="nc" id="L426">        this.revokeAdminRight(userDao.findUser(id));</span>
-<span class="nc" id="L427">    }</span>
+<span class="fc" id="L426">        this.revokeAdminRight(userDao.findUser(id));</span>
+<span class="fc" id="L427">    }</span>
 
     /**
      * revoke admin right to a user.
@@ -432,16 +432,16 @@ import org.slf4j.LoggerFactory;
      * @param user user who will not be an admin any longer
      */
     public void revokeAdminRight(User user) {
-<span class="nc bnc" id="L435" title="All 2 branches missed.">        if (user != null) {</span>
-<span class="nc" id="L436">            User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L437" title="All 2 branches missed.">            if (user.equals(currentUser)) {</span>
+<span class="pc bpc" id="L435" title="1 of 2 branches missed.">        if (user != null) {</span>
+<span class="fc" id="L436">            User currentUser = requestManager.getCurrentUser();</span>
+<span class="pc bpc" id="L437" title="1 of 2 branches missed.">            if (user.equals(currentUser)) {</span>
                 // user shall not remove admin right to itself
 <span class="nc" id="L439">                throw HttpErrorMessage.badRequest();</span>
             } else {
-<span class="nc" id="L441">                user.setAdmin(false);</span>
+<span class="fc" id="L441">                user.setAdmin(false);</span>
             }
         }
-<span class="nc" id="L444">    }</span>
+<span class="fc" id="L444">    }</span>
 
     /**
      * Setup new client hash method to use for the given local account

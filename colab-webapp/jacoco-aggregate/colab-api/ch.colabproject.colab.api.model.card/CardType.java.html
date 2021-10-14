@@ -161,15 +161,16 @@ import javax.persistence.NamedQuery;
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
 <span class="nc bnc" id="L163" title="All 2 branches missed.">        if (this.getProject() != null){</span>
-<span class="nc" id="L164">            return new Conditions.IsCurrentUserMemberOfProject(this.getProject());</span>
+<span class="nc" id="L164">            return new Conditions.IsCurrentUserInternToProject(this.getProject());</span>
         } else {
-<span class="nc" id="L166">            return Conditions.alwaysFalse;</span>
+            // only admin can edit global types
+<span class="nc" id="L167">            return Conditions.alwaysFalse;</span>
         }
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L172">        return &quot;CardType{&quot; + &quot;id=&quot; + getId() + &quot;, uniqueId=&quot; + uniqueId + &quot;, title=&quot; + title</span>
+<span class="nc" id="L173">        return &quot;CardType{&quot; + &quot;id=&quot; + getId() + &quot;, uniqueId=&quot; + uniqueId + &quot;, title=&quot; + title</span>
             + &quot;, purpose=&quot; + purpose + &quot;, authorityHolder=&quot; + authorityHolder + &quot;, projectId=&quot;
             + projectId + &quot;}&quot;;
     }

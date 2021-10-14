@@ -101,8 +101,8 @@ import javax.persistence.Transient;
     /**
      * List of references to this type
      */
-<span class="nc" id="L104">    @JsonbTransient</span>
-    @OneToMany(mappedBy = &quot;abstractCardType&quot;, cascade = CascadeType.ALL)
+<span class="nc" id="L104">    @OneToMany(mappedBy = &quot;abstractCardType&quot;, cascade = CascadeType.ALL)</span>
+    @JsonbTransient
     private List&lt;CardTypeRef&gt; references = new ArrayList&lt;&gt;();
 
     /**
@@ -298,12 +298,13 @@ import javax.persistence.Transient;
      *
      * @return all references
      */
+    @JsonbTransient
     public List&lt;CardTypeRef&gt; getAllReferences() {
-<span class="nc" id="L302">        List&lt;CardTypeRef&gt; all = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L303">        all.addAll(this.references);</span>
-<span class="nc" id="L304">        this.references.stream().forEach(ref -&gt; all.addAll(ref.getAllReferences()));</span>
+<span class="nc" id="L303">        List&lt;CardTypeRef&gt; all = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L304">        all.addAll(this.references);</span>
+<span class="nc" id="L305">        this.references.stream().forEach(ref -&gt; all.addAll(ref.getAllReferences()));</span>
 
-<span class="nc" id="L306">        return all;</span>
+<span class="nc" id="L307">        return all;</span>
     }
 
     /**
@@ -313,48 +314,48 @@ import javax.persistence.Transient;
     @PostLoad
     public void postLoad() {
         // keep trace of modification
-<span class="nc" id="L316">        this.initialPublished = this.published;</span>
-<span class="nc" id="L317">    }</span>
+<span class="nc" id="L317">        this.initialPublished = this.published;</span>
+<span class="nc" id="L318">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc" id="L321">        Set&lt;WebsocketChannel&gt; channels = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L322">        Set&lt;WebsocketChannel&gt; channels = new HashSet&lt;&gt;();</span>
 
         // should propagate data if the type is published or if it has just been unpublished
-<span class="nc bnc" id="L324" title="All 4 branches missed.">        boolean isOrWasPublished = this.isPublished() || this.initialPublished;</span>
+<span class="nc bnc" id="L325" title="All 4 branches missed.">        boolean isOrWasPublished = this.isPublished() || this.initialPublished;</span>
 
-<span class="nc bnc" id="L326" title="All 2 branches missed.">        if (this.getProject() != null) {</span>
+<span class="nc bnc" id="L327" title="All 2 branches missed.">        if (this.getProject() != null) {</span>
             // this type belongs to a specific project
             // first, everyone who is editing the project shall receive updates
-<span class="nc" id="L329">            channels.add(ProjectContentChannel.build(this.getProject()));</span>
+<span class="nc" id="L330">            channels.add(ProjectContentChannel.build(this.getProject()));</span>
 
             // then, the type must be propagated to all projects which reference it
-<span class="nc" id="L332">            this.references.forEach(ref -&gt; {</span>
-<span class="nc" id="L333">                channels.addAll(ref.getChannels());</span>
-<span class="nc" id="L334">            });</span>
+<span class="nc" id="L333">            this.references.forEach(ref -&gt; {</span>
+<span class="nc" id="L334">                channels.addAll(ref.getChannels());</span>
+<span class="nc" id="L335">            });</span>
 
-<span class="nc bnc" id="L336" title="All 2 branches missed.">            if (isOrWasPublished) {</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">            if (isOrWasPublished) {</span>
                 // eventually, published types are availaible to each project members dependless
                 // the project they're editing
-<span class="nc" id="L339">                this.getProject().getTeamMembers().forEach(member -&gt; {</span>
-<span class="nc" id="L340">                    User user = member.getUser();</span>
-<span class="nc bnc" id="L341" title="All 2 branches missed.">                    if (user != null) {</span>
-<span class="nc" id="L342">                        channels.add(user.getEffectiveChannel());</span>
+<span class="nc" id="L340">                this.getProject().getTeamMembers().forEach(member -&gt; {</span>
+<span class="nc" id="L341">                    User user = member.getUser();</span>
+<span class="nc bnc" id="L342" title="All 2 branches missed.">                    if (user != null) {</span>
+<span class="nc" id="L343">                        channels.add(user.getEffectiveChannel());</span>
                     }
-<span class="nc" id="L344">                });</span>
+<span class="nc" id="L345">                });</span>
             }
         } else {
             //This is a global type
-<span class="nc bnc" id="L348" title="All 2 branches missed.">            if (isOrWasPublished) {</span>
+<span class="nc bnc" id="L349" title="All 2 branches missed.">            if (isOrWasPublished) {</span>
                 // As the type is published, everyone may use this type -&gt; broadcast
-<span class="nc" id="L350">                channels.add(BroadcastChannel.build());</span>
+<span class="nc" id="L351">                channels.add(BroadcastChannel.build());</span>
             } else {
                 // Not published type are only available to admin
-<span class="nc" id="L353">                channels.add(new AdminChannel());</span>
+<span class="nc" id="L354">                channels.add(new AdminChannel());</span>
             }
         }
 
-<span class="nc" id="L357">        return channels;</span>
+<span class="nc" id="L358">        return channels;</span>
     }
 
     /**
@@ -364,14 +365,15 @@ import javax.persistence.Transient;
      */
     @JsonbTransient
     public Conditions.Condition getSelfReadCondition() {
-<span class="nc bnc" id="L367" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L368">            return new Conditions.IsCurrentUserMemberOfProject(this.project);</span>
+<span class="nc bnc" id="L368" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L369">            return new Conditions.IsCurrentUserMemberOfProject(this.project);</span>
         } else {
-<span class="nc bnc" id="L370" title="All 2 branches missed.">            if (this.isPublished()) {</span>
+<span class="nc bnc" id="L371" title="All 2 branches missed.">            if (this.isPublished()) {</span>
                 // Everybody can read published global types
-<span class="nc" id="L372">                return Conditions.alwaysTrue;</span>
+<span class="nc" id="L373">                return Conditions.alwaysTrue;</span>
             } else {
-<span class="nc" id="L374">                return Conditions.alwaysFalse;</span>
+                // only admin can edit global types
+<span class="nc" id="L376">                return Conditions.alwaysFalse;</span>
             }
         }
     }
@@ -379,61 +381,63 @@ import javax.persistence.Transient;
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L382" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc bnc" id="L384" title="All 2 branches missed.">        if (this.project != null) {</span>
             // type belongs to a project
-<span class="nc" id="L384">            List&lt;Conditions.Condition&gt; orList = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L386">            List&lt;Conditions.Condition&gt; orList = new ArrayList&lt;&gt;();</span>
 
             // members of the project which defined the type may read the type
             // members of project which reference this type may read it too
-<span class="nc" id="L388">            orList.addAll(this.expand().stream()</span>
-<span class="nc" id="L389">                .map(ref -&gt; ref.getSelfReadCondition()).collect(Collectors.toList()));</span>
+<span class="nc" id="L390">            orList.addAll(this.expand().stream()</span>
+<span class="nc" id="L391">                .map(ref -&gt; ref.getSelfReadCondition()).collect(Collectors.toList()));</span>
 
             // any type which references this one grant permission too
-<span class="nc" id="L392">            orList.addAll(this.getAllReferences().stream()</span>
-<span class="nc" id="L393">                .map(ref -&gt; ref.getSelfReadCondition()).collect(Collectors.toList()));</span>
-<span class="nc" id="L394">            return new Conditions.Or(orList.toArray(</span>
-<span class="nc" id="L395">                new Conditions.Condition[orList.size()]));</span>
+<span class="nc" id="L394">            orList.addAll(this.getAllReferences().stream()</span>
+<span class="nc" id="L395">                .map(ref -&gt; ref.getSelfReadCondition()).collect(Collectors.toList()));</span>
+
+<span class="nc" id="L397">            return new Conditions.Or(orList.toArray(</span>
+<span class="nc" id="L398">                new Conditions.Condition[orList.size()]));</span>
         } else {
-<span class="nc bnc" id="L397" title="All 2 branches missed.">            if (this.isPublished()) {</span>
+<span class="nc bnc" id="L400" title="All 2 branches missed.">            if (this.isPublished()) {</span>
                 // Everybody can read published global types
-<span class="nc" id="L399">                return Conditions.alwaysTrue;</span>
+<span class="nc" id="L402">                return Conditions.alwaysTrue;</span>
             } else {
-<span class="nc" id="L401">                return Conditions.alwaysFalse;</span>
+                // only admin can edit global types
+<span class="nc" id="L405">                return Conditions.alwaysFalse;</span>
             }
         }
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L408" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc bnc" id="L412" title="All 2 branches missed.">        if (this.project != null) {</span>
             // type belongs to a project
-<span class="nc" id="L410">            return this.project.getUpdateCondition();</span>
+<span class="nc" id="L414">            return this.project.getUpdateCondition();</span>
         } else {
             // only admin can edit global types
-<span class="nc" id="L413">            return Conditions.alwaysFalse;</span>
+<span class="nc" id="L417">            return Conditions.alwaysFalse;</span>
         }
     }
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L419" title="All 2 branches missed.">        if (other instanceof AbstractCardType) {</span>
-<span class="nc" id="L420">            AbstractCardType o = (AbstractCardType) other;</span>
-<span class="nc" id="L421">            this.setDeprecated(o.isDeprecated());</span>
-<span class="nc" id="L422">            this.setPublished(o.isPublished());</span>
-<span class="nc" id="L423">        } else {</span>
-<span class="nc" id="L424">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L423" title="All 2 branches missed.">        if (other instanceof AbstractCardType) {</span>
+<span class="nc" id="L424">            AbstractCardType o = (AbstractCardType) other;</span>
+<span class="nc" id="L425">            this.setDeprecated(o.isDeprecated());</span>
+<span class="nc" id="L426">            this.setPublished(o.isPublished());</span>
+<span class="nc" id="L427">        } else {</span>
+<span class="nc" id="L428">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L426">    }</span>
+<span class="nc" id="L430">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L430">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L434">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L436">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L440">        return EntityHelper.equals(this, obj);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

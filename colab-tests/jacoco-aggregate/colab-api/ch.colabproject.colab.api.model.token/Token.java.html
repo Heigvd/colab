@@ -258,20 +258,25 @@ import javax.validation.constraints.NotNull;
     }
 
     @Override
+    public Conditions.Condition getReadCondition() {
+<span class="fc" id="L262">        return Conditions.alwaysTrue;</span>
+    }
+
+    @Override
     public Conditions.Condition getUpdateCondition() {
         //TODO: decide what to do
-<span class="fc" id="L263">        return Conditions.alwaysTrue;</span>
+<span class="fc" id="L268">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L268">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L273">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L274">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L279">        return EntityHelper.equals(this, obj);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

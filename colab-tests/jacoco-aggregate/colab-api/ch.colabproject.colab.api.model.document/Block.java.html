@@ -231,24 +231,34 @@ import javax.persistence.Transient;
     }
 
     @Override
-    public Conditions.Condition getUpdateCondition() {
+    public Conditions.Condition getReadCondition() {
 <span class="pc bpc" id="L235" title="1 of 2 branches missed.">        if (this.document != null) {</span>
-<span class="fc" id="L236">            return this.document.getUpdateCondition();</span>
+<span class="fc" id="L236">            return this.document.getReadCondition();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L239">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L239">            return Conditions.defaultForOrphan;</span>
+        }
+    }
+
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (this.document != null) {</span>
+<span class="fc" id="L246">            return this.document.getUpdateCondition();</span>
+        } else {
+            // such an orphan shouldn't exist...
+<span class="nc" id="L249">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L245">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L255">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L251">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L261">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
@@ -258,7 +268,7 @@ import javax.persistence.Transient;
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-<span class="nc" id="L261">        return &quot;id=&quot; + id + &quot;, index=&quot; + index;</span>
+<span class="nc" id="L271">        return &quot;id=&quot; + id + &quot;, index=&quot; + index;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

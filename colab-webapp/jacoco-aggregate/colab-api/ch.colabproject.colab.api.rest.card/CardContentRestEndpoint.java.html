@@ -190,6 +190,20 @@ import org.slf4j.LoggerFactory;
     }
 
     /**
+     * Get the deliverable of the card content
+     *
+     * @param cardContentId the id of the card content
+     *
+     * @return the deliverable linked to the card content
+     */
+    @GET
+    @Path(&quot;{id}/Deliverable&quot;)
+    public Document getDeliverableOfCardContent(@PathParam(&quot;id&quot;) Long cardContentId) {
+<span class="nc" id="L202">        logger.debug(&quot;Get deliverable of card content #{}&quot;, cardContentId);</span>
+<span class="nc" id="L203">        return cardFacade.getDeliverableOfCardContent(cardContentId);</span>
+    }
+
+    /**
      * Set the deliverable to the card content.
      *
      * @param cardContentId the id of the card content
@@ -200,8 +214,8 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;{id}/setDeliverable&quot;)
     public Document assignDeliverable(@PathParam(&quot;id&quot;) Long cardContentId, Document document) {
-<span class="nc" id="L203">        logger.debug(&quot;add the deliverable {} for the card content #{}&quot;, document, cardContentId);</span>
-<span class="nc" id="L204">        return cardFacade.assignDeliverable(cardContentId, document);</span>
+<span class="nc" id="L217">        logger.debug(&quot;add the deliverable {} for the card content #{}&quot;, document, cardContentId);</span>
+<span class="nc" id="L218">        return cardFacade.assignDeliverable(cardContentId, document);</span>
     }
 
 }

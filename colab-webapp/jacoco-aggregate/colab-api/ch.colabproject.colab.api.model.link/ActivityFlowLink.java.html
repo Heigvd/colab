@@ -220,33 +220,34 @@ import javax.validation.constraints.NotNull;
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
 <span class="nc" id="L222">        return new Conditions.Or(</span>
-<span class="nc" id="L223">            this.previousCard.getReadCondition(),</span>
-<span class="nc" id="L224">            this.nextCard.getReadCondition()</span>
+            new Conditions.HasCardReadRight(this.previousCard),
+            new Conditions.HasCardReadRight(this.nextCard)
         );
     }
 
+    // TODO what is best : And / Or ?
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L230">        return new Conditions.And(</span>
-<span class="nc" id="L231">            this.previousCard.getUpdateCondition(),</span>
-<span class="nc" id="L232">            this.nextCard.getUpdateCondition()</span>
+<span class="nc" id="L231">        return new Conditions.Or(</span>
+<span class="nc" id="L232">            this.previousCard.getUpdateCondition(),</span>
+<span class="nc" id="L233">            this.nextCard.getUpdateCondition()</span>
         );
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L238">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L239">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L244">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L245">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L249">        return &quot;ActivityFlowLink{&quot; + &quot;id=&quot; + id + &quot;, previousCardId=&quot; + previousCardId</span>
+<span class="nc" id="L250">        return &quot;ActivityFlowLink{&quot; + &quot;id=&quot; + id + &quot;, previousCardId=&quot; + previousCardId</span>
             + &quot;, nextCardId=&quot; + nextCardId + &quot;}&quot;;
     }
 

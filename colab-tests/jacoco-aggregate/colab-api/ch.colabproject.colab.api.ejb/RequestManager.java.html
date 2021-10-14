@@ -207,12 +207,13 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L207">        this.currentAccountId = null;</span>
 <span class="pc bpc" id="L208" title="1 of 2 branches missed.">        if (session != null) {</span>
 <span class="fc" id="L209">            session.setAccountId(null);</span>
-<span class="fc" id="L210">            websocketFacade.signoutAndUnsubscribeFromAll(this.getHttpSession().getSessionId());</span>
+<span class="fc" id="L210">            conditionCache.clear();</span>
+<span class="fc" id="L211">            websocketFacade.signoutAndUnsubscribeFromAll(this.getHttpSession().getSessionId());</span>
         }
-<span class="fc" id="L212">    }</span>
+<span class="fc" id="L213">    }</span>
 
     private boolean txExists() {
-<span class="fc bfc" id="L215" title="All 2 branches covered.">        return !this.txDone;</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">        return !this.txDone;</span>
     }
 
     /**
@@ -221,23 +222,23 @@ import org.slf4j.LoggerFactory;
      * @param action code to execute with admin privileges
      */
     public void sudo(Runnable action) {
-<span class="fc bfc" id="L224" title="All 2 branches covered.">        if (txExists()) {</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">        if (txExists()) {</span>
             // make sure to flush to check every pending changes before granting admin rights
-<span class="fc" id="L226">            em.flush();</span>
+<span class="fc" id="L227">            em.flush();</span>
         }
 
-<span class="fc" id="L229">        this.sudoAsAdmin++;</span>
-<span class="fc" id="L230">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
-<span class="fc" id="L231">        action.run();</span>
-<span class="fc bfc" id="L232" title="All 2 branches covered.">        if (txExists()) {</span>
+<span class="fc" id="L230">        this.sudoAsAdmin++;</span>
+<span class="fc" id="L231">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="fc" id="L232">        action.run();</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">        if (txExists()) {</span>
             // make sure to flush to apply all pending changes with admin rights
-<span class="fc" id="L234">            em.flush();</span>
+<span class="fc" id="L235">            em.flush();</span>
         }
 
-<span class="fc" id="L237">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="fc" id="L238">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
 
-<span class="fc" id="L239">        this.sudoAsAdmin--;</span>
-<span class="fc" id="L240">    }</span>
+<span class="fc" id="L240">        this.sudoAsAdmin--;</span>
+<span class="fc" id="L241">    }</span>
 
     /**
      * Execute some piece of code with admin privileges and return something.
@@ -250,21 +251,21 @@ import org.slf4j.LoggerFactory;
      * @throws java.lang.Exception if something is thrown during the call
      */
     public &lt;R&gt; R sudo(Callable&lt;R&gt; action) throws Exception {
-<span class="fc bfc" id="L253" title="All 2 branches covered.">        if (txExists()) {</span>
+<span class="fc bfc" id="L254" title="All 2 branches covered.">        if (txExists()) {</span>
             // make sure to flush to check every pending changes before granting admin rights
-<span class="fc" id="L255">            em.flush();</span>
+<span class="fc" id="L256">            em.flush();</span>
         }
-<span class="fc" id="L257">        this.sudoAsAdmin++;</span>
-<span class="fc" id="L258">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
-<span class="fc" id="L259">        R result = action.call();</span>
-<span class="fc bfc" id="L260" title="All 2 branches covered.">        if (txExists()) {</span>
+<span class="fc" id="L258">        this.sudoAsAdmin++;</span>
+<span class="fc" id="L259">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="fc" id="L260">        R result = action.call();</span>
+<span class="fc bfc" id="L261" title="All 2 branches covered.">        if (txExists()) {</span>
             // make sure to flush to apply all pending changes with admin rights
-<span class="fc" id="L262">            em.flush();</span>
+<span class="fc" id="L263">            em.flush();</span>
         }
-<span class="fc" id="L264">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
-<span class="fc" id="L265">        this.sudoAsAdmin--;</span>
+<span class="fc" id="L265">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="fc" id="L266">        this.sudoAsAdmin--;</span>
 
-<span class="fc" id="L267">        return result;</span>
+<span class="fc" id="L268">        return result;</span>
     }
 
     /**
@@ -275,12 +276,12 @@ import org.slf4j.LoggerFactory;
     public boolean isAdmin() {
         // the sudoAsAdmin is done at first,
         // so we do not need to get the current user if this condition is fulfilled
-<span class="fc bfc" id="L278" title="All 2 branches covered.">        if (sudoAsAdmin &gt; 0) {</span>
-<span class="fc" id="L279">            return true;</span>
+<span class="fc bfc" id="L279" title="All 2 branches covered.">        if (sudoAsAdmin &gt; 0) {</span>
+<span class="fc" id="L280">            return true;</span>
         }
 
-<span class="fc" id="L282">        User currentUser = this.getCurrentUser();</span>
-<span class="fc bfc" id="L283" title="All 4 branches covered.">        return currentUser != null &amp;&amp; currentUser.isAdmin();</span>
+<span class="fc" id="L283">        User currentUser = this.getCurrentUser();</span>
+<span class="fc bfc" id="L284" title="All 4 branches covered.">        return currentUser != null &amp;&amp; currentUser.isAdmin();</span>
     }
 
     /**
@@ -290,8 +291,8 @@ import org.slf4j.LoggerFactory;
      * @param result    the result
      */
     public void registerConditionResult(Condition condition, Boolean result) {
-<span class="fc" id="L293">        this.conditionCache.put(condition, result);</span>
-<span class="fc" id="L294">    }</span>
+<span class="fc" id="L294">        this.conditionCache.put(condition, result);</span>
+<span class="fc" id="L295">    }</span>
 
     /**
      * Get the cached condition result
@@ -302,7 +303,7 @@ import org.slf4j.LoggerFactory;
      *         evaluated yet
      */
     public Boolean getConditionResult(Condition condition) {
-<span class="fc" id="L305">        return this.conditionCache.get(condition);</span>
+<span class="fc" id="L306">        return this.conditionCache.get(condition);</span>
     }
 
     /**
@@ -311,7 +312,7 @@ import org.slf4j.LoggerFactory;
      * @return true/false
      */
     public boolean isInSecurityTx() {
-<span class="fc" id="L314">        return inSecurityTx;</span>
+<span class="fc" id="L315">        return inSecurityTx;</span>
     }
 
     /**
@@ -320,15 +321,15 @@ import org.slf4j.LoggerFactory;
      * @param inSecurityTx new flag
      */
     public void setInSecurityTx(boolean inSecurityTx) {
-<span class="fc" id="L323">        this.inSecurityTx = inSecurityTx;</span>
-<span class="fc" id="L324">    }</span>
+<span class="fc" id="L324">        this.inSecurityTx = inSecurityTx;</span>
+<span class="fc" id="L325">    }</span>
 
     public boolean isTxDone() {
-<span class="nc" id="L327">        return txDone;</span>
+<span class="nc" id="L328">        return txDone;</span>
     }
 
     public void setTxDone(boolean txDone) {
-<span class="fc" id="L331">        this.txDone = txDone;</span>
-<span class="fc" id="L332">    }</span>
+<span class="fc" id="L332">        this.txDone = txDone;</span>
+<span class="fc" id="L333">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

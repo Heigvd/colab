@@ -349,11 +349,11 @@ import javax.validation.constraints.NotNull;
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="pc bpc" id="L352" title="2 of 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="pc bpc" id="L352" title="1 of 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
 <span class="fc" id="L353">            return new Conditions.IsCurrentUserMemberOfProject(project);</span>
         } else {
             // anyone can read a pending invitation
-<span class="nc" id="L356">            return Conditions.alwaysTrue;</span>
+<span class="fc" id="L356">            return Conditions.alwaysTrue;</span>
         }
     }
 

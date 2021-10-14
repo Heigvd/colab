@@ -221,9 +221,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id : [1-9][0-9]*}/GrantAdminRight&quot;)
     @AdminResource
     public void revokeAdminRight(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L224">        logger.debug(&quot;Grant admin right to user #{}&quot;, id);</span>
-<span class="nc" id="L225">        userManagement.revokeAdminRight(id);</span>
-<span class="nc" id="L226">    }</span>
+<span class="fc" id="L224">        logger.debug(&quot;Grant admin right to user #{}&quot;, id);</span>
+<span class="fc" id="L225">        userManagement.revokeAdminRight(id);</span>
+<span class="fc" id="L226">    }</span>
 
     /**
      * Update password of a localAccount. The password MUST be hasehd a first time by the client.
