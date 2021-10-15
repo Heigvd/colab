@@ -101,7 +101,7 @@ import javax.persistence.Transient;
     /**
      * List of references to this type
      */
-<span class="fc" id="L104">    @OneToMany(mappedBy = &quot;abstractCardType&quot;, cascade = CascadeType.ALL)</span>
+<span class="fc" id="L104">    @OneToMany(mappedBy = &quot;target&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;CardTypeRef&gt; references = new ArrayList&lt;&gt;();
 

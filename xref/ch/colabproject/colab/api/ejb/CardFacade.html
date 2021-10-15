@@ -303,7 +303,7 @@
 <a class="jxr_linenumber" name="L295" href="#L295">295</a>         <a name="CardTypeRef" href="../../../../../ch/colabproject/colab/api/model/card/CardTypeRef.html#CardTypeRef">CardTypeRef</a> ref = <strong class="jxr_keyword">new</strong> <a name="CardTypeRef" href="../../../../../ch/colabproject/colab/api/model/card/CardTypeRef.html#CardTypeRef">CardTypeRef</a>();
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>         ref.setProject(project);
 <a class="jxr_linenumber" name="L297" href="#L297">297</a> 
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>         ref.setAbstractCardType(cardType);
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>         ref.setTarget(cardType);
 <a class="jxr_linenumber" name="L299" href="#L299">299</a>         cardType.getReferences().add(ref);
 <a class="jxr_linenumber" name="L300" href="#L300">300</a> 
 <a class="jxr_linenumber" name="L301" href="#L301">301</a>         <em class="jxr_comment">// TODO: copy deprecated state or do never deprecate just created types?</em>
@@ -441,7 +441,7 @@
 <a class="jxr_linenumber" name="L433" href="#L433">433</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> isDirectRef(<a name="AbstractCardType" href="../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> child, <a name="AbstractCardType" href="../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> parent) {
 <a class="jxr_linenumber" name="L434" href="#L434">434</a>         <strong class="jxr_keyword">if</strong> (child instanceof <a name="CardTypeRef" href="../../../../../ch/colabproject/colab/api/model/card/CardTypeRef.html#CardTypeRef">CardTypeRef</a>) {
 <a class="jxr_linenumber" name="L435" href="#L435">435</a>             <a name="CardTypeRef" href="../../../../../ch/colabproject/colab/api/model/card/CardTypeRef.html#CardTypeRef">CardTypeRef</a> ref = (<a name="CardTypeRef" href="../../../../../ch/colabproject/colab/api/model/card/CardTypeRef.html#CardTypeRef">CardTypeRef</a>) child;
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>             <a name="AbstractCardType" href="../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> refTarget = ref.getAbstractCardType();
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>             <a name="AbstractCardType" href="../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> refTarget = ref.getTarget();
 <a class="jxr_linenumber" name="L437" href="#L437">437</a>             <strong class="jxr_keyword">return</strong> parent != <strong class="jxr_keyword">null</strong> &amp;&amp; parent.equals(refTarget);
 <a class="jxr_linenumber" name="L438" href="#L438">438</a>         }
 <a class="jxr_linenumber" name="L439" href="#L439">439</a>         <strong class="jxr_keyword">return</strong> false;
@@ -459,7 +459,7 @@
 <a class="jxr_linenumber" name="L451" href="#L451">451</a>         <strong class="jxr_keyword">if</strong> (isDirectRef(child, ancestor)) {
 <a class="jxr_linenumber" name="L452" href="#L452">452</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L453" href="#L453">453</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (child instanceof <a name="CardTypeRef" href="../../../../../ch/colabproject/colab/api/model/card/CardTypeRef.html#CardTypeRef">CardTypeRef</a>) {
-<a class="jxr_linenumber" name="L454" href="#L454">454</a>             <a name="AbstractCardType" href="../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> parent = ((<a name="CardTypeRef" href="../../../../../ch/colabproject/colab/api/model/card/CardTypeRef.html#CardTypeRef">CardTypeRef</a>) child).getAbstractCardType();
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>             <a name="AbstractCardType" href="../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> parent = ((<a name="CardTypeRef" href="../../../../../ch/colabproject/colab/api/model/card/CardTypeRef.html#CardTypeRef">CardTypeRef</a>) child).getTarget();
 <a class="jxr_linenumber" name="L455" href="#L455">455</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.isTransitiveRef(parent, ancestor);
 <a class="jxr_linenumber" name="L456" href="#L456">456</a>         }
 <a class="jxr_linenumber" name="L457" href="#L457">457</a> 

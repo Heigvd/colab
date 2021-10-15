@@ -295,7 +295,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L295">        CardTypeRef ref = new CardTypeRef();</span>
 <span class="nc" id="L296">        ref.setProject(project);</span>
 
-<span class="nc" id="L298">        ref.setAbstractCardType(cardType);</span>
+<span class="nc" id="L298">        ref.setTarget(cardType);</span>
 <span class="nc" id="L299">        cardType.getReferences().add(ref);</span>
 
         // TODO: copy deprecated state or do never deprecate just created types?
@@ -433,7 +433,7 @@ import org.slf4j.LoggerFactory;
     public boolean isDirectRef(AbstractCardType child, AbstractCardType parent) {
 <span class="nc bnc" id="L434" title="All 2 branches missed.">        if (child instanceof CardTypeRef) {</span>
 <span class="nc" id="L435">            CardTypeRef ref = (CardTypeRef) child;</span>
-<span class="nc" id="L436">            AbstractCardType refTarget = ref.getAbstractCardType();</span>
+<span class="nc" id="L436">            AbstractCardType refTarget = ref.getTarget();</span>
 <span class="nc bnc" id="L437" title="All 4 branches missed.">            return parent != null &amp;&amp; parent.equals(refTarget);</span>
         }
 <span class="nc" id="L439">        return false;</span>
@@ -451,7 +451,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc bnc" id="L451" title="All 2 branches missed.">        if (isDirectRef(child, ancestor)) {</span>
 <span class="nc" id="L452">            return true;</span>
 <span class="nc bnc" id="L453" title="All 2 branches missed.">        } else if (child instanceof CardTypeRef) {</span>
-<span class="nc" id="L454">            AbstractCardType parent = ((CardTypeRef) child).getAbstractCardType();</span>
+<span class="nc" id="L454">            AbstractCardType parent = ((CardTypeRef) child).getTarget();</span>
 <span class="nc" id="L455">            return this.isTransitiveRef(parent, ancestor);</span>
         }
 

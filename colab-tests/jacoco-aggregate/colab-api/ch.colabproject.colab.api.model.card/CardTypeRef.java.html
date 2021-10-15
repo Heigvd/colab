@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 /**
- * Reference to Card type
+ * Reference to another existing abstract card type.
  *
  * @author maxence
  */
@@ -31,57 +31,57 @@ import javax.persistence.Transient;
     // fields
     // ---------------------------------------------------------------------------------------------
     /**
-     * The type this reference references
+     * The abstract card type this reference aims at
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
-    private AbstractCardType abstractCardType;
+    private AbstractCardType target;
 
     /**
-     * The id of the type this reference references (serialization sugar)
+     * The id of the abstract card type this reference aims at (serialization sugar)
      */
     @Transient
-    private Long cardTypeId;
+    private Long targetId;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
     /**
-     * get the type this ref references.
+     * get the card type (or card type reference) this reference aims at
      *
      * @return the referenced type
      */
-    public AbstractCardType getAbstractCardType() {
-<span class="fc" id="L55">        return this.abstractCardType;</span>
+    public AbstractCardType getTarget() {
+<span class="fc" id="L55">        return this.target;</span>
     }
 
     /**
-     * @param cardType the new referenced type
+     * @param target the card type (or card type reference) this reference aims at
      */
-    public void setAbstractCardType(AbstractCardType cardType) {
-<span class="fc" id="L62">        this.abstractCardType = cardType;</span>
+    public void setTarget(AbstractCardType target) {
+<span class="fc" id="L62">        this.target = target;</span>
 <span class="fc" id="L63">    }</span>
 
     /**
-     * get the cardType id. To be sent to client
+     * get the id of the card type (or card type reference) this reference aims at. To be sent to client
      *
      * @return id of the abstractCardType or null
      */
-    public Long getAbstractCardTypeId() {
-<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (this.abstractCardType != null) {</span>
-<span class="fc" id="L72">            return this.abstractCardType.getId();</span>
+    public Long getTargetId() {
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (this.target != null) {</span>
+<span class="fc" id="L72">            return this.target.getId();</span>
         } else {
-<span class="fc" id="L74">            return cardTypeId;</span>
+<span class="fc" id="L74">            return targetId;</span>
         }
     }
 
     /**
-     * set the cardType id. For serialization only
+     * set the id of the card type (or card type reference) this reference aims at. For serialization only
      *
      * @param id the id of the abstractCardType
      */
-    public void setAbstractCardTypeId(Long id) {
-<span class="fc" id="L84">        this.cardTypeId = id;</span>
+    public void setTargetId(Long id) {
+<span class="fc" id="L84">        this.targetId = id;</span>
 <span class="fc" id="L85">    }</span>
 
     // ---------------------------------------------------------------------------------------------
@@ -94,10 +94,10 @@ import javax.persistence.Transient;
      */
     @Override
     public CardType resolve() {
-<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (this.abstractCardType instanceof CardType) {</span>
-<span class="nc" id="L98">            return (CardType) this.abstractCardType;</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">        } else if (this.abstractCardType instanceof CardTypeRef) {</span>
-<span class="nc" id="L100">            return ((CardTypeRef) abstractCardType).resolve();</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (this.target instanceof CardType) {</span>
+<span class="nc" id="L98">            return (CardType) this.target;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        } else if (this.target instanceof CardTypeRef) {</span>
+<span class="nc" id="L100">            return ((CardTypeRef) target).resolve();</span>
         }
 <span class="nc" id="L102">        return null;</span>
     }
@@ -107,8 +107,8 @@ import javax.persistence.Transient;
 <span class="fc" id="L107">        List&lt;AbstractCardType&gt; list = new ArrayList&lt;&gt;();</span>
 
 <span class="fc" id="L109">        list.add(this);</span>
-<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        if (this.abstractCardType != null) {</span>
-<span class="fc" id="L111">            list.addAll(this.abstractCardType.expand());</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        if (this.target != null) {</span>
+<span class="fc" id="L111">            list.addAll(this.target.expand());</span>
         }
 <span class="fc" id="L113">        return list;</span>
     }
@@ -117,7 +117,7 @@ import javax.persistence.Transient;
     public String toString() {
 <span class="nc" id="L118">        return &quot;CardTypeRef{&quot;</span>
 <span class="nc" id="L119">            + &quot;id=&quot; + getId()</span>
-            + &quot;, cardTypeId=&quot; + cardTypeId + '}';
+            + &quot;, targetId=&quot; + targetId + '}';
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

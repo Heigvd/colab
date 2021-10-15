@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2021 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 45,
+      <title>File: 46,
              Errors: 0,
-             Warnings: 121,
+             Warnings: 123,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -599,6 +599,20 @@ under the License.
                 </td>
                 <td>
                   13
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.card.CardTypeRef.java">ch/colabproject/colab/api/model/card/CardTypeRef.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
                 </td>
                 <td>
                   0
