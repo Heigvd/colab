@@ -63,8 +63,8 @@ function resolveRef(state: ColabState, ref: CardTypeRef): CardTypeState {
   let current = ref;
 
   while (current != null) {
-    if (current.abstractCardTypeId != null && current.abstractCardTypeId >= 0) {
-      const target = state.cardtype.cardtypes[current.abstractCardTypeId];
+    if (current.targetId != null && current.targetId >= 0) {
+      const target = state.cardtype.cardtypes[current.targetId];
       if (entityIs(target, 'CardType')) {
         result.cardType = target;
         return result;

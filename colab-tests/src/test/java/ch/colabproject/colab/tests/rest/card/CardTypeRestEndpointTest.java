@@ -122,7 +122,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         CardTypeRef projectOneRef = refs.get(0);
 
         Assertions.assertEquals(projectOne.getId(), projectOneRef.getProjectId());
-        Assertions.assertEquals(globalType.getId(), projectOneRef.getAbstractCardTypeId());
+        Assertions.assertEquals(globalType.getId(), projectOneRef.getTargetId());
         Assertions.assertEquals(globalType, theType);
 
         // -----
@@ -149,7 +149,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         CardTypeRef projectTwoRef = optRef.get();
 
         Assertions.assertEquals(projectTwo.getId(), projectTwoRef.getProjectId());
-        Assertions.assertEquals(projectOneRef.getId(), projectTwoRef.getAbstractCardTypeId());
+        Assertions.assertEquals(projectOneRef.getId(), projectTwoRef.getTargetId());
         Assertions.assertEquals(globalType, theType);
     }
 

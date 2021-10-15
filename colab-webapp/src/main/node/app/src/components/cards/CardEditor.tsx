@@ -100,8 +100,8 @@ Props): JSX.Element {
       if (cardTypeFull.chain.length > 0) {
         const link = cardTypeFull.chain[cardTypeFull.chain.length - 1];
 
-        if (link != null && link.abstractCardTypeId != null) {
-          dispatch(API.getCardType(link.abstractCardTypeId));
+        if (link != null && link.targetId != null) {
+          dispatch(API.getCardType(link.targetId));
         }
       } else if (card.cardTypeId != null) {
         dispatch(API.getCardType(card.cardTypeId));

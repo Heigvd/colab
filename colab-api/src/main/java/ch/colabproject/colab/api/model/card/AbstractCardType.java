@@ -101,7 +101,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     /**
      * List of references to this type
      */
-    @OneToMany(mappedBy = "abstractCardType", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<CardTypeRef> references = new ArrayList<>();
 

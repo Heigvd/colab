@@ -295,7 +295,7 @@ public class CardFacade {
         CardTypeRef ref = new CardTypeRef();
         ref.setProject(project);
 
-        ref.setAbstractCardType(cardType);
+        ref.setTarget(cardType);
         cardType.getReferences().add(ref);
 
         // TODO: copy deprecated state or do never deprecate just created types?
@@ -433,7 +433,7 @@ public class CardFacade {
     public boolean isDirectRef(AbstractCardType child, AbstractCardType parent) {
         if (child instanceof CardTypeRef) {
             CardTypeRef ref = (CardTypeRef) child;
-            AbstractCardType refTarget = ref.getAbstractCardType();
+            AbstractCardType refTarget = ref.getTarget();
             return parent != null && parent.equals(refTarget);
         }
         return false;
@@ -451,7 +451,7 @@ public class CardFacade {
         if (isDirectRef(child, ancestor)) {
             return true;
         } else if (child instanceof CardTypeRef) {
-            AbstractCardType parent = ((CardTypeRef) child).getAbstractCardType();
+            AbstractCardType parent = ((CardTypeRef) child).getTarget();
             return this.isTransitiveRef(parent, ancestor);
         }
 

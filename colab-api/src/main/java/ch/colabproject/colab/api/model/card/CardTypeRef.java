@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 /**
- * Reference to Card type
+ * Reference to another existing abstract card type.
  *
  * @author maxence
  */
@@ -31,57 +31,57 @@ public class CardTypeRef extends AbstractCardType {
     // fields
     // ---------------------------------------------------------------------------------------------
     /**
-     * The type this reference references
+     * The abstract card type this reference aims at
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
-    private AbstractCardType abstractCardType;
+    private AbstractCardType target;
 
     /**
-     * The id of the type this reference references (serialization sugar)
+     * The id of the abstract card type this reference aims at (serialization sugar)
      */
     @Transient
-    private Long cardTypeId;
+    private Long targetId;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
     /**
-     * get the type this ref references.
+     * get the card type (or card type reference) this reference aims at
      *
      * @return the referenced type
      */
-    public AbstractCardType getAbstractCardType() {
-        return this.abstractCardType;
+    public AbstractCardType getTarget() {
+        return this.target;
     }
 
     /**
-     * @param cardType the new referenced type
+     * @param target the card type (or card type reference) this reference aims at
      */
-    public void setAbstractCardType(AbstractCardType cardType) {
-        this.abstractCardType = cardType;
+    public void setTarget(AbstractCardType target) {
+        this.target = target;
     }
 
     /**
-     * get the cardType id. To be sent to client
+     * get the id of the card type (or card type reference) this reference aims at. To be sent to client
      *
      * @return id of the abstractCardType or null
      */
-    public Long getAbstractCardTypeId() {
-        if (this.abstractCardType != null) {
-            return this.abstractCardType.getId();
+    public Long getTargetId() {
+        if (this.target != null) {
+            return this.target.getId();
         } else {
-            return cardTypeId;
+            return targetId;
         }
     }
 
     /**
-     * set the cardType id. For serialization only
+     * set the id of the card type (or card type reference) this reference aims at. For serialization only
      *
      * @param id the id of the abstractCardType
      */
-    public void setAbstractCardTypeId(Long id) {
-        this.cardTypeId = id;
+    public void setTargetId(Long id) {
+        this.targetId = id;
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -94,10 +94,10 @@ public class CardTypeRef extends AbstractCardType {
      */
     @Override
     public CardType resolve() {
-        if (this.abstractCardType instanceof CardType) {
-            return (CardType) this.abstractCardType;
-        } else if (this.abstractCardType instanceof CardTypeRef) {
-            return ((CardTypeRef) abstractCardType).resolve();
+        if (this.target instanceof CardType) {
+            return (CardType) this.target;
+        } else if (this.target instanceof CardTypeRef) {
+            return ((CardTypeRef) target).resolve();
         }
         return null;
     }
@@ -107,8 +107,8 @@ public class CardTypeRef extends AbstractCardType {
         List<AbstractCardType> list = new ArrayList<>();
 
         list.add(this);
-        if (this.abstractCardType != null) {
-            list.addAll(this.abstractCardType.expand());
+        if (this.target != null) {
+            list.addAll(this.target.expand());
         }
         return list;
     }
@@ -117,6 +117,6 @@ public class CardTypeRef extends AbstractCardType {
     public String toString() {
         return "CardTypeRef{"
             + "id=" + getId()
-            + ", cardTypeId=" + cardTypeId + '}';
+            + ", targetId=" + targetId + '}';
     }
 }
