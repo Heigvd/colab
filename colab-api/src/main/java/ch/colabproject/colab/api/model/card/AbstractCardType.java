@@ -99,11 +99,11 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     private boolean deprecated;
 
     /**
-     * List of references to this type
+     * List of direct references to this type
      */
     @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
     @JsonbTransient
-    private List<CardTypeRef> references = new ArrayList<>();
+    private List<CardTypeRef> directReferences = new ArrayList<>();
 
     /**
      * The list of all cards implementing this card definition
@@ -243,8 +243,8 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
      *
      * @return list of references
      */
-    public List<CardTypeRef> getReferences() {
-        return references;
+    public List<CardTypeRef> getDirectReferences() {
+        return directReferences;
     }
 
     /**
@@ -252,8 +252,8 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
      *
      * @param references list of references
      */
-    public void setReferences(List<CardTypeRef> references) {
-        this.references = references;
+    public void setDirectReferences(List<CardTypeRef> references) {
+        this.directReferences = references;
     }
 
     /**
@@ -301,8 +301,8 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     @JsonbTransient
     public List<CardTypeRef> getAllReferences() {
         List<CardTypeRef> all = new ArrayList<>();
-        all.addAll(this.references);
-        this.references.stream().forEach(ref -> all.addAll(ref.getAllReferences()));
+        all.addAll(this.directReferences);
+        this.directReferences.stream().forEach(ref -> all.addAll(ref.getAllReferences()));
 
         return all;
     }
@@ -330,7 +330,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
             channels.add(ProjectContentChannel.build(this.getProject()));
 
             // then, the type must be propagated to all projects which reference it
-            this.references.forEach(ref -> {
+            this.directReferences.forEach(ref -> {
                 channels.addAll(ref.getChannels());
             });
 

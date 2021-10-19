@@ -296,7 +296,7 @@ public class CardFacade {
         ref.setProject(project);
 
         ref.setTarget(cardType);
-        cardType.getReferences().add(ref);
+        cardType.getDirectReferences().add(ref);
 
         // TODO: copy deprecated state or do never deprecate just created types?
         // ref.setDeprecated(cardType.isDeprecated());

@@ -464,7 +464,7 @@ public class ResourceFacade {
      */
     public Resource createResourceForCardContent(Document document, Long cardContentId,
         String category) {
-        logger.debug("create a resource for document {} and card content #{} with category",
+        logger.debug("create a resource for document {} and card content #{} with category {}",
             document, cardContentId, category);
 
         if (document == null) {
@@ -508,7 +508,7 @@ public class ResourceFacade {
      */
     private void createResourceRefForChildren(AbstractCardType cardTypeOrRef,
         AbstractResource resource) {
-        for (AbstractCardType cardTypeRef : cardTypeOrRef.getReferences()) {
+        for (AbstractCardType cardTypeRef : cardTypeOrRef.getDirectReferences()) {
             ResourceRef resourceRef = ResourceRef.initNewResourceRef();
 
             resourceRef.setTarget(resource);
@@ -808,7 +808,7 @@ public class ResourceFacade {
             .filter(card -> Objects.equals(projectId, card.getProject().getId()))
             .forEach(card -> renameCategory(card, oldName, newName));
 
-        cardTypeOrRef.getReferences().stream()
+        cardTypeOrRef.getDirectReferences().stream()
             .forEach(cardRef -> renameCategory(cardRef, projectId, oldName, newName));
     }
 
