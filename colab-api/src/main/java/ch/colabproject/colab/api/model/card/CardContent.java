@@ -122,6 +122,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
      * The deliverable ID (serialization sugar)
      */
     @Transient
+    @JsonbTransient
     private Long deliverableId;
 
     /**

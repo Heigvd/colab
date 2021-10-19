@@ -259,6 +259,11 @@ public class AccessControlTest extends AbstractArquillianTest {
 //        Assertions.assertFalse(hasAnotherProjectReadAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
 
+        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
+        Assertions.assertTrue(hasDeliverableDocumentReadWriteAccess());
+        Assertions.assertTrue(hasDeliverableBlockReadAccess());
+        Assertions.assertTrue(hasDeliverableBlockReadWriteAccess());
+
 //        Assertions.assertTrue(hasLocalResourceReadAccess());
 //        Assertions.assertTrue(hasLocalResourceReadWriteAccess());
 //        Assertions.assertTrue(hasGlobalResourceReadAccess());
@@ -289,8 +294,8 @@ public class AccessControlTest extends AbstractArquillianTest {
         Assertions.assertFalse(hasProjectReadWriteAccess());
         Assertions.assertTrue(hasCardReadAccess());
         Assertions.assertFalse(hasCardReadWriteAccess());
-//        Assertions.assertTrue(hasCardContentReadAccess());
-//        Assertions.assertFalse(hasCardContentReadWriteAccess());
+        Assertions.assertTrue(hasCardContentReadAccess());
+        Assertions.assertFalse(hasCardContentReadWriteAccess());
 
         Assertions.assertTrue(hasGlobalCardTypeRefReadAccess());
         Assertions.assertFalse(hasGlobalCardTypeRefReadWriteAccess());
@@ -307,6 +312,11 @@ public class AccessControlTest extends AbstractArquillianTest {
 //        Assertions.assertFalse(hasFriendProjectReadWriteAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
+
+        Assertions.assertFalse(hasDeliverableDocumentReadAccess());
+        Assertions.assertFalse(hasDeliverableDocumentReadWriteAccess());
+        Assertions.assertFalse(hasDeliverableBlockReadAccess());
+        Assertions.assertFalse(hasDeliverableBlockReadWriteAccess());
 
 //        Assertions.assertFalse(hasLocalResourceReadAccess());
 //        Assertions.assertFalse(hasLocalResourceReadWriteAccess());
@@ -339,8 +349,8 @@ public class AccessControlTest extends AbstractArquillianTest {
         Assertions.assertFalse(hasProjectReadWriteAccess());
         Assertions.assertTrue(hasCardReadAccess());
         Assertions.assertFalse(hasCardReadWriteAccess());
-//        Assertions.assertTrue(hasCardContentReadAccess());
-//        Assertions.assertFalse(hasCardContentReadWriteAccess());
+        Assertions.assertTrue(hasCardContentReadAccess());
+        Assertions.assertFalse(hasCardContentReadWriteAccess());
 
         Assertions.assertTrue(hasGlobalCardTypeRefReadAccess());
         Assertions.assertFalse(hasGlobalCardTypeRefReadWriteAccess());
@@ -357,6 +367,11 @@ public class AccessControlTest extends AbstractArquillianTest {
 //        Assertions.assertFalse(hasFriendProjectReadWriteAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
+
+        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
+        Assertions.assertFalse(hasDeliverableDocumentReadWriteAccess());
+        Assertions.assertTrue(hasDeliverableBlockReadAccess());
+        Assertions.assertFalse(hasDeliverableBlockReadWriteAccess());
 
 //        Assertions.assertTrue(hasLocalResourceReadAccess());
 //        Assertions.assertFalse(hasLocalResourceReadWriteAccess());
@@ -408,6 +423,11 @@ public class AccessControlTest extends AbstractArquillianTest {
 //        Assertions.assertFalse(hasAnotherProjectReadAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
 
+        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
+        Assertions.assertTrue(hasDeliverableDocumentReadWriteAccess());
+        Assertions.assertTrue(hasDeliverableBlockReadAccess());
+        Assertions.assertTrue(hasDeliverableBlockReadWriteAccess());
+
 //        Assertions.assertFalse(hasLocalResourceReadAccess());
 //        Assertions.assertFalse(hasLocalResourceReadWriteAccess());
 //        Assertions.assertTrue(hasGlobalResourceReadAccess());
@@ -439,8 +459,8 @@ public class AccessControlTest extends AbstractArquillianTest {
         Assertions.assertFalse(hasProjectReadWriteAccess());
         Assertions.assertTrue(hasCardReadAccess());
         Assertions.assertFalse(hasCardReadWriteAccess());
-//        Assertions.assertTrue(hasCardContentReadAccess());
-//        Assertions.assertFalse(hasCardContentReadWriteAccess());
+        Assertions.assertTrue(hasCardContentReadAccess());
+        Assertions.assertFalse(hasCardContentReadWriteAccess());
 
         Assertions.assertTrue(hasGlobalCardTypeRefReadAccess());
         Assertions.assertFalse(hasGlobalCardTypeRefReadWriteAccess());
@@ -457,6 +477,11 @@ public class AccessControlTest extends AbstractArquillianTest {
 //        Assertions.assertFalse(hasFriendProjectReadWriteAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
+
+        Assertions.assertFalse(hasDeliverableDocumentReadAccess());
+        Assertions.assertFalse(hasDeliverableDocumentReadWriteAccess());
+        Assertions.assertFalse(hasDeliverableBlockReadAccess());
+        Assertions.assertFalse(hasDeliverableBlockReadWriteAccess());
 
 //      Assertions.assertFalse(hasLocalResourceReadAccess());
 //      Assertions.assertFalse(hasLocalResourceReadWriteAccess());
@@ -506,6 +531,11 @@ public class AccessControlTest extends AbstractArquillianTest {
 //        Assertions.assertFalse(hasFriendProjectReadWriteAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
+
+        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
+        Assertions.assertTrue(hasDeliverableDocumentReadWriteAccess());
+        Assertions.assertTrue(hasDeliverableBlockReadAccess());
+        Assertions.assertTrue(hasDeliverableBlockReadWriteAccess());
 
 //    Assertions.assertTrue(hasLocalResourceReadAccess());
 //    Assertions.assertTrue(hasLocalResourceReadWriteAccess());
