@@ -8,13 +8,10 @@ package ch.colabproject.colab.api.model.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
-import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.NamedQuery;
 
 /**
@@ -25,9 +22,12 @@ import javax.persistence.NamedQuery;
 //TODO review accurate constraints when stabilized
 @Entity
 @NamedQuery(name = "CardType.findAll", query = "SELECT c FROM CardType c")
-@NamedQuery(name = "CardType.findGlobals", query = "SELECT c FROM CardType c WHERE c.project is NULL")
-@NamedQuery(name = "CardType.findPublishedGlobals", query = "SELECT c FROM CardType c WHERE c.project is NULL AND c.published = TRUE")
-@NamedQuery(name = "CardType.findPublishedFromProjects", query = "SELECT c FROM CardType c JOIN c.project project JOIN project.teamMembers teamMember WHERE c.published = TRUE AND teamMember.user.id = :userId")
+@NamedQuery(name = "CardType.findGlobals",
+    query = "SELECT c FROM CardType c WHERE c.project is NULL")
+@NamedQuery(name = "CardType.findPublishedGlobals",
+    query = "SELECT c FROM CardType c WHERE c.project is NULL AND c.published = TRUE")
+@NamedQuery(name = "CardType.findPublishedFromProjects",
+    query = "SELECT c FROM CardType c JOIN c.project project JOIN project.teamMembers teamMember WHERE c.published = TRUE AND teamMember.user.id = :userId")
 public class CardType extends AbstractCardType {
 
     /**
@@ -52,16 +52,6 @@ public class CardType extends AbstractCardType {
      * The purpose
      */
     private String purpose;
-
-    /**
-     * The authority holder : is it belonging to
-     * <ul>
-     * <li>a concrete project and behave for itself</li>
-     * <li>a shared abstract model</li>
-     * </ul>
-     */
-    @Enumerated(EnumType.STRING)
-    private ConcretizationCategory authorityHolder;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -108,24 +98,6 @@ public class CardType extends AbstractCardType {
         this.purpose = purpose;
     }
 
-    /**
-     * @return Authority holder : is it belonging to
-     * <ul>
-     * <li>a concrete project and behave for itself</li>
-     * <li>a shared abstract model</li>
-     * </ul>
-     */
-    public ConcretizationCategory getAuthorityHolder() {
-        return authorityHolder;
-    }
-
-    /**
-     * @param authorityHolder the authority holder
-     */
-    public void setAuthorityHolder(ConcretizationCategory authorityHolder) {
-        this.authorityHolder = authorityHolder;
-    }
-
     @Override
     public CardType resolve() {
         return this;
@@ -160,7 +132,7 @@ public class CardType extends AbstractCardType {
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-        if (this.getProject() != null){
+        if (this.getProject() != null) {
             return new Conditions.IsCurrentUserInternToProject(this.getProject());
         } else {
             // only admin can edit global types
@@ -171,8 +143,7 @@ public class CardType extends AbstractCardType {
     @Override
     public String toString() {
         return "CardType{" + "id=" + getId() + ", uniqueId=" + uniqueId + ", title=" + title
-            + ", purpose=" + purpose + ", authorityHolder=" + authorityHolder + ", projectId="
-            + projectId + "}";
+            + ", purpose=" + purpose + ", projectId=" + projectId + "}";
     }
 
 }

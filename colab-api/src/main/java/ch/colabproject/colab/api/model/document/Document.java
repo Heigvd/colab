@@ -8,7 +8,6 @@ package ch.colabproject.colab.api.model.document;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
-import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
@@ -23,8 +22,6 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -68,7 +65,6 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     @Embedded
     private Tracking trackingData;
 
-
     /**
      * Title
      */
@@ -78,16 +74,6 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      * Abstract / teaser of the content of the document
      */
     protected String teaser;
-
-    /**
-     * The authority holder : is it belonging to
-     * <ul>
-     * <li>a concrete project and behave for itself</li>
-     * <li>a shared abstract model</li>
-     * </ul>
-     */
-    @Enumerated(EnumType.STRING)
-    protected ConcretizationCategory authorityHolder;
 
     /**
      * The card content for which this document is the deliverable
@@ -161,28 +147,6 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      */
     public void setTeaser(String teaser) {
         this.teaser = teaser;
-    }
-
-    /**
-     * @return the authority holder : is it belonging to
-     * <ul>
-     * <li>a concrete project and behave for itself</li>
-     * <li>a shared abstract model</li>
-     * </ul>
-     */
-    public ConcretizationCategory getAuthorityHolder() {
-        return authorityHolder;
-    }
-
-    /**
-     * @param authorityHolder the authority holder : is it belonging to
-     * <ul>
-     * <li>a concrete project and behave for itself</li>
-     * <li>a shared abstract model</li>
-     * </ul>
-     */
-    public void setAuthorityHolder(ConcretizationCategory authorityHolder) {
-        this.authorityHolder = authorityHolder;
     }
 
     /**
@@ -292,7 +256,6 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
         }
     }
 
-
     /**
      * Get the tracking data
      *
@@ -322,7 +285,6 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
             Document o = (Document) other;
             this.setTitle(o.getTitle());
             this.setTeaser(o.getTeaser());
-            this.setAuthorityHolder(o.getAuthorityHolder());
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -389,8 +351,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-        return "id=" + id + ", title=" + title + ", teaser=" + teaser + ", authorityHolder="
-            + authorityHolder;
+        return "id=" + id + ", title=" + title + ", teaser=" + teaser;
     }
 
 }

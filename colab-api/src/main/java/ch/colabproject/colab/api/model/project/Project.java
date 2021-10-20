@@ -8,12 +8,11 @@ package ch.colabproject.colab.api.model.project;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
-import ch.colabproject.colab.api.model.ConcretizationCategory;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
@@ -28,8 +27,6 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -79,12 +76,6 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      * The description
      */
     private String description;
-
-    /**
-     * The concretization type : is it a concrete project or an abstract model
-     */
-    @Enumerated(value = EnumType.STRING)
-    private ConcretizationCategory concretizationCategory;
 
     /**
      * The root card of the project containing all other cards
@@ -166,20 +157,6 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    /**
-     * @return the concretization type : is it a concrete project or an abstract model
-     */
-    public ConcretizationCategory getConcretizationCategory() {
-        return concretizationCategory;
-    }
-
-    /**
-     * @param category the concretization type : is it a concrete project or an abstract model
-     */
-    public void setConcretizationCategory(ConcretizationCategory category) {
-        this.concretizationCategory = category;
     }
 
     /**
@@ -331,7 +308,6 @@ public class Project implements ColabEntity, WithWebsocketChannels {
             Project o = (Project) other;
             this.setName(o.getName());
             this.setDescription(o.getDescription());
-            // TODO see if concretizationCategory should be there
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -389,7 +365,6 @@ public class Project implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public String toString() {
-        return "Project{" + "id=" + id + ", name=" + name + ", descr=" + description + ", category="
-            + concretizationCategory + '}';
+        return "Project{" + "id=" + id + ", name=" + name + ", descr=" + description + '}';
     }
 }
