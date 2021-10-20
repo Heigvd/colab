@@ -99,11 +99,11 @@ import javax.persistence.Transient;
     private boolean deprecated;
 
     /**
-     * List of references to this type
+     * List of direct references to this type
      */
 <span class="fc" id="L104">    @OneToMany(mappedBy = &quot;target&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
-    private List&lt;CardTypeRef&gt; references = new ArrayList&lt;&gt;();
+    private List&lt;CardTypeRef&gt; directReferences = new ArrayList&lt;&gt;();
 
     /**
      * The list of all cards implementing this card definition
@@ -243,8 +243,8 @@ import javax.persistence.Transient;
      *
      * @return list of references
      */
-    public List&lt;CardTypeRef&gt; getReferences() {
-<span class="fc" id="L247">        return references;</span>
+    public List&lt;CardTypeRef&gt; getDirectReferences() {
+<span class="fc" id="L247">        return directReferences;</span>
     }
 
     /**
@@ -252,8 +252,8 @@ import javax.persistence.Transient;
      *
      * @param references list of references
      */
-    public void setReferences(List&lt;CardTypeRef&gt; references) {
-<span class="nc" id="L256">        this.references = references;</span>
+    public void setDirectReferences(List&lt;CardTypeRef&gt; references) {
+<span class="nc" id="L256">        this.directReferences = references;</span>
 <span class="nc" id="L257">    }</span>
 
     /**
@@ -301,8 +301,8 @@ import javax.persistence.Transient;
     @JsonbTransient
     public List&lt;CardTypeRef&gt; getAllReferences() {
 <span class="fc" id="L303">        List&lt;CardTypeRef&gt; all = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L304">        all.addAll(this.references);</span>
-<span class="fc" id="L305">        this.references.stream().forEach(ref -&gt; all.addAll(ref.getAllReferences()));</span>
+<span class="fc" id="L304">        all.addAll(this.directReferences);</span>
+<span class="fc" id="L305">        this.directReferences.stream().forEach(ref -&gt; all.addAll(ref.getAllReferences()));</span>
 
 <span class="fc" id="L307">        return all;</span>
     }
@@ -330,7 +330,7 @@ import javax.persistence.Transient;
 <span class="fc" id="L330">            channels.add(ProjectContentChannel.build(this.getProject()));</span>
 
             // then, the type must be propagated to all projects which reference it
-<span class="fc" id="L333">            this.references.forEach(ref -&gt; {</span>
+<span class="fc" id="L333">            this.directReferences.forEach(ref -&gt; {</span>
 <span class="fc" id="L334">                channels.addAll(ref.getChannels());</span>
 <span class="fc" id="L335">            });</span>
 

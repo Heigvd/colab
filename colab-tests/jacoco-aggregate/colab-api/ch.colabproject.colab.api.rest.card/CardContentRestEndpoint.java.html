@@ -199,8 +199,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/Deliverable&quot;)
     public Document getDeliverableOfCardContent(@PathParam(&quot;id&quot;) Long cardContentId) {
-<span class="nc" id="L202">        logger.debug(&quot;Get deliverable of card content #{}&quot;, cardContentId);</span>
-<span class="nc" id="L203">        return cardFacade.getDeliverableOfCardContent(cardContentId);</span>
+<span class="fc" id="L202">        logger.debug(&quot;Get deliverable of card content #{}&quot;, cardContentId);</span>
+<span class="fc" id="L203">        return cardFacade.getDeliverableOfCardContent(cardContentId);</span>
     }
 
     /**

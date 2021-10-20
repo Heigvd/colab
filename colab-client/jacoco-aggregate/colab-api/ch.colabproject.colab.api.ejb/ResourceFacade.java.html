@@ -464,7 +464,7 @@ import org.slf4j.LoggerFactory;
      */
     public Resource createResourceForCardContent(Document document, Long cardContentId,
         String category) {
-<span class="nc" id="L467">        logger.debug(&quot;create a resource for document {} and card content #{} with category&quot;,</span>
+<span class="nc" id="L467">        logger.debug(&quot;create a resource for document {} and card content #{} with category {}&quot;,</span>
             document, cardContentId, category);
 
 <span class="nc bnc" id="L470" title="All 2 branches missed.">        if (document == null) {</span>
@@ -508,7 +508,7 @@ import org.slf4j.LoggerFactory;
      */
     private void createResourceRefForChildren(AbstractCardType cardTypeOrRef,
         AbstractResource resource) {
-<span class="nc bnc" id="L511" title="All 2 branches missed.">        for (AbstractCardType cardTypeRef : cardTypeOrRef.getReferences()) {</span>
+<span class="nc bnc" id="L511" title="All 2 branches missed.">        for (AbstractCardType cardTypeRef : cardTypeOrRef.getDirectReferences()) {</span>
 <span class="nc" id="L512">            ResourceRef resourceRef = ResourceRef.initNewResourceRef();</span>
 
 <span class="nc" id="L514">            resourceRef.setTarget(resource);</span>
@@ -808,7 +808,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L808">            .filter(card -&gt; Objects.equals(projectId, card.getProject().getId()))</span>
 <span class="nc" id="L809">            .forEach(card -&gt; renameCategory(card, oldName, newName));</span>
 
-<span class="nc" id="L811">        cardTypeOrRef.getReferences().stream()</span>
+<span class="nc" id="L811">        cardTypeOrRef.getDirectReferences().stream()</span>
 <span class="nc" id="L812">            .forEach(cardRef -&gt; renameCategory(cardRef, projectId, oldName, newName));</span>
 <span class="nc" id="L813">    }</span>
 

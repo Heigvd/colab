@@ -472,7 +472,7 @@
 <a class="jxr_linenumber" name="L464" href="#L464">464</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L465" href="#L465">465</a>     <strong class="jxr_keyword">public</strong> <a name="Resource" href="../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> createResourceForCardContent(<a name="Document" href="../../../../../ch/colabproject/colab/api/model/document/Document.html#Document">Document</a> document, Long cardContentId,
 <a class="jxr_linenumber" name="L466" href="#L466">466</a>         String category) {
-<a class="jxr_linenumber" name="L467" href="#L467">467</a>         logger.debug(<span class="jxr_string">"create a resource for document {} and card content #{} with category"</span>,
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>         logger.debug(<span class="jxr_string">"create a resource for document {} and card content #{} with category {}"</span>,
 <a class="jxr_linenumber" name="L468" href="#L468">468</a>             document, cardContentId, category);
 <a class="jxr_linenumber" name="L469" href="#L469">469</a> 
 <a class="jxr_linenumber" name="L470" href="#L470">470</a>         <strong class="jxr_keyword">if</strong> (document == <strong class="jxr_keyword">null</strong>) {
@@ -516,7 +516,7 @@
 <a class="jxr_linenumber" name="L508" href="#L508">508</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L509" href="#L509">509</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> createResourceRefForChildren(<a name="AbstractCardType" href="../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> cardTypeOrRef,
 <a class="jxr_linenumber" name="L510" href="#L510">510</a>         <a name="AbstractResource" href="../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> resource) {
-<a class="jxr_linenumber" name="L511" href="#L511">511</a>         <strong class="jxr_keyword">for</strong> (<a name="AbstractCardType" href="../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> cardTypeRef : cardTypeOrRef.getReferences()) {
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>         <strong class="jxr_keyword">for</strong> (<a name="AbstractCardType" href="../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> cardTypeRef : cardTypeOrRef.getDirectReferences()) {
 <a class="jxr_linenumber" name="L512" href="#L512">512</a>             <a name="ResourceRef" href="../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a> resourceRef = ResourceRef.initNewResourceRef();
 <a class="jxr_linenumber" name="L513" href="#L513">513</a> 
 <a class="jxr_linenumber" name="L514" href="#L514">514</a>             resourceRef.setTarget(resource);
@@ -816,7 +816,7 @@
 <a class="jxr_linenumber" name="L808" href="#L808">808</a>             .filter(card -&gt; Objects.equals(projectId, card.getProject().getId()))
 <a class="jxr_linenumber" name="L809" href="#L809">809</a>             .forEach(card -&gt; renameCategory(card, oldName, newName));
 <a class="jxr_linenumber" name="L810" href="#L810">810</a> 
-<a class="jxr_linenumber" name="L811" href="#L811">811</a>         cardTypeOrRef.getReferences().stream()
+<a class="jxr_linenumber" name="L811" href="#L811">811</a>         cardTypeOrRef.getDirectReferences().stream()
 <a class="jxr_linenumber" name="L812" href="#L812">812</a>             .forEach(cardRef -&gt; renameCategory(cardRef, projectId, oldName, newName));
 <a class="jxr_linenumber" name="L813" href="#L813">813</a>     }
 <a class="jxr_linenumber" name="L814" href="#L814">814</a> 

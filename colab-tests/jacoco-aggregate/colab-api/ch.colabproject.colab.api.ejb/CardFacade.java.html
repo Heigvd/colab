@@ -296,7 +296,7 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L296">        ref.setProject(project);</span>
 
 <span class="fc" id="L298">        ref.setTarget(cardType);</span>
-<span class="fc" id="L299">        cardType.getReferences().add(ref);</span>
+<span class="fc" id="L299">        cardType.getDirectReferences().add(ref);</span>
 
         // TODO: copy deprecated state or do never deprecate just created types?
         // ref.setDeprecated(cardType.isDeprecated());
@@ -642,14 +642,14 @@ import org.slf4j.LoggerFactory;
      * @return the deliverable linked to the card content
      */
     public Document getDeliverableOfCardContent(Long cardContentId) {
-<span class="nc" id="L645">        logger.debug(&quot;get deliverable of card content #{}&quot;, cardContentId);</span>
+<span class="fc" id="L645">        logger.debug(&quot;get deliverable of card content #{}&quot;, cardContentId);</span>
 
-<span class="nc" id="L647">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
-<span class="nc bnc" id="L648" title="All 2 branches missed.">        if (cardContent == null) {</span>
+<span class="fc" id="L647">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
+<span class="pc bpc" id="L648" title="1 of 2 branches missed.">        if (cardContent == null) {</span>
 <span class="nc" id="L649">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L652">        return cardContent.getDeliverable();</span>
+<span class="fc" id="L652">        return cardContent.getDeliverable();</span>
     }
 
     /**
