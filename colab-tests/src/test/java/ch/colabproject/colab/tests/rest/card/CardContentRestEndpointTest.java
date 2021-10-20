@@ -189,10 +189,9 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(title, newDoc.getTitle());
         Assertions.assertEquals(cardContentId, persistedDoc.getDeliverableCardContentId());
 
-        CardContent persistedCardContent = client.cardContentRestEndpoint
-            .getCardContent(cardContentId);
-        Assertions.assertNotNull(persistedCardContent);
-        Assertions.assertEquals(docId, persistedCardContent.getDeliverableId());
+        Document deliverable = client.cardContentRestEndpoint.getDeliverableOfCardContent(cardContentId);
+        Assertions.assertNotNull(deliverable);
+        Assertions.assertEquals(docId, deliverable.getId());
 
         Document persistedDocument = client.documentRestEndPoint.getDocument(docId);
         Assertions.assertEquals(persistedDoc, persistedDocument);
@@ -201,9 +200,8 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
 
         client.documentRestEndPoint.deleteDocument(persistedDocument.getId());
 
-        persistedCardContent = client.cardContentRestEndpoint.getCardContent(cardContentId);
-        Assertions.assertNotNull(persistedCardContent);
-        Assertions.assertNull(persistedCardContent.getDeliverableId());
+        deliverable = client.cardContentRestEndpoint.getDeliverableOfCardContent(cardContentId);
+        Assertions.assertNull(deliverable);
 
         // delete card content
 
@@ -215,9 +213,9 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedDoc.getId());
         Long doc2Id = persistedDoc.getId();
 
-        persistedCardContent = client.cardContentRestEndpoint.getCardContent(cardContentId);
-        Assertions.assertNotNull(persistedCardContent);
-        Assertions.assertEquals(doc2Id, persistedCardContent.getDeliverableId());
+        deliverable = client.cardContentRestEndpoint.getDeliverableOfCardContent(cardContentId);
+        Assertions.assertNotNull(deliverable);
+        Assertions.assertEquals(doc2Id, deliverable.getId());
 
         client.cardContentRestEndpoint.deleteCardContent(cardContentId);
 
