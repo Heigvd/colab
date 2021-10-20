@@ -13,6 +13,7 @@ import { useDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AutoSaveInput from '../common/AutoSaveInput';
 import CheckBox from '../common/CheckBox';
+import OnBlurInput from '../common/OnBlurInput';
 import DocumentMiniDisplay from '../documents/DocumentMiniDisplay';
 import { defaultColumnContainerStyle, defaultRowContainerStyle } from '../styling/style';
 import { ResourceAndRef } from './ResourceCommonType';
@@ -36,10 +37,10 @@ function TargetResourceMiniDisplay({ resource }: { resource: Resource }): JSX.El
     <div className={defaultColumnContainerStyle}>
       <span>*** target resource #{resource.id} ***</span>
       <DisplayOwner resourceOrRef={resource} />
-      <AutoSaveInput
+      <OnBlurInput
         label="Category : "
         placeholder=""
-        inputType="INPUT"
+        size="SMALL"
         value={resource.category || ''}
         onChange={newValue => dispatch(API.updateResource({ ...resource, category: newValue }))}
       />

@@ -31,6 +31,7 @@ interface Props {
   offsetX?: number;
   // 1 means height of the toolbar
   offsetY?: number;
+  grow?: number;
 }
 
 const cssPos = (
@@ -158,6 +159,7 @@ export default function WithToolbar({
   toolbarClassName = semiDarkMode,
   offsetX = 0,
   offsetY = 0,
+  grow = 1,
 }: Props): JSX.Element {
   const toolbarRef = React.useRef<HTMLDivElement>(null);
 
@@ -193,7 +195,7 @@ export default function WithToolbar({
       className={cx(
         hoverToolbar ? hoverStyle : undefined,
         css({
-          flexGrow: 1,
+          flexGrow: grow,
           display: 'flex',
           flexDirection: 'column',
           width: 'max-content',

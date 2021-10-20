@@ -10,6 +10,7 @@ import { faCog, faFile } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useVariants } from '../../selectors/cardSelector';
 import { useCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
@@ -80,6 +81,7 @@ export default function CardEditor({
 }: //variant,
 //variants,
 Props): JSX.Element {
+  const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
   const cardTypeFull = useCardType(card.cardTypeId);
@@ -152,28 +154,40 @@ Props): JSX.Element {
                   })}
                 >
                   <div>
-                    <h5>Purpose {cardType?.title || ''}</h5>
-                    <div>{cardType?.purpose || ''}</div>
-                    Card name (card.title):
-                    <AutoSaveInput
-                      inputType="INPUT"
-                      value={card.title || ''}
-                      onChange={newValue => dispatch(API.updateCard({ ...card, title: newValue }))}
-                    />
+                    <Flex>
+                      Card name (card.title):
+                      <AutoSaveInput
+                        inputType="INPUT"
+                        value={card.title || ''}
+                        placeholder={i18n.card.untitled}
+                        onChange={newValue =>
+                          dispatch(API.updateCard({ ...card, title: newValue }))
+                        }
+                      />
+                    </Flex>
+                    <h4>Purpose</h4>
+                    <div>
+                      <b>{cardType?.title}</b>: {cardType?.purpose || ''}
+                    </div>
                   </div>
 
                   {variant != null ? (
                     <Flex direction="column" grow={1}>
                       <h5>Card Content #{variant.id}</h5>
                       <div>
-                        Version (contentTitle):
-                        <AutoSaveInput
-                          inputType="INPUT"
-                          value={variant.title || ''}
-                          onChange={newValue =>
-                            dispatch(API.updateCardContent({ ...variant, title: newValue }))
-                          }
-                        />
+                        {variants.length > 1 ? (
+                          <>
+                            Version(contentTitle):
+                            <AutoSaveInput
+                              inputType="INPUT"
+                              value={variant.title || ''}
+                              placeholder={i18n.content.untitled}
+                              onChange={newValue =>
+                                dispatch(API.updateCardContent({ ...variant, title: newValue }))
+                              }
+                            />
+                          </>
+                        ) : null}
                         {variant && variant.id ? (
                           <DocumentEditorAsDeliverableWrapper cardContentId={variant.id} />
                         ) : (

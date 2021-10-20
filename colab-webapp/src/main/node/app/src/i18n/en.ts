@@ -116,4 +116,15 @@ export const en = {
     EMAIL_MESSAGE_ERROR: 'e-mail not sent',
     BAD_REQUEST: 'Bad request',
   },
+  card: {
+    untitled: 'unnamed card',
+  },
+  content: {
+    none: 'no version',
+    untitled: 'unnamed version',
+  },
+  document: {
+    untitled: 'unnamed document',
+    noTeaser: 'no document teaser',
+  },
 };

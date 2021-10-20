@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import {createAsyncThunk} from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   AbstractCardType,
   AbstractResource,
@@ -27,9 +27,9 @@ import {
   User,
   WsUpdateMessage,
 } from 'colab-rest-client';
-import {checkUnreachable} from '../helper';
-import {getLogger} from '../logger';
-import {ColabNotification} from '../store/notification';
+import { checkUnreachable } from '../helper';
+import { getLogger } from '../logger';
+import { ColabNotification } from '../store/notification';
 
 const logger = getLogger('WebSockets');
 
@@ -37,7 +37,7 @@ const logger = getLogger('WebSockets');
  * Does the given index entry represent the given type ?
  */
 const indexEntryIs = <T extends keyof TypeMap>(entry: IndexEntry, klass: T) => {
-  return entityIs({'@class': entry.type, id: entry.id}, klass);
+  return entityIs({ '@class': entry.type, id: entry.id }, klass);
 };
 
 interface Updates<T> {
@@ -66,21 +66,21 @@ interface EntityBag {
 
 function createBag(): EntityBag {
   return {
-    accounts: {updated: [], deleted: []},
-    acl: {updated: [], deleted: []},
-    activityFlowLinks: {updated: [], deleted: []},
-    blocks: {updated: [], deleted: []},
-    cards: {updated: [], deleted: []},
-    changes: {updated: [], deleted: []},
-    contents: {updated: [], deleted: []},
-    documents: {updated: [], deleted: []},
-    members: {updated: [], deleted: []},
-    projects: {updated: [], deleted: []},
-    resources: {updated: [], deleted: []},
-    roles: {updated: [], deleted: []},
-    stickynotelinks: {updated: [], deleted: []},
-    types: {updated: [], deleted: []},
-    users: {updated: [], deleted: []},
+    accounts: { updated: [], deleted: [] },
+    acl: { updated: [], deleted: [] },
+    activityFlowLinks: { updated: [], deleted: [] },
+    blocks: { updated: [], deleted: [] },
+    cards: { updated: [], deleted: [] },
+    changes: { updated: [], deleted: [] },
+    contents: { updated: [], deleted: [] },
+    documents: { updated: [], deleted: [] },
+    members: { updated: [], deleted: [] },
+    projects: { updated: [], deleted: [] },
+    resources: { updated: [], deleted: [] },
+    roles: { updated: [], deleted: [] },
+    stickynotelinks: { updated: [], deleted: [] },
+    types: { updated: [], deleted: [] },
+    users: { updated: [], deleted: [] },
     notifications: [],
   };
 }

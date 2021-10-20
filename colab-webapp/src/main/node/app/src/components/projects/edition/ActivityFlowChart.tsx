@@ -5,30 +5,29 @@
  * Licensed under the MIT License
  */
 
-import * as React from 'react';
-import {ActivityFlowLink, Card, CardContent} from 'colab-rest-client';
-import * as API from '../../../API/api';
-import {useProjectBeingEdited} from '../../../selectors/projectSelector';
+import { css } from '@emotion/css';
+import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import {
-  shallowEqual,
-  useAppDispatch,
-  useAppSelector,
-} from '../../../store/hooks';
+  BeforeDropParams,
+  Connection,
+  ConnectionEstablishedParams,
+  EVENT_CONNECTION,
+  INTERCEPT_BEFORE_DROP,
+} from '@jsplumb/core';
+import { ActivityFlowLink, Card, CardContent } from 'colab-rest-client';
+import { uniq } from 'lodash';
+import * as React from 'react';
+import * as API from '../../../API/api';
+import { getLogger } from '../../../logger';
+import { useProjectBeingEdited } from '../../../selectors/projectSelector';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { ProgressBar } from '../../cards/CardLayout';
 import Flex from '../../common/Flex';
 import InlineLoading from '../../common/InlineLoading';
-import {uniq} from 'lodash';
-import {getLogger} from '../../../logger';
-import {BrowserJsPlumbInstance, newInstance} from '@jsplumb/browser-ui';
-import {
-  Connection, INTERCEPT_BEFORE_DROP, BeforeDropParams,
-  EVENT_CONNECTION, ConnectionEstablishedParams,
-} from '@jsplumb/core';
-import {css} from '@emotion/css';
-import {ProgressBar} from '../../cards/CardLayout';
-import {faProjectDiagram} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
-const logger = getLogger("ActivityFlow");
+const logger = getLogger('ActivityFlow');
 logger.setLevel(4);
 
 function getChildrenDeep(card: Card, cards: Card[], cardContents: CardContent[]): Card[] {
@@ -53,7 +52,6 @@ function getChildrenDeep(card: Card, cards: Card[], cardContents: CardContent[])
 //    .map(link => cards.find(card => card.id === link.previousCardId));
 //}
 
-
 const cardStyle = (color: string | null | undefined): string =>
   css({
     display: 'flex',
@@ -63,14 +61,14 @@ const cardStyle = (color: string | null | undefined): string =>
     backgroundColor: color || undefined,
     //  flexWrap: 'wrap',
     borderRadius: '5px',
-    minHeight: "100px",
-    minWidth: "180px",
+    minHeight: '100px',
+    minWidth: '180px',
     justifyContent: 'space-between',
     zIndex: 1,
   });
 
 const padding = css({
-  padding: "5px"
+  padding: '5px',
 });
 
 interface CardProps {
@@ -82,41 +80,45 @@ interface CardProps {
   jsPlumb: BrowserJsPlumbInstance;
 }
 
-export function Card({card, allVariants, showProgressBar, jsPlumb, plumbRefs}: CardProps): JSX.Element {
+export function Card({
+  card,
+  allVariants,
+  showProgressBar,
+  jsPlumb,
+  plumbRefs,
+}: CardProps): JSX.Element {
   const color = card.color || 'white';
 
-  const refCb = React.useCallback((ref: HTMLDivElement | null) => {
-    assignDiv(jsPlumb, plumbRefs.divs, ref, `Card-${card.id}`)
-  }, [jsPlumb, plumbRefs, card.id]);
+  const refCb = React.useCallback(
+    (ref: HTMLDivElement | null) => {
+      assignDiv(jsPlumb, plumbRefs.divs, ref, `Card-${card.id}`);
+    },
+    [jsPlumb, plumbRefs, card.id],
+  );
 
   const variants = getVariantsOfCard(card, allVariants);
 
   return (
-    <div
-      ref={refCb}
-      data-cardid={card.id}
-      className={`CardSource CardTarget ${cardStyle(color)}`}
-    >
-      <Flex justify='space-between'>
+    <div ref={refCb} data-cardid={card.id} className={`CardSource CardTarget ${cardStyle(color)}`}>
+      <Flex justify="space-between">
         <div className={padding}>{card.title}</div>
-        <FontAwesomeIcon className='CardSourceHandle' icon={faProjectDiagram} />
+        <FontAwesomeIcon className="CardSourceHandle" icon={faProjectDiagram} />
       </Flex>
-      <Flex className={css({width: '100%'})}>
+      <Flex className={css({ width: '100%' })}>
         {variants.map(variant => (
           <Flex
             key={variant.id}
-            direction='column'
-            justify='space-between'
-            className={css({width: '100%'})}
+            direction="column"
+            justify="space-between"
+            className={css({ width: '100%' })}
           >
-            {variants.length > 1 ?
-              <div className={padding}>{variant.title}</div>
-              : null}
+            {variants.length > 1 ? <div className={padding}>{variant.title}</div> : null}
             {showProgressBar ? <ProgressBar variant={variant} /> : null}
           </Flex>
         ))}
       </Flex>
-    </div>);
+    </div>
+  );
 }
 
 interface PlumbRef {
@@ -126,33 +128,31 @@ interface PlumbRef {
 
 export default function ActivityFlowChart(): JSX.Element {
   const dispatch = useAppDispatch();
-  const {project, status} = useProjectBeingEdited();
+  const { project, status } = useProjectBeingEdited();
 
-
-  const plumbRefs = React.useRef<PlumbRef>({divs: {}, connections: {}});
+  const plumbRefs = React.useRef<PlumbRef>({ divs: {}, connections: {} });
 
   const [rootNode, setRootNode] = React.useState<HTMLDivElement | null>(null);
   const [jsPlumb, setJsPlumb] = React.useState<BrowserJsPlumbInstance | undefined>(undefined);
 
-
   React.useEffect(() => {
     let jsPlumb: BrowserJsPlumbInstance | null = null;
     if (rootNode != null) {
-      logger.debug("Init JsPlumb");
+      logger.debug('Init JsPlumb');
       const plumb = newInstance({
         container: rootNode,
-        connector: {type: 'Straight', options: {gap: 5}},
-        paintStyle: {strokeWidth: 1, stroke: 'black'},
-        anchor: {type: "Perimeter", options: {shape: "Rectangle"}},
+        connector: { type: 'Straight', options: { gap: 5 } },
+        paintStyle: { strokeWidth: 1, stroke: 'black' },
+        anchor: { type: 'Perimeter', options: { shape: 'Rectangle' } },
         //        anchors: ['Right', 'Left'],
         endpoints: [
-          {type: 'Dot', options: {radius: 3}},
-          {type: 'Dot', options: {radius: 3}}
+          { type: 'Dot', options: { radius: 3 } },
+          { type: 'Dot', options: { radius: 3 } },
         ],
         connectionOverlays: [
           {
             type: 'Arrow',
-            options: {location: 1, width: 10, length: 5},
+            options: { location: 1, width: 10, length: 5 },
           },
         ],
       });
@@ -160,14 +160,14 @@ export default function ActivityFlowChart(): JSX.Element {
       plumb.addSourceSelector('.CardSource, .CardSourceHandle', {
         allowLoopback: false,
         anchors: ['Right', 'Left'],
-      })
+      });
 
       plumb.addTargetSelector('.CardTarget');
 
       plumb.bind(INTERCEPT_BEFORE_DROP, (params: BeforeDropParams) => {
         // create FlowLink !
-        const prevCardId = (params.connection.source as HTMLElement).getAttribute("data-cardid");
-        const nextCardId = (params.connection.target as HTMLElement).getAttribute("data-cardid");
+        const prevCardId = (params.connection.source as HTMLElement).getAttribute('data-cardid');
+        const nextCardId = (params.connection.target as HTMLElement).getAttribute('data-cardid');
 
         // check if it creates a loop
         //        logger.debug("Before DROP Connection: from ", prevCardId, " to ", nextCardId, params)
@@ -179,7 +179,7 @@ export default function ActivityFlowChart(): JSX.Element {
         // Move existing link
         //        const prevCardId = params.connection.source.getAttribute("data-cardid")
         //        const nextCardId = params.newEndpoint.element.getAttribute("data-cardid")
-        logger.info("Before Drop");
+        logger.info('Before Drop');
         const data = params.connection.getData();
         if (data) {
           const link = data['link'] as ActivityFlowLink;
@@ -190,21 +190,36 @@ export default function ActivityFlowChart(): JSX.Element {
             if (prevCardId === nextCardId) {
               dispatch(API.deleteActivityFlowLink(link.id!));
             } else {
-              logger.debug("BEFOREDROP Connection: from ", prevCardId, " to ", nextCardId, link, params)
-              if (prevCardId != null && +prevCardId !== link.previousCardId && +prevCardId !== link.nextCardId) {
-                logger.debug("New source", prevCardId);
+              logger.debug(
+                'BEFOREDROP Connection: from ',
+                prevCardId,
+                ' to ',
+                nextCardId,
+                link,
+                params,
+              );
+              if (
+                prevCardId != null &&
+                +prevCardId !== link.previousCardId &&
+                +prevCardId !== link.nextCardId
+              ) {
+                logger.debug('New source', prevCardId);
 
-                dispatch(API.changeActivityFlowLinkPreviousCard({
-                  linkId: link.id!,
-                  cardId: +prevCardId
-                }));
+                dispatch(
+                  API.changeActivityFlowLinkPreviousCard({
+                    linkId: link.id!,
+                    cardId: +prevCardId,
+                  }),
+                );
               } else if (nextCardId != null && +nextCardId !== link.nextCardId) {
-                logger.debug("New target ", nextCardId);
+                logger.debug('New target ', nextCardId);
 
-                dispatch(API.changeActivityFlowLinkNextCard({
-                  linkId: link.id!,
-                  cardId: +nextCardId
-                }));
+                dispatch(
+                  API.changeActivityFlowLinkNextCard({
+                    linkId: link.id!,
+                    cardId: +nextCardId,
+                  }),
+                );
               }
             }
             return false;
@@ -213,19 +228,20 @@ export default function ActivityFlowChart(): JSX.Element {
         return true;
       });
 
-
       plumb.bind(EVENT_CONNECTION, (params: ConnectionEstablishedParams<HTMLDivElement>) => {
         // create FlowLink !
-        const prevCardId = params.source.getAttribute("data-cardid")
-        const nextCardId = params.target.getAttribute("data-cardid")
+        const prevCardId = params.source.getAttribute('data-cardid');
+        const nextCardId = params.target.getAttribute('data-cardid');
         const link = params.connection.getData()['link'];
 
         if (link == null && prevCardId != null && nextCardId != null) {
-          logger.debug("New link", prevCardId, " to ", nextCardId, "with data: ", link);
-          dispatch(API.createActivityFlowLink({
-            previousId: +prevCardId,
-            nextId: +nextCardId
-          }));
+          logger.debug('New link', prevCardId, ' to ', nextCardId, 'with data: ', link);
+          dispatch(
+            API.createActivityFlowLink({
+              previousId: +prevCardId,
+              nextId: +nextCardId,
+            }),
+          );
           plumbRefs.current.connections['tmp'] = params.connection;
           //params.connection.destroy();
         }
@@ -238,22 +254,29 @@ export default function ActivityFlowChart(): JSX.Element {
     () => {
       //clean
       if (jsPlumb) {
-        logger.debug("Clear JSPLUB");
+        logger.debug('Clear JSPLUB');
         jsPlumb.destroy();
       }
     };
   }, [rootNode, dispatch]);
 
   const cardsStatus = useAppSelector(state => state.cards.status);
-  const cards: Card[] = useAppSelector(state =>
-    Object.values(state.cards.cards)
-      .flatMap(card => card.card != null && card.card.parentId != null
-        ? [card.card] : [])
-    , shallowEqual);
+  const cards: Card[] = useAppSelector(
+    state =>
+      Object.values(state.cards.cards).flatMap(card =>
+        card.card != null && card.card.parentId != null ? [card.card] : [],
+      ),
+    shallowEqual,
+  );
 
   const contentsStatus = useAppSelector(state => state.cards.contentStatus);
-  const cardContents: CardContent[] = useAppSelector(state => Object.values(state.cards.contents)
-    .flatMap(contents => contents.content != null ? [contents.content] : []), shallowEqual);
+  const cardContents: CardContent[] = useAppSelector(
+    state =>
+      Object.values(state.cards.contents).flatMap(contents =>
+        contents.content != null ? [contents.content] : [],
+      ),
+    shallowEqual,
+  );
 
   const linksStatus = useAppSelector(state => state.activityFlowLinks.status);
   const links = useAppSelector(state => Object.values(state.activityFlowLinks.links), shallowEqual);
@@ -280,7 +303,7 @@ export default function ActivityFlowChart(): JSX.Element {
 
   React.useEffect(() => {
     if (jsPlumb) {
-      logger.debug("UseEffect: The Paint Effect");
+      logger.debug('UseEffect: The Paint Effect');
 
       //      jsPlumb.connections.forEach(connection => {
       //        logger.debug("Connection", connection.source, connection.target);
@@ -298,7 +321,6 @@ export default function ActivityFlowChart(): JSX.Element {
 
         logger.info(`Refresh link from #${link.id} ${fromId}->${toId}`, source, target);
 
-
         if (source != null && target != null) {
           const existingConnection = plumbRefs.current.connections[cId];
           if (existingConnection != null) {
@@ -310,39 +332,44 @@ export default function ActivityFlowChart(): JSX.Element {
             }
           } else {
             if (plumbRefs.current.connections[cId] == null) {
-              const connection =
-                jsPlumb.connect({
-                  source: source,
-                  target: target,
-                  data: {link},
-                  reattach: true,
-                });
+              const connection = jsPlumb.connect({
+                source: source,
+                target: target,
+                data: { link },
+                reattach: true,
+              });
               plumbRefs.current.connections[cId] = connection;
             }
           }
         } else {
-          logger.info("Missing node");
+          logger.info('Missing node');
         }
       });
 
       Object.entries(plumbRefs.current.connections).forEach(([key, connection]) => {
         if (connection) {
-          logger.debug("RefConnection", connection.source, connection.target, connection.endpoints[0]?.element, connection.endpoints[1]?.element);
+          logger.debug(
+            'RefConnection',
+            connection.source,
+            connection.target,
+            connection.endpoints[0]?.element,
+            connection.endpoints[1]?.element,
+          );
           const data = connection.getData();
           if (data) {
             const theLink = data['link'] as ActivityFlowLink;
             if (!links.find(link => link.id === theLink?.id)) {
-              logger.debug("No link => delete connection and ref")
+              logger.debug('No link => delete connection and ref');
               jsPlumb.deleteConnection(connection);
               delete plumbRefs.current.connections[key];
             }
           } else {
-            logger.debug("No data => delete connection and ref")
+            logger.debug('No data => delete connection and ref');
             jsPlumb.deleteConnection(connection);
             delete plumbRefs.current.connections[key];
           }
         } else {
-          logger.debug("No Connection => delete ref")
+          logger.debug('No Connection => delete ref');
           delete plumbRefs.current.connections[key];
         }
       });
@@ -370,34 +397,40 @@ export default function ActivityFlowChart(): JSX.Element {
   if (status === 'READY' && project == null) {
     return <i>Error: no project selected</i>;
   } else if (cardsStatus === 'READY' && contentsStatus === 'READY' && linksStatus === 'READY') {
-
     // cards with direction acivity flow link connection
-    const inFlow = cards
-      .filter(card => links.find(link => link.nextCardId === card.id || link.previousCardId === card.id));
+    const inFlow = cards.filter(card =>
+      links.find(link => link.nextCardId === card.id || link.previousCardId === card.id),
+    );
 
     // cards in the activity flow becaus of an ancestor
     const inFlowChildren = uniq(inFlow.flatMap(card => getChildrenDeep(card, cards, cardContents)));
 
     // cards not in the activity neither directy not transitively
-    const notInFlow = cards.filter(card => !inFlow.includes(card) && !inFlowChildren.includes(card));
-
+    const notInFlow = cards.filter(
+      card => !inFlow.includes(card) && !inFlowChildren.includes(card),
+    );
 
     const cardsToProcess = [...inFlow];
-    const cardGroups: Card[][] = []
+    const cardGroups: Card[][] = [];
     const linksToProcess = [...links];
     while (linksToProcess.length > 0) {
       // extract all card with no predecessor (or already processed predecessor)
-      const cardGroup = cardsToProcess.filter(card => linksToProcess.find(link => link.nextCardId === card.id) == null)
+      const cardGroup = cardsToProcess.filter(
+        card => linksToProcess.find(link => link.nextCardId === card.id) == null,
+      );
       if (cardGroup.length > 0) {
         // stack the group
         cardGroups.push(cardGroup);
         // no need to process links from this group any longer
-        removeAll(linksToProcess, linksToProcess.filter(link => cardGroup.find(card => card.id === link.previousCardId)));
+        removeAll(
+          linksToProcess,
+          linksToProcess.filter(link => cardGroup.find(card => card.id === link.previousCardId)),
+        );
         // no need to process cards from this group any longer
         removeAll(cardsToProcess, cardGroup);
       } else {
-        logger.debug("LinksToProcess: ", linksToProcess);
-        logger.debug("CardsToProcess: ", cardsToProcess);
+        logger.debug('LinksToProcess: ', linksToProcess);
+        logger.debug('CardsToProcess: ', cardsToProcess);
         // purge
         linksToProcess.length = 0;
       }
@@ -407,58 +440,61 @@ export default function ActivityFlowChart(): JSX.Element {
     }
 
     return (
-      <Flex direction='column'
-        ref={ref => setRootNode(ref)}
+      <Flex
+        direction="column"
+        theRef={ref => setRootNode(ref)}
         className={css({
-          "& .jtk-endpoint": {
+          '& .jtk-endpoint': {
             zIndex: 2,
           },
-          "& .jtk-drag-hover": {
-            boxShadow: "0 0 1px 1px hotpink"
-          }
+          '& .jtk-drag-hover': {
+            boxShadow: '0 0 1px 1px hotpink',
+          },
         })}
       >
-        {jsPlumb != null ? <>
-          <span>Activity Flow</span>
-          <Flex direction='row'>
-            {cardGroups.map((group, i) => (
-              <Flex
-                direction='column'
-                justify='space-evenly'
-                className={css({padding: "20px"})}
-                key={`group-${i}`}>
-                {group.map(card => (
-                  <Card
-                    key={`Card-${card.id!}`}
-                    card={card}
-                    allVariants={cardContents}
-                    jsPlumb={jsPlumb}
-                    plumbRefs={plumbRefs.current}
-                    showProgressBar
-                  />
-                ))}
-              </Flex>
-            ))}
-          </Flex>
-          <span>Not in flow</span>
-          <Flex direction='row'>
-            {notInFlow.map(card =>
-              <Card
-                key={`Card-${card.id!}`}
-                card={card}
-                allVariants={cardContents}
-                jsPlumb={jsPlumb}
-                plumbRefs={plumbRefs.current}
-                showProgressBar
-              />
-            )}
-          </Flex>
-        </>
-          : null}
+        {jsPlumb != null ? (
+          <>
+            <span>Activity Flow</span>
+            <Flex direction="row">
+              {cardGroups.map((group, i) => (
+                <Flex
+                  direction="column"
+                  justify="space-evenly"
+                  className={css({ padding: '20px' })}
+                  key={`group-${i}`}
+                >
+                  {group.map(card => (
+                    <Card
+                      key={`Card-${card.id!}`}
+                      card={card}
+                      allVariants={cardContents}
+                      jsPlumb={jsPlumb}
+                      plumbRefs={plumbRefs.current}
+                      showProgressBar
+                    />
+                  ))}
+                </Flex>
+              ))}
+            </Flex>
+            <span>Not in flow</span>
+            <Flex direction="row">
+              {notInFlow.map(card => (
+                <Card
+                  key={`Card-${card.id!}`}
+                  card={card}
+                  allVariants={cardContents}
+                  jsPlumb={jsPlumb}
+                  plumbRefs={plumbRefs.current}
+                  showProgressBar
+                />
+              ))}
+            </Flex>
+          </>
+        ) : null}
       </Flex>
     );
   } else {
-    return <InlineLoading />
+    return <InlineLoading />;
   }
 }
 
@@ -466,7 +502,12 @@ function getVariantsOfCard(card: Card, variants: CardContent[]) {
   return variants.filter(content => content.cardId === card.id);
 }
 
-const assignDiv = (jsPlumb: BrowserJsPlumbInstance, refs: PlumbRef['divs'], element: Element | null, key: string) => {
+const assignDiv = (
+  jsPlumb: BrowserJsPlumbInstance,
+  refs: PlumbRef['divs'],
+  element: Element | null,
+  key: string,
+) => {
   logger.debug('Assign div ', key, ' to ', element);
   if (element != null) {
     jsPlumb.manage(element);
@@ -483,5 +524,5 @@ function removeAll<T>(list: T[], itemsToRemove: T[]) {
     if (i >= 0) {
       list.splice(i, 1);
     }
-  })
+  });
 }

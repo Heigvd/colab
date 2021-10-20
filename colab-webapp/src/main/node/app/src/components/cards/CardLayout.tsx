@@ -5,18 +5,18 @@
  * Licensed under the MIT License
  */
 
-import {css, cx} from '@emotion/css';
-import {faPen, faSearch} from '@fortawesome/free-solid-svg-icons';
-import {Card, CardContent} from 'colab-rest-client';
+import { css, cx } from '@emotion/css';
+import { faPen, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import * as API from '../../API/api';
-import {useAppDispatch} from '../../store/hooks';
-import {Destroyer} from '../common/Destroyer';
+import { useAppDispatch } from '../../store/hooks';
+import { Destroyer } from '../common/Destroyer';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import WithToolbar from '../common/WithToolbar';
-import {cardShadow, cardStyle} from '../styling/style';
+import { cardShadow, cardStyle } from '../styling/style';
 import CardCreator from './CardCreator';
 
 const progressBarContainer = css({
@@ -32,7 +32,7 @@ const progressBarStyle = (width: number) =>
     backgroundColor: '#2674AC',
   });
 
-export function ProgressBar({variant}: {variant: CardContent | undefined}): JSX.Element {
+export function ProgressBar({ variant }: { variant: CardContent | undefined }): JSX.Element {
   const percent = variant != null ? variant.completionLevel : 0;
   return (
     <div className={progressBarContainer}>

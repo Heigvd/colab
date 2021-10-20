@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { BlockDocument, TextDataBlock } from 'colab-rest-client';
 import * as React from 'react';
@@ -15,6 +16,8 @@ import IconButton from '../../common/IconButton';
 export interface BlockDocProps {
   doc: BlockDocument;
 }
+
+const addButtonStyle = css({ marginTop: '20px', display: 'block' });
 
 export function CreateBlockButton({ doc }: BlockDocProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -29,7 +32,7 @@ export function CreateBlockButton({ doc }: BlockDocProps): JSX.Element {
   }, [doc, dispatch]);
 
   return (
-    <IconButton icon={faPlus} onClick={createBlock}>
+    <IconButton className={addButtonStyle} icon={faPlus} onClick={createBlock}>
       Create a new block
     </IconButton>
   );

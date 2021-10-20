@@ -99,6 +99,7 @@ export default function AutoSaveInput({
         toolbarPosition="RIGHT_MIDDLE"
         toolbarClassName=""
         offsetY={0.5}
+        grow={0}
         toolbar={<IconButton icon={faPen} title="edit" onClick={editCb} />}
       >
         <>

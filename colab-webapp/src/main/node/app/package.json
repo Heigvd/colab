@@ -6,7 +6,7 @@
     "author": "Albasim <albasim@heig-vd.ch>",
     "license": "MIT",
     "private": true,
-    "main": "dist/index.js",
+    "main": "../../../../target/coLAB/dist/index.js",
     "scripts": {
         "clean": "rimraf ../../../../target/coLAB/dist && rimraf ../../../../target/ts-coverage && rimraf ../../../../target/ts-test-report",
         "test": "jest",
@@ -72,7 +72,6 @@
         "@emotion/react": "^11.4.1",
         "@svgr/webpack": "5.5.0",
         "@types/diff": "^5.0.0",
-        "@types/jest": "^27.0.2",
         "@types/lodash": "^4.14.175",
         "@types/react": "^17.0.24",
         "@types/react-color": "^3.0.5",
