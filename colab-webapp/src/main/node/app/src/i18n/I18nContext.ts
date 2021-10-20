@@ -8,7 +8,7 @@
 
 import * as React from 'react';
 import { en } from './en';
-import { fr } from './fr';
+//import { fr } from './fr';
 
 export type Language = 'FR' | 'EN';
 
@@ -28,7 +28,7 @@ export default function useTranslations(): typeof en {
   const { lang } = React.useContext(I18nCtx);
 
   if (lang === 'FR') {
-    return fr;
+    return en; // TODO
   } else {
     return en;
   }

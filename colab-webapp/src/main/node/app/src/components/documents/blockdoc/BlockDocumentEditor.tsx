@@ -8,6 +8,7 @@
 import { BlockDocument } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
+import useTranslations from '../../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
 import AutoSaveInput from '../../common/AutoSaveInput';
@@ -20,6 +21,7 @@ export interface BlockDocProps {
 
 export function BlockDocumentEditor({ doc }: BlockDocProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const blockIds = useAppSelector(state => {
     if (doc.id) {
@@ -37,13 +39,13 @@ export function BlockDocumentEditor({ doc }: BlockDocProps): JSX.Element {
   return (
     <div>
       <AutoSaveInput
-        placeholder="unnamed"
+        placeholder={i18n.document.untitled}
         value={doc.title || ''}
         onChange={newValue => dispatch(API.updateDocument({ ...doc, title: newValue }))}
       />
       <AutoSaveInput
         inputType="TEXTAREA"
-        placeholder="no teaser"
+        placeholder={i18n.document.noTeaser}
         value={doc.teaser || ''}
         onChange={newValue => dispatch(API.updateDocument({ ...doc, teaser: newValue }))}
       />
@@ -52,6 +54,7 @@ export function BlockDocumentEditor({ doc }: BlockDocProps): JSX.Element {
       ) : (
         blockIds.map(id => <BlockEditorWrapper key={id} blockId={id} />)
       )}
+
       <CreateBlockButton doc={doc} />
     </div>
   );

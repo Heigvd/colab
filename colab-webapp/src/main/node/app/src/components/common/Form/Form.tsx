@@ -15,12 +15,13 @@ import Button from '../Button';
 import InlineLoading from '../InlineLoading';
 import Checkbox from './Checkbox';
 import Input from './Input';
+import SelectInput from './SelectInput';
 import Toggler from './Toggler';
 
 const PasswordStrengthBar = React.lazy(() => import('react-password-strength-bar'));
 
 export interface BaseField<T> {
-  type: 'text' | 'textarea' | 'password' | 'boolean';
+  type: 'text' | 'textarea' | 'password' | 'boolean' | 'select' | 'selectnumber';
   key: keyof T;
   readonly?: boolean;
   label?: React.ReactNode;
@@ -35,6 +36,24 @@ export interface TextualField<T> extends BaseField<T> {
   type: 'text' | 'textarea';
 }
 
+export interface SelectField<T> extends BaseField<T> {
+  type: 'select';
+  canCreateOption?: boolean;
+  options: { label: string; value: string }[];
+}
+
+export interface SelectNumberField<T> extends BaseField<T> {
+  type: 'selectnumber';
+  options: { label: string; value: number }[];
+}
+
+//TODO: unify SelectInputs; something like (hint: this attempt does not work);
+//
+//export interface UniSelectField<T> extends BaseField<T> {
+//  type: 'select';
+//  options: {label: string, value: T[BaseField<T>['key']]}[];
+//}
+
 export interface PasswordField<T> extends BaseField<T> {
   type: 'password';
   showStrenghBar: boolean;
@@ -48,7 +67,12 @@ export interface BooleanField<T> extends BaseField<T> {
 
 //type: 'text' | 'password' | 'password_with_strength_bar' | 'toggle';
 
-export type Field<T> = TextualField<T> | PasswordField<T> | BooleanField<T>;
+export type Field<T> =
+  | TextualField<T>
+  | PasswordField<T>
+  | BooleanField<T>
+  | SelectField<T>
+  | SelectNumberField<T>;
 
 export interface FormProps<T> {
   fields: Field<T>[];
@@ -121,6 +145,39 @@ export default function Form<T>({
             value={String(state[field.key] || '')}
             label={field.label}
             placeholder={field.placeholder}
+            warning={erroneous && isErroneous ? field.errorMessage : undefined}
+            mandatory={field.isMandatory}
+            onChange={value => setFormValue(field.key, value)}
+            readonly={field.readonly}
+          />
+          {field.fieldFooter != null ? field.fieldFooter : null}
+        </div>
+      );
+    } else if (field.type === 'select') {
+      return (
+        <div key={fieldKey}>
+          <SelectInput
+            value={String(state[field.key])}
+            label={field.label}
+            placeholder={field.placeholder}
+            options={field.options}
+            warning={erroneous && isErroneous ? field.errorMessage : undefined}
+            mandatory={field.isMandatory}
+            onChange={value => setFormValue(field.key, value)}
+            readonly={field.readonly}
+            canCreateOption={field.canCreateOption}
+          />
+          {field.fieldFooter != null ? field.fieldFooter : null}
+        </div>
+      );
+    } else if (field.type === 'selectnumber') {
+      return (
+        <div key={fieldKey}>
+          <SelectInput
+            value={Number(state[field.key])}
+            label={field.label}
+            placeholder={field.placeholder}
+            options={field.options}
             warning={erroneous && isErroneous ? field.errorMessage : undefined}
             mandatory={field.isMandatory}
             onChange={value => setFormValue(field.key, value)}

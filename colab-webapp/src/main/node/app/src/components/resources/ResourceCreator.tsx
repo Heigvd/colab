@@ -5,13 +5,13 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import CheckBox from '../common/CheckBox';
+import Form, { Field } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
-import OpenClose from '../common/OpenClose';
-import Overlay from '../common/Overlay';
+import OpenCloseModal, { modalPadding } from '../common/OpenCloseModal';
 import { addIcon, cancelIcon, createIcon, reinitIcon } from '../styling/defaultIcons';
 import {
   CreationScope,
@@ -24,118 +24,144 @@ import {
  * the context in which we create a new resource
  */
 
-export type ResourceCreatorProps = { contextInfo: ResourceCallContext };
+export type ResourceCreatorProps = { contextInfo: ResourceCallContext; categories: string[] };
 
 const defaultDocType = 'BlockDocument';
 
-export default function ResourceCreator({ contextInfo }: ResourceCreatorProps): JSX.Element {
+interface ResourceType {
+  docType: 'BlockDocument' | 'ExternalDocLink' | 'HostedDocLink';
+  title: string;
+  teaser: string;
+  category: string;
+  atCardContentLevel: boolean;
+}
+
+const defaultResource: ResourceType = {
+  docType: defaultDocType,
+  title: '',
+  teaser: '',
+  category: '',
+  atCardContentLevel: false,
+};
+
+export default function ResourceCreator({
+  contextInfo,
+  categories,
+}: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const [docType, setDocType] = React.useState<
-    'BlockDocument' | 'ExternalDocLink' | 'HostedDocLink'
-  >(defaultDocType);
-  const [title, setTitle] = React.useState('');
-  const [teaser, setTeaser] = React.useState('');
+  const [state, setState] = React.useState<ResourceType>(defaultResource);
 
-  // const [url, setUrl] = React.useState('');
-  // const [pathname, setPathName] = React.useState('');
+  const resetInputs = React.useCallback(() => {
+    setState(defaultResource);
+  }, []);
 
-  const [category, setCategory] = React.useState('');
+  const fields: Field<ResourceType>[] = [
+    {
+      key: 'title',
+      type: 'text',
+      label: 'title',
+      placeholder: 'title',
+      isMandatory: true,
+    },
+    {
+      key: 'teaser',
+      type: 'text',
+      label: 'teaser',
+      placeholder: 'teaser',
+      isMandatory: true,
+    },
+    {
+      key: 'category',
+      type: 'select',
+      label: 'category',
+      options: categories.map(c => ({ label: c, value: c })),
+      canCreateOption: true,
+      placeholder: 'category',
+      isMandatory: true,
+    },
+    {
+      key: 'docType',
+      type: 'select',
+      options: [
+        //docType: 'BlockDocument' | 'ExternalDocLink' | 'HostedDocLink';
+        { label: 'Document', value: 'BlockDocument' },
+        { label: 'Link', value: 'ExternalDocLink' },
+        //{label: File', value: 'HostedDocLink'}
+      ],
+      isMandatory: true,
+    },
+  ];
 
-  const [atCardContentLevel, setAtCardContentLevel] = React.useState(false);
-
-  function resetInputs() {
-    setDocType(defaultDocType);
-    setTitle('');
-    setTeaser('');
-    setCategory('');
-    setAtCardContentLevel(false);
-    // must be the same as the default values of the states
+  if (contextInfo.kind == ResourceContextScope.CardOrCardContent) {
+    fields.push({
+      key: 'atCardContentLevel',
+      label: 'is only for the present version',
+      type: 'boolean',
+      isMandatory: false,
+      showAs: 'checkbox',
+    });
   }
-
   return (
-    <OpenClose collapsedChildren={<IconButton icon={addIcon} title="add a resource" />}>
+    <OpenCloseModal
+      title="Create a resource"
+      collapsedChildren={<IconButton title="add a sticky note" icon={addIcon} />}
+    >
       {collapse => (
-        <Overlay>
-          <>
-            <h2>Create a resource</h2>
-            <p>
-              {'Title : '}
-              <input value={title} onChange={event => setTitle(event.target.value)} />
-            </p>
-            <p>
-              {'Teaser : '}
-              <input value={teaser} onChange={event => setTeaser(event.target.value)} />
-            </p>
-            {/* <p> {'Doc type : '}
-            <Select options={} /> TODO
-            </p> */}
-            <p>
-              {'Category : '}
-              <input value={category} onChange={event => setCategory(event.target.value)} />
-            </p>
-            {contextInfo.kind == ResourceContextScope.CardOrCardContent && (
-              <p>
-                <CheckBox
-                  label="is only for the present variant"
-                  value={atCardContentLevel}
-                  onChange={() => setAtCardContentLevel(!atCardContentLevel)}
-                />
-              </p>
-            )}
-            <p>
-              <IconButton
-                icon={createIcon}
-                title="create"
-                onClick={() => {
-                  let creationScope: CreationScope;
-                  if (contextInfo.kind == ResourceContextScope.CardType) {
+        <div className={css({ padding: modalPadding })}>
+          <Form fields={fields} value={state} autoSubmit={true} onSubmit={setState} />
+          <div>
+            <IconButton
+              icon={createIcon}
+              title="create"
+              onClick={() => {
+                let creationScope: CreationScope;
+                if (contextInfo.kind == ResourceContextScope.CardType) {
+                  creationScope = {
+                    kind: CreationScopeKind.CardType,
+                    cardTypeId: contextInfo.cardTypeId,
+                  };
+                } else {
+                  if (state.atCardContentLevel) {
                     creationScope = {
-                      kind: CreationScopeKind.CardType,
-                      cardTypeId: contextInfo.cardTypeId,
+                      kind: CreationScopeKind.CardContent,
+                      cardContentId: contextInfo.cardContentId,
                     };
                   } else {
-                    if (atCardContentLevel) {
-                      creationScope = {
-                        kind: CreationScopeKind.CardContent,
-                        cardContentId: contextInfo.cardContentId,
-                      };
-                    } else {
-                      creationScope = {
-                        kind: CreationScopeKind.Card,
-                        cardId: contextInfo.cardId,
-                      };
-                    }
+                    creationScope = {
+                      kind: CreationScopeKind.Card,
+                      cardId: contextInfo.cardId,
+                    };
                   }
-                  dispatch(
-                    API.createResource({
-                      document: {
-                        '@class': docType,
-                        title: title,
-                        teaser: teaser,
-                      },
-                      creationScope,
-                      category,
-                    }),
-                  ).then(() => {
-                    resetInputs();
-                    collapse();
-                  });
-                }}
-              />
-              <IconButton icon={reinitIcon} title="reinit" onClick={() => resetInputs()} />
-              <IconButton
-                icon={cancelIcon}
-                title="cancel"
-                onClick={() => {
-                  // see if it is better to reset the values or not
+                }
+                dispatch(
+                  API.createResource({
+                    document: {
+                      '@class': state.docType,
+                      title: state.title,
+                      teaser: state.teaser,
+                    },
+                    creationScope,
+                    category: state.category,
+                  }),
+                ).then(() => {
+                  resetInputs();
                   collapse();
-                }}
-              />
-            </p>
-          </>
-        </Overlay>
+                });
+              }}
+            />
+            <IconButton icon={reinitIcon} title="reinit" onClick={() => resetInputs()} />
+            <IconButton
+              icon={cancelIcon}
+              title="cancel"
+              onClick={() => {
+                // see if it is better to reset the values or not
+                collapse();
+              }}
+            />
+          </div>
+        </div>
       )}
-    </OpenClose>
+    </OpenCloseModal>
   );
 }

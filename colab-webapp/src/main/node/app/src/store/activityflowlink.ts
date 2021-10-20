@@ -5,17 +5,17 @@
  * Licensed under the MIT License
  */
 
-import {createSlice} from '@reduxjs/toolkit';
-import {ActivityFlowLink} from 'colab-rest-client';
+import { createSlice } from '@reduxjs/toolkit';
+import { ActivityFlowLink } from 'colab-rest-client';
 import * as API from '../API/api';
-import {processMessage} from '../ws/wsThunkActions';
-import {LoadingStatus} from './store';
+import { processMessage } from '../ws/wsThunkActions';
+import { LoadingStatus } from './store';
 
 export interface ActivityFlowState {
   status: LoadingStatus;
   links: Record<number, ActivityFlowLink>;
-  byCardNext: Record<number, {activityFlowIds: number[]; status: LoadingStatus}>;
-  byCardPrev: Record<number, {activityFlowIds: number[]; status: LoadingStatus}>;
+  byCardNext: Record<number, { activityFlowIds: number[]; status: LoadingStatus }>;
+  byCardPrev: Record<number, { activityFlowIds: number[]; status: LoadingStatus }>;
 }
 
 const initialState: ActivityFlowState = {
@@ -25,14 +25,18 @@ const initialState: ActivityFlowState = {
   byCardPrev: {},
 };
 
-const updateActivityFlow = (state: ActivityFlowState, activityFlow: ActivityFlowLink, defaultCardStatus?: LoadingStatus) => {
+const updateActivityFlow = (
+  state: ActivityFlowState,
+  activityFlow: ActivityFlowLink,
+  defaultCardStatus?: LoadingStatus,
+) => {
   if (activityFlow.id != null) {
-
-
     if (activityFlow.previousCardId) {
-
       if (defaultCardStatus != null && state.byCardPrev[activityFlow.previousCardId] == null) {
-        state.byCardPrev[activityFlow.previousCardId] = {activityFlowIds: [], status: defaultCardStatus};
+        state.byCardPrev[activityFlow.previousCardId] = {
+          activityFlowIds: [],
+          status: defaultCardStatus,
+        };
       }
       const stateForPrevCard = state.byCardPrev[activityFlow.previousCardId];
 
@@ -44,9 +48,11 @@ const updateActivityFlow = (state: ActivityFlowState, activityFlow: ActivityFlow
     }
 
     if (activityFlow.nextCardId) {
-
       if (defaultCardStatus != null && state.byCardNext[activityFlow.nextCardId] == null) {
-        state.byCardNext[activityFlow.nextCardId] = {activityFlowIds: [], status: defaultCardStatus};
+        state.byCardNext[activityFlow.nextCardId] = {
+          activityFlowIds: [],
+          status: defaultCardStatus,
+        };
       }
       const stateForNextCard = state.byCardNext[activityFlow.nextCardId];
       if (stateForNextCard) {
@@ -82,7 +88,6 @@ const removeActivityFlow = (state: ActivityFlowState, activityFlowId: number) =>
         }
       }
     }
-
   }
 
   delete state.links[activityFlowId];
@@ -100,7 +105,7 @@ const activityFlowLinksSlice = createSlice({
           removeActivityFlow(state, indexEntry.id),
         );
       })
-      .addCase(API.getAllActivityFlowLinks.pending, (state) => {
+      .addCase(API.getAllActivityFlowLinks.pending, state => {
         state.status = 'LOADING';
       })
       .addCase(API.getAllActivityFlowLinks.fulfilled, (state, action) => {

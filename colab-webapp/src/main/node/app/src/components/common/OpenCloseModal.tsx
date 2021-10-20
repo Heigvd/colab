@@ -29,6 +29,8 @@ export const defaultIconClassName = css({
   textAlign: 'center',
 });
 
+export const modalPadding = '25px';
+
 export default function OpenCloseModal({
   className,
   collapsedChildren,

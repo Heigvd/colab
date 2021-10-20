@@ -132,7 +132,7 @@ export function ChangeTreeRaw({
   React.useEffect(() => {
     if (plumb != undefined) {
       // redraw everything
-      plumb.connections.forEach(c => c.destroy());
+      plumb.connections.forEach(c => plumb.deleteConnection(c));
       changes.map(change => {
         change.basedOn.map(link => {
           plumb.connect({

@@ -9,6 +9,7 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 
 export interface FlexProps {
+  theRef?: React.Ref<HTMLDivElement>;
   direction?: 'row' | 'column';
   className?: string;
   onClick?: () => void;
@@ -40,58 +41,22 @@ export interface FlexProps {
   children: React.ReactNode;
 }
 
-//export default function Flex({
-//  children,
-//  onClick,
-//  overflow,
-//  className,
-//  wrap,
-//  shrink,
-//  grow,
-//  direction = 'row',
-//  justify = 'normal',
-//  align = 'normal',
-//}: FlexProps): JSX.Element {
-//  return (
-//    <div
-//      onClick={onClick}
-//      className={cx(
-//        css({
-//          display: 'flex',
-//          flexDirection: direction,
-//          [direction === 'column' ? 'overflowY' : 'overflowX']: overflow,
-//          justifyContent: justify,
-//          alignItems: align,
-//          flexShrink: shrink,
-//          flexGrow: grow,
-//          flexWrap: wrap,
-//        }),
-//        className,
-//      )}
-//    >
-//      {children}
-//    </div>
-//  );
-//}
-
-export default React.forwardRef<HTMLDivElement, FlexProps>(function Flex(
-  {
-    children,
-    onClick,
-    overflow,
-    className,
-    wrap,
-    shrink,
-    grow,
-    direction = 'row',
-    justify = 'normal',
-    align = 'normal',
-  },
-  ref,
-) {
+export default function Flex({
+  theRef,
+  children,
+  onClick,
+  overflow,
+  className,
+  wrap,
+  shrink,
+  grow,
+  direction = 'row',
+  justify = 'normal',
+  align = 'normal',
+}: FlexProps): JSX.Element {
   return (
     <div
-      ref={ref}
+      ref={theRef}
       onClick={onClick}
       className={cx(
         css({
@@ -110,4 +75,42 @@ export default React.forwardRef<HTMLDivElement, FlexProps>(function Flex(
       {children}
     </div>
   );
-});
+}
+
+//export default React.forwardRef<HTMLDivElement, FlexProps>(function Flex(
+//  {
+//    children,
+//    onClick,
+//    overflow,
+//    className,
+//    wrap,
+//    shrink,
+//    grow,
+//    direction = 'row',
+//    justify = 'normal',
+//    align = 'normal',
+//  },
+//  ref,
+//) {
+//  return (
+//    <div
+//      ref={ref}
+//      onClick={onClick}
+//      className={cx(
+//        css({
+//          display: 'flex',
+//          flexDirection: direction,
+//          [direction === 'column' ? 'overflowY' : 'overflowX']: overflow,
+//          justifyContent: justify,
+//          alignItems: align,
+//          flexShrink: shrink,
+//          flexGrow: grow,
+//          flexWrap: wrap,
+//        }),
+//        className,
+//      )}
+//    >
+//      {children}
+//    </div>
+//  );
+//});

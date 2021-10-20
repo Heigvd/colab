@@ -6,9 +6,9 @@
  * Licensed under the MIT License
  */
 
-import { ColabTranslations } from './I18nContext';
+// import { ColabTranslations } from './I18nContext';
 
-export const fr: ColabTranslations = {
+export const fr /*: ColabTranslations */ = {
   pleaseProvideData: 'Merci de remplir tous les champs',
   cancel: 'annuler',
   agree: 'Accepter',

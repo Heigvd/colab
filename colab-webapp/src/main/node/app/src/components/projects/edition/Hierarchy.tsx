@@ -5,17 +5,17 @@
  * Licensed under the MIT License
  */
 
-import {css, cx} from '@emotion/css';
-import {BrowserJsPlumbInstance, newInstance} from '@jsplumb/browser-ui';
+import { css, cx } from '@emotion/css';
+import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import '@jsplumb/connector-flowchart';
-import {Connection} from '@jsplumb/core';
-import {Card, CardContent} from 'colab-rest-client';
-import {throttle} from 'lodash';
+import { Connection } from '@jsplumb/core';
+import { Card, CardContent } from 'colab-rest-client';
+import { throttle } from 'lodash';
 import * as React from 'react';
 import * as API from '../../../API/api';
-import {getLogger} from '../../../logger';
-import {useProjectBeingEdited} from '../../../selectors/projectSelector';
-import {CardContentDetail} from '../../../store/card';
+import { getLogger } from '../../../logger';
+import { useProjectBeingEdited } from '../../../selectors/projectSelector';
+import { CardContentDetail } from '../../../store/card';
 import {
   customColabStateEquals,
   shallowEqual,
@@ -25,7 +25,7 @@ import {
 import CardCreator from '../../cards/CardCreator';
 import Flex from '../../common/Flex';
 import InlineLoading from '../../common/InlineLoading';
-import {cardShadow} from '../../styling/style';
+import { cardShadow } from '../../styling/style';
 
 const logger = getLogger('JsPlumb');
 logger.setLevel(4);
@@ -128,7 +128,7 @@ interface CardGroupProps {
   divRefs: PlumbRef['divs'];
 }
 
-function CardGroup({card, divRefs}: CardGroupProps) {
+function CardGroup({ card, divRefs }: CardGroupProps) {
   const dispatch = useAppDispatch();
 
   const root = useAppSelector(state => {
@@ -169,7 +169,7 @@ function CardGroup({card, divRefs}: CardGroupProps) {
       {contents != null ? (
         <Flex
           direction="row"
-          ref={ref => {
+          theRef={ref => {
             assignDiv(divRefs, ref, `CardGroup-${card.id}`);
           }}
         >
@@ -257,7 +257,7 @@ function manageConnection({
   }
 }
 
-function SubCardCreator({divRefs, cRefs, jsPlumb, parent}: SubCardCreatorProps) {
+function SubCardCreator({ divRefs, cRefs, jsPlumb, parent }: SubCardCreatorProps) {
   const parentNode = divRefs[`CardContent-${parent.id}`];
   //  const thisNode = divRefs[`CreateSubCard-${parent.id}`];
   const [thisNode, setThisNode] = React.useState<HTMLDivElement | undefined>(undefined);
@@ -294,13 +294,13 @@ function SubCardCreator({divRefs, cRefs, jsPlumb, parent}: SubCardCreatorProps) 
 
 interface AllSubsContainerProps {
   contents: (CardContentDetail | undefined)[];
-  subs: {[contentId: number]: (Card | undefined)[] | null | undefined};
+  subs: { [contentId: number]: (Card | undefined)[] | null | undefined };
   divRefs: PlumbRef['divs'];
   cRefs: PlumbRef['connections'];
   jsPlumb: BrowserJsPlumbInstance;
 }
 
-function AllSubsContainer({contents, subs, divRefs, cRefs, jsPlumb}: AllSubsContainerProps) {
+function AllSubsContainer({ contents, subs, divRefs, cRefs, jsPlumb }: AllSubsContainerProps) {
   return (
     <Flex className={subsStyle} justify="space-evenly">
       {contents.map((v, i) => {
@@ -334,7 +334,7 @@ interface SubContainerProps {
   subcards: (Card | undefined)[];
 }
 
-function SubContainer({parent, subcards, divRefs, cRefs, jsPlumb}: SubContainerProps) {
+function SubContainer({ parent, subcards, divRefs, cRefs, jsPlumb }: SubContainerProps) {
   return (
     <div
       data-cardcontent={parent.id || ''}
@@ -381,7 +381,7 @@ export function CardHierarchy({
 }: CardHierarchyProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const {project, status} = useProjectBeingEdited();
+  const { project, status } = useProjectBeingEdited();
 
   const root = useAppSelector(state => {
     const rootState = state.cards.cards[rootId];
@@ -416,7 +416,7 @@ export function CardHierarchy({
   }, shallowEqual);
 
   const subs = useAppSelector(state => {
-    const result: {[contentId: number]: (Card | undefined)[] | null | undefined} = {};
+    const result: { [contentId: number]: (Card | undefined)[] | null | undefined } = {};
 
     if (contents != null) {
       contents.forEach(content => {
@@ -492,7 +492,7 @@ export function CardHierarchy({
           assignDiv(divRefs, ref, `CardHierarchy-${rootId}`);
         }}
       >
-        {project.rootCardId !== rootId ? <CardGroup card={root.card} divRefs={divRefs} /> : null}
+        <CardGroup card={root.card} divRefs={divRefs} />
         <AllSubsContainer
           contents={contents}
           subs={subs}
@@ -509,10 +509,10 @@ interface HierarchyDisplayProps {
   rootId: number;
 }
 
-export default function Hierarchy({rootId}: HierarchyDisplayProps): JSX.Element {
+export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const plumbRefs = React.useRef<PlumbRef>({divs: {}, connections: {}});
+  const plumbRefs = React.useRef<PlumbRef>({ divs: {}, connections: {} });
 
   const [thisNode, setThisNode] = React.useState<HTMLDivElement | null>(null);
   const [jsPlumb, setJsPlumb] = React.useState<BrowserJsPlumbInstance | undefined>(undefined);
@@ -522,8 +522,8 @@ export default function Hierarchy({rootId}: HierarchyDisplayProps): JSX.Element 
     if (thisNode != null) {
       const plumb = newInstance({
         container: thisNode,
-        connector: {type: 'Flowchart', options: {stub: 10}},
-        paintStyle: {strokeWidth: 1, stroke: 'black'},
+        connector: { type: 'Flowchart', options: { stub: 10 } },
+        paintStyle: { strokeWidth: 1, stroke: 'black' },
         anchors: ['Top', 'Bottom'],
         endpoint: 'Blank',
       });
@@ -574,7 +574,7 @@ export default function Hierarchy({rootId}: HierarchyDisplayProps): JSX.Element 
   // make sure to have all cards
   //const cards = useAllProjectCards();
   const cardStatus = useAppSelector(state => state.cards.status);
-  const {project} = useProjectBeingEdited();
+  const { project } = useProjectBeingEdited();
   const projectId = project != null ? project.id : undefined;
 
   React.useEffect(() => {
@@ -600,7 +600,7 @@ export default function Hierarchy({rootId}: HierarchyDisplayProps): JSX.Element 
     tmpConnection?: Connection;
     delta: [number, number];
     status: 'idle' | 'dragging';
-  }>({status: 'idle', delta: [0, 0]});
+  }>({ status: 'idle', delta: [0, 0] });
 
   const throttleRepaint = React.useMemo(() => {
     if (jsPlumb) {
@@ -613,7 +613,7 @@ export default function Hierarchy({rootId}: HierarchyDisplayProps): JSX.Element 
           }
         },
         40 /** 25x/s */,
-        {leading: true, trailing: true},
+        { leading: true, trailing: true },
       );
     } else {
       return () => {};
@@ -665,7 +665,7 @@ export default function Hierarchy({rootId}: HierarchyDisplayProps): JSX.Element 
 
         if (dndRef.current.tmpConnection) {
           if (jsPlumb) {
-            logger.debug("Destroy TMP connection");
+            logger.debug('Destroy TMP connection');
             jsPlumb.deleteConnection(dndRef.current.tmpConnection);
             dndRef.current.tmpConnection = undefined;
           }
@@ -729,7 +729,7 @@ export default function Hierarchy({rootId}: HierarchyDisplayProps): JSX.Element 
                     target: newParentTarget,
                   });
                 } else {
-                  logger.debug("Move TMP connection");
+                  logger.debug('Move TMP connection');
                   if (dndRef.current.tmpConnection.target !== newParentTarget) {
                     jsPlumb.setTarget(dndRef.current.tmpConnection, newParentTarget);
                   }
