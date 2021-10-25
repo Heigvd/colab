@@ -26,7 +26,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,369,0,66,0,8
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.SubscriptionType,24,0,0,0,3,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ApplicationLifecycleFacade,44,0,2,0,17,0,5,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,WebsocketFacade,724,0,52,0,186,0,58,0,32,0
-colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ResourceFacade,1065,0,108,0,271,0,101,0,47,0
+colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ResourceFacade,1002,0,102,0,259,0,99,0,48,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ProjectFacade,146,0,8,0,40,0,14,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,CardFacade,702,0,76,0,202,0,75,0,37,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,TransactionManager,184,0,10,0,47,0,17,0,12,0
@@ -103,8 +103,8 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.document,ResourceRef,109,
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,ExternalDocLink,44,0,2,0,14,0,8,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,AbstractResource,272,0,44,0,83,0,56,0,34,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,TextDataBlock,65,0,2,0,22,0,12,0,11,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Resource,102,0,4,0,33,0,20,0,18,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Document,196,0,30,0,61,0,42,0,27,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Resource,136,0,6,0,45,0,27,0,24,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Document,166,0,30,0,51,0,38,0,23,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Block,124,0,12,0,43,0,27,0,21,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,BlockDocument,43,0,2,0,14,0,8,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.project,ProjectDao,59,0,0,0,15,0,7,0,7,0
@@ -122,8 +122,9 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model,ColabEntity,35,0,4,0,11,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model,WithWebsocketChannels,2,0,0,0,1,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model,WithPermission,6,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.document,DocumentRestEndPoint,62,0,0,0,16,0,8,0,8,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.document,ResourceCreationBean,133,0,6,0,44,0,21,0,18,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.document,BlockRestEndPoint,79,0,0,0,21,0,11,0,11,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest.document,ResourceRestEndpoint,306,0,0,0,54,0,23,0,23,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest.document,ResourceRestEndpoint,242,0,0,0,53,0,18,0,18,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,SessionManager,46,0,6,0,12,0,6,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,HttpSession,28,0,0,0,12,0,8,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.security,CookieFilter,67,0,2,0,17,0,5,0,4,0

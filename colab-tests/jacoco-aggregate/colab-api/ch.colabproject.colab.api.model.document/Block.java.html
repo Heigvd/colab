@@ -222,31 +222,31 @@ import javax.persistence.Transient;
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="pc bpc" id="L225" title="1 of 2 branches missed.">        if (this.document != null) {</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">        if (this.document != null) {</span>
 <span class="fc" id="L226">            return this.document.getChannels();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L229">            return Set.of();</span>
+<span class="fc" id="L229">            return Set.of();</span>
         }
     }
 
     @Override
     public Conditions.Condition getReadCondition() {
-<span class="pc bpc" id="L235" title="1 of 2 branches missed.">        if (this.document != null) {</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">        if (this.document != null) {</span>
 <span class="fc" id="L236">            return this.document.getReadCondition();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L239">            return Conditions.defaultForOrphan;</span>
+<span class="fc" id="L239">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (this.document != null) {</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        if (this.document != null) {</span>
 <span class="fc" id="L246">            return this.document.getUpdateCondition();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L249">            return Conditions.defaultForOrphan;</span>
+<span class="fc" id="L249">            return Conditions.defaultForOrphan;</span>
         }
     }
 
