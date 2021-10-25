@@ -14,7 +14,7 @@ import IconButton from '../common/IconButton';
 import OpenClose from '../common/OpenClose';
 import Overlay from '../common/Overlay';
 import { closeIcon } from '../styling/defaultIcons';
-import { defaultColumnContainerStyle, defaultRowContainerStyle, iconStyle } from '../styling/style';
+import { defaultRowContainerStyle, iconStyle } from '../styling/style';
 import { DocumentEditorDisplay } from './DocumentEditorDisplay';
 
 export interface DocumentMiniDisplayProps {
@@ -28,10 +28,6 @@ export default function DocumentMiniDisplay({ document }: DocumentMiniDisplayPro
         collapsedChildren={
           <div className={defaultRowContainerStyle}>
             <FontAwesomeIcon icon={faFileAlt} className={cx(iconStyle)} />
-            <div className={defaultColumnContainerStyle}>
-              <span>{document.title}</span>
-              <span>{document.teaser}</span>
-            </div>
           </div>
         }
       >

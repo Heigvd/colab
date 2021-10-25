@@ -1,11 +1,14 @@
 package ch.colabproject.colab.tests.rest.document;
 
 import ch.colabproject.colab.api.model.document.AbstractResource;
+import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.ExternalDocLink;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.rest.document.ResourceCreationBean;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
 import com.google.common.collect.Lists;
@@ -104,46 +107,61 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         String category = "awesome resources #" + ((int) (Math.random() * 1000));
         String title = "The game encyclopedia #" + ((int) (Math.random() * 1000));
+        String mimeType = "text/markdown";
         String teaser = "Word by word descriptions #" + ((int) (Math.random() * 1000));
         String url = "http://www.123soleil.chat/theGameEncyclopedia.pdf";
 
         ExternalDocLink doc = new ExternalDocLink();
-        doc.setTitle(title);
-        doc.setTeaser(teaser);
         doc.setUrl(url);
 
+        Long persistedResourceId;
         Resource persistedResource;
+
+        TextDataBlock tea = new TextDataBlock();
+        tea.setMimeType(mimeType);
+        tea.setTextData(teaser);
+
+        ResourceCreationBean toCreate = new ResourceCreationBean();
+        toCreate.setTitle(title);
+        toCreate.setTeaser(tea);
+        toCreate.setDocument(doc);
+        toCreate.setCategory(category);
 
         switch (resourceLocation) {
             case GLOBAL_CARD_TYPE:
-                persistedResource = client.resourceRestEndpoint
-                    .createResourceForAbstractCardTypeWithCategory(globalCardTypeId, category, doc);
+                toCreate.setAbstractCardTypeId(globalCardTypeId);
+                persistedResourceId = client.resourceRestEndpoint.createResource(toCreate);
+                persistedResource = (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
                 break;
             case CARD_TYPE_REF:
-                persistedResource = client.resourceRestEndpoint
-                    .createResourceForAbstractCardTypeWithCategory(cardTypeRefId, category, doc);
+                toCreate.setAbstractCardTypeId(cardTypeRefId);
+                persistedResourceId = client.resourceRestEndpoint.createResource(toCreate);
+                persistedResource = (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
                 break;
             case CARD:
-                persistedResource = client.resourceRestEndpoint.createResourceForCardWithCategory(
-                    cardId,
-                    category, doc);
+                toCreate.setCardId(cardId);
+                persistedResourceId = client.resourceRestEndpoint.createResource(toCreate);
+                persistedResource = (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
                 break;
             case CARD_CONTENT:
-                persistedResource = client.resourceRestEndpoint
-                    .createResourceForCardContentWithCategory(cardContentId, category, doc);
+                toCreate.setCardContentId(cardContentId);
+                persistedResourceId = client.resourceRestEndpoint.createResource(toCreate);
+                persistedResource = (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
                 break;
             case SUB_CARD_TYPE:
-                persistedResource = client.resourceRestEndpoint
-                    .createResourceForAbstractCardTypeWithCategory(subCardTypeId, category, doc);
+                toCreate.setAbstractCardTypeId(subCardTypeId);
+                persistedResourceId = client.resourceRestEndpoint.createResource(toCreate);
+                persistedResource = (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
                 break;
             case SUB_CARD:
-                persistedResource = client.resourceRestEndpoint.createResourceForCardWithCategory(
-                    subCardId,
-                    category, doc);
+                toCreate.setCardId(subCardId);
+                persistedResourceId = client.resourceRestEndpoint.createResource(toCreate);
+                persistedResource = (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
                 break;
             case SUB_CARD_CONTENT:
-                persistedResource = client.resourceRestEndpoint
-                    .createResourceForCardContentWithCategory(subCardContentId, category, doc);
+                toCreate.setCardContentId(subCardContentId);
+                persistedResourceId = client.resourceRestEndpoint.createResource(toCreate);
+                persistedResource = (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
                 break;
             default:
                 Assertions.fail();
@@ -155,6 +173,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         Assertions.assertNotNull(persistedResource);
         Assertions.assertNotNull(persistedResource.getId());
+        Assertions.assertEquals(title, persistedResource.getTitle());
         switch (resourceLocation) {
             case GLOBAL_CARD_TYPE:
                 Assertions.assertEquals(globalCardTypeId,
@@ -196,14 +215,23 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
                 Assertions.fail();
         }
 
+        // check the teaser
+
+        Long teaserId = persistedResource.getTeaserId();
+        Block persistedTeaserBlock  = client.blockRestEndPoint.getBlock(teaserId);
+        Assertions.assertNotNull(persistedTeaserBlock);
+        Assertions.assertEquals(teaserId, persistedTeaserBlock.getId());
+        Assertions.assertTrue(persistedTeaserBlock instanceof TextDataBlock);
+        TextDataBlock persistedTeaserTextDataBlock = (TextDataBlock) persistedTeaserBlock;
+        Assertions.assertEquals(mimeType, persistedTeaserTextDataBlock.getMimeType());
+        Assertions.assertEquals(teaser, persistedTeaserTextDataBlock.getTextData());
+
         // check the document
 
         Long documentId = persistedResource.getDocumentId();
         Document persistedDocument = client.documentRestEndPoint.getDocument(documentId);
         Assertions.assertNotNull(persistedDocument);
         Assertions.assertEquals(documentId, persistedDocument.getId());
-        Assertions.assertEquals(title, persistedDocument.getTitle());
-        Assertions.assertEquals(teaser, persistedDocument.getTeaser());
         Assertions.assertTrue(persistedDocument instanceof ExternalDocLink);
         ExternalDocLink persistedExtDocLink = (ExternalDocLink) persistedDocument;
         Assertions.assertEquals(url, persistedExtDocLink.getUrl());
@@ -789,12 +817,22 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         String teaser = "and even more #" + ((int) (Math.random() * 1000));
         String url = "http://www.123soleil.chameau/Allyouneed.pdf";
 
-        ExternalDocLink doc2 = new ExternalDocLink();
-        doc2.setTitle(title + "2");
-        doc2.setTeaser(teaser + "2");
-        doc2.setUrl(url + "/2");
+        TextDataBlock teaserBlock = new TextDataBlock();
+        teaserBlock.setMimeType("text/markdown");
+        teaserBlock.setTextData(teaser);
 
-        return client.resourceRestEndpoint.createResourceForAbstractCardType(cardTypeId, doc2);
+        ExternalDocLink document = new ExternalDocLink();
+        document.setUrl(url);
+
+        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
+        resourceCreationBean.setTitle(title);
+        resourceCreationBean.setTeaser(teaserBlock);
+        resourceCreationBean.setDocument(document);
+        resourceCreationBean.setAbstractCardTypeId(cardTypeId);
+
+        Long persistedResourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
+
+        return (Resource) client.resourceRestEndpoint.getAbstractResource(persistedResourceId);
     }
 
     private ResourceRef retrieveResourceRefForCard(Long cardId) {

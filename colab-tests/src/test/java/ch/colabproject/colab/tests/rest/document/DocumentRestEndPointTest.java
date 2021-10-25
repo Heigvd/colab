@@ -24,20 +24,13 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
 
     @Test
     public void testCreateBlockDocument() {
-        String title = "The ultimate guide #" + ((int) (Math.random() * 1000));
-        String teaser = "Everything you need to know #" + ((int) (Math.random() * 1000));
-
         BlockDocument doc = new BlockDocument();
-        doc.setTitle(title);
-        doc.setTeaser(teaser);
 
         Long docId = client.documentRestEndPoint.createDocument(doc);
 
         Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
         Assertions.assertNotNull(persistedDoc);
         Assertions.assertEquals(docId, persistedDoc.getId());
-        Assertions.assertEquals(title, persistedDoc.getTitle());
-        Assertions.assertEquals(teaser, persistedDoc.getTeaser());
 
         Assertions.assertTrue(persistedDoc instanceof BlockDocument);
         BlockDocument persistedBlockDoc = (BlockDocument) persistedDoc;
@@ -46,14 +39,9 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
 
     @Test
     public void testCreateExternalDocLink() {
-        String title = "Co-Design Guidelines #" + ((int) (Math.random() * 1000));
-        String teaser = "Basis of the guidelines that will be inserted in the maps of the platform this co-design #"
-            + ((int) (Math.random() * 1000));
         String url = "https://www.colab-project.ch/sites/default/files/2021-03/WP1%20-%20Co-Design%20Guidelines.pdf";
 
         ExternalDocLink doc = new ExternalDocLink();
-        doc.setTitle(title);
-        doc.setTeaser(teaser);
         doc.setUrl(url);
 
         Long docId = client.documentRestEndPoint.createDocument(doc);
@@ -61,8 +49,6 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
         Assertions.assertNotNull(persistedDoc);
         Assertions.assertEquals(docId, persistedDoc.getId());
-        Assertions.assertEquals(title, persistedDoc.getTitle());
-        Assertions.assertEquals(teaser, persistedDoc.getTeaser());
 
         Assertions.assertTrue(persistedDoc instanceof ExternalDocLink);
         ExternalDocLink persistedExtDocLink = (ExternalDocLink) persistedDoc;
@@ -71,14 +57,9 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
 
     @Test
     public void testCreateHostedDocLink() {
-        String title = "How to do everything perfectly #" + ((int) (Math.random() * 1000));
-        String teaser = "Learn the perfection with the authors' experiments #"
-            + ((int) (Math.random() * 1000));
         String path = "someWayToAccessTheMongoDBData #" + ((int) (Math.random() * 1000));
 
         HostedDocLink doc = new HostedDocLink();
-        doc.setTitle(title);
-        doc.setTeaser(teaser);
         doc.setPath(path);
 
         Long docId = client.documentRestEndPoint.createDocument(doc);
@@ -86,8 +67,6 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
         Assertions.assertNotNull(persistedDoc);
         Assertions.assertEquals(docId, persistedDoc.getId());
-        Assertions.assertEquals(title, persistedDoc.getTitle());
-        Assertions.assertEquals(teaser, persistedDoc.getTeaser());
 
         Assertions.assertTrue(persistedDoc instanceof HostedDocLink);
         HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
@@ -103,14 +82,9 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertTrue(doc instanceof BlockDocument);
         BlockDocument blockDoc = (BlockDocument) doc;
         Assertions.assertEquals(docId, blockDoc.getId());
-        Assertions.assertNull(blockDoc.getTitle());
-        Assertions.assertNull(blockDoc.getTeaser());
 
-        String title = "The modern guide #" + ((int) (Math.random() * 1000));
-        String teaser = "Some things you need to know #" + ((int) (Math.random() * 1000));
+        // find any field to update when there will be one (if it happens once)
 
-        blockDoc.setTitle(title);
-        blockDoc.setTeaser(teaser);
         client.documentRestEndPoint.updateDocument(blockDoc);
 
         Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
@@ -118,8 +92,6 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertTrue(persistedDoc instanceof BlockDocument);
         BlockDocument persistedBlockDoc = (BlockDocument) persistedDoc;
         Assertions.assertEquals(docId, persistedBlockDoc.getId());
-        Assertions.assertEquals(title, persistedBlockDoc.getTitle());
-        Assertions.assertEquals(teaser, persistedBlockDoc.getTeaser());
     }
 
     @Test
@@ -131,17 +103,10 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertTrue(doc instanceof ExternalDocLink);
         ExternalDocLink extDocLink = (ExternalDocLink) doc;
         Assertions.assertEquals(docId, extDocLink.getId());
-        Assertions.assertNull(extDocLink.getTitle());
-        Assertions.assertNull(extDocLink.getTeaser());
         Assertions.assertNull(extDocLink.getUrl());
 
-        String title = "Serious Games Project Description Model #" + ((int) (Math.random() * 1000));
-        String teaser = "This model is a supplement to the direct deliverables of the co.LAB project #"
-            + ((int) (Math.random() * 1000));
         String url = "https://www.colab-project.ch/sites/default/files/2021-03/WP1%20-%20Project%20Description%20Model_0.pdf";
 
-        extDocLink.setTitle(title);
-        extDocLink.setTeaser(teaser);
         extDocLink.setUrl(url);
         client.documentRestEndPoint.updateDocument(extDocLink);
 
@@ -150,8 +115,6 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         ExternalDocLink persistedExtDocLink = (ExternalDocLink) persistedDoc;
         Assertions.assertNotNull(persistedExtDocLink);
         Assertions.assertEquals(docId, persistedExtDocLink.getId());
-        Assertions.assertEquals(title, persistedExtDocLink.getTitle());
-        Assertions.assertEquals(teaser, persistedExtDocLink.getTeaser());
         Assertions.assertEquals(url, persistedExtDocLink.getUrl());
     }
 
@@ -164,18 +127,10 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertTrue(doc instanceof HostedDocLink);
         HostedDocLink hostedDocLink = (HostedDocLink) doc;
         Assertions.assertEquals(docId, hostedDocLink.getId());
-        Assertions.assertNull(hostedDocLink.getTitle());
-        Assertions.assertNull(hostedDocLink.getTeaser());
         Assertions.assertNull(hostedDocLink.getPath());
 
-        String title = "How to do everything just like it should #"
-            + ((int) (Math.random() * 1000));
-        String teaser = "Learn the strict minimum with the authors' experiments #"
-            + ((int) (Math.random() * 1000));
         String path = "aWayToAccessTheMongoDBData #" + ((int) (Math.random() * 1000));
 
-        hostedDocLink.setTitle(title);
-        hostedDocLink.setTeaser(teaser);
         hostedDocLink.setPath(path);
         client.documentRestEndPoint.updateDocument(hostedDocLink);
 
@@ -184,8 +139,6 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
         Assertions.assertNotNull(persistedHostedDocLink);
         Assertions.assertEquals(docId, persistedHostedDocLink.getId());
-        Assertions.assertEquals(title, persistedHostedDocLink.getTitle());
-        Assertions.assertEquals(teaser, persistedHostedDocLink.getTeaser());
         Assertions.assertEquals(path, persistedHostedDocLink.getPath());
     }
 
@@ -194,15 +147,12 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         int initialSize = client.documentRestEndPoint.getAllDocuments().size();
 
         BlockDocument bdoc = new BlockDocument();
-        bdoc.setTitle("Block doc 1");
         client.documentRestEndPoint.createDocument(bdoc);
 
         ExternalDocLink edoc = new ExternalDocLink();
-        edoc.setTitle("Ext doc 2");
         client.documentRestEndPoint.createDocument(edoc);
 
         HostedDocLink hdoc = new HostedDocLink();
-        hdoc.setTitle("Hosted doc 3");
         client.documentRestEndPoint.createDocument(hdoc);
 
         List<Document> documents = client.documentRestEndPoint.getAllDocuments();

@@ -130,11 +130,7 @@ public class BlockRestEndPointTest extends AbstractArquillianTest {
 
     @Test
     public void testDocumentAccess() {
-        String title = "Random ideas #" + ((int) (Math.random() * 1000));
-
-        BlockDocument doc = new BlockDocument();
-        doc.setTitle(title);
-        Long documentId = client.documentRestEndPoint.createDocument(doc);
+        Long documentId = client.documentRestEndPoint.createDocument(new BlockDocument());
 
         Document persistedDoc = client.documentRestEndPoint.getDocument(documentId);
         Assertions.assertTrue(persistedDoc instanceof BlockDocument);

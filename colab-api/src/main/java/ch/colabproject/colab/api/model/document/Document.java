@@ -66,16 +66,6 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     private Tracking trackingData;
 
     /**
-     * Title
-     */
-    protected String title;
-
-    /**
-     * Abstract / teaser of the content of the document
-     */
-    protected String teaser;
-
-    /**
      * The card content for which this document is the deliverable
      */
     // TODO see where to prevent that a document is used by several card contents
@@ -119,34 +109,6 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      */
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /**
-     * @return the title
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * @param title the title to set
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * @return the abstract / teaser of the content of the document
-     */
-    public String getTeaser() {
-        return teaser;
-    }
-
-    /**
-     * @param teaser the abstract / teaser of the content of the document
-     */
-    public void setTeaser(String teaser) {
-        this.teaser = teaser;
     }
 
     /**
@@ -281,11 +243,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof Document) {
-            Document o = (Document) other;
-            this.setTitle(o.getTitle());
-            this.setTeaser(o.getTeaser());
-        } else {
+        if (!(other instanceof Document)) {
             throw new ColabMergeException(this, other);
         }
     }
@@ -351,7 +309,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-        return "id=" + id + ", title=" + title + ", teaser=" + teaser;
+        return "id=" + id;
     }
 
 }

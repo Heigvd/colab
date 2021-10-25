@@ -20,6 +20,7 @@ import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.Token;
+import ch.colabproject.colab.api.rest.document.ResourceCreationBean;
 import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
 import ch.colabproject.colab.tests.mailhog.model.Message;
@@ -155,7 +156,6 @@ public class ColabFactory {
         Long cardContentId) {
 
         Document newDoc = new BlockDocument();
-        newDoc.setTitle("a deliverable");
 
         return client.cardContentRestEndpoint.assignDeliverable(cardContentId, newDoc);
     }
@@ -228,10 +228,14 @@ public class ColabFactory {
      */
     public static Resource createCardTypeResourceBlockDoc(ColabClient client, Long cardTypeId,
         String title) {
-        BlockDocument doc = new BlockDocument();
-        doc.setTitle(title);
+        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
+        resourceCreationBean.setTitle(title);
+        resourceCreationBean.setDocument(new BlockDocument());
+        resourceCreationBean.setAbstractCardTypeId(cardTypeId);
 
-        return client.resourceRestEndpoint.createResourceForAbstractCardType(cardTypeId, doc);
+        Long id = client.resourceRestEndpoint.createResource(resourceCreationBean);
+
+        return (Resource) client.resourceRestEndpoint.getAbstractResource(id);
     }
 
     /**
@@ -244,10 +248,14 @@ public class ColabFactory {
      * @return the freshly created document
      */
     public static Resource createCardResource(ColabClient client, Long cardId, String title) {
-        BlockDocument doc = new BlockDocument();
-        doc.setTitle(title);
+        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
+        resourceCreationBean.setTitle(title);
+        resourceCreationBean.setDocument(new BlockDocument());
+        resourceCreationBean.setCardId(cardId);
 
-        return client.resourceRestEndpoint.createResourceForCard(cardId, doc);
+        Long id = client.resourceRestEndpoint.createResource(resourceCreationBean);
+
+        return (Resource) client.resourceRestEndpoint.getAbstractResource(id);
     }
 
     /**

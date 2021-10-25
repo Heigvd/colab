@@ -64,7 +64,7 @@ const EditorWrapper = () => {
   if (project === undefined) {
     return <InlineLoading />;
   } else if (project == null) {
-    return <div>The project does not exists</div>;
+    return <div>There is no project yet</div>;
   } else {
     if (editingStatus === 'NOT_EDITING' || (editedProject != null && editedProject.id !== +id)) {
       return <InlineLoading />;

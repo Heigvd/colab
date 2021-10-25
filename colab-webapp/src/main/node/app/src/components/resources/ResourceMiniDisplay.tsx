@@ -11,6 +11,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { useDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import AutoSaveInput from '../common/AutoSaveInput';
 import CheckBox from '../common/CheckBox';
 import OnBlurInput from '../common/OnBlurInput';
@@ -149,12 +150,17 @@ export default function ResourceMiniDisplay({
   return (
     <div className={defaultRowContainerStyle}>
       <div className={defaultColumnContainerStyle}>
-        {isDirectResource ? <span className={css({ color: 'blue' })}>direct</span> : 'transitive'}
-        <span>*** Category ***</span>
-        {effectiveCategory}
+        {isDirectResource ? (
+          <span className={css({ color: 'blue' })}>direct resource</span>
+        ) : (
+          'transitive resource'
+        )}
+        <span>Title : {targetResource.title}</span>
+        {targetResource.teaserId && <BlockEditorWrapper blockId={targetResource.teaserId} />}
+        <span> Category : {effectiveCategory}</span>
         {entityIs(document, 'Document') && (
           <>
-            <span>*** Document display #{document.id} ***</span>
+            <span>*** Document #{document.id} ***</span>
             <DocumentMiniDisplay document={document} />
           </>
         )}

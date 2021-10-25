@@ -10,7 +10,6 @@ import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
-import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
@@ -21,7 +20,6 @@ import ch.colabproject.colab.api.persistence.document.AbstractResourceDao;
 import ch.colabproject.colab.api.persistence.document.ResourceDao;
 import ch.colabproject.colab.api.persistence.document.ResourceRefDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +37,6 @@ import org.slf4j.LoggerFactory;
  */
 // TODO refine the publish / deprecated / refused effect
 // TODO requestingForGlory handling
-// TODO !!!! deal with abstract card type
 @Stateless
 @LocalBean
 public class ResourceFacade {
@@ -351,48 +348,58 @@ public class ResourceFacade {
     // *********************************************************************************************
 
     /**
-     * Create a new resource for the document linked to the card type (or card type reference).
+     * Create a new resource.
      * <p>
-     * Every child of the card type (recursively) acquires a reference to that resource or, for the
-     * grandchildren, to a reference to that resource.
+     * Every child of the card type acquires a reference to that resource.<br>
+     * And recursively the grandchildren acquires a reference to the reference of their parent.
      *
-     * @param document   the document the resource represents
-     * @param cardTypeId the id of the card type the resource must be linked to
-     * @param category   the category of the resource (for organization purpose)
+     * @param resource the resource to create
      *
      * @return the brand new resource
      */
-    public Resource createResourceForAbstractCardType(Document document, Long cardTypeId,
-        String category) {
-        logger.debug(
-            "create a resource for document {} and an abstract card type #{} with category {}",
-            document, cardTypeId, category);
+    public Resource createResource(Resource resource) {
+        logger.debug("create a resource {}", resource);
 
-        if (document == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+        if (resource.getAbstractCardTypeId() != null) {
+            return createResourceForAbstractCardType(resource);
         }
 
-        // A document can be related at max to one resource
-        if (document.hasResource()) {
+        if (resource.getCardId() != null) {
+            return createResourceForCard(resource);
+        }
+
+        if (resource.getCardContentId() != null) {
+            return createResourceForCardContent(resource);
+        }
+
+       throw HttpErrorMessage.dataIntegrityFailure();
+    }
+
+    /**
+     * Create a new resource linked to a card type (or a card type reference).
+     * <p>
+     * Every child of the card type acquires a reference to that resource.<br>
+     * And recursively the grandchildren acquires a reference to the reference of their parent.
+     *
+     * @param resource the resource to create
+     *
+     * @return the brand new resource
+     */
+    private Resource createResourceForAbstractCardType(Resource resource) {
+        logger.debug("create the resource {} for abstract card type", resource);
+
+        if (resource.getDocument() == null) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        AbstractCardType abstractCardType = cardTypeDao.getAbstractCardType(cardTypeId);
+        AbstractCardType abstractCardType = cardTypeDao
+            .getAbstractCardType(resource.getAbstractCardTypeId());
         if (abstractCardType == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        Resource resource = Resource.initNewResource();
-
         resource.setAbstractCardType(abstractCardType);
         abstractCardType.getDirectAbstractResources().add(resource);
-
-        resource.setDocument(document);
-        document.setResource(resource);
-
-        if (!Strings.isNullOrEmpty(category)) {
-            resource.setCategory(category);
-        }
 
         resource = resourceDao.persistResource(resource);
 
@@ -402,46 +409,28 @@ public class ResourceFacade {
     }
 
     /**
-     * Create a new resource for the document linked to the card
+     * Create a new resource linked to a card
      * <p>
-     * Every child of the card (recursively) acquires a reference to that resource or, for the
-     * grandchildren, to a reference to that resource
+     * Every direct child of the card acquires a reference to that resource.<br>
+     * And recursively the grandchildren acquires a reference to the reference of their parent.
      *
-     * @param document the document the resource represents
-     * @param cardId   the id of the card the resource must be linked to
-     * @param category the category of the resource (for organization purpose)
      *
      * @return the brand new resource
      */
-    public Resource createResourceForCard(Document document, Long cardId, String category) {
-        logger.debug("create a resource for document {} and card #{} with category {}",
-            document, cardId, category);
+    private Resource createResourceForCard(Resource resource) {
+        logger.debug("create the resource {} for card", resource);
 
-        if (document == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
-
-        // A document can be related at max to one resource
-        if (document.hasResource()) {
+        if (resource.getDocument() == null) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        Card card = cardDao.getCard(cardId);
+        Card card = cardDao.getCard(resource.getCardId());
         if (card == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        Resource resource = Resource.initNewResource();
-
         resource.setCard(card);
         card.getDirectAbstractResources().add(resource);
-
-        resource.setDocument(document);
-        document.setResource(resource);
-
-        if (!Strings.isNullOrEmpty(category)) {
-            resource.setCategory(category);
-        }
 
         resource = resourceDao.persistResource(resource);
 
@@ -453,45 +442,27 @@ public class ResourceFacade {
     /**
      * Create a new resource for the document linked to the card content
      * <p>
-     * Every child of the card content (recursively) acquires a reference to that resource or, for
-     * the grandchildren, to a reference to that resource
+     * Every child of the card content acquires a reference to that resource.<br>
+     * And recursively the grandchildren acquires a reference to the reference of their parent.
      *
-     * @param document      the document the resource represents
-     * @param cardContentId the id of the card content the resource must be linked to
-     * @param category      the category of the resource (for organization purpose)
+     * @param resource the resource to create
      *
      * @return the brand new resource
      */
-    public Resource createResourceForCardContent(Document document, Long cardContentId,
-        String category) {
-        logger.debug("create a resource for document {} and card content #{} with category {}",
-            document, cardContentId, category);
+    private Resource createResourceForCardContent(Resource resource) {
+        logger.debug("create the resource {} for card content", resource);
 
-        if (document == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
-
-        // A document can be related at max to one resource
-        if (document.hasResource()) {
+        if (resource.getDocument() == null) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+        CardContent cardContent = cardContentDao.getCardContent(resource.getCardContentId());
         if (cardContent == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        Resource resource = Resource.initNewResource();
-
         resource.setCardContent(cardContent);
         cardContent.getDirectAbstractResources().add(resource);
-
-        resource.setDocument(document);
-        document.setResource(resource);
-
-        if (!Strings.isNullOrEmpty(category)) {
-            resource.setCategory(category);
-        }
 
         resource = resourceDao.persistResource(resource);
 
@@ -504,7 +475,7 @@ public class ResourceFacade {
      * Each child of the card type acquires a reference to the resource.
      *
      * @param cardTypeOrRef the card type or card type reference
-     * @param resource the resource we are linking
+     * @param resource      the resource we are linking
      */
     private void createResourceRefForChildren(AbstractCardType cardTypeOrRef,
         AbstractResource resource) {

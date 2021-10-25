@@ -35,17 +35,9 @@ public class Resource extends AbstractResource {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * The document
+     * The title
      */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonbTransient
-    private Document document;
-
-    /**
-     * The document id (serialization sugar)
-     */
-    @Transient
-    private Long documentId;
+    private String title;
 
     /**
      * Is it at the disposal of the inheritors
@@ -61,6 +53,32 @@ public class Resource extends AbstractResource {
      * Should not be used anymore
      */
     private boolean deprecated;
+
+    /**
+     * The abstract / teaser
+     */
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonbTransient
+    private Block teaser;
+
+    /**
+     * The id of the abstract / teaser
+     */
+    @Transient
+    private Long teaserId;
+
+    /**
+     * The content of the resource
+     */
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonbTransient
+    private Document document;
+
+    /**
+     * The document id (serialization sugar)
+     */
+    @Transient
+    private Long documentId;
 
     // ---------------------------------------------------------------------------------------------
     // initialize
@@ -82,39 +100,17 @@ public class Resource extends AbstractResource {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * @return the document
+     * @return The title
      */
-    public Document getDocument() {
-        return document;
+    public String getTitle() {
+        return title;
     }
 
     /**
-     * @param document the document
+     * @param title The title
      */
-    public void setDocument(Document document) {
-        this.document = document;
-    }
-
-    /**
-     * get the id of the document. To be sent to client.
-     *
-     * @return the id of the document
-     */
-    public Long getDocumentId() {
-        if (document != null) {
-            return document.getId();
-        } else {
-            return documentId;
-        }
-    }
-
-    /**
-     * set the id of the document. For serialization only.
-     *
-     * @param documentId the id of the document
-     */
-    public void setDocumentId(Long documentId) {
-        this.documentId = documentId;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     /**
@@ -159,6 +155,78 @@ public class Resource extends AbstractResource {
         this.deprecated = deprecated;
     }
 
+    /**
+     * @return the teaser / abstract
+     */
+    public Block getTeaser() {
+        return teaser;
+    }
+
+    /**
+     * @param teaser the teaser / abstract
+     */
+    public void setTeaser(Block teaser) {
+        this.teaser = teaser;
+    }
+
+    /**
+     * get the id of the teaser. To be sent to client.
+     *
+     * @return the id of the teaser
+     */
+    public Long getTeaserId() {
+        if (teaser != null) {
+            return teaser.getId();
+        } else {
+            return teaserId;
+        }
+    }
+
+    /**
+     * set the id of the teaser. For serialization only.
+     *
+     * @param teaserId the id of the teaser
+     */
+    public void setTeaserId(Long teaserId) {
+        this.teaserId = teaserId;
+    }
+
+    /**
+     * @return the document
+     */
+    public Document getDocument() {
+        return document;
+    }
+
+    /**
+     * @param document the document
+     */
+    public void setDocument(Document document) {
+        this.document = document;
+    }
+
+    /**
+     * get the id of the document. To be sent to client.
+     *
+     * @return the id of the document
+     */
+    public Long getDocumentId() {
+        if (document != null) {
+            return document.getId();
+        } else {
+            return documentId;
+        }
+    }
+
+    /**
+     * set the id of the document. For serialization only.
+     *
+     * @param documentId the id of the document
+     */
+    public void setDocumentId(Long documentId) {
+        this.documentId = documentId;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -178,6 +246,7 @@ public class Resource extends AbstractResource {
         if (other instanceof Resource) {
             Resource o = (Resource) other;
             super.merge(o);
+            this.setTitle(o.getTitle());
             this.setPublished(o.isPublished());
             this.setRequestingForGlory(o.isRequestingForGlory());
             this.setDeprecated(o.isDeprecated());
@@ -185,6 +254,7 @@ public class Resource extends AbstractResource {
             throw new ColabMergeException(this, other);
         }
     }
+    // TODO see if need to have a way to change the teaser
 
     @Override
     public int hashCode() {
@@ -199,9 +269,9 @@ public class Resource extends AbstractResource {
 
     @Override
     public String toString() {
-        return "Resource{" + toPartialString() + ", documentId=" + documentId
+        return "Resource{" + toPartialString() + ", title=" + title
             + ", published=" + published + ", requestingForGlory=" + requestingForGlory
-            + ", deprecated=" + deprecated + "}";
+            + ", deprecated=" + deprecated + ", documentId=" + documentId + "}";
     }
 
 }

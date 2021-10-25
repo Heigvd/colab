@@ -24,6 +24,7 @@ import {
   InvolvementLevel,
   Project,
   Resource,
+  ResourceCreationBean,
   ResourceRef,
   SignUpInfo,
   StickyNoteLink,
@@ -31,7 +32,6 @@ import {
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
-import { CreationScope, CreationScopeKind } from '../components/resources/ResourceCommonType';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
@@ -544,8 +544,8 @@ export const createSubCard = createAsyncThunk(
       if (content != null && content.id) {
         const doc: BlockDocument = {
           '@class': 'BlockDocument',
-          title: '',
-          teaser: '',
+          // title: '',
+          // teaser: '',
         };
         await restClient.CardContentRestEndpoint.assignDeliverable(content.id, doc);
       }
@@ -596,8 +596,8 @@ export const createCardContentVariant = createAsyncThunk(
     const content = await restClient.CardContentRestEndpoint.createNewCardContent(cardId);
     const doc: BlockDocument = {
       '@class': 'BlockDocument',
-      title: '',
-      teaser: '',
+      // title: '',
+      // teaser: '',
     };
     if (content.id != null) {
       await restClient.CardContentRestEndpoint.assignDeliverable(content.id, doc);
@@ -677,64 +677,8 @@ export const updateResourceRef = createAsyncThunk(
 
 export const createResource = createAsyncThunk(
   'resource/create',
-  async ({
-    document,
-    creationScope,
-    category,
-  }: {
-    document: Document;
-    creationScope: CreationScope;
-    category?: string;
-  }) => {
-    if (creationScope.kind === CreationScopeKind.CardType) {
-      if (creationScope.cardTypeId != null) {
-        if (category) {
-          return await restClient.ResourceRestEndpoint.createResourceForAbstractCardTypeWithCategory(
-            creationScope.cardTypeId,
-            category,
-            document,
-          );
-        } else {
-          return await restClient.ResourceRestEndpoint.createResourceForAbstractCardType(
-            creationScope.cardTypeId,
-            document,
-          );
-        }
-      }
-    } else if (creationScope.kind === CreationScopeKind.Card) {
-      if (creationScope.cardId != null) {
-        if (category) {
-          return await restClient.ResourceRestEndpoint.createResourceForCardWithCategory(
-            creationScope.cardId,
-            category,
-            document,
-          );
-        } else {
-          return await restClient.ResourceRestEndpoint.createResourceForCard(
-            creationScope.cardId,
-            document,
-          );
-        }
-      }
-    } else if (creationScope.kind === CreationScopeKind.CardContent) {
-      if (creationScope.cardContentId != null) {
-        if (category) {
-          return await restClient.ResourceRestEndpoint.createResourceForCardContentWithCategory(
-            creationScope.cardContentId,
-            category,
-            document,
-          );
-        } else {
-          return await restClient.ResourceRestEndpoint.createResourceForCardContent(
-            creationScope.cardContentId,
-            document,
-          );
-        }
-      }
-    }
-
-    // nothing good happened
-    // TODO see how to say it
+  async (resource: ResourceCreationBean) => {
+    return await restClient.ResourceRestEndpoint.createResource(resource);
   },
 );
 

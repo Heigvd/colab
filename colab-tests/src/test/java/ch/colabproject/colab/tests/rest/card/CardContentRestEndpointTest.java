@@ -171,22 +171,18 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testDeliverableAccess() {
-        String title = "Description of what we need #" + ((int) (Math.random() * 1000));
-
         Project project = ColabFactory.createProject(client, "testDeliverableAccess");
         Long cardId = ColabFactory.createNewCard(client, project).getId();
 
         Long cardContentId = client.cardContentRestEndpoint.createNewCardContent(cardId).getId();
 
         Document newDoc = new BlockDocument();
-        newDoc.setTitle(title);
 
         Document persistedDoc = client.cardContentRestEndpoint.assignDeliverable(cardContentId,
             newDoc);
         Assertions.assertNotNull(persistedDoc);
         Assertions.assertNotNull(persistedDoc.getId());
         Long docId = persistedDoc.getId();
-        Assertions.assertEquals(title, newDoc.getTitle());
         Assertions.assertEquals(cardContentId, persistedDoc.getDeliverableCardContentId());
 
         Document deliverable = client.cardContentRestEndpoint.getDeliverableOfCardContent(cardContentId);
@@ -206,7 +202,6 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         // delete card content
 
         newDoc = new BlockDocument();
-        newDoc.setTitle(title);
 
         persistedDoc = client.cardContentRestEndpoint.assignDeliverable(cardContentId, newDoc);
         Assertions.assertNotNull(persistedDoc);

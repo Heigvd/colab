@@ -8,10 +8,9 @@
 import { BlockDocument } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
-import useTranslations from '../../../i18n/I18nContext';
+//import useTranslations from '../../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
-import AutoSaveInput from '../../common/AutoSaveInput';
 import InlineLoading from '../../common/InlineLoading';
 import { CreateBlockButton } from './CreateBlockButton';
 
@@ -21,7 +20,7 @@ export interface BlockDocProps {
 
 export function BlockDocumentEditor({ doc }: BlockDocProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const i18n = useTranslations();
+  //const i18n = useTranslations();
 
   const blockIds = useAppSelector(state => {
     if (doc.id) {
@@ -38,7 +37,7 @@ export function BlockDocumentEditor({ doc }: BlockDocProps): JSX.Element {
 
   return (
     <div>
-      <AutoSaveInput
+      {/*<AutoSaveInput
         placeholder={i18n.document.untitled}
         value={doc.title || ''}
         onChange={newValue => dispatch(API.updateDocument({ ...doc, title: newValue }))}
@@ -48,7 +47,7 @@ export function BlockDocumentEditor({ doc }: BlockDocProps): JSX.Element {
         placeholder={i18n.document.noTeaser}
         value={doc.teaser || ''}
         onChange={newValue => dispatch(API.updateDocument({ ...doc, teaser: newValue }))}
-      />
+      />*/}
       {blockIds == null ? (
         <InlineLoading />
       ) : (

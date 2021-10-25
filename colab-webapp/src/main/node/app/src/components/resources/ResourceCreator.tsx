@@ -13,12 +13,7 @@ import Form, { Field } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
 import OpenCloseModal, { modalPadding } from '../common/OpenCloseModal';
 import { addIcon, cancelIcon, createIcon, reinitIcon } from '../styling/defaultIcons';
-import {
-  CreationScope,
-  CreationScopeKind,
-  ResourceCallContext,
-  ResourceContextScope,
-} from './ResourceCommonType';
+import { ResourceCallContext, ResourceContextScope } from './ResourceCommonType';
 
 /**
  * the context in which we create a new resource
@@ -115,33 +110,33 @@ export default function ResourceCreator({
               icon={createIcon}
               title="create"
               onClick={() => {
-                let creationScope: CreationScope;
+                let cardTypeId: number | null = null;
+                let cardId: number | null = null;
+                let cardContentId: number | null = null;
                 if (contextInfo.kind == ResourceContextScope.CardType) {
-                  creationScope = {
-                    kind: CreationScopeKind.CardType,
-                    cardTypeId: contextInfo.cardTypeId,
-                  };
+                  cardTypeId = contextInfo.cardTypeId;
                 } else {
                   if (state.atCardContentLevel) {
-                    creationScope = {
-                      kind: CreationScopeKind.CardContent,
-                      cardContentId: contextInfo.cardContentId,
-                    };
+                    cardContentId = contextInfo.cardContentId;
                   } else {
-                    creationScope = {
-                      kind: CreationScopeKind.Card,
-                      cardId: contextInfo.cardId,
-                    };
+                    cardId = contextInfo.cardId;
                   }
                 }
                 dispatch(
                   API.createResource({
+                    abstractCardTypeId: cardTypeId,
+                    cardId: cardId,
+                    cardContentId: cardContentId,
                     document: {
                       '@class': state.docType,
-                      title: state.title,
-                      teaser: state.teaser,
                     },
-                    creationScope,
+                    title: state.title,
+                    teaser: {
+                      '@class': 'TextDataBlock',
+                      mimeType: 'text/markdown',
+                      textData: state.teaser,
+                      revision: '0',
+                    },
                     category: state.category,
                   }),
                 ).then(() => {
