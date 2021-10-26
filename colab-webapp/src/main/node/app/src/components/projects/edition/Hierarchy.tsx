@@ -28,7 +28,7 @@ import InlineLoading from '../../common/InlineLoading';
 import { cardShadow } from '../../styling/style';
 
 const logger = getLogger('JsPlumb');
-logger.setLevel(4);
+//logger.setLevel(4);
 
 const cardStyle = (color: string | null | undefined): string =>
   css({

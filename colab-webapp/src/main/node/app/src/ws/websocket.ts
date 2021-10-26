@@ -14,7 +14,7 @@ import { addNotification } from '../store/notification';
 import { dispatch } from '../store/store';
 import { processMessage } from './wsThunkActions';
 
-const logger = getLogger('WebSocket');
+const logger = getLogger('WebSockets');
 logger.setLevel(3);
 
 const onChannelUpdate = (message: WsChannelUpdate) => {

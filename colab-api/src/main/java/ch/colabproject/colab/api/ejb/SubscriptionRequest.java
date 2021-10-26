@@ -47,7 +47,11 @@ public class SubscriptionRequest implements Serializable {
         /**
          * {@link ch.colabproject.colab.api.ws.channel.ProjectContentChannel project channel}
          */
-        PROJECT
+        PROJECT,
+        /**
+         * {@link ch.colabproject.colab.api.ws.channel.BlockChannel block channel}
+         */
+        BLOCK
     }
 
     /**

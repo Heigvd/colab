@@ -7,7 +7,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Block } from 'colab-rest-client';
 import * as API from '../API/api';
-import { mapById } from '../helper';
 import { processMessage } from '../ws/wsThunkActions';
 //import {mapById} from '../helper';
 
@@ -76,17 +75,25 @@ const blocksSlice = createSlice({
       .addCase(API.getBlock.fulfilled, (state, action) => {
         updateBlock(state, action.payload);
       })
-      .addCase(API.getDocumentBlocks.pending, (state, action) => {
+      .addCase(API.createBlock.fulfilled, (state, action) => {
+        const docId = action.meta.arg.document.id!;
+        const blockId = action.payload;
+        const docState = state.documents[docId];
+        if (docState){
+          docState.push(blockId);
+        }
+      })
+      .addCase(API.getDocumentBlocksIds.pending, (state, action) => {
         if (action.meta.arg.id != null) {
           state.documents[action.meta.arg.id] = null;
         }
       })
-      .addCase(API.getDocumentBlocks.fulfilled, (state, action) => {
+      .addCase(API.getDocumentBlocksIds.fulfilled, (state, action) => {
         const docId = action.meta.arg.id;
         if (docId != null) {
           if (action.payload != null) {
-            state.blocks = { ...state.blocks, ...mapById(action.payload) };
-            state.documents[docId] = action.payload.flatMap(block => (block.id ? [block.id] : []));
+            //state.blocks = { ...state.blocks, ...mapById(action.payload) };
+            state.documents[docId] = action.payload;
           }
         }
       })

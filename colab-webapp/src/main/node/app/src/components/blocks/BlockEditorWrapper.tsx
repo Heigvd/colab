@@ -5,36 +5,22 @@
  * Licensed under the MIT License
  */
 
-import { Change, entityIs } from 'colab-rest-client';
+import {entityIs} from 'colab-rest-client';
 import * as React from 'react';
-import * as API from '../../API/api';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
-import LiveTextEditor from '../live/LiveTextEditor';
+import LiveEditor from '../live/LiveEditor';
+import {useBlock} from '../live/LiveTextEditor';
 
 export interface BlockEditorProps {
   blockId: number;
+  allowEdition?: boolean;
 }
 
-export function BlockEditorWrapper({ blockId }: BlockEditorProps): JSX.Element {
-  const dispatch = useAppDispatch();
-
-  const block = useAppSelector(state => {
-    return state.block.blocks[blockId];
-  });
-
-  const onChangeCb = React.useCallback(
-    (change: Change) => {
-      dispatch(API.patchBlock({ id: blockId, change: change }));
-    },
-    [dispatch, blockId],
-  );
-
-  React.useEffect(() => {
-    if (block == undefined && blockId != null) {
-      dispatch(API.getBlock(blockId));
-    }
-  }, [block, blockId, dispatch]);
+export function BlockEditorWrapper({
+  blockId,
+  allowEdition
+}: BlockEditorProps): JSX.Element {
+  const block = useBlock(blockId);
 
   if (block == null) {
     return <InlineLoading />;
@@ -43,12 +29,12 @@ export function BlockEditorWrapper({ blockId }: BlockEditorProps): JSX.Element {
       switch (block.mimeType) {
         case 'text/markdown':
           return (
-            <LiveTextEditor
+            <LiveEditor
+              allowEdition={allowEdition}
               atClass={block['@class']}
               atId={blockId}
               value={block.textData || ''}
               revision={block.revision}
-              onChange={onChangeCb}
             />
           );
         default:

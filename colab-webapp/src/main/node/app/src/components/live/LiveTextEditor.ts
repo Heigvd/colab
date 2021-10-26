@@ -5,50 +5,31 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
-import { faPen, faProjectDiagram, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Change } from 'colab-rest-client';
-import { throttle } from 'lodash';
+import {Block, Change} from 'colab-rest-client';
+import {throttle} from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import * as LiveHelper from '../../LiveHelper';
-import { getLogger } from '../../logger';
-import { useChanges } from '../../selectors/changeSelector';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
-import CleverTextarea from '../common/CleverTextarea';
-import IconButton from '../common/IconButton';
-import InlineLoading from '../common/InlineLoading';
-//import ToastFnMarkdownEditor from '../blocks/markdown/ToastFnMarkdownEditor';
-import OpenClose from '../common/OpenClose';
-import WithToolbar from '../common/WithToolbar';
-import ChangeTree from './ChangeTree';
+import {getLogger} from '../../logger';
+import {useChanges} from '../../selectors/changeSelector';
+import {useAppDispatch, useAppSelector} from '../../store/hooks';
 
 //import {ToastClsMarkdownEditor} from '../blocks/markdown/ToastClsMarkdownEditor';
 
 const logger = getLogger('LiveChanges');
 
-const shrink = css({
-  flexGrow: 0,
-  flexShrink: 1,
-});
 
-const grow = css({
-  flexGrow: 1,
-  flexShrink: 1,
-  flexBasis: '1px',
-});
-
-type State = {
-  status: 'VIEW' | 'EDIT';
-};
+export interface LiveBlockState {
+  status: 'DISCONNECTED' | 'UNSET' | 'LOADING' | 'READY';
+  currentValue: string;
+  onChange: (value: string) => void;
+}
 
 interface Props {
   atClass: string;
   atId: number;
   value: string;
   revision: string;
-  onChange: (change: Change) => void;
 }
 
 function applyChanges(value: string, revision: string, changes: Change[]) {
@@ -66,20 +47,56 @@ function findCounterValue(liveSession: string, changes: Change[]): number {
     .reduce((max, current) => (current > max ? current : max), 0);
 }
 
-export default function LiveTextEditor({
+
+export function useBlock(blockId: number | null | undefined): Block | null | undefined {
+
+  // blockId =>  number of subscriptions
+  const subscriptionCounters = React.useRef<Record<number, number>>({});
+  const dispatch = useAppDispatch();
+
+  React.useEffect(() => {
+    if (blockId != null) {
+      let alive = true;
+      const refSubs = subscriptionCounters.current;
+      const count = refSubs[blockId];
+      if (!count) {
+        // subscribe
+        dispatch(API.subscribeToBlockChannel(blockId)).then(() => {
+          if (alive) {
+            dispatch(API.getBlock(blockId));
+          }
+        })
+      } else {
+        dispatch(API.getBlock(blockId));
+      }
+
+      return () => {
+        alive = false;
+        const count = refSubs[blockId];
+        if (!count) {
+          // subscribe
+        }
+      };
+    }
+  }, [blockId, dispatch]);
+
+  if (blockId != null) {
+    return useAppSelector(state => state.block.blocks[blockId]);
+  } else {
+    return undefined;
+  }
+}
+
+
+export function useLiveBlock({
   atClass,
   atId,
   value,
   revision,
-  onChange,
-}: Props): JSX.Element {
+}: Props): LiveBlockState {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
   const changesState = useChanges(atClass, atId);
   const dispatch = useAppDispatch();
-
-  const [state, setState] = React.useState<State>({
-    status: 'VIEW',
-  });
 
   React.useEffect(() => {
     if (changesState.status === 'UNSET') {
@@ -163,15 +180,16 @@ export default function LiveTextEditor({
           valueRef.current.baseRevision = [change.revision];
 
           logger.trace('Send change', change);
-          onChange(change);
+          //onChange(change);
+          dispatch(API.patchBlock({id: atId, change: change}));
         }
       },
       500,
-      { trailing: true },
+      {trailing: true},
     );
-  }, [valueRef, liveSession, onChange, atClass, atId]);
+  }, [valueRef, liveSession, atClass, atId, dispatch]);
 
-  const onInternalChange = React.useCallback(
+  const onChange = React.useCallback(
     (value: string) => {
       logger.trace('editor onChange: ', value);
       valueRef.current.currentValue = value;
@@ -282,66 +300,9 @@ export default function LiveTextEditor({
     }
   }
 
-  if (changesState.status != 'READY') {
-    return <InlineLoading />;
-  }
-
-  if (!liveSession) {
-    return (
-      <div>
-        <div>
-          <i>disconnected...</i>
-        </div>
-        <MarkdownViewer md={valueRef.current.currentValue} />
-      </div>
-    );
-  }
-
-  if (state.status === 'VIEW') {
-    return (
-      <WithToolbar
-        toolbarPosition="TOP_RIGHT"
-        toolbarClassName=""
-        offsetY={-1}
-        toolbar={
-          <IconButton
-            title="Click to edit"
-            onClick={() => setState({ ...state, status: 'EDIT' })}
-            icon={faPen}
-          />
-        }
-      >
-        <MarkdownViewer md={valueRef.current.currentValue} />
-      </WithToolbar>
-    );
-  } else if (state.status === 'EDIT') {
-    return (
-      <div
-        className={css({
-          display: 'flex',
-          flexDirection: 'row',
-        })}
-      >
-        {/*<ToastClsMarkdownEditor value={valueRef.current.current} onChange={onInternalChange} />*/}
-        <CleverTextarea
-          className={grow}
-          value={valueRef.current.currentValue}
-          onChange={onInternalChange}
-        />
-        <MarkdownViewer className={grow} md={valueRef.current.currentValue} />
-        <div className={shrink}>
-          <OpenClose collapsedChildren={<IconButton icon={faProjectDiagram} />}>
-            {() => <ChangeTree atClass={atClass} atId={atId} value={value} revision={revision} />}
-          </OpenClose>
-        </div>
-        <IconButton
-          title="close editor"
-          className={shrink}
-          onClick={() => setState({ ...state, status: 'VIEW' })}
-          icon={faTimes}
-        />
-      </div>
-    );
-  }
-  return <div>not yet implemented</div>;
+  return {
+    status: !liveSession ? 'DISCONNECTED' : changesState.status,
+    onChange: onChange,
+    currentValue: valueRef.current.currentValue,
+  };
 }

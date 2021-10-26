@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -130,17 +131,18 @@ public class DocumentRestEndPoint {
     // *********************************************************************************************
 
     /**
-     * Get all blocks that make up the document
+     * Get all ids of blocks that make up the document
      *
      * @param id id of the document
      *
-     * @return the blocks linked to the document
+     * @return ids of the blocks linked to the document
      */
     @GET
-    @Path("{id}/Blocks")
-    public List<Block> getBlocksOfDocument(@PathParam("id") Long id) {
-        logger.debug("get document #{} blocks", id);
-        return documentFacade.getBlocksOfDocument(id);
+    @Path("{id}/BlocksIds")
+    public List<Long> getBlocksDocumentIds(@PathParam("id") Long id) {
+        logger.debug("get document #{} blocks ids", id);
+        return documentFacade.getBlocksOfDocument(id).stream()
+            .map(b ->  b.getId())
+            .collect(Collectors.toList());
     }
-
 }

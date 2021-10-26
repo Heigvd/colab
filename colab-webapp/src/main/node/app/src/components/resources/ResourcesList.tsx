@@ -5,29 +5,40 @@
  * Licensed under the MIT License
  */
 
-import { faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {css} from '@emotion/css';
+import {faCogs, faTrash, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { dispatch } from '../../store/store';
-import { Destroyer } from '../common/Destroyer';
+import useTranslations from '../../i18n/I18nContext';
+import {useDocument} from '../../selectors/documentSelector';
+import {useAppDispatch} from '../../store/hooks';
+import {Destroyer} from '../common/Destroyer';
 import Flex from '../common/Flex';
+import OpenCloseModal from '../common/OpenCloseModal';
 import WithToolbar from '../common/WithToolbar';
-import { getKey, ResourceAndRef, ResourceCallContext } from './ResourceCommonType';
+import {useBlock} from '../live/LiveTextEditor';
+import {getKey, ResourceAndRef, ResourceCallContext} from './ResourceCommonType';
 import ResourceCreator from './ResourceCreator';
-import ResourceMiniDisplay from './ResourceMiniDisplay';
+import {ResourceSettings} from './ResourceMiniDisplay';
 
 /**
  * List of ResourceAndRef which handles sorting, adding, removing.
  */
-
 // TODO real sort order
 function sortResources(a: ResourceAndRef, b: ResourceAndRef): number {
   return (a.targetResource.id || 0) - (b.targetResource.id || 0);
 }
 
+const tocEntryStyle = css({
+  cursor: 'pointer',
+  padding: "10px",
+});
+
 export interface ResourcesListProps {
   resourcesAndRefs: ResourceAndRef[];
   contextInfo: ResourceCallContext;
+  selectResource: (r: ResourceAndRef) => void
 }
 interface Categorized {
   categorized: Record<string, ResourceAndRef[]>;
@@ -37,6 +48,7 @@ interface Categorized {
 export default function ResourcesList({
   resourcesAndRefs,
   contextInfo,
+  selectResource,
 }: ResourcesListProps): JSX.Element {
   const categorized = resourcesAndRefs.reduce<Categorized>(
     (acc, current) => {
@@ -77,63 +89,11 @@ export default function ResourcesList({
             <h3>{category}</h3>
             <div>
               {categorized.categorized[category]!.sort(sortResources).map(resourceAndRef => (
-                <WithToolbar
+                <TocEntry
                   key={getKey(resourceAndRef)}
-                  toolbarPosition="RIGHT_BOTTOM"
-                  offsetY={-0.5}
-                  toolbar={
-                    <>
-                      {resourceAndRef.isDirectResource && (
-                        <Destroyer
-                          title="Delete this resource"
-                          icon={faTrashAlt}
-                          onDelete={() => {
-                            dispatch(API.deleteResource(resourceAndRef.targetResource));
-                          }}
-                        />
-                      )}
-                      {!resourceAndRef.isDirectResource && resourceAndRef.cardTypeResourceRef && (
-                        <Destroyer
-                          title="Refuse at card type level"
-                          icon={faTrash}
-                          onDelete={() => {
-                            dispatch(
-                              API.removeAccessToResource(resourceAndRef.cardTypeResourceRef!),
-                            );
-                          }}
-                        />
-                      )}
-                      {!resourceAndRef.isDirectResource && resourceAndRef.cardResourceRef && (
-                        <Destroyer
-                          title="Refuse at card level"
-                          icon={faTrash}
-                          onDelete={() => {
-                            dispatch(API.removeAccessToResource(resourceAndRef.cardResourceRef!));
-                          }}
-                        />
-                      )}
-                      {!resourceAndRef.isDirectResource && resourceAndRef.cardContentResourceRef && (
-                        <Destroyer
-                          title="Refuse at variant level"
-                          icon={faTrash}
-                          onDelete={() => {
-                            dispatch(
-                              API.removeAccessToResource(resourceAndRef.cardContentResourceRef!),
-                            );
-                          }}
-                        />
-                      )}
-                    </>
-                  }
-                >
-                  <ResourceMiniDisplay
-                    targetResource={resourceAndRef.targetResource}
-                    isDirectResource={resourceAndRef.isDirectResource}
-                    cardTypeResourceRef={resourceAndRef.cardTypeResourceRef}
-                    cardResourceRef={resourceAndRef.cardResourceRef}
-                    cardContentResourceRef={resourceAndRef.cardContentResourceRef}
-                  />
-                </WithToolbar>
+                  resourceAndRef={resourceAndRef}
+                  selectResource={selectResource}
+                />
               ))}
             </div>
           </div>
@@ -143,5 +103,95 @@ export default function ResourcesList({
         <ResourceCreator contextInfo={contextInfo} categories={categories} />
       </div>
     </Flex>
+  );
+}
+
+
+interface TocEntryProps {
+  resourceAndRef: ResourceAndRef;
+  selectResource: (r: ResourceAndRef) => void;
+}
+
+function TocEntry({resourceAndRef, selectResource}: TocEntryProps) {
+  const i18n = useTranslations();
+  const dispatch = useAppDispatch();
+
+  const docId = resourceAndRef.targetResource.documentId;
+  const document = useDocument(docId);
+
+  React.useEffect(() => {
+    if (docId != null && document == null) {
+      dispatch(API.getDocument(docId));
+    }
+  }, [docId, document, dispatch]);
+
+  const teaser = useBlock(resourceAndRef.targetResource.teaserId);
+
+  return (
+    <WithToolbar
+      toolbarPosition="RIGHT_BOTTOM"
+      toolbar={
+        <>
+          {resourceAndRef.isDirectResource && (
+            <Destroyer
+              title="Delete this resource"
+              icon={faTrashAlt}
+              onDelete={() => {
+                dispatch(API.deleteResource(resourceAndRef.targetResource));
+              }}
+            />
+          )}
+          {!resourceAndRef.isDirectResource && resourceAndRef.cardTypeResourceRef && (
+            <Destroyer
+              title="Refuse at card type level"
+              icon={faTrash}
+              onDelete={() => {
+                dispatch(
+                  API.removeAccessToResource(resourceAndRef.cardTypeResourceRef!),
+                );
+              }}
+            />
+          )}
+          {!resourceAndRef.isDirectResource && resourceAndRef.cardResourceRef && (
+            <Destroyer
+              title="Refuse at card level"
+              icon={faTrash}
+              onDelete={() => {
+                dispatch(API.removeAccessToResource(resourceAndRef.cardResourceRef!));
+              }}
+            />
+          )}
+          {!resourceAndRef.isDirectResource && resourceAndRef.cardContentResourceRef && (
+            <Destroyer
+              title="Refuse at variant level"
+              icon={faTrash}
+              onDelete={() => {
+                dispatch(
+                  API.removeAccessToResource(resourceAndRef.cardContentResourceRef!),
+                );
+              }}
+            />
+          )}
+          <OpenCloseModal
+            title='Resource Settings'
+            showCloseButton={true}
+            collapsedChildren={<FontAwesomeIcon icon={faCogs} />}>
+            {
+              () =>
+                <ResourceSettings {...resourceAndRef} />
+            }
+          </OpenCloseModal>
+        </>
+      }
+    >
+      <div
+        title={teaser ? teaser.textData || undefined : i18n.resource.noTeaser}
+        className={tocEntryStyle}
+        onClick={() => selectResource(resourceAndRef)}
+      >
+        {resourceAndRef.targetResource.title || i18n.resource.untitled}
+      </div>
+    </WithToolbar>
+
   );
 }

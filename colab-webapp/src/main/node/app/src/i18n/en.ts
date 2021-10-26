@@ -50,6 +50,7 @@ export const en = {
   passwordEditionImpossible: 'You cannot update your password',
 
   // common
+  loading: 'loading...',
   copiedToClipboard: 'copied to clipboard',
   copyToClipboard: 'copy to clipboard',
   reconnecting: 'reconnecting...',
@@ -123,7 +124,7 @@ export const en = {
     none: 'no version',
     untitled: 'unnamed version',
   },
-  document: {
+  resource: {
     untitled: 'unnamed document',
     noTeaser: 'no document teaser',
   },

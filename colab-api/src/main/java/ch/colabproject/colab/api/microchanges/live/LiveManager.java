@@ -179,13 +179,9 @@ public class LiveManager implements Serializable {
                     logger.trace("TODO: keep it in a temp bag the time his parent is known");
                     //patch.setBasedOn("0");
                 }
-                Project project = block.getProject();
+                //Project project = block.getProject();
 
-                if (project != null) {
-                    patch.setProjectId(project.getId());
-                } else {
-                    throw HttpErrorMessage.relatedObjectNotFoundError();
-                }
+                patch.setBlockId(block.getId());
 
                 changes.add(patch);
                 cache.put(id, get);

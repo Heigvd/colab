@@ -144,4 +144,36 @@ public class WebsocketRestEndpoint {
             projectId, sessionId);
         wsFacade.unsubscribeFromProjectChannel(sessionId, projectId);
     }
+
+    /**
+     * Subscribe to a BlockChannel.
+     *
+     * @param blockId   id of the block
+     * @param sessionId websocket session id
+     */
+    @PUT
+    @Path("SubscribeToBlockChannel/{blockId: [0-9]*}")
+    public void subscribeToBlockChannel(
+        @PathParam("blockId") Long blockId,
+        WsSessionIdentifier sessionId
+    ) {
+        logger.debug("Subscribe to block #{} channel with session id {}", blockId, sessionId);
+        wsFacade.subscribeToBlockChannel(sessionId, blockId);
+    }
+
+    /**
+     * Unsubscribe from a BlockContent channel.
+     *
+     * @param blockId   id of the block
+     * @param sessionId websocket session id
+     */
+    @PUT
+    @Path("UnSubscribeFromBlockChannel/{blockId: [0-9]*}")
+    public void unsubscribeFromBlockChannel(
+        @PathParam("blockId") Long blockId,
+        WsSessionIdentifier sessionId
+    ) {
+        logger.debug("Unsubscribe from block #{} channel with session id {}", blockId, sessionId);
+        wsFacade.unsubscribeFromBlockChannel(sessionId, blockId);
+    }
 }

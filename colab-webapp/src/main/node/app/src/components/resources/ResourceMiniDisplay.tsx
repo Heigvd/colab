@@ -5,21 +5,20 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
-import { AbstractResource, entityIs, Resource, ResourceRef } from 'colab-rest-client';
+import {css} from '@emotion/css';
+import {AbstractResource, entityIs, Resource, ResourceRef} from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useDocument } from '../../selectors/documentSelector';
-import { useAppDispatch } from '../../store/hooks';
-import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
-import AutoSaveInput from '../common/AutoSaveInput';
+import {useDocument} from '../../selectors/documentSelector';
+import {useAppDispatch} from '../../store/hooks';
+import {BlockEditorWrapper} from '../blocks/BlockEditorWrapper';
 import CheckBox from '../common/CheckBox';
 import OnBlurInput from '../common/OnBlurInput';
 import DocumentMiniDisplay from '../documents/DocumentMiniDisplay';
-import { defaultColumnContainerStyle, defaultRowContainerStyle } from '../styling/style';
-import { ResourceAndRef } from './ResourceCommonType';
+import {defaultColumnContainerStyle, defaultRowContainerStyle} from '../styling/style';
+import {ResourceAndRef} from './ResourceCommonType';
 
-function DisplayOwner({ resourceOrRef }: { resourceOrRef: AbstractResource }): JSX.Element {
+function DisplayOwner({resourceOrRef}: {resourceOrRef: AbstractResource}): JSX.Element {
   return (
     <>
       {resourceOrRef.abstractCardTypeId && (
@@ -31,7 +30,7 @@ function DisplayOwner({ resourceOrRef }: { resourceOrRef: AbstractResource }): J
   );
 }
 
-function TargetResourceMiniDisplay({ resource }: { resource: Resource }): JSX.Element {
+function TargetResourceMiniDisplay({resource}: {resource: Resource}): JSX.Element {
   const dispatch = useAppDispatch();
 
   return (
@@ -43,7 +42,7 @@ function TargetResourceMiniDisplay({ resource }: { resource: Resource }): JSX.El
         placeholder=""
         size="SMALL"
         value={resource.category || ''}
-        onChange={newValue => dispatch(API.updateResource({ ...resource, category: newValue }))}
+        onChange={newValue => dispatch(API.updateResource({...resource, category: newValue}))}
       />
       <CheckBox
         label="Published"
@@ -85,20 +84,20 @@ function TargetResourceMiniDisplay({ resource }: { resource: Resource }): JSX.El
   );
 }
 
-function ResourceRefMiniDisplay({ resourceRef }: { resourceRef: ResourceRef }): JSX.Element {
+function ResourceRefMiniDisplay({resourceRef}: {resourceRef: ResourceRef}): JSX.Element {
   const dispatch = useAppDispatch();
 
   return (
     <div className={defaultColumnContainerStyle}>
       <span>*** reference #{resourceRef.id} ***</span>
       <DisplayOwner resourceOrRef={resourceRef} />
-      <AutoSaveInput
+      <OnBlurInput
         label="Category : "
         placeholder=""
-        inputType="INPUT"
+        size='SMALL'
         value={resourceRef.category || ''}
         onChange={newValue =>
-          dispatch(API.updateResourceRef({ ...resourceRef, category: newValue }))
+          dispatch(API.updateResourceRef({...resourceRef, category: newValue}))
         }
       />
       <CheckBox
@@ -151,7 +150,7 @@ export default function ResourceMiniDisplay({
     <div className={defaultRowContainerStyle}>
       <div className={defaultColumnContainerStyle}>
         {isDirectResource ? (
-          <span className={css({ color: 'blue' })}>direct resource</span>
+          <span className={css({color: 'blue'})}>direct resource</span>
         ) : (
           'transitive resource'
         )}
@@ -172,3 +171,49 @@ export default function ResourceMiniDisplay({
     </div>
   );
 }
+
+
+
+export function ResourceSettings({
+  targetResource,
+  isDirectResource,
+  cardTypeResourceRef,
+  cardResourceRef,
+  cardContentResourceRef,
+}: ResourceAndRef): JSX.Element {
+  const dispatch = useAppDispatch();
+
+  // TODO see how the category is resolved
+  const effectiveCategory = (cardResourceRef || cardContentResourceRef || cardTypeResourceRef)
+    ?.category || targetResource.category;
+
+  return (
+    <div className={defaultRowContainerStyle}>
+      <div className={defaultColumnContainerStyle}>
+        {isDirectResource ? (<>
+          <div className={css({color: 'blue'})}>direct resource</div>
+          <OnBlurInput
+            label="Title : "
+            placeholder=""
+            size="SMALL"
+            value={targetResource.title || ''}
+            onChange={newValue => dispatch(API.updateResource({...targetResource, title: newValue}))}
+          />
+        </>) : <>
+          <div>'transitive resource'</div>
+          <div>Title : {targetResource.title}</div>
+        </>}
+        {targetResource.teaserId && <BlockEditorWrapper blockId={targetResource.teaserId} allowEdition={isDirectResource} />}
+        <span> Category : {effectiveCategory}</span>
+      </div>
+      {isDirectResource ?
+        <TargetResourceMiniDisplay resource={targetResource} /> :
+        cardTypeResourceRef ? <ResourceRefMiniDisplay resourceRef={cardTypeResourceRef} /> :
+          cardResourceRef ? <ResourceRefMiniDisplay resourceRef={cardResourceRef} /> :
+            cardContentResourceRef ? <ResourceRefMiniDisplay resourceRef={cardContentResourceRef} /> : null
+      }
+    </div>
+  );
+}
+
+

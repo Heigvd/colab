@@ -6,14 +6,17 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.document.BlockDao;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.WebsocketEndpoint;
 import ch.colabproject.colab.api.ws.WebsocketHelper;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
+import ch.colabproject.colab.api.ws.channel.BlockChannel;
 import ch.colabproject.colab.api.ws.channel.BroadcastChannel;
 import ch.colabproject.colab.api.ws.channel.ChannelOverview;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
@@ -117,6 +120,12 @@ public class WebsocketFacade {
      */
     @Inject
     private ProjectDao projectDao;
+
+    /**
+     * Block DAO
+     */
+    @Inject
+    private BlockDao blockDao;
 
     /**
      * User DAO
@@ -320,7 +329,60 @@ public class WebsocketFacade {
         } else {
             throw HttpErrorMessage.notFound();
         }
+    }
 
+    /**
+     * Current user want to subscribe to a block channel.
+     *
+     * @param sessionId websocket session identifier
+     * @param blockId   if of the block
+     *
+     * @throws HttpErrorMessage notFound if the block does not exists
+     */
+    public void subscribeToBlockChannel(WsSessionIdentifier sessionId, Long blockId) {
+        logger.debug("Session {} want to subscribe to Block#{}", sessionId, blockId);
+        Block block = blockDao.findBlock(blockId);
+        if (block != null) {
+            // no explicit security check : if one can load the block, one can subscribe to its channel
+//            securityFacade.assertConditionTx(new Conditions.IsCurrentUserMemberOfBlock(block),
+//                "Subscribe to block channel: Permision denied");
+            SubscriptionRequest request = SubscriptionRequest.build(
+                SubscriptionRequest.SubscriptionType.SUBSCRIBE,
+                SubscriptionRequest.ChannelType.BLOCK,
+                block.getId(),
+                sessionId.getSessionId(),
+                requestManager.getHttpSession().getSessionId());
+            subscriptionEvents.fire(request);
+        } else {
+            throw HttpErrorMessage.notFound();
+        }
+    }
+
+    /**
+     * Current user want to unsubscribe from a block channel.
+     *
+     * @param sessionId websocket session identifier
+     * @param blockId   if of the block
+     *
+     * @throws HttpErrorMessage notFound if the block does not exists
+     */
+    public void unsubscribeFromBlockChannel(WsSessionIdentifier sessionId, Long blockId) {
+        logger.debug("Session {} want to unsubscribe from Block#{}", sessionId, blockId);
+        Block block = blockDao.findBlock(blockId);
+        if (block != null) {
+            // no explicit security check : if one can load the block, one can subscribe to its channel
+//            securityFacade.assertConditionTx(new Conditions.IsCurrentUserMemberOfBlock(block),
+//                "Subscribe to block channel: Permision denied");
+            SubscriptionRequest request = SubscriptionRequest.build(
+                SubscriptionRequest.SubscriptionType.UNSUBSCRIBE,
+                SubscriptionRequest.ChannelType.BLOCK,
+                block.getId(),
+                sessionId.getSessionId(),
+                requestManager.getHttpSession().getSessionId());
+            subscriptionEvents.fire(request);
+        } else {
+            throw HttpErrorMessage.notFound();
+        }
     }
 
     /**
@@ -456,6 +518,11 @@ public class WebsocketFacade {
             Project project = projectDao.getProject(request.getChannelId());
             if (project != null) {
                 return ProjectContentChannel.build(project);
+            }
+        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BLOCK) {
+            Block block = blockDao.findBlock(request.getChannelId());
+            if (block != null) {
+                return BlockChannel.build(block);
             }
         } else if (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {
             User user = userDao.findUser(request.getChannelId());

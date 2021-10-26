@@ -5,20 +5,24 @@
  * Licensed under the MIT License
  */
 
-import { BlockDocument } from 'colab-rest-client';
+import {BlockDocument} from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 //import useTranslations from '../../../i18n/I18nContext';
-import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
+import {shallowEqual, useAppDispatch, useAppSelector} from '../../../store/hooks';
+import {BlockEditorWrapper} from '../../blocks/BlockEditorWrapper';
 import InlineLoading from '../../common/InlineLoading';
-import { CreateBlockButton } from './CreateBlockButton';
+import {CreateBlockButton} from './CreateBlockButton';
 
 export interface BlockDocProps {
   doc: BlockDocument;
+  allowEdition?: boolean;
 }
 
-export function BlockDocumentEditor({ doc }: BlockDocProps): JSX.Element {
+export function BlockDocumentEditor({
+  doc,
+  allowEdition,
+}: BlockDocProps): JSX.Element {
   const dispatch = useAppDispatch();
   //const i18n = useTranslations();
 
@@ -31,7 +35,7 @@ export function BlockDocumentEditor({ doc }: BlockDocProps): JSX.Element {
 
   React.useEffect(() => {
     if (blockIds === undefined) {
-      dispatch(API.getDocumentBlocks(doc));
+      dispatch(API.getDocumentBlocksIds(doc));
     }
   }, [doc, blockIds, dispatch]);
 
@@ -51,10 +55,12 @@ export function BlockDocumentEditor({ doc }: BlockDocProps): JSX.Element {
       {blockIds == null ? (
         <InlineLoading />
       ) : (
-        blockIds.map(id => <BlockEditorWrapper key={id} blockId={id} />)
+        blockIds.map(id => <BlockEditorWrapper key={id} blockId={id} allowEdition={allowEdition} />)
       )}
 
-      <CreateBlockButton doc={doc} />
+      {allowEdition ?
+        <CreateBlockButton doc={doc} />
+        : null}
     </div>
   );
 }

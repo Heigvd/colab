@@ -15,6 +15,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
+import ch.colabproject.colab.api.ws.channel.BlockChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
@@ -162,6 +163,7 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
      *
      * @return block owner
      */
+    @JsonbTransient
     public Project getProject() {
         if (this.document != null) {
             return this.document.getProject();
@@ -222,8 +224,8 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
 
     @Override
     public Set<WebsocketChannel> getChannels() {
-        if (this.document != null) {
-            return this.document.getChannels();
+        if (this.id!= null){
+            return Set.of(BlockChannel.build(id));
         } else {
             // such an orphan shouldn't exist...
             return Set.of();

@@ -5,31 +5,28 @@
  * Licensed under the MIT License
  */
 
-import { Document, entityIs } from 'colab-rest-client';
+import {Document, entityIs} from 'colab-rest-client';
 import * as React from 'react';
-import { BlockDocumentEditor } from './blockdoc/BlockDocumentEditor';
+import {BlockDocumentEditor} from './blockdoc/BlockDocumentEditor';
+import {ExternalDocLinkEditor} from './ExternalDocLinkEditor';
+import {HostedDocLinkEditor} from './HostedDocLinkEditor';
 
 export interface DocumentEditorDisplayProps {
   document: Document;
+  allowEdition?: boolean;
 }
 
-export function DocumentEditorDisplay({ document }: DocumentEditorDisplayProps): JSX.Element {
+export function DocumentEditorDisplay({
+  document,
+  allowEdition = true,
+}: DocumentEditorDisplayProps): JSX.Element {
+
   if (entityIs(document, 'BlockDocument')) {
-    return <BlockDocumentEditor doc={document} />;
+    return <BlockDocumentEditor doc={document} allowEdition={allowEdition} />;
   } else if (entityIs(document, 'HostedDocLink')) {
-    return (
-      <div>
-        {' '}
-        <i>HostedDocLink not yet implemented (upload new document)</i>{' '}
-      </div>
-    );
+    return <HostedDocLinkEditor document={document} allowEdition={allowEdition} />;
   } else if (entityIs(document, 'ExternalDocLink')) {
-    return (
-      <div>
-        {' '}
-        <i>ExternalDocLink not yet implemented (url thumbnail, url editor)</i>{' '}
-      </div>
-    );
+    return <ExternalDocLinkEditor document={document} allowEdition={allowEdition} />;
   } else {
     return (
       <div>

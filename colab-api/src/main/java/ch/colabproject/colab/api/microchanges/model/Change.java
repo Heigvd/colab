@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.microchanges.model;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.BlockChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ public class Change implements Serializable, WithWebsocketChannels {
      */
     @NotNull
     @JsonbTransient
-    private Long projectId;
+    private Long blockId;
 
     @Override
     public Long getId() {
@@ -186,8 +186,8 @@ public class Change implements Serializable, WithWebsocketChannels {
      *
      * @return id of the project
      */
-    public Long getProjectId() {
-        return projectId;
+    public Long getBlockId() {
+        return blockId;
     }
 
     @Override
@@ -196,17 +196,17 @@ public class Change implements Serializable, WithWebsocketChannels {
     }
 
     /**
-     * Set project id
+     * Set block id
      *
-     * @param projectId the id
+     * @param blockId the id
      */
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
+    public void setBlockId(Long blockId) {
+        this.blockId = blockId;
     }
 
     @Override
     public Set<WebsocketChannel> getChannels() {
-        return Set.of(ProjectContentChannel.build(projectId));
+        return Set.of(BlockChannel.build(blockId));
     }
 
     @Override
