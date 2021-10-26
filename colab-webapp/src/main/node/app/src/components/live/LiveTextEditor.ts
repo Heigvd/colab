@@ -80,11 +80,13 @@ export function useBlock(blockId: number | null | undefined): Block | null | und
     }
   }, [blockId, dispatch]);
 
-  if (blockId != null) {
-    return useAppSelector(state => state.block.blocks[blockId]);
-  } else {
-    return undefined;
-  }
+  return useAppSelector(state => {
+    if (blockId) {
+      return state.block.blocks[blockId]
+    } else {
+      return undefined;
+    }
+  });
 }
 
 

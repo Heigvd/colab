@@ -8,7 +8,6 @@ package ch.colabproject.colab.api.rest.document;
 
 import ch.colabproject.colab.api.ejb.DocumentFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;

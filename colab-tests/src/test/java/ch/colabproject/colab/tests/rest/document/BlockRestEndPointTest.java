@@ -156,18 +156,18 @@ public class BlockRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertEquals(documentId, block2.getDocumentId());
         Long block2Id = block2.getId();
 
-        List<Block> blocksOfDocument = client.documentRestEndPoint.getBlocksOfDocument(documentId);
+        List<Long> blocksOfDocument = client.documentRestEndPoint.getBlocksDocumentIds(documentId);
         Assertions.assertNotNull(blocksOfDocument);
         Assertions.assertEquals(2, blocksOfDocument.size());
-        Assertions.assertTrue(block1Id.equals(blocksOfDocument.get(0).getId())
-            || block1Id.equals(blocksOfDocument.get(1).getId()));
-        Assertions.assertTrue(block2Id.equals(blocksOfDocument.get(0).getId())
-            || block2Id.equals(blocksOfDocument.get(1).getId()));
+        Assertions.assertTrue(block1Id.equals(blocksOfDocument.get(0))
+            || block1Id.equals(blocksOfDocument.get(1)));
+        Assertions.assertTrue(block2Id.equals(blocksOfDocument.get(0))
+            || block2Id.equals(blocksOfDocument.get(1)));
 
         client.blockRestEndPoint.deleteBlock(persistedBlock.getId());
-        blocksOfDocument = client.documentRestEndPoint.getBlocksOfDocument(documentId);
+        blocksOfDocument = client.documentRestEndPoint.getBlocksDocumentIds(documentId);
         Assertions.assertNotNull(blocksOfDocument);
         Assertions.assertEquals(1, blocksOfDocument.size());
-        Assertions.assertTrue(block2Id.equals(blocksOfDocument.get(0).getId()));
+        Assertions.assertTrue(block2Id.equals(blocksOfDocument.get(0)));
     }
 }
