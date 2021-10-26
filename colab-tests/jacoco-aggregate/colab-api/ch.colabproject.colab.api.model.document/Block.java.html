@@ -15,6 +15,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
+import ch.colabproject.colab.api.ws.channel.BlockChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ import javax.persistence.Transient;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-<span class="fc" id="L47">public abstract class Block implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {</span>
+<span class="fc" id="L48">public abstract class Block implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -85,7 +86,7 @@ import javax.persistence.Transient;
     /**
      * The list of sticky note links of which the block is the source
      */
-<span class="fc" id="L88">    @OneToMany(mappedBy = &quot;srcBlock&quot;, cascade = CascadeType.ALL)</span>
+<span class="fc" id="L89">    @OneToMany(mappedBy = &quot;srcBlock&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;StickyNoteLink&gt; stickyNoteLinksAsSrc = new ArrayList&lt;&gt;();
 
@@ -97,43 +98,43 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L100">        return id;</span>
+<span class="fc" id="L101">        return id;</span>
     }
 
     /**
      * @param id the block id
      */
     public void setId(Long id) {
-<span class="fc" id="L107">        this.id = id;</span>
-<span class="fc" id="L108">    }</span>
+<span class="fc" id="L108">        this.id = id;</span>
+<span class="fc" id="L109">    }</span>
 
     /**
      * @return the index to define the place in the document
      */
     public int getIndex() {
-<span class="fc" id="L114">        return index;</span>
+<span class="fc" id="L115">        return index;</span>
     }
 
     /**
      * @param index the index to define the place in the document to set
      */
     public void setIndex(int index) {
-<span class="fc" id="L121">        this.index = index;</span>
-<span class="fc" id="L122">    }</span>
+<span class="fc" id="L122">        this.index = index;</span>
+<span class="fc" id="L123">    }</span>
 
     /**
      * @return the document it is part of
      */
     public BlockDocument getDocument() {
-<span class="fc" id="L128">        return document;</span>
+<span class="fc" id="L129">        return document;</span>
     }
 
     /**
      * @param document the document it is part of
      */
     public void setDocument(BlockDocument document) {
-<span class="fc" id="L135">        this.document = document;</span>
-<span class="fc" id="L136">    }</span>
+<span class="fc" id="L136">        this.document = document;</span>
+<span class="fc" id="L137">    }</span>
 
     /**
      * get the document id. To be sent to client
@@ -141,10 +142,10 @@ import javax.persistence.Transient;
      * @return id of the document or null
      */
     public Long getDocumentId() {
-<span class="fc bfc" id="L144" title="All 2 branches covered.">        if (this.document != null) {</span>
-<span class="fc" id="L145">            return this.document.getId();</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        if (this.document != null) {</span>
+<span class="fc" id="L146">            return this.document.getId();</span>
         } else {
-<span class="fc" id="L147">            return documentId;</span>
+<span class="fc" id="L148">            return documentId;</span>
         }
     }
 
@@ -154,20 +155,21 @@ import javax.persistence.Transient;
      * @param id the id of the document
      */
     public void setDocumentId(Long id) {
-<span class="fc" id="L157">        this.documentId = id;</span>
-<span class="fc" id="L158">    }</span>
+<span class="fc" id="L158">        this.documentId = id;</span>
+<span class="fc" id="L159">    }</span>
 
     /**
      * Get the project this block belongs to
      *
      * @return block owner
      */
+    @JsonbTransient
     public Project getProject() {
-<span class="fc bfc" id="L166" title="All 2 branches covered.">        if (this.document != null) {</span>
-<span class="fc" id="L167">            return this.document.getProject();</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (this.document != null) {</span>
+<span class="nc" id="L169">            return this.document.getProject();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="fc" id="L170">            return null;</span>
+<span class="nc" id="L172">            return null;</span>
         }
     }
 
@@ -176,15 +178,15 @@ import javax.persistence.Transient;
      */
     @Override
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc() {
-<span class="fc" id="L179">        return stickyNoteLinksAsSrc;</span>
+<span class="fc" id="L181">        return stickyNoteLinksAsSrc;</span>
     }
 
     /**
      * @param stickyNoteLinksAsSrc the list of sticky note links of which the block is the source
      */
     public void setStickyNoteLinksAsSrc(List&lt;StickyNoteLink&gt; stickyNoteLinksAsSrc) {
-<span class="nc" id="L186">        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;</span>
-<span class="nc" id="L187">    }</span>
+<span class="nc" id="L188">        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;</span>
+<span class="nc" id="L189">    }</span>
 
     /**
      * Get the tracking data
@@ -193,7 +195,7 @@ import javax.persistence.Transient;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="fc" id="L196">        return trackingData;</span>
+<span class="fc" id="L198">        return trackingData;</span>
     }
 
     /**
@@ -203,8 +205,8 @@ import javax.persistence.Transient;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="fc" id="L206">        this.trackingData = trackingData;</span>
-<span class="fc" id="L207">    }</span>
+<span class="fc" id="L208">        this.trackingData = trackingData;</span>
+<span class="fc" id="L209">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -212,53 +214,53 @@ import javax.persistence.Transient;
     // ---------------------------------------------------------------------------------------------
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L215" title="1 of 2 branches missed.">        if (other instanceof Block) {</span>
-<span class="fc" id="L216">            Block o = (Block) other;</span>
-<span class="fc" id="L217">            this.setIndex(o.getIndex());</span>
-<span class="fc" id="L218">        } else {</span>
-<span class="nc" id="L219">            throw new ColabMergeException(this, other);</span>
+<span class="pc bpc" id="L217" title="1 of 2 branches missed.">        if (other instanceof Block) {</span>
+<span class="fc" id="L218">            Block o = (Block) other;</span>
+<span class="fc" id="L219">            this.setIndex(o.getIndex());</span>
+<span class="fc" id="L220">        } else {</span>
+<span class="nc" id="L221">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L221">    }</span>
+<span class="fc" id="L223">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="fc bfc" id="L225" title="All 2 branches covered.">        if (this.document != null) {</span>
-<span class="fc" id="L226">            return this.document.getChannels();</span>
+<span class="pc bpc" id="L227" title="1 of 2 branches missed.">        if (this.id!= null){</span>
+<span class="fc" id="L228">            return Set.of(BlockChannel.build(id));</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="fc" id="L229">            return Set.of();</span>
+<span class="nc" id="L231">            return Set.of();</span>
         }
     }
 
     @Override
     public Conditions.Condition getReadCondition() {
-<span class="fc bfc" id="L235" title="All 2 branches covered.">        if (this.document != null) {</span>
-<span class="fc" id="L236">            return this.document.getReadCondition();</span>
+<span class="fc bfc" id="L237" title="All 2 branches covered.">        if (this.document != null) {</span>
+<span class="fc" id="L238">            return this.document.getReadCondition();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="fc" id="L239">            return Conditions.defaultForOrphan;</span>
+<span class="fc" id="L241">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="fc bfc" id="L245" title="All 2 branches covered.">        if (this.document != null) {</span>
-<span class="fc" id="L246">            return this.document.getUpdateCondition();</span>
+<span class="fc bfc" id="L247" title="All 2 branches covered.">        if (this.document != null) {</span>
+<span class="fc" id="L248">            return this.document.getUpdateCondition();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="fc" id="L249">            return Conditions.defaultForOrphan;</span>
+<span class="fc" id="L251">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L255">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L257">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L261">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L263">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
@@ -268,7 +270,7 @@ import javax.persistence.Transient;
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-<span class="nc" id="L271">        return &quot;id=&quot; + id + &quot;, index=&quot; + index;</span>
+<span class="nc" id="L273">        return &quot;id=&quot; + id + &quot;, index=&quot; + index;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

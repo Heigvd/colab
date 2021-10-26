@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.microchanges.model;
 
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
+import ch.colabproject.colab.api.ws.channel.BlockChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -66,7 +66,7 @@ import javax.validation.constraints.NotNull;
      */
     @NotNull
     @JsonbTransient
-    private Long projectId;
+    private Long blockId;
 
     @Override
     public Long getId() {
@@ -186,8 +186,8 @@ import javax.validation.constraints.NotNull;
      *
      * @return id of the project
      */
-    public Long getProjectId() {
-<span class="nc" id="L190">        return projectId;</span>
+    public Long getBlockId() {
+<span class="nc" id="L190">        return blockId;</span>
     }
 
     @Override
@@ -196,17 +196,17 @@ import javax.validation.constraints.NotNull;
     }
 
     /**
-     * Set project id
+     * Set block id
      *
-     * @param projectId the id
+     * @param blockId the id
      */
-    public void setProjectId(Long projectId) {
-<span class="nc" id="L204">        this.projectId = projectId;</span>
+    public void setBlockId(Long blockId) {
+<span class="nc" id="L204">        this.blockId = blockId;</span>
 <span class="nc" id="L205">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc" id="L209">        return Set.of(ProjectContentChannel.build(projectId));</span>
+<span class="nc" id="L209">        return Set.of(BlockChannel.build(blockId));</span>
     }
 
     @Override

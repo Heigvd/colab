@@ -152,7 +152,39 @@
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>             projectId, sessionId);
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>         wsFacade.unsubscribeFromProjectChannel(sessionId, projectId);
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>     }
-<a class="jxr_linenumber" name="L147" href="#L147">147</a> }
+<a class="jxr_linenumber" name="L147" href="#L147">147</a> 
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L149" href="#L149">149</a> <em class="jxr_javadoccomment">     * Subscribe to a BlockChannel.</em>
+<a class="jxr_linenumber" name="L150" href="#L150">150</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L151" href="#L151">151</a> <em class="jxr_javadoccomment">     * @param blockId   id of the block</em>
+<a class="jxr_linenumber" name="L152" href="#L152">152</a> <em class="jxr_javadoccomment">     * @param sessionId websocket session id</em>
+<a class="jxr_linenumber" name="L153" href="#L153">153</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>     @PUT
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>     @Path(<span class="jxr_string">"SubscribeToBlockChannel/{blockId: [0-9]*}"</span>)
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> subscribeToBlockChannel(
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>         @PathParam(<span class="jxr_string">"blockId"</span>) Long blockId,
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>         <a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>     ) {
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>         logger.debug(<span class="jxr_string">"Subscribe to block #{} channel with session id {}"</span>, blockId, sessionId);
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>         wsFacade.subscribeToBlockChannel(sessionId, blockId);
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>     }
+<a class="jxr_linenumber" name="L163" href="#L163">163</a> 
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L165" href="#L165">165</a> <em class="jxr_javadoccomment">     * Unsubscribe from a BlockContent channel.</em>
+<a class="jxr_linenumber" name="L166" href="#L166">166</a> <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L167" href="#L167">167</a> <em class="jxr_javadoccomment">     * @param blockId   id of the block</em>
+<a class="jxr_linenumber" name="L168" href="#L168">168</a> <em class="jxr_javadoccomment">     * @param sessionId websocket session id</em>
+<a class="jxr_linenumber" name="L169" href="#L169">169</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>     @PUT
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>     @Path(<span class="jxr_string">"UnSubscribeFromBlockChannel/{blockId: [0-9]*}"</span>)
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> unsubscribeFromBlockChannel(
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>         @PathParam(<span class="jxr_string">"blockId"</span>) Long blockId,
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>         <a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>     ) {
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>         logger.debug(<span class="jxr_string">"Unsubscribe from block #{} channel with session id {}"</span>, blockId, sessionId);
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>         wsFacade.unsubscribeFromBlockChannel(sessionId, blockId);
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>     }
+<a class="jxr_linenumber" name="L179" href="#L179">179</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

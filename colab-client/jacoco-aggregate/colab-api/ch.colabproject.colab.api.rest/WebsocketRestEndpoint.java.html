@@ -144,5 +144,37 @@ import org.slf4j.LoggerFactory;
             projectId, sessionId);
 <span class="nc" id="L145">        wsFacade.unsubscribeFromProjectChannel(sessionId, projectId);</span>
 <span class="nc" id="L146">    }</span>
+
+    /**
+     * Subscribe to a BlockChannel.
+     *
+     * @param blockId   id of the block
+     * @param sessionId websocket session id
+     */
+    @PUT
+    @Path(&quot;SubscribeToBlockChannel/{blockId: [0-9]*}&quot;)
+    public void subscribeToBlockChannel(
+        @PathParam(&quot;blockId&quot;) Long blockId,
+        WsSessionIdentifier sessionId
+    ) {
+<span class="nc" id="L160">        logger.debug(&quot;Subscribe to block #{} channel with session id {}&quot;, blockId, sessionId);</span>
+<span class="nc" id="L161">        wsFacade.subscribeToBlockChannel(sessionId, blockId);</span>
+<span class="nc" id="L162">    }</span>
+
+    /**
+     * Unsubscribe from a BlockContent channel.
+     *
+     * @param blockId   id of the block
+     * @param sessionId websocket session id
+     */
+    @PUT
+    @Path(&quot;UnSubscribeFromBlockChannel/{blockId: [0-9]*}&quot;)
+    public void unsubscribeFromBlockChannel(
+        @PathParam(&quot;blockId&quot;) Long blockId,
+        WsSessionIdentifier sessionId
+    ) {
+<span class="nc" id="L176">        logger.debug(&quot;Unsubscribe from block #{} channel with session id {}&quot;, blockId, sessionId);</span>
+<span class="nc" id="L177">        wsFacade.unsubscribeFromBlockChannel(sessionId, blockId);</span>
+<span class="nc" id="L178">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

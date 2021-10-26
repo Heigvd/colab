@@ -8,12 +8,12 @@ package ch.colabproject.colab.api.rest.document;
 
 import ch.colabproject.colab.api.ejb.DocumentFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -130,18 +130,19 @@ import org.slf4j.LoggerFactory;
     // *********************************************************************************************
 
     /**
-     * Get all blocks that make up the document
+     * Get all ids of blocks that make up the document
      *
      * @param id id of the document
      *
-     * @return the blocks linked to the document
+     * @return ids of the blocks linked to the document
      */
     @GET
-    @Path(&quot;{id}/Blocks&quot;)
-    public List&lt;Block&gt; getBlocksOfDocument(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L142">        logger.debug(&quot;get document #{} blocks&quot;, id);</span>
-<span class="nc" id="L143">        return documentFacade.getBlocksOfDocument(id);</span>
+    @Path(&quot;{id}/BlocksIds&quot;)
+    public List&lt;Long&gt; getBlocksDocumentIds(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L142">        logger.debug(&quot;get document #{} blocks ids&quot;, id);</span>
+<span class="nc" id="L143">        return documentFacade.getBlocksOfDocument(id).stream()</span>
+<span class="nc" id="L144">            .map(b -&gt;  b.getId())</span>
+<span class="nc" id="L145">            .collect(Collectors.toList());</span>
     }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
