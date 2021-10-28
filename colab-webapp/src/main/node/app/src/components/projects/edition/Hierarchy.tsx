@@ -196,7 +196,7 @@ function CardGroup({ card, divRefs }: CardGroupProps) {
               //              left: '100%',
             })}`}
             onClick={() => {
-              dispatch(API.createCardContentVariant(card.id!));
+              dispatch(API.createCardContentVariantWithBlockDoc(card.id!));
             }}
           />
         </Flex>

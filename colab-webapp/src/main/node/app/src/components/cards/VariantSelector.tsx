@@ -94,7 +94,7 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
               icon={faWindowRestore}
               title="Create new variant"
               onClick={() => {
-                dispatch(API.createCardContentVariant(cardId)).then(payload => {
+                dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {
                   // TODO select and display new content
                   if (payload.meta.requestStatus === 'fulfilled') {
                     if (entityIs(payload.payload, 'CardContent')) {
@@ -194,7 +194,7 @@ export function VariantPager({ card, onSelect }: PagerProps): JSX.Element {
           icon={faWindowRestore}
           title="Create new variant"
           onClick={() => {
-            dispatch(API.createCardContentVariant(cardId)).then(payload => {
+            dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {
               // TODO select and display new content
               if (payload.meta.requestStatus === 'fulfilled') {
                 if (entityIs(payload.payload, 'CardContent')) {
