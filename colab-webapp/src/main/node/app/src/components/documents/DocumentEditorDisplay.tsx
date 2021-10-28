@@ -5,11 +5,11 @@
  * Licensed under the MIT License
  */
 
-import {Document, entityIs} from 'colab-rest-client';
+import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import {BlockDocumentEditor} from './blockdoc/BlockDocumentEditor';
-import {ExternalDocLinkEditor} from './ExternalDocLinkEditor';
-import {HostedDocLinkEditor} from './HostedDocLinkEditor';
+import { BlockDocumentEditor } from './blockdoc/BlockDocumentEditor';
+import { ExternalDocLinkEditor } from './ExternalDocLinkEditor';
+import { HostedDocLinkEditor } from './HostedDocLinkEditor';
 
 export interface DocumentEditorDisplayProps {
   document: Document;
@@ -20,7 +20,6 @@ export function DocumentEditorDisplay({
   document,
   allowEdition = true,
 }: DocumentEditorDisplayProps): JSX.Element {
-
   if (entityIs(document, 'BlockDocument')) {
     return <BlockDocumentEditor doc={document} allowEdition={allowEdition} />;
   } else if (entityIs(document, 'HostedDocLink')) {

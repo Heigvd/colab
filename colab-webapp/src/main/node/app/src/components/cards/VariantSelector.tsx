@@ -36,6 +36,7 @@ const computeNav = (
       previous: contents[previous]!,
       next: contents[next]!,
       index: index,
+      length: contents.length,
     };
   } else {
     return null;
@@ -128,10 +129,11 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
 
 interface PagerProps {
   card: Card;
+  allowCreation: boolean;
   onSelect: (variant: CardContent) => void;
 }
 
-export function VariantPager({ card, onSelect }: PagerProps): JSX.Element {
+export function VariantPager({ card, allowCreation, onSelect }: PagerProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const [displayedVariant, setDisplayedVariant] = React.useState<CardContent | undefined>();
@@ -174,7 +176,9 @@ export function VariantPager({ card, onSelect }: PagerProps): JSX.Element {
           />
         ) : null}
 
-        {variantPager != null ? `${variantPager.index + 1} / ${contents?.length || 0}` : null}
+        {variantPager != null && variantPager.length > 1
+          ? `${variantPager.index + 1} / ${contents?.length || 0}`
+          : null}
 
         {variantPager != null && variantPager.next != variantPager.current ? (
           <IconButton
@@ -190,22 +194,24 @@ export function VariantPager({ card, onSelect }: PagerProps): JSX.Element {
           />
         ) : null}
 
-        <IconButton
-          icon={faWindowRestore}
-          title="Create new variant"
-          onClick={() => {
-            dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {
-              // TODO select and display new content
-              if (payload.meta.requestStatus === 'fulfilled') {
-                if (entityIs(payload.payload, 'CardContent')) {
-                  setDisplayedVariant(payload.payload || undefined);
+        {allowCreation ? (
+          <IconButton
+            icon={faWindowRestore}
+            title="Create new variant"
+            onClick={() => {
+              dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {
+                // TODO select and display new content
+                if (payload.meta.requestStatus === 'fulfilled') {
+                  if (entityIs(payload.payload, 'CardContent')) {
+                    setDisplayedVariant(payload.payload || undefined);
+                  }
                 }
-              }
-            });
-          }}
-        >
-          Create a new variant
-        </IconButton>
+              });
+            }}
+          >
+            Create a new variant
+          </IconButton>
+        ) : null}
       </Flex>
     );
   }

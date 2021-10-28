@@ -9,7 +9,7 @@ import * as React from 'react';
 import { linkStyle } from '../styling/style';
 
 export interface ClickablenProps {
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
   title?: string;
   children?: React.ReactNode;
   className?: string;
@@ -30,18 +30,21 @@ export default function Clickable({
     (event: React.KeyboardEvent<HTMLSpanElement>) => {
       if (onClick != null) {
         if (event.code === 'Space' || event.key === 'Enter') {
-          onClick();
+          onClick(event);
         }
       }
     },
     [onClick],
   );
 
-  const onClickCb = React.useCallback(() => {
-    if (onClick != null) {
-      onClick();
-    }
-  }, [onClick]);
+  const onClickCb = React.useCallback(
+    (e: React.MouseEvent<HTMLSpanElement>) => {
+      if (onClick != null) {
+        onClick(e);
+      }
+    },
+    [onClick],
+  );
 
   return (
     <span

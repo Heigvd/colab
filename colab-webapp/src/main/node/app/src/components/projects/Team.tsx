@@ -11,7 +11,7 @@ import * as React from 'react';
 import Select from 'react-select';
 import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
-import { useProjectTeam } from '../../selectors/projectSelector';
+import { useAndLoadProjectTeam } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/IconButton';
@@ -226,18 +226,9 @@ export default function Team({ project }: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const projectId = project.id;
 
-  const { members, roles, status } = useProjectTeam(projectId);
+  const { members, roles, status } = useAndLoadProjectTeam(projectId);
 
   const [invite, setInvite] = React.useState('');
-
-  React.useEffect(() => {
-    if (status === 'NOT_INITIALIZED') {
-      // Load team members from server
-      if (project.id != null) {
-        dispatch(API.getProjectTeam(project.id));
-      }
-    }
-  }, [projectId, status, dispatch, project.id]);
 
   const title = <h3>Team</h3>;
 

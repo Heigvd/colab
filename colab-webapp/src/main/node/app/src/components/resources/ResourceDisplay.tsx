@@ -1,31 +1,28 @@
 /*
  * The coLAB project
  * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
- * 
+ *
  * Licensed under the MIT License
  */
-import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
+import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import {useDocument} from '../../selectors/documentSelector';
-import {useAppDispatch} from '../../store/hooks';
+import { useDocument } from '../../selectors/documentSelector';
+import { useAppDispatch } from '../../store/hooks';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
-
-import * as API from '../../API/api';
-
-import {ResourceAndRef} from "./ResourceCommonType";
-import {entityIs} from 'colab-rest-client';
 import InlineLoading from '../common/InlineLoading';
-import {DocumentEditorDisplay} from '../documents/DocumentEditorDisplay';
+import { DocumentEditorDisplay } from '../documents/DocumentEditorDisplay';
+import { ResourceAndRef } from './ResourceCommonType';
 
 export interface ResourceDisplayProps {
   resourceAndRef: ResourceAndRef;
   onClose: () => void;
-};
+}
 
-export function ResourceDisplay({resourceAndRef, onClose}: ResourceDisplayProps): JSX.Element {
-
+export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
@@ -41,26 +38,29 @@ export function ResourceDisplay({resourceAndRef, onClose}: ResourceDisplayProps)
   return (
     <div>
       <Flex>
-        <IconButton
-          icon={faArrowLeft}
-          onClick={onClose}
-        />
+        <IconButton icon={faArrowLeft} onClick={onClose} />
         <div>
           {entityIs(document, 'Document') ? (
             resourceAndRef.targetResource.title || i18n.resource.untitled
-          ) : <InlineLoading />}
+          ) : (
+            <InlineLoading />
+          )}
         </div>
       </Flex>
 
       <div>
         {entityIs(document, 'Document') ? (
-          resourceAndRef.isDirectResource ?
-            <DocumentEditorDisplay document={document} /> :
+          resourceAndRef.isDirectResource ? (
+            <DocumentEditorDisplay document={document} />
+          ) : (
             <>
               <div>!!! Not a direct resource : readonly </div>
-              <DocumentEditorDisplay document={document} allowEdition={false} /> 
+              <DocumentEditorDisplay document={document} allowEdition={false} />
             </>
-        ) : <InlineLoading />}
+          )
+        ) : (
+          <InlineLoading />
+        )}
       </div>
     </div>
   );

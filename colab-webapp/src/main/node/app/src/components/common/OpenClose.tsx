@@ -73,7 +73,8 @@ export default function OpenClose({
       <Clickable
         className={className}
         clickableClassName={className}
-        onClick={() => {
+        onClick={e => {
+          e.stopPropagation();
           setState({
             status: 'EXPANDED',
           });

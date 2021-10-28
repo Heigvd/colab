@@ -11,7 +11,8 @@ import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useVariants } from '../../selectors/cardSelector';
+import { useLocalStorage } from '../../preferences';
+import { useCardACLForCurrentUser, useVariants } from '../../selectors/cardSelector';
 import { useCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AutoSaveInput from '../common/AutoSaveInput';
@@ -89,13 +90,19 @@ Props): JSX.Element {
 
   const variants = useVariants(card) || [];
 
-  const [rightPanel, setRightPanel] = React.useState<'NONE' | 'RESOURCES' | 'SETTINGS'>('NONE');
+  //const [rightPanel, setRightPanel] = React.useState<'NONE' | 'RESOURCES' | 'SETTINGS'>('NONE');
+  const [rightPanel, setRightPanel] = useLocalStorage<'NONE' | 'RESOURCES' | 'SETTINGS'>(
+    'cardRightPanel',
+    'NONE',
+  );
 
   const [variant, setVariant] = React.useState<CardContent | undefined>(undefined);
 
   const closePanelCb = React.useCallback(() => {
     setRightPanel('NONE');
-  }, []);
+  }, [setRightPanel]);
+
+  const userAcl = useCardACLForCurrentUser(card.id);
 
   React.useEffect(() => {
     if (cardType === undefined) {
@@ -178,26 +185,35 @@ Props): JSX.Element {
                         {variants.length > 1 ? (
                           <>
                             Version(contentTitle):
-                            <AutoSaveInput
-                              inputType="INPUT"
-                              value={variant.title || ''}
-                              placeholder={i18n.content.untitled}
-                              onChange={newValue =>
-                                dispatch(API.updateCardContent({ ...variant, title: newValue }))
-                              }
-                            />
+                            {userAcl.write ? (
+                              <AutoSaveInput
+                                inputType="INPUT"
+                                value={variant.title || ''}
+                                placeholder={i18n.content.untitled}
+                                onChange={newValue =>
+                                  dispatch(API.updateCardContent({ ...variant, title: newValue }))
+                                }
+                              />
+                            ) : (
+                              variant.title
+                            )}
                           </>
                         ) : null}
-                        {variant && variant.id ? (
-                          <DocumentEditorAsDeliverableWrapper cardContentId={variant.id} />
+
+                        {userAcl.read ? (
+                          variant && variant.id ? (
+                            <DocumentEditorAsDeliverableWrapper cardContentId={variant.id} />
+                          ) : (
+                            <span>no deliverable available</span>
+                          )
                         ) : (
-                          <span>no deliverable available</span>
+                          <span>Access Denied</span>
                         )}
                       </div>
                     </Flex>
                   ) : null}
                   <Flex justify="center">
-                    <VariantPager card={card} onSelect={setVariant} />
+                    <VariantPager allowCreation={userAcl.write} card={card} onSelect={setVariant} />
                   </Flex>
                 </Flex>
                 <Flex align="center">
@@ -233,6 +249,7 @@ Props): JSX.Element {
                       variant?.id && (
                         <ResourcesWrapper
                           kind={ResourceContextScope.CardOrCardContent}
+                          accessLevel={userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
                           cardId={card.id}
                           cardContentId={variant.id}
                         />

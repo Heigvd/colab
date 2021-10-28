@@ -6,7 +6,14 @@
  */
 
 import { Project, TeamMember, TeamRole } from 'colab-rest-client';
-import { customColabStateEquals, shallowEqual, useAppSelector } from '../store/hooks';
+import * as React from 'react';
+import * as API from '../API/api';
+import {
+  customColabStateEquals,
+  shallowEqual,
+  useAppDispatch,
+  useAppSelector,
+} from '../store/hooks';
 import { StateStatus } from '../store/project';
 
 export interface UsedProject {
@@ -62,7 +69,7 @@ export const useProjectBeingEdited = (): {
   }, shallowEqual);
 };
 
-export const useProjectTeam = (
+const useProjectTeam = (
   projectId: number | undefined | null,
 ): {
   members: TeamMember[];
@@ -87,3 +94,33 @@ export const useProjectTeam = (
     return r;
   }, customColabStateEquals);
 };
+
+export const useAndLoadProjectTeam = (
+  projectId: number | undefined | null,
+): {
+  members: TeamMember[];
+  roles: TeamRole[];
+  status: StateStatus;
+} => {
+  const dispatch = useAppDispatch();
+  const team = useProjectTeam(projectId);
+
+  React.useEffect(() => {
+    if (team.status == 'NOT_INITIALIZED' && projectId != null) {
+      dispatch(API.getProjectTeam(projectId));
+    }
+  }, [dispatch, team.status, projectId]);
+
+  return team;
+};
+
+export function useMyMember(
+  projectId: number | undefined | null,
+  userId: number | undefined | null,
+): TeamMember | undefined {
+  const team = useAndLoadProjectTeam(projectId);
+  if (projectId != null && userId != null) {
+    return Object.values(team.members || {}).find(m => m.userId === userId);
+  }
+  return undefined;
+}

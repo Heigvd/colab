@@ -79,7 +79,7 @@ const blocksSlice = createSlice({
         const docId = action.meta.arg.document.id!;
         const blockId = action.payload;
         const docState = state.documents[docId];
-        if (docState){
+        if (docState) {
           docState.push(blockId);
         }
       })

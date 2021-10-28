@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 
-import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {ExternalDocLink} from 'colab-rest-client';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ExternalDocLink } from 'colab-rest-client';
 import * as React from 'react';
 
 export interface ExternalDocLinkProps {
@@ -15,15 +15,12 @@ export interface ExternalDocLinkProps {
   allowEdition?: boolean;
 }
 
-export function ExternalDocLinkEditor({document}: ExternalDocLinkProps): JSX.Element {
+export function ExternalDocLinkEditor({ document }: ExternalDocLinkProps): JSX.Element {
   return (
     <div>
-      <a
-        href={document.url || undefined}
-        target='_blank'
-        rel='noreferrer'
-      >
-        <FontAwesomeIcon icon={faExternalLinkAlt} />{document.url}
+      <a href={document.url || undefined} target="_blank" rel="noreferrer">
+        <FontAwesomeIcon icon={faExternalLinkAlt} />
+        {document.url}
       </a>
       <i>ExternalDocLink not yet implemented (url thumbnail, url editor)</i>{' '}
     </div>

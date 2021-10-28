@@ -5,19 +5,18 @@
  * Licensed under the MIT License
  */
 
-import {Block, Change} from 'colab-rest-client';
-import {throttle} from 'lodash';
+import { Block, Change } from 'colab-rest-client';
+import { throttle } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
 import * as LiveHelper from '../../LiveHelper';
-import {getLogger} from '../../logger';
-import {useChanges} from '../../selectors/changeSelector';
-import {useAppDispatch, useAppSelector} from '../../store/hooks';
+import { getLogger } from '../../logger';
+import { useChanges } from '../../selectors/changeSelector';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 //import {ToastClsMarkdownEditor} from '../blocks/markdown/ToastClsMarkdownEditor';
 
 const logger = getLogger('LiveChanges');
-
 
 export interface LiveBlockState {
   status: 'DISCONNECTED' | 'UNSET' | 'LOADING' | 'READY';
@@ -47,9 +46,7 @@ function findCounterValue(liveSession: string, changes: Change[]): number {
     .reduce((max, current) => (current > max ? current : max), 0);
 }
 
-
 export function useBlock(blockId: number | null | undefined): Block | null | undefined {
-
   // blockId =>  number of subscriptions
   const subscriptionCounters = React.useRef<Record<number, number>>({});
   const dispatch = useAppDispatch();
@@ -65,7 +62,7 @@ export function useBlock(blockId: number | null | undefined): Block | null | und
           if (alive) {
             dispatch(API.getBlock(blockId));
           }
-        })
+        });
       } else {
         dispatch(API.getBlock(blockId));
       }
@@ -82,20 +79,14 @@ export function useBlock(blockId: number | null | undefined): Block | null | und
 
   return useAppSelector(state => {
     if (blockId) {
-      return state.block.blocks[blockId]
+      return state.block.blocks[blockId];
     } else {
       return undefined;
     }
   });
 }
 
-
-export function useLiveBlock({
-  atClass,
-  atId,
-  value,
-  revision,
-}: Props): LiveBlockState {
+export function useLiveBlock({ atClass, atId, value, revision }: Props): LiveBlockState {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
   const changesState = useChanges(atClass, atId);
   const dispatch = useAppDispatch();
@@ -183,11 +174,11 @@ export function useLiveBlock({
 
           logger.trace('Send change', change);
           //onChange(change);
-          dispatch(API.patchBlock({id: atId, change: change}));
+          dispatch(API.patchBlock({ id: atId, change: change }));
         }
       },
       500,
-      {trailing: true},
+      { trailing: true },
     );
   }, [valueRef, liveSession, atClass, atId, dispatch]);
 

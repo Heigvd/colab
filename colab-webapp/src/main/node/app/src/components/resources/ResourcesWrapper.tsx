@@ -7,11 +7,11 @@
 
 import * as React from 'react';
 import * as API from '../../API/api';
-import {useResource} from '../../selectors/resourceSelector';
-import {useAppDispatch} from '../../store/hooks';
+import { useResource } from '../../selectors/resourceSelector';
+import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
-import {ResourceAndRef, ResourceCallContext, ResourceContextScope} from './ResourceCommonType';
-import {ResourceDisplay} from './ResourceDisplay';
+import { ResourceAndRef, ResourceCallContext, ResourceContextScope } from './ResourceCommonType';
+import { ResourceDisplay } from './ResourceDisplay';
 import ResourcesList from './ResourcesList';
 
 /**
@@ -23,11 +23,11 @@ export type ResourcesWrapperProps = ResourceCallContext;
 export default function ResourcesWrapper(contextInfo: ResourcesWrapperProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const {resourcesAndRefs, status} = useResource(contextInfo);
+  const { resourcesAndRefs, status } = useResource(contextInfo);
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
 
   React.useEffect(() => {
-    if (status == 'NOT_INITIALIZED') {
+    if (status == 'NOT_INITIALIZED' && contextInfo.accessLevel !== 'DENIED') {
       if (
         contextInfo.kind === ResourceContextScope.CardOrCardContent &&
         contextInfo.cardContentId != null
@@ -45,9 +45,17 @@ export default function ResourcesWrapper(contextInfo: ResourcesWrapperProps): JS
     }
   }, [status, dispatch, contextInfo]);
 
-  const showTOC = React.useCallback(() => selectResource(null), [])
+  const showTOC = React.useCallback(() => selectResource(null), []);
 
-  if (status === 'NOT_INITIALIZED') {
+  if (contextInfo.accessLevel === 'DENIED') {
+    return (
+      <ResourcesList
+        resourcesAndRefs={resourcesAndRefs}
+        contextInfo={contextInfo}
+        selectResource={selectResource}
+      />
+    );
+  } else if (status === 'NOT_INITIALIZED') {
     return <InlineLoading />;
   } else if (status === 'LOADING') {
     return <InlineLoading />;
@@ -57,12 +65,15 @@ export default function ResourcesWrapper(contextInfo: ResourcesWrapperProps): JS
 
   if (selectedResource != null) {
     // show selected resource
-    return (<ResourceDisplay
-      resourceAndRef={selectedResource}
-      onClose={showTOC}
-    />);
+    return <ResourceDisplay resourceAndRef={selectedResource} onClose={showTOC} />;
   } else {
     // no selected resource : show table of content
-    return <ResourcesList resourcesAndRefs={resourcesAndRefs} contextInfo={contextInfo} selectResource={selectResource} />;
+    return (
+      <ResourcesList
+        resourcesAndRefs={resourcesAndRefs}
+        contextInfo={contextInfo}
+        selectResource={selectResource}
+      />
+    );
   }
 }

@@ -5,22 +5,22 @@
  * Licensed under the MIT License
  */
 
-import {css} from '@emotion/css';
-import {faCogs, faTrash, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { css } from '@emotion/css';
+import { faCog, faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import {useDocument} from '../../selectors/documentSelector';
-import {useAppDispatch} from '../../store/hooks';
-import {Destroyer} from '../common/Destroyer';
+import { useDocument } from '../../selectors/documentSelector';
+import { useAppDispatch } from '../../store/hooks';
+import { Destroyer } from '../common/Destroyer';
 import Flex from '../common/Flex';
 import OpenCloseModal from '../common/OpenCloseModal';
 import WithToolbar from '../common/WithToolbar';
-import {useBlock} from '../live/LiveTextEditor';
-import {getKey, ResourceAndRef, ResourceCallContext} from './ResourceCommonType';
+import { useBlock } from '../live/LiveTextEditor';
+import { getKey, ResourceAndRef, ResourceCallContext } from './ResourceCommonType';
 import ResourceCreator from './ResourceCreator';
-import {ResourceSettings} from './ResourceMiniDisplay';
+import { ResourceSettings } from './ResourceMiniDisplay';
 
 /**
  * List of ResourceAndRef which handles sorting, adding, removing.
@@ -32,13 +32,13 @@ function sortResources(a: ResourceAndRef, b: ResourceAndRef): number {
 
 const tocEntryStyle = css({
   cursor: 'pointer',
-  padding: "10px",
+  padding: '10px',
 });
 
 export interface ResourcesListProps {
   resourcesAndRefs: ResourceAndRef[];
   contextInfo: ResourceCallContext;
-  selectResource: (r: ResourceAndRef) => void
+  selectResource: (r: ResourceAndRef) => void;
 }
 interface Categorized {
   categorized: Record<string, ResourceAndRef[]>;
@@ -84,35 +84,40 @@ export default function ResourcesList({
     <Flex direction="column">
       <h3>Resources</h3>
       <div>
-        {toDisplay.map(category => (
-          <div key={category}>
-            <h3>{category}</h3>
-            <div>
-              {categorized.categorized[category]!.sort(sortResources).map(resourceAndRef => (
-                <TocEntry
-                  key={getKey(resourceAndRef)}
-                  resourceAndRef={resourceAndRef}
-                  selectResource={selectResource}
-                />
-              ))}
+        {contextInfo.accessLevel === 'DENIED' ? (
+          <div>ACCESS DENIED</div>
+        ) : (
+          toDisplay.map(category => (
+            <div key={category}>
+              <h3>{category}</h3>
+              <div>
+                {categorized.categorized[category]!.sort(sortResources).map(resourceAndRef => (
+                  <TocEntry
+                    key={getKey(resourceAndRef)}
+                    resourceAndRef={resourceAndRef}
+                    selectResource={selectResource}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
       <div>
-        <ResourceCreator contextInfo={contextInfo} categories={categories} />
+        {contextInfo.accessLevel === 'WRITE' ? (
+          <ResourceCreator contextInfo={contextInfo} categories={categories} />
+        ) : null}
       </div>
     </Flex>
   );
 }
-
 
 interface TocEntryProps {
   resourceAndRef: ResourceAndRef;
   selectResource: (r: ResourceAndRef) => void;
 }
 
-function TocEntry({resourceAndRef, selectResource}: TocEntryProps) {
+function TocEntry({ resourceAndRef, selectResource }: TocEntryProps) {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
@@ -146,9 +151,7 @@ function TocEntry({resourceAndRef, selectResource}: TocEntryProps) {
               title="Refuse at card type level"
               icon={faTrash}
               onDelete={() => {
-                dispatch(
-                  API.removeAccessToResource(resourceAndRef.cardTypeResourceRef!),
-                );
+                dispatch(API.removeAccessToResource(resourceAndRef.cardTypeResourceRef!));
               }}
             />
           )}
@@ -166,21 +169,10 @@ function TocEntry({resourceAndRef, selectResource}: TocEntryProps) {
               title="Refuse at variant level"
               icon={faTrash}
               onDelete={() => {
-                dispatch(
-                  API.removeAccessToResource(resourceAndRef.cardContentResourceRef!),
-                );
+                dispatch(API.removeAccessToResource(resourceAndRef.cardContentResourceRef!));
               }}
             />
           )}
-          <OpenCloseModal
-            title='Resource Settings'
-            showCloseButton={true}
-            collapsedChildren={<FontAwesomeIcon icon={faCogs} />}>
-            {
-              () =>
-                <ResourceSettings {...resourceAndRef} />
-            }
-          </OpenCloseModal>
         </>
       }
     >
@@ -190,8 +182,15 @@ function TocEntry({resourceAndRef, selectResource}: TocEntryProps) {
         onClick={() => selectResource(resourceAndRef)}
       >
         {resourceAndRef.targetResource.title || i18n.resource.untitled}
+
+        <OpenCloseModal
+          title="Resource Settings"
+          showCloseButton={true}
+          collapsedChildren={<FontAwesomeIcon icon={faCog} />}
+        >
+          {() => <ResourceSettings {...resourceAndRef} />}
+        </OpenCloseModal>
       </div>
     </WithToolbar>
-
   );
 }

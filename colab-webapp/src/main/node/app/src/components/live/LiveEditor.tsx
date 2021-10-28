@@ -5,10 +5,10 @@
  * Licensed under the MIT License
  */
 
-import {css} from '@emotion/css';
-import {faPen, faProjectDiagram, faTimes} from '@fortawesome/free-solid-svg-icons';
+import { css } from '@emotion/css';
+import { faPen, faProjectDiagram, faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import {useAppSelector} from '../../store/hooks';
+import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import CleverTextarea from '../common/CleverTextarea';
 import IconButton from '../common/IconButton';
@@ -17,7 +17,7 @@ import InlineLoading from '../common/InlineLoading';
 import OpenClose from '../common/OpenClose';
 import WithToolbar from '../common/WithToolbar';
 import ChangeTree from './ChangeTree';
-import {useLiveBlock} from './LiveTextEditor';
+import { useLiveBlock } from './LiveTextEditor';
 
 const shrink = css({
   flexGrow: 0,
@@ -51,11 +51,11 @@ export default function LiveEditor({
 }: Props): JSX.Element {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
 
-  const {currentValue, onChange, status} = useLiveBlock({
+  const { currentValue, onChange, status } = useLiveBlock({
     atClass: atClass,
     atId: atId,
     value: value,
-    revision: revision
+    revision: revision,
   });
 
   const [state, setState] = React.useState<State>({
@@ -78,7 +78,7 @@ export default function LiveEditor({
   }
 
   if (!allowEdition) {
-    return <MarkdownViewer md={currentValue} />
+    return <MarkdownViewer md={currentValue} />;
   } else {
     if (state.status === 'VIEW') {
       return (
@@ -89,7 +89,7 @@ export default function LiveEditor({
           toolbar={
             <IconButton
               title="Click to edit"
-              onClick={() => setState({...state, status: 'EDIT'})}
+              onClick={() => setState({ ...state, status: 'EDIT' })}
               icon={faPen}
             />
           }
@@ -106,11 +106,7 @@ export default function LiveEditor({
           })}
         >
           {/*<ToastClsMarkdownEditor value={valueRef.current.current} onChange={onInternalChange} />*/}
-          <CleverTextarea
-            className={grow}
-            value={currentValue}
-            onChange={onChange}
-          />
+          <CleverTextarea className={grow} value={currentValue} onChange={onChange} />
           <MarkdownViewer className={grow} md={currentValue} />
           <div className={shrink}>
             <OpenClose collapsedChildren={<IconButton icon={faProjectDiagram} />}>
@@ -120,7 +116,7 @@ export default function LiveEditor({
           <IconButton
             title="close editor"
             className={shrink}
-            onClick={() => setState({...state, status: 'VIEW'})}
+            onClick={() => setState({ ...state, status: 'VIEW' })}
             icon={faTimes}
           />
         </div>

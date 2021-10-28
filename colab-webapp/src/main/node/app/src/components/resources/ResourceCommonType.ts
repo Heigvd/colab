@@ -41,11 +41,13 @@ export enum ResourceContextScope {
 
 export type CardTypeContext = {
   kind: ResourceContextScope.CardType;
+  accessLevel: 'READ' | 'WRITE' | 'DENIED';
   cardTypeId: number;
 };
 
 export type CardOrCardContentContext = {
   kind: ResourceContextScope.CardOrCardContent;
+  accessLevel: 'READ' | 'WRITE' | 'DENIED';
   // TODO see if cardTypeId could be usefull
   cardId: number;
   cardContentId: number;

@@ -7,9 +7,18 @@
 
 import { Card, CardContent, InvolvementLevel } from 'colab-rest-client';
 import { mapValues, uniq } from 'lodash';
+import * as React from 'react';
+import * as API from '../API/api';
 import logger from '../logger';
 import { CardContentDetail, CardDetail } from '../store/card';
-import { customColabStateEquals, shallowEqual, useAppSelector } from '../store/hooks';
+import {
+  customColabStateEquals,
+  shallowEqual,
+  useAppDispatch,
+  useAppSelector,
+} from '../store/hooks';
+import { useMyMember, useProjectBeingEdited } from './projectSelector';
+import { useCurrentUser } from './userSelector';
 
 export const useAllProjectCards = (): Card[] => {
   return useAppSelector(state => {
@@ -128,6 +137,7 @@ export type CardAcl = {
   status: {
     cardId: number | null | undefined;
     missingCardId: number | undefined;
+    missingCardContentId: number | undefined;
     missingAclCardId: number | undefined;
   };
   self: ACL;
@@ -137,13 +147,14 @@ export type CardAcl = {
   };
 };
 
-export const useCardACL = (cardId: number | null | undefined): CardAcl => {
+const useCardACL = (cardId: number | null | undefined): CardAcl => {
   return useAppSelector(
     state => {
       const result: CardAcl = {
         status: {
           cardId: cardId,
           missingCardId: undefined,
+          missingCardContentId: undefined,
           missingAclCardId: undefined,
         },
         self: {
@@ -245,7 +256,14 @@ export const useCardACL = (cardId: number | null | undefined): CardAcl => {
                   } else if (card.parentId != null) {
                     // if some members or roles lacks level, inherit from parent card
                     //sub-card
-                    nextCardId = card.parentId;
+                    const parent = state.cards.contents[card.parentId];
+                    if (parent?.content != null) {
+                      nextCardId = parent.content.cardId;
+                    } else {
+                      // missing cardContent
+                      result.status.missingCardContentId = card.parentId;
+                      nextCardId = undefined;
+                    }
                   } else if (card.rootCardProjectId != null) {
                     //root-card : fetch level from member position
                     nextCardId = undefined;
@@ -287,4 +305,96 @@ export const useCardACL = (cardId: number | null | undefined): CardAcl => {
       return result;
     },
   );
+};
+
+export const useAndLoadCardACL = (cardId: number | null | undefined): CardAcl => {
+  const dispatch = useAppDispatch();
+  const acl = useCardACL(cardId);
+
+  React.useEffect(() => {
+    logger.info('Effect ', acl.status.missingCardId, ' | ', acl.status.missingAclCardId);
+    if (acl.status.missingCardId != null) {
+      logger.info('Load Card #', acl.status.missingCardId);
+      dispatch(API.getCard(acl.status.missingCardId));
+    }
+
+    if (acl.status.missingAclCardId != null) {
+      logger.info('Load ACL Card #', acl.status.missingAclCardId);
+      dispatch(API.getACL(acl.status.missingAclCardId));
+    }
+
+    if (acl.status.missingCardContentId != null) {
+      logger.info('Load CardContent #', acl.status.missingCardContentId);
+      dispatch(API.getCardContent(acl.status.missingCardContentId));
+    }
+  }, [
+    acl.status.missingAclCardId,
+    acl.status.missingCardId,
+    acl.status.missingCardContentId,
+    dispatch,
+  ]);
+
+  return acl;
+};
+
+export type MyCardAcl = {
+  status: {
+    cardId: number | null | undefined;
+    missingCardId: number | undefined;
+    missingCardContentId: number | undefined;
+    missingAclCardId: number | undefined;
+  };
+  mine: InvolvementLevel | undefined;
+  read: boolean;
+  write: boolean;
+};
+
+const levelOrder: Record<InvolvementLevel, { order: number; write: boolean }> = {
+  RESPONSIBLE: { order: 1, write: true },
+  ACCOUNTABLE: { order: 2, write: true },
+  CONSULTED_READWRITE: { order: 3, write: true },
+  CONSULTED_READONLY: { order: 4, write: false },
+  INFORMED_READWRITE: { order: 5, write: true },
+  INFORMED_READONLY: { order: 6, write: false },
+  OUT_OF_THE_LOOP: { order: 7, write: false },
+};
+
+function resolveAcl(acl: InvolvementLevel[]): InvolvementLevel {
+  const sorted = acl.sort((a, b) => levelOrder[a].order - levelOrder[b].order);
+  if (sorted.length === 0) {
+    return 'OUT_OF_THE_LOOP';
+  }
+  const max = sorted[0];
+  if (max === 'CONSULTED_READONLY' && acl.includes('INFORMED_READWRITE')) {
+    return 'CONSULTED_READWRITE';
+  }
+  return max!;
+}
+
+export const useCardACLForCurrentUser = (cardId: number | null | undefined): MyCardAcl => {
+  const acl = useAndLoadCardACL(cardId);
+  const { project } = useProjectBeingEdited();
+  const { currentUser } = useCurrentUser();
+
+  const member = useMyMember(project?.id, currentUser?.id);
+
+  if (member?.id != null) {
+    const levels = acl.effective.members[member.id];
+    if (levels) {
+      const resolved = resolveAcl(levels);
+      return {
+        status: acl.status,
+        mine: resolved,
+        read: resolved !== 'OUT_OF_THE_LOOP',
+        write: levelOrder[resolved].write,
+      };
+    }
+  }
+
+  return {
+    status: acl.status,
+    mine: undefined,
+    read: false,
+    write: false,
+  };
 };

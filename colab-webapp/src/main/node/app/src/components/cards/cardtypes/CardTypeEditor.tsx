@@ -85,7 +85,11 @@ export default function CardTypeEditor({ cardType }: DisplayProps): JSX.Element 
             {() => (
               <>
                 {cardType.id && (
-                  <ResourcesWrapper kind={ResourceContextScope.CardType} cardTypeId={cardType.id} />
+                  <ResourcesWrapper
+                    kind={ResourceContextScope.CardType}
+                    accessLevel="WRITE"
+                    cardTypeId={cardType.id}
+                  />
                 )}
               </>
             )}

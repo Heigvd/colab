@@ -3,8 +3,8 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
 import logger from '../../logger';
-import { CardAcl, useCardACL } from '../../selectors/cardSelector';
-import { useProjectBeingEdited, useProjectTeam } from '../../selectors/projectSelector';
+import { CardAcl, useAndLoadCardACL } from '../../selectors/cardSelector';
+import { useAndLoadProjectTeam, useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
@@ -102,33 +102,9 @@ interface Props {
 }
 
 export default function CardACL({ card }: Props): JSX.Element {
-  const dispatch = useAppDispatch();
-
   const { project } = useProjectBeingEdited();
-  const { members, roles, status: teamStatus } = useProjectTeam(project?.id);
-  const acl = useCardACL(card.id);
-
-  React.useEffect(() => {
-    if (teamStatus == 'NOT_INITIALIZED') {
-      if (project?.id != null) {
-        logger.info('Load Team');
-        dispatch(API.getProjectTeam(project.id));
-      }
-    }
-  }, [dispatch, teamStatus, project?.id]);
-
-  React.useEffect(() => {
-    logger.info('Effect ', acl.status.missingCardId, ' | ', acl.status.missingAclCardId);
-    if (acl.status.missingCardId != null) {
-      logger.info('Load Card #', acl.status.missingCardId);
-      dispatch(API.getCard(acl.status.missingCardId));
-    }
-
-    if (acl.status.missingAclCardId != null) {
-      logger.info('Load ACL Card #', acl.status.missingAclCardId);
-      dispatch(API.getACL(acl.status.missingAclCardId));
-    }
-  }, [acl.status.missingAclCardId, acl.status.missingCardId, dispatch]);
+  const { members, roles, status: teamStatus } = useAndLoadProjectTeam(project?.id);
+  const acl = useAndLoadCardACL(card.id);
 
   if (teamStatus === 'INITIALIZED') {
     return (
