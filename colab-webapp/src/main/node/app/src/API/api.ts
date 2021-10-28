@@ -533,22 +533,18 @@ export const createCard = createAsyncThunk('card/create', async (card: Card) => 
   });
 });
 
-export const createSubCard = createAsyncThunk(
+export const createSubCardWithBlockDoc = createAsyncThunk(
   'card/createSubCard',
   async ({parent, cardTypeId}: {parent: CardContent; cardTypeId: number}) => {
     if (parent.id != null) {
-      const card = await restClient.CardRestEndpoint.createNewCard(parent.id, cardTypeId);
-      const contents = await restClient.CardRestEndpoint.getContentVariantsOfCard(card.id!);
-
-      const content = contents[0];
-      if (content != null && content.id) {
-        const doc: BlockDocument = {
-          '@class': 'BlockDocument',
-          // title: '',
-          // teaser: '',
-        };
-        await restClient.CardContentRestEndpoint.assignDeliverable(content.id, doc);
-      }
+      const doc: BlockDocument = {
+        '@class': 'BlockDocument',
+      };
+      return await restClient.CardRestEndpoint.createNewCardWithDeliverable(
+        parent.id,
+        cardTypeId,
+        doc,
+      );
     }
   },
 );
@@ -590,19 +586,16 @@ export const getCardContents = createAsyncThunk('cardcontent/getByCard', async (
   return await restClient.CardRestEndpoint.getContentVariantsOfCard(cardId);
 });
 
-export const createCardContentVariant = createAsyncThunk(
+export const createCardContentVariantWithBlockDoc = createAsyncThunk(
   'cardcontent/create',
   async (cardId: number) => {
-    const content = await restClient.CardContentRestEndpoint.createNewCardContent(cardId);
     const doc: BlockDocument = {
       '@class': 'BlockDocument',
-      // title: '',
-      // teaser: '',
     };
-    if (content.id != null) {
-      await restClient.CardContentRestEndpoint.assignDeliverable(content.id, doc);
-    }
-    return content;
+    return await restClient.CardContentRestEndpoint.createNewCardContentWithDeliverable(
+      cardId,
+      doc,
+    );
   },
 );
 

@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
@@ -125,6 +126,33 @@ public class CardRestEndpoint {
         logger.debug("create a new card for the parent #{} and the type #{}", parentId,
             cardTypeId);
         return cardFacade.createNewCard(parentId, cardTypeId);
+    }
+
+    /**
+     * Create and persist a new card
+     *
+     * @param parentId   id of the new card's parent
+     * @param cardTypeId id of the card type of the new card
+     * @param document   deliverable of the new card content
+     *
+     * @return the persisted new card
+     */
+    @POST
+    @Path("createWithDeliverable/{parentId}/{cardTypeId}")
+    public Card createNewCardWithDeliverable(@PathParam("parentId") Long parentId,
+        @PathParam("cardTypeId") Long cardTypeId, Document document) {
+        logger.debug("create a new card in the parent #{} for the type #{} with the deliverable {}",
+            parentId, cardTypeId, document);
+        Card card = cardFacade.createNewCard(parentId, cardTypeId);
+
+        List<CardContent> variants = card.getContentVariants();
+        if (variants != null && variants.size() == 1 && variants.get(0) != null) {
+            cardFacade.assignDeliverable(variants.get(0).getId(), document);
+        } else {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        return card;
     }
 
     /**

@@ -159,7 +159,7 @@ export default function CardCreator({ parent }: CardCreatorProps): JSX.Element {
                   onClick={() => {
                     setState('PENDING');
                     dispatch(
-                      API.createSubCard({
+                      API.createSubCardWithBlockDoc({
                         parent: parent,
                         cardTypeId: selectedType,
                       }),

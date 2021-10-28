@@ -122,6 +122,26 @@ public class CardContentRestEndpoint {
     }
 
     /**
+     * Create and persist a new card content
+     *
+     * @param cardId   id of the new card content's parent
+     * @param document the deliverable of the new card content
+     *
+     * @return the persisted new card content
+     */
+    @POST
+    @Path("createWithDeliverable/{cardId}")
+    public CardContent createNewCardContentWithDeliverable(@PathParam("cardId") Long cardId,
+        Document document) {
+        logger.debug("create a new card content for the card #{} and document {}", cardId, document);
+        CardContent cardContent = cardFacade.createNewCardContent(cardId);
+
+        cardFacade.assignDeliverable(cardContent.getId(), document);
+
+        return cardContent;
+    }
+
+    /**
      * Save changes to database
      *
      * @param cardContent card content to update

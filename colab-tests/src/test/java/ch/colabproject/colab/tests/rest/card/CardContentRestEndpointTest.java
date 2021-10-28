@@ -174,12 +174,12 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Project project = ColabFactory.createProject(client, "testDeliverableAccess");
         Long cardId = ColabFactory.createNewCard(client, project).getId();
 
-        Long cardContentId = client.cardContentRestEndpoint.createNewCardContent(cardId).getId();
-
         Document newDoc = new BlockDocument();
 
-        Document persistedDoc = client.cardContentRestEndpoint.assignDeliverable(cardContentId,
-            newDoc);
+        CardContent cardContent = client.cardContentRestEndpoint.createNewCardContentWithDeliverable(cardId, newDoc);
+        Long cardContentId = cardContent.getId();
+
+        Document persistedDoc = client.cardContentRestEndpoint.getDeliverableOfCardContent(cardContentId);
         Assertions.assertNotNull(persistedDoc);
         Assertions.assertNotNull(persistedDoc.getId());
         Long docId = persistedDoc.getId();
