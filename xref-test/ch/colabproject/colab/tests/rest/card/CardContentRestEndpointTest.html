@@ -182,12 +182,12 @@
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testDeliverableAccess"</span>);
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>         Long cardId = ColabFactory.createNewCard(client, project).getId();
 <a class="jxr_linenumber" name="L176" href="#L176">176</a> 
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>         Long cardContentId = client.cardContentRestEndpoint.createNewCardContent(cardId).getId();
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>         Document newDoc = <strong class="jxr_keyword">new</strong> BlockDocument();
 <a class="jxr_linenumber" name="L178" href="#L178">178</a> 
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>         Document newDoc = <strong class="jxr_keyword">new</strong> BlockDocument();
-<a class="jxr_linenumber" name="L180" href="#L180">180</a> 
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>         Document persistedDoc = client.cardContentRestEndpoint.assignDeliverable(cardContentId,
-<a class="jxr_linenumber" name="L182" href="#L182">182</a>             newDoc);
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>         CardContent cardContent = client.cardContentRestEndpoint.createNewCardContentWithDeliverable(cardId, newDoc);
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>         Long cardContentId = cardContent.getId();
+<a class="jxr_linenumber" name="L181" href="#L181">181</a> 
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>         Document persistedDoc = client.cardContentRestEndpoint.getDeliverableOfCardContent(cardContentId);
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>         Assertions.assertNotNull(persistedDoc);
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>         Assertions.assertNotNull(persistedDoc.getId());
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>         Long docId = persistedDoc.getId();

@@ -114,8 +114,8 @@ colab-client/colab-api,ch.colabproject.colab.api.service.smtp,MessageBuilder,77,
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail.new Authenticator() {...},17,0,0,0,2,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Message,76,0,0,0,29,0,18,0,18,0
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail,173,0,6,0,42,0,6,0,3,0
-colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,109,0,0,0,26,0,13,0,13,0
-colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,133,0,0,0,32,0,16,0,16,0
+colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,128,0,0,0,30,0,14,0,14,0
+colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,184,0,6,0,39,0,20,0,17,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardTypeRestEndpoint,83,0,0,0,22,0,11,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.exceptions,ColabMergeException,15,0,0,0,5,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.exceptions,ColabRollbackException,4,0,0,0,2,0,1,0,1,0
