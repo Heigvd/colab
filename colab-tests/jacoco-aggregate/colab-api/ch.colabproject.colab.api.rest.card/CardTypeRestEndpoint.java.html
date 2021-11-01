@@ -130,14 +130,20 @@ import org.slf4j.LoggerFactory;
     /**
      * Persist a card type.
      *
-     * @param cardType the card type to persist
+     * @param cardTypeCreationBean Everything need to create the card type
      *
      * @return id of the persisted new card type
      */
     @POST
-    public Long createCardType(CardType cardType) {
-<span class="fc" id="L139">        logger.debug(&quot;create card type {}&quot;, cardType);</span>
-<span class="fc" id="L140">        return cardFacade.createNewCardType(cardType).getId();</span>
+    public Long createCardType(CardTypeCreationBean cardTypeCreationBean) {
+<span class="fc" id="L139">        logger.debug(&quot;create card type {}&quot;, cardTypeCreationBean);</span>
+
+<span class="fc" id="L141">        CardType cardType = new CardType();</span>
+<span class="fc" id="L142">        cardType.setProjectId(cardTypeCreationBean.getProjectId());</span>
+<span class="fc" id="L143">        cardType.setTitle(cardTypeCreationBean.getTitle());</span>
+<span class="fc" id="L144">        cardType.setPurpose(cardTypeCreationBean.getPurpose());</span>
+
+<span class="fc" id="L146">        return cardFacade.createNewCardType(cardType).getId();</span>
     }
 
 //    /**
@@ -163,9 +169,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCardType(AbstractCardType cardType) throws ColabMergeException {
-<span class="fc" id="L166">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
-<span class="fc" id="L167">        cardTypeDao.updateCardType(cardType);</span>
-<span class="fc" id="L168">    }</span>
+<span class="fc" id="L172">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
+<span class="fc" id="L173">        cardTypeDao.updateCardType(cardType);</span>
+<span class="fc" id="L174">    }</span>
 
     /**
      * Permanently delete a card type
@@ -175,9 +181,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteCardType(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L178">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
-<span class="fc" id="L179">        cardFacade.deleteCardType(id);</span>
-<span class="fc" id="L180">    }</span>
+<span class="fc" id="L184">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
+<span class="fc" id="L185">        cardFacade.deleteCardType(id);</span>
+<span class="fc" id="L186">    }</span>
 
     /**
      * Get the available active resources linked to a card type
@@ -190,9 +196,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id}/Resources&quot;)
     public List&lt;Resource&gt; getAvailableActiveLinkedResources(
         @PathParam(&quot;id&quot;) Long abstractCardTypeId) {
-<span class="nc" id="L193">        logger.debug(&quot;get available and active resources linked to abstract card type #{}&quot;,</span>
+<span class="nc" id="L199">        logger.debug(&quot;get available and active resources linked to abstract card type #{}&quot;,</span>
             abstractCardTypeId);
-<span class="nc" id="L195">        return resourceFacade.getAvailableActiveResourcesLinkedToAbstractCardType(abstractCardTypeId);</span>
+<span class="nc" id="L201">        return resourceFacade.getAvailableActiveResourcesLinkedToAbstractCardType(abstractCardTypeId);</span>
     }
 
 }

@@ -26,9 +26,15 @@ import javax.validation.constraints.NotBlank;
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The mime type by default
+     */
+    public static final String DEFAULT_MIME_TYPE = &quot;text/markdown&quot;;
+
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * The mime type of the information
      */
@@ -43,8 +49,21 @@ import javax.validation.constraints.NotBlank;
     /**
      * Current revision hash
      */
-<span class="fc" id="L46">    @NotBlank</span>
+<span class="fc" id="L52">    @NotBlank</span>
     private String revision = &quot;0&quot;;
+
+    // ---------------------------------------------------------------------------------------------
+    // initialize
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return an initialized a default block
+     */
+    public static TextDataBlock initNewDefaultTextDataBlock() {
+<span class="fc" id="L63">        TextDataBlock newBlock = new TextDataBlock();</span>
+<span class="fc" id="L64">        newBlock.setMimeType(DEFAULT_MIME_TYPE);</span>
+<span class="fc" id="L65">        return newBlock;</span>
+    }
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -53,29 +72,29 @@ import javax.validation.constraints.NotBlank;
      * @return the mime type of the information
      */
     public String getMimeType() {
-<span class="fc" id="L56">        return mimeType;</span>
+<span class="fc" id="L75">        return mimeType;</span>
     }
 
     /**
      * @param mimeType the mime type of the information to set
      */
     public void setMimeType(String mimeType) {
-<span class="fc" id="L63">        this.mimeType = mimeType;</span>
-<span class="fc" id="L64">    }</span>
+<span class="fc" id="L82">        this.mimeType = mimeType;</span>
+<span class="fc" id="L83">    }</span>
 
     /**
      * @return the information contained
      */
     public String getTextData() {
-<span class="fc" id="L70">        return textData;</span>
+<span class="fc" id="L89">        return textData;</span>
     }
 
     /**
      * @param data the information contained to set
      */
     public void setTextData(String data) {
-<span class="fc" id="L77">        this.textData = data;</span>
-<span class="fc" id="L78">    }</span>
+<span class="fc" id="L96">        this.textData = data;</span>
+<span class="fc" id="L97">    }</span>
 
     /**
      * Get the value of revision
@@ -83,7 +102,7 @@ import javax.validation.constraints.NotBlank;
      * @return the value of revision
      */
     public String getRevision() {
-<span class="fc" id="L86">        return revision;</span>
+<span class="fc" id="L105">        return revision;</span>
     }
 
     /**
@@ -92,38 +111,38 @@ import javax.validation.constraints.NotBlank;
      * @param revision new value of revision
      */
     public void setRevision(String revision) {
-<span class="fc" id="L95">        this.revision = revision;</span>
-<span class="fc" id="L96">    }</span>
+<span class="fc" id="L114">        this.revision = revision;</span>
+<span class="fc" id="L115">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L103" title="1 of 2 branches missed.">        if (other instanceof TextDataBlock) {</span>
-<span class="fc" id="L104">            TextDataBlock o = (TextDataBlock) other;</span>
-<span class="fc" id="L105">            super.merge(other);</span>
-<span class="fc" id="L106">            this.setMimeType(o.getMimeType());</span>
-<span class="fc" id="L107">            this.setTextData(o.getTextData());</span>
-<span class="fc" id="L108">        } else {</span>
-<span class="nc" id="L109">            throw new ColabMergeException(this, other);</span>
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">        if (other instanceof TextDataBlock) {</span>
+<span class="fc" id="L123">            TextDataBlock o = (TextDataBlock) other;</span>
+<span class="fc" id="L124">            super.merge(other);</span>
+<span class="fc" id="L125">            this.setMimeType(o.getMimeType());</span>
+<span class="fc" id="L126">            this.setTextData(o.getTextData());</span>
+<span class="fc" id="L127">        } else {</span>
+<span class="nc" id="L128">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L111">    }</span>
+<span class="fc" id="L130">    }</span>
 
     @Override
     public int hashCode() {
-<span class="fc" id="L115">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L134">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L121">        return EntityHelper.equals(this, obj);</span>
+<span class="fc" id="L140">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L126">        return &quot;TextDataBlock{&quot; + super.toPartialString() + &quot;, mimeType=&quot; + mimeType + &quot;}&quot;;</span>
+<span class="nc" id="L145">        return &quot;TextDataBlock{&quot; + super.toPartialString() + &quot;, mimeType=&quot; + mimeType + &quot;}&quot;;</span>
     }
 
 }

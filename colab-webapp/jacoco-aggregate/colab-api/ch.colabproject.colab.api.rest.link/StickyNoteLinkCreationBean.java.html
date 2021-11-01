@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>StickyNoteLinkCreationBean.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.link</a> &gt; <span class="el_source">StickyNoteLinkCreationBean.java</span></div><h1>StickyNoteLinkCreationBean.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.link;
+
+import ch.colabproject.colab.api.model.document.Block;
+import java.io.Serializable;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+/**
+ * Bean with everything needed to create a sticky note link
+ *
+ * @author sandra
+ */
+<span class="nc" id="L19">public class StickyNoteLinkCreationBean implements Serializable {</span>
+
+    private static final long serialVersionUID = 1L;
+
+    // ---------------------------------------------------------------------------------------------
+    // fields
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * The id of the source card
+     */
+    private Long srcCardId;
+
+    /**
+     * The ID of the source card content (serialization sugar)
+     */
+    private Long srcCardContentId;
+
+    /**
+     * The ID of the source resource / resource reference (serialization sugar)
+     */
+    private Long srcResourceOrRefId;
+
+    /**
+     * The ID of the source block (serialization sugar)
+     */
+    private Long srcBlockId;
+
+    /**
+     * The ID of the destination card (serialization sugar)
+     */
+    private Long destinationCardId;
+
+    /**
+     * The short description
+     */
+    private String teaser;
+
+    /**
+     * The id of the long description
+     */
+    private Block explanation;
+
+    // ---------------------------------------------------------------------------------------------
+    // getters and setters
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the srcCardId
+     */
+    public Long getSrcCardId() {
+<span class="nc" id="L70">        return srcCardId;</span>
+    }
+
+    /**
+     * @param srcCardId the srcCardId
+     */
+    public void setSrcCardId(Long srcCardId) {
+<span class="nc" id="L77">        this.srcCardId = srcCardId;</span>
+<span class="nc" id="L78">    }</span>
+
+    /**
+     * @return the srcCardContentId
+     */
+    public Long getSrcCardContentId() {
+<span class="nc" id="L84">        return srcCardContentId;</span>
+    }
+
+    /**
+     * @param srcCardContentId the srcCardContentId
+     */
+    public void setSrcCardContentId(Long srcCardContentId) {
+<span class="nc" id="L91">        this.srcCardContentId = srcCardContentId;</span>
+<span class="nc" id="L92">    }</span>
+
+    /**
+     * @return the srcResourceOrRefId
+     */
+    public Long getSrcResourceOrRefId() {
+<span class="nc" id="L98">        return srcResourceOrRefId;</span>
+    }
+
+    /**
+     * @param srcResourceOrRefId the srcResourceOrRefId
+     */
+    public void setSrcResourceOrRefId(Long srcResourceOrRefId) {
+<span class="nc" id="L105">        this.srcResourceOrRefId = srcResourceOrRefId;</span>
+<span class="nc" id="L106">    }</span>
+
+    /**
+     * @return the srcBlockId
+     */
+    public Long getSrcBlockId() {
+<span class="nc" id="L112">        return srcBlockId;</span>
+    }
+
+    /**
+     * @param srcBlockId the srcBlockId
+     */
+    public void setSrcBlockId(Long srcBlockId) {
+<span class="nc" id="L119">        this.srcBlockId = srcBlockId;</span>
+<span class="nc" id="L120">    }</span>
+
+    /**
+     * @return the destinationCardId
+     */
+    public Long getDestinationCardId() {
+<span class="nc" id="L126">        return destinationCardId;</span>
+    }
+
+    /**
+     * @param destinationCardId the destinationCardId
+     */
+    public void setDestinationCardId(Long destinationCardId) {
+<span class="nc" id="L133">        this.destinationCardId = destinationCardId;</span>
+<span class="nc" id="L134">    }</span>
+
+    /**
+     * @return the teaser
+     */
+    public String getTeaser() {
+<span class="nc" id="L140">        return teaser;</span>
+    }
+
+    /**
+     * @param teaser the teaser
+     */
+    public void setTeaser(String teaser) {
+<span class="nc" id="L147">        this.teaser = teaser;</span>
+<span class="nc" id="L148">    }</span>
+
+    /**
+     * @return the explanation
+     */
+    public Block getExplanation() {
+<span class="nc" id="L154">        return explanation;</span>
+    }
+
+    /**
+     * @param explanation the explanation
+     */
+    public void setExplanation(Block explanation) {
+<span class="nc" id="L161">        this.explanation = explanation;</span>
+<span class="nc" id="L162">    }</span>
+
+    // ---------------------------------------------------------------------------------------------
+    // concerning the whole class
+    // ---------------------------------------------------------------------------------------------
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L170">        return new HashCodeBuilder()</span>
+<span class="nc" id="L171">            .append(this.srcCardId)</span>
+<span class="nc" id="L172">            .append(this.srcCardContentId)</span>
+<span class="nc" id="L173">            .append(this.srcResourceOrRefId)</span>
+<span class="nc" id="L174">            .append(this.srcBlockId)</span>
+<span class="nc" id="L175">            .append(this.destinationCardId)</span>
+<span class="nc" id="L176">            .append(this.teaser)</span>
+<span class="nc" id="L177">            .toHashCode();</span>
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L183">            return true;</span>
+        }
+<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L186">            return false;</span>
+        }
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L189">            return false;</span>
+        }
+<span class="nc" id="L191">        final StickyNoteLinkCreationBean other = (StickyNoteLinkCreationBean) obj;</span>
+<span class="nc" id="L192">        return new EqualsBuilder()</span>
+<span class="nc" id="L193">            .append(this.srcCardId, other.srcCardId)</span>
+<span class="nc" id="L194">            .append(this.srcCardContentId, other.srcCardContentId)</span>
+<span class="nc" id="L195">            .append(this.srcResourceOrRefId, other.srcResourceOrRefId)</span>
+<span class="nc" id="L196">            .append(this.srcBlockId, other.srcBlockId)</span>
+<span class="nc" id="L197">            .append(this.destinationCardId, other.destinationCardId)</span>
+<span class="nc" id="L198">            .append(this.teaser, other.teaser)</span>
+<span class="nc" id="L199">            .isEquals();</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L204">        return &quot;StickyNoteLinkCreationBean{&quot; + &quot;srcCardId=&quot; + srcCardId</span>
+            + &quot;, srcCardContentId=&quot; + srcCardContentId
+            + &quot;, srcResourceOrRefId=&quot; + srcResourceOrRefId + &quot;, srcBlockId=&quot; + srcBlockId
+            + &quot;, destinationCardId=&quot; + destinationCardId + &quot;, teaser=&quot; + teaser + &quot;}&quot;;
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

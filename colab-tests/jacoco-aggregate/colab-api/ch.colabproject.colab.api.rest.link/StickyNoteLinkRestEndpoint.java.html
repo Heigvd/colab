@@ -89,14 +89,24 @@ import org.slf4j.LoggerFactory;
     /**
      * Persist the link
      *
-     * @param link the link to persist
+     * @param linkCreationBean Everything needed to create a link
      *
      * @return id of the persisted new link
      */
     @POST
-    public Long createLink(StickyNoteLink link) {
-<span class="fc" id="L98">        logger.debug(&quot;create link {}&quot;, link);</span>
-<span class="fc" id="L99">        return linkFacade.createStickyNoteLink(link).getId();</span>
+    public Long createLink(StickyNoteLinkCreationBean linkCreationBean) {
+<span class="fc" id="L98">        logger.debug(&quot;create link {}&quot;, linkCreationBean);</span>
+
+<span class="fc" id="L100">        StickyNoteLink link = new StickyNoteLink();</span>
+<span class="fc" id="L101">        link.setSrcCardId(linkCreationBean.getSrcCardId());</span>
+<span class="fc" id="L102">        link.setSrcCardContentId(linkCreationBean.getSrcCardContentId());</span>
+<span class="fc" id="L103">        link.setSrcResourceOrRefId(linkCreationBean.getSrcResourceOrRefId());</span>
+<span class="fc" id="L104">        link.setSrcBlockId(linkCreationBean.getSrcBlockId());</span>
+<span class="fc" id="L105">        link.setDestinationCardId(linkCreationBean.getDestinationCardId());</span>
+<span class="fc" id="L106">        link.setTeaser(linkCreationBean.getTeaser());</span>
+<span class="fc" id="L107">        link.setExplanation(linkCreationBean.getExplanation());</span>
+
+<span class="fc" id="L109">        return linkFacade.createStickyNoteLink(link).getId();</span>
     }
 
     /**
@@ -107,9 +117,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteLink(@PathParam(&quot;id&quot;) Long id) {
-<span class="fc" id="L110">        logger.debug(&quot;delete link #{}&quot;, id);</span>
-<span class="fc" id="L111">        linkFacade.deleteStickyNoteLink(id);</span>
-<span class="fc" id="L112">    }</span>
+<span class="fc" id="L120">        logger.debug(&quot;delete link #{}&quot;, id);</span>
+<span class="fc" id="L121">        linkFacade.deleteStickyNoteLink(id);</span>
+<span class="fc" id="L122">    }</span>
 
     /**
      * Change the source for a card
@@ -120,9 +130,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeSrc/{linkId}/Card&quot;)
     public void changeSrcWithCard(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
-<span class="fc" id="L123">        logger.debug(&quot;change link #{} with new card source #{}&quot;, linkId, cardId);</span>
-<span class="fc" id="L124">        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.CARD, cardId);</span>
-<span class="fc" id="L125">    }</span>
+<span class="fc" id="L133">        logger.debug(&quot;change link #{} with new card source #{}&quot;, linkId, cardId);</span>
+<span class="fc" id="L134">        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.CARD, cardId);</span>
+<span class="fc" id="L135">    }</span>
 
     /**
      * Change the source for a card content
@@ -133,9 +143,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeSrc/{linkId}/CardContent&quot;)
     public void changeSrcWithCardContent(@PathParam(&quot;linkId&quot;) Long linkId, Long cardContentId) {
-<span class="fc" id="L136">        logger.debug(&quot;change link #{} with new card content source #{}&quot;, linkId, cardContentId);</span>
-<span class="fc" id="L137">        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.CARD_CONTENT, cardContentId);</span>
-<span class="fc" id="L138">    }</span>
+<span class="fc" id="L146">        logger.debug(&quot;change link #{} with new card content source #{}&quot;, linkId, cardContentId);</span>
+<span class="fc" id="L147">        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.CARD_CONTENT, cardContentId);</span>
+<span class="fc" id="L148">    }</span>
 
     /**
      * Change the source for a resource / resource reference
@@ -146,10 +156,10 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeSrc/{linkId}/ResourceOrRef&quot;)
     public void changeSrcWithResourceOrRef(@PathParam(&quot;linkId&quot;) Long linkId, Long resourceOrRefId) {
-<span class="fc" id="L149">        logger.debug(&quot;change link #{} with new abstract resource source #{}&quot;, linkId,</span>
+<span class="fc" id="L159">        logger.debug(&quot;change link #{} with new abstract resource source #{}&quot;, linkId,</span>
             resourceOrRefId);
-<span class="fc" id="L151">        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.RESOURCE_OR_REF, resourceOrRefId);</span>
-<span class="fc" id="L152">    }</span>
+<span class="fc" id="L161">        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.RESOURCE_OR_REF, resourceOrRefId);</span>
+<span class="fc" id="L162">    }</span>
 
     /**
      * Change the source for a block
@@ -160,9 +170,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeSrc/{linkId}/Block&quot;)
     public void changeSrcWithBlock(@PathParam(&quot;linkId&quot;) Long linkId, Long blockId) {
-<span class="fc" id="L163">        logger.debug(&quot;change link #{} with new block source #{}&quot;, linkId, blockId);</span>
-<span class="fc" id="L164">        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.BLOCK, blockId);</span>
-<span class="fc" id="L165">    }</span>
+<span class="fc" id="L173">        logger.debug(&quot;change link #{} with new block source #{}&quot;, linkId, blockId);</span>
+<span class="fc" id="L174">        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.BLOCK, blockId);</span>
+<span class="fc" id="L175">    }</span>
 
     /**
      * Change the destination
@@ -173,9 +183,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeDest/{linkId}&quot;)
     public void changeDestination(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
-<span class="fc" id="L176">        logger.debug(&quot;change link #{} with new destination card #{}&quot;, linkId, cardId);</span>
-<span class="fc" id="L177">        linkFacade.changeStickyNoteLinkDestination(linkId, cardId);</span>
-<span class="fc" id="L178">    }</span>
+<span class="fc" id="L186">        logger.debug(&quot;change link #{} with new destination card #{}&quot;, linkId, cardId);</span>
+<span class="fc" id="L187">        linkFacade.changeStickyNoteLinkDestination(linkId, cardId);</span>
+<span class="fc" id="L188">    }</span>
 
     // *********************************************************************************************
     //

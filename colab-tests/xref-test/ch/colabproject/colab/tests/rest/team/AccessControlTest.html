@@ -1223,12 +1223,12 @@
 <a class="jxr_linenumber" name="L1215" href="#L1215">1215</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1216" href="#L1216">1216</a>             StickyNoteLink link = aclTestClient.stickyNoteLinkRestEndpoint
 <a class="jxr_linenumber" name="L1217" href="#L1217">1217</a>                 .getLink(data.getStickyNoteLink());
-<a class="jxr_linenumber" name="L1218" href="#L1218">1218</a>             link.setExplanation(<span class="jxr_string">"bla"</span>);
+<a class="jxr_linenumber" name="L1218" href="#L1218">1218</a>             link.setTeaser(<span class="jxr_string">"bla"</span>);
 <a class="jxr_linenumber" name="L1219" href="#L1219">1219</a>             aclTestClient.stickyNoteLinkRestEndpoint.updateLink(link);
 <a class="jxr_linenumber" name="L1220" href="#L1220">1220</a> 
 <a class="jxr_linenumber" name="L1221" href="#L1221">1221</a>             link = aclTestClient.stickyNoteLinkRestEndpoint
 <a class="jxr_linenumber" name="L1222" href="#L1222">1222</a>                 .getLink(data.getStickyNoteLink());
-<a class="jxr_linenumber" name="L1223" href="#L1223">1223</a>             link.setExplanation(<span class="jxr_string">"bloup"</span>);
+<a class="jxr_linenumber" name="L1223" href="#L1223">1223</a>             link.setTeaser(<span class="jxr_string">"bloup"</span>);
 <a class="jxr_linenumber" name="L1224" href="#L1224">1224</a>             aclTestClient.stickyNoteLinkRestEndpoint.updateLink(link);
 <a class="jxr_linenumber" name="L1225" href="#L1225">1225</a> 
 <a class="jxr_linenumber" name="L1226" href="#L1226">1226</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
