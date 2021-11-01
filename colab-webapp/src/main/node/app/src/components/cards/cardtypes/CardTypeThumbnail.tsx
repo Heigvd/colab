@@ -9,6 +9,7 @@ import { css, cx } from '@emotion/css';
 import { CardType } from 'colab-rest-client';
 import * as React from 'react';
 import Thumbnail from '../../common/Thumbnail';
+import { useBlock } from '../../live/LiveTextEditor';
 
 interface Props {
   highlighted: boolean;
@@ -32,6 +33,8 @@ const selected = cx(
 );
 
 export default function CardTypeThumbnail({ cardType, highlighted, onClick }: Props): JSX.Element {
+  const purpose = useBlock(cardType.purposeId);
+
   if (cardType.id == null) {
     return <i>CardType without id is invalid...</i>;
   } else {
@@ -44,7 +47,7 @@ export default function CardTypeThumbnail({ cardType, highlighted, onClick }: Pr
         }}
         className={highlighted ? selected : defaultStyle}
       >
-        <span className={css({ padding: '10px' })} title={cardType.purpose || ''}>
+        <span className={css({ padding: '10px' })} title={purpose?.textData || ''}>
           {cardType.title}
         </span>
       </Thumbnail>

@@ -66,10 +66,14 @@ export default ({ afterCreation, global = false }: Props): JSX.Element => {
           onClick={() => {
             dispatch(
               API.createCardType({
-                '@class': 'CardType',
                 projectId: project && !global ? project.id! : null,
                 title: title,
-                purpose: purpose,
+                purpose: {
+                  '@class': 'TextDataBlock',
+                  mimeType: 'text/markdown',
+                  textData: purpose,
+                  revision: '0',
+                },
               }),
             ).then(action => {
               if (action.meta.requestStatus === 'fulfilled') {

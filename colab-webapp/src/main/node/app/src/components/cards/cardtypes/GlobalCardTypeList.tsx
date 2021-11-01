@@ -28,7 +28,6 @@ export default function GlobalCardTypeList(): JSX.Element {
   const createNewCb = React.useCallback(() => {
     dispatch(
       API.createCardType({
-        '@class': 'CardType',
         projectId: null,
       }),
     );

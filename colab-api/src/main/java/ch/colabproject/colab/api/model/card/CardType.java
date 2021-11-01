@@ -8,11 +8,17 @@ package ch.colabproject.colab.api.model.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 /**
  * Card type, defining what is it for
@@ -51,7 +57,16 @@ public class CardType extends AbstractCardType {
     /**
      * The purpose
      */
-    private String purpose;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NotNull
+    @JsonbTransient
+    private Block purpose;
+
+    /**
+     * The id of the purpose
+     */
+    @Transient
+    private Long purposeId;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -87,15 +102,37 @@ public class CardType extends AbstractCardType {
     /**
      * @return the purpose
      */
-    public String getPurpose() {
+    public Block getPurpose() {
         return purpose;
     }
 
     /**
      * @param purpose the purpose
      */
-    public void setPurpose(String purpose) {
+    public void setPurpose(Block purpose) {
         this.purpose = purpose;
+    }
+
+    /**
+     * get the id of the purpose. To be sent to client.
+     *
+     * @return the id of the purpose
+     */
+    public Long getPurposeId() {
+        if (purpose != null) {
+            return purpose.getId();
+        } else {
+            return purposeId;
+        }
+    }
+
+    /**
+     * set the id of the purpose. For serialization only.
+     *
+     * @param purposeId the id of the purpose
+     */
+    public void setPurposeId(Long purposeId) {
+        this.purposeId = purposeId;
     }
 
     @Override
@@ -122,8 +159,6 @@ public class CardType extends AbstractCardType {
             CardType o = (CardType) other;
             // this.setUniqueId(o.getUniqueId());
             this.setTitle(o.getTitle());
-            this.setPurpose(o.getPurpose());
-            // this.setAuthorityHolder(o.getAuthorityHolder());
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -143,7 +178,7 @@ public class CardType extends AbstractCardType {
     @Override
     public String toString() {
         return "CardType{" + "id=" + getId() + ", uniqueId=" + uniqueId + ", title=" + title
-            + ", purpose=" + purpose + ", projectId=" + projectId + "}";
+            + ", projectId=" + projectId + "}";
     }
 
 }

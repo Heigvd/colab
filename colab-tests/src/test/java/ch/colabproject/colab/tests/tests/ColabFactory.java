@@ -14,13 +14,14 @@ import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
-import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.Token;
+import ch.colabproject.colab.api.rest.card.CardTypeCreationBean;
 import ch.colabproject.colab.api.rest.document.ResourceCreationBean;
+import ch.colabproject.colab.api.rest.link.StickyNoteLinkCreationBean;
 import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
 import ch.colabproject.colab.tests.mailhog.model.Message;
@@ -49,10 +50,10 @@ public class ColabFactory {
      * @return the CardType
      */
     public static CardType createCardType(ColabClient client, Long projectId) {
-        CardType cardType = new CardType();
-        cardType.setProjectId(projectId);
+        CardTypeCreationBean cardTypeToCreate = new CardTypeCreationBean();
+        cardTypeToCreate.setProjectId(projectId);
 
-        Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardType);
+        Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardTypeToCreate);
         return (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
     }
 
@@ -228,12 +229,12 @@ public class ColabFactory {
      */
     public static Resource createCardTypeResourceBlockDoc(ColabClient client, Long cardTypeId,
         String title) {
-        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
-        resourceCreationBean.setTitle(title);
-        resourceCreationBean.setDocument(new BlockDocument());
-        resourceCreationBean.setAbstractCardTypeId(cardTypeId);
+        ResourceCreationBean resourceToCreate = new ResourceCreationBean();
+        resourceToCreate.setTitle(title);
+        resourceToCreate.setDocument(new BlockDocument());
+        resourceToCreate.setAbstractCardTypeId(cardTypeId);
 
-        Long id = client.resourceRestEndpoint.createResource(resourceCreationBean);
+        Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
 
         return (Resource) client.resourceRestEndpoint.getAbstractResource(id);
     }
@@ -248,12 +249,12 @@ public class ColabFactory {
      * @return the freshly created document
      */
     public static Resource createCardResource(ColabClient client, Long cardId, String title) {
-        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
-        resourceCreationBean.setTitle(title);
-        resourceCreationBean.setDocument(new BlockDocument());
-        resourceCreationBean.setCardId(cardId);
+        ResourceCreationBean resourceToCreate = new ResourceCreationBean();
+        resourceToCreate.setTitle(title);
+        resourceToCreate.setDocument(new BlockDocument());
+        resourceToCreate.setCardId(cardId);
 
-        Long id = client.resourceRestEndpoint.createResource(resourceCreationBean);
+        Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
 
         return (Resource) client.resourceRestEndpoint.getAbstractResource(id);
     }
@@ -269,11 +270,11 @@ public class ColabFactory {
      */
     public static Long createStickyNoteLink(ColabClient client, Long srcCardId,
         Long destinationCardId) {
-        StickyNoteLink link = new StickyNoteLink();
-        link.setSrcCardId(srcCardId);
-        link.setDestinationCardId(destinationCardId);
+        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+        linkToCreate.setSrcCardId(srcCardId);
+        linkToCreate.setDestinationCardId(destinationCardId);
 
-        return client.stickyNoteLinkRestEndpoint.createLink(link);
+        return client.stickyNoteLinkRestEndpoint.createLink(linkToCreate);
     }
 
     /**

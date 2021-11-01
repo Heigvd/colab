@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
+import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
@@ -116,7 +117,10 @@ public class CardFacade {
             cardType.setProject(null);
         }
 
-        initNewCardType(cardType);
+        if (cardType.getPurpose() == null) {
+            cardType.setPurpose(Block.initNewDefaultBlock());
+        }
+
         cardTypeDao.createCardType(cardType);
 
         return cardType;
@@ -172,14 +176,6 @@ public class CardFacade {
         });
 
         return allTypes;
-    }
-
-    /**
-     * @return a new card type initialized object
-     */
-    private CardType initNewCardType(CardType cardType) {
-        // see if uniqueId must be initialized
-        return cardType;
     }
 
     // *********************************************************************************************

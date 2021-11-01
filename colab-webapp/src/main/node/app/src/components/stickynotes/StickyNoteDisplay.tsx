@@ -11,6 +11,7 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { useCard } from '../../selectors/cardSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import CardThumbWithSelector from '../cards/CardThumbWithSelector';
 import AutoSaveInput from '../common/AutoSaveInput';
 import Flex from '../common/Flex';
@@ -76,13 +77,9 @@ export default function StickyNoteDisplay({
               }
             />
           </div>
-          <AutoSaveInput
-            value={stickyNote.explanation || ''}
-            placeholder="add an explanation"
-            onChange={newValue =>
-              dispatch(API.updateStickyNote({ ...stickyNote, explanation: newValue }))
-            }
-          />
+          {stickyNote.explanationId && (
+            <BlockEditorWrapper blockId={stickyNote.explanationId} allowEdition={true} />
+          )}
         </div>
       </Flex>
 

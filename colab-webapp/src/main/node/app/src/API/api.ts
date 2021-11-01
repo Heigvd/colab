@@ -16,6 +16,7 @@ import {
   Card,
   CardContent,
   CardType,
+  CardTypeCreationBean,
   Change,
   ColabClient,
   Document,
@@ -28,6 +29,7 @@ import {
   ResourceRef,
   SignUpInfo,
   StickyNoteLink,
+  StickyNoteLinkCreationBean,
   TeamRole,
   User,
   WsSessionIdentifier,
@@ -483,9 +485,12 @@ export const getCardType = createAsyncThunk<AbstractCardType, number>(
   },
 );
 
-export const createCardType = createAsyncThunk('cardType/create', async (cardType: CardType) => {
-  return await restClient.CardTypeRestEndpoint.createCardType(cardType);
-});
+export const createCardType = createAsyncThunk(
+  'cardType/create',
+  async (cardType: CardTypeCreationBean) => {
+    return await restClient.CardTypeRestEndpoint.createCardType(cardType);
+  },
+);
 
 export const updateCardType = createAsyncThunk('cardType/update', async (cardType: CardType) => {
   await restClient.CardTypeRestEndpoint.updateCardType(cardType);
@@ -811,7 +816,7 @@ export const getStickyNoteLinkAsDest = createAsyncThunk(
 
 export const createStickyNote = createAsyncThunk(
   'stickyNoteLinks/create',
-  async (stickyNote: StickyNoteLink) => {
+  async (stickyNote: StickyNoteLinkCreationBean) => {
     return await restClient.StickyNoteLinkRestEndpoint.createLink(stickyNote);
   },
 );

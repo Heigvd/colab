@@ -21,6 +21,7 @@ import IconButton from '../common/IconButton';
 import OpenClose from '../common/OpenClose';
 import OpenCloseModal from '../common/OpenCloseModal';
 import { DocumentEditorAsDeliverableWrapper } from '../documents/DocumentEditorWrapper';
+import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
@@ -89,6 +90,8 @@ Props): JSX.Element {
   const cardType = cardTypeFull.cardType;
 
   const variants = useVariants(card) || [];
+
+  const purpose = useBlock(cardType?.purposeId);
 
   //const [rightPanel, setRightPanel] = React.useState<'NONE' | 'RESOURCES' | 'SETTINGS'>('NONE');
   const [rightPanel, setRightPanel] = useLocalStorage<'NONE' | 'RESOURCES' | 'SETTINGS'>(
@@ -174,7 +177,7 @@ Props): JSX.Element {
                     </Flex>
                     <h4>Purpose</h4>
                     <div>
-                      <b>{cardType?.title}</b>: {cardType?.purpose || ''}
+                      <b>{cardType?.title}</b>: {purpose?.textData || ''}
                     </div>
                   </div>
 

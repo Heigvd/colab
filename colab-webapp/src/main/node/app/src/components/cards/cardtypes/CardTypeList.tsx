@@ -31,7 +31,6 @@ export default function CardTypeList(): JSX.Element {
   const createNewCb = React.useCallback(() => {
     dispatch(
       API.createCardType({
-        '@class': 'CardType',
         projectId: project!.id!,
       }),
     );

@@ -10,6 +10,7 @@ import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
 import { CardType } from 'colab-rest-client';
 import * as React from 'react';
 import IconButton from '../../common/IconButton';
+import { useBlock } from '../../live/LiveTextEditor';
 import { ProjectName } from '../../projects/ProjectName';
 import { cardShadow } from '../../styling/style';
 
@@ -27,10 +28,12 @@ const style = css({
 });
 
 export default function CardTypeDisplay({ cardType }: DisplayProps): JSX.Element {
+  const purpose = useBlock(cardType.purposeId);
+
   return (
     <div className={style}>
       <div>Title: {cardType.title}</div>
-      <div>Purpose: {cardType.purpose}</div>
+      <div>Purpose: {purpose?.textData || ''}</div>
       <div>
         {cardType.projectId != null ? (
           <>

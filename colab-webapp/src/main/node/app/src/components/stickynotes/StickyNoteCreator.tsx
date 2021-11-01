@@ -6,7 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { StickyNoteLink } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -23,10 +22,22 @@ interface StickyNoteCreatorProps {
   destCardId: number;
 }
 
-const defaultStickyNode: StickyNoteLink = {
-  '@class': 'StickyNoteLink',
-  srcCardId: undefined,
-  destinationCardId: undefined,
+interface StickyNoteLinkType {
+  srcCardId: number | null;
+  srcCardContentId: number | null;
+  srcResourceOrRefId: number | null;
+  srcBlockId: number | null;
+  destinationCardId: number | null;
+  teaser: string;
+  explanation: string;
+}
+
+const defaultStickyNode: StickyNoteLinkType = {
+  srcCardId: null,
+  srcCardContentId: null,
+  srcResourceOrRefId: null,
+  srcBlockId: null,
+  destinationCardId: null,
   teaser: '',
   explanation: '',
 };
@@ -47,7 +58,7 @@ export default function StickyNoteCreator({ destCardId }: StickyNoteCreatorProps
     }
   }, [cardStatus, dispatch, projectId]);
 
-  const [state, setState] = React.useState<StickyNoteLink>(defaultStickyNode);
+  const [state, setState] = React.useState<StickyNoteLinkType>(defaultStickyNode);
 
   const resetInputs = React.useCallback(() => {
     setState(defaultStickyNode);
@@ -66,7 +77,7 @@ export default function StickyNoteCreator({ destCardId }: StickyNoteCreatorProps
     }
   });
 
-  const fields: Field<StickyNoteLink>[] = [
+  const fields: Field<StickyNoteLinkType>[] = [
     {
       key: 'teaser',
       type: 'text',
@@ -77,8 +88,8 @@ export default function StickyNoteCreator({ destCardId }: StickyNoteCreatorProps
     {
       key: 'explanation',
       type: 'text',
-      label: 'explaination',
-      placeholder: 'explaination',
+      label: 'explanation',
+      placeholder: 'explanation',
       isMandatory: true,
     },
     {
@@ -104,12 +115,21 @@ export default function StickyNoteCreator({ destCardId }: StickyNoteCreatorProps
               icon={createIcon}
               title="create"
               onClick={() => {
-                dispatch(API.createStickyNote({ ...state, destinationCardId: destCardId })).then(
-                  () => {
-                    resetInputs();
-                    collapse();
-                  },
-                );
+                dispatch(
+                  API.createStickyNote({
+                    ...state,
+                    explanation: {
+                      '@class': 'TextDataBlock',
+                      mimeType: 'text/markdown',
+                      textData: state.explanation,
+                      revision: '0',
+                    },
+                    destinationCardId: destCardId,
+                  }),
+                ).then(() => {
+                  resetInputs();
+                  collapse();
+                });
               }}
             />
             <IconButton icon={reinitIcon} title="reinit" onClick={() => resetInputs()} />

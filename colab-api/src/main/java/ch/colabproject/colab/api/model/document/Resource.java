@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 /**
  * A resource is a document provided to help the users to fulfill their goals.
@@ -58,6 +59,7 @@ public class Resource extends AbstractResource {
      * The abstract / teaser
      */
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Block teaser;
 
@@ -254,7 +256,6 @@ public class Resource extends AbstractResource {
             throw new ColabMergeException(this, other);
         }
     }
-    // TODO see if need to have a way to change the teaser
 
     @Override
     public int hashCode() {

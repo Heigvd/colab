@@ -91,6 +91,17 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
     private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
+    // initialize
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return an initialized a default block
+     */
+    public static Block initNewDefaultBlock() {
+        return TextDataBlock.initNewDefaultTextDataBlock();
+    }
+
+    // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
     /**

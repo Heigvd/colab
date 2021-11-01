@@ -26,9 +26,15 @@ public class TextDataBlock extends Block {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * The mime type by default
+     */
+    public static final String DEFAULT_MIME_TYPE = "text/markdown";
+
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * The mime type of the information
      */
@@ -45,6 +51,19 @@ public class TextDataBlock extends Block {
      */
     @NotBlank
     private String revision = "0";
+
+    // ---------------------------------------------------------------------------------------------
+    // initialize
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return an initialized a default block
+     */
+    public static TextDataBlock initNewDefaultTextDataBlock() {
+        TextDataBlock newBlock = new TextDataBlock();
+        newBlock.setMimeType(DEFAULT_MIME_TYPE);
+        return newBlock;
+    }
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters

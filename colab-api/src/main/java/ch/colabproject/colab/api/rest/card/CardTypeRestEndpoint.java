@@ -130,13 +130,19 @@ public class CardTypeRestEndpoint {
     /**
      * Persist a card type.
      *
-     * @param cardType the card type to persist
+     * @param cardTypeCreationBean Everything need to create the card type
      *
      * @return id of the persisted new card type
      */
     @POST
-    public Long createCardType(CardType cardType) {
-        logger.debug("create card type {}", cardType);
+    public Long createCardType(CardTypeCreationBean cardTypeCreationBean) {
+        logger.debug("create card type {}", cardTypeCreationBean);
+
+        CardType cardType = new CardType();
+        cardType.setProjectId(cardTypeCreationBean.getProjectId());
+        cardType.setTitle(cardTypeCreationBean.getTitle());
+        cardType.setPurpose(cardTypeCreationBean.getPurpose());
+
         return cardFacade.createNewCardType(cardType).getId();
     }
 

@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
@@ -97,7 +98,6 @@ public class StickyNoteLinkFacade {
     public StickyNoteLink createStickyNoteLink(StickyNoteLink link) {
         logger.debug("create link {}", link);
 
-        // firstly fetch all objects and so ensure that they exist
         StickyNoteSourceable sourceObject = findSourceObject(link);
         if (sourceObject == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
@@ -108,7 +108,10 @@ public class StickyNoteLinkFacade {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        // secondly make the modifications
+        if (link.getExplanation() == null) {
+            link.setExplanation(Block.initNewDefaultBlock());
+        }
+
         link.setSrc(sourceObject);
         link.setDestinationCard(toCard);
         StickyNoteLink persistedLink = linkDao.persistStickyNoteLink(link);

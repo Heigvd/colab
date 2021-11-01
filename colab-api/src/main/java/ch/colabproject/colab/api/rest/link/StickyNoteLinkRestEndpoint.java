@@ -89,13 +89,23 @@ public class StickyNoteLinkRestEndpoint {
     /**
      * Persist the link
      *
-     * @param link the link to persist
+     * @param linkCreationBean Everything needed to create a link
      *
      * @return id of the persisted new link
      */
     @POST
-    public Long createLink(StickyNoteLink link) {
-        logger.debug("create link {}", link);
+    public Long createLink(StickyNoteLinkCreationBean linkCreationBean) {
+        logger.debug("create link {}", linkCreationBean);
+
+        StickyNoteLink link = new StickyNoteLink();
+        link.setSrcCardId(linkCreationBean.getSrcCardId());
+        link.setSrcCardContentId(linkCreationBean.getSrcCardContentId());
+        link.setSrcResourceOrRefId(linkCreationBean.getSrcResourceOrRefId());
+        link.setSrcBlockId(linkCreationBean.getSrcBlockId());
+        link.setDestinationCardId(linkCreationBean.getDestinationCardId());
+        link.setTeaser(linkCreationBean.getTeaser());
+        link.setExplanation(linkCreationBean.getExplanation());
+
         return linkFacade.createStickyNoteLink(link).getId();
     }
 

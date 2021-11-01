@@ -1215,12 +1215,12 @@ public class AccessControlTest extends AbstractArquillianTest {
         try {
             StickyNoteLink link = aclTestClient.stickyNoteLinkRestEndpoint
                 .getLink(data.getStickyNoteLink());
-            link.setExplanation("bla");
+            link.setTeaser("bla");
             aclTestClient.stickyNoteLinkRestEndpoint.updateLink(link);
 
             link = aclTestClient.stickyNoteLinkRestEndpoint
                 .getLink(data.getStickyNoteLink());
-            link.setExplanation("bloup");
+            link.setTeaser("bloup");
             aclTestClient.stickyNoteLinkRestEndpoint.updateLink(link);
 
             return true;

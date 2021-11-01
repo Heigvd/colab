@@ -20,6 +20,7 @@ import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,7 +28,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 /**
  * Link to make an information accessible within a card.
@@ -139,7 +142,16 @@ public class StickyNoteLink implements ColabEntity , WithWebsocketChannels {
     /**
      * The long description
      */
-    private String explanation;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NotNull
+    @JsonbTransient
+    private Block explanation;
+
+    /**
+     * The id of the long description (serialization sugar)
+     */
+    @Transient
+    private Long explanationId;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -384,15 +396,37 @@ public class StickyNoteLink implements ColabEntity , WithWebsocketChannels {
     /**
      * @return the long description
      */
-    public String getExplanation() {
+    public Block getExplanation() {
         return explanation;
     }
 
     /**
      * @param explanation the long description
      */
-    public void setExplanation(String explanation) {
+    public void setExplanation(Block explanation) {
         this.explanation = explanation;
+    }
+
+    /**
+     * get the id of the explanation. To be sent to client.
+     *
+     * @return the id of the explanation
+     */
+    public Long getExplanationId() {
+        if (explanation != null) {
+            return explanation.getId();
+        } else {
+            return explanationId;
+        }
+    }
+
+    /**
+     * set the id of the explanation. For serialization only.
+     *
+     * @param explanationId the id of the teaser
+     */
+    public void setExplanationId(Long explanationId) {
+        this.explanationId = explanationId;
     }
 
     /**
@@ -493,10 +527,7 @@ public class StickyNoteLink implements ColabEntity , WithWebsocketChannels {
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof StickyNoteLink) {
             StickyNoteLink o = (StickyNoteLink) other;
-            // srcXxx is managed separately in the Facade
-            // destinationYyy is managed separately in the Facade
             this.setTeaser(o.getTeaser());
-            this.setExplanation(o.getExplanation());
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -541,7 +572,7 @@ public class StickyNoteLink implements ColabEntity , WithWebsocketChannels {
         return "StickyNoteLink{" + "id=" + id + ", srcCardId=" + srcCardId
             + ", srcCardContentId=" + srcCardContentId + ", srcResourceOrRefId="
             + srcResourceOrRefId + ", srcBlockId=" + srcBlockId + ", destinationCardId="
-            + destinationCardId + ", teaser=" + teaser + ", explanation=" + explanation + "}";
+            + destinationCardId + ", teaser=" + teaser + "}";
     }
 
 }

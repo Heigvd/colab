@@ -10,7 +10,10 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
+import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.rest.card.CardTypeCreationBean;
 import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
 import ch.colabproject.colab.client.ColabClient;
@@ -39,14 +42,35 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
     @Test
     public void testCreateCardType() {
         Long projectId = ColabFactory.createProject(client, "testCreateCardType").getId();
-        CardType cardType = ColabFactory.createCardType(client, projectId);
+
+        String title = "Context " + ((int) (Math.random() * 1000));
+        String purpose = "Define the game life context " + ((int) (Math.random() * 1000));
+
+        TextDataBlock purposeBlock = new TextDataBlock();
+        purposeBlock.setMimeType(TextDataBlock.DEFAULT_MIME_TYPE);
+        purposeBlock.setTextData(purpose);
+
+        CardTypeCreationBean cardTypeToCreate = new CardTypeCreationBean();
+        cardTypeToCreate.setProjectId(projectId);
+        cardTypeToCreate.setTitle(title);
+        cardTypeToCreate.setPurpose(purposeBlock);
+
+        Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardTypeToCreate);
+
+        CardType cardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
 
         Assertions.assertNotNull(cardType);
         Assertions.assertNotNull(cardType.getId());
-        Assertions.assertNull(cardType.getUniqueId());
-        Assertions.assertNull(cardType.getTitle());
-        Assertions.assertNull(cardType.getPurpose());
         Assertions.assertEquals(projectId, cardType.getProjectId());
+        Assertions.assertNull(cardType.getUniqueId());
+        Assertions.assertEquals(title, cardType.getTitle());
+        Assertions.assertNotNull(cardType.getPurposeId());
+
+        Block persistedPurpose = client.blockRestEndPoint.getBlock(cardType.getPurposeId());
+        Assertions.assertNotNull(persistedPurpose);
+        Assertions.assertTrue(persistedPurpose instanceof TextDataBlock);
+        TextDataBlock persistedPurposeTextDataBlock = (TextDataBlock) persistedPurpose;
+        Assertions.assertEquals(purpose, persistedPurposeTextDataBlock.getTextData());
     }
 
     @Test
@@ -283,7 +307,6 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
         // Update the projectOneType
         projectOneType.setTitle("My Favourite Recipes");
-        projectOneType.setPurpose("How to cook dishes from all over the world");
         client.cardTypeRestEndpoint.updateCardType(projectOneType);
 
         // both goulash and pizzaiolo should receive the update through websocket
@@ -313,28 +336,31 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
     public void testUpdateCardType() {
         Long projectId = ColabFactory.createProject(client, "testUpdateCardType").getId();
 
+        CardTypeCreationBean cardTypeToCreate = new CardTypeCreationBean();
+        cardTypeToCreate.setProjectId(projectId);
+
+        Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardTypeToCreate);
+
+        CardType cardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
+        Assertions.assertNull(cardType.getUniqueId());
+        Assertions.assertNull(cardType.getTitle());
+        Assertions.assertNotNull(cardType.getPurposeId());
+        Block persistedPurpose = client.blockRestEndPoint.getBlock(cardType.getPurposeId());
+        Assertions.assertNotNull(persistedPurpose);
+        Assertions.assertTrue(persistedPurpose instanceof TextDataBlock);
+
         // String uniqueId = String.valueOf(new Date().getTime() + ((long)(Math.random()
         // * 1000)));
         String title = "Dissemination " + ((int) (Math.random() * 1000));
-        String purpose = "Define how the project will be promoted "
-            + ((int) (Math.random() * 1000));
-
-        CardType cardType = ColabFactory.createCardType(client, projectId);
-
-        Assertions.assertNull(cardType.getUniqueId());
-        Assertions.assertNull(cardType.getTitle());
-        Assertions.assertNull(cardType.getPurpose());
 
         // cardType.setUniqueId(uniqueId);
         cardType.setTitle(title);
-        cardType.setPurpose(purpose);
         client.cardTypeRestEndpoint.updateCardType(cardType);
 
         CardType persistedCardType = (CardType) client.cardTypeRestEndpoint
             .getCardType(cardType.getId());
         // Assertions.assertEquals(uniqueId, persistedCardType2.getUniqueId());
         Assertions.assertEquals(title, persistedCardType.getTitle());
-        Assertions.assertEquals(purpose, persistedCardType.getPurpose());
     }
 
     @Test

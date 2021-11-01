@@ -11,6 +11,7 @@ import { CardType } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import { useAppDispatch } from '../../../store/hooks';
+import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
 import AutoSaveInput from '../../common/AutoSaveInput';
 import IconButton from '../../common/IconButton';
 import OpenClose from '../../common/OpenClose';
@@ -54,15 +55,9 @@ export default function CardTypeEditor({ cardType }: DisplayProps): JSX.Element 
                   dispatch(API.updateCardType({ ...cardType, title: newValue }))
                 }
               />
-              <AutoSaveInput
-                label="Purpose: "
-                placeholder=""
-                inputType="TEXTAREA"
-                value={cardType.purpose || ''}
-                onChange={newValue =>
-                  dispatch(API.updateCardType({ ...cardType, purpose: newValue }))
-                }
-              />
+              {cardType.purposeId && (
+                <BlockEditorWrapper blockId={cardType.purposeId} allowEdition={true} />
+              )}
               <IconButton
                 icon={cardType.deprecated ? faCheckSquare : faSquare}
                 onClick={() =>

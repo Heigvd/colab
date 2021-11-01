@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
+import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
@@ -375,6 +376,10 @@ public class ResourceFacade {
        throw HttpErrorMessage.dataIntegrityFailure();
     }
 
+    private void initTeaser(Resource resource) {
+        resource.setTeaser(Block.initNewDefaultBlock());
+    }
+
     /**
      * Create a new resource linked to a card type (or a card type reference).
      * <p>
@@ -396,6 +401,10 @@ public class ResourceFacade {
             .getAbstractCardType(resource.getAbstractCardTypeId());
         if (abstractCardType == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        if (resource.getTeaser() == null) {
+            initTeaser(resource);
         }
 
         resource.setAbstractCardType(abstractCardType);
@@ -429,6 +438,10 @@ public class ResourceFacade {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
+        if (resource.getTeaser() == null) {
+            initTeaser(resource);
+        }
+
         resource.setCard(card);
         card.getDirectAbstractResources().add(resource);
 
@@ -459,6 +472,10 @@ public class ResourceFacade {
         CardContent cardContent = cardContentDao.getCardContent(resource.getCardContentId());
         if (cardContent == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        if (resource.getTeaser() == null) {
+            initTeaser(resource);
         }
 
         resource.setCardContent(cardContent);
