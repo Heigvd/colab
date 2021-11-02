@@ -40,8 +40,8 @@ import org.slf4j.LoggerFactory;
      */
     private Resource findResource(Long id) {
         try {
-<span class="nc" id="L43">            logger.debug(&quot;find resource #{}&quot;, id);</span>
-<span class="nc" id="L44">            return em.find(Resource.class, id);</span>
+<span class="fc" id="L43">            logger.debug(&quot;find resource #{}&quot;, id);</span>
+<span class="fc" id="L44">            return em.find(Resource.class, id);</span>
 <span class="nc" id="L45">        } catch (IllegalArgumentException ex) {</span>
 <span class="nc" id="L46">            return null;</span>
         }
@@ -57,10 +57,10 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the resource failed
      */
     public Resource updateResource(Resource resource) throws ColabMergeException {
-<span class="nc" id="L60">        logger.debug(&quot;update resource {}&quot;, resource);</span>
-<span class="nc" id="L61">        Resource mResource = this.findResource(resource.getId());</span>
-<span class="nc" id="L62">        mResource.merge(resource);</span>
-<span class="nc" id="L63">        return mResource;</span>
+<span class="fc" id="L60">        logger.debug(&quot;update resource {}&quot;, resource);</span>
+<span class="fc" id="L61">        Resource mResource = this.findResource(resource.getId());</span>
+<span class="fc" id="L62">        mResource.merge(resource);</span>
+<span class="fc" id="L63">        return mResource;</span>
     }
 
     /**

@@ -366,13 +366,13 @@ import javax.persistence.Transient;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L369" title="All 2 branches missed.">        if (other instanceof AbstractResource) {</span>
-<span class="nc" id="L370">            AbstractResource o = (AbstractResource) other;</span>
-<span class="nc" id="L371">            this.setCategory(o.getCategory());</span>
-<span class="nc" id="L372">        } else {</span>
+<span class="pc bpc" id="L369" title="1 of 2 branches missed.">        if (other instanceof AbstractResource) {</span>
+<span class="fc" id="L370">            AbstractResource o = (AbstractResource) other;</span>
+<span class="fc" id="L371">            this.setCategory(o.getCategory());</span>
+<span class="fc" id="L372">        } else {</span>
 <span class="nc" id="L373">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L375">    }</span>
+<span class="fc" id="L375">    }</span>
 
 
     @JsonbTransient

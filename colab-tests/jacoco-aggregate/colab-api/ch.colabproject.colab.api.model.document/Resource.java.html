@@ -245,17 +245,17 @@ import javax.validation.constraints.NotNull;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L248" title="All 2 branches missed.">        if (other instanceof Resource) {</span>
-<span class="nc" id="L249">            Resource o = (Resource) other;</span>
-<span class="nc" id="L250">            super.merge(o);</span>
-<span class="nc" id="L251">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L252">            this.setPublished(o.isPublished());</span>
-<span class="nc" id="L253">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
-<span class="nc" id="L254">            this.setDeprecated(o.isDeprecated());</span>
-<span class="nc" id="L255">        } else {</span>
+<span class="pc bpc" id="L248" title="1 of 2 branches missed.">        if (other instanceof Resource) {</span>
+<span class="fc" id="L249">            Resource o = (Resource) other;</span>
+<span class="fc" id="L250">            super.merge(o);</span>
+<span class="fc" id="L251">            this.setTitle(o.getTitle());</span>
+<span class="fc" id="L252">            this.setPublished(o.isPublished());</span>
+<span class="fc" id="L253">            this.setRequestingForGlory(o.isRequestingForGlory());</span>
+<span class="fc" id="L254">            this.setDeprecated(o.isDeprecated());</span>
+<span class="fc" id="L255">        } else {</span>
 <span class="nc" id="L256">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L258">    }</span>
+<span class="fc" id="L258">    }</span>
 
     @Override
     public int hashCode() {
