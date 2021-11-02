@@ -1,5 +1,6 @@
 package ch.colabproject.colab.tests.rest.document;
 
+import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.ExternalDocLink;
@@ -11,6 +12,7 @@ import ch.colabproject.colab.api.rest.document.ResourceCreationBean;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
 import com.google.common.collect.Lists;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -22,6 +24,10 @@ import org.junit.jupiter.api.Test;
 // TODO refuse stuff
 // TODO publish / requestForGlory / deprecated stuff
 public class ResourceRestEndpointTest extends AbstractArquillianTest {
+
+    // *********************************************************************************************
+    // Resource
+    // *********************************************************************************************
 
     @Test
     public void testCreateResource() {
@@ -49,7 +55,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
 
-        Resource persistedResource = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
+        Resource persistedResource = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resourceId);
         Assertions.assertNotNull(persistedResource);
         Assertions.assertNotNull(persistedResource.getId());
         Assertions.assertEquals(resourceId, persistedResource.getId());
@@ -59,7 +66,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertFalse(persistedResource.isDeprecated());
 
         Assertions.assertNotNull(persistedResource.getDocumentId());
-        Document persistedDocument = client.documentRestEndPoint.getDocument(persistedResource.getDocumentId());
+        Document persistedDocument = client.documentRestEndPoint
+            .getDocument(persistedResource.getDocumentId());
         Assertions.assertNotNull(persistedDocument);
         Assertions.assertTrue(persistedDocument instanceof ExternalDocLink);
         ExternalDocLink persistedExtDoc = (ExternalDocLink) persistedDocument;
@@ -68,12 +76,14 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(resourceId, persistedExtDoc.getResourceId());
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
-        Block persistedTeaserBlock = client.blockRestEndPoint.getBlock(persistedResource.getTeaserId());
+        Block persistedTeaserBlock = client.blockRestEndPoint
+            .getBlock(persistedResource.getTeaserId());
         Assertions.assertNotNull(persistedTeaserBlock);
         Assertions.assertTrue(persistedTeaserBlock instanceof TextDataBlock);
         TextDataBlock persistedTeaserTextDataBlock = (TextDataBlock) persistedTeaserBlock;
         Assertions.assertNull(persistedTeaserTextDataBlock.getDocumentId());
-        Assertions.assertEquals(persistedTeaserTextDataBlock.getMimeType(), TextDataBlock.DEFAULT_MIME_TYPE);
+        Assertions.assertEquals(persistedTeaserTextDataBlock.getMimeType(),
+            TextDataBlock.DEFAULT_MIME_TYPE);
         Assertions.assertEquals(persistedTeaserTextDataBlock.getTextData(), teaser);
     }
 
@@ -93,7 +103,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
 
-        Resource persistedResource = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
+        Resource persistedResource = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resourceId);
         Assertions.assertNotNull(persistedResource);
         Assertions.assertNotNull(persistedResource.getId());
         Assertions.assertEquals(resourceId, persistedResource.getId());
@@ -103,7 +114,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertFalse(persistedResource.isDeprecated());
 
         Assertions.assertNotNull(persistedResource.getDocumentId());
-        Document persistedDocument = client.documentRestEndPoint.getDocument(persistedResource.getDocumentId());
+        Document persistedDocument = client.documentRestEndPoint
+            .getDocument(persistedResource.getDocumentId());
         Assertions.assertNotNull(persistedDocument);
         Assertions.assertTrue(persistedDocument instanceof ExternalDocLink);
         ExternalDocLink persistedExtDoc = (ExternalDocLink) persistedDocument;
@@ -112,12 +124,14 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(resourceId, persistedExtDoc.getResourceId());
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
-        Block persistedTeaserBlock = client.blockRestEndPoint.getBlock(persistedResource.getTeaserId());
+        Block persistedTeaserBlock = client.blockRestEndPoint
+            .getBlock(persistedResource.getTeaserId());
         Assertions.assertNotNull(persistedTeaserBlock);
         Assertions.assertTrue(persistedTeaserBlock instanceof TextDataBlock);
         TextDataBlock persistedTeaserTextDataBlock = (TextDataBlock) persistedTeaserBlock;
         Assertions.assertNull(persistedTeaserTextDataBlock.getDocumentId());
-        Assertions.assertEquals(persistedTeaserTextDataBlock.getMimeType(), TextDataBlock.DEFAULT_MIME_TYPE);
+        Assertions.assertEquals(persistedTeaserTextDataBlock.getMimeType(),
+            TextDataBlock.DEFAULT_MIME_TYPE);
         Assertions.assertNull(persistedTeaserTextDataBlock.getTextData());
 
         String title = "the guide " + ((int) (Math.random() * 1000));
@@ -125,6 +139,9 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         persistedResource.setTitle(title);
         persistedResource.setCategory(category);
+        persistedResource.setPublished(true);
+        persistedResource.setRequestingForGlory(true);
+        persistedResource.setDeprecated(true);
 
         client.resourceRestEndpoint.updateResource(persistedResource);
 
@@ -133,13 +150,14 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedResource.getId());
         Assertions.assertEquals(resourceId, persistedResource.getId());
         Assertions.assertEquals(title, persistedResource.getTitle());
-        Assertions.assertFalse(persistedResource.isPublished());
-        Assertions.assertFalse(persistedResource.isRequestingForGlory());
-        Assertions.assertFalse(persistedResource.isDeprecated());
+        Assertions.assertTrue(persistedResource.isPublished());
+        Assertions.assertTrue(persistedResource.isRequestingForGlory());
+        Assertions.assertTrue(persistedResource.isDeprecated());
         Assertions.assertEquals(category, persistedResource.getCategory());
 
         Assertions.assertNotNull(persistedResource.getDocumentId());
-        persistedDocument = client.documentRestEndPoint.getDocument(persistedResource.getDocumentId());
+        persistedDocument = client.documentRestEndPoint
+            .getDocument(persistedResource.getDocumentId());
         Assertions.assertNotNull(persistedDocument);
         Assertions.assertTrue(persistedDocument instanceof ExternalDocLink);
         persistedExtDoc = (ExternalDocLink) persistedDocument;
@@ -153,7 +171,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(persistedTeaserBlock instanceof TextDataBlock);
         persistedTeaserTextDataBlock = (TextDataBlock) persistedTeaserBlock;
         Assertions.assertNull(persistedTeaserTextDataBlock.getDocumentId());
-        Assertions.assertEquals(persistedTeaserTextDataBlock.getMimeType(), TextDataBlock.DEFAULT_MIME_TYPE);
+        Assertions.assertEquals(persistedTeaserTextDataBlock.getMimeType(),
+            TextDataBlock.DEFAULT_MIME_TYPE);
         Assertions.assertNull(persistedTeaserTextDataBlock.getTextData());
     }
 
@@ -173,7 +192,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
 
-        Resource persistedResource = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
+        Resource persistedResource = (Resource) client.resourceRestEndpoint
+            .getAbstractResource(resourceId);
         Assertions.assertNotNull(persistedResource);
 
         Assertions.assertNotNull(persistedResource.getDocumentId());
@@ -196,6 +216,68 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         persistedTeaserBlock = client.blockRestEndPoint.getBlock(teaserId);
         Assertions.assertNull(persistedTeaserBlock);
+    }
+
+    // *********************************************************************************************
+    // Resource reference
+    // *********************************************************************************************
+
+    @Test
+    public void testUpdateResourceReference() {
+        // creation of the context : project, global card type, card type, card
+        Project project = ColabFactory.createProject(client, "testResource");
+
+        Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
+
+        Long globalCardTypeId = ColabFactory.createCardType(client, null).getId();
+
+        Long cardId = ColabFactory.createNewCard(client, rootCardContentId, globalCardTypeId)
+            .getId();
+
+        String url = "http://www.123soleil.chat/theGameEncyclopedia.pdf";
+
+        ExternalDocLink doc = new ExternalDocLink();
+        doc.setUrl(url);
+
+        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
+        resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
+        resourceCreationBean.setDocument(doc);
+
+        client.resourceRestEndpoint.createResource(resourceCreationBean);
+
+        List<List<AbstractResource>> persistedCardResources = client.resourceRestEndpoint
+            .getResourceChainForCard(cardId);
+        Assertions.assertNotNull(persistedCardResources);
+        Assertions.assertEquals(1, persistedCardResources.size());
+        Assertions.assertTrue(persistedCardResources.get(0).size() > 1);
+        Long resourceRefId = persistedCardResources.get(0).get(0).getId();
+
+        AbstractResource persistedAbstractResourceRef = client.resourceRestEndpoint
+            .getAbstractResource(resourceRefId);
+        Assertions.assertNotNull(persistedAbstractResourceRef);
+        Assertions.assertTrue(persistedAbstractResourceRef instanceof ResourceRef);
+
+        ResourceRef persistedResourceRef = (ResourceRef) persistedAbstractResourceRef;
+        Assertions.assertFalse(persistedResourceRef.isRefused());
+        Assertions.assertNull(persistedResourceRef.getCategory());
+        Assertions.assertEquals(cardId, persistedResourceRef.getCardId());
+
+        String category = "category " + ((int) (Math.random() * 1000));
+
+        persistedResourceRef.setRefused(true);
+        persistedResourceRef.setCategory(category);
+
+        client.resourceRestEndpoint.updateResourceRef(persistedResourceRef);
+
+        persistedAbstractResourceRef = client.resourceRestEndpoint
+            .getAbstractResource(resourceRefId);
+        Assertions.assertNotNull(persistedAbstractResourceRef);
+        Assertions.assertTrue(persistedAbstractResourceRef instanceof ResourceRef);
+
+        persistedResourceRef = (ResourceRef) persistedAbstractResourceRef;
+        Assertions.assertTrue(persistedResourceRef.isRefused());
+        Assertions.assertEquals(category, persistedResourceRef.getCategory());
+        Assertions.assertEquals(cardId, persistedResourceRef.getCardId());
     }
 
     // *********************************************************************************************
