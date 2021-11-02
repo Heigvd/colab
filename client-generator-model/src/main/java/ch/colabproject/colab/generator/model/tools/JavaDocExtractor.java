@@ -1,4 +1,11 @@
+/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
 package ch.colabproject.colab.generator.model.tools;
+
 
 import java.io.IOException;
 import java.io.InputStream;

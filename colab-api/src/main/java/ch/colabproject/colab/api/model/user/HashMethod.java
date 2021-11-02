@@ -1,8 +1,7 @@
-/**
- * Wegas
- * http://wegas.albasim.ch
+/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
  *
- * Copyright (c) 2013-2021 School of Management and Engineering Vaud, Comem, MEI
  * Licensed under the MIT License
  */
 package ch.colabproject.colab.api.model.user;
