@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ClassDoc.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">client-generator-model</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.generator.model.tools</a> &gt; <span class="el_source">ClassDoc.java</span></div><h1>ClassDoc.java</h1><pre class="source lang-java linenums">/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
  */
 package ch.colabproject.colab.generator.model.tools;
 
@@ -14,7 +15,7 @@ import javax.json.bind.annotation.JsonbTransient;
  *
  * @author maxence
  */
-<span class="fc" id="L17">public class ClassDoc {</span>
+<span class="fc" id="L18">public class ClassDoc {</span>
 
     /**
      * The package name
@@ -32,11 +33,11 @@ import javax.json.bind.annotation.JsonbTransient;
     /**
      * Fields javadoc
      */
-<span class="fc" id="L35">    private Map&lt;String, String&gt; fields = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L36">    private Map&lt;String, String&gt; fields = new HashMap&lt;&gt;();</span>
     /**
      * Methods javadoc
      */
-<span class="fc" id="L39">    private Map&lt;String, String&gt; methods = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L40">    private Map&lt;String, String&gt; methods = new HashMap&lt;&gt;();</span>
 
     /**
      * Get the package name
@@ -44,7 +45,7 @@ import javax.json.bind.annotation.JsonbTransient;
      * @return package name
      */
     public String getPackageName() {
-<span class="nc" id="L47">        return packageName;</span>
+<span class="nc" id="L48">        return packageName;</span>
     }
 
     /**
@@ -53,8 +54,8 @@ import javax.json.bind.annotation.JsonbTransient;
      * @param packageName new package name
      */
     public void setPackageName(String packageName) {
-<span class="fc" id="L56">        this.packageName = packageName;</span>
-<span class="fc" id="L57">    }</span>
+<span class="fc" id="L57">        this.packageName = packageName;</span>
+<span class="fc" id="L58">    }</span>
 
     /**
      * Get simple name of the class
@@ -62,7 +63,7 @@ import javax.json.bind.annotation.JsonbTransient;
      * @return the name
      */
     public String getClassName() {
-<span class="nc" id="L65">        return className;</span>
+<span class="nc" id="L66">        return className;</span>
     }
 
     /**
@@ -71,8 +72,8 @@ import javax.json.bind.annotation.JsonbTransient;
      * @param className new class name
      */
     public void setClassName(String className) {
-<span class="fc" id="L74">        this.className = className;</span>
-<span class="fc" id="L75">    }</span>
+<span class="fc" id="L75">        this.className = className;</span>
+<span class="fc" id="L76">    }</span>
 
     /**
      * Get class level javadoc
@@ -80,7 +81,7 @@ import javax.json.bind.annotation.JsonbTransient;
      * @return class javadoc
      */
     public String getDoc() {
-<span class="nc" id="L83">        return doc;</span>
+<span class="nc" id="L84">        return doc;</span>
     }
 
     /**
@@ -89,8 +90,8 @@ import javax.json.bind.annotation.JsonbTransient;
      * @param doc new javadoc
      */
     public void setDoc(String doc) {
-<span class="fc" id="L92">        this.doc = doc;</span>
-<span class="fc" id="L93">    }</span>
+<span class="fc" id="L93">        this.doc = doc;</span>
+<span class="fc" id="L94">    }</span>
 
     /**
      * Get field javadocs
@@ -98,7 +99,7 @@ import javax.json.bind.annotation.JsonbTransient;
      * @return javadoc for fields
      */
     public Map&lt;String, String&gt; getFields() {
-<span class="nc" id="L101">        return fields;</span>
+<span class="nc" id="L102">        return fields;</span>
     }
 
     /**
@@ -107,8 +108,8 @@ import javax.json.bind.annotation.JsonbTransient;
      * @param fields new fields javadoc
      */
     public void setFields(Map&lt;String, String&gt; fields) {
-<span class="fc" id="L110">        this.fields = fields;</span>
-<span class="fc" id="L111">    }</span>
+<span class="fc" id="L111">        this.fields = fields;</span>
+<span class="fc" id="L112">    }</span>
 
     /**
      * get method javadocs
@@ -116,7 +117,7 @@ import javax.json.bind.annotation.JsonbTransient;
      * @return javadoc for methods
      */
     public Map&lt;String, String&gt; getMethods() {
-<span class="nc" id="L119">        return methods;</span>
+<span class="nc" id="L120">        return methods;</span>
     }
 
     /**
@@ -125,8 +126,8 @@ import javax.json.bind.annotation.JsonbTransient;
      * @param methods new methods javadoc
      */
     public void setMethods(Map&lt;String, String&gt; methods) {
-<span class="fc" id="L128">        this.methods = methods;</span>
-<span class="fc" id="L129">    }</span>
+<span class="fc" id="L129">        this.methods = methods;</span>
+<span class="fc" id="L130">    }</span>
 
     /**
      * Get class fill name
@@ -135,7 +136,7 @@ import javax.json.bind.annotation.JsonbTransient;
      */
     @JsonbTransient
     public String getFullName() {
-<span class="nc" id="L138">        return getPackageName() + &quot;.&quot; + getClassName();</span>
+<span class="nc" id="L139">        return getPackageName() + &quot;.&quot; + getClassName();</span>
     }
 
 }
