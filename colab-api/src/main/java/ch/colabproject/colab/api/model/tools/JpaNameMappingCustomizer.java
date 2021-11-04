@@ -40,6 +40,6 @@ public class JpaNameMappingCustomizer implements SessionCustomizer {
                     directMapping.getField().setName(newName);
                 }
             }
-        );
+            );
     }
 }

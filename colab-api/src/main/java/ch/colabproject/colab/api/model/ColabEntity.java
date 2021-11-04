@@ -14,7 +14,7 @@ import java.time.OffsetDateTime;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 
 /**
- * Simple interface which depict persisted object that may be exchanged with clients
+ * Simple interface which depicts persisted object that may be exchanged with clients
  *
  * @author maxence
  */

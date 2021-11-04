@@ -24,6 +24,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * JPA Entity listener defined in orm.xml
+ * <p>
+ * The purposes are to
+ * <ul>
+ * <li>check permissions</li>
+ * <li>register modifications</li>
+ * <li>set tracking data</li>
+ * </ul>
  *
  * @author maxence
  */

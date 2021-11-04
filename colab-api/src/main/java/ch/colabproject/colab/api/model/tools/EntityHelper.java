@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.WithId;
 import java.util.Objects;
 
 /**
+ * Helper to normalize common operations on WithId objects
  *
  * @author maxence
  */

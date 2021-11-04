@@ -19,7 +19,6 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
 public interface WithId extends WithJsonDiscriminator {
 
     /**
-     *
      * @return if of the entity
      */
     Long getId();
