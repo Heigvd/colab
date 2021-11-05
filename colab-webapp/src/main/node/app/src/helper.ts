@@ -1,4 +1,4 @@
-import { User, WithId } from 'colab-rest-client';
+import { CardContent, User, WithId } from 'colab-rest-client';
 import logger from './logger';
 
 /*
@@ -66,4 +66,34 @@ export const removeAllItems = (array: unknown[], items: unknown[]): void => {
 
 export function checkUnreachable(x: never): void {
   logger.error(x);
+}
+
+/**
+ * Convert CardContent status to comparable numbers
+ */
+function statusOrder(c: CardContent) {
+  switch (c.status) {
+    case 'ACTIVE':
+      return 1;
+    case 'POSTPONED':
+      return 2;
+    case 'ARCHIVED':
+      return 3;
+    case 'REJECTED':
+    default:
+      return 4;
+  }
+}
+
+export function sortCardContents(contents: CardContent[]): CardContent[] {
+  return contents.sort((a, b) => {
+    const aStatus = statusOrder(a);
+    const bStatus = statusOrder(b);
+
+    if (aStatus === bStatus) {
+      return (a.title || '').localeCompare(b.title || '', 'fr');
+    } else {
+      return aStatus - bStatus;
+    }
+  });
 }

@@ -58,20 +58,29 @@ export function useBlock(blockId: number | null | undefined): Block | null | und
       const count = refSubs[blockId];
       if (!count) {
         // subscribe
+        refSubs[blockId] = 1;
         dispatch(API.subscribeToBlockChannel(blockId)).then(() => {
           if (alive) {
             dispatch(API.getBlock(blockId));
           }
         });
       } else {
+        refSubs[blockId] = count + 1;
         dispatch(API.getBlock(blockId));
       }
 
       return () => {
         alive = false;
         const count = refSubs[blockId];
-        if (!count) {
-          // subscribe
+        if (count != null) {
+          if (count === 1) {
+            refSubs[blockId] = 0;
+            dispatch(API.unsubscribeFromBlockChannel(blockId));
+          } else if (count <= 0) {
+            logger.error('Already unsubscribed !');
+          } else {
+            refSubs[blockId] = count - 1;
+          }
         }
       };
     }

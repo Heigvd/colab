@@ -23,7 +23,7 @@ interface TokenProps {
 
 type STATE_TYPE = 'LOADING' | 'AUTH_REQUIRED' | 'NO_TOKEN' | 'ERROR' | 'DONE';
 
-export default (props: TokenProps): JSX.Element => {
+export default function Token(props: TokenProps): JSX.Element {
   const user = useCurrentUser();
   const dispatch = useAppDispatch();
 
@@ -111,4 +111,4 @@ export default (props: TokenProps): JSX.Element => {
       </Overlay>
     );
   }
-};
+}

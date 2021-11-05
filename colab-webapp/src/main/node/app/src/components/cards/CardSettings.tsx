@@ -7,24 +7,27 @@
 
 import { faCheck, faPalette, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Card, InvolvementLevel } from 'colab-rest-client';
+import { Card, CardContent, InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import { TwitterPicker } from 'react-color';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import Flex from '../common/Flex';
+import Checkbox from '../common/Form/Checkbox';
 import IconButton from '../common/IconButton';
 import OpenClose from '../common/OpenClose';
 import { cancelIcon } from '../styling/defaultIcons';
 import CardACL from './CardACL';
+import ContentStatusSelector from './ContentStatusSelector';
 import InvolvementSelector from './InvolvementSelector';
 
 interface Props {
   card: Card;
+  variant: CardContent;
   onClose: () => void;
 }
 
-export default function CardSettings({ card, onClose }: Props): JSX.Element {
+export default function CardSettings({ card, variant, onClose }: Props): JSX.Element {
   const dispatch = useAppDispatch();
 
   const updateDefInvolvementLevel = React.useCallback(
@@ -74,6 +77,16 @@ export default function CardSettings({ card, onClose }: Props): JSX.Element {
           />
         )}
       </OpenClose>
+      <ContentStatusSelector
+        self={variant.status}
+        onChange={status => dispatch(API.updateCardContent({ ...variant, status: status }))}
+      />
+
+      <Checkbox
+        label="frozen"
+        value={variant.frozen}
+        onChange={value => dispatch(API.updateCardContent({ ...variant, frozen: value }))}
+      />
     </Flex>
   );
 }

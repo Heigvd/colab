@@ -9,8 +9,9 @@ import { css } from '@emotion/css';
 import { faCaretLeft, faCaretRight, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
+import { useHistory } from 'react-router-dom';
 import * as API from '../../API/api';
-import { useVariants } from '../../selectors/cardSelector';
+import { useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
@@ -48,13 +49,7 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
 
   const [displayedVariantId, setDisplayedVariantId] = React.useState<number | undefined>();
 
-  const contents = useVariants(card);
-
-  React.useEffect(() => {
-    if (contents === undefined && card.id != null) {
-      dispatch(API.getCardContents(card.id));
-    }
-  }, [contents, card.id, dispatch]);
+  const contents = useVariantsOrLoad(card);
 
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
@@ -129,31 +124,25 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
 
 interface PagerProps {
   card: Card;
+  current: CardContent;
   allowCreation: boolean;
-  onSelect: (variant: CardContent) => void;
+  //onSelect: (variant: CardContent) => void;
 }
 
-export function VariantPager({ card, allowCreation, onSelect }: PagerProps): JSX.Element {
+export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const history = useHistory();
 
-  const [displayedVariant, setDisplayedVariant] = React.useState<CardContent | undefined>();
+  const contents = useVariantsOrLoad(card);
 
-  const contents = useVariants(card);
+  const variantPager = computeNav(contents, current.id);
 
-  React.useEffect(() => {
-    if (contents === undefined && card.id != null) {
-      dispatch(API.getCardContents(card.id));
-    }
-  }, [contents, card.id, dispatch]);
-
-  const variantPager = computeNav(contents, displayedVariant?.id);
-
-  React.useEffect(() => {
-    if (variantPager?.current != null && variantPager.current !== displayedVariant) {
-      setDisplayedVariant(variantPager.current);
-      onSelect(variantPager.current);
-    }
-  }, [variantPager, onSelect, displayedVariant]);
+  const goto = React.useCallback(
+    (card: Card, variant: CardContent) => {
+      history.push(`/edit/${card.id}/v/${variant.id}`);
+    },
+    [history],
+  );
 
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
@@ -169,8 +158,9 @@ export function VariantPager({ card, allowCreation, onSelect }: PagerProps): JSX
             title={variantPager.previous.title || ''}
             onClick={() => {
               if (variantPager.previous.id) {
-                setDisplayedVariant(variantPager.previous);
-                onSelect(variantPager.previous);
+                goto(card, variantPager.previous);
+                //setDisplayedVariant(variantPager.previous);
+                //                onSelect(variantPager.previous);
               }
             }}
           />
@@ -187,8 +177,9 @@ export function VariantPager({ card, allowCreation, onSelect }: PagerProps): JSX
             title={variantPager.next.title || ''}
             onClick={() => {
               if (variantPager.next.id) {
-                setDisplayedVariant(variantPager.next);
-                onSelect(variantPager.next);
+                goto(card, variantPager.next);
+                //setDisplayedVariant(variantPager.next);
+                //                onSelect(variantPager.next);
               }
             }}
           />
@@ -203,7 +194,7 @@ export function VariantPager({ card, allowCreation, onSelect }: PagerProps): JSX
                 // TODO select and display new content
                 if (payload.meta.requestStatus === 'fulfilled') {
                   if (entityIs(payload.payload, 'CardContent')) {
-                    setDisplayedVariant(payload.payload || undefined);
+                    goto(card, payload.payload);
                   }
                 }
               });

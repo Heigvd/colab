@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
- 
+
 import { Card, InvolvementLevel, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';

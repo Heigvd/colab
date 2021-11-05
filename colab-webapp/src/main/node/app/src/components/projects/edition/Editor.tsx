@@ -7,11 +7,25 @@
 
 import { css } from '@emotion/css';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Card, entityIs } from 'colab-rest-client';
+import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import { HashRouter as Router, Route, Switch, useHistory, useParams } from 'react-router-dom';
+import {
+  HashRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+  useHistory,
+  useParams,
+} from 'react-router-dom';
 import * as API from '../../../API/api';
-import { Ancestor, useAncestors, useCard } from '../../../selectors/cardSelector';
+import { sortCardContents } from '../../../helper';
+import {
+  Ancestor,
+  useAncestors,
+  useCard,
+  useCardContent,
+  useVariantsOrLoad,
+} from '../../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import CardCreator from '../../cards/CardCreator';
@@ -74,16 +88,49 @@ const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   }
 };
 
-interface CardWrapperProps {
-  children: (card: Card) => JSX.Element;
-}
-
-const CardWrapper = ({ children }: CardWrapperProps): JSX.Element => {
+/**
+ * Fetch card id from route and redirect to default variant
+ */
+const DefaultVariantDetector = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
   const cardId = +id;
 
   const dispatch = useAppDispatch();
   const card = useCard(cardId);
+
+  const variants = useVariantsOrLoad(card !== 'LOADING' ? card : undefined);
+
+  React.useEffect(() => {
+    if (card === undefined && cardId) {
+      dispatch(API.getCard(cardId));
+    }
+  }, [card, cardId, dispatch]);
+
+  if (card === 'LOADING' || card == null || variants == null) {
+    return <InlineLoading />;
+  } else if (variants.length === 0) {
+    return <InlineLoading />;
+  } else {
+    const v = sortCardContents(variants)[0]!;
+
+    return <Redirect to={`/edit/${card.id}/v/${v.id}`} />;
+  }
+};
+
+interface CardWrapperProps {
+  children: (card: Card, variant: CardContent) => JSX.Element;
+}
+
+const CardWrapper = ({ children }: CardWrapperProps): JSX.Element => {
+  const { id, vId } = useParams<{ id: string; vId: string }>();
+  const cardId = +id;
+  const cardContentId = +vId;
+
+  const dispatch = useAppDispatch();
+
+  const card = useCard(cardId);
+  const content = useCardContent(cardContentId);
+
   const parentId = card != null && card != 'LOADING' ? card.parentId : undefined;
 
   const { project } = useProjectBeingEdited();
@@ -96,7 +143,13 @@ const CardWrapper = ({ children }: CardWrapperProps): JSX.Element => {
     }
   }, [card, cardId, dispatch]);
 
-  if (card == null || card === 'LOADING' || project == null) {
+  if (
+    card == null ||
+    card === 'LOADING' ||
+    project == null ||
+    content == null ||
+    content === 'LOADING'
+  ) {
     return <InlineLoading />;
   } else {
     return (
@@ -107,7 +160,7 @@ const CardWrapper = ({ children }: CardWrapperProps): JSX.Element => {
           ))}
         </div>
         <Flex direction="column" grow={1}>
-          {children(card)}
+          {children(card, content)}
         </Flex>
       </>
     );
@@ -223,7 +276,12 @@ export default function Editor(): JSX.Element {
                 <CardWrapper>{card => <CardThumbWithSelector depth={2} card={card} />}</CardWrapper>
               </Route>
               <Route exact path="/edit/:id">
-                <CardWrapper>{card => <CardEditor card={card} showSubcards={true} />}</CardWrapper>
+                <DefaultVariantDetector />
+              </Route>
+              <Route exact path="/edit/:id/v/:vId">
+                <CardWrapper>
+                  {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
+                </CardWrapper>
               </Route>
               <Route>
                 <div>

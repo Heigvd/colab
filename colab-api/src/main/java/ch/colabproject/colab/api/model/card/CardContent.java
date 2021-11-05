@@ -79,8 +79,15 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
     /**
      * Status
      */
+    @NotNull
     @Enumerated(EnumType.STRING)
     private CardContentStatus status;
+
+    /**
+     * A frozen content is read-only
+     */
+    @NotNull
+    private boolean frozen;
 
     /**
      * Completion level
@@ -190,6 +197,24 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
      */
     public void setStatus(CardContentStatus status) {
         this.status = status;
+    }
+
+    /**
+     * Get the value of frozen
+     *
+     * @return the value of frozen
+     */
+    public boolean isFrozen() {
+        return frozen;
+    }
+
+    /**
+     * Set the value of frozen
+     *
+     * @param frozen new value of frozen
+     */
+    public void setFrozen(boolean frozen) {
+        this.frozen = frozen;
     }
 
     /**
@@ -370,6 +395,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
             this.setStatus(o.getStatus());
             this.setCompletionLevel(o.getCompletionLevel());
             this.setCompletionMode(o.getCompletionMode());
+            this.setFrozen(o.isFrozen());
             // the deliverable cannot be changed with a merge
         } else {
             throw new ColabMergeException(this, other);

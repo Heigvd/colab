@@ -29,9 +29,9 @@ export const useAllProjectCards = (): Card[] => {
   });
 };
 
-export function useVariants(card: Card): CardContent[] | null | undefined {
+export function useVariants(card?: Card): CardContent[] | null | undefined {
   return useAppSelector(state => {
-    if (card.id && state.cards.cards[card.id]) {
+    if (card?.id && state.cards.cards[card.id]) {
       const cardState = state.cards.cards[card.id]!;
       if (cardState.contents == null) {
         return cardState.contents;
@@ -46,6 +46,19 @@ export function useVariants(card: Card): CardContent[] | null | undefined {
       return null;
     }
   }, shallowEqual);
+}
+
+export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined {
+  const dispatch = useAppDispatch();
+  const contents = useVariants(card);
+
+  React.useEffect(() => {
+    if (contents === undefined && card?.id != null) {
+      dispatch(API.getCardContents(card.id));
+    }
+  }, [contents, card?.id, dispatch]);
+
+  return contents;
 }
 
 export const useCard = (id: number): Card | 'LOADING' | undefined => {
@@ -63,7 +76,9 @@ export const useCard = (id: number): Card | 'LOADING' | undefined => {
 export const useCardContent = (
   id: number | null | undefined,
 ): CardContent | undefined | 'LOADING' => {
-  return useAppSelector(state => {
+  const dispatch = useAppDispatch();
+
+  const content = useAppSelector(state => {
     if (id) {
       const cardDetail = state.cards.contents[id];
 
@@ -74,6 +89,14 @@ export const useCardContent = (
 
     return undefined;
   });
+
+  React.useEffect(() => {
+    if (content === undefined && id != null) {
+      dispatch(API.getCardContent(id));
+    }
+  }, [content, id, dispatch]);
+
+  return content;
 };
 
 export interface Ancestor {

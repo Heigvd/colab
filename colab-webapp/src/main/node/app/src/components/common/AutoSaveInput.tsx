@@ -22,6 +22,7 @@ export interface Props {
   onChange: (newValue: string) => void;
   placeholder?: string;
   inputType?: 'INPUT' | 'TEXTAREA';
+  readOnly?: boolean;
   delay?: number;
 }
 
@@ -32,6 +33,7 @@ export default function AutoSaveInput({
   placeholder = 'no value',
   inputType = 'INPUT',
   delay = 500,
+  readOnly = false,
 }: Props): JSX.Element {
   const [state, setState] = React.useState<State>({
     status: 'DISPLAY',
@@ -100,7 +102,7 @@ export default function AutoSaveInput({
         toolbarClassName=""
         offsetY={0.5}
         grow={0}
-        toolbar={<IconButton icon={faPen} title="edit" onClick={editCb} />}
+        toolbar={!readOnly ? <IconButton icon={faPen} title="edit" onClick={editCb} /> : null}
       >
         <>
           <label>{label}</label>

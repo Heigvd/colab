@@ -6,26 +6,30 @@
  */
 
 import { css } from '@emotion/css';
-import { faCog, faFile } from '@fortawesome/free-solid-svg-icons';
+import {
+  faFile as farFile,
+  faStickyNote as farStickyNote,
+} from '@fortawesome/free-regular-svg-icons/';
+import { faCog, faFile, faStickyNote } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useLocalStorage } from '../../preferences';
-import { useCardACLForCurrentUser, useVariants } from '../../selectors/cardSelector';
+import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AutoSaveInput from '../common/AutoSaveInput';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
-import OpenClose from '../common/OpenClose';
+import OnBlurInput from '../common/OnBlurInput';
 import OpenCloseModal from '../common/OpenCloseModal';
 import { DocumentEditorAsDeliverableWrapper } from '../documents/DocumentEditorWrapper';
 import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
-import { sideTabButton } from '../styling/style';
+import { cardTitle } from '../styling/style';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
@@ -33,8 +37,7 @@ import { VariantPager } from './VariantSelector';
 
 interface Props {
   card: Card;
-  //variant: CardContent | undefined;
-  //variants: CardContent[];
+  variant: CardContent;
   showSubcards?: boolean;
 }
 
@@ -79,6 +82,7 @@ function ProgressBar({ variant }: { variant: CardContent | undefined }) {
 
 export default function CardEditor({
   card,
+  variant,
   showSubcards = true,
 }: //variant,
 //variants,
@@ -89,23 +93,32 @@ Props): JSX.Element {
   const cardTypeFull = useCardType(card.cardTypeId);
   const cardType = cardTypeFull.cardType;
 
-  const variants = useVariants(card) || [];
+  const variants = useVariantsOrLoad(card) || [];
 
   const purpose = useBlock(cardType?.purposeId);
 
-  //const [rightPanel, setRightPanel] = React.useState<'NONE' | 'RESOURCES' | 'SETTINGS'>('NONE');
-  const [rightPanel, setRightPanel] = useLocalStorage<'NONE' | 'RESOURCES' | 'SETTINGS'>(
+  const [showStickyNote, setShowStickyNote] = useLocalStorage('showStickNotes', false);
+
+  const toggleShowStickyNotes = React.useCallback(() => {
+    setShowStickyNote(current => !current);
+  }, [setShowStickyNote]);
+
+  const [rightPanel, setRightPanel] = useLocalStorage<'NONE' | 'RESOURCES'>(
     'cardRightPanel',
     'NONE',
   );
 
-  const [variant, setVariant] = React.useState<CardContent | undefined>(undefined);
-
-  const closePanelCb = React.useCallback(() => {
-    setRightPanel('NONE');
+  const toggleResourcePanel = React.useCallback(() => {
+    setRightPanel(current => {
+      if (current !== 'RESOURCES') {
+        return 'RESOURCES';
+      }
+      return 'NONE';
+    });
   }, [setRightPanel]);
 
   const userAcl = useCardACLForCurrentUser(card.id);
+  const readOnly = !userAcl.write || variant.frozen;
 
   React.useEffect(() => {
     if (cardType === undefined) {
@@ -127,32 +140,9 @@ Props): JSX.Element {
     return (
       <Flex direction="column" grow={1}>
         <Flex grow={1} direction="row">
-          <OpenClose collapsedChildren={<span className={sideTabButton}>sticky notes</span>}>
-            {() => <>{card.id && <StickyNoteWrapper destCardId={card.id} showSrc />}</>}
-          </OpenClose>
+          {showStickyNote ? <StickyNoteWrapper destCardId={card.id} showSrc /> : null}
 
-          <CardLayout
-            showProgressBar={false}
-            card={card}
-            variant={variant}
-            variants={variants}
-            extraTools={
-              <>
-                <IconButton
-                  icon={faCog}
-                  onClick={() => {
-                    setRightPanel('SETTINGS');
-                  }}
-                />
-                <IconButton
-                  icon={faFile}
-                  onClick={() => {
-                    setRightPanel('RESOURCES');
-                  }}
-                />
-              </>
-            }
-          >
+          <CardLayout showProgressBar={false} card={card} variant={variant} variants={variants}>
             <Flex direction="row" grow={1}>
               <Flex direction="column" grow={1}>
                 <Flex
@@ -164,16 +154,51 @@ Props): JSX.Element {
                   })}
                 >
                   <div>
-                    <Flex>
-                      Card name (card.title):
-                      <AutoSaveInput
-                        inputType="INPUT"
-                        value={card.title || ''}
-                        placeholder={i18n.card.untitled}
-                        onChange={newValue =>
-                          dispatch(API.updateCard({ ...card, title: newValue }))
-                        }
-                      />
+                    <Flex justify="space-between">
+                      <Flex>
+                        <OnBlurInput
+                          className={cardTitle}
+                          value={card.title || ''}
+                          readOnly={readOnly}
+                          placeholder={i18n.card.untitled}
+                          onChange={newValue =>
+                            dispatch(API.updateCard({ ...card, title: newValue }))
+                          }
+                        />
+                        {variant != null && variants.length > 1 ? (
+                          <>
+                            {'/'}
+                            <OnBlurInput
+                              className={cardTitle}
+                              value={variant.title || ''}
+                              readOnly={readOnly}
+                              placeholder={i18n.content.untitled}
+                              onChange={newValue =>
+                                dispatch(API.updateCardContent({ ...variant, title: newValue }))
+                              }
+                            />
+                          </>
+                        ) : null}
+                      </Flex>
+                      <Flex>
+                        <OpenCloseModal
+                          title="Card Settings"
+                          showCloseButton={true}
+                          collapsedChildren={<IconButton icon={faCog} />}
+                        >
+                          {close => <CardSettings onClose={close} card={card} variant={variant} />}
+                        </OpenCloseModal>
+
+                        <IconButton
+                          icon={showStickyNote ? faStickyNote : farStickyNote}
+                          onClick={toggleShowStickyNotes}
+                        />
+
+                        <IconButton
+                          icon={rightPanel === 'RESOURCES' ? faFile : farFile}
+                          onClick={toggleResourcePanel}
+                        />
+                      </Flex>
                     </Flex>
                     <h4>Purpose</h4>
                     <div>
@@ -185,27 +210,12 @@ Props): JSX.Element {
                     <Flex direction="column" grow={1}>
                       <h5>Card Content #{variant.id}</h5>
                       <div>
-                        {variants.length > 1 ? (
-                          <>
-                            Version(contentTitle):
-                            {userAcl.write ? (
-                              <AutoSaveInput
-                                inputType="INPUT"
-                                value={variant.title || ''}
-                                placeholder={i18n.content.untitled}
-                                onChange={newValue =>
-                                  dispatch(API.updateCardContent({ ...variant, title: newValue }))
-                                }
-                              />
-                            ) : (
-                              variant.title
-                            )}
-                          </>
-                        ) : null}
-
                         {userAcl.read ? (
                           variant && variant.id ? (
-                            <DocumentEditorAsDeliverableWrapper cardContentId={variant.id} />
+                            <DocumentEditorAsDeliverableWrapper
+                              cardContentId={variant.id}
+                              allowEdition={!readOnly}
+                            />
                           ) : (
                             <span>no deliverable available</span>
                           )
@@ -216,7 +226,7 @@ Props): JSX.Element {
                     </Flex>
                   ) : null}
                   <Flex justify="center">
-                    <VariantPager allowCreation={userAcl.write} card={card} onSelect={setVariant} />
+                    <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
                   </Flex>
                 </Flex>
                 <Flex align="center">
@@ -252,15 +262,14 @@ Props): JSX.Element {
                       variant?.id && (
                         <ResourcesWrapper
                           kind={ResourceContextScope.CardOrCardContent}
-                          accessLevel={userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
+                          accessLevel={
+                            !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
+                          }
                           cardId={card.id}
                           cardContentId={variant.id}
                         />
                       )
                     : null}
-                  {rightPanel === 'SETTINGS' ? (
-                    <CardSettings onClose={closePanelCb} card={card} />
-                  ) : null}
                 </Flex>
               ) : null}
             </Flex>

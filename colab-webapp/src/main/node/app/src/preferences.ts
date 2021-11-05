@@ -14,7 +14,10 @@ function getKey(key: string) {
   return `${localStorageKey}.${key}`;
 }
 
-export function useLocalStorage<T>(key: string, defaultValue: T): [T, (newValue: T) => void] {
+export function useLocalStorage<T>(
+  key: string,
+  defaultValue: T,
+): [T, React.Dispatch<React.SetStateAction<T>>] {
   const getValue = React.useCallback(() => {
     const value = window.localStorage.getItem(getKey(key));
     return value != null ? (JSON.parse(value) as T) : defaultValue;

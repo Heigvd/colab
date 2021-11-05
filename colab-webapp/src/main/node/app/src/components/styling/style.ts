@@ -279,3 +279,7 @@ export const smallInputStyle = cx(
     borderRadius: '12px',
   }),
 );
+
+export const cardTitle = css({
+  fontSize: '2em',
+});
