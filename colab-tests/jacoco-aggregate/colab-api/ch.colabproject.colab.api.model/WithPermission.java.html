@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
 import javax.json.bind.annotation.JsonbTransient;
 
 /**
+ * Depict an entity which has access controls
  *
  * @author maxence
  */
@@ -22,7 +23,7 @@ public interface WithPermission {
      */
     @JsonbTransient
     default Condition getCreateCondition() {
-<span class="fc" id="L25">        return getUpdateCondition();</span>
+<span class="fc" id="L26">        return getUpdateCondition();</span>
     }
 
     /**
@@ -48,7 +49,7 @@ public interface WithPermission {
      */
     @JsonbTransient
     default Condition getDeleteCondition() {
-<span class="fc" id="L51">        return getUpdateCondition();</span>
+<span class="fc" id="L52">        return getUpdateCondition();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

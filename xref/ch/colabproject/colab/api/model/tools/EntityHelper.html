@@ -18,73 +18,74 @@
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * @author maxence</em>
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="EntityHelper" href="../../../../../../ch/colabproject/colab/api/model/tools/EntityHelper.html#EntityHelper">EntityHelper</a> {
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment">     * never-called private constructor</em>
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>      <strong class="jxr_keyword">private</strong> <a name="EntityHelper" href="../../../../../../ch/colabproject/colab/api/model/tools/EntityHelper.html#EntityHelper">EntityHelper</a>() {
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>          <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> UnsupportedOperationException(
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>              <span class="jxr_string">"This is a utility class and cannot be instantiated"</span>);
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>      }
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  <em class="jxr_javadoccomment">     * {@link Object#hashCode} implementation for all WithId implementation</em>
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment">     * @param object object to hash</em>
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment">     * @return a hash code value for the given object.</em>
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">int</strong> hashCode(<a name="WithId" href="../../../../../../ch/colabproject/colab/api/model/WithId.html#WithId">WithId</a> object) {
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>          <strong class="jxr_keyword">int</strong> hash = 7;
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>          hash = 31 * hash + Objects.hashCode(object.getId());
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>          <strong class="jxr_keyword">return</strong> hash;
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>      }
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment">     * {@link Object#equals} implementation for all WithId implementation. Objects equal if</em>
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">     * &lt;ul&gt;</em>
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">     * &lt;li&gt;it's the same reference (strict == equality)</em>
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment">     * &lt;li&gt;both are null</em>
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">     * &lt;li&gt;they are instance of the same class and have the same id</em>
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment">     * &lt;/ul&gt;</em>
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">     * @param a first object</em>
-<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">     * @param b second object</em>
-<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">     *</em>
-<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <em class="jxr_javadoccomment">     * @return {@code true} if both objects represent the same persisted entity</em>
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> equals(<a name="WithId" href="../../../../../../ch/colabproject/colab/api/model/WithId.html#WithId">WithId</a> a, Object b) {
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>          <strong class="jxr_keyword">if</strong> (a == b) {
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>              <em class="jxr_comment">// same object or both are null</em>
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>          }
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>          <strong class="jxr_keyword">if</strong> (a == <strong class="jxr_keyword">null</strong> || b == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L58" href="#L58">58</a>              <em class="jxr_comment">// only one is null</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>              <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>          }
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>  
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          <em class="jxr_comment">// at this point, both are not null</em>
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>          <strong class="jxr_keyword">if</strong> (a.getClass() != b.getClass()) {
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>              <em class="jxr_comment">// class mismatch</em>
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>              <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>          } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>              <em class="jxr_comment">// same class</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>              <a name="WithId" href="../../../../../../ch/colabproject/colab/api/model/WithId.html#WithId">WithId</a> otherB = (<a name="WithId" href="../../../../../../ch/colabproject/colab/api/model/WithId.html#WithId">WithId</a>) b;
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>              <strong class="jxr_keyword">if</strong> (a.getId() == <strong class="jxr_keyword">null</strong> || otherB.getId() == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>                  <em class="jxr_comment">// if at least one object has no id, object are not equals</em>
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  <em class="jxr_comment">// if both id are null, objects may equal, but this case is handled by the strict</em>
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>                  <em class="jxr_comment">// (a == b) equality check</em>
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>              }
-<a class="jxr_linenumber" name="L75" href="#L75">75</a>              <em class="jxr_comment">// same class, ids must equals</em>
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>              <strong class="jxr_keyword">return</strong> Objects.equals(a.getId(), otherB.getId());
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>          }
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>      }
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>  }
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> * Helper to normalize common operations on WithId objects</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * @author maxence</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="EntityHelper" href="../../../../../../ch/colabproject/colab/api/model/tools/EntityHelper.html#EntityHelper">EntityHelper</a> {
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment">     * never-called private constructor</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>      <strong class="jxr_keyword">private</strong> <a name="EntityHelper" href="../../../../../../ch/colabproject/colab/api/model/tools/EntityHelper.html#EntityHelper">EntityHelper</a>() {
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>          <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> UnsupportedOperationException(
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>              <span class="jxr_string">"This is a utility class and cannot be instantiated"</span>);
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>      }
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">     * {@link Object#hashCode} implementation for all WithId implementation</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment">     * @param object object to hash</em>
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment">     * @return a hash code value for the given object.</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">int</strong> hashCode(<a name="WithId" href="../../../../../../ch/colabproject/colab/api/model/WithId.html#WithId">WithId</a> object) {
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>          <strong class="jxr_keyword">int</strong> hash = 7;
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          hash = 31 * hash + Objects.hashCode(object.getId());
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>          <strong class="jxr_keyword">return</strong> hash;
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>      }
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>  
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  <em class="jxr_javadoccomment">     * {@link Object#equals} implementation for all WithId implementation. Objects equal if</em>
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">     * &lt;ul&gt;</em>
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment">     * &lt;li&gt;it's the same reference (strict == equality)</em>
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">     * &lt;li&gt;both are null</em>
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment">     * &lt;li&gt;they are instance of the same class and have the same id</em>
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment">     * &lt;/ul&gt;</em>
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  <em class="jxr_javadoccomment">     * @param a first object</em>
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>  <em class="jxr_javadoccomment">     * @param b second object</em>
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>  <em class="jxr_javadoccomment">     * @return {@code true} if both objects represent the same persisted entity</em>
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> equals(<a name="WithId" href="../../../../../../ch/colabproject/colab/api/model/WithId.html#WithId">WithId</a> a, Object b) {
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          <strong class="jxr_keyword">if</strong> (a == b) {
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>              <em class="jxr_comment">// same object or both are null</em>
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>              <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>          }
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>          <strong class="jxr_keyword">if</strong> (a == <strong class="jxr_keyword">null</strong> || b == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>              <em class="jxr_comment">// only one is null</em>
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>              <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          }
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>  
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          <em class="jxr_comment">// at this point, both are not null</em>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          <strong class="jxr_keyword">if</strong> (a.getClass() != b.getClass()) {
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>              <em class="jxr_comment">// class mismatch</em>
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>              <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>              <em class="jxr_comment">// same class</em>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>              <a name="WithId" href="../../../../../../ch/colabproject/colab/api/model/WithId.html#WithId">WithId</a> otherB = (<a name="WithId" href="../../../../../../ch/colabproject/colab/api/model/WithId.html#WithId">WithId</a>) b;
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>              <strong class="jxr_keyword">if</strong> (a.getId() == <strong class="jxr_keyword">null</strong> || otherB.getId() == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>                  <em class="jxr_comment">// if at least one object has no id, object are not equals</em>
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>                  <em class="jxr_comment">// if both id are null, objects may equal, but this case is handled by the strict</em>
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>                  <em class="jxr_comment">// (a == b) equality check</em>
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>                  <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>              }
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>              <em class="jxr_comment">// same class, ids must equals</em>
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>              <strong class="jxr_keyword">return</strong> Objects.equals(a.getId(), otherB.getId());
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>          }
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>      }
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>  }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

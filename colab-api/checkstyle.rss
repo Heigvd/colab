@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2021 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 43,
+      <title>File: 44,
              Errors: 0,
-             Warnings: 109,
+             Warnings: 110,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -61,6 +61,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.card.CardContent.java">ch/colabproject/colab/api/model/card/CardContent.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.tools.JpaNameMappingCustomizer.java">ch/colabproject/colab/api/model/tools/JpaNameMappingCustomizer.java</a>
                 </td>
                 <td>
                   0
@@ -340,7 +354,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.document.ResourceRestEndpoint.java">ch/colabproject/colab/api/rest/document/ResourceRestEndpoint.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.ActivityFlowLinkFacade.java">ch/colabproject/colab/api/ejb/ActivityFlowLinkFacade.java</a>
                 </td>
                 <td>
                   0
@@ -354,7 +368,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.ActivityFlowLinkFacade.java">ch/colabproject/colab/api/ejb/ActivityFlowLinkFacade.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.document.ResourceRestEndpoint.java">ch/colabproject/colab/api/rest/document/ResourceRestEndpoint.java</a>
                 </td>
                 <td>
                   0
@@ -452,20 +466,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.card.CardRestEndpoint.java">ch/colabproject/colab/api/rest/card/CardRestEndpoint.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.ResourceDao.java">ch/colabproject/colab/api/persistence/document/ResourceDao.java</a>
                 </td>
                 <td>
@@ -480,13 +480,13 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.utils.AbstractExceptionMapper.java">ch/colabproject/colab/api/rest/utils/AbstractExceptionMapper.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.card.CardRestEndpoint.java">ch/colabproject/colab/api/rest/card/CardRestEndpoint.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  1
+                  6
                 </td>
                 <td>
                   0
@@ -501,6 +501,20 @@ under the License.
                 </td>
                 <td>
                   4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.utils.AbstractExceptionMapper.java">ch/colabproject/colab/api/rest/utils/AbstractExceptionMapper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -536,20 +550,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.live.LiveManager.java">ch/colabproject/colab/api/microchanges/live/LiveManager.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  6
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.CardFacade.java">ch/colabproject/colab/api/ejb/CardFacade.java</a>
                 </td>
                 <td>
@@ -557,6 +557,20 @@ under the License.
                 </td>
                 <td>
                   14
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.microchanges.live.LiveManager.java">ch/colabproject/colab/api/microchanges/live/LiveManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  6
                 </td>
                 <td>
                   0

@@ -24,13 +24,20 @@ import org.slf4j.LoggerFactory;
 
 /**
  * JPA Entity listener defined in orm.xml
+ * &lt;p&gt;
+ * The purposes are to
+ * &lt;ul&gt;
+ * &lt;li&gt;check permissions&lt;/li&gt;
+ * &lt;li&gt;register modifications&lt;/li&gt;
+ * &lt;li&gt;set tracking data&lt;/li&gt;
+ * &lt;/ul&gt;
  *
  * @author maxence
  */
-<span class="nc" id="L30">public class EntityListener {</span>
+<span class="nc" id="L37">public class EntityListener {</span>
 
     /** logger */
-<span class="nc" id="L33">    private static final Logger logger = LoggerFactory.getLogger(EntityListener.class);</span>
+<span class="nc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(EntityListener.class);</span>
 
     /**
      * RequestManager
@@ -57,15 +64,15 @@ import org.slf4j.LoggerFactory;
      */
     @PostLoad
     public void onLoad(Object o) {
-<span class="nc" id="L60">        logger.trace(&quot;Load {}&quot;, o);</span>
-<span class="nc bnc" id="L61" title="All 2 branches missed.">        if (o instanceof WithPermission) {</span>
-<span class="nc bnc" id="L62" title="All 2 branches missed.">            if (requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L63">                securityFacade.assertReadPermission((WithPermission) o);</span>
+<span class="nc" id="L67">        logger.trace(&quot;Load {}&quot;, o);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (o instanceof WithPermission) {</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">            if (requestManager.isInSecurityTx()) {</span>
+<span class="nc" id="L70">                securityFacade.assertReadPermission((WithPermission) o);</span>
             } else {
-<span class="nc" id="L65">                securityFacade.assertReadPermissionTx((WithPermission) o);</span>
+<span class="nc" id="L72">                securityFacade.assertReadPermissionTx((WithPermission) o);</span>
             }
         }
-<span class="nc" id="L68">    }</span>
+<span class="nc" id="L75">    }</span>
 
     /**
      * Track all insertions
@@ -74,20 +81,20 @@ import org.slf4j.LoggerFactory;
      */
     @PostPersist
     public void onPersist(Object o) {
-<span class="nc" id="L77">        logger.trace(&quot;Persist {}&quot;, o);</span>
+<span class="nc" id="L84">        logger.trace(&quot;Persist {}&quot;, o);</span>
 
-<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (o instanceof WithPermission) {</span>
-<span class="nc bnc" id="L80" title="All 2 branches missed.">            if (requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L81">                securityFacade.assertCreatePermission((WithPermission) o);</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (o instanceof WithPermission) {</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">            if (requestManager.isInSecurityTx()) {</span>
+<span class="nc" id="L88">                securityFacade.assertCreatePermission((WithPermission) o);</span>
             } else {
-<span class="nc" id="L83">                securityFacade.assertCreatePermissionTx((WithPermission) o);</span>
+<span class="nc" id="L90">                securityFacade.assertCreatePermissionTx((WithPermission) o);</span>
             }
         }
 
-<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
-<span class="nc" id="L88">            transactionManager.registerUpdate((WithWebsocketChannels) o);</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
+<span class="nc" id="L95">            transactionManager.registerUpdate((WithWebsocketChannels) o);</span>
         }
-<span class="nc" id="L90">    }</span>
+<span class="nc" id="L97">    }</span>
 
     /**
      * Track all updated
@@ -96,19 +103,19 @@ import org.slf4j.LoggerFactory;
      */
     @PostUpdate
     public void onUpdate(Object o) {
-<span class="nc" id="L99">        logger.trace(&quot;Update {}&quot;, o);</span>
-<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (o instanceof WithPermission) {</span>
-<span class="nc bnc" id="L101" title="All 2 branches missed.">            if (requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L102">                securityFacade.assertUpdatePermission((WithPermission) o);</span>
+<span class="nc" id="L106">        logger.trace(&quot;Update {}&quot;, o);</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">        if (o instanceof WithPermission) {</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">            if (requestManager.isInSecurityTx()) {</span>
+<span class="nc" id="L109">                securityFacade.assertUpdatePermission((WithPermission) o);</span>
             } else {
-<span class="nc" id="L104">                securityFacade.assertUpdatePermissionTx((WithPermission) o);</span>
+<span class="nc" id="L111">                securityFacade.assertUpdatePermissionTx((WithPermission) o);</span>
             }
         }
 
-<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
-<span class="nc" id="L109">            transactionManager.registerUpdate((WithWebsocketChannels) o);</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
+<span class="nc" id="L116">            transactionManager.registerUpdate((WithWebsocketChannels) o);</span>
         }
-<span class="nc" id="L111">    }</span>
+<span class="nc" id="L118">    }</span>
 
     /**
      * Before persist and before update, update tracking data
@@ -118,10 +125,10 @@ import org.slf4j.LoggerFactory;
     @PrePersist
     @PreUpdate
     public void touch(Object o) {
-<span class="nc bnc" id="L121" title="All 2 branches missed.">        if (o instanceof ColabEntity) {</span>
-<span class="nc" id="L122">            ((ColabEntity) o).touch(requestManager.getCurrentUser());</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        if (o instanceof ColabEntity) {</span>
+<span class="nc" id="L129">            ((ColabEntity) o).touch(requestManager.getCurrentUser());</span>
         }
-<span class="nc" id="L124">    }</span>
+<span class="nc" id="L131">    }</span>
 
     /**
      * Intercept object just before their deletion
@@ -130,18 +137,18 @@ import org.slf4j.LoggerFactory;
      */
     @PreRemove
     public void onDestroy(Object o) {
-<span class="nc" id="L133">        logger.trace(&quot;Destroy {}&quot;, o);</span>
-<span class="nc bnc" id="L134" title="All 2 branches missed.">        if (o instanceof WithPermission) {</span>
-<span class="nc bnc" id="L135" title="All 2 branches missed.">            if (requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L136">                securityFacade.assertDeletePermission((WithPermission) o);</span>
+<span class="nc" id="L140">        logger.trace(&quot;Destroy {}&quot;, o);</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (o instanceof WithPermission) {</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">            if (requestManager.isInSecurityTx()) {</span>
+<span class="nc" id="L143">                securityFacade.assertDeletePermission((WithPermission) o);</span>
             } else {
-<span class="nc" id="L138">                securityFacade.assertDeletePermissionTx((WithPermission) o);</span>
+<span class="nc" id="L145">                securityFacade.assertDeletePermissionTx((WithPermission) o);</span>
             }
         }
 
-<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
-<span class="nc" id="L143">            transactionManager.registerDeletion((WithWebsocketChannels) o);</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
+<span class="nc" id="L150">            transactionManager.registerDeletion((WithWebsocketChannels) o);</span>
         }
-<span class="nc" id="L145">    }</span>
+<span class="nc" id="L152">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
