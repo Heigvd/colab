@@ -7,11 +7,9 @@
 package ch.colabproject.colab.api.rest.card;
 
 import ch.colabproject.colab.api.ejb.CardFacade;
-import ch.colabproject.colab.api.ejb.ResourceFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
-import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.persistence.card.CardTypeDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -56,12 +54,6 @@ public class CardTypeRestEndpoint {
      */
     @Inject
     private CardFacade cardFacade;
-
-    /**
-     * The resource-related logic
-     */
-    @Inject
-    private ResourceFacade resourceFacade;
 
     /**
      * Retrieve the list of all card types. This is available to admin only
@@ -183,22 +175,6 @@ public class CardTypeRestEndpoint {
     public void deleteCardType(@PathParam("id") Long id) {
         logger.debug("delete card type #{}", id);
         cardFacade.deleteCardType(id);
-    }
-
-    /**
-     * Get the available active resources linked to a card type
-     *
-     * @param abstractCardTypeId id of the card type or card type reference
-     *
-     * @return list of matching resources
-     */
-    @GET
-    @Path("{id}/Resources")
-    public List<Resource> getAvailableActiveLinkedResources(
-        @PathParam("id") Long abstractCardTypeId) {
-        logger.debug("get available and active resources linked to abstract card type #{}",
-            abstractCardTypeId);
-        return resourceFacade.getAvailableActiveResourcesLinkedToAbstractCardType(abstractCardTypeId);
     }
 
 }

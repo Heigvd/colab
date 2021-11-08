@@ -43,16 +43,19 @@ public class Resource extends AbstractResource {
     /**
      * Is it at the disposal of the inheritors
      */
+    @NotNull
     private boolean published;
 
     /**
      * Ask upper level(s) to integrate the resource
      */
+    @NotNull
     private boolean requestingForGlory;
 
     /**
      * Should not be used anymore
      */
+    @NotNull
     private boolean deprecated;
 
     /**
@@ -73,6 +76,7 @@ public class Resource extends AbstractResource {
      * The content of the resource
      */
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NotNull
     @JsonbTransient
     private Document document;
 
@@ -81,21 +85,6 @@ public class Resource extends AbstractResource {
      */
     @Transient
     private Long documentId;
-
-    // ---------------------------------------------------------------------------------------------
-    // initialize
-    // ---------------------------------------------------------------------------------------------
-
-    /**
-     * @return an initialized new resource
-     */
-    public static Resource initNewResource() {
-        // nothing to initialize from the super class
-        // implicitly setPublished(false);
-        // implicitly setRequestingForGlory(false);
-        // implicitly setDeprecated(false);
-        return new Resource();
-    }
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters

@@ -107,6 +107,18 @@ public class ColabFactory {
     }
 
     /**
+     * Create a new variant card content for the card
+     *
+     * @param client rest client to execute HTTP requests
+     * @param cardId id of the card of the new variant
+     *
+     * @return the newly created card content
+     */
+    public static CardContent createNewCardContent(ColabClient client, Long cardId) {
+        return client.cardContentRestEndpoint.createNewCardContent(cardId);
+    }
+
+    /**
      * Create a brand new project.
      *
      * @param client rest client to execute HTTP requests

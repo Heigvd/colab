@@ -6,13 +6,13 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.controller.document.ResourceManager;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
-import ch.colabproject.colab.api.persistence.document.AbstractResourceDao;
 import ch.colabproject.colab.api.persistence.document.BlockDao;
 import ch.colabproject.colab.api.persistence.link.StickyNoteLinkDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -57,16 +57,16 @@ public class StickyNoteLinkFacade {
     private CardContentDao cardContentDao;
 
     /**
-     * Resource persistence handling
-     */
-    @Inject
-    private AbstractResourceDao resourceOrRefDao;
-
-    /**
      * Block persistence handling
      */
     @Inject
     private BlockDao blockDao;
+
+    /**
+     * Resource / resource reference logic manager
+     */
+    @Inject
+    private ResourceManager resourceManager;
 
     // *********************************************************************************************
     //
@@ -244,10 +244,7 @@ public class StickyNoteLinkFacade {
                 }
                 break;
             case RESOURCE_OR_REF:
-                sourceObject = resourceOrRefDao.findResourceOrRef(srcId);
-                if (sourceObject == null) {
-                    throw HttpErrorMessage.dataIntegrityFailure();
-                }
+                sourceObject = resourceManager.assertAndGetResourceOrRef(srcId);
                 break;
             case BLOCK:
                 sourceObject = blockDao.findBlock(srcId);
@@ -288,10 +285,7 @@ public class StickyNoteLinkFacade {
                 }
                 break;
             case RESOURCE_OR_REF:
-                sourceObject = resourceOrRefDao.findResourceOrRef(link.getSrcResourceOrRefId());
-                if (sourceObject == null) {
-                    throw HttpErrorMessage.dataIntegrityFailure();
-                }
+                sourceObject = resourceManager.assertAndGetResourceOrRef(link.getSrcResourceOrRefId());
                 break;
             case BLOCK:
                 sourceObject = blockDao.findBlock(link.getSrcBlockId());

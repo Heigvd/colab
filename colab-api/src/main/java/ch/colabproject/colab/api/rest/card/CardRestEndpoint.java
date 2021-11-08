@@ -7,15 +7,13 @@
 package ch.colabproject.colab.api.rest.card;
 
 import ch.colabproject.colab.api.ejb.CardFacade;
-import ch.colabproject.colab.api.ejb.ResourceFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -59,12 +57,6 @@ public class CardRestEndpoint {
      */
     @Inject
     private CardFacade cardFacade;
-
-    /**
-     * The resource-related logic
-     */
-    @Inject
-    private ResourceFacade resourceFacade;
 
     /**
      * Retrieve the list of all cards. This is available to admin only
@@ -208,20 +200,6 @@ public class CardRestEndpoint {
     public List<CardContent> getContentVariantsOfCard(@PathParam("id") Long cardId) {
         logger.debug("Get card #{} content variants", cardId);
         return cardFacade.getContentVariants(cardId);
-    }
-
-    /**
-     * Get the available active resources linked to a card
-     *
-     * @param cardId id of the card
-     *
-     * @return list of matching resources
-     */
-    @GET
-    @Path("{id}/Resources")
-    public List<Resource> getAvailableActiveLinkedResources(@PathParam("id") Long cardId) {
-        logger.debug("get available and active resources linked to card #{}", cardId);
-        return resourceFacade.getAvailableActiveResourcesLinkedToCard(cardId);
     }
 
     /**

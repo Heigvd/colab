@@ -6,15 +6,14 @@
  */
 package ch.colabproject.colab.api.rest.document;
 
-import ch.colabproject.colab.api.ejb.ResourceFacade;
+import ch.colabproject.colab.api.controller.document.ResourceCategoryHelper;
+import ch.colabproject.colab.api.controller.document.ResourceManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
-import ch.colabproject.colab.api.persistence.document.AbstractResourceDao;
-import ch.colabproject.colab.api.persistence.document.ResourceDao;
-import ch.colabproject.colab.api.persistence.document.ResourceRefDao;
+import ch.colabproject.colab.api.persistence.document.ResourceAndRefDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
@@ -46,31 +45,24 @@ public class ResourceRestEndpoint {
 
     // *********************************************************************************************
     // injections
-    // *********************************************************************************************
 
     /**
-     * The abstract resource persistence manager
+     * The resource / resource reference persistence manager
      */
     @Inject
-    private AbstractResourceDao abstractResourceDao;
-
-    /**
-     * The resource persistence manager
-     */
-    @Inject
-    private ResourceDao resourceDao;
-
-    /**
-     * The resource reference persistence manager
-     */
-    @Inject
-    private ResourceRefDao resourceRefDao;
+    private ResourceAndRefDao resourceAndRefDao;
 
     /**
      * The resource and resource reference related logic
      */
     @Inject
-    private ResourceFacade resourceFacade;
+    private ResourceManager resourceManager;
+
+    /**
+     * Category specific logic handling
+     */
+    @Inject
+    private ResourceCategoryHelper resourceCategoryHelper;
 
     // *********************************************************************************************
     // read
@@ -87,36 +79,8 @@ public class ResourceRestEndpoint {
     @Path("{id}")
     public AbstractResource getAbstractResource(@PathParam("id") Long id) {
         logger.debug("get abstract resource #{}", id);
-        return abstractResourceDao.findResourceOrRef(id);
+        return resourceAndRefDao.findResourceOrRef(id);
     }
-
-//    /**
-//     * Get the resource identified by the given id
-//     *
-//     * @param id the id of the resource to fetch
-//     *
-//     * @return the resource or null
-//     */
-//    @GET
-//    @Path("{id}")
-//    public Resource getResource(@PathParam("id") Long id) {
-//        logger.debug("get resource #{}", id);
-//        return resourceDao.findResource(id);
-//    }
-//
-//    /**
-//     * Get the resource reference identified by the given id
-//     *
-//     * @param id the id of the resource reference to fetch
-//     *
-//     * @return the resource reference or null
-//     */
-//    @GET
-//    @Path("ref/{id}")
-//    public ResourceRef getResourceReference(@PathParam("id") Long id) {
-//        logger.debug("get resource reference #{}", id);
-//        return resourceRefDao.findResourceRef(id);
-//    }
 
     /**
      * Get the resources linked to the card type or reference. With a list of resource references to
@@ -132,7 +96,7 @@ public class ResourceRestEndpoint {
     public List<List<AbstractResource>> getResourceChainForAbstractCardType(
         @PathParam("cardTypeOrRefId") Long cardTypeOrRefId) {
         logger.debug("get resource chain for card content #{}", cardTypeOrRefId);
-        return resourceFacade.getResourceChainForAbstractCardType(cardTypeOrRefId);
+        return resourceManager.getResourceChainForAbstractCardType(cardTypeOrRefId);
     }
 
     /**
@@ -148,7 +112,7 @@ public class ResourceRestEndpoint {
     public List<List<AbstractResource>> getResourceChainForCard(
         @PathParam("cardId") Long cardId) {
         logger.debug("get resource chain for card content #{}", cardId);
-        return resourceFacade.getResourceChainForCard(cardId);
+        return resourceManager.getResourceChainForCard(cardId);
     }
 
     /**
@@ -164,7 +128,7 @@ public class ResourceRestEndpoint {
     public List<List<AbstractResource>> getResourceChainForCardContent(
         @PathParam("cardContentId") Long cardContentId) {
         logger.debug("get resource chain for card content #{}", cardContentId);
-        return resourceFacade.getResourceChainForCardContent(cardContentId);
+        return resourceManager.getResourceChainForCardContent(cardContentId);
     }
 
     // *********************************************************************************************
@@ -181,7 +145,7 @@ public class ResourceRestEndpoint {
     @PUT
     public void updateResource(Resource resource) throws ColabMergeException {
         logger.debug("update resource {}", resource);
-        resourceDao.updateResource(resource);
+        resourceAndRefDao.updateResource(resource);
     }
 
     // TODO see if updateResourceOrRef(AbstractResource resource)
@@ -197,7 +161,7 @@ public class ResourceRestEndpoint {
     @Path("ref")
     public void updateResourceRef(ResourceRef resourceRef) throws ColabMergeException {
         logger.debug("update resource reference {}", resourceRef);
-        resourceRefDao.updateResourceRef(resourceRef);
+        resourceAndRefDao.updateResourceRef(resourceRef);
     }
 
     // *********************************************************************************************
@@ -216,7 +180,7 @@ public class ResourceRestEndpoint {
     public Long createResource(ResourceCreationBean resourceCreationBean) {
         logger.debug("create resource {}", resourceCreationBean);
 
-        Resource resource = Resource.initNewResource();
+        Resource resource = new Resource();
         resource.setTitle(resourceCreationBean.getTitle());
         resource.setTeaser(resourceCreationBean.getTeaser());
         resource.setDocument(resourceCreationBean.getDocument());
@@ -225,9 +189,13 @@ public class ResourceRestEndpoint {
         resource.setCardId(resourceCreationBean.getCardId());
         resource.setCardContentId(resourceCreationBean.getCardContentId());
 
+        // implicitly setPublished(false);
+        // implicitly setRequestingForGlory(false);
+        // implicitly setDeprecated(false);
+
         resourceCreationBean.getDocument().setResource(resource);
 
-        return resourceFacade.createResource(resource).getId();
+        return resourceManager.createResource(resource).getId();
     }
 
     // *********************************************************************************************
@@ -243,7 +211,7 @@ public class ResourceRestEndpoint {
     @Path("{id}")
     public void deleteResource(@PathParam("id") Long id) {
         logger.debug("delete resource #{}", id);
-        resourceFacade.deleteResource(id);
+        resourceManager.deleteResource(id);
     }
 
     // *********************************************************************************************
@@ -262,7 +230,7 @@ public class ResourceRestEndpoint {
     public void setCategory(@PathParam("resourceOrRefId") Long resourceOrRefId,
         String categoryName) {
         logger.debug("add resource/ref #{} to category {}", resourceOrRefId, categoryName);
-        resourceFacade.setCategory(resourceOrRefId, categoryName);
+        resourceCategoryHelper.setCategory(resourceOrRefId, categoryName);
     }
 
     /**
@@ -272,13 +240,12 @@ public class ResourceRestEndpoint {
      * @param categoryName     the name of the category that apply to the resource / resource
      *                         reference
      */
-    // Note : Sandra : I would have preferred to send the ids in the path
     @PUT
     @Path("setCategory/list/{newName}")
     public void setCategoryForList(@PathParam("newName") String categoryName,
         List<Long> resourceOrRefIds) {
         logger.debug("add resource/ref #{} to category {}", resourceOrRefIds, categoryName);
-        resourceFacade.setCategory(resourceOrRefIds, categoryName);
+        resourceCategoryHelper.setCategory(resourceOrRefIds, categoryName);
     }
 
     /**
@@ -290,7 +257,7 @@ public class ResourceRestEndpoint {
     @Path("removeCategory/{resourceOrRefId}")
     public void removeCategory(@PathParam("resourceOrRefId") Long resourceOrRefId) {
         logger.debug("remove category from resource/ref #{}", resourceOrRefId);
-        resourceFacade.removeCategory(resourceOrRefId);
+        resourceCategoryHelper.removeCategory(resourceOrRefId);
     }
 
     /**
@@ -298,12 +265,11 @@ public class ResourceRestEndpoint {
      *
      * @param resourceOrRefIds the id of the resources / resource references
      */
-    // Note : Sandra : I would have preferred to send the ids in the path
     @PUT
     @Path("removeCategory/list")
     public void removeCategoryForList(List<Long> resourceOrRefIds) {
         logger.debug("remove category from resource/ref #{}", resourceOrRefIds);
-        resourceFacade.removeCategory(resourceOrRefIds);
+        resourceCategoryHelper.removeCategory(resourceOrRefIds);
     }
 
     /**
@@ -321,7 +287,8 @@ public class ResourceRestEndpoint {
         String newName) {
         logger.debug("rename category {} to {} for card type #{} in the project {}", oldName,
             newName, cardTypeOrRefId, projectId);
-        resourceFacade.renameCategoryInCardType(cardTypeOrRefId, projectId, oldName, newName);
+        resourceCategoryHelper.renameCategoryInCardType(cardTypeOrRefId, projectId, oldName,
+            newName);
     }
 
     /**
@@ -336,7 +303,7 @@ public class ResourceRestEndpoint {
     public void renameCategoryForCard(@PathParam("cardId") Long cardId,
         @PathParam("oldName") String oldName, String newName) {
         logger.debug("rename category {} to {} for card #{}", oldName, newName, cardId);
-        resourceFacade.renameCategoryInCard(cardId, oldName, newName);
+        resourceCategoryHelper.renameCategoryInCard(cardId, oldName, newName);
     }
 
     /**
@@ -352,7 +319,7 @@ public class ResourceRestEndpoint {
         @PathParam("oldName") String oldName, String newName) {
         logger.debug("rename category {} to {} for card content #{}", oldName, newName,
             cardContentId);
-        resourceFacade.renameCategoryInCardContent(cardContentId, oldName, newName);
+        resourceCategoryHelper.renameCategoryInCardContent(cardContentId, oldName, newName);
     }
 
     // *********************************************************************************************
@@ -370,14 +337,11 @@ public class ResourceRestEndpoint {
     @Path("{id}/StickyNoteLinks")
     public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long resourceOrRefId) {
         logger.debug("Get sticky note links to abstract resource #{} as source", resourceOrRefId);
-        return resourceFacade.getStickyNoteLinkAsSrc(resourceOrRefId);
+        return resourceManager.getStickyNoteLinkAsSrc(resourceOrRefId);
     }
 
     // *********************************************************************************************
     //
     // *********************************************************************************************
 
-    // TODO smart propagation handling
-
-    // TODO see if we could have a light handling of cards + type + content on client side
 }
