@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 /**
  * A reference to another existing abstract resource.
@@ -41,10 +42,17 @@ public class ResourceRef extends AbstractResource {
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * If the target resource is not useful for that card/cardDef/cardContent
+     */
+    @NotNull
+    private boolean refused;
+
+    /**
      * The abstract resource this reference aims at
      */
     @OneToOne(fetch = FetchType.LAZY)
     @JsonbTransient
+    @NotNull
     private AbstractResource target;
 
     /**
@@ -53,27 +61,23 @@ public class ResourceRef extends AbstractResource {
     @Transient
     private Long targetId;
 
-    /**
-     * If the target resource is not useful for that card/cardDef/cardContent
-     */
-    private boolean refused;
-
-    // ---------------------------------------------------------------------------------------------
-    // initialize
-    // ---------------------------------------------------------------------------------------------
-
-    /**
-     * @return an initialized new resource reference
-     */
-    public static ResourceRef initNewResourceRef() {
-        // nothing to initialize from the super class
-        // implicitly setRefused(false)
-        return new ResourceRef();
-    }
-
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return if the targeted resource is not useful for that card/cardDef/cardContent
+     */
+    public boolean isRefused() {
+        return refused;
+    }
+
+    /**
+     * @param refused if the targeted resource is not useful for that card/cardDef/cardContent
+     */
+    public void setRefused(boolean refused) {
+        this.refused = refused;
+    }
 
     /**
      * @return the resource (or resource reference) this reference aims at
@@ -111,20 +115,6 @@ public class ResourceRef extends AbstractResource {
      */
     public void setTargetId(Long targetId) {
         this.targetId = targetId;
-    }
-
-    /**
-     * @return if the targeted resource is not useful for that card/cardDef/cardContent
-     */
-    public boolean isRefused() {
-        return refused;
-    }
-
-    /**
-     * @param refused if the targeted resource is not useful for that card/cardDef/cardContent
-     */
-    public void setRefused(boolean refused) {
-        this.refused = refused;
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -176,8 +166,8 @@ public class ResourceRef extends AbstractResource {
 
     @Override
     public String toString() {
-        return "ResourceRef{" + toPartialString() + ", targetId=" + targetId
-            + ", refused=" + refused + "}";
+        return "ResourceRef{" + toPartialString() + ", refused=" + refused
+            + ", targetId=" + targetId + "}";
     }
 
 }

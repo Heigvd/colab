@@ -60,6 +60,7 @@ public abstract class AbstractResource
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Abstract resource ID
      */
@@ -72,6 +73,11 @@ public abstract class AbstractResource
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * The category to classify the resource
+     */
+    private String category;
 
     /**
      * The card type / card type reference to which the abstract resource is linked
@@ -113,12 +119,6 @@ public abstract class AbstractResource
     private Long cardContentId;
 
     /**
-     * The category to classify the resource
-     */
-    private String category;
-
-    // TODO see if useful
-    /**
      * The list of resource references that link to this abstract resource
      */
     @OneToMany(mappedBy = "target", cascade = CascadeType.ALL)
@@ -135,6 +135,7 @@ public abstract class AbstractResource
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the abstract resource id
      */
@@ -148,6 +149,40 @@ public abstract class AbstractResource
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+        return trackingData;
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+        this.trackingData = trackingData;
+    }
+
+    /**
+     * @return the category to classify the resource
+     */
+    public String getCategory() {
+        return category;
+    }
+
+    /**
+     * @param category the category to classify the resource
+     */
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     /**
@@ -284,20 +319,6 @@ public abstract class AbstractResource
     }
 
     /**
-     * @return the category to classify the resource
-     */
-    public String getCategory() {
-        return category;
-    }
-
-    /**
-     * @param category the category to classify the resource
-     */
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    /**
      * @return the list of resource references that directly link to this abstract resource
      */
     public List<ResourceRef> getDirectReferences() {
@@ -327,29 +348,10 @@ public abstract class AbstractResource
         this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
     }
 
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-        return trackingData;
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-        this.trackingData = trackingData;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Resolve to concrete Resource
      *
@@ -374,7 +376,6 @@ public abstract class AbstractResource
         }
     }
 
-
     @JsonbTransient
     @Override
     public Conditions.Condition getReadCondition() {
@@ -389,10 +390,26 @@ public abstract class AbstractResource
             return this.cardContent.getReadCondition();
         } else {
             // such an orphan shouldn't exist...
-            return Conditions.alwaysTrue;
+            return Conditions.defaultForOrphan;
         }
     }
 
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+        if (this.abstractCardType != null) {
+            // the abstract resource is linked to a card type / card type reference
+            return this.abstractCardType.getUpdateCondition();
+        } else if (this.card != null) {
+            // the abstract resource is linked to a card
+            return this.card.getUpdateCondition();
+        } else if (this.cardContent != null) {
+            // the abstract resource is linked to a card content
+            return this.cardContent.getUpdateCondition();
+        } else {
+            // such an orphan shouldn't exist...
+            return Conditions.defaultForOrphan;
+        }
+    }
 
     /**
      * Get the project this content belongs to
@@ -415,24 +432,6 @@ public abstract class AbstractResource
             return null;
         }
     }
-
-    @Override
-    public Conditions.Condition getUpdateCondition() {
-        if (this.abstractCardType != null) {
-            // the abstract resource is linked to a card type / card type reference
-            return this.abstractCardType.getUpdateCondition();
-        } else if (this.card != null) {
-            // the abstract resource is linked to a card
-            return this.card.getUpdateCondition();
-        } else if (this.cardContent != null) {
-            // the abstract resource is linked to a card content
-            return this.cardContent.getUpdateCondition();
-        } else {
-            // such an orphan shouldn't exist...
-            return Conditions.alwaysTrue;
-        }
-    }
-
 
     @Override
     public Set<WebsocketChannel> getChannels() {
@@ -466,9 +465,8 @@ public abstract class AbstractResource
      * @return string representation of its fields
      */
     protected String toPartialString() {
-        return "id=" + id + ", abstractCardTypeId=" + getAbstractCardTypeId()
-            + ", cardId=" + getCardId() + ", cardContentId=" + getCardContentId()
-            + ", category=" + category;
+        return "id=" + id + ", abstractCardTypeId=" + abstractCardTypeId + ", cardId=" + cardId
+            + ", cardContentId=" + cardContentId + ", category=" + category;
     }
 
 }

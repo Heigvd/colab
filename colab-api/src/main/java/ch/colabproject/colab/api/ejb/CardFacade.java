@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.ejb;
 
-import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.api.persistence.card.CardTypeDao;
@@ -94,6 +95,20 @@ public class CardFacade {
     // *********************************************************************************************
     // card type stuff
     // *********************************************************************************************
+
+    /**
+     * @param cardTypeOrRefId The identifier of the searched card type or reference
+     *
+     * @return The card type or reference corresponding to the id
+     */
+    public AbstractCardType assertAndGetAbstractCardType(Long cardTypeOrRefId) {
+        AbstractCardType cardTypeOrRef = cardTypeDao.getAbstractCardType(cardTypeOrRefId);
+        if (cardTypeOrRef == null) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+        return cardTypeOrRef;
+    }
+
     /**
      * Create a new card type. The new type will be a global type if the type is not bound to any
      * project.
@@ -181,6 +196,20 @@ public class CardFacade {
     // *********************************************************************************************
     // card stuff
     // *********************************************************************************************
+
+    /**
+     * @param cardId The identifier of the searched card
+     *
+     * @return The card corresponding to the id
+     */
+    public Card assertAndGetCard(Long cardId) {
+        Card card = cardDao.getCard(cardId);
+        if (card == null) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+        return card;
+    }
+
     /**
      * Get a card and all cards within in one set.
      *
@@ -209,7 +238,7 @@ public class CardFacade {
      * @return all cardContent in the card hierarchy
      */
     public Set<CardContent> getAllCardContents(Card rootCard) {
-        return this.getAllCards(rootCard).stream().flatMap(card ->{
+        return this.getAllCards(rootCard).stream().flatMap(card -> {
             return card.getContentVariants().stream();
         }).collect(Collectors.toSet());
     }
@@ -254,54 +283,11 @@ public class CardFacade {
 
         Card card = initNewCard(parent, cardType);
 
-        return cardDao.createCard(card);
-    }
+        ResourceReferenceSpreadingHelper.spreadResourceFromUp(card);
 
-    /**
-     * Delete the card
-     *
-     * @param cardId the id of the card to delete
-     *
-     * @return the freshly deleted card
-     */
-    public Card deleteCard(Long cardId) {
-        Card card = cardDao.getCard(cardId);
+        cardDao.createCard(card);
 
-        if (card.getRootCardProject() != null) {
-            // no way to delete the root card
-            throw HttpErrorMessage.dataIntegrityFailure();
-        }
-
-        card.getParent().getSubCards().remove(card);
-
-        card.getCardType().getImplementingCards().remove(card);
-
-        return cardDao.deleteCard(cardId);
-    }
-
-    /**
-     * Create a type reference to the given type. The ref will belongs to the given project.
-     *
-     * @param cardType type to reference
-     * @param project  reference owner
-     *
-     * @return the reference
-     */
-    private CardTypeRef createReference(AbstractCardType cardType, Project project) {
-        CardTypeRef ref = new CardTypeRef();
-        ref.setProject(project);
-
-        ref.setTarget(cardType);
-        cardType.getDirectReferences().add(ref);
-
-        // TODO: copy deprecated state or do never deprecate just created types?
-        // ref.setDeprecated(cardType.isDeprecated());
-        ref.setDeprecated(false);
-        ref.setPublished(false);
-
-        cardTypeDao.createCardType(ref);
-        project.getElementsToBeDefined().add(ref);
-        return ref;
+        return card;
     }
 
     /**
@@ -361,10 +347,47 @@ public class CardFacade {
     }
 
     /**
+     * @return a new card containing a new card content
+     */
+    private Card initNewCard() {
+        Card card = new Card();
+
+        initNewCardContent(card);
+
+        return card;
+    }
+
+    /**
+     * Create a type reference to the given type. The ref will belongs to the given project.
+     *
+     * @param cardType type to reference
+     * @param project  reference owner
+     *
+     * @return the reference
+     */
+    private CardTypeRef createReference(AbstractCardType cardType, Project project) {
+        CardTypeRef ref = new CardTypeRef();
+        ref.setProject(project);
+
+        ref.setTarget(cardType);
+        cardType.getDirectReferences().add(ref);
+
+        // TODO: copy deprecated state or do never deprecate just created types?
+        // ref.setDeprecated(cardType.isDeprecated());
+        ref.setDeprecated(false);
+        ref.setPublished(false);
+
+        cardTypeDao.createCardType(ref);
+        project.getElementsToBeDefined().add(ref);
+        return ref;
+    }
+
+    /**
      * Move a card to a new parent
      *
      * @param cardId      id of the card to move
      * @param newParentId id of the new parent
+     *
      * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
      */
     public void moveCard(Long cardId, Long newParentId) {
@@ -376,6 +399,7 @@ public class CardFacade {
      *
      * @param card      the card to move
      * @param newParent the new parent
+     *
      * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
      */
     public void moveCard(Card card, CardContent newParent) {
@@ -408,14 +432,25 @@ public class CardFacade {
     }
 
     /**
-     * @return a new card containing a new card content
+     * Delete the card
+     *
+     * @param cardId the id of the card to delete
+     *
+     * @return the freshly deleted card
      */
-    private Card initNewCard() {
-        Card card = new Card();
+    public Card deleteCard(Long cardId) {
+        Card card = cardDao.getCard(cardId);
 
-        initNewCardContent(card);
+        if (card.getRootCardProject() != null) {
+            // no way to delete the root card
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
 
-        return card;
+        card.getParent().getSubCards().remove(card);
+
+        card.getCardType().getImplementingCards().remove(card);
+
+        return cardDao.deleteCard(cardId);
     }
 
     /**
@@ -554,6 +589,20 @@ public class CardFacade {
     // *********************************************************************************************
     // card content stuff
     // *********************************************************************************************
+
+    /**
+     * @param cardContentId The identifier of the searched card content
+     *
+     * @return The card content corresponding to the id
+     */
+    public CardContent assertAndGetCardContent(Long cardContentId) {
+        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+        if (cardContent == null) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+        return cardContent;
+    }
+
     /**
      * Create a new card content variant for the card
      *
@@ -570,7 +619,11 @@ public class CardFacade {
         }
         CardContent cardContent = initNewCardContent(card);
 
-        return cardContentDao.createCardContent(cardContent);
+        ResourceReferenceSpreadingHelper.spreadResourceFromUp(cardContent);
+
+        cardContentDao.createCardContent(cardContent);
+
+        return cardContent;
     }
 
     /**
@@ -607,10 +660,13 @@ public class CardFacade {
      */
     private CardContent initNewCardContent(Card card) {
         CardContent cardContent = new CardContent();
+
         cardContent.setStatus(CARD_CONTENT_INITIAL_STATUS);
         cardContent.setCompletionLevel(MIN_COMPLETION_LEVEL);
+
         cardContent.setCard(card);
         card.getContentVariants().add(cardContent);
+
         return cardContent;
     }
 
