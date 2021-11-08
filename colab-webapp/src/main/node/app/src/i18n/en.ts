@@ -118,6 +118,12 @@ export const en = {
   },
   card: {
     untitled: 'unnamed card',
+    settings: {
+      title: 'Settings',
+      acl: {
+        title: 'Access Control',
+      },
+    },
   },
   content: {
     none: 'no version',

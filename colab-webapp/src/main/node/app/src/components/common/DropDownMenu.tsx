@@ -10,7 +10,7 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { lightMode, linkStyle } from '../styling/style';
+import { linkStyle, normalThemeMode } from '../styling/style';
 import Flex from './Flex';
 
 export const itemStyle = css({
@@ -34,7 +34,7 @@ interface Props<T> {
 }
 
 const containerStyle = cx(
-  lightMode,
+  normalThemeMode,
   css({
     position: 'relative',
     minWidth: '100%',
@@ -42,7 +42,7 @@ const containerStyle = cx(
 );
 
 const commonStyle = cx(
-  lightMode,
+  normalThemeMode,
   css({
     borderBottomRightRadius: '5px',
     boxShadow: '0 1px 3px rgba(0,0,0,.12)',

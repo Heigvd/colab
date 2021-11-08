@@ -20,6 +20,7 @@ import { ActivityFlowLink, Card, CardContent } from 'colab-rest-client';
 import { uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../../../API/api';
+import useTranslations from '../../../i18n/I18nContext';
 import { getLogger } from '../../../logger';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
@@ -88,6 +89,7 @@ export function Card({
   plumbRefs,
 }: CardProps): JSX.Element {
   const color = card.color || 'white';
+  const i18n = useTranslations();
 
   const refCb = React.useCallback(
     (ref: HTMLDivElement | null) => {
@@ -101,7 +103,7 @@ export function Card({
   return (
     <div ref={refCb} data-cardid={card.id} className={`CardSource CardTarget ${cardStyle(color)}`}>
       <Flex justify="space-between">
-        <div className={padding}>{card.title}</div>
+        <div className={padding}>{card.title || i18n.card.untitled}</div>
         <FontAwesomeIcon className="CardSourceHandle" icon={faProjectDiagram} />
       </Flex>
       <Flex className={css({ width: '100%' })}>
@@ -112,7 +114,9 @@ export function Card({
             justify="space-between"
             className={css({ width: '100%' })}
           >
-            {variants.length > 1 ? <div className={padding}>{variant.title}</div> : null}
+            {variants.length > 1 ? (
+              <div className={padding}>{variant.title || i18n.content.untitled}</div>
+            ) : null}
             {showProgressBar ? <ProgressBar variant={variant} /> : null}
           </Flex>
         ))}

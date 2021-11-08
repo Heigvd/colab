@@ -4,13 +4,12 @@
  *
  * Licensed under the MIT License
  */
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import { entityIs, HttpErrorMessage, HttpException } from 'colab-rest-client';
 import * as React from 'react';
 import useTranslations, { ColabTranslations } from '../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import { closeNotification, ColabNotification } from '../../store/notification';
-import { lightModeColors } from '../styling/style';
 
 function prettyPrint(error: HttpException | string, i18n: ColabTranslations): string {
   if (entityIs<'HttpErrorMessage'>(error, 'HttpErrorMessage')) {
@@ -109,19 +108,16 @@ export default function Notifier(): JSX.Element {
 
   return (
     <div
-      className={cx(
-        lightModeColors,
-        css({
-          position: 'fixed',
-          zIndex: 999,
-          top: 0,
-          left: 0,
-          right: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }),
-      )}
+      className={css({
+        position: 'fixed',
+        zIndex: 999,
+        top: 0,
+        left: 0,
+        right: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      })}
     >
       {notifications.map((notification, index) =>
         notification.status === 'OPEN' ? (

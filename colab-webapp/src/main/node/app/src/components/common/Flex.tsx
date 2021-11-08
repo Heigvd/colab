@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css, CSSObject, cx } from '@emotion/css';
 import * as React from 'react';
 
 export interface FlexProps {
@@ -13,8 +13,9 @@ export interface FlexProps {
   direction?: 'row' | 'column';
   className?: string;
   onClick?: () => void;
-  shrink?: number;
-  grow?: number;
+  shrink?: CSSObject['flexShrink'];
+  grow?: CSSObject['flexGrow'];
+  basis?: CSSObject['flexBasis'];
   overflow?: 'clip' | 'auto' | 'visible' | 'scroll' | 'unset' | 'hidden';
   wrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
   justify?:
@@ -50,6 +51,7 @@ export default function Flex({
   wrap,
   shrink,
   grow,
+  basis,
   direction = 'row',
   justify = 'normal',
   align = 'normal',
@@ -67,6 +69,7 @@ export default function Flex({
           alignItems: align,
           flexShrink: shrink,
           flexGrow: grow,
+          flexBasis: basis,
           flexWrap: wrap,
         }),
         className,

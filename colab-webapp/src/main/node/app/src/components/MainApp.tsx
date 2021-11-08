@@ -34,7 +34,7 @@ import SignInForm from './public/SignIn';
 import SignUpForm from './public/SignUp';
 import Settings from './settings/Settings';
 import Logo from './styling//WhiteLogo';
-import { darkMode, fullPageStyle } from './styling/style';
+import { fullPageStyle, invertedThemeMode } from './styling/style';
 
 /**
  * To read parameters from hash
@@ -147,7 +147,7 @@ export default function MainApp(): JSX.Element {
         <div className={fullPageStyle}>
           <div
             className={cx(
-              darkMode,
+              invertedThemeMode,
               css({
                 borderBottom: '6px solid grey',
                 display: 'flex',

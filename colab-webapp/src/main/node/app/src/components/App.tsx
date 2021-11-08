@@ -16,6 +16,7 @@ import ErrorBoundary from './common/ErrorBoundary';
 import Loading from './common/Loading';
 import Notifier from './common/Notifier';
 import MainApp from './MainApp';
+import { lightTheme } from './styling/style';
 import Token from './token/Token';
 
 /**
@@ -29,23 +30,25 @@ function TokenWrapper() {
 
 function mount() {
   return render(
-    <ErrorBoundary>
-      <Suspense fallback={<Loading />}>
-        <Provider store={getStore()}>
-          <Notifier />
-          <Router>
-            <Switch>
-              <Route path="/token/:id/:token">
-                <TokenWrapper />
-              </Route>
-              <Route>
-                <MainApp />
-              </Route>
-            </Switch>
-          </Router>
-        </Provider>
-      </Suspense>
-    </ErrorBoundary>,
+    <div className={lightTheme}>
+      <ErrorBoundary>
+        <Suspense fallback={<Loading />}>
+          <Provider store={getStore()}>
+            <Notifier />
+            <Router>
+              <Switch>
+                <Route path="/token/:id/:token">
+                  <TokenWrapper />
+                </Route>
+                <Route>
+                  <MainApp />
+                </Route>
+              </Switch>
+            </Router>
+          </Provider>
+        </Suspense>
+      </ErrorBoundary>
+    </div>,
     document.getElementById('root'),
   );
 }

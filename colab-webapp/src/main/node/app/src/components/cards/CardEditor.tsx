@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import {
   faFile as farFile,
   faStickyNote as farStickyNote,
@@ -29,8 +29,7 @@ import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
-import { cardTitle } from '../styling/style';
-import CardLayout from './CardLayout';
+import { cardStyle, cardTitle } from '../styling/style';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
 import { VariantPager } from './VariantSelector';
@@ -142,7 +141,17 @@ Props): JSX.Element {
         <Flex grow={1} direction="row">
           {showStickyNote ? <StickyNoteWrapper destCardId={card.id} showSrc /> : null}
 
-          <CardLayout showProgressBar={false} card={card} variant={variant} variants={variants}>
+          <Flex
+            grow={1}
+            direction="column"
+            justify="space-between"
+            className={cx(
+              cardStyle,
+              css({
+                backgroundColor: card.color || 'white',
+              }),
+            )}
+          >
             <Flex direction="row" grow={1}>
               <Flex direction="column" grow={1}>
                 <Flex
@@ -225,9 +234,7 @@ Props): JSX.Element {
                       </div>
                     </Flex>
                   ) : null}
-                  <Flex justify="center">
-                    <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
-                  </Flex>
+                  <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
                 </Flex>
                 <Flex align="center">
                   <OpenCloseModal
@@ -273,7 +280,7 @@ Props): JSX.Element {
                 </Flex>
               ) : null}
             </Flex>
-          </CardLayout>
+          </Flex>
         </Flex>
         {showSubcards ? (
           variant != null ? (

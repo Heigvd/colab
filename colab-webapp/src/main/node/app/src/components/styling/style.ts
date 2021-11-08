@@ -32,77 +32,74 @@ export const successStyle = css({
   color: 'var(--successColor)',
 });
 
-export const darkModeColors = css({
-  '--bgColor': '#444',
-  '--fgColor': 'white',
-  '--hoverBgColor': '#555',
-  '--hoverFgColor': 'white',
-  '--linkColor': 'white',
-  '--linkHoverColor': 'white',
-  '--linkHoverBgColor': '#555',
-  '--focusColor': 'var(--pictoSteelBlue)',
-  '--successColor': successColor,
-  '--warningColor': warningColor,
-  '--errorColor': errorColor,
-});
-
-export const darkMode = cx(
-  darkModeColors,
+export const lightTheme = cx(
+  pictoColours,
   css({
-    backgroundColor: 'var(--bgColor)',
-    color: 'var(--fgColor)',
+    '--primaryColor': '#333',
+    '--primaryColorShade': '#999',
+    '--primaryColorContrast': 'white',
+    '--primaryColorContrastShade': '#F6F1F1',
+
+    '--secondaryColor': 'var(--pictoSteelBlue)',
+    '--secondaryColorShade': 'var(--pictoBlue)',
+    '--secondaryColorContrast': '#FFF',
+    '--secondaryColorContrastShade': '#FFF',
+
+    '--themeSuccessColor': successColor,
+    '--themeWarningColor': warningColor,
+    '--themeErrorColor': errorColor,
   }),
 );
 
-export const semiDarkModeColors = css({
-  '--bgColor': '#d7d7d7',
-  '--fgColor': '#333',
-  '--hoverBgColor': '#FFF0',
-  '--hoverFgColor': '#999',
-  '--linkColor': 'var(--pictoSteelBlue)',
-  '--linkHoverColor': 'var(--pictoBlue)',
-  '--linkHoverBgColor': '#FFF0',
-  '--focusColor': 'var(--pictoSteelBlue)',
-  '--successColor': successColor,
-  '--warningColor': warningColor,
-  '--errorColor': errorColor,
+export const normalThemeMode = css({
+  '--bgColor': 'var(--primaryColorContrast)',
+  '--hoverBgColor': 'var(--primaryColorContrastShade)',
+  '--fgColor': 'var(--primaryColor)',
+  '--hoverFgColor': 'var(--primaryColorShade)',
+
+  '--linkColor': 'var(--secondaryColor)',
+  '--linkHoverColor': 'var(--secondaryColorShade)',
+  '--linkBgColor': 'var(--secondaryColorContrast)',
+  '--linkHoverBgColor': 'var(--secondaryColorContrastShade)',
+
+  '--focusColor': 'var(--secondaryColor)',
+  '--successColor': 'var(--themeSuccessColor)',
+  '--warningColor': 'var(--themeWarningColor)',
+  '--errorColor': 'var(--themeErrorColor)',
+
+  backgroundColor: 'var(--bgColor)',
+  color: 'var(--fgColor)',
 });
 
-export const semiDarkMode = cx(
-  semiDarkModeColors,
+export const invertedThemeMode = cx(
+  normalThemeMode,
   css({
-    backgroundColor: 'var(--bgColor)',
-    color: 'var(--fgColor)',
+    '--bgColor': 'var(--primaryColor)',
+    '--hoverBgColor': 'var(--primaryColorShade)',
+    '--fgColor': 'var(--primaryColorContrast)',
+    '--hoverFgColor': 'var(--primaryColorContrastShade)',
+
+    '--linkBgColor': 'var(--primaryColor)',
+    '--linkHoverBgColor': 'var(--primaryColorShade)',
+    '--linkColor': 'var(--primaryColorContrast)',
+    '--linkHoverColor': 'var(--primaryColorContrastShade)',
   }),
 );
 
-export const lightModeColors = css({
-  '--bgColor': 'white',
-  '--fgColor': '#333333',
-  '--hoverBgColor': '#FFF0',
-  '--hoverFgColor': '#999',
-  '--linkColor': 'var(--pictoSteelBlue)',
-  '--linkHoverColor': 'var(--pictoBlue)',
-  '--linkHoverBgColor': '#FFF0',
-  '--focusColor': 'var(--pictoSteelBlue)',
-  '--successColor': successColor,
-  '--warningColor': warningColor,
-  '--errorColor': errorColor,
-});
-
-export const lightMode = cx(
-  lightModeColors,
+export const shadedThemeMode = cx(
+  normalThemeMode,
   css({
-    backgroundColor: 'var(--bgColor)',
-    color: 'var(--fgColor)',
+    '--bgColor': 'var(--primaryColorShade)',
+    '--hoverBgColor': 'var(--primaryColor)',
+    '--fgColor': 'var(--primaryColorContrastShade)',
+    '--hoverFgColor': 'var(--primaryColorContrast)',
   }),
 );
 
 export const fullPageStyle = cx(
-  pictoColours,
-  lightMode,
+  normalThemeMode,
   css({
-    backgroundColor: '#F6F1F1',
+    backgroundColor: 'var(--primaryColorContrastShade)',
     display: 'flex',
     flexDirection: 'column',
     position: 'fixed',
@@ -163,7 +160,7 @@ export const iconButton = cx(linkStyle, iconStyle);
 
 export const buttonStyle = cx(
   linkStyle,
-  darkMode,
+  invertedThemeMode,
   css({
     padding: '5px',
   }),
@@ -188,7 +185,7 @@ export const sideTabButton = css({
 export const cardShadow = '0px 0px 7px rgba(0, 0, 0, 0.2)';
 
 export const cardStyle = cx(
-  lightMode,
+  normalThemeMode,
   css({
     //    border: `1px solid lightgrey`,
     boxShadow: cardShadow,
@@ -197,16 +194,23 @@ export const cardStyle = cx(
   }),
 );
 
-const defaultContainerStyle = css({
-  margin: '5px',
+export const paddedContainerStyle = css({
   padding: '10px',
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  border: '1 px solid lightgrey',
-  boxShadow: '0px 0px 7px rgba(0, 0, 0, 0.2)',
-  borderRadius: '5px',
 });
+
+const defaultContainerStyle = cx(
+  paddedContainerStyle,
+  css({
+    margin: '5px',
+    padding: '10px',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    border: '1 px solid lightgrey',
+    boxShadow: '0px 0px 7px rgba(0, 0, 0, 0.2)',
+    borderRadius: '5px',
+  }),
+);
 
 export const defaultRowContainerStyle = cx(
   defaultContainerStyle,

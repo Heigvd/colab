@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { semiDarkMode } from '../styling/style';
+import { shadedThemeMode } from '../styling/style';
 //import FitSpace from './FitSpace';
 
 interface Props {
@@ -156,7 +156,7 @@ export default function WithToolbar({
   children,
   toolbar,
   toolbarPosition = 'BOTTOM_RIGHT',
-  toolbarClassName = semiDarkMode,
+  toolbarClassName = shadedThemeMode,
   offsetX = 0,
   offsetY = 0,
   grow = 1,

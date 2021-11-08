@@ -16,7 +16,7 @@ import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/IconButton';
 import Loading from '../common/Loading';
 import Overlay from '../common/Overlay';
-import { lightMode } from '../styling/style';
+import { normalThemeMode } from '../styling/style';
 import CardTypeCreator from './cardtypes/CardTypeCreator';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
@@ -79,7 +79,7 @@ export default function CardCreator({ parent }: CardCreatorProps): JSX.Element {
         <Overlay>
           <div
             className={cx(
-              lightMode,
+              normalThemeMode,
               css({
                 border: '1px solid grey',
                 padding: '20px',

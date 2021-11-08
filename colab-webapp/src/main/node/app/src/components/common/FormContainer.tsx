@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { darkMode, fullPageStyle } from '../styling/style';
+import { fullPageStyle, invertedThemeMode } from '../styling/style';
 import Logo from '../styling/WhiteLogo';
 
 interface Props {
@@ -26,7 +26,7 @@ export default function ({ children }: Props): JSX.Element {
       >
         <div
           className={cx(
-            darkMode,
+            invertedThemeMode,
             css({
               display: 'flex',
               alignItems: 'center',

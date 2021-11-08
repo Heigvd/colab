@@ -5,18 +5,19 @@
  * Licensed under the MIT License
  */
 
-import { faCheck, faPalette, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, InvolvementLevel } from 'colab-rest-client';
 import * as React from 'react';
 import { TwitterPicker } from 'react-color';
 import * as API from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import Flex from '../common/Flex';
 import Checkbox from '../common/Form/Checkbox';
-import IconButton from '../common/IconButton';
 import OpenClose from '../common/OpenClose';
-import { cancelIcon } from '../styling/defaultIcons';
+import Tabs, { Tab } from '../common/Tabs';
+import { paddedContainerStyle } from '../styling/style';
 import CardACL from './CardACL';
 import ContentStatusSelector from './ContentStatusSelector';
 import InvolvementSelector from './InvolvementSelector';
@@ -27,8 +28,9 @@ interface Props {
   onClose: () => void;
 }
 
-export default function CardSettings({ card, variant, onClose }: Props): JSX.Element {
+export default function CardSettings({ card, variant }: Props): JSX.Element {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const updateDefInvolvementLevel = React.useCallback(
     (value: InvolvementLevel | null) => {
@@ -38,35 +40,9 @@ export default function CardSettings({ card, variant, onClose }: Props): JSX.Ele
   );
 
   return (
-    <Flex direction="column" shrink={1}>
-      <Flex>
-        <h5>Settings</h5>
-        <IconButton icon={cancelIcon} onClick={onClose} />
-      </Flex>
-      <InvolvementSelector
-        self={card.defaultInvolvementLevel}
-        onChange={updateDefInvolvementLevel}
-      />
-      <OpenClose
-        closeIcon={faCheck}
-        collapsedChildren={
-          <span>
-            <FontAwesomeIcon icon={faUsers} />
-          </span>
-        }
-      >
-        {() => <CardACL card={card} />}
-      </OpenClose>
-
-      <OpenClose
-        closeIcon={faCheck}
-        collapsedChildren={
-          <span>
-            <FontAwesomeIcon icon={faPalette} />
-          </span>
-        }
-      >
-        {() => (
+    <Tabs>
+      <Tab name="settings" label={i18n.card.settings.title}>
+        <Flex className={paddedContainerStyle} direction="column" shrink={1}>
           <TwitterPicker
             colors={['#EDD3EC', '#EAC2C2', '#CCEFD4', '#E1F2F9', '#F9F5D6', '#F6F1F1']}
             color={card.color || 'white'}
@@ -75,18 +51,37 @@ export default function CardSettings({ card, variant, onClose }: Props): JSX.Ele
               dispatch(API.updateCard({ ...card, color: newColor.hex }));
             }}
           />
-        )}
-      </OpenClose>
-      <ContentStatusSelector
-        self={variant.status}
-        onChange={status => dispatch(API.updateCardContent({ ...variant, status: status }))}
-      />
 
-      <Checkbox
-        label="frozen"
-        value={variant.frozen}
-        onChange={value => dispatch(API.updateCardContent({ ...variant, frozen: value }))}
-      />
-    </Flex>
+          <ContentStatusSelector
+            self={variant.status}
+            onChange={status => dispatch(API.updateCardContent({ ...variant, status: status }))}
+          />
+
+          <Checkbox
+            label="frozen"
+            value={variant.frozen}
+            onChange={value => dispatch(API.updateCardContent({ ...variant, frozen: value }))}
+          />
+        </Flex>
+      </Tab>
+      <Tab name="acl" label={i18n.card.settings.acl.title}>
+        <Flex className={paddedContainerStyle} direction="column" shrink={1}>
+          <InvolvementSelector
+            self={card.defaultInvolvementLevel}
+            onChange={updateDefInvolvementLevel}
+          />
+          <OpenClose
+            closeIcon={faCheck}
+            collapsedChildren={
+              <span>
+                <FontAwesomeIcon icon={faUsers} />
+              </span>
+            }
+          >
+            {() => <CardACL card={card} />}
+          </OpenClose>
+        </Flex>
+      </Tab>
+    </Tabs>
   );
 }
