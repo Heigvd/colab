@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 /**
  * A reference to another existing abstract resource.
@@ -32,7 +33,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @DiscriminatorValue(&quot;RESOURCE_REF&quot;)
-<span class="nc" id="L35">public class ResourceRef extends AbstractResource {</span>
+<span class="nc" id="L36">public class ResourceRef extends AbstractResource {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -41,10 +42,17 @@ import javax.persistence.Transient;
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * If the target resource is not useful for that card/cardDef/cardContent
+     */
+    @NotNull
+    private boolean refused;
+
+    /**
      * The abstract resource this reference aims at
      */
     @OneToOne(fetch = FetchType.LAZY)
     @JsonbTransient
+    @NotNull
     private AbstractResource target;
 
     /**
@@ -53,41 +61,37 @@ import javax.persistence.Transient;
     @Transient
     private Long targetId;
 
-    /**
-     * If the target resource is not useful for that card/cardDef/cardContent
-     */
-    private boolean refused;
-
-    // ---------------------------------------------------------------------------------------------
-    // initialize
-    // ---------------------------------------------------------------------------------------------
-
-    /**
-     * @return an initialized new resource reference
-     */
-    public static ResourceRef initNewResourceRef() {
-        // nothing to initialize from the super class
-        // implicitly setRefused(false)
-<span class="nc" id="L71">        return new ResourceRef();</span>
-    }
-
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
 
     /**
+     * @return if the targeted resource is not useful for that card/cardDef/cardContent
+     */
+    public boolean isRefused() {
+<span class="nc" id="L72">        return refused;</span>
+    }
+
+    /**
+     * @param refused if the targeted resource is not useful for that card/cardDef/cardContent
+     */
+    public void setRefused(boolean refused) {
+<span class="nc" id="L79">        this.refused = refused;</span>
+<span class="nc" id="L80">    }</span>
+
+    /**
      * @return the resource (or resource reference) this reference aims at
      */
     public AbstractResource getTarget() {
-<span class="nc" id="L82">        return target;</span>
+<span class="nc" id="L86">        return target;</span>
     }
 
     /**
      * @param target the resource (or resource reference) this reference aims at
      */
     public void setTarget(AbstractResource target) {
-<span class="nc" id="L89">        this.target = target;</span>
-<span class="nc" id="L90">    }</span>
+<span class="nc" id="L93">        this.target = target;</span>
+<span class="nc" id="L94">    }</span>
 
     /**
      * get the id of the resource (or resource reference) this reference aims at. To be sent to
@@ -96,10 +100,10 @@ import javax.persistence.Transient;
      * @return id of the abstract resource or null
      */
     public Long getTargetId() {
-<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (target != null) {</span>
-<span class="nc" id="L100">            return target.getId();</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (target != null) {</span>
+<span class="nc" id="L104">            return target.getId();</span>
         } else {
-<span class="nc" id="L102">            return targetId;</span>
+<span class="nc" id="L106">            return targetId;</span>
         }
     }
 
@@ -110,22 +114,8 @@ import javax.persistence.Transient;
      * @param targetId the id of the resource or resource reference
      */
     public void setTargetId(Long targetId) {
-<span class="nc" id="L113">        this.targetId = targetId;</span>
-<span class="nc" id="L114">    }</span>
-
-    /**
-     * @return if the targeted resource is not useful for that card/cardDef/cardContent
-     */
-    public boolean isRefused() {
-<span class="nc" id="L120">        return refused;</span>
-    }
-
-    /**
-     * @param refused if the targeted resource is not useful for that card/cardDef/cardContent
-     */
-    public void setRefused(boolean refused) {
-<span class="nc" id="L127">        this.refused = refused;</span>
-<span class="nc" id="L128">    }</span>
+<span class="nc" id="L117">        this.targetId = targetId;</span>
+<span class="nc" id="L118">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -133,51 +123,51 @@ import javax.persistence.Transient;
 
     @Override
     public Resource resolve() {
-<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (this.target instanceof Resource) {</span>
-<span class="nc" id="L137">            return (Resource) this.target;</span>
-<span class="nc bnc" id="L138" title="All 2 branches missed.">        } else if (this.target instanceof ResourceRef) {</span>
-<span class="nc" id="L139">            return ((ResourceRef) target).resolve();</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">        if (this.target instanceof Resource) {</span>
+<span class="nc" id="L127">            return (Resource) this.target;</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        } else if (this.target instanceof ResourceRef) {</span>
+<span class="nc" id="L129">            return ((ResourceRef) target).resolve();</span>
         }
-<span class="nc" id="L141">        return null;</span>
+<span class="nc" id="L131">        return null;</span>
     }
 
     @Override
     public List&lt;AbstractResource&gt; expand() {
-<span class="nc" id="L146">        List&lt;AbstractResource&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L136">        List&lt;AbstractResource&gt; list = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L148">        list.add(this);</span>
-<span class="nc bnc" id="L149" title="All 2 branches missed.">        if (this.target != null) {</span>
-<span class="nc" id="L150">            list.addAll(this.target.expand());</span>
+<span class="nc" id="L138">        list.add(this);</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (this.target != null) {</span>
+<span class="nc" id="L140">            list.addAll(this.target.expand());</span>
         }
-<span class="nc" id="L152">        return list;</span>
+<span class="nc" id="L142">        return list;</span>
     }
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L157" title="All 2 branches missed.">        if (other instanceof ResourceRef) {</span>
-<span class="nc" id="L158">            ResourceRef o = (ResourceRef) other;</span>
-<span class="nc" id="L159">            super.merge(o);</span>
-<span class="nc" id="L160">            this.setRefused(o.isRefused());</span>
-<span class="nc" id="L161">        } else {</span>
-<span class="nc" id="L162">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (other instanceof ResourceRef) {</span>
+<span class="nc" id="L148">            ResourceRef o = (ResourceRef) other;</span>
+<span class="nc" id="L149">            super.merge(o);</span>
+<span class="nc" id="L150">            this.setRefused(o.isRefused());</span>
+<span class="nc" id="L151">        } else {</span>
+<span class="nc" id="L152">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L164">    }</span>
+<span class="nc" id="L154">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L168">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L158">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L174">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L164">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L179">        return &quot;ResourceRef{&quot; + toPartialString() + &quot;, targetId=&quot; + targetId</span>
-            + &quot;, refused=&quot; + refused + &quot;}&quot;;
+<span class="nc" id="L169">        return &quot;ResourceRef{&quot; + toPartialString() + &quot;, refused=&quot; + refused</span>
+            + &quot;, targetId=&quot; + targetId + &quot;}&quot;;
     }
 
 }

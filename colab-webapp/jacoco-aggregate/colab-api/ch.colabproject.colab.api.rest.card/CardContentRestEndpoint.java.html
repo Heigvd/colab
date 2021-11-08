@@ -7,12 +7,10 @@
 package ch.colabproject.colab.api.rest.card;
 
 import ch.colabproject.colab.api.ejb.CardFacade;
-import ch.colabproject.colab.api.ejb.ResourceFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
@@ -40,10 +38,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L43">public class CardContentRestEndpoint {</span>
+<span class="nc" id="L41">public class CardContentRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L46">    private static final Logger logger = LoggerFactory.getLogger(CardContentRestEndpoint.class);</span>
+<span class="nc" id="L44">    private static final Logger logger = LoggerFactory.getLogger(CardContentRestEndpoint.class);</span>
 
     /**
      * The card content persistence manager
@@ -56,11 +54,6 @@ import org.slf4j.LoggerFactory;
      */
     @Inject
     private CardFacade cardFacade;
-    /**
-     * The resource-related logic
-     */
-    @Inject
-    private ResourceFacade resourceFacade;
 
     /**
      * Retrieve the list of all card contents. This is available to admin only
@@ -73,8 +66,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;CardContent&gt; getAllCardContents() {
-<span class="nc" id="L76">        logger.debug(&quot;Get all card contents&quot;);</span>
-<span class="nc" id="L77">        return cardContentDao.getAllCardContent();</span>
+<span class="nc" id="L69">        logger.debug(&quot;Get all card contents&quot;);</span>
+<span class="nc" id="L70">        return cardContentDao.getAllCardContent();</span>
     }
 
     /**
@@ -87,8 +80,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public CardContent getCardContent(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L90">        logger.debug(&quot;Get card #{}&quot;, id);</span>
-<span class="nc" id="L91">        return cardContentDao.getCardContent(id);</span>
+<span class="nc" id="L83">        logger.debug(&quot;Get card #{}&quot;, id);</span>
+<span class="nc" id="L84">        return cardContentDao.getCardContent(id);</span>
     }
 
     /**
@@ -103,8 +96,8 @@ import org.slf4j.LoggerFactory;
     @Deprecated
     @POST
     public Long createCardContent(CardContent cardContent) {
-<span class="nc" id="L106">        logger.debug(&quot;Create card content {}&quot;, cardContent);</span>
-<span class="nc" id="L107">        return cardContentDao.createCardContent(cardContent).getId();</span>
+<span class="nc" id="L99">        logger.debug(&quot;Create card content {}&quot;, cardContent);</span>
+<span class="nc" id="L100">        return cardContentDao.createCardContent(cardContent).getId();</span>
     }
 
     /**
@@ -117,8 +110,8 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;create/{cardId}&quot;)
     public CardContent createNewCardContent(@PathParam(&quot;cardId&quot;) Long cardId) {
-<span class="nc" id="L120">        logger.debug(&quot;create a new card content for the card #{}&quot;, cardId);</span>
-<span class="nc" id="L121">        return cardFacade.createNewCardContent(cardId);</span>
+<span class="nc" id="L113">        logger.debug(&quot;create a new card content for the card #{}&quot;, cardId);</span>
+<span class="nc" id="L114">        return cardFacade.createNewCardContent(cardId);</span>
     }
 
     /**
@@ -133,12 +126,12 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;createWithDeliverable/{cardId}&quot;)
     public CardContent createNewCardContentWithDeliverable(@PathParam(&quot;cardId&quot;) Long cardId,
         Document document) {
-<span class="nc" id="L136">        logger.debug(&quot;create a new card content for the card #{} and document {}&quot;, cardId, document);</span>
-<span class="nc" id="L137">        CardContent cardContent = cardFacade.createNewCardContent(cardId);</span>
+<span class="nc" id="L129">        logger.debug(&quot;create a new card content for the card #{} and document {}&quot;, cardId, document);</span>
+<span class="nc" id="L130">        CardContent cardContent = cardFacade.createNewCardContent(cardId);</span>
 
-<span class="nc" id="L139">        cardFacade.assignDeliverable(cardContent.getId(), document);</span>
+<span class="nc" id="L132">        cardFacade.assignDeliverable(cardContent.getId(), document);</span>
 
-<span class="nc" id="L141">        return cardContent;</span>
+<span class="nc" id="L134">        return cardContent;</span>
     }
 
     /**
@@ -150,9 +143,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCardContent(CardContent cardContent) throws ColabMergeException {
-<span class="nc" id="L153">        logger.debug(&quot;Update card content {}&quot;, cardContent);</span>
-<span class="nc" id="L154">        cardContentDao.updateCardContent(cardContent);</span>
-<span class="nc" id="L155">    }</span>
+<span class="nc" id="L146">        logger.debug(&quot;Update card content {}&quot;, cardContent);</span>
+<span class="nc" id="L147">        cardContentDao.updateCardContent(cardContent);</span>
+<span class="nc" id="L148">    }</span>
 
     /**
      * Permanently delete a card content
@@ -162,24 +155,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteCardContent(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L165">        logger.debug(&quot;Delete card #{}&quot;, id);</span>
-<span class="nc" id="L166">        cardFacade.deleteCardContent(id);</span>
-<span class="nc" id="L167">    }</span>
-
-    /**
-     * Get the available active resources linked to a card content
-     *
-     * @param cardContentId id of the card content
-     *
-     * @return list of matching resources
-     */
-    @GET
-    @Path(&quot;{id}/Resources&quot;)
-    public List&lt;Resource&gt; getAvailableActiveLinkedResources(@PathParam(&quot;id&quot;) Long cardContentId) {
-<span class="nc" id="L179">        logger.debug(&quot;get available and active resources linked to card content #{}&quot;,</span>
-            cardContentId);
-<span class="nc" id="L181">        return resourceFacade.getAvailableActiveResourcesLinkedToCardContent(cardContentId);</span>
-    }
+<span class="nc" id="L158">        logger.debug(&quot;Delete card #{}&quot;, id);</span>
+<span class="nc" id="L159">        cardFacade.deleteCardContent(id);</span>
+<span class="nc" id="L160">    }</span>
 
     /**
      * Get all sticky note links where the card content is the source
@@ -191,8 +169,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/StickyNoteLinks&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long cardContentId) {
-<span class="nc" id="L194">        logger.debug(&quot;Get sticky note links where card #{} is the source&quot;, cardContentId);</span>
-<span class="nc" id="L195">        return cardFacade.getStickyNoteLinkAsSrcCardContent(cardContentId);</span>
+<span class="nc" id="L172">        logger.debug(&quot;Get sticky note links where card #{} is the source&quot;, cardContentId);</span>
+<span class="nc" id="L173">        return cardFacade.getStickyNoteLinkAsSrcCardContent(cardContentId);</span>
     }
 
     /**
@@ -205,8 +183,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/Subcards&quot;)
     public List&lt;Card&gt; getSubCards(@PathParam(&quot;id&quot;) Long parentId) {
-<span class="nc" id="L208">        logger.debug(&quot;Get parent #{} sub cards&quot;, parentId);</span>
-<span class="nc" id="L209">        return cardFacade.getSubCards(parentId);</span>
+<span class="nc" id="L186">        logger.debug(&quot;Get parent #{} sub cards&quot;, parentId);</span>
+<span class="nc" id="L187">        return cardFacade.getSubCards(parentId);</span>
     }
 
     /**
@@ -219,8 +197,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/Deliverable&quot;)
     public Document getDeliverableOfCardContent(@PathParam(&quot;id&quot;) Long cardContentId) {
-<span class="nc" id="L222">        logger.debug(&quot;Get deliverable of card content #{}&quot;, cardContentId);</span>
-<span class="nc" id="L223">        return cardFacade.getDeliverableOfCardContent(cardContentId);</span>
+<span class="nc" id="L200">        logger.debug(&quot;Get deliverable of card content #{}&quot;, cardContentId);</span>
+<span class="nc" id="L201">        return cardFacade.getDeliverableOfCardContent(cardContentId);</span>
     }
 
     /**
@@ -234,8 +212,8 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;{id}/setDeliverable&quot;)
     public Document assignDeliverable(@PathParam(&quot;id&quot;) Long cardContentId, Document document) {
-<span class="nc" id="L237">        logger.debug(&quot;add the deliverable {} for the card content #{}&quot;, document, cardContentId);</span>
-<span class="nc" id="L238">        return cardFacade.assignDeliverable(cardContentId, document);</span>
+<span class="nc" id="L215">        logger.debug(&quot;add the deliverable {} for the card content #{}&quot;, document, cardContentId);</span>
+<span class="nc" id="L216">        return cardFacade.assignDeliverable(cardContentId, document);</span>
     }
 
 }

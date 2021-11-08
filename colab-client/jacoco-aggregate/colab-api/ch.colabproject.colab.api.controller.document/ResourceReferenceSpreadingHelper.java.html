@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ResourceReferenceSpreadingHelper.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.document</a> &gt; <span class="el_source">ResourceReferenceSpreadingHelper.java</span></div><h1>ResourceReferenceSpreadingHelper.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.document;
+
+import ch.colabproject.colab.api.model.card.AbstractCardType;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.document.AbstractResource;
+import ch.colabproject.colab.api.model.document.Resource;
+import ch.colabproject.colab.api.model.document.ResourceRef;
+import java.util.List;
+
+/**
+ * Resource and resource reference spread specific logic
+ *
+ * @author sandra
+ */
+public final class ResourceReferenceSpreadingHelper {
+
+<span class="nc" id="L24">    private ResourceReferenceSpreadingHelper() {</span>
+<span class="nc" id="L25">        throw new UnsupportedOperationException();</span>
+    }
+
+    // *********************************************************************************************
+    // when a resource / resource reference is created, spread it down stream with references
+    // *********************************************************************************************
+
+    /**
+     * Each child of the card type acquires a reference to the resource.
+     *
+     * @param cardTypeOrRef the card type or card type reference
+     * @param resourceOrRef the resource we are linking
+     */
+    public static void spreadReferenceDown(AbstractCardType cardTypeOrRef,
+        AbstractResource resourceOrRef) {
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        if (mustSpreadReference(resourceOrRef)) {</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">            for (AbstractCardType cardTypeRef : cardTypeOrRef.getDirectReferences()) {</span>
+<span class="nc" id="L42">                ResourceRef resourceRef = initNewResourceRef();</span>
+
+<span class="nc" id="L44">                resourceRef.setTarget(resourceOrRef);</span>
+<span class="nc" id="L45">                resourceOrRef.getDirectReferences().add(resourceRef);</span>
+
+<span class="nc" id="L47">                resourceRef.setAbstractCardType(cardTypeRef);</span>
+<span class="nc" id="L48">                cardTypeRef.getDirectAbstractResources().add(resourceRef);</span>
+
+<span class="nc" id="L50">                spreadReferenceDown(cardTypeRef, resourceRef);</span>
+<span class="nc" id="L51">            }</span>
+
+<span class="nc bnc" id="L53" title="All 2 branches missed.">            for (Card card : cardTypeOrRef.getImplementingCards()) {</span>
+<span class="nc" id="L54">                ResourceRef cardResourceRef = initNewResourceRef();</span>
+
+<span class="nc" id="L56">                cardResourceRef.setTarget(resourceOrRef);</span>
+<span class="nc" id="L57">                resourceOrRef.getDirectReferences().add(cardResourceRef);</span>
+
+<span class="nc" id="L59">                cardResourceRef.setCard(card);</span>
+<span class="nc" id="L60">                card.getDirectAbstractResources().add(cardResourceRef);</span>
+
+<span class="nc" id="L62">                spreadReferenceDown(card, cardResourceRef);</span>
+<span class="nc" id="L63">            }</span>
+        }
+<span class="nc" id="L65">    }</span>
+
+    /**
+     * Each child of the card acquires a reference to the resource.
+     *
+     * @param card          the card
+     * @param resourceOrRef the resource we are linking
+     */
+    public static void spreadReferenceDown(Card card, AbstractResource resourceOrRef) {
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (mustSpreadReference(resourceOrRef)) {</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">            for (CardContent cardContent : card.getContentVariants()) {</span>
+<span class="nc" id="L76">                ResourceRef resourceRef = initNewResourceRef();</span>
+
+<span class="nc" id="L78">                resourceRef.setTarget(resourceOrRef);</span>
+<span class="nc" id="L79">                resourceOrRef.getDirectReferences().add(resourceRef);</span>
+
+<span class="nc" id="L81">                resourceRef.setCardContent(cardContent);</span>
+<span class="nc" id="L82">                cardContent.getDirectAbstractResources().add(resourceRef);</span>
+
+<span class="nc" id="L84">                spreadReferenceDown(cardContent, resourceRef);</span>
+<span class="nc" id="L85">            }</span>
+        }
+<span class="nc" id="L87">    }</span>
+
+    /**
+     * Each child of the card content acquires a reference to the resource.
+     *
+     * @param cardContent   the card content
+     * @param resourceOrRef the resource we are linking
+     */
+    public static void spreadReferenceDown(CardContent cardContent,
+        AbstractResource resourceOrRef) {
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (mustSpreadReference(resourceOrRef)) {</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            for (Card card : cardContent.getSubCards()) {</span>
+<span class="nc" id="L99">                ResourceRef resourceRef = initNewResourceRef();</span>
+
+<span class="nc" id="L101">                resourceRef.setTarget(resourceOrRef);</span>
+<span class="nc" id="L102">                resourceOrRef.getDirectReferences().add(resourceRef);</span>
+
+<span class="nc" id="L104">                resourceRef.setCard(card);</span>
+<span class="nc" id="L105">                card.getDirectAbstractResources().add(resourceRef);</span>
+
+<span class="nc" id="L107">                spreadReferenceDown(card, resourceRef);</span>
+<span class="nc" id="L108">            }</span>
+        }
+<span class="nc" id="L110">    }</span>
+
+    /**
+     * Ascertain if we must create resource references down stream
+     *
+     * @param resourceOrRef Resource / resource reference
+     *
+     * @return True if the resource must be spread down
+     */
+    private static boolean mustSpreadReference(AbstractResource resourceOrRef) {
+        // do not spread references of a type from a card content to its subcards
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        if (resourceOrRef.hasCardContent()) {</span>
+<span class="nc" id="L122">            Resource concreteResource = resourceOrRef.resolve();</span>
+<span class="nc bnc" id="L123" title="All 4 branches missed.">            return concreteResource != null &amp;&amp; !concreteResource.hasAbstractCardType();</span>
+        }
+
+        // in all other cases, spread
+<span class="nc" id="L127">        return true;</span>
+    }
+
+    /**
+     * @return an initialized new resource reference
+     */
+    private static ResourceRef initNewResourceRef() {
+        // implicitly setRefused(false)
+<span class="nc" id="L135">        return new ResourceRef();</span>
+    }
+
+    // *********************************************************************************************
+    // when a card / card content is created,
+    // initialize the references from parent's resources / resource references
+    // *********************************************************************************************
+
+    /**
+     * Create a resource reference for each resource / resource reference of the parent that must be
+     * spread
+     *
+     * @param cardToFill The new card that need references to the up stream resources
+     */
+    public static void spreadResourceFromUp(Card cardToFill) {
+<span class="nc" id="L150">        CardContent parent = cardToFill.getParent();</span>
+
+<span class="nc" id="L152">        List&lt;AbstractResource&gt; parentResources = parent.getDirectAbstractResources();</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        for (AbstractResource parentResource : parentResources) {</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">            if (mustSpreadReference(parentResource)) {</span>
+<span class="nc" id="L155">                ResourceRef reference = initNewReferenceFrom(parentResource);</span>
+
+<span class="nc" id="L157">                reference.setCard(cardToFill);</span>
+<span class="nc" id="L158">                cardToFill.getDirectAbstractResources().add(reference);</span>
+
+<span class="nc" id="L160">                spreadReferenceDown(cardToFill, reference);</span>
+            }
+<span class="nc" id="L162">        }</span>
+
+<span class="nc" id="L164">        AbstractCardType type = cardToFill.getCardType();</span>
+<span class="nc" id="L165">        List&lt;AbstractResource&gt; typeResources = type.getDirectAbstractResources();</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        for (AbstractResource typeResource : typeResources) {</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">            if (mustSpreadReference(typeResource)) {</span>
+<span class="nc" id="L168">                ResourceRef reference = initNewReferenceFrom(typeResource);</span>
+
+<span class="nc" id="L170">                reference.setCard(cardToFill);</span>
+<span class="nc" id="L171">                cardToFill.getDirectAbstractResources().add(reference);</span>
+
+<span class="nc" id="L173">                spreadReferenceDown(cardToFill, reference);</span>
+            }
+<span class="nc" id="L175">        }</span>
+<span class="nc" id="L176">    }</span>
+
+    /**
+     * Create a resource reference for each resource / resource reference of the parent that must be
+     * spread
+     *
+     * @param cardContentToFill The new card content that need references to the up stream resources
+     */
+    public static void spreadResourceFromUp(CardContent cardContentToFill) {
+<span class="nc" id="L185">        Card parent = cardContentToFill.getCard();</span>
+
+<span class="nc" id="L187">        List&lt;AbstractResource&gt; parentResources = parent.getDirectAbstractResources();</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">        for (AbstractResource parentResource : parentResources) {</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">            if (mustSpreadReference(parentResource)) {</span>
+<span class="nc" id="L190">                ResourceRef reference = initNewReferenceFrom(parentResource);</span>
+
+<span class="nc" id="L192">                reference.setCardContent(cardContentToFill);</span>
+<span class="nc" id="L193">                cardContentToFill.getDirectAbstractResources().add(reference);</span>
+
+<span class="nc" id="L195">                spreadReferenceDown(cardContentToFill, reference);</span>
+            }
+<span class="nc" id="L197">        }</span>
+<span class="nc" id="L198">    }</span>
+
+    /**
+     * Initialize a new reference to the target resource / resource reference
+     *
+     * @param target Base resource / resource reference
+     *
+     * @return The new resource reference
+     */
+    private static ResourceRef initNewReferenceFrom(AbstractResource target) {
+<span class="nc" id="L208">        ResourceRef reference = new ResourceRef();</span>
+
+<span class="nc" id="L210">        reference.setCategory(target.getCategory());</span>
+
+<span class="nc bnc" id="L212" title="All 2 branches missed.">        if (target instanceof ResourceRef) {</span>
+<span class="nc" id="L213">            Resource concreteResource = ((ResourceRef) target).resolve();</span>
+<span class="nc bnc" id="L214" title="All 4 branches missed.">            if (concreteResource != null &amp;&amp; concreteResource.isDeprecated()) {</span>
+<span class="nc" id="L215">                reference.setRefused(true);</span>
+            } else {
+<span class="nc" id="L217">                reference.setRefused(((ResourceRef) target).isRefused());</span>
+            }
+        }
+
+<span class="nc" id="L221">        reference.setTarget(target);</span>
+<span class="nc" id="L222">        target.getDirectReferences().add(reference);</span>
+
+<span class="nc" id="L224">        return reference;</span>
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

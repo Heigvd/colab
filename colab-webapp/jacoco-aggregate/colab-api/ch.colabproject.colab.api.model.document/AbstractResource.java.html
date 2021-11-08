@@ -60,6 +60,7 @@ import javax.persistence.Transient;
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Abstract resource ID
      */
@@ -72,6 +73,11 @@ import javax.persistence.Transient;
      */
     @Embedded
     private Tracking trackingData;
+
+    /**
+     * The category to classify the resource
+     */
+    private String category;
 
     /**
      * The card type / card type reference to which the abstract resource is linked
@@ -113,12 +119,6 @@ import javax.persistence.Transient;
     private Long cardContentId;
 
     /**
-     * The category to classify the resource
-     */
-    private String category;
-
-    // TODO see if useful
-    /**
      * The list of resource references that link to this abstract resource
      */
 <span class="nc" id="L124">    @OneToMany(mappedBy = &quot;target&quot;, cascade = CascadeType.ALL)</span>
@@ -135,26 +135,61 @@ import javax.persistence.Transient;
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * @return the abstract resource id
      */
     @Override
     public Long getId() {
-<span class="nc" id="L143">        return id;</span>
+<span class="nc" id="L144">        return id;</span>
     }
 
     /**
      * @param id the abstract resource id
      */
     public void setId(Long id) {
-<span class="nc" id="L150">        this.id = id;</span>
-<span class="nc" id="L151">    }</span>
+<span class="nc" id="L151">        this.id = id;</span>
+<span class="nc" id="L152">    }</span>
+
+    /**
+     * Get the tracking data
+     *
+     * @return tracking data
+     */
+    @Override
+    public Tracking getTrackingData() {
+<span class="nc" id="L161">        return trackingData;</span>
+    }
+
+    /**
+     * Set tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    @Override
+    public void setTrackingData(Tracking trackingData) {
+<span class="nc" id="L171">        this.trackingData = trackingData;</span>
+<span class="nc" id="L172">    }</span>
+
+    /**
+     * @return the category to classify the resource
+     */
+    public String getCategory() {
+<span class="nc" id="L178">        return category;</span>
+    }
+
+    /**
+     * @param category the category to classify the resource
+     */
+    public void setCategory(String category) {
+<span class="nc" id="L185">        this.category = category;</span>
+<span class="nc" id="L186">    }</span>
 
     /**
      * @return the card type / card type reference to which an abstract resource is linked
      */
     public AbstractCardType getAbstractCardType() {
-<span class="nc" id="L157">        return abstractCardType;</span>
+<span class="nc" id="L192">        return abstractCardType;</span>
     }
 
     /**
@@ -162,8 +197,8 @@ import javax.persistence.Transient;
      *                         linked
      */
     public void setAbstractCardType(AbstractCardType abstractCardType) {
-<span class="nc" id="L165">        this.abstractCardType = abstractCardType;</span>
-<span class="nc" id="L166">    }</span>
+<span class="nc" id="L200">        this.abstractCardType = abstractCardType;</span>
+<span class="nc" id="L201">    }</span>
 
     /**
      * get the id of the card type / card type reference to which an abstract resource is linked. To
@@ -172,10 +207,10 @@ import javax.persistence.Transient;
      * @return the ID of the abstract card type
      */
     public Long getAbstractCardTypeId() {
-<span class="nc bnc" id="L175" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
-<span class="nc" id="L176">            return abstractCardType.getId();</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
+<span class="nc" id="L211">            return abstractCardType.getId();</span>
         } else {
-<span class="nc" id="L178">            return abstractCardTypeId;</span>
+<span class="nc" id="L213">            return abstractCardTypeId;</span>
         }
     }
 
@@ -186,29 +221,29 @@ import javax.persistence.Transient;
      * @param abstractCardTypeId the ID of the abstract card type
      */
     public void setAbstractCardTypeId(Long abstractCardTypeId) {
-<span class="nc" id="L189">        this.abstractCardTypeId = abstractCardTypeId;</span>
-<span class="nc" id="L190">    }</span>
+<span class="nc" id="L224">        this.abstractCardTypeId = abstractCardTypeId;</span>
+<span class="nc" id="L225">    }</span>
 
     /**
      * @return True if there is a linked abstract card type
      */
     public boolean hasAbstractCardType() {
-<span class="nc bnc" id="L196" title="All 4 branches missed.">        return abstractCardType != null || abstractCardTypeId != null;</span>
+<span class="nc bnc" id="L231" title="All 4 branches missed.">        return abstractCardType != null || abstractCardTypeId != null;</span>
     }
 
     /**
      * @return the card to which an abstract resource is linked
      */
     public Card getCard() {
-<span class="nc" id="L203">        return card;</span>
+<span class="nc" id="L238">        return card;</span>
     }
 
     /**
      * @param card the card to which an abstract resource is linked
      */
     public void setCard(Card card) {
-<span class="nc" id="L210">        this.card = card;</span>
-<span class="nc" id="L211">    }</span>
+<span class="nc" id="L245">        this.card = card;</span>
+<span class="nc" id="L246">    }</span>
 
     /**
      * get the id of the card to which an abstract resource is linked. To be sent to client.
@@ -216,10 +251,10 @@ import javax.persistence.Transient;
      * @return the ID of the card
      */
     public Long getCardId() {
-<span class="nc bnc" id="L219" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L220">            return card.getId();</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L255">            return card.getId();</span>
         } else {
-<span class="nc" id="L222">            return cardId;</span>
+<span class="nc" id="L257">            return cardId;</span>
         }
     }
 
@@ -229,29 +264,29 @@ import javax.persistence.Transient;
      * @param cardId the ID of the card
      */
     public void setCardId(Long cardId) {
-<span class="nc" id="L232">        this.cardId = cardId;</span>
-<span class="nc" id="L233">    }</span>
+<span class="nc" id="L267">        this.cardId = cardId;</span>
+<span class="nc" id="L268">    }</span>
 
     /**
      * @return True if there is a linked card
      */
     public boolean hasCard() {
-<span class="nc bnc" id="L239" title="All 4 branches missed.">        return card != null || cardId != null;</span>
+<span class="nc bnc" id="L274" title="All 4 branches missed.">        return card != null || cardId != null;</span>
     }
 
     /**
      * @return the card content to which an abstract resource is linked
      */
     public CardContent getCardContent() {
-<span class="nc" id="L246">        return cardContent;</span>
+<span class="nc" id="L281">        return cardContent;</span>
     }
 
     /**
      * @param cardContent the card content to which an abstract resource is linked
      */
     public void setCardContent(CardContent cardContent) {
-<span class="nc" id="L253">        this.cardContent = cardContent;</span>
-<span class="nc" id="L254">    }</span>
+<span class="nc" id="L288">        this.cardContent = cardContent;</span>
+<span class="nc" id="L289">    }</span>
 
     /**
      * get the id of the card content to which an abstract resource is linked. To be sent to client.
@@ -259,10 +294,10 @@ import javax.persistence.Transient;
      * @return the ID of the card content
      */
     public Long getCardContentId() {
-<span class="nc bnc" id="L262" title="All 2 branches missed.">        if (this.cardContent != null) {</span>
-<span class="nc" id="L263">            return cardContent.getId();</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">        if (this.cardContent != null) {</span>
+<span class="nc" id="L298">            return cardContent.getId();</span>
         } else {
-<span class="nc" id="L265">            return cardContentId;</span>
+<span class="nc" id="L300">            return cardContentId;</span>
         }
     }
 
@@ -273,35 +308,21 @@ import javax.persistence.Transient;
      * @param cardContentId the ID of the card content
      */
     public void setCardContentId(Long cardContentId) {
-<span class="nc" id="L276">        this.cardContentId = cardContentId;</span>
-<span class="nc" id="L277">    }</span>
+<span class="nc" id="L311">        this.cardContentId = cardContentId;</span>
+<span class="nc" id="L312">    }</span>
 
     /**
      * @return True if there is a linked card content
      */
     public boolean hasCardContent() {
-<span class="nc bnc" id="L283" title="All 4 branches missed.">        return cardContent != null || cardContentId != null;</span>
+<span class="nc bnc" id="L318" title="All 4 branches missed.">        return cardContent != null || cardContentId != null;</span>
     }
-
-    /**
-     * @return the category to classify the resource
-     */
-    public String getCategory() {
-<span class="nc" id="L290">        return category;</span>
-    }
-
-    /**
-     * @param category the category to classify the resource
-     */
-    public void setCategory(String category) {
-<span class="nc" id="L297">        this.category = category;</span>
-<span class="nc" id="L298">    }</span>
 
     /**
      * @return the list of resource references that directly link to this abstract resource
      */
     public List&lt;ResourceRef&gt; getDirectReferences() {
-<span class="nc" id="L304">        return directReferences;</span>
+<span class="nc" id="L325">        return directReferences;</span>
     }
 
     /**
@@ -309,47 +330,28 @@ import javax.persistence.Transient;
      *                         resource
      */
     public void setDirectReferences(List&lt;ResourceRef&gt; directReferences) {
-<span class="nc" id="L312">        this.directReferences = directReferences;</span>
-<span class="nc" id="L313">    }</span>
+<span class="nc" id="L333">        this.directReferences = directReferences;</span>
+<span class="nc" id="L334">    }</span>
 
     /**
      * @return the list of sticky note links of which the resource is the source
      */
     @Override
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc() {
-<span class="nc" id="L320">        return stickyNoteLinksAsSrc;</span>
+<span class="nc" id="L341">        return stickyNoteLinksAsSrc;</span>
     }
 
     /**
      * @param stickyNoteLinksAsSrc the list of sticky note links of which the resource is the source
      */
     public void setStickyNoteLinksAsSrc(List&lt;StickyNoteLink&gt; stickyNoteLinksAsSrc) {
-<span class="nc" id="L327">        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;</span>
-<span class="nc" id="L328">    }</span>
-
-    /**
-     * Get the tracking data
-     *
-     * @return tracking data
-     */
-    @Override
-    public Tracking getTrackingData() {
-<span class="nc" id="L337">        return trackingData;</span>
-    }
-
-    /**
-     * Set tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    @Override
-    public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L347">        this.trackingData = trackingData;</span>
-<span class="nc" id="L348">    }</span>
+<span class="nc" id="L348">        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;</span>
+<span class="nc" id="L349">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Resolve to concrete Resource
      *
@@ -366,33 +368,48 @@ import javax.persistence.Transient;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L369" title="All 2 branches missed.">        if (other instanceof AbstractResource) {</span>
-<span class="nc" id="L370">            AbstractResource o = (AbstractResource) other;</span>
-<span class="nc" id="L371">            this.setCategory(o.getCategory());</span>
-<span class="nc" id="L372">        } else {</span>
-<span class="nc" id="L373">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L371" title="All 2 branches missed.">        if (other instanceof AbstractResource) {</span>
+<span class="nc" id="L372">            AbstractResource o = (AbstractResource) other;</span>
+<span class="nc" id="L373">            this.setCategory(o.getCategory());</span>
+<span class="nc" id="L374">        } else {</span>
+<span class="nc" id="L375">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L375">    }</span>
-
+<span class="nc" id="L377">    }</span>
 
     @JsonbTransient
     @Override
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L381" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
+<span class="nc bnc" id="L382" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
             // the abstract resource is linked to a card type / card type reference
-<span class="nc" id="L383">            return this.abstractCardType.getReadCondition();</span>
-<span class="nc bnc" id="L384" title="All 2 branches missed.">        } else if (this.card != null) {</span>
+<span class="nc" id="L384">            return this.abstractCardType.getReadCondition();</span>
+<span class="nc bnc" id="L385" title="All 2 branches missed.">        } else if (this.card != null) {</span>
             // the abstract resource is linked to a card
-<span class="nc" id="L386">            return new Conditions.HasCardReadRight(this.card);</span>
-<span class="nc bnc" id="L387" title="All 2 branches missed.">        } else if (this.cardContent != null) {</span>
+<span class="nc" id="L387">            return new Conditions.HasCardReadRight(this.card);</span>
+<span class="nc bnc" id="L388" title="All 2 branches missed.">        } else if (this.cardContent != null) {</span>
             // the abstract resource is linked to a card content
-<span class="nc" id="L389">            return this.cardContent.getReadCondition();</span>
+<span class="nc" id="L390">            return this.cardContent.getReadCondition();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L392">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L393">            return Conditions.defaultForOrphan;</span>
         }
     }
 
+    @Override
+    public Conditions.Condition getUpdateCondition() {
+<span class="nc bnc" id="L399" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
+            // the abstract resource is linked to a card type / card type reference
+<span class="nc" id="L401">            return this.abstractCardType.getUpdateCondition();</span>
+<span class="nc bnc" id="L402" title="All 2 branches missed.">        } else if (this.card != null) {</span>
+            // the abstract resource is linked to a card
+<span class="nc" id="L404">            return this.card.getUpdateCondition();</span>
+<span class="nc bnc" id="L405" title="All 2 branches missed.">        } else if (this.cardContent != null) {</span>
+            // the abstract resource is linked to a card content
+<span class="nc" id="L407">            return this.cardContent.getUpdateCondition();</span>
+        } else {
+            // such an orphan shouldn't exist...
+<span class="nc" id="L410">            return Conditions.defaultForOrphan;</span>
+        }
+    }
 
     /**
      * Get the project this content belongs to
@@ -401,74 +418,55 @@ import javax.persistence.Transient;
      */
     @JsonbTransient
     public Project getProject() {
-<span class="nc bnc" id="L404" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
-            // the abstract resource is linked to a card type / card type reference
-<span class="nc" id="L406">            return this.abstractCardType.getProject();</span>
-<span class="nc bnc" id="L407" title="All 2 branches missed.">        } else if (this.card != null) {</span>
-            // the abstract resource is linked to a card
-<span class="nc" id="L409">            return this.card.getProject();</span>
-<span class="nc bnc" id="L410" title="All 2 branches missed.">        } else if (this.cardContent != null) {</span>
-            // the abstract resource is linked to a card content
-<span class="nc" id="L412">            return this.cardContent.getProject();</span>
-        } else {
-            // such an orphan shouldn't exist...
-<span class="nc" id="L415">            return null;</span>
-        }
-    }
-
-    @Override
-    public Conditions.Condition getUpdateCondition() {
 <span class="nc bnc" id="L421" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
             // the abstract resource is linked to a card type / card type reference
-<span class="nc" id="L423">            return this.abstractCardType.getUpdateCondition();</span>
+<span class="nc" id="L423">            return this.abstractCardType.getProject();</span>
 <span class="nc bnc" id="L424" title="All 2 branches missed.">        } else if (this.card != null) {</span>
             // the abstract resource is linked to a card
-<span class="nc" id="L426">            return this.card.getUpdateCondition();</span>
+<span class="nc" id="L426">            return this.card.getProject();</span>
 <span class="nc bnc" id="L427" title="All 2 branches missed.">        } else if (this.cardContent != null) {</span>
             // the abstract resource is linked to a card content
-<span class="nc" id="L429">            return this.cardContent.getUpdateCondition();</span>
+<span class="nc" id="L429">            return this.cardContent.getProject();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L432">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L432">            return null;</span>
         }
     }
-
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L439" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
+<span class="nc bnc" id="L438" title="All 2 branches missed.">        if (this.abstractCardType != null) {</span>
             // the abstract resource is linked to a card type / card type reference
-<span class="nc" id="L441">            return this.abstractCardType.getChannels();</span>
-<span class="nc bnc" id="L442" title="All 2 branches missed.">        } else if (this.card != null) {</span>
+<span class="nc" id="L440">            return this.abstractCardType.getChannels();</span>
+<span class="nc bnc" id="L441" title="All 2 branches missed.">        } else if (this.card != null) {</span>
             // the abstract resource is linked to a card
-<span class="nc" id="L444">            return this.card.getChannels();</span>
-<span class="nc bnc" id="L445" title="All 2 branches missed.">        } else if (this.cardContent != null) {</span>
+<span class="nc" id="L443">            return this.card.getChannels();</span>
+<span class="nc bnc" id="L444" title="All 2 branches missed.">        } else if (this.cardContent != null) {</span>
             // the abstract resource is linked to a card content
-<span class="nc" id="L447">            return this.cardContent.getChannels();</span>
+<span class="nc" id="L446">            return this.cardContent.getChannels();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L450">            return Set.of();</span>
+<span class="nc" id="L449">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L456">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L455">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L462">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L461">        return EntityHelper.equals(this, obj);</span>
     }
 
     /**
      * @return string representation of its fields
      */
     protected String toPartialString() {
-<span class="nc" id="L469">        return &quot;id=&quot; + id + &quot;, abstractCardTypeId=&quot; + getAbstractCardTypeId()</span>
-<span class="nc" id="L470">            + &quot;, cardId=&quot; + getCardId() + &quot;, cardContentId=&quot; + getCardContentId()</span>
-            + &quot;, category=&quot; + category;
+<span class="nc" id="L468">        return &quot;id=&quot; + id + &quot;, abstractCardTypeId=&quot; + abstractCardTypeId + &quot;, cardId=&quot; + cardId</span>
+            + &quot;, cardContentId=&quot; + cardContentId + &quot;, category=&quot; + category;
     }
 
 }

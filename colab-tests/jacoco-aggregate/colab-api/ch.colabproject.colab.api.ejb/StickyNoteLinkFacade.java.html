@@ -6,13 +6,13 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.controller.document.ResourceManager;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
-import ch.colabproject.colab.api.persistence.document.AbstractResourceDao;
 import ch.colabproject.colab.api.persistence.document.BlockDao;
 import ch.colabproject.colab.api.persistence.link.StickyNoteLinkDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
@@ -57,16 +57,16 @@ import org.slf4j.LoggerFactory;
     private CardContentDao cardContentDao;
 
     /**
-     * Resource persistence handling
-     */
-    @Inject
-    private AbstractResourceDao resourceOrRefDao;
-
-    /**
      * Block persistence handling
      */
     @Inject
     private BlockDao blockDao;
+
+    /**
+     * Resource / resource reference logic manager
+     */
+    @Inject
+    private ResourceManager resourceManager;
 
     // *********************************************************************************************
     //
@@ -244,22 +244,19 @@ import org.slf4j.LoggerFactory;
                 }
                 break;
             case RESOURCE_OR_REF:
-<span class="fc" id="L247">                sourceObject = resourceOrRefDao.findResourceOrRef(srcId);</span>
-<span class="pc bpc" id="L248" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L249">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
-                }
-                break;
+<span class="fc" id="L247">                sourceObject = resourceManager.assertAndGetResourceOrRef(srcId);</span>
+<span class="fc" id="L248">                break;</span>
             case BLOCK:
-<span class="fc" id="L253">                sourceObject = blockDao.findBlock(srcId);</span>
-<span class="pc bpc" id="L254" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L255">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L250">                sourceObject = blockDao.findBlock(srcId);</span>
+<span class="pc bpc" id="L251" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
+<span class="nc" id="L252">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
                 }
                 break;
             default:
-<span class="nc" id="L259">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L256">                throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L262">        return sourceObject;</span>
+<span class="fc" id="L259">        return sourceObject;</span>
     }
 
     /**
@@ -272,38 +269,35 @@ import org.slf4j.LoggerFactory;
     private StickyNoteSourceable findSourceObject(StickyNoteLink link) {
         StickyNoteSourceable sourceObject;
 
-<span class="fc" id="L275">        SrcType srcType = inferSrcType(link);</span>
+<span class="fc" id="L272">        SrcType srcType = inferSrcType(link);</span>
 
-<span class="pc bpc" id="L277" title="1 of 5 branches missed.">        switch (srcType) {</span>
+<span class="pc bpc" id="L274" title="1 of 5 branches missed.">        switch (srcType) {</span>
             case CARD:
-<span class="fc" id="L279">                sourceObject = cardDao.getCard(link.getSrcCardId());</span>
-<span class="pc bpc" id="L280" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L281">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L276">                sourceObject = cardDao.getCard(link.getSrcCardId());</span>
+<span class="pc bpc" id="L277" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
+<span class="nc" id="L278">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
                 }
                 break;
             case CARD_CONTENT:
-<span class="fc" id="L285">                sourceObject = cardContentDao.getCardContent(link.getSrcCardContentId());</span>
-<span class="pc bpc" id="L286" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L287">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L282">                sourceObject = cardContentDao.getCardContent(link.getSrcCardContentId());</span>
+<span class="pc bpc" id="L283" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
+<span class="nc" id="L284">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
                 }
                 break;
             case RESOURCE_OR_REF:
-<span class="fc" id="L291">                sourceObject = resourceOrRefDao.findResourceOrRef(link.getSrcResourceOrRefId());</span>
+<span class="fc" id="L288">                sourceObject = resourceManager.assertAndGetResourceOrRef(link.getSrcResourceOrRefId());</span>
+<span class="fc" id="L289">                break;</span>
+            case BLOCK:
+<span class="fc" id="L291">                sourceObject = blockDao.findBlock(link.getSrcBlockId());</span>
 <span class="pc bpc" id="L292" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
 <span class="nc" id="L293">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
                 }
                 break;
-            case BLOCK:
-<span class="fc" id="L297">                sourceObject = blockDao.findBlock(link.getSrcBlockId());</span>
-<span class="pc bpc" id="L298" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L299">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
-                }
-                break;
             default:
-<span class="nc" id="L303">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L297">                throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L306">        return sourceObject;</span>
+<span class="fc" id="L300">        return sourceObject;</span>
     }
 
     /**
@@ -316,34 +310,34 @@ import org.slf4j.LoggerFactory;
      * @return the source type used
      */
     private SrcType inferSrcType(StickyNoteLink link) {
-<span class="fc" id="L319">        SrcType effectiveSrcType = null;</span>
+<span class="fc" id="L313">        SrcType effectiveSrcType = null;</span>
 
-<span class="fc bfc" id="L321" title="All 2 branches covered.">        if (link.isSrcCard()) {</span>
-<span class="fc" id="L322">            effectiveSrcType = SrcType.CARD;</span>
+<span class="fc bfc" id="L315" title="All 2 branches covered.">        if (link.isSrcCard()) {</span>
+<span class="fc" id="L316">            effectiveSrcType = SrcType.CARD;</span>
         }
-<span class="fc bfc" id="L324" title="All 2 branches covered.">        if (link.isSrcCardContent()) {</span>
+<span class="fc bfc" id="L318" title="All 2 branches covered.">        if (link.isSrcCardContent()) {</span>
+<span class="pc bpc" id="L319" title="1 of 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
+<span class="nc" id="L320">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+            }
+<span class="fc" id="L322">            effectiveSrcType = SrcType.CARD_CONTENT;</span>
+        }
+<span class="fc bfc" id="L324" title="All 2 branches covered.">        if (link.isSrcResourceOrRef()) {</span>
 <span class="pc bpc" id="L325" title="1 of 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
 <span class="nc" id="L326">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
-<span class="fc" id="L328">            effectiveSrcType = SrcType.CARD_CONTENT;</span>
+<span class="fc" id="L328">            effectiveSrcType = SrcType.RESOURCE_OR_REF;</span>
         }
-<span class="fc bfc" id="L330" title="All 2 branches covered.">        if (link.isSrcResourceOrRef()) {</span>
+<span class="fc bfc" id="L330" title="All 2 branches covered.">        if (link.isSrcBlock()) {</span>
 <span class="pc bpc" id="L331" title="1 of 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
 <span class="nc" id="L332">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
-<span class="fc" id="L334">            effectiveSrcType = SrcType.RESOURCE_OR_REF;</span>
+<span class="fc" id="L334">            effectiveSrcType = SrcType.BLOCK;</span>
         }
-<span class="fc bfc" id="L336" title="All 2 branches covered.">        if (link.isSrcBlock()) {</span>
-<span class="pc bpc" id="L337" title="1 of 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
-<span class="nc" id="L338">                throw HttpErrorMessage.dataIntegrityFailure();</span>
-            }
-<span class="fc" id="L340">            effectiveSrcType = SrcType.BLOCK;</span>
-        }
-<span class="pc bpc" id="L342" title="1 of 2 branches missed.">        if (effectiveSrcType == null) { // it must match one type</span>
-<span class="nc" id="L343">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="pc bpc" id="L336" title="1 of 2 branches missed.">        if (effectiveSrcType == null) { // it must match one type</span>
+<span class="nc" id="L337">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L346">        return effectiveSrcType;</span>
+<span class="fc" id="L340">        return effectiveSrcType;</span>
     }
 
     // *********************************************************************************************
