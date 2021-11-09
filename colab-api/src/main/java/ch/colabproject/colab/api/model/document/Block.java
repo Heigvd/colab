@@ -179,7 +179,7 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
         if (this.document != null) {
             return this.document.getProject();
         } else {
-            // such an orphan shouldn't exist...
+            // may be a block used as teaser, purpose, or any other
             return null;
         }
     }
@@ -238,7 +238,7 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
         if (this.id!= null){
             return Set.of(BlockChannel.build(id));
         } else {
-            // such an orphan shouldn't exist...
+            // may be a block used as teaser, purpose, or any other
             return Set.of();
         }
     }
@@ -248,8 +248,8 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
         if (this.document != null) {
             return this.document.getReadCondition();
         } else {
-            // such an orphan shouldn't exist...
-            return Conditions.defaultForOrphan;
+            // may be a block used as teaser, purpose, or any other
+            return Conditions.alwaysTrue;
         }
     }
 
@@ -258,8 +258,8 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
         if (this.document != null) {
             return this.document.getUpdateCondition();
         } else {
-            // such an orphan shouldn't exist...
-            return Conditions.defaultForOrphan;
+            // may be a block used as teaser, purpose, or any other
+            return Conditions.alwaysTrue;
         }
     }
 
