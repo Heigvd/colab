@@ -22,7 +22,7 @@ colab-client/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.Subscri
 colab-client/colab-api,ch.colabproject.colab.api.ejb,ApplicationLifecycleFacade,44,0,2,0,17,0,5,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,WebsocketFacade,804,0,60,0,212,0,64,0,34,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,ProjectFacade,146,0,8,0,40,0,14,0,10,0
-colab-client/colab-api,ch.colabproject.colab.api.ejb,CardFacade,743,0,84,0,218,0,81,0,39,0
+colab-client/colab-api,ch.colabproject.colab.api.ejb,CardFacade,745,0,84,0,219,0,81,0,39,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,TransactionManager,184,0,10,0,47,0,17,0,12,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,RequestManager,254,0,30,0,74,0,38,0,23,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,DocumentFacade,72,0,8,0,21,0,9,0,5,0
@@ -95,7 +95,7 @@ colab-client/colab-api,ch.colabproject.colab.api.ws.channel,ChannelOverview,72,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel,BlockChannel,64,0,6,0,20,0,11,0,8,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel,AdminChannel,15,0,0,0,4,0,3,0,3,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceManager,295,0,24,0,84,0,29,0,17,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceReferenceSpreadingHelper,314,0,38,0,84,0,28,0,9,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceReferenceSpreadingHelper,349,0,42,0,94,0,31,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceCategoryHelper,308,0,14,0,62,0,30,0,23,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.tools,Debouncer,18,0,0,0,7,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.tools,CancelDebounce,15,0,0,0,5,0,2,0,2,0

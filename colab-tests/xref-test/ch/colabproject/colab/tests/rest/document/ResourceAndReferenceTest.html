@@ -67,7 +67,7 @@
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>      }
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>      @Test
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testOnSubCardType() {
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testOnSubCardLocalType() {
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          doTest(Access.SUB_CARD_TYPE,
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>              Set.of(Access.SUB_CARD, Access.SUB_CARD_CONTENT));
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      }
@@ -110,9 +110,9 @@
 <a class="jxr_linenumber" name="L102" href="#L102">102</a> 
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         Long cardContentId = ColabFactory.getCardContent(client, cardId).getId();
 <a class="jxr_linenumber" name="L104" href="#L104">104</a> 
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>         Long subCardTypeId = ColabFactory.createCardType(client, projectId).getId();
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         Long subCardLocalTypeId = ColabFactory.createCardType(client, projectId).getId();
 <a class="jxr_linenumber" name="L106" href="#L106">106</a> 
-<a class="jxr_linenumber" name="L107" href="#L107">107</a>         Long subCardId = ColabFactory.createNewCard(client, cardContentId, subCardTypeId).getId();
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>         Long subCardId = ColabFactory.createNewCard(client, cardContentId, subCardLocalTypeId).getId();
 <a class="jxr_linenumber" name="L108" href="#L108">108</a> 
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>         Long subCardContentId = ColabFactory.getCardContent(client, subCardId).getId();
 <a class="jxr_linenumber" name="L110" href="#L110">110</a> 
@@ -166,7 +166,7 @@
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>                     .getAbstractResource(persistedResourceId);
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>                 <strong class="jxr_keyword">break</strong>;
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>             <strong class="jxr_keyword">case</strong> SUB_CARD_TYPE:
-<a class="jxr_linenumber" name="L161" href="#L161">161</a>                 toCreate.setAbstractCardTypeId(subCardTypeId);
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>                 toCreate.setAbstractCardTypeId(subCardLocalTypeId);
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>                 persistedResourceId = client.resourceRestEndpoint.createResource(toCreate);
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>                 persistedResource = (Resource) client.resourceRestEndpoint
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>                     .getAbstractResource(persistedResourceId);
@@ -198,7 +198,7 @@
 <a class="jxr_linenumber" name="L190" href="#L190">190</a> 
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>         Long sisterCardContentId = ColabFactory.getCardContent(client, sisterCardId).getId();
 <a class="jxr_linenumber" name="L192" href="#L192">192</a> 
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>         Long sisterSubCardId = ColabFactory.createNewCard(client, cardContentId, subCardTypeId)
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>         Long sisterSubCardId = ColabFactory.createNewCard(client, cardContentId, subCardLocalTypeId)
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>             .getId();
 <a class="jxr_linenumber" name="L195" href="#L195">195</a> 
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>         Long sisterSubCardContentId = ColabFactory.getCardContent(client, sisterSubCardId).getId();
@@ -231,7 +231,7 @@
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>                 Assertions.assertEquals(cardContentId, persistedResource.getCardContentId());
 <a class="jxr_linenumber" name="L224" href="#L224">224</a>                 <strong class="jxr_keyword">break</strong>;
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>             <strong class="jxr_keyword">case</strong> SUB_CARD_TYPE:
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>                 Assertions.assertEquals(subCardTypeId, persistedResource.getAbstractCardTypeId());
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>                 Assertions.assertEquals(subCardLocalTypeId, persistedResource.getAbstractCardTypeId());
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>                 Assertions.assertNull(persistedResource.getCardId());
 <a class="jxr_linenumber" name="L228" href="#L228">228</a>                 Assertions.assertNull(persistedResource.getCardContentId());
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>                 <strong class="jxr_keyword">break</strong>;
@@ -429,7 +429,7 @@
 <a class="jxr_linenumber" name="L421" href="#L421">421</a> 
 <a class="jxr_linenumber" name="L422" href="#L422">422</a>         AbstractResource persistedSubCardTypeAbstractResource = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L423" href="#L423">423</a>         List&lt;List&lt;AbstractResource&gt;&gt; persistedSubCardTypeResources = client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>             .getResourceChainForAbstractCardType(subCardTypeId);
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>             .getResourceChainForAbstractCardType(subCardLocalTypeId);
 <a class="jxr_linenumber" name="L425" href="#L425">425</a>         <strong class="jxr_keyword">if</strong> (resourceLocation == Access.SUB_CARD_TYPE) {
 <a class="jxr_linenumber" name="L426" href="#L426">426</a>             Assertions.assertNotNull(persistedSubCardTypeResources);
 <a class="jxr_linenumber" name="L427" href="#L427">427</a>             Assertions.assertEquals(1, persistedSubCardTypeResources.size());
@@ -586,7 +586,7 @@
 <a class="jxr_linenumber" name="L578" href="#L578">578</a>         Assertions.assertEquals(0, persistedCardContentResources.size());
 <a class="jxr_linenumber" name="L579" href="#L579">579</a> 
 <a class="jxr_linenumber" name="L580" href="#L580">580</a>         persistedSubCardTypeResources = client.resourceRestEndpoint
-<a class="jxr_linenumber" name="L581" href="#L581">581</a>             .getResourceChainForAbstractCardType(subCardTypeId);
+<a class="jxr_linenumber" name="L581" href="#L581">581</a>             .getResourceChainForAbstractCardType(subCardLocalTypeId);
 <a class="jxr_linenumber" name="L582" href="#L582">582</a>         Assertions.assertNotNull(persistedSubCardTypeResources);
 <a class="jxr_linenumber" name="L583" href="#L583">583</a>         Assertions.assertEquals(0, persistedSubCardTypeResources.size());
 <a class="jxr_linenumber" name="L584" href="#L584">584</a> 

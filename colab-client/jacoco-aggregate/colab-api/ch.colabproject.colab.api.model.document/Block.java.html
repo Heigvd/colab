@@ -179,7 +179,7 @@ import javax.persistence.Transient;
 <span class="nc bnc" id="L179" title="All 2 branches missed.">        if (this.document != null) {</span>
 <span class="nc" id="L180">            return this.document.getProject();</span>
         } else {
-            // such an orphan shouldn't exist...
+            // may be a block used as teaser, purpose, or any other
 <span class="nc" id="L183">            return null;</span>
         }
     }
@@ -238,7 +238,7 @@ import javax.persistence.Transient;
 <span class="nc bnc" id="L238" title="All 2 branches missed.">        if (this.id!= null){</span>
 <span class="nc" id="L239">            return Set.of(BlockChannel.build(id));</span>
         } else {
-            // such an orphan shouldn't exist...
+            // may be a block used as teaser, purpose, or any other
 <span class="nc" id="L242">            return Set.of();</span>
         }
     }
@@ -248,8 +248,8 @@ import javax.persistence.Transient;
 <span class="nc bnc" id="L248" title="All 2 branches missed.">        if (this.document != null) {</span>
 <span class="nc" id="L249">            return this.document.getReadCondition();</span>
         } else {
-            // such an orphan shouldn't exist...
-<span class="nc" id="L252">            return Conditions.defaultForOrphan;</span>
+            // may be a block used as teaser, purpose, or any other
+<span class="nc" id="L252">            return Conditions.alwaysTrue;</span>
         }
     }
 
@@ -258,8 +258,8 @@ import javax.persistence.Transient;
 <span class="nc bnc" id="L258" title="All 2 branches missed.">        if (this.document != null) {</span>
 <span class="nc" id="L259">            return this.document.getUpdateCondition();</span>
         } else {
-            // such an orphan shouldn't exist...
-<span class="nc" id="L262">            return Conditions.defaultForOrphan;</span>
+            // may be a block used as teaser, purpose, or any other
+<span class="nc" id="L262">            return Conditions.alwaysTrue;</span>
         }
     }
 
