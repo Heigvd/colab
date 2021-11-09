@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.controller.document;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.card.CardTypeRef;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
@@ -144,7 +145,30 @@ public final class ResourceReferenceSpreadingHelper {
      * Create a resource reference for each resource / resource reference of the parent that must be
      * spread
      *
-     * @param cardToFill The new card that need references to the up stream resources
+     * @param cardTypeRefToFill A new card type reference that need references to the up stream
+     *                          resources
+     */
+    public static void spreadResourceFromUp(CardTypeRef cardTypeRefToFill) {
+        AbstractCardType parent = cardTypeRefToFill.getTarget();
+
+        List<AbstractResource> parentResources = parent.getDirectAbstractResources();
+        for (AbstractResource parentResource : parentResources) {
+            if (mustSpreadReference(parentResource)) {
+                ResourceRef reference = initNewReferenceFrom(parentResource);
+
+                reference.setAbstractCardType(cardTypeRefToFill);
+                cardTypeRefToFill.getDirectAbstractResources().add(reference);
+
+                spreadReferenceDown(cardTypeRefToFill, reference);
+            }
+        }
+    }
+
+    /**
+     * Create a resource reference for each resource / resource reference of the parent that must be
+     * spread
+     *
+     * @param cardToFill A new card that need references to the up stream resources
      */
     public static void spreadResourceFromUp(Card cardToFill) {
         CardContent parent = cardToFill.getParent();
@@ -179,7 +203,7 @@ public final class ResourceReferenceSpreadingHelper {
      * Create a resource reference for each resource / resource reference of the parent that must be
      * spread
      *
-     * @param cardContentToFill The new card content that need references to the up stream resources
+     * @param cardContentToFill A new card content that need references to the up stream resources
      */
     public static void spreadResourceFromUp(CardContent cardContentToFill) {
         Card parent = cardContentToFill.getCard();

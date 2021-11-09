@@ -377,8 +377,11 @@ public class CardFacade {
         ref.setDeprecated(false);
         ref.setPublished(false);
 
+        ResourceReferenceSpreadingHelper.spreadResourceFromUp(ref);
+
         cardTypeDao.createCardType(ref);
         project.getElementsToBeDefined().add(ref);
+
         return ref;
     }
 

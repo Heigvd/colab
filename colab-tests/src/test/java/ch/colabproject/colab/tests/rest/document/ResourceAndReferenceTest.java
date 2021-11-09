@@ -59,7 +59,7 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testOnSubCardType() {
+    public void testOnSubCardLocalType() {
         doTest(Access.SUB_CARD_TYPE,
             Set.of(Access.SUB_CARD, Access.SUB_CARD_CONTENT));
     }
@@ -102,9 +102,9 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
 
         Long cardContentId = ColabFactory.getCardContent(client, cardId).getId();
 
-        Long subCardTypeId = ColabFactory.createCardType(client, projectId).getId();
+        Long subCardLocalTypeId = ColabFactory.createCardType(client, projectId).getId();
 
-        Long subCardId = ColabFactory.createNewCard(client, cardContentId, subCardTypeId).getId();
+        Long subCardId = ColabFactory.createNewCard(client, cardContentId, subCardLocalTypeId).getId();
 
         Long subCardContentId = ColabFactory.getCardContent(client, subCardId).getId();
 
@@ -158,7 +158,7 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
                     .getAbstractResource(persistedResourceId);
                 break;
             case SUB_CARD_TYPE:
-                toCreate.setAbstractCardTypeId(subCardTypeId);
+                toCreate.setAbstractCardTypeId(subCardLocalTypeId);
                 persistedResourceId = client.resourceRestEndpoint.createResource(toCreate);
                 persistedResource = (Resource) client.resourceRestEndpoint
                     .getAbstractResource(persistedResourceId);
@@ -190,7 +190,7 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
 
         Long sisterCardContentId = ColabFactory.getCardContent(client, sisterCardId).getId();
 
-        Long sisterSubCardId = ColabFactory.createNewCard(client, cardContentId, subCardTypeId)
+        Long sisterSubCardId = ColabFactory.createNewCard(client, cardContentId, subCardLocalTypeId)
             .getId();
 
         Long sisterSubCardContentId = ColabFactory.getCardContent(client, sisterSubCardId).getId();
@@ -223,7 +223,7 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
                 Assertions.assertEquals(cardContentId, persistedResource.getCardContentId());
                 break;
             case SUB_CARD_TYPE:
-                Assertions.assertEquals(subCardTypeId, persistedResource.getAbstractCardTypeId());
+                Assertions.assertEquals(subCardLocalTypeId, persistedResource.getAbstractCardTypeId());
                 Assertions.assertNull(persistedResource.getCardId());
                 Assertions.assertNull(persistedResource.getCardContentId());
                 break;
@@ -421,7 +421,7 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
 
         AbstractResource persistedSubCardTypeAbstractResource = null;
         List<List<AbstractResource>> persistedSubCardTypeResources = client.resourceRestEndpoint
-            .getResourceChainForAbstractCardType(subCardTypeId);
+            .getResourceChainForAbstractCardType(subCardLocalTypeId);
         if (resourceLocation == Access.SUB_CARD_TYPE) {
             Assertions.assertNotNull(persistedSubCardTypeResources);
             Assertions.assertEquals(1, persistedSubCardTypeResources.size());
@@ -578,7 +578,7 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         Assertions.assertEquals(0, persistedCardContentResources.size());
 
         persistedSubCardTypeResources = client.resourceRestEndpoint
-            .getResourceChainForAbstractCardType(subCardTypeId);
+            .getResourceChainForAbstractCardType(subCardLocalTypeId);
         Assertions.assertNotNull(persistedSubCardTypeResources);
         Assertions.assertEquals(0, persistedSubCardTypeResources.size());
 
