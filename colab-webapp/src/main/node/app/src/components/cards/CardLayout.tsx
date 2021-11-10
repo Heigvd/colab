@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import { faPen, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import { Destroyer } from '../common/Destroyer';
@@ -17,7 +17,6 @@ import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import WithToolbar from '../common/WithToolbar';
 import { cardShadow, cardStyle } from '../styling/style';
-import CardCreator from './CardCreator';
 
 const progressBarContainer = css({
   height: '4px',
@@ -60,7 +59,8 @@ export default function CardLayout({
 }: Props): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
@@ -73,30 +73,33 @@ export default function CardLayout({
         toolbar={
           <>
             {extraTools}
-            <IconButton
-              icon={faSearch}
-              onClick={() => {
-                if (history.location.pathname.startsWith('/card/')) {
-                  history.push('' + card.id);
-                } else {
-                  history.push('/card/' + card.id);
-                }
-              }}
-            />
-            <IconButton
-              icon={faPen}
-              onClick={() => {
-                if (history.location.pathname.startsWith('/card/')) {
-                  history.push('../edit/' + card.id);
-                } else if (history.location.pathname.startsWith('/edit/')) {
-                  history.push('' + card.id);
-                } else {
-                  history.push('/edit/' + card.id);
-                }
-              }}
-            />
 
-            {variant != null ? <CardCreator parent={variant} /> : null}
+            {variant != null ? (
+              <>
+                <IconButton
+                  icon={faSearch}
+                  onClick={() => {
+                    const path = `card/${card.id}`;
+                    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+                      navigate(`../${path}`);
+                    } else {
+                      navigate(path);
+                    }
+                  }}
+                />
+                <IconButton
+                  icon={faPen}
+                  onClick={() => {
+                    const path = `edit/${card.id}/v/${variant.id}`;
+                    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+                      navigate(`../${path}`);
+                    } else {
+                      navigate(`${path}`);
+                    }
+                  }}
+                />
+              </>
+            ) : null}
 
             {variants.length > 1 && variant != null ? (
               // several variants, delete the current one
@@ -119,7 +122,6 @@ export default function CardLayout({
         }
       >
         <Flex
-          grow={1}
           direction="column"
           justify="space-between"
           className={cx(

@@ -192,6 +192,7 @@ Props): JSX.Element {
                       <Flex>
                         <OpenCloseModal
                           title="Card Settings"
+                          route="settings"
                           showCloseButton={true}
                           collapsedChildren={<IconButton icon={faCog} />}
                         >

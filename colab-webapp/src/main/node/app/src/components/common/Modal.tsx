@@ -18,7 +18,6 @@ interface Props {
   children: (collapse: () => void) => React.ReactNode;
   showCloseButton?: boolean;
   onClose: () => void;
-  illustration?: string;
 }
 const backgroundStyle = css({
   backgroundColor: 'rgba(0,0,0, 0.6)',

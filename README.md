@@ -93,7 +93,7 @@ You way have a look on run options:
 Some commands listed below require to re-deploy the app.
 You can do a full, complete reload by killing the ./run script and running it again.
 
-Or you can do it the quick way: `touch colab-webapp/target/colab-webapp-0.1/.reload'
+Or you can do it the quick way: `touch colab-webapp/target/coLAB/.reload'
 
 ### Changes in the data model
 Database refactoring is not enabled yet.
@@ -132,7 +132,7 @@ This is not required for lcoal developemnt.
 
 In this case, one would run the webpack dev-server with
 ```bash
-cd colab-webapp/src/main/webapp/app
+cd colab-webapp/src/main/node/app
 yarn start
 ```
 

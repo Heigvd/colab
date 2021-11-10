@@ -5,8 +5,9 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import { faCheck, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -14,9 +15,8 @@ import { useProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/IconButton';
-import Loading from '../common/Loading';
-import Overlay from '../common/Overlay';
-import { normalThemeMode } from '../styling/style';
+import InlineLoading from '../common/InlineLoading';
+import OpenCloseModal from '../common/OpenCloseModal';
 import CardTypeCreator from './cardtypes/CardTypeCreator';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
@@ -32,61 +32,39 @@ const listOfTypeStyle = css({
 
 export default function CardCreator({ parent }: CardCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const [state, setState] = React.useState<'COLLAPSED' | 'EXPANDED' | 'PENDING'>('COLLAPSED');
   const [selectedType, setSelectedType] = React.useState<number | undefined>();
   const { project } = useProjectBeingEdited();
   const cardTypes = useProjectCardTypes();
 
   React.useEffect(() => {
-    if (state !== 'EXPANDED') {
-      if (cardTypes.projectStatus === 'UNSET') {
-        if (project != null) {
-          dispatch(API.getProjectCardTypes(project));
-        }
-      }
-      if (cardTypes.publishedStatus === 'UNSET') {
-        // published type from other project or global types not yet knonw
-        dispatch(API.getPublishedCardTypes());
+    if (cardTypes.projectStatus === 'UNSET') {
+      if (project != null) {
+        dispatch(API.getProjectCardTypes(project));
       }
     }
-  }, [cardTypes.projectStatus, cardTypes.publishedStatus, state, project, dispatch]);
+    if (cardTypes.publishedStatus === 'UNSET') {
+      // published type from other project or global types not yet knonw
+      dispatch(API.getPublishedCardTypes());
+    }
+  }, [cardTypes.projectStatus, cardTypes.publishedStatus, project, dispatch]);
 
   const onSelect = React.useCallback((id: number) => {
     setSelectedType(id);
   }, []);
 
-  if (state === 'COLLAPSED') {
-    return (
-      <div>
-        <IconButton
-          icon={faPlus}
-          title="Add card"
-          onClick={() => {
-            setState('EXPANDED');
-          }}
-        />
-      </div>
-    );
-  } else {
-    if (
-      cardTypes.projectStatus !== 'READY' ||
-      cardTypes.publishedStatus !== 'READY' ||
-      state === 'PENDING'
-    ) {
-      return <Loading />;
-    } else {
-      return (
-        <Overlay>
-          <div
-            className={cx(
-              normalThemeMode,
-              css({
+  return (
+    <OpenCloseModal title="Create a card" collapsedChildren={<FontAwesomeIcon icon={faPlus} />}>
+      {close => {
+        if (cardTypes.projectStatus !== 'READY' || cardTypes.publishedStatus !== 'READY') {
+          return <InlineLoading />;
+        } else {
+          return (
+            <div
+              className={css({
                 border: '1px solid grey',
                 padding: '20px',
-              }),
-            )}
-          >
-            <div>
+              })}
+            >
               <h2>Create a new subcard {parent.title ? 'for ' + parent.title : ''}</h2>
               <div>
                 <h3>Common types</h3>
@@ -143,36 +121,29 @@ export default function CardCreator({ parent }: CardCreatorProps): JSX.Element {
                   />
                 </div>
               </div>
+              <div>
+                <IconButton icon={faTimes} title="cancel" onClick={close} />
+                {selectedType != null ? (
+                  <IconButton
+                    icon={faCheck}
+                    title="create"
+                    onClick={() => {
+                      dispatch(
+                        API.createSubCardWithBlockDoc({
+                          parent: parent,
+                          cardTypeId: selectedType,
+                        }),
+                      ).then(() => {
+                        close();
+                      });
+                    }}
+                  />
+                ) : null}
+              </div>
             </div>
-            <div>
-              <IconButton
-                icon={faTimes}
-                title="cancel"
-                onClick={() => {
-                  setState('COLLAPSED');
-                }}
-              />
-              {selectedType != null ? (
-                <IconButton
-                  icon={faCheck}
-                  title="create"
-                  onClick={() => {
-                    setState('PENDING');
-                    dispatch(
-                      API.createSubCardWithBlockDoc({
-                        parent: parent,
-                        cardTypeId: selectedType,
-                      }),
-                    ).then(() => {
-                      setState('COLLAPSED');
-                    });
-                  }}
-                />
-              ) : null}
-            </div>
-          </div>
-        </Overlay>
-      );
-    }
-  }
+          );
+        }
+      }}
+    </OpenCloseModal>
+  );
 }

@@ -7,14 +7,7 @@
 import { css, cx } from '@emotion/css';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import {
-  HashRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-  useLocation,
-  useParams,
-} from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
 import { getDisplayName } from '../helper';
 import { useProject, useProjectBeingEdited } from '../selectors/projectSelector';
@@ -40,10 +33,12 @@ import { fullPageStyle, invertedThemeMode } from './styling/style';
  * To read parameters from hash
  */
 const EditorWrapper = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id: sId } = useParams<'id'>();
+
+  const id = +sId!;
 
   const dispatch = useAppDispatch();
-  const { project, status } = useProject(+id);
+  const { project, status } = useProject(+id!);
   const { project: editedProject, status: editingStatus } = useProjectBeingEdited();
 
   React.useEffect(() => {
@@ -122,28 +117,23 @@ export default function MainApp(): JSX.Element {
     return <Loading />;
   } else if (currentUserStatus == 'NOT_AUTHENTICATED') {
     return (
-      <Router>
-        <Switch>
-          <Route exact path="/SignUp">
-            <SignUpForm redirectTo={query.get('redirectTo')} />
-          </Route>
-          <Route exact path="/ForgotPassword">
-            <ForgotPassword redirectTo={query.get('redirectTo')} />
-          </Route>
-          <Route exact path="/SignIn">
-            <SignInForm redirectTo={query.get('redirectTo')} />
-          </Route>
-          <Route>
-            <SignInForm redirectTo={query.get('redirectTo')} />
-          </Route>
-        </Switch>
+      <>
+        <Routes>
+          <Route path="/SignUp" element={<SignUpForm redirectTo={query.get('redirectTo')} />} />
+          <Route
+            path="/ForgotPassword"
+            element={<ForgotPassword redirectTo={query.get('redirectTo')} />}
+          />
+          <Route path="/SignIn" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
+          <Route path="*" element={<SignInForm redirectTo={query.get('redirectTo')} />} />
+        </Routes>
         {reconnecting}
-      </Router>
+      </>
     );
   } else if (currentUser != null) {
     // user is authenticated
     return (
-      <Router>
+      <>
         <div className={fullPageStyle}>
           <div
             className={cx(
@@ -166,19 +156,9 @@ export default function MainApp(): JSX.Element {
               })}
             />
             <nav>
-              <MainMenuLink exact to="/">
-                Projects
-              </MainMenuLink>
+              <MainMenuLink to="/">Projects</MainMenuLink>
               {projectBeingEdited != null ? (
-                <MainMenuLink
-                  to={`/editor/${projectBeingEdited.id}`}
-                  isActive={(match, _location) => {
-                    if (match) {
-                      return match.url.startsWith(`/editor/${projectBeingEdited.id}`);
-                    }
-                    return false;
-                  }}
-                >
+                <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
                   Project {projectBeingEdited.name}
                 </MainMenuLink>
               ) : null}
@@ -208,31 +188,23 @@ export default function MainApp(): JSX.Element {
               },
             })}
           >
-            <Switch>
-              <Route exact path="/">
-                <UserProjects />
-              </Route>
-              <Route path="/settings">
-                <Settings />
-              </Route>
-              <Route path="/admin">
-                <Admin />
-              </Route>
-              <Route path="/editor/:id">
-                <EditorWrapper />
-              </Route>
-              <Route path="/debug">
-                <Debugger />
-              </Route>
-              <Route>
-                {/* no matching route, redirect to projects */}
-                <Redirect to="/" />
-              </Route>
-            </Switch>
+            <Routes>
+              <Route path="/" element={<UserProjects />} />
+              <Route path="/settings/*" element={<Settings />} />
+              <Route path="/admin/*" element={<Admin />} />
+              <Route path="/editor/:id/*" element={<EditorWrapper />} />
+              <Route path="/debug" element={<Debugger />} />
+              <Route
+                element={
+                  /* no matching route, redirect to projects */
+                  <Navigate to="/" />
+                }
+              />
+            </Routes>
           </div>
         </div>
         {reconnecting}
-      </Router>
+      </>
     );
   } else {
     return (

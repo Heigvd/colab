@@ -71,7 +71,7 @@ export default function SelectInput<T>({
           value={currentValue}
           options={options}
           onChange={onInternalChangeCb}
-          readOnly={readonly}
+          isDisabled={readonly}
         />
       ) : (
         <Select
@@ -80,7 +80,7 @@ export default function SelectInput<T>({
           value={currentValue}
           options={options}
           onChange={onInternalChangeCb}
-          readOnly={readonly}
+          isDisabled={readonly}
         />
       )}
     </Flex>

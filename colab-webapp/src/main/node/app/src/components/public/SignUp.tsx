@@ -6,7 +6,7 @@
  */
 import { css } from '@emotion/css';
 import * as React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { signUp } from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
@@ -37,7 +37,7 @@ const defData: Data = {
 
 export default (props: Props): JSX.Element => {
   const dispatch = useAppDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const i18n = useTranslations();
 
   const fields: Field<Data>[] = [
@@ -85,11 +85,11 @@ export default (props: Props): JSX.Element => {
       dispatch(signUp(credentials)).then(action => {
         // is that a hack or not ???
         if (props.redirectTo && action.meta.requestStatus === 'fulfilled') {
-          history.push(props.redirectTo);
+          navigate(props.redirectTo);
         }
       });
     },
-    [dispatch, props.redirectTo, history],
+    [dispatch, props.redirectTo, navigate],
   );
 
   return (

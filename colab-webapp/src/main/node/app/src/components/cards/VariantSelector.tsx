@@ -9,13 +9,15 @@ import { css } from '@emotion/css';
 import { faCaretLeft, faCaretRight, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
-import WithToolbar from '../common/WithToolbar';
+import InlineLoading from '../common/InlineLoading';
+//import WithToolbar from '../common/WithToolbar';
+import { useDefaultVariant } from '../projects/edition/Editor';
 
 interface Props {
   card: Card;
@@ -45,23 +47,27 @@ const computeNav = (
 };
 
 export default function VariantSelector({ card, children }: Props): JSX.Element {
-  const dispatch = useAppDispatch();
+  //  const dispatch = useAppDispatch();
 
   const [displayedVariantId, setDisplayedVariantId] = React.useState<number | undefined>();
 
   const contents = useVariantsOrLoad(card);
 
+  const defaultVariant = useDefaultVariant(card.id!);
+
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
+  } else if (defaultVariant === 'LOADING') {
+    return <InlineLoading />;
   } else {
-    const cardId = card.id;
-    const variantPager = computeNav(contents, displayedVariantId);
+    //    const cardId = card.id;
+    const variantPager = computeNav(contents, displayedVariantId || defaultVariant.id);
 
     return (
       <div
         className={css({
           margin: '10px',
-          flexGrow: 1,
+          //          flexGrow: 1,
           display: 'flex',
           //          alignItems: 'center',
           '& > div': {
@@ -82,28 +88,7 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
           />
         ) : null}
 
-        <WithToolbar
-          toolbarPosition="TOP_RIGHT"
-          //          offsetX={-1}
-          toolbar={
-            <IconButton
-              icon={faWindowRestore}
-              title="Create new variant"
-              onClick={() => {
-                dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {
-                  // TODO select and display new content
-                  if (payload.meta.requestStatus === 'fulfilled') {
-                    if (entityIs(payload.payload, 'CardContent')) {
-                      setDisplayedVariantId(payload.payload.id || undefined);
-                    }
-                  }
-                });
-              }}
-            />
-          }
-        >
-          {children(variantPager?.current, contents || [])}
-        </WithToolbar>
+        {children(variantPager?.current, contents || [])}
 
         {variantPager != null && variantPager.next != variantPager.current ? (
           <IconButton
@@ -131,7 +116,7 @@ interface PagerProps {
 
 export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const contents = useVariantsOrLoad(card);
 
@@ -139,9 +124,9 @@ export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.
 
   const goto = React.useCallback(
     (card: Card, variant: CardContent) => {
-      history.push(`/edit/${card.id}/v/${variant.id}`);
+      navigate(`../edit/${card.id}/v/${variant.id}`);
     },
-    [history],
+    [navigate],
   );
 
   if (card.id == null) {
@@ -196,7 +181,6 @@ export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.
               title="Create new variant"
               onClick={() => {
                 dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {
-                  // TODO select and display new content
                   if (payload.meta.requestStatus === 'fulfilled') {
                     if (entityIs(payload.payload, 'CardContent')) {
                       goto(card, payload.payload);

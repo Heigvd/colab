@@ -11,6 +11,7 @@ import * as React from 'react';
 import { getSubCards } from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
+import CardCreator from './CardCreator';
 import CardThumbWithSelector from './CardThumbWithSelector';
 
 interface Props {
@@ -88,6 +89,7 @@ export default function ContentSubs({
       return (
         <div className={voidStyle}>
           <i className={foggyBackground}>empty</i>
+          <CardCreator parent={cardContent} />
         </div>
       );
     } else {
@@ -96,6 +98,7 @@ export default function ContentSubs({
           {subCards.map(sub => (
             <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
           ))}
+          <CardCreator parent={cardContent} />
         </div>
       ) : (
         <div className={flexWrap}>

@@ -48,48 +48,37 @@ const inlineLink = cx(
 
 interface LinkProps {
   to: string;
-  exact?: boolean;
   children: React.ReactNode;
-  isActive?: NavLinkProps['isActive'];
-  className?: string;
+  className?: NavLinkProps['className'];
 }
 
-export const MainMenuLink = ({ to, exact = false, children, isActive }: LinkProps): JSX.Element => {
+function defaultClassName({ isActive }: { isActive: boolean }): string {
+  return isActive ? mainLinkActiveClass : mainMenuLink;
+}
+
+export const MainMenuLink = ({ to, children, className }: LinkProps): JSX.Element => {
   return (
-    <NavLink
-      isActive={isActive}
-      exact={exact}
-      to={to}
-      activeClassName={mainLinkActiveClass}
-      className={mainMenuLink}
-    >
+    <NavLink className={className || defaultClassName} to={to}>
       {children}
     </NavLink>
   );
 };
 
-export const SecondLevelLink = ({
-  to,
-  exact = false,
-  children,
-  isActive,
-}: LinkProps): JSX.Element => {
+function secondDefaultClassName({ isActive }: { isActive: boolean }): string {
+  return isActive ? secondLevelLinkActiveClass : secondLevelLink;
+}
+
+export const SecondLevelLink = ({ to, children, className }: LinkProps): JSX.Element => {
   return (
-    <NavLink
-      isActive={isActive}
-      exact={exact}
-      to={to}
-      activeClassName={secondLevelLinkActiveClass}
-      className={secondLevelLink}
-    >
+    <NavLink to={to} className={className || secondDefaultClassName}>
       {children}
     </NavLink>
   );
 };
 
-export const InlineLink = ({ to, exact = false, children, className }: LinkProps): JSX.Element => {
+export const InlineLink = ({ to, children, className }: LinkProps): JSX.Element => {
   return (
-    <NavLink exact={exact} to={to} className={cx(className, inlineLink)}>
+    <NavLink to={to} className={className || inlineLink}>
       {children}
     </NavLink>
   );

@@ -34,7 +34,8 @@ const cardStyle = (color: string | null | undefined): string =>
   css({
     display: 'flex',
     flexDirection: 'column',
-    margin: '20px',
+    padding: '0px',
+    margin: '0px',
     backgroundColor: color || undefined,
     //  flexWrap: 'wrap',
     borderRadius: '5px',
@@ -280,6 +281,8 @@ function SubCardCreator({ divRefs, cRefs, jsPlumb, parent }: SubCardCreatorProps
         css({
           border: '1px grey dashed',
           alignSelf: 'flex-start',
+          margin: '30px',
+          padding: '20px',
         }),
       )}
       ref={ref => {
@@ -487,12 +490,13 @@ export function CardHierarchy({
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          margin: '30px',
         })}`}
         ref={ref => {
           assignDiv(divRefs, ref, `CardHierarchy-${rootId}`);
         }}
       >
-        <CardGroup card={root.card} divRefs={divRefs} />
+        {project.rootCardId !== rootId ? <CardGroup card={root.card} divRefs={divRefs} /> : null}
         <AllSubsContainer
           contents={contents}
           subs={subs}
@@ -522,7 +526,7 @@ export default function Hierarchy({ rootId }: HierarchyDisplayProps): JSX.Elemen
     if (thisNode != null) {
       const plumb = newInstance({
         container: thisNode,
-        connector: { type: 'Flowchart', options: { stub: 10 } },
+        connector: { type: 'Flowchart', options: { stub: 5 } },
         paintStyle: { strokeWidth: 1, stroke: 'black' },
         anchors: ['Top', 'Bottom'],
         endpoint: 'Blank',

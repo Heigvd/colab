@@ -25,7 +25,7 @@ export const errorStyle = css({
 });
 
 export const warningStyle = css({
-  color: 'var(--warninggColor)',
+  color: 'var(--warningColor)',
 });
 
 export const successStyle = css({

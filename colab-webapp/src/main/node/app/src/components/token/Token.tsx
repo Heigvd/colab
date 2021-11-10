@@ -6,7 +6,7 @@
  */
 
 import * as React from 'react';
-import { Redirect, useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { getRestClient, reloadCurrentUser } from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
 import logger from '../../logger';
@@ -17,8 +17,8 @@ import Loading from '../common/Loading';
 import Overlay from '../common/Overlay';
 
 interface TokenProps {
-  tokenId: string;
-  token: string;
+  tokenId: string | undefined;
+  token: string | undefined;
 }
 
 type STATE_TYPE = 'LOADING' | 'AUTH_REQUIRED' | 'NO_TOKEN' | 'ERROR' | 'DONE';
@@ -33,54 +33,58 @@ export default function Token(props: TokenProps): JSX.Element {
   const [redirectTo, setRedirectTo] = React.useState('');
 
   React.useEffect(() => {
-    // hack: nest API calls within this hook to avoid setting full token slice
-    if (user.status === 'UNKNOWN') {
-      // authenticate state not known-> reload
-      dispatch(reloadCurrentUser());
-      logger.debug('reload current user');
-    } else if (user.status !== 'LOADING') {
-      // null user means unauthenticated
-      const loadToken = async () => {
-        logger.debug('load token #', props.tokenId);
-        const token = await getRestClient().TokenRestEndpoint.getToken(+props.tokenId);
-        if (token != null) {
-          logger.debug('Got token', token);
-          setRedirectTo(token.redirectTo || '');
-          if (user.currentUser === null && token.authenticationRequired) {
-            logger.debug('Token requires authentication, current user is not');
-            setState('AUTH_REQUIRED');
-          } else {
-            logger.debug('Ready to process the token');
-            try {
-              const processedToken = await getRestClient().TokenRestEndpoint.consumeToken(
-                +props.tokenId,
-                props.token,
-              );
-              setRedirectTo(processedToken.redirectTo || '');
-              // some token may change authentication status: force to reload current user/account
-              dispatch(reloadCurrentUser());
-              setState('DONE');
-            } catch (e) {
-              setState('ERROR');
+    if (props.tokenId && props.token) {
+      const tokenId = props.tokenId;
+      const tokenHash = props.token;
+      // hack: nest API calls within this hook to avoid setting full token slice
+      if (user.status === 'UNKNOWN') {
+        // authenticate state not known-> reload
+        dispatch(reloadCurrentUser());
+        logger.debug('reload current user');
+      } else if (user.status !== 'LOADING') {
+        // null user means unauthenticated
+        const loadToken = async () => {
+          logger.debug('load token #', tokenId);
+          const token = await getRestClient().TokenRestEndpoint.getToken(+tokenId);
+          if (token != null) {
+            logger.debug('Got token', token);
+            setRedirectTo(token.redirectTo || '');
+            if (user.currentUser === null && token.authenticationRequired) {
+              logger.debug('Token requires authentication, current user is not');
+              setState('AUTH_REQUIRED');
+            } else {
+              logger.debug('Ready to process the token');
+              try {
+                const processedToken = await getRestClient().TokenRestEndpoint.consumeToken(
+                  +tokenId,
+                  tokenHash,
+                );
+                setRedirectTo(processedToken.redirectTo || '');
+                // some token may change authentication status: force to reload current user/account
+                dispatch(reloadCurrentUser());
+                setState('DONE');
+              } catch (e) {
+                setState('ERROR');
+              }
             }
+          } else {
+            // token not found
+            logger.debug('Got no token...');
+            setState('NO_TOKEN');
           }
-        } else {
-          // token not found
-          logger.debug('Got no token...');
-          setState('NO_TOKEN');
-        }
+        };
+        loadToken();
+      }
+      return () => {
+        //clean}
       };
-      loadToken();
     }
-    return () => {
-      //clean}
-    };
   }, [dispatch, user, props.tokenId, props.token]);
 
   if (state == 'LOADING') {
     return <Loading />;
   } else if (state == 'DONE') {
-    return <Redirect to={redirectTo} />;
+    return <Navigate to={redirectTo} />;
   } else if (state == 'AUTH_REQUIRED') {
     const backToTokenUrl = location.pathname;
     return (

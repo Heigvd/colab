@@ -7,7 +7,7 @@
 
 import { Account, entityIs } from 'colab-rest-client';
 import * as React from 'react';
-import { HashRouter as Router, Route, Switch, useParams } from 'react-router-dom';
+import { Route, Routes, useParams } from 'react-router-dom';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { shallowEqual, useAppSelector } from '../../store/hooks';
 import { SecondLevelLink } from '../common/Link';
@@ -25,7 +25,7 @@ function accountTitle(account: Account) {
  * useParams does not work inline...
  */
 function WrapLocalAccountEditor() {
-  const { id } = useParams<{ id?: string }>();
+  const { id } = useParams<'id'>();
 
   if (id != null && +id >= 0) {
     return <LocalAccount accountId={+id} />;
@@ -45,35 +45,27 @@ export default (): JSX.Element => {
     return (
       <div>
         <h2>Settings</h2>
-        <Router basename="/settings">
+        <div>
+          <nav>
+            <SecondLevelLink to="user">User Profile</SecondLevelLink>
+            {accounts.map(account => {
+              return (
+                <SecondLevelLink key={`account-${account.id}`} to={`account/${account.id}`}>
+                  {accountTitle(account)}
+                </SecondLevelLink>
+              );
+            })}
+            <span>add account</span>
+            <span>...</span>
+          </nav>
           <div>
-            <nav>
-              <SecondLevelLink to="/user">User Profile</SecondLevelLink>
-              {accounts.map(account => {
-                return (
-                  <SecondLevelLink key={`account-${account.id}`} to={`/account/${account.id}`}>
-                    {accountTitle(account)}
-                  </SecondLevelLink>
-                );
-              })}
-              <span>add account</span>
-              <span>...</span>
-            </nav>
-            <div>
-              <Switch>
-                <Route exact path="/">
-                  <span>select something...</span>
-                </Route>
-                <Route exact path="/user">
-                  <UserProfile user={currentUser} />
-                </Route>
-                <Route path="/account/:id">
-                  <WrapLocalAccountEditor />
-                </Route>
-              </Switch>
-            </div>
+            <Routes>
+              <Route path="/" element={<span>select something...</span>} />
+              <Route path="user" element={<UserProfile user={currentUser} />} />
+              <Route path="account/:id" element={<WrapLocalAccountEditor />} />
+            </Routes>
           </div>
-        </Router>
+        </div>
       </div>
     );
   } else {
