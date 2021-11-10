@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.62% </span>
+                <span class="strong">69.61% </span>
                 <span class="quiet">Statements</span>
                 <span class='fraction'>181/260</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.36% </span>
+                <span class="strong">65.17% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>81/132</span>
+                <span class='fraction'>73/112</span>
             </div>
         
             
@@ -1306,7 +1306,7 @@ export const getMicroChangeReduce = <span class="fstat-no" title="function not c
         };
 <span class="cstat-no" title="statement not covered" >        logger.trace('NewAcc: ', nAcc);</span>
 <span class="cstat-no" title="statement not covered" >        return nAcc;</span>
-      } else <span class="cstat-no" title="statement not covered" >if (current.removed) {</span>
+      } else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>if (current.removed) {</span>
         const nAcc: ChangesWithOffset = <span class="cstat-no" title="statement not covered" >{</span>
           changes: [
             ...acc.changes,
@@ -1342,9 +1342,9 @@ export const getMicroChangeReduce = <span class="fstat-no" title="function not c
 function applyChange(buffer: string, mu: MicroChange): string {
   if (mu.t === 'D' &amp;&amp; mu.l != null) {
     return buffer.substring(0, mu.o) + buffer.substring(mu.o + mu.l);
-  } else <span class="missing-if-branch" title="else path not taken" >E</span>if (mu.t === 'I' &amp;&amp; mu.v != null) {
+  } else if (mu.t === 'I' &amp;&amp; mu.v != null) {
     return buffer.substring(0, mu.o) + mu.v + buffer.substring(mu.o);
-  } else {
+  } else <span class="missing-if-branch" title="else path not taken" >E</span>{
 <span class="cstat-no" title="statement not covered" >    logger.error('Invalid change: ', mu);</span>
 <span class="cstat-no" title="statement not covered" >    return buffer;</span>
   }
@@ -1370,11 +1370,11 @@ function modifyOffsets(offsets: Offsets, index: number, value: number) {
       // current offset if after the new offset
       // shoudl be moves
       const oValue = <span class="cstat-no" title="statement not covered" >offsets[key];</span>
-<span class="cstat-no" title="statement not covered" >      if (oValue != null) {</span>
+<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (oValue != null) {</span>
         const newKey = <span class="cstat-no" title="statement not covered" >key + value;</span>
         let newValue = <span class="cstat-no" title="statement not covered" >oValue;</span>
         const newOffset = <span class="cstat-no" title="statement not covered" >offsets[newKey];</span>
-<span class="cstat-no" title="statement not covered" >        if (newOffset) {</span>
+<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (newOffset) {</span>
 <span class="cstat-no" title="statement not covered" >          newValue = newOffset + newValue;</span>
         }
 <span class="cstat-no" title="statement not covered" >        modified[key] = 0;</span>
@@ -1387,7 +1387,7 @@ function modifyOffsets(offsets: Offsets, index: number, value: number) {
   for (const sKey in modified) {
     const key = <span class="cstat-no" title="statement not covered" >+sKey;</span>
     const current = <span class="cstat-no" title="statement not covered" >modified[key];</span>
-<span class="cstat-no" title="statement not covered" >    if (current != null) {</span>
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (current != null) {</span>
 <span class="cstat-no" title="statement not covered" >      offsets[key] = current;</span>
     }
   }
@@ -1399,11 +1399,11 @@ export function computeOffsets(microchanges: MicroChange[]): Offsets {
   for (let i = microchanges.length - 1; i &gt;= 0; i--) {
     const mu = microchanges[i]!;
     if (mu.t === 'D') {
-      <span class="missing-if-branch" title="else path not taken" >E</span>if (mu.l != null) {
+      if (mu.l != null) {
         modifyOffsets(offsets, mu.o + mu.l, -mu.l);
       }
     } else {
-      <span class="missing-if-branch" title="else path not taken" >E</span>if (mu.v != null) {
+      if (mu.v != null) {
         modifyOffsets(offsets, mu.o, mu.v.length);
       }
     }
@@ -1427,10 +1427,10 @@ export function shiftOffsets(offsets: Offsets, change: Change): Offsets {
 &nbsp;
       if (mu.o &lt;= offsetIndex) {
         <span class="missing-if-branch" title="if path not taken" >I</span>if (mu.t === 'D') {
-<span class="cstat-no" title="statement not covered" >          if (mu.l != null) {</span>
+<span class="cstat-no" title="statement not covered" >          <span class="missing-if-branch" title="if path not taken" >I</span>if (mu.l != null) {</span>
 <span class="cstat-no" title="statement not covered" >            offsetIndex -= mu.l;</span>
           }
-        } else <span class="missing-if-branch" title="else path not taken" >E</span>if (mu.v != null) {
+        } else if (mu.v != null) {
           offsetIndex += mu.v.length;
         }
       }
@@ -1486,14 +1486,14 @@ function shift(change: Change, offsets: Offsets, _forward: boolean) {
             // mu     |-----|
             // new mu |--|
             mu.l = deleteFromIndex - muStart;
-          } else <span class="missing-if-branch" title="else path not taken" >E</span>if (muStart &gt;= deleteFromIndex &amp;&amp; muEnd &gt;= deleteToIndex) {
+          } else if (muStart &gt;= deleteFromIndex &amp;&amp; muEnd &gt;= deleteToIndex) {
             // partial overlap
             // off    |-----|
             // mu        |-----|
             // new mu       |--| shifted at offsetStart
             mu.l = muEnd - deleteToIndex;
             mu.o = deleteFromIndex;
-          } else {
+          } else <span class="missing-if-branch" title="else path not taken" >E</span>{
 <span class="cstat-no" title="statement not covered" >            logger.error('Unhandled case offset{}:{}, mu:{}', offsetIndex, offsetValue, mu);</span>
           }
         }
@@ -1516,7 +1516,7 @@ function shift(change: Change, offsets: Offsets, _forward: boolean) {
           // mu     |+|
           // nothing to do
         }
-      } else <span class="missing-if-branch" title="else path not taken" >E</span>if (offsetValue &gt; 0 &amp;&amp; mu.t === 'D') {
+      } else if (offsetValue &gt; 0 &amp;&amp; mu.t === 'D') {
         // offset is addition, mu is deletion
         const muEnd = muStart + mu.l!;
 &nbsp;
@@ -1591,9 +1591,9 @@ function getAllDependencies(changes: Change[], change: Change): string[] {
   while (queue.length &gt; 0) {
     const ch = queue.shift();
 &nbsp;
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (ch != null) {
+    if (ch != null) {
       ch.basedOn.forEach(dep =&gt; {
-        <span class="missing-if-branch" title="else path not taken" >E</span>if (!deps[dep]) {
+        if (!deps[dep]) {
           deps[dep] = true;
           const parent = getByRevision(changes, dep);
           if (parent != null &amp;&amp; queue.indexOf(parent) &lt; 0) {
@@ -1629,7 +1629,7 @@ function rebase(allChanges: Change[], newBase: Change, change: Change) {
   const baseDeps = getAllDependencies(allChanges, newBase);
   const changeDeps = getAllDependencies(allChanges, change);
 &nbsp;
-  <span class="missing-if-branch" title="else path not taken" >E</span>if (setsEqual(baseDeps, changeDeps)) {
+  if (setsEqual(baseDeps, changeDeps)) {
     // exact same set of dependencies: changes are sieblings
     const offsets = computeOffsets(newBase.microchanges);
     const newBaseRev = newBase.revision;
@@ -1640,7 +1640,7 @@ function rebase(allChanges: Change[], newBase: Change, change: Change) {
     propagateOffsets(allChanges, change, offsets, true, newBaseRev);
 &nbsp;
     change.basedOn = [newBaseRev];
-  } else <span class="cstat-no" title="statement not covered" >if (setsEqual([change.revision], newBase.basedOn)) {</span>
+  } else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="else path not taken" >E</span>if (setsEqual([change.revision], newBase.basedOn)) {</span>
 <span class="cstat-no" title="statement not covered" >    logger.debug('Inverse hierarchy : ', change, ' on ', newBase);</span>
     const offsets = <span class="cstat-no" title="statement not covered" >computeOffsets(newBase.microchanges);</span>
 &nbsp;
@@ -1687,15 +1687,15 @@ export const process = (
     // fetch all changes based on the current revision
     const children = changes.filter(change =&gt; change.basedOn.indexOf(currentRevision) &gt;= 0);
 &nbsp;
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (children.length &gt; 0) {
+    if (children.length &gt; 0) {
       logger.debug('All @', currentRevision, ' children: ', children);
       // find a child which depends only only already applied changes
       // This may be the case when changes order is quite messed up due to network asyncness
       const change = children.filter(ch =&gt; containsAll(appliedChanges, ch.basedOn))[0];
 &nbsp;
-      <span class="missing-if-branch" title="else path not taken" >E</span>if (change != null) {
+      if (change != null) {
         const originalChange = getByRevision(changeset, change.revision);
-        <span class="missing-if-branch" title="else path not taken" >E</span>if (originalChange != null) {
+        if (originalChange != null) {
           deps.push(change.revision);
           removeAllItems(deps, originalChange.basedOn);
         }
@@ -1721,11 +1721,11 @@ export const process = (
         }
 &nbsp;
         currentRevision = change.revision;
-      } else {
+      } else <span class="missing-if-branch" title="else path not taken" >E</span>{
 <span class="cstat-no" title="statement not covered" >        logger.error('Inconsistent changes: all children have unapplied parent ', children);</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Inconsistent changset: unapplied parent ' + children);</span>
       }
-    } else {
+    } else <span class="missing-if-branch" title="else path not taken" >E</span>{
 <span class="cstat-no" title="statement not covered" >      logger.error('Inconsistent changes: no children for @', currentRevision, ' in ', changes);</span>
 <span class="cstat-no" title="statement not covered" >      throw new Error('Inconsistent changset: missing ' + currentRevision + ' children');</span>
       //break;
@@ -1777,7 +1777,7 @@ export const merge = <span class="fstat-no" title="function not covered" >(</spa
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Nov 09 2021 15:35:59 GMT+0000 (Coordinated Universal Time)
+                at Wed Nov 10 2021 16:43:36 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../prettify.js"></script>
