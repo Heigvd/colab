@@ -7,15 +7,15 @@
 
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ExternalDocLink } from 'colab-rest-client';
+import { ExternalLink } from 'colab-rest-client';
 import * as React from 'react';
 
-export interface ExternalDocLinkProps {
-  document: ExternalDocLink;
+export interface ExternalLinkProps {
+  document: ExternalLink;
   allowEdition?: boolean;
 }
 
-export function ExternalDocLinkEditor({ document }: ExternalDocLinkProps): JSX.Element {
+export function ExternalLinkEditor({ document }: ExternalLinkProps): JSX.Element {
   return (
     <div>
       <a href={document.url || undefined} target="_blank" rel="noreferrer">

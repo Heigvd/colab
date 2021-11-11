@@ -24,7 +24,7 @@ export type ResourceCreatorProps = { contextInfo: ResourceCallContext; categorie
 const defaultDocType = 'BlockDocument';
 
 interface ResourceType {
-  docType: 'BlockDocument' | 'ExternalDocLink' | 'HostedDocLink';
+  docType: 'BlockDocument' | 'ExternalLink' | 'HostedDocLink';
   title: string;
   teaser: string;
   category: string;

@@ -116,6 +116,11 @@ public class User implements ColabEntity, WithWebsocketChannels {
     private String commonname;
 
     /**
+     * User affiliation
+     */
+    private String affiliation;
+
+    /**
      * System-wide unique name. Alphanumeric only
      */
     @Pattern(regexp = "[a-zA-Z0-9]+")
@@ -253,6 +258,24 @@ public class User implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
+     * Get the value of affiliation
+     *
+     * @return the value of affiliation
+     */
+    public String getAffiliation() {
+        return affiliation;
+    }
+
+    /**
+     * Set the value of affiliation
+     *
+     * @param affiliation new value of affiliation
+     */
+    public void setAffiliation(String affiliation) {
+        this.affiliation = affiliation;
+    }
+
+    /**
      * Get user's username. This name is unique system-wide
      *
      * @return username
@@ -343,6 +366,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
             this.setFirstname(o.getFirstname());
             this.setLastname(o.getLastname());
             this.setCommonname(o.getCommonname());
+            this.setAffiliation(o.getAffiliation());
         } else {
             throw new ColabMergeException(this, other);
         }

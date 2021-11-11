@@ -29,26 +29,26 @@ public class HostedDocLink extends Document {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * The path to access the document
+     * The filePath to access the document
      */
-    private String path;
+    private String filePath;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * @return the path to access the document
+     * @return the filePath to access the document
      */
-    public String getPath() {
-        return path;
+    public String getFilePath() {
+        return filePath;
     }
 
     /**
-     * @param path the path to access the document to set
+     * @param filePath the filePath to access the document to set
      */
-    public void setPath(String path) {
-        this.path = path;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ public class HostedDocLink extends Document {
         if (other instanceof HostedDocLink) {
             HostedDocLink o = (HostedDocLink) other;
             super.merge(o);
-            this.setPath(o.getPath());
+            this.setFilePath(o.getFilePath());
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -79,7 +79,7 @@ public class HostedDocLink extends Document {
 
     @Override
     public String toString() {
-        return "HostedDocLink{" + super.toPartialString() + ", path=" + path + "}";
+        return "HostedDocLink{" + super.toPartialString() + ", filePath=" + filePath + "}";
     }
 
 }

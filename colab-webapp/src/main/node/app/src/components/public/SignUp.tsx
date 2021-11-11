@@ -52,8 +52,8 @@ export default (props: Props): JSX.Element => {
     },
     {
       key: 'password',
-      label: i18n.password,
-      placeholder: i18n.password,
+      label: i18n.model.user.password,
+      placeholder: i18n.model.user.password,
       type: 'password',
       isMandatory: false,
       isErroneous: data => data.passwordScore < 2,
@@ -73,8 +73,8 @@ export default (props: Props): JSX.Element => {
     },
     {
       key: 'username',
-      label: i18n.username,
-      placeholder: i18n.username,
+      label: i18n.model.user.username,
+      placeholder: i18n.model.user.username,
       type: 'text',
       isMandatory: false,
     },

@@ -5,12 +5,12 @@
  * Licensed under the MIT License
  */
 
-import { faSave } from '@fortawesome/free-regular-svg-icons';
 import { User } from 'colab-rest-client';
 import * as React from 'react';
 import { updateUser } from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import IconButton from '../common/IconButton';
+import Form, { Field } from '../common/Form/Form';
 
 interface UserProfileProps {
   user: User;
@@ -18,57 +18,55 @@ interface UserProfileProps {
 
 export default ({ user }: UserProfileProps): JSX.Element => {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
+
+  const fields: Field<User>[] = [
+    {
+      key: 'username',
+      label: i18n.model.user.username,
+      readonly: true,
+      type: 'text',
+      isMandatory: false,
+    },
+    {
+      key: 'commonname',
+      label: i18n.model.user.commonName,
+      type: 'text',
+      isMandatory: false,
+    },
+    {
+      key: 'firstname',
+      label: i18n.model.user.firstname,
+      type: 'text',
+      isMandatory: false,
+    },
+    {
+      key: 'lastname',
+      label: i18n.model.user.lastname,
+      type: 'text',
+      isMandatory: false,
+    },
+    {
+      key: 'affiliation',
+      label: i18n.model.user.affiliation,
+      type: 'text',
+      isMandatory: false,
+    },
+  ];
 
   if (user) {
-    const [uUser, setUpdatedUser] = React.useState<User>({ ...user });
-
     return (
       <div>
         <h3>User Profile</h3>
         <div>
-          <div>
-            <span>username:</span>
-            <span>{user.username} </span>
-          </div>
-
-          <div>
-            <label>
-              Common name:
-              <input
-                onChange={e => setUpdatedUser({ ...uUser, commonname: e.target.value })}
-                value={uUser.commonname || ''}
-              />
-            </label>
-          </div>
-
-          <div>
-            <label>
-              {' '}
-              First name:
-              <input
-                onChange={e => setUpdatedUser({ ...uUser, firstname: e.target.value })}
-                value={uUser.firstname || ''}
-              />
-            </label>
-          </div>
-
-          <div>
-            <label>
-              Last name:
-              <input
-                onChange={e => setUpdatedUser({ ...uUser, lastname: e.target.value })}
-                value={uUser.lastname || ''}
-              />
-            </label>
-          </div>
+          <Form
+            fields={fields}
+            value={user}
+            onSubmit={u => {
+              dispatch(updateUser(u));
+            }}
+          />
         </div>
-
-        <IconButton
-          icon={faSave}
-          onClick={() => {
-            dispatch(updateUser(uUser));
-          }}
-        />
       </div>
     );
   } else {

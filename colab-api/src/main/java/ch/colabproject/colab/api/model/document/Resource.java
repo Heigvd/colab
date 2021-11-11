@@ -53,7 +53,7 @@ public class Resource extends AbstractResource {
     private boolean requestingForGlory;
 
     /**
-     * Should not be used anymore
+     * Indicates the resource should not be used anymore
      */
     @NotNull
     private boolean deprecated;

@@ -49,7 +49,7 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
     },
     {
       key: 'password',
-      placeholder: i18n.password,
+      placeholder: i18n.model.user.password,
       type: 'password',
       isMandatory: false,
       showStrenghBar: false,

@@ -59,10 +59,12 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         String cn = "Goulash Sensei";
         String fn = "Georges";
         String ln = "Croivet-Batton";
+        String aff = "Palais des Verres-Sales";
 
         user.setCommonname(cn);
         user.setFirstname(fn);
         user.setLastname(ln);
+        user.setAffiliation(aff);
 
         client.userRestEndpoint.updateUser(user);
 
@@ -70,6 +72,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(cn, user.getCommonname());
         Assertions.assertEquals(fn, user.getFirstname());
         Assertions.assertEquals(ln, user.getLastname());
+        Assertions.assertEquals(aff, user.getAffiliation());
 
         this.signOut();
         Assertions.assertNull(client.userRestEndpoint.getCurrentUser());

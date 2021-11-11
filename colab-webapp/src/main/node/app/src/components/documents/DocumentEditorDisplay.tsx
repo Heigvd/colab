@@ -8,7 +8,7 @@
 import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { BlockDocumentEditor } from './blockdoc/BlockDocumentEditor';
-import { ExternalDocLinkEditor } from './ExternalDocLinkEditor';
+import { ExternalLinkEditor } from './ExternalLinkEditor';
 import { HostedDocLinkEditor } from './HostedDocLinkEditor';
 
 export interface DocumentEditorDisplayProps {
@@ -24,8 +24,8 @@ export function DocumentEditorDisplay({
     return <BlockDocumentEditor doc={document} allowEdition={allowEdition} />;
   } else if (entityIs(document, 'HostedDocLink')) {
     return <HostedDocLinkEditor document={document} allowEdition={allowEdition} />;
-  } else if (entityIs(document, 'ExternalDocLink')) {
-    return <ExternalDocLinkEditor document={document} allowEdition={allowEdition} />;
+  } else if (entityIs(document, 'ExternalLink')) {
+    return <ExternalLinkEditor document={document} allowEdition={allowEdition} />;
   } else {
     return (
       <div>

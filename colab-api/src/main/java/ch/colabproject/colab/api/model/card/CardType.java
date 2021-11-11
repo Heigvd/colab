@@ -41,13 +41,6 @@ public class CardType extends AbstractCardType {
      */
     private static final long serialVersionUID = 1L;
 
-    // ---------------------------------------------------------------------------------------------
-    // fields
-    // ---------------------------------------------------------------------------------------------
-    /**
-     * A unique identifier
-     */
-    private String uniqueId;
 
     /**
      * The title
@@ -71,19 +64,6 @@ public class CardType extends AbstractCardType {
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-    /**
-     * @return the unique identifier
-     */
-    public String getUniqueId() {
-        return uniqueId;
-    }
-
-    /**
-     * @param uniqueId the unique identifier
-     */
-    public void setUniqueId(String uniqueId) {
-        this.uniqueId = uniqueId;
-    }
 
     /**
      * @return the title
@@ -177,7 +157,7 @@ public class CardType extends AbstractCardType {
 
     @Override
     public String toString() {
-        return "CardType{" + "id=" + getId() + ", uniqueId=" + uniqueId + ", title=" + title
+        return "CardType{" + "id=" + getId() + ", title=" + title
             + ", projectId=" + projectId + "}";
     }
 

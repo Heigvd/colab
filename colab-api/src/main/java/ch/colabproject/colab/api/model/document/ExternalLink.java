@@ -19,8 +19,8 @@ import javax.persistence.Entity;
  */
 //TODO adjust the constraints / indexes
 @Entity
-@DiscriminatorValue("EXT_DOC_LINK")
-public class ExternalDocLink extends Document {
+@DiscriminatorValue("EXT_LINK")
+public class ExternalLink extends Document {
 
     private static final long serialVersionUID = 1L;
 
@@ -57,8 +57,8 @@ public class ExternalDocLink extends Document {
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof ExternalDocLink) {
-            ExternalDocLink o = (ExternalDocLink) other;
+        if (other instanceof ExternalLink) {
+            ExternalLink o = (ExternalLink) other;
             super.merge(o);
             this.setUrl(o.getUrl());
         } else {

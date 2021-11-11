@@ -6,6 +6,19 @@
  */
 
 export const en = {
+  model: {
+    user: {
+      username: 'username',
+      commonName: 'common name',
+      password: 'password',
+      firstname: 'firstname',
+      missingFirstname: 'please enter your firstname',
+      lastname: 'lastname',
+      missingLastname: 'please enter your lastname',
+      affiliation: 'affiliation',
+    },
+  },
+
   pleaseProvideData: 'Some data are missing',
   cancel: 'cancel',
   agree: 'agree',
@@ -14,9 +27,7 @@ export const en = {
   emailAddressNotValid: 'e-mail address is not valid',
   emailShort: 'E-Mail',
   pleaseEnterId: 'Please enter an identifier',
-  username: 'username',
   emailOrUsername: 'e-mail or username',
-  password: 'password',
   weakPassword: 'password is too weak',
   password_again: 'password again',
   passwordsMismatch: 'passwords do not match',
@@ -25,11 +36,7 @@ export const en = {
   createAnAccount: 'create an account',
   sendMePassword: 'send me a new password',
   unverifiedEmail: 'unverified e-mail',
-  verifyEmail: 'click to verify your e-mail address',
-  firstname: 'firstname',
-  missingFirstname: 'please enter your firstname',
-  lastname: 'lastname',
-  missingLastname: 'please enter your lastname',
+
   agreementDisclaimer: 'The use of this service implies that you agree to',
   iAccept: 'I accept',
   termOfUse: 'the general terms of use',
