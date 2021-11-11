@@ -77,6 +77,11 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     private Tracking trackingData;
 
     /**
+     * Optional display name. Such a name will hide user.commonName.
+     */
+    private String displayName;
+
+    /**
      * The user
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -146,6 +151,24 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Get the value of displayName
+     *
+     * @return the value of displayName
+     */
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    /**
+     * Set the value of displayName
+     *
+     * @param displayName new value of displayName
+     */
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     /**
@@ -322,7 +345,12 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        /* no-op */
+        if (other instanceof TeamMember) {
+            TeamMember t = (TeamMember) other;
+            this.setDisplayName(t.getDisplayName());
+        } else {
+            throw new ColabMergeException(this, other);
+        }
     }
 
     @Override

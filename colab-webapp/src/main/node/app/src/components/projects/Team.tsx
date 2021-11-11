@@ -5,18 +5,30 @@
  * Licensed under the MIT License
  */
 import { css } from '@emotion/css';
-import { faCheck, faPaperPlane, faPlus, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faEraser,
+  faHourglassStart,
+  faPaperPlane,
+  faPen,
+  faPlus,
+  faSave,
+  faTimes,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HierarchicalPosition, Project, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
 import Select from 'react-select';
 import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
+import useTranslations from '../../i18n/I18nContext';
 import { useAndLoadProjectTeam } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/IconButton';
 import InlineInput from '../common/InlineInput';
 import InlineLoading from '../common/InlineLoading';
+import OnBlurInput from '../common/OnBlurInput';
 import OpenClose from '../common/OpenClose';
 import WithToolbar from '../common/WithToolbar';
 import { linkStyle } from '../styling/style';
@@ -86,6 +98,7 @@ export interface MemberProps {
 
 const Member = ({ member, roles }: MemberProps) => {
   const dispatch = useAppDispatch();
+  const i18n = useTranslations();
 
   const user = useAppSelector(state => {
     if (member.userId != null) {
@@ -104,14 +117,51 @@ const Member = ({ member, roles }: MemberProps) => {
     }
   }, [member.userId, user, dispatch]);
 
+  const updateDisplayName = React.useCallback(
+    (displayName: string) => {
+      dispatch(API.updateMember({ ...member, displayName: displayName }));
+    },
+    [dispatch, member],
+  );
+
+  const clearDisplayName = React.useCallback(() => {
+    dispatch(API.updateMember({ ...member, displayName: '' }));
+  }, [dispatch, member]);
+
   let username = <>"n/a"</>;
 
-  if (member.userId == null) {
-    username = <li>Invitation is pending...</li>;
+  if (member.displayName && member.userId != null) {
+    // effective user with custom displayName
+    // DN can be edited or cleared
+    username = (
+      <>
+        <OnBlurInput value={member.displayName || ''} onChange={updateDisplayName} />
+        <IconButton icon={faEraser} onClick={clearDisplayName} />
+      </>
+    );
+  } else if (member.displayName && member.userId == null) {
+    // display name with DN but no user depict a pending invitation
+    // display name is not editable until user accept invitation
+    username = (
+      <span title={i18n.pendingInvitation}>
+        {member.displayName}
+        <FontAwesomeIcon icon={faHourglassStart} />
+      </span>
+    );
+  } else if (member.userId == null) {
+    // no user, no dn
+    username = <span>{i18n.pendingInvitation}</span>;
   } else if (user == null) {
     username = <InlineLoading />;
   } else {
-    username = <>{getDisplayName(user)}</>;
+    const cn = getDisplayName(user);
+    username = (
+      <>
+        {cn}
+        {user.affiliation ? ` (${user.affiliation})` : ''}
+        <IconButton icon={faPen} onClick={() => updateDisplayName(cn)} />
+      </>
+    );
   }
 
   const roleIds = member.roleIds || [];

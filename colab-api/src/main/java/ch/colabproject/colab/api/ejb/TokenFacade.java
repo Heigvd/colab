@@ -277,6 +277,8 @@ public class TokenFacade {
             token.setAuthenticationRequired(Boolean.TRUE);
             token.setRecipient(recipient);
 
+            newMember.setDisplayName(recipient);
+
             tokenDao.persistToken(token);
         }
 

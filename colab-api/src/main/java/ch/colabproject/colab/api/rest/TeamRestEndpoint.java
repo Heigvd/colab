@@ -85,6 +85,21 @@ public class TeamRestEndpoint {
     }
 
     /**
+     * Update a TeamMember
+     *
+     * @param member new value
+     *
+     * @return the team member
+     * @throws ColabMergeException if update failed
+     */
+    @PUT
+    @Path("member")
+    public TeamMember updateTeamMember(TeamMember member) throws ColabMergeException {
+        logger.debug("Update member {}", member);
+        return teamDao.updateTeamMember(member);
+    }
+
+    /**
      * Update hierarchical position of a member
      *
      * @param memberId id of the member

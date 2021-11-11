@@ -19,6 +19,8 @@ export const en = {
     },
   },
 
+  pendingInvitation: 'pending invitation',
+
   pleaseProvideData: 'Some data are missing',
   cancel: 'cancel',
   agree: 'agree',

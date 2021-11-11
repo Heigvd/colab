@@ -6,11 +6,13 @@
  */
 package ch.colabproject.colab.api.persistence.project;
 
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -53,6 +55,24 @@ public class TeamDao {
      */
     public TeamMember findTeamMember(Long memberId) {
         return em.find(TeamMember.class, memberId);
+    }
+
+    /**
+     * Update a team member
+     *
+     * @param member new value
+     *
+     * @return updated managed member
+     * @throws ColabMergeException if update failed
+     */
+    public TeamMember updateTeamMember(TeamMember member) throws ColabMergeException {
+        TeamMember managedMember = this.findTeamMember(member.getId());
+        if (managedMember == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+        managedMember.merge(member);
+
+        return managedMember;
     }
 
     /**

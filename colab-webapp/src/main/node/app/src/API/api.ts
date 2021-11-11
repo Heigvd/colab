@@ -30,6 +30,7 @@ import {
   SignUpInfo,
   StickyNoteLink,
   StickyNoteLinkCreationBean,
+  TeamMember,
   TeamRole,
   User,
   WsSessionIdentifier,
@@ -376,6 +377,13 @@ export const removeRole = createAsyncThunk(
   'project/team/remove',
   async ({ roleId, memberId }: { roleId: number; memberId: number }) => {
     return await restClient.TeamRestEndpoint.removeRoleFrom(roleId, memberId);
+  },
+);
+
+export const updateMember = createAsyncThunk(
+  'project/member/update',
+  async (member: TeamMember) => {
+    await restClient.TeamRestEndpoint.updateTeamMember(member);
   },
 );
 
