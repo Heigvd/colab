@@ -78,9 +78,13 @@ public class StickyNoteLinkFacade {
      * @author sandra
      */
     public enum SrcType {
+        /** from a card. */
         CARD,
+        /** from a card content. */
         CARD_CONTENT,
+        /** from a resource or ref */
         RESOURCE_OR_REF,
+        /** from a block */
         BLOCK;
     }
 

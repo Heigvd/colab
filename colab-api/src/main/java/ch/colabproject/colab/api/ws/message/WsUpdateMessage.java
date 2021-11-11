@@ -65,6 +65,11 @@ public class WsUpdateMessage extends WsMessage {
         return deleted;
     }
 
+    /**
+     * Register index of deleted entities;
+     *
+     * @param deleted index
+     */
     public void setDeleted(Set<IndexEntry> deleted) {
         this.deleted = deleted;
     }

@@ -324,10 +324,20 @@ public class RequestManager {
         this.inSecurityTx = inSecurityTx;
     }
 
+    /**
+     * Check if the current transaction is already done
+     *
+     * @return whether or not the current transaction is already done
+     */
     public boolean isTxDone() {
         return txDone;
     }
 
+    /**
+     * Mark the current transaction as done or undone
+     *
+     * @param txDone whether or not the current transaction is already done
+     */
     public void setTxDone(boolean txDone) {
         this.txDone = txDone;
     }

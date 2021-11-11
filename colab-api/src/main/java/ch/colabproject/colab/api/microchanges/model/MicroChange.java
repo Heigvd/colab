@@ -52,34 +52,74 @@ public class MicroChange implements Serializable {
      */
     private Integer l;
 
+    /**
+     * Get offset
+     *
+     * @return offset value
+     */
     public Integer getO() {
         return o;
     }
 
+    /**
+     * set offset
+     *
+     * @param o offset value
+     */
     public void setO(Integer o) {
         this.o = o;
     }
 
+    /**
+     * get type
+     *
+     * @return change type
+     */
     public Type getT() {
         return t;
     }
 
+    /**
+     * Set change type
+     *
+     * @param t type
+     */
     public void setT(Type t) {
         this.t = t;
     }
 
+    /**
+     * Get change value
+     *
+     * @return value
+     */
     public String getV() {
         return v;
     }
 
+    /**
+     * set change value.
+     *
+     * @param v value
+     */
     public void setV(String v) {
         this.v = v;
     }
 
+    /**
+     * get length.
+     *
+     * @return length
+     */
     public Integer getL() {
         return l;
     }
 
+    /**
+     * set the length
+     *
+     * @param l length
+     */
     public void setL(Integer l) {
         this.l = l;
     }
