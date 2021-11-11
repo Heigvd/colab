@@ -41,13 +41,6 @@ import javax.validation.constraints.NotNull;
      */
     private static final long serialVersionUID = 1L;
 
-    // ---------------------------------------------------------------------------------------------
-    // fields
-    // ---------------------------------------------------------------------------------------------
-    /**
-     * A unique identifier
-     */
-    private String uniqueId;
 
     /**
      * The title
@@ -71,47 +64,34 @@ import javax.validation.constraints.NotNull;
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-    /**
-     * @return the unique identifier
-     */
-    public String getUniqueId() {
-<span class="fc" id="L78">        return uniqueId;</span>
-    }
-
-    /**
-     * @param uniqueId the unique identifier
-     */
-    public void setUniqueId(String uniqueId) {
-<span class="nc" id="L85">        this.uniqueId = uniqueId;</span>
-<span class="nc" id="L86">    }</span>
 
     /**
      * @return the title
      */
     public String getTitle() {
-<span class="fc" id="L92">        return title;</span>
+<span class="fc" id="L72">        return title;</span>
     }
 
     /**
      * @param title the title
      */
     public void setTitle(String title) {
-<span class="fc" id="L99">        this.title = title;</span>
-<span class="fc" id="L100">    }</span>
+<span class="fc" id="L79">        this.title = title;</span>
+<span class="fc" id="L80">    }</span>
 
     /**
      * @return the purpose
      */
     public Block getPurpose() {
-<span class="fc" id="L106">        return purpose;</span>
+<span class="fc" id="L86">        return purpose;</span>
     }
 
     /**
      * @param purpose the purpose
      */
     public void setPurpose(Block purpose) {
-<span class="fc" id="L113">        this.purpose = purpose;</span>
-<span class="fc" id="L114">    }</span>
+<span class="fc" id="L93">        this.purpose = purpose;</span>
+<span class="fc" id="L94">    }</span>
 
     /**
      * get the id of the purpose. To be sent to client.
@@ -119,10 +99,10 @@ import javax.validation.constraints.NotNull;
      * @return the id of the purpose
      */
     public Long getPurposeId() {
-<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (purpose != null) {</span>
-<span class="fc" id="L123">            return purpose.getId();</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (purpose != null) {</span>
+<span class="fc" id="L103">            return purpose.getId();</span>
         } else {
-<span class="fc" id="L125">            return purposeId;</span>
+<span class="fc" id="L105">            return purposeId;</span>
         }
     }
 
@@ -132,17 +112,17 @@ import javax.validation.constraints.NotNull;
      * @param purposeId the id of the purpose
      */
     public void setPurposeId(Long purposeId) {
-<span class="fc" id="L135">        this.purposeId = purposeId;</span>
-<span class="fc" id="L136">    }</span>
+<span class="fc" id="L115">        this.purposeId = purposeId;</span>
+<span class="fc" id="L116">    }</span>
 
     @Override
     public CardType resolve() {
-<span class="nc" id="L140">        return this;</span>
+<span class="nc" id="L120">        return this;</span>
     }
 
     @Override
     public List&lt;AbstractCardType&gt; expand() {
-<span class="fc" id="L145">        return List.of(this);</span>
+<span class="fc" id="L125">        return List.of(this);</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -153,31 +133,31 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="fc" id="L156">        super.merge(other);</span>
+<span class="fc" id="L136">        super.merge(other);</span>
 
-<span class="pc bpc" id="L158" title="1 of 2 branches missed.">        if (other instanceof CardType) {</span>
-<span class="fc" id="L159">            CardType o = (CardType) other;</span>
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">        if (other instanceof CardType) {</span>
+<span class="fc" id="L139">            CardType o = (CardType) other;</span>
             // this.setUniqueId(o.getUniqueId());
-<span class="fc" id="L161">            this.setTitle(o.getTitle());</span>
-<span class="fc" id="L162">        } else {</span>
-<span class="nc" id="L163">            throw new ColabMergeException(this, other);</span>
+<span class="fc" id="L141">            this.setTitle(o.getTitle());</span>
+<span class="fc" id="L142">        } else {</span>
+<span class="nc" id="L143">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L165">    }</span>
+<span class="fc" id="L145">    }</span>
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-<span class="fc bfc" id="L170" title="All 2 branches covered.">        if (this.getProject() != null) {</span>
-<span class="fc" id="L171">            return new Conditions.IsCurrentUserInternToProject(this.getProject());</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">        if (this.getProject() != null) {</span>
+<span class="fc" id="L151">            return new Conditions.IsCurrentUserInternToProject(this.getProject());</span>
         } else {
             // only admin can edit global types
-<span class="fc" id="L174">            return Conditions.alwaysFalse;</span>
+<span class="fc" id="L154">            return Conditions.alwaysFalse;</span>
         }
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L180">        return &quot;CardType{&quot; + &quot;id=&quot; + getId() + &quot;, uniqueId=&quot; + uniqueId + &quot;, title=&quot; + title</span>
+<span class="fc" id="L160">        return &quot;CardType{&quot; + &quot;id=&quot; + getId() + &quot;, title=&quot; + title</span>
             + &quot;, projectId=&quot; + projectId + &quot;}&quot;;
     }
 

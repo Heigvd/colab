@@ -65,13 +65,18 @@ public class WsUpdateMessage extends WsMessage {
 <span class="nc" id="L65">        return deleted;</span>
     }
 
+    /**
+     * Register index of deleted entities;
+     *
+     * @param deleted index
+     */
     public void setDeleted(Set&lt;IndexEntry&gt; deleted) {
-<span class="nc" id="L69">        this.deleted = deleted;</span>
-<span class="nc" id="L70">    }</span>
+<span class="nc" id="L74">        this.deleted = deleted;</span>
+<span class="nc" id="L75">    }</span>
 
     @Override
     public String toString() {
-<span class="nc" id="L74">        return &quot;WsUpdateMessage{&quot; + &quot;updated=&quot; + updated + &quot;, deleted=&quot; + deleted + '}';</span>
+<span class="nc" id="L79">        return &quot;WsUpdateMessage{&quot; + &quot;updated=&quot; + updated + &quot;, deleted=&quot; + deleted + '}';</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

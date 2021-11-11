@@ -78,10 +78,14 @@ import org.slf4j.LoggerFactory;
      * @author sandra
      */
 <span class="fc" id="L80">    public enum SrcType {</span>
-<span class="fc" id="L81">        CARD,</span>
-<span class="fc" id="L82">        CARD_CONTENT,</span>
-<span class="fc" id="L83">        RESOURCE_OR_REF,</span>
-<span class="fc" id="L84">        BLOCK;</span>
+        /** from a card. */
+<span class="fc" id="L82">        CARD,</span>
+        /** from a card content. */
+<span class="fc" id="L84">        CARD_CONTENT,</span>
+        /** from a resource or ref */
+<span class="fc" id="L86">        RESOURCE_OR_REF,</span>
+        /** from a block */
+<span class="fc" id="L88">        BLOCK;</span>
     }
 
     // *********************************************************************************************
@@ -96,30 +100,30 @@ import org.slf4j.LoggerFactory;
      * @return the brand new link
      */
     public StickyNoteLink createStickyNoteLink(StickyNoteLink link) {
-<span class="fc" id="L99">        logger.debug(&quot;create link {}&quot;, link);</span>
+<span class="fc" id="L103">        logger.debug(&quot;create link {}&quot;, link);</span>
 
-<span class="fc" id="L101">        StickyNoteSourceable sourceObject = findSourceObject(link);</span>
-<span class="pc bpc" id="L102" title="1 of 2 branches missed.">        if (sourceObject == null) {</span>
-<span class="nc" id="L103">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L105">        StickyNoteSourceable sourceObject = findSourceObject(link);</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        if (sourceObject == null) {</span>
+<span class="nc" id="L107">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="fc" id="L106">        Card toCard = cardDao.getCard(link.getDestinationCardId());</span>
-<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        if (toCard == null) {</span>
-<span class="nc" id="L108">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L110">        Card toCard = cardDao.getCard(link.getDestinationCardId());</span>
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">        if (toCard == null) {</span>
+<span class="nc" id="L112">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="fc bfc" id="L111" title="All 2 branches covered.">        if (link.getExplanation() == null) {</span>
-<span class="fc" id="L112">            link.setExplanation(Block.initNewDefaultBlock());</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">        if (link.getExplanation() == null) {</span>
+<span class="fc" id="L116">            link.setExplanation(Block.initNewDefaultBlock());</span>
         }
 
-<span class="fc" id="L115">        link.setSrc(sourceObject);</span>
-<span class="fc" id="L116">        link.setDestinationCard(toCard);</span>
-<span class="fc" id="L117">        StickyNoteLink persistedLink = linkDao.persistStickyNoteLink(link);</span>
+<span class="fc" id="L119">        link.setSrc(sourceObject);</span>
+<span class="fc" id="L120">        link.setDestinationCard(toCard);</span>
+<span class="fc" id="L121">        StickyNoteLink persistedLink = linkDao.persistStickyNoteLink(link);</span>
 
-<span class="fc" id="L119">        sourceObject.getStickyNoteLinksAsSrc().add(persistedLink);</span>
-<span class="fc" id="L120">        toCard.getStickyNoteLinksAsDest().add(persistedLink);</span>
+<span class="fc" id="L123">        sourceObject.getStickyNoteLinksAsSrc().add(persistedLink);</span>
+<span class="fc" id="L124">        toCard.getStickyNoteLinksAsDest().add(persistedLink);</span>
 
-<span class="fc" id="L122">        return persistedLink;</span>
+<span class="fc" id="L126">        return persistedLink;</span>
     }
 
     /**
@@ -128,31 +132,31 @@ import org.slf4j.LoggerFactory;
      * @param linkId the id of the link to delete
      */
     public void deleteStickyNoteLink(Long linkId) {
-<span class="fc" id="L131">        logger.debug(&quot;delete link #{}&quot;, linkId);</span>
+<span class="fc" id="L135">        logger.debug(&quot;delete link #{}&quot;, linkId);</span>
 
         // firstly fetch all objects and so ensure that they exist
-<span class="fc" id="L134">        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);</span>
-<span class="pc bpc" id="L135" title="1 of 2 branches missed.">        if (link == null) {</span>
-<span class="nc" id="L136">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L138">        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);</span>
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">        if (link == null) {</span>
+<span class="nc" id="L140">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
             // or just return. see what is best
         }
 
-<span class="fc" id="L140">        StickyNoteSourceable sourceObject = link.getSrc();</span>
-<span class="pc bpc" id="L141" title="1 of 2 branches missed.">        if (sourceObject == null) {</span>
-<span class="nc" id="L142">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L144">        StickyNoteSourceable sourceObject = link.getSrc();</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if (sourceObject == null) {</span>
+<span class="nc" id="L146">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L145">        Card toCard = link.getDestinationCard();</span>
-<span class="pc bpc" id="L146" title="1 of 2 branches missed.">        if (toCard == null) {</span>
-<span class="nc" id="L147">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L149">        Card toCard = link.getDestinationCard();</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">        if (toCard == null) {</span>
+<span class="nc" id="L151">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
         // secondly make the modifications
-<span class="fc" id="L151">        sourceObject.getStickyNoteLinksAsSrc().remove(link);</span>
-<span class="fc" id="L152">        toCard.getStickyNoteLinksAsDest().remove(link);</span>
+<span class="fc" id="L155">        sourceObject.getStickyNoteLinksAsSrc().remove(link);</span>
+<span class="fc" id="L156">        toCard.getStickyNoteLinksAsDest().remove(link);</span>
 
-<span class="fc" id="L154">        linkDao.deleteStickyNoteLink(linkId);</span>
-<span class="fc" id="L155">    }</span>
+<span class="fc" id="L158">        linkDao.deleteStickyNoteLink(linkId);</span>
+<span class="fc" id="L159">    }</span>
 
     /**
      * Change the source
@@ -162,30 +166,30 @@ import org.slf4j.LoggerFactory;
      * @param newSrcId   the id of the new source
      */
     public void changeStickyNoteLinkSource(Long linkId, SrcType newSrcType, Long newSrcId) {
-<span class="fc" id="L165">        logger.debug(&quot;change source of link #{} with {} #{}&quot;, linkId, newSrcType, newSrcId);</span>
+<span class="fc" id="L169">        logger.debug(&quot;change source of link #{} with {} #{}&quot;, linkId, newSrcType, newSrcId);</span>
 
         // firstly fetch all objects and so ensure that they exist
-<span class="fc" id="L168">        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);</span>
-<span class="pc bpc" id="L169" title="1 of 2 branches missed.">        if (link == null) {</span>
-<span class="nc" id="L170">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L172">        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);</span>
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        if (link == null) {</span>
+<span class="nc" id="L174">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="fc" id="L173">        StickyNoteSourceable oldSourceObject = findSourceObject(link);</span>
-<span class="pc bpc" id="L174" title="1 of 2 branches missed.">        if (oldSourceObject == null) {</span>
-<span class="nc" id="L175">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L177">        StickyNoteSourceable oldSourceObject = findSourceObject(link);</span>
+<span class="pc bpc" id="L178" title="1 of 2 branches missed.">        if (oldSourceObject == null) {</span>
+<span class="nc" id="L179">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L178">        StickyNoteSourceable newSourceObject = findSourceObject(newSrcType, newSrcId);</span>
-<span class="pc bpc" id="L179" title="1 of 2 branches missed.">        if (newSourceObject == null) {</span>
-<span class="nc" id="L180">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L182">        StickyNoteSourceable newSourceObject = findSourceObject(newSrcType, newSrcId);</span>
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">        if (newSourceObject == null) {</span>
+<span class="nc" id="L184">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
         // secondly make the modifications
-<span class="fc" id="L184">        oldSourceObject.getStickyNoteLinksAsSrc().remove(link);</span>
+<span class="fc" id="L188">        oldSourceObject.getStickyNoteLinksAsSrc().remove(link);</span>
 
-<span class="fc" id="L186">        link.setSrc(newSourceObject);</span>
-<span class="fc" id="L187">        newSourceObject.getStickyNoteLinksAsSrc().add(link);</span>
-<span class="fc" id="L188">    }</span>
+<span class="fc" id="L190">        link.setSrc(newSourceObject);</span>
+<span class="fc" id="L191">        newSourceObject.getStickyNoteLinksAsSrc().add(link);</span>
+<span class="fc" id="L192">    }</span>
 
     /**
      * Change the destination
@@ -194,30 +198,30 @@ import org.slf4j.LoggerFactory;
      * @param newDestId the id of the new destination card
      */
     public void changeStickyNoteLinkDestination(Long linkId, Long newDestId) {
-<span class="fc" id="L197">        logger.debug(&quot;change destination of link #{} with #{}&quot;, linkId, newDestId);</span>
+<span class="fc" id="L201">        logger.debug(&quot;change destination of link #{} with #{}&quot;, linkId, newDestId);</span>
 
         // firstly fetch all objects and so ensure that they exist
-<span class="fc" id="L200">        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);</span>
-<span class="pc bpc" id="L201" title="1 of 2 branches missed.">        if (link == null) {</span>
-<span class="nc" id="L202">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L204">        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);</span>
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">        if (link == null) {</span>
+<span class="nc" id="L206">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="fc" id="L205">        Card oldDest = cardDao.getCard(link.getDestinationCardId());</span>
-<span class="pc bpc" id="L206" title="1 of 2 branches missed.">        if (oldDest == null) {</span>
-<span class="nc" id="L207">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L209">        Card oldDest = cardDao.getCard(link.getDestinationCardId());</span>
+<span class="pc bpc" id="L210" title="1 of 2 branches missed.">        if (oldDest == null) {</span>
+<span class="nc" id="L211">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L210">        Card newDestination = cardDao.getCard(newDestId);</span>
-<span class="pc bpc" id="L211" title="1 of 2 branches missed.">        if (newDestination == null) {</span>
-<span class="nc" id="L212">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L214">        Card newDestination = cardDao.getCard(newDestId);</span>
+<span class="pc bpc" id="L215" title="1 of 2 branches missed.">        if (newDestination == null) {</span>
+<span class="nc" id="L216">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
         // secondly make the modifications
-<span class="fc" id="L216">        oldDest.getStickyNoteLinksAsDest().remove(link);</span>
+<span class="fc" id="L220">        oldDest.getStickyNoteLinksAsDest().remove(link);</span>
 
-<span class="fc" id="L218">        link.setDestinationCard(newDestination);</span>
-<span class="fc" id="L219">        newDestination.getStickyNoteLinksAsDest().add(link);</span>
-<span class="fc" id="L220">    }</span>
+<span class="fc" id="L222">        link.setDestinationCard(newDestination);</span>
+<span class="fc" id="L223">        newDestination.getStickyNoteLinksAsDest().add(link);</span>
+<span class="fc" id="L224">    }</span>
 
     /**
      * Get the source object corresponding to the given type and id.
@@ -230,33 +234,33 @@ import org.slf4j.LoggerFactory;
     private StickyNoteSourceable findSourceObject(SrcType srcType, Long srcId) {
         StickyNoteSourceable sourceObject;
 
-<span class="pc bpc" id="L233" title="1 of 5 branches missed.">        switch (srcType) {</span>
+<span class="pc bpc" id="L237" title="1 of 5 branches missed.">        switch (srcType) {</span>
             case CARD:
-<span class="fc" id="L235">                sourceObject = cardDao.getCard(srcId);</span>
-<span class="pc bpc" id="L236" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L237">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L239">                sourceObject = cardDao.getCard(srcId);</span>
+<span class="pc bpc" id="L240" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
+<span class="nc" id="L241">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
                 }
                 break;
             case CARD_CONTENT:
-<span class="fc" id="L241">                sourceObject = cardContentDao.getCardContent(srcId);</span>
-<span class="pc bpc" id="L242" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L243">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L245">                sourceObject = cardContentDao.getCardContent(srcId);</span>
+<span class="pc bpc" id="L246" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
+<span class="nc" id="L247">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
                 }
                 break;
             case RESOURCE_OR_REF:
-<span class="fc" id="L247">                sourceObject = resourceManager.assertAndGetResourceOrRef(srcId);</span>
-<span class="fc" id="L248">                break;</span>
+<span class="fc" id="L251">                sourceObject = resourceManager.assertAndGetResourceOrRef(srcId);</span>
+<span class="fc" id="L252">                break;</span>
             case BLOCK:
-<span class="fc" id="L250">                sourceObject = blockDao.findBlock(srcId);</span>
-<span class="pc bpc" id="L251" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L252">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L254">                sourceObject = blockDao.findBlock(srcId);</span>
+<span class="pc bpc" id="L255" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
+<span class="nc" id="L256">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
                 }
                 break;
             default:
-<span class="nc" id="L256">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L260">                throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L259">        return sourceObject;</span>
+<span class="fc" id="L263">        return sourceObject;</span>
     }
 
     /**
@@ -269,35 +273,35 @@ import org.slf4j.LoggerFactory;
     private StickyNoteSourceable findSourceObject(StickyNoteLink link) {
         StickyNoteSourceable sourceObject;
 
-<span class="fc" id="L272">        SrcType srcType = inferSrcType(link);</span>
+<span class="fc" id="L276">        SrcType srcType = inferSrcType(link);</span>
 
-<span class="pc bpc" id="L274" title="1 of 5 branches missed.">        switch (srcType) {</span>
+<span class="pc bpc" id="L278" title="1 of 5 branches missed.">        switch (srcType) {</span>
             case CARD:
-<span class="fc" id="L276">                sourceObject = cardDao.getCard(link.getSrcCardId());</span>
-<span class="pc bpc" id="L277" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L278">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L280">                sourceObject = cardDao.getCard(link.getSrcCardId());</span>
+<span class="pc bpc" id="L281" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
+<span class="nc" id="L282">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
                 }
                 break;
             case CARD_CONTENT:
-<span class="fc" id="L282">                sourceObject = cardContentDao.getCardContent(link.getSrcCardContentId());</span>
-<span class="pc bpc" id="L283" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L284">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L286">                sourceObject = cardContentDao.getCardContent(link.getSrcCardContentId());</span>
+<span class="pc bpc" id="L287" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
+<span class="nc" id="L288">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
                 }
                 break;
             case RESOURCE_OR_REF:
-<span class="fc" id="L288">                sourceObject = resourceManager.assertAndGetResourceOrRef(link.getSrcResourceOrRefId());</span>
-<span class="fc" id="L289">                break;</span>
+<span class="fc" id="L292">                sourceObject = resourceManager.assertAndGetResourceOrRef(link.getSrcResourceOrRefId());</span>
+<span class="fc" id="L293">                break;</span>
             case BLOCK:
-<span class="fc" id="L291">                sourceObject = blockDao.findBlock(link.getSrcBlockId());</span>
-<span class="pc bpc" id="L292" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L293">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc" id="L295">                sourceObject = blockDao.findBlock(link.getSrcBlockId());</span>
+<span class="pc bpc" id="L296" title="1 of 2 branches missed.">                if (sourceObject == null) {</span>
+<span class="nc" id="L297">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
                 }
                 break;
             default:
-<span class="nc" id="L297">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L301">                throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L300">        return sourceObject;</span>
+<span class="fc" id="L304">        return sourceObject;</span>
     }
 
     /**
@@ -310,34 +314,34 @@ import org.slf4j.LoggerFactory;
      * @return the source type used
      */
     private SrcType inferSrcType(StickyNoteLink link) {
-<span class="fc" id="L313">        SrcType effectiveSrcType = null;</span>
+<span class="fc" id="L317">        SrcType effectiveSrcType = null;</span>
 
-<span class="fc bfc" id="L315" title="All 2 branches covered.">        if (link.isSrcCard()) {</span>
-<span class="fc" id="L316">            effectiveSrcType = SrcType.CARD;</span>
+<span class="fc bfc" id="L319" title="All 2 branches covered.">        if (link.isSrcCard()) {</span>
+<span class="fc" id="L320">            effectiveSrcType = SrcType.CARD;</span>
         }
-<span class="fc bfc" id="L318" title="All 2 branches covered.">        if (link.isSrcCardContent()) {</span>
-<span class="pc bpc" id="L319" title="1 of 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
-<span class="nc" id="L320">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc bfc" id="L322" title="All 2 branches covered.">        if (link.isSrcCardContent()) {</span>
+<span class="pc bpc" id="L323" title="1 of 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
+<span class="nc" id="L324">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
-<span class="fc" id="L322">            effectiveSrcType = SrcType.CARD_CONTENT;</span>
+<span class="fc" id="L326">            effectiveSrcType = SrcType.CARD_CONTENT;</span>
         }
-<span class="fc bfc" id="L324" title="All 2 branches covered.">        if (link.isSrcResourceOrRef()) {</span>
-<span class="pc bpc" id="L325" title="1 of 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
-<span class="nc" id="L326">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc bfc" id="L328" title="All 2 branches covered.">        if (link.isSrcResourceOrRef()) {</span>
+<span class="pc bpc" id="L329" title="1 of 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
+<span class="nc" id="L330">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
-<span class="fc" id="L328">            effectiveSrcType = SrcType.RESOURCE_OR_REF;</span>
+<span class="fc" id="L332">            effectiveSrcType = SrcType.RESOURCE_OR_REF;</span>
         }
-<span class="fc bfc" id="L330" title="All 2 branches covered.">        if (link.isSrcBlock()) {</span>
-<span class="pc bpc" id="L331" title="1 of 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
-<span class="nc" id="L332">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="fc bfc" id="L334" title="All 2 branches covered.">        if (link.isSrcBlock()) {</span>
+<span class="pc bpc" id="L335" title="1 of 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
+<span class="nc" id="L336">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
-<span class="fc" id="L334">            effectiveSrcType = SrcType.BLOCK;</span>
+<span class="fc" id="L338">            effectiveSrcType = SrcType.BLOCK;</span>
         }
-<span class="pc bpc" id="L336" title="1 of 2 branches missed.">        if (effectiveSrcType == null) { // it must match one type</span>
-<span class="nc" id="L337">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="pc bpc" id="L340" title="1 of 2 branches missed.">        if (effectiveSrcType == null) { // it must match one type</span>
+<span class="nc" id="L341">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="fc" id="L340">        return effectiveSrcType;</span>
+<span class="fc" id="L344">        return effectiveSrcType;</span>
     }
 
     // *********************************************************************************************

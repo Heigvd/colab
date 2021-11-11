@@ -16,7 +16,7 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.BlockDocument;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.Document;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.ExternalDocLink;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.ExternalLink;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.HostedDocLink;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> java.util.List;
@@ -46,10 +46,10 @@
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>      }
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>      @Test
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateExternalDocLink() {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testCreateExternalLink() {
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>          String url = <span class="jxr_string">"https://www.colab-project.ch/sites/default/files/2021-03/WP1%20-%20Co-Design%20Guidelines.pdf"</span>;
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  
-<a class="jxr_linenumber" name="L44" href="#L44">44</a>          ExternalDocLink doc = <strong class="jxr_keyword">new</strong> ExternalDocLink();
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>          ExternalLink doc = <strong class="jxr_keyword">new</strong> ExternalLink();
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>          doc.setUrl(url);
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>  
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>          Long docId = client.documentRestEndPoint.createDocument(doc);
@@ -58,8 +58,8 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>          Assertions.assertNotNull(persistedDoc);
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>          Assertions.assertEquals(docId, persistedDoc.getId());
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>          Assertions.assertTrue(persistedDoc instanceof ExternalDocLink);
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>          ExternalDocLink persistedExtDocLink = (ExternalDocLink) persistedDoc;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>          Assertions.assertTrue(persistedDoc instanceof ExternalLink);
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>          ExternalLink persistedExtDocLink = (ExternalLink) persistedDoc;
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>          Assertions.assertEquals(url, persistedExtDocLink.getUrl());
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>      }
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  
@@ -68,7 +68,7 @@
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>          String path = <span class="jxr_string">"someWayToAccessTheMongoDBData #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          HostedDocLink doc = <strong class="jxr_keyword">new</strong> HostedDocLink();
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>          doc.setPath(path);
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          doc.setFilePath(path);
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          Long docId = client.documentRestEndPoint.createDocument(doc);
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  
@@ -78,7 +78,7 @@
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          Assertions.assertTrue(persistedDoc instanceof HostedDocLink);
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>          Assertions.assertEquals(path, persistedHostedDocLink.getPath());
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          Assertions.assertEquals(path, persistedHostedDocLink.getFilePath());
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>      }
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>      @Test
@@ -103,13 +103,13 @@
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      }
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>  
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>      @Test
-<a class="jxr_linenumber" name="L98" href="#L98">98</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateExternalDocLink() {
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>          Long docId = client.documentRestEndPoint.createDocument(<strong class="jxr_keyword">new</strong> ExternalDocLink());
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testUpdateExternalLink() {
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>          Long docId = client.documentRestEndPoint.createDocument(<strong class="jxr_keyword">new</strong> ExternalLink());
 <a class="jxr_linenumber" name="L100" href="#L100">100</a> 
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>         Document doc = client.documentRestEndPoint.getDocument(docId);
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>         Assertions.assertNotNull(doc);
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>         Assertions.assertTrue(doc instanceof ExternalDocLink);
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>         ExternalDocLink extDocLink = (ExternalDocLink) doc;
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>         Assertions.assertTrue(doc instanceof ExternalLink);
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>         ExternalLink extDocLink = (ExternalLink) doc;
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>         Assertions.assertEquals(docId, extDocLink.getId());
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         Assertions.assertNull(extDocLink.getUrl());
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> 
@@ -119,8 +119,8 @@
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         client.documentRestEndPoint.updateDocument(extDocLink);
 <a class="jxr_linenumber" name="L112" href="#L112">112</a> 
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>         Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>         Assertions.assertTrue(persistedDoc instanceof ExternalDocLink);
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>         ExternalDocLink persistedExtDocLink = (ExternalDocLink) persistedDoc;
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>         Assertions.assertTrue(persistedDoc instanceof ExternalLink);
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>         ExternalLink persistedExtDocLink = (ExternalLink) persistedDoc;
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         Assertions.assertNotNull(persistedExtDocLink);
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         Assertions.assertEquals(docId, persistedExtDocLink.getId());
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>         Assertions.assertEquals(url, persistedExtDocLink.getUrl());
@@ -135,11 +135,11 @@
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>         Assertions.assertTrue(doc instanceof HostedDocLink);
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>         HostedDocLink hostedDocLink = (HostedDocLink) doc;
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>         Assertions.assertEquals(docId, hostedDocLink.getId());
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>         Assertions.assertNull(hostedDocLink.getPath());
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>         Assertions.assertNull(hostedDocLink.getFilePath());
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> 
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         String path = <span class="jxr_string">"aWayToAccessTheMongoDBData #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> 
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>         hostedDocLink.setPath(path);
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>         hostedDocLink.setFilePath(path);
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         client.documentRestEndPoint.updateDocument(hostedDocLink);
 <a class="jxr_linenumber" name="L136" href="#L136">136</a> 
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
@@ -147,7 +147,7 @@
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>         HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>         Assertions.assertNotNull(persistedHostedDocLink);
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         Assertions.assertEquals(docId, persistedHostedDocLink.getId());
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>         Assertions.assertEquals(path, persistedHostedDocLink.getPath());
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>         Assertions.assertEquals(path, persistedHostedDocLink.getFilePath());
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>     }
 <a class="jxr_linenumber" name="L144" href="#L144">144</a> 
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>     @Test
@@ -157,7 +157,7 @@
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>         BlockDocument bdoc = <strong class="jxr_keyword">new</strong> BlockDocument();
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>         client.documentRestEndPoint.createDocument(bdoc);
 <a class="jxr_linenumber" name="L151" href="#L151">151</a> 
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>         ExternalDocLink edoc = <strong class="jxr_keyword">new</strong> ExternalDocLink();
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>         ExternalLink edoc = <strong class="jxr_keyword">new</strong> ExternalLink();
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         client.documentRestEndPoint.createDocument(edoc);
 <a class="jxr_linenumber" name="L154" href="#L154">154</a> 
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>         HostedDocLink hdoc = <strong class="jxr_keyword">new</strong> HostedDocLink();
@@ -181,8 +181,8 @@
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>     }
 <a class="jxr_linenumber" name="L174" href="#L174">174</a> 
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>     @Test
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDeleteExternalDocLink() {
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>         Long docId = client.documentRestEndPoint.createDocument(<strong class="jxr_keyword">new</strong> ExternalDocLink());
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testDeleteExternalLink() {
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>         Long docId = client.documentRestEndPoint.createDocument(<strong class="jxr_keyword">new</strong> ExternalLink());
 <a class="jxr_linenumber" name="L178" href="#L178">178</a> 
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>         Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>         Assertions.assertNotNull(persistedDoc);

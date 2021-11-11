@@ -6,11 +6,13 @@
  */
 package ch.colabproject.colab.api.persistence.project;
 
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -25,7 +27,7 @@ import javax.persistence.TypedQuery;
  */
 @Stateless
 @LocalBean
-<span class="fc" id="L28">public class TeamDao {</span>
+<span class="fc" id="L30">public class TeamDao {</span>
 
     /**
      * Access to the persistence unit
@@ -41,7 +43,7 @@ import javax.persistence.TypedQuery;
      * @return the role or null if it does no exist
      */
     public TeamRole findRole(Long roleId) {
-<span class="fc" id="L44">        return em.find(TeamRole.class, roleId);</span>
+<span class="fc" id="L46">        return em.find(TeamRole.class, roleId);</span>
     }
 
     /**
@@ -52,7 +54,25 @@ import javax.persistence.TypedQuery;
      * @return the member or null if it does no exist
      */
     public TeamMember findTeamMember(Long memberId) {
-<span class="fc" id="L55">        return em.find(TeamMember.class, memberId);</span>
+<span class="fc" id="L57">        return em.find(TeamMember.class, memberId);</span>
+    }
+
+    /**
+     * Update a team member
+     *
+     * @param member new value
+     *
+     * @return updated managed member
+     * @throws ColabMergeException if update failed
+     */
+    public TeamMember updateTeamMember(TeamMember member) throws ColabMergeException {
+<span class="nc" id="L69">        TeamMember managedMember = this.findTeamMember(member.getId());</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (managedMember == null) {</span>
+<span class="nc" id="L71">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+<span class="nc" id="L73">        managedMember.merge(member);</span>
+
+<span class="nc" id="L75">        return managedMember;</span>
     }
 
     /**
@@ -61,8 +81,8 @@ import javax.persistence.TypedQuery;
      * @param role the role to delete
      */
     public void removeRole(TeamRole role) {
-<span class="nc" id="L64">        em.remove(role);</span>
-<span class="nc" id="L65">    }</span>
+<span class="nc" id="L84">        em.remove(role);</span>
+<span class="nc" id="L85">    }</span>
 
     /**
      * Remove access control
@@ -70,20 +90,20 @@ import javax.persistence.TypedQuery;
      * @param ac access control to remove
      */
     public void removeAccessControl(AccessControl ac) {
-<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (ac.getMember() != null) {</span>
-<span class="nc" id="L74">            ac.getMember().getAccessControlList().remove(ac);</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (ac.getMember() != null) {</span>
+<span class="nc" id="L94">            ac.getMember().getAccessControlList().remove(ac);</span>
         }
 
-<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (ac.getRole() != null) {</span>
-<span class="nc" id="L78">            ac.getRole().getAccessControl().remove(ac);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (ac.getRole() != null) {</span>
+<span class="nc" id="L98">            ac.getRole().getAccessControl().remove(ac);</span>
         }
 
-<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (ac.getCard() != null) {</span>
-<span class="nc" id="L82">            ac.getCard().getAccessControlList().remove(ac);</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (ac.getCard() != null) {</span>
+<span class="nc" id="L102">            ac.getCard().getAccessControlList().remove(ac);</span>
         }
 
-<span class="nc" id="L85">        em.remove(ac);</span>
-<span class="nc" id="L86">    }</span>
+<span class="nc" id="L105">        em.remove(ac);</span>
+<span class="nc" id="L106">    }</span>
 
     /**
      * Find the teamMember who match the given project and the given user.
@@ -95,14 +115,14 @@ import javax.persistence.TypedQuery;
      */
     public TeamMember findMemberByUserAndProject(Project project, User user) {
         try {
-<span class="fc" id="L98">            TypedQuery&lt;TeamMember&gt; query = em.createNamedQuery(&quot;TeamMember.findByUserAndProject&quot;, TeamMember.class);</span>
+<span class="fc" id="L118">            TypedQuery&lt;TeamMember&gt; query = em.createNamedQuery(&quot;TeamMember.findByUserAndProject&quot;, TeamMember.class);</span>
 
-<span class="fc" id="L100">            query.setParameter(&quot;projectId&quot;, project.getId());</span>
-<span class="fc" id="L101">            query.setParameter(&quot;userId&quot;, user.getId());</span>
+<span class="fc" id="L120">            query.setParameter(&quot;projectId&quot;, project.getId());</span>
+<span class="fc" id="L121">            query.setParameter(&quot;userId&quot;, user.getId());</span>
 
-<span class="fc" id="L103">            return query.getSingleResult();</span>
-<span class="fc" id="L104">        } catch (NoResultException ex) {</span>
-<span class="fc" id="L105">            return null;</span>
+<span class="fc" id="L123">            return query.getSingleResult();</span>
+<span class="fc" id="L124">        } catch (NoResultException ex) {</span>
+<span class="fc" id="L125">            return null;</span>
         }
     }
 
@@ -115,18 +135,18 @@ import javax.persistence.TypedQuery;
      * @return true if both user are both member of the same team
      */
     public boolean areUserTeammate(User a, User b) {
-<span class="fc" id="L118">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
+<span class="fc" id="L138">        TypedQuery&lt;Boolean&gt; query = em.createNamedQuery(</span>
             &quot;TeamMember.areUserTeammate&quot;,
             Boolean.class);
 
-<span class="fc" id="L122">        query.setParameter(</span>
-<span class="fc" id="L123">            &quot;aUserId&quot;, a.getId());</span>
-<span class="fc" id="L124">        query.setParameter(</span>
-<span class="fc" id="L125">            &quot;bUserId&quot;, b.getId());</span>
+<span class="fc" id="L142">        query.setParameter(</span>
+<span class="fc" id="L143">            &quot;aUserId&quot;, a.getId());</span>
+<span class="fc" id="L144">        query.setParameter(</span>
+<span class="fc" id="L145">            &quot;bUserId&quot;, b.getId());</span>
 
         // if the query returns something, users are teammates
-<span class="fc" id="L128">        return !query.getResultList()</span>
-<span class="pc bpc" id="L129" title="1 of 2 branches missed.">            .isEmpty();</span>
+<span class="fc" id="L148">        return !query.getResultList()</span>
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">            .isEmpty();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

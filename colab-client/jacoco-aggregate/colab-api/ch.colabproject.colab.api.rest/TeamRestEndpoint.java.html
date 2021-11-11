@@ -85,6 +85,21 @@ import org.slf4j.LoggerFactory;
     }
 
     /**
+     * Update a TeamMember
+     *
+     * @param member new value
+     *
+     * @return the team member
+     * @throws ColabMergeException if update failed
+     */
+    @PUT
+    @Path(&quot;member&quot;)
+    public TeamMember updateTeamMember(TeamMember member) throws ColabMergeException {
+<span class="nc" id="L98">        logger.debug(&quot;Update member {}&quot;, member);</span>
+<span class="nc" id="L99">        return teamDao.updateTeamMember(member);</span>
+    }
+
+    /**
      * Update hierarchical position of a member
      *
      * @param memberId id of the member
@@ -96,8 +111,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;memberId&quot;) Long memberId,
         @PathParam(&quot;position&quot;) HierarchicalPosition position
     ) {
-<span class="nc" id="L99">        teamFacade.updatePosition(memberId, position);</span>
-<span class="nc" id="L100">    }</span>
+<span class="nc" id="L114">        teamFacade.updatePosition(memberId, position);</span>
+<span class="nc" id="L115">    }</span>
 
     // *********************************************************************************************
     // Roles
@@ -112,9 +127,9 @@ import org.slf4j.LoggerFactory;
     @POST
     @Path(&quot;role&quot;)
     public Long createRole(TeamRole role) {
-<span class="nc" id="L115">        logger.debug(&quot;Create role {}&quot;, role);</span>
-<span class="nc" id="L116">        teamFacade.createRole(role);</span>
-<span class="nc" id="L117">        return role.getId();</span>
+<span class="nc" id="L130">        logger.debug(&quot;Create role {}&quot;, role);</span>
+<span class="nc" id="L131">        teamFacade.createRole(role);</span>
+<span class="nc" id="L132">        return role.getId();</span>
     }
 
     /**
@@ -127,8 +142,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;role/{roleId: [0-9]+}&quot;)
     public TeamRole getRole(@PathParam(&quot;roleId&quot;) Long roleId) {
-<span class="nc" id="L130">        logger.debug(&quot;Get Role #{}&quot;, roleId);</span>
-<span class="nc" id="L131">        return teamDao.findRole(roleId);</span>
+<span class="nc" id="L145">        logger.debug(&quot;Get Role #{}&quot;, roleId);</span>
+<span class="nc" id="L146">        return teamDao.findRole(roleId);</span>
     }
 
     /**
@@ -141,9 +156,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;role&quot;)
     public void updateRole(TeamRole role) throws ColabMergeException {
-<span class="nc" id="L144">        logger.debug(&quot;Update role {}&quot;, role);</span>
-<span class="nc" id="L145">        teamFacade.updateRole(role);</span>
-<span class="nc" id="L146">    }</span>
+<span class="nc" id="L159">        logger.debug(&quot;Update role {}&quot;, role);</span>
+<span class="nc" id="L160">        teamFacade.updateRole(role);</span>
+<span class="nc" id="L161">    }</span>
 
     /**
      * Delete a role
@@ -155,9 +170,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;role/{roleId: [0-9]+}&quot;)
     public void deleteRole(@PathParam(&quot;roleId&quot;) Long roleId) {
-<span class="nc" id="L158">        logger.debug(&quot;Delete role #{}&quot;, roleId);</span>
-<span class="nc" id="L159">        teamFacade.deleteRole(roleId);</span>
-<span class="nc" id="L160">    }</span>
+<span class="nc" id="L173">        logger.debug(&quot;Delete role #{}&quot;, roleId);</span>
+<span class="nc" id="L174">        teamFacade.deleteRole(roleId);</span>
+<span class="nc" id="L175">    }</span>
 
     /**
      * Give a role to a member. Member and role must belong to the same project. CurrentUser must
@@ -172,9 +187,9 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;roleId&quot;) Long roleId,
         @PathParam(&quot;memberId&quot;) Long memberId
     ) {
-<span class="nc" id="L175">        logger.debug(&quot;Give role #{} to member#{}&quot;, roleId, memberId);</span>
-<span class="nc" id="L176">        teamFacade.giveRole(roleId, memberId);</span>
-<span class="nc" id="L177">    }</span>
+<span class="nc" id="L190">        logger.debug(&quot;Give role #{} to member#{}&quot;, roleId, memberId);</span>
+<span class="nc" id="L191">        teamFacade.giveRole(roleId, memberId);</span>
+<span class="nc" id="L192">    }</span>
 
     /**
      * Remove a role from some team member. CurrentUser must have the right to edit the role.
@@ -188,9 +203,9 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;roleId&quot;) Long roleId,
         @PathParam(&quot;memberId&quot;) Long memberId
     ) {
-<span class="nc" id="L191">        logger.debug(&quot;Remove role #{} to member#{}&quot;, roleId, memberId);</span>
-<span class="nc" id="L192">        teamFacade.removeRole(roleId, memberId);</span>
-<span class="nc" id="L193">    }</span>
+<span class="nc" id="L206">        logger.debug(&quot;Remove role #{} to member#{}&quot;, roleId, memberId);</span>
+<span class="nc" id="L207">        teamFacade.removeRole(roleId, memberId);</span>
+<span class="nc" id="L208">    }</span>
 
     /**
      * Get ACL for the card
@@ -202,7 +217,7 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;acl/{cardId: [0-9]+}&quot;)
     public List&lt;AccessControl&gt; getAcl(@PathParam(&quot;cardId&quot;) Long cardId) {
-<span class="nc" id="L205">        return teamFacade.getAccessControlList(cardId);</span>
+<span class="nc" id="L220">        return teamFacade.getAccessControlList(cardId);</span>
     }
 
     /**
@@ -219,8 +234,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;memberId&quot;) Long memberId,
         @PathParam(&quot;level&quot;) InvolvementLevel level
     ) {
-<span class="nc" id="L222">        teamFacade.setInvolvementLevelForMember(cardId, memberId, level);</span>
-<span class="nc" id="L223">    }</span>
+<span class="nc" id="L237">        teamFacade.setInvolvementLevelForMember(cardId, memberId, level);</span>
+<span class="nc" id="L238">    }</span>
 
     /**
      * Clear access control for a member
@@ -234,8 +249,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;memberId&quot;) Long memberId
     ) {
-<span class="nc" id="L237">        teamFacade.setInvolvementLevelForMember(cardId, memberId, null);</span>
-<span class="nc" id="L238">    }</span>
+<span class="nc" id="L252">        teamFacade.setInvolvementLevelForMember(cardId, memberId, null);</span>
+<span class="nc" id="L253">    }</span>
 
     /**
      * Update access control for a role
@@ -251,8 +266,8 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;roleId&quot;) Long roleId,
         @PathParam(&quot;level&quot;) InvolvementLevel level
     ) {
-<span class="nc" id="L254">        teamFacade.setInvolvementLevelForRole(cardId, roleId, level);</span>
-<span class="nc" id="L255">    }</span>
+<span class="nc" id="L269">        teamFacade.setInvolvementLevelForRole(cardId, roleId, level);</span>
+<span class="nc" id="L270">    }</span>
 
     /**
      * Clear access control for a role
@@ -266,7 +281,7 @@ import org.slf4j.LoggerFactory;
         @PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;roleId&quot;) Long roleId
     ) {
-<span class="nc" id="L269">        teamFacade.setInvolvementLevelForRole(cardId, roleId, null);</span>
-<span class="nc" id="L270">    }</span>
+<span class="nc" id="L284">        teamFacade.setInvolvementLevelForRole(cardId, roleId, null);</span>
+<span class="nc" id="L285">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

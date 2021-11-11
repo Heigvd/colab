@@ -324,12 +324,22 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L324">        this.inSecurityTx = inSecurityTx;</span>
 <span class="fc" id="L325">    }</span>
 
+    /**
+     * Check if the current transaction is already done
+     *
+     * @return whether or not the current transaction is already done
+     */
     public boolean isTxDone() {
-<span class="nc" id="L328">        return txDone;</span>
+<span class="nc" id="L333">        return txDone;</span>
     }
 
+    /**
+     * Mark the current transaction as done or undone
+     *
+     * @param txDone whether or not the current transaction is already done
+     */
     public void setTxDone(boolean txDone) {
-<span class="fc" id="L332">        this.txDone = txDone;</span>
-<span class="fc" id="L333">    }</span>
+<span class="fc" id="L342">        this.txDone = txDone;</span>
+<span class="fc" id="L343">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -43,36 +43,76 @@ import javax.persistence.Embeddable;
      */
     private String modifiedBy;
 
+    /**
+     * Get the creation date
+     *
+     * @return creation date
+     */
     public OffsetDateTime getCreationDate() {
-<span class="nc" id="L47">        return creationDate;</span>
+<span class="nc" id="L52">        return creationDate;</span>
     }
 
+    /**
+     * Set the creation date
+     *
+     * @param creationDate creation date
+     */
     public void setCreationDate(OffsetDateTime creationDate) {
-<span class="nc" id="L51">        this.creationDate = creationDate;</span>
-<span class="nc" id="L52">    }</span>
+<span class="nc" id="L61">        this.creationDate = creationDate;</span>
+<span class="nc" id="L62">    }</span>
 
+    /**
+     * get created by
+     *
+     * @return created by
+     */
     public String getCreatedBy() {
-<span class="nc" id="L55">        return createdBy;</span>
+<span class="nc" id="L70">        return createdBy;</span>
     }
 
+    /**
+     * Set create by
+     *
+     * @param createdBy created by value
+     */
     public void setCreatedBy(String createdBy) {
-<span class="nc" id="L59">        this.createdBy = createdBy;</span>
-<span class="nc" id="L60">    }</span>
+<span class="nc" id="L79">        this.createdBy = createdBy;</span>
+<span class="nc" id="L80">    }</span>
 
+    /**
+     * get modification date
+     *
+     * @return date of most recent modification
+     */
     public OffsetDateTime getModificationDate() {
-<span class="nc" id="L63">        return modificationDate;</span>
+<span class="nc" id="L88">        return modificationDate;</span>
     }
 
+    /**
+     * set the date of most recent modification
+     *
+     * @param modificationDate the date
+     */
     public void setModificationDate(OffsetDateTime modificationDate) {
-<span class="nc" id="L67">        this.modificationDate = modificationDate;</span>
-<span class="nc" id="L68">    }</span>
+<span class="nc" id="L97">        this.modificationDate = modificationDate;</span>
+<span class="nc" id="L98">    }</span>
 
+    /**
+     * Get name of last user who touch the entity
+     *
+     * @return username
+     */
     public String getModifiedBy() {
-<span class="nc" id="L71">        return modifiedBy;</span>
+<span class="nc" id="L106">        return modifiedBy;</span>
     }
 
+    /**
+     * Set the name of user who touch the entity
+     *
+     * @param modifiedBy username
+     */
     public void setModifiedBy(String modifiedBy) {
-<span class="nc" id="L75">        this.modifiedBy = modifiedBy;</span>
-<span class="nc" id="L76">    }</span>
+<span class="nc" id="L115">        this.modifiedBy = modifiedBy;</span>
+<span class="nc" id="L116">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

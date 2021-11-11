@@ -132,11 +132,12 @@ import javax.validation.constraints.NotNull;
 <span class="nc" id="L132">        User user = requestManager.getCurrentUser();</span>
 <span class="nc bnc" id="L133" title="All 2 branches missed.">        if (user != null) {</span>
 <span class="nc" id="L134">            teamMember.setUser(user);</span>
-<span class="nc" id="L135">            user.getTeamMembers().add(teamMember);</span>
+<span class="nc" id="L135">            teamMember.setDisplayName(&quot;&quot;);</span>
+<span class="nc" id="L136">            user.getTeamMembers().add(teamMember);</span>
         } else {
-<span class="nc" id="L137">            throw HttpErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L138">            throw HttpErrorMessage.authenticationRequired();</span>
         }
-<span class="nc" id="L139">    }</span>
+<span class="nc" id="L140">    }</span>
 
     /**
      * If team member is set, return the associated project.
@@ -145,40 +146,40 @@ import javax.validation.constraints.NotNull;
      */
     @JsonbTransient
     private Project getProject() {
-<span class="pc bpc" id="L148" title="1 of 2 branches missed.">        if (teamMember != null) {</span>
-<span class="fc" id="L149">            return teamMember.getProject();</span>
+<span class="pc bpc" id="L149" title="1 of 2 branches missed.">        if (teamMember != null) {</span>
+<span class="fc" id="L150">            return teamMember.getProject();</span>
         }
-<span class="nc" id="L151">        return null;</span>
+<span class="nc" id="L152">        return null;</span>
     }
 
     @Override
     public String getSubject() {
-<span class="fc" id="L156">        return EMAIL_SUBJECT;</span>
+<span class="fc" id="L157">        return EMAIL_SUBJECT;</span>
     }
 
     @Override
     public String getEmailBody(String link) {
-<span class="fc" id="L161">        Project project = getProject();</span>
+<span class="fc" id="L162">        Project project = getProject();</span>
 
-<span class="pc bpc" id="L163" title="1 of 2 branches missed.">        String theProject = project != null</span>
-<span class="fc" id="L164">            ? &quot;the \&quot;&quot; + project.getName() + &quot;\&quot; project&quot;</span>
-<span class="pc" id="L165">            : &quot;a co.LAB project&quot;;</span>
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">        String theProject = project != null</span>
+<span class="fc" id="L165">            ? &quot;the \&quot;&quot; + project.getName() + &quot;\&quot; project&quot;</span>
+<span class="pc" id="L166">            : &quot;a co.LAB project&quot;;</span>
 
-<span class="fc" id="L167">        return MessageFormat.format(&quot;Hi,&lt;br /&gt;&lt;br /&gt;&quot;</span>
+<span class="fc" id="L168">        return MessageFormat.format(&quot;Hi,&lt;br /&gt;&lt;br /&gt;&quot;</span>
             + &quot;{0} invites you to collaborate on {1}.&lt;br /&gt;&lt;br /&gt;&quot;
             + &quot;Click &lt;a href=\&quot;{2}\&quot;&gt;here&lt;/a&gt; to join the team.&lt;br /&gt;&lt;br /&gt;&quot;,
-<span class="pc bpc" id="L170" title="1 of 2 branches missed.">            sender != null ? sender : &quot;Someone&quot;, theProject, link);</span>
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">            sender != null ? sender : &quot;Someone&quot;, theProject, link);</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-<span class="fc" id="L176">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
+<span class="fc" id="L177">        return new Conditions.IsCurrentUserMemberOfProject(getProject());</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L181">        return &quot;InvitationToken{&quot; + &quot;id=&quot; + getId() + '}';</span>
+<span class="nc" id="L182">        return &quot;InvitationToken{&quot; + &quot;id=&quot; + getId() + '}';</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

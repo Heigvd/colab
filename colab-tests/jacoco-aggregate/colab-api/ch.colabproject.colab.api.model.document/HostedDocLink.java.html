@@ -29,26 +29,26 @@ import javax.persistence.Entity;
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * The path to access the document
+     * The filePath to access the document
      */
-    private String path;
+    private String filePath;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * @return the path to access the document
+     * @return the filePath to access the document
      */
-    public String getPath() {
-<span class="fc" id="L44">        return path;</span>
+    public String getFilePath() {
+<span class="fc" id="L44">        return filePath;</span>
     }
 
     /**
-     * @param path the path to access the document to set
+     * @param filePath the filePath to access the document to set
      */
-    public void setPath(String path) {
-<span class="fc" id="L51">        this.path = path;</span>
+    public void setFilePath(String filePath) {
+<span class="fc" id="L51">        this.filePath = filePath;</span>
 <span class="fc" id="L52">    }</span>
 
     // ---------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ import javax.persistence.Entity;
 <span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (other instanceof HostedDocLink) {</span>
 <span class="fc" id="L61">            HostedDocLink o = (HostedDocLink) other;</span>
 <span class="fc" id="L62">            super.merge(o);</span>
-<span class="fc" id="L63">            this.setPath(o.getPath());</span>
+<span class="fc" id="L63">            this.setFilePath(o.getFilePath());</span>
 <span class="fc" id="L64">        } else {</span>
 <span class="nc" id="L65">            throw new ColabMergeException(this, other);</span>
         }
@@ -79,7 +79,7 @@ import javax.persistence.Entity;
 
     @Override
     public String toString() {
-<span class="nc" id="L82">        return &quot;HostedDocLink{&quot; + super.toPartialString() + &quot;, path=&quot; + path + &quot;}&quot;;</span>
+<span class="nc" id="L82">        return &quot;HostedDocLink{&quot; + super.toPartialString() + &quot;, filePath=&quot; + filePath + &quot;}&quot;;</span>
     }
 
 }

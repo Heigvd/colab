@@ -5,9 +5,9 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.card,Card,350,0,28,0,109,
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardTypeRef,68,0,8,0,21,0,12,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContent,218,0,12,0,73,0,43,0,37,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContentCompletionMode,34,0,0,0,4,0,1,0,1,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardType,85,0,6,0,28,0,17,0,14,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardType,76,0,6,0,25,0,15,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api,Helper,160,0,14,0,40,0,18,0,11,0
-colab-webapp/colab-api,ch.colabproject.colab.api.ejb,TokenFacade,339,0,24,0,98,0,24,0,12,0
+colab-webapp/colab-api,ch.colabproject.colab.api.ejb,TokenFacade,342,0,24,0,99,0,24,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,BlockFacade,194,0,22,0,56,0,18,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ActivityFlowLinkFacade,289,0,40,0,81,0,29,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.ChannelType,44,0,0,0,5,0,1,0,1,0
@@ -57,7 +57,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.user,Account,93,0,6,0,25,
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HashMethod.new HashMethod() {...},25,0,0,0,6,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HashMethod,20,0,0,0,3,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,AuthMethod,46,0,0,0,20,0,10,0,10,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.user,User,250,0,12,0,69,0,39,0,33,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.user,User,261,0,12,0,73,0,41,0,35,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,AuthInfo,24,0,0,0,10,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,LocalAccount,94,0,4,0,36,0,25,0,23,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,SignUpInfo,38,0,0,0,16,0,11,0,11,0
@@ -79,10 +79,10 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.team.acl,InvolvementLevel
 colab-webapp/colab-api,ch.colabproject.colab.api.model.team.acl,AccessControl,110,0,16,0,42,0,28,0,20,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.team.acl,HierarchicalPosition,59,0,0,0,9,0,3,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.team,TeamRole,156,0,12,0,51,0,31,0,25,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.team,TeamMember,192,0,24,0,61,0,42,0,30,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.team,TeamMember,216,0,26,0,69,0,45,0,32,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.token,VerifyLocalAccountToken,41,0,0,0,11,0,8,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.token,ResetLocalAccountPasswordToken,49,0,2,0,13,0,9,0,8,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.token,InvitationToken,119,0,16,0,33,0,22,0,14,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.token,InvitationToken,123,0,16,0,34,0,22,0,14,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.token,Token,78,0,2,0,29,0,21,0,20,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb.monitoring,LoggerLevelPayload,29,0,0,0,11,0,6,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb.monitoring,LevelDescriptor,40,0,2,0,12,0,7,0,6,0
@@ -101,7 +101,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.tools,Debouncer,18
 colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.tools,CancelDebounce,15,0,0,0,5,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,HostedDocLink,44,0,2,0,14,0,8,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,ResourceRef,105,0,10,0,32,0,18,0,13,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.document,ExternalDocLink,44,0,2,0,14,0,8,0,7,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.document,ExternalLink,44,0,2,0,14,0,8,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,AbstractResource,272,0,44,0,82,0,56,0,34,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,TextDataBlock,74,0,2,0,25,0,13,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Resource,132,0,6,0,44,0,26,0,23,0
@@ -109,7 +109,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Document,166,0,3
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Block,127,0,12,0,44,0,28,0,22,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,BlockDocument,43,0,2,0,14,0,8,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.project,ProjectDao,59,0,0,0,15,0,7,0,7,0
-colab-webapp/colab-api,ch.colabproject.colab.api.persistence.project,TeamDao,105,0,8,0,26,0,11,0,7,0
+colab-webapp/colab-api,ch.colabproject.colab.api.persistence.project,TeamDao,119,0,10,0,31,0,13,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,MessageBuilder,77,0,0,0,22,0,12,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail.new Authenticator() {...},17,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Message,76,0,0,0,29,0,18,0,18,0
@@ -137,7 +137,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.rest,MonitoringRestEndpoint,15,
 colab-webapp/colab-api,ch.colabproject.colab.api.rest,WebsocketRestEndpoint,94,0,0,0,28,0,11,0,11,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest,ProjectRestEndpoint,114,0,0,0,28,0,14,0,14,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest,TokenRestEndpoint,14,0,0,0,3,0,3,0,3,0
-colab-webapp/colab-api,ch.colabproject.colab.api.rest,TeamRestEndpoint,128,0,0,0,34,0,16,0,16,0
+colab-webapp/colab-api,ch.colabproject.colab.api.rest,TeamRestEndpoint,137,0,0,0,36,0,17,0,17,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest,UserRestEndpoint,161,0,2,0,50,0,20,0,19,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,EntityListener,133,0,24,0,35,0,19,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,JpaNameMappingCustomizer,44,0,2,0,13,0,7,0,6,0

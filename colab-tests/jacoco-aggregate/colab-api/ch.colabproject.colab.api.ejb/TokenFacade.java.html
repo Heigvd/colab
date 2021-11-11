@@ -277,17 +277,19 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L277">            token.setAuthenticationRequired(Boolean.TRUE);</span>
 <span class="fc" id="L278">            token.setRecipient(recipient);</span>
 
-<span class="fc" id="L280">            tokenDao.persistToken(token);</span>
+<span class="fc" id="L280">            newMember.setDisplayName(recipient);</span>
+
+<span class="fc" id="L282">            tokenDao.persistToken(token);</span>
         }
 
-<span class="fc" id="L283">        token.setSender(currentUser.getDisplayName());</span>
+<span class="fc" id="L285">        token.setSender(currentUser.getDisplayName());</span>
         try {
-<span class="fc" id="L285">            sendTokenByEmail(token, recipient);</span>
-<span class="nc" id="L286">        } catch (MessagingException ex) {</span>
-<span class="nc" id="L287">            logger.error(&quot;Failed to send pssword reset email&quot;, ex);</span>
-<span class="nc" id="L288">            throw HttpErrorMessage.smtpError();</span>
-<span class="fc" id="L289">        }</span>
-<span class="fc" id="L290">        return token.getTeamMember();</span>
+<span class="fc" id="L287">            sendTokenByEmail(token, recipient);</span>
+<span class="nc" id="L288">        } catch (MessagingException ex) {</span>
+<span class="nc" id="L289">            logger.error(&quot;Failed to send pssword reset email&quot;, ex);</span>
+<span class="nc" id="L290">            throw HttpErrorMessage.smtpError();</span>
+<span class="fc" id="L291">        }</span>
+<span class="fc" id="L292">        return token.getTeamMember();</span>
     }
 
     /**
@@ -299,12 +301,12 @@ import org.slf4j.LoggerFactory;
      * @return token if it exists and is not outdated, null otherwise
      */
     public Token getNotExpiredToken(Long id) {
-<span class="fc" id="L302">        Token token = tokenDao.getToken(id);</span>
-<span class="pc bpc" id="L303" title="2 of 4 branches missed.">        if (token != null &amp;&amp; token.isOutdated()) {</span>
-<span class="nc" id="L304">            requestManager.sudo(() -&gt; tokenDao.deleteToken(token));</span>
-<span class="nc" id="L305">            return null;</span>
+<span class="fc" id="L304">        Token token = tokenDao.getToken(id);</span>
+<span class="pc bpc" id="L305" title="2 of 4 branches missed.">        if (token != null &amp;&amp; token.isOutdated()) {</span>
+<span class="nc" id="L306">            requestManager.sudo(() -&gt; tokenDao.deleteToken(token));</span>
+<span class="nc" id="L307">            return null;</span>
         } else {
-<span class="fc" id="L307">            return token;</span>
+<span class="fc" id="L309">            return token;</span>
         }
     }
 }

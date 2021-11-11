@@ -17,7 +17,7 @@
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.AbstractResource;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.Block;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.Document;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.ExternalDocLink;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.ExternalLink;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.Resource;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.ResourceRef;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.TextDataBlock;
@@ -124,7 +124,7 @@
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         String teaser = <span class="jxr_string">"Word by word descriptions #"</span> + ((<strong class="jxr_keyword">int</strong>) (Math.random() * 1000));
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         String url = <span class="jxr_string">"http://www.123soleil.chat/theGameEncyclopedia.pdf"</span>;
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> 
-<a class="jxr_linenumber" name="L119" href="#L119">119</a>         ExternalDocLink doc = <strong class="jxr_keyword">new</strong> ExternalDocLink();
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>         ExternalLink doc = <strong class="jxr_keyword">new</strong> ExternalLink();
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>         doc.setUrl(url);
 <a class="jxr_linenumber" name="L121" href="#L121">121</a> 
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>         Long persistedResourceId;
@@ -266,8 +266,8 @@
 <a class="jxr_linenumber" name="L258" href="#L258">258</a>         Document persistedDocument = client.documentRestEndPoint.getDocument(documentId);
 <a class="jxr_linenumber" name="L259" href="#L259">259</a>         Assertions.assertNotNull(persistedDocument);
 <a class="jxr_linenumber" name="L260" href="#L260">260</a>         Assertions.assertEquals(documentId, persistedDocument.getId());
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>         Assertions.assertTrue(persistedDocument instanceof ExternalDocLink);
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>         ExternalDocLink persistedExtDocLink = (ExternalDocLink) persistedDocument;
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>         Assertions.assertTrue(persistedDocument instanceof ExternalLink);
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>         ExternalLink persistedExtDocLink = (ExternalLink) persistedDocument;
 <a class="jxr_linenumber" name="L263" href="#L263">263</a>         Assertions.assertEquals(url, persistedExtDocLink.getUrl());
 <a class="jxr_linenumber" name="L264" href="#L264">264</a>         Assertions.assertEquals(persistedResource.getId(), persistedDocument.getResourceId());
 <a class="jxr_linenumber" name="L265" href="#L265">265</a> 
