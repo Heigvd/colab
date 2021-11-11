@@ -8,7 +8,7 @@ package ch.colabproject.colab.tests.rest.document;
 
 import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.model.document.ExternalDocLink;
+import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.document.HostedDocLink;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import java.util.List;
@@ -38,10 +38,10 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testCreateExternalDocLink() {
+    public void testCreateExternalLink() {
         String url = "https://www.colab-project.ch/sites/default/files/2021-03/WP1%20-%20Co-Design%20Guidelines.pdf";
 
-        ExternalDocLink doc = new ExternalDocLink();
+        ExternalLink doc = new ExternalLink();
         doc.setUrl(url);
 
         Long docId = client.documentRestEndPoint.createDocument(doc);
@@ -50,8 +50,8 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedDoc);
         Assertions.assertEquals(docId, persistedDoc.getId());
 
-        Assertions.assertTrue(persistedDoc instanceof ExternalDocLink);
-        ExternalDocLink persistedExtDocLink = (ExternalDocLink) persistedDoc;
+        Assertions.assertTrue(persistedDoc instanceof ExternalLink);
+        ExternalLink persistedExtDocLink = (ExternalLink) persistedDoc;
         Assertions.assertEquals(url, persistedExtDocLink.getUrl());
     }
 
@@ -60,7 +60,7 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         String path = "someWayToAccessTheMongoDBData #" + ((int) (Math.random() * 1000));
 
         HostedDocLink doc = new HostedDocLink();
-        doc.setPath(path);
+        doc.setFilePath(path);
 
         Long docId = client.documentRestEndPoint.createDocument(doc);
 
@@ -70,7 +70,7 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
 
         Assertions.assertTrue(persistedDoc instanceof HostedDocLink);
         HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
-        Assertions.assertEquals(path, persistedHostedDocLink.getPath());
+        Assertions.assertEquals(path, persistedHostedDocLink.getFilePath());
     }
 
     @Test
@@ -95,13 +95,13 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testUpdateExternalDocLink() {
-        Long docId = client.documentRestEndPoint.createDocument(new ExternalDocLink());
+    public void testUpdateExternalLink() {
+        Long docId = client.documentRestEndPoint.createDocument(new ExternalLink());
 
         Document doc = client.documentRestEndPoint.getDocument(docId);
         Assertions.assertNotNull(doc);
-        Assertions.assertTrue(doc instanceof ExternalDocLink);
-        ExternalDocLink extDocLink = (ExternalDocLink) doc;
+        Assertions.assertTrue(doc instanceof ExternalLink);
+        ExternalLink extDocLink = (ExternalLink) doc;
         Assertions.assertEquals(docId, extDocLink.getId());
         Assertions.assertNull(extDocLink.getUrl());
 
@@ -111,8 +111,8 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         client.documentRestEndPoint.updateDocument(extDocLink);
 
         Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
-        Assertions.assertTrue(persistedDoc instanceof ExternalDocLink);
-        ExternalDocLink persistedExtDocLink = (ExternalDocLink) persistedDoc;
+        Assertions.assertTrue(persistedDoc instanceof ExternalLink);
+        ExternalLink persistedExtDocLink = (ExternalLink) persistedDoc;
         Assertions.assertNotNull(persistedExtDocLink);
         Assertions.assertEquals(docId, persistedExtDocLink.getId());
         Assertions.assertEquals(url, persistedExtDocLink.getUrl());
@@ -127,11 +127,11 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertTrue(doc instanceof HostedDocLink);
         HostedDocLink hostedDocLink = (HostedDocLink) doc;
         Assertions.assertEquals(docId, hostedDocLink.getId());
-        Assertions.assertNull(hostedDocLink.getPath());
+        Assertions.assertNull(hostedDocLink.getFilePath());
 
         String path = "aWayToAccessTheMongoDBData #" + ((int) (Math.random() * 1000));
 
-        hostedDocLink.setPath(path);
+        hostedDocLink.setFilePath(path);
         client.documentRestEndPoint.updateDocument(hostedDocLink);
 
         Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
@@ -139,7 +139,7 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
         Assertions.assertNotNull(persistedHostedDocLink);
         Assertions.assertEquals(docId, persistedHostedDocLink.getId());
-        Assertions.assertEquals(path, persistedHostedDocLink.getPath());
+        Assertions.assertEquals(path, persistedHostedDocLink.getFilePath());
     }
 
     @Test
@@ -149,7 +149,7 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         BlockDocument bdoc = new BlockDocument();
         client.documentRestEndPoint.createDocument(bdoc);
 
-        ExternalDocLink edoc = new ExternalDocLink();
+        ExternalLink edoc = new ExternalLink();
         client.documentRestEndPoint.createDocument(edoc);
 
         HostedDocLink hdoc = new HostedDocLink();
@@ -173,8 +173,8 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testDeleteExternalDocLink() {
-        Long docId = client.documentRestEndPoint.createDocument(new ExternalDocLink());
+    public void testDeleteExternalLink() {
+        Long docId = client.documentRestEndPoint.createDocument(new ExternalLink());
 
         Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
         Assertions.assertNotNull(persistedDoc);

@@ -9,7 +9,7 @@ package ch.colabproject.colab.tests.rest.document;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.model.document.ExternalDocLink;
+import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
@@ -116,7 +116,7 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         String teaser = "Word by word descriptions #" + ((int) (Math.random() * 1000));
         String url = "http://www.123soleil.chat/theGameEncyclopedia.pdf";
 
-        ExternalDocLink doc = new ExternalDocLink();
+        ExternalLink doc = new ExternalLink();
         doc.setUrl(url);
 
         Long persistedResourceId;
@@ -258,8 +258,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         Document persistedDocument = client.documentRestEndPoint.getDocument(documentId);
         Assertions.assertNotNull(persistedDocument);
         Assertions.assertEquals(documentId, persistedDocument.getId());
-        Assertions.assertTrue(persistedDocument instanceof ExternalDocLink);
-        ExternalDocLink persistedExtDocLink = (ExternalDocLink) persistedDocument;
+        Assertions.assertTrue(persistedDocument instanceof ExternalLink);
+        ExternalLink persistedExtDocLink = (ExternalLink) persistedDocument;
         Assertions.assertEquals(url, persistedExtDocLink.getUrl());
         Assertions.assertEquals(persistedResource.getId(), persistedDocument.getResourceId());
 

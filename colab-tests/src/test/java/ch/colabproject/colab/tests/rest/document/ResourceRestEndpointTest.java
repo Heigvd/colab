@@ -10,7 +10,7 @@ import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.model.document.ExternalDocLink;
+import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
@@ -47,7 +47,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         String category = "awesome resources #" + ((int) (Math.random() * 1000));
         String url = "http://www.123soleil.chat/theGameEncyclopedia.pdf";
 
-        ExternalDocLink doc = new ExternalDocLink();
+        ExternalLink doc = new ExternalLink();
         doc.setUrl(url);
 
         TextDataBlock teaserBlock = TextDataBlock.initNewDefaultTextDataBlock();
@@ -77,8 +77,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Document persistedDocument = client.documentRestEndPoint
             .getDocument(persistedResource.getDocumentId());
         Assertions.assertNotNull(persistedDocument);
-        Assertions.assertTrue(persistedDocument instanceof ExternalDocLink);
-        ExternalDocLink persistedExtDoc = (ExternalDocLink) persistedDocument;
+        Assertions.assertTrue(persistedDocument instanceof ExternalLink);
+        ExternalLink persistedExtDoc = (ExternalLink) persistedDocument;
         Assertions.assertEquals(url, persistedExtDoc.getUrl());
         Assertions.assertNull(persistedExtDoc.getDeliverableCardContentId());
         Assertions.assertEquals(resourceId, persistedExtDoc.getResourceId());
@@ -102,7 +102,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         String url = "http://www.123soleil.chat/theGameEncyclopedia.pdf";
 
-        ExternalDocLink doc = new ExternalDocLink();
+        ExternalLink doc = new ExternalLink();
         doc.setUrl(url);
 
         ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
@@ -125,8 +125,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Document persistedDocument = client.documentRestEndPoint
             .getDocument(persistedResource.getDocumentId());
         Assertions.assertNotNull(persistedDocument);
-        Assertions.assertTrue(persistedDocument instanceof ExternalDocLink);
-        ExternalDocLink persistedExtDoc = (ExternalDocLink) persistedDocument;
+        Assertions.assertTrue(persistedDocument instanceof ExternalLink);
+        ExternalLink persistedExtDoc = (ExternalLink) persistedDocument;
         Assertions.assertEquals(url, persistedExtDoc.getUrl());
         Assertions.assertNull(persistedExtDoc.getDeliverableCardContentId());
         Assertions.assertEquals(resourceId, persistedExtDoc.getResourceId());
@@ -167,8 +167,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         persistedDocument = client.documentRestEndPoint
             .getDocument(persistedResource.getDocumentId());
         Assertions.assertNotNull(persistedDocument);
-        Assertions.assertTrue(persistedDocument instanceof ExternalDocLink);
-        persistedExtDoc = (ExternalDocLink) persistedDocument;
+        Assertions.assertTrue(persistedDocument instanceof ExternalLink);
+        persistedExtDoc = (ExternalLink) persistedDocument;
         Assertions.assertEquals(url, persistedExtDoc.getUrl());
         Assertions.assertNull(persistedExtDoc.getDeliverableCardContentId());
         Assertions.assertEquals(resourceId, persistedExtDoc.getResourceId());
@@ -191,7 +191,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         String url = "http://www.123soleil.chat/theGameEncyclopedia.pdf";
 
-        ExternalDocLink doc = new ExternalDocLink();
+        ExternalLink doc = new ExternalLink();
         doc.setUrl(url);
 
         ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
@@ -244,7 +244,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         String url = "http://www.123soleil.chat/theGameEncyclopedia.pdf";
 
-        ExternalDocLink doc = new ExternalDocLink();
+        ExternalLink doc = new ExternalLink();
         doc.setUrl(url);
 
         ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
@@ -611,7 +611,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         teaserBlock.setMimeType("text/markdown");
         teaserBlock.setTextData(teaser);
 
-        ExternalDocLink document = new ExternalDocLink();
+        ExternalLink document = new ExternalLink();
         document.setUrl(url);
 
         ResourceCreationBean resourceCreationBean = new ResourceCreationBean();

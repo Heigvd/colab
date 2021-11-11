@@ -62,7 +62,6 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(cardType);
         Assertions.assertNotNull(cardType.getId());
         Assertions.assertEquals(projectId, cardType.getProjectId());
-        Assertions.assertNull(cardType.getUniqueId());
         Assertions.assertEquals(title, cardType.getTitle());
         Assertions.assertNotNull(cardType.getPurposeId());
 
@@ -342,7 +341,6 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardTypeToCreate);
 
         CardType cardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
-        Assertions.assertNull(cardType.getUniqueId());
         Assertions.assertNull(cardType.getTitle());
         Assertions.assertNotNull(cardType.getPurposeId());
         Block persistedPurpose = client.blockRestEndPoint.getBlock(cardType.getPurposeId());
