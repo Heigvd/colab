@@ -19,7 +19,7 @@ Setup a 2nd database for tests
 
 ```shell
 echo "CREATE USER \"colab_test\" WITH PASSWORD '1234';
-CREATE DATABASE \"colab_test\" OWNER \"colab_test\";" |  docker exec -it colab_postgres psql -U postgres
+CREATE DATABASE \"colab_test\" OWNER \"colab_test\";" |  docker exec colab_postgres psql -U colab
 ```
 
 ## Compile
