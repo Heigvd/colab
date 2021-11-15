@@ -75,7 +75,7 @@
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>      @GET
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      @Path(<span class="jxr_string">"{id}"</span>)
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <strong class="jxr_keyword">public</strong> <a name="ActivityFlowLink" href="../../../../../../ch/colabproject/colab/api/model/link/ActivityFlowLink.html#ActivityFlowLink">ActivityFlowLink</a> getLink(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>      <strong class="jxr_keyword">public</strong> ActivityFlowLink getLink(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          logger.debug(<span class="jxr_string">"get activity flow link #{}"</span>, id);
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          <strong class="jxr_keyword">return</strong> linkDao.findActivityFlowLink(id);
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      }
@@ -101,7 +101,7 @@
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">     * @return id of the persisted new link</em>
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      @POST
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">public</strong> Long createLink(<a name="ActivityFlowLink" href="../../../../../../ch/colabproject/colab/api/model/link/ActivityFlowLink.html#ActivityFlowLink">ActivityFlowLink</a> link) {
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">public</strong> Long createLink(ActivityFlowLink link) {
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>          logger.debug(<span class="jxr_string">"create activity flow link {}"</span>, link);
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>          <strong class="jxr_keyword">return</strong> linkFacade.createActivityFlowLink(link).getId();
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>      }

@@ -92,11 +92,11 @@
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">     * @return the new persisted project</em>
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">public</strong> <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> createNewProject(<a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project) {
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>      <strong class="jxr_keyword">public</strong> Project createNewProject(Project project) {
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>              <strong class="jxr_keyword">return</strong> requestManager.sudo(() -&gt; {
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>                  logger.debug(<span class="jxr_string">"Create new project: {}"</span>, project);
-<a class="jxr_linenumber" name="L91" href="#L91">91</a>                  <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> rootCard = cardFacade.initNewRootCard();
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>                  Card rootCard = cardFacade.initNewRootCard();
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>                  project.setRootCard(rootCard);
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>                  rootCard.setRootCardProject(project);
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  
@@ -123,7 +123,7 @@
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">     * @return all cards of the project</em>
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>     <strong class="jxr_keyword">public</strong> Set&lt;Card&gt; getCards(Long projectId) {
-<a class="jxr_linenumber" name="L118" href="#L118">118</a>         <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(projectId);
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>         Project project = projectDao.getProject(projectId);
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>         logger.debug(<span class="jxr_string">"Get card types of project {}"</span>, project);
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>         <strong class="jxr_keyword">if</strong> (project == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
@@ -140,7 +140,7 @@
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> <em class="jxr_javadoccomment">     * @return all cards contents of the project</em>
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>     <strong class="jxr_keyword">public</strong> Set&lt;CardContent&gt; getCardContents(Long projectId) {
-<a class="jxr_linenumber" name="L135" href="#L135">135</a>         <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(projectId);
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>         Project project = projectDao.getProject(projectId);
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         logger.debug(<span class="jxr_string">"Get card types of project {}"</span>, project);
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         <strong class="jxr_keyword">if</strong> (project == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
@@ -157,7 +157,7 @@
 <a class="jxr_linenumber" name="L149" href="#L149">149</a> <em class="jxr_javadoccomment">     * @return all card types of the project</em>
 <a class="jxr_linenumber" name="L150" href="#L150">150</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>     <strong class="jxr_keyword">public</strong> Set&lt;AbstractCardType&gt; getCardTypes(Long projectId) {
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>         <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(projectId);
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>         Project project = projectDao.getProject(projectId);
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         logger.debug(<span class="jxr_string">"Get card types of project {}"</span>, project);
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         <strong class="jxr_keyword">if</strong> (project == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
@@ -174,7 +174,7 @@
 <a class="jxr_linenumber" name="L166" href="#L166">166</a> <em class="jxr_javadoccomment">     * @return all activityFlowLinks linked to the project</em>
 <a class="jxr_linenumber" name="L167" href="#L167">167</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>     <strong class="jxr_keyword">public</strong> Set&lt;ActivityFlowLink&gt; getActivityFlowLinks(Long projectId) {
-<a class="jxr_linenumber" name="L169" href="#L169">169</a>         <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(projectId);
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>         Project project = projectDao.getProject(projectId);
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>         logger.debug(<span class="jxr_string">"Get activityflowlinks of project {}"</span>, project);
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>         <strong class="jxr_keyword">if</strong> (project == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();

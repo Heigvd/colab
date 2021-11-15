@@ -297,7 +297,7 @@
 <a class="jxr_linenumber" name="L289" href="#L289">289</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L290" href="#L290">290</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> subscribeToProjectChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId, Long projectId) {
 <a class="jxr_linenumber" name="L291" href="#L291">291</a>         logger.debug(<span class="jxr_string">"Session {} want to subscribe to Project#{}"</span>, sessionId, projectId);
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>         <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(projectId);
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>         Project project = projectDao.getProject(projectId);
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>         <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L294" href="#L294">294</a>             securityFacade.assertConditionTx(<strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserMemberOfProject(project),
 <a class="jxr_linenumber" name="L295" href="#L295">295</a>                 <span class="jxr_string">"Subscribe to project channel: Permision denied"</span>);
@@ -323,7 +323,7 @@
 <a class="jxr_linenumber" name="L315" href="#L315">315</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> unsubscribeFromProjectChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId, Long projectId) {
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>         logger.debug(<span class="jxr_string">"Session {} want to unsubscribe from Project#{}"</span>, sessionId, projectId);
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>         <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(projectId);
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>         Project project = projectDao.getProject(projectId);
 <a class="jxr_linenumber" name="L319" href="#L319">319</a>         <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L320" href="#L320">320</a>             securityFacade.assertConditionTx(<strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserMemberOfProject(project),
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>                 <span class="jxr_string">"Subscribe to project channel: Permision denied"</span>);
@@ -349,7 +349,7 @@
 <a class="jxr_linenumber" name="L341" href="#L341">341</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L342" href="#L342">342</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> subscribeToBlockChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId, Long blockId) {
 <a class="jxr_linenumber" name="L343" href="#L343">343</a>         logger.debug(<span class="jxr_string">"Session {} want to subscribe to Block#{}"</span>, sessionId, blockId);
-<a class="jxr_linenumber" name="L344" href="#L344">344</a>         <a name="Block" href="../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> block = blockDao.findBlock(blockId);
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>         Block block = blockDao.findBlock(blockId);
 <a class="jxr_linenumber" name="L345" href="#L345">345</a>         <strong class="jxr_keyword">if</strong> (block != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L346" href="#L346">346</a>             <em class="jxr_comment">// no explicit security check : if one can load the block, one can subscribe to its channel</em>
 <a class="jxr_linenumber" name="L347" href="#L347">347</a> <em class="jxr_comment">//            securityFacade.assertConditionTx(new Conditions.IsCurrentUserMemberOfBlock(block),</em>
@@ -376,7 +376,7 @@
 <a class="jxr_linenumber" name="L368" href="#L368">368</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L369" href="#L369">369</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> unsubscribeFromBlockChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId, Long blockId) {
 <a class="jxr_linenumber" name="L370" href="#L370">370</a>         logger.debug(<span class="jxr_string">"Session {} want to unsubscribe from Block#{}"</span>, sessionId, blockId);
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>         <a name="Block" href="../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> block = blockDao.findBlock(blockId);
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>         Block block = blockDao.findBlock(blockId);
 <a class="jxr_linenumber" name="L372" href="#L372">372</a>         <strong class="jxr_keyword">if</strong> (block != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L373" href="#L373">373</a>             <em class="jxr_comment">// no explicit security check : if one can load the block, one can subscribe to its channel</em>
 <a class="jxr_linenumber" name="L374" href="#L374">374</a> <em class="jxr_comment">//            securityFacade.assertConditionTx(new Conditions.IsCurrentUserMemberOfBlock(block),</em>
@@ -523,12 +523,12 @@
 <a class="jxr_linenumber" name="L515" href="#L515">515</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L516" href="#L516">516</a>     <strong class="jxr_keyword">private</strong> <a name="WebsocketEffectiveChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/WebsocketEffectiveChannel.html#WebsocketEffectiveChannel">WebsocketEffectiveChannel</a> getChannel(<a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/ejb/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request) {
 <a class="jxr_linenumber" name="L517" href="#L517">517</a>         <strong class="jxr_keyword">if</strong> (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {
-<a class="jxr_linenumber" name="L518" href="#L518">518</a>             <a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project = projectDao.getProject(request.getChannelId());
+<a class="jxr_linenumber" name="L518" href="#L518">518</a>             Project project = projectDao.getProject(request.getChannelId());
 <a class="jxr_linenumber" name="L519" href="#L519">519</a>             <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L520" href="#L520">520</a>                 <strong class="jxr_keyword">return</strong> ProjectContentChannel.build(project);
 <a class="jxr_linenumber" name="L521" href="#L521">521</a>             }
 <a class="jxr_linenumber" name="L522" href="#L522">522</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (request.getChannelType() == SubscriptionRequest.ChannelType.BLOCK) {
-<a class="jxr_linenumber" name="L523" href="#L523">523</a>             <a name="Block" href="../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> block = blockDao.findBlock(request.getChannelId());
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>             Block block = blockDao.findBlock(request.getChannelId());
 <a class="jxr_linenumber" name="L524" href="#L524">524</a>             <strong class="jxr_keyword">if</strong> (block != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L525" href="#L525">525</a>                 <strong class="jxr_keyword">return</strong> BlockChannel.build(block);
 <a class="jxr_linenumber" name="L526" href="#L526">526</a>             }

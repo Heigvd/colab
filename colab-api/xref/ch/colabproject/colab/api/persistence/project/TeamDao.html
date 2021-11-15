@@ -50,7 +50,7 @@
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment">     * @return the role or null if it does no exist</em>
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">public</strong> <a name="TeamRole" href="../../../../../../ch/colabproject/colab/api/model/team/TeamRole.html#TeamRole">TeamRole</a> findRole(Long roleId) {
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>      <strong class="jxr_keyword">public</strong> TeamRole findRole(Long roleId) {
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>          <strong class="jxr_keyword">return</strong> em.find(TeamRole.<strong class="jxr_keyword">class</strong>, roleId);
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>      }
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  
@@ -61,7 +61,7 @@
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">     * @return the member or null if it does no exist</em>
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">public</strong> <a name="TeamMember" href="../../../../../../ch/colabproject/colab/api/model/team/TeamMember.html#TeamMember">TeamMember</a> findTeamMember(Long memberId) {
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">public</strong> TeamMember findTeamMember(Long memberId) {
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>          <strong class="jxr_keyword">return</strong> em.find(TeamMember.<strong class="jxr_keyword">class</strong>, memberId);
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      }
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  
@@ -73,8 +73,8 @@
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">     * @return updated managed member</em>
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">     * @throws ColabMergeException if update failed</em>
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">public</strong> <a name="TeamMember" href="../../../../../../ch/colabproject/colab/api/model/team/TeamMember.html#TeamMember">TeamMember</a> updateTeamMember(<a name="TeamMember" href="../../../../../../ch/colabproject/colab/api/model/team/TeamMember.html#TeamMember">TeamMember</a> member) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <a name="TeamMember" href="../../../../../../ch/colabproject/colab/api/model/team/TeamMember.html#TeamMember">TeamMember</a> managedMember = <strong class="jxr_keyword">this</strong>.findTeamMember(member.getId());
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">public</strong> TeamMember updateTeamMember(TeamMember member) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          TeamMember managedMember = <strong class="jxr_keyword">this</strong>.findTeamMember(member.getId());
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">if</strong> (managedMember == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>              <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          }
@@ -88,7 +88,7 @@
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  <em class="jxr_javadoccomment">     * @param role the role to delete</em>
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> removeRole(<a name="TeamRole" href="../../../../../../ch/colabproject/colab/api/model/team/TeamRole.html#TeamRole">TeamRole</a> role) {
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> removeRole(TeamRole role) {
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          em.remove(role);
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      }
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  
@@ -97,7 +97,7 @@
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">     * @param ac access control to remove</em>
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> removeAccessControl(<a name="AccessControl" href="../../../../../../ch/colabproject/colab/api/model/team/acl/AccessControl.html#AccessControl">AccessControl</a> ac) {
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> removeAccessControl(AccessControl ac) {
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>          <strong class="jxr_keyword">if</strong> (ac.getMember() != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>              ac.getMember().getAccessControlList().remove(ac);
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          }
@@ -121,7 +121,7 @@
 <a class="jxr_linenumber" name="L113" href="#L113">113</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> <em class="jxr_javadoccomment">     * @return the teamMember or null</em>
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>     <strong class="jxr_keyword">public</strong> <a name="TeamMember" href="../../../../../../ch/colabproject/colab/api/model/team/TeamMember.html#TeamMember">TeamMember</a> findMemberByUserAndProject(<a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project, User user) {
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>     <strong class="jxr_keyword">public</strong> TeamMember findMemberByUserAndProject(Project project, User user) {
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>             TypedQuery&lt;TeamMember&gt; query = em.createNamedQuery(<span class="jxr_string">"TeamMember.findByUserAndProject"</span>, TeamMember.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="L119" href="#L119">119</a> 

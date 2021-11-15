@@ -169,13 +169,13 @@
 <a class="jxr_linenumber" name="L161" href="#L161">161</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L162" href="#L162">162</a> <em class="jxr_javadoccomment">     * @return a brand new token or a refresh</em>
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L164" href="#L164">164</a>     <strong class="jxr_keyword">public</strong> <a name="VerifyLocalAccountToken" href="../../../../../ch/colabproject/colab/api/model/token/VerifyLocalAccountToken.html#VerifyLocalAccountToken">VerifyLocalAccountToken</a> getOrCreateVerifyAccountToken(LocalAccount account) {
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>     <strong class="jxr_keyword">public</strong> VerifyLocalAccountToken getOrCreateVerifyAccountToken(LocalAccount account) {
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>         logger.debug(<span class="jxr_string">"getOrCreate VerifyToken for {}"</span>, account);
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>         <a name="VerifyLocalAccountToken" href="../../../../../ch/colabproject/colab/api/model/token/VerifyLocalAccountToken.html#VerifyLocalAccountToken">VerifyLocalAccountToken</a> token = tokenDao.findVerifyTokenByAccount(account);
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>         VerifyLocalAccountToken token = tokenDao.findVerifyTokenByAccount(account);
 <a class="jxr_linenumber" name="L167" href="#L167">167</a> 
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>         <strong class="jxr_keyword">if</strong> (token == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>             logger.debug(<span class="jxr_string">"no token, create one"</span>);
-<a class="jxr_linenumber" name="L170" href="#L170">170</a>             token = <strong class="jxr_keyword">new</strong> <a name="VerifyLocalAccountToken" href="../../../../../ch/colabproject/colab/api/model/token/VerifyLocalAccountToken.html#VerifyLocalAccountToken">VerifyLocalAccountToken</a>();
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>             token = <strong class="jxr_keyword">new</strong> VerifyLocalAccountToken();
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>             token.setAuthenticationRequired(false);
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>             token.setLocalAccount(account);
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>             tokenDao.persistToken(token);
@@ -198,7 +198,7 @@
 <a class="jxr_linenumber" name="L190" href="#L190">190</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> requestEmailAddressVerification(LocalAccount account, <strong class="jxr_keyword">boolean</strong> failsOnError) {
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>             <a name="VerifyLocalAccountToken" href="../../../../../ch/colabproject/colab/api/model/token/VerifyLocalAccountToken.html#VerifyLocalAccountToken">VerifyLocalAccountToken</a> token = <strong class="jxr_keyword">this</strong>.getOrCreateVerifyAccountToken(account);
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>             VerifyLocalAccountToken token = <strong class="jxr_keyword">this</strong>.getOrCreateVerifyAccountToken(account);
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>             sendTokenByEmail(token, account.getEmail());
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>         } <strong class="jxr_keyword">catch</strong> (MessagingException ex) {
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>             logger.error(<span class="jxr_string">"Fails to send email address verification email"</span>, ex);
@@ -218,12 +218,12 @@
 <a class="jxr_linenumber" name="L210" href="#L210">210</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L211" href="#L211">211</a> <em class="jxr_javadoccomment">     * @return the token to user</em>
 <a class="jxr_linenumber" name="L212" href="#L212">212</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>     <strong class="jxr_keyword">private</strong> <a name="ResetLocalAccountPasswordToken" href="../../../../../ch/colabproject/colab/api/model/token/ResetLocalAccountPasswordToken.html#ResetLocalAccountPasswordToken">ResetLocalAccountPasswordToken</a> getOrCreateResetToken(LocalAccount account) {
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>     <strong class="jxr_keyword">private</strong> ResetLocalAccountPasswordToken getOrCreateResetToken(LocalAccount account) {
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>         logger.debug(<span class="jxr_string">"getOrCreate Reset for {}"</span>, account);
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>         <a name="ResetLocalAccountPasswordToken" href="../../../../../ch/colabproject/colab/api/model/token/ResetLocalAccountPasswordToken.html#ResetLocalAccountPasswordToken">ResetLocalAccountPasswordToken</a> token = tokenDao.findResetTokenByAccount(account);
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>         ResetLocalAccountPasswordToken token = tokenDao.findResetTokenByAccount(account);
 <a class="jxr_linenumber" name="L216" href="#L216">216</a> 
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         <strong class="jxr_keyword">if</strong> (token == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L218" href="#L218">218</a>             token = <strong class="jxr_keyword">new</strong> <a name="ResetLocalAccountPasswordToken" href="../../../../../ch/colabproject/colab/api/model/token/ResetLocalAccountPasswordToken.html#ResetLocalAccountPasswordToken">ResetLocalAccountPasswordToken</a>();
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>             token = <strong class="jxr_keyword">new</strong> ResetLocalAccountPasswordToken();
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>             logger.debug(<span class="jxr_string">"no token, create one"</span>);
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>             token.setAuthenticationRequired(false);
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>             token.setLocalAccount(account);
@@ -247,7 +247,7 @@
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> sendResetPasswordToken(LocalAccount account, <strong class="jxr_keyword">boolean</strong> failsOnError) {
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>             logger.debug(<span class="jxr_string">"Send reset password token to {}"</span>, account);
-<a class="jxr_linenumber" name="L242" href="#L242">242</a>             <a name="ResetLocalAccountPasswordToken" href="../../../../../ch/colabproject/colab/api/model/token/ResetLocalAccountPasswordToken.html#ResetLocalAccountPasswordToken">ResetLocalAccountPasswordToken</a> token = <strong class="jxr_keyword">this</strong>.getOrCreateResetToken(account);
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>             ResetLocalAccountPasswordToken token = <strong class="jxr_keyword">this</strong>.getOrCreateResetToken(account);
 <a class="jxr_linenumber" name="L243" href="#L243">243</a>             sendTokenByEmail(token, account.getEmail());
 <a class="jxr_linenumber" name="L244" href="#L244">244</a>         } <strong class="jxr_keyword">catch</strong> (MessagingException ex) {
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>             logger.error(<span class="jxr_string">"Failed to send pssword reset email"</span>, ex);
@@ -268,16 +268,16 @@
 <a class="jxr_linenumber" name="L260" href="#L260">260</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L261" href="#L261">261</a> <em class="jxr_javadoccomment">     * @return the pending teamMember of null if none was sent</em>
 <a class="jxr_linenumber" name="L262" href="#L262">262</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L263" href="#L263">263</a>     <strong class="jxr_keyword">public</strong> <a name="TeamMember" href="../../../../../ch/colabproject/colab/api/model/team/TeamMember.html#TeamMember">TeamMember</a> sendMembershipInvitation(<a name="Project" href="../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project, String recipient) {
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>     <strong class="jxr_keyword">public</strong> TeamMember sendMembershipInvitation(Project project, String recipient) {
 <a class="jxr_linenumber" name="L264" href="#L264">264</a>         User currentUser = securityFacade.assertAndGetCurrentUser();
 <a class="jxr_linenumber" name="L265" href="#L265">265</a> 
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>         <a name="InvitationToken" href="../../../../../ch/colabproject/colab/api/model/token/InvitationToken.html#InvitationToken">InvitationToken</a> token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>         InvitationToken token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);
 <a class="jxr_linenumber" name="L267" href="#L267">267</a>         <strong class="jxr_keyword">if</strong> (token == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L268" href="#L268">268</a>             <em class="jxr_comment">// create a member and link it to the project, but do not link it to any user</em>
 <a class="jxr_linenumber" name="L269" href="#L269">269</a>             <em class="jxr_comment">// this link will be set during token consumtion</em>
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>             <a name="TeamMember" href="../../../../../ch/colabproject/colab/api/model/team/TeamMember.html#TeamMember">TeamMember</a> newMember = teamFacade.addMember(project, <strong class="jxr_keyword">null</strong>,
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>             TeamMember newMember = teamFacade.addMember(project, <strong class="jxr_keyword">null</strong>,
 <a class="jxr_linenumber" name="L271" href="#L271">271</a>                 HierarchicalPosition.INTERN);
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>             token = <strong class="jxr_keyword">new</strong> <a name="InvitationToken" href="../../../../../ch/colabproject/colab/api/model/token/InvitationToken.html#InvitationToken">InvitationToken</a>();
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>             token = <strong class="jxr_keyword">new</strong> InvitationToken();
 <a class="jxr_linenumber" name="L273" href="#L273">273</a> 
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>             token.setTeamMember(newMember);
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>             <em class="jxr_comment">// never expire</em>

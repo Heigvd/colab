@@ -121,8 +121,7 @@ import org.slf4j.LoggerFactory;
     public AbstractCardType createCardType(AbstractCardType cardType) {
 <span class="nc" id="L122">        logger.debug(&quot;create card type {}&quot;, cardType);</span>
 <span class="nc" id="L123">        em.persist(cardType);</span>
-<span class="nc" id="L124">        em.flush();</span>
-<span class="nc" id="L125">        return cardType;</span>
+<span class="nc" id="L124">        return cardType;</span>
     }
 
     /**
@@ -135,12 +134,12 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the card type failed
      */
     public AbstractCardType updateCardType(AbstractCardType cardType) throws ColabMergeException {
-<span class="nc" id="L138">        logger.debug(&quot;update card type {}&quot;, cardType);</span>
-<span class="nc" id="L139">        AbstractCardType mCardType = this.getAbstractCardType(cardType.getId());</span>
+<span class="nc" id="L137">        logger.debug(&quot;update card type {}&quot;, cardType);</span>
+<span class="nc" id="L138">        AbstractCardType mCardType = this.getAbstractCardType(cardType.getId());</span>
 
-<span class="nc" id="L141">        mCardType.merge(cardType);</span>
+<span class="nc" id="L140">        mCardType.merge(cardType);</span>
 
-<span class="nc" id="L143">        return mCardType;</span>
+<span class="nc" id="L142">        return mCardType;</span>
     }
 
     /**
@@ -151,11 +150,11 @@ import org.slf4j.LoggerFactory;
      * @return just deleted card type
      */
     public CardType deleteCardType(Long id) {
-<span class="nc" id="L154">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
+<span class="nc" id="L153">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="nc" id="L156">        CardType cardType = this.getCardType(id);</span>
-<span class="nc" id="L157">        em.remove(cardType);</span>
-<span class="nc" id="L158">        return cardType;</span>
+<span class="nc" id="L155">        CardType cardType = this.getCardType(id);</span>
+<span class="nc" id="L156">        em.remove(cardType);</span>
+<span class="nc" id="L157">        return cardType;</span>
     }
 
 }

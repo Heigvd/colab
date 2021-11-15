@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
@@ -25,7 +26,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -34,7 +37,14 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @Entity
-<span class="fc" id="L37">public class AccessControl implements ColabEntity, WithWebsocketChannels {</span>
+@Table(
+    indexes = {
+        @Index(columnList = &quot;card_id&quot;),
+        @Index(columnList = &quot;member_id&quot;),
+        @Index(columnList = &quot;role_id&quot;),
+    }
+)
+<span class="fc" id="L47">public class AccessControl implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -45,7 +55,7 @@ import javax.validation.constraints.NotNull;
      * Project ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TEAM_SEQUENCE_NAME)
     private Long id;
 
     /**
@@ -91,15 +101,15 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L94">        return id;</span>
+<span class="nc" id="L104">        return id;</span>
     }
 
     /**
      * @param id the project ID
      */
     public void setId(Long id) {
-<span class="nc" id="L101">        this.id = id;</span>
-<span class="nc" id="L102">    }</span>
+<span class="nc" id="L111">        this.id = id;</span>
+<span class="nc" id="L112">    }</span>
 
     /**
      * Get the value of member
@@ -107,7 +117,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of member
      */
     public TeamMember getMember() {
-<span class="nc" id="L110">        return member;</span>
+<span class="nc" id="L120">        return member;</span>
     }
 
     /**
@@ -116,10 +126,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the member
      */
     public Long getMemberId() {
-<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (this.member != null) {</span>
-<span class="nc" id="L120">            return member.getId();</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (this.member != null) {</span>
+<span class="nc" id="L130">            return member.getId();</span>
         } else {
-<span class="nc" id="L122">            return null;</span>
+<span class="nc" id="L132">            return null;</span>
         }
     }
 
@@ -129,11 +139,11 @@ import javax.validation.constraints.NotNull;
      * @param member new value of member
      */
     public void setMember(TeamMember member) {
-<span class="nc" id="L132">        this.member = member;</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (member != null) {</span>
-<span class="nc" id="L134">            this.setRole(null);</span>
+<span class="nc" id="L142">        this.member = member;</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (member != null) {</span>
+<span class="nc" id="L144">            this.setRole(null);</span>
         }
-<span class="nc" id="L136">    }</span>
+<span class="nc" id="L146">    }</span>
 
     /**
      * Get the value of role
@@ -141,7 +151,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of role
      */
     public TeamRole getRole() {
-<span class="nc" id="L144">        return role;</span>
+<span class="nc" id="L154">        return role;</span>
     }
 
     /**
@@ -150,12 +160,12 @@ import javax.validation.constraints.NotNull;
      * @param role new value of role
      */
     public void setRole(TeamRole role) {
-<span class="nc" id="L153">        this.role = role;</span>
+<span class="nc" id="L163">        this.role = role;</span>
 
-<span class="nc bnc" id="L155" title="All 2 branches missed.">        if (role != null) {</span>
-<span class="nc" id="L156">            this.setMember(null);</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        if (role != null) {</span>
+<span class="nc" id="L166">            this.setMember(null);</span>
         }
-<span class="nc" id="L158">    }</span>
+<span class="nc" id="L168">    }</span>
 
     /**
      * Get id of the role, for serialization only
@@ -163,10 +173,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the role
      */
     public Long getRoleId() {
-<span class="nc bnc" id="L166" title="All 2 branches missed.">        if (this.role != null) {</span>
-<span class="nc" id="L167">            return role.getId();</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">        if (this.role != null) {</span>
+<span class="nc" id="L177">            return role.getId();</span>
         } else {
-<span class="nc" id="L169">            return null;</span>
+<span class="nc" id="L179">            return null;</span>
         }
     }
 
@@ -176,7 +186,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of InvolvementLevel
      */
     public InvolvementLevel getCairoLevel() {
-<span class="nc" id="L179">        return cairoLevel;</span>
+<span class="nc" id="L189">        return cairoLevel;</span>
     }
 
     /**
@@ -185,8 +195,8 @@ import javax.validation.constraints.NotNull;
      * @param cairoLevel new value of InvolvementLevel
      */
     public void setCairoLevel(InvolvementLevel cairoLevel) {
-<span class="nc" id="L188">        this.cairoLevel = cairoLevel;</span>
-<span class="nc" id="L189">    }</span>
+<span class="nc" id="L198">        this.cairoLevel = cairoLevel;</span>
+<span class="nc" id="L199">    }</span>
 
     /**
      * Get the card
@@ -194,7 +204,7 @@ import javax.validation.constraints.NotNull;
      * @return the card
      */
     public Card getCard() {
-<span class="nc" id="L197">        return card;</span>
+<span class="nc" id="L207">        return card;</span>
     }
 
     /**
@@ -203,8 +213,8 @@ import javax.validation.constraints.NotNull;
      * @param card the card
      */
     public void setCard(Card card) {
-<span class="nc" id="L206">        this.card = card;</span>
-<span class="nc" id="L207">    }</span>
+<span class="nc" id="L216">        this.card = card;</span>
+<span class="nc" id="L217">    }</span>
 
     /**
      * Get id of the card, for serialization only
@@ -212,10 +222,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the card
      */
     public Long getCardId() {
-<span class="nc bnc" id="L215" title="All 2 branches missed.">        if (this.card != null) {</span>
-<span class="nc" id="L216">            return card.getId();</span>
+<span class="nc bnc" id="L225" title="All 2 branches missed.">        if (this.card != null) {</span>
+<span class="nc" id="L226">            return card.getId();</span>
         } else {
-<span class="nc" id="L218">            return null;</span>
+<span class="nc" id="L228">            return null;</span>
         }
     }
 
@@ -226,7 +236,7 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L229">        return trackingData;</span>
+<span class="nc" id="L239">        return trackingData;</span>
     }
 
     /**
@@ -236,8 +246,8 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L239">        this.trackingData = trackingData;</span>
-<span class="nc" id="L240">    }</span>
+<span class="nc" id="L249">        this.trackingData = trackingData;</span>
+<span class="nc" id="L250">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -245,33 +255,33 @@ import javax.validation.constraints.NotNull;
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         // no-op
-<span class="nc" id="L248">    }</span>
+<span class="nc" id="L258">    }</span>
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L253" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L254">            return this.getCard().getReadCondition();</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L264">            return this.getCard().getReadCondition();</span>
         } else {
-<span class="nc" id="L256">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L266">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L262" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L263">            return this.getCard().getUpdateCondition();</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L273">            return this.getCard().getUpdateCondition();</span>
         } else {
-<span class="nc" id="L265">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L275">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L271" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
-<span class="nc" id="L272">            return this.getCard().getChannels();</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">        if (this.getCard() != null) {</span>
+<span class="nc" id="L282">            return this.getCard().getChannels();</span>
         } else {
-<span class="nc" id="L274">            return Set.of();</span>
+<span class="nc" id="L284">            return Set.of();</span>
         }
     }
 }

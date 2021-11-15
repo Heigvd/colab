@@ -15,7 +15,9 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -32,8 +34,13 @@ import javax.validation.constraints.NotNull;
  * @author sandra
  */
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = &quot;target_id&quot;),
+    }
+)
 @DiscriminatorValue(&quot;RESOURCE_REF&quot;)
-<span class="nc" id="L36">public class ResourceRef extends AbstractResource {</span>
+<span class="nc" id="L43">public class ResourceRef extends AbstractResource {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -69,29 +76,29 @@ import javax.validation.constraints.NotNull;
      * @return if the targeted resource is not useful for that card/cardDef/cardContent
      */
     public boolean isRefused() {
-<span class="nc" id="L72">        return refused;</span>
+<span class="nc" id="L79">        return refused;</span>
     }
 
     /**
      * @param refused if the targeted resource is not useful for that card/cardDef/cardContent
      */
     public void setRefused(boolean refused) {
-<span class="nc" id="L79">        this.refused = refused;</span>
-<span class="nc" id="L80">    }</span>
+<span class="nc" id="L86">        this.refused = refused;</span>
+<span class="nc" id="L87">    }</span>
 
     /**
      * @return the resource (or resource reference) this reference aims at
      */
     public AbstractResource getTarget() {
-<span class="nc" id="L86">        return target;</span>
+<span class="nc" id="L93">        return target;</span>
     }
 
     /**
      * @param target the resource (or resource reference) this reference aims at
      */
     public void setTarget(AbstractResource target) {
-<span class="nc" id="L93">        this.target = target;</span>
-<span class="nc" id="L94">    }</span>
+<span class="nc" id="L100">        this.target = target;</span>
+<span class="nc" id="L101">    }</span>
 
     /**
      * get the id of the resource (or resource reference) this reference aims at. To be sent to
@@ -100,10 +107,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the abstract resource or null
      */
     public Long getTargetId() {
-<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (target != null) {</span>
-<span class="nc" id="L104">            return target.getId();</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (target != null) {</span>
+<span class="nc" id="L111">            return target.getId();</span>
         } else {
-<span class="nc" id="L106">            return targetId;</span>
+<span class="nc" id="L113">            return targetId;</span>
         }
     }
 
@@ -114,8 +121,8 @@ import javax.validation.constraints.NotNull;
      * @param targetId the id of the resource or resource reference
      */
     public void setTargetId(Long targetId) {
-<span class="nc" id="L117">        this.targetId = targetId;</span>
-<span class="nc" id="L118">    }</span>
+<span class="nc" id="L124">        this.targetId = targetId;</span>
+<span class="nc" id="L125">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -123,50 +130,50 @@ import javax.validation.constraints.NotNull;
 
     @Override
     public Resource resolve() {
-<span class="nc bnc" id="L126" title="All 2 branches missed.">        if (this.target instanceof Resource) {</span>
-<span class="nc" id="L127">            return (Resource) this.target;</span>
-<span class="nc bnc" id="L128" title="All 2 branches missed.">        } else if (this.target instanceof ResourceRef) {</span>
-<span class="nc" id="L129">            return ((ResourceRef) target).resolve();</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (this.target instanceof Resource) {</span>
+<span class="nc" id="L134">            return (Resource) this.target;</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        } else if (this.target instanceof ResourceRef) {</span>
+<span class="nc" id="L136">            return ((ResourceRef) target).resolve();</span>
         }
-<span class="nc" id="L131">        return null;</span>
+<span class="nc" id="L138">        return null;</span>
     }
 
     @Override
     public List&lt;AbstractResource&gt; expand() {
-<span class="nc" id="L136">        List&lt;AbstractResource&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L143">        List&lt;AbstractResource&gt; list = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L138">        list.add(this);</span>
-<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (this.target != null) {</span>
-<span class="nc" id="L140">            list.addAll(this.target.expand());</span>
+<span class="nc" id="L145">        list.add(this);</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">        if (this.target != null) {</span>
+<span class="nc" id="L147">            list.addAll(this.target.expand());</span>
         }
-<span class="nc" id="L142">        return list;</span>
+<span class="nc" id="L149">        return list;</span>
     }
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (other instanceof ResourceRef) {</span>
-<span class="nc" id="L148">            ResourceRef o = (ResourceRef) other;</span>
-<span class="nc" id="L149">            super.merge(o);</span>
-<span class="nc" id="L150">            this.setRefused(o.isRefused());</span>
-<span class="nc" id="L151">        } else {</span>
-<span class="nc" id="L152">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (other instanceof ResourceRef) {</span>
+<span class="nc" id="L155">            ResourceRef o = (ResourceRef) other;</span>
+<span class="nc" id="L156">            super.merge(o);</span>
+<span class="nc" id="L157">            this.setRefused(o.isRefused());</span>
+<span class="nc" id="L158">        } else {</span>
+<span class="nc" id="L159">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L154">    }</span>
+<span class="nc" id="L161">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L158">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L165">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L164">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L171">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L169">        return &quot;ResourceRef{&quot; + toPartialString() + &quot;, refused=&quot; + refused</span>
+<span class="nc" id="L176">        return &quot;ResourceRef{&quot; + toPartialString() + &quot;, refused=&quot; + refused</span>
             + &quot;, targetId=&quot; + targetId + &quot;}&quot;;
     }
 

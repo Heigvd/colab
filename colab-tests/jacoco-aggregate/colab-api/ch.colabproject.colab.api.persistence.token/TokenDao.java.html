@@ -117,9 +117,7 @@ import javax.persistence.PersistenceContext;
         }
 
 <span class="fc" id="L119">        em.persist(token);</span>
-        // flush to make sure token got an id
-<span class="fc" id="L121">        em.flush();</span>
-<span class="fc" id="L122">    }</span>
+<span class="fc" id="L120">    }</span>
 
     /**
      * Delete the given token
@@ -127,7 +125,7 @@ import javax.persistence.PersistenceContext;
      * @param token token to remove
      */
     public void deleteToken(Token token) {
-<span class="fc" id="L130">        em.remove(token);</span>
-<span class="fc" id="L131">    }</span>
+<span class="fc" id="L128">        em.remove(token);</span>
+<span class="fc" id="L129">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

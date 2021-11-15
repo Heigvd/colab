@@ -85,7 +85,7 @@
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>      @GET
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      @Path(<span class="jxr_string">"{id}"</span>)
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">public</strong> <a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> getAbstractResource(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">public</strong> AbstractResource getAbstractResource(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          logger.debug(<span class="jxr_string">"get abstract resource #{}"</span>, id);
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>          <strong class="jxr_keyword">return</strong> resourceAndRefDao.findResourceOrRef(id);
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      }
@@ -151,7 +151,7 @@
 <a class="jxr_linenumber" name="L143" href="#L143">143</a> <em class="jxr_javadoccomment">     * @throws ColabMergeException if the merge is impossible</em>
 <a class="jxr_linenumber" name="L144" href="#L144">144</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>     @PUT
-<a class="jxr_linenumber" name="L146" href="#L146">146</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> updateResource(<a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> resource) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> updateResource(Resource resource) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>         logger.debug(<span class="jxr_string">"update resource {}"</span>, resource);
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>         resourceAndRefDao.updateResource(resource);
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>     }
@@ -167,7 +167,7 @@
 <a class="jxr_linenumber" name="L159" href="#L159">159</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>     @PUT
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>     @Path(<span class="jxr_string">"ref"</span>)
-<a class="jxr_linenumber" name="L162" href="#L162">162</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> updateResourceRef(<a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a> resourceRef) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> updateResourceRef(ResourceRef resourceRef) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>         logger.debug(<span class="jxr_string">"update resource reference {}"</span>, resourceRef);
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>         resourceAndRefDao.updateResourceRef(resourceRef);
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>     }
@@ -188,7 +188,7 @@
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>     <strong class="jxr_keyword">public</strong> Long createResource(<a name="ResourceCreationBean" href="../../../../../../ch/colabproject/colab/api/rest/document/ResourceCreationBean.html#ResourceCreationBean">ResourceCreationBean</a> resourceCreationBean) {
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>         logger.debug(<span class="jxr_string">"create resource {}"</span>, resourceCreationBean);
 <a class="jxr_linenumber" name="L182" href="#L182">182</a> 
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>         <a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> resource = <strong class="jxr_keyword">new</strong> <a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a>();
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>         Resource resource = <strong class="jxr_keyword">new</strong> Resource();
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>         resource.setTitle(resourceCreationBean.getTitle());
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>         resource.setTeaser(resourceCreationBean.getTeaser());
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>         resource.setDocument(resourceCreationBean.getDocument());

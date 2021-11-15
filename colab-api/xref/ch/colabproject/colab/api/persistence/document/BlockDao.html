@@ -46,7 +46,7 @@
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L39" href="#L39">39</a>  <em class="jxr_javadoccomment">     * @return the block with the given id or null if such a block does not exists</em>
 <a class="jxr_linenumber" name="L40" href="#L40">40</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">public</strong> <a name="Block" href="../../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> findBlock(Long id) {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>      <strong class="jxr_keyword">public</strong> Block findBlock(Long id) {
 <a class="jxr_linenumber" name="L42" href="#L42">42</a>          <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>              logger.debug(<span class="jxr_string">"find block #{}"</span>, id);
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>              <strong class="jxr_keyword">return</strong> em.find(Block.<strong class="jxr_keyword">class</strong>, id);
@@ -64,9 +64,9 @@
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">     * @throws ColabMergeException if updating the block failed</em>
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">public</strong> <a name="Block" href="../../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> updateBlock(<a name="Block" href="../../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> block) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">public</strong> Block updateBlock(Block block) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>          logger.debug(<span class="jxr_string">"update block {}"</span>, block);
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>          <a name="Block" href="../../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> mBlock = <strong class="jxr_keyword">this</strong>.findBlock(block.getId());
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          Block mBlock = <strong class="jxr_keyword">this</strong>.findBlock(block.getId());
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          mBlock.merge(block);
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          <strong class="jxr_keyword">return</strong> mBlock;
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      }
@@ -78,7 +78,7 @@
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">     * @return the new persisted block</em>
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>      <strong class="jxr_keyword">public</strong> <a name="Block" href="../../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> persistBlock(<a name="Block" href="../../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> block) {
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>      <strong class="jxr_keyword">public</strong> Block persistBlock(Block block) {
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          logger.debug(<span class="jxr_string">"persist block {}"</span>, block);
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          em.persist(block);
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          <strong class="jxr_keyword">return</strong> block;
@@ -91,10 +91,10 @@
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">     * @return just deleted block</em>
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">public</strong> <a name="Block" href="../../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> deleteBlock(Long id) {
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>      <strong class="jxr_keyword">public</strong> Block deleteBlock(Long id) {
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          logger.debug(<span class="jxr_string">"delete block #{}"</span>, id);
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          <em class="jxr_comment">// TODO: move to recycle bin first</em>
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>          <a name="Block" href="../../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> block = <strong class="jxr_keyword">this</strong>.findBlock(id);
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>          Block block = <strong class="jxr_keyword">this</strong>.findBlock(id);
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>          em.remove(block);
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          <strong class="jxr_keyword">return</strong> block;
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>      }

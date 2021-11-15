@@ -30,10 +30,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
@@ -43,11 +46,19 @@ import javax.persistence.Transient;
  */
 //TODO adjust the constraints / indexes
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = &quot;document_id&quot;),
+    }
+)
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-<span class="fc" id="L48">public abstract class Block implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {</span>
+<span class="fc" id="L56">public abstract class Block implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {</span>
 
     private static final long serialVersionUID = 1L;
+
+    /** block sequence name */
+    public static final String BLOCK_SEQUENCE_NAME = &quot;block_seq&quot;;
 
     // ---------------------------------------------------------------------------------------------
     // fields
@@ -56,7 +67,8 @@ import javax.persistence.Transient;
      * The block ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = BLOCK_SEQUENCE_NAME, allocationSize = 20)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = BLOCK_SEQUENCE_NAME)
     private Long id;
 
     /**
@@ -86,19 +98,18 @@ import javax.persistence.Transient;
     /**
      * The list of sticky note links of which the block is the source
      */
-<span class="fc" id="L89">    @OneToMany(mappedBy = &quot;srcBlock&quot;, cascade = CascadeType.ALL)</span>
+<span class="fc" id="L101">    @OneToMany(mappedBy = &quot;srcBlock&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
     private List&lt;StickyNoteLink&gt; stickyNoteLinksAsSrc = new ArrayList&lt;&gt;();
 
     // ---------------------------------------------------------------------------------------------
     // initialize
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return an initialized a default block
      */
     public static Block initNewDefaultBlock() {
-<span class="fc" id="L101">        return TextDataBlock.initNewDefaultTextDataBlock();</span>
+<span class="fc" id="L112">        return TextDataBlock.initNewDefaultTextDataBlock();</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -109,43 +120,43 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L112">        return id;</span>
+<span class="fc" id="L123">        return id;</span>
     }
 
     /**
      * @param id the block id
      */
     public void setId(Long id) {
-<span class="fc" id="L119">        this.id = id;</span>
-<span class="fc" id="L120">    }</span>
+<span class="fc" id="L130">        this.id = id;</span>
+<span class="fc" id="L131">    }</span>
 
     /**
      * @return the index to define the place in the document
      */
     public int getIndex() {
-<span class="fc" id="L126">        return index;</span>
+<span class="fc" id="L137">        return index;</span>
     }
 
     /**
      * @param index the index to define the place in the document to set
      */
     public void setIndex(int index) {
-<span class="fc" id="L133">        this.index = index;</span>
-<span class="fc" id="L134">    }</span>
+<span class="fc" id="L144">        this.index = index;</span>
+<span class="fc" id="L145">    }</span>
 
     /**
      * @return the document it is part of
      */
     public BlockDocument getDocument() {
-<span class="fc" id="L140">        return document;</span>
+<span class="fc" id="L151">        return document;</span>
     }
 
     /**
      * @param document the document it is part of
      */
     public void setDocument(BlockDocument document) {
-<span class="fc" id="L147">        this.document = document;</span>
-<span class="fc" id="L148">    }</span>
+<span class="fc" id="L158">        this.document = document;</span>
+<span class="fc" id="L159">    }</span>
 
     /**
      * get the document id. To be sent to client
@@ -153,10 +164,10 @@ import javax.persistence.Transient;
      * @return id of the document or null
      */
     public Long getDocumentId() {
-<span class="fc bfc" id="L156" title="All 2 branches covered.">        if (this.document != null) {</span>
-<span class="fc" id="L157">            return this.document.getId();</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (this.document != null) {</span>
+<span class="fc" id="L168">            return this.document.getId();</span>
         } else {
-<span class="fc" id="L159">            return documentId;</span>
+<span class="fc" id="L170">            return documentId;</span>
         }
     }
 
@@ -166,8 +177,8 @@ import javax.persistence.Transient;
      * @param id the id of the document
      */
     public void setDocumentId(Long id) {
-<span class="fc" id="L169">        this.documentId = id;</span>
-<span class="fc" id="L170">    }</span>
+<span class="fc" id="L180">        this.documentId = id;</span>
+<span class="fc" id="L181">    }</span>
 
     /**
      * Get the project this block belongs to
@@ -176,11 +187,11 @@ import javax.persistence.Transient;
      */
     @JsonbTransient
     public Project getProject() {
-<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (this.document != null) {</span>
-<span class="nc" id="L180">            return this.document.getProject();</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (this.document != null) {</span>
+<span class="nc" id="L191">            return this.document.getProject();</span>
         } else {
             // may be a block used as teaser, purpose, or any other
-<span class="nc" id="L183">            return null;</span>
+<span class="nc" id="L194">            return null;</span>
         }
     }
 
@@ -189,15 +200,15 @@ import javax.persistence.Transient;
      */
     @Override
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc() {
-<span class="fc" id="L192">        return stickyNoteLinksAsSrc;</span>
+<span class="fc" id="L203">        return stickyNoteLinksAsSrc;</span>
     }
 
     /**
      * @param stickyNoteLinksAsSrc the list of sticky note links of which the block is the source
      */
     public void setStickyNoteLinksAsSrc(List&lt;StickyNoteLink&gt; stickyNoteLinksAsSrc) {
-<span class="nc" id="L199">        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;</span>
-<span class="nc" id="L200">    }</span>
+<span class="nc" id="L210">        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;</span>
+<span class="nc" id="L211">    }</span>
 
     /**
      * Get the tracking data
@@ -206,7 +217,7 @@ import javax.persistence.Transient;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="fc" id="L209">        return trackingData;</span>
+<span class="fc" id="L220">        return trackingData;</span>
     }
 
     /**
@@ -216,8 +227,8 @@ import javax.persistence.Transient;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="fc" id="L219">        this.trackingData = trackingData;</span>
-<span class="fc" id="L220">    }</span>
+<span class="fc" id="L230">        this.trackingData = trackingData;</span>
+<span class="fc" id="L231">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -225,53 +236,53 @@ import javax.persistence.Transient;
     // ---------------------------------------------------------------------------------------------
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="pc bpc" id="L228" title="1 of 2 branches missed.">        if (other instanceof Block) {</span>
-<span class="fc" id="L229">            Block o = (Block) other;</span>
-<span class="fc" id="L230">            this.setIndex(o.getIndex());</span>
-<span class="fc" id="L231">        } else {</span>
-<span class="nc" id="L232">            throw new ColabMergeException(this, other);</span>
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">        if (other instanceof Block) {</span>
+<span class="fc" id="L240">            Block o = (Block) other;</span>
+<span class="fc" id="L241">            this.setIndex(o.getIndex());</span>
+<span class="fc" id="L242">        } else {</span>
+<span class="nc" id="L243">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L234">    }</span>
+<span class="fc" id="L245">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="pc bpc" id="L238" title="1 of 2 branches missed.">        if (this.id!= null){</span>
-<span class="fc" id="L239">            return Set.of(BlockChannel.build(id));</span>
+<span class="pc bpc" id="L249" title="1 of 2 branches missed.">        if (this.id != null) {</span>
+<span class="fc" id="L250">            return Set.of(BlockChannel.build(id));</span>
         } else {
             // may be a block used as teaser, purpose, or any other
-<span class="nc" id="L242">            return Set.of();</span>
+<span class="nc" id="L253">            return Set.of();</span>
         }
     }
 
     @Override
     public Conditions.Condition getReadCondition() {
-<span class="fc bfc" id="L248" title="All 2 branches covered.">        if (this.document != null) {</span>
-<span class="fc" id="L249">            return this.document.getReadCondition();</span>
+<span class="fc bfc" id="L259" title="All 2 branches covered.">        if (this.document != null) {</span>
+<span class="fc" id="L260">            return this.document.getReadCondition();</span>
         } else {
             // may be a block used as teaser, purpose, or any other
-<span class="fc" id="L252">            return Conditions.alwaysTrue;</span>
+<span class="fc" id="L263">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="fc bfc" id="L258" title="All 2 branches covered.">        if (this.document != null) {</span>
-<span class="fc" id="L259">            return this.document.getUpdateCondition();</span>
+<span class="fc bfc" id="L269" title="All 2 branches covered.">        if (this.document != null) {</span>
+<span class="fc" id="L270">            return this.document.getUpdateCondition();</span>
         } else {
             // may be a block used as teaser, purpose, or any other
-<span class="fc" id="L262">            return Conditions.alwaysTrue;</span>
+<span class="fc" id="L273">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L268">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L279">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L274">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L285">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
@@ -281,7 +292,7 @@ import javax.persistence.Transient;
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-<span class="nc" id="L284">        return &quot;id=&quot; + id + &quot;, index=&quot; + index;</span>
+<span class="nc" id="L295">        return &quot;id=&quot; + id + &quot;, index=&quot; + index;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

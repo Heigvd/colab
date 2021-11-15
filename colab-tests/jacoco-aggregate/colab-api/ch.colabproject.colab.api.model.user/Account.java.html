@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
+import static ch.colabproject.colab.api.model.user.User.USER_SEQUENCE_NAME;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
@@ -23,9 +24,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
@@ -34,11 +37,16 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
-// JOIND inheritance will generate one &quot;abstract&quot; account table and one table for each subclass.
+@Table(
+    indexes = {
+        @Index(columnList = &quot;user_id&quot;),
+    }
+)
+// JOINED inheritance will generate one &quot;abstract&quot; account table and one table for each subclass.
 // Having one table per subclass allows subclasses to defined their own indexes and constraints
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-<span class="fc" id="L41">public abstract class Account implements ColabEntity, WithWebsocketChannels {</span>
+<span class="fc" id="L49">public abstract class Account implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -49,7 +57,7 @@ import javax.persistence.Transient;
      * Account unique ID IDs are unique within all account class hierarchy
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = USER_SEQUENCE_NAME)
     private Long id;
 
     /**
@@ -79,7 +87,7 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="fc" id="L82">        return id;</span>
+<span class="fc" id="L90">        return id;</span>
     }
 
     /**
@@ -88,14 +96,14 @@ import javax.persistence.Transient;
      * @param id id
      */
     public void setId(Long id) {
-<span class="fc" id="L91">        this.id = id;</span>
-<span class="fc" id="L92">    }</span>
+<span class="fc" id="L99">        this.id = id;</span>
+<span class="fc" id="L100">    }</span>
 
     /**
      * @return the user
      */
     public User getUser() {
-<span class="fc" id="L98">        return user;</span>
+<span class="fc" id="L106">        return user;</span>
     }
 
     /**
@@ -104,8 +112,8 @@ import javax.persistence.Transient;
      * @param user user who owns this account
      */
     public void setUser(User user) {
-<span class="fc" id="L107">        this.user = user;</span>
-<span class="fc" id="L108">    }</span>
+<span class="fc" id="L115">        this.user = user;</span>
+<span class="fc" id="L116">    }</span>
 
     /**
      * Return the id of the account owner
@@ -113,10 +121,10 @@ import javax.persistence.Transient;
      * @return id of the user
      */
     public Long getUserId() {
-<span class="pc bpc" id="L116" title="1 of 2 branches missed.">        if (this.getUser() != null) {</span>
-<span class="fc" id="L117">            return getUser().getId();</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if (this.getUser() != null) {</span>
+<span class="fc" id="L125">            return getUser().getId();</span>
         } else {
-<span class="nc" id="L119">            return userId;</span>
+<span class="nc" id="L127">            return userId;</span>
         }
     }
 
@@ -126,8 +134,8 @@ import javax.persistence.Transient;
      * @param id if of the user
      */
     public void setUserId(Long id) {
-<span class="fc" id="L129">        this.userId = id;</span>
-<span class="fc" id="L130">    }</span>
+<span class="fc" id="L137">        this.userId = id;</span>
+<span class="fc" id="L138">    }</span>
 
     /**
      * Get the tracking data
@@ -136,7 +144,7 @@ import javax.persistence.Transient;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="fc" id="L139">        return trackingData;</span>
+<span class="fc" id="L147">        return trackingData;</span>
     }
 
     /**
@@ -146,18 +154,18 @@ import javax.persistence.Transient;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="fc" id="L149">        this.trackingData = trackingData;</span>
-<span class="fc" id="L150">    }</span>
+<span class="fc" id="L157">        this.trackingData = trackingData;</span>
+<span class="fc" id="L158">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="pc bpc" id="L157" title="1 of 2 branches missed.">        if (this.user != null) {</span>
-<span class="fc" id="L158">            return Set.of(this.user.getEffectiveChannel(), new AdminChannel());</span>
+<span class="pc bpc" id="L165" title="1 of 2 branches missed.">        if (this.user != null) {</span>
+<span class="fc" id="L166">            return Set.of(this.user.getEffectiveChannel(), new AdminChannel());</span>
         } else {
-<span class="nc" id="L160">            return Set.of(new AdminChannel());</span>
+<span class="nc" id="L168">            return Set.of(new AdminChannel());</span>
         }
     }
 
@@ -165,13 +173,13 @@ import javax.persistence.Transient;
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
         // anyone can create an account
-<span class="fc" id="L168">        return Conditions.alwaysTrue;</span>
+<span class="fc" id="L176">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="fc" id="L174">        return new Conditions.Or(</span>
+<span class="fc" id="L182">        return new Conditions.Or(</span>
             // unauthenticated users shall read account data to authenticate
             new Conditions.Not(Conditions.authenticated),
             new Conditions.IsCurrentUserThisUser(this.user)
@@ -180,22 +188,22 @@ import javax.persistence.Transient;
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="pc bpc" id="L183" title="1 of 2 branches missed.">        if (this.user != null) {</span>
-<span class="fc" id="L184">            return this.user.getUpdateCondition();</span>
+<span class="pc bpc" id="L191" title="1 of 2 branches missed.">        if (this.user != null) {</span>
+<span class="fc" id="L192">            return this.user.getUpdateCondition();</span>
         } else {
-<span class="nc" id="L186">            return Conditions.alwaysFalse;</span>
+<span class="nc" id="L194">            return Conditions.alwaysFalse;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L192">        return EntityHelper.hashCode(this);</span>
+<span class="fc" id="L200">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="fc" id="L198">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L206">        return EntityHelper.equals(this, obj);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

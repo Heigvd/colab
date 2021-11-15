@@ -44,11 +44,11 @@
 <a class="jxr_linenumber" name="L36" href="#L36">36</a>  <em class="jxr_javadoccomment">     * @param cardTypeOrRef the card type or card type reference</em>
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>  <em class="jxr_javadoccomment">     * @param resourceOrRef the resource we are linking</em>
 <a class="jxr_linenumber" name="L38" href="#L38">38</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> spreadReferenceDown(<a name="AbstractCardType" href="../../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> cardTypeOrRef,
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>          <a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> resourceOrRef) {
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> spreadReferenceDown(AbstractCardType cardTypeOrRef,
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>          AbstractResource resourceOrRef) {
 <a class="jxr_linenumber" name="L41" href="#L41">41</a>          <strong class="jxr_keyword">if</strong> (mustSpreadReference(resourceOrRef)) {
-<a class="jxr_linenumber" name="L42" href="#L42">42</a>              <strong class="jxr_keyword">for</strong> (<a name="AbstractCardType" href="../../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> cardTypeRef : cardTypeOrRef.getDirectReferences()) {
-<a class="jxr_linenumber" name="L43" href="#L43">43</a>                  <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a> resourceRef = initNewResourceRef();
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>              <strong class="jxr_keyword">for</strong> (AbstractCardType cardTypeRef : cardTypeOrRef.getDirectReferences()) {
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>                  ResourceRef resourceRef = initNewResourceRef();
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>                  resourceRef.setTarget(resourceOrRef);
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>                  resourceOrRef.getDirectReferences().add(resourceRef);
@@ -59,8 +59,8 @@
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>                  spreadReferenceDown(cardTypeRef, resourceRef);
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>              }
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  
-<a class="jxr_linenumber" name="L54" href="#L54">54</a>              <strong class="jxr_keyword">for</strong> (<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card : cardTypeOrRef.getImplementingCards()) {
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>                  <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a> cardResourceRef = initNewResourceRef();
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>              <strong class="jxr_keyword">for</strong> (Card card : cardTypeOrRef.getImplementingCards()) {
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>                  ResourceRef cardResourceRef = initNewResourceRef();
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>                  cardResourceRef.setTarget(resourceOrRef);
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>                  resourceOrRef.getDirectReferences().add(cardResourceRef);
@@ -79,10 +79,10 @@
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">     * @param card          the card</em>
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  <em class="jxr_javadoccomment">     * @param resourceOrRef the resource we are linking</em>
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L74" href="#L74">74</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> spreadReferenceDown(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card, <a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> resourceOrRef) {
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> spreadReferenceDown(Card card, AbstractResource resourceOrRef) {
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          <strong class="jxr_keyword">if</strong> (mustSpreadReference(resourceOrRef)) {
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>              <strong class="jxr_keyword">for</strong> (<a name="CardContent" href="../../../../../../ch/colabproject/colab/api/model/card/CardContent.html#CardContent">CardContent</a> cardContent : card.getContentVariants()) {
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>                  <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a> resourceRef = initNewResourceRef();
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>              <strong class="jxr_keyword">for</strong> (CardContent cardContent : card.getContentVariants()) {
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>                  ResourceRef resourceRef = initNewResourceRef();
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>                  resourceRef.setTarget(resourceOrRef);
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>                  resourceOrRef.getDirectReferences().add(resourceRef);
@@ -101,11 +101,11 @@
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">     * @param cardContent   the card content</em>
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">     * @param resourceOrRef the resource we are linking</em>
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> spreadReferenceDown(<a name="CardContent" href="../../../../../../ch/colabproject/colab/api/model/card/CardContent.html#CardContent">CardContent</a> cardContent,
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>          <a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> resourceOrRef) {
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> spreadReferenceDown(CardContent cardContent,
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>          AbstractResource resourceOrRef) {
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>          <strong class="jxr_keyword">if</strong> (mustSpreadReference(resourceOrRef)) {
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>              <strong class="jxr_keyword">for</strong> (<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card : cardContent.getSubCards()) {
-<a class="jxr_linenumber" name="L100" href="#L100">100</a>                 <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a> resourceRef = initNewResourceRef();
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>              <strong class="jxr_keyword">for</strong> (Card card : cardContent.getSubCards()) {
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>                 ResourceRef resourceRef = initNewResourceRef();
 <a class="jxr_linenumber" name="L101" href="#L101">101</a> 
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>                 resourceRef.setTarget(resourceOrRef);
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>                 resourceOrRef.getDirectReferences().add(resourceRef);
@@ -125,10 +125,10 @@
 <a class="jxr_linenumber" name="L117" href="#L117">117</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> <em class="jxr_javadoccomment">     * @return True if the resource must be spread down</em>
 <a class="jxr_linenumber" name="L119" href="#L119">119</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> mustSpreadReference(<a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> resourceOrRef) {
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">boolean</strong> mustSpreadReference(AbstractResource resourceOrRef) {
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>         <em class="jxr_comment">// do not spread references of a type from a card content to its subcards</em>
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>         <strong class="jxr_keyword">if</strong> (resourceOrRef.hasCardContent()) {
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>             <a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> concreteResource = resourceOrRef.resolve();
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>             Resource concreteResource = resourceOrRef.resolve();
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>             <strong class="jxr_keyword">return</strong> concreteResource != <strong class="jxr_keyword">null</strong> &amp;&amp; !concreteResource.hasAbstractCardType();
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>         }
 <a class="jxr_linenumber" name="L126" href="#L126">126</a> 
@@ -139,9 +139,9 @@
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> <em class="jxr_javadoccomment">     * @return an initialized new resource reference</em>
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a> initNewResourceRef() {
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> ResourceRef initNewResourceRef() {
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         <em class="jxr_comment">// implicitly setRefused(false)</em>
-<a class="jxr_linenumber" name="L136" href="#L136">136</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a>();
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> ResourceRef();
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>     }
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> 
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>     <em class="jxr_comment">// *********************************************************************************************</em>
@@ -156,13 +156,13 @@
 <a class="jxr_linenumber" name="L148" href="#L148">148</a> <em class="jxr_javadoccomment">     * @param cardTypeRefToFill A new card type reference that need references to the up stream</em>
 <a class="jxr_linenumber" name="L149" href="#L149">149</a> <em class="jxr_javadoccomment">     *                          resources</em>
 <a class="jxr_linenumber" name="L150" href="#L150">150</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L151" href="#L151">151</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> spreadResourceFromUp(<a name="CardTypeRef" href="../../../../../../ch/colabproject/colab/api/model/card/CardTypeRef.html#CardTypeRef">CardTypeRef</a> cardTypeRefToFill) {
-<a class="jxr_linenumber" name="L152" href="#L152">152</a>         <a name="AbstractCardType" href="../../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> parent = cardTypeRefToFill.getTarget();
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> spreadResourceFromUp(CardTypeRef cardTypeRefToFill) {
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>         AbstractCardType parent = cardTypeRefToFill.getTarget();
 <a class="jxr_linenumber" name="L153" href="#L153">153</a> 
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         List&lt;AbstractResource&gt; parentResources = parent.getDirectAbstractResources();
-<a class="jxr_linenumber" name="L155" href="#L155">155</a>         <strong class="jxr_keyword">for</strong> (<a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> parentResource : parentResources) {
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>         <strong class="jxr_keyword">for</strong> (AbstractResource parentResource : parentResources) {
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>             <strong class="jxr_keyword">if</strong> (mustSpreadReference(parentResource)) {
-<a class="jxr_linenumber" name="L157" href="#L157">157</a>                 <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a> reference = initNewReferenceFrom(parentResource);
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>                 ResourceRef reference = initNewReferenceFrom(parentResource);
 <a class="jxr_linenumber" name="L158" href="#L158">158</a> 
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>                 reference.setAbstractCardType(cardTypeRefToFill);
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>                 cardTypeRefToFill.getDirectAbstractResources().add(reference);
@@ -178,13 +178,13 @@
 <a class="jxr_linenumber" name="L170" href="#L170">170</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L171" href="#L171">171</a> <em class="jxr_javadoccomment">     * @param cardToFill A new card that need references to the up stream resources</em>
 <a class="jxr_linenumber" name="L172" href="#L172">172</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> spreadResourceFromUp(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> cardToFill) {
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>         <a name="CardContent" href="../../../../../../ch/colabproject/colab/api/model/card/CardContent.html#CardContent">CardContent</a> parent = cardToFill.getParent();
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> spreadResourceFromUp(Card cardToFill) {
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>         CardContent parent = cardToFill.getParent();
 <a class="jxr_linenumber" name="L175" href="#L175">175</a> 
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>         List&lt;AbstractResource&gt; parentResources = parent.getDirectAbstractResources();
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>         <strong class="jxr_keyword">for</strong> (<a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> parentResource : parentResources) {
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>         <strong class="jxr_keyword">for</strong> (AbstractResource parentResource : parentResources) {
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>             <strong class="jxr_keyword">if</strong> (mustSpreadReference(parentResource)) {
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>                 <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a> reference = initNewReferenceFrom(parentResource);
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>                 ResourceRef reference = initNewReferenceFrom(parentResource);
 <a class="jxr_linenumber" name="L180" href="#L180">180</a> 
 <a class="jxr_linenumber" name="L181" href="#L181">181</a>                 reference.setCard(cardToFill);
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>                 cardToFill.getDirectAbstractResources().add(reference);
@@ -193,11 +193,11 @@
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>             }
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>         }
 <a class="jxr_linenumber" name="L187" href="#L187">187</a> 
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>         <a name="AbstractCardType" href="../../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> type = cardToFill.getCardType();
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>         AbstractCardType type = cardToFill.getCardType();
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>         List&lt;AbstractResource&gt; typeResources = type.getDirectAbstractResources();
-<a class="jxr_linenumber" name="L190" href="#L190">190</a>         <strong class="jxr_keyword">for</strong> (<a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> typeResource : typeResources) {
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>         <strong class="jxr_keyword">for</strong> (AbstractResource typeResource : typeResources) {
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>             <strong class="jxr_keyword">if</strong> (mustSpreadReference(typeResource)) {
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>                 <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a> reference = initNewReferenceFrom(typeResource);
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>                 ResourceRef reference = initNewReferenceFrom(typeResource);
 <a class="jxr_linenumber" name="L193" href="#L193">193</a> 
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>                 reference.setCard(cardToFill);
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>                 cardToFill.getDirectAbstractResources().add(reference);
@@ -213,13 +213,13 @@
 <a class="jxr_linenumber" name="L205" href="#L205">205</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L206" href="#L206">206</a> <em class="jxr_javadoccomment">     * @param cardContentToFill A new card content that need references to the up stream resources</em>
 <a class="jxr_linenumber" name="L207" href="#L207">207</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> spreadResourceFromUp(<a name="CardContent" href="../../../../../../ch/colabproject/colab/api/model/card/CardContent.html#CardContent">CardContent</a> cardContentToFill) {
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>         <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> parent = cardContentToFill.getCard();
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> spreadResourceFromUp(CardContent cardContentToFill) {
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>         Card parent = cardContentToFill.getCard();
 <a class="jxr_linenumber" name="L210" href="#L210">210</a> 
 <a class="jxr_linenumber" name="L211" href="#L211">211</a>         List&lt;AbstractResource&gt; parentResources = parent.getDirectAbstractResources();
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>         <strong class="jxr_keyword">for</strong> (<a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> parentResource : parentResources) {
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>         <strong class="jxr_keyword">for</strong> (AbstractResource parentResource : parentResources) {
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>             <strong class="jxr_keyword">if</strong> (mustSpreadReference(parentResource)) {
-<a class="jxr_linenumber" name="L214" href="#L214">214</a>                 <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a> reference = initNewReferenceFrom(parentResource);
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>                 ResourceRef reference = initNewReferenceFrom(parentResource);
 <a class="jxr_linenumber" name="L215" href="#L215">215</a> 
 <a class="jxr_linenumber" name="L216" href="#L216">216</a>                 reference.setCardContent(cardContentToFill);
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>                 cardContentToFill.getDirectAbstractResources().add(reference);
@@ -236,17 +236,17 @@
 <a class="jxr_linenumber" name="L228" href="#L228">228</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L229" href="#L229">229</a> <em class="jxr_javadoccomment">     * @return The new resource reference</em>
 <a class="jxr_linenumber" name="L230" href="#L230">230</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a> initNewReferenceFrom(<a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> target) {
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>         <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a> reference = <strong class="jxr_keyword">new</strong> <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a>();
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> ResourceRef initNewReferenceFrom(AbstractResource target) {
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>         ResourceRef reference = <strong class="jxr_keyword">new</strong> ResourceRef();
 <a class="jxr_linenumber" name="L233" href="#L233">233</a> 
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>         reference.setCategory(target.getCategory());
 <a class="jxr_linenumber" name="L235" href="#L235">235</a> 
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>         <strong class="jxr_keyword">if</strong> (target instanceof <a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a>) {
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>             <a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> concreteResource = ((<a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a>) target).resolve();
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>         <strong class="jxr_keyword">if</strong> (target instanceof ResourceRef) {
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>             Resource concreteResource = ((ResourceRef) target).resolve();
 <a class="jxr_linenumber" name="L238" href="#L238">238</a>             <strong class="jxr_keyword">if</strong> (concreteResource != <strong class="jxr_keyword">null</strong> &amp;&amp; concreteResource.isDeprecated()) {
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>                 reference.setRefused(<strong class="jxr_keyword">true</strong>);
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>                 reference.setRefused(((<a name="ResourceRef" href="../../../../../../ch/colabproject/colab/api/model/document/ResourceRef.html#ResourceRef">ResourceRef</a>) target).isRefused());
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>                 reference.setRefused(((ResourceRef) target).isRefused());
 <a class="jxr_linenumber" name="L242" href="#L242">242</a>             }
 <a class="jxr_linenumber" name="L243" href="#L243">243</a>         }
 <a class="jxr_linenumber" name="L244" href="#L244">244</a> 

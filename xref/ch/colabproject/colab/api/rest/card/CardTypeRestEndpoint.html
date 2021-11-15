@@ -122,7 +122,7 @@
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>     @GET
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>     @Path(<span class="jxr_string">"{id}"</span>)
-<a class="jxr_linenumber" name="L117" href="#L117">117</a>     <strong class="jxr_keyword">public</strong> <a name="AbstractCardType" href="../../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> getCardType(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>     <strong class="jxr_keyword">public</strong> AbstractCardType getCardType(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>         logger.debug(<span class="jxr_string">"get card type #{}"</span>, id);
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>         <strong class="jxr_keyword">return</strong> cardTypeDao.getAbstractCardType(id);
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>     }
@@ -138,7 +138,7 @@
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>     <strong class="jxr_keyword">public</strong> Long createCardType(<a name="CardTypeCreationBean" href="../../../../../../ch/colabproject/colab/api/rest/card/CardTypeCreationBean.html#CardTypeCreationBean">CardTypeCreationBean</a> cardTypeCreationBean) {
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         logger.debug(<span class="jxr_string">"create card type {}"</span>, cardTypeCreationBean);
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> 
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>         <a name="CardType" href="../../../../../../ch/colabproject/colab/api/model/card/CardType.html#CardType">CardType</a> cardType = <strong class="jxr_keyword">new</strong> <a name="CardType" href="../../../../../../ch/colabproject/colab/api/model/card/CardType.html#CardType">CardType</a>();
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>         CardType cardType = <strong class="jxr_keyword">new</strong> CardType();
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         cardType.setProjectId(cardTypeCreationBean.getProjectId());
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         cardType.setTitle(cardTypeCreationBean.getTitle());
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         cardType.setPurpose(cardTypeCreationBean.getPurpose());
@@ -168,7 +168,7 @@
 <a class="jxr_linenumber" name="L160" href="#L160">160</a> <em class="jxr_javadoccomment">     * @throws ColabMergeException if the merge is not possible</em>
 <a class="jxr_linenumber" name="L161" href="#L161">161</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>     @PUT
-<a class="jxr_linenumber" name="L163" href="#L163">163</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> updateCardType(<a name="AbstractCardType" href="../../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> cardType) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> updateCardType(AbstractCardType cardType) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
 <a class="jxr_linenumber" name="L164" href="#L164">164</a>         logger.debug(<span class="jxr_string">"update abstract card type {}"</span>, cardType);
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>         cardTypeDao.updateCardType(cardType);
 <a class="jxr_linenumber" name="L166" href="#L166">166</a>     }

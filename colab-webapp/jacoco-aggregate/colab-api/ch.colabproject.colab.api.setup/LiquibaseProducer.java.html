@@ -7,11 +7,10 @@
 package ch.colabproject.colab.api.setup;
 
 import javax.annotation.Resource;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.sql.DataSource;
-//import liquibase.integration.cdi.CDILiquibaseConfig;
-//import liquibase.integration.cdi.annotations.LiquibaseType;
+import liquibase.integration.cdi.CDILiquibaseConfig;
+import liquibase.integration.cdi.annotations.LiquibaseType;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
@@ -27,8 +26,7 @@ import liquibase.resource.ResourceAccessor;
  *
  * @author maxence
  */
-@ApplicationScoped
-<span class="nc" id="L31">public class LiquibaseProducer {</span>
+<span class="nc" id="L29">public class LiquibaseProducer {</span>
 
     /**
      * SQL Datasource
@@ -36,18 +34,18 @@ import liquibase.resource.ResourceAccessor;
     @Resource(lookup = &quot;java:global/colabDS&quot;)
     private DataSource myDataSource;
 
-    /*/**
+    /**
      * Liquibase configuration
      *
      * @return the config
      */
-    /*@Produces
+    @Produces
     @LiquibaseType
     public CDILiquibaseConfig createConfig() {
-        CDILiquibaseConfig config = new CDILiquibaseConfig();
-        config.setChangeLog(&quot;/META-INF/db.changelog.xml&quot;);
-        return config;
-    }*/
+<span class="nc" id="L45">        CDILiquibaseConfig config = new CDILiquibaseConfig();</span>
+<span class="nc" id="L46">        config.setChangeLog(&quot;/META-INF/db.changelog.xml&quot;);</span>
+<span class="nc" id="L47">        return config;</span>
+    }
 
     /**
      * Give liquibase access to the datasource
@@ -56,9 +54,9 @@ import liquibase.resource.ResourceAccessor;
      *
      */
     @Produces
-    //@LiquibaseType
+    @LiquibaseType
     public DataSource createDataSource() {
-<span class="nc" id="L61">        return myDataSource;</span>
+<span class="nc" id="L59">        return myDataSource;</span>
     }
 
     /**
@@ -67,9 +65,9 @@ import liquibase.resource.ResourceAccessor;
      * @return the classloader
      */
     @Produces
-    //@LiquibaseType
+    @LiquibaseType
     public ResourceAccessor create() {
-<span class="nc" id="L72">        return new ClassLoaderResourceAccessor(getClass().getClassLoader());</span>
+<span class="nc" id="L70">        return new ClassLoaderResourceAccessor(getClass().getClassLoader());</span>
     }
 
 }

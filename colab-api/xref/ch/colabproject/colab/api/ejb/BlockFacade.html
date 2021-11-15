@@ -74,7 +74,7 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">     * @return the new persisted block</em>
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">public</strong> <a name="Block" href="../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> persistBlock(<a name="Block" href="../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> block) {
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">public</strong> Block persistBlock(Block block) {
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          logger.debug(<span class="jxr_string">"persist the block {}"</span>, block);
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          <a name="Document" href="../../../../../ch/colabproject/colab/api/model/document/Document.html#Document">Document</a> document = documentDao.findDocument(block.getDocumentId());
@@ -104,7 +104,7 @@
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>                  <strong class="jxr_keyword">return</strong> 0;
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>              });
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>              <strong class="jxr_keyword">if</strong> (endBlock.isPresent()) {
-<a class="jxr_linenumber" name="L99" href="#L99">99</a>                  <a name="Block" href="../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> end = endBlock.get();
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>                  Block end = endBlock.get();
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>                 <strong class="jxr_keyword">if</strong> (end.getIndex() &gt; Long.MAX_VALUE - DEFAULT_INDEX_INC) {
 <a class="jxr_linenumber" name="L101" href="#L101">101</a>                     block.setIndex(end.getIndex() + DEFAULT_INDEX_INC);
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>                 } <strong class="jxr_keyword">else</strong> {
@@ -113,7 +113,7 @@
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>                     <em class="jxr_comment">// it will crash when there is more than (MAX_LONG / 1000) blocks</em>
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>                     <em class="jxr_comment">// anyway, such a document must be quite unreadable...</em>
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>                     <strong class="jxr_keyword">int</strong> index = 0;
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>                     <strong class="jxr_keyword">for</strong> (<a name="Block" href="../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> b : blocks) {
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>                     <strong class="jxr_keyword">for</strong> (Block b : blocks) {
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>                         b.setIndex(index);
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>                         index += DEFAULT_INDEX_INC;
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>                     }
@@ -136,7 +136,7 @@
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> deleteBlock(Long blockId) {
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>         logger.debug(<span class="jxr_string">"delete the block #{}"</span>, blockId);
 <a class="jxr_linenumber" name="L130" href="#L130">130</a> 
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>         <a name="Block" href="../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> block = blockDao.findBlock(blockId);
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>         Block block = blockDao.findBlock(blockId);
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         <strong class="jxr_keyword">if</strong> (block == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         }
@@ -158,7 +158,7 @@
 <a class="jxr_linenumber" name="L150" href="#L150">150</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L151" href="#L151">151</a> <em class="jxr_javadoccomment">     * @return a new, initialized and persisted text data block</em>
 <a class="jxr_linenumber" name="L152" href="#L152">152</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L153" href="#L153">153</a>     <strong class="jxr_keyword">public</strong> <a name="Block" href="../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> createNewTextDataBlock(Long documentId) {
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>     <strong class="jxr_keyword">public</strong> Block createNewTextDataBlock(Long documentId) {
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>         logger.debug(<span class="jxr_string">"create a new block for the document #{}"</span>, documentId);
 <a class="jxr_linenumber" name="L155" href="#L155">155</a> 
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>         <a name="Document" href="../../../../../ch/colabproject/colab/api/model/document/Document.html#Document">Document</a> document = documentDao.findDocument(documentId);
@@ -189,7 +189,7 @@
 <a class="jxr_linenumber" name="L181" href="#L181">181</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>     <strong class="jxr_keyword">public</strong> List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrc(Long cardBlockId) {
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>         logger.debug(<span class="jxr_string">"get sticky note links where the block #{} is the source"</span>, cardBlockId);
-<a class="jxr_linenumber" name="L184" href="#L184">184</a>         <a name="Block" href="../../../../../ch/colabproject/colab/api/model/document/Block.html#Block">Block</a> block = blockDao.findBlock(cardBlockId);
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>         Block block = blockDao.findBlock(cardBlockId);
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>         <strong class="jxr_keyword">if</strong> (block == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>         }

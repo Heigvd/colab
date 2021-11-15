@@ -31,10 +31,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -44,6 +48,12 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = &quot;project_id&quot;),
+        @Index(columnList = &quot;user_id&quot;)
+    }
+)
 @NamedQuery(
     name = &quot;TeamMember.areUserTeammate&quot;,
     // SELECT true FROM TeamMember a, TeamMember b WHERE ...
@@ -56,9 +66,12 @@ import javax.validation.constraints.NotNull;
     + &quot;WHERE m.project.id = :projectId &quot;
     + &quot;AND m.user IS NOT NULL AND m.user.id = :userId&quot;
 )
-<span class="nc" id="L59">public class TeamMember implements ColabEntity, WithWebsocketChannels {</span>
+<span class="nc" id="L69">public class TeamMember implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
+
+    /** project team sequence name */
+    public static final String TEAM_SEQUENCE_NAME = &quot;team_seq&quot;;
 
     // ---------------------------------------------------------------------------------------------
     // fields
@@ -67,7 +80,8 @@ import javax.validation.constraints.NotNull;
      * Member ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = TEAM_SEQUENCE_NAME, allocationSize = 20)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TEAM_SEQUENCE_NAME)
     private Long id;
 
     /**
@@ -105,6 +119,10 @@ import javax.validation.constraints.NotNull;
      * The roles
      */
     @ManyToMany
+    @JoinTable(indexes = {
+        @Index(columnList = &quot;members_id&quot;),
+        @Index(columnList = &quot;roles_id&quot;),
+    })
     @JsonbTransient
     private List&lt;TeamRole&gt; roles;
 
@@ -118,7 +136,7 @@ import javax.validation.constraints.NotNull;
     /**
      * Id of the roles. For deserialization only
      */
-<span class="nc" id="L121">    @NotNull</span>
+<span class="nc" id="L139">    @NotNull</span>
     @Transient
     private List&lt;Long&gt; roleIds = new ArrayList&lt;&gt;();
 
@@ -131,7 +149,7 @@ import javax.validation.constraints.NotNull;
     /**
      * Hierarchical position of the member
      */
-<span class="nc" id="L134">    @NotNull</span>
+<span class="nc" id="L152">    @NotNull</span>
     @Enumerated(value = EnumType.STRING)
     private HierarchicalPosition position = HierarchicalPosition.INTERN;
 
@@ -143,15 +161,15 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L146">        return id;</span>
+<span class="nc" id="L164">        return id;</span>
     }
 
     /**
      * @param id the member ID
      */
     public void setId(Long id) {
-<span class="nc" id="L153">        this.id = id;</span>
-<span class="nc" id="L154">    }</span>
+<span class="nc" id="L171">        this.id = id;</span>
+<span class="nc" id="L172">    }</span>
 
     /**
      * Get the value of displayName
@@ -159,7 +177,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of displayName
      */
     public String getDisplayName() {
-<span class="nc" id="L162">        return displayName;</span>
+<span class="nc" id="L180">        return displayName;</span>
     }
 
     /**
@@ -168,22 +186,22 @@ import javax.validation.constraints.NotNull;
      * @param displayName new value of displayName
      */
     public void setDisplayName(String displayName) {
-<span class="nc" id="L171">        this.displayName = displayName;</span>
-<span class="nc" id="L172">    }</span>
+<span class="nc" id="L189">        this.displayName = displayName;</span>
+<span class="nc" id="L190">    }</span>
 
     /**
      * @return the user
      */
     public User getUser() {
-<span class="nc" id="L178">        return user;</span>
+<span class="nc" id="L196">        return user;</span>
     }
 
     /**
      * @param user the user
      */
     public void setUser(User user) {
-<span class="nc" id="L185">        this.user = user;</span>
-<span class="nc" id="L186">    }</span>
+<span class="nc" id="L203">        this.user = user;</span>
+<span class="nc" id="L204">    }</span>
 
     /**
      * get the user id. To be sent to client
@@ -191,10 +209,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the user or null
      */
     public Long getUserId() {
-<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (this.user != null) {</span>
-<span class="nc" id="L195">            return this.user.getId();</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">        if (this.user != null) {</span>
+<span class="nc" id="L213">            return this.user.getId();</span>
         } else {
-<span class="nc" id="L197">            return userId;</span>
+<span class="nc" id="L215">            return userId;</span>
         }
     }
 
@@ -204,22 +222,22 @@ import javax.validation.constraints.NotNull;
      * @param id the id of the user
      */
     public void setUserId(Long id) {
-<span class="nc" id="L207">        this.userId = id;</span>
-<span class="nc" id="L208">    }</span>
+<span class="nc" id="L225">        this.userId = id;</span>
+<span class="nc" id="L226">    }</span>
 
     /**
      * @return the project
      */
     public Project getProject() {
-<span class="nc" id="L214">        return project;</span>
+<span class="nc" id="L232">        return project;</span>
     }
 
     /**
      * @param project the project
      */
     public void setProject(Project project) {
-<span class="nc" id="L221">        this.project = project;</span>
-<span class="nc" id="L222">    }</span>
+<span class="nc" id="L239">        this.project = project;</span>
+<span class="nc" id="L240">    }</span>
 
     /**
      * get the project id. To be sent to client
@@ -227,10 +245,10 @@ import javax.validation.constraints.NotNull;
      * @return id of the project or null
      */
     public Long getProjectId() {
-<span class="nc bnc" id="L230" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L231">            return this.project.getId();</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L249">            return this.project.getId();</span>
         } else {
-<span class="nc" id="L233">            return projectId;</span>
+<span class="nc" id="L251">            return projectId;</span>
         }
     }
 
@@ -240,8 +258,8 @@ import javax.validation.constraints.NotNull;
      * @param id the id of the project
      */
     public void setProjectId(Long id) {
-<span class="nc" id="L243">        this.projectId = id;</span>
-<span class="nc" id="L244">    }</span>
+<span class="nc" id="L261">        this.projectId = id;</span>
+<span class="nc" id="L262">    }</span>
 
     /**
      * Get roles
@@ -249,7 +267,7 @@ import javax.validation.constraints.NotNull;
      * @return roles
      */
     public List&lt;TeamRole&gt; getRoles() {
-<span class="nc" id="L252">        return roles;</span>
+<span class="nc" id="L270">        return roles;</span>
     }
 
     /**
@@ -258,8 +276,8 @@ import javax.validation.constraints.NotNull;
      * @param roles list of roles
      */
     public void setRoles(List&lt;TeamRole&gt; roles) {
-<span class="nc" id="L261">        this.roles = roles;</span>
-<span class="nc" id="L262">    }</span>
+<span class="nc" id="L279">        this.roles = roles;</span>
+<span class="nc" id="L280">    }</span>
 
     /**
      * Get ids of the roles.
@@ -267,12 +285,12 @@ import javax.validation.constraints.NotNull;
      * @return list of ids
      */
     public List&lt;Long&gt; getRoleIds() {
-<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (this.roles != null) {</span>
-<span class="nc" id="L271">            return roles.stream()</span>
-<span class="nc" id="L272">                .map(role -&gt; role.getId())</span>
-<span class="nc" id="L273">                .collect(Collectors.toList());</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">        if (this.roles != null) {</span>
+<span class="nc" id="L289">            return roles.stream()</span>
+<span class="nc" id="L290">                .map(role -&gt; role.getId())</span>
+<span class="nc" id="L291">                .collect(Collectors.toList());</span>
         }
-<span class="nc" id="L275">        return roleIds;</span>
+<span class="nc" id="L293">        return roleIds;</span>
     }
 
     /**
@@ -281,8 +299,8 @@ import javax.validation.constraints.NotNull;
      * @param roleIds id of roles
      */
     public void setRoleIds(List&lt;Long&gt; roleIds) {
-<span class="nc" id="L284">        this.roleIds = roleIds;</span>
-<span class="nc" id="L285">    }</span>
+<span class="nc" id="L302">        this.roleIds = roleIds;</span>
+<span class="nc" id="L303">    }</span>
 
     /**
      * Get the list of access control
@@ -290,7 +308,7 @@ import javax.validation.constraints.NotNull;
      * @return access control list
      */
     public List&lt;AccessControl&gt; getAccessControlList() {
-<span class="nc" id="L293">        return accessControlList;</span>
+<span class="nc" id="L311">        return accessControlList;</span>
     }
 
     /**
@@ -299,8 +317,8 @@ import javax.validation.constraints.NotNull;
      * @param accessControlList new list of access control
      */
     public void setAccessControlList(List&lt;AccessControl&gt; accessControlList) {
-<span class="nc" id="L302">        this.accessControlList = accessControlList;</span>
-<span class="nc" id="L303">    }</span>
+<span class="nc" id="L320">        this.accessControlList = accessControlList;</span>
+<span class="nc" id="L321">    }</span>
 
     /**
      * Get the hierarchical position of the member
@@ -308,7 +326,7 @@ import javax.validation.constraints.NotNull;
      * @return member's position
      */
     public HierarchicalPosition getPosition() {
-<span class="nc" id="L311">        return position;</span>
+<span class="nc" id="L329">        return position;</span>
     }
 
     /**
@@ -317,8 +335,8 @@ import javax.validation.constraints.NotNull;
      * @param position new position
      */
     public void setPosition(HierarchicalPosition position) {
-<span class="nc" id="L320">        this.position = position;</span>
-<span class="nc" id="L321">    }</span>
+<span class="nc" id="L338">        this.position = position;</span>
+<span class="nc" id="L339">    }</span>
 
     /**
      * Get the tracking data
@@ -327,7 +345,7 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L330">        return trackingData;</span>
+<span class="nc" id="L348">        return trackingData;</span>
     }
 
     /**
@@ -337,85 +355,85 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L340">        this.trackingData = trackingData;</span>
-<span class="nc" id="L341">    }</span>
+<span class="nc" id="L358">        this.trackingData = trackingData;</span>
+<span class="nc" id="L359">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L348" title="All 2 branches missed.">        if (other instanceof TeamMember) {</span>
-<span class="nc" id="L349">            TeamMember t = (TeamMember) other;</span>
-<span class="nc" id="L350">            this.setDisplayName(t.getDisplayName());</span>
-<span class="nc" id="L351">        } else {</span>
-<span class="nc" id="L352">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L366" title="All 2 branches missed.">        if (other instanceof TeamMember) {</span>
+<span class="nc" id="L367">            TeamMember t = (TeamMember) other;</span>
+<span class="nc" id="L368">            this.setDisplayName(t.getDisplayName());</span>
+<span class="nc" id="L369">        } else {</span>
+<span class="nc" id="L370">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L354">    }</span>
+<span class="nc" id="L372">    }</span>
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L358" title="All 2 branches missed.">        if (this.project != null) {</span>
-<span class="nc" id="L359">            return this.project.getChannels();</span>
+<span class="nc bnc" id="L376" title="All 2 branches missed.">        if (this.project != null) {</span>
+<span class="nc" id="L377">            return this.project.getChannels();</span>
         } else {
-<span class="nc" id="L361">            return Set.of();</span>
+<span class="nc" id="L379">            return Set.of();</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-<span class="nc bnc" id="L368" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="nc bnc" id="L386" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
             // any &quot;intern&quot; may invite somebody
-<span class="nc" id="L370">            return new Conditions.IsCurrentUserInternToProject(project);</span>
+<span class="nc" id="L388">            return new Conditions.IsCurrentUserInternToProject(project);</span>
         } else {
             // anyone can read a pending invitation
-<span class="nc" id="L373">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L391">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L380" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
-<span class="nc" id="L381">            return new Conditions.IsCurrentUserMemberOfProject(project);</span>
+<span class="nc bnc" id="L398" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="nc" id="L399">            return new Conditions.IsCurrentUserMemberOfProject(project);</span>
         } else {
             // anyone can read a pending invitation
-<span class="nc" id="L384">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L402">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L390" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
-<span class="nc bnc" id="L391" title="All 2 branches missed.">            if (this.position == HierarchicalPosition.OWNER) {</span>
-<span class="nc" id="L392">                return new Conditions.IsCurrentUserOwnerOfProject(project);</span>
+<span class="nc bnc" id="L408" title="All 4 branches missed.">        if (this.user != null &amp;&amp; this.project != null) {</span>
+<span class="nc bnc" id="L409" title="All 2 branches missed.">            if (this.position == HierarchicalPosition.OWNER) {</span>
+<span class="nc" id="L410">                return new Conditions.IsCurrentUserOwnerOfProject(project);</span>
             } else {
-<span class="nc" id="L394">                return new Conditions.IsCurrentUserLeaderOfProject(project);</span>
+<span class="nc" id="L412">                return new Conditions.IsCurrentUserLeaderOfProject(project);</span>
             }
         } else {
             // anyone can read a pending invitation
-<span class="nc" id="L398">            return Conditions.alwaysTrue;</span>
+<span class="nc" id="L416">            return Conditions.alwaysTrue;</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L404">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L422">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L410">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L428">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc bnc" id="L415" title="All 2 branches missed.">        if (user == null) {</span>
-<span class="nc" id="L416">            return &quot;TeamMember{pending}&quot;;</span>
+<span class="nc bnc" id="L433" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L434">            return &quot;TeamMember{pending}&quot;;</span>
         } else {
-<span class="nc" id="L418">            return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + userId + &quot;, projectId=&quot;</span>
+<span class="nc" id="L436">            return &quot;TeamMember{&quot; + &quot;id=&quot; + id + &quot;, userId=&quot; + userId + &quot;, projectId=&quot;</span>
                 + projectId + &quot;}&quot;;
         }
     }

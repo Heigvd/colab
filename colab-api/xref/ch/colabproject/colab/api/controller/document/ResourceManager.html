@@ -71,8 +71,8 @@
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">     * @return The resource or reference corresponding to the id</em>
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">public</strong> <a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> assertAndGetResourceOrRef(Long resourceOrRefId) {
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>          <a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> resourceOrRef = resourceAndRefDao.findResourceOrRef(resourceOrRefId);
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">public</strong> AbstractResource assertAndGetResourceOrRef(Long resourceOrRefId) {
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          AbstractResource resourceOrRef = resourceAndRefDao.findResourceOrRef(resourceOrRefId);
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          <strong class="jxr_keyword">if</strong> (resourceOrRef == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>              <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
@@ -92,7 +92,7 @@
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      <strong class="jxr_keyword">public</strong> List&lt;List&lt;AbstractResource&gt;&gt; getResourceChainForAbstractCardType(Long cardTypeOrRefId) {
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>          logger.debug(<span class="jxr_string">"get resource chain linked to abstract card type #{}"</span>, cardTypeOrRefId);
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  
-<a class="jxr_linenumber" name="L87" href="#L87">87</a>          <a name="AbstractCardType" href="../../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> cardTypeOrRef = cardFacade.assertAndGetAbstractCardType(cardTypeOrRefId);
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>          AbstractCardType cardTypeOrRef = cardFacade.assertAndGetAbstractCardType(cardTypeOrRefId);
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          List&lt;AbstractResource&gt; directResourceOrRefs = cardTypeOrRef.getDirectAbstractResources();
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  
@@ -110,7 +110,7 @@
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>     <strong class="jxr_keyword">public</strong> List&lt;List&lt;AbstractResource&gt;&gt; getResourceChainForCard(Long cardId) {
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         logger.debug(<span class="jxr_string">"get resource chain linked to card #{}"</span>, cardId);
 <a class="jxr_linenumber" name="L104" href="#L104">104</a> 
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>         <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card = cardFacade.assertAndGetCard(cardId);
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         Card card = cardFacade.assertAndGetCard(cardId);
 <a class="jxr_linenumber" name="L106" href="#L106">106</a> 
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         List&lt;AbstractResource&gt; directResourceOrRefs = card.getDirectAbstractResources();
 <a class="jxr_linenumber" name="L108" href="#L108">108</a> 
@@ -128,7 +128,7 @@
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>     <strong class="jxr_keyword">public</strong> List&lt;List&lt;AbstractResource&gt;&gt; getResourceChainForCardContent(Long cardContentId) {
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>         logger.debug(<span class="jxr_string">"get resource chain linked to card content #{}"</span>, cardContentId);
 <a class="jxr_linenumber" name="L122" href="#L122">122</a> 
-<a class="jxr_linenumber" name="L123" href="#L123">123</a>         <a name="CardContent" href="../../../../../../ch/colabproject/colab/api/model/card/CardContent.html#CardContent">CardContent</a> cardContent = cardFacade.assertAndGetCardContent(cardContentId);
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>         CardContent cardContent = cardFacade.assertAndGetCardContent(cardContentId);
 <a class="jxr_linenumber" name="L124" href="#L124">124</a> 
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>         List&lt;AbstractResource&gt; directResourceOrRefs = cardContent.getDirectAbstractResources();
 <a class="jxr_linenumber" name="L126" href="#L126">126</a> 
@@ -165,7 +165,7 @@
 <a class="jxr_linenumber" name="L157" href="#L157">157</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L158" href="#L158">158</a> <em class="jxr_javadoccomment">     * @return the brand new resource</em>
 <a class="jxr_linenumber" name="L159" href="#L159">159</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>     <strong class="jxr_keyword">public</strong> <a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> createResource(<a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> resource) {
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>     <strong class="jxr_keyword">public</strong> Resource createResource(Resource resource) {
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>         logger.debug(<span class="jxr_string">"create a resource {}"</span>, resource);
 <a class="jxr_linenumber" name="L162" href="#L162">162</a> 
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>         <strong class="jxr_keyword">if</strong> (resource.getDocument() == <strong class="jxr_keyword">null</strong>) {
@@ -191,7 +191,7 @@
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>         <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>     }
 <a class="jxr_linenumber" name="L185" href="#L185">185</a> 
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> initTeaser(<a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> resource) {
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> initTeaser(Resource resource) {
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>         resource.setTeaser(Block.initNewDefaultBlock());
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>     }
 <a class="jxr_linenumber" name="L189" href="#L189">189</a> 
@@ -205,10 +205,10 @@
 <a class="jxr_linenumber" name="L197" href="#L197">197</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L198" href="#L198">198</a> <em class="jxr_javadoccomment">     * @return the brand new resource</em>
 <a class="jxr_linenumber" name="L199" href="#L199">199</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>     <strong class="jxr_keyword">private</strong> <a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> createResourceForAbstractCardType(<a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> resource) {
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>     <strong class="jxr_keyword">private</strong> Resource createResourceForAbstractCardType(Resource resource) {
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>         logger.debug(<span class="jxr_string">"create the resource {} for abstract card type"</span>, resource);
 <a class="jxr_linenumber" name="L202" href="#L202">202</a> 
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>         <a name="AbstractCardType" href="../../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> abstractCardType = cardFacade
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>         AbstractCardType abstractCardType = cardFacade
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>             .assertAndGetAbstractCardType(resource.getAbstractCardTypeId());
 <a class="jxr_linenumber" name="L205" href="#L205">205</a> 
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>         resource.setAbstractCardType(abstractCardType);
@@ -231,10 +231,10 @@
 <a class="jxr_linenumber" name="L223" href="#L223">223</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L224" href="#L224">224</a> <em class="jxr_javadoccomment">     * @return the brand new resource</em>
 <a class="jxr_linenumber" name="L225" href="#L225">225</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>     <strong class="jxr_keyword">private</strong> <a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> createResourceForCard(<a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> resource) {
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>     <strong class="jxr_keyword">private</strong> Resource createResourceForCard(Resource resource) {
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>         logger.debug(<span class="jxr_string">"create the resource {} for card"</span>, resource);
 <a class="jxr_linenumber" name="L228" href="#L228">228</a> 
-<a class="jxr_linenumber" name="L229" href="#L229">229</a>         <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card = cardFacade.assertAndGetCard(resource.getCardId());
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>         Card card = cardFacade.assertAndGetCard(resource.getCardId());
 <a class="jxr_linenumber" name="L230" href="#L230">230</a> 
 <a class="jxr_linenumber" name="L231" href="#L231">231</a>         resource.setCard(card);
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>         card.getDirectAbstractResources().add(resource);
@@ -256,10 +256,10 @@
 <a class="jxr_linenumber" name="L248" href="#L248">248</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L249" href="#L249">249</a> <em class="jxr_javadoccomment">     * @return the brand new resource</em>
 <a class="jxr_linenumber" name="L250" href="#L250">250</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>     <strong class="jxr_keyword">private</strong> <a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> createResourceForCardContent(<a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a> resource) {
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>     <strong class="jxr_keyword">private</strong> Resource createResourceForCardContent(Resource resource) {
 <a class="jxr_linenumber" name="L252" href="#L252">252</a>         logger.debug(<span class="jxr_string">"create the resource {} for card content"</span>, resource);
 <a class="jxr_linenumber" name="L253" href="#L253">253</a> 
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>         <a name="CardContent" href="../../../../../../ch/colabproject/colab/api/model/card/CardContent.html#CardContent">CardContent</a> cardContent = cardFacade.assertAndGetCardContent(resource.getCardContentId());
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>         CardContent cardContent = cardFacade.assertAndGetCardContent(resource.getCardContentId());
 <a class="jxr_linenumber" name="L255" href="#L255">255</a> 
 <a class="jxr_linenumber" name="L256" href="#L256">256</a>         resource.setCardContent(cardContent);
 <a class="jxr_linenumber" name="L257" href="#L257">257</a>         cardContent.getDirectAbstractResources().add(resource);
@@ -283,13 +283,13 @@
 <a class="jxr_linenumber" name="L275" href="#L275">275</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> deleteResource(Long resourceId) {
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>         logger.debug(<span class="jxr_string">"delete resource #{}"</span>, resourceId);
 <a class="jxr_linenumber" name="L277" href="#L277">277</a> 
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>         <a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> resource = resourceAndRefDao.findResourceOrRef(resourceId);
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>         AbstractResource resource = resourceAndRefDao.findResourceOrRef(resourceId);
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>         <strong class="jxr_keyword">if</strong> (resource == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>             <em class="jxr_comment">// FIXME or just return. see what is best</em>
 <a class="jxr_linenumber" name="L282" href="#L282">282</a>         }
 <a class="jxr_linenumber" name="L283" href="#L283">283</a> 
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>         <strong class="jxr_keyword">if</strong> (!(resource instanceof <a name="Resource" href="../../../../../../ch/colabproject/colab/api/model/document/Resource.html#Resource">Resource</a>)) {
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>         <strong class="jxr_keyword">if</strong> (!(resource instanceof Resource)) {
 <a class="jxr_linenumber" name="L285" href="#L285">285</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
 <a class="jxr_linenumber" name="L286" href="#L286">286</a>         }
 <a class="jxr_linenumber" name="L287" href="#L287">287</a> 
@@ -303,24 +303,24 @@
 <a class="jxr_linenumber" name="L295" href="#L295">295</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L296" href="#L296">296</a> <em class="jxr_javadoccomment">     * @param resourceOrRef The initial abstract resource to delete</em>
 <a class="jxr_linenumber" name="L297" href="#L297">297</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> deleteResourceAndRefs(<a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> resourceOrRef) {
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> deleteResourceAndRefs(AbstractResource resourceOrRef) {
 <a class="jxr_linenumber" name="L299" href="#L299">299</a>         List&lt;ResourceRef&gt; references = resourceOrRef.getDirectReferences();
 <a class="jxr_linenumber" name="L300" href="#L300">300</a>         <strong class="jxr_keyword">if</strong> (references != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L301" href="#L301">301</a>             references.stream().forEach(ref -&gt; deleteResourceAndRefs(ref));
 <a class="jxr_linenumber" name="L302" href="#L302">302</a>         }
 <a class="jxr_linenumber" name="L303" href="#L303">303</a> 
 <a class="jxr_linenumber" name="L304" href="#L304">304</a>         <strong class="jxr_keyword">if</strong> (resourceOrRef.hasAbstractCardType()) {
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>             <a name="AbstractCardType" href="../../../../../../ch/colabproject/colab/api/model/card/AbstractCardType.html#AbstractCardType">AbstractCardType</a> cardTypeOrRef = resourceOrRef.getAbstractCardType();
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>             AbstractCardType cardTypeOrRef = resourceOrRef.getAbstractCardType();
 <a class="jxr_linenumber" name="L306" href="#L306">306</a>             cardTypeOrRef.getDirectAbstractResources().remove(resourceOrRef);
 <a class="jxr_linenumber" name="L307" href="#L307">307</a>         }
 <a class="jxr_linenumber" name="L308" href="#L308">308</a> 
 <a class="jxr_linenumber" name="L309" href="#L309">309</a>         <strong class="jxr_keyword">if</strong> (resourceOrRef.hasCard()) {
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>             <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card = resourceOrRef.getCard();
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>             Card card = resourceOrRef.getCard();
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>             card.getDirectAbstractResources().remove(resourceOrRef);
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>         }
 <a class="jxr_linenumber" name="L313" href="#L313">313</a> 
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>         <strong class="jxr_keyword">if</strong> (resourceOrRef.hasCardContent()) {
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>             <a name="CardContent" href="../../../../../../ch/colabproject/colab/api/model/card/CardContent.html#CardContent">CardContent</a> cardContent = resourceOrRef.getCardContent();
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>             CardContent cardContent = resourceOrRef.getCardContent();
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>             cardContent.getDirectAbstractResources().remove(resourceOrRef);
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>         }
 <a class="jxr_linenumber" name="L318" href="#L318">318</a> 
@@ -342,7 +342,7 @@
 <a class="jxr_linenumber" name="L334" href="#L334">334</a>         logger.debug(<span class="jxr_string">"get sticky note links where the abstract resource #{} is the source"</span>,
 <a class="jxr_linenumber" name="L335" href="#L335">335</a>             resourceOrRefId);
 <a class="jxr_linenumber" name="L336" href="#L336">336</a> 
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>         <a name="AbstractResource" href="../../../../../../ch/colabproject/colab/api/model/document/AbstractResource.html#AbstractResource">AbstractResource</a> resource = assertAndGetResourceOrRef(resourceOrRefId);
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>         AbstractResource resource = assertAndGetResourceOrRef(resourceOrRefId);
 <a class="jxr_linenumber" name="L338" href="#L338">338</a> 
 <a class="jxr_linenumber" name="L339" href="#L339">339</a>         <strong class="jxr_keyword">return</strong> resource.getStickyNoteLinksAsSrc();
 <a class="jxr_linenumber" name="L340" href="#L340">340</a>     }

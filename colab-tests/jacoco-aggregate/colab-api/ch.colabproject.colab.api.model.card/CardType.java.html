@@ -15,8 +15,10 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -27,6 +29,11 @@ import javax.validation.constraints.NotNull;
  */
 //TODO review accurate constraints when stabilized
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = &quot;purpose_id&quot;),
+    }
+)
 @NamedQuery(name = &quot;CardType.findAll&quot;, query = &quot;SELECT c FROM CardType c&quot;)
 @NamedQuery(name = &quot;CardType.findGlobals&quot;,
     query = &quot;SELECT c FROM CardType c WHERE c.project is NULL&quot;)
@@ -34,7 +41,7 @@ import javax.validation.constraints.NotNull;
     query = &quot;SELECT c FROM CardType c WHERE c.project is NULL AND c.published = TRUE&quot;)
 @NamedQuery(name = &quot;CardType.findPublishedFromProjects&quot;,
     query = &quot;SELECT c FROM CardType c JOIN c.project project JOIN project.teamMembers teamMember WHERE c.published = TRUE AND teamMember.user.id = :userId&quot;)
-<span class="fc" id="L37">public class CardType extends AbstractCardType {</span>
+<span class="fc" id="L44">public class CardType extends AbstractCardType {</span>
 
     /**
      * Serial version UID
@@ -69,29 +76,29 @@ import javax.validation.constraints.NotNull;
      * @return the title
      */
     public String getTitle() {
-<span class="fc" id="L72">        return title;</span>
+<span class="fc" id="L79">        return title;</span>
     }
 
     /**
      * @param title the title
      */
     public void setTitle(String title) {
-<span class="fc" id="L79">        this.title = title;</span>
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L86">        this.title = title;</span>
+<span class="fc" id="L87">    }</span>
 
     /**
      * @return the purpose
      */
     public Block getPurpose() {
-<span class="fc" id="L86">        return purpose;</span>
+<span class="fc" id="L93">        return purpose;</span>
     }
 
     /**
      * @param purpose the purpose
      */
     public void setPurpose(Block purpose) {
-<span class="fc" id="L93">        this.purpose = purpose;</span>
-<span class="fc" id="L94">    }</span>
+<span class="fc" id="L100">        this.purpose = purpose;</span>
+<span class="fc" id="L101">    }</span>
 
     /**
      * get the id of the purpose. To be sent to client.
@@ -99,10 +106,10 @@ import javax.validation.constraints.NotNull;
      * @return the id of the purpose
      */
     public Long getPurposeId() {
-<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (purpose != null) {</span>
-<span class="fc" id="L103">            return purpose.getId();</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (purpose != null) {</span>
+<span class="fc" id="L110">            return purpose.getId();</span>
         } else {
-<span class="fc" id="L105">            return purposeId;</span>
+<span class="fc" id="L112">            return purposeId;</span>
         }
     }
 
@@ -112,17 +119,17 @@ import javax.validation.constraints.NotNull;
      * @param purposeId the id of the purpose
      */
     public void setPurposeId(Long purposeId) {
-<span class="fc" id="L115">        this.purposeId = purposeId;</span>
-<span class="fc" id="L116">    }</span>
+<span class="fc" id="L122">        this.purposeId = purposeId;</span>
+<span class="fc" id="L123">    }</span>
 
     @Override
     public CardType resolve() {
-<span class="nc" id="L120">        return this;</span>
+<span class="nc" id="L127">        return this;</span>
     }
 
     @Override
     public List&lt;AbstractCardType&gt; expand() {
-<span class="fc" id="L125">        return List.of(this);</span>
+<span class="fc" id="L132">        return List.of(this);</span>
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -133,31 +140,31 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="fc" id="L136">        super.merge(other);</span>
+<span class="fc" id="L143">        super.merge(other);</span>
 
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">        if (other instanceof CardType) {</span>
-<span class="fc" id="L139">            CardType o = (CardType) other;</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        if (other instanceof CardType) {</span>
+<span class="fc" id="L146">            CardType o = (CardType) other;</span>
             // this.setUniqueId(o.getUniqueId());
-<span class="fc" id="L141">            this.setTitle(o.getTitle());</span>
-<span class="fc" id="L142">        } else {</span>
-<span class="nc" id="L143">            throw new ColabMergeException(this, other);</span>
+<span class="fc" id="L148">            this.setTitle(o.getTitle());</span>
+<span class="fc" id="L149">        } else {</span>
+<span class="nc" id="L150">            throw new ColabMergeException(this, other);</span>
         }
-<span class="fc" id="L145">    }</span>
+<span class="fc" id="L152">    }</span>
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-<span class="fc bfc" id="L150" title="All 2 branches covered.">        if (this.getProject() != null) {</span>
-<span class="fc" id="L151">            return new Conditions.IsCurrentUserInternToProject(this.getProject());</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">        if (this.getProject() != null) {</span>
+<span class="fc" id="L158">            return new Conditions.IsCurrentUserInternToProject(this.getProject());</span>
         } else {
             // only admin can edit global types
-<span class="fc" id="L154">            return Conditions.alwaysFalse;</span>
+<span class="fc" id="L161">            return Conditions.alwaysFalse;</span>
         }
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L160">        return &quot;CardType{&quot; + &quot;id=&quot; + getId() + &quot;, title=&quot; + title</span>
+<span class="fc" id="L167">        return &quot;CardType{&quot; + &quot;id=&quot; + getId() + &quot;, title=&quot; + title</span>
             + &quot;, projectId=&quot; + projectId + &quot;}&quot;;
     }
 

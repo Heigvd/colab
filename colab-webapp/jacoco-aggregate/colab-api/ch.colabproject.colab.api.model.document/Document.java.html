@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
@@ -45,7 +46,7 @@ import javax.persistence.Transient;
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 //FIXME see if is needed or not. It was implemented for test purpose at first
 @NamedQuery(name = &quot;Document.findAll&quot;, query = &quot;SELECT d FROM Document d&quot;)
-<span class="nc" id="L48">public abstract class Document implements ColabEntity, WithWebsocketChannels {</span>
+<span class="nc" id="L49">public abstract class Document implements ColabEntity, WithWebsocketChannels {</span>
 
     private static final long serialVersionUID = 1L;
 
@@ -56,7 +57,7 @@ import javax.persistence.Transient;
      * Document ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = STRUCTURE_SEQUENCE_NAME)
     protected Long id;
 
     /**
@@ -101,21 +102,21 @@ import javax.persistence.Transient;
      */
     @Override
     public Long getId() {
-<span class="nc" id="L104">        return id;</span>
+<span class="nc" id="L105">        return id;</span>
     }
 
     /**
      * @param id the document id
      */
     public void setId(Long id) {
-<span class="nc" id="L111">        this.id = id;</span>
-<span class="nc" id="L112">    }</span>
+<span class="nc" id="L112">        this.id = id;</span>
+<span class="nc" id="L113">    }</span>
 
     /**
      * @return the card content for which this document is the deliverable
      */
     public CardContent getDeliverableCardContent() {
-<span class="nc" id="L118">        return deliverableCardContent;</span>
+<span class="nc" id="L119">        return deliverableCardContent;</span>
     }
 
     /**
@@ -123,8 +124,8 @@ import javax.persistence.Transient;
      *                               set
      */
     public void setDeliverableCardContent(CardContent deliverableCardContent) {
-<span class="nc" id="L126">        this.deliverableCardContent = deliverableCardContent;</span>
-<span class="nc" id="L127">    }</span>
+<span class="nc" id="L127">        this.deliverableCardContent = deliverableCardContent;</span>
+<span class="nc" id="L128">    }</span>
 
     /**
      * get the id of the card content for which this document is the deliverable. To be sent to
@@ -133,10 +134,10 @@ import javax.persistence.Transient;
      * @return the id of the card content
      */
     public Long getDeliverableCardContentId() {
-<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (this.deliverableCardContent != null) {</span>
-<span class="nc" id="L137">            return deliverableCardContent.getId();</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        if (this.deliverableCardContent != null) {</span>
+<span class="nc" id="L138">            return deliverableCardContent.getId();</span>
         } else {
-<span class="nc" id="L139">            return deliverableCardContentId;</span>
+<span class="nc" id="L140">            return deliverableCardContentId;</span>
         }
     }
 
@@ -147,29 +148,29 @@ import javax.persistence.Transient;
      * @param deliverableCardContentId the id of the card contentto set
      */
     public void setDeliverableCardContentId(Long deliverableCardContentId) {
-<span class="nc" id="L150">        this.deliverableCardContentId = deliverableCardContentId;</span>
-<span class="nc" id="L151">    }</span>
+<span class="nc" id="L151">        this.deliverableCardContentId = deliverableCardContentId;</span>
+<span class="nc" id="L152">    }</span>
 
     /**
      * @return True if there is a linked deliverable card content
      */
     public boolean hasDeliverableCardContent() {
-<span class="nc bnc" id="L157" title="All 4 branches missed.">        return deliverableCardContent != null || deliverableCardContentId != null;</span>
+<span class="nc bnc" id="L158" title="All 4 branches missed.">        return deliverableCardContent != null || deliverableCardContentId != null;</span>
     }
 
     /**
      * @return the resource representing this document
      */
     public Resource getResource() {
-<span class="nc" id="L164">        return resource;</span>
+<span class="nc" id="L165">        return resource;</span>
     }
 
     /**
      * @param resource the resource representing this document
      */
     public void setResource(Resource resource) {
-<span class="nc" id="L171">        this.resource = resource;</span>
-<span class="nc" id="L172">    }</span>
+<span class="nc" id="L172">        this.resource = resource;</span>
+<span class="nc" id="L173">    }</span>
 
     /**
      * get the id of resource representing this document. To be sent to client
@@ -177,10 +178,10 @@ import javax.persistence.Transient;
      * @return the id of the resource representing this document
      */
     public Long getResourceId() {
-<span class="nc bnc" id="L180" title="All 2 branches missed.">        if (this.resource != null) {</span>
-<span class="nc" id="L181">            return resource.getId();</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (this.resource != null) {</span>
+<span class="nc" id="L182">            return resource.getId();</span>
         } else {
-<span class="nc" id="L183">            return resourceId;</span>
+<span class="nc" id="L184">            return resourceId;</span>
         }
     }
 
@@ -190,14 +191,14 @@ import javax.persistence.Transient;
      * @param resourceId the id of the resource representing this document
      */
     public void setResourceId(Long resourceId) {
-<span class="nc" id="L193">        this.resourceId = resourceId;</span>
-<span class="nc" id="L194">    }</span>
+<span class="nc" id="L194">        this.resourceId = resourceId;</span>
+<span class="nc" id="L195">    }</span>
 
     /**
      * @return True if there is a linked resource
      */
     public boolean hasResource() {
-<span class="nc bnc" id="L200" title="All 4 branches missed.">        return resource != null || resourceId != null;</span>
+<span class="nc bnc" id="L201" title="All 4 branches missed.">        return resource != null || resourceId != null;</span>
     }
 
     /**
@@ -206,15 +207,15 @@ import javax.persistence.Transient;
      * @return block owner
      */
     public Project getProject() {
-<span class="nc bnc" id="L209" title="All 2 branches missed.">        if (this.deliverableCardContent != null) {</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (this.deliverableCardContent != null) {</span>
             // The document is the deliverable of a card content
-<span class="nc" id="L211">            return this.deliverableCardContent.getProject();</span>
-<span class="nc bnc" id="L212" title="All 2 branches missed.">        } else if (this.resource != null) {</span>
+<span class="nc" id="L212">            return this.deliverableCardContent.getProject();</span>
+<span class="nc bnc" id="L213" title="All 2 branches missed.">        } else if (this.resource != null) {</span>
             // The document is a resource
-<span class="nc" id="L214">            return this.resource.getProject();</span>
+<span class="nc" id="L215">            return this.resource.getProject();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L217">            return null;</span>
+<span class="nc" id="L218">            return null;</span>
         }
     }
 
@@ -225,7 +226,7 @@ import javax.persistence.Transient;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L228">        return trackingData;</span>
+<span class="nc" id="L229">        return trackingData;</span>
     }
 
     /**
@@ -235,71 +236,71 @@ import javax.persistence.Transient;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L238">        this.trackingData = trackingData;</span>
-<span class="nc" id="L239">    }</span>
+<span class="nc" id="L239">        this.trackingData = trackingData;</span>
+<span class="nc" id="L240">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L246" title="All 2 branches missed.">        if (!(other instanceof Document)) {</span>
-<span class="nc" id="L247">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">        if (!(other instanceof Document)) {</span>
+<span class="nc" id="L248">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L249">    }</span>
+<span class="nc" id="L250">    }</span>
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc bnc" id="L254" title="All 2 branches missed.">        if (this.deliverableCardContent != null) {</span>
+<span class="nc bnc" id="L255" title="All 2 branches missed.">        if (this.deliverableCardContent != null) {</span>
             // The document is the deliverable of a card content
-<span class="nc" id="L256">            return new Conditions.HasCardReadRight(this.deliverableCardContent);</span>
-<span class="nc bnc" id="L257" title="All 2 branches missed.">        } else if (this.resource != null) {</span>
+<span class="nc" id="L257">            return new Conditions.HasCardReadRight(this.deliverableCardContent);</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">        } else if (this.resource != null) {</span>
             // The document is a resource
-<span class="nc" id="L259">            return this.resource.getReadCondition();</span>
+<span class="nc" id="L260">            return this.resource.getReadCondition();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L262">            return Conditions.defaultForOrphan;</span>
+<span class="nc" id="L263">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc bnc" id="L268" title="All 2 branches missed.">        if (this.deliverableCardContent != null) {</span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">        if (this.deliverableCardContent != null) {</span>
             // The document is the deliverable of a card content
-<span class="nc" id="L270">            return this.deliverableCardContent.getUpdateCondition();</span>
-<span class="nc bnc" id="L271" title="All 2 branches missed.">        } else if (this.resource != null) {</span>
+<span class="nc" id="L271">            return this.deliverableCardContent.getUpdateCondition();</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">        } else if (this.resource != null) {</span>
             // The document is a resource
-<span class="nc" id="L273">            return this.resource.getUpdateCondition();</span>
+<span class="nc" id="L274">            return this.resource.getUpdateCondition();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L276">            return Conditions.defaultForOrphan;</span>
+<span class="nc" id="L277">            return Conditions.defaultForOrphan;</span>
         }
     }
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L282" title="All 2 branches missed.">        if (this.deliverableCardContent != null) {</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">        if (this.deliverableCardContent != null) {</span>
             // The document is the deliverable of a card content
-<span class="nc" id="L284">            return this.deliverableCardContent.getChannels();</span>
-<span class="nc bnc" id="L285" title="All 2 branches missed.">        } else if (this.resource != null) {</span>
+<span class="nc" id="L285">            return this.deliverableCardContent.getChannels();</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">        } else if (this.resource != null) {</span>
             // The document is a resource
-<span class="nc" id="L287">            return this.resource.getChannels();</span>
+<span class="nc" id="L288">            return this.resource.getChannels();</span>
         } else {
             // such an orphan shouldn't exist...
-<span class="nc" id="L290">            return Set.of();</span>
+<span class="nc" id="L291">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L296">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L297">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L302">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L303">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
@@ -309,7 +310,7 @@ import javax.persistence.Transient;
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-<span class="nc" id="L312">        return &quot;id=&quot; + id;</span>
+<span class="nc" id="L313">        return &quot;id=&quot; + id;</span>
     }
 
 }

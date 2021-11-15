@@ -71,7 +71,7 @@
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          logger.debug(<span class="jxr_string">"create document {}"</span>, document);
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          <strong class="jxr_keyword">if</strong> (document.getDeliverableCardContentId() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L66" href="#L66">66</a>              <a name="CardContent" href="../../../../../ch/colabproject/colab/api/model/card/CardContent.html#CardContent">CardContent</a> cardContent = cardContentDao
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>              CardContent cardContent = cardContentDao
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>                      .getCardContent(document.getDeliverableCardContentId());
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>              <strong class="jxr_keyword">if</strong> (cardContent == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>                  <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
@@ -95,7 +95,7 @@
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>  
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          <a name="Document" href="../../../../../ch/colabproject/colab/api/model/document/Document.html#Document">Document</a> document = documentDao.findDocument(documentId);
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>          <a name="CardContent" href="../../../../../ch/colabproject/colab/api/model/card/CardContent.html#CardContent">CardContent</a> cardContent = document.getDeliverableCardContent();
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>          CardContent cardContent = document.getDeliverableCardContent();
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          <strong class="jxr_keyword">if</strong> (cardContent != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>              cardContent.setDeliverable(<strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>          }

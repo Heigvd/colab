@@ -11,7 +11,9 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
@@ -20,7 +22,12 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
-<span class="nc" id="L23">public class CardTypeRef extends AbstractCardType {</span>
+@Table(
+    indexes = {
+        @Index(columnList = &quot;target_id&quot;),
+    }
+)
+<span class="nc" id="L30">public class CardTypeRef extends AbstractCardType {</span>
 
     /**
      * Serial version UID
@@ -52,15 +59,15 @@ import javax.persistence.Transient;
      * @return the referenced type
      */
     public AbstractCardType getTarget() {
-<span class="nc" id="L55">        return this.target;</span>
+<span class="nc" id="L62">        return this.target;</span>
     }
 
     /**
      * @param target the card type (or card type reference) this reference aims at
      */
     public void setTarget(AbstractCardType target) {
-<span class="nc" id="L62">        this.target = target;</span>
-<span class="nc" id="L63">    }</span>
+<span class="nc" id="L69">        this.target = target;</span>
+<span class="nc" id="L70">    }</span>
 
     /**
      * get the id of the card type (or card type reference) this reference aims at. To be sent to client
@@ -68,10 +75,10 @@ import javax.persistence.Transient;
      * @return id of the abstractCardType or null
      */
     public Long getTargetId() {
-<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (this.target != null) {</span>
-<span class="nc" id="L72">            return this.target.getId();</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (this.target != null) {</span>
+<span class="nc" id="L79">            return this.target.getId();</span>
         } else {
-<span class="nc" id="L74">            return targetId;</span>
+<span class="nc" id="L81">            return targetId;</span>
         }
     }
 
@@ -81,8 +88,8 @@ import javax.persistence.Transient;
      * @param id the id of the abstractCardType
      */
     public void setTargetId(Long id) {
-<span class="nc" id="L84">        this.targetId = id;</span>
-<span class="nc" id="L85">    }</span>
+<span class="nc" id="L91">        this.targetId = id;</span>
+<span class="nc" id="L92">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -94,29 +101,29 @@ import javax.persistence.Transient;
      */
     @Override
     public CardType resolve() {
-<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (this.target instanceof CardType) {</span>
-<span class="nc" id="L98">            return (CardType) this.target;</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">        } else if (this.target instanceof CardTypeRef) {</span>
-<span class="nc" id="L100">            return ((CardTypeRef) target).resolve();</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (this.target instanceof CardType) {</span>
+<span class="nc" id="L105">            return (CardType) this.target;</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        } else if (this.target instanceof CardTypeRef) {</span>
+<span class="nc" id="L107">            return ((CardTypeRef) target).resolve();</span>
         }
-<span class="nc" id="L102">        return null;</span>
+<span class="nc" id="L109">        return null;</span>
     }
 
     @Override
     public List&lt;AbstractCardType&gt; expand() {
-<span class="nc" id="L107">        List&lt;AbstractCardType&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L114">        List&lt;AbstractCardType&gt; list = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L109">        list.add(this);</span>
-<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (this.target != null) {</span>
-<span class="nc" id="L111">            list.addAll(this.target.expand());</span>
+<span class="nc" id="L116">        list.add(this);</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (this.target != null) {</span>
+<span class="nc" id="L118">            list.addAll(this.target.expand());</span>
         }
-<span class="nc" id="L113">        return list;</span>
+<span class="nc" id="L120">        return list;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L118">        return &quot;CardTypeRef{&quot;</span>
-<span class="nc" id="L119">            + &quot;id=&quot; + getId()</span>
+<span class="nc" id="L125">        return &quot;CardTypeRef{&quot;</span>
+<span class="nc" id="L126">            + &quot;id=&quot; + getId()</span>
             + &quot;, targetId=&quot; + targetId + '}';
     }
 }

@@ -107,7 +107,7 @@
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L100" href="#L100">100</a> <em class="jxr_javadoccomment">     * @return the brand new link</em>
 <a class="jxr_linenumber" name="L101" href="#L101">101</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L102" href="#L102">102</a>     <strong class="jxr_keyword">public</strong> <a name="StickyNoteLink" href="../../../../../ch/colabproject/colab/api/model/link/StickyNoteLink.html#StickyNoteLink">StickyNoteLink</a> createStickyNoteLink(<a name="StickyNoteLink" href="../../../../../ch/colabproject/colab/api/model/link/StickyNoteLink.html#StickyNoteLink">StickyNoteLink</a> link) {
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     <strong class="jxr_keyword">public</strong> StickyNoteLink createStickyNoteLink(StickyNoteLink link) {
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         logger.debug(<span class="jxr_string">"create link {}"</span>, link);
 <a class="jxr_linenumber" name="L104" href="#L104">104</a> 
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>         <a name="StickyNoteSourceable" href="../../../../../ch/colabproject/colab/api/model/link/StickyNoteSourceable.html#StickyNoteSourceable">StickyNoteSourceable</a> sourceObject = findSourceObject(link);
@@ -115,7 +115,7 @@
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>         }
 <a class="jxr_linenumber" name="L109" href="#L109">109</a> 
-<a class="jxr_linenumber" name="L110" href="#L110">110</a>         <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> toCard = cardDao.getCard(link.getDestinationCardId());
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>         Card toCard = cardDao.getCard(link.getDestinationCardId());
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         <strong class="jxr_keyword">if</strong> (toCard == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>         }
@@ -126,7 +126,7 @@
 <a class="jxr_linenumber" name="L118" href="#L118">118</a> 
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>         link.setSrc(sourceObject);
 <a class="jxr_linenumber" name="L120" href="#L120">120</a>         link.setDestinationCard(toCard);
-<a class="jxr_linenumber" name="L121" href="#L121">121</a>         <a name="StickyNoteLink" href="../../../../../ch/colabproject/colab/api/model/link/StickyNoteLink.html#StickyNoteLink">StickyNoteLink</a> persistedLink = linkDao.persistStickyNoteLink(link);
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>         StickyNoteLink persistedLink = linkDao.persistStickyNoteLink(link);
 <a class="jxr_linenumber" name="L122" href="#L122">122</a> 
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>         sourceObject.getStickyNoteLinksAsSrc().add(persistedLink);
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>         toCard.getStickyNoteLinksAsDest().add(persistedLink);
@@ -143,7 +143,7 @@
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         logger.debug(<span class="jxr_string">"delete link #{}"</span>, linkId);
 <a class="jxr_linenumber" name="L136" href="#L136">136</a> 
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         <em class="jxr_comment">// firstly fetch all objects and so ensure that they exist</em>
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>         <a name="StickyNoteLink" href="../../../../../ch/colabproject/colab/api/model/link/StickyNoteLink.html#StickyNoteLink">StickyNoteLink</a> link = linkDao.findStickyNoteLink(linkId);
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         StickyNoteLink link = linkDao.findStickyNoteLink(linkId);
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>         <strong class="jxr_keyword">if</strong> (link == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>             <em class="jxr_comment">// or just return. see what is best</em>
@@ -154,7 +154,7 @@
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>         }
 <a class="jxr_linenumber" name="L148" href="#L148">148</a> 
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>         <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> toCard = link.getDestinationCard();
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>         Card toCard = link.getDestinationCard();
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>         <strong class="jxr_keyword">if</strong> (toCard == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>         }
@@ -177,7 +177,7 @@
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>         logger.debug(<span class="jxr_string">"change source of link #{} with {} #{}"</span>, linkId, newSrcType, newSrcId);
 <a class="jxr_linenumber" name="L170" href="#L170">170</a> 
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>         <em class="jxr_comment">// firstly fetch all objects and so ensure that they exist</em>
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>         <a name="StickyNoteLink" href="../../../../../ch/colabproject/colab/api/model/link/StickyNoteLink.html#StickyNoteLink">StickyNoteLink</a> link = linkDao.findStickyNoteLink(linkId);
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>         StickyNoteLink link = linkDao.findStickyNoteLink(linkId);
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>         <strong class="jxr_keyword">if</strong> (link == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>         }
@@ -209,17 +209,17 @@
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>         logger.debug(<span class="jxr_string">"change destination of link #{} with #{}"</span>, linkId, newDestId);
 <a class="jxr_linenumber" name="L202" href="#L202">202</a> 
 <a class="jxr_linenumber" name="L203" href="#L203">203</a>         <em class="jxr_comment">// firstly fetch all objects and so ensure that they exist</em>
-<a class="jxr_linenumber" name="L204" href="#L204">204</a>         <a name="StickyNoteLink" href="../../../../../ch/colabproject/colab/api/model/link/StickyNoteLink.html#StickyNoteLink">StickyNoteLink</a> link = linkDao.findStickyNoteLink(linkId);
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>         StickyNoteLink link = linkDao.findStickyNoteLink(linkId);
 <a class="jxr_linenumber" name="L205" href="#L205">205</a>         <strong class="jxr_keyword">if</strong> (link == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L206" href="#L206">206</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L207" href="#L207">207</a>         }
 <a class="jxr_linenumber" name="L208" href="#L208">208</a> 
-<a class="jxr_linenumber" name="L209" href="#L209">209</a>         <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> oldDest = cardDao.getCard(link.getDestinationCardId());
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>         Card oldDest = cardDao.getCard(link.getDestinationCardId());
 <a class="jxr_linenumber" name="L210" href="#L210">210</a>         <strong class="jxr_keyword">if</strong> (oldDest == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L211" href="#L211">211</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
 <a class="jxr_linenumber" name="L212" href="#L212">212</a>         }
 <a class="jxr_linenumber" name="L213" href="#L213">213</a> 
-<a class="jxr_linenumber" name="L214" href="#L214">214</a>         <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> newDestination = cardDao.getCard(newDestId);
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>         Card newDestination = cardDao.getCard(newDestId);
 <a class="jxr_linenumber" name="L215" href="#L215">215</a>         <strong class="jxr_keyword">if</strong> (newDestination == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L216" href="#L216">216</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>         }
@@ -278,7 +278,7 @@
 <a class="jxr_linenumber" name="L270" href="#L270">270</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L271" href="#L271">271</a> <em class="jxr_javadoccomment">     * @return the source object</em>
 <a class="jxr_linenumber" name="L272" href="#L272">272</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>     <strong class="jxr_keyword">private</strong> <a name="StickyNoteSourceable" href="../../../../../ch/colabproject/colab/api/model/link/StickyNoteSourceable.html#StickyNoteSourceable">StickyNoteSourceable</a> findSourceObject(<a name="StickyNoteLink" href="../../../../../ch/colabproject/colab/api/model/link/StickyNoteLink.html#StickyNoteLink">StickyNoteLink</a> link) {
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>     <strong class="jxr_keyword">private</strong> <a name="StickyNoteSourceable" href="../../../../../ch/colabproject/colab/api/model/link/StickyNoteSourceable.html#StickyNoteSourceable">StickyNoteSourceable</a> findSourceObject(StickyNoteLink link) {
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>         <a name="StickyNoteSourceable" href="../../../../../ch/colabproject/colab/api/model/link/StickyNoteSourceable.html#StickyNoteSourceable">StickyNoteSourceable</a> sourceObject;
 <a class="jxr_linenumber" name="L275" href="#L275">275</a> 
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>         SrcType srcType = inferSrcType(link);
@@ -321,7 +321,7 @@
 <a class="jxr_linenumber" name="L313" href="#L313">313</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L314" href="#L314">314</a> <em class="jxr_javadoccomment">     * @return the source type used</em>
 <a class="jxr_linenumber" name="L315" href="#L315">315</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>     <strong class="jxr_keyword">private</strong> SrcType inferSrcType(<a name="StickyNoteLink" href="../../../../../ch/colabproject/colab/api/model/link/StickyNoteLink.html#StickyNoteLink">StickyNoteLink</a> link) {
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>     <strong class="jxr_keyword">private</strong> SrcType inferSrcType(StickyNoteLink link) {
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>         SrcType effectiveSrcType = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L318" href="#L318">318</a> 
 <a class="jxr_linenumber" name="L319" href="#L319">319</a>         <strong class="jxr_keyword">if</strong> (link.isSrcCard()) {

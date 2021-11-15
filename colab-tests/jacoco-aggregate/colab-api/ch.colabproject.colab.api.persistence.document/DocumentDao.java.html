@@ -86,8 +86,7 @@ import org.slf4j.LoggerFactory;
     public Document persistDocument(Document document) {
 <span class="fc" id="L87">        logger.debug(&quot;persist document {}&quot;, document);</span>
 <span class="fc" id="L88">        em.persist(document);</span>
-<span class="fc" id="L89">        em.flush();</span>
-<span class="fc" id="L90">        return document;</span>
+<span class="fc" id="L89">        return document;</span>
     }
 
     /**
@@ -98,11 +97,11 @@ import org.slf4j.LoggerFactory;
      * @return just deleted document
      */
     public Document deleteDocument(Long id) {
-<span class="fc" id="L101">        logger.debug(&quot;delete document #{}&quot;, id);</span>
+<span class="fc" id="L100">        logger.debug(&quot;delete document #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="fc" id="L103">        Document document = this.findDocument(id);</span>
-<span class="fc" id="L104">        em.remove(document);</span>
-<span class="fc" id="L105">        return document;</span>
+<span class="fc" id="L102">        Document document = this.findDocument(id);</span>
+<span class="fc" id="L103">        em.remove(document);</span>
+<span class="fc" id="L104">        return document;</span>
     }
 
 }

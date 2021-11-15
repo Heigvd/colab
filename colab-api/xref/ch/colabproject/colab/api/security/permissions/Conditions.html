@@ -400,14 +400,14 @@
 <a class="jxr_linenumber" name="L392" href="#L392">392</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> IsCurrentUserMemberOfProject <strong class="jxr_keyword">extends</strong> Condition {
 <a class="jxr_linenumber" name="L393" href="#L393">393</a> 
 <a class="jxr_linenumber" name="L394" href="#L394">394</a>         <em class="jxr_javadoccomment">/** the project */</em>
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project;
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Project project;
 <a class="jxr_linenumber" name="L396" href="#L396">396</a> 
 <a class="jxr_linenumber" name="L397" href="#L397">397</a>         <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L398" href="#L398">398</a> <em class="jxr_javadoccomment">         * Create a "Is current user member of this project" statement</em>
 <a class="jxr_linenumber" name="L399" href="#L399">399</a> <em class="jxr_javadoccomment">         *</em>
 <a class="jxr_linenumber" name="L400" href="#L400">400</a> <em class="jxr_javadoccomment">         * @param project the project to check if the current user is member of</em>
 <a class="jxr_linenumber" name="L401" href="#L401">401</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>         <strong class="jxr_keyword">public</strong> IsCurrentUserMemberOfProject(<a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project) {
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>         <strong class="jxr_keyword">public</strong> IsCurrentUserMemberOfProject(Project project) {
 <a class="jxr_linenumber" name="L403" href="#L403">403</a>             <strong class="jxr_keyword">this</strong>.project = project;
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>         }
 <a class="jxr_linenumber" name="L405" href="#L405">405</a> 
@@ -454,14 +454,14 @@
 <a class="jxr_linenumber" name="L446" href="#L446">446</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> IsCurrentUserOwnerOfProject <strong class="jxr_keyword">extends</strong> Condition {
 <a class="jxr_linenumber" name="L447" href="#L447">447</a> 
 <a class="jxr_linenumber" name="L448" href="#L448">448</a>         <em class="jxr_javadoccomment">/** the project */</em>
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project;
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Project project;
 <a class="jxr_linenumber" name="L450" href="#L450">450</a> 
 <a class="jxr_linenumber" name="L451" href="#L451">451</a>         <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L452" href="#L452">452</a> <em class="jxr_javadoccomment">         * Create a "Is current user owner of this project" statement</em>
 <a class="jxr_linenumber" name="L453" href="#L453">453</a> <em class="jxr_javadoccomment">         *</em>
 <a class="jxr_linenumber" name="L454" href="#L454">454</a> <em class="jxr_javadoccomment">         * @param project the project to check if the current user is member of</em>
 <a class="jxr_linenumber" name="L455" href="#L455">455</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L456" href="#L456">456</a>         <strong class="jxr_keyword">public</strong> IsCurrentUserOwnerOfProject(<a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project) {
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>         <strong class="jxr_keyword">public</strong> IsCurrentUserOwnerOfProject(Project project) {
 <a class="jxr_linenumber" name="L457" href="#L457">457</a>             <strong class="jxr_keyword">this</strong>.project = project;
 <a class="jxr_linenumber" name="L458" href="#L458">458</a>         }
 <a class="jxr_linenumber" name="L459" href="#L459">459</a> 
@@ -508,14 +508,14 @@
 <a class="jxr_linenumber" name="L500" href="#L500">500</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> IsCurrentUserLeaderOfProject <strong class="jxr_keyword">extends</strong> Condition {
 <a class="jxr_linenumber" name="L501" href="#L501">501</a> 
 <a class="jxr_linenumber" name="L502" href="#L502">502</a>         <em class="jxr_javadoccomment">/** the project */</em>
-<a class="jxr_linenumber" name="L503" href="#L503">503</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project;
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Project project;
 <a class="jxr_linenumber" name="L504" href="#L504">504</a> 
 <a class="jxr_linenumber" name="L505" href="#L505">505</a>         <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L506" href="#L506">506</a> <em class="jxr_javadoccomment">         * Create a "Is current user leader of this project" statement</em>
 <a class="jxr_linenumber" name="L507" href="#L507">507</a> <em class="jxr_javadoccomment">         *</em>
 <a class="jxr_linenumber" name="L508" href="#L508">508</a> <em class="jxr_javadoccomment">         * @param project the project to check if the current user is member of</em>
 <a class="jxr_linenumber" name="L509" href="#L509">509</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L510" href="#L510">510</a>         <strong class="jxr_keyword">public</strong> IsCurrentUserLeaderOfProject(<a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project) {
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>         <strong class="jxr_keyword">public</strong> IsCurrentUserLeaderOfProject(Project project) {
 <a class="jxr_linenumber" name="L511" href="#L511">511</a>             <strong class="jxr_keyword">this</strong>.project = project;
 <a class="jxr_linenumber" name="L512" href="#L512">512</a>         }
 <a class="jxr_linenumber" name="L513" href="#L513">513</a> 
@@ -562,14 +562,14 @@
 <a class="jxr_linenumber" name="L554" href="#L554">554</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> IsCurrentUserInternToProject <strong class="jxr_keyword">extends</strong> Condition {
 <a class="jxr_linenumber" name="L555" href="#L555">555</a> 
 <a class="jxr_linenumber" name="L556" href="#L556">556</a>         <em class="jxr_javadoccomment">/** the project */</em>
-<a class="jxr_linenumber" name="L557" href="#L557">557</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project;
+<a class="jxr_linenumber" name="L557" href="#L557">557</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Project project;
 <a class="jxr_linenumber" name="L558" href="#L558">558</a> 
 <a class="jxr_linenumber" name="L559" href="#L559">559</a>         <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L560" href="#L560">560</a> <em class="jxr_javadoccomment">         * Create a "Is current user leader of this project" statement</em>
 <a class="jxr_linenumber" name="L561" href="#L561">561</a> <em class="jxr_javadoccomment">         *</em>
 <a class="jxr_linenumber" name="L562" href="#L562">562</a> <em class="jxr_javadoccomment">         * @param project the project to check if the current user is member of</em>
 <a class="jxr_linenumber" name="L563" href="#L563">563</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L564" href="#L564">564</a>         <strong class="jxr_keyword">public</strong> IsCurrentUserInternToProject(<a name="Project" href="../../../../../../ch/colabproject/colab/api/model/project/Project.html#Project">Project</a> project) {
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>         <strong class="jxr_keyword">public</strong> IsCurrentUserInternToProject(Project project) {
 <a class="jxr_linenumber" name="L565" href="#L565">565</a>             <strong class="jxr_keyword">this</strong>.project = project;
 <a class="jxr_linenumber" name="L566" href="#L566">566</a>         }
 <a class="jxr_linenumber" name="L567" href="#L567">567</a> 
@@ -700,14 +700,14 @@
 <a class="jxr_linenumber" name="L692" href="#L692">692</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> HasCardWriteRight <strong class="jxr_keyword">extends</strong> Condition {
 <a class="jxr_linenumber" name="L693" href="#L693">693</a> 
 <a class="jxr_linenumber" name="L694" href="#L694">694</a>         <em class="jxr_javadoccomment">/** The card * */</em>
-<a class="jxr_linenumber" name="L695" href="#L695">695</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card;
+<a class="jxr_linenumber" name="L695" href="#L695">695</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Card card;
 <a class="jxr_linenumber" name="L696" href="#L696">696</a> 
 <a class="jxr_linenumber" name="L697" href="#L697">697</a>         <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L698" href="#L698">698</a> <em class="jxr_javadoccomment">         * Create a has write access statement</em>
 <a class="jxr_linenumber" name="L699" href="#L699">699</a> <em class="jxr_javadoccomment">         *</em>
 <a class="jxr_linenumber" name="L700" href="#L700">700</a> <em class="jxr_javadoccomment">         * @param card the card</em>
 <a class="jxr_linenumber" name="L701" href="#L701">701</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L702" href="#L702">702</a>         <strong class="jxr_keyword">public</strong> HasCardWriteRight(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card) {
+<a class="jxr_linenumber" name="L702" href="#L702">702</a>         <strong class="jxr_keyword">public</strong> HasCardWriteRight(Card card) {
 <a class="jxr_linenumber" name="L703" href="#L703">703</a>             <strong class="jxr_keyword">this</strong>.card = card;
 <a class="jxr_linenumber" name="L704" href="#L704">704</a>         }
 <a class="jxr_linenumber" name="L705" href="#L705">705</a> 
@@ -754,14 +754,14 @@
 <a class="jxr_linenumber" name="L746" href="#L746">746</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> HasCardReadRight <strong class="jxr_keyword">extends</strong> Condition {
 <a class="jxr_linenumber" name="L747" href="#L747">747</a> 
 <a class="jxr_linenumber" name="L748" href="#L748">748</a>         <em class="jxr_javadoccomment">/** The card * */</em>
-<a class="jxr_linenumber" name="L749" href="#L749">749</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card;
+<a class="jxr_linenumber" name="L749" href="#L749">749</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Card card;
 <a class="jxr_linenumber" name="L750" href="#L750">750</a> 
 <a class="jxr_linenumber" name="L751" href="#L751">751</a>         <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L752" href="#L752">752</a> <em class="jxr_javadoccomment">         * Create a has read access statement</em>
 <a class="jxr_linenumber" name="L753" href="#L753">753</a> <em class="jxr_javadoccomment">         *</em>
 <a class="jxr_linenumber" name="L754" href="#L754">754</a> <em class="jxr_javadoccomment">         * @param card the card</em>
 <a class="jxr_linenumber" name="L755" href="#L755">755</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L756" href="#L756">756</a>         <strong class="jxr_keyword">public</strong> HasCardReadRight(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card) {
+<a class="jxr_linenumber" name="L756" href="#L756">756</a>         <strong class="jxr_keyword">public</strong> HasCardReadRight(Card card) {
 <a class="jxr_linenumber" name="L757" href="#L757">757</a>             <strong class="jxr_keyword">this</strong>.card = card;
 <a class="jxr_linenumber" name="L758" href="#L758">758</a>         }
 <a class="jxr_linenumber" name="L759" href="#L759">759</a> 
@@ -770,7 +770,7 @@
 <a class="jxr_linenumber" name="L762" href="#L762">762</a> <em class="jxr_javadoccomment">         *</em>
 <a class="jxr_linenumber" name="L763" href="#L763">763</a> <em class="jxr_javadoccomment">         * @param cardContent a card content</em>
 <a class="jxr_linenumber" name="L764" href="#L764">764</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L765" href="#L765">765</a>         <strong class="jxr_keyword">public</strong> HasCardReadRight(<a name="CardContent" href="../../../../../../ch/colabproject/colab/api/model/card/CardContent.html#CardContent">CardContent</a> cardContent) {
+<a class="jxr_linenumber" name="L765" href="#L765">765</a>         <strong class="jxr_keyword">public</strong> HasCardReadRight(CardContent cardContent) {
 <a class="jxr_linenumber" name="L766" href="#L766">766</a>             <strong class="jxr_keyword">this</strong>.card = cardContent.getCard();
 <a class="jxr_linenumber" name="L767" href="#L767">767</a>         }
 <a class="jxr_linenumber" name="L768" href="#L768">768</a> 

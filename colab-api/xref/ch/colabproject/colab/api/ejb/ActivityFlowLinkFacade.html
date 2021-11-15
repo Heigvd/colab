@@ -64,7 +64,7 @@
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  <em class="jxr_javadoccomment">     * @return the brand new link</em>
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">public</strong> <a name="ActivityFlowLink" href="../../../../../ch/colabproject/colab/api/model/link/ActivityFlowLink.html#ActivityFlowLink">ActivityFlowLink</a> createActivityFlowLink(<a name="ActivityFlowLink" href="../../../../../ch/colabproject/colab/api/model/link/ActivityFlowLink.html#ActivityFlowLink">ActivityFlowLink</a> link) {
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      <strong class="jxr_keyword">public</strong> ActivityFlowLink createActivityFlowLink(ActivityFlowLink link) {
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>          logger.debug(<span class="jxr_string">"create activity flow link {}"</span>, link);
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          <em class="jxr_comment">// validation</em>
@@ -73,12 +73,12 @@
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>          }
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          <em class="jxr_comment">// fetch all objects and so ensure that they exist</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>          <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> previousCard = cardDao.getCard(link.getPreviousCardId());
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          Card previousCard = cardDao.getCard(link.getPreviousCardId());
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          <strong class="jxr_keyword">if</strong> (previousCard == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>              <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          }
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>          <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> nextCard = cardDao.getCard(link.getNextCardId());
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          Card nextCard = cardDao.getCard(link.getNextCardId());
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          <strong class="jxr_keyword">if</strong> (nextCard == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>              <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          }
@@ -88,7 +88,7 @@
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>              <strong class="jxr_keyword">throw</strong> HttpErrorMessage.badRequest();
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          }
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>  
-<a class="jxr_linenumber" name="L83" href="#L83">83</a>          <a name="ActivityFlowLink" href="../../../../../ch/colabproject/colab/api/model/link/ActivityFlowLink.html#ActivityFlowLink">ActivityFlowLink</a> existingLink = getLink(previousCard, nextCard);
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>          ActivityFlowLink existingLink = getLink(previousCard, nextCard);
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>  
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>          <strong class="jxr_keyword">if</strong> (existingLink != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>              <em class="jxr_comment">// return pre-existing link silently</em>
@@ -99,7 +99,7 @@
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>              link.setPreviousCard(previousCard);
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>              link.setNextCard(nextCard);
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>  
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>              <a name="ActivityFlowLink" href="../../../../../ch/colabproject/colab/api/model/link/ActivityFlowLink.html#ActivityFlowLink">ActivityFlowLink</a> persistedLink = linkDao.persistActivityFlowLink(link);
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>              ActivityFlowLink persistedLink = linkDao.persistActivityFlowLink(link);
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>  
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>              previousCard.getActivityFlowLinksAsPrevious().add(persistedLink);
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>              nextCard.getActivityFlowLinksAsNext().add(persistedLink);
@@ -116,7 +116,7 @@
 <a class="jxr_linenumber" name="L108" href="#L108">108</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L109" href="#L109">109</a> <em class="jxr_javadoccomment">     * @return the link if it exists or null</em>
 <a class="jxr_linenumber" name="L110" href="#L110">110</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L111" href="#L111">111</a>     <strong class="jxr_keyword">private</strong> <a name="ActivityFlowLink" href="../../../../../ch/colabproject/colab/api/model/link/ActivityFlowLink.html#ActivityFlowLink">ActivityFlowLink</a> getLink(<a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> previous, <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> next) {
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>     <strong class="jxr_keyword">private</strong> ActivityFlowLink getLink(Card previous, Card next) {
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>         <em class="jxr_comment">// make sur not to create same link twice</em>
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>         Optional&lt;ActivityFlowLink&gt; find = previous.getActivityFlowLinksAsPrevious().stream()
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>             .filter(l -&gt; l.getNextCard().equals(next))
@@ -137,18 +137,18 @@
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>         logger.debug(<span class="jxr_string">"delete activity flow link #{}"</span>, linkId);
 <a class="jxr_linenumber" name="L130" href="#L130">130</a> 
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         <em class="jxr_comment">// fetch all objects and so ensure that they exist</em>
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <a name="ActivityFlowLink" href="../../../../../ch/colabproject/colab/api/model/link/ActivityFlowLink.html#ActivityFlowLink">ActivityFlowLink</a> link = linkDao.findActivityFlowLink(linkId);
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         ActivityFlowLink link = linkDao.findActivityFlowLink(linkId);
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>         <strong class="jxr_keyword">if</strong> (link == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>             <em class="jxr_comment">// or just return. see what is best</em>
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         }
 <a class="jxr_linenumber" name="L137" href="#L137">137</a> 
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>         <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> previousCard = link.getPreviousCard();
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         Card previousCard = link.getPreviousCard();
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>         <strong class="jxr_keyword">if</strong> (previousCard == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         }
 <a class="jxr_linenumber" name="L142" href="#L142">142</a> 
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>         <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> nextCard = link.getNextCard();
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>         Card nextCard = link.getNextCard();
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>         <strong class="jxr_keyword">if</strong> (nextCard == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>         }
@@ -171,7 +171,7 @@
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>             newPreviousCardId);
 <a class="jxr_linenumber" name="L164" href="#L164">164</a> 
 <a class="jxr_linenumber" name="L165" href="#L165">165</a>         <em class="jxr_comment">// fetch all objects and so ensure that they exist</em>
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>         <a name="ActivityFlowLink" href="../../../../../ch/colabproject/colab/api/model/link/ActivityFlowLink.html#ActivityFlowLink">ActivityFlowLink</a> link = linkDao.findActivityFlowLink(linkId);
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>         ActivityFlowLink link = linkDao.findActivityFlowLink(linkId);
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>         <strong class="jxr_keyword">if</strong> (link == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>         }
@@ -181,17 +181,17 @@
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>         }
 <a class="jxr_linenumber" name="L175" href="#L175">175</a> 
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>         <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> oldPreviousCard = cardDao.getCard(link.getPreviousCardId());
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>         Card oldPreviousCard = cardDao.getCard(link.getPreviousCardId());
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>         <strong class="jxr_keyword">if</strong> (oldPreviousCard == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>         }
 <a class="jxr_linenumber" name="L180" href="#L180">180</a> 
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>         <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> newPreviousCard = cardDao.getCard(newPreviousCardId);
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>         Card newPreviousCard = cardDao.getCard(newPreviousCardId);
 <a class="jxr_linenumber" name="L182" href="#L182">182</a>         <strong class="jxr_keyword">if</strong> (newPreviousCard == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L183" href="#L183">183</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>         }
 <a class="jxr_linenumber" name="L185" href="#L185">185</a> 
-<a class="jxr_linenumber" name="L186" href="#L186">186</a>         <a name="ActivityFlowLink" href="../../../../../ch/colabproject/colab/api/model/link/ActivityFlowLink.html#ActivityFlowLink">ActivityFlowLink</a> existingLink = getLink(newPreviousCard, link.getNextCard());
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>         ActivityFlowLink existingLink = getLink(newPreviousCard, link.getNextCard());
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>         <strong class="jxr_keyword">if</strong> (existingLink != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>             <em class="jxr_comment">// such a link already exists</em>
 <a class="jxr_linenumber" name="L189" href="#L189">189</a>             <em class="jxr_comment">// preserve pre-existing and delete this one</em>
@@ -216,7 +216,7 @@
 <a class="jxr_linenumber" name="L208" href="#L208">208</a>             newNextCardId);
 <a class="jxr_linenumber" name="L209" href="#L209">209</a> 
 <a class="jxr_linenumber" name="L210" href="#L210">210</a>         <em class="jxr_comment">// fetch all objects and so ensure that they exist</em>
-<a class="jxr_linenumber" name="L211" href="#L211">211</a>         <a name="ActivityFlowLink" href="../../../../../ch/colabproject/colab/api/model/link/ActivityFlowLink.html#ActivityFlowLink">ActivityFlowLink</a> link = linkDao.findActivityFlowLink(linkId);
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>         ActivityFlowLink link = linkDao.findActivityFlowLink(linkId);
 <a class="jxr_linenumber" name="L212" href="#L212">212</a>         <strong class="jxr_keyword">if</strong> (link == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>         }
@@ -226,17 +226,17 @@
 <a class="jxr_linenumber" name="L218" href="#L218">218</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
 <a class="jxr_linenumber" name="L219" href="#L219">219</a>         }
 <a class="jxr_linenumber" name="L220" href="#L220">220</a> 
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>         <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> oldNext = cardDao.getCard(link.getNextCardId());
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>         Card oldNext = cardDao.getCard(link.getNextCardId());
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>         <strong class="jxr_keyword">if</strong> (oldNext == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L223" href="#L223">223</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
 <a class="jxr_linenumber" name="L224" href="#L224">224</a>         }
 <a class="jxr_linenumber" name="L225" href="#L225">225</a> 
-<a class="jxr_linenumber" name="L226" href="#L226">226</a>         <a name="Card" href="../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> newNext = cardDao.getCard(newNextCardId);
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>         Card newNext = cardDao.getCard(newNextCardId);
 <a class="jxr_linenumber" name="L227" href="#L227">227</a>         <strong class="jxr_keyword">if</strong> (newNext == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L228" href="#L228">228</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.relatedObjectNotFoundError();
 <a class="jxr_linenumber" name="L229" href="#L229">229</a>         }
 <a class="jxr_linenumber" name="L230" href="#L230">230</a> 
-<a class="jxr_linenumber" name="L231" href="#L231">231</a>         <a name="ActivityFlowLink" href="../../../../../ch/colabproject/colab/api/model/link/ActivityFlowLink.html#ActivityFlowLink">ActivityFlowLink</a> existingLink = getLink(link.getPreviousCard(), newNext);
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>         ActivityFlowLink existingLink = getLink(link.getPreviousCard(), newNext);
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>         <strong class="jxr_keyword">if</strong> (existingLink != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L233" href="#L233">233</a>             <em class="jxr_comment">// such a link already exists</em>
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>             <em class="jxr_comment">// preserve pre-existing and delete this one</em>

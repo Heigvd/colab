@@ -72,7 +72,7 @@
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      @POST
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      @Path(<span class="jxr_string">"Invite/{projectId: [0-9]+}/{email}"</span>)
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> <a name="TeamMember" href="../../../../../ch/colabproject/colab/api/model/team/TeamMember.html#TeamMember">TeamMember</a> inviteSomeone(@PathParam(<span class="jxr_string">"projectId"</span>) Long projectId,
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> TeamMember inviteSomeone(@PathParam(<span class="jxr_string">"projectId"</span>) Long projectId,
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          @PathParam(<span class="jxr_string">"email"</span>) String email) {
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          logger.debug(<span class="jxr_string">"Invite {} to joint project #{}"</span>, email, projectId);
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">return</strong> teamFacade.invite(projectId, email);
@@ -87,7 +87,7 @@
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>      @GET
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>      @Path(<span class="jxr_string">"member/{memberId: [0-9]+}"</span>)
-<a class="jxr_linenumber" name="L82" href="#L82">82</a>      <strong class="jxr_keyword">public</strong> <a name="TeamMember" href="../../../../../ch/colabproject/colab/api/model/team/TeamMember.html#TeamMember">TeamMember</a> getTeamMember(@PathParam(<span class="jxr_string">"memberId"</span>) Long memberId) {
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>      <strong class="jxr_keyword">public</strong> TeamMember getTeamMember(@PathParam(<span class="jxr_string">"memberId"</span>) Long memberId) {
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          logger.debug(<span class="jxr_string">"Get member #{}"</span>, memberId);
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>          <strong class="jxr_keyword">return</strong> teamDao.findTeamMember(memberId);
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      }
@@ -102,7 +102,7 @@
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      @PUT
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>      @Path(<span class="jxr_string">"member"</span>)
-<a class="jxr_linenumber" name="L97" href="#L97">97</a>      <strong class="jxr_keyword">public</strong> <a name="TeamMember" href="../../../../../ch/colabproject/colab/api/model/team/TeamMember.html#TeamMember">TeamMember</a> updateTeamMember(<a name="TeamMember" href="../../../../../ch/colabproject/colab/api/model/team/TeamMember.html#TeamMember">TeamMember</a> member) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>      <strong class="jxr_keyword">public</strong> TeamMember updateTeamMember(TeamMember member) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>          logger.debug(<span class="jxr_string">"Update member {}"</span>, member);
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>          <strong class="jxr_keyword">return</strong> teamDao.updateTeamMember(member);
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>     }
@@ -134,7 +134,7 @@
 <a class="jxr_linenumber" name="L126" href="#L126">126</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>     @POST
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>     @Path(<span class="jxr_string">"role"</span>)
-<a class="jxr_linenumber" name="L129" href="#L129">129</a>     <strong class="jxr_keyword">public</strong> Long createRole(<a name="TeamRole" href="../../../../../ch/colabproject/colab/api/model/team/TeamRole.html#TeamRole">TeamRole</a> role) {
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>     <strong class="jxr_keyword">public</strong> Long createRole(TeamRole role) {
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>         logger.debug(<span class="jxr_string">"Create role {}"</span>, role);
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         teamFacade.createRole(role);
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         <strong class="jxr_keyword">return</strong> role.getId();
@@ -149,7 +149,7 @@
 <a class="jxr_linenumber" name="L141" href="#L141">141</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>     @GET
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>     @Path(<span class="jxr_string">"role/{roleId: [0-9]+}"</span>)
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">public</strong> <a name="TeamRole" href="../../../../../ch/colabproject/colab/api/model/team/TeamRole.html#TeamRole">TeamRole</a> getRole(@PathParam(<span class="jxr_string">"roleId"</span>) Long roleId) {
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>     <strong class="jxr_keyword">public</strong> TeamRole getRole(@PathParam(<span class="jxr_string">"roleId"</span>) Long roleId) {
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>         logger.debug(<span class="jxr_string">"Get Role #{}"</span>, roleId);
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>         <strong class="jxr_keyword">return</strong> teamDao.findRole(roleId);
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>     }
@@ -163,7 +163,7 @@
 <a class="jxr_linenumber" name="L155" href="#L155">155</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>     @PUT
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>     @Path(<span class="jxr_string">"role"</span>)
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> updateRole(<a name="TeamRole" href="../../../../../ch/colabproject/colab/api/model/team/TeamRole.html#TeamRole">TeamRole</a> role) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> updateRole(TeamRole role) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>         logger.debug(<span class="jxr_string">"Update role {}"</span>, role);
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>         teamFacade.updateRole(role);
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>     }

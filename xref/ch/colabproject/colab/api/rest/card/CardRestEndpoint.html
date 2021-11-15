@@ -90,7 +90,7 @@
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      @GET
 <a class="jxr_linenumber" name="L84" href="#L84">84</a>      @Path(<span class="jxr_string">"{id}"</span>)
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">public</strong> <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> getCard(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">public</strong> Card getCard(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>          logger.debug(<span class="jxr_string">"get card #{}"</span>, id);
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>          <strong class="jxr_keyword">return</strong> cardDao.getCard(id);
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>      }
@@ -106,7 +106,7 @@
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>      @Deprecated
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>     @POST
-<a class="jxr_linenumber" name="L101" href="#L101">101</a>     <strong class="jxr_keyword">public</strong> Long createCard(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card) {
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>     <strong class="jxr_keyword">public</strong> Long createCard(Card card) {
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>         logger.debug(<span class="jxr_string">"create card {}"</span>, card);
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>         <strong class="jxr_keyword">return</strong> cardDao.createCard(card).getId();
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>     }
@@ -121,7 +121,7 @@
 <a class="jxr_linenumber" name="L113" href="#L113">113</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>     @POST
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>     @Path(<span class="jxr_string">"create/{parentId}/{cardTypeId}"</span>)
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>     <strong class="jxr_keyword">public</strong> <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> createNewCard(@PathParam(<span class="jxr_string">"parentId"</span>) Long parentId,
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>     <strong class="jxr_keyword">public</strong> Card createNewCard(@PathParam(<span class="jxr_string">"parentId"</span>) Long parentId,
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         @PathParam(<span class="jxr_string">"cardTypeId"</span>) Long cardTypeId) {
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>         logger.debug(<span class="jxr_string">"create a new card for the parent #{} and the type #{}"</span>, parentId,
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>             cardTypeId);
@@ -139,11 +139,11 @@
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>     @POST
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>     @Path(<span class="jxr_string">"createWithDeliverable/{parentId}/{cardTypeId}"</span>)
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>     <strong class="jxr_keyword">public</strong> <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> createNewCardWithDeliverable(@PathParam(<span class="jxr_string">"parentId"</span>) Long parentId,
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>     <strong class="jxr_keyword">public</strong> Card createNewCardWithDeliverable(@PathParam(<span class="jxr_string">"parentId"</span>) Long parentId,
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         @PathParam(<span class="jxr_string">"cardTypeId"</span>) Long cardTypeId, <a name="Document" href="../../../../../../ch/colabproject/colab/api/model/document/Document.html#Document">Document</a> document) {
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         logger.debug(<span class="jxr_string">"create a new card in the parent #{} for the type #{} with the deliverable {}"</span>,
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>             parentId, cardTypeId, document);
-<a class="jxr_linenumber" name="L138" href="#L138">138</a>         <a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card = cardFacade.createNewCard(parentId, cardTypeId);
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>         Card card = cardFacade.createNewCard(parentId, cardTypeId);
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> 
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>         List&lt;CardContent&gt; variants = card.getContentVariants();
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>         <strong class="jxr_keyword">if</strong> (variants != <strong class="jxr_keyword">null</strong> &amp;&amp; variants.size() == 1 &amp;&amp; variants.get(0) != <strong class="jxr_keyword">null</strong>) {
@@ -163,7 +163,7 @@
 <a class="jxr_linenumber" name="L155" href="#L155">155</a> <em class="jxr_javadoccomment">     * @throws ColabMergeException if the merge is not possible</em>
 <a class="jxr_linenumber" name="L156" href="#L156">156</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>     @PUT
-<a class="jxr_linenumber" name="L158" href="#L158">158</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> updateCard(<a name="Card" href="../../../../../../ch/colabproject/colab/api/model/card/Card.html#Card">Card</a> card) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> updateCard(Card card) <strong class="jxr_keyword">throws</strong> <a name="ColabMergeException" href="../../../../../../ch/colabproject/colab/api/exceptions/ColabMergeException.html#ColabMergeException">ColabMergeException</a> {
 <a class="jxr_linenumber" name="L159" href="#L159">159</a>         logger.debug(<span class="jxr_string">"update card {}"</span>, card);
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>         cardDao.updateCard(card);
 <a class="jxr_linenumber" name="L161" href="#L161">161</a>     }
