@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
@@ -31,10 +32,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -47,6 +50,11 @@ import javax.validation.constraints.NotNull;
  */
 //TODO review accurate constraints when stabilized
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "card_id"),
+        @Index(columnList = "deliverable_id"),}
+)
 @NamedQuery(name = "CardContent.findAll", query = "SELECT c FROM CardContent c")
 public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {
 
@@ -62,7 +70,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
      * Card content ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = STRUCTURE_SEQUENCE_NAME)
     private Long id;
 
     /**

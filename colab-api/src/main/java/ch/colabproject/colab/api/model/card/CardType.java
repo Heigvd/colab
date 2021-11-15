@@ -15,8 +15,10 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -27,6 +29,11 @@ import javax.validation.constraints.NotNull;
  */
 //TODO review accurate constraints when stabilized
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "purpose_id"),
+    }
+)
 @NamedQuery(name = "CardType.findAll", query = "SELECT c FROM CardType c")
 @NamedQuery(name = "CardType.findGlobals",
     query = "SELECT c FROM CardType c WHERE c.project is NULL")

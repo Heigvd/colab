@@ -13,6 +13,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Block;
+import static ch.colabproject.colab.api.model.link.ActivityFlowLink.LINK_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -27,8 +28,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -46,7 +49,17 @@ import javax.validation.constraints.NotNull;
  * @author sandra
  */
 @Entity
-public class StickyNoteLink implements ColabEntity , WithWebsocketChannels {
+@Table(
+    indexes = {
+        @Index(columnList = "destinationcard_id"),
+        @Index(columnList = "explanation_id"),
+        @Index(columnList = "srcblock_id"),
+        @Index(columnList = "srccard_id"),
+        @Index(columnList = "srccardcontent_id"),
+        @Index(columnList = "srcresourceorref_id")
+    }
+)
+public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
 
     /**
      * Serial version UID
@@ -60,7 +73,7 @@ public class StickyNoteLink implements ColabEntity , WithWebsocketChannels {
      * Link ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = LINK_SEQUENCE_NAME)
     private Long id;
 
     /**
@@ -552,7 +565,7 @@ public class StickyNoteLink implements ColabEntity , WithWebsocketChannels {
         if (this.destinationCard != null) {
             return this.destinationCard.getChannels();
         } else {
-        return Set.of();
+            return Set.of();
         }
     }
 

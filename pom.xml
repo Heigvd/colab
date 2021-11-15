@@ -114,18 +114,17 @@
                 <version>3.12.0</version>
             </dependency>
 
-            <!--
-            Works well with a standard deployment but crashes during tests...
+            <!-- Works well with a standard deployment but crashes during tests...-->
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-cdi</artifactId>
-                <version>4.2.0</version>
-            </dependency> -->
+                <version>4.6.1</version>
+            </dependency>
             <!-- Tool for managing and executing database changes -->
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
-                <version>4.4.3</version>
+                <version>4.6.1</version>
             </dependency>
 
             <!-- PostgreSQL JDBC Driver Postgresq -->
@@ -581,7 +580,7 @@
             </plugin>
             <!-- Site  -->
             <!-- generates a site for the current project -->
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <inherited>true</inherited>
@@ -598,7 +597,7 @@
                     <skipDeploy>true</skipDeploy>
                     <generateReports>true</generateReports>
                 </configuration>
-            </plugin>
+            </plugin>-->
             <!-- -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

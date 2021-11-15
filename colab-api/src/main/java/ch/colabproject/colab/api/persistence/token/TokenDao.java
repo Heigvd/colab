@@ -117,8 +117,6 @@ public class TokenDao {
         }
 
         em.persist(token);
-        // flush to make sure token got an id
-        em.flush();
     }
 
     /**

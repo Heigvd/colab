@@ -37,10 +37,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
@@ -52,8 +55,16 @@ import javax.persistence.Transient;
  */
 // TODO review accurate constraints when stabilized
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "cardtype_id"),
+        @Index(columnList = "parent_id"),}
+)
 @NamedQuery(name = "Card.findAll", query = "SELECT c FROM Card c")
 public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {
+
+    /** Name of the project structure sequence */
+    public static final String STRUCTURE_SEQUENCE_NAME = "structure_seq";
 
     /**
      * Serial version UID
@@ -67,7 +78,8 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
      * Card ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = STRUCTURE_SEQUENCE_NAME, allocationSize = 20)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = STRUCTURE_SEQUENCE_NAME)
     private Long id;
 
     /**
@@ -363,8 +375,8 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
 
     /**
      * @return the parent card content
-     *         <p>
-     *         A card can either be the root card of a project or be within a card content
+     * <p>
+     * A card can either be the root card of a project or be within a card content
      */
     public CardContent getParent() {
         return parent;

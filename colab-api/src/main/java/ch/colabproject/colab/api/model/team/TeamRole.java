@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.project.Project;
+import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -27,19 +28,26 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
- * Not used yet
+ * A role within the development team. A role is used to group several member sharing same skills or
+ * objective within the project.
  *
  * @author maxence
  */
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "project_id"),}
+)
 public class TeamRole implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
@@ -51,7 +59,7 @@ public class TeamRole implements ColabEntity, WithWebsocketChannels {
      * TeamRole ID.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TEAM_SEQUENCE_NAME)
     private Long id;
 
     /**

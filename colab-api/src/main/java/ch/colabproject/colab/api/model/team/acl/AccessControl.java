@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import static ch.colabproject.colab.api.model.team.TeamMember.TEAM_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
@@ -25,7 +26,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -34,6 +37,13 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "card_id"),
+        @Index(columnList = "member_id"),
+        @Index(columnList = "role_id"),
+    }
+)
 public class AccessControl implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
@@ -45,7 +55,7 @@ public class AccessControl implements ColabEntity, WithWebsocketChannels {
      * Project ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TEAM_SEQUENCE_NAME)
     private Long id;
 
     /**

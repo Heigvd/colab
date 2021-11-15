@@ -31,10 +31,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -44,6 +48,12 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "project_id"),
+        @Index(columnList = "user_id")
+    }
+)
 @NamedQuery(
     name = "TeamMember.areUserTeammate",
     // SELECT true FROM TeamMember a, TeamMember b WHERE ...
@@ -60,6 +70,9 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 
+    /** project team sequence name */
+    public static final String TEAM_SEQUENCE_NAME = "team_seq";
+
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
@@ -67,7 +80,8 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      * Member ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = TEAM_SEQUENCE_NAME, allocationSize = 20)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TEAM_SEQUENCE_NAME)
     private Long id;
 
     /**
@@ -105,6 +119,10 @@ public class TeamMember implements ColabEntity, WithWebsocketChannels {
      * The roles
      */
     @ManyToMany
+    @JoinTable(indexes = {
+        @Index(columnList = "members_id"),
+        @Index(columnList = "roles_id"),
+    })
     @JsonbTransient
     private List<TeamRole> roles;
 

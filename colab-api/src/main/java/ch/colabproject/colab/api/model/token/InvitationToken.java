@@ -16,8 +16,10 @@ import java.text.MessageFormat;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -26,6 +28,11 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "teammember_id"),
+    }
+)
 @NamedQuery(
     name = "InvitationToken.findByProjectAndRecipient",
     query = "SELECT t from InvitationToken t "

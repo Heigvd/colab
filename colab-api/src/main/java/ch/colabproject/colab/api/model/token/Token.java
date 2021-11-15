@@ -28,6 +28,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -35,6 +38,9 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @Entity
+// JOINED inheritance will generate one "abstract" account table and one table for each subclass.
+// Having one table per subclass allows subclasses to defined their own indexes and constraints
+@Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public abstract class Token implements ColabEntity {
 
@@ -46,11 +52,15 @@ public abstract class Token implements ColabEntity {
 
     private static final long serialVersionUID = 1L;
 
+    /** token sequence name */
+    public static final String TOKEN_SEQUENCE_NAME = "token_seq";
+
     /**
      * Project ID.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = TOKEN_SEQUENCE_NAME, allocationSize = 20)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = TOKEN_SEQUENCE_NAME)
     private Long id;
 
     /**

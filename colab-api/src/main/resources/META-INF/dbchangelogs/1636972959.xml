@@ -1,0 +1,475 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="maxence" id="1636972961288-1">
+        <createTable tableName="verifylocalaccounttoken">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="verifylocalaccounttoken_pkey"/>
+            </column>
+            <column name="localaccount_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="account">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="account_pkey"/>
+            </column>
+            <column name="dtype" type="VARCHAR(31)"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="stickynotelink">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="stickynotelink_pkey"/>
+            </column>
+            <column name="teaser" type="VARCHAR(255)"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+            <column name="destinationcard_id" type="BIGINT"/>
+            <column name="srcblock_id" type="BIGINT"/>
+            <column name="srccard_id" type="BIGINT"/>
+            <column name="srccardcontent_id" type="BIGINT"/>
+            <column name="srcresourceorref_id" type="BIGINT"/>
+            <column name="explanation_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="teammember">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="teammember_pkey"/>
+            </column>
+            <column name="display_name" type="VARCHAR(255)"/>
+            <column name="position" type="VARCHAR(255)"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+            <column name="project_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="localaccount">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="localaccount_pkey"/>
+            </column>
+            <column name="client_salt" type="VARCHAR(255)"/>
+            <column name="current_client_hash_method" type="VARCHAR(100)"/>
+            <column name="current_db_hash_method" type="VARCHAR(100)"/>
+            <column name="db_salt" type="BYTEA"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="hashed_password" type="BYTEA"/>
+            <column name="new_client_salt" type="VARCHAR(255)"/>
+            <column name="next_client_hash_method" type="VARCHAR(100)"/>
+            <column name="next_db_hash_method" type="VARCHAR(100)"/>
+            <column name="verified" type="BOOLEAN"/>
+        </createTable>
+        <createTable tableName="cardcontent">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="cardcontent_pkey"/>
+            </column>
+            <column name="completion_level" type="INTEGER"/>
+            <column name="completion_mode" type="VARCHAR(255)"/>
+            <column name="frozen" type="BOOLEAN"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+            <column name="card_id" type="BIGINT"/>
+            <column name="deliverable_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="block">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="block_pkey"/>
+            </column>
+            <column name="dtype" type="VARCHAR(31)"/>
+            <column name="index" type="INTEGER"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+            <column name="document_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="abstractresource">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="abstractresource_pkey"/>
+            </column>
+            <column name="dtype" type="VARCHAR(31)"/>
+            <column name="category" type="VARCHAR(255)"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+            <column name="abstractcardtype_id" type="BIGINT"/>
+            <column name="card_id" type="BIGINT"/>
+            <column name="cardcontent_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="abstractcardtype">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="abstractcardtype_pkey"/>
+            </column>
+            <column name="dtype" type="VARCHAR(31)"/>
+            <column name="deprecated" type="BOOLEAN"/>
+            <column name="published" type="BOOLEAN"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+            <column name="project_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="cardtype">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="cardtype_pkey"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="purpose_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="resource">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="resource_pkey"/>
+            </column>
+            <column name="deprecated" type="BOOLEAN"/>
+            <column name="published" type="BOOLEAN"/>
+            <column name="requesting_for_glory" type="BOOLEAN"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="document_id" type="BIGINT"/>
+            <column name="teaser_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="activityflowlink">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="activityflowlink_pkey"/>
+            </column>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+            <column name="nextcard_id" type="BIGINT"/>
+            <column name="previouscard_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="accesscontrol">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="accesscontrol_pkey"/>
+            </column>
+            <column name="cairo_level" type="VARCHAR(255)"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+            <column name="card_id" type="BIGINT"/>
+            <column name="member_id" type="BIGINT"/>
+            <column name="role_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="cardtyperef">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="cardtyperef_pkey"/>
+            </column>
+            <column name="target_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="teamrole">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="teamrole_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+            <column name="project_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="resetlocalaccountpasswordtoken">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="resetlocalaccountpasswordtoken_pkey"/>
+            </column>
+            <column name="localaccount_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="invitationtoken">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="invitationtoken_pkey"/>
+            </column>
+            <column name="recipient" type="VARCHAR(255)"/>
+            <column name="sender" type="VARCHAR(255)"/>
+            <column name="teammember_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="card">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="card_pkey"/>
+            </column>
+            <column name="color" type="VARCHAR(255)"/>
+            <column name="default_involvement_level" type="VARCHAR(255)"/>
+            <column name="index" type="INTEGER"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+            <column name="cardtype_id" type="BIGINT"/>
+            <column name="parent_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="users">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
+            </column>
+            <column name="affiliation" type="VARCHAR(255)"/>
+            <column name="commonname" type="VARCHAR(255)"/>
+            <column name="firstname" type="VARCHAR(255)"/>
+            <column name="is_admin" type="BOOLEAN"/>
+            <column name="last_seen_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="lastname" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+        </createTable>
+        <createTable tableName="resourceref">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="resourceref_pkey"/>
+            </column>
+            <column name="refused" type="BOOLEAN"/>
+            <column name="target_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="project">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="project_pkey"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+            <column name="rootcard_id" type="BIGINT"/>
+        </createTable>
+        <createTable tableName="teammember_teamrole">
+            <column name="members_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="teammember_teamrole_pkey"/>
+            </column>
+            <column name="roles_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="teammember_teamrole_pkey"/>
+            </column>
+        </createTable>
+        <createTable tableName="document">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="document_pkey"/>
+            </column>
+            <column name="dtype" type="VARCHAR(31)"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+        </createTable>
+        <createTable tableName="blockdocument">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="blockdocument_pkey"/>
+            </column>
+        </createTable>
+        <createTable tableName="externallink">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="externallink_pkey"/>
+            </column>
+            <column name="url" type="VARCHAR(255)"/>
+        </createTable>
+        <createTable tableName="hosteddoclink">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="hosteddoclink_pkey"/>
+            </column>
+            <column name="file_path" type="VARCHAR(255)"/>
+        </createTable>
+        <createTable tableName="token">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="token_pkey"/>
+            </column>
+            <column name="dtype" type="VARCHAR(31)"/>
+            <column name="authentication_required" type="BOOLEAN"/>
+            <column name="expiration_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="hash_method" type="VARCHAR(100)"/>
+            <column name="hashed_token" type="BYTEA"/>
+            <column name="createdby" type="VARCHAR(255)"/>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modifiedby" type="VARCHAR(255)"/>
+        </createTable>
+        <createTable tableName="textdatablock">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="textdatablock_pkey"/>
+            </column>
+            <column name="mime_type" type="VARCHAR(255)"/>
+            <column name="revision" type="VARCHAR(255)"/>
+            <column name="text_data" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="maxence" id="1636972961288-2">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="20" maxValue="9223372036854775807" minValue="1" sequenceName="block_seq" startValue="20"/>
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="20" maxValue="9223372036854775807" minValue="1" sequenceName="link_seq" startValue="20"/>
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807" minValue="1" sequenceName="project_seq" startValue="1"/>
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="20" maxValue="9223372036854775807" minValue="1" sequenceName="structure_seq" startValue="20"/>
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="20" maxValue="9223372036854775807" minValue="1" sequenceName="team_seq" startValue="20"/>
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="20" maxValue="9223372036854775807" minValue="1" sequenceName="token_seq" startValue="20"/>
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="20" maxValue="9223372036854775807" minValue="1" sequenceName="user_seq" startValue="20"/>
+    </changeSet>
+
+    <changeSet author="maxence" id="1636972961288-3">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="verifylocalaccounttoken" constraintName="fk_verifylocalaccounttoken_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="token" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="localaccount_id" baseTableName="verifylocalaccounttoken" constraintName="fk_verifylocalaccounttoken_localaccount_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="account" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="account" constraintName="fk_account_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="localaccount" constraintName="fk_localaccount_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="account" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="localaccount_id" baseTableName="resetlocalaccountpasswordtoken" constraintName="fk_resetlocalaccountpasswordtoken_localaccount_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="account" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="destinationcard_id" baseTableName="stickynotelink" constraintName="fk_stickynotelink_destinationcard_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="card" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="explanation_id" baseTableName="stickynotelink" constraintName="fk_stickynotelink_explanation_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="block" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="srcblock_id" baseTableName="stickynotelink" constraintName="fk_stickynotelink_srcblock_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="block" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="srccard_id" baseTableName="stickynotelink" constraintName="fk_stickynotelink_srccard_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="card" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="srccardcontent_id" baseTableName="stickynotelink" constraintName="fk_stickynotelink_srccardcontent_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="cardcontent" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="srcresourceorref_id" baseTableName="stickynotelink" constraintName="fk_stickynotelink_srcresourceorref_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstractresource" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="member_id" baseTableName="accesscontrol" constraintName="fk_accesscontrol_member_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="teammember" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="teammember_id" baseTableName="invitationtoken" constraintName="fk_invitationtoken_teammember_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="teammember" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="project_id" baseTableName="teammember" constraintName="fk_teammember_project_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="project" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="members_id" baseTableName="teammember_teamrole" constraintName="fk_teammember_teamrole_members_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="teammember" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="teammember" constraintName="fk_teammember_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="cardcontent_id" baseTableName="abstractresource" constraintName="fk_abstractresource_cardcontent_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="cardcontent" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="card" constraintName="fk_card_parent_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="cardcontent" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="card_id" baseTableName="cardcontent" constraintName="fk_cardcontent_card_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="card" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="deliverable_id" baseTableName="cardcontent" constraintName="fk_cardcontent_deliverable_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="document" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="document_id" baseTableName="block" constraintName="fk_block_document_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="document" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="purpose_id" baseTableName="cardtype" constraintName="fk_cardtype_purpose_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="block" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="teaser_id" baseTableName="resource" constraintName="fk_resource_teaser_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="block" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="textdatablock" constraintName="fk_textdatablock_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="block" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="abstractcardtype_id" baseTableName="abstractresource" constraintName="fk_abstractresource_abstractcardtype_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstractcardtype" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="card_id" baseTableName="abstractresource" constraintName="fk_abstractresource_card_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="card" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="resource" constraintName="fk_resource_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstractresource" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="resourceref" constraintName="fk_resourceref_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstractresource" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="target_id" baseTableName="resourceref" constraintName="fk_resourceref_target_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstractresource" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="project_id" baseTableName="abstractcardtype" constraintName="fk_abstractcardtype_project_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="project" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="cardtype_id" baseTableName="card" constraintName="fk_card_cardtype_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstractcardtype" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="cardtype" constraintName="fk_cardtype_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstractcardtype" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="cardtyperef" constraintName="fk_cardtyperef_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstractcardtype" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="target_id" baseTableName="cardtyperef" constraintName="fk_cardtyperef_target_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="abstractcardtype" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="document_id" baseTableName="resource" constraintName="fk_resource_document_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="document" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="nextcard_id" baseTableName="activityflowlink" constraintName="fk_activityflowlink_nextcard_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="card" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="previouscard_id" baseTableName="activityflowlink" constraintName="fk_activityflowlink_previouscard_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="card" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="card_id" baseTableName="accesscontrol" constraintName="fk_accesscontrol_card_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="card" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="accesscontrol" constraintName="fk_accesscontrol_role_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="teamrole" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="roles_id" baseTableName="teammember_teamrole" constraintName="fk_teammember_teamrole_roles_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="teamrole" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="project_id" baseTableName="teamrole" constraintName="fk_teamrole_project_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="project" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="resetlocalaccountpasswordtoken" constraintName="fk_resetlocalaccountpasswordtoken_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="token" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="invitationtoken" constraintName="fk_invitationtoken_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="token" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="rootcard_id" baseTableName="project" constraintName="fk_project_rootcard_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="card" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="blockdocument" constraintName="fk_blockdocument_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="document" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="externallink" constraintName="fk_externallink_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="document" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="hosteddoclink" constraintName="fk_hosteddoclink_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="document" validate="true"/>
+    </changeSet>
+
+    <changeSet author="maxence" id="1636972961288-4">
+        <createIndex indexName="index_verifylocalaccounttoken_localaccount_id" tableName="verifylocalaccounttoken">
+            <column name="localaccount_id"/>
+        </createIndex>
+        <createIndex indexName="index_account_user_id" tableName="account">
+            <column name="user_id"/>
+        </createIndex>
+        <createIndex indexName="index_stickynotelink_destinationcard_id" tableName="stickynotelink">
+            <column name="destinationcard_id"/>
+        </createIndex>
+        <createIndex indexName="index_stickynotelink_explanation_id" tableName="stickynotelink">
+            <column name="explanation_id"/>
+        </createIndex>
+        <createIndex indexName="index_stickynotelink_srcblock_id" tableName="stickynotelink">
+            <column name="srcblock_id"/>
+        </createIndex>
+        <createIndex indexName="index_stickynotelink_srccard_id" tableName="stickynotelink">
+            <column name="srccard_id"/>
+        </createIndex>
+        <createIndex indexName="index_stickynotelink_srccardcontent_id" tableName="stickynotelink">
+            <column name="srccardcontent_id"/>
+        </createIndex>
+        <createIndex indexName="index_stickynotelink_srcresourceorref_id" tableName="stickynotelink">
+            <column name="srcresourceorref_id"/>
+        </createIndex>
+        <createIndex indexName="index_teammember_project_id" tableName="teammember">
+            <column name="project_id"/>
+        </createIndex>
+        <createIndex indexName="index_teammember_user_id" tableName="teammember">
+            <column name="user_id"/>
+        </createIndex>
+        <createIndex indexName="index_localaccount_email" tableName="localaccount" unique="true">
+            <column name="email"/>
+        </createIndex>
+        <createIndex indexName="index_cardcontent_card_id" tableName="cardcontent">
+            <column name="card_id"/>
+        </createIndex>
+        <createIndex indexName="index_cardcontent_deliverable_id" tableName="cardcontent">
+            <column name="deliverable_id"/>
+        </createIndex>
+        <createIndex indexName="index_block_document_id" tableName="block">
+            <column name="document_id"/>
+        </createIndex>
+        <createIndex indexName="index_abstractresource_abstractcardtype_id" tableName="abstractresource">
+            <column name="abstractcardtype_id"/>
+        </createIndex>
+        <createIndex indexName="index_abstractresource_card_id" tableName="abstractresource">
+            <column name="card_id"/>
+        </createIndex>
+        <createIndex indexName="index_abstractresource_cardcontent_id" tableName="abstractresource">
+            <column name="cardcontent_id"/>
+        </createIndex>
+        <createIndex indexName="index_abstractcardtype_project_id" tableName="abstractcardtype">
+            <column name="project_id"/>
+        </createIndex>
+        <createIndex indexName="index_cardtype_purpose_id" tableName="cardtype">
+            <column name="purpose_id"/>
+        </createIndex>
+        <createIndex indexName="index_resource_document_id" tableName="resource">
+            <column name="document_id"/>
+        </createIndex>
+        <createIndex indexName="index_resource_teaser_id" tableName="resource">
+            <column name="teaser_id"/>
+        </createIndex>
+        <createIndex indexName="index_activityflowlink_nextcard_id" tableName="activityflowlink">
+            <column name="nextcard_id"/>
+        </createIndex>
+        <createIndex indexName="index_activityflowlink_previouscard_id" tableName="activityflowlink">
+            <column name="previouscard_id"/>
+        </createIndex>
+        <createIndex indexName="index_accesscontrol_card_id" tableName="accesscontrol">
+            <column name="card_id"/>
+        </createIndex>
+        <createIndex indexName="index_accesscontrol_member_id" tableName="accesscontrol">
+            <column name="member_id"/>
+        </createIndex>
+        <createIndex indexName="index_accesscontrol_role_id" tableName="accesscontrol">
+            <column name="role_id"/>
+        </createIndex>
+        <createIndex indexName="index_cardtyperef_target_id" tableName="cardtyperef">
+            <column name="target_id"/>
+        </createIndex>
+        <createIndex indexName="index_teamrole_project_id" tableName="teamrole">
+            <column name="project_id"/>
+        </createIndex>
+        <createIndex indexName="index_resetlocalaccountpasswordtoken_localaccount_id" tableName="resetlocalaccountpasswordtoken">
+            <column name="localaccount_id"/>
+        </createIndex>
+        <createIndex indexName="index_invitationtoken_teammember_id" tableName="invitationtoken">
+            <column name="teammember_id"/>
+        </createIndex>
+        <createIndex indexName="index_card_cardtype_id" tableName="card">
+            <column name="cardtype_id"/>
+        </createIndex>
+        <createIndex indexName="index_card_parent_id" tableName="card">
+            <column name="parent_id"/>
+        </createIndex>
+        <createIndex indexName="index_users_username" tableName="users" unique="true">
+            <column name="username"/>
+        </createIndex>
+        <createIndex indexName="index_resourceref_target_id" tableName="resourceref">
+            <column name="target_id"/>
+        </createIndex>
+        <createIndex indexName="index_project_rootcard_id" tableName="project">
+            <column name="rootcard_id"/>
+        </createIndex>
+        <createIndex indexName="index_teammember_teamrole_members_id" tableName="teammember_teamrole">
+            <column name="members_id"/>
+        </createIndex>
+        <createIndex indexName="index_teammember_teamrole_roles_id" tableName="teammember_teamrole">
+            <column name="roles_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

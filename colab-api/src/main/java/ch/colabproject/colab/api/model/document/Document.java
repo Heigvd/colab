@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
@@ -56,7 +57,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      * Document ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = STRUCTURE_SEQUENCE_NAME)
     protected Long id;
 
     /**

@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
+import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
@@ -32,10 +33,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
@@ -50,6 +53,12 @@ import javax.persistence.Transient;
  * @author sandra
  */
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "abstractcardtype_id"),
+        @Index(columnList = "card_id"),
+        @Index(columnList = "cardcontent_id"),}
+)
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public abstract class AbstractResource
@@ -60,12 +69,11 @@ public abstract class AbstractResource
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Abstract resource ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = STRUCTURE_SEQUENCE_NAME)
     protected Long id;
 
     /**
@@ -135,7 +143,6 @@ public abstract class AbstractResource
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the abstract resource id
      */
@@ -351,7 +358,6 @@ public abstract class AbstractResource
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     /**
      * Resolve to concrete Resource
      *

@@ -15,7 +15,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -26,6 +28,12 @@ import javax.validation.constraints.NotNull;
  */
 // TODO check if a constraint is needed for uniqueness link between a document and a resource
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "document_id"),
+        @Index(columnList = "teaser_id"),
+    }
+)
 @DiscriminatorValue("RESOURCE")
 public class Resource extends AbstractResource {
 

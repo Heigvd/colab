@@ -33,6 +33,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -46,7 +47,7 @@ import javax.validation.constraints.Pattern;
  */
 @Entity
 @Table(name = "users", indexes = {
-    @Index(columnList = "username", unique = true)
+    @Index(columnList = "username", unique = true),
 })
 @NamedQuery(name = "User.findAll", query = "SELECT u from User u")
 @NamedQuery(name = "User.findByUsername",
@@ -57,6 +58,9 @@ public class User implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 
+    /** user sequence name */
+    public static final String USER_SEQUENCE_NAME = "user_seq";
+
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
@@ -64,7 +68,8 @@ public class User implements ColabEntity, WithWebsocketChannels {
      * User unique id
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = USER_SEQUENCE_NAME, allocationSize = 20)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = USER_SEQUENCE_NAME)
     private Long id;
 
     /**

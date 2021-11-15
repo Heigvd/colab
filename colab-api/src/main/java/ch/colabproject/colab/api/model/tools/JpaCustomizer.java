@@ -12,11 +12,14 @@ import org.eclipse.persistence.mappings.DirectToFieldMapping;
 import org.eclipse.persistence.sessions.Session;
 
 /**
- * Customize database field names.
+ * Customize JPA session.
+ * <ul>
+ * <li> use lowercase with underscore database field names
+ * </ul>
  *
  * @author maxence
  */
-public class JpaNameMappingCustomizer implements SessionCustomizer {
+public class JpaCustomizer implements SessionCustomizer {
 
     @Override
     public void customize(Session session) throws Exception {

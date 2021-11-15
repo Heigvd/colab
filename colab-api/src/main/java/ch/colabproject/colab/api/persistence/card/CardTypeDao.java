@@ -121,7 +121,6 @@ public class CardTypeDao {
     public AbstractCardType createCardType(AbstractCardType cardType) {
         logger.debug("create card type {}", cardType);
         em.persist(cardType);
-        em.flush();
         return cardType;
     }
 

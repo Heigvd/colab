@@ -22,7 +22,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -32,7 +35,15 @@ import javax.validation.constraints.NotNull;
  * @author sandra
  */
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "nextcard_id"),
+        @Index(columnList = "previouscard_id"),}
+)
 public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
+
+    /** Link sequence name */
+    public static final String LINK_SEQUENCE_NAME = "link_seq";
 
     /**
      * Serial version UID
@@ -46,7 +57,8 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
      * Link ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = LINK_SEQUENCE_NAME, allocationSize = 20)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = LINK_SEQUENCE_NAME)
     private Long id;
 
     /**

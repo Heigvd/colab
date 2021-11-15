@@ -31,18 +31,27 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
+ * C
  * A project as persisted in database
  *
  * @author maxence
  * @author sandra
  */
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "rootcard_id"),
+    }
+)
 @NamedQuery(name = "Project.findAll", query = "SELECT p FROM Project p")
 @NamedQuery(
     name = "Project.findProjectByUser",
@@ -51,6 +60,9 @@ public class Project implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
 
+    /** Project sequence name */
+    public static final String PROJECT_SEQUENCE_NAME = "project_seq";
+
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
@@ -58,7 +70,8 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      * Project ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = PROJECT_SEQUENCE_NAME, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = PROJECT_SEQUENCE_NAME)
     private Long id;
 
     /**

@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.card;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
@@ -34,11 +35,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
@@ -47,6 +50,11 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "project_id"),
+    }
+)
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public abstract class AbstractCardType implements ColabEntity, WithWebsocketChannels {
@@ -60,7 +68,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
      * CardType ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = STRUCTURE_SEQUENCE_NAME)
     private Long id;
 
     /**
