@@ -7,11 +7,10 @@
 package ch.colabproject.colab.api.setup;
 
 import javax.annotation.Resource;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.sql.DataSource;
-//import liquibase.integration.cdi.CDILiquibaseConfig;
-//import liquibase.integration.cdi.annotations.LiquibaseType;
+import liquibase.integration.cdi.CDILiquibaseConfig;
+import liquibase.integration.cdi.annotations.LiquibaseType;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
@@ -27,7 +26,6 @@ import liquibase.resource.ResourceAccessor;
  *
  * @author maxence
  */
-@ApplicationScoped
 public class LiquibaseProducer {
 
     /**
@@ -36,18 +34,18 @@ public class LiquibaseProducer {
     @Resource(lookup = "java:global/colabDS")
     private DataSource myDataSource;
 
-    /*/**
+    /**
      * Liquibase configuration
      *
      * @return the config
      */
-    /*@Produces
+    @Produces
     @LiquibaseType
     public CDILiquibaseConfig createConfig() {
         CDILiquibaseConfig config = new CDILiquibaseConfig();
         config.setChangeLog("/META-INF/db.changelog.xml");
         return config;
-    }*/
+    }
 
     /**
      * Give liquibase access to the datasource
@@ -56,7 +54,7 @@ public class LiquibaseProducer {
      *
      */
     @Produces
-    //@LiquibaseType
+    @LiquibaseType
     public DataSource createDataSource() {
         return myDataSource;
     }
@@ -67,7 +65,7 @@ public class LiquibaseProducer {
      * @return the classloader
      */
     @Produces
-    //@LiquibaseType
+    @LiquibaseType
     public ResourceAccessor create() {
         return new ClassLoaderResourceAccessor(getClass().getClassLoader());
     }

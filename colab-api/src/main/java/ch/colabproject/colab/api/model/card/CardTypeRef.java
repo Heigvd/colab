@@ -11,7 +11,9 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
@@ -20,6 +22,11 @@ import javax.persistence.Transient;
  * @author maxence
  */
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "target_id"),
+    }
+)
 public class CardTypeRef extends AbstractCardType {
 
     /**

@@ -11,8 +11,10 @@ import ch.colabproject.colab.api.model.user.LocalAccount;
 import java.text.MessageFormat;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -21,6 +23,11 @@ import javax.validation.constraints.NotNull;
  * @author maxence
  */
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "localaccount_id"),
+    }
+)
 @NamedQuery(
     name = "VerifyLocalAccountToken.findByAccountId",
     query = "SELECT t from VerifyLocalAccountToken t where t.localAccount.id =:id")

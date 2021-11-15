@@ -75,10 +75,10 @@
 
         <!-- Liquibase: db refactoring tool -->
         <!-- tool for managing and executing database changes -->
-        <!--<dependency>
+        <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-cdi</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>

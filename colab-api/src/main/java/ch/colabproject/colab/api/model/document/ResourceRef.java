@@ -15,7 +15,9 @@ import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -32,6 +34,11 @@ import javax.validation.constraints.NotNull;
  * @author sandra
  */
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "target_id"),
+    }
+)
 @DiscriminatorValue("RESOURCE_REF")
 public class ResourceRef extends AbstractResource {
 

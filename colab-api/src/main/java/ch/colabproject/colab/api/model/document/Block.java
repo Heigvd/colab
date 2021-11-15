@@ -30,10 +30,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
@@ -43,11 +46,19 @@ import javax.persistence.Transient;
  */
 //TODO adjust the constraints / indexes
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "document_id"),
+    }
+)
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public abstract class Block implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {
 
     private static final long serialVersionUID = 1L;
+
+    /** block sequence name */
+    public static final String BLOCK_SEQUENCE_NAME = "block_seq";
 
     // ---------------------------------------------------------------------------------------------
     // fields
@@ -56,7 +67,8 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
      * The block ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = BLOCK_SEQUENCE_NAME, allocationSize = 20)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = BLOCK_SEQUENCE_NAME)
     private Long id;
 
     /**
@@ -93,7 +105,6 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
     // ---------------------------------------------------------------------------------------------
     // initialize
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return an initialized a default block
      */
@@ -235,7 +246,7 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
 
     @Override
     public Set<WebsocketChannel> getChannels() {
-        if (this.id!= null){
+        if (this.id != null) {
             return Set.of(BlockChannel.build(id));
         } else {
             // may be a block used as teaser, purpose, or any other

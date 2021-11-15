@@ -33,6 +33,19 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>colab-api</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <!-- 
+                using liquibase-cdi AND arquillan causes webapp deployment to crash
+                luckily we do not want to use liquibase during tests (DB is created by JPA).
+                Let's exlude liquibase-cdi dep.
+                Doing so will not only prevent the crash but also will prevent liquibase 
+                from being used.
+                -->
+                <exclusion>
+                    <groupId>org.liquibase</groupId>
+                    <artifactId>liquibase-cdi</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -147,7 +160,7 @@
                         <java.util.logging.config.file>${project.basedir}/src/test/resources/logging.properties</java.util.logging.config.file>
                         <arquillian.launch>payara-embedded</arquillian.launch>
                         <!-- do not run liquibase as the database is dropped and created by JPA -->
-                        <liquibase.config.shouldRun>false</liquibase.config.shouldRun>
+                        <!--<liquibase.shouldRun>false</liquibase.shouldRun>-->
                         <colab.database.host>localhost</colab.database.host>
                         <!-- one would be able to set the port too...
                         <colab.database.host>localhost</colab.database.host> -->
