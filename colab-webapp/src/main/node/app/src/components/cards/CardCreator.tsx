@@ -17,6 +17,7 @@ import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 import OpenCloseModal from '../common/OpenCloseModal';
+import Tips from '../common/Tips';
 import CardTypeCreator from './cardtypes/CardTypeCreator';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
@@ -53,7 +54,10 @@ export default function CardCreator({ parent }: CardCreatorProps): JSX.Element {
   }, []);
 
   return (
-    <OpenCloseModal title="Create a card" collapsedChildren={<FontAwesomeIcon icon={faPlus} />}>
+    <OpenCloseModal
+      title="Create a card"
+      collapsedChildren={<FontAwesomeIcon title="add a card" icon={faPlus} />}
+    >
       {close => {
         if (cardTypes.projectStatus !== 'READY' || cardTypes.publishedStatus !== 'READY') {
           return <InlineLoading />;
@@ -67,8 +71,23 @@ export default function CardCreator({ parent }: CardCreatorProps): JSX.Element {
             >
               <h2>Create a new subcard {parent.title ? 'for ' + parent.title : ''}</h2>
               <div>
+                <Tips tipsType="TODO">
+                  To create a card, one should select a type among all available ones in a
+                  convinient way
+                </Tips>
+                <Tips tipsType="TODO">
+                  Project "Card Types" tab display all types too: such duplication should be solved
+                </Tips>
                 <h3>Common types</h3>
+                <Tips>
+                  Common types are types defined outside the current project and which are not yet
+                  used in the project
+                </Tips>
                 <h4>Global</h4>
+                <Tips>
+                  Global types are defined by adminstrators in "admin/card types" tab. Such type are
+                  available in any project
+                </Tips>
                 <div className={listOfTypeStyle}>
                   {cardTypes.global.map(cardType => (
                     <CardTypeThumbnail
@@ -80,6 +99,9 @@ export default function CardCreator({ parent }: CardCreatorProps): JSX.Element {
                   ))}
                 </div>
                 <h4>From other projects</h4>
+                <Tips>
+                  Types published from others projects you, as specific colab user, have acces to.
+                </Tips>
                 <div className={listOfTypeStyle}>
                   {cardTypes.published.map(cardType => (
                     <CardTypeThumbnail
@@ -93,7 +115,11 @@ export default function CardCreator({ parent }: CardCreatorProps): JSX.Element {
               </div>
               <div>
                 <h3>Project Types</h3>
+                <Tips>All types already used/defined in the project</Tips>
                 <h4>Inherited</h4>
+                <Tips>
+                  Inherited types references either global types or types from others projects
+                </Tips>
                 <div className={listOfTypeStyle}>
                   {cardTypes.inherited.map(cardType => (
                     <CardTypeThumbnail
@@ -105,6 +131,9 @@ export default function CardCreator({ parent }: CardCreatorProps): JSX.Element {
                   ))}
                 </div>
                 <h4>Custom</h4>
+                <Tips>
+                  Custom project types belong to this very project (ie you have full write right)
+                </Tips>
                 <div className={listOfTypeStyle}>
                   {cardTypes.own.map(cardType => (
                     <CardTypeThumbnail

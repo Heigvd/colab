@@ -24,6 +24,7 @@ import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import OnBlurInput from '../common/OnBlurInput';
 import OpenCloseModal from '../common/OpenCloseModal';
+import Tips from '../common/Tips';
 import { DocumentEditorAsDeliverableWrapper } from '../documents/DocumentEditorWrapper';
 import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
@@ -174,7 +175,7 @@ Props): JSX.Element {
                             dispatch(API.updateCard({ ...card, title: newValue }))
                           }
                         />
-                        {variant != null && variants.length > 1 ? (
+                        {variants.length > 1 ? (
                           <>
                             {'/'}
                             <OnBlurInput
@@ -216,25 +217,23 @@ Props): JSX.Element {
                     </div>
                   </div>
 
-                  {variant != null ? (
-                    <Flex direction="column" grow={1}>
-                      <h5>Card Content #{variant.id}</h5>
-                      <div>
-                        {userAcl.read ? (
-                          variant && variant.id ? (
-                            <DocumentEditorAsDeliverableWrapper
-                              cardContentId={variant.id}
-                              allowEdition={!readOnly}
-                            />
-                          ) : (
-                            <span>no deliverable available</span>
-                          )
+                  <Flex direction="column" grow={1}>
+                    <h5>Card Content #{variant.id}</h5>
+                    <div>
+                      {userAcl.read ? (
+                        variant.id ? (
+                          <DocumentEditorAsDeliverableWrapper
+                            cardContentId={variant.id}
+                            allowEdition={!readOnly}
+                          />
                         ) : (
-                          <span>Access Denied</span>
-                        )}
-                      </div>
-                    </Flex>
-                  ) : null}
+                          <span>no deliverable available</span>
+                        )
+                      ) : (
+                        <span>Access Denied</span>
+                      )}
+                    </div>
+                  </Flex>
                   <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
                 </Flex>
                 <Flex align="center">
@@ -246,17 +245,21 @@ Props): JSX.Element {
                   >
                     {() => (
                       <Flex direction="column">
-                        {variant != null ? (
-                          <AutoSaveInput
-                            inputType="INPUT"
-                            value={String(variant.completionLevel || 0)}
-                            onChange={newValue =>
-                              dispatch(
-                                API.updateCardContent({ ...variant, completionLevel: +newValue }),
-                              )
-                            }
-                          />
-                        ) : null}
+                        <Tips tipsType="TODO">
+                          Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set
+                          completion; Auto: based on children; No: do not event diplay the bar
+                          <br />
+                          Shall we move all of this to card settings ??
+                        </Tips>
+                        <AutoSaveInput
+                          inputType="INPUT"
+                          value={String(variant.completionLevel || 0)}
+                          onChange={newValue =>
+                            dispatch(
+                              API.updateCardContent({ ...variant, completionLevel: +newValue }),
+                            )
+                          }
+                        />
                       </Flex>
                     )}
                   </OpenCloseModal>
@@ -283,13 +286,7 @@ Props): JSX.Element {
             </Flex>
           </Flex>
         </Flex>
-        {showSubcards ? (
-          variant != null ? (
-            <ContentSubs depth={1} cardContent={variant} />
-          ) : (
-            <i>no content</i>
-          )
-        ) : null}
+        {showSubcards ? <ContentSubs depth={1} cardContent={variant} /> : null}
       </Flex>
     );
   }

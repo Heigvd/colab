@@ -11,6 +11,8 @@ import { Route, Routes, useParams } from 'react-router-dom';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { shallowEqual, useAppSelector } from '../../store/hooks';
 import { SecondLevelLink } from '../common/Link';
+import Tips from '../common/Tips';
+import DisplaySettings from './DisplaySettings';
 import LocalAccount from './LocalAccount';
 import UserProfile from './UserProfile';
 
@@ -55,13 +57,20 @@ export default (): JSX.Element => {
                 </SecondLevelLink>
               );
             })}
-            <span>add account</span>
+            <SecondLevelLink to="display">Display Settings</SecondLevelLink>
+            <span>
+              add account{' '}
+              <Tips tipsType="TODO">
+                One user may have one to many accounts. (AAI, wegas, github, ...)
+              </Tips>
+            </span>
             <span>...</span>
           </nav>
           <div>
             <Routes>
               <Route path="/" element={<span>select something...</span>} />
               <Route path="user" element={<UserProfile user={currentUser} />} />
+              <Route path="display" element={<DisplaySettings />} />
               <Route path="account/:id" element={<WrapLocalAccountEditor />} />
             </Routes>
           </div>

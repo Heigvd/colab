@@ -7,6 +7,7 @@
 
 import { Change } from 'colab-rest-client';
 import * as React from 'react';
+import Tips from '../common/Tips';
 import { ChangeTreeRaw } from '../live/ChangeTree';
 import PlayJsPlumb from './PlayJsPlumb';
 
@@ -106,6 +107,28 @@ export default function Debugger(): JSX.Element {
   return (
     <div>
       <PlayJsPlumb />
+      <div>
+        <Tips tipsType="TODO" interactionType="HOVER">
+          coucou todo
+        </Tips>
+        <Tips tipsType="NEWS" interactionType="HOVER">
+          coucou news
+        </Tips>
+        <Tips tipsType="TIPS" interactionType="HOVER">
+          coucou tips
+        </Tips>
+      </div>
+      <div>
+        <Tips tipsType="TODO" interactionType="CLICK">
+          coucou todo
+        </Tips>
+        <Tips tipsType="NEWS" interactionType="CLICK">
+          coucou news
+        </Tips>
+        <Tips tipsType="TIPS" interactionType="CLICK">
+          coucou tips
+        </Tips>
+      </div>
     </div>
   );
 }
