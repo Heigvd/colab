@@ -21,6 +21,11 @@ Setup a 2nd database for tests
 echo "CREATE USER \"colab_test\" WITH PASSWORD '1234';
 CREATE DATABASE \"colab_test\" OWNER \"colab_test\";" |  docker exec colab_postgres psql -U colab
 ```
+create en email testing tool
+#### Mail Hog
+```
+docker run -d --restart always -p 8025:8025 -p 1025:1025 mailhog/mailhog
+```
 
 ## Compile
 
