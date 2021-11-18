@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.model.tools;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.ejb.SecurityFacade;
-import ch.colabproject.colab.api.ejb.TransactionManager;
+import ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
@@ -43,7 +43,7 @@ public class EntityListener {
      * RequestManager
      */
     @Inject
-    private TransactionManager transactionManager;
+    private EntityGatheringBagForPropagation wsEntityBag;
 
     /**
      * Security check
@@ -92,7 +92,7 @@ public class EntityListener {
         }
 
         if (o instanceof WithWebsocketChannels) {
-            transactionManager.registerUpdate((WithWebsocketChannels) o);
+            wsEntityBag.registerUpdate((WithWebsocketChannels) o);
         }
     }
 
@@ -113,7 +113,7 @@ public class EntityListener {
         }
 
         if (o instanceof WithWebsocketChannels) {
-            transactionManager.registerUpdate((WithWebsocketChannels) o);
+            wsEntityBag.registerUpdate((WithWebsocketChannels) o);
         }
     }
 
@@ -147,7 +147,7 @@ public class EntityListener {
         }
 
         if (o instanceof WithWebsocketChannels) {
-            transactionManager.registerDeletion((WithWebsocketChannels) o);
+            wsEntityBag.registerDeletion((WithWebsocketChannels) o);
         }
     }
 }

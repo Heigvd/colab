@@ -16,36 +16,39 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.ejb.AfterCompletion;
-import javax.ejb.BeforeCompletion;
-import javax.ejb.Stateful;
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.transaction.Status;
+import javax.transaction.TransactionSynchronizationRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Transaction sidekick.
+ * Transaction sidekick used to collect updated and deleted entities. Once the transaction is
+ * completed, precompute messages to propagate through websocket channels.
  *
  * @author maxence
  */
-@RequestScoped // one would use a TransactionScoped bean but such a scope is not compatible with
-//                the @AfterCompletion annotation
-@Stateful // Stateful beans allows to use Before and AfterCompletion annotations
-public class TransactionManager implements Serializable {
+@RequestScoped
+public class EntityGatheringBagForPropagation implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(TransactionManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(EntityGatheringBagForPropagation.class);
 
     /**
-     * Access to the persistence unit
+     * Tx sync registry
      */
-    @PersistenceContext(unitName = "COLAB_PU")
-    private EntityManager em;
+    @Resource
+    private transient TransactionSynchronizationRegistry jtaSyncRegistry;
+
+    /**
+     * Synchronizer
+     */
+    private transient WebsocketTxSync synchronizer;
 
     /**
      * To send message to clients
@@ -84,6 +87,27 @@ public class TransactionManager implements Serializable {
      * Is the message has been precomputed ?
      */
     private boolean precomputed = false;
+
+    /**
+     * As soon as this bean is construct, make sure there is a XapiSync bound to the current
+     * transaction
+     */
+    //@AfterBegin
+    @PostConstruct
+    public void construct() {
+        logger.trace("NEW TRANSACTION BEANLIFE CYCLE");
+        if (jtaSyncRegistry != null) {
+            if (synchronizer == null) {
+                logger.trace("Create Sync");
+                synchronizer = new WebsocketTxSync(this);
+                jtaSyncRegistry.registerInterposedSynchronization(synchronizer);
+            } else {
+                logger.trace("Synchronizer already registered");
+            }
+        } else {
+            logger.error(" * NULL -> NO-CONTEXT");
+        }
+    }
 
     /**
      * Register updated object within the WS JTA synchronizer.
@@ -144,7 +168,7 @@ public class TransactionManager implements Serializable {
             requestManager.sudo(() -> {
                 return this.message = WebsocketHelper.prepareWsMessage(userDao, requestManager, filtered, deleted);
             });
-            logger.trace("Precomputed: {}", message);
+            logger.debug("Precomputed: {}", message);
         } catch (Exception ex) {
             logger.error("Failed to precompute websocket messages", ex);
         }
@@ -153,35 +177,59 @@ public class TransactionManager implements Serializable {
     /**
      * Prepare websocket messages
      */
-    @BeforeCompletion
-    public void beforeCompletion() {
-        //make sure to flush everything to database
-        em.flush();
-        logger.info(
-            "Before transactionCompletion: This method is not called for each transaction, why ???");
+    public void prepare() {
+        //make sure to flush everything to database: EDIT 20211118: seems useless
+        //em.flush();
+        requestManager.setTxDone(true);
+        //logger.info(
+        //    "Before transactionCompletion: This method is not called for each transaction, why ???");
         this.precomputeMessage();
     }
 
     /**
-     * After commit, if the transaction was successful, send pre-computed messages.
+     * After completion callback
      *
-     * @param successful true of the transaction was successfully committed
+     * @param status transaction {@link Status status}
      */
-    @AfterCompletion
-    public void afterCompletion(boolean successful) {
-        logger.debug("After transaction completion : {}; messages: {}", successful, message);
-        if (successful) {
-            requestManager.setTxDone(true);
-            if (!precomputed) {
-                logger.info("Messages were not precomputed @BeforeCompletion!!!");
-                // ,essage shall be precomputed during the "before completion" phase, but the
-                // dedicated method is never called, and I do not understand the reason...
-                this.precomputeMessage();
-            }
-            if (message != null && !message.getMessages().isEmpty()) {
-                logger.info("Send messages");
-                websocketFacade.propagate(message);
-            }
+    public void afterCompletion(int status) {
+        switch (status) {
+            case Status.STATUS_COMMITTED:
+                logger.trace("Commit TX");
+                this.commit();
+                break;
+            case Status.STATUS_ROLLEDBACK:
+                logger.trace("Rollback TX");
+                this.rollback();
+                break;
+            default:
+                logger.warn("Unknonwn status {}", status);
+                break;
+        }
+
+    }
+
+    /**
+     * On transaction rollback
+     */
+    private void rollback() {
+        /* no-op */
+    }
+
+    /**
+     * After commit, send pre-computed messages.
+     */
+    private void commit() {
+        logger.debug("After transaction completion: {}", message);
+        requestManager.setTxDone(true);
+        if (!precomputed) {
+            logger.warn("Messages were not precomputed @BeforeCompletion!!!");
+            // message shall be precomputed during the "before completion" phase, but the
+            // dedicated method is never called, and I do not understand the reason...
+            this.precomputeMessage();
+        }
+        if (message != null && !message.getMessages().isEmpty()) {
+            logger.debug("Send messages: {}", message);
+            websocketFacade.propagate(message);
         }
     }
 }
