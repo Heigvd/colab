@@ -38,7 +38,19 @@ export interface TextualField<T> extends BaseField<T> {
 export interface SelectField<T> extends BaseField<T> {
   type: 'select';
   canCreateOption?: boolean;
-  options: { label: string; value: string }[];
+  options: { label: string; value: unknown }[];
+}
+
+export function createSelectField<T, K extends keyof T>(
+  field: SelectField<T> & {
+    key: K;
+    options: {
+      label: string;
+      value: T[K];
+    }[];
+  },
+): Field<T> {
+  return field;
 }
 
 export interface SelectNumberField<T> extends BaseField<T> {
