@@ -14,7 +14,9 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.Channel
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,TeamFacade,497,0,82,0,143,0,65,0,24,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,StickyNoteLinkFacade,337,0,62,0,106,0,43,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,StickyNoteLinkFacade.SrcType,44,0,0,0,5,0,1,0,1,0
+colab-webapp/colab-api,ch.colabproject.colab.api.ejb,WebsocketTxSync,45,0,4,0,16,0,6,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest,71,0,0,0,24,0,13,0,13,0
+colab-webapp/colab-api,ch.colabproject.colab.api.ejb,EntityGatheringBagForPropagation,233,0,15,0,64,0,23,0,15,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,CdiBridgeSingleton,26,0,0,0,8,0,6,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,UserManagement,535,0,54,0,151,0,50,0,23,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,369,0,66,0,81,0,62,0,29,0
@@ -23,7 +25,6 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ApplicationLifecycleFacade,
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,WebsocketFacade,804,0,60,0,212,0,64,0,34,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ProjectFacade,146,0,8,0,40,0,14,0,10,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,CardFacade,745,0,84,0,219,0,81,0,39,0
-colab-webapp/colab-api,ch.colabproject.colab.api.ejb,TransactionManager,184,0,10,0,47,0,17,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,RequestManager,254,0,30,0,74,0,38,0,23,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,DocumentFacade,72,0,8,0,21,0,9,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.utils,CacheControlFilter,28,0,4,0,7,0,5,0,3,0
@@ -65,8 +66,8 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ws,WebsocketEndpoint,134,0,2,0,
 colab-webapp/colab-api,ch.colabproject.colab.api.ws,WebsocketHelper,311,0,12,0,82,0,26,0,20,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ColabConfiguration,47,0,0,0,12,0,11,0,11,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,LiquibaseProducer,22,0,0,0,6,0,4,0,4,0
-colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,40,0,0,0,14,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvider,5,0,0,0,2,0,2,0,2,0
+colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,40,0,0,0,14,0,4,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationConfig,3,0,0,0,1,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.document,BlockDao,59,0,0,0,17,0,6,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.document,ResourceAndRefDao,101,0,0,0,29,0,9,0,9,0

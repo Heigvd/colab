@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.model.tools;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.ejb.SecurityFacade;
-import ch.colabproject.colab.api.ejb.TransactionManager;
+import ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
      * RequestManager
      */
     @Inject
-    private TransactionManager transactionManager;
+    private EntityGatheringBagForPropagation wsEntityBag;
 
     /**
      * Security check
@@ -92,7 +92,7 @@ import org.slf4j.LoggerFactory;
         }
 
 <span class="nc bnc" id="L94" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
-<span class="nc" id="L95">            transactionManager.registerUpdate((WithWebsocketChannels) o);</span>
+<span class="nc" id="L95">            wsEntityBag.registerUpdate((WithWebsocketChannels) o);</span>
         }
 <span class="nc" id="L97">    }</span>
 
@@ -113,7 +113,7 @@ import org.slf4j.LoggerFactory;
         }
 
 <span class="nc bnc" id="L115" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
-<span class="nc" id="L116">            transactionManager.registerUpdate((WithWebsocketChannels) o);</span>
+<span class="nc" id="L116">            wsEntityBag.registerUpdate((WithWebsocketChannels) o);</span>
         }
 <span class="nc" id="L118">    }</span>
 
@@ -147,7 +147,7 @@ import org.slf4j.LoggerFactory;
         }
 
 <span class="nc bnc" id="L149" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
-<span class="nc" id="L150">            transactionManager.registerDeletion((WithWebsocketChannels) o);</span>
+<span class="nc" id="L150">            wsEntityBag.registerDeletion((WithWebsocketChannels) o);</span>
         }
 <span class="nc" id="L152">    }</span>
 }
