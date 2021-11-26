@@ -63,6 +63,12 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     private ExceptionMapper<Exception> exceptionMapper;
 
     /**
+     * Cluster-wide session cache.
+     */
+    @Inject
+    private SessionManager sessionManager;
+
+    /**
      * Get all method or class annotations matching the given type.
      *
      * @param <T>        type of annotation to search
@@ -116,6 +122,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 logger.trace("Request aborted:user is not authenticated");
                 abortWith = HttpErrorMessage.authenticationRequired();
             }
+        } else {
+            sessionManager.touchUserActivityDate(currentUser);
         }
 
         List<AdminResource> annotations = getAnnotations(

@@ -14,6 +14,8 @@ DEBUG_OPTS=
 
 JAVA_HOME=""
 JAVA_EXECUTABLE=""
+INTERFACE=127.0.0.1
+CLUSTERMODE=DEFAULT
 
 function show_help {
     echo "Usage: ./run [OPTIONS]"
@@ -22,12 +24,14 @@ function show_help {
     echo " -m HEAP        heap size (default is ${HEAP})"
     echo " -p PORT        debug port (default is ${DEBUG_PORT})"
     echo " -w WAR_PATH    war path (default is ${THE_WAR})"
+    echo " -i INTERFACE   datagrid discovery interface (default is ${INTERFACE})"
+    echo " -m CLUSTERMODE datagrid discovery mode (default is ${CLUSTERMODE})"
 }
 
 # A POSIX variable
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
-while getopts "h?gm:p:w:j:" opt; do
+while getopts "h?gm:p:w:j:i:m:" opt; do
     case "$opt" in
     h|\?)
         show_help
@@ -42,6 +46,10 @@ while getopts "h?gm:p:w:j:" opt; do
     p)  DEBUG_PORT=$OPTARG
         ;;
     w)  THE_WAR=$OPTARG
+        ;;
+    i)  INTERFACE=$OPTARG
+        ;;
+    m)  CLUSTERMODE=$OPTARG
         ;;
     esac
 done
@@ -86,13 +94,15 @@ if [ $? -eq 0 ]; then
         --add-opens=java.management/sun.management=ALL-UNNAMED
         --add-opens=java.base/sun.net.www.protocol.jrt=ALL-UNNAMED"
     GC="-XX:+UnlockExperimentalVMOptions -XX:+UseZGC"
-    GC="-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1MaxNewSizePercent=75 -XX:G1NewSizePercent=40 -XX:MaxGCPauseMillis=2500"
-# -XX:ConcGCThreads=<number> – Basic logging: -Xlog:gc – Detailed logging useful when tuning: -Xlog:gc*
+    #GC="-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1MaxNewSizePercent=75 -XX:G1NewSizePercent=40 -XX:MaxGCPauseMillis=2500"
+    #-XX:ConcGCThreads=<number> – Basic logging: -Xlog:gc – Detailed logging useful when tuning: -Xlog:gc*
 else
     echo JAVA 8 detected
     JDK_EXTRA_OPTS=""
     GC="-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1MaxNewSizePercent=75 -XX:G1NewSizePercent=40 -XX:MaxGCPauseMillis=2500"
 fi
+
+if [ "${CLUSTERMODE}" = "DEFAULT" ]; then CLUSTERMODE_OPT=""; else CLUSTERMODE_OPT="--clustermode=${CLUSTERMODE}"; fi
 
 
 ${JAVA_EXECUTABLE} ${DEBUG_OPTS} ${JDK_EXTRA_OPTS} ${SSL_OPTS} ${GC} ${HTTP2_OPTS} \
@@ -100,15 +110,20 @@ ${JAVA_EXECUTABLE} ${DEBUG_OPTS} ${JDK_EXTRA_OPTS} ${SSL_OPTS} ${GC} ${HTTP2_OPT
     -Dproduct.name= -XX:+ParallelRefProcEnabled -XX:+UseCompressedOops -XX:-UseLoopPredicate \
     -Xms${HEAP} -Xmx${HEAP} \
     -Djava.security.egd=file:/dev/urandom \
-    -Dcolab.database=colab_prod \
+    -Dfish.payara.shutdowngrace=0 \
+    -Dhazelcast.shutdownhook.enabled=false \
     -Declipselink.cache.coordination.protocol=fish.payara.persistence.eclipselink.cache.coordination.HazelcastPublishingTransportManager \
     -Declipselink.cache.coordination.channel=${HZ_CLUSTER_NAME} \
     -jar ${PAYARA_MICRO} --deploy ${THE_WAR} --clusterName ${HZ_CLUSTER_NAME} \
+    --interfaces "${INTERFACE}" \
+    ${CLUSTERMODE_OPT} \
     --contextroot "" \
-    --interfaces 127.0.0.1 \
     --systemproperties colab.properties \
     --autobindhttp --autobindssl &
 PID=$!
+
+
+    #-Dcolab.database=colab_prod \
 
 wait $PID
 trap - TERM INT

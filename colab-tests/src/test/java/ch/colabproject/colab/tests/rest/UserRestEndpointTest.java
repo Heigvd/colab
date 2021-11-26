@@ -23,7 +23,6 @@ import ch.colabproject.colab.tests.ws.WebsocketClient;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.Date;
 import javax.inject.Inject;
 import javax.websocket.DeploymentException;
 import org.junit.jupiter.api.Assertions;
@@ -105,7 +104,6 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
 
         // not authorized
         user.setAdmin(true);
-        user.setLastSeenAt(new Date(0));
 
         client.userRestEndpoint.updateUser(user);
 

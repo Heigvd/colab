@@ -17,14 +17,14 @@ import ch.colabproject.colab.api.ws.channel.AdminChannel;
 import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
 import ch.colabproject.colab.api.ws.channel.UserChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,8 +35,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -47,8 +46,7 @@ import javax.validation.constraints.Pattern;
  */
 @Entity
 @Table(name = "users", indexes = {
-    @Index(columnList = "username", unique = true),
-})
+    @Index(columnList = "username", unique = true),})
 @NamedQuery(name = "User.findAll", query = "SELECT u from User u")
 @NamedQuery(name = "User.findByUsername",
     query = "SELECT u from User u where u.username = :username")
@@ -98,12 +96,17 @@ public class User implements ColabEntity, WithWebsocketChannels {
     private List<TeamMember> teamMembers = new ArrayList<>();
 
     /**
-     * last activity date
+     * persisted last-activity date
      */
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(columnDefinition = "timestamp with time zone")
     @JsonbTransient
-    private Date lastSeenAt = null;
+    private OffsetDateTime lastSeenAt = null;
+
+    /**
+     * Last activity date
+     */
+    @Transient
+    @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
+    private OffsetDateTime activityDate = null;
 
     /**
      * Firstname
@@ -200,8 +203,8 @@ public class User implements ColabEntity, WithWebsocketChannels {
     /**
      * @return last seen at
      */
-    public Date getLastSeenAt() {
-        return new Date(lastSeenAt.getTime());
+    public OffsetDateTime getLastSeenAt() {
+        return lastSeenAt;
     }
 
     /**
@@ -209,8 +212,31 @@ public class User implements ColabEntity, WithWebsocketChannels {
      *
      * @param lastSeenAt the lastSeenAt date
      */
-    public void setLastSeenAt(Date lastSeenAt) {
-        this.lastSeenAt = new Date(lastSeenAt.getTime());
+    public void setLastSeenAt(OffsetDateTime lastSeenAt) {
+        this.lastSeenAt = lastSeenAt;
+    }
+
+    /**
+     * Get last known activity date.
+     *
+     * @return transient <code>this.activityDate</code> if it exists or persisted
+     *         <code>this.lastSeenAt</code> otherwise
+     */
+    public OffsetDateTime getActivityDate() {
+        if (activityDate != null) {
+            return activityDate;
+        } else {
+            return lastSeenAt;
+        }
+    }
+
+    /**
+     * Set transient activity date
+     *
+     * @param activityDate new activityDate
+     */
+    public void setActivityDate(OffsetDateTime activityDate) {
+        this.activityDate = activityDate;
     }
 
     /**
@@ -355,7 +381,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
      * Set lastSeenAt to now
      */
     public void touchLastSeenAt() {
-        this.setLastSeenAt(new Date());
+        this.setLastSeenAt(OffsetDateTime.now());
     }
 
     // ---------------------------------------------------------------------------------------------

@@ -12,6 +12,9 @@ import ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.security.SessionManager;
+import java.time.OffsetDateTime;
 import javax.inject.Inject;
 import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
@@ -39,23 +42,21 @@ public class EntityListener {
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(EntityListener.class);
 
-    /**
-     * RequestManager
-     */
+    /** To collect entities for later propagation */
     @Inject
     private EntityGatheringBagForPropagation wsEntityBag;
 
-    /**
-     * Security check
-     */
+    /** Security check */
     @Inject
     private SecurityFacade securityFacade;
 
-    /**
-     *
-     */
+    /** request manager */
     @Inject
     private RequestManager requestManager;
+
+    /** activity date cache */
+    @Inject
+    private SessionManager sessionManager;
 
     /**
      * Track all reads from database
@@ -65,12 +66,13 @@ public class EntityListener {
     @PostLoad
     public void onLoad(Object o) {
         logger.trace("Load {}", o);
-        if (o instanceof WithPermission) {
-            if (requestManager.isInSecurityTx()) {
-                securityFacade.assertReadPermission((WithPermission) o);
-            } else {
-                securityFacade.assertReadPermissionTx((WithPermission) o);
-            }
+        // Skip permission check if a condition assetion is already in progress
+        if (o instanceof WithPermission && !requestManager.isInSecurityTx()) {
+            securityFacade.assertReadPermissionTx((WithPermission) o);
+        }
+        if (o instanceof User){
+            OffsetDateTime activityDate = sessionManager.getActivityDate((User) o);
+            ((User) o).setActivityDate(activityDate);
         }
     }
 
@@ -83,12 +85,9 @@ public class EntityListener {
     public void onPersist(Object o) {
         logger.trace("Persist {}", o);
 
-        if (o instanceof WithPermission) {
-            if (requestManager.isInSecurityTx()) {
-                securityFacade.assertCreatePermission((WithPermission) o);
-            } else {
-                securityFacade.assertCreatePermissionTx((WithPermission) o);
-            }
+        // Skip permission check if a condition assetion is already in progress
+        if (o instanceof WithPermission && !requestManager.isInSecurityTx()) {
+            securityFacade.assertCreatePermissionTx((WithPermission) o);
         }
 
         if (o instanceof WithWebsocketChannels) {
@@ -97,19 +96,16 @@ public class EntityListener {
     }
 
     /**
-     * Track all updated
+     * Track all updates
      *
      * @param o just updated object
      */
     @PostUpdate
     public void onUpdate(Object o) {
         logger.trace("Update {}", o);
-        if (o instanceof WithPermission) {
-            if (requestManager.isInSecurityTx()) {
-                securityFacade.assertUpdatePermission((WithPermission) o);
-            } else {
-                securityFacade.assertUpdatePermissionTx((WithPermission) o);
-            }
+        // Skip permission check if a condition assetion is already in progress
+        if (o instanceof WithPermission && !requestManager.isInSecurityTx()) {
+            securityFacade.assertUpdatePermissionTx((WithPermission) o);
         }
 
         if (o instanceof WithWebsocketChannels) {
@@ -125,7 +121,7 @@ public class EntityListener {
     @PrePersist
     @PreUpdate
     public void touch(Object o) {
-        if (o instanceof ColabEntity) {
+        if (!requestManager.isDoNotTrackChange() && o instanceof ColabEntity) {
             ((ColabEntity) o).touch(requestManager.getCurrentUser());
         }
     }
@@ -138,12 +134,9 @@ public class EntityListener {
     @PreRemove
     public void onDestroy(Object o) {
         logger.trace("Destroy {}", o);
-        if (o instanceof WithPermission) {
-            if (requestManager.isInSecurityTx()) {
-                securityFacade.assertDeletePermission((WithPermission) o);
-            } else {
-                securityFacade.assertDeletePermissionTx((WithPermission) o);
-            }
+        // Skip permission check if a condition assetion is already in progress
+        if (o instanceof WithPermission && !requestManager.isInSecurityTx()) {
+            securityFacade.assertDeletePermissionTx((WithPermission) o);
         }
 
         if (o instanceof WithWebsocketChannels) {

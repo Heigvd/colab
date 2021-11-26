@@ -16,12 +16,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Status;
-import javax.transaction.TransactionSynchronizationRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,18 +29,13 @@ import org.slf4j.LoggerFactory;
  * @author maxence
  */
 @RequestScoped
+//@Stateful
 public class EntityGatheringBagForPropagation implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(EntityGatheringBagForPropagation.class);
-
-    /**
-     * Tx sync registry
-     */
-    @Resource
-    private transient TransactionSynchronizationRegistry jtaSyncRegistry;
 
     /**
      * Synchronizer
@@ -69,6 +61,12 @@ public class EntityGatheringBagForPropagation implements Serializable {
     private RequestManager requestManager;
 
     /**
+     * To sync with JTA transaction(s)
+     */
+    @Inject
+    private WebsocketTxManager txManager;
+
+    /**
      * set of updated entities to be propagated
      */
     private Set<WithWebsocketChannels> updated = new HashSet<>();
@@ -89,32 +87,51 @@ public class EntityGatheringBagForPropagation implements Serializable {
     private boolean precomputed = false;
 
     /**
-     * As soon as this bean is construct, make sure there is a XapiSync bound to the current
-     * transaction
+     * Get the synchronizer
+     *
+     * @return the synchronizer
      */
-    //@AfterBegin
-    @PostConstruct
-    public void construct() {
-        logger.trace("NEW TRANSACTION BEANLIFE CYCLE");
-        if (jtaSyncRegistry != null) {
-            if (synchronizer == null) {
-                logger.trace("Create Sync");
-                synchronizer = new WebsocketTxSync(this);
-                jtaSyncRegistry.registerInterposedSynchronization(synchronizer);
-            } else {
-                logger.trace("Synchronizer already registered");
-            }
-        } else {
-            logger.error(" * NULL -> NO-CONTEXT");
-        }
+    public WebsocketTxSync getSynchronizer() {
+        return synchronizer;
     }
 
+    /**
+     * Set the synchronizer
+     *
+     * @param sync the synchronizer
+     */
+    public void setSynchronizer(WebsocketTxSync sync) {
+        this.synchronizer = sync;
+    }
+
+//    /**
+//     * As soon as this bean is construct, make sure there is a synchronizer bound to the current
+//     * transaction
+//     */
+//    @AfterBegin
+//    //@PostConstruct
+//    public void construct() {
+//        logger.trace("NEW TRANSACTION BEANLIFE CYCLE");
+//        if (jtaSyncRegistry != null) {
+//            if (synchronizer == null) {
+//                logger.trace("Create Sync");
+//                synchronizer = new WebsocketTxSync(this);
+//                jtaSyncRegistry.registerInterposedSynchronization(synchronizer);
+//            } else {
+//                logger.trace("Synchronizer already registered");
+//            }
+//        } else {
+//            logger.error(" * NULL -> NO-CONTEXT");
+//        }
+//    }
     /**
      * Register updated object within the WS JTA synchronizer.
      *
      * @param o object to register
      */
     public void registerUpdate(WithWebsocketChannels o) {
+        // make sure txManager exists by just touching it
+        txManager.touch();
         updated.add(o);
         logger.trace("UpdatedSet: {}", updated);
     }
@@ -125,6 +142,8 @@ public class EntityGatheringBagForPropagation implements Serializable {
      * @param c collection of objects to register
      */
     public void registerUpdates(Collection<WithWebsocketChannels> c) {
+        // make sure txManager exists by just touching it
+        txManager.touch();
         updated.addAll(c);
         logger.trace("UpdatedSet: {}", updated);
     }
@@ -135,6 +154,8 @@ public class EntityGatheringBagForPropagation implements Serializable {
      * @param c just deleted objects
      */
     public void registerDeletion(Collection<? extends WithWebsocketChannels> c) {
+        // make sure txManager exists by just touching it
+        txManager.touch();
         c.stream()
             .map(IndexEntry::build)
             .forEach(deleted::add);
@@ -147,6 +168,8 @@ public class EntityGatheringBagForPropagation implements Serializable {
      * @param o just deleted object
      */
     public void registerDeletion(WithWebsocketChannels o) {
+        // make sure txManager exists by just touching it
+        txManager.touch();
         deleted.add(IndexEntry.build(o));
         logger.trace("Deleted set: {}", deleted);
     }
@@ -205,7 +228,8 @@ public class EntityGatheringBagForPropagation implements Serializable {
                 logger.warn("Unknonwn status {}", status);
                 break;
         }
-
+        // clear the synchronizer, so any new transaction will recreate one
+        this.synchronizer = null;
     }
 
     /**

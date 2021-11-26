@@ -63,7 +63,13 @@ public class SecurityFacade {
         }
     }
 
-    private void inSecurityTx(Runnable action) {
+    /**
+     * Mark the current request as {@link RequestManager#setInSecurityTx(boolean) in-security-tx}
+     * and run the given action.
+     *
+     * @param action action to run
+     */
+    private void runInSecurityTx(Runnable action) {
         requestManager.setInSecurityTx(true);
         action.run();
         requestManager.setInSecurityTx(false);
@@ -82,51 +88,35 @@ public class SecurityFacade {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void assertConditionTx(Condition condition, String message) {
-        inSecurityTx(() -> this.assertCondition(condition, message));
+        runInSecurityTx(() -> this.assertCondition(condition, message, null));
     }
 
     /**
-     * Assert the given condition is true
+     * Assert the given condition is true. If the current user is an admin, this assertion will
+     * never fail
      *
-     * @param condition the condition to check
-     * @param message   message to log in case the assertion failed
+     * @param condition the condition to evaluate
+     * @param message   message to display if the assertion failed
+     * @param o         related object to log, may be null
      *
      * @throws HttpErrorMessage <ul>
      * <li>with authenticationRequired if assertion fails and current user is not authenticated;
      * <li>with forbidden if the authenticated user does not have enough permission
      * </ul>
      */
-    public void assertCondition(Condition condition, String message) {
-        if (!requestManager.isAdmin()) {
-            requestManager.sudo(() -> {
-                if (!condition.eval(requestManager, this)) {
-                    logger.error(message);
-                    if (requestManager.isAuthenticated()) {
-                        throw HttpErrorMessage.forbidden();
-                    } else {
-                        throw HttpErrorMessage.authenticationRequired();
-                    }
-                }
-            });
-        }
-    }
-
-    /**
-     * Assert the given condition is true.If the current user is an admin, this assertion will never
-     * fail
-     *
-     * @param condition the condition to evaluate
-     *
-     * @throws HttpErrorMessage <li>with authenticationRequired if assertion fails and current user
-     *                          is not authenticated; <li>with forbidden if the authenticated user
-     *                          does not have enough permission
-     */
     private void assertCondition(Condition condition, String message, WithPermission o) {
         if (!requestManager.isAdmin()) {
             requestManager.sudo(() -> {
                 if (!condition.eval(requestManager, this)) {
-                    logger.error("{} Permission denied: {} ({}) currentUser: {}",
-                        message, o, condition, requestManager.getCurrentUser());
+                    if (logger.isErrorEnabled()) {
+                        if (o != null) {
+                            logger.error("{} Permission denied: {} ({}) currentUser: {}",
+                                message, o, condition, requestManager.getCurrentUser());
+                        } else {
+                            logger.error("{} Permission denied: ({}) currentUser: {}",
+                                message, condition, requestManager.getCurrentUser());
+                        }
+                    }
                     if (requestManager.isAuthenticated()) {
                         throw HttpErrorMessage.forbidden();
                     } else {
@@ -144,7 +134,7 @@ public class SecurityFacade {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void assertCreatePermissionTx(WithPermission o) {
-        inSecurityTx(() -> this.assertCreatePermission(o));
+        runInSecurityTx(() -> this.assertCreatePermission(o));
     }
 
     /**
@@ -152,7 +142,7 @@ public class SecurityFacade {
      *
      * @param o object the user want to create
      */
-    public void assertCreatePermission(WithPermission o) {
+    private void assertCreatePermission(WithPermission o) {
         this.assertCondition(o.getCreateCondition(), "Create", o);
     }
 
@@ -163,7 +153,7 @@ public class SecurityFacade {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void assertReadPermissionTx(WithPermission o) {
-        inSecurityTx(() -> this.assertReadPermission(o));
+        runInSecurityTx(() -> this.assertReadPermission(o));
     }
 
     /**
@@ -171,7 +161,7 @@ public class SecurityFacade {
      *
      * @param o object the user want to read
      */
-    public void assertReadPermission(WithPermission o) {
+    private void assertReadPermission(WithPermission o) {
         this.assertCondition(o.getReadCondition(), "Read", o);
     }
 
@@ -182,7 +172,7 @@ public class SecurityFacade {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void assertUpdatePermissionTx(WithPermission o) {
-        inSecurityTx(() -> this.assertUpdatePermission(o));
+        runInSecurityTx(() -> this.assertUpdatePermission(o));
     }
 
     /**
@@ -190,7 +180,7 @@ public class SecurityFacade {
      *
      * @param o object the user want to update
      */
-    public void assertUpdatePermission(WithPermission o) {
+    private void assertUpdatePermission(WithPermission o) {
         this.assertCondition(o.getUpdateCondition(), "Update", o);
     }
 
@@ -201,7 +191,7 @@ public class SecurityFacade {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void assertDeletePermissionTx(WithPermission o) {
-        inSecurityTx(() -> this.assertDeletePermission(o));
+        runInSecurityTx(() -> this.assertDeletePermission(o));
     }
 
     /**
@@ -209,7 +199,7 @@ public class SecurityFacade {
      *
      * @param o object the user want to delete
      */
-    public void assertDeletePermission(WithPermission o) {
+    private void assertDeletePermission(WithPermission o) {
         this.assertCondition(o.getDeleteCondition(), "Delete", o);
     }
 

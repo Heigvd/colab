@@ -15,6 +15,7 @@ import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 //import ToastFnMarkdownEditor from '../blocks/markdown/ToastFnMarkdownEditor';
 import OpenClose from '../common/OpenClose';
+import Tips from '../common/Tips';
 import WithToolbar from '../common/WithToolbar';
 import ChangeTree from './ChangeTree';
 import { useLiveBlock } from './LiveTextEditor';
@@ -105,6 +106,7 @@ export default function LiveEditor({
             flexDirection: 'row',
           })}
         >
+          <Tips tipsType="TODO">Lot of work... custom WYSIWYG editor with live capabilities</Tips>
           {/*<ToastClsMarkdownEditor value={valueRef.current.current} onChange={onInternalChange} />*/}
           <CleverTextarea className={grow} value={currentValue} onChange={onChange} />
           <MarkdownViewer className={grow} md={currentValue} />
