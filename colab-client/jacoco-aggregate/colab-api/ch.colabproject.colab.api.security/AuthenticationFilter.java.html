@@ -63,6 +63,12 @@ import org.slf4j.LoggerFactory;
     private ExceptionMapper&lt;Exception&gt; exceptionMapper;
 
     /**
+     * Cluster-wide session cache.
+     */
+    @Inject
+    private SessionManager sessionManager;
+
+    /**
      * Get all method or class annotations matching the given type.
      *
      * @param &lt;T&gt;        type of annotation to search
@@ -75,19 +81,19 @@ import org.slf4j.LoggerFactory;
     private &lt;T extends Annotation&gt; List&lt;T&gt; getAnnotations(Class&lt;T&gt; annotation,
         Class&lt;?&gt; klass, Method method) {
 
-<span class="nc" id="L78">        List&lt;T&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L84">        List&lt;T&gt; list = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L80">        T a = method.getAnnotation(annotation);</span>
-<span class="nc bnc" id="L81" title="All 2 branches missed.">        if (a != null) {</span>
-<span class="nc" id="L82">            list.add(a);</span>
+<span class="nc" id="L86">        T a = method.getAnnotation(annotation);</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (a != null) {</span>
+<span class="nc" id="L88">            list.add(a);</span>
         }
-<span class="nc" id="L84">        a = klass.getAnnotation(annotation);</span>
+<span class="nc" id="L90">        a = klass.getAnnotation(annotation);</span>
 
-<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (a != null) {</span>
-<span class="nc" id="L87">            list.add(a);</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (a != null) {</span>
+<span class="nc" id="L93">            list.add(a);</span>
         }
 
-<span class="nc" id="L90">        return list;</span>
+<span class="nc" id="L96">        return list;</span>
     }
 
     /**
@@ -97,47 +103,49 @@ import org.slf4j.LoggerFactory;
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         // Targeted Class &amp; method
-<span class="nc" id="L100">        final Class&lt;?&gt; targetClass = resourceInfo.getResourceClass();</span>
-<span class="nc" id="L101">        Method targetMethod = resourceInfo.getResourceMethod();</span>
+<span class="nc" id="L106">        final Class&lt;?&gt; targetClass = resourceInfo.getResourceClass();</span>
+<span class="nc" id="L107">        Method targetMethod = resourceInfo.getResourceMethod();</span>
 
-<span class="nc" id="L103">        User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc" id="L104">        HttpErrorMessage abortWith = null;</span>
+<span class="nc" id="L109">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc" id="L110">        HttpErrorMessage abortWith = null;</span>
 
-<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (currentUser == null) {</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (currentUser == null) {</span>
             // curenr user not authenticated: make sure the targeted method is accessible to
             // unauthenticated user
-<span class="nc" id="L109">            List&lt;AuthenticationRequired&gt; annotations = getAnnotations(</span>
+<span class="nc" id="L115">            List&lt;AuthenticationRequired&gt; annotations = getAnnotations(</span>
                 AuthenticationRequired.class,
                 targetClass, targetMethod);
 
-<span class="nc bnc" id="L113" title="All 2 branches missed.">            if (!annotations.isEmpty()) {</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (!annotations.isEmpty()) {</span>
                 // No current user but annotation required to be authenticated
                 // abort with 401 code
-<span class="nc" id="L116">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
-<span class="nc" id="L117">                abortWith = HttpErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L122">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
+<span class="nc" id="L123">                abortWith = HttpErrorMessage.authenticationRequired();</span>
             }
+<span class="nc" id="L125">        } else {</span>
+<span class="nc" id="L126">            sessionManager.touchUserActivityDate(currentUser);</span>
         }
 
-<span class="nc" id="L121">        List&lt;AdminResource&gt; annotations = getAnnotations(</span>
+<span class="nc" id="L129">        List&lt;AdminResource&gt; annotations = getAnnotations(</span>
             AdminResource.class,
             targetClass, targetMethod);
-<span class="nc bnc" id="L124" title="All 2 branches missed.">        if (!annotations.isEmpty()) {</span>
-<span class="nc bnc" id="L125" title="All 2 branches missed.">            if (currentUser == null) {</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (!annotations.isEmpty()) {</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">            if (currentUser == null) {</span>
                 // no current user : unauthorized asks for user to authenticate
-<span class="nc" id="L127">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
-<span class="nc" id="L128">                abortWith = HttpErrorMessage.authenticationRequired();</span>
+<span class="nc" id="L135">                logger.trace(&quot;Request aborted:user is not authenticated&quot;);</span>
+<span class="nc" id="L136">                abortWith = HttpErrorMessage.authenticationRequired();</span>
             } else {
-<span class="nc bnc" id="L130" title="All 2 branches missed.">                if (!currentUser.isAdmin()) {</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">                if (!currentUser.isAdmin()) {</span>
                     // current user is authenticaed but lack admin right: forbidden
-<span class="nc" id="L132">                    logger.trace(&quot;Request aborted:user tries to access admin resource&quot;);</span>
-<span class="nc" id="L133">                    abortWith = HttpErrorMessage.forbidden();</span>
+<span class="nc" id="L140">                    logger.trace(&quot;Request aborted:user tries to access admin resource&quot;);</span>
+<span class="nc" id="L141">                    abortWith = HttpErrorMessage.forbidden();</span>
                 }
             }
         }
 
-<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (abortWith != null) {</span>
-<span class="nc" id="L139">            requestContext.abortWith(exceptionMapper.toResponse(abortWith));</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">        if (abortWith != null) {</span>
+<span class="nc" id="L147">            requestContext.abortWith(exceptionMapper.toResponse(abortWith));</span>
         }
-<span class="nc" id="L141">    }</span>
+<span class="nc" id="L149">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

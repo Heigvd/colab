@@ -497,7 +497,7 @@ import org.slf4j.LoggerFactory;
                 //merge has been done
 <span class="nc" id="L498">                HashSet&lt;String&gt; newDeps = new HashSet&lt;&gt;(child.getBasedOn());</span>
 <span class="nc" id="L499">                newDeps.remove(offsetFromRev);</span>
-<span class="nc" id="L500">                logger.error(&quot;Do not go deeper than {}, now based on {}&quot;, child, newDeps);</span>
+<span class="nc" id="L500">                logger.debug(&quot;Do not go deeper than {}, now based on {}&quot;, child, newDeps);</span>
 <span class="nc" id="L501">                child.setBasedOn(newDeps);</span>
                 //child.getBasedOn().remove(offsetFromRev);
             }
@@ -690,7 +690,7 @@ import org.slf4j.LoggerFactory;
                     }
 
 <span class="nc" id="L692">                    logger.debug(&quot; -&gt; {}&quot;, buffer);</span>
-                    //logger.trace(&quot;Offsets&quot; + offsets);
+                    // logger.trace(&quot;Offsets&quot; + offsets);
                     // rebase others children
 
 <span class="nc" id="L696">                    changes.removeAll(children);</span>
@@ -698,7 +698,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L698">                        Change child = children.remove(i);</span>
 <span class="nc bnc" id="L699" title="All 4 branches missed.">                        if (!rebase(allChanges, change, child) &amp;&amp; strict) {</span>
                             // todo throw ?
-<span class="nc" id="L701">                            logger.error(&quot;Conflict&quot;);</span>
+<span class="nc" id="L701">                            logger.warn(&quot;Conflict&quot;);</span>
                         }
 <span class="nc" id="L703">                        changes.add(0, child);</span>
                     }

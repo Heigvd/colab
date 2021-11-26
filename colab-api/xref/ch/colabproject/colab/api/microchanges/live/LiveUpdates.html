@@ -505,7 +505,7 @@
 <a class="jxr_linenumber" name="L497" href="#L497">497</a>                 <em class="jxr_comment">//merge has been done</em>
 <a class="jxr_linenumber" name="L498" href="#L498">498</a>                 HashSet&lt;String&gt; newDeps = <strong class="jxr_keyword">new</strong> HashSet&lt;&gt;(child.getBasedOn());
 <a class="jxr_linenumber" name="L499" href="#L499">499</a>                 newDeps.remove(offsetFromRev);
-<a class="jxr_linenumber" name="L500" href="#L500">500</a>                 logger.error(<span class="jxr_string">"Do not go deeper than {}, now based on {}"</span>, child, newDeps);
+<a class="jxr_linenumber" name="L500" href="#L500">500</a>                 logger.debug(<span class="jxr_string">"Do not go deeper than {}, now based on {}"</span>, child, newDeps);
 <a class="jxr_linenumber" name="L501" href="#L501">501</a>                 child.setBasedOn(newDeps);
 <a class="jxr_linenumber" name="L502" href="#L502">502</a>                 <em class="jxr_comment">//child.getBasedOn().remove(offsetFromRev);</em>
 <a class="jxr_linenumber" name="L503" href="#L503">503</a>             }
@@ -698,7 +698,7 @@
 <a class="jxr_linenumber" name="L690" href="#L690">690</a>                     }
 <a class="jxr_linenumber" name="L691" href="#L691">691</a> 
 <a class="jxr_linenumber" name="L692" href="#L692">692</a>                     logger.debug(<span class="jxr_string">" -&gt; {}"</span>, buffer);
-<a class="jxr_linenumber" name="L693" href="#L693">693</a>                     <em class="jxr_comment">//logger.trace("Offsets" + offsets);</em>
+<a class="jxr_linenumber" name="L693" href="#L693">693</a>                     <em class="jxr_comment">// logger.trace("Offsets" + offsets);</em>
 <a class="jxr_linenumber" name="L694" href="#L694">694</a>                     <em class="jxr_comment">// rebase others children</em>
 <a class="jxr_linenumber" name="L695" href="#L695">695</a> 
 <a class="jxr_linenumber" name="L696" href="#L696">696</a>                     changes.removeAll(children);
@@ -706,7 +706,7 @@
 <a class="jxr_linenumber" name="L698" href="#L698">698</a>                         <a name="Change" href="../../../../../../ch/colabproject/colab/api/microchanges/model/Change.html#Change">Change</a> child = children.remove(i);
 <a class="jxr_linenumber" name="L699" href="#L699">699</a>                         <strong class="jxr_keyword">if</strong> (!rebase(allChanges, change, child) &amp;&amp; strict) {
 <a class="jxr_linenumber" name="L700" href="#L700">700</a>                             <em class="jxr_comment">// todo throw ?</em>
-<a class="jxr_linenumber" name="L701" href="#L701">701</a>                             logger.error(<span class="jxr_string">"Conflict"</span>);
+<a class="jxr_linenumber" name="L701" href="#L701">701</a>                             logger.warn(<span class="jxr_string">"Conflict"</span>);
 <a class="jxr_linenumber" name="L702" href="#L702">702</a>                         }
 <a class="jxr_linenumber" name="L703" href="#L703">703</a>                         changes.add(0, child);
 <a class="jxr_linenumber" name="L704" href="#L704">704</a>                     }

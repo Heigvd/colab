@@ -9,6 +9,9 @@ package ch.colabproject.colab.api.setup;
 import ch.colabproject.colab.api.ejb.ApplicationLifecycleFacade;
 import ch.colabproject.colab.api.ejb.CdiBridgeSingleton;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import com.hazelcast.cluster.Member;
+import com.hazelcast.core.HazelcastInstance;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -22,14 +25,18 @@ import org.slf4j.LoggerFactory;
  * @author maxence
  */
 @WebServlet(loadOnStartup = 2)
-<span class="nc" id="L25">public class ApplicationLifecycle extends HttpServlet {</span>
+<span class="nc" id="L28">public class ApplicationLifecycle extends HttpServlet {</span>
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Logger. Default level, set in logback.xml, is INFO
      */
-<span class="nc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(ApplicationLifecycle.class);</span>
+<span class="nc" id="L35">    private static final Logger logger = LoggerFactory.getLogger(ApplicationLifecycle.class);</span>
+
+    /** Hazelcast instance */
+    @Inject
+    private HazelcastInstance hzInstance;
 
     /**
      * User related methods
@@ -53,25 +60,55 @@ import org.slf4j.LoggerFactory;
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
-<span class="nc" id="L56">        super.init(config);</span>
-<span class="nc" id="L57">        logger.info(&quot;Initialize Application&quot;);</span>
+<span class="nc" id="L63">        super.init(config);</span>
+<span class="nc" id="L64">        logger.info(&quot;Initialize Application&quot;);</span>
 
-<span class="nc" id="L59">        logger.info(&quot;Initialize Bridge Singleton&quot;);</span>
-<span class="nc" id="L60">        cdiBridgeSingleton.init();</span>
+<span class="nc" id="L66">        logger.info(&quot;Initialize Bridge Singleton&quot;);</span>
+<span class="nc" id="L67">        cdiBridgeSingleton.init();</span>
 
         // make sure the PolymoorphicDeserializer known all entities defined in
         // the ch.colabproject.colab.api package
-<span class="nc" id="L64">        int newTypeCount = PolymorphicDeserializer.includePackage(&quot;ch.colabproject.colab.api&quot;);</span>
-<span class="nc" id="L65">        logger.info(&quot;Update PolymorphicDeserializer: {} new types&quot;, newTypeCount);</span>
+<span class="nc" id="L71">        int newTypeCount = PolymorphicDeserializer.includePackage(&quot;ch.colabproject.colab.api&quot;);</span>
+<span class="nc" id="L72">        logger.info(&quot;Update PolymorphicDeserializer: {} new types&quot;, newTypeCount);</span>
 
-<span class="nc" id="L67">        logger.info(&quot;Create a default admin user if none exists&quot;);</span>
-<span class="nc" id="L68">        applicationLifecycleFacade.createDefaultAdminIfNone();</span>
-<span class="nc" id="L69">    }</span>
+<span class="nc" id="L74">        logger.info(&quot;Create a default admin user if none exists&quot;);</span>
+<span class="nc" id="L75">        applicationLifecycleFacade.createDefaultAdminIfNone();</span>
+
+<span class="nc" id="L77">        Runtime.getRuntime().addShutdownHook(new Thread() {</span>
+            @Override
+            public void run() {
+<span class="nc" id="L80">                logger.info(&quot;Gracefull Shutdown Hook&quot;);</span>
+<span class="nc" id="L81">                gracefullShutdown();</span>
+<span class="nc" id="L82">            }</span>
+        });
+<span class="nc" id="L84">    }</span>
+
+    /**
+     * Shutdown everything with grace
+     */
+    public void gracefullShutdown() {
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (hzInstance != null) {</span>
+<span class="nc" id="L91">            Set&lt;Member&gt; members = hzInstance.getCluster().getMembers();</span>
+            //TODO: sessionManager.writeActivityDatesToDatabase();
+<span class="nc" id="L93">            logger.error(&quot;Members: {}&quot;, members);</span>
+<span class="nc" id="L94">        } else {</span>
+<span class="nc" id="L95">            logger.error(&quot;NO HAZELCAST INSTANCE: SHOULD BE UNREACHABLE&quot;);</span>
+        }
+
+        try {
+<span class="nc" id="L99">            String shutdownHook = System.getProperty(&quot;hazelcast.shutdownhook.enabled&quot;, &quot;true&quot;);</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">            if (&quot;false&quot;.equals(shutdownHook)) {</span>
+<span class="nc" id="L101">                hzInstance.shutdown();</span>
+            }
+<span class="nc" id="L103">        } catch (Exception ex) {</span>
+<span class="nc" id="L104">            logger.error(&quot;HzShutdown Error: {}&quot;, ex);</span>
+<span class="nc" id="L105">        }</span>
+<span class="nc" id="L106">    }</span>
 
     @Override
     public void destroy() {
-<span class="nc" id="L73">        super.destroy();</span>
-<span class="nc" id="L74">        logger.trace(&quot;LIFE CYCLE : destroy&quot;);</span>
-<span class="nc" id="L75">    }</span>
+<span class="nc" id="L110">        logger.info(&quot;LIFE CYCLE : destroy&quot;);</span>
+<span class="nc" id="L111">        super.destroy();</span>
+<span class="nc" id="L112">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -156,9 +156,93 @@ public class Helper {
     }
 
     /**
+     * Convert given stack trace to string but skip some first elements.
+     *
+     * @param stackTrace list of stack trace element to print
+     * @param skip       number of element to slip
+     *
+     * @return string to be logged
+     */
+    private static String prettyPrintColabStackTrace(StackTraceElement[] stackTrace, int skip) {
+<span class="nc" id="L167">        StringBuilder sb = new StringBuilder();</span>
+
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        for (int i = skip ; i &lt; stackTrace.length; i++) {</span>
+<span class="nc" id="L170">            StackTraceElement elem = stackTrace[i];</span>
+<span class="nc bnc" id="L171" title="All 2 branches missed.">            if (elem.getClassName().startsWith(&quot;ch.colab&quot;)) {</span>
+<span class="nc" id="L172">                sb.append(&quot;\n\tat &quot;);</span>
+<span class="nc" id="L173">                sb.append(elem);</span>
+            }
+        }
+<span class="nc" id="L176">        return sb.toString();</span>
+    }
+
+    /**
+     * Export the current colab-only stack trace to string.
+     *
+     * @return string which represent the current stack trace
+     */
+    public static String getStringifiedColabStackTrace() {
+<span class="nc" id="L185">        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();</span>
+<span class="nc" id="L186">        return prettyPrintColabStackTrace(stackTrace, 2);</span>
+    }
+
+    /**
+     * Dump the colab-only stack trace to string from given throwable.
+     *
+     * @param t the throwable to dump the stack from
+     *
+     * @return string which represent the throwable stack trace
+     */
+    public static String getStringifiedColabStackTrace(Throwable t) {
+<span class="nc" id="L197">        StackTraceElement[] stackTrace = t.getStackTrace();</span>
+<span class="nc" id="L198">        return prettyPrintColabStackTrace(stackTrace, 0);</span>
+    }
+
+    /**
+     * Convert given stack trace to string but skip some first elements.
+     *
+     * @param stackTrace list of stack trace element to print
+     * @param skip       number of element to slip
+     *
+     * @return string to be logged
+     */
+    private static String prettyPrintStackTrace(StackTraceElement[] stackTrace, int skip) {
+<span class="nc" id="L210">        StringBuilder sb = new StringBuilder();</span>
+
+<span class="nc bnc" id="L212" title="All 2 branches missed.">        for (int i = skip ; i &lt; stackTrace.length; i++) {</span>
+<span class="nc" id="L213">            StackTraceElement elem = stackTrace[i];</span>
+<span class="nc" id="L214">            sb.append(&quot;\n\tat &quot;);</span>
+<span class="nc" id="L215">            sb.append(elem);</span>
+        }
+<span class="nc" id="L217">        return sb.toString();</span>
+    }
+
+    /**
+     * Export the current stack trace to string.
+     *
+     * @return string which represent the current stack trace
+     */
+    public static String getStringifiedStackTrace() {
+<span class="nc" id="L226">        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();</span>
+<span class="nc" id="L227">        return prettyPrintStackTrace(stackTrace, 2);</span>
+    }
+
+    /**
+     * Dump the stack trace to string from given throwable.
+     *
+     * @param t the throwable to dump the stack from
+     *
+     * @return string which represent the throwable stack trace
+     */
+    public static String getStringifiedStackTrace(Throwable t) {
+<span class="nc" id="L238">        StackTraceElement[] stackTrace = t.getStackTrace();</span>
+<span class="nc" id="L239">        return prettyPrintStackTrace(stackTrace, 0);</span>
+    }
+
+    /**
      * Lookup instances
      *
-     * @param &lt;T&gt; class to lookup
+     * @param &lt;T&gt;   class to lookup
      * @param klass class to lookup
      *
      * @return instance of &lt;code&gt;klass&lt;/code&gt;
@@ -166,8 +250,8 @@ public class Helper {
      * @throws NamingException if lookup failed
      */
     public static &lt;T&gt; T lookup(Class&lt;T&gt; klass) throws NamingException {
-<span class="nc" id="L169">        return (T) new InitialContext().lookup(</span>
-<span class="nc" id="L170">            &quot;java:global/coLAB/&quot; + klass.getSimpleName() + &quot;!&quot; + klass.getName());</span>
+<span class="nc" id="L253">        return (T) new InitialContext().lookup(</span>
+<span class="nc" id="L254">            &quot;java:global/coLAB/&quot; + klass.getSimpleName() + &quot;!&quot; + klass.getName());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

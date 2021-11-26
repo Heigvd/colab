@@ -12,6 +12,9 @@ import ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.security.SessionManager;
+import java.time.OffsetDateTime;
 import javax.inject.Inject;
 import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
@@ -34,28 +37,26 @@ import org.slf4j.LoggerFactory;
  *
  * @author maxence
  */
-<span class="fc" id="L37">public class EntityListener {</span>
+<span class="fc" id="L40">public class EntityListener {</span>
 
     /** logger */
-<span class="fc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(EntityListener.class);</span>
+<span class="fc" id="L43">    private static final Logger logger = LoggerFactory.getLogger(EntityListener.class);</span>
 
-    /**
-     * RequestManager
-     */
+    /** To collect entities for later propagation */
     @Inject
     private EntityGatheringBagForPropagation wsEntityBag;
 
-    /**
-     * Security check
-     */
+    /** Security check */
     @Inject
     private SecurityFacade securityFacade;
 
-    /**
-     *
-     */
+    /** request manager */
     @Inject
     private RequestManager requestManager;
+
+    /** activity date cache */
+    @Inject
+    private SessionManager sessionManager;
 
     /**
      * Track all reads from database
@@ -64,15 +65,16 @@ import org.slf4j.LoggerFactory;
      */
     @PostLoad
     public void onLoad(Object o) {
-<span class="fc" id="L67">        logger.trace(&quot;Load {}&quot;, o);</span>
-<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        if (o instanceof WithPermission) {</span>
-<span class="fc bfc" id="L69" title="All 2 branches covered.">            if (requestManager.isInSecurityTx()) {</span>
-<span class="fc" id="L70">                securityFacade.assertReadPermission((WithPermission) o);</span>
-            } else {
-<span class="fc" id="L72">                securityFacade.assertReadPermissionTx((WithPermission) o);</span>
-            }
+<span class="fc" id="L68">        logger.trace(&quot;Load {}&quot;, o);</span>
+        // Skip permission check if a condition assetion is already in progress
+<span class="pc bpc" id="L70" title="1 of 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
+<span class="fc" id="L71">            securityFacade.assertReadPermissionTx((WithPermission) o);</span>
         }
-<span class="fc" id="L75">    }</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (o instanceof User){</span>
+<span class="fc" id="L74">            OffsetDateTime activityDate = sessionManager.getActivityDate((User) o);</span>
+<span class="fc" id="L75">            ((User) o).setActivityDate(activityDate);</span>
+        }
+<span class="fc" id="L77">    }</span>
 
     /**
      * Track all insertions
@@ -81,41 +83,35 @@ import org.slf4j.LoggerFactory;
      */
     @PostPersist
     public void onPersist(Object o) {
-<span class="fc" id="L84">        logger.trace(&quot;Persist {}&quot;, o);</span>
+<span class="fc" id="L86">        logger.trace(&quot;Persist {}&quot;, o);</span>
 
-<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        if (o instanceof WithPermission) {</span>
-<span class="pc bpc" id="L87" title="1 of 2 branches missed.">            if (requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L88">                securityFacade.assertCreatePermission((WithPermission) o);</span>
-            } else {
-<span class="fc" id="L90">                securityFacade.assertCreatePermissionTx((WithPermission) o);</span>
-            }
+        // Skip permission check if a condition assetion is already in progress
+<span class="pc bpc" id="L89" title="2 of 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
+<span class="fc" id="L90">            securityFacade.assertCreatePermissionTx((WithPermission) o);</span>
         }
 
-<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (o instanceof WithWebsocketChannels) {</span>
-<span class="fc" id="L95">            wsEntityBag.registerUpdate((WithWebsocketChannels) o);</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (o instanceof WithWebsocketChannels) {</span>
+<span class="fc" id="L94">            wsEntityBag.registerUpdate((WithWebsocketChannels) o);</span>
         }
-<span class="fc" id="L97">    }</span>
+<span class="fc" id="L96">    }</span>
 
     /**
-     * Track all updated
+     * Track all updates
      *
      * @param o just updated object
      */
     @PostUpdate
     public void onUpdate(Object o) {
-<span class="fc" id="L106">        logger.trace(&quot;Update {}&quot;, o);</span>
-<span class="pc bpc" id="L107" title="1 of 2 branches missed.">        if (o instanceof WithPermission) {</span>
-<span class="pc bpc" id="L108" title="1 of 2 branches missed.">            if (requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L109">                securityFacade.assertUpdatePermission((WithPermission) o);</span>
-            } else {
-<span class="fc" id="L111">                securityFacade.assertUpdatePermissionTx((WithPermission) o);</span>
-            }
+<span class="fc" id="L105">        logger.trace(&quot;Update {}&quot;, o);</span>
+        // Skip permission check if a condition assetion is already in progress
+<span class="pc bpc" id="L107" title="2 of 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
+<span class="fc" id="L108">            securityFacade.assertUpdatePermissionTx((WithPermission) o);</span>
         }
 
-<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
-<span class="fc" id="L116">            wsEntityBag.registerUpdate((WithWebsocketChannels) o);</span>
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
+<span class="fc" id="L112">            wsEntityBag.registerUpdate((WithWebsocketChannels) o);</span>
         }
-<span class="fc" id="L118">    }</span>
+<span class="fc" id="L114">    }</span>
 
     /**
      * Before persist and before update, update tracking data
@@ -125,10 +121,10 @@ import org.slf4j.LoggerFactory;
     @PrePersist
     @PreUpdate
     public void touch(Object o) {
-<span class="pc bpc" id="L128" title="1 of 2 branches missed.">        if (o instanceof ColabEntity) {</span>
-<span class="fc" id="L129">            ((ColabEntity) o).touch(requestManager.getCurrentUser());</span>
+<span class="pc bpc" id="L124" title="1 of 4 branches missed.">        if (!requestManager.isDoNotTrackChange() &amp;&amp; o instanceof ColabEntity) {</span>
+<span class="fc" id="L125">            ((ColabEntity) o).touch(requestManager.getCurrentUser());</span>
         }
-<span class="fc" id="L131">    }</span>
+<span class="fc" id="L127">    }</span>
 
     /**
      * Intercept object just before their deletion
@@ -137,18 +133,15 @@ import org.slf4j.LoggerFactory;
      */
     @PreRemove
     public void onDestroy(Object o) {
-<span class="fc" id="L140">        logger.trace(&quot;Destroy {}&quot;, o);</span>
-<span class="pc bpc" id="L141" title="1 of 2 branches missed.">        if (o instanceof WithPermission) {</span>
-<span class="pc bpc" id="L142" title="1 of 2 branches missed.">            if (requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L143">                securityFacade.assertDeletePermission((WithPermission) o);</span>
-            } else {
-<span class="fc" id="L145">                securityFacade.assertDeletePermissionTx((WithPermission) o);</span>
-            }
+<span class="fc" id="L136">        logger.trace(&quot;Destroy {}&quot;, o);</span>
+        // Skip permission check if a condition assetion is already in progress
+<span class="pc bpc" id="L138" title="2 of 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
+<span class="fc" id="L139">            securityFacade.assertDeletePermissionTx((WithPermission) o);</span>
         }
 
-<span class="fc bfc" id="L149" title="All 2 branches covered.">        if (o instanceof WithWebsocketChannels) {</span>
-<span class="fc" id="L150">            wsEntityBag.registerDeletion((WithWebsocketChannels) o);</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (o instanceof WithWebsocketChannels) {</span>
+<span class="fc" id="L143">            wsEntityBag.registerDeletion((WithWebsocketChannels) o);</span>
         }
-<span class="fc" id="L152">    }</span>
+<span class="fc" id="L145">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
