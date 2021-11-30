@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -20,6 +21,7 @@ import javax.persistence.Transient;
  * Reference to another existing abstract card type.
  *
  * @author maxence
+ * @author sandra
  */
 @Entity
 @Table(
@@ -27,7 +29,10 @@ import javax.persistence.Transient;
         @Index(columnList = &quot;target_id&quot;),
     }
 )
-<span class="fc" id="L30">public class CardTypeRef extends AbstractCardType {</span>
+@NamedQuery(name = &quot;CardTypeRef.getTargetIds&quot;,
+    query = &quot;SELECT ctr.target.id FROM CardTypeRef ctr&quot;
+        + &quot; WHERE ctr.id IN :initIds&quot;)
+<span class="fc" id="L35">public class CardTypeRef extends AbstractCardType {</span>
 
     /**
      * Serial version UID
@@ -37,6 +42,7 @@ import javax.persistence.Transient;
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * The abstract card type this reference aims at
      */
@@ -53,21 +59,22 @@ import javax.persistence.Transient;
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * get the card type (or card type reference) this reference aims at
      *
      * @return the referenced type
      */
     public AbstractCardType getTarget() {
-<span class="fc" id="L62">        return this.target;</span>
+<span class="fc" id="L69">        return this.target;</span>
     }
 
     /**
      * @param target the card type (or card type reference) this reference aims at
      */
     public void setTarget(AbstractCardType target) {
-<span class="fc" id="L69">        this.target = target;</span>
-<span class="fc" id="L70">    }</span>
+<span class="fc" id="L76">        this.target = target;</span>
+<span class="fc" id="L77">    }</span>
 
     /**
      * get the id of the card type (or card type reference) this reference aims at. To be sent to client
@@ -75,25 +82,27 @@ import javax.persistence.Transient;
      * @return id of the abstractCardType or null
      */
     public Long getTargetId() {
-<span class="fc bfc" id="L78" title="All 2 branches covered.">        if (this.target != null) {</span>
-<span class="fc" id="L79">            return this.target.getId();</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (this.target != null) {</span>
+<span class="fc" id="L86">            return this.target.getId();</span>
         } else {
-<span class="fc" id="L81">            return targetId;</span>
+<span class="fc" id="L88">            return targetId;</span>
         }
     }
 
     /**
-     * set the id of the card type (or card type reference) this reference aims at. For serialization only
+     * set the id of the card type (or card type reference) this reference aims at. For
+     * serialization only
      *
      * @param id the id of the abstractCardType
      */
     public void setTargetId(Long id) {
-<span class="fc" id="L91">        this.targetId = id;</span>
-<span class="fc" id="L92">    }</span>
+<span class="fc" id="L99">        this.targetId = id;</span>
+<span class="fc" id="L100">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Resolve the reference.
      *
@@ -101,29 +110,29 @@ import javax.persistence.Transient;
      */
     @Override
     public CardType resolve() {
-<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (this.target instanceof CardType) {</span>
-<span class="nc" id="L105">            return (CardType) this.target;</span>
-<span class="nc bnc" id="L106" title="All 2 branches missed.">        } else if (this.target instanceof CardTypeRef) {</span>
-<span class="nc" id="L107">            return ((CardTypeRef) target).resolve();</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (this.target instanceof CardType) {</span>
+<span class="nc" id="L114">            return (CardType) this.target;</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        } else if (this.target instanceof CardTypeRef) {</span>
+<span class="nc" id="L116">            return ((CardTypeRef) target).resolve();</span>
         }
-<span class="nc" id="L109">        return null;</span>
+<span class="nc" id="L118">        return null;</span>
     }
 
     @Override
     public List&lt;AbstractCardType&gt; expand() {
-<span class="fc" id="L114">        List&lt;AbstractCardType&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L123">        List&lt;AbstractCardType&gt; list = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L116">        list.add(this);</span>
-<span class="pc bpc" id="L117" title="1 of 2 branches missed.">        if (this.target != null) {</span>
-<span class="fc" id="L118">            list.addAll(this.target.expand());</span>
+<span class="fc" id="L125">        list.add(this);</span>
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">        if (this.target != null) {</span>
+<span class="fc" id="L127">            list.addAll(this.target.expand());</span>
         }
-<span class="fc" id="L120">        return list;</span>
+<span class="fc" id="L129">        return list;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L125">        return &quot;CardTypeRef{&quot;</span>
-<span class="nc" id="L126">            + &quot;id=&quot; + getId()</span>
+<span class="nc" id="L134">        return &quot;CardTypeRef{&quot;</span>
+<span class="nc" id="L135">            + &quot;id=&quot; + getId()</span>
             + &quot;, targetId=&quot; + targetId + '}';
     }
 }

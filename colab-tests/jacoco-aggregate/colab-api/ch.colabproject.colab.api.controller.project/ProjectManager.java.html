@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ProjectManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.project</a> &gt; <span class="el_source">ProjectManager.java</span></div><h1>ProjectManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.project;
+
+import ch.colabproject.colab.api.controller.card.CardTypeManager;
+import ch.colabproject.colab.api.ejb.SecurityFacade;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.project.ProjectDao;
+import java.util.List;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Project specific logic
+ *
+ * @author sandra
+ */
+<span class="fc" id="L23">public class ProjectManager {</span>
+
+    /** logger */
+<span class="fc" id="L26">    private static final Logger logger = LoggerFactory.getLogger(ProjectManager.class);</span>
+
+    // *********************************************************************************************
+    // injections
+
+    /**
+     * Project persistence handling
+     */
+    @Inject
+    private ProjectDao projectDao;
+
+    /**
+     * Card type specific logic
+     */
+    @Inject
+    private CardTypeManager cardTypeManager;
+
+    /**
+     * Access control manager
+     */
+    @Inject
+    private SecurityFacade securityFacade;
+
+    // *********************************************************************************************
+    // Access control
+    // *********************************************************************************************
+
+    /**
+     * Retrieve the ids of the projects the current user is a member of
+     *
+     * @return the ids of the matching projects
+     */
+    public List&lt;Long&gt; findIdsOfProjectsCurrentUserIsMemberOf() {
+<span class="fc" id="L59">        User user = securityFacade.assertAndGetCurrentUser();</span>
+
+<span class="fc" id="L61">        List&lt;Long&gt; projectsIds = projectDao.getIdsOfProjectUserIsMemberOf(user.getId());</span>
+
+<span class="fc" id="L63">        logger.debug(&quot;found projects where the user {} is a team member : {}&quot;, user, projectsIds);</span>
+
+<span class="fc" id="L65">        return projectsIds;</span>
+    }
+
+    /**
+     * Retrieve the ids of the project for which the current user can read any local card type or
+     * reference
+     *
+     * @return the ids of the matching projects
+     */
+    public List&lt;Long&gt; findProjectsIdsReadableByCardTypes() {
+<span class="nc" id="L75">        List&lt;Long&gt; cardTypeOrRefIds = cardTypeManager.findCurrentUserReadableProjectsCardTypesIds();</span>
+
+<span class="nc" id="L77">        List&lt;Long&gt; projectsIds = cardTypeManager.findProjectIdsFromCardTypeIds(cardTypeOrRefIds);</span>
+
+<span class="nc" id="L79">        logger.debug(&quot;found projects from readable card types {} : {}&quot;, cardTypeOrRefIds,</span>
+            projectsIds);
+
+<span class="nc" id="L82">        return projectsIds;</span>
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

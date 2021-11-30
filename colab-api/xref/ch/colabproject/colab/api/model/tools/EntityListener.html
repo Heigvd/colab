@@ -74,7 +74,7 @@
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      @PostLoad
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onLoad(Object o) {
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          logger.trace(<span class="jxr_string">"Load {}"</span>, o);
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <em class="jxr_comment">// Skip permission check if a condition assetion is already in progress</em>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          <em class="jxr_comment">// Skip permission check if a condition assertion is already in progress</em>
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">if</strong> (o instanceof <a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a> &amp;&amp; !requestManager.isInSecurityTx()) {
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>              securityFacade.assertReadPermissionTx((<a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a>) o);
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          }
@@ -93,7 +93,7 @@
 <a class="jxr_linenumber" name="L85" href="#L85">85</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onPersist(Object o) {
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>          logger.trace(<span class="jxr_string">"Persist {}"</span>, o);
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>  
-<a class="jxr_linenumber" name="L88" href="#L88">88</a>          <em class="jxr_comment">// Skip permission check if a condition assetion is already in progress</em>
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>          <em class="jxr_comment">// Skip permission check if a condition assertion is already in progress</em>
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          <strong class="jxr_keyword">if</strong> (o instanceof <a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a> &amp;&amp; !requestManager.isInSecurityTx()) {
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>              securityFacade.assertCreatePermissionTx((<a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a>) o);
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          }
@@ -111,7 +111,7 @@
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>     @PostUpdate
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onUpdate(Object o) {
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>         logger.trace(<span class="jxr_string">"Update {}"</span>, o);
-<a class="jxr_linenumber" name="L106" href="#L106">106</a>         <em class="jxr_comment">// Skip permission check if a condition assetion is already in progress</em>
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>         <em class="jxr_comment">// Skip permission check if a condition assertion is already in progress</em>
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         <strong class="jxr_keyword">if</strong> (o instanceof <a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a> &amp;&amp; !requestManager.isInSecurityTx()) {
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>             securityFacade.assertUpdatePermissionTx((<a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a>) o);
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>         }
@@ -142,7 +142,7 @@
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>     @PreRemove
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> onDestroy(Object o) {
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         logger.trace(<span class="jxr_string">"Destroy {}"</span>, o);
-<a class="jxr_linenumber" name="L137" href="#L137">137</a>         <em class="jxr_comment">// Skip permission check if a condition assetion is already in progress</em>
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>         <em class="jxr_comment">// Skip permission check if a condition assertion is already in progress</em>
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>         <strong class="jxr_keyword">if</strong> (o instanceof <a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a> &amp;&amp; !requestManager.isInSecurityTx()) {
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>             securityFacade.assertDeletePermissionTx((<a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a>) o);
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>         }

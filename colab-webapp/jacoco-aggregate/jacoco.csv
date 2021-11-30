@@ -1,6 +1,6 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContentStatus,44,0,0,0,5,0,1,0,1,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.card,AbstractCardType,291,0,26,0,84,0,46,0,33,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.card,AbstractCardType,229,0,18,0,69,0,39,0,30,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,Card,350,0,28,0,109,0,65,0,51,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardTypeRef,68,0,8,0,21,0,12,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.card,CardContent,218,0,12,0,73,0,43,0,37,0
@@ -21,7 +21,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest,71,0,0,
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,EntityGatheringBagForPropagation,223,0,11,0,63,0,22,0,16,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,CdiBridgeSingleton,26,0,0,0,8,0,6,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,UserManagement,535,0,54,0,151,0,50,0,23,0
-colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,364,0,64,0,76,0,59,0,27,0
+colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,428,0,80,0,98,0,69,0,29,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.SubscriptionType,24,0,0,0,3,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,ApplicationLifecycleFacade,44,0,2,0,17,0,5,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ejb,WebsocketFacade,804,0,60,0,212,0,64,0,34,0
@@ -56,6 +56,8 @@ colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.live,LiveManager,3
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,JsonDecoder,29,0,0,0,10,0,5,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,JsonEncoder,22,0,0,0,8,0,5,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.utils,CallableGetChannel,14,0,2,0,5,0,3,0,2,0
+colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.project,ProjectConditions,7,0,0,0,2,0,1,0,1,0
+colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.project,ProjectConditions.IsProjectReadable,56,0,8,0,18,0,9,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,Account,93,0,6,0,25,0,18,0,15,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HashMethod.new HashMethod() {...},25,0,0,0,6,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.user,HashMethod,20,0,0,0,3,0,2,0,2,0
@@ -75,7 +77,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle.new 
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.document,BlockDao,59,0,0,0,17,0,6,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.document,ResourceAndRefDao,101,0,0,0,29,0,9,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.document,DocumentDao,71,0,0,0,20,0,7,0,7,0
-colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardTypeDao,125,0,0,0,31,0,11,0,11,0
+colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardTypeDao,198,0,4,0,52,0,17,0,15,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardDao,68,0,0,0,18,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.card,CardContentDao,68,0,0,0,18,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.user,UserDao,121,0,8,0,38,0,14,0,10,0
@@ -112,8 +114,10 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Resource,132,0,6
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Document,166,0,30,0,51,0,38,0,23,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,Block,127,0,12,0,44,0,28,0,22,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.document,BlockDocument,43,0,2,0,14,0,8,0,7,0
-colab-webapp/colab-api,ch.colabproject.colab.api.persistence.project,ProjectDao,59,0,0,0,15,0,7,0,7,0
+colab-webapp/colab-api,ch.colabproject.colab.api.persistence.project,ProjectDao,73,0,0,0,18,0,8,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.project,TeamDao,119,0,10,0,31,0,13,0,8,0
+colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.card,CardTypeOrRefConditions,7,0,0,0,2,0,1,0,1,0
+colab-webapp/colab-api,ch.colabproject.colab.api.security.permissions.card,CardTypeOrRefConditions.IsCardTypeOrRefReadable,56,0,8,0,18,0,9,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,MessageBuilder,77,0,0,0,22,0,12,0,12,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail.new Authenticator() {...},17,0,0,0,2,0,2,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.service.smtp,Message,76,0,0,0,29,0,18,0,18,0
@@ -146,7 +150,8 @@ colab-webapp/colab-api,ch.colabproject.colab.api.rest,UserRestEndpoint,161,0,2,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,EntityListener,126,0,28,0,30,0,21,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,JpaCustomizer,44,0,2,0,13,0,7,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,EntityHelper,54,0,12,0,15,0,9,0,3,0
-colab-webapp/colab-api,ch.colabproject.colab.api.model.project,Project,205,0,12,0,61,0,37,0,31,0
+colab-webapp/colab-api,ch.colabproject.colab.api.model.project,Project,178,0,12,0,55,0,36,0,30,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.card,CardTypeManager,86,0,4,0,24,0,10,0,8,0
 colab-webapp/colab-api,ch.colabproject.colab.api.persistence.token,TokenDao,81,0,4,0,26,0,9,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tracking,Tracking,31,0,0,0,13,0,9,0,9,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsSessionIdentifier,20,0,0,0,9,0,5,0,5,0
@@ -163,3 +168,4 @@ colab-webapp/colab-api,ch.colabproject.colab.api.microchanges.model,MicroChange.
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.link,ActivityFlowLinkRestEndpoint,57,0,0,0,16,0,7,0,7,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.link,StickyNoteLinkCreationBean,143,0,6,0,46,0,21,0,18,0
 colab-webapp/colab-api,ch.colabproject.colab.api.rest.link,StickyNoteLinkRestEndpoint,136,0,0,0,35,0,11,0,11,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.project,ProjectManager,40,0,0,0,10,0,4,0,4,0

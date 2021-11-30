@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CardTypeManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.card</a> &gt; <span class="el_source">CardTypeManager.java</span></div><h1>CardTypeManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.card;
+
+import ch.colabproject.colab.api.ejb.SecurityFacade;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.card.CardTypeDao;
+import com.google.common.collect.Lists;
+import java.util.Collections;
+import java.util.List;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import liquibase.repackaged.org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Card type and reference specific logic
+ *
+ * @author sandra
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L29">public class CardTypeManager {</span>
+
+    /** logger */
+<span class="nc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(CardTypeManager.class);</span>
+
+    // *********************************************************************************************
+    // injections
+
+    /**
+     * Card type persistence handling
+     */
+    @Inject
+    private CardTypeDao cardTypeDao;
+
+    /**
+     * Access control manager
+     */
+    @Inject
+    private SecurityFacade securityFacade;
+
+    // *********************************************************************************************
+    // Access control
+    // *********************************************************************************************
+
+    /**
+     * Retrieve the ids of the global (not in a project) published card types.
+     *
+     * @return the ids of the matching card types
+     */
+    public List&lt;Long&gt; findGlobalPublishedCardTypeIds() {
+<span class="nc" id="L59">        return cardTypeDao.getPublishedGlobalCardTypeIds();</span>
+    }
+
+    /**
+     * Retrieve the id of the all the card types the current user can read.
+     * &lt;p&gt;
+     * That means every card type (or reference) owned by a project the current user is member of
+     * and all the targets of these.
+     *
+     * @return the ids of the matching card types or references
+     */
+    public List&lt;Long&gt; findCurrentUserReadableProjectsCardTypesIds() {
+<span class="nc" id="L71">        List&lt;Long&gt; directInOwnProjects = findCurrentUserDirectProjectsCardTypesIds();</span>
+
+<span class="nc" id="L73">        List&lt;Long&gt; result = Lists.newArrayList();</span>
+<span class="nc" id="L74">        result.addAll(directInOwnProjects);</span>
+<span class="nc" id="L75">        result.addAll(findTransitiveTargets(directInOwnProjects));</span>
+<span class="nc" id="L76">        return result;</span>
+    }
+
+    /**
+     * Retrieve the ids of the card types (or references) owned by a project the current user is a
+     * member of
+     *
+     * @return the ids of the matching card types or references
+     */
+    private List&lt;Long&gt; findCurrentUserDirectProjectsCardTypesIds() {
+<span class="nc" id="L86">        User user = securityFacade.assertAndGetCurrentUser();</span>
+
+<span class="nc" id="L88">        List&lt;Long&gt; cardTypeOrRefIds = cardTypeDao.getUserProjectCardTypeIds(user.getId());</span>
+
+<span class="nc" id="L90">        logger.debug(&quot;found direct project's card types' id : {} &quot;, cardTypeOrRefIds);</span>
+
+<span class="nc" id="L92">        return cardTypeOrRefIds;</span>
+    }
+
+    /**
+     * Retrieve the ids of the direct and transitive targets for each card type or reference.
+     *
+     * @param cardTypeOrRefIds the ids of card types and references
+     *
+     * @return the ids of the matching card types or references
+     */
+    private List&lt;Long&gt; findTransitiveTargets(List&lt;Long&gt; cardTypeOrRefIds) {
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {</span>
+<span class="nc" id="L104">            return Collections.emptyList();</span>
+        }
+
+<span class="nc" id="L107">        List&lt;Long&gt; result = Lists.newArrayList();</span>
+
+<span class="nc" id="L109">        List&lt;Long&gt; directTargets = findDirectTargets(cardTypeOrRefIds);</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (!CollectionUtils.isEmpty(directTargets)) {</span>
+<span class="nc" id="L111">            result.addAll(directTargets);</span>
+<span class="nc" id="L112">            result.addAll(findTransitiveTargets(directTargets));</span>
+        }
+
+<span class="nc" id="L115">        return result;</span>
+    }
+
+    /**
+     * Retrieve the ids of the direct target of each card type or reference
+     *
+     * @param cardTypeOrRefIds the ids of card types and references
+     *
+     * @return the ids of the matching card types or references
+     */
+    private List&lt;Long&gt; findDirectTargets(List&lt;Long&gt; cardTypeOrRefIds) {
+<span class="nc" id="L126">        List&lt;Long&gt; result = cardTypeDao.getTargetIdsOf(cardTypeOrRefIds);</span>
+<span class="nc" id="L127">        logger.debug(&quot;found targets : {} &quot;, result);</span>
+<span class="nc" id="L128">        return result;</span>
+    }
+
+    /**
+     * Retrieve the ids of the projects owning any card type or reference.
+     *
+     * @param cardTypeOrRefIds the ids of card types and references
+     *
+     * @return the ids of the matching projects
+     */
+    public List&lt;Long&gt; findProjectIdsFromCardTypeIds(List&lt;Long&gt; cardTypeOrRefIds) {
+<span class="nc" id="L139">        return cardTypeDao.getProjectIdsOf(cardTypeOrRefIds);</span>
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

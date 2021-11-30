@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
     @PostLoad
     public void onLoad(Object o) {
 <span class="nc" id="L68">        logger.trace(&quot;Load {}&quot;, o);</span>
-        // Skip permission check if a condition assetion is already in progress
+        // Skip permission check if a condition assertion is already in progress
 <span class="nc bnc" id="L70" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
 <span class="nc" id="L71">            securityFacade.assertReadPermissionTx((WithPermission) o);</span>
         }
@@ -85,7 +85,7 @@ import org.slf4j.LoggerFactory;
     public void onPersist(Object o) {
 <span class="nc" id="L86">        logger.trace(&quot;Persist {}&quot;, o);</span>
 
-        // Skip permission check if a condition assetion is already in progress
+        // Skip permission check if a condition assertion is already in progress
 <span class="nc bnc" id="L89" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
 <span class="nc" id="L90">            securityFacade.assertCreatePermissionTx((WithPermission) o);</span>
         }
@@ -103,7 +103,7 @@ import org.slf4j.LoggerFactory;
     @PostUpdate
     public void onUpdate(Object o) {
 <span class="nc" id="L105">        logger.trace(&quot;Update {}&quot;, o);</span>
-        // Skip permission check if a condition assetion is already in progress
+        // Skip permission check if a condition assertion is already in progress
 <span class="nc bnc" id="L107" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
 <span class="nc" id="L108">            securityFacade.assertUpdatePermissionTx((WithPermission) o);</span>
         }
@@ -134,7 +134,7 @@ import org.slf4j.LoggerFactory;
     @PreRemove
     public void onDestroy(Object o) {
 <span class="nc" id="L136">        logger.trace(&quot;Destroy {}&quot;, o);</span>
-        // Skip permission check if a condition assetion is already in progress
+        // Skip permission check if a condition assertion is already in progress
 <span class="nc bnc" id="L138" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
 <span class="nc" id="L139">            securityFacade.assertDeletePermissionTx((WithPermission) o);</span>
         }
