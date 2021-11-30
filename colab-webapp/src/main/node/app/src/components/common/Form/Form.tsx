@@ -5,11 +5,12 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/notification';
+import { space_S } from '../../styling/style';
 import Button from '../Button';
 import InlineLoading from '../InlineLoading';
 import Checkbox from './Checkbox';
@@ -80,6 +81,8 @@ export interface FormProps<T> {
   submitLabel?: string;
   onSubmit: (entity: T) => void;
   children?: React.ReactNode;
+  className?: string;
+  buttonClassName?: string;
 }
 
 export default function Form<T>({
@@ -88,6 +91,8 @@ export default function Form<T>({
   submitLabel,
   onSubmit,
   children,
+  className,
+  buttonClassName,
   autoSubmit = false,
 }: FormProps<T>): JSX.Element {
   const i18n = useTranslations();
@@ -244,14 +249,16 @@ export default function Form<T>({
 
   return (
     <div
-      className={css({
-        display: 'flex',
-        //        overflow: 'auto',
-        flexDirection: 'column',
-        '& > *': {
-          padding: '8px 0',
-        },
-      })}
+      className={cx(
+        css({
+          display: 'flex',
+          flexDirection: 'column',
+          '& > *': {
+            padding: space_S + ' 0',
+          },
+        }),
+        className || ''
+      )}
       onKeyDown={onEnterCb}
     >
       {fieldComps}
@@ -259,7 +266,7 @@ export default function Form<T>({
         <Button
           key="submit"
           label={submitLabel || i18n.submit}
-          className={css({ alignSelf: 'flex-end' })}
+          className={buttonClassName || ''}
           onClick={submitCb}
         />
       )}

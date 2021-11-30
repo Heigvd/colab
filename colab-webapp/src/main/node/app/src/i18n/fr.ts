@@ -23,7 +23,7 @@ export const fr /*: ColabTranslations */ = {
   password_again: 'confirmation du mot de passe',
   passwordsMismatch: 'les mots de passe ne correspondent pas',
   login: 'connexion',
-  forgottenPassword: 'mot de pass oublié ?',
+  forgottenPassword: 'Mot de passe oublié?',
   createAnAccount: 'créer un compte',
   sendMePassword: 'Envoyez-moi un nouveau mot de passe',
   unverifiedEmail: 'e-mail non vérifié',

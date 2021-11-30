@@ -37,8 +37,8 @@ export const lightTheme = cx(
   css({
     '--primaryColor': '#333',
     '--primaryColorShade': '#999',
-    '--primaryColorContrast': 'white',
-    '--primaryColorContrastShade': '#F6F1F1',
+    '--primaryColorContrast': '#fff',
+    '--primaryColorContrastShade': '#FCF9F9',
 
     '--secondaryColor': 'var(--pictoSteelBlue)',
     '--secondaryColorShade': 'var(--pictoBlue)',
@@ -95,6 +95,26 @@ export const shadedThemeMode = cx(
     '--hoverFgColor': 'var(--primaryColorContrast)',
   }),
 );
+
+export const borderRadius = '5px';
+export const boxShadow = '0px 0px 20px 0px rgba(0,0,0,0.3)';
+export const space_S = '5px';
+export const space_M = '15px';
+export const space_L = '1.5rem';
+
+type blockSide = 1 | 2 | 3 | 4 ;
+const blockMargin = {
+  1: "margin-top",
+  2: "margin-right",
+  3: "margin-bottom",
+  4: "margin-left",
+}
+
+export function marginAroundStyle(marginPos:blockSide[], marginSize: string) {
+return(
+  css`${marginPos.map((pos)=>`${blockMargin[pos]}: ${marginSize};`).join('\n')}`
+)
+}
 
 export const fullPageStyle = cx(
   normalThemeMode,
@@ -162,7 +182,8 @@ export const buttonStyle = cx(
   linkStyle,
   invertedThemeMode,
   css({
-    padding: '5px',
+    padding: '8px 14px',
+    borderRadius: borderRadius
   }),
 );
 

@@ -7,8 +7,8 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { fullPageStyle, invertedThemeMode } from '../styling/style';
-import Logo from '../styling/WhiteLogo';
+import { fullPageStyle } from '../styling/style';
+import Logo from '../styling/Logo';
 
 interface Props {
   children: React.ReactNode;
@@ -26,7 +26,6 @@ export default function ({ children }: Props): JSX.Element {
       >
         <div
           className={cx(
-            invertedThemeMode,
             css({
               display: 'flex',
               alignItems: 'center',

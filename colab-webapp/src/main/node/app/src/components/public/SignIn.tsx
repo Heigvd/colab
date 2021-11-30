@@ -4,8 +4,7 @@
  *
  * Licensed under the MIT License
  */
-import { css } from '@emotion/css';
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import Form, { Field } from '../common/Form/Form';
 import FormContainer from '../common/FormContainer';
 import { InlineLink } from '../common/Link';
+import { marginAroundStyle, space_M } from '../styling/style';
 
 interface Props {
   redirectTo: string | null;
@@ -53,14 +53,6 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
       type: 'password',
       isMandatory: false,
       showStrenghBar: false,
-      fieldFooter: (
-        <InlineLink
-          className={css({ alignSelf: 'flex-start' })}
-          to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })}
-        >
-          {i18n.forgottenPassword}
-        </InlineLink>
-      ),
     },
   ];
 
@@ -83,12 +75,17 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
         onSubmit={onSubmitCb}
         fields={formFields}
         submitLabel={i18n.login}
+        buttonClassName={marginAroundStyle([1,3], space_M)}
       >
         <InlineLink
-          className={css({ alignSelf: 'center' })}
+          to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })}
+        >
+          {i18n.forgottenPassword}
+        </InlineLink>
+        <InlineLink
           to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
         >
-          <FontAwesomeIcon icon={faPlusCircle} /> {i18n.createAnAccount}{' '}
+          <FontAwesomeIcon icon={faPlus} /> {i18n.createAnAccount}{' '}
         </InlineLink>
       </Form>
     </FormContainer>
