@@ -17,6 +17,7 @@ import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
+import ch.colabproject.colab.api.security.permissions.project.ProjectConditions;
 import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import java.util.ArrayList;
@@ -50,12 +51,13 @@ import javax.persistence.Transient;
 @Table(
     indexes = {
         @Index(columnList = "rootcard_id"),
-    }
-)
-@NamedQuery(name = "Project.findAll", query = "SELECT p FROM Project p")
-@NamedQuery(
-    name = "Project.findProjectByUser",
+    })
+@NamedQuery(name = "Project.findAll",
+    query = "SELECT p FROM Project p")
+@NamedQuery(name = "Project.findProjectsByTeamMemberUser",
     query = "SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId")
+@NamedQuery(name = "Project.findIdsOfProjectByTeamMemberUser",
+    query = "SELECT p.id FROM Project p JOIN p.teamMembers m WHERE m.user.id = :userId")
 public class Project implements ColabEntity, WithWebsocketChannels {
 
     private static final long serialVersionUID = 1L;
@@ -346,18 +348,7 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-
-        List<Conditions.Condition> orList = new ArrayList<>();
-
-        orList.add(new Conditions.IsCurrentUserMemberOfProject(this));
-
-        this.elementsToBeDefined.stream().forEach(type -> {
-            // anyone who has access to a type may read the project too
-            orList.add(type.getReadCondition());
-        });
-
-        return new Conditions.Or(orList.toArray(
-            new Conditions.Condition[orList.size()]));
+        return new ProjectConditions.IsProjectReadable(this.id);
     }
 
     @Override

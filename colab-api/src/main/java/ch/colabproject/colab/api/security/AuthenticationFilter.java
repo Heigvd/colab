@@ -110,7 +110,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         HttpErrorMessage abortWith = null;
 
         if (currentUser == null) {
-            // curenr user not authenticated: make sure the targeted method is accessible to
+            // current user not authenticated: make sure the targeted method is accessible to
             // unauthenticated user
             List<AuthenticationRequired> annotations = getAnnotations(
                 AuthenticationRequired.class,

@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -20,6 +21,7 @@ import javax.persistence.Transient;
  * Reference to another existing abstract card type.
  *
  * @author maxence
+ * @author sandra
  */
 @Entity
 @Table(
@@ -27,6 +29,9 @@ import javax.persistence.Transient;
         @Index(columnList = "target_id"),
     }
 )
+@NamedQuery(name = "CardTypeRef.getTargetIds",
+    query = "SELECT ctr.target.id FROM CardTypeRef ctr"
+        + " WHERE ctr.id IN :initIds")
 public class CardTypeRef extends AbstractCardType {
 
     /**
@@ -37,6 +42,7 @@ public class CardTypeRef extends AbstractCardType {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
+
     /**
      * The abstract card type this reference aims at
      */
@@ -53,6 +59,7 @@ public class CardTypeRef extends AbstractCardType {
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
+
     /**
      * get the card type (or card type reference) this reference aims at
      *
@@ -83,7 +90,8 @@ public class CardTypeRef extends AbstractCardType {
     }
 
     /**
-     * set the id of the card type (or card type reference) this reference aims at. For serialization only
+     * set the id of the card type (or card type reference) this reference aims at. For
+     * serialization only
      *
      * @param id the id of the abstractCardType
      */
@@ -94,6 +102,7 @@ public class CardTypeRef extends AbstractCardType {
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     /**
      * Resolve the reference.
      *

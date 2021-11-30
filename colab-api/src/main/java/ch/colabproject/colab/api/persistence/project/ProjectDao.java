@@ -41,15 +41,29 @@ public class ProjectDao {
     }
 
     /**
-     * Get all projects the current user is member of
+     * Get all projects the user is member of
      *
-     * @param userId userId
+     * @param userId the id of the user
+     *
      * @return list of project
      */
     public List<Project> getUserProject(Long userId) {
-        TypedQuery<Project> query = em.createNamedQuery("Project.findProjectByUser", Project.class);
+        TypedQuery<Project> query = em.createNamedQuery("Project.findProjectsByTeamMemberUser", Project.class);
         query.setParameter("userId", userId);
+        return query.getResultList();
+    }
 
+    /**
+     * Get the ids of the projects the user is member of
+     *
+     * @param userId the id of the user
+     *
+     * @return list of ids of projects
+     */
+    public List<Long> getIdsOfProjectUserIsMemberOf(Long userId) {
+        TypedQuery<Long> query = em.createNamedQuery("Project.findIdsOfProjectByTeamMemberUser",
+            Long.class);
+        query.setParameter("userId", userId);
         return query.getResultList();
     }
 

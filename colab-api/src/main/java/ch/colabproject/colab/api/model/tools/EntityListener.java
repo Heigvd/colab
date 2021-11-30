@@ -66,7 +66,7 @@ public class EntityListener {
     @PostLoad
     public void onLoad(Object o) {
         logger.trace("Load {}", o);
-        // Skip permission check if a condition assetion is already in progress
+        // Skip permission check if a condition assertion is already in progress
         if (o instanceof WithPermission && !requestManager.isInSecurityTx()) {
             securityFacade.assertReadPermissionTx((WithPermission) o);
         }
@@ -85,7 +85,7 @@ public class EntityListener {
     public void onPersist(Object o) {
         logger.trace("Persist {}", o);
 
-        // Skip permission check if a condition assetion is already in progress
+        // Skip permission check if a condition assertion is already in progress
         if (o instanceof WithPermission && !requestManager.isInSecurityTx()) {
             securityFacade.assertCreatePermissionTx((WithPermission) o);
         }
@@ -103,7 +103,7 @@ public class EntityListener {
     @PostUpdate
     public void onUpdate(Object o) {
         logger.trace("Update {}", o);
-        // Skip permission check if a condition assetion is already in progress
+        // Skip permission check if a condition assertion is already in progress
         if (o instanceof WithPermission && !requestManager.isInSecurityTx()) {
             securityFacade.assertUpdatePermissionTx((WithPermission) o);
         }
@@ -134,7 +134,7 @@ public class EntityListener {
     @PreRemove
     public void onDestroy(Object o) {
         logger.trace("Destroy {}", o);
-        // Skip permission check if a condition assetion is already in progress
+        // Skip permission check if a condition assertion is already in progress
         if (o instanceof WithPermission && !requestManager.isInSecurityTx()) {
             securityFacade.assertDeletePermissionTx((WithPermission) o);
         }
