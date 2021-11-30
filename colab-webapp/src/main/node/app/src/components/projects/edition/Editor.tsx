@@ -6,7 +6,6 @@
  */
 
 import { css } from '@emotion/css';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -28,7 +27,6 @@ import CardTypeList from '../../cards/cardtypes/CardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
 import Clickable from '../../common/Clickable';
 import Flex from '../../common/Flex';
-import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
 import { SecondLevelLink } from '../../common/Link';
 import Team from '../Team';
@@ -179,7 +177,6 @@ const CardWrapper = ({ children, grow = 1, align = 'normal' }: CardWrapperProps)
 
 export default function Editor(): JSX.Element {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const { project, status } = useProjectBeingEdited();
 
@@ -254,16 +251,6 @@ export default function Editor(): JSX.Element {
             <SecondLevelLink to="defs">Card Types</SecondLevelLink>
             <SecondLevelLink to="team">Team</SecondLevelLink>
           </nav>
-          <IconButton
-            iconSize="2x"
-            onClick={() => {
-              // make sure to go back to projects page before closing project
-              // to avoid infinite loop
-              navigate('/projects');
-              dispatch(API.closeCurrentProject());
-            }}
-            icon={faTimes}
-          />
         </div>
         <Flex direction="column" grow={1}>
           <Routes>

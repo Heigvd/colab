@@ -5,15 +5,17 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faSignOutAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { entries } from 'lodash';
 import * as React from 'react';
-import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../API/api';
 import { getDisplayName } from '../helper';
 import { useProject, useProjectBeingEdited } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import Admin from './admin/Admin';
+import DropDownMenu from './common/DropDownMenu';
 import IconButton from './common/IconButton';
 import InlineLoading from './common/InlineLoading';
 import { InlineLink, MainMenuLink } from './common/Link';
@@ -26,8 +28,8 @@ import ForgotPassword from './public/ForgotPassword';
 import SignInForm from './public/SignIn';
 import SignUpForm from './public/SignUp';
 import Settings from './settings/Settings';
-import Logo from './styling//WhiteLogo';
-import { fullPageStyle, invertedThemeMode } from './styling/style';
+import Picto from './styling/Picto';
+import { flex, fullPageStyle, invertedThemeMode, space_M, space_S } from './styling/style';
 
 /**
  * To read parameters from hash
@@ -74,10 +76,10 @@ const EditorWrapper = () => {
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
-
 export default function MainApp(): JSX.Element {
   const dispatch = useAppDispatch();
-
+  const navigate = useNavigate();
+  
   const { currentUser, status: currentUserStatus } = useCurrentUser();
 
   const socketId = useAppSelector(state => state.websockets.sessionId);
@@ -87,7 +89,6 @@ export default function MainApp(): JSX.Element {
   const logout = React.useCallback(() => {
     dispatch(API.signOut());
   }, [dispatch]);
-
   React.useEffect(() => {
     if (currentUserStatus == 'UNKNOWN') {
       // user is not known. Reload state from API
@@ -139,28 +140,43 @@ export default function MainApp(): JSX.Element {
             className={cx(
               invertedThemeMode,
               css({
-                borderBottom: '6px solid grey',
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
-                height: '46px',
-                boxSizin: 'border-box',
+                boxSizing: 'border-box',
               }),
             )}
           >
-            <Logo
+            <Picto
               className={css({
-                height: '36px',
+                height: '30px',
                 width: 'auto',
-                padding: '5px',
+                padding: space_S,
               })}
             />
-            <nav>
+            <nav className={flex}>
               <MainMenuLink to="/">Projects</MainMenuLink>
               {projectBeingEdited != null ? (
-                <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
-                  Project {projectBeingEdited.name}
-                </MainMenuLink>
+                  <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
+                    {projectBeingEdited.name}
+                    <IconButton
+                        onClick={(events) => {
+                          // make sure to go back to projects page before closing project
+                          // to avoid infinite loop
+                          events.preventDefault();
+                          navigate('/');
+                          dispatch(API.closeCurrentProject());
+                        }}
+                        icon={faTimes}
+                        className={css({
+                          pointerEvents: 'auto', 
+                          marginLeft: space_M, 
+                          padding: 0, 
+                          ':hover': {
+                            backgroundColor: 'transparent'
+                          }})}
+                      />
+                  </MainMenuLink>
               ) : null}
               <MainMenuLink to="/settings">Settings</MainMenuLink>
               {currentUser.admin ? <MainMenuLink to="/debug">debug</MainMenuLink> : null}
@@ -171,9 +187,17 @@ export default function MainApp(): JSX.Element {
                 flexGrow: 1,
               })}
             ></div>
-
-            <InlineLink to="/settings/user">{getDisplayName(currentUser)}</InlineLink>
-            <IconButton onClick={logout} icon={faSignOutAlt} />
+            <DropDownMenu
+              icon={faCog}
+              valueComp={{value: '', label: ""}}
+              entries={[
+                {value: '/settings/user', label: getDisplayName(currentUser)},
+                {value: 'logOut', label: <IconButton onClick={logout} icon={faSignOutAlt} />},
+              ]}
+              //DOESNT WORK IN ALL CASES!!!!
+              onSelect={(el)=>{navigate(el)}}
+              buttonClassName={invertedThemeMode}
+            />
           </div>
 
           <div

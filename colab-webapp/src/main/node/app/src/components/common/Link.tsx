@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { NavLink, NavLinkProps } from 'react-router-dom';
-import { mainMenuLink } from '../styling/style';
+import { space_M } from '../styling/style';
 
 const linkStyle = css({
   textDecoration: 'none',
@@ -19,9 +19,33 @@ const linkStyle = css({
   },
 });
 
-const mainLinkActiveClass = cx(
-  css({
-    borderBottom: '6px solid var(--pictoLightBlue)',
+export const mainMenuLink = css({
+  textDecoration: 'none',
+  color: 'var(--linkColor)',
+  textTransform: 'uppercase',
+  fontSize: '14px',
+  padding: space_M,
+  boxSizing: 'border-box',
+  ':focus': {
+    outline: 'none',
+  },
+  ':focus-visible': {
+    outline: '1px solid blue',
+  },
+  ':hover': {
+    backgroundColor: 'var(--hoverBgColor)',
+    color: 'var(--linkHoverColor)',
+  },
+});
+
+export const mainLinkActiveClass = cx(
+  mainMenuLink,
+  css({ 
+    backgroundColor: 'var(--pictoSteelBlue)',
+    pointerEvents: 'none',
+    ':hover': {
+      backgroundColor: 'var(--pictoSteelBlue)',
+    }
   }),
 );
 

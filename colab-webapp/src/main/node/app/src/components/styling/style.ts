@@ -36,9 +36,9 @@ export const lightTheme = cx(
   pictoColours,
   css({
     '--primaryColor': '#333',
-    '--primaryColorShade': '#999',
+    '--primaryColorShade': '#494949',
     '--primaryColorContrast': '#fff',
-    '--primaryColorContrastShade': '#FCF9F9',
+    '--primaryColorContrastShade': '#F4EFEF',
 
     '--secondaryColor': 'var(--pictoSteelBlue)',
     '--secondaryColorShade': 'var(--pictoBlue)',
@@ -53,7 +53,7 @@ export const lightTheme = cx(
 
 export const normalThemeMode = css({
   '--bgColor': 'var(--primaryColorContrast)',
-  '--hoverBgColor': 'var(--primaryColorContrastShade)',
+  '--hoverBgColor': '#FCF9F9',
   '--fgColor': 'var(--primaryColor)',
   '--hoverFgColor': 'var(--primaryColorShade)',
 
@@ -101,6 +101,7 @@ export const boxShadow = '0px 0px 20px 0px rgba(0,0,0,0.3)';
 export const space_S = '5px';
 export const space_M = '15px';
 export const space_L = '1.5rem';
+export const flex = css({display: 'flex'});
 
 type blockSide = 1 | 2 | 3 | 4 ;
 const blockMargin = {
@@ -176,7 +177,14 @@ export const iconStyle = css({
   paddingRight: '5px',
 });
 
-export const iconButton = cx(linkStyle, iconStyle);
+export const iconButton = cx(
+  iconStyle, 
+  css({
+    cursor: 'pointer',
+  ':hover': {
+    color: 'var(--hoverFgColor)',
+  },
+  }));
 
 export const buttonStyle = cx(
   linkStyle,
@@ -247,22 +255,7 @@ export const defaultColumnContainerStyle = cx(
   }),
 );
 
-export const mainHeaderHeight = '48px';
-
-export const mainMenuLink = css({
-  textDecoration: 'none',
-  color: 'var(--linkColor)',
-  textTransform: 'uppercase',
-  fontSize: '12px',
-  padding: '10px 20px 14px 5px',
-  ':focus': {
-    /*outlineStyle: 'inset',*/
-  },
-  ':hover': {
-    backgroundColor: '#e6e6e6',
-    color: 'var(--linkHoverColor)',
-  },
-});
+export const mainHeaderHeight = '50px';
 
 export const labelStyle = css({
   fontWeight: 500,

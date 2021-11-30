@@ -10,15 +10,11 @@ import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { iconButton, iconStyle, linkStyle } from '../styling/style';
-import Clickable from './Clickable';
+import Clickable, { ClickablenProps } from './Clickable';
 
-export interface IconButtonProps {
-  onClick?: () => void;
+export interface IconButtonProps extends Omit<ClickablenProps, "clickableClassName">{
   icon: IconProp;
   iconSize?: SizeProp;
-  title?: string;
-  children?: React.ReactNode;
-  className?: string;
   reverseOrder?: boolean;
   iconColor?: string;
 }
@@ -37,11 +33,11 @@ export default function IconButton({
     <Clickable
       onClick={onClick}
       title={title}
-      className={cx(iconStyle, className)}
+      className={cx(iconStyle, iconButton, className)}
       clickableClassName={cx(linkStyle, className)}
     >
       {reverseOrder ? children : null}
-      <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} className={iconButton} />
+      <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} />
       {!reverseOrder ? children : null}
     </Clickable>
   );
