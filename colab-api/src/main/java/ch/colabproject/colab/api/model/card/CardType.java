@@ -41,11 +41,6 @@ import javax.validation.constraints.NotNull;
     query = "SELECT c FROM CardType c WHERE c.project is NULL AND c.published = TRUE")
 @NamedQuery(name = "CardType.findIdOfPublishedGlobals",
     query = "SELECT c.id FROM CardType c WHERE c.project is NULL AND c.published = TRUE")
-@NamedQuery(name = "CardType.findPublishedFromProjects",
-    query = "SELECT ct FROM CardType ct "
-        + "JOIN ct.project proj "
-        + "JOIN proj.teamMembers memb "
-        + "WHERE ct.published = TRUE AND memb.user.id = :userId")
 public class CardType extends AbstractCardType {
 
     /**

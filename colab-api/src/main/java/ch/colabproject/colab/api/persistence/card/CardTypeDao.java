@@ -103,7 +103,7 @@ public class CardTypeDao {
 
         User user = securityFacade.assertAndGetCurrentUser();
         TypedQuery<AbstractCardType> query = em
-            .createNamedQuery("CardType.findPublishedFromProjects", AbstractCardType.class);
+            .createNamedQuery("AbstractCardType.findPublishedFromProjects", AbstractCardType.class);
         query.setParameter("userId", user.getId());
         return query.getResultList();
     }
@@ -186,30 +186,30 @@ public class CardTypeDao {
     /**
      * Persist a brand new card type to database
      *
-     * @param cardType new card type to persist
+     * @param cardTypeOrRef new card type to persist
      *
      * @return the new persisted card type
      */
-    public AbstractCardType createCardType(AbstractCardType cardType) {
-        logger.debug("create card type {}", cardType);
-        em.persist(cardType);
-        return cardType;
+    public AbstractCardType createCardType(AbstractCardType cardTypeOrRef) {
+        logger.debug("create card type {}", cardTypeOrRef);
+        em.persist(cardTypeOrRef);
+        return cardTypeOrRef;
     }
 
     /**
      * Update card type
      *
-     * @param cardType card type as supply by clients (ie not managed)
+     * @param cardTypeOrRef card type as supply by clients (ie not managed)
      *
      * @return updated managed card type
      *
      * @throws ColabMergeException if updating the card type failed
      */
-    public AbstractCardType updateCardType(AbstractCardType cardType) throws ColabMergeException {
-        logger.debug("update card type {}", cardType);
-        AbstractCardType mCardType = this.getAbstractCardType(cardType.getId());
+    public AbstractCardType updateCardType(AbstractCardType cardTypeOrRef) throws ColabMergeException {
+        logger.debug("update card type {}", cardTypeOrRef);
+        AbstractCardType mCardType = this.getAbstractCardType(cardTypeOrRef.getId());
 
-        mCardType.merge(cardType);
+        mCardType.merge(cardTypeOrRef);
 
         return mCardType;
     }
