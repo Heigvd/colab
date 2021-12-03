@@ -6,11 +6,11 @@
  */
 package ch.colabproject.colab.api.model.tools;
 
+import ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
 import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.ejb.SecurityFacade;
-import ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
-import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithPermission;
+import ch.colabproject.colab.api.model.WithTrackingData;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.SessionManager;
@@ -121,8 +121,8 @@ public class EntityListener {
     @PrePersist
     @PreUpdate
     public void touch(Object o) {
-        if (!requestManager.isDoNotTrackChange() && o instanceof ColabEntity) {
-            ((ColabEntity) o).touch(requestManager.getCurrentUser());
+        if (!requestManager.isDoNotTrackChange() && o instanceof WithTrackingData) {
+            ((WithTrackingData) o).touch(requestManager.getCurrentUser());
         }
     }
 

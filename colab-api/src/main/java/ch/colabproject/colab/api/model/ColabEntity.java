@@ -7,12 +7,9 @@
 package ch.colabproject.colab.api.model;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.tracking.Tracking;
-import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.interfaces.WithId;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
-import java.time.OffsetDateTime;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 
 /**
@@ -21,40 +18,8 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
  * @author maxence
  */
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public interface ColabEntity extends WithId, WithJsonDiscriminator, WithPermission {
-
-    /**
-     * Get the tracking data
-     *
-     * @return the tracking data
-     */
-    Tracking getTrackingData();
-
-    /**
-     * Set the tracking data
-     *
-     * @param trackingData new tracking data
-     */
-    void setTrackingData(Tracking trackingData);
-
-    /**
-     * Update tracking data
-     *
-     * @param user current user
-     */
-    default void touch(User user) {
-        Tracking trackingData = getTrackingData();
-        String username = user != null ? user.getUsername() : null;
-        OffsetDateTime now = OffsetDateTime.now();
-        if (trackingData == null) {
-            setTrackingData(new Tracking());
-            trackingData = getTrackingData();
-            trackingData.setCreatedBy(username);
-            trackingData.setCreationDate(now);
-        }
-        trackingData.setModifiedBy(username);
-        trackingData.setModificationDate(now);
-    }
+public interface ColabEntity
+    extends WithId, WithJsonDiscriminator, WithTrackingData, WithPermission {
 
     /**
      * Update this object according to values provided by other
