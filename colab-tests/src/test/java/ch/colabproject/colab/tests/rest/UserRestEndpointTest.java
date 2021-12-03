@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.tests.rest;
 
+import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
@@ -15,7 +16,6 @@ import ch.colabproject.colab.api.ws.channel.UserChannel;
 import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.TestHelper;
 import ch.colabproject.colab.tests.tests.TestUser;
@@ -417,7 +417,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         // one entity has been updated
         Assertions.assertEquals(1, updateMessage.getUpdated().size());
 
-        WithJsonDiscriminator entity = updateMessage.getUpdated().iterator().next();
+        WithWebsocketChannels entity = updateMessage.getUpdated().iterator().next();
 
         Assertions.assertTrue(entity instanceof User);
         Assertions.assertEquals(NEW_NAME, ((User) entity).getCommonname());

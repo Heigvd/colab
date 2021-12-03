@@ -9,6 +9,8 @@ package ch.colabproject.colab.api.model;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.generator.model.interfaces.WithId;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.time.OffsetDateTime;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
@@ -19,7 +21,7 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
  * @author maxence
  */
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public interface ColabEntity extends WithId, WithPermission {
+public interface ColabEntity extends WithId, WithJsonDiscriminator, WithPermission {
 
     /**
      * Get the tracking data
