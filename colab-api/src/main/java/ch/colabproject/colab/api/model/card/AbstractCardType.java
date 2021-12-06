@@ -6,16 +6,18 @@
  */
 package ch.colabproject.colab.api.model.card;
 
+import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
+
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions;
+import ch.colabproject.colab.api.security.permissions.card.CardTypeOrRefConditions;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
 import ch.colabproject.colab.api.ws.channel.BroadcastChannel;
 import ch.colabproject.colab.api.ws.channel.ProjectContentChannel;
@@ -25,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.persistence.CascadeType;
@@ -39,6 +40,7 @@ import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
@@ -55,6 +57,13 @@ import javax.persistence.Transient;
         @Index(columnList = "project_id"),
     }
 )
+@NamedQuery(name = "AbstractCardType.findIdOfUserProjectDirectCardType",
+    query = "SELECT act.id FROM AbstractCardType act"
+        + " JOIN act.project p"
+        + " JOIN p.teamMembers m"
+        + " WHERE m.user.id = :userId")
+@NamedQuery(name = "AbstractCardType.getProjectId",
+    query = "SELECT act.project.id FROM AbstractCardType act WHERE act.id in :listId")
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public abstract class AbstractCardType implements ColabEntity, WithWebsocketChannels {
@@ -366,53 +375,10 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
         return channels;
     }
 
-    /**
-     * Get the read condition for this very type, ignoring references.
-     *
-     * @return the read condition
-     */
-    @JsonbTransient
-    public Conditions.Condition getSelfReadCondition() {
-        if (this.project != null) {
-            return new Conditions.IsCurrentUserMemberOfProject(this.project);
-        } else {
-            if (this.isPublished()) {
-                // Everybody can read published global types
-                return Conditions.alwaysTrue;
-            } else {
-                // only admin can edit global types
-                return Conditions.alwaysFalse;
-            }
-        }
-    }
-
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-        if (this.project != null) {
-            // type belongs to a project
-            List<Conditions.Condition> orList = new ArrayList<>();
-
-            // members of the project which defined the type may read the type
-            // members of project which reference this type may read it too
-            orList.addAll(this.expand().stream()
-                .map(ref -> ref.getSelfReadCondition()).collect(Collectors.toList()));
-
-            // any type which references this one grant permission too
-            orList.addAll(this.getAllReferences().stream()
-                .map(ref -> ref.getSelfReadCondition()).collect(Collectors.toList()));
-
-            return new Conditions.Or(orList.toArray(
-                new Conditions.Condition[orList.size()]));
-        } else {
-            if (this.isPublished()) {
-                // Everybody can read published global types
-                return Conditions.alwaysTrue;
-            } else {
-                // only admin can edit global types
-                return Conditions.alwaysFalse;
-            }
-        }
+        return new CardTypeOrRefConditions.IsCardTypeOrRefReadable(this.id);
     }
 
     @Override

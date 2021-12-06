@@ -87,6 +87,7 @@ public class SampleTestData {
 
         Project anotherProject = ColabFactory.createProject(client, "another project");
         anotherProjectId = anotherProject.getId();
+        Long anotherRootCardContentId = ColabFactory.getRootContent(client, anotherProject).getId();
 
         Long rootCardContentId = ColabFactory.getRootContent(client, theProject).getId();
 
@@ -117,6 +118,8 @@ public class SampleTestData {
         friendCardTypeRefId = cardWithFriendType.getCardTypeId();
 
         subCardWithSameFriendTypeId = ColabFactory.createNewCard(client, cardContentWithFriendTypeId, friendCardTypeId).getId();
+
+        /* Card anotherProjectCardWithFriendType = */ColabFactory.createNewCard(client, anotherRootCardContentId, friendCardTypeId);
 
         deliverableDocumentId = ColabFactory.assignNewBlockDocumentDeliverable(client, cardContentWithLocalTypeId).getId();
         deliverableBlockId = ColabFactory.addBlockToDocument(client, deliverableDocumentId).getId();

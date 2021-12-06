@@ -6,15 +6,18 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.controller.card.CardTypeManager;
+import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.model.WithPermission;
-import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
+import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -46,6 +49,18 @@ public class SecurityFacade {
      */
     @Inject
     private TeamFacade teamFacade;
+
+    /**
+     * Card type specific logic
+     */
+    @Inject
+    private CardTypeManager cardTypeManager;
+
+    /**
+     * Project specific logic
+     */
+    @Inject
+    private ProjectManager projectManager;
 
     /**
      * Get the current user if it exists.
@@ -314,5 +329,69 @@ public class SecurityFacade {
         }
         TeamMember member = teamFacade.findMemberByUserAndProject(project, currentUser);
         return member != null && member.getPosition() != HierarchicalPosition.EXTERN;
+    }
+
+    /**
+     * Has the current user the right to read the card type (/ reference) ?
+     * <p>
+     * A user can read
+     * <ul>
+     * <li>any global published card type</li>
+     * <li>any card type (/ reference) defined in a project he is member of</li>
+     * <li>and all the chain of targets of those card types references</li>
+     * </ul>
+     *
+     * @param cardTypeOrRefId the id of the card type or reference
+     *
+     * @return true if the current user can read the card type or reference
+     */
+    public boolean isCardTypeOrRefReadableByCurrentUser(Long cardTypeOrRefId) {
+        User currentUser = requestManager.getCurrentUser();
+        if (cardTypeOrRefId == null || currentUser == null) {
+            return false;
+        }
+
+        List<Long> globalPublished = cardTypeManager.findGlobalPublishedCardTypeIds();
+        if (globalPublished.contains(cardTypeOrRefId)) {
+            return true;
+        }
+
+        List<Long> accessibleFromProjects = cardTypeManager
+            .findCurrentUserReadableProjectsCardTypesIds();
+        if (accessibleFromProjects.contains(cardTypeOrRefId)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Has the current user the right to read the project ?
+     * <p>
+     * A user can read any project he is a member of and any project which contains a card type or
+     * reference the current user has a read access.
+     *
+     * @param projectId the id of the project
+     *
+     * @return True if the current user can read the project
+     */
+    public boolean isProjectReadableByCurrentUser(Long projectId) {
+        User currentUser = requestManager.getCurrentUser();
+        if (projectId == null || currentUser == null) {
+            return false;
+        }
+
+        List<Long> directProjects = projectManager.findIdsOfProjectsCurrentUserIsMemberOf();
+        if (directProjects.contains(projectId)) {
+            return true;
+        }
+
+        List<Long> accessibleByCardTypes = projectManager
+            .findProjectsIdsReadableByCardTypes();
+        if (accessibleByCardTypes.contains(projectId)) {
+            return true;
+        }
+
+        return false;
     }
 }

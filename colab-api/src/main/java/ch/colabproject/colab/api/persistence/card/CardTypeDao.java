@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.user.User;
+import com.google.common.collect.Lists;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import liquibase.repackaged.org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,8 +75,21 @@ public class CardTypeDao {
      * @return list of published global card types
      */
     public List<CardType> getPublishedGlobalCardType() {
-        logger.debug("get published  global card types");
-        TypedQuery<CardType> query = em.createNamedQuery("CardType.findPublishedGlobals", CardType.class);
+        logger.debug("get published global card types");
+        TypedQuery<CardType> query = em.createNamedQuery("CardType.findPublishedGlobals",
+            CardType.class);
+        return query.getResultList();
+    }
+
+    /**
+     * Get the list of the id of the published global card types
+     *
+     * @return list of ids corresponding to the global published card types
+     */
+    public List<Long> getPublishedGlobalCardTypeIds() {
+        logger.debug("get published global card type ids");
+        TypedQuery<Long> query = em.createNamedQuery("CardType.findIdOfPublishedGlobals",
+            Long.class);
         return query.getResultList();
     }
 
@@ -84,10 +99,67 @@ public class CardTypeDao {
      * @return list of published non-global card types accessible to the current user
      */
     public List<AbstractCardType> getPublishedProjectsCardType() {
-        logger.debug("get published  global card types");
+        logger.debug("get published global card types");
+
         User user = securityFacade.assertAndGetCurrentUser();
-        TypedQuery<AbstractCardType> query = em.createNamedQuery("CardType.findPublishedFromProjects", AbstractCardType.class);
+        TypedQuery<AbstractCardType> query = em
+            .createNamedQuery("CardType.findPublishedFromProjects", AbstractCardType.class);
         query.setParameter("userId", user.getId());
+        return query.getResultList();
+    }
+
+    /**
+     * Retrieve the ids of the card types directly linked to a project the user is a team member of
+     *
+     * @param userId the id of the user
+     *
+     * @return the ids of the matching card types or references
+     */
+    public List<Long> getUserProjectCardTypeIds(Long userId) {
+        logger.debug("get the ids of the card types in the projects the user is a team member of");
+
+        TypedQuery<Long> query = em
+            .createNamedQuery("AbstractCardType.findIdOfUserProjectDirectCardType", Long.class);
+        query.setParameter("userId", userId);
+        return query.getResultList();
+    }
+
+    /**
+     * Retrieve the direct target of each card type or reference.
+     * <p>
+     * Done for several entities to be more efficient.
+     *
+     * @param cardTypeOrRefIds the ids of the card types or references (can contain card types,
+     *                         there just will be no result for these)
+     *
+     * @return the ids of matching card types or references
+     */
+    public List<Long> getTargetIdsOf(List<Long> cardTypeOrRefIds) {
+        logger.debug("get the target's ids");
+        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {
+            return Lists.newArrayList();
+        }
+        TypedQuery<Long> query = em.createNamedQuery("CardTypeRef.getTargetIds", Long.class);
+        query.setParameter("initIds", cardTypeOrRefIds);
+        return query.getResultList();
+    }
+
+    /**
+     * Retrieve the projects owning the card types or references.
+     * <p>
+     * Done for several entities to be more efficient.
+     *
+     * @param cardTypeOrRefIds the ids of the card types or references
+     *
+     * @return the ids of the matching projects
+     */
+    public List<Long> getProjectIdsOf(List<Long> cardTypeOrRefIds) {
+        logger.debug("get the project's id");
+        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {
+            return Lists.newArrayList();
+        }
+        TypedQuery<Long> query = em.createNamedQuery("AbstractCardType.getProjectId", Long.class);
+        query.setParameter("listId", cardTypeOrRefIds);
         return query.getResultList();
     }
 
