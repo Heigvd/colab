@@ -47,7 +47,7 @@ export function getLogger(name: string): Logger {
       getLevel: () => currentLevel,
       setLevel: (level: LoggerLevel) => (currentLevel = level),
       trace: (...params: unknown[]): void => {
-        if (currentLevel >= INFO) {
+        if (currentLevel >= TRACE) {
           // eslint-disable-next-line no-console
           console.info(...mapArgs(...params));
         }
