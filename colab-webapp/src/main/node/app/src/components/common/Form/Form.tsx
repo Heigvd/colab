@@ -37,16 +37,18 @@ export interface TextualField<T> extends BaseField<T> {
 
 export interface SelectField<T> extends BaseField<T> {
   type: 'select';
+  isMulti: boolean;
   canCreateOption?: boolean;
   options: { label: string; value: unknown }[];
 }
 
-export function createSelectField<T, K extends keyof T>(
+export function createSelectField<T, IsMulti extends boolean, K extends keyof T>(
   field: SelectField<T> & {
     key: K;
+    isMulti: IsMulti;
     options: {
       label: string;
-      value: T[K];
+      value: T[K] extends Array<infer Item> ? (IsMulti extends true ? Item : T[K]) : T[K];
     }[];
   },
 ): Field<T> {
@@ -174,6 +176,7 @@ export default function Form<T>({
             options={field.options}
             warning={erroneous && isErroneous ? field.errorMessage : undefined}
             mandatory={field.isMandatory}
+            isMulti={field.isMulti}
             onChange={value => setFormValue(field.key, value)}
             readonly={field.readonly}
             canCreateOption={field.canCreateOption}
@@ -191,6 +194,7 @@ export default function Form<T>({
             options={field.options}
             warning={erroneous && isErroneous ? field.errorMessage : undefined}
             mandatory={field.isMandatory}
+            isMulti={false}
             onChange={value => setFormValue(field.key, value)}
             readonly={field.readonly}
           />

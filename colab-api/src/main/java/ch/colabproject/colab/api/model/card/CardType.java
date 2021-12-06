@@ -10,9 +10,13 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.security.permissions.Conditions;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
@@ -31,7 +35,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(
     indexes = {
-        @Index(columnList = "purpose_id"),
+        @Index(columnList = "purpose_id")
     }
 )
 @NamedQuery(name = "CardType.findAll", query = "SELECT c FROM CardType c")
@@ -48,7 +52,6 @@ public class CardType extends AbstractCardType {
      */
     private static final long serialVersionUID = 1L;
 
-
     /**
      * The title
      */
@@ -61,6 +64,16 @@ public class CardType extends AbstractCardType {
     @NotNull
     @JsonbTransient
     private Block purpose;
+
+    /**
+     * Tags
+     */
+    @ElementCollection
+    @CollectionTable(indexes = {
+        @Index(columnList = "cardtype_id")
+    })
+    @NotNull
+    private Set<String> tags =new HashSet<>();
 
     /**
      * The id of the purpose
@@ -122,6 +135,24 @@ public class CardType extends AbstractCardType {
         this.purposeId = purposeId;
     }
 
+    /**
+     * Get tags
+     *
+     * @return get the list of tags
+     */
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    /**
+     * Set tags
+     *
+     * @param tags new set of tags
+     */
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
+    }
+
     @Override
     public CardType resolve() {
         return this;
@@ -135,6 +166,7 @@ public class CardType extends AbstractCardType {
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     /**
      * {@inheritDoc }
      */
@@ -146,6 +178,7 @@ public class CardType extends AbstractCardType {
             CardType o = (CardType) other;
             // this.setUniqueId(o.getUniqueId());
             this.setTitle(o.getTitle());
+            this.setTags(((CardType) other).getTags());
         } else {
             throw new ColabMergeException(this, other);
         }
