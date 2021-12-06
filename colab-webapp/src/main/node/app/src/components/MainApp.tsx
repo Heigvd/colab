@@ -11,7 +11,7 @@ import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 're
 import * as API from '../API/api';
 import { useProject, useProjectBeingEdited } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
 import Admin from './admin/Admin';
 import DropDownMenu from './common/DropDownMenu';
 import IconButton from './common/IconButton';
@@ -79,6 +79,10 @@ export default function MainApp(): JSX.Element {
   const navigate = useNavigate();
   
   const { currentUser, status: currentUserStatus } = useCurrentUser();
+  const currentAccount = useAppSelector(
+    state => Object.values(state.users.accounts).filter(a => a.userId == state.auth.currentUserId)[0],
+    shallowEqual,
+  );
 
   const socketId = useAppSelector(state => state.websockets.sessionId);
 
@@ -177,9 +181,6 @@ export default function MainApp(): JSX.Element {
                       />
                   </MainMenuLink>
               ) : null}
-              <MainMenuLink to="/settings">Settings</MainMenuLink>
-              {currentUser.admin ? <MainMenuLink to="/debug">debug</MainMenuLink> : null}
-              {currentUser.admin ? <MainMenuLink to="/admin">Admin</MainMenuLink> : null}
             </nav>
             <div
               className={css({
@@ -192,6 +193,8 @@ export default function MainApp(): JSX.Element {
               entries={[
                 {value: '/settings/display', label: "Display settings"},
                 {value: '/settings', label: "Other settings"},
+                ...(currentUser.admin ? [{value: '/debug', label: "Debug"}] : []),
+                ...(currentUser.admin ? [{value: '/admin', label: "Admin"}] : []),
               ]}
               onSelect={(val)=>{
                 val.action != null ? val.action() : navigate(val.value)}}
@@ -202,12 +205,12 @@ export default function MainApp(): JSX.Element {
               valueComp={{value: '', label: ""}}
               entries={[
                 {value: '/settings/user', label: "Profile"},
-                {value: '/settings/user', label: "Edit email"},
-                {value: 'logout', label: <IconButton icon={faSignOutAlt} />, action: logout},
+                {value: `/settings/account/${currentAccount?.id}`, label: "Edit email"},
+                {value: 'logout', label: <>Logout <IconButton icon={faSignOutAlt} /></>, action: logout},
               ]}
               onSelect={(val)=>{
                 val.action != null ? val.action() : navigate(val.value)}}
-              buttonClassName={invertedThemeMode}
+              buttonClassName={cx(invertedThemeMode, css({marginLeft: space_S}))}
             />
           </div>
 
