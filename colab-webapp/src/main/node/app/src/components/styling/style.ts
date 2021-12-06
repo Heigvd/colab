@@ -170,6 +170,12 @@ export const linkStyle = css({
     color: 'var(--hoverFgColor)',
     backgroundColor: 'var(--hoverBgColor)',
   },
+  ':focus': {
+    outline: 'none',
+  },
+  ':focus-visible': {
+    outline: '1px solid blue',
+  },
 });
 
 export const iconStyle = css({
@@ -191,7 +197,8 @@ export const buttonStyle = cx(
   invertedThemeMode,
   css({
     padding: '8px 14px',
-    borderRadius: borderRadius
+    borderRadius: borderRadius,
+
   }),
 );
 
@@ -209,6 +216,13 @@ export const sideTabButton = css({
   writingMode: 'sideways-lr',
   textOrientation: 'sideways',
   width: '24px',
+});
+
+export const fixedButtonStyle = css({
+  position: 'fixed',
+  bottom: '2rem',
+  right: '4vw',
+  boxShadow: boxShadow,
 });
 
 export const cardShadow = '0px 0px 7px rgba(0, 0, 0, 0.2)';

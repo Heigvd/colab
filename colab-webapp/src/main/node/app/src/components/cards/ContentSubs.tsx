@@ -15,15 +15,9 @@ import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks'
 import Button from '../common/Button';
 import InlineLoading from '../common/InlineLoading';
 import { depthMax } from '../projects/edition/Editor';
-import { boxShadow } from '../styling/style';
+import { fixedButtonStyle } from '../styling/style';
 import CardCreator from './CardCreator';
 import CardThumbWithSelector from './CardThumbWithSelector';
-const fixedButtonStyle = css({
-  position: 'fixed',
-  bottom: '2rem',
-  right: '4vw',
-  boxShadow: boxShadow,
-});
 
 interface Props {
   cardContent: CardContent;

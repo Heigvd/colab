@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
@@ -14,11 +15,12 @@ import * as API from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import { StateStatus } from '../../store/project';
 import AutoSaveInput from '../common/AutoSaveInput';
+import Button from '../common/Button';
 import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 import { InlineLink } from '../common/Link';
-import { cardStyle } from '../styling/style';
+import { cardStyle, fixedButtonStyle } from '../styling/style';
 
 interface Props {
   project: Project;
@@ -46,7 +48,6 @@ const ProjectDisplay = ({ project }: Props) => {
           padding: '10px',
         })}
       >
-        <span className={css({})}>Project #{project.id}</span>
         <AutoSaveInput
           placeholder="unnamed"
           value={project.name || ''}
@@ -123,9 +124,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
               }
             })}
         </div>
-        <div>
-          <IconButton
-            icon={faPlus}
+          <Button
             onClick={() => {
               dispatch(
                 API.createProject({
@@ -134,11 +133,11 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
                 }),
               );
             }}
-          >
-            Create a project
-          </IconButton>
+            label={<><FontAwesomeIcon icon={faPlus} /> Create new project</>}
+            title={"Create new project"}
+            className={fixedButtonStyle}
+          />
         </div>
-      </div>
     );
   }
 }
