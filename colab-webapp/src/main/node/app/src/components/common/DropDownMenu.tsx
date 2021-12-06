@@ -389,7 +389,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
             
             {icon ? <FontAwesomeIcon icon={icon} className={css({fontSize: '18px'})}/> : null}
             {current.label}
-            {menuIcon === 'CARET' ? <FontAwesomeIcon icon={faCaretDown} /> : null}
+            {menuIcon === 'CARET' ? <FontAwesomeIcon icon={faCaretDown} className={css({marginLeft: space_S })} /> : null}
           </Flex>
           {open &&
             <div 

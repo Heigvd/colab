@@ -5,7 +5,8 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
+import { faClone, faCog, faEye, faNetworkWired, faPen, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -26,9 +27,11 @@ import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import CardTypeList from '../../cards/cardtypes/CardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
 import Clickable from '../../common/Clickable';
+import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
+import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
-import { SecondLevelLink } from '../../common/Link';
+import { invertedThemeMode, space_M } from '../../styling/style';
 import Team from '../Team';
 import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
@@ -179,6 +182,7 @@ export default function Editor(): JSX.Element {
   const dispatch = useAppDispatch();
 
   const { project, status } = useProjectBeingEdited();
+  const navigate = useNavigate();
 
   const root = useAppSelector(state => {
     if (project != null && project.rootCardId != null) {
@@ -229,29 +233,54 @@ export default function Editor(): JSX.Element {
     return <InlineLoading />;
   } else {
     return (
+      <>
+        <div
+          className={cx(invertedThemeMode, css({
+            display: 'inline-grid',
+            gridTemplateColumns: '1fr 3fr 1fr',
+            flexGrow: 0,
+            padding: `${space_M} ${space_M}` ,
+            backgroundColor: 'var(--hoverBgColor)',
+          }))}
+        >
+            <div className={css({ gridColumn: '2/3', placeSelf: 'center', display:'flex'})}>
+              <p className={css({margin: 0})}>{project.name}</p>
+              <IconButton icon={faPen}/>
+              <DropDownMenu
+              icon={faEye}
+              valueComp={{value: '', label: ""}}
+              entries={[
+                {value: './', label: <><IconButton icon={faClone}/> Project</>},
+                {value: './hierarchy', label: <><IconButton icon={faNetworkWired}/> Hierarchy</>},
+                {value: './flow', label: <><IconButton icon={faProjectDiagram}/> Activity Flow</>},
+              ]}
+              onSelect={(val)=>{
+                val.action != null ? val.action() : navigate(val.value)}}
+              buttonClassName={css({textAlign: 'right', alignSelf: 'center', marginLeft: 'auto'})}
+              menuIcon="CARET"
+            />
+            </div>
+            <DropDownMenu
+              icon={faCog}
+              valueComp={{value: '', label: ""}}
+              entries={[
+                {value: './defs', label: "Card Types"},
+                {value: './team', label: "Team"},
+              ]}
+              onSelect={(val)=>{
+                val.action != null ? val.action() : navigate(val.value)}}
+              buttonClassName={css({textAlign: 'right', alignSelf: 'center', marginLeft: 'auto'})}
+              menuIcon="CARET"
+            />
+        </div>
       <div
         className={css({
           display: 'flex',
           flexDirection: 'column',
+          padding: '30px',
+          overflow: 'auto',
         })}
       >
-        <div
-          className={css({
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          })}
-        >
-          <h3>Edit project "{project.name}"</h3>
-          <nav>
-            <SecondLevelLink to="">Project</SecondLevelLink>
-            <SecondLevelLink to="hierarchy">Hierarchy</SecondLevelLink>
-            <SecondLevelLink to="flow">Activity Flow</SecondLevelLink>
-            <SecondLevelLink to="defs">Card Types</SecondLevelLink>
-            <SecondLevelLink to="team">Team</SecondLevelLink>
-          </nav>
-        </div>
         <Flex direction="column" grow={1}>
           <Routes>
             <Route path="team" element={<Team project={project} />} />
@@ -291,6 +320,7 @@ export default function Editor(): JSX.Element {
           </Routes>
         </Flex>
       </div>
+      </>
     );
   }
 }

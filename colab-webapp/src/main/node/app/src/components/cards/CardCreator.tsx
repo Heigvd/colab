@@ -56,7 +56,7 @@ export default function CardCreator({ parent }: CardCreatorProps): JSX.Element {
   return (
     <OpenCloseModal
       title="Create a card"
-      collapsedChildren={<FontAwesomeIcon title="add a card" icon={faPlus} />}
+      collapsedChildren={<FontAwesomeIcon icon={faPlus} title="Add a card"/>}
     >
       {close => {
         if (cardTypes.projectStatus !== 'READY' || cardTypes.publishedStatus !== 'READY') {

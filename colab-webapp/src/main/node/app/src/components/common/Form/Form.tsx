@@ -266,6 +266,7 @@ export default function Form<T>({
         <Button
           key="submit"
           label={submitLabel || i18n.submit}
+          title="Submit"
           className={buttonClassName || ''}
           onClick={submitCb}
         />

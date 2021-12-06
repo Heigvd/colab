@@ -79,8 +79,8 @@ export default function MainApp(): JSX.Element {
   const navigate = useNavigate();
   
   const { currentUser, status: currentUserStatus } = useCurrentUser();
-  const currentAccount = useAppSelector(
-    state => Object.values(state.users.accounts).filter(a => a.userId == state.auth.currentUserId)[0],
+  const currentAccounts = useAppSelector(
+    state => Object.values(state.users.accounts).filter(a => a.userId == state.auth.currentUserId),
     shallowEqual,
   );
 
@@ -205,8 +205,11 @@ export default function MainApp(): JSX.Element {
               valueComp={{value: '', label: ""}}
               entries={[
                 {value: '/settings/user', label: "Profile"},
-                {value: `/settings/account/${currentAccount?.id}`, label: "Edit email"},
+                ...(currentAccounts.map(account => {
+                  return {value: `/settings/account/${account.id}`, label: `Edit ${account.email}`}
+                })),
                 {value: 'logout', label: <>Logout <IconButton icon={faSignOutAlt} /></>, action: logout},
+
               ]}
               onSelect={(val)=>{
                 val.action != null ? val.action() : navigate(val.value)}}
@@ -221,7 +224,6 @@ export default function MainApp(): JSX.Element {
               display: 'flex',
               flexDirection: 'column',
               '& > *': {
-                padding: '0 30px 30px 30px',
                 flexGrow: 1,
               },
             })}
