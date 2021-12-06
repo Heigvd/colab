@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEllipsisV, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
@@ -53,6 +53,7 @@ const ProjectDisplay = ({ project }: Props) => {
           value={project.name || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
         />
+        <IconButton icon={faEllipsisV} />
       </div>
       <div
         className={css({

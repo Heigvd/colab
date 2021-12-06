@@ -4,10 +4,11 @@
  *
  * Licensed under the MIT License
  */
-
+import { css } from '@emotion/css';
 import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { debounce } from 'lodash';
 import * as React from 'react';
+import { inputStyle, textareaStyle } from '../styling/style';
 import IconButton from './IconButton';
 import WithToolbar from './WithToolbar';
 
@@ -82,12 +83,14 @@ export default function AutoSaveInput({
               placeholder={placeholder}
               value={state.currentValue}
               onChange={onInternalChangeCb}
+              className={inputStyle}
             />
           ) : (
             <textarea
               placeholder={placeholder}
               value={state.currentValue}
               onChange={onInternalChangeCb}
+              className={textareaStyle}
             />
           )}
         </label>
@@ -102,11 +105,12 @@ export default function AutoSaveInput({
         toolbarClassName=""
         offsetY={0.5}
         grow={0}
-        toolbar={!readOnly ? <IconButton icon={faPen} title="edit" onClick={editCb} /> : null}
+        toolbar={!readOnly ? <IconButton icon={faPen} title="edit" /> : null}
+        onClick={editCb}
       >
         <>
           <label>{label}</label>
-          {state.currentValue ? state.currentValue : <i>{placeholder}</i>}
+          <div className={css({'&:hover': {opacity: 0.7}})}>{state.currentValue ? state.currentValue : <i>{placeholder}</i>}</div>
         </>
       </WithToolbar>
     );

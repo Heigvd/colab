@@ -283,11 +283,11 @@ export const textareaStyle = css({
   backgroundColor: 'var(--secBgColor)',
   borderRadius: '6px',
   boxSizing: 'border-box',
-  //  margin: "2px 2px 2px 8px",
   transition: '.8s',
-  padding: '0 24px',
-  lineHeight: '24px',
+  padding: '0 15px',
+  lineHeight: '1.6em',
   height: '144px',
+  fontFamily: 'inherit'
 });
 
 export const inputStyle = css({
@@ -297,10 +297,10 @@ export const inputStyle = css({
   backgroundColor: 'var(--secBgColor)',
   borderRadius: '6px',
   boxSizing: 'border-box',
-  //  margin: "2px 2px 2px 8px",
   transition: '.8s',
   padding: '0 24px',
-  lineHeight: '48px',
+  lineHeight: '2.5em',
+  fontFamily: 'inherit'
 });
 
 export const smallInputStyle = cx(

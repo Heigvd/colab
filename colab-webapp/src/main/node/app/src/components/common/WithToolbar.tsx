@@ -32,6 +32,7 @@ interface Props {
   // 1 means height of the toolbar
   offsetY?: number;
   grow?: number;
+  onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
 }
 
 const cssPos = (
@@ -148,11 +149,8 @@ const cssPos = (
   }
 };
 
-const hoverStyle = css({
-  boxShadow: '0 0 6px 0px grey',
-});
-
 export default function WithToolbar({
+  onClick,
   children,
   toolbar,
   toolbarPosition = 'BOTTOM_RIGHT',
@@ -167,15 +165,6 @@ export default function WithToolbar({
 
   const cssPosition = cssPos(toolbarPosition, offsets.x, offsets.y);
 
-  const [hoverToolbar, setHoverToolbar] = React.useState(false);
-
-  const hoverTrueCb = React.useCallback(() => {
-    setHoverToolbar(true);
-  }, []);
-
-  const hoverFalseCb = React.useCallback(() => {
-    setHoverToolbar(false);
-  }, []);
 
   const posCb = React.useCallback(() => {
     if (toolbarRef.current != null && toolbarRef.current.offsetParent != null) {
@@ -191,9 +180,9 @@ export default function WithToolbar({
 
   return (
     <div
+      onClick={onClick} 
       onMouseEnter={posCb}
-      className={cx(
-        hoverToolbar ? hoverStyle : undefined,
+      className={
         css({
           flexGrow: grow,
           display: 'flex',
@@ -203,14 +192,11 @@ export default function WithToolbar({
           ':hover > .toolbar': {
             display: 'flex',
           },
-        }),
-      )}
+        })}
     >
       {toolbar ? (
         <div
           ref={toolbarRef}
-          onMouseEnter={hoverTrueCb}
-          onMouseLeave={hoverFalseCb}
           className={cx(
             'toolbar',
             toolbarClassName,
