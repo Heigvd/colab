@@ -13,18 +13,20 @@ import Clickable from './Clickable';
 
 export interface ButtonProps {
   onClick?: () => void;
+  clickable?: boolean;
   label: string | ReactJSXElement;
   title: string;
   className?: string;
 }
 
-export default function Button({ onClick, label, title, className }: ButtonProps): JSX.Element {
+export default function Button({ onClick, clickable, label, title, className }: ButtonProps): JSX.Element {
   return (
     <Clickable
       onClick={onClick}
       title={title}
       className={cx(inactiveButtonStyle, className)}
       clickableClassName={cx(buttonStyle, className)}
+      clickable={clickable}
     >
       {label}
     </Clickable>

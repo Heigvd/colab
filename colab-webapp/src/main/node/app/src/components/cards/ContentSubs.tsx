@@ -6,13 +6,24 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { getSubCards } from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
+import Button from '../common/Button';
 import InlineLoading from '../common/InlineLoading';
+import { depthMax } from '../projects/edition/Editor';
+import { boxShadow } from '../styling/style';
 import CardCreator from './CardCreator';
 import CardThumbWithSelector from './CardThumbWithSelector';
+const fixedButtonStyle = css({
+  position: 'fixed',
+  bottom: '2rem',
+  right: '4vw',
+  boxShadow: boxShadow,
+});
 
 interface Props {
   cardContent: CardContent;
@@ -98,7 +109,19 @@ export default function ContentSubs({
           {subCards.map(sub => (
             <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
           ))}
-          <CardCreator parent={cardContent} />
+          <CardCreator 
+            parent={cardContent} 
+            customButton={ 
+              depth === depthMax 
+              ? <Button 
+                label={<><FontAwesomeIcon icon={faPlus} /> Add Card</>} 
+                title="Add Card"
+                className={fixedButtonStyle}
+                clickable
+                />
+              : undefined 
+            } 
+          />
         </div>
       ) : (
         <div className={flexWrap}>

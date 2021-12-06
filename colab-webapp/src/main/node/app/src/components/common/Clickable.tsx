@@ -10,6 +10,7 @@ import { linkStyle } from '../styling/style';
 
 export interface ClickablenProps {
   onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
+  clickable?: boolean;
   title?: string;
   children?: React.ReactNode;
   className?: string;
@@ -18,6 +19,7 @@ export interface ClickablenProps {
 
 export default function Clickable({
   onClick,
+  clickable,
   title,
   children,
   className = '',
@@ -49,7 +51,7 @@ export default function Clickable({
   return (
     <span
       tabIndex={0}
-      className={onClick != null ? clickableClassName : className}
+      className={onClick != null || clickable ? clickableClassName : className}
       onClick={onClickCb}
       onKeyDown={keyDownCb}
       title={title}

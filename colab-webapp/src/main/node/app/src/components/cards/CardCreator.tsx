@@ -6,6 +6,7 @@
  */
 
 import { css } from '@emotion/css';
+import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { faCheck, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardContent } from 'colab-rest-client';
@@ -23,6 +24,8 @@ import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
 export interface CardCreatorProps {
   parent: CardContent;
+  customButton?: ReactJSXElement;
+  className?: string;
 }
 
 const listOfTypeStyle = css({
@@ -31,7 +34,7 @@ const listOfTypeStyle = css({
   flexWrap: 'wrap',
 });
 
-export default function CardCreator({ parent }: CardCreatorProps): JSX.Element {
+export default function CardCreator({ parent, customButton, className }: CardCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const [selectedType, setSelectedType] = React.useState<number | undefined>();
   const { project } = useProjectBeingEdited();
@@ -56,7 +59,8 @@ export default function CardCreator({ parent }: CardCreatorProps): JSX.Element {
   return (
     <OpenCloseModal
       title="Create a card"
-      collapsedChildren={<FontAwesomeIcon icon={faPlus} title="Add a card"/>}
+      collapsedChildren={customButton ? customButton : <FontAwesomeIcon icon={faPlus} title="Add a card" />}
+      className={className}
     >
       {close => {
         if (cardTypes.projectStatus !== 'READY' || cardTypes.publishedStatus !== 'READY') {

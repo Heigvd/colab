@@ -36,6 +36,7 @@ import Team from '../Team';
 import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
 
+export const depthMax = 2;
 const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -310,7 +311,7 @@ export default function Editor(): JSX.Element {
               element={
                 <div>
                   {rootContent != null ? (
-                    <ContentSubs showEmptiness={true} depth={2} cardContent={rootContent} />
+                    <ContentSubs showEmptiness={true} depth={depthMax} cardContent={rootContent} />
                   ) : (
                     <InlineLoading />
                   )}
