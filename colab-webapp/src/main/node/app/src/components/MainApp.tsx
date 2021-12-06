@@ -5,12 +5,10 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { faCog, faSignOutAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { entries } from 'lodash';
+import { faCog, faSignOutAlt, faTimes, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../API/api';
-import { getDisplayName } from '../helper';
 import { useProject, useProjectBeingEdited } from '../selectors/projectSelector';
 import { useCurrentUser } from '../selectors/userSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -18,7 +16,7 @@ import Admin from './admin/Admin';
 import DropDownMenu from './common/DropDownMenu';
 import IconButton from './common/IconButton';
 import InlineLoading from './common/InlineLoading';
-import { InlineLink, MainMenuLink } from './common/Link';
+import { MainMenuLink } from './common/Link';
 import Loading from './common/Loading';
 import Overlay from './common/Overlay';
 import Debugger from './debugger/debugger';
@@ -144,6 +142,7 @@ export default function MainApp(): JSX.Element {
                 flexDirection: 'row',
                 alignItems: 'center',
                 boxSizing: 'border-box',
+                padding: '0 ' + space_M,
               }),
             )}
           >
@@ -191,11 +190,23 @@ export default function MainApp(): JSX.Element {
               icon={faCog}
               valueComp={{value: '', label: ""}}
               entries={[
-                {value: '/settings/user', label: getDisplayName(currentUser)},
-                {value: 'logOut', label: <IconButton onClick={logout} icon={faSignOutAlt} />},
+                {value: '/settings/display', label: "Display settings"},
+                {value: '/settings', label: "Other settings"},
               ]}
-              //DOESNT WORK IN ALL CASES!!!!
-              onSelect={(el)=>{navigate(el)}}
+              onSelect={(val)=>{
+                val.action != null ? val.action() : navigate(val.value)}}
+              buttonClassName={invertedThemeMode}
+            />
+            <DropDownMenu
+              icon={faUserCircle}
+              valueComp={{value: '', label: ""}}
+              entries={[
+                {value: '/settings/user', label: "Profile"},
+                {value: '/settings/user', label: "Edit email"},
+                {value: 'logout', label: <IconButton icon={faSignOutAlt} />, action: logout},
+              ]}
+              onSelect={(val)=>{
+                val.action != null ? val.action() : navigate(val.value)}}
               buttonClassName={invertedThemeMode}
             />
           </div>

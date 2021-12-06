@@ -10,6 +10,7 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import { useEffect, useRef } from 'react';
 import { iconButton, linkStyle, normalThemeMode, space_S } from '../styling/style';
 import Flex from './Flex';
 
@@ -90,7 +91,7 @@ function ajustHorizontally(values: ContainerValues) {
   // Check right
   if (overflowRight(newValues)) {
     // Move left
-    newValues.left = window.innerWidth - newValues.width;
+    newValues.left = window.innerWidth - newValues.width - 5;
   }
   // Check left again
   if (overflowLeft(newValues)) {
@@ -293,9 +294,11 @@ export function justifyDropMenu(
     menu.style.setProperty('position', 'fixed');
   }
 }
+
 interface Entry<T> {
   value: T;
   label: React.ReactNode;
+  action?: ()=>void;
 }
 
 interface Props<T> {
@@ -307,7 +310,7 @@ interface Props<T> {
   direction?: DropDownDirection;
   height?: string;
   valueComp?: Entry<T>;
-  onSelect?: (value: T) => void;
+  onSelect?: (value: Entry<T>) => void;
   buttonClassName?: string;
   dropClassName?: string;
 }
@@ -324,19 +327,30 @@ export default function DropDownMenu<T extends string | number | symbol>({
   idleHoverStyle = 'FOREGROUND',
 }: Props<T>): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
+  
+  const dropRef= useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (event:Event) => {
+    if (dropRef.current && !dropRef.current.contains(event.target as Node)) {
+      setOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  });
 
   const toggle = React.useCallback(() => {
     setOpen(open => !open);
   }, []);
 
-  const clickIn = React.useCallback((event: React.MouseEvent<HTMLDivElement> | undefined) => {
+   const clickIn = React.useCallback((event: React.MouseEvent<HTMLDivElement> | undefined) => {
     if (event != null) {
       event.stopPropagation();
     }
-  }, []);
-
-  const clickOut = React.useCallback(() => {
-    setOpen(false);
   }, []);
 
   const entryStyle = css({
@@ -351,22 +365,12 @@ export default function DropDownMenu<T extends string | number | symbol>({
     },
   });
 
-  React.useEffect(() => {
-    const body = document.getElementsByTagName('body')[0];
-    if (body != null) {
-      body.addEventListener('click', clickOut);
-      return () => {
-        body.removeEventListener('click', clickOut);
-      };
-    }
-  }, [clickOut]);
-
   if (entries.length > 0) {
     const current =
       valueComp != null ? valueComp : entries.find(entry => entry.value === value) || entries[0]!;
 
     return (
-      <div onClick={clickIn} className={css({ cursor: 'pointer' })}>
+      <div ref={dropRef} onClick={clickIn} className={css({ cursor: 'pointer' })}>
         <Flex direction="column" className={css({ overflow: 'visible' })}>
           <Flex
             align="center"
@@ -383,7 +387,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
               </>
             }
             
-            {icon ? <FontAwesomeIcon icon={icon} /> : null}
+            {icon ? <FontAwesomeIcon icon={icon} className={css({fontSize: '18px'})}/> : null}
             {current.label}
             {menuIcon === 'CARET' ? <FontAwesomeIcon icon={faCaretDown} /> : null}
           </Flex>
@@ -404,7 +408,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
                   key={String(entry.value)}
                   onClick={() => {
                     if (onSelect != null) {
-                      onSelect(entry.value);
+                      onSelect(entry);
                     }
                     setOpen(false);
                   }}
