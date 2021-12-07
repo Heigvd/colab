@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.rest.card;
 
 import ch.colabproject.colab.api.model.document.Block;
 import java.io.Serializable;
+import java.util.Set;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -16,14 +17,13 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author sandra
  */
-<span class="fc" id="L19">public class CardTypeCreationBean implements Serializable {</span>
+<span class="fc" id="L20">public class CardTypeCreationBean implements Serializable {</span>
 
     private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * The id of the project it belongs to
      */
@@ -39,85 +39,106 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
      */
     private Block purpose;
 
+    /**
+     * The tags
+     */
+    private Set&lt;String&gt; tags;
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the projectId
      */
     public Long getProjectId() {
-<span class="fc" id="L50">        return projectId;</span>
+<span class="fc" id="L54">        return projectId;</span>
     }
 
     /**
      * @param projectId the projectId
      */
     public void setProjectId(Long projectId) {
-<span class="fc" id="L57">        this.projectId = projectId;</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L61">        this.projectId = projectId;</span>
+<span class="fc" id="L62">    }</span>
 
     /**
      * @return the title
      */
     public String getTitle() {
-<span class="fc" id="L64">        return title;</span>
+<span class="fc" id="L68">        return title;</span>
     }
 
     /**
      * @param title the title
      */
     public void setTitle(String title) {
-<span class="fc" id="L71">        this.title = title;</span>
-<span class="fc" id="L72">    }</span>
+<span class="fc" id="L75">        this.title = title;</span>
+<span class="fc" id="L76">    }</span>
 
     /**
      * @return the purpose
      */
     public Block getPurpose() {
-<span class="fc" id="L78">        return purpose;</span>
+<span class="fc" id="L82">        return purpose;</span>
     }
 
     /**
      * @param purpose the purpose
      */
     public void setPurpose(Block purpose) {
-<span class="fc" id="L85">        this.purpose = purpose;</span>
-<span class="fc" id="L86">    }</span>
+<span class="fc" id="L89">        this.purpose = purpose;</span>
+<span class="fc" id="L90">    }</span>
+
+    /**
+     * Get tags
+     *
+     * @return the tags
+     */
+    public Set&lt;String&gt; getTags() {
+<span class="fc" id="L98">        return tags;</span>
+    }
+
+    /**
+     * Set the tags
+     *
+     * @param tags the tags
+     */
+    public void setTags(Set&lt;String&gt; tags) {
+<span class="fc" id="L107">        this.tags = tags;</span>
+<span class="fc" id="L108">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     @Override
     public int hashCode() {
-<span class="fc" id="L94">        return new HashCodeBuilder()</span>
-<span class="fc" id="L95">            .append(this.projectId)</span>
-<span class="fc" id="L96">            .append(this.title)</span>
-<span class="fc" id="L97">            .toHashCode();</span>
+<span class="fc" id="L115">        return new HashCodeBuilder()</span>
+<span class="fc" id="L116">            .append(this.projectId)</span>
+<span class="fc" id="L117">            .append(this.title)</span>
+<span class="fc" id="L118">            .toHashCode();</span>
     }
 
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (this == obj) {</span>
-<span class="nc" id="L103">            return true;</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (this == obj) {</span>
+<span class="nc" id="L124">            return true;</span>
         }
-<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L106">            return false;</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">        if (obj == null) {</span>
+<span class="nc" id="L127">            return false;</span>
         }
-<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
-<span class="nc" id="L109">            return false;</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (getClass() != obj.getClass()) {</span>
+<span class="nc" id="L130">            return false;</span>
         }
-<span class="nc" id="L111">        final CardTypeCreationBean other = (CardTypeCreationBean) obj;</span>
-<span class="nc" id="L112">        return new EqualsBuilder()</span>
-<span class="nc" id="L113">            .append(this.projectId, other.projectId)</span>
-<span class="nc" id="L114">            .append(this.title, other.title)</span>
-<span class="nc" id="L115">            .isEquals();</span>
+<span class="nc" id="L132">        final CardTypeCreationBean other = (CardTypeCreationBean) obj;</span>
+<span class="nc" id="L133">        return new EqualsBuilder()</span>
+<span class="nc" id="L134">            .append(this.projectId, other.projectId)</span>
+<span class="nc" id="L135">            .append(this.title, other.title)</span>
+<span class="nc" id="L136">            .isEquals();</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L120">        return &quot;CardTypeCreationBean{&quot; + &quot;, projectId=&quot; + projectId + &quot;title=&quot; + title + &quot;}&quot;;</span>
+<span class="nc" id="L141">        return &quot;CardTypeCreationBean{&quot; + &quot;, projectId=&quot; + projectId + &quot;title=&quot; + title + &quot;}&quot;;</span>
     }
 
 }

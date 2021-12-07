@@ -147,8 +147,8 @@ import org.slf4j.LoggerFactory;
 <span class="pc bpc" id="L147" title="1 of 2 branches missed.">                    if (userId != null) {</span>
 <span class="fc" id="L148">                        User user = userDao.findUser(userId);</span>
 <span class="fc" id="L149">                        OffsetDateTime date = activityCache.remove(userId);</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">                        if (user != null) {</span>
-<span class="fc" id="L151">                            user.setLastSeenAt(date);</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">                        if (user != null) {</span>
+<span class="nc" id="L151">                            user.setLastSeenAt(date);</span>
                         }
                     }
                 }

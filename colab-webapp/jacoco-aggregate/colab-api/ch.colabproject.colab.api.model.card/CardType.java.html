@@ -10,9 +10,13 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.security.permissions.Conditions;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
@@ -31,7 +35,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(
     indexes = {
-        @Index(columnList = &quot;purpose_id&quot;),
+        @Index(columnList = &quot;purpose_id&quot;)
     }
 )
 @NamedQuery(name = &quot;CardType.findAll&quot;, query = &quot;SELECT c FROM CardType c&quot;)
@@ -46,13 +50,12 @@ import javax.validation.constraints.NotNull;
         + &quot;JOIN ct.project proj &quot;
         + &quot;JOIN proj.teamMembers memb &quot;
         + &quot;WHERE ct.published = TRUE AND memb.user.id = :userId&quot;)
-<span class="nc" id="L49">public class CardType extends AbstractCardType {</span>
+<span class="nc" id="L53">public class CardType extends AbstractCardType {</span>
 
     /**
      * Serial version UID
      */
     private static final long serialVersionUID = 1L;
-
 
     /**
      * The title
@@ -68,6 +71,16 @@ import javax.validation.constraints.NotNull;
     private Block purpose;
 
     /**
+     * Tags
+     */
+<span class="nc" id="L76">    @ElementCollection</span>
+    @CollectionTable(indexes = {
+        @Index(columnList = &quot;cardtype_id&quot;)
+    })
+    @NotNull
+    private Set&lt;String&gt; tags =new HashSet&lt;&gt;();
+
+    /**
      * The id of the purpose
      */
     @Transient
@@ -81,29 +94,29 @@ import javax.validation.constraints.NotNull;
      * @return the title
      */
     public String getTitle() {
-<span class="nc" id="L84">        return title;</span>
+<span class="nc" id="L97">        return title;</span>
     }
 
     /**
      * @param title the title
      */
     public void setTitle(String title) {
-<span class="nc" id="L91">        this.title = title;</span>
-<span class="nc" id="L92">    }</span>
+<span class="nc" id="L104">        this.title = title;</span>
+<span class="nc" id="L105">    }</span>
 
     /**
      * @return the purpose
      */
     public Block getPurpose() {
-<span class="nc" id="L98">        return purpose;</span>
+<span class="nc" id="L111">        return purpose;</span>
     }
 
     /**
      * @param purpose the purpose
      */
     public void setPurpose(Block purpose) {
-<span class="nc" id="L105">        this.purpose = purpose;</span>
-<span class="nc" id="L106">    }</span>
+<span class="nc" id="L118">        this.purpose = purpose;</span>
+<span class="nc" id="L119">    }</span>
 
     /**
      * get the id of the purpose. To be sent to client.
@@ -111,10 +124,10 @@ import javax.validation.constraints.NotNull;
      * @return the id of the purpose
      */
     public Long getPurposeId() {
-<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (purpose != null) {</span>
-<span class="nc" id="L115">            return purpose.getId();</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">        if (purpose != null) {</span>
+<span class="nc" id="L128">            return purpose.getId();</span>
         } else {
-<span class="nc" id="L117">            return purposeId;</span>
+<span class="nc" id="L130">            return purposeId;</span>
         }
     }
 
@@ -124,52 +137,72 @@ import javax.validation.constraints.NotNull;
      * @param purposeId the id of the purpose
      */
     public void setPurposeId(Long purposeId) {
-<span class="nc" id="L127">        this.purposeId = purposeId;</span>
-<span class="nc" id="L128">    }</span>
+<span class="nc" id="L140">        this.purposeId = purposeId;</span>
+<span class="nc" id="L141">    }</span>
+
+    /**
+     * Get tags
+     *
+     * @return get the list of tags
+     */
+    public Set&lt;String&gt; getTags() {
+<span class="nc" id="L149">        return tags;</span>
+    }
+
+    /**
+     * Set tags
+     *
+     * @param tags new set of tags
+     */
+    public void setTags(Set&lt;String&gt; tags) {
+<span class="nc" id="L158">        this.tags = tags;</span>
+<span class="nc" id="L159">    }</span>
 
     @Override
     public CardType resolve() {
-<span class="nc" id="L132">        return this;</span>
+<span class="nc" id="L163">        return this;</span>
     }
 
     @Override
     public List&lt;AbstractCardType&gt; expand() {
-<span class="nc" id="L137">        return List.of(this);</span>
+<span class="nc" id="L168">        return List.of(this);</span>
     }
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     /**
      * {@inheritDoc }
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc" id="L148">        super.merge(other);</span>
+<span class="nc" id="L180">        super.merge(other);</span>
 
-<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (other instanceof CardType) {</span>
-<span class="nc" id="L151">            CardType o = (CardType) other;</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (other instanceof CardType) {</span>
+<span class="nc" id="L183">            CardType o = (CardType) other;</span>
             // this.setUniqueId(o.getUniqueId());
-<span class="nc" id="L153">            this.setTitle(o.getTitle());</span>
-<span class="nc" id="L154">        } else {</span>
-<span class="nc" id="L155">            throw new ColabMergeException(this, other);</span>
+<span class="nc" id="L185">            this.setTitle(o.getTitle());</span>
+<span class="nc" id="L186">            this.setTags(((CardType) other).getTags());</span>
+<span class="nc" id="L187">        } else {</span>
+<span class="nc" id="L188">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L157">    }</span>
+<span class="nc" id="L190">    }</span>
 
     @Override
     @JsonbTransient
     public Conditions.Condition getCreateCondition() {
-<span class="nc bnc" id="L162" title="All 2 branches missed.">        if (this.getProject() != null) {</span>
-<span class="nc" id="L163">            return new Conditions.IsCurrentUserInternToProject(this.getProject());</span>
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        if (this.getProject() != null) {</span>
+<span class="nc" id="L196">            return new Conditions.IsCurrentUserInternToProject(this.getProject());</span>
         } else {
             // only admin can edit global types
-<span class="nc" id="L166">            return Conditions.alwaysFalse;</span>
+<span class="nc" id="L199">            return Conditions.alwaysFalse;</span>
         }
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L172">        return &quot;CardType{&quot; + &quot;id=&quot; + getId() + &quot;, title=&quot; + title</span>
+<span class="nc" id="L205">        return &quot;CardType{&quot; + &quot;id=&quot; + getId() + &quot;, title=&quot; + title</span>
             + &quot;, projectId=&quot; + projectId + &quot;}&quot;;
     }
 

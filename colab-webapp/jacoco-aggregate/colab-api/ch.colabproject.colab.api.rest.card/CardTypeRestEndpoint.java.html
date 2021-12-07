@@ -134,8 +134,9 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L134">        cardType.setProjectId(cardTypeCreationBean.getProjectId());</span>
 <span class="nc" id="L135">        cardType.setTitle(cardTypeCreationBean.getTitle());</span>
 <span class="nc" id="L136">        cardType.setPurpose(cardTypeCreationBean.getPurpose());</span>
+<span class="nc" id="L137">        cardType.setTags(cardTypeCreationBean.getTags());</span>
 
-<span class="nc" id="L138">        return cardFacade.createNewCardType(cardType).getId();</span>
+<span class="nc" id="L139">        return cardFacade.createNewCardType(cardType).getId();</span>
     }
 
 //    /**
@@ -161,9 +162,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCardType(AbstractCardType cardType) throws ColabMergeException {
-<span class="nc" id="L164">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
-<span class="nc" id="L165">        cardTypeDao.updateCardType(cardType);</span>
-<span class="nc" id="L166">    }</span>
+<span class="nc" id="L165">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
+<span class="nc" id="L166">        cardTypeDao.updateCardType(cardType);</span>
+<span class="nc" id="L167">    }</span>
 
     /**
      * Permanently delete a card type
@@ -173,9 +174,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteCardType(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L176">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
-<span class="nc" id="L177">        cardFacade.deleteCardType(id);</span>
-<span class="nc" id="L178">    }</span>
+<span class="nc" id="L177">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
+<span class="nc" id="L178">        cardFacade.deleteCardType(id);</span>
+<span class="nc" id="L179">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

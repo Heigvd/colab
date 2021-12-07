@@ -110,10 +110,10 @@ import javax.persistence.Transient;
      */
     @Override
     public CardType resolve() {
-<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (this.target instanceof CardType) {</span>
-<span class="nc" id="L114">            return (CardType) this.target;</span>
-<span class="nc bnc" id="L115" title="All 2 branches missed.">        } else if (this.target instanceof CardTypeRef) {</span>
-<span class="nc" id="L116">            return ((CardTypeRef) target).resolve();</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (this.target instanceof CardType) {</span>
+<span class="fc" id="L114">            return (CardType) this.target;</span>
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">        } else if (this.target instanceof CardTypeRef) {</span>
+<span class="fc" id="L116">            return ((CardTypeRef) target).resolve();</span>
         }
 <span class="nc" id="L118">        return null;</span>
     }
