@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>WithTrackingData.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-tests</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.model</a> &gt; <span class="el_source">WithTrackingData.java</span></div><h1>WithTrackingData.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.model;
+
+import ch.colabproject.colab.api.model.tracking.Tracking;
+import ch.colabproject.colab.api.model.user.User;
+import java.time.OffsetDateTime;
+
+/**
+ * Simple interface which depict objects having tracking data
+ *
+ * @author sandra
+ */
+public interface WithTrackingData {
+
+    /**
+     * Get the tracking data
+     *
+     * @return the tracking data
+     */
+    Tracking getTrackingData();
+
+    /**
+     * Set the tracking data
+     *
+     * @param trackingData new tracking data
+     */
+    void setTrackingData(Tracking trackingData);
+
+    /**
+     * Update tracking data
+     *
+     * @param user current user
+     */
+    default void touch(User user) {
+<span class="fc" id="L40">        Tracking trackingData = getTrackingData();</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        String username = user != null ? user.getUsername() : null;</span>
+<span class="fc" id="L42">        OffsetDateTime now = OffsetDateTime.now();</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (trackingData == null) {</span>
+<span class="fc" id="L44">            setTrackingData(new Tracking());</span>
+<span class="fc" id="L45">            trackingData = getTrackingData();</span>
+<span class="fc" id="L46">            trackingData.setCreatedBy(username);</span>
+<span class="fc" id="L47">            trackingData.setCreationDate(now);</span>
+        }
+<span class="fc" id="L49">        trackingData.setModifiedBy(username);</span>
+<span class="fc" id="L50">        trackingData.setModificationDate(now);</span>
+<span class="fc" id="L51">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

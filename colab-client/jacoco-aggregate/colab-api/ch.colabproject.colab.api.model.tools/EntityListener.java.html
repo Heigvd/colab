@@ -6,11 +6,11 @@
  */
 package ch.colabproject.colab.api.model.tools;
 
+import ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
 import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.ejb.SecurityFacade;
-import ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
-import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithPermission;
+import ch.colabproject.colab.api.model.WithTrackingData;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.SessionManager;
@@ -121,8 +121,8 @@ import org.slf4j.LoggerFactory;
     @PrePersist
     @PreUpdate
     public void touch(Object o) {
-<span class="nc bnc" id="L124" title="All 4 branches missed.">        if (!requestManager.isDoNotTrackChange() &amp;&amp; o instanceof ColabEntity) {</span>
-<span class="nc" id="L125">            ((ColabEntity) o).touch(requestManager.getCurrentUser());</span>
+<span class="nc bnc" id="L124" title="All 4 branches missed.">        if (!requestManager.isDoNotTrackChange() &amp;&amp; o instanceof WithTrackingData) {</span>
+<span class="nc" id="L125">            ((WithTrackingData) o).touch(requestManager.getCurrentUser());</span>
         }
 <span class="nc" id="L127">    }</span>
 

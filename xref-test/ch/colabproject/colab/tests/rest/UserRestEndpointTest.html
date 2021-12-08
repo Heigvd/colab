@@ -14,16 +14,16 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.tests.<strong class="jxr_keyword">rest</strong>;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.AuthInfo;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.AuthMethod;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.LocalAccount;
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.User;
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.user.UserDao;
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.channel.UserChannel;
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.message.WsChannelUpdate;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.message.WsUpdateMessage;
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.WithWebsocketChannels;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.AuthInfo;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.AuthMethod;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.LocalAccount;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.User;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.user.UserDao;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.channel.UserChannel;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.message.WsChannelUpdate;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.message.WsUpdateMessage;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.TestHelper;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.tests.TestUser;
@@ -425,7 +425,7 @@
 <a class="jxr_linenumber" name="L417" href="#L417">417</a>         <em class="jxr_comment">// one entity has been updated</em>
 <a class="jxr_linenumber" name="L418" href="#L418">418</a>         Assertions.assertEquals(1, updateMessage.getUpdated().size());
 <a class="jxr_linenumber" name="L419" href="#L419">419</a> 
-<a class="jxr_linenumber" name="L420" href="#L420">420</a>         WithJsonDiscriminator entity = updateMessage.getUpdated().iterator().next();
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>         WithWebsocketChannels entity = updateMessage.getUpdated().iterator().next();
 <a class="jxr_linenumber" name="L421" href="#L421">421</a> 
 <a class="jxr_linenumber" name="L422" href="#L422">422</a>         Assertions.assertTrue(entity instanceof User);
 <a class="jxr_linenumber" name="L423" href="#L423">423</a>         Assertions.assertEquals(NEW_NAME, ((User) entity).getCommonname());

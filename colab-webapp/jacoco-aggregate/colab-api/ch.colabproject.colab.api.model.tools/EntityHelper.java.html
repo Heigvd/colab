@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model.tools;
 
-import ch.colabproject.colab.api.model.WithId;
+import ch.colabproject.colab.generator.model.interfaces.WithId;
 import java.util.Objects;
 
 /**

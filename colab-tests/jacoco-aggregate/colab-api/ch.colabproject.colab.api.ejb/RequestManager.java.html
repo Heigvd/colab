@@ -225,28 +225,37 @@ import org.slf4j.LoggerFactory;
     }
 
     /**
+     * Synchronize the persistence context to the underlying database.
+     */
+    public void flush() {
+<span class="nc bnc" id="L231" title="All 2 branches missed.">        if (txExists()) {</span>
+<span class="nc" id="L232">            em.flush();</span>
+        }
+<span class="nc" id="L234">    }</span>
+
+    /**
      * Execute some piece of code with admin privileges.
      *
      * @param action code to execute with admin privileges
      */
     public void sudo(Runnable action) {
-<span class="fc bfc" id="L233" title="All 2 branches covered.">        if (txExists()) {</span>
+<span class="fc bfc" id="L242" title="All 2 branches covered.">        if (txExists()) {</span>
             // make sure to flush to check every pending changes before granting admin rights
-<span class="fc" id="L235">            em.flush();</span>
+<span class="fc" id="L244">            em.flush();</span>
         }
 
-<span class="fc" id="L238">        this.sudoAsAdmin++;</span>
-<span class="fc" id="L239">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
-<span class="fc" id="L240">        action.run();</span>
-<span class="fc bfc" id="L241" title="All 2 branches covered.">        if (txExists()) {</span>
+<span class="fc" id="L247">        this.sudoAsAdmin++;</span>
+<span class="fc" id="L248">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="fc" id="L249">        action.run();</span>
+<span class="fc bfc" id="L250" title="All 2 branches covered.">        if (txExists()) {</span>
             // make sure to flush to apply all pending changes with admin rights
-<span class="fc" id="L243">            em.flush();</span>
+<span class="fc" id="L252">            em.flush();</span>
         }
 
-<span class="fc" id="L246">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="fc" id="L255">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
 
-<span class="fc" id="L248">        this.sudoAsAdmin--;</span>
-<span class="fc" id="L249">    }</span>
+<span class="fc" id="L257">        this.sudoAsAdmin--;</span>
+<span class="fc" id="L258">    }</span>
 
     /**
      * Execute some piece of code with admin privileges and return something.
@@ -259,21 +268,21 @@ import org.slf4j.LoggerFactory;
      * @throws java.lang.Exception if something is thrown during the call
      */
     public &lt;R&gt; R sudo(Callable&lt;R&gt; action) throws Exception {
-<span class="fc bfc" id="L262" title="All 2 branches covered.">        if (txExists()) {</span>
+<span class="fc bfc" id="L271" title="All 2 branches covered.">        if (txExists()) {</span>
             // make sure to flush to check every pending changes before granting admin rights
-<span class="fc" id="L264">            em.flush();</span>
+<span class="fc" id="L273">            em.flush();</span>
         }
-<span class="fc" id="L266">        this.sudoAsAdmin++;</span>
-<span class="fc" id="L267">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
-<span class="fc" id="L268">        R result = action.call();</span>
-<span class="fc bfc" id="L269" title="All 2 branches covered.">        if (txExists()) {</span>
+<span class="fc" id="L275">        this.sudoAsAdmin++;</span>
+<span class="fc" id="L276">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="fc" id="L277">        R result = action.call();</span>
+<span class="fc bfc" id="L278" title="All 2 branches covered.">        if (txExists()) {</span>
             // make sure to flush to apply all pending changes with admin rights
-<span class="fc" id="L271">            em.flush();</span>
+<span class="fc" id="L280">            em.flush();</span>
         }
-<span class="fc" id="L273">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
-<span class="fc" id="L274">        this.sudoAsAdmin--;</span>
+<span class="fc" id="L282">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="fc" id="L283">        this.sudoAsAdmin--;</span>
 
-<span class="fc" id="L276">        return result;</span>
+<span class="fc" id="L285">        return result;</span>
     }
 
     /**
@@ -284,12 +293,12 @@ import org.slf4j.LoggerFactory;
     public boolean isAdmin() {
         // the sudoAsAdmin is done at first,
         // so we do not need to get the current user if this condition is fulfilled
-<span class="fc bfc" id="L287" title="All 2 branches covered.">        if (sudoAsAdmin &gt; 0) {</span>
-<span class="fc" id="L288">            return true;</span>
+<span class="fc bfc" id="L296" title="All 2 branches covered.">        if (sudoAsAdmin &gt; 0) {</span>
+<span class="fc" id="L297">            return true;</span>
         }
 
-<span class="fc" id="L291">        User currentUser = this.getCurrentUser();</span>
-<span class="fc bfc" id="L292" title="All 4 branches covered.">        return currentUser != null &amp;&amp; currentUser.isAdmin();</span>
+<span class="fc" id="L300">        User currentUser = this.getCurrentUser();</span>
+<span class="fc bfc" id="L301" title="All 4 branches covered.">        return currentUser != null &amp;&amp; currentUser.isAdmin();</span>
     }
 
     /**
@@ -299,8 +308,8 @@ import org.slf4j.LoggerFactory;
      * @param result    the result
      */
     public void registerConditionResult(Condition condition, Boolean result) {
-<span class="fc" id="L302">        this.conditionCache.put(condition, result);</span>
-<span class="fc" id="L303">    }</span>
+<span class="fc" id="L311">        this.conditionCache.put(condition, result);</span>
+<span class="fc" id="L312">    }</span>
 
     /**
      * Get the cached condition result
@@ -311,7 +320,7 @@ import org.slf4j.LoggerFactory;
      *         evaluated yet
      */
     public Boolean getConditionResult(Condition condition) {
-<span class="fc" id="L314">        return this.conditionCache.get(condition);</span>
+<span class="fc" id="L323">        return this.conditionCache.get(condition);</span>
     }
 
     /**
@@ -320,7 +329,7 @@ import org.slf4j.LoggerFactory;
      * @return true/false
      */
     public boolean isInSecurityTx() {
-<span class="fc" id="L323">        return inSecurityTx;</span>
+<span class="fc" id="L332">        return inSecurityTx;</span>
     }
 
     /**
@@ -329,8 +338,8 @@ import org.slf4j.LoggerFactory;
      * @param inSecurityTx new flag
      */
     public void setInSecurityTx(boolean inSecurityTx) {
-<span class="fc" id="L332">        this.inSecurityTx = inSecurityTx;</span>
-<span class="fc" id="L333">    }</span>
+<span class="fc" id="L341">        this.inSecurityTx = inSecurityTx;</span>
+<span class="fc" id="L342">    }</span>
 
     /**
      * Check if the current transaction is already done
@@ -338,7 +347,7 @@ import org.slf4j.LoggerFactory;
      * @return whether or not the current transaction is already done
      */
     public boolean isTxDone() {
-<span class="nc" id="L341">        return txDone;</span>
+<span class="nc" id="L350">        return txDone;</span>
     }
 
     /**
@@ -347,8 +356,8 @@ import org.slf4j.LoggerFactory;
      * @param txDone whether or not the current transaction is already done
      */
     public void setTxDone(boolean txDone) {
-<span class="fc" id="L350">        this.txDone = txDone;</span>
-<span class="fc" id="L351">    }</span>
+<span class="fc" id="L359">        this.txDone = txDone;</span>
+<span class="fc" id="L360">    }</span>
 
     /**
      * Set Do-Not-Track-Change boolean
@@ -356,8 +365,8 @@ import org.slf4j.LoggerFactory;
      * @param value the new value
      */
     public void setDoNotTrackChange(boolean value) {
-<span class="fc" id="L359">        this.doNotTrackChange = value;</span>
-<span class="fc" id="L360">    }</span>
+<span class="fc" id="L368">        this.doNotTrackChange = value;</span>
+<span class="fc" id="L369">    }</span>
 
     /**
      * Get Do-Not-Track-Change value
@@ -365,7 +374,7 @@ import org.slf4j.LoggerFactory;
      * @return should ou shouldn't track entity updates?
      */
     public boolean isDoNotTrackChange() {
-<span class="fc" id="L368">        return doNotTrackChange;</span>
+<span class="fc" id="L377">        return doNotTrackChange;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

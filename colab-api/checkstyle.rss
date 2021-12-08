@@ -27,7 +27,7 @@ under the License.
     <item>
       <title>File: 151,
              Errors: 0,
-             Warnings: 94,
+             Warnings: 96,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -290,7 +290,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   0
@@ -542,7 +542,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   0
@@ -641,20 +641,6 @@ under the License.
                 </td>
                 <td>
                   1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.WithId.java">ch/colabproject/colab/api/model/WithId.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
                 </td>
                 <td>
                   0
@@ -1074,7 +1060,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  1
                 </td>
                 <td>
                   0
@@ -1508,7 +1494,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  2
                 </td>
                 <td>
                   0
@@ -1545,6 +1531,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.tools.EntityHelper.java">ch/colabproject/colab/api/model/tools/EntityHelper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.WithTrackingData.java">ch/colabproject/colab/api/model/WithTrackingData.java</a>
                 </td>
                 <td>
                   0

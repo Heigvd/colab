@@ -7,6 +7,8 @@
 package ch.colabproject.colab.api.model;
 
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.generator.model.interfaces.WithId;
+import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
@@ -18,7 +20,7 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
  * @author maxence
  */
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public interface WithWebsocketChannels extends WithId {
+public interface WithWebsocketChannels extends WithId, WithJsonDiscriminator {
 
     /**
      * Get the channels this entity shall be sent through.
@@ -35,7 +37,7 @@ public interface WithWebsocketChannels extends WithId {
      */
     @JsonbTransient
     default Object getIndexEntryPayload() {
-<span class="fc" id="L38">        return null;</span>
+<span class="fc" id="L40">        return null;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
