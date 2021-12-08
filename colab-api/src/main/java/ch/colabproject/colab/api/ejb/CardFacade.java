@@ -336,7 +336,12 @@ public class CardFacade {
             if (effectiveType != null) {
                 card.setCardType(effectiveType);
                 effectiveType.getImplementingCards().add(card);
-
+                CardType resolved = effectiveType.resolve();
+                if (resolved != null) {
+                    card.setTitle(resolved.getTitle());
+                } else {
+                    logger.error("Unresolvable card type {}", effectiveType);
+                }
             } else {
                 logger.error("Unable to find effective type for {}", cardType);
                 throw HttpErrorMessage.relatedObjectNotFoundError();

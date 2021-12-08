@@ -25,6 +25,7 @@ import ch.colabproject.colab.api.rest.link.StickyNoteLinkCreationBean;
 import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
 import ch.colabproject.colab.tests.mailhog.model.Message;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import org.junit.jupiter.api.Assertions;
 
@@ -52,6 +53,7 @@ public class ColabFactory {
     public static CardType createCardType(ColabClient client, Long projectId) {
         CardTypeCreationBean cardTypeToCreate = new CardTypeCreationBean();
         cardTypeToCreate.setProjectId(projectId);
+        cardTypeToCreate.setTags(new HashSet<>());
 
         Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardTypeToCreate);
         return (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);

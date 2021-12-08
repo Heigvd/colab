@@ -70,6 +70,7 @@ export default function ResourceCreator({
       key: 'category',
       type: 'select',
       label: 'category',
+      isMulti: false,
       options: categories.map(c => ({ label: c, value: c })),
       canCreateOption: true,
       placeholder: 'category',
@@ -78,6 +79,7 @@ export default function ResourceCreator({
     createSelectField({
       key: 'docType',
       type: 'select',
+      isMulti: false,
       options: [
         { label: 'Document', value: 'BlockDocument' },
         { label: 'Link', value: 'ExternalLink' },

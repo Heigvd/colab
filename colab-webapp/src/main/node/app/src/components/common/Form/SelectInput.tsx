@@ -6,26 +6,34 @@
  */
 
 import * as React from 'react';
-import Select from 'react-select';
+import Select, { MultiValue, OnChangeValue, SingleValue } from 'react-select';
 import Creatable from 'react-select/creatable';
 import { errorStyle, inputStyle, labelStyle, warningStyle } from '../../styling/style';
 import Flex from '../Flex';
 
-export interface Props<T> {
+interface Opt<T> {
+  label: string;
+  value: T;
+}
+
+type ValueType<T, IsMulti> = IsMulti extends true ? T[] : T | undefined;
+
+export interface Props<T, IsMulti extends boolean> {
   label?: React.ReactNode;
   value?: T;
-  options: { label: string; value: T }[];
+  options: Opt<T>[];
   warning?: string;
   error?: string;
   mandatory?: boolean;
-  onChange: (newValue: T | undefined) => void;
+  onChange: (newValue: ValueType<T, IsMulti>) => void;
   placeholder?: string;
   className?: string;
   readonly?: boolean;
+  isMulti: IsMulti;
   canCreateOption?: boolean;
 }
 
-export default function SelectInput<T>({
+export default function SelectInput<T, IsMulti extends boolean>({
   options,
   label,
   warning,
@@ -34,10 +42,11 @@ export default function SelectInput<T>({
   onChange,
   mandatory,
   className,
+  isMulti,
   placeholder = 'no value',
   readonly = false,
   canCreateOption = false,
-}: Props<T>): JSX.Element {
+}: Props<T, IsMulti>): JSX.Element {
   const [state, setState] = React.useState<T | undefined>(value);
   const currentValue = options.find(o => o.value === state);
 
@@ -46,12 +55,19 @@ export default function SelectInput<T>({
   }, [value]);
 
   const onInternalChangeCb = React.useCallback(
-    (o: { label: string; value: T } | null) => {
-      const newValue = o?.value;
-      onChange(newValue);
-      setState(newValue);
+    (data: OnChangeValue<{ label: string; value: T }, IsMulti>) => {
+      if (isMulti) {
+        const v = (data as MultiValue<Opt<T>>).map(o => o.value);
+        onChange(v as ValueType<T, IsMulti>);
+      } else if (data != null) {
+        const v = data as SingleValue<Opt<T>>;
+        if (v != null) {
+          onChange(v.value as ValueType<T, IsMulti>);
+        }
+      }
+      return undefined;
     },
-    [onChange],
+    [isMulti, onChange],
   );
 
   return (
@@ -67,6 +83,7 @@ export default function SelectInput<T>({
       {canCreateOption ? (
         <Creatable
           className={inputStyle}
+          isMulti={isMulti}
           placeholder={placeholder}
           value={currentValue}
           options={options}
@@ -76,6 +93,7 @@ export default function SelectInput<T>({
       ) : (
         <Select
           className={inputStyle}
+          isMulti={isMulti}
           placeholder={placeholder}
           value={currentValue}
           options={options}
