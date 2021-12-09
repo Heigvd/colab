@@ -194,7 +194,7 @@ export default function WithToolbar({
           },
         })}
     >
-      {toolbar ? (
+      {toolbar &&
         <div
           ref={toolbarRef}
           className={cx(
@@ -212,8 +212,7 @@ export default function WithToolbar({
           )}
         >
           {toolbar}
-        </div>
-      ) : null}
+        </div>}
       {children}
     </div>
   );

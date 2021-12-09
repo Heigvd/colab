@@ -4,11 +4,11 @@
  *
  * Licensed under the MIT License
  */
-import { css } from '@emotion/css';
-import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { css, cx } from '@emotion/css';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { debounce } from 'lodash';
 import * as React from 'react';
-import { inputStyle, textareaStyle } from '../styling/style';
+import { invisibleInputStyle, invisibleTextareaStyle } from '../styling/style';
 import IconButton from './IconButton';
 import WithToolbar from './WithToolbar';
 
@@ -25,6 +25,7 @@ export interface Props {
   inputType?: 'INPUT' | 'TEXTAREA';
   readOnly?: boolean;
   delay?: number;
+  className?: string;
 }
 
 export default function AutoSaveInput({
@@ -35,10 +36,26 @@ export default function AutoSaveInput({
   inputType = 'INPUT',
   delay = 500,
   readOnly = false,
+  className,
 }: Props): JSX.Element {
   const [state, setState] = React.useState<State>({
     status: 'DISPLAY',
     currentValue: value || '',
+  });
+
+  const dropRef = React.useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (event: Event) => {
+    if (dropRef.current && !dropRef.current.contains(event.target as Node)) {
+      displayCb();
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
   });
 
   React.useEffect(() => {
@@ -75,7 +92,7 @@ export default function AutoSaveInput({
 
   if (state.status === 'EDIT') {
     return (
-      <div>
+      <div ref={dropRef}>
         <label>
           {label}
           {inputType === 'INPUT' ? (
@@ -83,19 +100,19 @@ export default function AutoSaveInput({
               placeholder={placeholder}
               value={state.currentValue}
               onChange={onInternalChangeCb}
-              className={inputStyle}
+              autoFocus
+              className={cx(invisibleInputStyle, (className || ''))}
             />
           ) : (
             <textarea
               placeholder={placeholder}
               value={state.currentValue}
               onChange={onInternalChangeCb}
-              className={textareaStyle}
+              autoFocus
+              className={cx(invisibleTextareaStyle, (className || ''))}
             />
           )}
         </label>
-
-        <IconButton icon={faTimes} title="stop edition" onClick={displayCb} />
       </div>
     );
   } else {
@@ -110,7 +127,9 @@ export default function AutoSaveInput({
       >
         <>
           <label>{label}</label>
-          <div className={css({'&:hover': {opacity: 0.7}})}>{state.currentValue ? state.currentValue : <i>{placeholder}</i>}</div>
+          <div className={cx(css({'&:hover': { opacity: 0.7 } }), (className || ''))}>
+            {state.currentValue ? state.currentValue : <i>{placeholder}</i>}
+          </div>
         </>
       </WithToolbar>
     );

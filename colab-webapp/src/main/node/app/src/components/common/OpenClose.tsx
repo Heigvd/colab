@@ -12,9 +12,9 @@ import * as React from 'react';
 import Clickable from './Clickable';
 import IconButton from './IconButton';
 
-type State = {
+/*  type State = {
   status: 'COLLAPSED' | 'EXPANDED';
-};
+}; */
 
 export interface Props {
   className?: string;
@@ -22,6 +22,7 @@ export interface Props {
   showCloseIcon?: 'ICON' | 'NONE' | 'KEEP_CHILD';
   collapsedChildren: React.ReactNode;
   children: (collapse: () => void) => React.ReactNode;
+  status?: 'COLLAPSED' | 'EXPANDED';
 }
 
 const relative = css({
@@ -40,9 +41,10 @@ export default function OpenClose({
   children,
   closeIcon = faTimes,
   showCloseIcon = 'ICON',
+  status = 'COLLAPSED',
 }: Props): JSX.Element {
-  const [state, setState] = React.useState<State>({
-    status: 'COLLAPSED',
+  const [state, setState] = React.useState({
+    status: status || 'COLLAPSED',
   });
 
   const collapse = React.useCallback(() => {

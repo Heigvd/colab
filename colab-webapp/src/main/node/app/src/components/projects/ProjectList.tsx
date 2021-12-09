@@ -6,7 +6,13 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faEdit, faEllipsisV, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faEllipsisV,
+  faExclamationTriangle,
+  faPlus,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
@@ -16,11 +22,11 @@ import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks'
 import { StateStatus } from '../../store/project';
 import AutoSaveInput from '../common/AutoSaveInput';
 import Button from '../common/Button';
-import { Destroyer } from '../common/Destroyer';
-import IconButton from '../common/IconButton';
+import DropDownMenu from '../common/DropDownMenu';
 import InlineLoading from '../common/InlineLoading';
 import { InlineLink } from '../common/Link';
-import { cardStyle, fixedButtonStyle } from '../styling/style';
+import OpenCloseModal from '../common/OpenCloseModal';
+import { cardStyle, fixedButtonStyle, flex, space_M } from '../styling/style';
 
 interface Props {
   project: Project;
@@ -28,7 +34,7 @@ interface Props {
 
 // Display one project and allow to edit it
 const ProjectDisplay = ({ project }: Props) => {
-  const dispatch = useAppDispatch();
+const dispatch = useAppDispatch();
 
   return (
     <div
@@ -45,21 +51,61 @@ const ProjectDisplay = ({ project }: Props) => {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
-          padding: '10px',
+          padding: space_M,
         })}
       >
         <AutoSaveInput
           placeholder="unnamed"
           value={project.name || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+          className={css({ fontWeight: 'bold'})}
         />
-        <IconButton icon={faEllipsisV} />
+        <DropDownMenu
+          icon={faEllipsisV}
+          valueComp={{ value: '', label: '' }}
+          buttonClassName={css({marginLeft: '40px'})}
+          entries={[
+            {
+              value: 'Delete project',
+              label: (
+                <>
+                  <OpenCloseModal
+                    title="Delete project"
+                    collapsedChildren={
+                      <div className={css({ pointerEvents: 'none' })}>
+                        <FontAwesomeIcon icon={faTrash} /> Delete project
+                      </div>
+                    }
+                  >
+                    {collapse => (
+                      <div>
+                        <FontAwesomeIcon icon={faExclamationTriangle} />
+                        <FontAwesomeIcon icon={faExclamationTriangle} />
+                        <FontAwesomeIcon icon={faExclamationTriangle} />
+                        <FontAwesomeIcon icon={faExclamationTriangle} />
+                        <FontAwesomeIcon icon={faExclamationTriangle} />
+                        <p>
+                          Are you <strong>sure</strong> you want to delete the whole project? This
+                          will delete all cards inside.
+                        </p>
+                        <div className={flex}>
+                          <Button label="Delete project" title="Confirm delete" onClick={()=>dispatch(API.deleteProject(project))}/>
+                          <Button label="Cancel" title="Cancel delete" onClick={() => collapse()} />
+                        </div>
+                      </div>
+                    )}
+                  </OpenCloseModal>
+                </>
+              ),
+            },
+          ]}
+        />
       </div>
       <div
         className={css({
-          padding: '10px',
-          borderTop: '1px solid grey',
-          borderBottom: '1px solid grey',
+          padding: space_M,
+          paddingRight: '40px',
+          borderBottom: '1px solid #ddd',
         })}
       >
         <AutoSaveInput
@@ -74,18 +120,20 @@ const ProjectDisplay = ({ project }: Props) => {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
-          padding: '10px',
+          padding: space_M,
         })}
       >
         <InlineLink to={`/editor/${project.id}`}>
-          <IconButton title="Edit project" iconColor="var(--fgColor)" icon={faEdit} />
+          <Button
+            title="Edit project"
+            label={
+              <>
+                <FontAwesomeIcon icon={faEdit} /> Edit
+              </>
+            }
+            className={css({margin:'auto'})}
+          />
         </InlineLink>
-
-        <Destroyer
-          onDelete={() => {
-            dispatch(API.deleteProject(project));
-          }}
-        />
       </div>
     </div>
   );
@@ -125,20 +173,24 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
               }
             })}
         </div>
-          <Button
-            onClick={() => {
-              dispatch(
-                API.createProject({
-                  '@class': 'Project',
-                  name: '',
-                }),
-              );
-            }}
-            label={<><FontAwesomeIcon icon={faPlus} /> Create new project</>}
-            title={"Create new project"}
-            className={fixedButtonStyle}
-          />
-        </div>
+        <Button
+          onClick={() => {
+            dispatch(
+              API.createProject({
+                '@class': 'Project',
+                name: '',
+              }),
+            );
+          }}
+          label={
+            <>
+              <FontAwesomeIcon icon={faPlus} /> Create new project
+            </>
+          }
+          title={'Create new project'}
+          className={fixedButtonStyle}
+        />
+      </div>
     );
   }
 }

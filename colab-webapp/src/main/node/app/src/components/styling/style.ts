@@ -101,20 +101,20 @@ export const boxShadow = '0px 0px 20px 0px rgba(0,0,0,0.3)';
 export const space_S = '5px';
 export const space_M = '15px';
 export const space_L = '1.5rem';
-export const flex = css({display: 'flex'});
+export const flex = css({ display: 'flex' });
 
-type blockSide = 1 | 2 | 3 | 4 ;
+type blockSide = 1 | 2 | 3 | 4;
 const blockMargin = {
-  1: "margin-top",
-  2: "margin-right",
-  3: "margin-bottom",
-  4: "margin-left",
-}
+  1: 'margin-top',
+  2: 'margin-right',
+  3: 'margin-bottom',
+  4: 'margin-left',
+};
 
-export function marginAroundStyle(marginPos:blockSide[], marginSize: string) {
-return(
-  css`${marginPos.map((pos)=>`${blockMargin[pos]}: ${marginSize};`).join('\n')}`
-)
+export function marginAroundStyle(marginPos: blockSide[], marginSize: string) {
+  return css`
+    ${marginPos.map(pos => `${blockMargin[pos]}: ${marginSize};`).join('\n')}
+  `;
 }
 
 export const fullPageStyle = cx(
@@ -184,13 +184,14 @@ export const iconStyle = css({
 });
 
 export const iconButton = cx(
-  iconStyle, 
+  iconStyle,
   css({
     cursor: 'pointer',
-  ':hover': {
-    color: 'var(--hoverFgColor)',
-  },
-  }));
+    ':hover': {
+      color: 'var(--hoverFgColor)',
+    },
+  }),
+);
 
 export const buttonStyle = cx(
   linkStyle,
@@ -198,7 +199,6 @@ export const buttonStyle = cx(
   css({
     padding: '8px 14px',
     borderRadius: borderRadius,
-
   }),
 );
 
@@ -286,9 +286,19 @@ export const textareaStyle = css({
   transition: '.8s',
   padding: '0 15px',
   lineHeight: '1.6em',
-  height: '144px',
-  fontFamily: 'inherit'
+  height: '100px',
+  fontFamily: 'inherit',
 });
+export const invisibleTextareaStyle = cx(
+  textareaStyle,
+  css({
+    border: 'none',
+    padding: 0,
+    lineHeight: '120%',
+    fontSize: 'inherit',
+    '&:focus': { outline: 'none' },
+  }),
+);
 
 export const inputStyle = css({
   outline: 'none',
@@ -300,8 +310,18 @@ export const inputStyle = css({
   transition: '.8s',
   padding: '0 24px',
   lineHeight: '2.5em',
-  fontFamily: 'inherit'
+  fontFamily: 'inherit',
 });
+export const invisibleInputStyle = cx(
+  inputStyle,
+  css({
+    border: 'none',
+    padding: 0,
+    lineHeight: '120%',
+    fontSize: 'inherit',
+    '&:focus': { outline: 'none' },
+  }),
+);
 
 export const smallInputStyle = cx(
   inputStyle,
