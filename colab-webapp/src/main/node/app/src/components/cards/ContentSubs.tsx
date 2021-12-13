@@ -38,18 +38,13 @@ const flexWrap = css({
 });
 
 const voidStyle = css({
-  minHeight: '200px',
+  minHeight: '150px',
   background:
-    'repeating-Linear-gradient(45deg,#ffffff00,#ffffff00 5px,#eeeeee80 5px,#eeeeee80 10px)',
+    'repeating-Linear-gradient(45deg,transparent,transparent 5px,#e4e4e4 5px,#e4e4e4 10px)',
   display: 'flex',
+  flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-});
-
-const foggyBackground = css({
-  boxShadow: '0 0 25px 20px white',
-  background: 'white',
-  color: 'var(--hoverFgColor)',
 });
 
 // Display sub cards of a parent
@@ -93,8 +88,16 @@ export default function ContentSubs({
     if (subCards.length === 0 && showEmptiness) {
       return (
         <div className={voidStyle}>
-          <i className={foggyBackground}>empty</i>
-          <CardCreator parent={cardContent} />
+          <p>This project has no card yet. Add some to begin this co-design journey!</p>
+          <CardCreator 
+            parent={cardContent} 
+            customButton={<Button 
+                label={<><FontAwesomeIcon icon={faPlus} /> Add the first card</>} 
+                title="Add first card"
+                clickable
+                />}
+                className={css({display: 'block'})}
+          />
         </div>
       );
     } else {

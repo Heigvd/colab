@@ -22,6 +22,11 @@ import Tips from '../common/Tips';
 import CardTypeCreator from './cardtypes/CardTypeCreator';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
+const inlineStyle = css({
+  display: 'flex',
+  alignItems: 'center',
+});
+
 export interface CardCreatorProps {
   parent: CardContent;
   customButton?: ReactJSXElement;
@@ -58,7 +63,7 @@ export default function CardCreator({ parent, customButton, className }: CardCre
 
   return (
     <OpenCloseModal
-      title="Create a card"
+      title="Create card - choose the type"
       collapsedChildren={customButton ? customButton : <FontAwesomeIcon icon={faPlus} title="Add a card" />}
       className={className}
     >
@@ -67,12 +72,7 @@ export default function CardCreator({ parent, customButton, className }: CardCre
           return <InlineLoading />;
         } else {
           return (
-            <div
-              className={css({
-                border: '1px solid grey',
-                padding: '20px',
-              })}
-            >
+            <div>
               <h2>Create a new subcard {parent.title ? 'for ' + parent.title : ''}</h2>
               <div>
                 <Tips tipsType="TODO">
@@ -82,11 +82,13 @@ export default function CardCreator({ parent, customButton, className }: CardCre
                 <Tips tipsType="TODO">
                   Project "Card Types" tab display all types too: such duplication should be solved
                 </Tips>
-                <h3>Common types</h3>
-                <Tips>
-                  Common types are types defined outside the current project and which are not yet
-                  used in the project
-                </Tips>
+                <div className={inlineStyle}>
+                  <h3>Common types</h3>
+                  <Tips>
+                    Common types are types defined outside the current project and which are not yet
+                    used in the project
+                  </Tips>
+                </div>
                 <h4>Global</h4>
                 <Tips>
                   Global types are defined by adminstrators in "admin/card types" tab. Such type are

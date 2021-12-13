@@ -26,7 +26,12 @@ import DropDownMenu from '../common/DropDownMenu';
 import InlineLoading from '../common/InlineLoading';
 import { InlineLink } from '../common/Link';
 import OpenCloseModal from '../common/OpenCloseModal';
-import { cardStyle, errorColor, fixedButtonStyle, flex, space_M } from '../styling/style';
+import { cardStyle, errorColor, fixedButtonStyle, flex, space_M, space_S } from '../styling/style';
+
+
+const cardInfoStyle = css({
+  margin: space_S + ' 0'
+})
 
 interface Props {
   project: Project;
@@ -114,6 +119,18 @@ const dispatch = useAppDispatch();
           value={project.description || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
         />
+        <div className={css({
+          fontSize: '0.8em',
+          opacity: 0.4,
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          marginTop: space_M,
+          })}>
+            <p className={cardInfoStyle}>Number of Cards?</p>
+            <p className={cardInfoStyle}>Created by: {project.trackingData?.createdBy} </p>
+            <p className={cardInfoStyle}>Number of people involved?</p>
+            <p className={cardInfoStyle}>Last update: {project.trackingData?.modificationDate}</p>
+        </div>
       </div>
       <div
         className={css({

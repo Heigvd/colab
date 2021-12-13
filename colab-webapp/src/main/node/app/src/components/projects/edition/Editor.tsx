@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faClone, faCog, faEye, faNetworkWired, faPen, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
+import { faClone, faCog, faEye, faNetworkWired, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -26,6 +26,7 @@ import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import CardTypeList from '../../cards/cardtypes/CardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
+import AutoSaveInput from '../../common/AutoSaveInput';
 import Clickable from '../../common/Clickable';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
@@ -245,8 +246,13 @@ export default function Editor(): JSX.Element {
           }))}
         >
             <div className={css({ gridColumn: '2/3', placeSelf: 'center', display:'flex'})}>
-              <p className={css({margin: 0})}>{project.name}</p>
-              <IconButton icon={faPen}/>
+              <div className={css({marginRight: '30px'})}>
+              <AutoSaveInput
+                placeholder="unnamed"
+                value={project.name || ''}
+                onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+              />
+              </div>
               <DropDownMenu
               icon={faEye}
               valueComp={{value: '', label: ""}}
