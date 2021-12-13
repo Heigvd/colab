@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
-import { faCheck, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardContent, CardType } from 'colab-rest-client';
 import * as React from 'react';
@@ -15,15 +15,40 @@ import * as API from '../../API/api';
 import { useCardTypeTags, useProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
+import Button from '../common/Button';
 import Flex from '../common/Flex';
 import Checkbox from '../common/Form/Checkbox';
-import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
+import {
+  borderRadius,
+  lightTheme,
+  marginAroundStyle,
+  noOutlineStyle,
+  space_M,
+  space_S,
+} from '../styling/style';
 import CardTypeCreator from './cardtypes/CardTypeCreator';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
 
+const categoryTabStyle = cx(
+  lightTheme,
+  css({
+    padding: space_S,
+    backgroundColor: 'var(--primaryColorContrastShade)',
+    color: 'var(--primaryColor)',
+    margin: '0 ' + space_S,
+    borderRadius: borderRadius,
+  }),
+);
+const checkedCategoryTabStyle = css({
+  backgroundColor: 'var(--primaryColor)',
+  color: 'var(--primaryColorContrast)',
+  '&:hover': {
+    color: 'var(--primaryColorContrast)',
+  },
+});
 export interface CardCreatorProps {
   parent: CardContent;
   customButton?: ReactJSXElement;
@@ -31,12 +56,17 @@ export interface CardCreatorProps {
 }
 
 const listOfTypeStyle = css({
-  display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'wrap',
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr 1fr',
+  gap: space_M,
+  margin: space_M + ' 0',
 });
 
-export default function CardCreator({ parent, customButton, className }: CardCreatorProps): JSX.Element {
+export default function CardCreator({
+  parent,
+  customButton,
+  className,
+}: CardCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const [selectedType, setSelectedType] = React.useState<number | undefined>();
   const { project } = useProjectBeingEdited();
@@ -89,137 +119,161 @@ export default function CardCreator({ parent, customButton, className }: CardCre
 
   return (
     <OpenCloseModal
-      title="Create card - choose the type"
-      collapsedChildren={customButton ? customButton : <FontAwesomeIcon icon={faPlus} title="Add a card" />}
+      title={
+        'Create new ' +
+        (parent.title ? 'subcard for ' + parent.title : 'card') +
+        ' - choose the type'
+      }
+      collapsedChildren={
+        customButton ? customButton : <FontAwesomeIcon icon={faPlus} title="Add a card" />
+      }
       className={className}
+      modalClassName={css({ width: '800px' })}
     >
       {close => {
         if (cardTypes.projectStatus !== 'READY' || cardTypes.publishedStatus !== 'READY') {
           return <InlineLoading />;
         } else {
           return (
-            <div>
-              <h2>Create a new subcard {parent.title ? 'for ' + parent.title : ''}</h2>
+            <div className={css({width: '100%'})}>
               <Flex>
                 {allTags.map(tag => {
                   return (
-                    <Checkbox
-                      key={tag}
-                      label={tag}
-                      value={tagState && tagState[tag]}
-                      onChange={t =>
-                        setTagState(state => {
-                          return { ...state, [tag]: t };
-                        })
-                      }
-                    />
+                    <div
+                      className={cx(categoryTabStyle, {
+                        [checkedCategoryTabStyle]: tagState && tagState[tag],
+                      })}
+                    >
+                      <Checkbox
+                        key={tag}
+                        label={tag}
+                        value={tagState && tagState[tag]}
+                        onChange={t =>
+                          setTagState(state => {
+                            return { ...state, [tag]: t };
+                          })
+                        }
+                        className={cx(noOutlineStyle, {
+                          [checkedCategoryTabStyle]: tagState && tagState[tag],
+                        })}
+                      />
+                    </div>
                   );
                 })}
-              </Flex>
-              <div>
                 <Tips tipsType="TODO">
                   To create a card, one should select a type among all available ones in a
-                  convinient way
+                  convinient way. Project "Card Types" tab display all types too: such duplication
+                  should be solved.
                 </Tips>
-                <Tips tipsType="TODO">
-                  Project "Card Types" tab display all types too: such duplication should be solved
-                </Tips>
-                <h3>Common types</h3>
-                <Tips>
-                  Common types are types defined outside the current project and which are not yet
-                  used in the project
-                </Tips>
+              </Flex>
+              <div className={marginAroundStyle([1], space_M)}>
+                {/* <div className={inlineTipsStyle}>
+                  <h3>Common types</h3>
+                  <Tips>
+                    Common types are types defined outside the current project and which are not yet
+                    used in the project
+                  </Tips>
+                </div> */}
                 <details>
-                  <summary>
+                  <summary className={noOutlineStyle}>
                     Global
                     <Tips>
                       Global types are defined by adminstrators in "admin/card types" tab. Such type
                       are available in any project
                     </Tips>
                   </summary>
-                  <div className={listOfTypeStyle}>
-                    {filtered.global.map(cardType => (
-                      <CardTypeThumbnail
-                        key={cardType.id}
-                        onClick={onSelect}
-                        highlighted={cardType.id === selectedType}
-                        cardType={cardType}
-                      />
-                    ))}
-                  </div>
+                  {filtered.global != null && (
+                    <div className={listOfTypeStyle}>
+                      {filtered.global.map(cardType => (
+                        <CardTypeThumbnail
+                          key={cardType.id}
+                          onClick={onSelect}
+                          highlighted={cardType.id === selectedType}
+                          cardType={cardType}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </details>
                 <details>
-                  <summary>
+                  <summary className={noOutlineStyle}>
                     From other projects
                     <Tips>
                       Types published from others projects you, as specific colab user, have acces
                       to.
                     </Tips>
                   </summary>
-                  <div className={listOfTypeStyle}>
-                    {filtered.published.map(cardType => (
-                      <CardTypeThumbnail
-                        key={cardType.id}
-                        onClick={onSelect}
-                        highlighted={cardType.id === selectedType}
-                        cardType={cardType}
-                      />
-                    ))}
-                  </div>
+                  {filtered.published != null && (
+                    <div className={listOfTypeStyle}>
+                      {filtered.published.map(cardType => (
+                        <CardTypeThumbnail
+                          key={cardType.id}
+                          onClick={onSelect}
+                          highlighted={cardType.id === selectedType}
+                          cardType={cardType}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </details>
               </div>
               <div>
-                <h3>Project Types</h3>
-                <Tips>All types already used/defined in the project</Tips>
+                {/* <div className={inlineTipsStyle}>
+                  <h3>Project Types</h3>
+                  <Tips>All types already used/defined in the project</Tips>
+                </div> */}
                 <details>
-                  <summary>
+                  <summary className={noOutlineStyle}>
                     Inherited
                     <Tips>
                       Inherited types references either global types or types from others projects
                     </Tips>
                   </summary>
-                  <div className={listOfTypeStyle}>
-                    {filtered.inherited.map(cardType => (
-                      <CardTypeThumbnail
-                        key={cardType.id}
-                        onClick={onSelect}
-                        highlighted={cardType.id === selectedType}
-                        cardType={cardType}
-                      />
-                    ))}
-                  </div>
+                  {filtered.inherited != null && (
+                    <div className={listOfTypeStyle}>
+                      {filtered.inherited.map(cardType => (
+                        <CardTypeThumbnail
+                          key={cardType.id}
+                          onClick={onSelect}
+                          highlighted={cardType.id === selectedType}
+                          cardType={cardType}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </details>
                 <details>
-                  <summary>
+                  <summary className={noOutlineStyle}>
                     Custom
                     <Tips>
                       Custom project types belong to this very project (ie you have full write
                       right)
                     </Tips>
                   </summary>
-                  <div className={listOfTypeStyle}>
-                    {filtered.own.map(cardType => (
-                      <CardTypeThumbnail
-                        key={cardType.id}
-                        onClick={onSelect}
-                        highlighted={cardType.id === selectedType}
-                        cardType={cardType}
-                      />
-                    ))}
-                    <CardTypeCreator
-                      afterCreation={(id: number) => {
-                        setSelectedType(id);
-                      }}
-                    />
-                  </div>
+                  {filtered.own != null && (
+                    <div className={listOfTypeStyle}>
+                      {filtered.own.map(cardType => (
+                        <CardTypeThumbnail
+                          key={cardType.id}
+                          onClick={onSelect}
+                          highlighted={cardType.id === selectedType}
+                          cardType={cardType}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  <CardTypeCreator
+                    afterCreation={(id: number) => {
+                      setSelectedType(id);
+                    }}
+                  />
                 </details>
               </div>
-              <div>
-                <IconButton icon={faTimes} title="cancel" onClick={close} />
+              <Flex justify="flex-end" className={css({ marginTop: 'auto' })}>
                 {selectedType != null ? (
-                  <IconButton
-                    icon={faCheck}
-                    title="create"
+                  <Button
+                    title="Create card"
+                    label="Create card"
                     onClick={() => {
                       dispatch(
                         API.createSubCardWithBlockDoc({
@@ -232,7 +286,14 @@ export default function CardCreator({ parent, customButton, className }: CardCre
                     }}
                   />
                 ) : null}
-              </div>
+                <Button
+                  title="Cancel"
+                  label="Cancel"
+                  onClick={close}
+                  invertedButton
+                  className={marginAroundStyle([4], space_S)}
+                />
+              </Flex>
             </div>
           );
         }

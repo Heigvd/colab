@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { space_M } from '../styling/style';
 import Clickable from './Clickable';
 
 interface Props {
@@ -17,16 +18,13 @@ interface Props {
 
 const thumbStyle = css({
   cursor: 'pointer',
-  margin: '20px',
-  padding: '10px',
-  width: 'max-content',
-  border: '1px solid grey',
+  padding: space_M,
 });
 
 export default function Thumbnail({ children, onClick, className }: Props): JSX.Element {
   return (
-    <div className={cx(thumbStyle, className)}>
-      <Clickable onClick={onClick}>{children}</Clickable>
-    </div>
+      <Clickable onClick={onClick} clickableClassName={cx(thumbStyle, className)}>
+        {children}
+      </Clickable>
   );
 }

@@ -5,11 +5,11 @@
  * Licensed under the MIT License
  */
 
-import { cx } from '@emotion/css';
+import { cx, css } from '@emotion/css';
 import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { iconButton, iconStyle, linkStyle } from '../styling/style';
+import { iconButton, iconStyle, linkStyle, space_S } from '../styling/style';
 import Clickable, { ClickablenProps } from './Clickable';
 
 export interface IconButtonProps extends Omit<ClickablenProps, "clickableClassName">{
@@ -37,7 +37,7 @@ export default function IconButton({
       clickableClassName={cx(linkStyle, className)}
     >
       {reverseOrder ? children : null}
-      <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} />
+      <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} className={reverseOrder ? css({marginLeft: space_S}) : css({marginRight: space_S})}/>
       {!reverseOrder ? children : null}
     </Clickable>
   );

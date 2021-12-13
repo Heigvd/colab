@@ -10,6 +10,7 @@ import { CardType } from 'colab-rest-client';
 import * as React from 'react';
 import Thumbnail from '../../common/Thumbnail';
 import { useBlock } from '../../live/LiveTextEditor';
+import { borderRadius, cardShadow } from '../../styling/style';
 
 interface Props {
   highlighted: boolean;
@@ -19,16 +20,22 @@ interface Props {
 
 const defaultStyle = css({
   cursor: 'pointer',
-  margin: '20px',
-  width: 'max-content',
-  border: '1px solid grey',
+  boxShadow: cardShadow,
+  borderRadius: borderRadius,
+  '&:hover': {
+    backgroundColor: 'var(--primaryColorContrastShade)'
+  }
 });
 
 const selected = cx(
   defaultStyle,
   css({
-    backgroundColor: 'var(--focusColor)',
+    backgroundColor: 'var(--primaryColor)',
     color: 'var(--bgColor)',
+    '&:hover': {
+      backgroundColor: 'var(--primaryColor)',
+      color: 'var(--bgColor)',
+    }
   }),
 );
 
@@ -47,7 +54,7 @@ export default function CardTypeThumbnail({ cardType, highlighted, onClick }: Pr
         }}
         className={highlighted ? selected : defaultStyle}
       >
-        <div className={css({ padding: '10px' })} title={purpose?.textData || ''}>
+        <div title={purpose?.textData || ''}>
           <div>{cardType.title}</div>
           <div>{cardType.tags.join('; ')}</div>
         </div>

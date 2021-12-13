@@ -17,9 +17,11 @@ interface Props {
   className?: string;
   collapsedChildren: React.ReactNode;
   children: (collapse: () => void) => React.ReactNode;
+  footer?: React.ReactNode;
   showCloseButton?: boolean;
   route?: string;
   status?: 'COLLAPSED' | 'EXPANDED';
+  modalClassName?: string;
 }
 
 export const defaultIconClassName = css({
@@ -35,9 +37,11 @@ export default function OpenCloseModal({
   collapsedChildren,
   title,
   children,
+  footer,
   route,
   showCloseButton = false,
   status = 'COLLAPSED',
+  modalClassName,
 }: Props): JSX.Element {
   const navigate = useNavigate();
   //const match = useRouteMatch();
@@ -81,7 +85,7 @@ export default function OpenCloseModal({
         status={status}
       >
         {onClose => (
-          <Modal title={title} onClose={onClose} showCloseButton={showCloseButton}>
+          <Modal title={title} onClose={onClose} showCloseButton={showCloseButton} className={modalClassName} footer={footer}>
             {onCloseModal => children(onCloseModal)}
           </Modal>
         )}

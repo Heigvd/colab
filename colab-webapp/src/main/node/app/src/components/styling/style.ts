@@ -38,7 +38,7 @@ export const lightTheme = cx(
     '--primaryColor': '#333',
     '--primaryColorShade': '#494949',
     '--primaryColorContrast': '#fff',
-    '--primaryColorContrastShade': '#F4EFEF',
+    '--primaryColorContrastShade': '#FCF9F9',
 
     '--secondaryColor': 'var(--pictoSteelBlue)',
     '--secondaryColorShade': 'var(--pictoBlue)',
@@ -53,7 +53,7 @@ export const lightTheme = cx(
 
 export const normalThemeMode = css({
   '--bgColor': 'var(--primaryColorContrast)',
-  '--hoverBgColor': '#FCF9F9',
+  '--hoverBgColor': 'var(--primaryColorContrastShade)',
   '--fgColor': 'var(--primaryColor)',
   '--hoverFgColor': 'var(--primaryColorShade)',
 
@@ -128,9 +128,6 @@ export const fullPageStyle = cx(
     right: 0,
     bottom: 0,
     left: 0,
-    '& :focus': {
-      outline: 'var(--focusColor) auto 1px',
-    },
   }),
 );
 
@@ -178,6 +175,16 @@ export const linkStyle = css({
   },
 });
 
+export const noOutlineStyle = css({
+  verticalAlign: 'center',
+  '&:focus': {
+    outline: 'none',
+  },
+  '&:focus-visible': {
+    outline: '1px solid blue',
+  },
+})
+
 export const iconStyle = css({
   paddingLeft: '5px',
   paddingRight: '5px',
@@ -209,6 +216,35 @@ export const inactiveButtonStyle = cx(
     cursor: 'default',
   }),
 );
+
+export const invertedButtonStyle = cx(
+  css({
+    backgroundColor: 'transparent',
+    border: '1px solid var(--primaryColor)',
+    color:'var(--primaryColor)',
+    padding: '8px 14px',
+    borderRadius: borderRadius,
+    cursor:'pointer',
+    ':hover': {
+      backgroundColor: 'var(--hoverBgColor)',
+    },
+    ':focus': {
+      outline: 'none',
+    },
+    ':focus-visible': {
+      outline: '1px solid blue',
+    },
+  }),
+);
+
+export const inactiveInvertedButtonStyle = cx(
+  invertedButtonStyle,
+  css({
+    opacity: '0.5',
+    cursor: 'default',
+  }),
+);
+
 
 export const disabledIconStyle = iconStyle;
 

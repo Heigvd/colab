@@ -16,8 +16,10 @@ import Overlay from './Overlay';
 interface Props {
   title: string;
   children: (collapse: () => void) => React.ReactNode;
+  footer?: React.ReactNode;
   showCloseButton?: boolean;
   onClose: () => void;
+  className?: string;
 }
 const backgroundStyle = css({
   backgroundColor: 'rgba(0,0,0, 0.6)',
@@ -29,8 +31,8 @@ const modalStyle = cx(
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    width: '800px',
-    height: '580px',
+    maxWidth: '800px',
+    maxHeight: '580px',
     boxShadow: '0 3px 6px rgba(0,0,0,.16)',
     borderRadius: '8px',
     overflow: 'auto',
@@ -60,16 +62,24 @@ const closeIconStyle = css({
 const modalBody = css({
   padding: space_L,
 });
+const modalFooter = css({
+  display: 'flex',
+  width: '100%',
+  alignItems: 'center',
+  borderTop: modalSeparatorBorder,
+});
 
 export default function Modal({
   onClose,
   title,
   children,
+  footer,
   showCloseButton = false,
+  className,
 }: Props): JSX.Element {
   return (
     <Overlay backgroundStyle={backgroundStyle} clickOutside={onClose}>
-      <div className={modalStyle}>
+      <div className={cx(modalStyle, className || '')}>
         <div className={modalHeader}>
           <Flex grow={1} direction="column" className={titleStyle}>
             {title}
@@ -81,6 +91,7 @@ export default function Modal({
         <Flex grow={1} direction="column" overflow="auto" className={modalBody}>
           {children(onClose)}
         </Flex>
+        {footer && <div className={modalFooter}>{footer}</div>}
       </div>
     </Overlay>
   );

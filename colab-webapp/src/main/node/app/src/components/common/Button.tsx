@@ -8,7 +8,7 @@
 import { cx } from '@emotion/css';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import * as React from 'react';
-import { buttonStyle, inactiveButtonStyle } from '../styling/style';
+import { buttonStyle, inactiveButtonStyle, inactiveInvertedButtonStyle, invertedButtonStyle } from '../styling/style';
 import Clickable from './Clickable';
 
 export interface ButtonProps {
@@ -17,15 +17,16 @@ export interface ButtonProps {
   label: string | ReactJSXElement;
   title: string;
   className?: string;
+  invertedButton?: boolean;
 }
 
-export default function Button({ onClick, clickable, label, title, className }: ButtonProps): JSX.Element {
+export default function Button({ onClick, clickable, label, title, className, invertedButton }: ButtonProps): JSX.Element {
   return (
     <Clickable
       onClick={onClick}
       title={title}
-      className={cx(inactiveButtonStyle, className)}
-      clickableClassName={cx(buttonStyle, className)}
+      className={cx(invertedButton ? inactiveInvertedButtonStyle : inactiveButtonStyle, className)}
+      clickableClassName={cx(invertedButton ? invertedButtonStyle : buttonStyle, className)}
       clickable={clickable}
     >
       {label}

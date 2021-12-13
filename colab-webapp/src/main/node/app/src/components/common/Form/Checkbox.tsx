@@ -21,6 +21,7 @@ export interface Props {
   value?: boolean;
   onChange: (newValue: boolean) => void;
   className?: string;
+  containerClassName?: string;
 }
 
 const disabledStyle = css({
@@ -36,10 +37,11 @@ export default function Checkbox({
   disabled = false,
   value,
   onChange,
+  containerClassName,
   className,
 }: Props): JSX.Element {
   return (
-    <Flex className={className} direction="column">
+    <Flex className={containerClassName} direction="column">
       <Flex justify="space-between">
         {warning ? <div className={warningStyle}>{warning}</div> : null}
         {error ? <div className={errorStyle}>{error}</div> : null}
@@ -49,7 +51,7 @@ export default function Checkbox({
         justify="flex-start"
         onClick={disabled ? undefined : () => onChange(!value)}
       >
-        <IconButton title={title} icon={value ? faCheckSquare : faSquare}>
+        <IconButton title={title} icon={value ? faCheckSquare : faSquare} className={className}>
           {label}
         </IconButton>
       </Flex>

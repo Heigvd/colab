@@ -54,7 +54,7 @@ export default function Flex({
   basis,
   direction = 'row',
   justify = 'normal',
-  align = 'normal',
+  align = 'flex-start',
 }: FlexProps): JSX.Element {
   return (
     <div
