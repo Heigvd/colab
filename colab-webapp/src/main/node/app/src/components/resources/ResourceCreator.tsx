@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
-import Form, { Field } from '../common/Form/Form';
+import Form, { createSelectField, Field } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
 import OpenCloseModal, { modalPadding } from '../common/OpenCloseModal';
 import { addIcon, cancelIcon, createIcon, reinitIcon } from '../styling/defaultIcons';
@@ -66,26 +66,27 @@ export default function ResourceCreator({
       placeholder: 'teaser',
       isMandatory: true,
     },
-    {
+    createSelectField({
       key: 'category',
       type: 'select',
       label: 'category',
+      isMulti: false,
       options: categories.map(c => ({ label: c, value: c })),
       canCreateOption: true,
       placeholder: 'category',
       isMandatory: true,
-    },
-    {
+    }),
+    createSelectField({
       key: 'docType',
       type: 'select',
+      isMulti: false,
       options: [
-        //docType: 'BlockDocument' | 'ExternalDocLink' | 'HostedDocLink';
         { label: 'Document', value: 'BlockDocument' },
-        { label: 'Link', value: 'ExternalDocLink' },
+        { label: 'Link', value: 'ExternalLink' },
         //{label: File', value: 'HostedDocLink'}
       ],
       isMandatory: true,
-    },
+    }),
   ];
 
   if (contextInfo.kind == ResourceContextScope.CardOrCardContent) {

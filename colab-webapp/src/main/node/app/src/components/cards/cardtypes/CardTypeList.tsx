@@ -32,6 +32,7 @@ export default function CardTypeList(): JSX.Element {
     dispatch(
       API.createCardType({
         projectId: project!.id!,
+        tags: [],
       }),
     );
   }, [dispatch, project]);
@@ -70,7 +71,7 @@ export default function CardTypeList(): JSX.Element {
               <CardTypeDisplay key={cardType.id} cardType={cardType} />
             ))}
           </div>
-          <h4>From other projects</h4>
+          {/*<h4>From other projects</h4>
           <div className={flexWrap}>
             {cardTypes.published.map(cardType => (
               <CardTypeDisplay key={cardType.id} cardType={cardType} />
@@ -81,7 +82,7 @@ export default function CardTypeList(): JSX.Element {
             {cardTypes.global.map(cardType => (
               <CardTypeDisplay key={cardType.id} cardType={cardType} />
             ))}
-          </div>
+          </div>*/}
         </div>
       );
     }

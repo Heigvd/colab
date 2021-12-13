@@ -6,6 +6,15 @@
  */
 
 export const en = {
+  common: {
+    date: (timestamp: number | null | undefined) => {
+      if (timestamp != null) {
+        return new Date(timestamp).toLocaleTimeString();
+      } else {
+        return 'never';
+      }
+    },
+  },
   model: {
     user: {
       username: 'username',

@@ -48,7 +48,6 @@ export default (): JSX.Element => {
       <div>
         <h2>Settings</h2>
         <div>
-          {console.log(accounts)}
           <nav>
             <SecondLevelLink to="user">User Profile</SecondLevelLink>
             {accounts.map(account => {

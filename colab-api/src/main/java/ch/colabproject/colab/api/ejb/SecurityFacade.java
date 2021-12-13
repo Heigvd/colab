@@ -6,15 +6,18 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.controller.card.CardTypeManager;
+import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.model.WithPermission;
-import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
+import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -48,6 +51,18 @@ public class SecurityFacade {
     private TeamFacade teamFacade;
 
     /**
+     * Card type specific logic
+     */
+    @Inject
+    private CardTypeManager cardTypeManager;
+
+    /**
+     * Project specific logic
+     */
+    @Inject
+    private ProjectManager projectManager;
+
+    /**
      * Get the current user if it exists.
      *
      * @return the current user
@@ -63,7 +78,13 @@ public class SecurityFacade {
         }
     }
 
-    private void inSecurityTx(Runnable action) {
+    /**
+     * Mark the current request as {@link RequestManager#setInSecurityTx(boolean) in-security-tx}
+     * and run the given action.
+     *
+     * @param action action to run
+     */
+    private void runInSecurityTx(Runnable action) {
         requestManager.setInSecurityTx(true);
         action.run();
         requestManager.setInSecurityTx(false);
@@ -82,51 +103,35 @@ public class SecurityFacade {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void assertConditionTx(Condition condition, String message) {
-        inSecurityTx(() -> this.assertCondition(condition, message));
+        runInSecurityTx(() -> this.assertCondition(condition, message, null));
     }
 
     /**
-     * Assert the given condition is true
+     * Assert the given condition is true. If the current user is an admin, this assertion will
+     * never fail
      *
-     * @param condition the condition to check
-     * @param message   message to log in case the assertion failed
+     * @param condition the condition to evaluate
+     * @param message   message to display if the assertion failed
+     * @param o         related object to log, may be null
      *
      * @throws HttpErrorMessage <ul>
      * <li>with authenticationRequired if assertion fails and current user is not authenticated;
      * <li>with forbidden if the authenticated user does not have enough permission
      * </ul>
      */
-    public void assertCondition(Condition condition, String message) {
-        if (!requestManager.isAdmin()) {
-            requestManager.sudo(() -> {
-                if (!condition.eval(requestManager, this)) {
-                    logger.error(message);
-                    if (requestManager.isAuthenticated()) {
-                        throw HttpErrorMessage.forbidden();
-                    } else {
-                        throw HttpErrorMessage.authenticationRequired();
-                    }
-                }
-            });
-        }
-    }
-
-    /**
-     * Assert the given condition is true.If the current user is an admin, this assertion will never
-     * fail
-     *
-     * @param condition the condition to evaluate
-     *
-     * @throws HttpErrorMessage <li>with authenticationRequired if assertion fails and current user
-     *                          is not authenticated; <li>with forbidden if the authenticated user
-     *                          does not have enough permission
-     */
     private void assertCondition(Condition condition, String message, WithPermission o) {
         if (!requestManager.isAdmin()) {
             requestManager.sudo(() -> {
                 if (!condition.eval(requestManager, this)) {
-                    logger.error("{} Permission denied: {} ({}) currentUser: {}",
-                        message, o, condition, requestManager.getCurrentUser());
+                    if (logger.isErrorEnabled()) {
+                        if (o != null) {
+                            logger.error("{} Permission denied: {} ({}) currentUser: {}",
+                                message, o, condition, requestManager.getCurrentUser());
+                        } else {
+                            logger.error("{} Permission denied: ({}) currentUser: {}",
+                                message, condition, requestManager.getCurrentUser());
+                        }
+                    }
                     if (requestManager.isAuthenticated()) {
                         throw HttpErrorMessage.forbidden();
                     } else {
@@ -144,7 +149,7 @@ public class SecurityFacade {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void assertCreatePermissionTx(WithPermission o) {
-        inSecurityTx(() -> this.assertCreatePermission(o));
+        runInSecurityTx(() -> this.assertCreatePermission(o));
     }
 
     /**
@@ -152,7 +157,7 @@ public class SecurityFacade {
      *
      * @param o object the user want to create
      */
-    public void assertCreatePermission(WithPermission o) {
+    private void assertCreatePermission(WithPermission o) {
         this.assertCondition(o.getCreateCondition(), "Create", o);
     }
 
@@ -163,7 +168,7 @@ public class SecurityFacade {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void assertReadPermissionTx(WithPermission o) {
-        inSecurityTx(() -> this.assertReadPermission(o));
+        runInSecurityTx(() -> this.assertReadPermission(o));
     }
 
     /**
@@ -171,7 +176,7 @@ public class SecurityFacade {
      *
      * @param o object the user want to read
      */
-    public void assertReadPermission(WithPermission o) {
+    private void assertReadPermission(WithPermission o) {
         this.assertCondition(o.getReadCondition(), "Read", o);
     }
 
@@ -182,7 +187,7 @@ public class SecurityFacade {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void assertUpdatePermissionTx(WithPermission o) {
-        inSecurityTx(() -> this.assertUpdatePermission(o));
+        runInSecurityTx(() -> this.assertUpdatePermission(o));
     }
 
     /**
@@ -190,7 +195,7 @@ public class SecurityFacade {
      *
      * @param o object the user want to update
      */
-    public void assertUpdatePermission(WithPermission o) {
+    private void assertUpdatePermission(WithPermission o) {
         this.assertCondition(o.getUpdateCondition(), "Update", o);
     }
 
@@ -201,7 +206,7 @@ public class SecurityFacade {
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void assertDeletePermissionTx(WithPermission o) {
-        inSecurityTx(() -> this.assertDeletePermission(o));
+        runInSecurityTx(() -> this.assertDeletePermission(o));
     }
 
     /**
@@ -209,7 +214,7 @@ public class SecurityFacade {
      *
      * @param o object the user want to delete
      */
-    public void assertDeletePermission(WithPermission o) {
+    private void assertDeletePermission(WithPermission o) {
         this.assertCondition(o.getDeleteCondition(), "Delete", o);
     }
 
@@ -324,5 +329,69 @@ public class SecurityFacade {
         }
         TeamMember member = teamFacade.findMemberByUserAndProject(project, currentUser);
         return member != null && member.getPosition() != HierarchicalPosition.EXTERN;
+    }
+
+    /**
+     * Has the current user the right to read the card type (/ reference) ?
+     * <p>
+     * A user can read
+     * <ul>
+     * <li>any global published card type</li>
+     * <li>any card type (/ reference) defined in a project he is member of</li>
+     * <li>and all the chain of targets of those card types references</li>
+     * </ul>
+     *
+     * @param cardTypeOrRefId the id of the card type or reference
+     *
+     * @return true if the current user can read the card type or reference
+     */
+    public boolean isCardTypeOrRefReadableByCurrentUser(Long cardTypeOrRefId) {
+        User currentUser = requestManager.getCurrentUser();
+        if (cardTypeOrRefId == null || currentUser == null) {
+            return false;
+        }
+
+        List<Long> globalPublished = cardTypeManager.findGlobalPublishedCardTypeIds();
+        if (globalPublished.contains(cardTypeOrRefId)) {
+            return true;
+        }
+
+        List<Long> accessibleFromProjects = cardTypeManager
+            .findCurrentUserReadableProjectsCardTypesIds();
+        if (accessibleFromProjects.contains(cardTypeOrRefId)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Has the current user the right to read the project ?
+     * <p>
+     * A user can read any project he is a member of and any project which contains a card type or
+     * reference the current user has a read access.
+     *
+     * @param projectId the id of the project
+     *
+     * @return True if the current user can read the project
+     */
+    public boolean isProjectReadableByCurrentUser(Long projectId) {
+        User currentUser = requestManager.getCurrentUser();
+        if (projectId == null || currentUser == null) {
+            return false;
+        }
+
+        List<Long> directProjects = projectManager.findIdsOfProjectsCurrentUserIsMemberOf();
+        if (directProjects.contains(projectId)) {
+            return true;
+        }
+
+        List<Long> accessibleByCardTypes = projectManager
+            .findProjectsIdsReadableByCardTypes();
+        if (accessibleByCardTypes.contains(projectId)) {
+            return true;
+        }
+
+        return false;
     }
 }

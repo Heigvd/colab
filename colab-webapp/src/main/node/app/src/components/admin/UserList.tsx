@@ -17,11 +17,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { User } from 'colab-rest-client';
 import * as React from 'react';
 import { grantAdminRight, revokeAdminRight } from '../../API/api';
+import useTranslations from '../../i18n/I18nContext';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
 import IconButton from '../common/IconButton';
 
 const UserComp = ({ user }: { user: User }) => {
+  const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const { currentUser } = useCurrentUser()!;
   const currentUserId = currentUser && currentUser.id;
@@ -34,6 +36,7 @@ const UserComp = ({ user }: { user: User }) => {
       <div>{user.firstname}</div>
       <div>{user.lastname}</div>
       <div>{user.commonname}</div>
+      <div>{i18n.common.date(user.activityDate)}</div>
       <div>
         <IconButton
           icon={user.admin ? faCheck : faTimes}
@@ -101,6 +104,7 @@ const Headers = () => {
       <Header sortKey="firstname" text="Firstname" />
       <Header sortKey="lastname" text="Lastname" />
       <Header sortKey="commonname" text="CommonName" />
+      <Header sortKey="activityDate" text="Last seen" />
       <Header sortKey="admin" text="Admin" />
       <Header text="Actions " />
     </div>
@@ -170,7 +174,7 @@ export default ({ users }: UserListProps): JSX.Element => {
           <div
             className={css({
               display: 'grid',
-              gridTemplateColumns: 'repeat(6, max-content)',
+              gridTemplateColumns: 'repeat(7, max-content)',
               '& div div': {
                 paddingRight: '10px',
               },

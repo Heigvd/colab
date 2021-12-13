@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.microchanges.live;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.api.ejb.TransactionManager;
+import ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.microchanges.tools.CancelDebounce;
@@ -74,7 +74,7 @@ public class LiveManager implements Serializable {
      * To register changes as updated object
      */
     @Inject
-    private TransactionManager transactionManager;
+    private EntityGatheringBagForPropagation transactionManager;
 
     /**
      * Get the lock for the given block id

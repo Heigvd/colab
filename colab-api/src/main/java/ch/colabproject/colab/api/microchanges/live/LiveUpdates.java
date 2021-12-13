@@ -497,7 +497,7 @@ public class LiveUpdates implements Serializable {
                 //merge has been done
                 HashSet<String> newDeps = new HashSet<>(child.getBasedOn());
                 newDeps.remove(offsetFromRev);
-                logger.error("Do not go deeper than {}, now based on {}", child, newDeps);
+                logger.debug("Do not go deeper than {}, now based on {}", child, newDeps);
                 child.setBasedOn(newDeps);
                 //child.getBasedOn().remove(offsetFromRev);
             }
@@ -690,7 +690,7 @@ public class LiveUpdates implements Serializable {
                     }
 
                     logger.debug(" -> {}", buffer);
-                    //logger.trace("Offsets" + offsets);
+                    // logger.trace("Offsets" + offsets);
                     // rebase others children
 
                     changes.removeAll(children);
@@ -698,7 +698,7 @@ public class LiveUpdates implements Serializable {
                         Change child = children.remove(i);
                         if (!rebase(allChanges, change, child) && strict) {
                             // todo throw ?
-                            logger.error("Conflict");
+                            logger.warn("Conflict");
                         }
                         changes.add(0, child);
                     }

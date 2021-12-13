@@ -7,12 +7,24 @@
 package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.api.Helper;
-import javax.cache.Cache;
+import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.user.UserDao;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.map.IMap;
+import java.time.OffsetDateTime;
+import java.util.Iterator;
+import java.util.Map;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Bean to manage HTTP sessions
  *
  * @author maxence
  */
@@ -20,11 +32,37 @@ import javax.inject.Inject;
 @LocalBean
 public class SessionManager {
 
-    /**
-     * Cluster wide cache for HTTP sessions
-     */
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);
+
+    /** hazelcast instance */
     @Inject
-    private Cache<String, HttpSession> sessions;
+    private HazelcastInstance hzInstance;
+
+    /** user DAO */
+    @Inject
+    private UserDao userDao;
+
+    /** request manager */
+    @Inject
+    private RequestManager requestManager;
+
+    /**
+     * Get cluster-wide cache for HTTP sessions
+     *
+     * @return the session cache
+     */
+    private IMap<String, HttpSession> getSessionsCache() {
+        return hzInstance.getMap("HTTP_SESSIONS_CACHE");
+        //return hzInstance.getCacheManager().getCache("HTTP_SESSIONS_CACHE");
+    }
+
+    /**
+     * get user activity date cache. Map user id with activity date
+     */
+    private IMap<Long, OffsetDateTime> getActivityCache() {
+        return hzInstance.getMap("USER_ACTIVITY_CACHE");
+    }
 
     /**
      * Put session in cache
@@ -33,7 +71,7 @@ public class SessionManager {
      */
     public void save(HttpSession session) {
         String sessionId = session.getSessionId();
-        sessions.put(sessionId, session);
+        getSessionsCache().put(sessionId, session);
     }
 
     /**
@@ -44,6 +82,7 @@ public class SessionManager {
      * @return the session to use from now. The session may have a new sessionId !
      */
     public HttpSession getOrCreate(String sessionId) {
+        IMap<String, HttpSession> sessions = getSessionsCache();
         // no session id or sessionId not in cache: generate new sessionId
         if (sessionId == null || !sessions.containsKey(sessionId)) {
             sessionId = Helper.generateHexSalt(32) + "-" + System.currentTimeMillis();
@@ -57,5 +96,63 @@ public class SessionManager {
             sessions.put(sessionId, session);
         }
         return session;
+    }
+
+    /**
+     * Touch activity date for user
+     *
+     * @param user the user
+     */
+    public void touchUserActivityDate(User user) {
+        if (user != null && user.getId() != null) {
+            getActivityCache().put(user.getId(), OffsetDateTime.now());
+        }
+    }
+
+    /**
+     * Get effective activity date for user
+     *
+     * @param user the user
+     *
+     * @return effective activity date
+     */
+    public OffsetDateTime getActivityDate(User user) {
+        if (user != null) {
+            if (user.getId() != null) {
+                OffsetDateTime date = getActivityCache().get(user.getId());
+                if (date != null) {
+                    return date;
+                }
+            }
+            return user.getActivityDate();
+        }
+        return null;
+    }
+
+    /**
+     * Write in-cache activity-date to database
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void writeActivityDatesToDatabase() {
+        logger.trace("Write Activity Date to DB");
+        requestManager.sudo(() -> {
+            // prevent updating tracking data (updated by and at)
+            requestManager.setDoNotTrackChange(true);
+            IMap<Long, OffsetDateTime> activityCache = getActivityCache();
+            Iterator<Map.Entry<Long, OffsetDateTime>> iterator = activityCache.iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<Long, OffsetDateTime> next = iterator.next();
+                if (next != null) {
+                    Long userId = next.getKey();
+                    if (userId != null) {
+                        User user = userDao.findUser(userId);
+                        OffsetDateTime date = activityCache.remove(userId);
+                        if (user != null) {
+                            user.setLastSeenAt(date);
+                        }
+                    }
+                }
+            }
+        });
     }
 }

@@ -9,23 +9,20 @@ import { css } from '@emotion/css';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { faCheck, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CardContent } from 'colab-rest-client';
+import { CardContent, CardType } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useProjectCardTypes } from '../../selectors/cardTypeSelector';
+import { useCardTypeTags, useProjectCardTypes } from '../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
+import Flex from '../common/Flex';
+import Checkbox from '../common/Form/Checkbox';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
 import CardTypeCreator from './cardtypes/CardTypeCreator';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
-
-const inlineStyle = css({
-  display: 'flex',
-  alignItems: 'center',
-});
 
 export interface CardCreatorProps {
   parent: CardContent;
@@ -61,6 +58,35 @@ export default function CardCreator({ parent, customButton, className }: CardCre
     setSelectedType(id);
   }, []);
 
+  const allTags = useCardTypeTags();
+
+  const projectTags = [...cardTypes.own, ...cardTypes.inherited].flatMap(cardType => cardType.tags);
+
+  const [tagState, setTagState] = React.useState<Record<string, boolean> | undefined>(undefined);
+
+  React.useEffect(() => {
+    if (tagState === undefined && cardTypes.projectStatus === 'READY') {
+      const intialTagState = projectTags.reduce<Record<string, boolean>>((acc, cur) => {
+        acc[cur] = true;
+        return acc;
+      }, {});
+      setTagState(intialTagState);
+    }
+  }, [cardTypes.own, cardTypes.inherited, cardTypes.projectStatus, tagState, projectTags]);
+
+  const eTags = Object.keys(tagState || []).filter(tag => tagState && tagState[tag]);
+
+  const filter = (types: CardType[]) => {
+    return types.filter(ty => ty.tags.find(tag => eTags.includes(tag)));
+  };
+
+  const filtered = {
+    own: filter(cardTypes.own),
+    inherited: filter(cardTypes.inherited),
+    published: filter(cardTypes.published),
+    global: filter(cardTypes.global),
+  };
+
   return (
     <OpenCloseModal
       title="Create card - choose the type"
@@ -74,6 +100,22 @@ export default function CardCreator({ parent, customButton, className }: CardCre
           return (
             <div>
               <h2>Create a new subcard {parent.title ? 'for ' + parent.title : ''}</h2>
+              <Flex>
+                {allTags.map(tag => {
+                  return (
+                    <Checkbox
+                      key={tag}
+                      label={tag}
+                      value={tagState && tagState[tag]}
+                      onChange={t =>
+                        setTagState(state => {
+                          return { ...state, [tag]: t };
+                        })
+                      }
+                    />
+                  );
+                })}
+              </Flex>
               <div>
                 <Tips tipsType="TODO">
                   To create a card, one should select a type among all available ones in a
@@ -82,79 +124,95 @@ export default function CardCreator({ parent, customButton, className }: CardCre
                 <Tips tipsType="TODO">
                   Project "Card Types" tab display all types too: such duplication should be solved
                 </Tips>
-                <div className={inlineStyle}>
-                  <h3>Common types</h3>
-                  <Tips>
-                    Common types are types defined outside the current project and which are not yet
-                    used in the project
-                  </Tips>
-                </div>
-                <h4>Global</h4>
+                <h3>Common types</h3>
                 <Tips>
-                  Global types are defined by adminstrators in "admin/card types" tab. Such type are
-                  available in any project
+                  Common types are types defined outside the current project and which are not yet
+                  used in the project
                 </Tips>
-                <div className={listOfTypeStyle}>
-                  {cardTypes.global.map(cardType => (
-                    <CardTypeThumbnail
-                      key={cardType.id}
-                      onClick={onSelect}
-                      highlighted={cardType.id === selectedType}
-                      cardType={cardType}
-                    />
-                  ))}
-                </div>
-                <h4>From other projects</h4>
-                <Tips>
-                  Types published from others projects you, as specific colab user, have acces to.
-                </Tips>
-                <div className={listOfTypeStyle}>
-                  {cardTypes.published.map(cardType => (
-                    <CardTypeThumbnail
-                      key={cardType.id}
-                      onClick={onSelect}
-                      highlighted={cardType.id === selectedType}
-                      cardType={cardType}
-                    />
-                  ))}
-                </div>
+                <details>
+                  <summary>
+                    Global
+                    <Tips>
+                      Global types are defined by adminstrators in "admin/card types" tab. Such type
+                      are available in any project
+                    </Tips>
+                  </summary>
+                  <div className={listOfTypeStyle}>
+                    {filtered.global.map(cardType => (
+                      <CardTypeThumbnail
+                        key={cardType.id}
+                        onClick={onSelect}
+                        highlighted={cardType.id === selectedType}
+                        cardType={cardType}
+                      />
+                    ))}
+                  </div>
+                </details>
+                <details>
+                  <summary>
+                    From other projects
+                    <Tips>
+                      Types published from others projects you, as specific colab user, have acces
+                      to.
+                    </Tips>
+                  </summary>
+                  <div className={listOfTypeStyle}>
+                    {filtered.published.map(cardType => (
+                      <CardTypeThumbnail
+                        key={cardType.id}
+                        onClick={onSelect}
+                        highlighted={cardType.id === selectedType}
+                        cardType={cardType}
+                      />
+                    ))}
+                  </div>
+                </details>
               </div>
               <div>
                 <h3>Project Types</h3>
                 <Tips>All types already used/defined in the project</Tips>
-                <h4>Inherited</h4>
-                <Tips>
-                  Inherited types references either global types or types from others projects
-                </Tips>
-                <div className={listOfTypeStyle}>
-                  {cardTypes.inherited.map(cardType => (
-                    <CardTypeThumbnail
-                      key={cardType.id}
-                      onClick={onSelect}
-                      highlighted={cardType.id === selectedType}
-                      cardType={cardType}
+                <details>
+                  <summary>
+                    Inherited
+                    <Tips>
+                      Inherited types references either global types or types from others projects
+                    </Tips>
+                  </summary>
+                  <div className={listOfTypeStyle}>
+                    {filtered.inherited.map(cardType => (
+                      <CardTypeThumbnail
+                        key={cardType.id}
+                        onClick={onSelect}
+                        highlighted={cardType.id === selectedType}
+                        cardType={cardType}
+                      />
+                    ))}
+                  </div>
+                </details>
+                <details>
+                  <summary>
+                    Custom
+                    <Tips>
+                      Custom project types belong to this very project (ie you have full write
+                      right)
+                    </Tips>
+                  </summary>
+                  <div className={listOfTypeStyle}>
+                    {filtered.own.map(cardType => (
+                      <CardTypeThumbnail
+                        key={cardType.id}
+                        onClick={onSelect}
+                        highlighted={cardType.id === selectedType}
+                        cardType={cardType}
+                      />
+                    ))}
+                    <CardTypeCreator
+                      afterCreation={(id: number) => {
+                        setSelectedType(id);
+                      }}
                     />
-                  ))}
-                </div>
-                <h4>Custom</h4>
-                <Tips>
-                  Custom project types belong to this very project (ie you have full write right)
-                </Tips>
-                <div className={listOfTypeStyle}>
-                  {cardTypes.own.map(cardType => (
-                    <CardTypeThumbnail
-                      key={cardType.id}
-                      onClick={onSelect}
-                      highlighted={cardType.id === selectedType}
-                      cardType={cardType}
-                    />
-                  ))}
-                  <CardTypeCreator
-                    afterCreation={(id: number) => {
-                      setSelectedType(id);
-                    }}
-                  />
-                </div>
+                  </div>
+                </details>
               </div>
               <div>
                 <IconButton icon={faTimes} title="cancel" onClick={close} />

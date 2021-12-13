@@ -9,7 +9,9 @@ import { css } from '@emotion/css';
 import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
 import { CardType } from 'colab-rest-client';
 import * as React from 'react';
+import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
+import { useCardTypeTags } from '../../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
 import AutoSaveInput from '../../common/AutoSaveInput';
@@ -21,6 +23,7 @@ import {
   cardShadow,
   defaultColumnContainerStyle,
   defaultRowContainerStyle,
+  inputStyle,
   sideTabButton,
 } from '../../styling/style';
 
@@ -40,6 +43,9 @@ const style = css({
 export default function CardTypeEditor({ cardType }: DisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
 
+  const allTags = useCardTypeTags();
+  const options = allTags.map(tag => ({ label: tag, value: tag }));
+
   return (
     <>
       <div className={defaultRowContainerStyle}>
@@ -54,6 +60,20 @@ export default function CardTypeEditor({ cardType }: DisplayProps): JSX.Element 
                 onChange={newValue =>
                   dispatch(API.updateCardType({ ...cardType, title: newValue }))
                 }
+              />
+              <Creatable
+                className={inputStyle}
+                isMulti={true}
+                value={cardType.tags.map(tag => ({ label: tag, value: tag }))}
+                options={options}
+                onChange={tagsOptions => {
+                  dispatch(
+                    API.updateCardType({
+                      ...cardType,
+                      tags: tagsOptions.map(o => o.value),
+                    }),
+                  );
+                }}
               />
               {cardType.purposeId && (
                 <BlockEditorWrapper blockId={cardType.purposeId} allowEdition={true} />

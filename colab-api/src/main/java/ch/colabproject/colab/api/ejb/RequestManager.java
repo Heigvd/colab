@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
@@ -91,6 +92,12 @@ public class RequestManager {
     private boolean txDone = false;
 
     /**
+     * In some case, {@link Tracking tracking data} shouldn't be updated. Setting this boolean to
+     * prevent allow such behaviour.
+     */
+    private boolean doNotTrackChange = false;
+
+    /**
      * Get request base url
      *
      * @return url
@@ -123,10 +130,6 @@ public class RequestManager {
      */
     public void setHttpSession(HttpSession httpSession) {
         this.httpSession = httpSession;
-        User currentUser = getCurrentUser();
-        if (currentUser != null) {
-            currentUser.touchLastSeenAt();
-        }
     }
 
     /**
@@ -212,8 +215,22 @@ public class RequestManager {
         }
     }
 
+    /**
+     * Is current transaction still alive ?
+     *
+     * @return true if current tx is not dead
+     */
     private boolean txExists() {
         return !this.txDone;
+    }
+
+    /**
+     * Synchronize the persistence context to the underlying database.
+     */
+    public void flush() {
+        if (txExists()) {
+            em.flush();
+        }
     }
 
     /**
@@ -340,5 +357,23 @@ public class RequestManager {
      */
     public void setTxDone(boolean txDone) {
         this.txDone = txDone;
+    }
+
+    /**
+     * Set Do-Not-Track-Change boolean
+     *
+     * @param value the new value
+     */
+    public void setDoNotTrackChange(boolean value) {
+        this.doNotTrackChange = value;
+    }
+
+    /**
+     * Get Do-Not-Track-Change value
+     *
+     * @return should ou shouldn't track entity updates?
+     */
+    public boolean isDoNotTrackChange() {
+        return doNotTrackChange;
     }
 }

@@ -156,9 +156,93 @@ public class Helper {
     }
 
     /**
+     * Convert given stack trace to string but skip some first elements.
+     *
+     * @param stackTrace list of stack trace element to print
+     * @param skip       number of element to slip
+     *
+     * @return string to be logged
+     */
+    private static String prettyPrintColabStackTrace(StackTraceElement[] stackTrace, int skip) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = skip ; i < stackTrace.length; i++) {
+            StackTraceElement elem = stackTrace[i];
+            if (elem.getClassName().startsWith("ch.colab")) {
+                sb.append("\n\tat ");
+                sb.append(elem);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Export the current colab-only stack trace to string.
+     *
+     * @return string which represent the current stack trace
+     */
+    public static String getStringifiedColabStackTrace() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        return prettyPrintColabStackTrace(stackTrace, 2);
+    }
+
+    /**
+     * Dump the colab-only stack trace to string from given throwable.
+     *
+     * @param t the throwable to dump the stack from
+     *
+     * @return string which represent the throwable stack trace
+     */
+    public static String getStringifiedColabStackTrace(Throwable t) {
+        StackTraceElement[] stackTrace = t.getStackTrace();
+        return prettyPrintColabStackTrace(stackTrace, 0);
+    }
+
+    /**
+     * Convert given stack trace to string but skip some first elements.
+     *
+     * @param stackTrace list of stack trace element to print
+     * @param skip       number of element to slip
+     *
+     * @return string to be logged
+     */
+    private static String prettyPrintStackTrace(StackTraceElement[] stackTrace, int skip) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = skip ; i < stackTrace.length; i++) {
+            StackTraceElement elem = stackTrace[i];
+            sb.append("\n\tat ");
+            sb.append(elem);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Export the current stack trace to string.
+     *
+     * @return string which represent the current stack trace
+     */
+    public static String getStringifiedStackTrace() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        return prettyPrintStackTrace(stackTrace, 2);
+    }
+
+    /**
+     * Dump the stack trace to string from given throwable.
+     *
+     * @param t the throwable to dump the stack from
+     *
+     * @return string which represent the throwable stack trace
+     */
+    public static String getStringifiedStackTrace(Throwable t) {
+        StackTraceElement[] stackTrace = t.getStackTrace();
+        return prettyPrintStackTrace(stackTrace, 0);
+    }
+
+    /**
      * Lookup instances
      *
-     * @param <T> class to lookup
+     * @param <T>   class to lookup
      * @param klass class to lookup
      *
      * @return instance of <code>klass</code>

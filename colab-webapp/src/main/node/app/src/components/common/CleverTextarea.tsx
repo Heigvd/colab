@@ -16,7 +16,7 @@ export interface Props {
 }
 
 /**
- * Get new selection rang by applying offsets to current selection
+ * Get new selection range by applying offsets to current selection
  */
 function computeSelectionOffsets(offsets: LiveHelper.Offsets, node: HTMLTextAreaElement) {
   const startIndex = node.selectionStart;
