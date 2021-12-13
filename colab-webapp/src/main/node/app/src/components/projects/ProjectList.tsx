@@ -26,7 +26,7 @@ import DropDownMenu from '../common/DropDownMenu';
 import InlineLoading from '../common/InlineLoading';
 import { InlineLink } from '../common/Link';
 import OpenCloseModal from '../common/OpenCloseModal';
-import { cardStyle, fixedButtonStyle, flex, space_M } from '../styling/style';
+import { cardStyle, errorColor, fixedButtonStyle, flex, space_M } from '../styling/style';
 
 interface Props {
   project: Project;
@@ -41,8 +41,8 @@ const dispatch = useAppDispatch();
       className={cx(
         cardStyle,
         css({
-          margin: '20px',
-          width: 'max-content',
+          margin: '20px 0',
+          width: '100%',
         }),
       )}
     >
@@ -85,11 +85,11 @@ const dispatch = useAppDispatch();
                         <FontAwesomeIcon icon={faExclamationTriangle} />
                         <FontAwesomeIcon icon={faExclamationTriangle} />
                         <p>
-                          Are you <strong>sure</strong> you want to delete the whole project? This
-                          will delete all cards inside.
+                          Are you <strong>sure</strong> you want to delete the whole project? 
+                          This will delete all cards inside.
                         </p>
                         <div className={flex}>
-                          <Button label="Delete project" title="Confirm delete" onClick={()=>dispatch(API.deleteProject(project))}/>
+                          <Button label="Delete project" title="Confirm delete" onClick={()=>dispatch(API.deleteProject(project))} className={css({backgroundColor: errorColor, marginRight: space_M})}/>
                           <Button label="Cancel" title="Cancel delete" onClick={() => collapse()} />
                         </div>
                       </div>
@@ -123,7 +123,7 @@ const dispatch = useAppDispatch();
           padding: space_M,
         })}
       >
-        <InlineLink to={`/editor/${project.id}`}>
+        <InlineLink to={`/editor/${project.id}`} className={css({margin:'auto', textDecoration: 'none'})}>
           <Button
             title="Edit project"
             label={
@@ -131,7 +131,6 @@ const dispatch = useAppDispatch();
                 <FontAwesomeIcon icon={faEdit} /> Edit
               </>
             }
-            className={css({margin:'auto'})}
           />
         </InlineLink>
       </div>
@@ -162,7 +161,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
   } else {
     return (
       <div>
-        <div>
+        <div className={css({margin: 'auto', width: '80%'})}>
           {projects
             .sort((a, b) => (a.id || 0) - (b.id || 0))
             .map(project => {

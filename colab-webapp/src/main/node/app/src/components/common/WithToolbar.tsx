@@ -187,7 +187,7 @@ export default function WithToolbar({
           flexGrow: grow,
           display: 'flex',
           flexDirection: 'column',
-          width: 'max-content',
+          width: 'fit-content',
           position: 'relative',
           ':hover > .toolbar': {
             display: 'flex',

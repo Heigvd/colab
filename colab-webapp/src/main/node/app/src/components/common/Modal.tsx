@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import { cardStyle } from '../styling/style';
+import { cardStyle, space_L } from '../styling/style';
 import Flex from './Flex';
 import IconButton from './IconButton';
 import Overlay from './Overlay';
@@ -58,7 +58,7 @@ const closeIconStyle = css({
 });
 
 const modalBody = css({
-  width: '100%',
+  padding: space_L,
 });
 
 export default function Modal({
