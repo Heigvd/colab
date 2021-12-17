@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.generator.plugin;
 
+import ch.colabproject.colab.generator.model.interfaces.WithId;
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.ClassDoc;
 import ch.colabproject.colab.generator.model.tools.JavaDocExtractor;
@@ -230,6 +231,7 @@ public class Generator {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getTsClientTemplate());
         extraTypes.put("WithJsonDiscriminator", WithJsonDiscriminator.class);
+        extraTypes.put("WithId", WithId.class);
 
         String modules = this.restEndpoints.stream().map(controller
             -> controller.generateTypescriptClient(extraTypes, this.javadoc, reflections)

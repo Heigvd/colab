@@ -57,6 +57,11 @@ import javax.persistence.Transient;
         @Index(columnList = "project_id"),
     }
 )
+@NamedQuery(name = "AbstractCardType.findPublishedFromProjects",
+query = "SELECT ct FROM AbstractCardType ct "
+    + "JOIN ct.project proj "
+    + "JOIN proj.teamMembers memb "
+    + "WHERE ct.published = TRUE AND memb.user.id = :userId")
 @NamedQuery(name = "AbstractCardType.findIdOfUserProjectDirectCardType",
     query = "SELECT act.id FROM AbstractCardType act"
         + " JOIN act.project p"
