@@ -225,6 +225,15 @@ public class RequestManager {
     }
 
     /**
+     * Synchronize the persistence context to the underlying database.
+     */
+    public void flush() {
+        if (txExists()) {
+            em.flush();
+        }
+    }
+
+    /**
      * Execute some piece of code with admin privileges.
      *
      * @param action code to execute with admin privileges

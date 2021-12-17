@@ -32,7 +32,8 @@ function mapArgs(...args: unknown[]): unknown[] {
   return args.map(arg => {
     const argP = typeof arg === 'function' ? arg() : arg;
     try {
-      return typeof argP === 'object' ? JSON.stringify(argP) : arg;
+      return argP;
+      //return typeof argP === 'object' ? JSON.stringify(argP) : arg;
     } catch {
       return arg;
     }
@@ -47,7 +48,7 @@ export function getLogger(name: string): Logger {
       getLevel: () => currentLevel,
       setLevel: (level: LoggerLevel) => (currentLevel = level),
       trace: (...params: unknown[]): void => {
-        if (currentLevel >= INFO) {
+        if (currentLevel >= TRACE) {
           // eslint-disable-next-line no-console
           console.info(...mapArgs(...params));
         }

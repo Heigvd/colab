@@ -45,6 +45,9 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
         String title = "Context " + ((int) (Math.random() * 1000));
         String purpose = "Define the game life context " + ((int) (Math.random() * 1000));
+        String aTag = "life hack";
+        String otherTag = "Contextualization";
+        Set<String> tags = Set.of(aTag, otherTag);
 
         TextDataBlock purposeBlock = new TextDataBlock();
         purposeBlock.setMimeType(TextDataBlock.DEFAULT_MIME_TYPE);
@@ -54,6 +57,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         cardTypeToCreate.setProjectId(projectId);
         cardTypeToCreate.setTitle(title);
         cardTypeToCreate.setPurpose(purposeBlock);
+        cardTypeToCreate.setTags(tags);
 
         Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardTypeToCreate);
 
@@ -64,12 +68,17 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(projectId, cardType.getProjectId());
         Assertions.assertEquals(title, cardType.getTitle());
         Assertions.assertNotNull(cardType.getPurposeId());
+        Assertions.assertNotNull(cardType.getTags());
 
         Block persistedPurpose = client.blockRestEndPoint.getBlock(cardType.getPurposeId());
         Assertions.assertNotNull(persistedPurpose);
         Assertions.assertTrue(persistedPurpose instanceof TextDataBlock);
         TextDataBlock persistedPurposeTextDataBlock = (TextDataBlock) persistedPurpose;
         Assertions.assertEquals(purpose, persistedPurposeTextDataBlock.getTextData());
+
+        Assertions.assertEquals(cardType.getTags().size(), tags.size());
+        Assertions.assertTrue(cardType.getTags().contains(aTag));
+        Assertions.assertTrue(cardType.getTags().contains(otherTag));
     }
 
     @Test
@@ -337,6 +346,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
         CardTypeCreationBean cardTypeToCreate = new CardTypeCreationBean();
         cardTypeToCreate.setProjectId(projectId);
+        cardTypeToCreate.setTags(new HashSet<>());
 
         Long cardTypeId = client.cardTypeRestEndpoint.createCardType(cardTypeToCreate);
 
@@ -347,18 +357,31 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedPurpose);
         Assertions.assertTrue(persistedPurpose instanceof TextDataBlock);
 
+        Assertions.assertNotNull(cardType.getTags());
+        Assertions.assertTrue(cardType.getTags().isEmpty());
+
+        String aTag = "life hack";
+        String otherTag = "Contextualization";
+        Set<String> tags = Set.of(aTag, otherTag);
+
         // String uniqueId = String.valueOf(new Date().getTime() + ((long)(Math.random()
         // * 1000)));
         String title = "Dissemination " + ((int) (Math.random() * 1000));
 
         // cardType.setUniqueId(uniqueId);
         cardType.setTitle(title);
+        cardType.setTags(tags);
         client.cardTypeRestEndpoint.updateCardType(cardType);
 
         CardType persistedCardType = (CardType) client.cardTypeRestEndpoint
             .getCardType(cardType.getId());
         // Assertions.assertEquals(uniqueId, persistedCardType2.getUniqueId());
         Assertions.assertEquals(title, persistedCardType.getTitle());
+
+        Assertions.assertNotNull(cardType.getTags());
+        Assertions.assertEquals(cardType.getTags().size(), tags.size());
+        Assertions.assertTrue(cardType.getTags().contains(aTag));
+        Assertions.assertTrue(cardType.getTags().contains(otherTag));
     }
 
     @Test

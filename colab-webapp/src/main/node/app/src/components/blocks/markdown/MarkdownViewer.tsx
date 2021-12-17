@@ -4,10 +4,9 @@
  *
  * Licensed under the MIT License
  */
-import '@toast-ui/editor/dist/toastui-editor.css';
-import { Viewer } from '@toast-ui/react-editor';
 import * as React from 'react';
 import logger from '../../../logger';
+import markdownToDom from './parser/markdownToDom';
 
 export interface MarkdownViewerProps {
   md: string;
@@ -15,29 +14,27 @@ export interface MarkdownViewerProps {
 }
 
 export default function MarkdownViewer({ md, className }: MarkdownViewerProps): JSX.Element {
-  const viewerRef = React.useRef<{ viewer?: Viewer }>({});
+  const divRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    if (viewerRef.current != null && viewerRef.current.viewer) {
-      viewerRef.current.viewer.getInstance().setMarkdown(md);
+    // TODO: Maybe useLayoutEffect ?
+    const div = divRef.current;
+    if (div != null) {
+      // empty div
+      while (div.firstChild) {
+        div.removeChild(div.firstChild);
+      }
+      const dom = markdownToDom(md);
+      dom.nodes.forEach(node => div.append(node));
     } else {
-      logger.error('Viewer ref is null');
+      logger.error('Div ref is null');
     }
-  }, [md, viewerRef]);
+  }, [md]);
 
   return (
     <div className={className}>
       {md === '' ? <i>empty</i> : null}
-      <Viewer
-        ref={ref => {
-          if (ref != null) {
-            viewerRef.current.viewer = ref;
-          } else {
-            delete viewerRef.current.viewer;
-          }
-        }}
-        initialValue={md}
-      />
+      <div ref={divRef} />
     </div>
   );
 }

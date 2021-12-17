@@ -113,6 +113,12 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>3.12.0</version>
             </dependency>
+            <!-- Utility classes for Java Collections Framework -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.4</version>
+            </dependency>
 
             <!-- Works well with a standard deployment but crashes during tests...-->
             <dependency>

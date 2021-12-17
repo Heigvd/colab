@@ -47,9 +47,10 @@ export default function CardTypeThumbnail({ cardType, highlighted, onClick }: Pr
         }}
         className={highlighted ? selected : defaultStyle}
       >
-        <span className={css({ padding: '10px' })} title={purpose?.textData || ''}>
-          {cardType.title}
-        </span>
+        <div className={css({ padding: '10px' })} title={purpose?.textData || ''}>
+          <div>{cardType.title}</div>
+          <div>{cardType.tags.join('; ')}</div>
+        </div>
       </Thumbnail>
     );
   }

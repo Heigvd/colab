@@ -1,5 +1,5 @@
 import { customColabStateEquals, shallowEqual } from '../src/store/hooks';
-//import {test, expect} from '@jest/globals/';
+import {test, expect} from '@jest/globals';
 
 const empty: never[] = [];
 const array: number[] = [1, 2, 3, 4];
