@@ -88,7 +88,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.RestEndpoint.java">ch/colabproject/colab/generator/plugin/rest/RestEndpoint.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.ServerException.java">ch/colabproject/colab/generator/plugin/rest/ServerException.java</a>
                 </td>
                 <td>
                   0
@@ -102,7 +102,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.ServerException.java">ch/colabproject/colab/generator/plugin/rest/ServerException.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.RestEndpoint.java">ch/colabproject/colab/generator/plugin/rest/RestEndpoint.java</a>
                 </td>
                 <td>
                   0
