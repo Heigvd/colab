@@ -6,10 +6,14 @@
  */
 package ch.colabproject.colab.generator.plugin.rest;
 
+import ch.colabproject.colab.generator.plugin.Logger;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
 
 /**
  * Represent a rest method
@@ -44,6 +48,11 @@ public class RestMethod {
     private List<Param> queryParameters = new ArrayList<>();
 
     /**
+     * List of form parameters
+     */
+    private List<Param> formParameters = new ArrayList<>();
+
+    /**
      * body param
      */
     private Param bodyParam;
@@ -67,6 +76,16 @@ public class RestMethod {
      * does this class restricted to authenticated users ?
      */
     private boolean authenticationRequired;
+
+    /**
+     * MIME Type the method produces.
+     */
+    private List<String> produces;
+
+    /**
+     * Effective MIME Type the method consumes.
+     */
+    private List<String> consumes;
 
     /**
      * Get the value of authenticationRequired
@@ -177,6 +196,24 @@ public class RestMethod {
     }
 
     /**
+     * Get the value of formParameters
+     *
+     * @return the value of formParameters
+     */
+    public List<Param> getFormParameters() {
+        return formParameters;
+    }
+
+    /**
+     * Set the value of formParameters
+     *
+     * @param formParameters new value of formParameters
+     */
+    public void setFormParameters(List<Param> formParameters) {
+        this.formParameters = formParameters;
+    }
+
+    /**
      * Get the value of pathParameters
      *
      * @return the value of pathParameters
@@ -249,6 +286,42 @@ public class RestMethod {
     }
 
     /**
+     * Get the value of produces
+     *
+     * @return the value of produces
+     */
+    public List<String> getProduces() {
+        return produces;
+    }
+
+    /**
+     * Set the value of produces
+     *
+     * @param produces new value of produces
+     */
+    public void setProduces(List<String> produces) {
+        this.produces = produces;
+    }
+
+    /**
+     * Get the value of consumes
+     *
+     * @return the value of consumes
+     */
+    public List<String> getConsumes() {
+        return consumes;
+    }
+
+    /**
+     * Set the value of consumes
+     *
+     * @param consumes new value of consumes
+     */
+    public void setConsumes(List<String> consumes) {
+        this.consumes = consumes;
+    }
+
+    /**
      * Register a path parameter
      *
      * @param name           name of the parameter
@@ -285,6 +358,44 @@ public class RestMethod {
     }
 
     /**
+     * Register a query parameter
+     *
+     * @param name           name of the parameter
+     * @param annotationName FormData name
+     * @param javadoc        some documentation
+     * @param type           type of the parameter
+     */
+    public void addFormParameter(String name, String annotationName, String javadoc, Type type) {
+        Optional<Param> findFirst
+            = this.formParameters.stream().filter(p -> p.getInAnnotationName().equals(annotationName)).findFirst();
+        if (findFirst.isPresent()) {
+            Param param = findFirst.get();
+            // hack: Files are injected with two disctinct parameter: one InputStream for bytes, one
+            // FormDataBodyPart for metadata
+            if (param.getType() instanceof Class
+                && type instanceof Class
+                && ((InputStream.class.isAssignableFrom((Class) type)
+                && ContentDisposition.class.isAssignableFrom((Class) param.getType()))
+                || (InputStream.class.isAssignableFrom((Class) type)
+                && ContentDisposition.class.isAssignableFrom((Class) param.getType())))) {
+                // Both ContentDisposition and InputStream exists: only keep InputStream
+                param.setType(InputStream.class);
+            } else {
+                Logger.warn("Duplicate Form Data");
+            }
+
+        } else {
+            Param param = new Param();
+            param.setName(name);
+            param.setInAnnotationName(annotationName);
+            param.setJavadoc(javadoc);
+            param.setType(type);
+            this.formParameters.add(param);
+        }
+
+    }
+
+    /**
      * Get all parameters. PathParams + queryParams + body
      *
      * @return list of all non-null parameters
@@ -293,6 +404,7 @@ public class RestMethod {
         List<Param> list = new ArrayList<>();
         list.addAll(this.pathParameters);
         list.addAll(this.queryParameters);
+        list.addAll(this.formParameters);
 
         if (bodyParam != null) {
             list.add(bodyParam);

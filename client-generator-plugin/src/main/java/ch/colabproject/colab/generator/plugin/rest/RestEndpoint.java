@@ -26,10 +26,14 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.uri.PathPattern;
 import org.glassfish.jersey.uri.UriTemplate;
 import org.reflections.Reflections;
@@ -450,7 +454,7 @@ public class RestEndpoint {
             if (!method.getQueryParameters().isEmpty()) {
                 sb.append("List<String> qs =new ArrayList<>();");
                 newLine(sb);
-                if (method.getQueryParameters().size() > 0) {
+                if (!method.getQueryParameters().isEmpty()) {
                     imports.put("ArrayList", "java.util.ArrayList");
                     imports.put("URLEncoder", "java.net.URLEncoder");
                     imports.put("StandardCharsets;", "java.nio.charset.StandardCharsets");
@@ -584,6 +588,22 @@ public class RestEndpoint {
             });
             newLine(sb);
 
+            if (!method.getFormParameters().isEmpty()) {
+                sb.append("const formData = new FormData();");
+                method.getFormParameters().forEach(formParam -> {
+                    //indent++;
+                    newLine(sb);
+                    sb.append("formData.append('")
+                        .append(formParam.getInAnnotationName())
+                        .append("', ")
+                        .append(formParam.getInAnnotationName())
+                        .append(");");
+                    //indent--;
+                    newLine(sb);
+                });
+                newLine(sb);
+            }
+
             Map<String, String> pathParams = method.getPathParameters().stream()
                 .collect(Collectors.toMap(
                     p -> p.getInAnnotationName(),
@@ -596,16 +616,32 @@ public class RestEndpoint {
                 .append("` + (queryString.length > 0 ? '?' + queryString.join('&') : '');");
             newLine(sb);
 
-            sb.append("return sendRequest")
-                .append("<")
-                .append(TypeScriptHelper.convertType(method.getReturnType(), types))
-                .append(">('").append(method.getHttpMethod())
-                .append("', path")
-                .append(", ")
-                .append(method.getBodyParam() != null
-                    ? method.getBodyParam().getName()
-                    : "undefined")
-                .append(", errorHandler);");
+            boolean forDataRequest = method.getConsumes().contains(MediaType.MULTIPART_FORM_DATA);
+
+            if (forDataRequest) {
+                sb.append("return sendRequest")
+                    .append("<")
+                    .append(TypeScriptHelper.convertType(method.getReturnType(), types))
+                    .append(">('").append(method.getHttpMethod())
+                    .append("', path")
+                    .append(", formData")
+                    .append(", errorHandler")
+                    .append(", '").append(MediaType.MULTIPART_FORM_DATA).append("'")
+                    .append(");");
+            } else {
+                sb.append("return sendRequest")
+                    .append("<")
+                    .append(TypeScriptHelper.convertType(method.getReturnType(), types))
+                    .append(">('").append(method.getHttpMethod())
+                    .append("', path")
+                    .append(", ")
+                    .append(method.getBodyParam() != null
+                        ? method.getBodyParam().getName()
+                        : "undefined")
+                    .append(", errorHandler")
+                    .append(", '").append(MediaType.APPLICATION_JSON).append("'")
+                    .append(");");
+            }
             indent--;
             newLine(sb);
             sb.append("},");
@@ -699,6 +735,10 @@ public class RestEndpoint {
     public static RestEndpoint build(Class<?> klass, String applicationPath) {
         RestEndpoint restEndpoint = new RestEndpoint();
 
+        Consumes defaultConsumes = klass.getAnnotation(Consumes.class);
+
+        Produces defautProduces = klass.getAnnotation(Produces.class);
+
         restEndpoint.setAdminResource(klass.getAnnotation(AdminResource.class) != null);
         restEndpoint.setAuthenticationRequired(
             klass.getAnnotation(AuthenticationRequired.class) != null);
@@ -728,6 +768,19 @@ public class RestEndpoint {
 
                     Path methodPath = method.getAnnotation(Path.class);
 
+                    Consumes methodConsumes = method.getAnnotation(Consumes.class);
+                    Consumes consumes = methodConsumes != null ? methodConsumes : defaultConsumes;
+                    if (consumes != null) {
+                        restMethod.setConsumes(List.of(consumes.value()));
+                    }
+
+                    Produces methodProduces = method.getAnnotation(Produces.class);
+                    Produces produces = methodProduces != null ? methodProduces : defautProduces;
+
+                    if (produces != null) {
+                        restMethod.setProduces(List.of(produces.value()));
+                    }
+
                     restMethod
                         .setAdminResource(method.getAnnotation(AdminResource.class) != null);
                     restMethod.setAuthenticationRequired(
@@ -753,6 +806,7 @@ public class RestEndpoint {
                     for (Parameter p : method.getParameters()) {
                         PathParam pathParam = p.getAnnotation(PathParam.class);
                         QueryParam queryParam = p.getAnnotation(QueryParam.class);
+                        FormDataParam formDataParam = p.getAnnotation(FormDataParam.class);
 
                         if (pathParam != null) {
                             // Path param may be a method specific param or a class one
@@ -781,6 +835,12 @@ public class RestEndpoint {
                             restMethod.addQueryParameter(
                                 p.getName(),
                                 queryParam.value(),
+                                "query param",
+                                p.getType());
+                        } else if (formDataParam != null) {
+                            restMethod.addFormParameter(
+                                p.getName(),
+                                formDataParam.value(),
                                 "query param",
                                 p.getType());
                         } else if (p.getAnnotations().length == 0) {

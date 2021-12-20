@@ -8,6 +8,8 @@ package ch.colabproject.colab.generator.plugin;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.ClassDoc;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -124,7 +126,7 @@ public class TypeScriptHelper {
 
             int modifiers = javaClass.getModifiers();
 
-            if (javaClass.isEnum()){
+            if (javaClass.isEnum()) {
                 String joinType = Arrays.stream(javaClass.getEnumConstants())
                     .map(item -> "'" + item.toString() + "'")
                     .collect(Collectors.joining(" | "));
@@ -303,6 +305,9 @@ public class TypeScriptHelper {
                 return "boolean";
             } else if (void.class.isAssignableFrom(javaClass)) {
                 return "void";
+            } else if (InputStream.class.isAssignableFrom(javaClass)
+                || OutputStream.class.isAssignableFrom(javaClass)) {
+                return "File";
             } else if (isArrayLike(javaClass)) {
                 return "unknown[]";
 //            } else if (javaClass.isEnum()) {
