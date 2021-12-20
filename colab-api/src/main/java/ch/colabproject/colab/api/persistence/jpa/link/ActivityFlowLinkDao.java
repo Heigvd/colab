@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.persistence.link;
+package ch.colabproject.colab.api.persistence.jpa.link;
 
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import javax.ejb.LocalBean;

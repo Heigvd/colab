@@ -9,7 +9,7 @@ package ch.colabproject.colab.api.security;
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import java.time.OffsetDateTime;
