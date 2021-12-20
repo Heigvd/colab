@@ -72,7 +72,7 @@ colab-client/colab-api,ch.colabproject.colab.api.setup,ColabConfiguration,47,0,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,LiquibaseProducer,22,0,0,0,6,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,80,0,4,0,27,0,7,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvider,5,0,0,0,2,0,2,0,2,0
-colab-client/colab-api,ch.colabproject.colab.api.setup,ApplicationConfig,3,0,0,0,1,0,1,0,1,0
+colab-client/colab-api,ch.colabproject.colab.api.setup,ApplicationConfig,16,0,0,0,4,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle.new Thread() {...},13,0,0,0,4,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.document,BlockDao,59,0,0,0,17,0,6,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.persistence.document,ResourceAndRefDao,101,0,0,0,29,0,9,0,9,0
@@ -171,7 +171,7 @@ colab-client/colab-api,ch.colabproject.colab.api.rest.link,StickyNoteLinkRestEnd
 colab-client/colab-api,ch.colabproject.colab.api.controller.project,ProjectManager,40,0,0,0,10,0,4,0,4,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,HelpMojo,802,0,110,0,159,0,71,0,16,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,Logger,49,0,8,0,18,0,11,0,7,0
-colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,TypeScriptHelper,607,0,98,0,161,0,63,0,14,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,TypeScriptHelper,617,0,102,0,164,0,65,0,14,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,FileHelper,24,0,0,0,7,0,2,0,2,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,GeneratorPlugin,70,0,2,0,20,0,5,0,4,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,Generator,534,0,20,0,138,0,31,0,21,0
@@ -180,5 +180,5 @@ colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,Param,31,0,0,0,13,0,9,0,9,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestClient,232,0,24,0,47,0,22,0,10,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,ClientException,8,0,0,0,4,0,2,0,2,0
-colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestEndpoint,1527,0,92,0,362,0,83,0,37,0
-colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestMethod,166,0,2,0,54,0,26,0,25,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestEndpoint,1674,0,106,0,403,0,91,0,38,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestMethod,275,0,16,0,84,0,41,0,33,0

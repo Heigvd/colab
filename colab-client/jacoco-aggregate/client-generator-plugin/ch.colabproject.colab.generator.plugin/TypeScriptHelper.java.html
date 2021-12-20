@@ -8,6 +8,8 @@ package ch.colabproject.colab.generator.plugin;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.ClassDoc;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -45,50 +47,50 @@ public class TypeScriptHelper {
     /**
      * never-called private constructor
      */
-<span class="nc" id="L48">    private TypeScriptHelper() {</span>
-<span class="nc" id="L49">        throw new UnsupportedOperationException(</span>
+<span class="nc" id="L50">    private TypeScriptHelper() {</span>
+<span class="nc" id="L51">        throw new UnsupportedOperationException(</span>
             &quot;This is a utility class and cannot be instantiated&quot;);
     }
 
     private static String getTsTypeName(Class&lt;?&gt; javaClass) {
-<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (WithJsonDiscriminator.class.isAssignableFrom(javaClass)) {</span>
-<span class="nc" id="L55">            return WithJsonDiscriminator.getJsonDiscriminator(javaClass);</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        if (WithJsonDiscriminator.class.isAssignableFrom(javaClass)) {</span>
+<span class="nc" id="L57">            return WithJsonDiscriminator.getJsonDiscriminator(javaClass);</span>
         } else {
-<span class="nc" id="L57">            Logger.warn(&quot;Consider to implement WithJsonDiscriminator: &quot;</span>
-<span class="nc" id="L58">                + javaClass.getSimpleName());</span>
-<span class="nc" id="L59">            return javaClass.getSimpleName();</span>
+<span class="nc" id="L59">            Logger.warn(&quot;Consider to implement WithJsonDiscriminator: &quot;</span>
+<span class="nc" id="L60">                + javaClass.getSimpleName());</span>
+<span class="nc" id="L61">            return javaClass.getSimpleName();</span>
         }
     }
 
     private static Method getGetter(Class&lt;?&gt; javaClass, String fieldName) {
-<span class="nc" id="L64">        String methodName = fieldName.substring(0, 1).toUpperCase()</span>
-<span class="nc" id="L65">            + fieldName.substring(1);</span>
+<span class="nc" id="L66">        String methodName = fieldName.substring(0, 1).toUpperCase()</span>
+<span class="nc" id="L67">            + fieldName.substring(1);</span>
 
         try {
             // default getter looks like getXxxx
-<span class="nc" id="L69">            return javaClass.getMethod(&quot;get&quot; + methodName);</span>
-<span class="nc" id="L70">        } catch (NoSuchMethodException ex2) {</span>
+<span class="nc" id="L71">            return javaClass.getMethod(&quot;get&quot; + methodName);</span>
+<span class="nc" id="L72">        } catch (NoSuchMethodException ex2) {</span>
             try {
                 // boolean getter may looks liek isXxx
-<span class="nc" id="L73">                return javaClass.getMethod(&quot;is&quot; + methodName);</span>
-<span class="nc" id="L74">            } catch (NoSuchMethodException ex3) {</span>
-<span class="nc" id="L75">                return null;</span>
+<span class="nc" id="L75">                return javaClass.getMethod(&quot;is&quot; + methodName);</span>
+<span class="nc" id="L76">            } catch (NoSuchMethodException ex3) {</span>
+<span class="nc" id="L77">                return null;</span>
             }
         }
 
     }
 
     private static Field getField(Class&lt;?&gt; javaClass, String fieldName) {
-<span class="nc" id="L82">        Class&lt;?&gt; declaringClass = javaClass;</span>
-<span class="nc" id="L83">        Method getter = getGetter(javaClass, fieldName);</span>
+<span class="nc" id="L84">        Class&lt;?&gt; declaringClass = javaClass;</span>
+<span class="nc" id="L85">        Method getter = getGetter(javaClass, fieldName);</span>
 
-<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (getter != null) {</span>
-<span class="nc" id="L86">            declaringClass = getter.getDeclaringClass();</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (getter != null) {</span>
+<span class="nc" id="L88">            declaringClass = getter.getDeclaringClass();</span>
         }
         try {
-<span class="nc" id="L89">            return declaringClass.getDeclaredField(fieldName);</span>
-<span class="nc" id="L90">        } catch (NoSuchFieldException ex) {</span>
-<span class="nc" id="L91">            return null;</span>
+<span class="nc" id="L91">            return declaringClass.getDeclaredField(fieldName);</span>
+<span class="nc" id="L92">        } catch (NoSuchFieldException ex) {</span>
+<span class="nc" id="L93">            return null;</span>
         }
     }
 
@@ -113,164 +115,164 @@ public class TypeScriptHelper {
         Reflections reflections,
         Map&lt;String, ClassDoc&gt; javadoc
     ) throws MojoFailureException {
-<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (javaType instanceof Class&lt;?&gt;) {</span>
-<span class="nc" id="L117">            Class&lt;?&gt; javaClass = (Class&lt;?&gt;) javaType;</span>
-<span class="nc" id="L118">            String name = getTsTypeName(javaClass);</span>
-<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (javaClass.isArray()) {</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (javaType instanceof Class&lt;?&gt;) {</span>
+<span class="nc" id="L119">            Class&lt;?&gt; javaClass = (Class&lt;?&gt;) javaType;</span>
+<span class="nc" id="L120">            String name = getTsTypeName(javaClass);</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">            if (javaClass.isArray()) {</span>
                 // hack: remove []
-<span class="nc" id="L121">                name = name.replace(&quot;[]&quot;, &quot;&quot;);</span>
+<span class="nc" id="L123">                name = name.replace(&quot;[]&quot;, &quot;&quot;);</span>
             }
-<span class="nc" id="L123">            StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L125">            StringBuilder sb = new StringBuilder();</span>
 
-<span class="nc" id="L125">            int modifiers = javaClass.getModifiers();</span>
+<span class="nc" id="L127">            int modifiers = javaClass.getModifiers();</span>
 
-<span class="nc bnc" id="L127" title="All 2 branches missed.">            if (javaClass.isEnum()){</span>
-<span class="nc" id="L128">                String joinType = Arrays.stream(javaClass.getEnumConstants())</span>
-<span class="nc" id="L129">                    .map(item -&gt; &quot;'&quot; + item.toString() + &quot;'&quot;)</span>
-<span class="nc" id="L130">                    .collect(Collectors.joining(&quot; | &quot;));</span>
-<span class="nc" id="L131">                sb.append(&quot;export type &quot;).append(name).append(&quot; = &quot;)</span>
-<span class="nc" id="L132">                    .append(joinType).append(&quot;;\n&quot;);</span>
-<span class="nc bnc" id="L133" title="All 4 branches missed.">            } else if (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers)) {</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">            if (javaClass.isEnum()) {</span>
+<span class="nc" id="L130">                String joinType = Arrays.stream(javaClass.getEnumConstants())</span>
+<span class="nc" id="L131">                    .map(item -&gt; &quot;'&quot; + item.toString() + &quot;'&quot;)</span>
+<span class="nc" id="L132">                    .collect(Collectors.joining(&quot; | &quot;));</span>
+<span class="nc" id="L133">                sb.append(&quot;export type &quot;).append(name).append(&quot; = &quot;)</span>
+<span class="nc" id="L134">                    .append(joinType).append(&quot;;\n&quot;);</span>
+<span class="nc bnc" id="L135" title="All 4 branches missed.">            } else if (Modifier.isAbstract(modifiers) || Modifier.isInterface(modifiers)) {</span>
                 // abstract class
                 // Type X = directSubCLass | otherdirectsubclass
 
-<span class="nc" id="L137">                List&lt;String&gt; allConcreteSubtypes = reflections.getSubTypesOf(javaClass).stream()</span>
-<span class="nc" id="L138">                    .filter(subType</span>
-<span class="nc bnc" id="L139" title="All 2 branches missed.">                        -&gt; !Modifier.isAbstract(subType.getModifiers())</span>
-<span class="nc bnc" id="L140" title="All 2 branches missed.">                    &amp;&amp; !Modifier.isInterface(subType.getModifiers())</span>
+<span class="nc" id="L139">                List&lt;String&gt; allConcreteSubtypes = reflections.getSubTypesOf(javaClass).stream()</span>
+<span class="nc" id="L140">                    .filter(subType</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">                        -&gt; !Modifier.isAbstract(subType.getModifiers())</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">                    &amp;&amp; !Modifier.isInterface(subType.getModifiers())</span>
                     )
-<span class="nc" id="L142">                    .map(subType -&gt; getTsTypeName(subType))</span>
-<span class="nc" id="L143">                    .collect(Collectors.toList());</span>
-<span class="nc" id="L144">                inheritance.put(name, allConcreteSubtypes);</span>
+<span class="nc" id="L144">                    .map(subType -&gt; getTsTypeName(subType))</span>
+<span class="nc" id="L145">                    .collect(Collectors.toList());</span>
+<span class="nc" id="L146">                inheritance.put(name, allConcreteSubtypes);</span>
 
-<span class="nc" id="L146">                String directSubtypes = reflections.getSubTypesOf(javaClass).stream()</span>
+<span class="nc" id="L148">                String directSubtypes = reflections.getSubTypesOf(javaClass).stream()</span>
                     // Only keep direct directSubtypes
-<span class="nc" id="L148">                    .filter(subType -&gt; {</span>
-<span class="nc bnc" id="L149" title="All 2 branches missed.">                        return (Modifier.isAbstract(modifiers)</span>
-<span class="nc bnc" id="L150" title="All 2 branches missed.">                            &amp;&amp; javaClass.equals(subType.getSuperclass()))</span>
-<span class="nc bnc" id="L151" title="All 2 branches missed.">                            || (Modifier.isInterface(modifiers)</span>
-<span class="nc" id="L152">                            &amp;&amp; Arrays.stream(subType.getInterfaces())</span>
-<span class="nc bnc" id="L153" title="All 2 branches missed.">                                .anyMatch(iface -&gt; iface.equals(javaClass)));</span>
+<span class="nc" id="L150">                    .filter(subType -&gt; {</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">                        return (Modifier.isAbstract(modifiers)</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">                            &amp;&amp; javaClass.equals(subType.getSuperclass()))</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">                            || (Modifier.isInterface(modifiers)</span>
+<span class="nc" id="L154">                            &amp;&amp; Arrays.stream(subType.getInterfaces())</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">                                .anyMatch(iface -&gt; iface.equals(javaClass)));</span>
                     })
-<span class="nc" id="L155">                    .map(subType -&gt; {</span>
-<span class="nc" id="L156">                        String subTypeTsName = getTsTypeName(subType);</span>
+<span class="nc" id="L157">                    .map(subType -&gt; {</span>
+<span class="nc" id="L158">                        String subTypeTsName = getTsTypeName(subType);</span>
                         // make sure to generate interface
-<span class="nc" id="L158">                        types.put(subTypeTsName, subType);</span>
-<span class="nc" id="L159">                        return subTypeTsName;</span>
+<span class="nc" id="L160">                        types.put(subTypeTsName, subType);</span>
+<span class="nc" id="L161">                        return subTypeTsName;</span>
                     })
-<span class="nc" id="L161">                    .collect(Collectors.joining(&quot; | &quot;));</span>
+<span class="nc" id="L163">                    .collect(Collectors.joining(&quot; | &quot;));</span>
 
-<span class="nc" id="L163">                sb.append(&quot;export type &quot;).append(name).append(&quot; = &quot;)</span>
-<span class="nc bnc" id="L164" title="All 4 branches missed.">                    .append(directSubtypes == null || directSubtypes.isBlank() ? &quot; never&quot;</span>
-<span class="nc" id="L165">                        : directSubtypes)</span>
-<span class="nc" id="L166">                    .append(&quot;;\n&quot;);</span>
-<span class="nc" id="L167">            } else {</span>
-<span class="nc" id="L168">                inheritance.put(name, new ArrayList&lt;&gt;());</span>
-<span class="nc" id="L169">                inheritance.get(name).add(name);</span>
+<span class="nc" id="L165">                sb.append(&quot;export type &quot;).append(name).append(&quot; = &quot;)</span>
+<span class="nc bnc" id="L166" title="All 4 branches missed.">                    .append(directSubtypes == null || directSubtypes.isBlank() ? &quot; never&quot;</span>
+<span class="nc" id="L167">                        : directSubtypes)</span>
+<span class="nc" id="L168">                    .append(&quot;;\n&quot;);</span>
+<span class="nc" id="L169">            } else {</span>
+<span class="nc" id="L170">                inheritance.put(name, new ArrayList&lt;&gt;());</span>
+<span class="nc" id="L171">                inheritance.get(name).add(name);</span>
 
                 // concrete class
                 ///////////////////////////////
-<span class="nc" id="L173">                ClassDoc classDoc = javadoc.get(javaClass.getName());</span>
-<span class="nc" id="L174">                Map&lt;String, String&gt; fields = null;</span>
+<span class="nc" id="L175">                ClassDoc classDoc = javadoc.get(javaClass.getName());</span>
+<span class="nc" id="L176">                Map&lt;String, String&gt; fields = null;</span>
                 // javadoc
-<span class="nc" id="L176">                sb.append(&quot;/**\n&quot;);</span>
-<span class="nc bnc" id="L177" title="All 2 branches missed.">                if (classDoc != null) {</span>
-<span class="nc" id="L178">                    sb.append(classDoc.getDoc());</span>
-<span class="nc" id="L179">                    fields = classDoc.getFields();</span>
+<span class="nc" id="L178">                sb.append(&quot;/**\n&quot;);</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">                if (classDoc != null) {</span>
+<span class="nc" id="L180">                    sb.append(classDoc.getDoc());</span>
+<span class="nc" id="L181">                    fields = classDoc.getFields();</span>
                 } else {
-<span class="nc" id="L181">                    Logger.warn(&quot;No javadoc for class &quot; + name);</span>
+<span class="nc" id="L183">                    Logger.warn(&quot;No javadoc for class &quot; + name);</span>
                 }
-<span class="nc" id="L183">                sb.append(&quot;*/\n&quot;);</span>
+<span class="nc" id="L185">                sb.append(&quot;*/\n&quot;);</span>
 
-<span class="nc" id="L185">                sb.append(&quot;export interface &quot;).append(name).append(&quot;{\n&quot;);</span>
+<span class="nc" id="L187">                sb.append(&quot;export interface &quot;).append(name).append(&quot;{\n&quot;);</span>
 
-<span class="nc bnc" id="L187" title="All 2 branches missed.">                if (WithJsonDiscriminator.class.isAssignableFrom(javaClass)) {</span>
-<span class="nc" id="L188">                    sb.append(&quot;  '@class': '&quot;).append(name).append(&quot;';\n&quot;);</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">                if (WithJsonDiscriminator.class.isAssignableFrom(javaClass)) {</span>
+<span class="nc" id="L190">                    sb.append(&quot;  '@class': '&quot;).append(name).append(&quot;';\n&quot;);</span>
                 }
 
                 try {
-<span class="nc" id="L192">                    Object newInstance = javaClass.getConstructor().newInstance();</span>
-<span class="nc" id="L193">                    JsonbConfig withNullValues = new JsonbConfig()</span>
-<span class="nc" id="L194">                        .withNullValues(Boolean.TRUE);</span>
+<span class="nc" id="L194">                    Object newInstance = javaClass.getConstructor().newInstance();</span>
+<span class="nc" id="L195">                    JsonbConfig withNullValues = new JsonbConfig()</span>
+<span class="nc" id="L196">                        .withNullValues(Boolean.TRUE);</span>
 
-<span class="nc" id="L196">                    Jsonb jsonb = JsonbBuilder.create(withNullValues);</span>
+<span class="nc" id="L198">                    Jsonb jsonb = JsonbBuilder.create(withNullValues);</span>
 
-<span class="nc" id="L198">                    String json = jsonb.toJson(newInstance);</span>
-<span class="nc" id="L199">                    JsonParser parser = Json.createParser(new StringReader(json));</span>
-<span class="nc" id="L200">                    parser.next();</span>
-<span class="nc" id="L201">                    JsonObject object = parser.getObject();</span>
-<span class="nc" id="L202">                    Set&lt;String&gt; keySet = object.keySet();</span>
-<span class="nc bnc" id="L203" title="All 2 branches missed.">                    for (String key : keySet) {</span>
-<span class="nc bnc" id="L204" title="All 2 branches missed.">                        if (!&quot;@class&quot;.equals(key)) {</span>
-<span class="nc" id="L205">                            Type propertyType = null;</span>
-<span class="nc" id="L206">                            boolean optional = true;</span>
+<span class="nc" id="L200">                    String json = jsonb.toJson(newInstance);</span>
+<span class="nc" id="L201">                    JsonParser parser = Json.createParser(new StringReader(json));</span>
+<span class="nc" id="L202">                    parser.next();</span>
+<span class="nc" id="L203">                    JsonObject object = parser.getObject();</span>
+<span class="nc" id="L204">                    Set&lt;String&gt; keySet = object.keySet();</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">                    for (String key : keySet) {</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">                        if (!&quot;@class&quot;.equals(key)) {</span>
+<span class="nc" id="L207">                            Type propertyType = null;</span>
+<span class="nc" id="L208">                            boolean optional = true;</span>
 
-<span class="nc" id="L208">                            Field field = getField(javaClass, key);</span>
+<span class="nc" id="L210">                            Field field = getField(javaClass, key);</span>
 
-<span class="nc bnc" id="L210" title="All 2 branches missed.">                            if (field != null) {</span>
-<span class="nc" id="L211">                                optional</span>
-<span class="nc bnc" id="L212" title="All 2 branches missed.">                                    = (field.getAnnotation(NotNull.class) == null)</span>
-<span class="nc bnc" id="L213" title="All 2 branches missed.">                                    &amp;&amp; (field.getAnnotation(NotEmpty.class) == null)</span>
-<span class="nc bnc" id="L214" title="All 2 branches missed.">                                    &amp;&amp; (field.getAnnotation(NotBlank.class) == null);</span>
-<span class="nc" id="L215">                                propertyType = field.getGenericType();</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">                            if (field != null) {</span>
+<span class="nc" id="L213">                                optional</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">                                    = (field.getAnnotation(NotNull.class) == null)</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">                                    &amp;&amp; (field.getAnnotation(NotEmpty.class) == null)</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">                                    &amp;&amp; (field.getAnnotation(NotBlank.class) == null);</span>
+<span class="nc" id="L217">                                propertyType = field.getGenericType();</span>
                             } else {
                                 // unable to find a field, rely on method
                                 // no way to detect whether the property is optional
-<span class="nc" id="L219">                                Method getter = getGetter(javaClass, key);</span>
-<span class="nc bnc" id="L220" title="All 2 branches missed.">                                if (getter != null) {</span>
-<span class="nc" id="L221">                                    propertyType = getter.getGenericReturnType();</span>
+<span class="nc" id="L221">                                Method getter = getGetter(javaClass, key);</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">                                if (getter != null) {</span>
+<span class="nc" id="L223">                                    propertyType = getter.getGenericReturnType();</span>
                                 }
                             }
-<span class="nc bnc" id="L224" title="All 2 branches missed.">                            if (fields != null) {</span>
-<span class="nc" id="L225">                                String fieldDoc = fields.getOrDefault(key, &quot;&quot;);</span>
-<span class="nc" id="L226">                                sb.append(&quot;  /**\n  &quot;).append(fieldDoc).append(&quot;\n  */&quot;);</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">                            if (fields != null) {</span>
+<span class="nc" id="L227">                                String fieldDoc = fields.getOrDefault(key, &quot;&quot;);</span>
+<span class="nc" id="L228">                                sb.append(&quot;  /**\n  &quot;).append(fieldDoc).append(&quot;\n  */&quot;);</span>
                             }
 
-<span class="nc" id="L229">                            sb.append(&quot;  '&quot;).append(key).append(&quot;'&quot;);</span>
-<span class="nc bnc" id="L230" title="All 2 branches missed.">                            if (optional) {</span>
-<span class="nc" id="L231">                                sb.append(&quot;?&quot;);</span>
+<span class="nc" id="L231">                            sb.append(&quot;  '&quot;).append(key).append(&quot;'&quot;);</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">                            if (optional) {</span>
+<span class="nc" id="L233">                                sb.append(&quot;?&quot;);</span>
                             }
-<span class="nc" id="L233">                            sb.append(&quot;: &quot;);</span>
-<span class="nc bnc" id="L234" title="All 2 branches missed.">                            if (propertyType != null) {</span>
-<span class="nc" id="L235">                                String tsType = convertType(propertyType, types);</span>
-<span class="nc" id="L236">                                sb.append(tsType);</span>
-<span class="nc" id="L237">                            } else {</span>
-<span class="nc" id="L238">                                sb.append(&quot;unknown&quot;);</span>
+<span class="nc" id="L235">                            sb.append(&quot;: &quot;);</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">                            if (propertyType != null) {</span>
+<span class="nc" id="L237">                                String tsType = convertType(propertyType, types);</span>
+<span class="nc" id="L238">                                sb.append(tsType);</span>
+<span class="nc" id="L239">                            } else {</span>
+<span class="nc" id="L240">                                sb.append(&quot;unknown&quot;);</span>
                             }
-<span class="nc bnc" id="L240" title="All 2 branches missed.">                            if (optional) {</span>
-<span class="nc" id="L241">                                sb.append(&quot; | undefined | null&quot;);</span>
+<span class="nc bnc" id="L242" title="All 2 branches missed.">                            if (optional) {</span>
+<span class="nc" id="L243">                                sb.append(&quot; | undefined | null&quot;);</span>
                             }
-<span class="nc" id="L243">                            sb.append(&quot;;\n&quot;);</span>
+<span class="nc" id="L245">                            sb.append(&quot;;\n&quot;);</span>
                         }
-<span class="nc" id="L245">                    }</span>
-<span class="nc" id="L246">                } catch (RuntimeException</span>
+<span class="nc" id="L247">                    }</span>
+<span class="nc" id="L248">                } catch (RuntimeException</span>
                     | NoSuchMethodException
                     | InstantiationException
                     | IllegalAccessException
                     | InvocationTargetException ex) {
-<span class="nc" id="L251">                    throw new MojoFailureException(&quot;Something went wrong&quot;, ex);</span>
-<span class="nc" id="L252">                }</span>
-<span class="nc" id="L253">                sb.append(&quot;}\n&quot;);</span>
+<span class="nc" id="L253">                    throw new MojoFailureException(&quot;Something went wrong&quot;, ex);</span>
+<span class="nc" id="L254">                }</span>
+<span class="nc" id="L255">                sb.append(&quot;}\n&quot;);</span>
             }
 
-<span class="nc" id="L256">            return sb.toString();</span>
+<span class="nc" id="L258">            return sb.toString();</span>
         } else {
-<span class="nc" id="L258">            return &quot;&quot;;</span>
+<span class="nc" id="L260">            return &quot;&quot;;</span>
         }
     }
 
     private static boolean isArrayLike(Type javaType) {
-<span class="nc bnc" id="L263" title="All 2 branches missed.">        if (javaType instanceof Class) {</span>
-<span class="nc" id="L264">            return Collection.class.isAssignableFrom((Class&lt;?&gt;) javaType);</span>
+<span class="nc bnc" id="L265" title="All 2 branches missed.">        if (javaType instanceof Class) {</span>
+<span class="nc" id="L266">            return Collection.class.isAssignableFrom((Class&lt;?&gt;) javaType);</span>
         }
-<span class="nc" id="L266">        return false;</span>
+<span class="nc" id="L268">        return false;</span>
     }
 
     private static boolean isMap(Type javaType) {
-<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (javaType instanceof Class) {</span>
-<span class="nc" id="L271">            return Map.class.isAssignableFrom((Class&lt;?&gt;) javaType);</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">        if (javaType instanceof Class) {</span>
+<span class="nc" id="L273">            return Map.class.isAssignableFrom((Class&lt;?&gt;) javaType);</span>
         }
-<span class="nc" id="L273">        return false;</span>
+<span class="nc" id="L275">        return false;</span>
     }
 
     /**
@@ -283,56 +285,59 @@ public class TypeScriptHelper {
      * @return the typescript type name to use
      */
     public static String convertType(Type javaType, Map&lt;String, Type&gt; customTypes) {
-<span class="nc bnc" id="L286" title="All 2 branches missed.">        if (javaType == null) {</span>
-<span class="nc" id="L287">            return &quot;undefined&quot;;</span>
-<span class="nc bnc" id="L288" title="All 2 branches missed.">        } else if (javaType instanceof Class) {</span>
-<span class="nc" id="L289">            Class&lt;?&gt; javaClass = (Class&lt;?&gt;) javaType;</span>
-<span class="nc bnc" id="L290" title="All 2 branches missed.">            if (Number.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L291" title="All 2 branches missed.">                || byte.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L292" title="All 2 branches missed.">                || short.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L293" title="All 2 branches missed.">                || int.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L294" title="All 2 branches missed.">                || long.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L295" title="All 2 branches missed.">                || float.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L296" title="All 2 branches missed.">                || double.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L297" title="All 2 branches missed.">                || Temporal.class.isAssignableFrom(javaClass)) {</span>
-<span class="nc" id="L298">                return &quot;number&quot;;</span>
-<span class="nc bnc" id="L299" title="All 2 branches missed.">            } else if (String.class.isAssignableFrom(javaClass)) {</span>
-<span class="nc" id="L300">                return &quot;string&quot;;</span>
-<span class="nc bnc" id="L301" title="All 2 branches missed.">            } else if (boolean.class.isAssignableFrom(javaClass)</span>
-<span class="nc bnc" id="L302" title="All 2 branches missed.">                || Boolean.class.isAssignableFrom(javaClass)) {</span>
-<span class="nc" id="L303">                return &quot;boolean&quot;;</span>
-<span class="nc bnc" id="L304" title="All 2 branches missed.">            } else if (void.class.isAssignableFrom(javaClass)) {</span>
-<span class="nc" id="L305">                return &quot;void&quot;;</span>
-<span class="nc bnc" id="L306" title="All 2 branches missed.">            } else if (isArrayLike(javaClass)) {</span>
-<span class="nc" id="L307">                return &quot;unknown[]&quot;;</span>
+<span class="nc bnc" id="L288" title="All 2 branches missed.">        if (javaType == null) {</span>
+<span class="nc" id="L289">            return &quot;undefined&quot;;</span>
+<span class="nc bnc" id="L290" title="All 2 branches missed.">        } else if (javaType instanceof Class) {</span>
+<span class="nc" id="L291">            Class&lt;?&gt; javaClass = (Class&lt;?&gt;) javaType;</span>
+<span class="nc bnc" id="L292" title="All 2 branches missed.">            if (Number.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L293" title="All 2 branches missed.">                || byte.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">                || short.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L295" title="All 2 branches missed.">                || int.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L296" title="All 2 branches missed.">                || long.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L297" title="All 2 branches missed.">                || float.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L298" title="All 2 branches missed.">                || double.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L299" title="All 2 branches missed.">                || Temporal.class.isAssignableFrom(javaClass)) {</span>
+<span class="nc" id="L300">                return &quot;number&quot;;</span>
+<span class="nc bnc" id="L301" title="All 2 branches missed.">            } else if (String.class.isAssignableFrom(javaClass)) {</span>
+<span class="nc" id="L302">                return &quot;string&quot;;</span>
+<span class="nc bnc" id="L303" title="All 2 branches missed.">            } else if (boolean.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">                || Boolean.class.isAssignableFrom(javaClass)) {</span>
+<span class="nc" id="L305">                return &quot;boolean&quot;;</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">            } else if (void.class.isAssignableFrom(javaClass)) {</span>
+<span class="nc" id="L307">                return &quot;void&quot;;</span>
+<span class="nc bnc" id="L308" title="All 2 branches missed.">            } else if (InputStream.class.isAssignableFrom(javaClass)</span>
+<span class="nc bnc" id="L309" title="All 2 branches missed.">                || OutputStream.class.isAssignableFrom(javaClass)) {</span>
+<span class="nc" id="L310">                return &quot;File&quot;;</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">            } else if (isArrayLike(javaClass)) {</span>
+<span class="nc" id="L312">                return &quot;unknown[]&quot;;</span>
 //            } else if (javaClass.isEnum()) {
 //                return Arrays.stream(javaClass.getEnumConstants())
 //                    .map(item -&gt; &quot;'&quot; + item.toString() + &quot;'&quot;)
 //                    .collect(Collectors.joining(&quot; | &quot;));
             } else {
-<span class="nc" id="L313">                String name = getTsTypeName(javaClass);</span>
-<span class="nc bnc" id="L314" title="All 2 branches missed.">                if (!customTypes.containsKey(name)) {</span>
-<span class="nc" id="L315">                    customTypes.put(name, javaType);</span>
+<span class="nc" id="L318">                String name = getTsTypeName(javaClass);</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">                if (!customTypes.containsKey(name)) {</span>
+<span class="nc" id="L320">                    customTypes.put(name, javaType);</span>
                     /* } else { // TODO check collision */
                 }
-<span class="nc" id="L318">                return name;</span>
+<span class="nc" id="L323">                return name;</span>
             }
-<span class="nc bnc" id="L320" title="All 2 branches missed.">        } else if (javaType instanceof ParameterizedType) {</span>
-<span class="nc" id="L321">            ParameterizedType genericType = (ParameterizedType) javaType;</span>
-<span class="nc" id="L322">            Type rawType = genericType.getRawType();</span>
-<span class="nc" id="L323">            Type[] args = genericType.getActualTypeArguments();</span>
-<span class="nc bnc" id="L324" title="All 2 branches missed.">            if (isArrayLike(rawType)) {</span>
-<span class="nc" id="L325">                return convertType(args[0], customTypes) + &quot;[]&quot;;</span>
-<span class="nc bnc" id="L326" title="All 2 branches missed.">            } else if (isMap(rawType)) {</span>
-<span class="nc" id="L327">                return &quot;{&quot;</span>
-<span class="nc" id="L328">                    + &quot;[key: &quot; + convertType(args[0], customTypes) + &quot;]: &quot;</span>
-<span class="nc" id="L329">                    + convertType(args[1], customTypes)</span>
+<span class="nc bnc" id="L325" title="All 2 branches missed.">        } else if (javaType instanceof ParameterizedType) {</span>
+<span class="nc" id="L326">            ParameterizedType genericType = (ParameterizedType) javaType;</span>
+<span class="nc" id="L327">            Type rawType = genericType.getRawType();</span>
+<span class="nc" id="L328">            Type[] args = genericType.getActualTypeArguments();</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">            if (isArrayLike(rawType)) {</span>
+<span class="nc" id="L330">                return convertType(args[0], customTypes) + &quot;[]&quot;;</span>
+<span class="nc bnc" id="L331" title="All 2 branches missed.">            } else if (isMap(rawType)) {</span>
+<span class="nc" id="L332">                return &quot;{&quot;</span>
+<span class="nc" id="L333">                    + &quot;[key: &quot; + convertType(args[0], customTypes) + &quot;]: &quot;</span>
+<span class="nc" id="L334">                    + convertType(args[1], customTypes)</span>
                     + &quot;}&quot;;
             } else {
-<span class="nc" id="L332">                return &quot;unknown&quot;;</span>
+<span class="nc" id="L337">                return &quot;unknown&quot;;</span>
             }
         } else {
-<span class="nc" id="L335">            return &quot;unknown&quot;;</span>
+<span class="nc" id="L340">            return &quot;unknown&quot;;</span>
         }
     }
 }

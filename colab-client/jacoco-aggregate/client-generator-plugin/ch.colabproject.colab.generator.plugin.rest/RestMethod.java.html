@@ -6,17 +6,21 @@
  */
 package ch.colabproject.colab.generator.plugin.rest;
 
+import ch.colabproject.colab.generator.plugin.Logger;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import org.glassfish.jersey.media.multipart.ContentDisposition;
 
 /**
  * Represent a rest method
  *
  * @author maxence
  */
-<span class="nc" id="L19">public class RestMethod {</span>
+<span class="nc" id="L23">public class RestMethod {</span>
 
     /**
      * HTTP method. One of GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS.
@@ -36,12 +40,17 @@ import java.util.List;
     /**
      * List of path parameters
      */
-<span class="nc" id="L39">    private List&lt;Param&gt; pathParameters = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L43">    private List&lt;Param&gt; pathParameters = new ArrayList&lt;&gt;();</span>
 
     /**
      * List of querystring parameters
      */
-<span class="nc" id="L44">    private List&lt;Param&gt; queryParameters = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L48">    private List&lt;Param&gt; queryParameters = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * List of form parameters
+     */
+<span class="nc" id="L53">    private List&lt;Param&gt; formParameters = new ArrayList&lt;&gt;();</span>
 
     /**
      * body param
@@ -69,12 +78,22 @@ import java.util.List;
     private boolean authenticationRequired;
 
     /**
+     * MIME Type the method produces.
+     */
+    private List&lt;String&gt; produces;
+
+    /**
+     * Effective MIME Type the method consumes.
+     */
+    private List&lt;String&gt; consumes;
+
+    /**
      * Get the value of authenticationRequired
      *
      * @return the value of authenticationRequired
      */
     public boolean isAuthenticationRequired() {
-<span class="nc" id="L77">        return authenticationRequired;</span>
+<span class="nc" id="L96">        return authenticationRequired;</span>
     }
 
     /**
@@ -83,8 +102,8 @@ import java.util.List;
      * @param authenticationRequired new value of authenticationRequired
      */
     public void setAuthenticationRequired(boolean authenticationRequired) {
-<span class="nc" id="L86">        this.authenticationRequired = authenticationRequired;</span>
-<span class="nc" id="L87">    }</span>
+<span class="nc" id="L105">        this.authenticationRequired = authenticationRequired;</span>
+<span class="nc" id="L106">    }</span>
 
     /**
      * Get the value of adminResource
@@ -92,7 +111,7 @@ import java.util.List;
      * @return the value of adminResource
      */
     public boolean isAdminResource() {
-<span class="nc" id="L95">        return adminResource;</span>
+<span class="nc" id="L114">        return adminResource;</span>
     }
 
     /**
@@ -101,8 +120,8 @@ import java.util.List;
      * @param adminResource new value of adminResource
      */
     public void setAdminResource(boolean adminResource) {
-<span class="nc" id="L104">        this.adminResource = adminResource;</span>
-<span class="nc" id="L105">    }</span>
+<span class="nc" id="L123">        this.adminResource = adminResource;</span>
+<span class="nc" id="L124">    }</span>
 
     /**
      * Get the value of returnTypeGeneric
@@ -110,7 +129,7 @@ import java.util.List;
      * @return the value of returnTypeGeneric
      */
     public boolean isReturnTypeGeneric() {
-<span class="nc" id="L113">        return returnTypeGeneric;</span>
+<span class="nc" id="L132">        return returnTypeGeneric;</span>
     }
 
     /**
@@ -119,8 +138,8 @@ import java.util.List;
      * @param returnTypeGeneric new value of returnTypeGeneric
      */
     public void setReturnTypeGeneric(boolean returnTypeGeneric) {
-<span class="nc" id="L122">        this.returnTypeGeneric = returnTypeGeneric;</span>
-<span class="nc" id="L123">    }</span>
+<span class="nc" id="L141">        this.returnTypeGeneric = returnTypeGeneric;</span>
+<span class="nc" id="L142">    }</span>
 
     /**
      * Get the value of returnType
@@ -128,7 +147,7 @@ import java.util.List;
      * @return the value of returnType
      */
     public Type getReturnType() {
-<span class="nc" id="L131">        return returnType;</span>
+<span class="nc" id="L150">        return returnType;</span>
     }
 
     /**
@@ -137,8 +156,8 @@ import java.util.List;
      * @param returnType new value of returnType
      */
     public void setReturnType(Type returnType) {
-<span class="nc" id="L140">        this.returnType = returnType;</span>
-<span class="nc" id="L141">    }</span>
+<span class="nc" id="L159">        this.returnType = returnType;</span>
+<span class="nc" id="L160">    }</span>
 
     /**
      * Get the value of bodyParam
@@ -146,7 +165,7 @@ import java.util.List;
      * @return the value of bodyParam
      */
     public Param getBodyParam() {
-<span class="nc" id="L149">        return bodyParam;</span>
+<span class="nc" id="L168">        return bodyParam;</span>
     }
 
     /**
@@ -155,8 +174,8 @@ import java.util.List;
      * @param bodyParam new value of bodyParam
      */
     public void setBodyParam(Param bodyParam) {
-<span class="nc" id="L158">        this.bodyParam = bodyParam;</span>
-<span class="nc" id="L159">    }</span>
+<span class="nc" id="L177">        this.bodyParam = bodyParam;</span>
+<span class="nc" id="L178">    }</span>
 
     /**
      * Get the value of queryParameters
@@ -164,7 +183,7 @@ import java.util.List;
      * @return the value of queryParameters
      */
     public List&lt;Param&gt; getQueryParameters() {
-<span class="nc" id="L167">        return queryParameters;</span>
+<span class="nc" id="L186">        return queryParameters;</span>
     }
 
     /**
@@ -173,8 +192,26 @@ import java.util.List;
      * @param queryParameters new value of queryParameters
      */
     public void setQueryParameters(List&lt;Param&gt; queryParameters) {
-<span class="nc" id="L176">        this.queryParameters = queryParameters;</span>
-<span class="nc" id="L177">    }</span>
+<span class="nc" id="L195">        this.queryParameters = queryParameters;</span>
+<span class="nc" id="L196">    }</span>
+
+    /**
+     * Get the value of formParameters
+     *
+     * @return the value of formParameters
+     */
+    public List&lt;Param&gt; getFormParameters() {
+<span class="nc" id="L204">        return formParameters;</span>
+    }
+
+    /**
+     * Set the value of formParameters
+     *
+     * @param formParameters new value of formParameters
+     */
+    public void setFormParameters(List&lt;Param&gt; formParameters) {
+<span class="nc" id="L213">        this.formParameters = formParameters;</span>
+<span class="nc" id="L214">    }</span>
 
     /**
      * Get the value of pathParameters
@@ -182,7 +219,7 @@ import java.util.List;
      * @return the value of pathParameters
      */
     public List&lt;Param&gt; getPathParameters() {
-<span class="nc" id="L185">        return pathParameters;</span>
+<span class="nc" id="L222">        return pathParameters;</span>
     }
 
     /**
@@ -191,8 +228,8 @@ import java.util.List;
      * @param pathParameters new value of pathParameters
      */
     public void setPathParameters(List&lt;Param&gt; pathParameters) {
-<span class="nc" id="L194">        this.pathParameters = pathParameters;</span>
-<span class="nc" id="L195">    }</span>
+<span class="nc" id="L231">        this.pathParameters = pathParameters;</span>
+<span class="nc" id="L232">    }</span>
 
     /**
      * Get the value of name
@@ -200,7 +237,7 @@ import java.util.List;
      * @return the value of name
      */
     public String getName() {
-<span class="nc" id="L203">        return name;</span>
+<span class="nc" id="L240">        return name;</span>
     }
 
     /**
@@ -209,8 +246,8 @@ import java.util.List;
      * @param name new value of name
      */
     public void setName(String name) {
-<span class="nc" id="L212">        this.name = name;</span>
-<span class="nc" id="L213">    }</span>
+<span class="nc" id="L249">        this.name = name;</span>
+<span class="nc" id="L250">    }</span>
 
     /**
      * Get the value of fullPath
@@ -218,7 +255,7 @@ import java.util.List;
      * @return the value of fullPath
      */
     public String getFullPath() {
-<span class="nc" id="L221">        return fullPath;</span>
+<span class="nc" id="L258">        return fullPath;</span>
     }
 
     /**
@@ -227,8 +264,8 @@ import java.util.List;
      * @param fullPath new value of fullPath
      */
     public void setFullPath(String fullPath) {
-<span class="nc" id="L230">        this.fullPath = fullPath;</span>
-<span class="nc" id="L231">    }</span>
+<span class="nc" id="L267">        this.fullPath = fullPath;</span>
+<span class="nc" id="L268">    }</span>
 
     /**
      * Get the value of httpMethod
@@ -236,7 +273,7 @@ import java.util.List;
      * @return the value of httpMethod
      */
     public String getHttpMethod() {
-<span class="nc" id="L239">        return httpMethod;</span>
+<span class="nc" id="L276">        return httpMethod;</span>
     }
 
     /**
@@ -245,8 +282,44 @@ import java.util.List;
      * @param httpMethod new value of httpMethod
      */
     public void setHttpMethod(String httpMethod) {
-<span class="nc" id="L248">        this.httpMethod = httpMethod;</span>
-<span class="nc" id="L249">    }</span>
+<span class="nc" id="L285">        this.httpMethod = httpMethod;</span>
+<span class="nc" id="L286">    }</span>
+
+    /**
+     * Get the value of produces
+     *
+     * @return the value of produces
+     */
+    public List&lt;String&gt; getProduces() {
+<span class="nc" id="L294">        return produces;</span>
+    }
+
+    /**
+     * Set the value of produces
+     *
+     * @param produces new value of produces
+     */
+    public void setProduces(List&lt;String&gt; produces) {
+<span class="nc" id="L303">        this.produces = produces;</span>
+<span class="nc" id="L304">    }</span>
+
+    /**
+     * Get the value of consumes
+     *
+     * @return the value of consumes
+     */
+    public List&lt;String&gt; getConsumes() {
+<span class="nc" id="L312">        return consumes;</span>
+    }
+
+    /**
+     * Set the value of consumes
+     *
+     * @param consumes new value of consumes
+     */
+    public void setConsumes(List&lt;String&gt; consumes) {
+<span class="nc" id="L321">        this.consumes = consumes;</span>
+<span class="nc" id="L322">    }</span>
 
     /**
      * Register a path parameter
@@ -257,14 +330,14 @@ import java.util.List;
      * @param type           type of the parameter
      */
     public void addPathParameter(String name, String annotationName, String javadoc, Type type) {
-<span class="nc" id="L260">        Param param = new Param();</span>
-<span class="nc" id="L261">        param.setName(name);</span>
-<span class="nc" id="L262">        param.setInAnnotationName(annotationName);</span>
-<span class="nc" id="L263">        param.setJavadoc(javadoc);</span>
-<span class="nc" id="L264">        param.setType(type);</span>
+<span class="nc" id="L333">        Param param = new Param();</span>
+<span class="nc" id="L334">        param.setName(name);</span>
+<span class="nc" id="L335">        param.setInAnnotationName(annotationName);</span>
+<span class="nc" id="L336">        param.setJavadoc(javadoc);</span>
+<span class="nc" id="L337">        param.setType(type);</span>
 
-<span class="nc" id="L266">        this.pathParameters.add(param);</span>
-<span class="nc" id="L267">    }</span>
+<span class="nc" id="L339">        this.pathParameters.add(param);</span>
+<span class="nc" id="L340">    }</span>
 
     /**
      * Register a query parameter
@@ -275,14 +348,52 @@ import java.util.List;
      * @param type           type of the parameter
      */
     public void addQueryParameter(String name, String annotationName, String javadoc, Type type) {
-<span class="nc" id="L278">        Param param = new Param();</span>
-<span class="nc" id="L279">        param.setName(name);</span>
-<span class="nc" id="L280">        param.setInAnnotationName(annotationName);</span>
-<span class="nc" id="L281">        param.setJavadoc(javadoc);</span>
-<span class="nc" id="L282">        param.setType(type);</span>
+<span class="nc" id="L351">        Param param = new Param();</span>
+<span class="nc" id="L352">        param.setName(name);</span>
+<span class="nc" id="L353">        param.setInAnnotationName(annotationName);</span>
+<span class="nc" id="L354">        param.setJavadoc(javadoc);</span>
+<span class="nc" id="L355">        param.setType(type);</span>
 
-<span class="nc" id="L284">        this.queryParameters.add(param);</span>
-<span class="nc" id="L285">    }</span>
+<span class="nc" id="L357">        this.queryParameters.add(param);</span>
+<span class="nc" id="L358">    }</span>
+
+    /**
+     * Register a query parameter
+     *
+     * @param name           name of the parameter
+     * @param annotationName FormData name
+     * @param javadoc        some documentation
+     * @param type           type of the parameter
+     */
+    public void addFormParameter(String name, String annotationName, String javadoc, Type type) {
+<span class="nc" id="L369">        Optional&lt;Param&gt; findFirst</span>
+<span class="nc" id="L370">            = this.formParameters.stream().filter(p -&gt; p.getInAnnotationName().equals(annotationName)).findFirst();</span>
+<span class="nc bnc" id="L371" title="All 2 branches missed.">        if (findFirst.isPresent()) {</span>
+<span class="nc" id="L372">            Param param = findFirst.get();</span>
+            // hack: Files are injected with two disctinct parameter: one InputStream for bytes, one
+            // FormDataBodyPart for metadata
+<span class="nc bnc" id="L375" title="All 4 branches missed.">            if (param.getType() instanceof Class</span>
+                &amp;&amp; type instanceof Class
+<span class="nc bnc" id="L377" title="All 2 branches missed.">                &amp;&amp; ((InputStream.class.isAssignableFrom((Class) type)</span>
+<span class="nc bnc" id="L378" title="All 2 branches missed.">                &amp;&amp; ContentDisposition.class.isAssignableFrom((Class) param.getType()))</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">                || (InputStream.class.isAssignableFrom((Class) type)</span>
+<span class="nc bnc" id="L380" title="All 2 branches missed.">                &amp;&amp; ContentDisposition.class.isAssignableFrom((Class) param.getType())))) {</span>
+                // Both ContentDisposition and InputStream exists: only keep InputStream
+<span class="nc" id="L382">                param.setType(InputStream.class);</span>
+            } else {
+<span class="nc" id="L384">                Logger.warn(&quot;Duplicate Form Data&quot;);</span>
+            }
+
+<span class="nc" id="L387">        } else {</span>
+<span class="nc" id="L388">            Param param = new Param();</span>
+<span class="nc" id="L389">            param.setName(name);</span>
+<span class="nc" id="L390">            param.setInAnnotationName(annotationName);</span>
+<span class="nc" id="L391">            param.setJavadoc(javadoc);</span>
+<span class="nc" id="L392">            param.setType(type);</span>
+<span class="nc" id="L393">            this.formParameters.add(param);</span>
+        }
+
+<span class="nc" id="L396">    }</span>
 
     /**
      * Get all parameters. PathParams + queryParams + body
@@ -290,19 +401,20 @@ import java.util.List;
      * @return list of all non-null parameters
      */
     public List&lt;Param&gt; getAllParameters() {
-<span class="nc" id="L293">        List&lt;Param&gt; list = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L294">        list.addAll(this.pathParameters);</span>
-<span class="nc" id="L295">        list.addAll(this.queryParameters);</span>
+<span class="nc" id="L404">        List&lt;Param&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L405">        list.addAll(this.pathParameters);</span>
+<span class="nc" id="L406">        list.addAll(this.queryParameters);</span>
+<span class="nc" id="L407">        list.addAll(this.formParameters);</span>
 
-<span class="nc bnc" id="L297" title="All 2 branches missed.">        if (bodyParam != null) {</span>
-<span class="nc" id="L298">            list.add(bodyParam);</span>
+<span class="nc bnc" id="L409" title="All 2 branches missed.">        if (bodyParam != null) {</span>
+<span class="nc" id="L410">            list.add(bodyParam);</span>
         }
-<span class="nc" id="L300">        return list;</span>
+<span class="nc" id="L412">        return list;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L305">        return MessageFormat.format(&quot;{0} {1}&quot;, this.getHttpMethod(), this.getFullPath());</span>
+<span class="nc" id="L417">        return MessageFormat.format(&quot;{0} {1}&quot;, this.getHttpMethod(), this.getFullPath());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

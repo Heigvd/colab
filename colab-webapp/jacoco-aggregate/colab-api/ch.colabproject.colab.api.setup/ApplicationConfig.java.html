@@ -7,7 +7,8 @@
 package ch.colabproject.colab.api.setup;
 
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.core.Application;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.server.ResourceConfig;
 
 /**
  * Simple REST WebService application.
@@ -15,7 +16,17 @@ import javax.ws.rs.core.Application;
  * @author maxence
  */
 @ApplicationPath(&quot;api&quot;)
-<span class="nc" id="L18">public class ApplicationConfig extends Application {</span>
-    /* no-op : declarative configuration */
+public class ApplicationConfig extends ResourceConfig {
+
+    /**
+     * Create and init REST application
+     */
+<span class="nc" id="L24">    public ApplicationConfig() {</span>
+        // Implemetation dependent feature needs implementation dependent ResourceConfig application
+<span class="nc" id="L26">        register(MultiPartFeature.class);</span>
+
+        // Scan packages to find endpoints
+<span class="nc" id="L29">        packages(&quot;ch.colabproject.colab.api&quot;);</span>
+<span class="nc" id="L30">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
