@@ -59,8 +59,8 @@ And open ./target/staging/index.html
 ## Run (development)
 
 ### Configuration file
-Copy './colab-webapp/src/default_colab.properties' to './colab-webapp/src/colab.properties' and edit the colab.
-Edit './colab-webapp/src/colab.properties' to match
+Copy `./colab-webapp/default_colab.properties` to `./colab-webapp/colab.properties` and edit the colab.
+Edit `./colab-webapp/colab.properties` to match
 ```
 #
 # coLAB properties
@@ -76,7 +76,7 @@ colab.default.admin.email=
 colab.default.admin.password=
 ```
 
-The './colab-webapp/src/colab.properties' is your own configuration file and will never be committed.
+The `./colab-webapp/colab.properties` is your own configuration file and will never be committed.
 So you can safely put secrets in it.
 
 ## Dev tooltips
