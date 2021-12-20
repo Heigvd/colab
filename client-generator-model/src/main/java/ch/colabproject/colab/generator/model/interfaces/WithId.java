@@ -4,9 +4,8 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.model;
+package ch.colabproject.colab.generator.model.interfaces;
 
-import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 
@@ -16,7 +15,7 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
  * @author maxence
  */
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public interface WithId extends WithJsonDiscriminator {
+public interface WithId {
 
     /**
      * @return if of the entity

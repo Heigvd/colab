@@ -134,6 +134,7 @@ public class CardTypeRestEndpoint {
         cardType.setProjectId(cardTypeCreationBean.getProjectId());
         cardType.setTitle(cardTypeCreationBean.getTitle());
         cardType.setPurpose(cardTypeCreationBean.getPurpose());
+        cardType.setTags(cardTypeCreationBean.getTags());
 
         return cardFacade.createNewCardType(cardType).getId();
     }

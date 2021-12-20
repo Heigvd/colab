@@ -29,6 +29,7 @@ export default function GlobalCardTypeList(): JSX.Element {
     dispatch(
       API.createCardType({
         projectId: null,
+        tags: [],
       }),
     );
   }, [dispatch]);

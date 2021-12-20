@@ -34,6 +34,7 @@ export default function CardTypeDisplay({ cardType }: DisplayProps): JSX.Element
     <div className={style}>
       <div>Title: {cardType.title}</div>
       <div>Purpose: {purpose?.textData || ''}</div>
+      <div>Tags: {cardType.tags.join('; ')}</div>
       <div>
         {cardType.projectId != null ? (
           <>

@@ -10,12 +10,12 @@ import ch.colabproject.colab.api.ejb.SecurityFacade;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import com.google.common.collect.Lists;
-import java.util.Collections;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import liquibase.repackaged.org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,11 +69,7 @@ public class CardTypeManager {
      */
     public List<Long> findCurrentUserReadableProjectsCardTypesIds() {
         List<Long> directInOwnProjects = findCurrentUserDirectProjectsCardTypesIds();
-
-        List<Long> result = Lists.newArrayList();
-        result.addAll(directInOwnProjects);
-        result.addAll(findTransitiveTargets(directInOwnProjects));
-        return result;
+        return retrieveDirectAndTransitiveCardTypesOrRefs(directInOwnProjects);
     }
 
     /**
@@ -93,26 +89,38 @@ public class CardTypeManager {
     }
 
     /**
-     * Retrieve the ids of the direct and transitive targets for each card type or reference.
+     * Retrieve the ids of the card types or references with their direct and transitive targets.
      *
-     * @param cardTypeOrRefIds the ids of card types and references
+     * @param cardTypeOrRefIds
+     *
+     * @return
+     */
+    private List<Long> retrieveDirectAndTransitiveCardTypesOrRefs(List<Long> cardTypeOrRefIds) {
+        return retrieveDirectAndTransitiveCardTypesOrRefs(cardTypeOrRefIds, Lists.newArrayList());
+    }
+
+    /**
+     * Retrieve the ids of the card types or references with their direct and transitive targets.
+     *
+     * @param toProcess   the ids of card types and references
+     * @param alreadyDone the already processed ids
      *
      * @return the ids of the matching card types or references
      */
-    private List<Long> findTransitiveTargets(List<Long> cardTypeOrRefIds) {
-        if (CollectionUtils.isEmpty(cardTypeOrRefIds)) {
-            return Collections.emptyList();
+    private List<Long> retrieveDirectAndTransitiveCardTypesOrRefs(List<Long> toProcess,
+        List<Long> alreadyDone) {
+        List<Long> remainsToProcess = ListUtils.removeAll(toProcess, alreadyDone);
+        if (CollectionUtils.isEmpty(remainsToProcess)) {
+            return alreadyDone;
         }
 
-        List<Long> result = Lists.newArrayList();
+        alreadyDone.addAll(remainsToProcess);
 
-        List<Long> directTargets = findDirectTargets(cardTypeOrRefIds);
-        if (!CollectionUtils.isEmpty(directTargets)) {
-            result.addAll(directTargets);
-            result.addAll(findTransitiveTargets(directTargets));
-        }
+        List<Long> directTargets = findDirectTargets(remainsToProcess);
+        alreadyDone.addAll(directTargets);
+        retrieveDirectAndTransitiveCardTypesOrRefs(directTargets, alreadyDone);
 
-        return result;
+        return alreadyDone;
     }
 
     /**

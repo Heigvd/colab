@@ -102,6 +102,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
+        
+        <!-- Utility classes for Java Collections Framework -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+        </dependency>
 
         <!-- PostgreSQL JDBC Driver Postgresq -->
         <dependency>

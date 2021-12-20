@@ -6,6 +6,7 @@
  */
 
 import { CardType, CardTypeRef, entityIs } from 'colab-rest-client';
+import { uniq } from 'lodash';
 import { customColabStateEquals, useAppSelector } from '../store/hooks';
 import { ColabState } from '../store/store';
 
@@ -177,3 +178,20 @@ export const useGlobalTypes = (): {
     };
   }, customColabStateEquals);
 };
+
+/**
+ * Find list of all known tags
+ */
+export function useCardTypeTags() {
+  return useAppSelector(state => {
+    return uniq(
+      Object.values(state.cardtype.cardtypes).flatMap(ct => {
+        if (entityIs(ct, 'CardType')) {
+          return ct.tags;
+        } else {
+          return [];
+        }
+      }),
+    ).sort();
+  });
+}

@@ -466,6 +466,7 @@ export const process = (
 ): {
   value: string;
   revision: string[];
+  mergedChanges: Change[];
 } => {
   let buffer = content;
 
@@ -477,6 +478,7 @@ export const process = (
     basedOn: [...c.basedOn],
   }));
   const appliedChanges: string[] = [];
+  const mergedChanges: Change[] = [];
 
   const deps: string[] = [currentRevision];
 
@@ -510,6 +512,7 @@ export const process = (
           buffer = applyChange(buffer, mu);
         }
         logger.debug(' -> ', buffer);
+        mergedChanges.push(change);
 
         // rebase sieblings
         children.reverse();
@@ -535,6 +538,7 @@ export const process = (
   return {
     value: buffer,
     revision: deps,
+    mergedChanges: mergedChanges,
   };
 };
 

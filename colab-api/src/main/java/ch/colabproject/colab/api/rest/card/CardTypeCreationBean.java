@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.rest.card;
 
 import ch.colabproject.colab.api.model.document.Block;
 import java.io.Serializable;
+import java.util.Set;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -23,7 +24,6 @@ public class CardTypeCreationBean implements Serializable {
     // ---------------------------------------------------------------------------------------------
     // fields
     // ---------------------------------------------------------------------------------------------
-
     /**
      * The id of the project it belongs to
      */
@@ -39,10 +39,14 @@ public class CardTypeCreationBean implements Serializable {
      */
     private Block purpose;
 
+    /**
+     * The tags
+     */
+    private Set<String> tags;
+
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
-
     /**
      * @return the projectId
      */
@@ -85,10 +89,27 @@ public class CardTypeCreationBean implements Serializable {
         this.purpose = purpose;
     }
 
+    /**
+     * Get tags
+     *
+     * @return the tags
+     */
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    /**
+     * Set the tags
+     *
+     * @param tags the tags
+     */
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
-
     @Override
     public int hashCode() {
         return new HashCodeBuilder()

@@ -17,6 +17,7 @@
     },
     "jest": {
         "collectCoverage": true,
+        "testEnvironment": "jsdom",
         "coverageDirectory": "../../../../target/ts-coverage",
         "collectCoverageFrom": [
             "src/**/*.{js,jsx,ts,tsx}",
@@ -29,6 +30,9 @@
             "<rootDir>/__tests__"
         ],
         "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?)$",
+        "testPathIgnorePatterns": [
+            "/__utils__/"
+        ],
         "moduleFileExtensions": [
             "js",
             "ts",
@@ -108,7 +112,6 @@
         "@jsplumb/connector-bezier": "^5.0.0-RC32",
         "@jsplumb/connector-flowchart": "^5.0.0-RC32",
         "@reduxjs/toolkit": "^1.6.1",
-        "@toast-ui/react-editor": "^3.1.0",
         "colab-rest-client": "link:../../../../../colab-client/target/generated-sources/tsClient",
         "diff": "^5.0.0",
         "emotion": "^11.0.0",
