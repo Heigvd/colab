@@ -14,8 +14,8 @@ import IconButton from '../IconButton';
 
 export interface Props {
   label?: React.ReactNode;
-  warning?: string;
-  error?: string;
+  warning?: React.ReactNode;
+  error?: React.ReactNode;
   title?: string;
   disabled?: boolean;
   value?: boolean;

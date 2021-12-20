@@ -12,8 +12,8 @@ import Flex from '../Flex';
 
 export interface Props {
   label?: React.ReactNode;
-  warning?: string;
-  error?: string;
+  warning?: React.ReactNode;
+  error?: React.ReactNode;
   title?: string;
   value?: boolean;
   onChange: (newValue: boolean) => void;

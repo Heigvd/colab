@@ -18,8 +18,8 @@ import Flex from '../Flex';
 export interface Props {
   label?: React.ReactNode;
   inputType?: 'input' | 'textarea';
-  warning?: string;
-  error?: string;
+  warning?: React.ReactNode;
+  error?: React.ReactNode;
   value?: string;
   mandatory?: boolean;
   type?: HTMLInputElement['type'];

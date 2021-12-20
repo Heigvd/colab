@@ -4,16 +4,18 @@
  *
  * Licensed under the MIT License
  */
-import { css } from '@emotion/css';
+import {css} from '@emotion/css';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { signUp } from '../../API/api';
-import { buildLinkWithQueryParam } from '../../helper';
+import {PasswordFeedback} from 'react-password-strength-bar';
+import {useNavigate} from 'react-router-dom';
+import {signUp} from '../../API/api';
+import {buildLinkWithQueryParam} from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
-import { useAppDispatch } from '../../store/hooks';
-import Form, { Field } from '../common/Form/Form';
+import {useAppDispatch} from '../../store/hooks';
+import Form, {Field} from '../common/Form/Form';
 import FormContainer from '../common/FormContainer';
-import { InlineLink } from '../common/Link';
+import {InlineLink} from '../common/Link';
+import PasswordFeedbackDisplay from './PasswordFeedbackDisplay';
 
 interface Props {
   redirectTo: string | null;
@@ -24,7 +26,10 @@ interface Data {
   email: string;
   password: string;
   confirm: string;
-  passwordScore: number;
+  passwordScore: {
+    score: number;
+    feedback: PasswordFeedback;
+  };
 }
 
 const defData: Data = {
@@ -32,7 +37,13 @@ const defData: Data = {
   email: '',
   password: '',
   confirm: '',
-  passwordScore: 0,
+  passwordScore: {
+    score: 0,
+    feedback: {
+      warning: '',
+      suggestions: []
+    }
+  },
 };
 
 export default (props: Props): JSX.Element => {
@@ -56,8 +67,8 @@ export default (props: Props): JSX.Element => {
       placeholder: i18n.model.user.password,
       type: 'password',
       isMandatory: false,
-      isErroneous: data => data.passwordScore < 2,
-      errorMessage: i18n.weakPassword,
+      isErroneous: data => data.passwordScore.score < 2,
+      errorMessage: data => <PasswordFeedbackDisplay feedback={data.passwordScore.feedback} />,
       showStrenghBar: true,
       strengthProp: 'passwordScore',
     },
@@ -96,8 +107,8 @@ export default (props: Props): JSX.Element => {
     <FormContainer>
       <Form fields={fields} value={defData} submitLabel={i18n.createAnAccount} onSubmit={signUpCb}>
         <InlineLink
-          className={css({ alignSelf: 'flex-end' })}
-          to={buildLinkWithQueryParam('/SignIn', { redirectTo: props.redirectTo })}
+          className={css({alignSelf: 'flex-end'})}
+          to={buildLinkWithQueryParam('/SignIn', {redirectTo: props.redirectTo})}
         >
           {i18n.cancel}
         </InlineLink>
