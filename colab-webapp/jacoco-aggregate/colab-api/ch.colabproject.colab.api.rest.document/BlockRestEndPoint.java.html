@@ -133,7 +133,7 @@ import org.slf4j.LoggerFactory;
     @POST
     public Long createBlock(Block block) {
 <span class="nc" id="L135">        logger.debug(&quot;create block {}&quot;, block);</span>
-<span class="nc" id="L136">        return blockFacade.persistBlock(block).getId();</span>
+<span class="nc" id="L136">        return blockFacade.createBlock(block).getId();</span>
     }
 
     /**
@@ -147,7 +147,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;newTextData/{documentId}&quot;)
     public Block createNewTextDataBlock(@PathParam(&quot;documentId&quot;) Long documentId) {
 <span class="nc" id="L149">        logger.debug(&quot;create new text data block for document #{}&quot;, documentId);</span>
-<span class="nc" id="L150">        return blockFacade.createNewTextDataBlock(documentId);</span>
+<span class="nc" id="L150">        return blockFacade.createTextDataBlock(documentId);</span>
     }
 
     /**

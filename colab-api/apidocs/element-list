@@ -1,7 +1,6 @@
 ch.colabproject.colab.api
 ch.colabproject.colab.api.controller.card
 ch.colabproject.colab.api.controller.document
-ch.colabproject.colab.api.controller.project
 ch.colabproject.colab.api.ejb
 ch.colabproject.colab.api.ejb.config
 ch.colabproject.colab.api.ejb.monitoring

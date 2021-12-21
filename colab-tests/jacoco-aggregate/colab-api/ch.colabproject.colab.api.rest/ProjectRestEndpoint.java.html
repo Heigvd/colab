@@ -85,7 +85,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;MyOwn&quot;)
     public List&lt;Project&gt; getUserProjects() {
 <span class="nc" id="L87">        logger.debug(&quot;Get user projects&quot;);</span>
-<span class="nc" id="L88">        return projectFacade.getCurrentUserProject();</span>
+<span class="nc" id="L88">        return projectFacade.findProjectsOfCurrentUser();</span>
     }
 
     /**
@@ -112,7 +112,7 @@ import org.slf4j.LoggerFactory;
     @POST
     public Long createProject(Project project) {
 <span class="fc" id="L114">        logger.debug(&quot;Create project {}&quot;, project);</span>
-<span class="fc" id="L115">        return projectFacade.createNewProject(project).getId();</span>
+<span class="fc" id="L115">        return projectFacade.createProject(project).getId();</span>
     }
 
     /**
