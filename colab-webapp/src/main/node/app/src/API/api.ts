@@ -296,6 +296,13 @@ export const deleteProject = createAsyncThunk('project/delete', async (project: 
   }
 });
 
+export const getRootCardOfProject = createAsyncThunk<Card, number>(
+  'project/getRootCard',
+  async (projectId: number) => {
+    return await restClient.ProjectRestEndpoint.getRootCardOfProject(projectId);
+  },
+);
+
 export const startProjectEdition = createAsyncThunk(
   'project/startEditing',
   async (project: Project, thunkApi) => {

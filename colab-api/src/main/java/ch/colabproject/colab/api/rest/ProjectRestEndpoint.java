@@ -14,8 +14,8 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -138,6 +138,20 @@ public class ProjectRestEndpoint {
     public void deleteProject(@PathParam("id") Long id) {
         logger.debug("Delete project #{}", id);
         projectDao.deleteProject(id);
+    }
+
+    /**
+     * Get the root card of the project
+     *
+     * @param projectId the id of the project
+     *
+     * @return the matching card
+     */
+    @GET
+    @Path("{projectId}/RootCard")
+    public Card getRootCardOfProject(@PathParam("projectId") Long projectId) {
+        logger.debug("get the root card of the project #{}", projectId);
+        return projectFacade.getRootCard(projectId);
     }
 
     /**

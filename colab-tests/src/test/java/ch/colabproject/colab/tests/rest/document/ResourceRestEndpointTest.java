@@ -645,7 +645,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Project project = ColabFactory.createProject(client, "testResource");
         Long projectId = project.getId();
 
-        Long rootCardId = project.getRootCardId();
+        Long rootCardId = ColabFactory.getRootCard(client, project).getId();
         ResourceCreationBean rootCardResource = new ResourceCreationBean();
         rootCardResource.setDocument(new BlockDocument());
         rootCardResource.setCardId(rootCardId);
@@ -797,7 +797,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Project project = ColabFactory.createProject(client, "testResource");
         Long projectId = project.getId();
 
-        Long rootCardId = project.getRootCardId();
+        Long rootCardId = ColabFactory.getRootCard(client, project).getId();
 
         Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
 

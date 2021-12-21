@@ -186,7 +186,7 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Project project = ColabFactory.createProject(client, "testProjectRootCardAccess");
         Long projectId = project.getId();
 
-        Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());
+        Card rootCard = client.projectRestEndpoint.getRootCardOfProject(projectId);
         Long rootCardId = rootCard.getId();
 
         Assertions.assertEquals(projectId, rootCard.getRootCardProjectId());

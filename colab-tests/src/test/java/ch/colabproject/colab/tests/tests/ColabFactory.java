@@ -136,6 +136,18 @@ public class ColabFactory {
     }
 
     /**
+     * Retrieve the root card of the given project
+     *
+     * @param client  rest client to execute HTTP requests
+     * @param project the project to fetch the root card in
+     *
+     * @return the root card of project
+     */
+    public static Card getRootCard(ColabClient client, Project project) {
+        return client.projectRestEndpoint.getRootCardOfProject(project.getId());
+    }
+
+    /**
      * Retrieve the root cardContent of the given project.
      *
      * @param client  rest client to execute HTTP requests
@@ -144,7 +156,7 @@ public class ColabFactory {
      * @return the root card content of project
      */
     public static CardContent getRootContent(ColabClient client, Project project) {
-        return getCardContent(client, project.getRootCardId());
+        return getCardContent(client, getRootCard(client, project).getId());
     }
 
     /**

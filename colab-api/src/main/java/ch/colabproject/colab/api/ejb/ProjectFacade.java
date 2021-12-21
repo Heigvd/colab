@@ -107,6 +107,25 @@ public class ProjectFacade {
     // *********************************************************************************************
     // cards
     // *********************************************************************************************
+
+    /**
+     * Get the root card of the project
+     *
+     * @param projectId the id of the project
+     *
+     * @return The root card linked to the project
+     */
+    public Card getRootCard(Long projectId) {
+        logger.debug("get the root card of the project #{}", projectId);
+
+        Project project = projectDao.getProject(projectId);
+        if (project == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return project.getRootCard();
+    }
+
     /**
      * Get all cards of the given project
      *
