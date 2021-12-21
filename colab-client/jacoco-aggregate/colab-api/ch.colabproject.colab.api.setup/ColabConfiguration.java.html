@@ -111,10 +111,20 @@ public class ColabConfiguration {
     public static final String SMTP_STARTTLS_DEFAULT_VALUE = &quot;false&quot;;
 
     /**
+     * Display &quot;create an account&quot; button or not
+     */
+    public static final String LOCAL_ACCOUNT_BUTTON = &quot;colab.localaccount.showcreatebutton&quot;;
+
+    /**
+     * Display &quot;create an account&quot; button or not default value
+     */
+    public static final String LOCAL_ACCOUNT_BUTTON_VALUE = &quot;true&quot;;
+
+    /**
      * never-called private constructor
      */
-<span class="nc" id="L116">    private ColabConfiguration() {</span>
-<span class="nc" id="L117">        throw new UnsupportedOperationException(</span>
+<span class="nc" id="L126">    private ColabConfiguration() {</span>
+<span class="nc" id="L127">        throw new UnsupportedOperationException(</span>
             &quot;This is a utility class and cannot be instantiated&quot;);
     }
 
@@ -124,7 +134,7 @@ public class ColabConfiguration {
      * @return default admin username
      */
     public static String getDefaultAdminUsername() {
-<span class="nc" id="L127">        return System.getProperty(DEFAULT_ADMIN_USERNAME_PROPERTY, DEFAULT_ADMIN_USERNAME_VALUE);</span>
+<span class="nc" id="L137">        return System.getProperty(DEFAULT_ADMIN_USERNAME_PROPERTY, DEFAULT_ADMIN_USERNAME_VALUE);</span>
     }
 
     /**
@@ -133,7 +143,7 @@ public class ColabConfiguration {
      * @return default admin email address
      */
     public static String getDefaultAdminEmail() {
-<span class="nc" id="L136">        return System.getProperty(DEFAULT_ADMIN_EMAIL_PROPERTY, DEFAULT_ADMIN_EMAIL_VALUE);</span>
+<span class="nc" id="L146">        return System.getProperty(DEFAULT_ADMIN_EMAIL_PROPERTY, DEFAULT_ADMIN_EMAIL_VALUE);</span>
     }
 
     /**
@@ -142,7 +152,7 @@ public class ColabConfiguration {
      * @return default admin password
      */
     public static String getDefaultAdminPassword() {
-<span class="nc" id="L145">        return System.getProperty(DEFAULT_ADMIN_PASSWORD_PROPERTY, DEFAULT_ADMIN_PASSWORD_VALUE);</span>
+<span class="nc" id="L155">        return System.getProperty(DEFAULT_ADMIN_PASSWORD_PROPERTY, DEFAULT_ADMIN_PASSWORD_VALUE);</span>
     }
 
     /**
@@ -151,7 +161,7 @@ public class ColabConfiguration {
      * @return the domain name
      */
     public static String getSmtpDomain() {
-<span class="nc" id="L154">        return System.getProperty(SMTP_DOMAIN, SMTP_DOMAIN_DEFAULT_VALUE);</span>
+<span class="nc" id="L164">        return System.getProperty(SMTP_DOMAIN, SMTP_DOMAIN_DEFAULT_VALUE);</span>
     }
 
     /**
@@ -160,35 +170,35 @@ public class ColabConfiguration {
      * @return &quot;true&quot; or &quot;false&quot;
      */
     public static String getSmtpAuth() {
-<span class="nc" id="L163">        return System.getProperty(SMTP_AUTH, SMTP_AUTH_DEFAULT_VALUE);</span>
+<span class="nc" id="L173">        return System.getProperty(SMTP_AUTH, SMTP_AUTH_DEFAULT_VALUE);</span>
     }
 
     /**
      * @return SMTP username
      */
     public static String getSmtpUsername() {
-<span class="nc" id="L170">        return System.getProperty(SMTP_USERNAME, SMTP_USERNAME_DEFAULT_VALUE);</span>
+<span class="nc" id="L180">        return System.getProperty(SMTP_USERNAME, SMTP_USERNAME_DEFAULT_VALUE);</span>
     }
 
     /**
      * @return SMTP password
      */
     public static String getSmtpPassword() {
-<span class="nc" id="L177">        return System.getProperty(SMTP_PASSWORD, SMTP_PASSWORD_DEFAULT_VALUE);</span>
+<span class="nc" id="L187">        return System.getProperty(SMTP_PASSWORD, SMTP_PASSWORD_DEFAULT_VALUE);</span>
     }
 
     /**
      * @return SMTP host
      */
     public static String getSmtpHost() {
-<span class="nc" id="L184">        return System.getProperty(SMTP_HOST, SMTP_HOST_DEFAULT_VALUE);</span>
+<span class="nc" id="L194">        return System.getProperty(SMTP_HOST, SMTP_HOST_DEFAULT_VALUE);</span>
     }
 
     /**
      * @return SMPT port
      */
     public static String getSmtpPort() {
-<span class="nc" id="L191">        return System.getProperty(SMTP_PORT, SMTP_PORT_DEFAULT_VALUE);</span>
+<span class="nc" id="L201">        return System.getProperty(SMTP_PORT, SMTP_PORT_DEFAULT_VALUE);</span>
     }
 
     /**
@@ -196,8 +206,19 @@ public class ColabConfiguration {
      *
      * @return &quot;true&quot; or &quot;false&quot;
      */
-    public static String getSmtpStartTls() {
-<span class="nc" id="L200">        return System.getProperty(SMTP_STARTTLS, SMTP_STARTTLS_DEFAULT_VALUE);</span>
+    public static boolean getSmtpStartTls() {
+<span class="nc" id="L210">        return System.getProperty(SMTP_STARTTLS,</span>
+<span class="nc" id="L211">            SMTP_STARTTLS_DEFAULT_VALUE).equals(&quot;true&quot;);</span>
+    }
+
+    /**
+     * Show create an account or not?
+     *
+     * @return show create an account button or not?
+     */
+    public static boolean getDisplayLocalAccountButton() {
+<span class="nc" id="L220">        return System.getProperty(LOCAL_ACCOUNT_BUTTON,</span>
+<span class="nc" id="L221">            LOCAL_ACCOUNT_BUTTON_VALUE).equals(&quot;true&quot;);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -61,7 +61,7 @@ public class Sendmail {
 
 <span class="nc" id="L62">        props.put(&quot;mail.smtp.port&quot;, port);</span>
 
-<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (ColabConfiguration.getSmtpStartTls().equals(&quot;true&quot;)) {</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (ColabConfiguration.getSmtpStartTls()) {</span>
 <span class="nc" id="L65">            props.put(&quot;mail.smtp.starttls.enable&quot;, &quot;true&quot;);</span>
 <span class="nc" id="L66">            props.put(&quot;mail.smtp.ssl.trust&quot;, host);</span>
         } else {

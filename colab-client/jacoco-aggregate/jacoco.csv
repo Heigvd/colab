@@ -50,6 +50,7 @@ colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserInternToProject,56,0,8,0,18,0,9,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserLeaderOfProject,56,0,8,0,18,0,9,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.security.permissions,Conditions.IsCurrentUserMemberOfProject,56,0,8,0,18,0,9,0,5,0
+colab-client/colab-api,ch.colabproject.colab.api.ejb.config,ConfigurationFacade,12,0,0,0,4,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.live,LiveUpdates,1307,0,158,0,267,0,116,0,37,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.live,LiveResult,29,0,0,0,11,0,6,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.live,LiveManager,368,0,22,0,103,0,27,0,16,0
@@ -66,9 +67,10 @@ colab-client/colab-api,ch.colabproject.colab.api.model.user,User,267,0,14,0,79,0
 colab-client/colab-api,ch.colabproject.colab.api.model.user,AuthInfo,24,0,0,0,10,0,7,0,7,0
 colab-client/colab-api,ch.colabproject.colab.api.model.user,LocalAccount,94,0,4,0,36,0,25,0,23,0
 colab-client/colab-api,ch.colabproject.colab.api.model.user,SignUpInfo,38,0,0,0,16,0,11,0,11,0
+colab-client/colab-api,ch.colabproject.colab.api.rest.config,ConfigRestEndpoint,7,0,0,0,2,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.ws,WebsocketEndpoint,134,0,2,0,35,0,10,0,9,0
 colab-client/colab-api,ch.colabproject.colab.api.ws,WebsocketHelper,311,0,12,0,82,0,26,0,20,0
-colab-client/colab-api,ch.colabproject.colab.api.setup,ColabConfiguration,47,0,0,0,12,0,11,0,11,0
+colab-client/colab-api,ch.colabproject.colab.api.setup,ColabConfiguration,55,0,0,0,15,0,12,0,12,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,LiquibaseProducer,22,0,0,0,6,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,ApplicationLifecycle,80,0,4,0,27,0,7,0,5,0
 colab-client/colab-api,ch.colabproject.colab.api.setup,DataSourceDefinitionProvider,5,0,0,0,2,0,2,0,2,0
@@ -121,13 +123,14 @@ colab-client/colab-api,ch.colabproject.colab.api.security.permissions.card,CardT
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,MessageBuilder,77,0,0,0,22,0,12,0,12,0
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail.new Authenticator() {...},17,0,0,0,2,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Message,76,0,0,0,29,0,18,0,18,0
-colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail,173,0,6,0,42,0,6,0,3,0
+colab-client/colab-api,ch.colabproject.colab.api.service.smtp,Sendmail,171,0,6,0,42,0,6,0,3,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardContentRestEndpoint,119,0,0,0,28,0,13,0,13,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardRestEndpoint,175,0,6,0,37,0,19,0,16,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardTypeCreationBean,82,0,6,0,29,0,15,0,12,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.card,CardTypeRestEndpoint,94,0,0,0,25,0,10,0,10,0
 colab-client/colab-api,ch.colabproject.colab.api.exceptions,ColabMergeException,15,0,0,0,5,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.exceptions,ColabRollbackException,4,0,0,0,2,0,1,0,1,0
+colab-client/colab-api,ch.colabproject.colab.api.rest.config.bean,AccountConfig,10,0,0,0,4,0,3,0,3,0
 colab-client/colab-api,ch.colabproject.colab.api.model,WithTrackingData,35,0,4,0,11,0,3,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.model,WithWebsocketChannels,2,0,0,0,1,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.model,WithPermission,6,0,0,0,2,0,2,0,2,0
@@ -178,7 +181,8 @@ colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin,Gene
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestClient.CookieFilter,49,0,4,0,14,0,5,0,3,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,ServerException,8,0,0,0,4,0,2,0,2,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,Param,31,0,0,0,13,0,9,0,9,0
-colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestClient,232,0,24,0,47,0,22,0,10,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestClient,308,0,24,0,61,0,26,0,14,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,ClientException,8,0,0,0,4,0,2,0,2,0
-colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestEndpoint,1674,0,106,0,403,0,91,0,38,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,FormField,17,0,0,0,7,0,5,0,5,0
+colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestEndpoint,1852,0,114,0,442,0,101,0,44,0
 colab-client/client-generator-plugin,ch.colabproject.colab.generator.plugin.rest,RestMethod,275,0,16,0,84,0,41,0,33,0

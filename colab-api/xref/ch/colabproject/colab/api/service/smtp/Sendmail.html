@@ -69,7 +69,7 @@
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>  
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          props.put(<span class="jxr_string">"mail.smtp.port"</span>, port);
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          <strong class="jxr_keyword">if</strong> (ColabConfiguration.getSmtpStartTls().equals(<span class="jxr_string">"true"</span>)) {
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          <strong class="jxr_keyword">if</strong> (ColabConfiguration.getSmtpStartTls()) {
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>              props.put(<span class="jxr_string">"mail.smtp.starttls.enable"</span>, <span class="jxr_string">"true"</span>);
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>              props.put(<span class="jxr_string">"mail.smtp.ssl.trust"</span>, host);
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          } <strong class="jxr_keyword">else</strong> {

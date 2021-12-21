@@ -3,6 +3,7 @@ ch.colabproject.colab.api.controller.card
 ch.colabproject.colab.api.controller.document
 ch.colabproject.colab.api.controller.project
 ch.colabproject.colab.api.ejb
+ch.colabproject.colab.api.ejb.config
 ch.colabproject.colab.api.ejb.monitoring
 ch.colabproject.colab.api.exceptions
 ch.colabproject.colab.api.microchanges.live
@@ -27,6 +28,8 @@ ch.colabproject.colab.api.persistence.token
 ch.colabproject.colab.api.persistence.user
 ch.colabproject.colab.api.rest
 ch.colabproject.colab.api.rest.card
+ch.colabproject.colab.api.rest.config
+ch.colabproject.colab.api.rest.config.bean
 ch.colabproject.colab.api.rest.document
 ch.colabproject.colab.api.rest.link
 ch.colabproject.colab.api.rest.utils

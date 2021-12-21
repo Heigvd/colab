@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2021 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 151,
+      <title>File: 154,
              Errors: 0,
-             Warnings: 96,
+             Warnings: 97,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -291,6 +291,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ejb.config.ConfigurationFacade.java">ch/colabproject/colab/api/ejb/config/ConfigurationFacade.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
                 </td>
                 <td>
                   0
@@ -1068,6 +1082,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.config.bean.AccountConfig.java">ch/colabproject/colab/api/rest/config/bean/AccountConfig.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.card.CardContent.java">ch/colabproject/colab/api/model/card/CardContent.java</a>
                 </td>
                 <td>
@@ -1349,6 +1377,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.utils.EjbExceptionMapper.java">ch/colabproject/colab/api/rest/utils/EjbExceptionMapper.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.rest.config.ConfigRestEndpoint.java">ch/colabproject/colab/api/rest/config/ConfigRestEndpoint.java</a>
                 </td>
                 <td>
                   0
