@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbException;
@@ -28,6 +29,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
 /**
  * JakartaEE-based rest client.
@@ -168,7 +170,7 @@ public class RestClient {
     }
 
     /**
-     * send POST request.
+     * send JSON POST request.
      *
      * @param <T>  expected return type
      * @param path rest path
@@ -181,6 +183,29 @@ public class RestClient {
         return processResponse(webTarget.path(path).request()
             .accept(MediaType.APPLICATION_JSON)
             .post(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),
+            type);
+    }
+
+    /**
+     * send multipart form POST request.
+     *
+     * @param <T>    expected return type
+     * @param path   rest path
+     * @param fields form data
+     * @param type   expected return type
+     *
+     * @return instance of T
+     */
+    public <T> T post(String path, Map<String, FormField> fields, GenericType<T> type) {
+        FormDataMultiPart multipart = new FormDataMultiPart();
+
+        fields.forEach((fieldName, data) -> {
+            multipart.field(fieldName, data.getData(), data.getMimeType());
+        });
+
+        return processResponse(webTarget.path(path).request()
+            .accept(MediaType.APPLICATION_JSON)
+            .post(Entity.entity(multipart, multipart.getMediaType())),
             type);
     }
 
@@ -198,7 +223,7 @@ public class RestClient {
     }
 
     /**
-     * send PUT request.
+     * send PUT request with JSON body.
      *
      * @param <T>  expected return type
      * @param path rest path
@@ -211,6 +236,29 @@ public class RestClient {
         return processResponse(webTarget.path(path).request()
             .accept(MediaType.APPLICATION_JSON)
             .put(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),
+            type);
+    }
+
+    /**
+     * send multipart form PUT request.
+     *
+     * @param <T>    expected return type
+     * @param path   rest path
+     * @param fields form data
+     * @param type   expected return type
+     *
+     * @return instance of T
+     */
+    public <T> T put(String path, Map<String, FormField> fields, GenericType<T> type) {
+        FormDataMultiPart multipart = new FormDataMultiPart();
+
+        fields.forEach((fieldName, data) -> {
+            multipart.field(fieldName, data.getData(), data.getMimeType());
+        });
+
+        return processResponse(webTarget.path(path).request()
+            .accept(MediaType.APPLICATION_JSON)
+            .put(Entity.entity(multipart, multipart.getMediaType())),
             type);
     }
 

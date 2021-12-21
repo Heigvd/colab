@@ -15,6 +15,7 @@ import blockReducer from './block';
 import cardReducer from './card';
 import cardTypeReducer from './cardtype';
 import changeReducer from './change';
+import configReducer from './configuration';
 import documentReducer from './document';
 import notifReducer from './notification';
 import projectReducer from './project';
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   block: blockReducer,
   cards: cardReducer,
   cardtype: cardTypeReducer,
+  config: configReducer,
   change: changeReducer,
   document: documentReducer,
   notifications: notifReducer,

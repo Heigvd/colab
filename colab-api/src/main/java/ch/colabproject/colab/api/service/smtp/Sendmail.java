@@ -61,7 +61,7 @@ public class Sendmail {
 
         props.put("mail.smtp.port", port);
 
-        if (ColabConfiguration.getSmtpStartTls().equals("true")) {
+        if (ColabConfiguration.getSmtpStartTls()) {
             props.put("mail.smtp.starttls.enable", "true");
             props.put("mail.smtp.ssl.trust", host);
         } else {

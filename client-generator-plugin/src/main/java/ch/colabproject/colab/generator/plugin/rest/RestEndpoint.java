@@ -179,10 +179,16 @@ public class RestEndpoint {
      *
      * @param javadoc     javadoc text
      * @param reflections reflections store
+     * @param parameters  list of parameters to keep
      *
      * @return processed javadoc
      */
-    private String processJavaDoc(String javadoc, boolean keepJava, Reflections reflections) {
+    private String processJavaDoc(
+        String javadoc,
+        boolean keepJava,
+        Reflections reflections,
+        List<String> parameters
+    ) {
         Pattern atLink = Pattern.compile("\\{@link ([a-zA-Z]+)\\}");
         Matcher atLinkMatcher = atLink.matcher(javadoc);
         String atLinkProcessed = atLinkMatcher.replaceAll(match -> {
@@ -194,8 +200,20 @@ public class RestEndpoint {
             }
         });
 
+        Pattern paramPattern = Pattern.compile("@param ([a-zA-Z]+)(.*)");
+        Matcher paramMatcher = paramPattern.matcher(atLinkProcessed);
+
+        String pCleaned = paramMatcher.replaceAll(match -> {
+            String pName = match.group(1);
+            if (parameters.contains(pName)) {
+                return "@param " + match.group(1) + " " + match.group(2);
+            } else {
+                return "";
+            }
+        });
+
         Pattern throwsPattern = Pattern.compile("@throws ([a-zA-Z]+)");
-        Matcher throwsMatcher = throwsPattern.matcher(atLinkProcessed);
+        Matcher throwsMatcher = throwsPattern.matcher(pCleaned);
 
         return throwsMatcher.replaceAll(match -> {
             Class<? extends Serializable> klass
@@ -232,11 +250,17 @@ public class RestEndpoint {
      * @param block       block to append
      * @param keepJava    should keep java specific tags (eg @link)
      * @param reflections reflections store
+     * @param parameters  parameters to keep
      */
     private void appendJavadocBlock(
-        StringBuilder sb, String prefix, String block, boolean keepJava, Reflections reflections
+        StringBuilder sb,
+        String prefix,
+        String block,
+        boolean keepJava,
+        Reflections reflections,
+        List<String> parameters
     ) {
-        this.appendBlock(sb, prefix, processJavaDoc(block, keepJava, reflections));
+        this.appendBlock(sb, prefix, processJavaDoc(block, keepJava, reflections, parameters));
     }
 
     /**
@@ -334,6 +358,13 @@ public class RestEndpoint {
         return firstChar.toLowerCase() + simpleClassName.substring(1);
     }
 
+    private List<String> processParameters(List<Param> params, Map<String, String> imports) {
+        return params.stream()
+            .map(param -> resolveImport(param.getType().getTypeName(), imports)
+            + " " + param.getName())
+            .collect(Collectors.toList());
+    }
+
     /**
      * Write java class as string.The generated class is an inner class which has to be included in
      * a main class.
@@ -360,7 +391,7 @@ public class RestEndpoint {
         sb.append("/**");
         ClassDoc classDoc = javadoc.get(this.className);
         if (classDoc != null) {
-            appendJavadocBlock(sb, " *", classDoc.getDoc(), true, reflections);
+            appendJavadocBlock(sb, " *", classDoc.getDoc(), true, reflections, List.of());
             newLine(sb);
             sb.append(" * <p>");
             newLine(sb);
@@ -400,9 +431,15 @@ public class RestEndpoint {
                 .append("#").append(method.getName()).append("}");
 
             String methodDoc = classDoc.getMethods().getOrDefault(method.getName(), "");
+
             newLine(sb);
             sb.append(" *");
-            appendJavadocBlock(sb, " *", methodDoc, true, reflections);
+
+            List<String> paramNames = method.getAllParameters().stream()
+                .map(param -> param.getName())
+                .collect(Collectors.toList());
+
+            appendJavadocBlock(sb, " *", methodDoc, true, reflections, paramNames);
 
             newLine(sb);
             sb.append(" */");
@@ -416,12 +453,21 @@ public class RestEndpoint {
                 .append(" ").append(method.getName()).append("(");
 
             // parameters
-            List<Param> params = new ArrayList<>(this.getPathParameters());
-            params.addAll(method.getAllParameters());
-            sb.append(params.stream()
-                .map(param -> resolveImport(
-                param.getType().getTypeName(), imports) + " " + param.getName())
-                .collect(Collectors.joining(", ")));
+            List<String> params= new ArrayList<>();
+            params.addAll(processParameters(this.getPathParameters(), imports));
+            params.addAll(processParameters(method.getPathParameters(), imports));
+            params.addAll(processParameters(method.getQueryParameters(), imports));
+
+            if (method.getBodyParam() != null) {
+                params.addAll(processParameters(List.of(method.getBodyParam()), imports));
+            }
+
+            method.getFormParameters().forEach(param -> {
+                String type = resolveImport(param.getType().getTypeName(), imports);
+                params.add("FormField<" + type + "> " + param.getName());
+            });
+
+            sb.append(params.stream().collect(Collectors.joining(", ")));
             sb.append(") ");
 
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -475,6 +521,26 @@ public class RestEndpoint {
                 newLine(sb);
             }
 
+            boolean forDataRequest = method.getConsumes().contains(MediaType.MULTIPART_FORM_DATA);
+
+            if (forDataRequest) {
+                imports.put("Map", "java.util.Map");
+                imports.put("HashMap", "java.util.HashMap");
+                imports.put("FormField", "ch.colabproject.colab.generator.plugin.rest.FormField");
+
+                sb.append("Map<String, FormField> formData = new HashMap<>();");
+                newLine(sb);
+                method.getFormParameters().forEach(param -> {
+                    sb.append("formData.put(\"")
+                        .append(param.getInAnnotationName())
+                        .append("\", ")
+                        .append(param.getName())
+                        .append(");");
+
+                    newLine(sb);
+                });
+            }
+
             // make http request
             //////////////////////
             if (!method.getReturnType().equals(void.class)) {
@@ -485,7 +551,9 @@ public class RestEndpoint {
                 .append(method.getHttpMethod().toLowerCase())
                 .append("(path, ");
 
-            if (method.getBodyParam() != null) {
+            if (forDataRequest) {
+                sb.append(" formData").append(", ");
+            } else if (method.getBodyParam() != null) {
                 sb.append(method.getBodyParam().getName()).append(", ");
             }
 
@@ -530,7 +598,7 @@ public class RestEndpoint {
         sb.append("/**");
         ClassDoc classDoc = javadoc.get(this.className);
         if (classDoc != null) {
-            appendJavadocBlock(sb, " *", classDoc.getDoc(), false, reflections);
+            appendJavadocBlock(sb, " *", classDoc.getDoc(), false, reflections, List.of());
         }
         newLine(sb);
         sb.append(" */");
@@ -552,7 +620,12 @@ public class RestEndpoint {
             newLine(sb);
             sb.append(" * <p> ");
             String methodDoc = classDoc.getMethods().getOrDefault(method.getName(), "");
-            appendJavadocBlock(sb, " *", methodDoc, false, reflections);
+
+            List<String> paramNames = method.getAllParameters().stream()
+                .map(param -> param.getName())
+                .collect(Collectors.toList());
+
+            appendJavadocBlock(sb, " *", methodDoc, false, reflections, paramNames);
             newLine(sb);
             sb.append(" */");
             newLine(sb);
@@ -596,7 +669,7 @@ public class RestEndpoint {
                     sb.append("formData.append('")
                         .append(formParam.getInAnnotationName())
                         .append("', ")
-                        .append(formParam.getInAnnotationName())
+                        .append(formParam.getName())
                         .append(");");
                     //indent--;
                     newLine(sb);
