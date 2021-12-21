@@ -371,7 +371,7 @@ public class RequestManager {
     /**
      * Get Do-Not-Track-Change value
      *
-     * @return should ou shouldn't track entity updates?
+     * @return should or shouldn't track entity updates?
      */
     public boolean isDoNotTrackChange() {
         return doNotTrackChange;

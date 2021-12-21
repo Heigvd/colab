@@ -85,7 +85,7 @@ public class ProjectRestEndpoint {
     @Path("MyOwn")
     public List<Project> getUserProjects() {
         logger.debug("Get user projects");
-        return projectFacade.getCurrentUserProject();
+        return projectFacade.findProjectsOfCurrentUser();
     }
 
     /**
@@ -112,7 +112,7 @@ public class ProjectRestEndpoint {
     @POST
     public Long createProject(Project project) {
         logger.debug("Create project {}", project);
-        return projectFacade.createNewProject(project).getId();
+        return projectFacade.createProject(project).getId();
     }
 
     /**

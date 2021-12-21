@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -25,9 +26,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Some project logic
+ * Project specific logic
  *
  * @author maxence
+ * @author sandra
  */
 @Stateless
 @LocalBean
@@ -36,6 +38,10 @@ public class ProjectFacade {
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(ProjectFacade.class);
 
+    // *********************************************************************************************
+    // injections
+    // *********************************************************************************************
+
     /**
      * To control access
      */
@@ -43,52 +49,107 @@ public class ProjectFacade {
     private SecurityFacade securityFacade;
 
     /**
-     * To control access
+     * Request management
      */
     @Inject
     private RequestManager requestManager;
 
     /**
-     * Project persistence
+     * Project persistence handler
      */
     @Inject
     private ProjectDao projectDao;
 
-    /** Team management */
+    /**
+     * Team specific logic management
+     */
     @Inject
     private TeamFacade teamFacade;
 
     /**
-     * Cards-related logic
+     * Cards specific logic management
      */
     @Inject
     private CardFacade cardFacade;
 
-    // *********************************************************************************************
-    // pure projects
-    // *********************************************************************************************
     /**
-     * Get all projects the current user is member of
-     *
-     * @return list of projects
+     * Card type specific logic management
      */
-    public List<Project> getCurrentUserProject() {
+    @Inject
+    private CardTypeManager cardTypeManager;
+
+    // *********************************************************************************************
+    // projects as a whole
+    // *********************************************************************************************
+
+    /**
+     * Retrieve all projects the current user is member of
+     *
+     * @return list of matching projects
+     */
+    public List<Project> findProjectsOfCurrentUser() {
         User user = securityFacade.assertAndGetCurrentUser();
-        return projectDao.getUserProject(user.getId());
+
+        List<Project> projects = projectDao.getUserProject(user.getId());
+
+        logger.debug("found projects where the user {} is a team member : {}", user, projects);
+
+        return projects;
     }
 
     /**
-     * Persist the given project and add the current user to the project team
+     * Retrieve the ids of the projects the current user is a member of.
+     * <p>
+     * We do not load the java objects. Just work with the ids. Two reasons : 1. the ids are enough,
+     * so it is lighter + 2. prevent from loading object the user is not allowed to read
+     *
+     * @return the ids of the matching projects
+     */
+    public List<Long> findIdsOfProjectsOfCurrentUser() {
+        User user = securityFacade.assertAndGetCurrentUser();
+
+        List<Long> projectsIds = projectDao.getIdsOfProjectUserIsMemberOf(user.getId());
+
+        logger.debug("found projects' id where the user {} is a team member : {}", user,
+            projectsIds);
+
+        return projectsIds;
+    }
+
+    /**
+     * Retrieve the ids of the project for which the current user can read at least one local card
+     * type or reference
+     * <p>
+     * We do not load the java objects. Just work with the ids. Two reasons : 1. the ids are enough,
+     * so it is lighter + 2. prevent from loading object the user is not allowed to read
+     *
+     * @return the ids of the matching projects
+     */
+    public List<Long> findIdsOfProjectsReadableThroughCardTypes() {
+        List<Long> cardTypeOrRefIds = cardTypeManager.findCurrentUserReadableProjectsCardTypesIds();
+
+        List<Long> projectsIds = cardTypeManager.findProjectIdsFromCardTypeIds(cardTypeOrRefIds);
+
+        logger.debug("found projects from readable card types {} : {}", cardTypeOrRefIds,
+            projectsIds);
+
+        return projectsIds;
+    }
+
+    /**
+     * Complete and persist the given project and add the current user to the project team
      *
      * @param project project to persist
      *
      * @return the new persisted project
      */
-    public Project createNewProject(Project project) {
+    public Project createProject(Project project) {
         try {
             return requestManager.sudo(() -> {
-                logger.debug("Create new project: {}", project);
+                logger.debug("Create project: {}", project);
+
                 Card rootCard = cardFacade.initNewRootCard();
+
                 project.setRootCard(rootCard);
                 rootCard.setRootCardProject(project);
 
@@ -105,20 +166,19 @@ public class ProjectFacade {
     }
 
     // *********************************************************************************************
-    // cards
+    // retrieve the elements of a project
     // *********************************************************************************************
 
     /**
-     * Get the root card of the project
+     * Get the root card of the given project
      *
      * @param projectId the id of the project
      *
      * @return The root card linked to the project
      */
     public Card getRootCard(Long projectId) {
-        logger.debug("get the root card of the project #{}", projectId);
-
         Project project = projectDao.getProject(projectId);
+        logger.debug("get the root card of the project {}", project);
         if (project == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
@@ -135,7 +195,7 @@ public class ProjectFacade {
      */
     public Set<Card> getCards(Long projectId) {
         Project project = projectDao.getProject(projectId);
-        logger.debug("Get card types of project {}", project);
+        logger.debug("get all card of project {}", project);
         if (project == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
@@ -152,7 +212,7 @@ public class ProjectFacade {
      */
     public Set<CardContent> getCardContents(Long projectId) {
         Project project = projectDao.getProject(projectId);
-        logger.debug("Get card types of project {}", project);
+        logger.debug("get all card contents of project {}", project);
         if (project == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
@@ -169,7 +229,7 @@ public class ProjectFacade {
      */
     public Set<AbstractCardType> getCardTypes(Long projectId) {
         Project project = projectDao.getProject(projectId);
-        logger.debug("Get card types of project {}", project);
+        logger.debug("get card types of project {}", project);
         if (project == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
@@ -178,15 +238,15 @@ public class ProjectFacade {
     }
 
     /**
-     * Get all activityflowlinks belonging to a project
+     * Get all activity flow links belonging to the given project
      *
-     * @param projectId ID of the project activityflowlinks belong to
+     * @param projectId id of the project
      *
      * @return all activityFlowLinks linked to the project
      */
     public Set<ActivityFlowLink> getActivityFlowLinks(Long projectId) {
         Project project = projectDao.getProject(projectId);
-        logger.debug("Get activityflowlinks of project {}", project);
+        logger.debug("Get activity flow links of project {}", project);
         if (project == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
@@ -197,4 +257,9 @@ public class ProjectFacade {
                 return card.getActivityFlowLinksAsPrevious().stream();
             }).collect(Collectors.toSet());
     }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
 }

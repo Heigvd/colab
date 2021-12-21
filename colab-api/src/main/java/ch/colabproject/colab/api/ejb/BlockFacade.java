@@ -23,8 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Blocks specific logic
+ * Block specific logic
  *
+ * @author maxence
  * @author sandra
  */
 @Stateless
@@ -44,30 +45,30 @@ public class BlockFacade {
     // *********************************************************************************************
 
     /**
-     * Block persistence handling
+     * Block persistence handler
      */
     @Inject
     private BlockDao blockDao;
 
     /**
-     * Document persistence handling
+     * Document persistence handler
      */
     @Inject
     private DocumentDao documentDao;
 
     // *********************************************************************************************
-    // general block stuff
+    // general blocks
     // *********************************************************************************************
 
     /**
-     * Persist the new block
+     * Complete and persist the given new block
      *
      * @param block the block to persist
      *
      * @return the new persisted block
      */
-    public Block persistBlock(Block block) {
-        logger.debug("persist the block {}", block);
+    public Block createBlock(Block block) {
+        logger.debug("create the block : {}", block);
 
         Document document = documentDao.findDocument(block.getDocumentId());
         if (!(document instanceof BlockDocument)) {
@@ -133,24 +134,28 @@ public class BlockFacade {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        BlockDocument blockDoc = block.getDocument();
-        blockDoc.getBlocks().remove(block);
+        BlockDocument blockDocument = block.getDocument();
+        if (blockDocument == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        blockDocument.getBlocks().remove(block);
 
         blockDao.deleteBlock(blockId);
     }
 
     // *********************************************************************************************
-    // text data block stuff
+    // text data blocks
     // *********************************************************************************************
 
     /**
-     * Create a brand new block for a document
+     * Complete and persist a brand new text data block for a document
      *
      * @param documentId id of the document the block belongs to
      *
      * @return a new, initialized and persisted text data block
      */
-    public Block createNewTextDataBlock(Long documentId) {
+    public Block createTextDataBlock(Long documentId) {
         logger.debug("create a new block for the document #{}", documentId);
 
         Document document = documentDao.findDocument(documentId);
@@ -169,22 +174,24 @@ public class BlockFacade {
     }
 
     // *********************************************************************************************
-    //
+    // blocks as a source of link
     // *********************************************************************************************
 
     /**
      * Get all sticky note links of which the given block is the source
      *
-     * @param cardBlockId the id of the block
+     * @param blockId the id of the block
      *
-     * @return all sticky note links linked to the block
+     * @return all blocks source of sticky note links
      */
-    public List<StickyNoteLink> getStickyNoteLinkAsSrc(Long cardBlockId) {
-        logger.debug("get sticky note links where the block #{} is the source", cardBlockId);
-        Block block = blockDao.findBlock(cardBlockId);
+    public List<StickyNoteLink> getStickyNoteLinkAsSrc(Long blockId) {
+        logger.debug("get sticky note links where the block #{} is the source", blockId);
+
+        Block block = blockDao.findBlock(blockId);
         if (block == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
+
         return block.getStickyNoteLinksAsSrc();
     }
 
