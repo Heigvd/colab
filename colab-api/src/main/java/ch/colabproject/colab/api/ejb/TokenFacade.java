@@ -17,7 +17,7 @@ import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.HashMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.token.TokenDao;
+import ch.colabproject.colab.api.persistence.jpa.token.TokenDao;
 import ch.colabproject.colab.api.service.smtp.Message;
 import ch.colabproject.colab.api.service.smtp.Sendmail;
 import ch.colabproject.colab.api.setup.ColabConfiguration;

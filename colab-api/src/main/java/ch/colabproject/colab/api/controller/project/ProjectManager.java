@@ -9,7 +9,7 @@ package ch.colabproject.colab.api.controller.project;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.ejb.SecurityFacade;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.project.ProjectDao;
+import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import java.util.List;
 import javax.inject.Inject;
 import org.slf4j.Logger;

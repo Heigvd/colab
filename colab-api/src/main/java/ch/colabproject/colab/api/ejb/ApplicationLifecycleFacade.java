@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.ejb.LocalBean;

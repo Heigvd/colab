@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.ws.channel;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;

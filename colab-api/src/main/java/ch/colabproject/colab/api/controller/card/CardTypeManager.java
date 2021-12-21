@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.controller.card;
 
 import ch.colabproject.colab.api.ejb.SecurityFacade;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.card.CardTypeDao;
+import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import com.google.common.collect.Lists;
 import java.util.List;
 import javax.ejb.LocalBean;

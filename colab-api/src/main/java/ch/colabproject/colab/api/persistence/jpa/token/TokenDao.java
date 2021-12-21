@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.persistence.token;
+package ch.colabproject.colab.api.persistence.jpa.token;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.model.project.Project;

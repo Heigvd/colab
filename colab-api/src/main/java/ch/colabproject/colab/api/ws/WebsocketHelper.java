@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.ws;
 
 import ch.colabproject.colab.api.ejb.RequestManager;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketMetaChannel;
