@@ -107,6 +107,25 @@ import org.slf4j.LoggerFactory;
     // *********************************************************************************************
     // cards
     // *********************************************************************************************
+
+    /**
+     * Get the root card of the project
+     *
+     * @param projectId the id of the project
+     *
+     * @return The root card linked to the project
+     */
+    public Card getRootCard(Long projectId) {
+<span class="fc" id="L119">        logger.debug(&quot;get the root card of the project #{}&quot;, projectId);</span>
+
+<span class="fc" id="L121">        Project project = projectDao.getProject(projectId);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (project == null) {</span>
+<span class="fc" id="L123">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+
+<span class="fc" id="L126">        return project.getRootCard();</span>
+    }
+
     /**
      * Get all cards of the given project
      *
@@ -115,13 +134,13 @@ import org.slf4j.LoggerFactory;
      * @return all cards of the project
      */
     public Set&lt;Card&gt; getCards(Long projectId) {
-<span class="nc" id="L118">        Project project = projectDao.getProject(projectId);</span>
-<span class="nc" id="L119">        logger.debug(&quot;Get card types of project {}&quot;, project);</span>
-<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (project == null) {</span>
-<span class="nc" id="L121">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L137">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L138">        logger.debug(&quot;Get card types of project {}&quot;, project);</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (project == null) {</span>
+<span class="nc" id="L140">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L124">        return cardFacade.getAllCards(project.getRootCard());</span>
+<span class="nc" id="L143">        return cardFacade.getAllCards(project.getRootCard());</span>
     }
 
     /**
@@ -132,13 +151,13 @@ import org.slf4j.LoggerFactory;
      * @return all cards contents of the project
      */
     public Set&lt;CardContent&gt; getCardContents(Long projectId) {
-<span class="nc" id="L135">        Project project = projectDao.getProject(projectId);</span>
-<span class="nc" id="L136">        logger.debug(&quot;Get card types of project {}&quot;, project);</span>
-<span class="nc bnc" id="L137" title="All 2 branches missed.">        if (project == null) {</span>
-<span class="nc" id="L138">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L154">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L155">        logger.debug(&quot;Get card types of project {}&quot;, project);</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">        if (project == null) {</span>
+<span class="nc" id="L157">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L141">        return cardFacade.getAllCardContents(project.getRootCard());</span>
+<span class="nc" id="L160">        return cardFacade.getAllCardContents(project.getRootCard());</span>
     }
 
     /**
@@ -149,13 +168,13 @@ import org.slf4j.LoggerFactory;
      * @return all card types of the project
      */
     public Set&lt;AbstractCardType&gt; getCardTypes(Long projectId) {
-<span class="fc" id="L152">        Project project = projectDao.getProject(projectId);</span>
-<span class="fc" id="L153">        logger.debug(&quot;Get card types of project {}&quot;, project);</span>
-<span class="pc bpc" id="L154" title="1 of 2 branches missed.">        if (project == null) {</span>
-<span class="nc" id="L155">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="fc" id="L171">        Project project = projectDao.getProject(projectId);</span>
+<span class="fc" id="L172">        logger.debug(&quot;Get card types of project {}&quot;, project);</span>
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">        if (project == null) {</span>
+<span class="nc" id="L174">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="fc" id="L158">        return cardFacade.getExpandedProjectType(project);</span>
+<span class="fc" id="L177">        return cardFacade.getExpandedProjectType(project);</span>
     }
 
     /**
@@ -166,17 +185,17 @@ import org.slf4j.LoggerFactory;
      * @return all activityFlowLinks linked to the project
      */
     public Set&lt;ActivityFlowLink&gt; getActivityFlowLinks(Long projectId) {
-<span class="nc" id="L169">        Project project = projectDao.getProject(projectId);</span>
-<span class="nc" id="L170">        logger.debug(&quot;Get activityflowlinks of project {}&quot;, project);</span>
-<span class="nc bnc" id="L171" title="All 2 branches missed.">        if (project == null) {</span>
-<span class="nc" id="L172">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L188">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L189">        logger.debug(&quot;Get activityflowlinks of project {}&quot;, project);</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (project == null) {</span>
+<span class="nc" id="L191">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L175">        return cardFacade</span>
-<span class="nc" id="L176">            .getAllCards(project.getRootCard())</span>
-<span class="nc" id="L177">            .stream().flatMap(card -&gt; {</span>
-<span class="nc" id="L178">                return card.getActivityFlowLinksAsPrevious().stream();</span>
-<span class="nc" id="L179">            }).collect(Collectors.toSet());</span>
+<span class="nc" id="L194">        return cardFacade</span>
+<span class="nc" id="L195">            .getAllCards(project.getRootCard())</span>
+<span class="nc" id="L196">            .stream().flatMap(card -&gt; {</span>
+<span class="nc" id="L197">                return card.getActivityFlowLinksAsPrevious().stream();</span>
+<span class="nc" id="L198">            }).collect(Collectors.toSet());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

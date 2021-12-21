@@ -653,7 +653,7 @@
 <a class="jxr_linenumber" name="L645" href="#L645">645</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testResource"</span>);
 <a class="jxr_linenumber" name="L646" href="#L646">646</a>         Long projectId = project.getId();
 <a class="jxr_linenumber" name="L647" href="#L647">647</a> 
-<a class="jxr_linenumber" name="L648" href="#L648">648</a>         Long rootCardId = project.getRootCardId();
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>         Long rootCardId = ColabFactory.getRootCard(client, project).getId();
 <a class="jxr_linenumber" name="L649" href="#L649">649</a>         ResourceCreationBean rootCardResource = <strong class="jxr_keyword">new</strong> ResourceCreationBean();
 <a class="jxr_linenumber" name="L650" href="#L650">650</a>         rootCardResource.setDocument(<strong class="jxr_keyword">new</strong> BlockDocument());
 <a class="jxr_linenumber" name="L651" href="#L651">651</a>         rootCardResource.setCardId(rootCardId);
@@ -805,7 +805,7 @@
 <a class="jxr_linenumber" name="L797" href="#L797">797</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testResource"</span>);
 <a class="jxr_linenumber" name="L798" href="#L798">798</a>         Long projectId = project.getId();
 <a class="jxr_linenumber" name="L799" href="#L799">799</a> 
-<a class="jxr_linenumber" name="L800" href="#L800">800</a>         Long rootCardId = project.getRootCardId();
+<a class="jxr_linenumber" name="L800" href="#L800">800</a>         Long rootCardId = ColabFactory.getRootCard(client, project).getId();
 <a class="jxr_linenumber" name="L801" href="#L801">801</a> 
 <a class="jxr_linenumber" name="L802" href="#L802">802</a>         Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
 <a class="jxr_linenumber" name="L803" href="#L803">803</a> 

@@ -77,7 +77,7 @@ import org.slf4j.LoggerFactory;
 <span class="fc" id="L77">        Runtime.getRuntime().addShutdownHook(new Thread() {</span>
             @Override
             public void run() {
-<span class="nc" id="L80">                logger.info(&quot;Gracefull Shutdown Hook&quot;);</span>
+<span class="fc" id="L80">                logger.info(&quot;Gracefull Shutdown Hook&quot;);</span>
 <span class="nc" id="L81">                gracefullShutdown();</span>
 <span class="nc" id="L82">            }</span>
         });
@@ -87,7 +87,7 @@ import org.slf4j.LoggerFactory;
      * Shutdown everything with grace
      */
     public void gracefullShutdown() {
-<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (hzInstance != null) {</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        if (hzInstance != null) {</span>
 <span class="nc" id="L91">            Set&lt;Member&gt; members = hzInstance.getCluster().getMembers();</span>
             //TODO: sessionManager.writeActivityDatesToDatabase();
 <span class="nc" id="L93">            logger.error(&quot;Members: {}&quot;, members);</span>

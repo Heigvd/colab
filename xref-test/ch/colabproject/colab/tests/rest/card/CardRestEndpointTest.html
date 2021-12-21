@@ -194,7 +194,7 @@
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>         Project project = ColabFactory.createProject(client, <span class="jxr_string">"testProjectRootCardAccess"</span>);
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>         Long projectId = project.getId();
 <a class="jxr_linenumber" name="L188" href="#L188">188</a> 
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>         Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>         Card rootCard = client.projectRestEndpoint.getRootCardOfProject(projectId);
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>         Long rootCardId = rootCard.getId();
 <a class="jxr_linenumber" name="L191" href="#L191">191</a> 
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>         Assertions.assertEquals(projectId, rootCard.getRootCardProjectId());
