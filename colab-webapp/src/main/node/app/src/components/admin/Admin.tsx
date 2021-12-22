@@ -14,7 +14,7 @@ import AllUsers from './AllUsers';
 import LoggersConfig from './LoggersConfig';
 import Who from './Who';
 
-export default (): JSX.Element => {
+export default function Admin(): JSX.Element {
   return (
     <div>
       <h2>Admin Page</h2>
@@ -45,4 +45,4 @@ export default (): JSX.Element => {
       </div>
     </div>
   );
-};
+}

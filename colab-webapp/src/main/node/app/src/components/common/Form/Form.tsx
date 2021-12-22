@@ -5,11 +5,11 @@
  * Licensed under the MIT License
  */
 
-import {css} from '@emotion/css';
+import { css } from '@emotion/css';
 import * as React from 'react';
 import useTranslations from '../../../i18n/I18nContext';
-import {useAppDispatch} from '../../../store/hooks';
-import {addNotification} from '../../../store/notification';
+import { useAppDispatch } from '../../../store/hooks';
+import { addNotification } from '../../../store/notification';
 import Button from '../Button';
 import InlineLoading from '../InlineLoading';
 import Checkbox from './Checkbox';
@@ -39,7 +39,7 @@ export interface SelectField<T> extends BaseField<T> {
   type: 'select';
   isMulti: boolean;
   canCreateOption?: boolean;
-  options: {label: string; value: unknown}[];
+  options: { label: string; value: unknown }[];
 }
 
 export function createSelectField<T, IsMulti extends boolean, K extends keyof T>(
@@ -57,7 +57,7 @@ export function createSelectField<T, IsMulti extends boolean, K extends keyof T>
 
 export interface SelectNumberField<T> extends BaseField<T> {
   type: 'selectnumber';
-  options: {label: string; value: number}[];
+  options: { label: string; value: number }[];
 }
 
 //TODO: unify SelectInputs; something like (hint: this attempt does not work);
@@ -116,7 +116,7 @@ export default function Form<T>({
     (key: keyof T, value: unknown) => {
       // genuine hack inside: use setState as getter
       setState(s => {
-        const newState = {...s, [key]: value};
+        const newState = { ...s, [key]: value };
         if (autoSubmit) {
           onSubmit(newState);
         }
@@ -131,7 +131,7 @@ export default function Form<T>({
       onSubmit(state);
     } else {
       setErroneous(true);
-      dispatch(addNotification({status: 'OPEN', type: 'WARN', message: i18n.pleaseProvideData}));
+      dispatch(addNotification({ status: 'OPEN', type: 'WARN', message: i18n.pleaseProvideData }));
     }
   }, [state, onSubmit, dispatch, i18n.pleaseProvideData, globalErroneous]);
 
@@ -149,9 +149,12 @@ export default function Form<T>({
     globalErroneous = globalErroneous || isErroneous;
     const fieldKey = `field-${field.key}`;
 
-    const errorMessage = erroneous && isErroneous && field.errorMessage != null ?
-      typeof field.errorMessage === "function" ? field.errorMessage(state) : field.errorMessage
-      : undefined;
+    const errorMessage =
+      erroneous && isErroneous && field.errorMessage != null
+        ? typeof field.errorMessage === 'function'
+          ? field.errorMessage(state)
+          : field.errorMessage
+        : undefined;
 
     if (field.type == 'text' || field.type === 'textarea') {
       return (
@@ -223,10 +226,10 @@ export default function Form<T>({
             <React.Suspense fallback={<InlineLoading />}>
               <PasswordStrengthBar
                 barColors={['#ddd', '#ef4836', 'rgb(118, 176, 232)', '#2b90ef', '#01f590']}
-                scoreWordStyle={{color: 'var(--fgColor)'}}
+                scoreWordStyle={{ color: 'var(--fgColor)' }}
                 onChangeScore={(value, feedback) => {
                   if (field.strengthProp != null) {
-                    setFormValue(field.strengthProp, {score: value, feedback: feedback});
+                    setFormValue(field.strengthProp, { score: value, feedback: feedback });
                   }
                 }}
                 password={String(state[field.key] || '')}
@@ -279,7 +282,7 @@ export default function Form<T>({
         <Button
           key="submit"
           label={submitLabel || i18n.submit}
-          className={css({alignSelf: 'flex-end'})}
+          className={css({ alignSelf: 'flex-end' })}
           onClick={submitCb}
         />
       )}

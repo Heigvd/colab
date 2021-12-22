@@ -4,17 +4,17 @@
  *
  * Licensed under the MIT License
  */
-import {css} from '@emotion/css';
+import { css } from '@emotion/css';
 import * as React from 'react';
-import {PasswordFeedback} from 'react-password-strength-bar';
-import {useNavigate} from 'react-router-dom';
-import {signUp} from '../../API/api';
-import {buildLinkWithQueryParam} from '../../helper';
+import { PasswordFeedback } from 'react-password-strength-bar';
+import { useNavigate } from 'react-router-dom';
+import { signUp } from '../../API/api';
+import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
-import {useAppDispatch} from '../../store/hooks';
-import Form, {Field} from '../common/Form/Form';
+import { useAppDispatch } from '../../store/hooks';
+import Form, { Field } from '../common/Form/Form';
 import FormContainer from '../common/FormContainer';
-import {InlineLink} from '../common/Link';
+import { InlineLink } from '../common/Link';
 import PasswordFeedbackDisplay from './PasswordFeedbackDisplay';
 
 interface Props {
@@ -41,12 +41,12 @@ const defData: Data = {
     score: 0,
     feedback: {
       warning: '',
-      suggestions: []
-    }
+      suggestions: [],
+    },
   },
 };
 
-export default (props: Props): JSX.Element => {
+export default function SignUp(props: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
@@ -107,12 +107,12 @@ export default (props: Props): JSX.Element => {
     <FormContainer>
       <Form fields={fields} value={defData} submitLabel={i18n.createAnAccount} onSubmit={signUpCb}>
         <InlineLink
-          className={css({alignSelf: 'flex-end'})}
-          to={buildLinkWithQueryParam('/SignIn', {redirectTo: props.redirectTo})}
+          className={css({ alignSelf: 'flex-end' })}
+          to={buildLinkWithQueryParam('/SignIn', { redirectTo: props.redirectTo })}
         >
           {i18n.cancel}
         </InlineLink>
       </Form>
     </FormContainer>
   );
-};
+}

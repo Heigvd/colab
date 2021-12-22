@@ -6,12 +6,12 @@
  */
 
 import * as React from 'react';
-import Picto from '../../images/picto.svg';
+import PictoSvg from '../../images/picto.svg';
 
 export interface PictoProps {
   className?: string;
 }
 
-export default ({ className }: PictoProps): JSX.Element => {
-  return <Picto className={className} />;
-};
+export default function Picto({ className }: PictoProps): JSX.Element {
+  return <PictoSvg className={className} />;
+}

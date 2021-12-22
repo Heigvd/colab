@@ -13,7 +13,7 @@ export interface LogoProps {
   className?: string;
 }
 
-export default ({ className }: LogoProps): JSX.Element => {
+export default function WhiteLogo({ className }: LogoProps): JSX.Element {
   return (
     <Logo
       className={cx(
@@ -26,4 +26,4 @@ export default ({ className }: LogoProps): JSX.Element => {
       )}
     />
   );
-};
+}

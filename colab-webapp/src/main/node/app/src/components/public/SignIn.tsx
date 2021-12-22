@@ -4,19 +4,19 @@
  *
  * Licensed under the MIT License
  */
-import {css} from '@emotion/css';
-import {faPlusCircle} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { css } from '@emotion/css';
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import {useNavigate} from 'react-router-dom';
-import {signInWithLocalAccount} from '../../API/api';
-import {buildLinkWithQueryParam} from '../../helper';
+import { useNavigate } from 'react-router-dom';
+import { signInWithLocalAccount } from '../../API/api';
+import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
-import {useAccountConfig} from '../../selectors/configSelector';
-import {useAppDispatch} from '../../store/hooks';
-import Form, {Field} from '../common/Form/Form';
+import { useAccountConfig } from '../../selectors/configSelector';
+import { useAppDispatch } from '../../store/hooks';
+import Form, { Field } from '../common/Form/Form';
 import FormContainer from '../common/FormContainer';
-import {InlineLink} from '../common/Link';
+import { InlineLink } from '../common/Link';
 
 interface Props {
   redirectTo: string | null;
@@ -32,7 +32,7 @@ const defCred: Credentials = {
   password: '',
 };
 
-export default function SignInForm({redirectTo}: Props): JSX.Element {
+export default function SignInForm({ redirectTo }: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -58,8 +58,8 @@ export default function SignInForm({redirectTo}: Props): JSX.Element {
       showStrenghBar: false,
       fieldFooter: (
         <InlineLink
-          className={css({alignSelf: 'flex-start'})}
-          to={buildLinkWithQueryParam('/ForgotPassword', {redirectTo: redirectTo})}
+          className={css({ alignSelf: 'flex-start' })}
+          to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })}
         >
           {i18n.forgottenPassword}
         </InlineLink>
@@ -82,19 +82,19 @@ export default function SignInForm({redirectTo}: Props): JSX.Element {
   return (
     <FormContainer>
       <Form
-        value={{...defCred, identifier: ''}}
+        value={{ ...defCred, identifier: '' }}
         onSubmit={onSubmitCb}
         fields={formFields}
         submitLabel={i18n.login}
       >
-        {accountConfig.showCreateAccountButton ?
+        {accountConfig.showCreateAccountButton ? (
           <InlineLink
-            className={css({alignSelf: 'center'})}
-            to={buildLinkWithQueryParam('/SignUp', {redirectTo: redirectTo})}
+            className={css({ alignSelf: 'center' })}
+            to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
           >
             <FontAwesomeIcon icon={faPlusCircle} /> {i18n.createAnAccount}{' '}
           </InlineLink>
-          : null}
+        ) : null}
       </Form>
     </FormContainer>
   );

@@ -4,12 +4,10 @@
  *
  * Licensed under the MIT License
  */
-import {createSlice} from '@reduxjs/toolkit';
-import {
-  AccountConfig,
-} from 'colab-rest-client';
+import { createSlice } from '@reduxjs/toolkit';
+import { AccountConfig } from 'colab-rest-client';
 import * as API from '../API/api';
-import {LoadingStatus} from './store';
+import { LoadingStatus } from './store';
 
 export interface ConfigState {
   accountConfigState: LoadingStatus;
@@ -20,7 +18,7 @@ const initialState: ConfigState = {
   accountConfigState: 'NOT_INITIALIZED',
   accountConfig: {
     displayCreateLocalAccountButton: false,
-  }
+  },
 };
 
 const slice = createSlice({
@@ -35,7 +33,7 @@ const slice = createSlice({
       .addCase(API.getAccountConfig.fulfilled, (state, action) => {
         state.accountConfigState = 'READY';
         state.accountConfig = action.payload;
-      })
+      }),
 });
 
 //export const {} = slice.actions;

@@ -1,7 +1,12 @@
+const WebpackReactComponentNamePlugin = require("webpack-react-component-name");
+
 const path = require('path');
 const config = {
   entry: './src/components/App.tsx',
   devtool: 'inline-source-map',
+  plugins: [
+    new WebpackReactComponentNamePlugin()
+  ],
   module: {
     rules: [
       {

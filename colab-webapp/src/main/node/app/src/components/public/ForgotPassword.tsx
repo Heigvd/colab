@@ -22,7 +22,7 @@ interface Data {
   email: string;
 }
 
-export default (props: Props): JSX.Element => {
+export default function ForgotPassword(props: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -61,4 +61,4 @@ export default (props: Props): JSX.Element => {
       </Form>
     </FormContainer>
   );
-};
+}

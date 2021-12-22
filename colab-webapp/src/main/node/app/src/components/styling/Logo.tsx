@@ -6,12 +6,12 @@
  */
 
 import * as React from 'react';
-import Logo from '../../images/logo.svg';
+import LogoSvg from '../../images/logo.svg';
 
 export interface LogoProps {
   className?: string;
 }
 
-export default ({ className }: LogoProps): JSX.Element => {
-  return <Logo className={className} />;
-};
+export default function Logo({ className }: LogoProps): JSX.Element {
+  return <LogoSvg className={className} />;
+}
