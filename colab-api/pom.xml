@@ -127,6 +127,49 @@
             <artifactId>jersey-server</artifactId>
         </dependency>
 
+        <!-- Jackrabbit content repository -->
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>oak-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>oak-jcr</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>jackrabbit-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jackrabbit</groupId>
+            <artifactId>oak-segment-tar</artifactId>
+        </dependency>
+        <dependency>
+            <!--
+            Without this dependency, browsing JCR repository leads to:
+            java.lang.NoClassDefFoundError: com/codahale/metrics/Reservoir
+            See: https://issues.apache.org/jira/browse/OAK-6542
+            -->
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+        </dependency>
+
         <!--*****************************************************************-->
         <!-- TEST DEPENDENCIES -->
         <!-- note : on April 8th, there is no test, so no need for test dependencies -->
@@ -182,16 +225,6 @@
             <artifactId>arquillian-suite-extension</artifactId>
             <scope>test</scope>
         </dependency>
-
-	    <!-- Jackrabbit content repository -->
-	    <dependency>
-	        <groupId>javax.jcr</groupId>
-	        <artifactId>jcr</artifactId>
-	    </dependency>
-	    <dependency>
-	        <groupId>org.apache.jackrabbit</groupId>
-	        <artifactId>jackrabbit-core</artifactId>
-	    </dependency>
 
         <!-- Arquillian -->
         <!--<dependency>

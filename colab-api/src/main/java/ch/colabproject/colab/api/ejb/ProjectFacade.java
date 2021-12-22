@@ -13,6 +13,8 @@ import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.jcr.JcrSession;
+import ch.colabproject.colab.api.persistence.jcr.JcrSessionManager;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
@@ -21,6 +23,9 @@ import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +68,12 @@ public class ProjectFacade {
      */
     @Inject
     private CardFacade cardFacade;
+
+    /**
+     * to get session to workspace
+     */
+    @Inject
+    private JcrSessionManager jcrSessionManager;
 
     // *********************************************************************************************
     // pure projects
@@ -177,5 +188,66 @@ public class ProjectFacade {
             .stream().flatMap(card -> {
                 return card.getActivityFlowLinksAsPrevious().stream();
             }).collect(Collectors.toSet());
+    }
+
+    /**
+     * Touch a file in project workspace
+     *
+     * @param projectId id of the project
+     * @param name      name of the node/file to create
+     * @param content   node data content
+     *
+     * @return persisted data content
+     */
+    public String touchFile(Long projectId, String name, String content) {
+        Project project = projectDao.getProject(projectId);
+
+        try {
+            JcrSession session = jcrSessionManager.getSession(project);
+
+            Node node;
+            if (session.nodeExists(name)) {
+                node = session.getNode(name);
+            } else {
+                Node root = session.getWorkspaceRoot();
+                root.addNode(name);
+                node = session.getNode(name);
+            }
+
+            node.setProperty("data", content);
+            return node.getProperty("data").getString();
+        } catch (RepositoryException ex) {
+            logger.error("Error: {}", ex);
+            return null;
+        }
+    }
+
+    /**
+     * Get a file in project workspace
+     *
+     * @param projectId id of the project
+     * @param name      name of the file
+     *
+     * @return data content
+     *
+     */
+    public String getFile(Long projectId, String name) {
+        Project project = projectDao.getProject(projectId);
+
+        try {
+            JcrSession session = jcrSessionManager.getSession(project);
+            Node node;
+            if (session.nodeExists(name)) {
+                node = session.getNode(name);
+                Property property = node.getProperty("data");
+                return property.getString();
+            } else {
+                return null;
+            }
+
+        } catch (RepositoryException ex) {
+            logger.error("Error: {}", ex);
+            return null;
+        }
     }
 }

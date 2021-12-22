@@ -27,25 +27,26 @@ import org.apache.jackrabbit.commons.JcrUtils;
 
 /**
  * Manages the persistence of files with JackRabbit Oak
+ *
  * @author xaviergood
  */
 public class JCRManager {
-    	
-	//TODO see if Stream is better
-	public boolean storeNewFile(long projectId, long identifier, byte[] fileContent) {
-            return true;
-	}
-	
-	//TODO see if stream is better
-	public byte[] getFileBytes(long projectId, long identifier) {
-            return null;
-	}
-	
-	public void updateFile(long projectId, long identifier, byte[] newContent) {
-		
-	}
-	
-	public void deleteFile(long projectId, long identifier) {
-		
-	}	
+
+    //TODO see if Stream is better
+    public boolean storeNewFile(long projectId, long identifier, byte[] fileContent) {
+        return true;
+    }
+
+    //TODO see if stream is better
+    public byte[] getFileBytes(long projectId, long identifier) {
+        return null;
+    }
+
+    public void updateFile(long projectId, long identifier, byte[] newContent) {
+
+    }
+
+    public void deleteFile(long projectId, long identifier) {
+
+    }
 }

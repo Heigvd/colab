@@ -19,6 +19,7 @@ import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
@@ -31,6 +32,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -222,5 +225,57 @@ public class ProjectRestEndpoint {
     public Set<ActivityFlowLink> getActivityFlowLinks(@PathParam("id") Long id) {
         logger.debug("Get project #{} activityflowlinks", id);
         return projectFacade.getActivityFlowLinks(id);
+    }
+
+    /**
+     * TODO delete
+     *
+     * @param file    the file
+     * @param details some details
+     *
+     * @return some random data
+     */
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public String postFile(
+        @FormDataParam("file") InputStream file,
+        @FormDataParam("file") FormDataContentDisposition details) {
+        return "Salut";
+    }
+
+    /**
+     * Dummy method for test purpose only. Should be deleted ASAP
+     *
+     * @param id      id of the project
+     * @param name    name of the file
+     * @param content new content of the file
+     *
+     * @return the saved content
+     */
+    @GET
+    @Path("{id}/TouchFile/{name}/{content}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String touchFile(
+        @PathParam("id") Long id,
+        @PathParam("name") String name,
+        @PathParam("content") String content) {
+        return projectFacade.touchFile(id, name, content);
+    }
+
+    /**
+     * Get file content
+     *
+     * @param id   id of the project
+     * @param name name of the file
+     *
+     * @return file content
+     */
+    @GET
+    @Path("{id}/GetFile/{name}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getFileContent(
+        @PathParam("id") Long id,
+        @PathParam("name") String name) {
+        return projectFacade.getFile(id, name);
     }
 }
