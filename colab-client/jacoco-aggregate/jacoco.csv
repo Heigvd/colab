@@ -20,7 +20,7 @@ colab-client/colab-api,ch.colabproject.colab.api.ejb,WebsocketTxManager,45,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest,71,0,0,0,24,0,13,0,13,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,EntityGatheringBagForPropagation,223,0,11,0,63,0,22,0,16,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,CdiBridgeSingleton,26,0,0,0,8,0,6,0,6,0
-colab-client/colab-api,ch.colabproject.colab.api.ejb,UserManagement,535,0,54,0,151,0,50,0,23,0
+colab-client/colab-api,ch.colabproject.colab.api.ejb,UserManagement,592,0,60,0,165,0,53,0,23,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,SecurityFacade,428,0,80,0,98,0,69,0,29,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,SubscriptionRequest.SubscriptionType,24,0,0,0,3,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.ejb,ApplicationLifecycleFacade,44,0,2,0,17,0,5,0,4,0
@@ -138,7 +138,8 @@ colab-client/colab-api,ch.colabproject.colab.api.rest.document,DocumentRestEndPo
 colab-client/colab-api,ch.colabproject.colab.api.rest.document,ResourceCreationBean,133,0,6,0,44,0,21,0,18,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.document,BlockRestEndPoint,79,0,0,0,21,0,11,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.document,ResourceRestEndpoint,244,0,0,0,53,0,18,0,18,0
-colab-client/colab-api,ch.colabproject.colab.api.security,SessionManager,147,0,24,0,43,0,22,0,10,0
+colab-client/colab-api,ch.colabproject.colab.api.security,SessionManager,196,0,26,0,54,0,27,0,14,0
+colab-client/colab-api,ch.colabproject.colab.api.security,AuthenticationFailure,32,0,0,0,8,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.security,HttpSession,28,0,0,0,12,0,8,0,8,0
 colab-client/colab-api,ch.colabproject.colab.api.security,CookieFilter,67,0,2,0,17,0,5,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.security,AuthenticationFilter,102,0,16,0,32,0,12,0,4,0

@@ -21,16 +21,17 @@ public class HttpErrorMessage extends HttpException {
      * List of message type
      */
 <span class="nc" id="L23">    public enum MessageCode {</span>
-<span class="nc" id="L24">        AUTHENTICATION_FAILED,</span>
-<span class="nc" id="L25">        AUTHENTICATION_REQUIRED,</span>
-<span class="nc" id="L26">        ACCESS_DENIED,</span>
+<span class="nc" id="L24">        ACCESS_DENIED,</span>
+<span class="nc" id="L25">        AUTHENTICATION_FAILED,</span>
+<span class="nc" id="L26">        AUTHENTICATION_REQUIRED,</span>
 <span class="nc" id="L27">        BAD_REQUEST,</span>
-<span class="nc" id="L28">        NOT_FOUND,</span>
-<span class="nc" id="L29">        USERNAME_ALREADY_TAKEN,</span>
-<span class="nc" id="L30">        SMTP_ERROR,</span>
-<span class="nc" id="L31">        EMAIL_MESSAGE_ERROR,</span>
-<span class="nc" id="L32">        RELATED_OBJECT_NOT_FOUND,</span>
-<span class="nc" id="L33">        DATA_INTEGRITY_FAILURE,</span>
+<span class="nc" id="L28">        DATA_INTEGRITY_FAILURE,</span>
+<span class="nc" id="L29">        EMAIL_MESSAGE_ERROR,</span>
+<span class="nc" id="L30">        RELATED_OBJECT_NOT_FOUND,</span>
+<span class="nc" id="L31">        NOT_FOUND,</span>
+<span class="nc" id="L32">        SMTP_ERROR,</span>
+<span class="nc" id="L33">        USERNAME_ALREADY_TAKEN,</span>
+<span class="nc" id="L34">        TOO_MANY_REQUESTS,</span>
     }
 
     /**
@@ -42,8 +43,8 @@ public class HttpErrorMessage extends HttpException {
      * Default bad request error
      */
     public HttpErrorMessage() {
-<span class="nc" id="L45">        this(Response.Status.BAD_REQUEST, MessageCode.BAD_REQUEST);</span>
-<span class="nc" id="L46">    }</span>
+<span class="nc" id="L46">        this(Response.Status.BAD_REQUEST, MessageCode.BAD_REQUEST);</span>
+<span class="nc" id="L47">    }</span>
 
     /**
      * Create a new error message with a HTTP 400 bad request status
@@ -51,8 +52,8 @@ public class HttpErrorMessage extends HttpException {
      * @param messageCode error message code
      */
     private HttpErrorMessage(MessageCode messageCode) {
-<span class="nc" id="L54">        this(Response.Status.BAD_REQUEST, messageCode);</span>
-<span class="nc" id="L55">    }</span>
+<span class="nc" id="L55">        this(Response.Status.BAD_REQUEST, messageCode);</span>
+<span class="nc" id="L56">    }</span>
 
     /**
      * Create a new error message
@@ -61,15 +62,15 @@ public class HttpErrorMessage extends HttpException {
      * @param messageCode error message code
      */
     private HttpErrorMessage(Response.Status status, MessageCode messageCode) {
-<span class="nc" id="L64">        super(status);</span>
-<span class="nc" id="L65">        this.messageCode = messageCode;</span>
-<span class="nc" id="L66">    }</span>
+<span class="nc" id="L65">        super(status);</span>
+<span class="nc" id="L66">        this.messageCode = messageCode;</span>
+<span class="nc" id="L67">    }</span>
 
     /**
      * @return message code
      */
     public MessageCode getMessageCode() {
-<span class="nc" id="L72">        return messageCode;</span>
+<span class="nc" id="L73">        return messageCode;</span>
     }
 
     /**
@@ -78,21 +79,21 @@ public class HttpErrorMessage extends HttpException {
      * @param messageCode message code
      */
     public void setMessageCode(MessageCode messageCode) {
-<span class="nc" id="L81">        this.messageCode = messageCode;</span>
-<span class="nc" id="L82">    }</span>
+<span class="nc" id="L82">        this.messageCode = messageCode;</span>
+<span class="nc" id="L83">    }</span>
 
     /**
      * @return 400 invalid bad request
      */
     public static HttpErrorMessage badRequest() {
-<span class="nc" id="L88">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.BAD_REQUEST);</span>
+<span class="nc" id="L89">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.BAD_REQUEST);</span>
     }
 
     /**
      * @return 404 not found
      */
     public static HttpErrorMessage notFound() {
-<span class="nc" id="L95">        return new HttpErrorMessage(Response.Status.NOT_FOUND,</span>
+<span class="nc" id="L96">        return new HttpErrorMessage(Response.Status.NOT_FOUND,</span>
             HttpErrorMessage.MessageCode.NOT_FOUND);
     }
 
@@ -100,7 +101,7 @@ public class HttpErrorMessage extends HttpException {
      * @return 403 Forbidden
      */
     public static HttpErrorMessage forbidden() {
-<span class="nc" id="L103">        return new HttpErrorMessage(Response.Status.FORBIDDEN,</span>
+<span class="nc" id="L104">        return new HttpErrorMessage(Response.Status.FORBIDDEN,</span>
             HttpErrorMessage.MessageCode.ACCESS_DENIED);
     }
 
@@ -108,50 +109,58 @@ public class HttpErrorMessage extends HttpException {
      * @return 401 Unauthorized
      */
     public static HttpErrorMessage authenticationRequired() {
-<span class="nc" id="L111">        return new HttpErrorMessage(Response.Status.UNAUTHORIZED,</span>
+<span class="nc" id="L112">        return new HttpErrorMessage(Response.Status.UNAUTHORIZED,</span>
             HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED);
+    }
+
+    /**
+     * @return 429 too many requests
+     */
+    public static HttpErrorMessage tooManyRequest() {
+<span class="nc" id="L120">        return new HttpErrorMessage(Response.Status.TOO_MANY_REQUESTS,</span>
+            HttpErrorMessage.MessageCode.TOO_MANY_REQUESTS);
     }
 
     /**
      * @return 400 username already taken
      */
     public static HttpErrorMessage userNameAlreadyTaken() {
-<span class="nc" id="L119">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.USERNAME_ALREADY_TAKEN);</span>
+<span class="nc" id="L128">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.USERNAME_ALREADY_TAKEN);</span>
     }
 
     /**
      * @return 400 authentication failed
      */
     public static HttpErrorMessage authenticationFailed() {
-<span class="nc" id="L126">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED);</span>
+<span class="nc" id="L135">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.AUTHENTICATION_FAILED);</span>
     }
 
     /**
      * @return 400 SMTP error
      */
     public static HttpErrorMessage smtpError() {
-<span class="nc" id="L133">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.SMTP_ERROR);</span>
+<span class="nc" id="L142">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.SMTP_ERROR);</span>
     }
 
     /**
      * @return 400 Malformed Email Message
      */
     public static HttpErrorMessage emailMessageError() {
-<span class="nc" id="L140">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.EMAIL_MESSAGE_ERROR);</span>
+<span class="nc" id="L149">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.EMAIL_MESSAGE_ERROR);</span>
     }
 
     /**
      * @return 400 Related object not found
      */
     public static HttpErrorMessage relatedObjectNotFoundError() {
-<span class="nc" id="L147">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND);</span>
+<span class="nc" id="L156">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND);</span>
     }
 
     /**
      * @return 400 Data integrity problem
      */
     public static HttpErrorMessage dataIntegrityFailure() {
-<span class="nc" id="L154">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE);</span>
+<span class="nc" id="L163">        return new HttpErrorMessage(HttpErrorMessage.MessageCode.DATA_INTEGRITY_FAILURE);</span>
     }
 
 }

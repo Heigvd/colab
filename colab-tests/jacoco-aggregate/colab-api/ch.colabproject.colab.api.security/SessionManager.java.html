@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import com.hazelcast.core.HazelcastInstance;
@@ -15,6 +16,8 @@ import com.hazelcast.map.IMap;
 import java.time.OffsetDateTime;
 import java.util.Iterator;
 import java.util.Map;
+import javax.cache.Cache;
+import javax.cache.processor.MutableEntry;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -30,10 +33,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="fc" id="L33">public class SessionManager {</span>
+<span class="fc" id="L36">public class SessionManager {</span>
 
     /** logger */
-<span class="fc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);</span>
+<span class="fc" id="L39">    private static final Logger logger = LoggerFactory.getLogger(SessionManager.class);</span>
 
     /** hazelcast instance */
     @Inject
@@ -47,13 +50,17 @@ import org.slf4j.LoggerFactory;
     @Inject
     private RequestManager requestManager;
 
+    /** cache of failed authentication */
+    @Inject
+    private Cache&lt;Long, AuthenticationFailure&gt; authenticationFailureCache;
+
     /**
      * Get cluster-wide cache for HTTP sessions
      *
      * @return the session cache
      */
     private IMap&lt;String, HttpSession&gt; getSessionsCache() {
-<span class="fc" id="L56">        return hzInstance.getMap(&quot;HTTP_SESSIONS_CACHE&quot;);</span>
+<span class="fc" id="L63">        return hzInstance.getMap(&quot;HTTP_SESSIONS_CACHE&quot;);</span>
         //return hzInstance.getCacheManager().getCache(&quot;HTTP_SESSIONS_CACHE&quot;);
     }
 
@@ -61,7 +68,7 @@ import org.slf4j.LoggerFactory;
      * get user activity date cache. Map user id with activity date
      */
     private IMap&lt;Long, OffsetDateTime&gt; getActivityCache() {
-<span class="fc" id="L64">        return hzInstance.getMap(&quot;USER_ACTIVITY_CACHE&quot;);</span>
+<span class="fc" id="L71">        return hzInstance.getMap(&quot;USER_ACTIVITY_CACHE&quot;);</span>
     }
 
     /**
@@ -70,9 +77,9 @@ import org.slf4j.LoggerFactory;
      * @param session session to cache
      */
     public void save(HttpSession session) {
-<span class="fc" id="L73">        String sessionId = session.getSessionId();</span>
-<span class="fc" id="L74">        getSessionsCache().put(sessionId, session);</span>
-<span class="fc" id="L75">    }</span>
+<span class="fc" id="L80">        String sessionId = session.getSessionId();</span>
+<span class="fc" id="L81">        getSessionsCache().put(sessionId, session);</span>
+<span class="fc" id="L82">    }</span>
 
     /**
      * Get a session from the cache. Try to reuse given sessionId.
@@ -82,20 +89,61 @@ import org.slf4j.LoggerFactory;
      * @return the session to use from now. The session may have a new sessionId !
      */
     public HttpSession getOrCreate(String sessionId) {
-<span class="fc" id="L85">        IMap&lt;String, HttpSession&gt; sessions = getSessionsCache();</span>
+<span class="fc" id="L92">        IMap&lt;String, HttpSession&gt; sessions = getSessionsCache();</span>
         // no session id or sessionId not in cache: generate new sessionId
-<span class="pc bpc" id="L87" title="1 of 4 branches missed.">        if (sessionId == null || !sessions.containsKey(sessionId)) {</span>
-<span class="fc" id="L88">            sessionId = Helper.generateHexSalt(32) + &quot;-&quot; + System.currentTimeMillis();</span>
+<span class="pc bpc" id="L94" title="1 of 4 branches missed.">        if (sessionId == null || !sessions.containsKey(sessionId)) {</span>
+<span class="fc" id="L95">            sessionId = Helper.generateHexSalt(32) + &quot;-&quot; + System.currentTimeMillis();</span>
         }
 
-<span class="fc" id="L91">        HttpSession session = sessions.get(sessionId);</span>
-<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (session == null) {</span>
+<span class="fc" id="L98">        HttpSession session = sessions.get(sessionId);</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        if (session == null) {</span>
             // if no cached session, create on
-<span class="fc" id="L94">            session = new HttpSession();</span>
-<span class="fc" id="L95">            session.setSessionId(sessionId);</span>
-<span class="fc" id="L96">            sessions.put(sessionId, session);</span>
+<span class="fc" id="L101">            session = new HttpSession();</span>
+<span class="fc" id="L102">            session.setSessionId(sessionId);</span>
+<span class="fc" id="L103">            sessions.put(sessionId, session);</span>
         }
-<span class="fc" id="L98">        return session;</span>
+<span class="fc" id="L105">        return session;</span>
+    }
+
+    /**
+     * keep trace of failed authentication attempt
+     *
+     * @param account the local account for which authentication failed
+     *
+     * @return the number of failed attempts in a row
+     */
+    public Long authenticationFailure(LocalAccount account) {
+<span class="fc" id="L116">        return this.authenticationFailureCache.invoke(account.getId(), (MutableEntry&lt;Long, AuthenticationFailure&gt; entry, Object... arguments) -&gt; {</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">            if (entry.exists()) {</span>
+<span class="nc" id="L118">                AuthenticationFailure value = entry.getValue();</span>
+<span class="nc" id="L119">                value.inc();</span>
+<span class="nc" id="L120">                entry.setValue(value);</span>
+<span class="nc" id="L121">                return entry.getValue().getCounter();</span>
+            } else {
+<span class="fc" id="L123">                entry.setValue(new AuthenticationFailure());</span>
+<span class="fc" id="L124">                return 1l;</span>
+            }
+        });
+    }
+
+    /**
+     * clear failed attempts for given account
+     *
+     * @param account the account to clear attempts for
+     */
+    public void resetAuthenticationAttemptHistory(LocalAccount account) {
+<span class="fc" id="L135">        this.authenticationFailureCache.remove(account.getId());</span>
+<span class="fc" id="L136">    }</span>
+
+    /**
+     * Get history of failed authentication attempts for an account
+     *
+     * @param account account
+     *
+     * @return authentication failure history or null
+     */
+    public AuthenticationFailure getAuthenticationAttempt(LocalAccount account) {
+<span class="fc" id="L146">        return this.authenticationFailureCache.get(account.getId());</span>
     }
 
     /**
@@ -104,10 +152,10 @@ import org.slf4j.LoggerFactory;
      * @param user the user
      */
     public void touchUserActivityDate(User user) {
-<span class="pc bpc" id="L107" title="2 of 4 branches missed.">        if (user != null &amp;&amp; user.getId() != null) {</span>
-<span class="fc" id="L108">            getActivityCache().put(user.getId(), OffsetDateTime.now());</span>
+<span class="pc bpc" id="L155" title="2 of 4 branches missed.">        if (user != null &amp;&amp; user.getId() != null) {</span>
+<span class="fc" id="L156">            getActivityCache().put(user.getId(), OffsetDateTime.now());</span>
         }
-<span class="fc" id="L110">    }</span>
+<span class="fc" id="L158">    }</span>
 
     /**
      * Get effective activity date for user
@@ -117,16 +165,16 @@ import org.slf4j.LoggerFactory;
      * @return effective activity date
      */
     public OffsetDateTime getActivityDate(User user) {
-<span class="pc bpc" id="L120" title="1 of 2 branches missed.">        if (user != null) {</span>
-<span class="pc bpc" id="L121" title="1 of 2 branches missed.">            if (user.getId() != null) {</span>
-<span class="fc" id="L122">                OffsetDateTime date = getActivityCache().get(user.getId());</span>
-<span class="fc bfc" id="L123" title="All 2 branches covered.">                if (date != null) {</span>
-<span class="fc" id="L124">                    return date;</span>
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">        if (user != null) {</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">            if (user.getId() != null) {</span>
+<span class="fc" id="L170">                OffsetDateTime date = getActivityCache().get(user.getId());</span>
+<span class="fc bfc" id="L171" title="All 2 branches covered.">                if (date != null) {</span>
+<span class="fc" id="L172">                    return date;</span>
                 }
             }
-<span class="fc" id="L127">            return user.getActivityDate();</span>
+<span class="fc" id="L175">            return user.getActivityDate();</span>
         }
-<span class="nc" id="L129">        return null;</span>
+<span class="nc" id="L177">        return null;</span>
     }
 
     /**
@@ -134,26 +182,26 @@ import org.slf4j.LoggerFactory;
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void writeActivityDatesToDatabase() {
-<span class="fc" id="L137">        logger.trace(&quot;Write Activity Date to DB&quot;);</span>
-<span class="fc" id="L138">        requestManager.sudo(() -&gt; {</span>
+<span class="fc" id="L185">        logger.trace(&quot;Write Activity Date to DB&quot;);</span>
+<span class="fc" id="L186">        requestManager.sudo(() -&gt; {</span>
             // prevent updating tracking data (updated by and at)
-<span class="fc" id="L140">            requestManager.setDoNotTrackChange(true);</span>
-<span class="fc" id="L141">            IMap&lt;Long, OffsetDateTime&gt; activityCache = getActivityCache();</span>
-<span class="fc" id="L142">            Iterator&lt;Map.Entry&lt;Long, OffsetDateTime&gt;&gt; iterator = activityCache.iterator();</span>
-<span class="fc bfc" id="L143" title="All 2 branches covered.">            while (iterator.hasNext()) {</span>
-<span class="fc" id="L144">                Map.Entry&lt;Long, OffsetDateTime&gt; next = iterator.next();</span>
-<span class="pc bpc" id="L145" title="1 of 2 branches missed.">                if (next != null) {</span>
-<span class="fc" id="L146">                    Long userId = next.getKey();</span>
-<span class="pc bpc" id="L147" title="1 of 2 branches missed.">                    if (userId != null) {</span>
-<span class="fc" id="L148">                        User user = userDao.findUser(userId);</span>
-<span class="fc" id="L149">                        OffsetDateTime date = activityCache.remove(userId);</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">                        if (user != null) {</span>
-<span class="fc" id="L151">                            user.setLastSeenAt(date);</span>
+<span class="fc" id="L188">            requestManager.setDoNotTrackChange(true);</span>
+<span class="fc" id="L189">            IMap&lt;Long, OffsetDateTime&gt; activityCache = getActivityCache();</span>
+<span class="fc" id="L190">            Iterator&lt;Map.Entry&lt;Long, OffsetDateTime&gt;&gt; iterator = activityCache.iterator();</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">            while (iterator.hasNext()) {</span>
+<span class="fc" id="L192">                Map.Entry&lt;Long, OffsetDateTime&gt; next = iterator.next();</span>
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">                if (next != null) {</span>
+<span class="fc" id="L194">                    Long userId = next.getKey();</span>
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">                    if (userId != null) {</span>
+<span class="fc" id="L196">                        User user = userDao.findUser(userId);</span>
+<span class="fc" id="L197">                        OffsetDateTime date = activityCache.remove(userId);</span>
+<span class="pc bpc" id="L198" title="1 of 2 branches missed.">                        if (user != null) {</span>
+<span class="nc" id="L199">                            user.setLastSeenAt(date);</span>
                         }
                     }
                 }
-<span class="fc" id="L155">            }</span>
-<span class="fc" id="L156">        });</span>
-<span class="fc" id="L157">    }</span>
+<span class="fc" id="L203">            }</span>
+<span class="fc" id="L204">        });</span>
+<span class="fc" id="L205">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
