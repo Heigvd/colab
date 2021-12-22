@@ -453,7 +453,7 @@ public class RestEndpoint {
                 .append(" ").append(method.getName()).append("(");
 
             // parameters
-            List<String> params= new ArrayList<>();
+            List<String> params = new ArrayList<>();
             params.addAll(processParameters(this.getPathParameters(), imports));
             params.addAll(processParameters(method.getPathParameters(), imports));
             params.addAll(processParameters(method.getQueryParameters(), imports));
@@ -562,6 +562,15 @@ public class RestEndpoint {
             } else {
                 sb.append("new GenericType<>(").append(resolvedReturnType).append(".class)");
             }
+
+            List<String> produces = method.getProduces();
+            if (produces != null && !produces.isEmpty()) {
+                String accept = produces.stream()
+                    .map(type -> "\"" + type + "\"")
+                    .collect(Collectors.joining(", "));
+                sb.append(", ").append(accept);
+            }
+
             sb.append(");");
             indent--;
             newLine(sb);
