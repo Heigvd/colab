@@ -23,6 +23,7 @@ export interface CardContentDetail {
 export interface CardState {
   status: LoadingStatus;
   contentStatus: LoadingStatus;
+  rootCardId: number | LoadingStatus;
   cards: Record<number, CardDetail>;
   contents: Record<number, CardContentDetail>;
 }
@@ -30,6 +31,7 @@ export interface CardState {
 const initialState: CardState = {
   status: 'NOT_INITIALIZED',
   contentStatus: 'NOT_INITIALIZED',
+  rootCardId: 'NOT_INITIALIZED',
   cards: {},
   contents: {},
 };
@@ -174,6 +176,17 @@ const cardsSlice = createSlice({
           cardState.card = card;
         });
         state.status = 'READY';
+      })
+      .addCase(API.getRootCardOfProject.pending, state => {
+        state.rootCardId = 'LOADING';
+      })
+      .addCase(API.getRootCardOfProject.fulfilled, (state, action) => {
+        const cardId = action.payload.id;
+        if (cardId != null) {
+          state.rootCardId = cardId;
+          const cardState = getOrCreateCardState(state, cardId);
+          cardState.card = action.payload;
+        }
       })
       .addCase(API.getCard.pending, (state, action) => {
         const cardState = getOrCreateCardState(state, action.meta.arg);
