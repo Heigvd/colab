@@ -21,16 +21,17 @@ public class HttpErrorMessage extends HttpException {
      * List of message type
      */
     public enum MessageCode {
+        ACCESS_DENIED,
         AUTHENTICATION_FAILED,
         AUTHENTICATION_REQUIRED,
-        ACCESS_DENIED,
         BAD_REQUEST,
-        NOT_FOUND,
-        USERNAME_ALREADY_TAKEN,
-        SMTP_ERROR,
+        DATA_INTEGRITY_FAILURE,
         EMAIL_MESSAGE_ERROR,
         RELATED_OBJECT_NOT_FOUND,
-        DATA_INTEGRITY_FAILURE,
+        NOT_FOUND,
+        SMTP_ERROR,
+        USERNAME_ALREADY_TAKEN,
+        TOO_MANY_REQUESTS,
     }
 
     /**
@@ -110,6 +111,14 @@ public class HttpErrorMessage extends HttpException {
     public static HttpErrorMessage authenticationRequired() {
         return new HttpErrorMessage(Response.Status.UNAUTHORIZED,
             HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED);
+    }
+
+    /**
+     * @return 429 too many requests
+     */
+    public static HttpErrorMessage tooManyRequest() {
+        return new HttpErrorMessage(Response.Status.TOO_MANY_REQUESTS,
+            HttpErrorMessage.MessageCode.TOO_MANY_REQUESTS);
     }
 
     /**

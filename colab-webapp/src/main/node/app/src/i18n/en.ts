@@ -133,6 +133,7 @@ export const en = {
     SMTP_ERROR: 'e-mail server error',
     EMAIL_MESSAGE_ERROR: 'e-mail not sent',
     BAD_REQUEST: 'Bad request',
+    TOO_MANY_REQUEST: 'too many request',
   },
   card: {
     untitled: 'unnamed card',

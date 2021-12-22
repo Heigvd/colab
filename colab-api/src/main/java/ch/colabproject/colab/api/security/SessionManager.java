@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import com.hazelcast.core.HazelcastInstance;
@@ -15,6 +16,8 @@ import com.hazelcast.map.IMap;
 import java.time.OffsetDateTime;
 import java.util.Iterator;
 import java.util.Map;
+import javax.cache.Cache;
+import javax.cache.processor.MutableEntry;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -46,6 +49,10 @@ public class SessionManager {
     /** request manager */
     @Inject
     private RequestManager requestManager;
+
+    /** cache of failed authentication */
+    @Inject
+    private Cache<Long, AuthenticationFailure> authenticationFailureCache;
 
     /**
      * Get cluster-wide cache for HTTP sessions
@@ -96,6 +103,47 @@ public class SessionManager {
             sessions.put(sessionId, session);
         }
         return session;
+    }
+
+    /**
+     * keep trace of failed authentication attempt
+     *
+     * @param account the local account for which authentication failed
+     *
+     * @return the number of failed attempts in a row
+     */
+    public Long authenticationFailure(LocalAccount account) {
+        return this.authenticationFailureCache.invoke(account.getId(), (MutableEntry<Long, AuthenticationFailure> entry, Object... arguments) -> {
+            if (entry.exists()) {
+                AuthenticationFailure value = entry.getValue();
+                value.inc();
+                entry.setValue(value);
+                return entry.getValue().getCounter();
+            } else {
+                entry.setValue(new AuthenticationFailure());
+                return 1l;
+            }
+        });
+    }
+
+    /**
+     * clear failed attempts for given account
+     *
+     * @param account the account to clear attempts for
+     */
+    public void resetAuthenticationAttemptHistory(LocalAccount account) {
+        this.authenticationFailureCache.remove(account.getId());
+    }
+
+    /**
+     * Get history of failed authentication attempts for an account
+     *
+     * @param account account
+     *
+     * @return authentication failure history or null
+     */
+    public AuthenticationFailure getAuthenticationAttempt(LocalAccount account) {
+        return this.authenticationFailureCache.get(account.getId());
     }
 
     /**

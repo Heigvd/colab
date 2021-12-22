@@ -16,7 +16,10 @@ import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.security.AuthenticationFailure;
+import ch.colabproject.colab.api.security.SessionManager;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.time.OffsetDateTime;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -24,6 +27,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import liquibase.pro.packaged.ch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +45,16 @@ public class UserManagement {
      */
     private static final int SALT_LENGTH = 32;
 
+    /**
+     * Max number of failed authentication allowed
+     */
+    private static final Long AUTHENTICATION_ATTEMPT_MAX = 5l;
+
+    /**
+     * Number of second to wait to accept new authentication attempt if max number has been reached
+     */
+    private static final Long AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC = 10l;
+
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(UserManagement.class);
 
@@ -49,6 +63,10 @@ public class UserManagement {
      */
     @Inject
     private RequestManager requestManager;
+
+    /** Session manager to keep trace of authentication attempts */
+    @Inject
+    private SessionManager sessionManager;
 
     /**
      * some operation on users will create and send tokens
@@ -297,12 +315,31 @@ public class UserManagement {
             if (mandatoryHash != null) {
                 byte[] hash = m.hash(mandatoryHash, account.getDbSalt());
 
+                AuthenticationFailure aa = sessionManager.getAuthenticationAttempt(account);
+                if (aa != null) {
+                    logger.warn("Attmpt: {}", aa.getCounter());
+                    if (aa.getCounter() >= AUTHENTICATION_ATTEMPT_MAX) {
+                        // max number of failed attempts reached
+                        OffsetDateTime lastAttempt = aa.getTimestamp();
+                        OffsetDateTime delay = lastAttempt.plusSeconds(AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC);
+                        if (OffsetDateTime.now().isAfter(delay)) {
+                            // delay has been reached, user may try again
+                            sessionManager.resetAuthenticationAttemptHistory(account);
+                        } else {
+                            // user have to wait some time before any new attempt
+                            logger.warn("Account {} has reache the max number of failed authentication", account);
+                            throw HttpErrorMessage.tooManyRequest();
+                        }
+                    }
+                }
+
                 // Spotbugs reports a timing attack vulnerability using:
                 //  if (Arrays.equals(hash, account.getHashedPassword())) {
                 // doing a fullcomparison of arrays makes it happy:
                 if (this.constantTimeArrayEquals(hash, account.getHashedPassword())) {
                     // authentication succeed
                     /////////////////////////////////
+                    sessionManager.resetAuthenticationAttemptHistory(account);
 
                     boolean forceShadow = false;
 
@@ -336,6 +373,9 @@ public class UserManagement {
                     requestManager.login(account);
 
                     return account.getUser();
+                } else {
+                    // update cache of failed authentication attempt
+                    sessionManager.authenticationFailure(account);
                 }
             }
         }
