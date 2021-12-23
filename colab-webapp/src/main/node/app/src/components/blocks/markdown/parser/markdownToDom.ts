@@ -462,9 +462,9 @@ function parseMinor(minor: Combined): DomTree {
           logger.trace('SubTag.all: ', tag.all);
           all.push(...tag.all);
 
-          // move cursor to end of tag
-          offset += tag.root.consumed;
-          nodeStart = offset;
+          // move cursor to last character of tag
+          offset += tag.root.consumed - 1;
+          nodeStart = offset + 1;
         } else if (minor.data[offset] === '\n') {
           createTextNode();
           const br = document.createElement('BR');
