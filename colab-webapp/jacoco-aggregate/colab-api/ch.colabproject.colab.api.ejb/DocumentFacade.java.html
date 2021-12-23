@@ -6,11 +6,11 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
@@ -43,13 +43,68 @@ import org.slf4j.LoggerFactory;
     private DocumentDao documentDao;
 
     /**
-     * Card content persistence handler
+     * Card content specific logic management
      */
     @Inject
-    private CardContentDao cardContentDao;
+    private CardContentManager cardContentManager;
 
     // *********************************************************************************************
-    // general documents
+    // find document
+    // *********************************************************************************************
+
+    /**
+     * Retrieve the document. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param documentId the id of the document
+     *
+     * @return the document if found
+     *
+     * @throws HttpErrorMessage if the document was not found
+     */
+    public Document assertAndGetDocument(Long documentId) {
+<span class="nc" id="L65">        Document document = documentDao.findDocument(documentId);</span>
+
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L68">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+
+<span class="nc" id="L71">        return document;</span>
+    }
+
+    /**
+     * Retrieve the block document. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param documentId the id of the block document
+     *
+     * @return the block document if found
+     *
+     * @throws HttpErrorMessage if the block document was not found
+     */
+    public BlockDocument assertAndGetBlockDocument(Long documentId) {
+<span class="nc" id="L84">        Document document = documentDao.findDocument(documentId);</span>
+
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (!(document instanceof BlockDocument)) {</span>
+<span class="nc" id="L87">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+
+<span class="nc" id="L90">        return (BlockDocument) document;</span>
+    }
+
+    /**
+     * Assert that the block document is not null. If not throw a {@link HttpErrorMessage}.
+     *
+     * @param blockDocument the block document to check
+     *
+     * @throws HttpErrorMessage if the block document is null
+     */
+    public void assertBlockDocument(BlockDocument blockDocument) {
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (blockDocument == null) {</span>
+<span class="nc" id="L102">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+<span class="nc" id="L104">    }</span>
+
+    // *********************************************************************************************
+    // life cycle
     // *********************************************************************************************
 
     /**
@@ -59,25 +114,23 @@ import org.slf4j.LoggerFactory;
      *
      * @return the new persisted document
      */
+    // TODO no effective use. To destroy during RestEndpoint cleaning
     public Document createDocument(Document document) {
-<span class="nc" id="L63">        logger.debug(&quot;create document : {}&quot;, document);</span>
+<span class="nc" id="L119">        logger.debug(&quot;create document : {}&quot;, document);</span>
 
-<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (document.getDeliverableCardContentId() != null) {</span>
-<span class="nc" id="L66">            CardContent cardContent = cardContentDao</span>
-<span class="nc" id="L67">                .getCardContent(document.getDeliverableCardContentId());</span>
-<span class="nc bnc" id="L68" title="All 2 branches missed.">            if (cardContent == null) {</span>
-<span class="nc" id="L69">                throw HttpErrorMessage.relatedObjectNotFoundError();</span>
-            }
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        if (document.getDeliverableCardContentId() != null) {</span>
+<span class="nc" id="L122">            CardContent cardContent = cardContentManager</span>
+<span class="nc" id="L123">                .assertAndGetCardContent(document.getDeliverableCardContentId());</span>
 
-<span class="nc" id="L72">            cardContent.setDeliverable(document);</span>
-<span class="nc" id="L73">            document.setDeliverableCardContent(cardContent);</span>
+<span class="nc" id="L125">            cardContent.setDeliverable(document);</span>
+<span class="nc" id="L126">            document.setDeliverableCardContent(cardContent);</span>
         }
 
-<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (document.getResourceId() != null) {</span>
-<span class="nc" id="L77">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (document.getResourceId() != null) {</span>
+<span class="nc" id="L130">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L80">        return documentDao.persistDocument(document);</span>
+<span class="nc" id="L133">        return documentDao.persistDocument(document);</span>
     }
 
     /**
@@ -87,22 +140,20 @@ import org.slf4j.LoggerFactory;
      *
      * @return the freshly deleted document
      */
+    // TODO no effective use. To destroy during RestEndpoint cleaning
     public Document deleteDocument(Long documentId) {
-<span class="nc" id="L91">        logger.debug(&quot;delete document #{}&quot;, documentId);</span>
+<span class="nc" id="L145">        logger.debug(&quot;delete document #{}&quot;, documentId);</span>
 
-<span class="nc" id="L93">        Document document = documentDao.findDocument(documentId);</span>
-<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L95">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
-        }
+<span class="nc" id="L147">        Document document = assertAndGetDocument(documentId);</span>
 
-<span class="nc" id="L98">        CardContent cardContent = document.getDeliverableCardContent();</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (cardContent != null) {</span>
-<span class="nc" id="L100">            cardContent.setDeliverable(null);</span>
+<span class="nc" id="L149">        CardContent cardContent = document.getDeliverableCardContent();</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (cardContent != null) {</span>
+<span class="nc" id="L151">            cardContent.setDeliverable(null);</span>
         }
 
         // to check : resource handling
 
-<span class="nc" id="L105">        return documentDao.deleteDocument(documentId);</span>
+<span class="nc" id="L156">        return documentDao.deleteDocument(documentId);</span>
     }
 
     // *********************************************************************************************
@@ -116,16 +167,62 @@ import org.slf4j.LoggerFactory;
      *
      * @return all blocks of the document
      */
+    // TODO To move into BlockFacade during RestEndpoint cleaning
     public List&lt;Block&gt; getBlocksOfDocument(Long documentId) {
-<span class="nc" id="L120">        logger.debug(&quot;get blocks composing the document #{}&quot;, documentId);</span>
+<span class="nc" id="L172">        logger.debug(&quot;get blocks composing the document #{}&quot;, documentId);</span>
 
-<span class="nc" id="L122">        Document document = documentDao.findDocument(documentId);</span>
-<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (!(document instanceof BlockDocument)) {</span>
-<span class="nc" id="L124">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L174">        BlockDocument document = assertAndGetBlockDocument(documentId);</span>
+
+<span class="nc" id="L176">        return document.getBlocks();</span>
+    }
+
+    // *********************************************************************************************
+    // integrity check
+    // *********************************************************************************************
+
+    /**
+     * Check the integrity of the document
+     *
+     * @param document the document to check
+     *
+     * @return true iff the document is complete and safe
+     */
+    public boolean checkIntegrity(Document document) {
+<span class="nc bnc" id="L191" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L192">            return false;</span>
         }
 
-<span class="nc" id="L127">        return ((BlockDocument) document).getBlocks();</span>
+<span class="nc bnc" id="L195" title="All 4 branches missed.">        if (!(document.hasDeliverableCardContent() || document.hasResource())) {</span>
+<span class="nc" id="L196">            return false;</span>
+        }
+
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        if (document instanceof BlockDocument) {</span>
+<span class="nc" id="L200">            return checkBlockDocumentSpecificIntegrity((BlockDocument)document);</span>
+        } else {
+<span class="nc" id="L202">            return true;</span>
+        }
     }
+
+    private boolean checkBlockDocumentSpecificIntegrity(BlockDocument document) {
+        // not twice the same index
+//        List&lt;Block&gt; blocks = document.getBlocks();
+//        if (!CollectionUtils.isEmpty(blocks)) {
+            // TODO
+//        }
+        // TODO delete that. It is just to satisfy PMD
+<span class="nc bnc" id="L213" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L214">            return false;</span>
+        }
+
+<span class="nc" id="L217">        return true;</span>
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    // As a document is either linked to a resource or to a card content, most of the operations are
+    // made from there
 
     // *********************************************************************************************
     //

@@ -14,7 +14,7 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.card;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.CardFacade;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.card.CardTypeManager;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.exceptions.ColabMergeException;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.AbstractCardType;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.CardType;
@@ -58,10 +58,10 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">private</strong> <a name="CardTypeDao" href="../../../../../../ch/colabproject/colab/api/persistence/card/CardTypeDao.html#CardTypeDao">CardTypeDao</a> cardTypeDao;
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">     * The card-related logic</em>
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">     * Card type specific logic management</em>
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>      @Inject
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">private</strong> <a name="CardFacade" href="../../../../../../ch/colabproject/colab/api/ejb/CardFacade.html#CardFacade">CardFacade</a> cardFacade;
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">private</strong> <a name="CardTypeManager" href="../../../../../../ch/colabproject/colab/api/controller/card/CardTypeManager.html#CardTypeManager">CardTypeManager</a> cardTypeManager;
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">     * Retrieve the list of all card types. This is available to admin only</em>
@@ -110,7 +110,7 @@
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>     @Path(<span class="jxr_string">"allProjectsPublished"</span>)
 <a class="jxr_linenumber" name="L103" href="#L103">103</a>     <strong class="jxr_keyword">public</strong> Set&lt;AbstractCardType&gt; getPublishedCardTypes() {
 <a class="jxr_linenumber" name="L104" href="#L104">104</a>         logger.debug(<span class="jxr_string">"get published projects card types"</span>);
-<a class="jxr_linenumber" name="L105" href="#L105">105</a>         <strong class="jxr_keyword">return</strong> cardFacade.getExpandedPublishedTypes();
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>         <strong class="jxr_keyword">return</strong> cardTypeManager.getExpandedProjectPublishedTypes();
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>     }
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> 
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>     <em class="jxr_javadoccomment">/**</em>
@@ -144,7 +144,7 @@
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         cardType.setPurpose(cardTypeCreationBean.getPurpose());
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         cardType.setTags(cardTypeCreationBean.getTags());
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> 
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>         <strong class="jxr_keyword">return</strong> cardFacade.createNewCardType(cardType).getId();
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>         <strong class="jxr_keyword">return</strong> cardTypeManager.createCardType(cardType).getId();
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>     }
 <a class="jxr_linenumber" name="L141" href="#L141">141</a> 
 <a class="jxr_linenumber" name="L142" href="#L142">142</a> <em class="jxr_comment">//    /**</em>
@@ -183,7 +183,7 @@
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>     @Path(<span class="jxr_string">"{id}"</span>)
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> deleteCardType(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>         logger.debug(<span class="jxr_string">"delete card type #{}"</span>, id);
-<a class="jxr_linenumber" name="L178" href="#L178">178</a>         cardFacade.deleteCardType(id);
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>         cardTypeManager.deleteCardType(id);
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>     }
 <a class="jxr_linenumber" name="L180" href="#L180">180</a> 
 <a class="jxr_linenumber" name="L181" href="#L181">181</a> }

@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.card;
 
-import ch.colabproject.colab.api.ejb.CardFacade;
+import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
@@ -50,10 +50,10 @@ import org.slf4j.LoggerFactory;
     private CardTypeDao cardTypeDao;
 
     /**
-     * The card-related logic
+     * Card type specific logic management
      */
     @Inject
-    private CardFacade cardFacade;
+    private CardTypeManager cardTypeManager;
 
     /**
      * Retrieve the list of all card types. This is available to admin only
@@ -102,7 +102,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;allProjectsPublished&quot;)
     public Set&lt;AbstractCardType&gt; getPublishedCardTypes() {
 <span class="nc" id="L104">        logger.debug(&quot;get published projects card types&quot;);</span>
-<span class="nc" id="L105">        return cardFacade.getExpandedPublishedTypes();</span>
+<span class="nc" id="L105">        return cardTypeManager.getExpandedProjectPublishedTypes();</span>
     }
 
     /**
@@ -136,7 +136,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L136">        cardType.setPurpose(cardTypeCreationBean.getPurpose());</span>
 <span class="nc" id="L137">        cardType.setTags(cardTypeCreationBean.getTags());</span>
 
-<span class="nc" id="L139">        return cardFacade.createNewCardType(cardType).getId();</span>
+<span class="nc" id="L139">        return cardTypeManager.createCardType(cardType).getId();</span>
     }
 
 //    /**
@@ -175,7 +175,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id}&quot;)
     public void deleteCardType(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L177">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
-<span class="nc" id="L178">        cardFacade.deleteCardType(id);</span>
+<span class="nc" id="L178">        cardTypeManager.deleteCardType(id);</span>
 <span class="nc" id="L179">    }</span>
 
 }
