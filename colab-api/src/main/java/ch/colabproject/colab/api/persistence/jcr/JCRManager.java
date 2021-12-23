@@ -23,6 +23,14 @@
  */
 package ch.colabproject.colab.api.persistence.jcr;
 
+import ch.colabproject.colab.api.model.project.Project;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.jcr.Binary;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import org.apache.jackrabbit.commons.JcrUtils;
 
 /**
@@ -30,23 +38,54 @@ import org.apache.jackrabbit.commons.JcrUtils;
  *
  * @author xaviergood
  */
-public class JCRManager {
+@Stateless
+public class JcrManager {
 
+    @Inject 
+    private JcrSessionManager jcrSessionManager;
+    
+    private static final String CONTENT = "CONTENT";
     //TODO see if Stream is better
-    public boolean storeNewFile(long projectId, long identifier, byte[] fileContent) {
-        return true;
+    /**
+     * projectId project uid
+     * fileId file unique id
+     */
+//    public void storeNewFile(Project project, long fileId, InputStream file) throws RepositoryException {
+//        var session = this.jcrSessionManager.getSession(project);
+//        
+//    }
+
+    public InputStream getFileStream(Project project, Long identifier) throws RepositoryException {
+        var session = this.jcrSessionManager.getSession(project);
+        
+        var node = session.getNode(identifier.toString());
+        var prop = node.getProperty(CONTENT);
+        //TODO figure out when to call dispose
+        return prop.getBinary().getStream();
     }
 
-    //TODO see if stream is better
-    public byte[] getFileBytes(long projectId, long identifier) {
-        return null;
+    public void updateFile(Project project, Long identifier, InputStream newContent) throws RepositoryException {
+        var session = this.jcrSessionManager.getSession(project);
+        
+        var node = session.getNode(identifier.toString());
+        var prop = node.getProperty(CONTENT);
+        Binary binary = session.getSession().getValueFactory().createBinary(newContent);
+        prop.setValue(binary);
+    }
+    
+    public void createFile(Project project, Long identifier, InputStream content) throws RepositoryException{
+        var session = this.jcrSessionManager.getSession(project);
+        
+        Node root = session.getWorkspaceRoot();
+        Node newNode = root.addNode(identifier.toString());
+        var prop = newNode.setProperty(CONTENT, identifier.toString());
+        Binary binary = session.getSession().getValueFactory().createBinary(content);
+        
+        prop.setValue(binary);
     }
 
-    public void updateFile(long projectId, long identifier, byte[] newContent) {
-
-    }
-
-    public void deleteFile(long projectId, long identifier) {
-
+    public void deleteFile(Project project, Long identifier) throws RepositoryException {
+        var session = this.jcrSessionManager.getSession(project);
+        session.removeNode(identifier.toString());
     }
 }

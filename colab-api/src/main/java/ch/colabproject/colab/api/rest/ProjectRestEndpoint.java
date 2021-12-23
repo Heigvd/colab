@@ -227,21 +227,21 @@ public class ProjectRestEndpoint {
         return projectFacade.getActivityFlowLinks(id);
     }
 
-    /**
-     * TODO delete
-     *
-     * @param file    the file
-     * @param details some details
-     *
-     * @return some random data
-     */
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public String postFile(
-        @FormDataParam("file") InputStream file,
-        @FormDataParam("file") FormDataContentDisposition details) {
-        return "Salut";
-    }
+//    /**
+//     * TODO delete
+//     *
+//     * @param file    the file
+//     * @param details some details
+//     *
+//     * @return some random data
+//     */
+//    @POST
+//    @Consumes(MediaType.MULTIPART_FORM_DATA)
+//    public String postFile(
+//        @FormDataParam("file") InputStream file,
+//        @FormDataParam("file") FormDataContentDisposition details) {
+//        return "Salut";
+//    }
 
     /**
      * Dummy method for test purpose only. Should be deleted ASAP
@@ -262,20 +262,20 @@ public class ProjectRestEndpoint {
         return projectFacade.touchFile(id, name, content);
     }
 
-    /**
-     * Get file content
-     *
-     * @param id   id of the project
-     * @param name name of the file
-     *
-     * @return file content
-     */
-    @GET
-    @Path("{id}/GetFile/{name}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getFileContent(
-        @PathParam("id") Long id,
-        @PathParam("name") String name) {
-        return projectFacade.getFile(id, name);
-    }
+//    /**
+//     * Get file content
+//     *
+//     * @param id   id of the project
+//     * @param name name of the file
+//     *
+//     * @return file content
+//     */
+//    @GET
+//    @Path("{id}/GetFile/{name}")
+//    @Produces(MediaType.TEXT_PLAIN)
+//    public String getFileContent(
+//        @PathParam("id") Long id,
+//        @PathParam("name") String name) {
+//        return projectFacade.getFile(id, name);
+//    }
 }

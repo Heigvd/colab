@@ -127,6 +127,19 @@ public class JcrSession implements Serializable {
             return null;
         }
     }
+    
+    /**
+     * 
+     * @param relativePath relative path from workspace root
+     */
+    public void removeNode(String relativePath) {
+        try{
+            session.removeItem(getFullPath(relativePath));
+        }catch(RepositoryException ex){
+            logger.warn("removeNode: node could not be removed", ex);
+        }
+        
+    }
 
     /**
      * Get JCR session

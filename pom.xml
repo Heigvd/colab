@@ -148,6 +148,19 @@
                 <version>2.0</version>
             </dependency>
 
+			
+	       <dependency>
+	            <groupId>org.apache.jackrabbit</groupId>
+	            <artifactId>oak-store-document</artifactId>
+	            <type>jar</type>
+	            <exclusions>
+	                <exclusion>
+	                    <groupId>com.google.guava</groupId>
+	                    <artifactId>guava</artifactId>
+	                </exclusion>
+	            </exclusions>
+	        </dependency>
+
             <dependency>
                 <groupId>org.apache.jackrabbit</groupId>
                 <artifactId>jackrabbit-core</artifactId>
