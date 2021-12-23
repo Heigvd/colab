@@ -293,7 +293,7 @@ public class ProjectFacade {
             return false;
         }
 
-        if (project.getRootCardId() == null && project.getRootCard() == null) {
+        if (project.getRootCard() == null) {
             return false;
         }
 
