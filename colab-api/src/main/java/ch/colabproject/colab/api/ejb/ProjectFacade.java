@@ -12,10 +12,12 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -64,13 +66,13 @@ public class ProjectFacade {
      * Team specific logic management
      */
     @Inject
-    private TeamFacade teamFacade;
+    private TeamFacade teamManager;
 
     /**
-     * Cards specific logic management
+     * Card specific logic management
      */
     @Inject
-    private CardFacade cardFacade;
+    private CardFacade cardManager;
 
     /**
      * Card type specific logic management
@@ -79,8 +81,27 @@ public class ProjectFacade {
     private CardTypeManager cardTypeManager;
 
     // *********************************************************************************************
-    // projects as a whole
+    // find projects
     // *********************************************************************************************
+
+    /**
+     * Retrieve the project. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param projectId the id of the project
+     *
+     * @return the project if found
+     *
+     * @throws HttpErrorMessage if the project was not found
+     */
+    public Project assertAndGetProject(Long projectId) {
+        Project project = projectDao.getProject(projectId);
+
+        if (project == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return project;
+    }
 
     /**
      * Retrieve all projects the current user is member of
@@ -96,6 +117,126 @@ public class ProjectFacade {
 
         return projects;
     }
+
+    // *********************************************************************************************
+    // life cycle
+    // *********************************************************************************************
+
+    /**
+     * Complete and persist the given project and add the current user to the project team
+     *
+     * @param project project to persist
+     *
+     * @return the new persisted project
+     */
+    public Project createProject(Project project) {
+        try {
+            return requestManager.sudo(() -> {
+                logger.debug("Create project: {}", project);
+
+                Card rootCard = cardManager.initNewRootCard();
+
+                project.setRootCard(rootCard);
+                rootCard.setRootCardProject(project);
+
+                User user = securityFacade.assertAndGetCurrentUser();
+                teamManager.addMember(project, user, HierarchicalPosition.OWNER);
+
+                return projectDao.createProject(project);
+            });
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    // *********************************************************************************************
+    // retrieve the elements of a project
+    // *********************************************************************************************
+
+    /**
+     * Get the root card of the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return The root card linked to the project
+     */
+    public Card getRootCard(Long projectId) {
+        logger.debug("get the root card of the project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        return project.getRootCard();
+    }
+
+    /**
+     * Get all cards of the given project
+     *
+     * @param projectId id of the project
+     *
+     * @return all cards of the project
+     */
+    public Set<Card> getCards(Long projectId) {
+        logger.debug("get all card of project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        return cardManager.getAllCards(project.getRootCard());
+    }
+
+    /**
+     * Get all cardContents of the given project
+     *
+     * @param projectId id of the project
+     *
+     * @return all cards contents of the project
+     */
+    public Set<CardContent> getCardContents(Long projectId) {
+        logger.debug("get all card contents of project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        return cardManager.getAllCardContents(project.getRootCard());
+    }
+
+    /**
+     * Get all card types of the given project
+     *
+     * @param projectId id of the project
+     *
+     * @return all card types of the project
+     */
+    public Set<AbstractCardType> getCardTypes(Long projectId) {
+        logger.debug("get card types of project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        return cardTypeManager.getExpandedProjectTypes(project);
+    }
+
+    /**
+     * Get all activity flow links belonging to the given project
+     *
+     * @param projectId id of the project
+     *
+     * @return all activityFlowLinks linked to the project
+     */
+    public Set<ActivityFlowLink> getActivityFlowLinks(Long projectId) {
+        logger.debug("Get activity flow links of project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        return cardManager
+            .getAllCards(project.getRootCard())
+            .stream().flatMap(card -> {
+                return card.getActivityFlowLinksAsPrevious().stream();
+            }).collect(Collectors.toSet());
+    }
+
+    // *********************************************************************************************
+    // dedicated to access control
+    // *********************************************************************************************
 
     /**
      * Retrieve the ids of the projects the current user is a member of.
@@ -136,126 +277,32 @@ public class ProjectFacade {
         return projectsIds;
     }
 
-    /**
-     * Complete and persist the given project and add the current user to the project team
-     *
-     * @param project project to persist
-     *
-     * @return the new persisted project
-     */
-    public Project createProject(Project project) {
-        try {
-            return requestManager.sudo(() -> {
-                logger.debug("Create project: {}", project);
-
-                Card rootCard = cardFacade.initNewRootCard();
-
-                project.setRootCard(rootCard);
-                rootCard.setRootCardProject(project);
-
-                User user = securityFacade.assertAndGetCurrentUser();
-                teamFacade.addMember(project, user, HierarchicalPosition.OWNER);
-
-                return projectDao.createProject(project);
-            });
-        } catch (RuntimeException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
     // *********************************************************************************************
-    // retrieve the elements of a project
+    // integrity check
     // *********************************************************************************************
 
     /**
-     * Get the root card of the given project
+     * Check the integrity of the project
      *
-     * @param projectId the id of the project
+     * @param project the project to check
      *
-     * @return The root card linked to the project
+     * @return true iff the project is complete and safe
      */
-    public Card getRootCard(Long projectId) {
-        Project project = projectDao.getProject(projectId);
-        logger.debug("get the root card of the project {}", project);
+    public boolean checkIntegrity(Project project) {
         if (project == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+            return false;
         }
 
-        return project.getRootCard();
-    }
-
-    /**
-     * Get all cards of the given project
-     *
-     * @param projectId id of the project
-     *
-     * @return all cards of the project
-     */
-    public Set<Card> getCards(Long projectId) {
-        Project project = projectDao.getProject(projectId);
-        logger.debug("get all card of project {}", project);
-        if (project == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+        if (project.getRootCardId() == null && project.getRootCard() == null) {
+            return false;
         }
 
-        return cardFacade.getAllCards(project.getRootCard());
-    }
-
-    /**
-     * Get all cardContents of the given project
-     *
-     * @param projectId id of the project
-     *
-     * @return all cards contents of the project
-     */
-    public Set<CardContent> getCardContents(Long projectId) {
-        Project project = projectDao.getProject(projectId);
-        logger.debug("get all card contents of project {}", project);
-        if (project == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
+        List<TeamMember> teamMembers = new ArrayList<>(project.getTeamMembers());
+        if (teamMembers.stream().noneMatch(m -> m.getPosition() == HierarchicalPosition.OWNER)) {
+            return false;
         }
 
-        return cardFacade.getAllCardContents(project.getRootCard());
-    }
-
-    /**
-     * Get all card types of the given project
-     *
-     * @param projectId id of the project
-     *
-     * @return all card types of the project
-     */
-    public Set<AbstractCardType> getCardTypes(Long projectId) {
-        Project project = projectDao.getProject(projectId);
-        logger.debug("get card types of project {}", project);
-        if (project == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
-
-        return cardFacade.getExpandedProjectType(project);
-    }
-
-    /**
-     * Get all activity flow links belonging to the given project
-     *
-     * @param projectId id of the project
-     *
-     * @return all activityFlowLinks linked to the project
-     */
-    public Set<ActivityFlowLink> getActivityFlowLinks(Long projectId) {
-        Project project = projectDao.getProject(projectId);
-        logger.debug("Get activity flow links of project {}", project);
-        if (project == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
-
-        return cardFacade
-            .getAllCards(project.getRootCard())
-            .stream().flatMap(card -> {
-                return card.getActivityFlowLinksAsPrevious().stream();
-            }).collect(Collectors.toSet());
+        return true;
     }
 
     // *********************************************************************************************
