@@ -6,6 +6,8 @@
  */
 package ch.colabproject.colab.api.controller.document;
 
+import ch.colabproject.colab.api.controller.card.CardContentManager;
+import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
@@ -49,10 +51,22 @@ public class ResourceManager {
     private ResourceAndRefDao resourceAndRefDao;
 
     /**
-     * Card type, card and card content specific logic
+     * Card type specific logic management
      */
     @Inject
-    private CardFacade cardFacade;
+    private CardTypeManager cardTypeManager;
+
+    /**
+     * Card specific logic management
+     */
+    @Inject
+    private CardFacade cardManager;
+
+    /**
+     * Card content specific logic management
+     */
+    @Inject
+    private CardContentManager cardContentManager;
 
     // *********************************************************************************************
     // resource access
@@ -84,7 +98,7 @@ public class ResourceManager {
     public List<List<AbstractResource>> getResourceChainForAbstractCardType(Long cardTypeOrRefId) {
         logger.debug("get resource chain linked to abstract card type #{}", cardTypeOrRefId);
 
-        AbstractCardType cardTypeOrRef = cardFacade.assertAndGetAbstractCardType(cardTypeOrRefId);
+        AbstractCardType cardTypeOrRef = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeOrRefId);
 
         List<AbstractResource> directResourceOrRefs = cardTypeOrRef.getDirectAbstractResources();
 
@@ -102,7 +116,7 @@ public class ResourceManager {
     public List<List<AbstractResource>> getResourceChainForCard(Long cardId) {
         logger.debug("get resource chain linked to card #{}", cardId);
 
-        Card card = cardFacade.assertAndGetCard(cardId);
+        Card card = cardManager.assertAndGetCard(cardId);
 
         List<AbstractResource> directResourceOrRefs = card.getDirectAbstractResources();
 
@@ -120,7 +134,7 @@ public class ResourceManager {
     public List<List<AbstractResource>> getResourceChainForCardContent(Long cardContentId) {
         logger.debug("get resource chain linked to card content #{}", cardContentId);
 
-        CardContent cardContent = cardFacade.assertAndGetCardContent(cardContentId);
+        CardContent cardContent = cardContentManager.assertAndGetCardContent(cardContentId);
 
         List<AbstractResource> directResourceOrRefs = cardContent.getDirectAbstractResources();
 
@@ -151,7 +165,7 @@ public class ResourceManager {
      * Create a new resource.
      * <p>
      * Every child of the card type acquires a reference to that resource.<br>
-     * And recursively the grandchildren acquires a reference to the reference of their parent.
+     * And recursively the grand children acquires a reference to the reference of their parent.
      *
      * @param resource the resource to create
      *
@@ -191,7 +205,7 @@ public class ResourceManager {
      * Create a new resource linked to a card type (or a card type reference).
      * <p>
      * Every child of the card type acquires a reference to that resource.<br>
-     * And recursively the grandchildren acquires a reference to the reference of their parent.
+     * And recursively the grand children acquires a reference to the reference of their parent.
      *
      * @param resource the resource to create
      *
@@ -200,8 +214,8 @@ public class ResourceManager {
     private Resource createResourceForAbstractCardType(Resource resource) {
         logger.debug("create the resource {} for abstract card type", resource);
 
-        AbstractCardType abstractCardType = cardFacade
-            .assertAndGetAbstractCardType(resource.getAbstractCardTypeId());
+        AbstractCardType abstractCardType = cardTypeManager
+            .assertAndGetCardTypeOrRef(resource.getAbstractCardTypeId());
 
         resource.setAbstractCardType(abstractCardType);
         abstractCardType.getDirectAbstractResources().add(resource);
@@ -217,7 +231,7 @@ public class ResourceManager {
      * Create a new resource linked to a card
      * <p>
      * Every direct child of the card acquires a reference to that resource.<br>
-     * And recursively the grandchildren acquires a reference to the reference of their parent.
+     * And recursively the grand children acquires a reference to the reference of their parent.
      *
      * @param resource The resource to create
      *
@@ -226,7 +240,7 @@ public class ResourceManager {
     private Resource createResourceForCard(Resource resource) {
         logger.debug("create the resource {} for card", resource);
 
-        Card card = cardFacade.assertAndGetCard(resource.getCardId());
+        Card card = cardManager.assertAndGetCard(resource.getCardId());
 
         resource.setCard(card);
         card.getDirectAbstractResources().add(resource);
@@ -242,7 +256,7 @@ public class ResourceManager {
      * Create a new resource for the document linked to the card content
      * <p>
      * Every child of the card content acquires a reference to that resource.<br>
-     * And recursively the grandchildren acquires a reference to the reference of their parent.
+     * And recursively the grand children acquires a reference to the reference of their parent.
      *
      * @param resource the resource to create
      *
@@ -251,7 +265,7 @@ public class ResourceManager {
     private Resource createResourceForCardContent(Resource resource) {
         logger.debug("create the resource {} for card content", resource);
 
-        CardContent cardContent = cardFacade.assertAndGetCardContent(resource.getCardContentId());
+        CardContent cardContent = cardContentManager.assertAndGetCardContent(resource.getCardContentId());
 
         resource.setCardContent(cardContent);
         cardContent.getDirectAbstractResources().add(resource);

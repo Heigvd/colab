@@ -8,11 +8,9 @@ package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.BlockDocument;
-import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.document.BlockDao;
-import ch.colabproject.colab.api.persistence.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import java.util.Optional;
@@ -51,13 +49,49 @@ public class BlockFacade {
     private BlockDao blockDao;
 
     /**
-     * Document persistence handler
+     * Document specific logic management
      */
     @Inject
-    private DocumentDao documentDao;
+    private DocumentFacade documentManager;
 
     // *********************************************************************************************
-    // general blocks
+    // find blocks
+    // *********************************************************************************************
+
+    /**
+     * Retrieve the block. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param blockId the id of the block
+     *
+     * @return the block if found
+     *
+     * @throws HttpErrorMessage if the block was not found
+     */
+    public Block assertAndGetBlock(Long blockId) {
+        Block block = blockDao.findBlock(blockId);
+
+        if (block == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return block;
+    }
+
+    /**
+     * Assert that the block is not null. If not throw a {@link HttpErrorMessage}.
+     *
+     * @param block the block to check
+     *
+     * @throws HttpErrorMessage if the block is null
+     */
+    public void assertBlock(Block block) {
+        if (block == null) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+    }
+
+    // *********************************************************************************************
+    // life cycle
     // *********************************************************************************************
 
     /**
@@ -70,11 +104,7 @@ public class BlockFacade {
     public Block createBlock(Block block) {
         logger.debug("create the block : {}", block);
 
-        Document document = documentDao.findDocument(block.getDocumentId());
-        if (!(document instanceof BlockDocument)) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
-        BlockDocument blockDocument = (BlockDocument) document;
+        BlockDocument blockDocument = documentManager.assertAndGetBlockDocument(block.getDocumentId());
 
         block.setDocument(blockDocument);
         List<Block> blocks = blockDocument.getBlocks();
@@ -129,15 +159,10 @@ public class BlockFacade {
     public void deleteBlock(Long blockId) {
         logger.debug("delete the block #{}", blockId);
 
-        Block block = blockDao.findBlock(blockId);
-        if (block == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        Block block = assertAndGetBlock(blockId);
 
         BlockDocument blockDocument = block.getDocument();
-        if (blockDocument == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        documentManager.assertBlockDocument(blockDocument);
 
         blockDocument.getBlocks().remove(block);
 
@@ -145,7 +170,7 @@ public class BlockFacade {
     }
 
     // *********************************************************************************************
-    // text data blocks
+    // text data blocks life cycle
     // *********************************************************************************************
 
     /**
@@ -155,26 +180,19 @@ public class BlockFacade {
      *
      * @return a new, initialized and persisted text data block
      */
+    // TODO no effective use. To destroy during RestEndpoint cleaning
     public Block createTextDataBlock(Long documentId) {
         logger.debug("create a new block for the document #{}", documentId);
 
-        Document document = documentDao.findDocument(documentId);
-        if (!(document instanceof BlockDocument)) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
-        BlockDocument blockDocument = (BlockDocument) document;
-
         TextDataBlock block = new TextDataBlock();
         block.setRevision("0");
+        block.setDocumentId(documentId);
 
-        block.setDocument(blockDocument);
-        (blockDocument).getBlocks().add(block);
-
-        return blockDao.persistBlock(block);
+        return createBlock(block);
     }
 
     // *********************************************************************************************
-    // blocks as a source of link
+    // retrieve the elements linked to blocks
     // *********************************************************************************************
 
     /**
@@ -187,12 +205,32 @@ public class BlockFacade {
     public List<StickyNoteLink> getStickyNoteLinkAsSrc(Long blockId) {
         logger.debug("get sticky note links where the block #{} is the source", blockId);
 
-        Block block = blockDao.findBlock(blockId);
-        if (block == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        Block block = assertAndGetBlock(blockId);
 
         return block.getStickyNoteLinksAsSrc();
+    }
+
+    // *********************************************************************************************
+    // integrity check
+    // *********************************************************************************************
+
+    /**
+     * Check the integrity of the block
+     *
+     * @param block the block to check
+     *
+     * @return true iff the block is complete and safe
+     */
+    public boolean checkIntegrity(Block block) {
+        if (block == null) {
+            return false;
+        }
+
+        if (block.getDocument() == null && block.getDocumentId() == null) {
+            return false;
+        }
+
+        return true;
     }
 
     // *********************************************************************************************

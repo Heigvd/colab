@@ -13,7 +13,6 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
-import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
@@ -23,7 +22,6 @@ import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.api.persistence.card.CardTypeDao;
 import ch.colabproject.colab.api.persistence.document.DocumentDao;
-import ch.colabproject.colab.api.persistence.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -62,8 +60,9 @@ public class CardFacade {
     // *********************************************************************************************
     // injections
     // *********************************************************************************************
+
     /**
-     * Card type persistence handling
+     * Card type persistence handler
      */
     @Inject
     private CardTypeDao cardTypeDao;
@@ -75,123 +74,16 @@ public class CardFacade {
     private CardDao cardDao;
 
     /**
-     * Card content persistence handling
+     * Card content persistence handler
      */
     @Inject
     private CardContentDao cardContentDao;
 
     /**
-     * Project persistence handling
-     */
-    @Inject
-    private ProjectDao projectDao;
-
-    /**
-     * Document persistence handling
+     * Document persistence handler
      */
     @Inject
     private DocumentDao documentDao;
-
-    // *********************************************************************************************
-    // card type stuff
-    // *********************************************************************************************
-
-    /**
-     * @param cardTypeOrRefId The identifier of the searched card type or reference
-     *
-     * @return The card type or reference corresponding to the id
-     */
-    public AbstractCardType assertAndGetAbstractCardType(Long cardTypeOrRefId) {
-        AbstractCardType cardTypeOrRef = cardTypeDao.getAbstractCardType(cardTypeOrRefId);
-        if (cardTypeOrRef == null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
-        }
-        return cardTypeOrRef;
-    }
-
-    /**
-     * Create a new card type. The new type will be a global type if the type is not bound to any
-     * project.
-     *
-     * @param cardType the type to create
-     *
-     * @return a new, persisted card type
-     */
-    public CardType createNewCardType(CardType cardType) {
-        Long projectId = cardType.getProjectId();
-        if (projectId != null) {
-            logger.debug("create a new card type in the project #{}", projectId);
-            Project project = projectDao.getProject(projectId);
-            if (project == null) {
-                throw HttpErrorMessage.relatedObjectNotFoundError();
-            }
-            project.getElementsToBeDefined().add(cardType);
-            cardType.setProject(project);
-        } else {
-            logger.debug("create a new global card type");
-            cardType.setProject(null);
-        }
-
-        if (cardType.getPurpose() == null) {
-            cardType.setPurpose(Block.initNewDefaultBlock());
-        }
-
-        cardTypeDao.createCardType(cardType);
-
-        return cardType;
-    }
-
-    /**
-     * Delete the card type
-     *
-     * @param cardTypeId the id of the card type to delete
-     *
-     * @return the freshly deleted card
-     */
-    public CardType deleteCardType(Long cardTypeId) {
-        logger.debug("delete card type {}", cardTypeId);
-        CardType cardType = cardTypeDao.getCardType(cardTypeId);
-
-        cardType.getProject().getElementsToBeDefined().remove(cardType);
-        return cardTypeDao.deleteCardType(cardTypeId);
-    }
-
-    // TODO delete AbstractCardType / CardTypeRef
-    /**
-     * Expand project own types.
-     *
-     * @param project type owner
-     *
-     * @return set of concrete types and all transitive ref to reach them
-     */
-    public Set<AbstractCardType> getExpandedProjectType(Project project) {
-        return this.expand(project.getElementsToBeDefined());
-    }
-
-    /**
-     * Expand all type the current user has access to
-     *
-     * @return set of concrete types and all transitive ref to reach them
-     */
-    public Set<AbstractCardType> getExpandedPublishedTypes() {
-        return this.expand(cardTypeDao.getPublishedProjectsCardType());
-    }
-
-    /**
-     * Expand given types
-     *
-     * @param types to expand
-     *
-     * @return all types
-     */
-    public Set<AbstractCardType> expand(List<AbstractCardType> types) {
-        Set<AbstractCardType> allTypes = new HashSet<>();
-        types.forEach(type -> {
-            allTypes.addAll(type.expand());
-        });
-
-        return allTypes;
-    }
 
     // *********************************************************************************************
     // card stuff
@@ -597,19 +489,6 @@ public class CardFacade {
     // *********************************************************************************************
     // card content stuff
     // *********************************************************************************************
-
-    /**
-     * @param cardContentId The identifier of the searched card content
-     *
-     * @return The card content corresponding to the id
-     */
-    public CardContent assertAndGetCardContent(Long cardContentId) {
-        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
-        if (cardContent == null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
-        }
-        return cardContent;
-    }
 
     /**
      * Create a new card content variant for the card
