@@ -129,6 +129,100 @@ public class BlockRestEndPointTest extends AbstractArquillianTest {
     }
 
     @Test
+    public void testBlockIndexes() {
+        Long documentId = client.documentRestEndPoint.createDocument(new BlockDocument());
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // create a first block
+
+        TextDataBlock block1 = new TextDataBlock();
+        block1.setDocumentId(documentId);
+
+        Long block1Id = client.blockRestEndPoint.createBlock(block1);
+
+        Block persistedBlock1 = client.blockRestEndPoint.getBlock(block1Id);
+        Assertions.assertEquals(0, persistedBlock1.getIndex());
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // create a second block
+
+        TextDataBlock block2 = new TextDataBlock();
+        block2.setDocumentId(documentId);
+
+        Long block2Id = client.blockRestEndPoint.createBlock(block2);
+
+        Block persistedBlock2 = client.blockRestEndPoint.getBlock(block2Id);
+        Assertions.assertEquals(1000, persistedBlock2.getIndex());
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // change the index of the second block
+
+        persistedBlock2.setIndex(1982);
+
+        client.blockRestEndPoint.updateBlock(persistedBlock2);
+
+        persistedBlock2 = client.blockRestEndPoint.getBlock(block2Id);
+
+        Assertions.assertEquals(1982, persistedBlock2.getIndex());
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // create a third block
+
+        TextDataBlock block3 = new TextDataBlock();
+        block3.setDocumentId(documentId);
+
+        Long block3Id = client.blockRestEndPoint.createBlock(block3);
+
+        Block persistedBlock3 = client.blockRestEndPoint.getBlock(block3Id);
+        Assertions.assertEquals(2982, persistedBlock3.getIndex());
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // change the index of the blocks with a very high one
+
+        // change the indexes by hand and set the last index very high
+        persistedBlock1.setIndex(51);
+        persistedBlock2.setIndex(1982);
+        persistedBlock3.setIndex(Integer.MAX_VALUE - 10);
+
+        client.blockRestEndPoint.updateBlock(persistedBlock1);
+        client.blockRestEndPoint.updateBlock(persistedBlock2);
+        client.blockRestEndPoint.updateBlock(persistedBlock3);
+
+        persistedBlock1 = client.blockRestEndPoint.getBlock(block1Id);
+        persistedBlock2 = client.blockRestEndPoint.getBlock(block2Id);
+        persistedBlock3 = client.blockRestEndPoint.getBlock(block3Id);
+
+        Assertions.assertEquals(51, persistedBlock1.getIndex());
+        Assertions.assertEquals(1982, persistedBlock2.getIndex());
+        Assertions.assertTrue(persistedBlock3.getIndex() > 1000000000);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // create a forth block
+
+        TextDataBlock block4 = new TextDataBlock();
+        block4.setDocumentId(documentId);
+
+        Long block4Id = client.blockRestEndPoint.createBlock(block4);
+
+        Block persistedBlock4 = client.blockRestEndPoint.getBlock(block4Id);
+        Assertions.assertEquals(3000, persistedBlock4.getIndex());
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // check that all blocks index are recomputed
+
+        // the others indexes are recomputed
+        persistedBlock1 = client.blockRestEndPoint.getBlock(block1Id);
+        persistedBlock2 = client.blockRestEndPoint.getBlock(block2Id);
+        persistedBlock3 = client.blockRestEndPoint.getBlock(block3Id);
+        persistedBlock4 = client.blockRestEndPoint.getBlock(block4Id);
+
+        Assertions.assertEquals(0, persistedBlock1.getIndex());
+        Assertions.assertEquals(1000, persistedBlock2.getIndex());
+        Assertions.assertEquals(2000, persistedBlock3.getIndex());
+        Assertions.assertEquals(3000, persistedBlock4.getIndex());
+    }
+
+    @Test
     public void testDocumentAccess() {
         Long documentId = client.documentRestEndPoint.createDocument(new BlockDocument());
 
