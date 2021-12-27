@@ -38,7 +38,8 @@ import javax.persistence.OneToMany;
      */
 <span class="nc" id="L39">    @OneToMany(mappedBy = &quot;document&quot;, cascade = CascadeType.ALL)</span>
     @JsonbTransient
-    // TODO see where do the order by index
+    // Note : do not sort with JPA. It does not work well with our production environment
+    // The client is in charge of the sort
     private List&lt;Block&gt; blocks = new ArrayList&lt;&gt;();
 
     // ---------------------------------------------------------------------------------------------
@@ -49,15 +50,15 @@ import javax.persistence.OneToMany;
      * @return the content of the document : a list of blocks of content
      */
     public List&lt;Block&gt; getBlocks() {
-<span class="nc" id="L52">        return blocks;</span>
+<span class="nc" id="L53">        return blocks;</span>
     }
 
     /**
      * @param blocks the content of the document : a list of blocks of content to set
      */
     public void setBlocks(List&lt;Block&gt; blocks) {
-<span class="nc" id="L59">        this.blocks = blocks;</span>
-<span class="nc" id="L60">    }</span>
+<span class="nc" id="L60">        this.blocks = blocks;</span>
+<span class="nc" id="L61">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -65,28 +66,28 @@ import javax.persistence.OneToMany;
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (other instanceof BlockDocument) {</span>
-<span class="nc" id="L69">            BlockDocument o = (BlockDocument) other;</span>
-<span class="nc" id="L70">            super.merge(o);</span>
-<span class="nc" id="L71">        } else {</span>
-<span class="nc" id="L72">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (other instanceof BlockDocument) {</span>
+<span class="nc" id="L70">            BlockDocument o = (BlockDocument) other;</span>
+<span class="nc" id="L71">            super.merge(o);</span>
+<span class="nc" id="L72">        } else {</span>
+<span class="nc" id="L73">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L74">    }</span>
+<span class="nc" id="L75">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L78">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L79">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L84">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L85">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L89">        return &quot;BlockDocument{&quot; + super.toPartialString() + &quot;}&quot;;</span>
+<span class="nc" id="L90">        return &quot;BlockDocument{&quot; + super.toPartialString() + &quot;}&quot;;</span>
     }
 
 }

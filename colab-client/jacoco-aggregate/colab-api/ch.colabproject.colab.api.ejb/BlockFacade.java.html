@@ -13,7 +13,6 @@ import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.document.BlockDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
-import java.util.Optional;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -28,10 +27,20 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L31">public class BlockFacade {</span>
+<span class="nc" id="L30">public class BlockFacade {</span>
 
     /** logger */
-<span class="nc" id="L34">    private static final Logger logger = LoggerFactory.getLogger(BlockFacade.class);</span>
+<span class="nc" id="L33">    private static final Logger logger = LoggerFactory.getLogger(BlockFacade.class);</span>
+
+    /**
+     * The value of the first index
+     */
+    private static final int MIN_INDEX = 0;
+
+    /**
+     * The value of the bigger index that is compatible with the model
+     */
+    private static final int MAX_INDEX = Integer.MAX_VALUE;
 
     /**
      * Default room between indexes
@@ -68,13 +77,13 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the block was not found
      */
     public Block assertAndGetBlock(Long blockId) {
-<span class="nc" id="L71">        Block block = blockDao.findBlock(blockId);</span>
+<span class="nc" id="L80">        Block block = blockDao.findBlock(blockId);</span>
 
-<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (block == null) {</span>
-<span class="nc" id="L74">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (block == null) {</span>
+<span class="nc" id="L83">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L77">        return block;</span>
+<span class="nc" id="L86">        return block;</span>
     }
 
     /**
@@ -85,10 +94,10 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the block is null
      */
     public void assertBlock(Block block) {
-<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (block == null) {</span>
-<span class="nc" id="L89">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (block == null) {</span>
+<span class="nc" id="L98">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
-<span class="nc" id="L91">    }</span>
+<span class="nc" id="L100">    }</span>
 
     // *********************************************************************************************
     // life cycle
@@ -102,53 +111,53 @@ import org.slf4j.LoggerFactory;
      * @return the new persisted block
      */
     public Block createBlock(Block block) {
-<span class="nc" id="L105">        logger.debug(&quot;create the block : {}&quot;, block);</span>
+<span class="nc" id="L114">        logger.debug(&quot;create the block : {}&quot;, block);</span>
 
-<span class="nc" id="L107">        BlockDocument blockDocument = documentManager.assertAndGetBlockDocument(block.getDocumentId());</span>
+<span class="nc" id="L116">        BlockDocument blockDocument = documentManager.assertAndGetBlockDocument(block.getDocumentId());</span>
 
-<span class="nc" id="L109">        block.setDocument(blockDocument);</span>
-<span class="nc" id="L110">        List&lt;Block&gt; blocks = blockDocument.getBlocks();</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">        if (blocks.isEmpty()) {</span>
-<span class="nc" id="L112">            block.setIndex(0);</span>
+<span class="nc" id="L118">        block.setDocument(blockDocument);</span>
+
+<span class="nc" id="L120">        List&lt;Block&gt; blocks = blockDocument.getBlocks();</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        if (blocks.isEmpty()) {</span>
+<span class="nc" id="L122">            block.setIndex(MIN_INDEX);</span>
         } else {
-<span class="nc" id="L114">            Optional&lt;Block&gt; endBlock = blocks.stream().max((a, b) -&gt; {</span>
-<span class="nc bnc" id="L115" title="All 2 branches missed.">                if (a != null) {</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">                    if (b != null) {</span>
-<span class="nc" id="L117">                        return Math.max(a.getIndex(), b.getIndex());</span>
+<span class="nc" id="L124">            blocks.sort((a, b) -&gt; {</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">                if (a != null) {</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">                    if (b != null) {</span>
+<span class="nc" id="L127">                        return Math.max(a.getIndex(), b.getIndex());</span>
                     } else {
                         // a is not null, b is null
-<span class="nc" id="L120">                        return -1;</span>
+<span class="nc" id="L130">                        return -1;</span>
                     }
-<span class="nc bnc" id="L122" title="All 2 branches missed.">                } else if (b != null) {</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">                } else if (b != null) {</span>
                     // a is null, not b
-<span class="nc" id="L124">                    return 1;</span>
+<span class="nc" id="L134">                    return 1;</span>
                 }
                 //both are null
-<span class="nc" id="L127">                return 0;</span>
+<span class="nc" id="L137">                return 0;</span>
             });
-<span class="nc bnc" id="L129" title="All 2 branches missed.">            if (endBlock.isPresent()) {</span>
-<span class="nc" id="L130">                Block end = endBlock.get();</span>
-<span class="nc bnc" id="L131" title="All 2 branches missed.">                if (end.getIndex() &gt; Long.MAX_VALUE - DEFAULT_INDEX_INC) {</span>
-<span class="nc" id="L132">                    block.setIndex(end.getIndex() + DEFAULT_INDEX_INC);</span>
-                } else {
-                    // MAX INDEX reached -&gt; reset all indexes
-                    // TODO: current behaviour is not that robust...
-                    // it will crash when there is more than (MAX_LONG / 1000) blocks
-                    // anyway, such a document must be quite unreadable...
-<span class="nc" id="L138">                    int index = 0;</span>
-<span class="nc bnc" id="L139" title="All 2 branches missed.">                    for (Block b : blocks) {</span>
-<span class="nc" id="L140">                        b.setIndex(index);</span>
-<span class="nc" id="L141">                        index += DEFAULT_INDEX_INC;</span>
-<span class="nc" id="L142">                    }</span>
-<span class="nc" id="L143">                    block.setIndex(index);</span>
-                }
-<span class="nc" id="L145">            } else {</span>
-<span class="nc" id="L146">                block.setIndex(0);</span>
+<span class="nc" id="L139">            Block endBlock = blocks.get(blocks.size() - 1);</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">            if (endBlock.getIndex() &lt; MAX_INDEX - DEFAULT_INDEX_INC) {</span>
+<span class="nc" id="L141">                block.setIndex(endBlock.getIndex() + DEFAULT_INDEX_INC);</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">            } else if (blocks.size() &gt; (MAX_INDEX - MIN_INDEX) / DEFAULT_INDEX_INC) {</span>
+                // current behaviour is not that robust...
+                // it will crash when there is more than (MAX_INTEGER / 1000) blocks
+                // anyway, such a document must be quite unreadable...
+<span class="nc" id="L146">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+            } else {
+<span class="nc" id="L148">                logger.warn(&quot;needed to reindex the blocks of the document {}&quot;, blockDocument);</span>
+                // MAX INDEX reached -&gt; reset all indexes
+<span class="nc" id="L150">                int index = MIN_INDEX;</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">                for (Block b : blocks) {</span>
+<span class="nc" id="L152">                    b.setIndex(index);</span>
+<span class="nc" id="L153">                    index += DEFAULT_INDEX_INC;</span>
+<span class="nc" id="L154">                }</span>
+<span class="nc" id="L155">                block.setIndex(index);</span>
             }
         }
-<span class="nc" id="L149">        blocks.add(block);</span>
+<span class="nc" id="L158">        blocks.add(block);</span>
 
-<span class="nc" id="L151">        return blockDao.persistBlock(block);</span>
+<span class="nc" id="L160">        return blockDao.persistBlock(block);</span>
     }
 
     /**
@@ -157,17 +166,17 @@ import org.slf4j.LoggerFactory;
      * @param blockId the id of the block to delete
      */
     public void deleteBlock(Long blockId) {
-<span class="nc" id="L160">        logger.debug(&quot;delete the block #{}&quot;, blockId);</span>
+<span class="nc" id="L169">        logger.debug(&quot;delete the block #{}&quot;, blockId);</span>
 
-<span class="nc" id="L162">        Block block = assertAndGetBlock(blockId);</span>
+<span class="nc" id="L171">        Block block = assertAndGetBlock(blockId);</span>
 
-<span class="nc" id="L164">        BlockDocument blockDocument = block.getDocument();</span>
-<span class="nc" id="L165">        documentManager.assertBlockDocument(blockDocument);</span>
+<span class="nc" id="L173">        BlockDocument blockDocument = block.getDocument();</span>
+<span class="nc" id="L174">        documentManager.assertBlockDocument(blockDocument);</span>
 
-<span class="nc" id="L167">        blockDocument.getBlocks().remove(block);</span>
+<span class="nc" id="L176">        blockDocument.getBlocks().remove(block);</span>
 
-<span class="nc" id="L169">        blockDao.deleteBlock(blockId);</span>
-<span class="nc" id="L170">    }</span>
+<span class="nc" id="L178">        blockDao.deleteBlock(blockId);</span>
+<span class="nc" id="L179">    }</span>
 
     // *********************************************************************************************
     // text data blocks life cycle
@@ -182,13 +191,13 @@ import org.slf4j.LoggerFactory;
      */
     // TODO no effective use. To destroy during RestEndpoint cleaning
     public Block createTextDataBlock(Long documentId) {
-<span class="nc" id="L185">        logger.debug(&quot;create a new block for the document #{}&quot;, documentId);</span>
+<span class="nc" id="L194">        logger.debug(&quot;create a new block for the document #{}&quot;, documentId);</span>
 
-<span class="nc" id="L187">        TextDataBlock block = new TextDataBlock();</span>
-<span class="nc" id="L188">        block.setRevision(&quot;0&quot;);</span>
-<span class="nc" id="L189">        block.setDocumentId(documentId);</span>
+<span class="nc" id="L196">        TextDataBlock block = new TextDataBlock();</span>
+<span class="nc" id="L197">        block.setRevision(&quot;0&quot;);</span>
+<span class="nc" id="L198">        block.setDocumentId(documentId);</span>
 
-<span class="nc" id="L191">        return createBlock(block);</span>
+<span class="nc" id="L200">        return createBlock(block);</span>
     }
 
     // *********************************************************************************************
@@ -203,11 +212,11 @@ import org.slf4j.LoggerFactory;
      * @return all blocks source of sticky note links
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrc(Long blockId) {
-<span class="nc" id="L206">        logger.debug(&quot;get sticky note links where the block #{} is the source&quot;, blockId);</span>
+<span class="nc" id="L215">        logger.debug(&quot;get sticky note links where the block #{} is the source&quot;, blockId);</span>
 
-<span class="nc" id="L208">        Block block = assertAndGetBlock(blockId);</span>
+<span class="nc" id="L217">        Block block = assertAndGetBlock(blockId);</span>
 
-<span class="nc" id="L210">        return block.getStickyNoteLinksAsSrc();</span>
+<span class="nc" id="L219">        return block.getStickyNoteLinksAsSrc();</span>
     }
 
     // *********************************************************************************************
@@ -222,15 +231,15 @@ import org.slf4j.LoggerFactory;
      * @return true iff the block is complete and safe
      */
     public boolean checkIntegrity(Block block) {
-<span class="nc bnc" id="L225" title="All 2 branches missed.">        if (block == null) {</span>
-<span class="nc" id="L226">            return false;</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">        if (block == null) {</span>
+<span class="nc" id="L235">            return false;</span>
         }
 
-<span class="nc bnc" id="L229" title="All 4 branches missed.">        if (block.getDocument() == null &amp;&amp; block.getDocumentId() == null) {</span>
-<span class="nc" id="L230">            return false;</span>
+<span class="nc bnc" id="L238" title="All 4 branches missed.">        if (block.getDocument() == null &amp;&amp; block.getDocumentId() == null) {</span>
+<span class="nc" id="L239">            return false;</span>
         }
 
-<span class="nc" id="L233">        return true;</span>
+<span class="nc" id="L242">        return true;</span>
     }
 
     // *********************************************************************************************
