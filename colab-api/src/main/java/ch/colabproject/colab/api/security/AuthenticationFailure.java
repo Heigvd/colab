@@ -17,9 +17,9 @@ import java.time.OffsetDateTime;
 public class AuthenticationFailure implements Serializable {
 
     /**
-     * Date of first failed attempt
+     * Date of most recent failed attempt
      */
-    private final OffsetDateTime timestamp;
+    private OffsetDateTime timestamp;
 
     /**
      * Number of failed attempt in a row
@@ -35,11 +35,11 @@ public class AuthenticationFailure implements Serializable {
     }
 
     /**
-     * Increment counter
+     * Increment counter and touch timestamp
      */
     public void inc() {
         this.counter++;
-        // this.timestamp = OffsetDateTime.now();
+        this.timestamp = OffsetDateTime.now();
     }
 
     /**

@@ -48,12 +48,12 @@ public class UserManagement {
     /**
      * Max number of failed authentication allowed
      */
-    private static final Long AUTHENTICATION_ATTEMPT_MAX = 5l;
+    private static final Long AUTHENTICATION_ATTEMPT_MAX = 25l;
 
     /**
      * Number of second to wait to accept new authentication attempt if max number has been reached
      */
-    private static final Long AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC = 10l;
+    private static final Long AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC = 60*15l; // 15min
 
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(UserManagement.class);
@@ -327,7 +327,7 @@ public class UserManagement {
                             sessionManager.resetAuthenticationAttemptHistory(account);
                         } else {
                             // user have to wait some time before any new attempt
-                            logger.warn("Account {} has reache the max number of failed authentication", account);
+                            logger.warn("Account {} reached the max number of failed authentication", account);
                             throw HttpErrorMessage.tooManyRequest();
                         }
                     }

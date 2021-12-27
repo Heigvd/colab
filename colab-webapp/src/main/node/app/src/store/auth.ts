@@ -6,17 +6,20 @@
  */
 import { createSlice } from '@reduxjs/toolkit';
 import * as API from '../API/api';
+import { PasswordScore } from '../components/common/Form/Form';
 
 export interface AuthState {
   status: 'UNKNOWN' | 'LOADING' | 'NOT_AUTHENTICATED' | 'AUTHENTICATED';
   currentUserId: number | null;
   currentAccountId: number | null;
+  localAccountPasswordScore: PasswordScore | undefined;
 }
 
 const initialState: AuthState = {
   currentUserId: null,
   currentAccountId: null,
   status: 'UNKNOWN',
+  localAccountPasswordScore: undefined,
 };
 
 const authSlice = createSlice({
@@ -45,6 +48,9 @@ const authSlice = createSlice({
           state.currentAccountId = null;
           state.status = 'NOT_AUTHENTICATED';
         }
+      })
+      .addCase(API.signInWithLocalAccount.fulfilled, (state, action) => {
+        state.localAccountPasswordScore = action.meta.arg.passwordScore;
       })
       .addCase(API.signOut.pending, state => {
         state.status = 'LOADING';

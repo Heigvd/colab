@@ -19,6 +19,7 @@ import ErrorBoundary from './common/ErrorBoundary';
 import Loading from './common/Loading';
 import Notifier from './common/Notifier';
 import { TipsConfig, TipsCtx } from './common/Tips';
+import Bruteforce from './debugger/Bruteforce';
 import MainApp from './MainApp';
 import { lightTheme, normalThemeMode } from './styling/style';
 import Token from './token/Token';
@@ -69,38 +70,41 @@ function App(): JSX.Element {
 
   return (
     <div className={cx(lightTheme, normalThemeMode)}>
-      <ErrorBoundary>
-        <Suspense fallback={<Loading />}>
-          <Provider store={getStore()}>
-            <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
-              <TipsCtx.Provider
-                value={{
-                  TODO: {
-                    value: tipsConfig.TODO,
-                    set: setTodoCb,
-                  },
-                  TIPS: {
-                    value: tipsConfig.TIPS,
-                    set: setTipsCb,
-                  },
-                  NEWS: {
-                    value: tipsConfig.NEWS,
-                    set: setNewsCb,
-                  },
-                }}
-              >
-                <Notifier />
-                <HashRouter>
-                  <Routes>
-                    <Route path="/token/:id/:token" element={<TokenWrapper />} />
-                    <Route path="*" element={<MainApp />} />
-                  </Routes>
-                </HashRouter>
-              </TipsCtx.Provider>
-            </I18nCtx.Provider>
-          </Provider>
-        </Suspense>
-      </ErrorBoundary>
+      <React.StrictMode>
+        <ErrorBoundary>
+          <Suspense fallback={<Loading />}>
+            <Provider store={getStore()}>
+              <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
+                <TipsCtx.Provider
+                  value={{
+                    TODO: {
+                      value: tipsConfig.TODO,
+                      set: setTodoCb,
+                    },
+                    TIPS: {
+                      value: tipsConfig.TIPS,
+                      set: setTipsCb,
+                    },
+                    NEWS: {
+                      value: tipsConfig.NEWS,
+                      set: setNewsCb,
+                    },
+                  }}
+                >
+                  <Notifier />
+                  <HashRouter>
+                    <Routes>
+                      <Route path="/brute" element={<Bruteforce />} />
+                      <Route path="/token/:id/:token" element={<TokenWrapper />} />
+                      <Route path="*" element={<MainApp />} />
+                    </Routes>
+                  </HashRouter>
+                </TipsCtx.Provider>
+              </I18nCtx.Provider>
+            </Provider>
+          </Suspense>
+        </ErrorBoundary>
+      </React.StrictMode>
     </div>
   );
 }

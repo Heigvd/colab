@@ -14,7 +14,7 @@ import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
 import { useAccountConfig } from '../../selectors/configSelector';
 import { useAppDispatch } from '../../store/hooks';
-import Form, { Field } from '../common/Form/Form';
+import Form, { Field, PasswordScore } from '../common/Form/Form';
 import FormContainer from '../common/FormContainer';
 import { InlineLink } from '../common/Link';
 
@@ -25,11 +25,19 @@ interface Props {
 interface Credentials {
   identifier: string;
   password: string;
+  passwordScore: PasswordScore;
 }
 
 const defCred: Credentials = {
   identifier: '',
   password: '',
+  passwordScore: {
+    score: 0,
+    feedback: {
+      warning: '',
+      suggestions: [],
+    },
+  },
 };
 
 export default function SignInForm({ redirectTo }: Props): JSX.Element {
@@ -55,6 +63,7 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
       placeholder: i18n.model.user.password,
       type: 'password',
       isMandatory: false,
+      strengthProp: 'passwordScore',
       showStrenghBar: false,
       fieldFooter: (
         <InlineLink
@@ -69,7 +78,13 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
 
   const onSubmitCb = React.useCallback(
     (credentials: Credentials) => {
-      dispatch(signInWithLocalAccount(credentials)).then(action => {
+      dispatch(
+        signInWithLocalAccount({
+          identifier: credentials.identifier,
+          password: credentials.password,
+          passwordScore: credentials.passwordScore,
+        }),
+      ).then(action => {
         // is that a hack or not ???
         if (redirectTo && action.meta.requestStatus === 'fulfilled') {
           navigate(redirectTo);

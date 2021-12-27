@@ -35,6 +35,7 @@ import {
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
+import { PasswordScore } from '../components/common/Form/Form';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
@@ -143,6 +144,7 @@ export const signInWithLocalAccount = createAsyncThunk(
     a: {
       identifier: string;
       password: string;
+      passwordScore: PasswordScore;
     },
     thunkApi,
   ) => {
@@ -162,7 +164,7 @@ export const signInWithLocalAccount = createAsyncThunk(
 
 export const updateLocalAccountPassword = createAsyncThunk(
   'user/updatePassword',
-  async (a: { email: string; password: string }) => {
+  async (a: { email: string; password: string; passwordScore: PasswordScore }) => {
     // first, fetch the authenatication method fot the account
     const authMethod = await restClient.UserRestEndpoint.getAuthMethod(a.email);
 
@@ -189,6 +191,7 @@ export const signUp = createAsyncThunk(
       username: string;
       email: string;
       password: string;
+      passwordScore: PasswordScore;
     },
     thunkApi,
   ) => {
@@ -206,7 +209,13 @@ export const signUp = createAsyncThunk(
     await restClient.UserRestEndpoint.signUp(signUpInfo);
 
     // go back to login page
-    thunkApi.dispatch(signInWithLocalAccount({ identifier: a.email, password: a.password }));
+    thunkApi.dispatch(
+      signInWithLocalAccount({
+        identifier: a.email,
+        password: a.password,
+        passwordScore: a.passwordScore,
+      }),
+    );
   },
 );
 
