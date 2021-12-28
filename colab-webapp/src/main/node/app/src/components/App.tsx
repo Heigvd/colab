@@ -19,7 +19,6 @@ import ErrorBoundary from './common/ErrorBoundary';
 import Loading from './common/Loading';
 import Notifier from './common/Notifier';
 import { TipsConfig, TipsCtx } from './common/Tips';
-import Bruteforce from './debugger/Bruteforce';
 import MainApp from './MainApp';
 import { lightTheme, normalThemeMode } from './styling/style';
 import Token from './token/Token';
@@ -94,7 +93,6 @@ function App(): JSX.Element {
                   <Notifier />
                   <HashRouter>
                     <Routes>
-                      <Route path="/brute" element={<Bruteforce />} />
                       <Route path="/token/:id/:token" element={<TokenWrapper />} />
                       <Route path="*" element={<MainApp />} />
                     </Routes>
