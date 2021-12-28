@@ -102,7 +102,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;allProjectsPublished&quot;)
     public Set&lt;AbstractCardType&gt; getPublishedCardTypes() {
 <span class="nc" id="L104">        logger.debug(&quot;get published projects card types&quot;);</span>
-<span class="nc" id="L105">        return cardTypeManager.getExpandedProjectPublishedTypes();</span>
+<span class="nc" id="L105">        return cardTypeManager.getExpandedPublishedProjectTypes();</span>
     }
 
     /**

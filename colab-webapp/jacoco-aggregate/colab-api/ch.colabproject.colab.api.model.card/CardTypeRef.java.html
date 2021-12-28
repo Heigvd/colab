@@ -110,29 +110,28 @@ import javax.persistence.Transient;
      */
     @Override
     public CardType resolve() {
-<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (this.target instanceof CardType) {</span>
-<span class="nc" id="L114">            return (CardType) this.target;</span>
-<span class="nc bnc" id="L115" title="All 2 branches missed.">        } else if (this.target instanceof CardTypeRef) {</span>
-<span class="nc" id="L116">            return ((CardTypeRef) target).resolve();</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (this.target == null) {</span>
+<span class="nc" id="L114">            return null;</span>
         }
-<span class="nc" id="L118">        return null;</span>
+
+<span class="nc" id="L117">        return this.target.resolve();</span>
     }
 
     @Override
     public List&lt;AbstractCardType&gt; expand() {
-<span class="nc" id="L123">        List&lt;AbstractCardType&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L122">        List&lt;AbstractCardType&gt; list = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L125">        list.add(this);</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">        if (this.target != null) {</span>
-<span class="nc" id="L127">            list.addAll(this.target.expand());</span>
+<span class="nc" id="L124">        list.add(this);</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (this.target != null) {</span>
+<span class="nc" id="L126">            list.addAll(this.target.expand());</span>
         }
-<span class="nc" id="L129">        return list;</span>
+<span class="nc" id="L128">        return list;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L134">        return &quot;CardTypeRef{&quot;</span>
-<span class="nc" id="L135">            + &quot;id=&quot; + getId()</span>
+<span class="nc" id="L133">        return &quot;CardTypeRef{&quot;</span>
+<span class="nc" id="L134">            + &quot;id=&quot; + getId()</span>
             + &quot;, targetId=&quot; + targetId + '}';
     }
 }

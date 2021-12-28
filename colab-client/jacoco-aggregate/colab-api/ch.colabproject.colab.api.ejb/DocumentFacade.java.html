@@ -108,6 +108,17 @@ import org.slf4j.LoggerFactory;
     // *********************************************************************************************
 
     /**
+     * Persist the given new document
+     *
+     * @param document the document to persist
+     *
+     * @return the new persisted document
+     */
+    public Document persistDocument(Document document) {
+<span class="nc" id="L118">        return documentDao.persistDocument(document);</span>
+    }
+
+    /**
      * Complete and persist the given new document
      *
      * @param document the document to persist
@@ -116,21 +127,21 @@ import org.slf4j.LoggerFactory;
      */
     // TODO no effective use. To destroy during RestEndpoint cleaning
     public Document createDocument(Document document) {
-<span class="nc" id="L119">        logger.debug(&quot;create document : {}&quot;, document);</span>
+<span class="nc" id="L130">        logger.debug(&quot;create document : {}&quot;, document);</span>
 
-<span class="nc bnc" id="L121" title="All 2 branches missed.">        if (document.getDeliverableCardContentId() != null) {</span>
-<span class="nc" id="L122">            CardContent cardContent = cardContentManager</span>
-<span class="nc" id="L123">                .assertAndGetCardContent(document.getDeliverableCardContentId());</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (document.getDeliverableCardContentId() != null) {</span>
+<span class="nc" id="L133">            CardContent cardContent = cardContentManager</span>
+<span class="nc" id="L134">                .assertAndGetCardContent(document.getDeliverableCardContentId());</span>
 
-<span class="nc" id="L125">            cardContent.setDeliverable(document);</span>
-<span class="nc" id="L126">            document.setDeliverableCardContent(cardContent);</span>
+<span class="nc" id="L136">            cardContent.setDeliverable(document);</span>
+<span class="nc" id="L137">            document.setDeliverableCardContent(cardContent);</span>
         }
 
-<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (document.getResourceId() != null) {</span>
-<span class="nc" id="L130">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (document.getResourceId() != null) {</span>
+<span class="nc" id="L141">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L133">        return documentDao.persistDocument(document);</span>
+<span class="nc" id="L144">        return documentDao.persistDocument(document);</span>
     }
 
     /**
@@ -142,18 +153,18 @@ import org.slf4j.LoggerFactory;
      */
     // TODO no effective use. To destroy during RestEndpoint cleaning
     public Document deleteDocument(Long documentId) {
-<span class="nc" id="L145">        logger.debug(&quot;delete document #{}&quot;, documentId);</span>
+<span class="nc" id="L156">        logger.debug(&quot;delete document #{}&quot;, documentId);</span>
 
-<span class="nc" id="L147">        Document document = assertAndGetDocument(documentId);</span>
+<span class="nc" id="L158">        Document document = assertAndGetDocument(documentId);</span>
 
-<span class="nc" id="L149">        CardContent cardContent = document.getDeliverableCardContent();</span>
-<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (cardContent != null) {</span>
-<span class="nc" id="L151">            cardContent.setDeliverable(null);</span>
+<span class="nc" id="L160">        CardContent cardContent = document.getDeliverableCardContent();</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">        if (cardContent != null) {</span>
+<span class="nc" id="L162">            cardContent.setDeliverable(null);</span>
         }
 
         // to check : resource handling
 
-<span class="nc" id="L156">        return documentDao.deleteDocument(documentId);</span>
+<span class="nc" id="L167">        return documentDao.deleteDocument(documentId);</span>
     }
 
     // *********************************************************************************************
@@ -169,11 +180,11 @@ import org.slf4j.LoggerFactory;
      */
     // TODO To move into BlockFacade during RestEndpoint cleaning
     public List&lt;Block&gt; getBlocksOfDocument(Long documentId) {
-<span class="nc" id="L172">        logger.debug(&quot;get blocks composing the document #{}&quot;, documentId);</span>
+<span class="nc" id="L183">        logger.debug(&quot;get blocks composing the document #{}&quot;, documentId);</span>
 
-<span class="nc" id="L174">        BlockDocument document = assertAndGetBlockDocument(documentId);</span>
+<span class="nc" id="L185">        BlockDocument document = assertAndGetBlockDocument(documentId);</span>
 
-<span class="nc" id="L176">        return document.getBlocks();</span>
+<span class="nc" id="L187">        return document.getBlocks();</span>
     }
 
     // *********************************************************************************************
@@ -188,18 +199,24 @@ import org.slf4j.LoggerFactory;
      * @return true iff the document is complete and safe
      */
     public boolean checkIntegrity(Document document) {
-<span class="nc bnc" id="L191" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L192">            return false;</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L203">            return false;</span>
         }
 
-<span class="nc bnc" id="L195" title="All 4 branches missed.">        if (!(document.hasDeliverableCardContent() || document.hasResource())) {</span>
-<span class="nc" id="L196">            return false;</span>
+<span class="nc bnc" id="L206" title="All 4 branches missed.">        if (!(document.hasDeliverableCardContent() || document.hasResource())) {</span>
+<span class="nc" id="L207">            return false;</span>
         }
 
-<span class="nc bnc" id="L199" title="All 2 branches missed.">        if (document instanceof BlockDocument) {</span>
-<span class="nc" id="L200">            return checkBlockDocumentSpecificIntegrity((BlockDocument)document);</span>
+<span class="nc bnc" id="L210" title="All 4 branches missed.">        if (document.hasDeliverableCardContent() &amp;&amp; document.hasResource()) {</span>
+<span class="nc" id="L211">            return false;</span>
+        }
+
+        // TODO if is a deliverable card content, there must be only one card content that use it
+
+<span class="nc bnc" id="L216" title="All 2 branches missed.">        if (document instanceof BlockDocument) {</span>
+<span class="nc" id="L217">            return checkBlockDocumentSpecificIntegrity((BlockDocument)document);</span>
         } else {
-<span class="nc" id="L202">            return true;</span>
+<span class="nc" id="L219">            return true;</span>
         }
     }
 
@@ -210,11 +227,11 @@ import org.slf4j.LoggerFactory;
             // TODO
 //        }
         // TODO delete that. It is just to satisfy PMD
-<span class="nc bnc" id="L213" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L214">            return false;</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L231">            return false;</span>
         }
 
-<span class="nc" id="L217">        return true;</span>
+<span class="nc" id="L234">        return true;</span>
     }
 
     // *********************************************************************************************

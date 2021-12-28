@@ -186,14 +186,15 @@ import org.slf4j.LoggerFactory;
     /**
      * Persist a brand new card type to database
      *
+     * @param &lt;T&gt; a sub type of AbstractCardType
      * @param cardTypeOrRef new card type to persist
      *
      * @return the new persisted card type
      */
-    public AbstractCardType createCardType(AbstractCardType cardTypeOrRef) {
-<span class="nc" id="L194">        logger.debug(&quot;create card type {}&quot;, cardTypeOrRef);</span>
-<span class="nc" id="L195">        em.persist(cardTypeOrRef);</span>
-<span class="nc" id="L196">        return cardTypeOrRef;</span>
+    public &lt;T extends AbstractCardType&gt; T createCardType(T cardTypeOrRef) {
+<span class="nc" id="L195">        logger.debug(&quot;create card type {}&quot;, cardTypeOrRef);</span>
+<span class="nc" id="L196">        em.persist(cardTypeOrRef);</span>
+<span class="nc" id="L197">        return cardTypeOrRef;</span>
     }
 
     /**
@@ -206,12 +207,12 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the card type failed
      */
     public AbstractCardType updateCardType(AbstractCardType cardTypeOrRef) throws ColabMergeException {
-<span class="nc" id="L209">        logger.debug(&quot;update card type {}&quot;, cardTypeOrRef);</span>
-<span class="nc" id="L210">        AbstractCardType mCardType = this.getAbstractCardType(cardTypeOrRef.getId());</span>
+<span class="nc" id="L210">        logger.debug(&quot;update card type {}&quot;, cardTypeOrRef);</span>
+<span class="nc" id="L211">        AbstractCardType mCardType = this.getAbstractCardType(cardTypeOrRef.getId());</span>
 
-<span class="nc" id="L212">        mCardType.merge(cardTypeOrRef);</span>
+<span class="nc" id="L213">        mCardType.merge(cardTypeOrRef);</span>
 
-<span class="nc" id="L214">        return mCardType;</span>
+<span class="nc" id="L215">        return mCardType;</span>
     }
 
     /**
@@ -222,11 +223,11 @@ import org.slf4j.LoggerFactory;
      * @return just deleted card type
      */
     public CardType deleteCardType(Long id) {
-<span class="nc" id="L225">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
+<span class="nc" id="L226">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="nc" id="L227">        CardType cardType = this.getCardType(id);</span>
-<span class="nc" id="L228">        em.remove(cardType);</span>
-<span class="nc" id="L229">        return cardType;</span>
+<span class="nc" id="L228">        CardType cardType = this.getCardType(id);</span>
+<span class="nc" id="L229">        em.remove(cardType);</span>
+<span class="nc" id="L230">        return cardType;</span>
     }
 
 }

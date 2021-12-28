@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.card;
 
+import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
@@ -41,10 +42,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L44">public class CardRestEndpoint {</span>
+<span class="nc" id="L45">public class CardRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L47">    private static final Logger logger = LoggerFactory.getLogger(CardRestEndpoint.class);</span>
+<span class="nc" id="L48">    private static final Logger logger = LoggerFactory.getLogger(CardRestEndpoint.class);</span>
 
     /**
      * The card persistence manager
@@ -59,6 +60,12 @@ import org.slf4j.LoggerFactory;
     private CardFacade cardFacade;
 
     /**
+     * Card content specific logic management
+     */
+    @Inject
+    private CardContentManager cardContentManager;
+
+    /**
      * Retrieve the list of all cards. This is available to admin only
      *
      * @return all known cards
@@ -69,8 +76,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;Card&gt; getAllCards() {
-<span class="nc" id="L72">        logger.debug(&quot;get all cards&quot;);</span>
-<span class="nc" id="L73">        return cardDao.getAllCard();</span>
+<span class="nc" id="L79">        logger.debug(&quot;get all cards&quot;);</span>
+<span class="nc" id="L80">        return cardDao.getAllCard();</span>
     }
 
     /**
@@ -83,8 +90,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public Card getCard(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L86">        logger.debug(&quot;get card #{}&quot;, id);</span>
-<span class="nc" id="L87">        return cardDao.getCard(id);</span>
+<span class="nc" id="L93">        logger.debug(&quot;get card #{}&quot;, id);</span>
+<span class="nc" id="L94">        return cardDao.getCard(id);</span>
     }
 
     /**
@@ -99,8 +106,8 @@ import org.slf4j.LoggerFactory;
     @Deprecated
     @POST
     public Long createCard(Card card) {
-<span class="nc" id="L102">        logger.debug(&quot;create card {}&quot;, card);</span>
-<span class="nc" id="L103">        return cardDao.createCard(card).getId();</span>
+<span class="nc" id="L109">        logger.debug(&quot;create card {}&quot;, card);</span>
+<span class="nc" id="L110">        return cardDao.createCard(card).getId();</span>
     }
 
     /**
@@ -115,9 +122,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;create/{parentId}/{cardTypeId}&quot;)
     public Card createNewCard(@PathParam(&quot;parentId&quot;) Long parentId,
         @PathParam(&quot;cardTypeId&quot;) Long cardTypeId) {
-<span class="nc" id="L118">        logger.debug(&quot;create a new card for the parent #{} and the type #{}&quot;, parentId,</span>
+<span class="nc" id="L125">        logger.debug(&quot;create a new card for the parent #{} and the type #{}&quot;, parentId,</span>
             cardTypeId);
-<span class="nc" id="L120">        return cardFacade.createNewCard(parentId, cardTypeId);</span>
+<span class="nc" id="L127">        return cardFacade.createNewCard(parentId, cardTypeId);</span>
     }
 
     /**
@@ -133,18 +140,18 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;createWithDeliverable/{parentId}/{cardTypeId}&quot;)
     public Card createNewCardWithDeliverable(@PathParam(&quot;parentId&quot;) Long parentId,
         @PathParam(&quot;cardTypeId&quot;) Long cardTypeId, Document document) {
-<span class="nc" id="L136">        logger.debug(&quot;create a new card in the parent #{} for the type #{} with the deliverable {}&quot;,</span>
+<span class="nc" id="L143">        logger.debug(&quot;create a new card in the parent #{} for the type #{} with the deliverable {}&quot;,</span>
             parentId, cardTypeId, document);
-<span class="nc" id="L138">        Card card = cardFacade.createNewCard(parentId, cardTypeId);</span>
+<span class="nc" id="L145">        Card card = cardFacade.createNewCard(parentId, cardTypeId);</span>
 
-<span class="nc" id="L140">        List&lt;CardContent&gt; variants = card.getContentVariants();</span>
-<span class="nc bnc" id="L141" title="All 6 branches missed.">        if (variants != null &amp;&amp; variants.size() == 1 &amp;&amp; variants.get(0) != null) {</span>
-<span class="nc" id="L142">            cardFacade.assignDeliverable(variants.get(0).getId(), document);</span>
+<span class="nc" id="L147">        List&lt;CardContent&gt; variants = card.getContentVariants();</span>
+<span class="nc bnc" id="L148" title="All 6 branches missed.">        if (variants != null &amp;&amp; variants.size() == 1 &amp;&amp; variants.get(0) != null) {</span>
+<span class="nc" id="L149">            cardContentManager.assignDeliverable(variants.get(0).getId(), document);</span>
         } else {
-<span class="nc" id="L144">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L151">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L147">        return card;</span>
+<span class="nc" id="L154">        return card;</span>
     }
 
     /**
@@ -156,9 +163,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCard(Card card) throws ColabMergeException {
-<span class="nc" id="L159">        logger.debug(&quot;update card {}&quot;, card);</span>
-<span class="nc" id="L160">        cardDao.updateCard(card);</span>
-<span class="nc" id="L161">    }</span>
+<span class="nc" id="L166">        logger.debug(&quot;update card {}&quot;, card);</span>
+<span class="nc" id="L167">        cardDao.updateCard(card);</span>
+<span class="nc" id="L168">    }</span>
 
     /**
      * Move a card to a new parent
@@ -173,8 +180,8 @@ import org.slf4j.LoggerFactory;
     public void moveCard(
         @PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;newParentId&quot;) Long newParentId) {
-<span class="nc" id="L176">        cardFacade.moveCard(cardId, newParentId);</span>
-<span class="nc" id="L177">    }</span>
+<span class="nc" id="L183">        cardFacade.moveCard(cardId, newParentId);</span>
+<span class="nc" id="L184">    }</span>
 
     /**
      * Permanently delete a card
@@ -184,9 +191,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteCard(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L187">        logger.debug(&quot;delete card #{}&quot;, id);</span>
-<span class="nc" id="L188">        cardFacade.deleteCard(id);</span>
-<span class="nc" id="L189">    }</span>
+<span class="nc" id="L194">        logger.debug(&quot;delete card #{}&quot;, id);</span>
+<span class="nc" id="L195">        cardFacade.deleteCard(id);</span>
+<span class="nc" id="L196">    }</span>
 
     /**
      * Get all card content variants of a card
@@ -198,8 +205,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/CardContents&quot;)
     public List&lt;CardContent&gt; getContentVariantsOfCard(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L201">        logger.debug(&quot;Get card #{} content variants&quot;, cardId);</span>
-<span class="nc" id="L202">        return cardFacade.getContentVariants(cardId);</span>
+<span class="nc" id="L208">        logger.debug(&quot;Get card #{} content variants&quot;, cardId);</span>
+<span class="nc" id="L209">        return cardFacade.getContentVariants(cardId);</span>
     }
 
     /**
@@ -212,8 +219,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/StickyNoteLinksDestinationCard&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsDest(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L215">        logger.debug(&quot;Get sticky note links to card #{} as destination&quot;, cardId);</span>
-<span class="nc" id="L216">        return cardFacade.getStickyNoteLinkAsDest(cardId);</span>
+<span class="nc" id="L222">        logger.debug(&quot;Get sticky note links to card #{} as destination&quot;, cardId);</span>
+<span class="nc" id="L223">        return cardFacade.getStickyNoteLinkAsDest(cardId);</span>
     }
 
     /**
@@ -226,8 +233,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/StickyNoteLinksSrcCard&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L229">        logger.debug(&quot;Get sticky note links to card #{} as source&quot;, cardId);</span>
-<span class="nc" id="L230">        return cardFacade.getStickyNoteLinkAsSrcCard(cardId);</span>
+<span class="nc" id="L236">        logger.debug(&quot;Get sticky note links to card #{} as source&quot;, cardId);</span>
+<span class="nc" id="L237">        return cardFacade.getStickyNoteLinkAsSrcCard(cardId);</span>
     }
 
     /**
@@ -240,8 +247,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/ActivityFlowLinksPreviousCard&quot;)
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsPrevious(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L243">        logger.debug(&quot;Get activity flow links to card #{} as previous&quot;, cardId);</span>
-<span class="nc" id="L244">        return cardFacade.getActivityFlowLinkAsPrevious(cardId);</span>
+<span class="nc" id="L250">        logger.debug(&quot;Get activity flow links to card #{} as previous&quot;, cardId);</span>
+<span class="nc" id="L251">        return cardFacade.getActivityFlowLinkAsPrevious(cardId);</span>
     }
 
     /**
@@ -254,8 +261,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/ActivityFlowLinksNextCard&quot;)
     public List&lt;ActivityFlowLink&gt; getActivityFlowLinksAsNext(@PathParam(&quot;id&quot;) Long cardId) {
-<span class="nc" id="L257">        logger.debug(&quot;Get activity flow links to card #{} as next&quot;, cardId);</span>
-<span class="nc" id="L258">        return cardFacade.getActivityFlowLinkAsNext(cardId);</span>
+<span class="nc" id="L264">        logger.debug(&quot;Get activity flow links to card #{} as next&quot;, cardId);</span>
+<span class="nc" id="L265">        return cardFacade.getActivityFlowLinkAsNext(cardId);</span>
     }
 
     /**
@@ -268,8 +275,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{cardId}/ACLs&quot;)
     public List&lt;AccessControl&gt; getAcls(@PathParam(&quot;cardId&quot;) Long cardId) {
-<span class="nc" id="L271">        logger.debug(&quot;Get Card #{} access-control list&quot;, cardId);</span>
-<span class="nc" id="L272">        return cardFacade.getAcls(cardId);</span>
+<span class="nc" id="L278">        logger.debug(&quot;Get Card #{} access-control list&quot;, cardId);</span>
+<span class="nc" id="L279">        return cardFacade.getAcls(cardId);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -14,7 +14,7 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.card;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.CardFacade;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.card.CardContentManager;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.exceptions.ColabMergeException;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.Card;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.CardContent;
@@ -58,10 +58,10 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">private</strong> <a name="CardContentDao" href="../../../../../../ch/colabproject/colab/api/persistence/card/CardContentDao.html#CardContentDao">CardContentDao</a> cardContentDao;
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">     * The card-related logic</em>
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">     * Card content specific logic management</em>
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>      @Inject
-<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">private</strong> <a name="CardFacade" href="../../../../../../ch/colabproject/colab/api/ejb/CardFacade.html#CardFacade">CardFacade</a> cardFacade;
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">private</strong> <a name="CardContentManager" href="../../../../../../ch/colabproject/colab/api/controller/card/CardContentManager.html#CardContentManager">CardContentManager</a> cardContentManager;
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>  
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  <em class="jxr_javadoccomment">     * Retrieve the list of all card contents. This is available to admin only</em>
@@ -119,7 +119,7 @@
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>     @Path(<span class="jxr_string">"create/{cardId}"</span>)
 <a class="jxr_linenumber" name="L112" href="#L112">112</a>     <strong class="jxr_keyword">public</strong> CardContent createNewCardContent(@PathParam(<span class="jxr_string">"cardId"</span>) Long cardId) {
 <a class="jxr_linenumber" name="L113" href="#L113">113</a>         logger.debug(<span class="jxr_string">"create a new card content for the card #{}"</span>, cardId);
-<a class="jxr_linenumber" name="L114" href="#L114">114</a>         <strong class="jxr_keyword">return</strong> cardFacade.createNewCardContent(cardId);
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>         <strong class="jxr_keyword">return</strong> cardContentManager.createNewCardContent(cardId);
 <a class="jxr_linenumber" name="L115" href="#L115">115</a>     }
 <a class="jxr_linenumber" name="L116" href="#L116">116</a> 
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>     <em class="jxr_javadoccomment">/**</em>
@@ -135,9 +135,9 @@
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>     <strong class="jxr_keyword">public</strong> CardContent createNewCardContentWithDeliverable(@PathParam(<span class="jxr_string">"cardId"</span>) Long cardId,
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>         <a name="Document" href="../../../../../../ch/colabproject/colab/api/model/document/Document.html#Document">Document</a> document) {
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>         logger.debug(<span class="jxr_string">"create a new card content for the card #{} and document {}"</span>, cardId, document);
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>         CardContent cardContent = cardFacade.createNewCardContent(cardId);
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>         CardContent cardContent = cardContentManager.createNewCardContent(cardId);
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> 
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>         cardFacade.assignDeliverable(cardContent.getId(), document);
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         cardContentManager.assignDeliverable(cardContent.getId(), document);
 <a class="jxr_linenumber" name="L133" href="#L133">133</a> 
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         <strong class="jxr_keyword">return</strong> cardContent;
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>     }
@@ -164,7 +164,7 @@
 <a class="jxr_linenumber" name="L156" href="#L156">156</a>     @Path(<span class="jxr_string">"{id}"</span>)
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> deleteCardContent(@PathParam(<span class="jxr_string">"id"</span>) Long id) {
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>         logger.debug(<span class="jxr_string">"Delete card #{}"</span>, id);
-<a class="jxr_linenumber" name="L159" href="#L159">159</a>         cardFacade.deleteCardContent(id);
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>         cardContentManager.deleteCardContent(id);
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>     }
 <a class="jxr_linenumber" name="L161" href="#L161">161</a> 
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>     <em class="jxr_javadoccomment">/**</em>
@@ -178,7 +178,7 @@
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>     @Path(<span class="jxr_string">"{id}/StickyNoteLinks"</span>)
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>     <strong class="jxr_keyword">public</strong> List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(<span class="jxr_string">"id"</span>) Long cardContentId) {
 <a class="jxr_linenumber" name="L172" href="#L172">172</a>         logger.debug(<span class="jxr_string">"Get sticky note links where card #{} is the source"</span>, cardContentId);
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>         <strong class="jxr_keyword">return</strong> cardFacade.getStickyNoteLinkAsSrcCardContent(cardContentId);
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>         <strong class="jxr_keyword">return</strong> cardContentManager.getStickyNoteLinkAsSrcCardContent(cardContentId);
 <a class="jxr_linenumber" name="L174" href="#L174">174</a>     }
 <a class="jxr_linenumber" name="L175" href="#L175">175</a> 
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>     <em class="jxr_javadoccomment">/**</em>
@@ -192,7 +192,7 @@
 <a class="jxr_linenumber" name="L184" href="#L184">184</a>     @Path(<span class="jxr_string">"{id}/Subcards"</span>)
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>     <strong class="jxr_keyword">public</strong> List&lt;Card&gt; getSubCards(@PathParam(<span class="jxr_string">"id"</span>) Long parentId) {
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>         logger.debug(<span class="jxr_string">"Get parent #{} sub cards"</span>, parentId);
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>         <strong class="jxr_keyword">return</strong> cardFacade.getSubCards(parentId);
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>         <strong class="jxr_keyword">return</strong> cardContentManager.getSubCards(parentId);
 <a class="jxr_linenumber" name="L188" href="#L188">188</a>     }
 <a class="jxr_linenumber" name="L189" href="#L189">189</a> 
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>     <em class="jxr_javadoccomment">/**</em>
@@ -206,7 +206,7 @@
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>     @Path(<span class="jxr_string">"{id}/Deliverable"</span>)
 <a class="jxr_linenumber" name="L199" href="#L199">199</a>     <strong class="jxr_keyword">public</strong> <a name="Document" href="../../../../../../ch/colabproject/colab/api/model/document/Document.html#Document">Document</a> getDeliverableOfCardContent(@PathParam(<span class="jxr_string">"id"</span>) Long cardContentId) {
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>         logger.debug(<span class="jxr_string">"Get deliverable of card content #{}"</span>, cardContentId);
-<a class="jxr_linenumber" name="L201" href="#L201">201</a>         <strong class="jxr_keyword">return</strong> cardFacade.getDeliverableOfCardContent(cardContentId);
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>         <strong class="jxr_keyword">return</strong> cardContentManager.getDeliverableOfCardContent(cardContentId);
 <a class="jxr_linenumber" name="L202" href="#L202">202</a>     }
 <a class="jxr_linenumber" name="L203" href="#L203">203</a> 
 <a class="jxr_linenumber" name="L204" href="#L204">204</a>     <em class="jxr_javadoccomment">/**</em>
@@ -221,7 +221,7 @@
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>     @Path(<span class="jxr_string">"{id}/setDeliverable"</span>)
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>     <strong class="jxr_keyword">public</strong> <a name="Document" href="../../../../../../ch/colabproject/colab/api/model/document/Document.html#Document">Document</a> assignDeliverable(@PathParam(<span class="jxr_string">"id"</span>) Long cardContentId, <a name="Document" href="../../../../../../ch/colabproject/colab/api/model/document/Document.html#Document">Document</a> document) {
 <a class="jxr_linenumber" name="L215" href="#L215">215</a>         logger.debug(<span class="jxr_string">"add the deliverable {} for the card content #{}"</span>, document, cardContentId);
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>         <strong class="jxr_keyword">return</strong> cardFacade.assignDeliverable(cardContentId, document);
+<a class="jxr_linenumber" name="L216" href="#L216">216</a>         <strong class="jxr_keyword">return</strong> cardContentManager.assignDeliverable(cardContentId, document);
 <a class="jxr_linenumber" name="L217" href="#L217">217</a>     }
 <a class="jxr_linenumber" name="L218" href="#L218">218</a> 
 <a class="jxr_linenumber" name="L219" href="#L219">219</a> }
