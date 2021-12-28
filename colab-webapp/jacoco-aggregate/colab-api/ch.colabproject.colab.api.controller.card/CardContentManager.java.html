@@ -9,6 +9,8 @@ package ch.colabproject.colab.api.controller.card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
@@ -18,7 +20,9 @@ import javax.inject.Inject;
  *
  * @author sandra
  */
-<span class="nc" id="L21">public class CardContentManager {</span>
+@Stateless
+@LocalBean
+<span class="nc" id="L25">public class CardContentManager {</span>
 
     /** logger */
     //private static final Logger logger = LoggerFactory.getLogger(CardContentManager.class);
@@ -53,13 +57,13 @@ import javax.inject.Inject;
      * @throws HttpErrorMessage if the card content was not found
      */
     public CardContent assertAndGetCardContent(Long cardContentId) {
-<span class="nc" id="L56">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
+<span class="nc" id="L60">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
 
-<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (cardContent == null) {</span>
-<span class="nc" id="L59">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (cardContent == null) {</span>
+<span class="nc" id="L63">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L62">        return cardContent;</span>
+<span class="nc" id="L66">        return cardContent;</span>
     }
 
     // *********************************************************************************************

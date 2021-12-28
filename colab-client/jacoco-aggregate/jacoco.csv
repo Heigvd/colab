@@ -139,7 +139,7 @@ colab-client/colab-api,ch.colabproject.colab.api.rest.document,ResourceCreationB
 colab-client/colab-api,ch.colabproject.colab.api.rest.document,BlockRestEndPoint,79,0,0,0,21,0,11,0,11,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.document,ResourceRestEndpoint,244,0,0,0,53,0,18,0,18,0
 colab-client/colab-api,ch.colabproject.colab.api.security,SessionManager,196,0,26,0,54,0,27,0,14,0
-colab-client/colab-api,ch.colabproject.colab.api.security,AuthenticationFailure,32,0,0,0,8,0,4,0,4,0
+colab-client/colab-api,ch.colabproject.colab.api.security,AuthenticationFailure,35,0,0,0,9,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.security,HttpSession,28,0,0,0,12,0,8,0,8,0
 colab-client/colab-api,ch.colabproject.colab.api.security,CookieFilter,67,0,2,0,17,0,5,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.security,AuthenticationFilter,102,0,16,0,32,0,12,0,4,0

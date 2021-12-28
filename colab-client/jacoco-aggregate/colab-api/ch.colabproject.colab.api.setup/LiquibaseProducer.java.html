@@ -15,18 +15,11 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
 /**
- * LiquiBase Singleton. To manage database migrations.
- *
- * DB Migration is not enable for the time. We'll wait for a first stable version of the model
- *
- * Morover it seems there is an issue setting the Liquibase config with such CDI injections
- * when used within arquillian containers...
- *
- * We may want to setup a liquibase servlet in web.xml to replace this
+ * LiquiBase Producer. To manage database migrations.
  *
  * @author maxence
  */
-<span class="nc" id="L29">public class LiquibaseProducer {</span>
+<span class="nc" id="L22">public class LiquibaseProducer {</span>
 
     /**
      * SQL Datasource
@@ -42,9 +35,9 @@ import liquibase.resource.ResourceAccessor;
     @Produces
     @LiquibaseType
     public CDILiquibaseConfig createConfig() {
-<span class="nc" id="L45">        CDILiquibaseConfig config = new CDILiquibaseConfig();</span>
-<span class="nc" id="L46">        config.setChangeLog(&quot;/META-INF/db.changelog.xml&quot;);</span>
-<span class="nc" id="L47">        return config;</span>
+<span class="nc" id="L38">        CDILiquibaseConfig config = new CDILiquibaseConfig();</span>
+<span class="nc" id="L39">        config.setChangeLog(&quot;/META-INF/db.changelog.xml&quot;);</span>
+<span class="nc" id="L40">        return config;</span>
     }
 
     /**
@@ -56,7 +49,7 @@ import liquibase.resource.ResourceAccessor;
     @Produces
     @LiquibaseType
     public DataSource createDataSource() {
-<span class="nc" id="L59">        return myDataSource;</span>
+<span class="nc" id="L52">        return myDataSource;</span>
     }
 
     /**
@@ -67,7 +60,7 @@ import liquibase.resource.ResourceAccessor;
     @Produces
     @LiquibaseType
     public ResourceAccessor create() {
-<span class="nc" id="L70">        return new ClassLoaderResourceAccessor(getClass().getClassLoader());</span>
+<span class="nc" id="L63">        return new ClassLoaderResourceAccessor(getClass().getClassLoader());</span>
     }
 
 }

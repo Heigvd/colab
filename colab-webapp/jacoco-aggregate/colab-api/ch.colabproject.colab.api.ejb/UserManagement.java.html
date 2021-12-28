@@ -48,12 +48,12 @@ import org.slf4j.LoggerFactory;
     /**
      * Max number of failed authentication allowed
      */
-<span class="nc" id="L51">    private static final Long AUTHENTICATION_ATTEMPT_MAX = 5l;</span>
+<span class="nc" id="L51">    private static final Long AUTHENTICATION_ATTEMPT_MAX = 25l;</span>
 
     /**
      * Number of second to wait to accept new authentication attempt if max number has been reached
      */
-<span class="nc" id="L56">    private static final Long AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC = 10l;</span>
+<span class="nc" id="L56">    private static final Long AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC = 60*15l; // 15min</span>
 
     /** logger */
 <span class="nc" id="L59">    private static final Logger logger = LoggerFactory.getLogger(UserManagement.class);</span>
@@ -327,7 +327,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L327">                            sessionManager.resetAuthenticationAttemptHistory(account);</span>
                         } else {
                             // user have to wait some time before any new attempt
-<span class="nc" id="L330">                            logger.warn(&quot;Account {} has reache the max number of failed authentication&quot;, account);</span>
+<span class="nc" id="L330">                            logger.warn(&quot;Account {} reached the max number of failed authentication&quot;, account);</span>
 <span class="nc" id="L331">                            throw HttpErrorMessage.tooManyRequest();</span>
                         }
                     }
