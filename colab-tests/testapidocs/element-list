@@ -3,6 +3,7 @@ ch.colabproject.colab.tests.db
 ch.colabproject.colab.tests.e2e
 ch.colabproject.colab.tests.mailhog
 ch.colabproject.colab.tests.mailhog.model
+ch.colabproject.colab.tests.mock
 ch.colabproject.colab.tests.rest
 ch.colabproject.colab.tests.rest.card
 ch.colabproject.colab.tests.rest.document
