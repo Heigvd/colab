@@ -121,7 +121,7 @@ import org.slf4j.LoggerFactory;
     @PrePersist
     @PreUpdate
     public void touch(Object o) {
-<span class="pc bpc" id="L124" title="1 of 4 branches missed.">        if (!requestManager.isDoNotTrackChange() &amp;&amp; o instanceof WithTrackingData) {</span>
+<span class="pc bpc" id="L124" title="2 of 4 branches missed.">        if (!requestManager.isDoNotTrackChange() &amp;&amp; o instanceof WithTrackingData) {</span>
 <span class="fc" id="L125">            ((WithTrackingData) o).touch(requestManager.getCurrentUser());</span>
         }
 <span class="fc" id="L127">    }</span>

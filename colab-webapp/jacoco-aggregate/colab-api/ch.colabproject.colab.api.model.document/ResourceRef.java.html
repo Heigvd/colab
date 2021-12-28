@@ -130,50 +130,49 @@ import javax.validation.constraints.NotNull;
 
     @Override
     public Resource resolve() {
-<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (this.target instanceof Resource) {</span>
-<span class="nc" id="L134">            return (Resource) this.target;</span>
-<span class="nc bnc" id="L135" title="All 2 branches missed.">        } else if (this.target instanceof ResourceRef) {</span>
-<span class="nc" id="L136">            return ((ResourceRef) target).resolve();</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (this.target != null) {</span>
+<span class="nc" id="L134">            return this.target.resolve();</span>
         }
-<span class="nc" id="L138">        return null;</span>
+
+<span class="nc" id="L137">        return null;</span>
     }
 
     @Override
     public List&lt;AbstractResource&gt; expand() {
-<span class="nc" id="L143">        List&lt;AbstractResource&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L142">        List&lt;AbstractResource&gt; list = new ArrayList&lt;&gt;();</span>
 
-<span class="nc" id="L145">        list.add(this);</span>
-<span class="nc bnc" id="L146" title="All 2 branches missed.">        if (this.target != null) {</span>
-<span class="nc" id="L147">            list.addAll(this.target.expand());</span>
+<span class="nc" id="L144">        list.add(this);</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (this.target != null) {</span>
+<span class="nc" id="L146">            list.addAll(this.target.expand());</span>
         }
-<span class="nc" id="L149">        return list;</span>
+<span class="nc" id="L148">        return list;</span>
     }
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L154" title="All 2 branches missed.">        if (other instanceof ResourceRef) {</span>
-<span class="nc" id="L155">            ResourceRef o = (ResourceRef) other;</span>
-<span class="nc" id="L156">            super.merge(o);</span>
-<span class="nc" id="L157">            this.setRefused(o.isRefused());</span>
-<span class="nc" id="L158">        } else {</span>
-<span class="nc" id="L159">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        if (other instanceof ResourceRef) {</span>
+<span class="nc" id="L154">            ResourceRef o = (ResourceRef) other;</span>
+<span class="nc" id="L155">            super.merge(o);</span>
+<span class="nc" id="L156">            this.setRefused(o.isRefused());</span>
+<span class="nc" id="L157">        } else {</span>
+<span class="nc" id="L158">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L161">    }</span>
+<span class="nc" id="L160">    }</span>
 
     @Override
     public int hashCode() {
-<span class="nc" id="L165">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L164">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L171">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L170">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L176">        return &quot;ResourceRef{&quot; + toPartialString() + &quot;, refused=&quot; + refused</span>
+<span class="nc" id="L175">        return &quot;ResourceRef{&quot; + toPartialString() + &quot;, refused=&quot; + refused</span>
             + &quot;, targetId=&quot; + targetId + &quot;}&quot;;
     }
 

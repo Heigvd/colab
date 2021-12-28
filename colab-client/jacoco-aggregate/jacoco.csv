@@ -103,12 +103,12 @@ colab-client/colab-api,ch.colabproject.colab.api.ws.channel,ChannelOverview,72,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel,BlockChannel,64,0,6,0,20,0,11,0,8,0
 colab-client/colab-api,ch.colabproject.colab.api.ws.channel,AdminChannel,15,0,0,0,4,0,3,0,3,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceManager,295,0,24,0,84,0,29,0,17,0
-colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceReferenceSpreadingHelper,349,0,42,0,94,0,31,0,10,0
+colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceReferenceSpreadingHelper,279,0,44,0,77,0,35,0,13,0
 colab-client/colab-api,ch.colabproject.colab.api.controller.document,ResourceCategoryHelper,308,0,14,0,62,0,30,0,23,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.tools,Debouncer,18,0,0,0,7,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.microchanges.tools,CancelDebounce,15,0,0,0,5,0,2,0,2,0
 colab-client/colab-api,ch.colabproject.colab.api.model.document,HostedDocLink,44,0,2,0,14,0,8,0,7,0
-colab-client/colab-api,ch.colabproject.colab.api.model.document,ResourceRef,105,0,10,0,32,0,18,0,13,0
+colab-client/colab-api,ch.colabproject.colab.api.model.document,ResourceRef,95,0,8,0,30,0,17,0,13,0
 colab-client/colab-api,ch.colabproject.colab.api.model.document,ExternalLink,44,0,2,0,14,0,8,0,7,0
 colab-client/colab-api,ch.colabproject.colab.api.model.document,AbstractResource,272,0,44,0,82,0,56,0,34,0
 colab-client/colab-api,ch.colabproject.colab.api.model.document,TextDataBlock,74,0,2,0,25,0,13,0,12,0
