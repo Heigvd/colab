@@ -6,7 +6,7 @@
  */
 
 import { entityIs, WsChannelUpdate } from 'colab-rest-client';
-import { initSocketId } from '../API/api';
+import { getApplicationPath, initSocketId } from '../API/api';
 import { checkUnreachable } from '../helper';
 import { getLogger } from '../logger';
 import * as AdminActions from '../store/admin';
@@ -28,10 +28,13 @@ const onChannelUpdate = (message: WsChannelUpdate) => {
 //  }));
 //}
 
+const path = getApplicationPath();
+
 function createConnection(onCloseCb: () => void) {
   logger.info('Init Websocket Connection');
   const protocol = window.location.protocol.startsWith('https') ? 'wss' : 'ws';
-  const connection = new WebSocket(`${protocol}:///${window.location.host}/ws`);
+  const wsPath = `${path}/ws`;
+  const connection = new WebSocket(`${protocol}:///${window.location.host}${wsPath}`);
   logger.info('Init Ws Done');
 
   connection.onclose = () => {

@@ -9,6 +9,8 @@ package ch.colabproject.colab.api.controller.card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
@@ -18,6 +20,8 @@ import javax.inject.Inject;
  *
  * @author sandra
  */
+@Stateless
+@LocalBean
 public class CardContentManager {
 
     /** logger */

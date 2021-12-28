@@ -4,10 +4,12 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.api.setup;
+package ch.colabproject.colab.tests.tests;
 
+import ch.colabproject.colab.api.setup.LiquibaseProducer;
 import javax.annotation.Resource;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.Specializes;
 import javax.sql.DataSource;
 import liquibase.integration.cdi.CDILiquibaseConfig;
 import liquibase.integration.cdi.annotations.LiquibaseType;
@@ -15,11 +17,11 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
 /**
- * LiquiBase Producer. To manage database migrations.
+ * Override default Producer as we do not want to use liquibase in test env
  *
  * @author maxence
  */
-public class LiquibaseProducer {
+public class LiquibaseTestProducer extends LiquibaseProducer {
 
     /**
      * SQL Datasource
@@ -28,15 +30,16 @@ public class LiquibaseProducer {
     private DataSource myDataSource;
 
     /**
-     * Liquibase configuration
+     * Liquibase configuration which indicates liquibase should not run
      *
      * @return the config
      */
     @Produces
     @LiquibaseType
+    @Specializes
     public CDILiquibaseConfig createConfig() {
         CDILiquibaseConfig config = new CDILiquibaseConfig();
-        config.setChangeLog("/META-INF/db.changelog.xml");
+        config.setShouldRun(false);
         return config;
     }
 
@@ -48,6 +51,7 @@ public class LiquibaseProducer {
      */
     @Produces
     @LiquibaseType
+    @Specializes
     public DataSource createDataSource() {
         return myDataSource;
     }
@@ -59,6 +63,7 @@ public class LiquibaseProducer {
      */
     @Produces
     @LiquibaseType
+    @Specializes
     public ResourceAccessor create() {
         return new ClassLoaderResourceAccessor(getClass().getClassLoader());
     }

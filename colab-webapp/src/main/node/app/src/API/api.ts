@@ -40,7 +40,17 @@ import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
 
-const restClient = ColabClient('', error => {
+const winPath = window.location.pathname;
+
+/**
+ * Get application path. With a leading / and no leading slash.
+ * If application is deployed on ROOT, empty path is returned
+ */
+export const getApplicationPath = () => {
+  return winPath.endsWith('/') ? winPath.substring(0, winPath.length - 1) : winPath;
+};
+
+const restClient = ColabClient(getApplicationPath(), error => {
   if (entityIs(error, 'HttpException')) {
     getStore().dispatch(
       addNotification({
