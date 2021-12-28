@@ -108,6 +108,17 @@ public class DocumentFacade {
     // *********************************************************************************************
 
     /**
+     * Persist the given new document
+     *
+     * @param document the document to persist
+     *
+     * @return the new persisted document
+     */
+    public Document persistDocument(Document document) {
+        return documentDao.persistDocument(document);
+    }
+
+    /**
      * Complete and persist the given new document
      *
      * @param document the document to persist
@@ -195,6 +206,12 @@ public class DocumentFacade {
         if (!(document.hasDeliverableCardContent() || document.hasResource())) {
             return false;
         }
+
+        if (document.hasDeliverableCardContent() && document.hasResource()) {
+            return false;
+        }
+
+        // TODO if is a deliverable card content, there must be only one card content that use it
 
         if (document instanceof BlockDocument) {
             return checkBlockDocumentSpecificIntegrity((BlockDocument)document);

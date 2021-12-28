@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.card;
 
+import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.ejb.ProjectFacade;
 import ch.colabproject.colab.api.ejb.SecurityFacade;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
@@ -18,6 +19,8 @@ import ch.colabproject.colab.api.persistence.card.CardTypeDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -64,7 +67,7 @@ public class CardTypeManager {
     private ProjectFacade projectManager;
 
     // *********************************************************************************************
-    // find card types
+    // find card types and references
     // *********************************************************************************************
 
     /**
@@ -102,7 +105,7 @@ public class CardTypeManager {
      *
      * @return set of concrete types and all transitive ref to reach them
      */
-    public Set<AbstractCardType> getExpandedProjectPublishedTypes() {
+    public Set<AbstractCardType> getExpandedPublishedProjectTypes() {
         return this.expand(cardTypeDao.getPublishedProjectsCardType());
     }
 
@@ -154,9 +157,7 @@ public class CardTypeManager {
             cardType.setPurpose(Block.initNewDefaultBlock());
         }
 
-        cardTypeDao.createCardType(cardType);
-
-        return cardType;
+        return cardTypeDao.createCardType(cardType);
     }
 
     /**
@@ -199,6 +200,121 @@ public class CardTypeManager {
         }
 
         return true;
+    }
+
+    // *********************************************************************************************
+    // reference handling
+    // *********************************************************************************************
+
+    /**
+     * Get a card type located in the given project and targeting the given card type.
+     *
+     * @param cardType the target card type
+     * @param project  the project the card type is located
+     *
+     * @return the unique card type
+     */
+    public AbstractCardType computeEffectiveCardTypeOrRef(AbstractCardType cardType,
+        Project project) {
+        // The given type belongs to the project
+        // it can be used as-is
+        if (project.equals(cardType.getProject())) {
+            return cardType;
+        }
+
+        // So, cardType belongs to another project or is global
+        // it must be accessed via a reference belonging to the given project
+
+        // Check if the project already got a direct reference the super-type
+        // shall we check something to prevent extending same type several times?
+        Optional<AbstractCardType> directRefToCardTypeInProject = project.getElementsToBeDefined()
+            .stream()
+            .filter(type -> {
+                return isDirectRef(type, cardType);
+            })
+            .findFirst();
+
+        // direct reference found, reuse it
+        if (directRefToCardTypeInProject.isPresent()) {
+            return directRefToCardTypeInProject.get();
+        }
+
+        // no direct reference. Create one.
+        return createNewCardReference(cardType, project);
+    }
+
+    /**
+     * Is the given child a direct reference to the given parent.
+     *
+     * @param child  the child
+     * @param parent the parent
+     *
+     * @return true if child is a direct reference to the parent
+     */
+    private boolean isDirectRef(AbstractCardType child, AbstractCardType parent) {
+        if (child instanceof CardTypeRef) {
+            CardTypeRef ref = (CardTypeRef) child;
+            AbstractCardType refTarget = ref.getTarget();
+            return Objects.equals(refTarget, parent);
+        }
+
+        return false;
+    }
+
+    /**
+     * Complete and persist a new type reference to the given type. The ref will belongs to the
+     * given project.
+     *
+     * @param cardType the type to reference
+     * @param project  the reference owner
+     *
+     * @return a new, initialized card type reference (just the object, no persistence)
+     */
+    private CardTypeRef createNewCardReference(AbstractCardType cardType, Project project) {
+        CardTypeRef ref = initNewCardTypeRef();
+
+        ref.setProject(project);
+        project.getElementsToBeDefined().add(ref);
+
+        ref.setTarget(cardType);
+        cardType.getDirectReferences().add(ref);
+
+        ResourceReferenceSpreadingHelper.spreadResourceFromUp(ref);
+
+        return cardTypeDao.createCardType(ref);
+    }
+
+    /**
+     * Initialize a new card type reference
+     *
+     * @return a new, initialized card type reference (just the object, no persistence)
+     */
+    private CardTypeRef initNewCardTypeRef() {
+        CardTypeRef ref = new CardTypeRef();
+
+        ref.setDeprecated(false);
+        ref.setPublished(false);
+
+        return ref;
+    }
+
+    /**
+     * Is the given ancestor an ancestor of the given child
+     *
+     * @param child    the child
+     * @param ancestor the ancestor
+     *
+     * @return true if child is a ref and if ancestor is an ancestor of the ref
+     */
+    public boolean isTransitiveRef(AbstractCardType child, AbstractCardType ancestor) {
+        if (isDirectRef(child, ancestor)) {
+            return true;
+        } else if (child instanceof CardTypeRef) {
+            AbstractCardType parent = ((CardTypeRef) child).getTarget();
+            return this.isTransitiveRef(parent, ancestor);
+        }
+
+        return false;
     }
 
     // *********************************************************************************************
@@ -325,6 +441,8 @@ public class CardTypeManager {
                 return false;
             }
         }
+
+        // just one ref with target/project
 
         return true;
     }

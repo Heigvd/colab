@@ -110,12 +110,11 @@ public class CardTypeRef extends AbstractCardType {
      */
     @Override
     public CardType resolve() {
-        if (this.target instanceof CardType) {
-            return (CardType) this.target;
-        } else if (this.target instanceof CardTypeRef) {
-            return ((CardTypeRef) target).resolve();
+        if (this.target == null) {
+            return null;
         }
-        return null;
+
+        return this.target.resolve();
     }
 
     @Override

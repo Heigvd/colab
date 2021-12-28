@@ -374,6 +374,13 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     }
 
     /**
+     * @return True if it has a card type
+     */
+    public boolean hasCardType() {
+        return cardType != null || cardTypeId != null;
+    }
+
+    /**
      * @return the parent card content
      * <p>
      * A card can either be the root card of a project or be within a card content
@@ -449,6 +456,13 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
      */
     public void setRootCardProjectId(Long rootCardProjectId) {
         this.rootCardProjectId = rootCardProjectId;
+    }
+
+    /**
+     * @return True if there is a project whose root card is this one
+     */
+    public boolean hasRootCardProject() {
+        return rootCardProject != null || rootCardProjectId != null;
     }
 
     /**

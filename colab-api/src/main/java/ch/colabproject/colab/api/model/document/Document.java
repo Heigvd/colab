@@ -70,7 +70,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      * The card content for which this document is the deliverable
      */
     // TODO see where to prevent that a document is used by several card contents
-    @OneToOne(mappedBy = "deliverable", cascade = {}, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "deliverable", fetch = FetchType.LAZY)
     @JsonbTransient
     private CardContent deliverableCardContent;
 

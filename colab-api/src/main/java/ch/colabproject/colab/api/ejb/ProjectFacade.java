@@ -173,7 +173,7 @@ public class ProjectFacade {
     /**
      * Get all cards of the given project
      *
-     * @param projectId id of the project
+     * @param projectId the id of the project
      *
      * @return all cards of the project
      */
@@ -188,7 +188,7 @@ public class ProjectFacade {
     /**
      * Get all cardContents of the given project
      *
-     * @param projectId id of the project
+     * @param projectId the id of the project
      *
      * @return all cards contents of the project
      */
@@ -203,7 +203,7 @@ public class ProjectFacade {
     /**
      * Get all card types of the given project
      *
-     * @param projectId id of the project
+     * @param projectId the id of the project
      *
      * @return all card types of the project
      */
@@ -218,7 +218,7 @@ public class ProjectFacade {
     /**
      * Get all activity flow links belonging to the given project
      *
-     * @param projectId id of the project
+     * @param projectId the id of the project
      *
      * @return all activityFlowLinks linked to the project
      */
