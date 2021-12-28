@@ -4,7 +4,7 @@
  *
  * Licensed under the MIT License
  */
-package ch.colabproject.colab.tests.tests;
+package ch.colabproject.colab.tests.mock;
 
 import ch.colabproject.colab.api.setup.LiquibaseProducer;
 import javax.annotation.Resource;
