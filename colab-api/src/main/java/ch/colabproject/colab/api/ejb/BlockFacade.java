@@ -13,7 +13,6 @@ import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.document.BlockDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
-import java.util.Optional;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -32,6 +31,16 @@ public class BlockFacade {
 
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(BlockFacade.class);
+
+    /**
+     * The value of the first index
+     */
+    private static final int MIN_INDEX = 0;
+
+    /**
+     * The value of the bigger index that is compatible with the model
+     */
+    private static final int MAX_INDEX = Integer.MAX_VALUE;
 
     /**
      * Default room between indexes
@@ -107,11 +116,12 @@ public class BlockFacade {
         BlockDocument blockDocument = documentManager.assertAndGetBlockDocument(block.getDocumentId());
 
         block.setDocument(blockDocument);
+
         List<Block> blocks = blockDocument.getBlocks();
         if (blocks.isEmpty()) {
-            block.setIndex(0);
+            block.setIndex(MIN_INDEX);
         } else {
-            Optional<Block> endBlock = blocks.stream().max((a, b) -> {
+            blocks.sort((a, b) -> {
                 if (a != null) {
                     if (b != null) {
                         return Math.max(a.getIndex(), b.getIndex());
@@ -126,24 +136,23 @@ public class BlockFacade {
                 //both are null
                 return 0;
             });
-            if (endBlock.isPresent()) {
-                Block end = endBlock.get();
-                if (end.getIndex() > Long.MAX_VALUE - DEFAULT_INDEX_INC) {
-                    block.setIndex(end.getIndex() + DEFAULT_INDEX_INC);
-                } else {
-                    // MAX INDEX reached -> reset all indexes
-                    // TODO: current behaviour is not that robust...
-                    // it will crash when there is more than (MAX_LONG / 1000) blocks
-                    // anyway, such a document must be quite unreadable...
-                    int index = 0;
-                    for (Block b : blocks) {
-                        b.setIndex(index);
-                        index += DEFAULT_INDEX_INC;
-                    }
-                    block.setIndex(index);
-                }
+            Block endBlock = blocks.get(blocks.size() - 1);
+            if (endBlock.getIndex() < MAX_INDEX - DEFAULT_INDEX_INC) {
+                block.setIndex(endBlock.getIndex() + DEFAULT_INDEX_INC);
+            } else if (blocks.size() > (MAX_INDEX - MIN_INDEX) / DEFAULT_INDEX_INC) {
+                // current behaviour is not that robust...
+                // it will crash when there is more than (MAX_INTEGER / 1000) blocks
+                // anyway, such a document must be quite unreadable...
+                throw HttpErrorMessage.dataIntegrityFailure();
             } else {
-                block.setIndex(0);
+                logger.warn("needed to reindex the blocks of the document {}", blockDocument);
+                // MAX INDEX reached -> reset all indexes
+                int index = MIN_INDEX;
+                for (Block b : blocks) {
+                    b.setIndex(index);
+                    index += DEFAULT_INDEX_INC;
+                }
+                block.setIndex(index);
             }
         }
         blocks.add(block);
