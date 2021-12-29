@@ -306,18 +306,19 @@
 <a class="jxr_linenumber" name="L298" href="#L298">298</a>         }
 <a class="jxr_linenumber" name="L299" href="#L299">299</a> 
 <a class="jxr_linenumber" name="L300" href="#L300">300</a>         List&lt;TeamMember&gt; teamMembers = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(project.getTeamMembers());
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>         <strong class="jxr_keyword">if</strong> (teamMembers.stream().noneMatch(m -&gt; m.getPosition() == HierarchicalPosition.OWNER)) {
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>             <strong class="jxr_keyword">return</strong> false;
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>         }
-<a class="jxr_linenumber" name="L304" href="#L304">304</a> 
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>     }
-<a class="jxr_linenumber" name="L307" href="#L307">307</a> 
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>     <em class="jxr_comment">// *********************************************************************************************</em>
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>     <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>     <em class="jxr_comment">// *********************************************************************************************</em>
-<a class="jxr_linenumber" name="L311" href="#L311">311</a> 
-<a class="jxr_linenumber" name="L312" href="#L312">312</a> }
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         <strong class="jxr_keyword">if</strong> (teamMembers == <strong class="jxr_keyword">null</strong>
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>             || teamMembers.stream().noneMatch(m -&gt; m.getPosition() == HierarchicalPosition.OWNER)) {
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>             <strong class="jxr_keyword">return</strong> false;
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>         }
+<a class="jxr_linenumber" name="L305" href="#L305">305</a> 
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>     }
+<a class="jxr_linenumber" name="L308" href="#L308">308</a> 
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>     <em class="jxr_comment">// *********************************************************************************************</em>
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>     <em class="jxr_comment">//</em>
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>     <em class="jxr_comment">// *********************************************************************************************</em>
+<a class="jxr_linenumber" name="L312" href="#L312">312</a> 
+<a class="jxr_linenumber" name="L313" href="#L313">313</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

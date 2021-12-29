@@ -116,7 +116,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L117">        CardContent cardContent = initNewCardContentForCard(card);</span>
 
-<span class="nc" id="L119">        ResourceReferenceSpreadingHelper.spreadResourceFromUp(cardContent);</span>
+<span class="nc" id="L119">        ResourceReferenceSpreadingHelper.spreadResourcesFromUp(cardContent);</span>
 
 <span class="nc" id="L121">        return cardContentDao.createCardContent(cardContent);</span>
     }
@@ -150,7 +150,7 @@ import org.slf4j.LoggerFactory;
     public CardContent deleteCardContent(Long cardContentId) {
 <span class="nc" id="L151">        CardContent cardContent = assertAndGetCardContent(cardContentId);</span>
 
-<span class="nc bnc" id="L153" title="All 2 branches missed.">        if (!(checkDeletionAcceptability(cardContent))) {</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        if (!checkDeletionAcceptability(cardContent)) {</span>
 <span class="nc" id="L154">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 

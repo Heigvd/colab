@@ -298,11 +298,12 @@ import org.slf4j.LoggerFactory;
         }
 
 <span class="nc" id="L300">        List&lt;TeamMember&gt; teamMembers = new ArrayList&lt;&gt;(project.getTeamMembers());</span>
-<span class="nc bnc" id="L301" title="All 4 branches missed.">        if (teamMembers.stream().noneMatch(m -&gt; m.getPosition() == HierarchicalPosition.OWNER)) {</span>
-<span class="nc" id="L302">            return false;</span>
+<span class="nc bnc" id="L301" title="All 2 branches missed.">        if (teamMembers == null</span>
+<span class="nc bnc" id="L302" title="All 4 branches missed.">            || teamMembers.stream().noneMatch(m -&gt; m.getPosition() == HierarchicalPosition.OWNER)) {</span>
+<span class="nc" id="L303">            return false;</span>
         }
 
-<span class="nc" id="L305">        return true;</span>
+<span class="nc" id="L306">        return true;</span>
     }
 
     // *********************************************************************************************

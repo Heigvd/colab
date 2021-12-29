@@ -90,7 +90,7 @@ public final class ResourceReferenceSpreadingHelper {
      * @param cardTypeRefToFill A new card type reference that need references to the up stream
      *                          resources
      */
-    public static void spreadResourceFromUp(CardTypeRef cardTypeRefToFill) {
+    public static void spreadResourcesFromUp(CardTypeRef cardTypeRefToFill) {
 <span class="nc" id="L94">        AbstractCardType target = cardTypeRefToFill.getTarget();</span>
 
 <span class="nc bnc" id="L96" title="All 2 branches missed.">        for (AbstractResource targetResource : target.getDirectAbstractResources()) {</span>
@@ -106,7 +106,7 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @param cardToFill A new card that need references to the up stream resources
      */
-    public static void spreadResourceFromUp(Card cardToFill) {
+    public static void spreadResourcesFromUp(Card cardToFill) {
 <span class="nc" id="L110">        CardContent parent = cardToFill.getParent();</span>
 
 <span class="nc bnc" id="L112" title="All 2 branches missed.">        for (AbstractResource parentResource : parent.getDirectAbstractResources()) {</span>
@@ -130,7 +130,7 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @param cardContentToFill A new card content that need references to the up stream resources
      */
-    public static void spreadResourceFromUp(CardContent cardContentToFill) {
+    public static void spreadResourcesFromUp(CardContent cardContentToFill) {
 <span class="nc" id="L134">        Card parent = cardContentToFill.getCard();</span>
 
 <span class="nc" id="L136">        List&lt;AbstractResource&gt; parentResources = parent.getDirectAbstractResources();</span>
