@@ -102,7 +102,7 @@ public class CardTypeRestEndpoint {
     @Path("allProjectsPublished")
     public Set<AbstractCardType> getPublishedCardTypes() {
         logger.debug("get published projects card types");
-        return cardTypeManager.getExpandedProjectPublishedTypes();
+        return cardTypeManager.getExpandedPublishedProjectTypes();
     }
 
     /**

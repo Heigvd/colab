@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.card;
 
+import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
@@ -57,6 +58,12 @@ public class CardRestEndpoint {
      */
     @Inject
     private CardFacade cardFacade;
+
+    /**
+     * Card content specific logic management
+     */
+    @Inject
+    private CardContentManager cardContentManager;
 
     /**
      * Retrieve the list of all cards. This is available to admin only
@@ -139,7 +146,7 @@ public class CardRestEndpoint {
 
         List<CardContent> variants = card.getContentVariants();
         if (variants != null && variants.size() == 1 && variants.get(0) != null) {
-            cardFacade.assignDeliverable(variants.get(0).getId(), document);
+            cardContentManager.assignDeliverable(variants.get(0).getId(), document);
         } else {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
