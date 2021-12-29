@@ -453,7 +453,7 @@ public class RestEndpoint {
                 .append(" ").append(method.getName()).append("(");
 
             // parameters
-            List<String> params= new ArrayList<>();
+            List<String> params = new ArrayList<>();
             params.addAll(processParameters(this.getPathParameters(), imports));
             params.addAll(processParameters(method.getPathParameters(), imports));
             params.addAll(processParameters(method.getQueryParameters(), imports));
@@ -576,6 +576,66 @@ public class RestEndpoint {
     }
 
     /**
+     *
+     * @param sb
+     * @param functionName
+     * @param params
+     * @param returnType
+     */
+    private void generateTypescriptFunction(
+        StringBuilder sb,
+        RestMethod method,
+        String functionName,
+        List<Param> params,
+        ClassDoc classDoc,
+        Map<String, Type> types,
+        Reflections reflections,
+        Runnable bodyGenerator
+    ) {
+
+        Logger.debug(" * generate " + functionName);
+
+        // JSDOC
+        ////////////////////////
+        newLine(sb);
+        sb.append("/**");
+        newLine(sb);
+        sb.append(" * ").append(method.getHttpMethod()).append(" ")
+            .append(method.getFullPath());
+        newLine(sb);
+        sb.append(" * <p> ");
+        String methodDoc = classDoc != null
+            ? classDoc.getMethods().getOrDefault(method.getName(), "")
+            : "";
+
+        List<String> paramNames = params.stream()
+            .map(param -> param.getName())
+            .collect(Collectors.toList());
+
+        appendJavadocBlock(sb, " *", methodDoc, false, reflections, paramNames);
+        newLine(sb);
+        sb.append(" */");
+        newLine(sb);
+        // Signature
+        /////////////////////////////
+        sb.append(functionName)
+            .append(": function(")
+            .append(params.stream()
+                .map(param -> param.getName() + ": "
+                + TypeScriptHelper.convertType(param.getType(), types))
+                .collect(Collectors.joining(", ")))
+            .append(") {");
+        indent++;
+        newLine(sb);
+
+        bodyGenerator.run();
+
+        indent--;
+        newLine(sb);
+        sb.append("},");
+    }
+
+    /**
      * Write ts client for this controller.This method will populate types map with type which
      * requires a dedicated TS interface
      *
@@ -608,116 +668,106 @@ public class RestEndpoint {
         newLine(sb);
 
         restMethods.forEach(method -> {
-            Logger.debug(" * generate " + method);
 
-            // JSDOC
-            ////////////////////////
-            newLine(sb);
-            sb.append("/**");
-            newLine(sb);
-            sb.append(" * ").append(method.getHttpMethod()).append(" ")
-                .append(method.getFullPath());
-            newLine(sb);
-            sb.append(" * <p> ");
-            String methodDoc = classDoc.getMethods().getOrDefault(method.getName(), "");
+            // 1 Generate getPath function
+            List<Param> urlParams = new ArrayList<>(this.getPathParameters());
+            urlParams.addAll(method.getUrlParameters());
+            String getPathFunctionName = method.getName() + "Path";
 
-            List<String> paramNames = method.getAllParameters().stream()
-                .map(param -> param.getName())
-                .collect(Collectors.toList());
-
-            appendJavadocBlock(sb, " *", methodDoc, false, reflections, paramNames);
-            newLine(sb);
-            sb.append(" */");
-            newLine(sb);
-            // Signature
-            /////////////////////////////
-            sb.append(method.getName()).append(": function(");
-            List<Param> params = new ArrayList<>(this.getPathParameters());
-            params.addAll(method.getAllParameters());
-            sb.append(params.stream()
-                .map(param -> param.getName() + ": "
-                + TypeScriptHelper.convertType(param.getType(), types))
-                .collect(Collectors.joining(", ")));
-            sb.append(") {");
-
-            // Body
-            /////////////////////////////
-            indent++;
-            newLine(sb);
-            sb.append("const queryString : string[] = [];");
-            newLine(sb);
-
-            method.getQueryParameters().forEach(queryParam -> {
-                sb.append("if (").append(queryParam.getName()).append(" != null){");
-                indent++;
+            Runnable buildPath = () -> {
+                sb.append("const queryString : string[] = [];");
                 newLine(sb);
-                sb.append("queryString.push('")
-                    .append(queryParam.getInAnnotationName())
-                    .append("=' + encodeURIComponent(").append(queryParam.getName())
-                    .append("+')'));");
-                indent--;
-                newLine(sb);
-                sb.append("}");
-            });
-            newLine(sb);
 
-            if (!method.getFormParameters().isEmpty()) {
-                sb.append("const formData = new FormData();");
-                method.getFormParameters().forEach(formParam -> {
-                    //indent++;
+                method.getQueryParameters().forEach(queryParam -> {
+                    sb.append("if (").append(queryParam.getName()).append(" != null){");
+                    indent++;
                     newLine(sb);
-                    sb.append("formData.append('")
-                        .append(formParam.getInAnnotationName())
-                        .append("', ")
-                        .append(formParam.getName())
-                        .append(");");
-                    //indent--;
+                    sb.append("queryString.push('")
+                        .append(queryParam.getInAnnotationName())
+                        .append("=' + encodeURIComponent(").append(queryParam.getName())
+                        .append("+')'));");
+                    indent--;
                     newLine(sb);
+                    sb.append("}");
                 });
                 newLine(sb);
-            }
 
-            Map<String, String> pathParams = method.getPathParameters().stream()
-                .collect(Collectors.toMap(
-                    p -> p.getInAnnotationName(),
-                    p -> "${" + p.getName() + "}")
-                );
+                Map<String, String> pathParams = method.getPathParameters().stream()
+                    .collect(Collectors.toMap(
+                        p -> p.getInAnnotationName(),
+                        p -> "${" + p.getName() + "}")
+                    );
 
-            UriTemplate pathTemplate = new PathPattern(method.getFullPath()).getTemplate();
-            String tsPath = pathTemplate.createURI(pathParams);
-            sb.append("const path = `${baseUrl}").append(tsPath)
-                .append("` + (queryString.length > 0 ? '?' + queryString.join('&') : '');");
-            newLine(sb);
+                UriTemplate pathTemplate = new PathPattern(method.getFullPath()).getTemplate();
+                String tsPath = pathTemplate.createURI(pathParams);
+                sb.append("const path = `${baseUrl}").append(tsPath)
+                    .append("${queryString.length > 0 ? '?' + queryString.join('&') : ''}`;");
+            };
 
-            boolean forDataRequest = method.getConsumes().contains(MediaType.MULTIPART_FORM_DATA);
+            this.generateTypescriptFunction(sb, method, getPathFunctionName, urlParams,
+                classDoc, types, reflections,
+                () -> {
+                    buildPath.run();
+                    newLine(sb);
+                    sb.append("return path;");
+                }
+            );
 
-            if (forDataRequest) {
-                sb.append("return sendRequest")
-                    .append("<")
-                    .append(TypeScriptHelper.convertType(method.getReturnType(), types))
-                    .append(">('").append(method.getHttpMethod())
-                    .append("', path")
-                    .append(", formData")
-                    .append(", errorHandler")
-                    .append(", '").append(MediaType.MULTIPART_FORM_DATA).append("'")
-                    .append(");");
-            } else {
-                sb.append("return sendRequest")
-                    .append("<")
-                    .append(TypeScriptHelper.convertType(method.getReturnType(), types))
-                    .append(">('").append(method.getHttpMethod())
-                    .append("', path")
-                    .append(", ")
-                    .append(method.getBodyParam() != null
-                        ? method.getBodyParam().getName()
-                        : "undefined")
-                    .append(", errorHandler")
-                    .append(", '").append(MediaType.APPLICATION_JSON).append("'")
-                    .append(");");
-            }
-            indent--;
-            newLine(sb);
-            sb.append("},");
+            List<Param> allParams = new ArrayList<>(this.getPathParameters());
+            allParams.addAll(method.getAllParameters());
+
+            // 2 generate API call function
+            this.generateTypescriptFunction(sb, method, method.getName(), allParams,
+                classDoc, types, reflections,
+                () -> {
+                    buildPath.run();
+                    newLine(sb);
+
+                    // JSDOC
+                    ////////////////////////
+                    if (!method.getFormParameters().isEmpty()) {
+                        sb.append("const formData = new FormData();");
+                        method.getFormParameters().forEach(formParam -> {
+                            //indent++;
+                            newLine(sb);
+                            sb.append("formData.append('")
+                                .append(formParam.getInAnnotationName())
+                                .append("', ")
+                                .append(formParam.getName())
+                                .append(");");
+                            //indent--;
+                            newLine(sb);
+                        });
+                        newLine(sb);
+                    }
+
+                    boolean forDataRequest = method.getConsumes().contains(MediaType.MULTIPART_FORM_DATA);
+
+                    if (forDataRequest) {
+                        sb.append("return sendRequest")
+                            .append("<")
+                            .append(TypeScriptHelper.convertType(method.getReturnType(), types))
+                            .append(">('").append(method.getHttpMethod())
+                            .append("', path")
+                            .append(", formData")
+                            .append(", errorHandler")
+                            .append(", '").append(MediaType.MULTIPART_FORM_DATA).append("'")
+                            .append(");");
+                    } else {
+                        sb.append("return sendRequest")
+                            .append("<")
+                            .append(TypeScriptHelper.convertType(method.getReturnType(), types))
+                            .append(">('").append(method.getHttpMethod())
+                            .append("', path")
+                            .append(", ")
+                            .append(method.getBodyParam() != null
+                                ? method.getBodyParam().getName()
+                                : "undefined")
+                            .append(", errorHandler")
+                            .append(", '").append(MediaType.APPLICATION_JSON).append("'")
+                            .append(");");
+                    }
+                });
         });
 
         indent--;

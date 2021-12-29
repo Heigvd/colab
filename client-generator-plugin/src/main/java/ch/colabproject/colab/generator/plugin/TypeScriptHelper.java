@@ -225,7 +225,7 @@ public class TypeScriptHelper {
                             }
                             if (fields != null) {
                                 String fieldDoc = fields.getOrDefault(key, "");
-                                sb.append("  /**\n  ").append(fieldDoc).append("\n  */");
+                                sb.append("  /**\n  ").append(fieldDoc).append("  */\n");
                             }
 
                             sb.append("  '").append(key).append("'");
