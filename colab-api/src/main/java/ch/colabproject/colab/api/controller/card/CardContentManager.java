@@ -116,7 +116,7 @@ public class CardContentManager {
 
         CardContent cardContent = initNewCardContentForCard(card);
 
-        ResourceReferenceSpreadingHelper.spreadResourceFromUp(cardContent);
+        ResourceReferenceSpreadingHelper.spreadResourcesFromUp(cardContent);
 
         return cardContentDao.createCardContent(cardContent);
     }
@@ -150,7 +150,7 @@ public class CardContentManager {
     public CardContent deleteCardContent(Long cardContentId) {
         CardContent cardContent = assertAndGetCardContent(cardContentId);
 
-        if (!(checkDeletionAcceptability(cardContent))) {
+        if (!checkDeletionAcceptability(cardContent)) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 

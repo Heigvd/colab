@@ -17,12 +17,12 @@ import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
-import ch.colabproject.colab.api.persistence.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.card.CardDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
@@ -48,7 +48,7 @@ public class CardFacade {
     // *********************************************************************************************
 
     /**
-     * Card persistence
+     * Card persistence handler
      */
     @Inject
     private CardDao cardDao;
@@ -64,12 +64,6 @@ public class CardFacade {
      */
     @Inject
     private CardContentManager cardContentManager;
-
-    /**
-     * Card content persistence handler
-     */
-    @Inject
-    private CardContentDao cardContentDao;
 
     // *********************************************************************************************
     // find cards
@@ -88,6 +82,59 @@ public class CardFacade {
         }
 
         return card;
+    }
+
+    // *********************************************************************************************
+    // find all recursively
+    // *********************************************************************************************
+
+    /**
+     * Get a card and all cards within in one set.
+     *
+     * @param rootCard the first card
+     *
+     * @return the rootCard + all cards within
+     */
+    public Set<Card> getAllCards(Card rootCard) {
+        Set<Card> cards = new HashSet<>();
+        List<Card> queue = new LinkedList<>();
+        queue.add(rootCard);
+
+        while (!queue.isEmpty()) {
+            Card card = queue.remove(0);
+            if (!cards.contains(card)) { // prevent cycles
+                cards.add(card);
+                card.getContentVariants().forEach(content -> queue.addAll(content.getSubCards()));
+            }
+        }
+
+        return cards;
+    }
+
+    /**
+     * Get all cardContents
+     *
+     * @param rootCard the first card
+     *
+     * @return all cardContent in the card hierarchy
+     */
+    public Set<CardContent> getAllCardContents(Card rootCard) {
+        return this.getAllCards(rootCard).stream().flatMap(card -> {
+            return card.getContentVariants().stream();
+        }).collect(Collectors.toSet());
+    }
+
+    // *********************************************************************************************
+    // helper
+    // *********************************************************************************************
+
+    /**
+     * @param card the card to check
+     *
+     * @return True if the card is the root card of a project
+     */
+    private boolean isARootCard(Card card) {
+        return card.hasRootCardProject();
     }
 
     // *********************************************************************************************
@@ -114,7 +161,7 @@ public class CardFacade {
 
         Card card = initNewCard(parent, cardType);
 
-        ResourceReferenceSpreadingHelper.spreadResourceFromUp(card);
+        ResourceReferenceSpreadingHelper.spreadResourcesFromUp(card);
 
         return cardDao.createCard(card);
     }
@@ -136,14 +183,15 @@ public class CardFacade {
         parent.getSubCards().add(card);
 
         Project project = parent.getProject();
-
         if (project != null) {
-            AbstractCardType effectiveType =
-                cardTypeManager.computeEffectiveCardTypeOrRef(cardType, project);
+            AbstractCardType effectiveType = cardTypeManager.computeEffectiveCardTypeOrRef(cardType,
+                project);
 
             if (effectiveType != null) {
+
                 card.setCardType(effectiveType);
                 effectiveType.getImplementingCards().add(card);
+
                 CardType resolved = effectiveType.resolve();
                 if (resolved != null) {
                     card.setTitle(resolved.getTitle());
@@ -152,7 +200,7 @@ public class CardFacade {
                 }
             } else {
                 logger.error("Unable to find effective type for {}", cardType);
-                throw HttpErrorMessage.relatedObjectNotFoundError();
+                throw HttpErrorMessage.dataIntegrityFailure();
             }
         }
 
@@ -170,7 +218,6 @@ public class CardFacade {
         logger.debug("initialize a new root card");
 
         Card rootCard = initNewCard();
-        rootCard.setIndex(0);
 
         return rootCard;
     }
@@ -189,17 +236,16 @@ public class CardFacade {
     }
 
     /**
-     * Delete the card
+     * Delete the given card
      *
      * @param cardId the id of the card to delete
      *
      * @return the freshly deleted card
      */
     public Card deleteCard(Long cardId) {
-        Card card = cardDao.getCard(cardId);
+        Card card = assertAndGetCard(cardId);
 
-        if (card.getRootCardProject() != null) {
-            // no way to delete the root card
+        if (!checkDeletionAcceptability(card)) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
@@ -211,6 +257,22 @@ public class CardFacade {
     }
 
     /**
+     * Ascertain that the card can be deleted
+     *
+     * @param card the card to check for deletion
+     *
+     * @return True iff it can be safely deleted
+     */
+    private boolean checkDeletionAcceptability(Card card) {
+        // no way to delete the root card
+        if (card.getRootCardProject() != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Move a card to a new parent
      *
      * @param cardId      id of the card to move
@@ -219,7 +281,9 @@ public class CardFacade {
      * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
      */
     public void moveCard(Long cardId, Long newParentId) {
-        this.moveCard(cardDao.getCard(cardId), cardContentDao.getCardContent(newParentId));
+        Card card = this.assertAndGetCard(cardId);
+        CardContent parent = cardContentManager.assertAndGetCardContent(newParentId);
+        this.moveCard(card, parent);
     }
 
     /**
@@ -230,70 +294,60 @@ public class CardFacade {
      *
      * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
      */
-    public void moveCard(Card card, CardContent newParent) {
-        if (card != null && newParent != null) {
-            if (card.getRootCardProject() != null) {
-                // Do never move root card
-                throw HttpErrorMessage.dataIntegrityFailure();
-            }
+    private void moveCard(Card card, CardContent newParent) {
+        if (!checkMoveAcceptability(card, newParent)) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        if (!Objects.equals(card.getParent(), newParent)) {
 
             CardContent previousParent = card.getParent();
             if (previousParent != null) {
-                // check if newParent is a child of the card
-                Card c = newParent.getCard();
-                while (c != null) {
-                    if (c.equals(card)) {
-                        throw HttpErrorMessage.dataIntegrityFailure();
-                    }
-                    CardContent parent = c.getParent();
-                    if (parent != null) {
-                        c = parent.getCard();
-                    } else {
-                        c = null;
-                    }
-                }
                 previousParent.getSubCards().remove(card);
-                newParent.getSubCards().add(card);
-                card.setParent(newParent);
+            }
+
+            card.setParent(newParent);
+            newParent.getSubCards().add(card);
+
+            // TODO handle the resources
+        }
+    }
+
+    /**
+     * Ascertain that the given card can be moved to the given card content
+     * @param card the card to move
+     * @param newParent the new potential parent of the card
+     * @return True iff it can be safely moved
+     */
+    private boolean checkMoveAcceptability(Card card, CardContent newParent) {
+        if (card == null ) {
+            return false;
+        }
+
+        if (newParent == null) {
+            return false;
+        }
+
+        // Do never move the root card
+        if (isARootCard(card)) {
+            return false;
+        }
+
+        // check if newParent is a child of the card
+        Card ancestorOfParent = newParent.getCard();
+        while (ancestorOfParent != null) {
+            if (ancestorOfParent.equals(card)) {
+                return false;
+            }
+            CardContent parent = ancestorOfParent.getParent();
+            if (parent != null) {
+                ancestorOfParent = parent.getCard();
+            } else {
+                ancestorOfParent = null;
             }
         }
-    }
 
-    // *********************************************************************************************
-    // utility
-    // *********************************************************************************************
-
-    /**
-     * Get a card and all cards within in one set.
-     *
-     * @param rootCard the first card
-     *
-     * @return the rootCard + all cards within
-     */
-    public Set<Card> getAllCards(Card rootCard) {
-        Set<Card> cards = new HashSet<>();
-        List<Card> queue = new LinkedList<>();
-        queue.add(rootCard);
-
-        while (!queue.isEmpty()) {
-            Card card = queue.remove(0);
-            cards.add(card);
-            card.getContentVariants().forEach(content -> queue.addAll(content.getSubCards()));
-        }
-        return cards;
-    }
-
-    /**
-     * Get all cardContents
-     *
-     * @param rootCard the first card
-     *
-     * @return all cardContent in the card hierarchy
-     */
-    public Set<CardContent> getAllCardContents(Card rootCard) {
-        return this.getAllCards(rootCard).stream().flatMap(card -> {
-            return card.getContentVariants().stream();
-        }).collect(Collectors.toSet());
+        return true;
     }
 
     // *********************************************************************************************
@@ -303,16 +357,15 @@ public class CardFacade {
     /**
      * Get all variants content for the given card
      *
-     * @param cardId id of the card
+     * @param cardId the id of the card
      *
      * @return all card contents of the card
      */
     public List<CardContent> getContentVariants(Long cardId) {
         logger.debug("Get card contents of card #{}", cardId);
-        Card card = cardDao.getCard(cardId);
-        if (card == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+
+        Card card = assertAndGetCard(cardId);
+
         return card.getContentVariants();
     }
 
@@ -325,10 +378,9 @@ public class CardFacade {
      */
     public List<StickyNoteLink> getStickyNoteLinkAsDest(Long cardId) {
         logger.debug("get sticky note links where the card #{} is the destination", cardId);
-        Card card = cardDao.getCard(cardId);
-        if (card == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+
+        Card card = assertAndGetCard(cardId);
+
         return card.getStickyNoteLinksAsDest();
     }
 
@@ -341,10 +393,9 @@ public class CardFacade {
      */
     public List<StickyNoteLink> getStickyNoteLinkAsSrcCard(Long cardId) {
         logger.debug("get sticky note links where the card #{} is the source", cardId);
-        Card card = cardDao.getCard(cardId);
-        if (card == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+
+        Card card = assertAndGetCard(cardId);
+
         return card.getStickyNoteLinksAsSrc();
     }
 
@@ -357,10 +408,9 @@ public class CardFacade {
      */
     public List<ActivityFlowLink> getActivityFlowLinkAsPrevious(Long cardId) {
         logger.debug("get activity flow links where the card #{} is the previous one", cardId);
-        Card card = cardDao.getCard(cardId);
-        if (card == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+
+        Card card = assertAndGetCard(cardId);
+
         return card.getActivityFlowLinksAsPrevious();
     }
 
@@ -373,10 +423,9 @@ public class CardFacade {
      */
     public List<ActivityFlowLink> getActivityFlowLinkAsNext(Long cardId) {
         logger.debug("get activity flow links where the card #{} is the next one", cardId);
-        Card card = cardDao.getCard(cardId);
-        if (card == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+
+        Card card = assertAndGetCard(cardId);
+
         return card.getActivityFlowLinksAsNext();
     }
 
@@ -389,12 +438,10 @@ public class CardFacade {
      */
     public List<AccessControl> getAcls(Long cardId) {
         logger.debug("Get Card #{} access-control list", cardId);
-        Card card = cardDao.getCard(cardId);
-        if (card != null) {
-            return card.getAccessControlList();
-        } else {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+
+        Card card = assertAndGetCard(cardId);
+
+        return card.getAccessControlList();
     }
 
     // *********************************************************************************************
@@ -417,8 +464,7 @@ public class CardFacade {
             return false;
         }
 
-        boolean isARootCard = card.hasRootCardProject();
-        if (!(isARootCard || card.hasCardType())) {
+        if (!(isARootCard(card) || card.hasCardType())) {
             return false;
         }
 
@@ -428,12 +474,6 @@ public class CardFacade {
     // *********************************************************************************************
     //
     // *********************************************************************************************
-
-    // *********************************************************************************************
-    // card type stuff
-    // *********************************************************************************************
-
-
 
     // *********************************************************************************************
     //

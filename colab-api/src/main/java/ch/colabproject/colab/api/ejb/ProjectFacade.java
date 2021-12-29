@@ -298,7 +298,8 @@ public class ProjectFacade {
         }
 
         List<TeamMember> teamMembers = new ArrayList<>(project.getTeamMembers());
-        if (teamMembers.stream().noneMatch(m -> m.getPosition() == HierarchicalPosition.OWNER)) {
+        if (teamMembers == null
+            || teamMembers.stream().noneMatch(m -> m.getPosition() == HierarchicalPosition.OWNER)) {
             return false;
         }
 

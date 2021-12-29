@@ -279,7 +279,7 @@ public class CardTypeManager {
         ref.setTarget(cardType);
         cardType.getDirectReferences().add(ref);
 
-        ResourceReferenceSpreadingHelper.spreadResourceFromUp(ref);
+        ResourceReferenceSpreadingHelper.spreadResourcesFromUp(ref);
 
         return cardTypeDao.createCardType(ref);
     }
