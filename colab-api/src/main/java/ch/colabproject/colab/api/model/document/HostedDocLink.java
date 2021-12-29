@@ -29,28 +29,47 @@ public class HostedDocLink extends Document {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * The filePath to access the document
+     * Size of the file in bytes
      */
-    private String filePath;
+    private Long fileSize;
+    
+    /**
+     * Original file name
+     */
+    private String fileName;
+    
+    /**
+     * mime type of file
+     */
+    private String mimeType;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
 
-    /**
-     * @return the filePath to access the document
-     */
-    public String getFilePath() {
-        return filePath;
+    public Long getFileSize() {
+        return fileSize;
     }
 
-    /**
-     * @param filePath the filePath to access the document to set
-     */
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+    
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -60,7 +79,9 @@ public class HostedDocLink extends Document {
         if (other instanceof HostedDocLink) {
             HostedDocLink o = (HostedDocLink) other;
             super.merge(o);
-            this.setFilePath(o.getFilePath());
+            this.setFileName(o.getFileName());
+            this.setFileSize(o.getFileSize());
+            this.setMimeType(o.getMimeType());
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -79,7 +100,7 @@ public class HostedDocLink extends Document {
 
     @Override
     public String toString() {
-        return "HostedDocLink{" + super.toPartialString() + ", filePath=" + filePath + "}";
+        return "HostedDocLink{" + super.toPartialString() + ", fileName=" + fileName + "}";
     }
 
 }

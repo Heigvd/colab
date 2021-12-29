@@ -127,11 +127,11 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertTrue(doc instanceof HostedDocLink);
         HostedDocLink hostedDocLink = (HostedDocLink) doc;
         Assertions.assertEquals(docId, hostedDocLink.getId());
-        Assertions.assertNull(hostedDocLink.getFilePath());
+        Assertions.assertNull(hostedDocLink.getFileName());
 
         String path = "aWayToAccessTheMongoDBData #" + ((int) (Math.random() * 1000));
 
-        hostedDocLink.setFilePath(path);
+        hostedDocLink.setFileName(path);
         client.documentRestEndPoint.updateDocument(hostedDocLink);
 
         Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
@@ -139,7 +139,7 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
         Assertions.assertNotNull(persistedHostedDocLink);
         Assertions.assertEquals(docId, persistedHostedDocLink.getId());
-        Assertions.assertEquals(path, persistedHostedDocLink.getFilePath());
+        Assertions.assertEquals(path, persistedHostedDocLink.getFileName());
     }
 
     @Test

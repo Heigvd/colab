@@ -45,16 +45,13 @@ public class JcrManager {
     private JcrSessionManager jcrSessionManager;
     
     private static final String CONTENT = "CONTENT";
-    //TODO see if Stream is better
+    
     /**
-     * projectId project uid
-     * fileId file unique id
+     * @param project related project
+     * @param identifier document id
+     * @return stream to the file
+     * @throws javax.jcr.RepositoryException
      */
-//    public void storeNewFile(Project project, long fileId, InputStream file) throws RepositoryException {
-//        var session = this.jcrSessionManager.getSession(project);
-//        
-//    }
-
     public InputStream getFileStream(Project project, Long identifier) throws RepositoryException {
         var session = this.jcrSessionManager.getSession(project);
         
@@ -64,28 +61,54 @@ public class JcrManager {
         return prop.getBinary().getStream();
     }
 
-    public void updateFile(Project project, Long identifier, InputStream newContent) throws RepositoryException {
+    /**
+     * @param project project related to file
+     * @param identifier document id
+     * @param fileContent file content
+     * @throws RepositoryException 
+     */
+    public void updateOrCreateFile(Project project, Long identifier, InputStream fileContent) throws RepositoryException {
         var session = this.jcrSessionManager.getSession(project);
         
-        var node = session.getNode(identifier.toString());
-        var prop = node.getProperty(CONTENT);
-        Binary binary = session.getSession().getValueFactory().createBinary(newContent);
-        prop.setValue(binary);
+        if(!session.nodeExists(identifier.toString())){
+            createFile(project, identifier, fileContent);
+        }else{
+            var node = session.getNode(identifier.toString());
+            var prop = node.getProperty(CONTENT);
+            Binary binary = session.getSession().getValueFactory().createBinary(fileContent);
+            prop.setValue(binary);
+        }
     }
     
-    public void createFile(Project project, Long identifier, InputStream content) throws RepositoryException{
+    /**
+     * Creates a node for the given file id, and store its content
+     * @param project related project
+     * @param identifier document id 
+     * @param content file content
+     * @throws RepositoryException 
+     */
+    private void createFile(Project project, Long identifier, InputStream content) throws RepositoryException{
         var session = this.jcrSessionManager.getSession(project);
         
         Node root = session.getWorkspaceRoot();
         Node newNode = root.addNode(identifier.toString());
-        var prop = newNode.setProperty(CONTENT, identifier.toString());
-        Binary binary = session.getSession().getValueFactory().createBinary(content);
         
+        var prop = newNode.setProperty(CONTENT, identifier.toString());
+        Binary binary = session.createBinary(content);
         prop.setValue(binary);
     }
 
+    /**
+     * Deletes any existing node. Call is ignored if the file doesn't exist
+     * @param project related project
+     * @param identifier doc id
+     * @throws RepositoryException 
+     */
     public void deleteFile(Project project, Long identifier) throws RepositoryException {
         var session = this.jcrSessionManager.getSession(project);
-        session.removeNode(identifier.toString());
+        if(session.nodeExists(identifier.toString())){
+            session.removeNode(identifier.toString());
+        }
+        
     }
 }

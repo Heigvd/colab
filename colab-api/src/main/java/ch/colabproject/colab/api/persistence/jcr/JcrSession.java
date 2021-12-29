@@ -8,7 +8,9 @@ package ch.colabproject.colab.api.persistence.jcr;
 
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.io.InputStream;
 import java.io.Serializable;
+import javax.jcr.Binary;
 import javax.jcr.Credentials;
 import javax.jcr.Node;
 import javax.jcr.Repository;
@@ -40,7 +42,7 @@ public class JcrSession implements Serializable {
 
     /** Session workspace path */
     private final String workspacePath;
-
+    
     /**
      * Open a JCR session to the repository
      *
@@ -51,6 +53,8 @@ public class JcrSession implements Serializable {
      */
     public JcrSession(Repository repository, Project project) throws RepositoryException {
         logger.trace("Create JCR Session for {}", project);
+        //TODO create user if not present in 
+        //TODO long term : 
         this.session = repository.login(credentials);
         this.workspace = "project_" + project.getId();
         this.workspacePath = "/" + this.workspace;
@@ -163,6 +167,10 @@ public class JcrSession implements Serializable {
             // TODO throw something else, but what ?
             throw HttpErrorMessage.dataIntegrityFailure();
         }
+    }
+    
+    public Binary createBinary(InputStream content) throws RepositoryException{
+       return this.session.getValueFactory().createBinary(content);
     }
 
     /**

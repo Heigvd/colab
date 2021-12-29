@@ -9,7 +9,6 @@ import ch.colabproject.colab.api.model.document.HostedDocLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.jcr.JcrManager;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
-import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import java.io.InputStream;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -18,6 +17,10 @@ import javax.jcr.RepositoryException;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.io.BufferedInputStream;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+
 
 /**
  * Handles files
@@ -36,64 +39,78 @@ public class FileManager {
     @Inject
     private JcrManager jcrManager;
     
-        /**
-     * Project persistence
-     */
-    @Inject
-    private ProjectDao projectDao;
-    
-    
     /**
      * Document persistence
      */
     @Inject
     private DocumentDao documentDao;
     
+//    @Inject
+//    private ResourceAndRefDao resourceDao;
     
-    public void createFile(Long projectId, InputStream file, FormDataContentDisposition details) throws RepositoryException{
+    public void updateFile(
+            Long docId, 
+            InputStream file, 
+            FormDataContentDisposition details,
+            FormDataBodyPart body) 
+            throws RepositoryException
+    {
         
-        Project project = projectDao.getProject(projectId);
-        String name = details.getFileName();
-        Long size = details.getSize();
-        
-        HostedDocLink newDoc = new HostedDocLink();
-        documentDao.persistDocument(newDoc);
-        
-        //TODO fileId
-        Long fileId = 123L;
-        this.jcrManager.createFile(project, fileId, file);
-    }
-    
-    public void updateFile(Long projectId, Long docId, InputStream file, FormDataContentDisposition details) throws RepositoryException{
-        
-        Project project = projectDao.getProject(projectId);
         Document doc = documentDao.findDocument(docId);
-        //TODO fileId instead
-        Long fileId = 123L;
-
-        this.jcrManager.updateFile(project, docId, file);
-    }
-    
-    public void deleteFile(Long projectId, Long documentId) throws RepositoryException{
-    
-        this.documentDao.deleteDocument(documentId);
-        var p = this.projectDao.getProject(projectId);
-        //TODO fileId instead
-
-        this.jcrManager.deleteFile(p, documentId);
-    }
-    
-    public InputStream getFile(Long projectId, Long documentId) throws Exception{
-        var doc = this.documentDao.findDocument(documentId);
-        //TODO fileId instead
-
-        if(doc == null){
-            throw new Exception("Document with id " + documentId + " does not exist");
-        }else if(doc.getClass() != HostedDocLink.class){
-            throw new Exception("Document is not a hosted file");
+        if(doc == null || !(doc instanceof HostedDocLink))
+        {
+            throw HttpErrorMessage.notFound();
         }
-        Project project = projectDao.getProject(projectId);
+        
+        HostedDocLink hostedDoc = (HostedDocLink)doc;
+        hostedDoc.setFileName(details.getFileName());
+        hostedDoc.setFileSize(details.getSize());
+        hostedDoc.setMimeType(body.getMediaType().toString());
 
-        return this.jcrManager.getFileStream(project, documentId);
+        Project project = doc.getProject();
+        this.jcrManager.updateOrCreateFile(project, docId, file);
+        FileManager.logger.debug("Updated file {} with id {}", hostedDoc.getFileName(), hostedDoc.getId());
+    }
+    
+    public void deleteFile(Long docId) throws RepositoryException{
+    
+        Document doc = documentDao.findDocument(docId);
+        if(doc == null || !(doc instanceof HostedDocLink))
+        {
+            throw HttpErrorMessage.notFound();
+        }
+        
+        Project project = doc.getProject();
+        HostedDocLink hostedDoc = (HostedDocLink)doc;
+
+        this.documentDao.deleteDocument(docId);
+
+        this.jcrManager.deleteFile(project, docId);
+        
+        FileManager.logger.debug("Deleted file '{}' with id {}", hostedDoc.getFileName(), doc.getId());
+    }
+    
+    public InputStream getFileStream(Long documentId) throws RepositoryException {
+        var doc = this.documentDao.findDocument(documentId);
+
+        if(doc == null || doc.getClass() != HostedDocLink.class)
+        {
+            throw HttpErrorMessage.notFound();
+        }
+        
+        Project project = doc.getProject();
+
+        return new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));
+    }
+    
+    public String getFileMimeType(Long documentId){
+        var doc = this.documentDao.findDocument(documentId);
+
+        if(doc == null || doc.getClass() != HostedDocLink.class)
+        {
+            throw HttpErrorMessage.notFound();
+        }
+        var hostedDoc = (HostedDocLink)doc;
+        return hostedDoc.getMimeType();
     }
 }

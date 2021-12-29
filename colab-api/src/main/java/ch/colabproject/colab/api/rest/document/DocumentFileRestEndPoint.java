@@ -25,17 +25,20 @@ package ch.colabproject.colab.api.rest.document;
 
 import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.io.InputStream;
 import javax.inject.Inject;
+import javax.jcr.RepositoryException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -56,100 +59,66 @@ public class DocumentFileRestEndPoint {
 
     @Inject
     private FileManager fileManager;
-    
+
     /**
-     *
-     * @param id      project id
-     * @param file    the file bytes
-     * @param details file meta data
-     *
-     * @return some random data
-     */
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public String postFile(
-        @FormDataParam("id") Long id,
-        @FormDataParam("file") InputStream file,
-        @FormDataParam("file") FormDataContentDisposition details) {
-        
-        try{
-            logger.debug("post file in project #{} file name", id, details.getFileName());
-            fileManager.createFile(id, file, details);
-        }catch(Exception ex){
-            return "Failure";// TODO : reason
-        }
-        
-        //TODO return new identifier ?
-        return "Success";//TODO
-    }
-    
-        /**
-     *
-     * @param projectId      project id
      * @param docId   document id
      * @param file    the file bytes
      * @param details file meta data
-     *
-     * @return some random data
+     * @param bodypart file meta data (for mime type)
      */
     @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public String updateFile(
-        @FormDataParam("projectId") Long projectId,
+    public void updateFile(
         @FormDataParam("documentId") Long docId,
         @FormDataParam("file") InputStream file,
-        @FormDataParam("file") FormDataContentDisposition details) {
+        @FormDataParam("file") FormDataContentDisposition details,
+        @FormDataParam("file") FormDataBodyPart bodypart //TODO does that work ?
+        ) {
         
         try{
-            logger.debug("post file in project #{} file name", projectId, details.getFileName());
-            fileManager.updateFile(projectId, docId, file, details);
-        }catch(Exception ex){
-            return "Failure";// TODO : reason
+            fileManager.updateFile(docId, file, details, bodypart);
+        }catch(RepositoryException ex){
+            logger.debug("Could not update file with id {} : {}", docId, ex);
+            throw HttpErrorMessage.internalServerError();
         }
-        
-        //TODO return new identifier ?
-        return "Success";//TODO
     }
     
-    
     @DELETE
-    @Path("{projectId}/GetFile/{documentId}/{name}")
+    @Path("{projectId}/DeleteFile/{documentId}/{name}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String deleteFile(
-        @PathParam("projectId") Long projectId,
+    public void deleteFile(
         @PathParam("documentId") Long documentId,
         @PathParam("name") String name) {
-        
         try {
-            fileManager.deleteFile(projectId, documentId);
-            return "Success";// TODO
-        } catch (Exception ex) {
-            logger.debug("Could not delete file {}", ex);
-            return "Failure"; // TODO 
+            fileManager.deleteFile(documentId);
+        } catch (RepositoryException ex) {
+            logger.debug("Could not delete file with id {} : {}", documentId, ex);
         }
     }
     
     /**
      * Get file content
      *
-     * @param projectId project id
      * @param documentId document id
      * @param name name of the file
      *
      * @return file content
      */
     @GET
-    @Path("{projectId}/GetFile/{documentId}/{name}")
+    @Path("GetFile/{documentId}/{name}")
     @Produces(MediaType.TEXT_PLAIN)
-    // TODO see in Wegas how it is done
-    public InputStream getFileContent(
-        @PathParam("projectId") Long projectId,
+    public Response getFileContent(
         @PathParam("documentId") Long documentId,
         @PathParam("name") String name) {
         
         try {
-            return fileManager.getFile(projectId, documentId);
-        } catch (Exception ex) {
+            
+            var response = Response.ok(fileManager.getFileStream(documentId));
+            response.header("Content-Type", fileManager.getFileMimeType(documentId));
+            //response.header("Description", fileDescriptor.getDescription());
+            
+            return response.build();
+        } catch (RepositoryException ex) {
             logger.debug("Could not get file content {}", ex);
             return null;
         }

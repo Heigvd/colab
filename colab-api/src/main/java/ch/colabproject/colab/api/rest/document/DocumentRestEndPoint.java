@@ -125,10 +125,6 @@ public class DocumentRestEndPoint {
         documentFacade.deleteDocument(id);
     }
 
-    // *********************************************************************************************
-    //
-    // *********************************************************************************************
-
     /**
      * Get all ids of blocks that make up the document
      *
