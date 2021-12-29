@@ -229,7 +229,7 @@ export default function Form<T>({
           />
           {field.fieldFooter != null ? field.fieldFooter : null}
           {field.strengthProp != null ? (
-            <div className={field.showStrenghBar ? css({ display: 'none' }) : undefined}>
+            <div className={field.showStrenghBar ? undefined : css({ display: 'none' })}>
               <React.Suspense fallback={<InlineLoading />}>
                 <PasswordStrengthBar
                   barColors={['#ddd', '#ef4836', 'rgb(118, 176, 232)', '#2b90ef', '#01f590']}

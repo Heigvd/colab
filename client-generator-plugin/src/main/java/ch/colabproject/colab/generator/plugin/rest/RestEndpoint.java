@@ -33,6 +33,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.uri.PathPattern;
 import org.glassfish.jersey.uri.UriTemplate;
@@ -84,6 +85,20 @@ public class RestEndpoint {
      * List of rest methods defined in this controller.
      */
     private List<RestMethod> restMethods = new ArrayList<>();
+
+    /**
+     * optional errorHandler parameter definition
+     */
+    private static final Param optionalErrorHandler;
+
+    static {
+        optionalErrorHandler = new Param();
+        optionalErrorHandler.setName("errorHandler");
+        optionalErrorHandler.setInAnnotationName("errorHandler");
+        optionalErrorHandler.setJavadoc("optional custom error handler");
+        optionalErrorHandler.setOptional(true);
+        optionalErrorHandler.setType(ErrorHandler.class);
+    }
 
     /**
      * Get the value of authenticationRequired
@@ -621,7 +636,9 @@ public class RestEndpoint {
         sb.append(functionName)
             .append(": function(")
             .append(params.stream()
-                .map(param -> param.getName() + ": "
+                .map(param -> param.getName()
+                + (param.isOptional() ? "?" : "")
+                + ": "
                 + TypeScriptHelper.convertType(param.getType(), types))
                 .collect(Collectors.joining(", ")))
             .append(") {");
@@ -716,6 +733,8 @@ public class RestEndpoint {
             List<Param> allParams = new ArrayList<>(this.getPathParameters());
             allParams.addAll(method.getAllParameters());
 
+            allParams.add(optionalErrorHandler);
+
             // 2 generate API call function
             this.generateTypescriptFunction(sb, method, method.getName(), allParams,
                 classDoc, types, reflections,
@@ -743,27 +762,28 @@ public class RestEndpoint {
 
                     boolean forDataRequest = method.getConsumes().contains(MediaType.MULTIPART_FORM_DATA);
 
+                    String fn = method.getReturnType() == Response.class ? "sendHttpRequest" : "sendJsonRequest";
+                    String fnTemplate = method.getReturnType() == Response.class ? "" : "<" +
+                            TypeScriptHelper.convertType(method.getReturnType(), types)
+                        +">";
+
                     if (forDataRequest) {
-                        sb.append("return sendRequest")
-                            .append("<")
-                            .append(TypeScriptHelper.convertType(method.getReturnType(), types))
-                            .append(">('").append(method.getHttpMethod())
+                        sb.append("return ").append(fn).append(fnTemplate)
+                            .append("('").append(method.getHttpMethod())
                             .append("', path")
                             .append(", formData")
-                            .append(", errorHandler")
+                            .append(", errorHandler || defaultErrorHandler")
                             .append(", '").append(MediaType.MULTIPART_FORM_DATA).append("'")
                             .append(");");
                     } else {
-                        sb.append("return sendRequest")
-                            .append("<")
-                            .append(TypeScriptHelper.convertType(method.getReturnType(), types))
-                            .append(">('").append(method.getHttpMethod())
+                        sb.append("return ").append(fn).append(fnTemplate)
+                            .append("('").append(method.getHttpMethod())
                             .append("', path")
                             .append(", ")
                             .append(method.getBodyParam() != null
                                 ? method.getBodyParam().getName()
                                 : "undefined")
-                            .append(", errorHandler")
+                            .append(", errorHandler || defaultErrorHandler")
                             .append(", '").append(MediaType.APPLICATION_JSON).append("'")
                             .append(");");
                     }

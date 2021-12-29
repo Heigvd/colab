@@ -4,7 +4,7 @@
 function getOptions({
   method,
   body,
-  contentType
+  contentType,
 }: {
   method?: string;
   body?: {} | string | FormData;
@@ -16,12 +16,12 @@ function getOptions({
     // browser do it
     if (contentType != "multipart/form-data") {
       headers = new Headers({
-        "content-type": contentType
+        "content-type": contentType,
       });
     }
   } else {
     headers = new Headers({
-      "content-type": "application/json"
+      "content-type": "application/json",
     });
   }
 
@@ -36,11 +36,13 @@ function getOptions({
   };
 }
 
-const sendRequest = async <T>(
+type ErrorHandler = (error: WithJsonDiscriminator | Error) => void;
+
+const sendJsonRequest = async <T>(
   method: string,
   path: string,
   body: string | {} | undefined,
-  errorHandler: (error: WithJsonDiscriminator | Error) => void,
+  errorHandler: ErrorHandler,
   contentType: string
 ): Promise<T> => {
   const res = await fetch(
@@ -56,7 +58,7 @@ const sendRequest = async <T>(
     if (res.status != 204) {
       return res.json();
     } else {
-      return (new Promise<void>(resolve => resolve()) as unknown) as Promise<T>;
+      return new Promise<void>((resolve) => resolve()) as unknown as Promise<T>;
     }
   } else {
     let error;
@@ -68,4 +70,23 @@ const sendRequest = async <T>(
     errorHandler(error);
     throw error;
   }
+};
+
+const sendHttpRequest = async (
+  method: string,
+  path: string,
+  body: string | {} | undefined,
+  errorHandler: ErrorHandler,
+  contentType: string
+): Promise<Response> => {
+  const res = await fetch(
+    path,
+    getOptions({
+      method: method,
+      body: body,
+      contentType: contentType,
+    })
+  );
+
+  return res;
 };
