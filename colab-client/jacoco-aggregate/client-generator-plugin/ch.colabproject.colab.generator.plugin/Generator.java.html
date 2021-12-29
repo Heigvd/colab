@@ -298,7 +298,7 @@ public class Generator {
 <span class="nc" id="L298">                + &quot;* The &quot;).append(clientName).append(&quot; REST client\n&quot;</span>
             + &quot; */\n&quot;
 <span class="nc" id="L300">            + &quot;export const &quot;).append(clientName)</span>
-<span class="nc" id="L301">            .append(&quot; = function (baseUrl: string, errorHandler: (error: unknown) =&gt; void) {&quot;)</span>
+<span class="nc" id="L301">            .append(&quot; = function (baseUrl: string, defaultErrorHandler: (error: unknown) =&gt; void) {&quot;)</span>
 <span class="nc" id="L302">            .append(&quot;\n    return {&quot;)</span>
 <span class="nc" id="L303">            .append(modules)</span>
 <span class="nc" id="L304">            .append(&quot;    }\n&quot;)</span>

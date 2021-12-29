@@ -36,12 +36,17 @@ import java.lang.reflect.Type;
     private Type type;
 
     /**
+     * Is the parameter optional ?
+     */
+<span class="nc" id="L41">    private boolean optional = false;</span>
+
+    /**
      * Get the value of type
      *
      * @return the value of type
      */
     public Type getType() {
-<span class="nc" id="L44">        return type;</span>
+<span class="nc" id="L49">        return type;</span>
     }
 
     /**
@@ -50,8 +55,8 @@ import java.lang.reflect.Type;
      * @param type new value of type
      */
     public void setType(Type type) {
-<span class="nc" id="L53">        this.type = type;</span>
-<span class="nc" id="L54">    }</span>
+<span class="nc" id="L58">        this.type = type;</span>
+<span class="nc" id="L59">    }</span>
 
     /**
      * Get the value of name
@@ -59,7 +64,7 @@ import java.lang.reflect.Type;
      * @return the value of name
      */
     public String getName() {
-<span class="nc" id="L62">        return name;</span>
+<span class="nc" id="L67">        return name;</span>
     }
 
     /**
@@ -68,8 +73,8 @@ import java.lang.reflect.Type;
      * @param name new value of name
      */
     public void setName(String name) {
-<span class="nc" id="L71">        this.name = name;</span>
-<span class="nc" id="L72">    }</span>
+<span class="nc" id="L76">        this.name = name;</span>
+<span class="nc" id="L77">    }</span>
 
     /**
      * Get @PathParam name
@@ -77,7 +82,7 @@ import java.lang.reflect.Type;
      * @return path param name
      */
     public String getInAnnotationName() {
-<span class="nc" id="L80">        return inAnnotationName;</span>
+<span class="nc" id="L85">        return inAnnotationName;</span>
     }
 
     /**
@@ -86,8 +91,8 @@ import java.lang.reflect.Type;
      * @param inAnnotationName new path param name
      */
     public void setInAnnotationName(String inAnnotationName) {
-<span class="nc" id="L89">        this.inAnnotationName = inAnnotationName;</span>
-<span class="nc" id="L90">    }</span>
+<span class="nc" id="L94">        this.inAnnotationName = inAnnotationName;</span>
+<span class="nc" id="L95">    }</span>
 
     /**
      * Get the value of javadoc
@@ -95,7 +100,7 @@ import java.lang.reflect.Type;
      * @return the value of javadoc
      */
     public String getJavadoc() {
-<span class="nc" id="L98">        return javadoc;</span>
+<span class="nc" id="L103">        return javadoc;</span>
     }
 
     /**
@@ -104,8 +109,25 @@ import java.lang.reflect.Type;
      * @param javadoc new value of javadoc
      */
     public void setJavadoc(String javadoc) {
-<span class="nc" id="L107">        this.javadoc = javadoc;</span>
-<span class="nc" id="L108">    }</span>
+<span class="nc" id="L112">        this.javadoc = javadoc;</span>
+<span class="nc" id="L113">    }</span>
 
+    /**
+     * Is the parameter optional?
+     *
+     * @return is optional or mandatory
+     */
+    public boolean isOptional() {
+<span class="nc" id="L121">        return optional;</span>
+    }
+
+    /**
+     * Set parameter optional-ness
+     *
+     * @param optional new optional value
+     */
+    public void setOptional(boolean optional) {
+<span class="nc" id="L130">        this.optional = optional;</span>
+<span class="nc" id="L131">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

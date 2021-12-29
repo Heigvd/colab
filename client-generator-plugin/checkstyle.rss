@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2021 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 12,
+      <title>File: 13,
              Errors: 0,
-             Warnings: 6,
+             Warnings: 14,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -60,7 +60,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.FileHelper.java">ch/colabproject/colab/generator/plugin/FileHelper.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.ClientException.java">ch/colabproject/colab/generator/plugin/rest/ClientException.java</a>
                 </td>
                 <td>
                   0
@@ -74,7 +74,35 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.ClientException.java">ch/colabproject/colab/generator/plugin/rest/ClientException.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.RestEndpoint.java">ch/colabproject/colab/generator/plugin/rest/RestEndpoint.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.Generator.java">ch/colabproject/colab/generator/plugin/Generator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.FileHelper.java">ch/colabproject/colab/generator/plugin/FileHelper.java</a>
                 </td>
                 <td>
                   0
@@ -102,20 +130,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.RestEndpoint.java">ch/colabproject/colab/generator/plugin/rest/RestEndpoint.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  4
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.TypeScriptHelper.java">ch/colabproject/colab/generator/plugin/TypeScriptHelper.java</a>
                 </td>
                 <td>
@@ -123,20 +137,6 @@ under the License.
                 </td>
                 <td>
                   1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.Generator.java">ch/colabproject/colab/generator/plugin/Generator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
                 </td>
                 <td>
                   0
@@ -207,6 +207,20 @@ under the License.
                 </td>
                 <td>
                   1
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.rest.ErrorHandler.java">ch/colabproject/colab/generator/plugin/rest/ErrorHandler.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
                 </td>
                 <td>
                   0
