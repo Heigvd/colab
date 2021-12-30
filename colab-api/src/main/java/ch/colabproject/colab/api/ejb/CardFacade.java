@@ -70,14 +70,19 @@ public class CardFacade {
     // *********************************************************************************************
 
     /**
-     * @param cardId The identifier of the searched card
+     * Retrieve the card. If not found, throw a {@link HttpErrorMessage}.
      *
-     * @return The card corresponding to the id
+     * @param cardId the id of the card
+     *
+     * @return the card if found
+     *
+     * @throws HttpErrorMessage if the card was not found
      */
     public Card assertAndGetCard(Long cardId) {
         Card card = cardDao.getCard(cardId);
 
         if (card == null) {
+            logger.error("card #{} not found", cardId);
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 

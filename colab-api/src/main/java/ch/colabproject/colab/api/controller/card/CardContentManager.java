@@ -90,6 +90,7 @@ public class CardContentManager {
         CardContent cardContent = cardContentDao.getCardContent(cardContentId);
 
         if (cardContent == null) {
+            logger.error("card content #{} not found", cardContentId);
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 

@@ -97,6 +97,7 @@ public class ProjectFacade {
         Project project = projectDao.getProject(projectId);
 
         if (project == null) {
+            logger.error("project #{} not found", projectId);
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 

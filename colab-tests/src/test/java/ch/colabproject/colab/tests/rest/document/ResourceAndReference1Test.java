@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author sandra
  */
-public class ResourceAndReferenceTest extends AbstractArquillianTest {
+public class ResourceAndReference1Test extends AbstractArquillianTest {
 
     @Test
     public void testOnGlobalCardType() {

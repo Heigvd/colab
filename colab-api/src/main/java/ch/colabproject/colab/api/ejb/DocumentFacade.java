@@ -65,6 +65,7 @@ public class DocumentFacade {
         Document document = documentDao.findDocument(documentId);
 
         if (document == null) {
+            logger.error("document #{} not found", documentId);
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
@@ -84,6 +85,7 @@ public class DocumentFacade {
         Document document = documentDao.findDocument(documentId);
 
         if (!(document instanceof BlockDocument)) {
+            logger.error("block document #{} not found", documentId);
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
@@ -99,6 +101,7 @@ public class DocumentFacade {
      */
     public void assertBlockDocument(BlockDocument blockDocument) {
         if (blockDocument == null) {
+            logger.error("block document {} not found", blockDocument);
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
     }

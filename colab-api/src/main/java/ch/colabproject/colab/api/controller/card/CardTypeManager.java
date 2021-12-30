@@ -83,6 +83,7 @@ public class CardTypeManager {
         AbstractCardType cardTypeOrRef = cardTypeDao.getAbstractCardType(cardTypeOrRefId);
 
         if (cardTypeOrRef == null) {
+            logger.error("card type or reference #{} not found", cardTypeOrRefId);
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
@@ -442,7 +443,7 @@ public class CardTypeManager {
             }
         }
 
-        // just one ref with target/project
+        // just one ref by target/project
 
         return true;
     }

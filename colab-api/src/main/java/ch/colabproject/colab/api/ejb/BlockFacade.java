@@ -80,6 +80,7 @@ public class BlockFacade {
         Block block = blockDao.findBlock(blockId);
 
         if (block == null) {
+            logger.error("block #{} not found", blockId);
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
@@ -95,6 +96,7 @@ public class BlockFacade {
      */
     public void assertBlock(Block block) {
         if (block == null) {
+            logger.error("block {} not found", block);
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
     }
