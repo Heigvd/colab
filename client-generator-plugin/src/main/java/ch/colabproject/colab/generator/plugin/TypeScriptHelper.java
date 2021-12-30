@@ -8,6 +8,7 @@ package ch.colabproject.colab.generator.plugin;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.ClassDoc;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -306,7 +307,8 @@ public class TypeScriptHelper {
             } else if (void.class.isAssignableFrom(javaClass)) {
                 return "void";
             } else if (InputStream.class.isAssignableFrom(javaClass)
-                || OutputStream.class.isAssignableFrom(javaClass)) {
+                || OutputStream.class.isAssignableFrom(javaClass)
+                || File.class.isAssignableFrom(javaClass)) {
                 return "File";
             } else if (isArrayLike(javaClass)) {
                 return "unknown[]";

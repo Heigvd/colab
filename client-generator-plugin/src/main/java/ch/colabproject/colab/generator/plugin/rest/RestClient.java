@@ -7,6 +7,7 @@
 package ch.colabproject.colab.generator.plugin.rest;
 
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +32,8 @@ import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
 /**
  * JakartaEE-based rest client.
@@ -64,6 +67,8 @@ public class RestClient {
      */
     public RestClient(String baseUri, String cookieName, Jsonb jsonb, Object... clientFeatures) {
         ClientBuilder builder = ClientBuilder.newBuilder();
+
+        builder.register(MultiPartFeature.class);
 
         for (Object feature : clientFeatures) {
             builder.register(feature);
@@ -171,6 +176,37 @@ public class RestClient {
     }
 
     /**
+     * Create FormData to send
+     *
+     * @param fields form content
+     *
+     * @return the formdata to send
+     */
+    private FormDataMultiPart getFormData(Map<String, FormField> fields) {
+        FormDataMultiPart multipart = new FormDataMultiPart();
+
+        fields.forEach((fieldName, data) -> {
+            MediaType mimeType = data.getMimeType();
+            if (data.getData() instanceof File) {
+                FileDataBodyPart filePart;
+                if (mimeType != null) {
+                    filePart = new FileDataBodyPart(fieldName, (File) data.getData(), mimeType);
+                } else {
+                    filePart = new FileDataBodyPart(fieldName, (File) data.getData());
+                }
+                multipart.bodyPart(filePart);
+            } else {
+                if (mimeType != null) {
+                    multipart.field(fieldName, data.getData(), mimeType);
+                } else {
+                    multipart.field(fieldName, data.getData().toString());
+                }
+            }
+        });
+        return multipart;
+    }
+
+    /**
      * send GET request.
      *
      * @param <T>    expected return type
@@ -237,11 +273,7 @@ public class RestClient {
         GenericType<T> type,
         String... accept
     ) {
-        FormDataMultiPart multipart = new FormDataMultiPart();
-
-        fields.forEach((fieldName, data) -> {
-            multipart.field(fieldName, data.getData(), data.getMimeType());
-        });
+        FormDataMultiPart multipart = getFormData(fields);
 
         return processResponse(webTarget.path(path).request()
             .accept(accept)
@@ -293,11 +325,7 @@ public class RestClient {
      * @return instance of T
      */
     public <T> T put(String path, Map<String, FormField> fields, GenericType<T> type, String... accept) {
-        FormDataMultiPart multipart = new FormDataMultiPart();
-
-        fields.forEach((fieldName, data) -> {
-            multipart.field(fieldName, data.getData(), data.getMimeType());
-        });
+        FormDataMultiPart multipart = getFormData(fields);
 
         return processResponse(webTarget.path(path).request()
             .accept(accept)
