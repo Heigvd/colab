@@ -24,14 +24,13 @@
 package ch.colabproject.colab.api.persistence.jcr;
 
 import ch.colabproject.colab.api.model.project.Project;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import org.apache.jackrabbit.commons.JcrUtils;
 
 /**
  * Manages the persistence of files with JackRabbit Oak
@@ -54,8 +53,12 @@ public class JcrManager {
      */
     public InputStream getFileStream(Project project, Long identifier) throws RepositoryException {
         var session = this.jcrSessionManager.getSession(project);
-        
+
         var node = session.getNode(identifier.toString());
+        if(node == null){
+            return new ByteArrayInputStream(new byte[0]);
+        }
+
         var prop = node.getProperty(CONTENT);
         //TODO figure out when to call dispose
         return prop.getBinary().getStream();

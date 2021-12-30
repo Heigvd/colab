@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.io.BufferedInputStream;
+import javax.ws.rs.core.MediaType;
+import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 
 
@@ -111,6 +113,7 @@ public class FileManager {
             throw HttpErrorMessage.notFound();
         }
         var hostedDoc = (HostedDocLink)doc;
-        return hostedDoc.getMimeType();
+        var mediaType = hostedDoc.getMimeType();
+        return StringUtils.isEmpty(mediaType) ? MediaType.APPLICATION_OCTET_STREAM : mediaType;
     }
 }

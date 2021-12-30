@@ -56,24 +56,6 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testCreateHostedDocLink() {
-        String path = "someWayToAccessTheMongoDBData #" + ((int) (Math.random() * 1000));
-
-        HostedDocLink doc = new HostedDocLink();
-        doc.setFilePath(path);
-
-        Long docId = client.documentRestEndPoint.createDocument(doc);
-
-        Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
-        Assertions.assertNotNull(persistedDoc);
-        Assertions.assertEquals(docId, persistedDoc.getId());
-
-        Assertions.assertTrue(persistedDoc instanceof HostedDocLink);
-        HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
-        Assertions.assertEquals(path, persistedHostedDocLink.getFilePath());
-    }
-
-    @Test
     public void testUpdateBlockDocument() {
         Long docId = client.documentRestEndPoint.createDocument(new BlockDocument());
 
@@ -116,30 +98,6 @@ public class DocumentRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedExtDocLink);
         Assertions.assertEquals(docId, persistedExtDocLink.getId());
         Assertions.assertEquals(url, persistedExtDocLink.getUrl());
-    }
-
-    @Test
-    public void testUpdateHostedDocLink() {
-        Long docId = client.documentRestEndPoint.createDocument(new HostedDocLink());
-
-        Document doc = client.documentRestEndPoint.getDocument(docId);
-        Assertions.assertNotNull(doc);
-        Assertions.assertTrue(doc instanceof HostedDocLink);
-        HostedDocLink hostedDocLink = (HostedDocLink) doc;
-        Assertions.assertEquals(docId, hostedDocLink.getId());
-        Assertions.assertNull(hostedDocLink.getFileName());
-
-        String path = "aWayToAccessTheMongoDBData #" + ((int) (Math.random() * 1000));
-
-        hostedDocLink.setFileName(path);
-        client.documentRestEndPoint.updateDocument(hostedDocLink);
-
-        Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
-        Assertions.assertTrue(persistedDoc instanceof HostedDocLink);
-        HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
-        Assertions.assertNotNull(persistedHostedDocLink);
-        Assertions.assertEquals(docId, persistedHostedDocLink.getId());
-        Assertions.assertEquals(path, persistedHostedDocLink.getFileName());
     }
 
     @Test

@@ -169,6 +169,12 @@ public class JcrSession implements Serializable {
         }
     }
     
+    /**
+     *  creates a new binary object to be stored
+     * @param content
+     * @return
+     * @throws RepositoryException 
+     */
     public Binary createBinary(InputStream content) throws RepositoryException{
        return this.session.getValueFactory().createBinary(content);
     }

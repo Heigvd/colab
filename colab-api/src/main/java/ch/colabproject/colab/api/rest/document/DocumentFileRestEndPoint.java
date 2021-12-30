@@ -39,7 +39,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,32 +62,32 @@ public class DocumentFileRestEndPoint {
     /**
      * @param docId   document id
      * @param file    the file bytes
-     * @param details file meta data
-     * @param bodypart file meta data (for mime type)
+     * @param bodypart file meta data
      */
     @PUT
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public void updateFile(
         @FormDataParam("documentId") Long docId,
         @FormDataParam("file") InputStream file,
-        @FormDataParam("file") FormDataContentDisposition details,
         @FormDataParam("file") FormDataBodyPart bodypart //TODO does that work ?
         ) {
-        
         try{
-            fileManager.updateFile(docId, file, details, bodypart);
+            fileManager.updateFile(docId, file, bodypart.getFormDataContentDisposition(), bodypart);
         }catch(RepositoryException ex){
             logger.debug("Could not update file with id {} : {}", docId, ex);
             throw HttpErrorMessage.internalServerError();
         }
     }
     
+    /**
+     * 
+     * @param documentId 
+     */
     @DELETE
     @Path("{projectId}/DeleteFile/{documentId}/{name}")
     @Produces(MediaType.TEXT_PLAIN)
     public void deleteFile(
-        @PathParam("documentId") Long documentId,
-        @PathParam("name") String name) {
+        @PathParam("documentId") Long documentId){
         try {
             fileManager.deleteFile(documentId);
         } catch (RepositoryException ex) {
@@ -97,25 +96,19 @@ public class DocumentFileRestEndPoint {
     }
     
     /**
-     * Get file content
+     * Get the file content
      *
      * @param documentId document id
-     * @param name name of the file
-     *
-     * @return file content
+     * @return file content, if no file has been set, return an empty stream (0 bytes)
      */
     @GET
     @Path("GetFile/{documentId}/{name}")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response getFileContent(
-        @PathParam("documentId") Long documentId,
-        @PathParam("name") String name) {
+    public Response getFileContent(@PathParam("documentId") Long documentId) {
         
         try {
-            
             var response = Response.ok(fileManager.getFileStream(documentId));
             response.header("Content-Type", fileManager.getFileMimeType(documentId));
-            //response.header("Description", fileDescriptor.getDescription());
             
             return response.build();
         } catch (RepositoryException ex) {

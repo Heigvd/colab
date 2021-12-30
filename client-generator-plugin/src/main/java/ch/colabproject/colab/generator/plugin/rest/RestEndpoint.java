@@ -675,13 +675,36 @@ public class RestEndpoint {
                 method.getFormParameters().forEach(formParam -> {
                     //indent++;
                     newLine(sb);
+                    sb.append("if(")
+                        .append(formParam.getName())
+                        .append(" as unknown instanceof Blob) {");
+                    
+                    indent++;
+                    newLine(sb);
+                    
                     sb.append("formData.append('")
                         .append(formParam.getInAnnotationName())
                         .append("', ")
                         .append(formParam.getName())
-                        .append(");");
+                        .append(" as unknown as Blob);");
                     //indent--;
+                    indent--;
                     newLine(sb);
+                    sb.append("} else {");
+                    indent++;
+                    newLine(sb);
+                    sb.append("formData.append('")
+                        .append(formParam.getInAnnotationName())
+                        .append("', ")
+                        .append(formParam.getName())
+                        .append(" ? '' + ")
+                        .append(formParam.getName())
+                        .append(" : '')");
+                    indent--;
+                    newLine(sb);
+                    sb.append("}");
+                    newLine(sb);
+
                 });
                 newLine(sb);
             }
