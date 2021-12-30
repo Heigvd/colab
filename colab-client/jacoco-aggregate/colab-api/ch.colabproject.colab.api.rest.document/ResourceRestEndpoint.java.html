@@ -96,7 +96,7 @@ import org.slf4j.LoggerFactory;
     public List&lt;List&lt;AbstractResource&gt;&gt; getResourceChainForAbstractCardType(
         @PathParam(&quot;cardTypeOrRefId&quot;) Long cardTypeOrRefId) {
 <span class="nc" id="L98">        logger.debug(&quot;get resource chain for card content #{}&quot;, cardTypeOrRefId);</span>
-<span class="nc" id="L99">        return resourceManager.getResourceChainForAbstractCardType(cardTypeOrRefId);</span>
+<span class="nc" id="L99">        return resourceManager.getExpandedResourcesForAbstractCardType(cardTypeOrRefId);</span>
     }
 
     /**
@@ -112,7 +112,7 @@ import org.slf4j.LoggerFactory;
     public List&lt;List&lt;AbstractResource&gt;&gt; getResourceChainForCard(
         @PathParam(&quot;cardId&quot;) Long cardId) {
 <span class="nc" id="L114">        logger.debug(&quot;get resource chain for card content #{}&quot;, cardId);</span>
-<span class="nc" id="L115">        return resourceManager.getResourceChainForCard(cardId);</span>
+<span class="nc" id="L115">        return resourceManager.getExpandedResourcesForCard(cardId);</span>
     }
 
     /**
@@ -128,7 +128,7 @@ import org.slf4j.LoggerFactory;
     public List&lt;List&lt;AbstractResource&gt;&gt; getResourceChainForCardContent(
         @PathParam(&quot;cardContentId&quot;) Long cardContentId) {
 <span class="nc" id="L130">        logger.debug(&quot;get resource chain for card content #{}&quot;, cardContentId);</span>
-<span class="nc" id="L131">        return resourceManager.getResourceChainForCardContent(cardContentId);</span>
+<span class="nc" id="L131">        return resourceManager.getExpandedResourcesForCardContent(cardContentId);</span>
     }
 
     // *********************************************************************************************
@@ -189,13 +189,9 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L189">        resource.setCardId(resourceCreationBean.getCardId());</span>
 <span class="nc" id="L190">        resource.setCardContentId(resourceCreationBean.getCardContentId());</span>
 
-        // implicitly setPublished(false);
-        // implicitly setRequestingForGlory(false);
-        // implicitly setDeprecated(false);
+<span class="nc" id="L192">        resourceCreationBean.getDocument().setResource(resource);</span>
 
-<span class="nc" id="L196">        resourceCreationBean.getDocument().setResource(resource);</span>
-
-<span class="nc" id="L198">        return resourceManager.createResource(resource).getId();</span>
+<span class="nc" id="L194">        return resourceManager.createResource(resource).getId();</span>
     }
 
     // *********************************************************************************************
@@ -210,9 +206,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteResource(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L213">        logger.debug(&quot;delete resource #{}&quot;, id);</span>
-<span class="nc" id="L214">        resourceManager.deleteResource(id);</span>
-<span class="nc" id="L215">    }</span>
+<span class="nc" id="L209">        logger.debug(&quot;delete resource #{}&quot;, id);</span>
+<span class="nc" id="L210">        resourceManager.deleteResource(id);</span>
+<span class="nc" id="L211">    }</span>
 
     // *********************************************************************************************
     // category
@@ -229,9 +225,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;setCategory/{resourceOrRefId}&quot;)
     public void setCategory(@PathParam(&quot;resourceOrRefId&quot;) Long resourceOrRefId,
         String categoryName) {
-<span class="nc" id="L232">        logger.debug(&quot;add resource/ref #{} to category {}&quot;, resourceOrRefId, categoryName);</span>
-<span class="nc" id="L233">        resourceCategoryHelper.setCategory(resourceOrRefId, categoryName);</span>
-<span class="nc" id="L234">    }</span>
+<span class="nc" id="L228">        logger.debug(&quot;add resource/ref #{} to category {}&quot;, resourceOrRefId, categoryName);</span>
+<span class="nc" id="L229">        resourceCategoryHelper.setCategory(resourceOrRefId, categoryName);</span>
+<span class="nc" id="L230">    }</span>
 
     /**
      * Set the category of a list of resources
@@ -244,9 +240,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;setCategory/list/{newName}&quot;)
     public void setCategoryForList(@PathParam(&quot;newName&quot;) String categoryName,
         List&lt;Long&gt; resourceOrRefIds) {
-<span class="nc" id="L247">        logger.debug(&quot;add resource/ref #{} to category {}&quot;, resourceOrRefIds, categoryName);</span>
-<span class="nc" id="L248">        resourceCategoryHelper.setCategory(resourceOrRefIds, categoryName);</span>
-<span class="nc" id="L249">    }</span>
+<span class="nc" id="L243">        logger.debug(&quot;add resource/ref #{} to category {}&quot;, resourceOrRefIds, categoryName);</span>
+<span class="nc" id="L244">        resourceCategoryHelper.setCategory(resourceOrRefIds, categoryName);</span>
+<span class="nc" id="L245">    }</span>
 
     /**
      * Remove the category of the resource / resource reference
@@ -256,9 +252,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;removeCategory/{resourceOrRefId}&quot;)
     public void removeCategory(@PathParam(&quot;resourceOrRefId&quot;) Long resourceOrRefId) {
-<span class="nc" id="L259">        logger.debug(&quot;remove category from resource/ref #{}&quot;, resourceOrRefId);</span>
-<span class="nc" id="L260">        resourceCategoryHelper.removeCategory(resourceOrRefId);</span>
-<span class="nc" id="L261">    }</span>
+<span class="nc" id="L255">        logger.debug(&quot;remove category from resource/ref #{}&quot;, resourceOrRefId);</span>
+<span class="nc" id="L256">        resourceCategoryHelper.removeCategory(resourceOrRefId);</span>
+<span class="nc" id="L257">    }</span>
 
     /**
      * Remove the category of a list of resources / resource references
@@ -268,9 +264,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;removeCategory/list&quot;)
     public void removeCategoryForList(List&lt;Long&gt; resourceOrRefIds) {
-<span class="nc" id="L271">        logger.debug(&quot;remove category from resource/ref #{}&quot;, resourceOrRefIds);</span>
-<span class="nc" id="L272">        resourceCategoryHelper.removeCategory(resourceOrRefIds);</span>
-<span class="nc" id="L273">    }</span>
+<span class="nc" id="L267">        logger.debug(&quot;remove category from resource/ref #{}&quot;, resourceOrRefIds);</span>
+<span class="nc" id="L268">        resourceCategoryHelper.removeCategory(resourceOrRefIds);</span>
+<span class="nc" id="L269">    }</span>
 
     /**
      * Rename the category in a card type / card type reference
@@ -285,11 +281,11 @@ import org.slf4j.LoggerFactory;
     public void renameCategoryForCardType(@PathParam(&quot;projectId&quot;) Long projectId,
         @PathParam(&quot;cardTypeId&quot;) Long cardTypeOrRefId, @PathParam(&quot;oldName&quot;) String oldName,
         String newName) {
-<span class="nc" id="L288">        logger.debug(&quot;rename category {} to {} for card type #{} in the project {}&quot;, oldName,</span>
+<span class="nc" id="L284">        logger.debug(&quot;rename category {} to {} for card type #{} in the project {}&quot;, oldName,</span>
             newName, cardTypeOrRefId, projectId);
-<span class="nc" id="L290">        resourceCategoryHelper.renameCategoryInCardType(cardTypeOrRefId, projectId, oldName,</span>
+<span class="nc" id="L286">        resourceCategoryHelper.renameCategoryInCardType(cardTypeOrRefId, projectId, oldName,</span>
             newName);
-<span class="nc" id="L292">    }</span>
+<span class="nc" id="L288">    }</span>
 
     /**
      * Rename the category in a card
@@ -302,9 +298,9 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;renameCategory/card/{cardId}/{oldName}&quot;)
     public void renameCategoryForCard(@PathParam(&quot;cardId&quot;) Long cardId,
         @PathParam(&quot;oldName&quot;) String oldName, String newName) {
-<span class="nc" id="L305">        logger.debug(&quot;rename category {} to {} for card #{}&quot;, oldName, newName, cardId);</span>
-<span class="nc" id="L306">        resourceCategoryHelper.renameCategoryInCard(cardId, oldName, newName);</span>
-<span class="nc" id="L307">    }</span>
+<span class="nc" id="L301">        logger.debug(&quot;rename category {} to {} for card #{}&quot;, oldName, newName, cardId);</span>
+<span class="nc" id="L302">        resourceCategoryHelper.renameCategoryInCard(cardId, oldName, newName);</span>
+<span class="nc" id="L303">    }</span>
 
     /**
      * Rename the category in a card content
@@ -317,10 +313,10 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;renameCategory/cardContent/{cardContentId}/{oldName}&quot;)
     public void renameCategoryForCardContent(@PathParam(&quot;cardContentId&quot;) Long cardContentId,
         @PathParam(&quot;oldName&quot;) String oldName, String newName) {
-<span class="nc" id="L320">        logger.debug(&quot;rename category {} to {} for card content #{}&quot;, oldName, newName,</span>
+<span class="nc" id="L316">        logger.debug(&quot;rename category {} to {} for card content #{}&quot;, oldName, newName,</span>
             cardContentId);
-<span class="nc" id="L322">        resourceCategoryHelper.renameCategoryInCardContent(cardContentId, oldName, newName);</span>
-<span class="nc" id="L323">    }</span>
+<span class="nc" id="L318">        resourceCategoryHelper.renameCategoryInCardContent(cardContentId, oldName, newName);</span>
+<span class="nc" id="L319">    }</span>
 
     // *********************************************************************************************
     // links
@@ -336,8 +332,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/StickyNoteLinks&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long resourceOrRefId) {
-<span class="nc" id="L339">        logger.debug(&quot;Get sticky note links to abstract resource #{} as source&quot;, resourceOrRefId);</span>
-<span class="nc" id="L340">        return resourceManager.getStickyNoteLinkAsSrc(resourceOrRefId);</span>
+<span class="nc" id="L335">        logger.debug(&quot;Get sticky note links to abstract resource #{} as source&quot;, resourceOrRefId);</span>
+<span class="nc" id="L336">        return resourceManager.getStickyNoteLinkAsSrc(resourceOrRefId);</span>
     }
 
     // *********************************************************************************************

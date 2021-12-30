@@ -65,10 +65,11 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L65">        Document document = documentDao.findDocument(documentId);</span>
 
 <span class="nc bnc" id="L67" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L68">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L68">            logger.error(&quot;document #{} not found&quot;, documentId);</span>
+<span class="nc" id="L69">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L71">        return document;</span>
+<span class="nc" id="L72">        return document;</span>
     }
 
     /**
@@ -81,13 +82,14 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the block document was not found
      */
     public BlockDocument assertAndGetBlockDocument(Long documentId) {
-<span class="nc" id="L84">        Document document = documentDao.findDocument(documentId);</span>
+<span class="nc" id="L85">        Document document = documentDao.findDocument(documentId);</span>
 
-<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (!(document instanceof BlockDocument)) {</span>
-<span class="nc" id="L87">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (!(document instanceof BlockDocument)) {</span>
+<span class="nc" id="L88">            logger.error(&quot;block document #{} not found&quot;, documentId);</span>
+<span class="nc" id="L89">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L90">        return (BlockDocument) document;</span>
+<span class="nc" id="L92">        return (BlockDocument) document;</span>
     }
 
     /**
@@ -98,10 +100,11 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the block document is null
      */
     public void assertBlockDocument(BlockDocument blockDocument) {
-<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (blockDocument == null) {</span>
-<span class="nc" id="L102">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (blockDocument == null) {</span>
+<span class="nc" id="L104">            logger.error(&quot;block document {} not found&quot;, blockDocument);</span>
+<span class="nc" id="L105">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
-<span class="nc" id="L104">    }</span>
+<span class="nc" id="L107">    }</span>
 
     // *********************************************************************************************
     // life cycle
@@ -115,7 +118,7 @@ import org.slf4j.LoggerFactory;
      * @return the new persisted document
      */
     public Document persistDocument(Document document) {
-<span class="nc" id="L118">        return documentDao.persistDocument(document);</span>
+<span class="nc" id="L121">        return documentDao.persistDocument(document);</span>
     }
 
     /**
@@ -127,21 +130,21 @@ import org.slf4j.LoggerFactory;
      */
     // TODO no effective use. To destroy during RestEndpoint cleaning
     public Document createDocument(Document document) {
-<span class="nc" id="L130">        logger.debug(&quot;create document : {}&quot;, document);</span>
+<span class="nc" id="L133">        logger.debug(&quot;create document : {}&quot;, document);</span>
 
-<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (document.getDeliverableCardContentId() != null) {</span>
-<span class="nc" id="L133">            CardContent cardContent = cardContentManager</span>
-<span class="nc" id="L134">                .assertAndGetCardContent(document.getDeliverableCardContentId());</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">        if (document.getDeliverableCardContentId() != null) {</span>
+<span class="nc" id="L136">            CardContent cardContent = cardContentManager</span>
+<span class="nc" id="L137">                .assertAndGetCardContent(document.getDeliverableCardContentId());</span>
 
-<span class="nc" id="L136">            cardContent.setDeliverable(document);</span>
-<span class="nc" id="L137">            document.setDeliverableCardContent(cardContent);</span>
+<span class="nc" id="L139">            cardContent.setDeliverable(document);</span>
+<span class="nc" id="L140">            document.setDeliverableCardContent(cardContent);</span>
         }
 
-<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (document.getResourceId() != null) {</span>
-<span class="nc" id="L141">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (document.getResourceId() != null) {</span>
+<span class="nc" id="L144">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L144">        return documentDao.persistDocument(document);</span>
+<span class="nc" id="L147">        return documentDao.persistDocument(document);</span>
     }
 
     /**
@@ -153,18 +156,18 @@ import org.slf4j.LoggerFactory;
      */
     // TODO no effective use. To destroy during RestEndpoint cleaning
     public Document deleteDocument(Long documentId) {
-<span class="nc" id="L156">        logger.debug(&quot;delete document #{}&quot;, documentId);</span>
+<span class="nc" id="L159">        logger.debug(&quot;delete document #{}&quot;, documentId);</span>
 
-<span class="nc" id="L158">        Document document = assertAndGetDocument(documentId);</span>
+<span class="nc" id="L161">        Document document = assertAndGetDocument(documentId);</span>
 
-<span class="nc" id="L160">        CardContent cardContent = document.getDeliverableCardContent();</span>
-<span class="nc bnc" id="L161" title="All 2 branches missed.">        if (cardContent != null) {</span>
-<span class="nc" id="L162">            cardContent.setDeliverable(null);</span>
+<span class="nc" id="L163">        CardContent cardContent = document.getDeliverableCardContent();</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (cardContent != null) {</span>
+<span class="nc" id="L165">            cardContent.setDeliverable(null);</span>
         }
 
         // to check : resource handling
 
-<span class="nc" id="L167">        return documentDao.deleteDocument(documentId);</span>
+<span class="nc" id="L170">        return documentDao.deleteDocument(documentId);</span>
     }
 
     // *********************************************************************************************
@@ -180,11 +183,11 @@ import org.slf4j.LoggerFactory;
      */
     // TODO To move into BlockFacade during RestEndpoint cleaning
     public List&lt;Block&gt; getBlocksOfDocument(Long documentId) {
-<span class="nc" id="L183">        logger.debug(&quot;get blocks composing the document #{}&quot;, documentId);</span>
+<span class="nc" id="L186">        logger.debug(&quot;get blocks composing the document #{}&quot;, documentId);</span>
 
-<span class="nc" id="L185">        BlockDocument document = assertAndGetBlockDocument(documentId);</span>
+<span class="nc" id="L188">        BlockDocument document = assertAndGetBlockDocument(documentId);</span>
 
-<span class="nc" id="L187">        return document.getBlocks();</span>
+<span class="nc" id="L190">        return document.getBlocks();</span>
     }
 
     // *********************************************************************************************
@@ -199,24 +202,24 @@ import org.slf4j.LoggerFactory;
      * @return true iff the document is complete and safe
      */
     public boolean checkIntegrity(Document document) {
-<span class="nc bnc" id="L202" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L203">            return false;</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L206">            return false;</span>
         }
 
-<span class="nc bnc" id="L206" title="All 4 branches missed.">        if (!(document.hasDeliverableCardContent() || document.hasResource())) {</span>
-<span class="nc" id="L207">            return false;</span>
+<span class="nc bnc" id="L209" title="All 4 branches missed.">        if (!(document.hasDeliverableCardContent() || document.hasResource())) {</span>
+<span class="nc" id="L210">            return false;</span>
         }
 
-<span class="nc bnc" id="L210" title="All 4 branches missed.">        if (document.hasDeliverableCardContent() &amp;&amp; document.hasResource()) {</span>
-<span class="nc" id="L211">            return false;</span>
+<span class="nc bnc" id="L213" title="All 4 branches missed.">        if (document.hasDeliverableCardContent() &amp;&amp; document.hasResource()) {</span>
+<span class="nc" id="L214">            return false;</span>
         }
 
         // TODO if is a deliverable card content, there must be only one card content that use it
 
-<span class="nc bnc" id="L216" title="All 2 branches missed.">        if (document instanceof BlockDocument) {</span>
-<span class="nc" id="L217">            return checkBlockDocumentSpecificIntegrity((BlockDocument)document);</span>
+<span class="nc bnc" id="L219" title="All 2 branches missed.">        if (document instanceof BlockDocument) {</span>
+<span class="nc" id="L220">            return checkBlockDocumentSpecificIntegrity((BlockDocument)document);</span>
         } else {
-<span class="nc" id="L219">            return true;</span>
+<span class="nc" id="L222">            return true;</span>
         }
     }
 
@@ -227,11 +230,11 @@ import org.slf4j.LoggerFactory;
             // TODO
 //        }
         // TODO delete that. It is just to satisfy PMD
-<span class="nc bnc" id="L230" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L231">            return false;</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L234">            return false;</span>
         }
 
-<span class="nc" id="L234">        return true;</span>
+<span class="nc" id="L237">        return true;</span>
     }
 
     // *********************************************************************************************

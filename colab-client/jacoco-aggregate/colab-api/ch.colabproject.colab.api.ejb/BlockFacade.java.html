@@ -80,10 +80,11 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L80">        Block block = blockDao.findBlock(blockId);</span>
 
 <span class="nc bnc" id="L82" title="All 2 branches missed.">        if (block == null) {</span>
-<span class="nc" id="L83">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L83">            logger.error(&quot;block #{} not found&quot;, blockId);</span>
+<span class="nc" id="L84">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L86">        return block;</span>
+<span class="nc" id="L87">        return block;</span>
     }
 
     /**
@@ -94,10 +95,11 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the block is null
      */
     public void assertBlock(Block block) {
-<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (block == null) {</span>
-<span class="nc" id="L98">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        if (block == null) {</span>
+<span class="nc" id="L99">            logger.error(&quot;block {} not found&quot;, block);</span>
+<span class="nc" id="L100">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
-<span class="nc" id="L100">    }</span>
+<span class="nc" id="L102">    }</span>
 
     // *********************************************************************************************
     // life cycle
@@ -111,53 +113,53 @@ import org.slf4j.LoggerFactory;
      * @return the new persisted block
      */
     public Block createBlock(Block block) {
-<span class="nc" id="L114">        logger.debug(&quot;create the block : {}&quot;, block);</span>
+<span class="nc" id="L116">        logger.debug(&quot;create the block : {}&quot;, block);</span>
 
-<span class="nc" id="L116">        BlockDocument blockDocument = documentManager.assertAndGetBlockDocument(block.getDocumentId());</span>
+<span class="nc" id="L118">        BlockDocument blockDocument = documentManager.assertAndGetBlockDocument(block.getDocumentId());</span>
 
-<span class="nc" id="L118">        block.setDocument(blockDocument);</span>
+<span class="nc" id="L120">        block.setDocument(blockDocument);</span>
 
-<span class="nc" id="L120">        List&lt;Block&gt; blocks = blockDocument.getBlocks();</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">        if (blocks.isEmpty()) {</span>
-<span class="nc" id="L122">            block.setIndex(MIN_INDEX);</span>
+<span class="nc" id="L122">        List&lt;Block&gt; blocks = blockDocument.getBlocks();</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (blocks.isEmpty()) {</span>
+<span class="nc" id="L124">            block.setIndex(MIN_INDEX);</span>
         } else {
-<span class="nc" id="L124">            blocks.sort((a, b) -&gt; {</span>
-<span class="nc bnc" id="L125" title="All 2 branches missed.">                if (a != null) {</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">                    if (b != null) {</span>
-<span class="nc" id="L127">                        return Math.max(a.getIndex(), b.getIndex());</span>
+<span class="nc" id="L126">            blocks.sort((a, b) -&gt; {</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">                if (a != null) {</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">                    if (b != null) {</span>
+<span class="nc" id="L129">                        return Math.max(a.getIndex(), b.getIndex());</span>
                     } else {
                         // a is not null, b is null
-<span class="nc" id="L130">                        return -1;</span>
+<span class="nc" id="L132">                        return -1;</span>
                     }
-<span class="nc bnc" id="L132" title="All 2 branches missed.">                } else if (b != null) {</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">                } else if (b != null) {</span>
                     // a is null, not b
-<span class="nc" id="L134">                    return 1;</span>
+<span class="nc" id="L136">                    return 1;</span>
                 }
                 //both are null
-<span class="nc" id="L137">                return 0;</span>
+<span class="nc" id="L139">                return 0;</span>
             });
-<span class="nc" id="L139">            Block endBlock = blocks.get(blocks.size() - 1);</span>
-<span class="nc bnc" id="L140" title="All 2 branches missed.">            if (endBlock.getIndex() &lt; MAX_INDEX - DEFAULT_INDEX_INC) {</span>
-<span class="nc" id="L141">                block.setIndex(endBlock.getIndex() + DEFAULT_INDEX_INC);</span>
-<span class="nc bnc" id="L142" title="All 2 branches missed.">            } else if (blocks.size() &gt; (MAX_INDEX - MIN_INDEX) / DEFAULT_INDEX_INC) {</span>
+<span class="nc" id="L141">            Block endBlock = blocks.get(blocks.size() - 1);</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">            if (endBlock.getIndex() &lt; MAX_INDEX - DEFAULT_INDEX_INC) {</span>
+<span class="nc" id="L143">                block.setIndex(endBlock.getIndex() + DEFAULT_INDEX_INC);</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">            } else if (blocks.size() &gt; (MAX_INDEX - MIN_INDEX) / DEFAULT_INDEX_INC) {</span>
                 // current behaviour is not that robust...
                 // it will crash when there is more than (MAX_INTEGER / 1000) blocks
                 // anyway, such a document must be quite unreadable...
-<span class="nc" id="L146">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L148">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             } else {
-<span class="nc" id="L148">                logger.warn(&quot;needed to reindex the blocks of the document {}&quot;, blockDocument);</span>
+<span class="nc" id="L150">                logger.warn(&quot;needed to reindex the blocks of the document {}&quot;, blockDocument);</span>
                 // MAX INDEX reached -&gt; reset all indexes
-<span class="nc" id="L150">                int index = MIN_INDEX;</span>
-<span class="nc bnc" id="L151" title="All 2 branches missed.">                for (Block b : blocks) {</span>
-<span class="nc" id="L152">                    b.setIndex(index);</span>
-<span class="nc" id="L153">                    index += DEFAULT_INDEX_INC;</span>
-<span class="nc" id="L154">                }</span>
-<span class="nc" id="L155">                block.setIndex(index);</span>
+<span class="nc" id="L152">                int index = MIN_INDEX;</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">                for (Block b : blocks) {</span>
+<span class="nc" id="L154">                    b.setIndex(index);</span>
+<span class="nc" id="L155">                    index += DEFAULT_INDEX_INC;</span>
+<span class="nc" id="L156">                }</span>
+<span class="nc" id="L157">                block.setIndex(index);</span>
             }
         }
-<span class="nc" id="L158">        blocks.add(block);</span>
+<span class="nc" id="L160">        blocks.add(block);</span>
 
-<span class="nc" id="L160">        return blockDao.persistBlock(block);</span>
+<span class="nc" id="L162">        return blockDao.persistBlock(block);</span>
     }
 
     /**
@@ -166,17 +168,17 @@ import org.slf4j.LoggerFactory;
      * @param blockId the id of the block to delete
      */
     public void deleteBlock(Long blockId) {
-<span class="nc" id="L169">        logger.debug(&quot;delete the block #{}&quot;, blockId);</span>
+<span class="nc" id="L171">        logger.debug(&quot;delete the block #{}&quot;, blockId);</span>
 
-<span class="nc" id="L171">        Block block = assertAndGetBlock(blockId);</span>
+<span class="nc" id="L173">        Block block = assertAndGetBlock(blockId);</span>
 
-<span class="nc" id="L173">        BlockDocument blockDocument = block.getDocument();</span>
-<span class="nc" id="L174">        documentManager.assertBlockDocument(blockDocument);</span>
+<span class="nc" id="L175">        BlockDocument blockDocument = block.getDocument();</span>
+<span class="nc" id="L176">        documentManager.assertBlockDocument(blockDocument);</span>
 
-<span class="nc" id="L176">        blockDocument.getBlocks().remove(block);</span>
+<span class="nc" id="L178">        blockDocument.getBlocks().remove(block);</span>
 
-<span class="nc" id="L178">        blockDao.deleteBlock(blockId);</span>
-<span class="nc" id="L179">    }</span>
+<span class="nc" id="L180">        blockDao.deleteBlock(blockId);</span>
+<span class="nc" id="L181">    }</span>
 
     // *********************************************************************************************
     // text data blocks life cycle
@@ -191,13 +193,13 @@ import org.slf4j.LoggerFactory;
      */
     // TODO no effective use. To destroy during RestEndpoint cleaning
     public Block createTextDataBlock(Long documentId) {
-<span class="nc" id="L194">        logger.debug(&quot;create a new block for the document #{}&quot;, documentId);</span>
+<span class="nc" id="L196">        logger.debug(&quot;create a new block for the document #{}&quot;, documentId);</span>
 
-<span class="nc" id="L196">        TextDataBlock block = new TextDataBlock();</span>
-<span class="nc" id="L197">        block.setRevision(&quot;0&quot;);</span>
-<span class="nc" id="L198">        block.setDocumentId(documentId);</span>
+<span class="nc" id="L198">        TextDataBlock block = new TextDataBlock();</span>
+<span class="nc" id="L199">        block.setRevision(&quot;0&quot;);</span>
+<span class="nc" id="L200">        block.setDocumentId(documentId);</span>
 
-<span class="nc" id="L200">        return createBlock(block);</span>
+<span class="nc" id="L202">        return createBlock(block);</span>
     }
 
     // *********************************************************************************************
@@ -212,11 +214,11 @@ import org.slf4j.LoggerFactory;
      * @return all blocks source of sticky note links
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrc(Long blockId) {
-<span class="nc" id="L215">        logger.debug(&quot;get sticky note links where the block #{} is the source&quot;, blockId);</span>
+<span class="nc" id="L217">        logger.debug(&quot;get sticky note links where the block #{} is the source&quot;, blockId);</span>
 
-<span class="nc" id="L217">        Block block = assertAndGetBlock(blockId);</span>
+<span class="nc" id="L219">        Block block = assertAndGetBlock(blockId);</span>
 
-<span class="nc" id="L219">        return block.getStickyNoteLinksAsSrc();</span>
+<span class="nc" id="L221">        return block.getStickyNoteLinksAsSrc();</span>
     }
 
     // *********************************************************************************************
@@ -231,15 +233,15 @@ import org.slf4j.LoggerFactory;
      * @return true iff the block is complete and safe
      */
     public boolean checkIntegrity(Block block) {
-<span class="nc bnc" id="L234" title="All 2 branches missed.">        if (block == null) {</span>
-<span class="nc" id="L235">            return false;</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">        if (block == null) {</span>
+<span class="nc" id="L237">            return false;</span>
         }
 
-<span class="nc bnc" id="L238" title="All 4 branches missed.">        if (block.getDocument() == null &amp;&amp; block.getDocumentId() == null) {</span>
-<span class="nc" id="L239">            return false;</span>
+<span class="nc bnc" id="L240" title="All 4 branches missed.">        if (block.getDocument() == null &amp;&amp; block.getDocumentId() == null) {</span>
+<span class="nc" id="L241">            return false;</span>
         }
 
-<span class="nc" id="L242">        return true;</span>
+<span class="nc" id="L244">        return true;</span>
     }
 
     // *********************************************************************************************

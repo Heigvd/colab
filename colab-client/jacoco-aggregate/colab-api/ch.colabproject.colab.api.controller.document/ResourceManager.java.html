@@ -19,8 +19,8 @@ import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.document.ResourceAndRefDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
     // *********************************************************************************************
     // injections
+    // *********************************************************************************************
 
     /**
      * Resource / resource reference persistence handling
@@ -69,23 +70,32 @@ import org.slf4j.LoggerFactory;
     private CardContentManager cardContentManager;
 
     // *********************************************************************************************
-    // resource access
+    // find resource
     // *********************************************************************************************
 
     /**
-     * @param resourceOrRefId The identifier of the searched resource or reference
+     * Retrieve the resource (or reference). If not found, throw a {@link HttpErrorMessage}.
      *
-     * @return The resource or reference corresponding to the id
+     * @param resourceOrRefId the id of the resource or reference
+     *
+     * @return the resource or reference if found
+     *
+     * @throws HttpErrorMessage if the resource or reference was not found
      */
     public AbstractResource assertAndGetResourceOrRef(Long resourceOrRefId) {
-<span class="nc" id="L81">        AbstractResource resourceOrRef = resourceAndRefDao.findResourceOrRef(resourceOrRefId);</span>
+<span class="nc" id="L86">        AbstractResource resourceOrRef = resourceAndRefDao.findResourceOrRef(resourceOrRefId);</span>
 
-<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (resourceOrRef == null) {</span>
-<span class="nc" id="L84">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (resourceOrRef == null) {</span>
+<span class="nc" id="L89">            logger.error(&quot;resource or reference #{} not found&quot;, resourceOrRefId);</span>
+<span class="nc" id="L90">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L87">        return resourceOrRef;</span>
+<span class="nc" id="L93">        return resourceOrRef;</span>
     }
+
+    // *********************************************************************************************
+    // find all resources for a card type / card / card content
+    // *********************************************************************************************
 
     /**
      * Retrieve the abstract resources directly linked to an abstract card type and all the chain of
@@ -93,16 +103,17 @@ import org.slf4j.LoggerFactory;
      *
      * @param cardTypeOrRefId The id of the card type or reference
      *
-     * @return For each abstract resource, the chain of abstract resources to the resource
+     * @return For each direct abstract resource, the chain of abstract resources to the resource
      */
-    public List&lt;List&lt;AbstractResource&gt;&gt; getResourceChainForAbstractCardType(Long cardTypeOrRefId) {
-<span class="nc" id="L99">        logger.debug(&quot;get resource chain linked to abstract card type #{}&quot;, cardTypeOrRefId);</span>
+    public List&lt;List&lt;AbstractResource&gt;&gt; getExpandedResourcesForAbstractCardType(
+        Long cardTypeOrRefId) {
+<span class="nc" id="L110">        logger.debug(&quot;get expanded resources linked to abstract card type #{}&quot;, cardTypeOrRefId);</span>
 
-<span class="nc" id="L101">        AbstractCardType cardTypeOrRef = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeOrRefId);</span>
+<span class="nc" id="L112">        AbstractCardType cardTypeOrRef = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeOrRefId);</span>
 
-<span class="nc" id="L103">        List&lt;AbstractResource&gt; directResourceOrRefs = cardTypeOrRef.getDirectAbstractResources();</span>
+<span class="nc" id="L114">        List&lt;AbstractResource&gt; directResourcesAndRefs = cardTypeOrRef.getDirectAbstractResources();</span>
 
-<span class="nc" id="L105">        return expandCompleteChains(directResourceOrRefs);</span>
+<span class="nc" id="L116">        return expandCompleteChains(directResourcesAndRefs);</span>
     }
 
     /**
@@ -111,16 +122,16 @@ import org.slf4j.LoggerFactory;
      *
      * @param cardId The id of the card
      *
-     * @return For each abstract resource, the chain of abstract resources until the resource
+     * @return For each direct abstract resource, the chain of abstract resources to the resource
      */
-    public List&lt;List&lt;AbstractResource&gt;&gt; getResourceChainForCard(Long cardId) {
-<span class="nc" id="L117">        logger.debug(&quot;get resource chain linked to card #{}&quot;, cardId);</span>
+    public List&lt;List&lt;AbstractResource&gt;&gt; getExpandedResourcesForCard(Long cardId) {
+<span class="nc" id="L128">        logger.debug(&quot;get expanded resources linked to card #{}&quot;, cardId);</span>
 
-<span class="nc" id="L119">        Card card = cardManager.assertAndGetCard(cardId);</span>
+<span class="nc" id="L130">        Card card = cardManager.assertAndGetCard(cardId);</span>
 
-<span class="nc" id="L121">        List&lt;AbstractResource&gt; directResourceOrRefs = card.getDirectAbstractResources();</span>
+<span class="nc" id="L132">        List&lt;AbstractResource&gt; directResourcesAndRefs = card.getDirectAbstractResources();</span>
 
-<span class="nc" id="L123">        return expandCompleteChains(directResourceOrRefs);</span>
+<span class="nc" id="L134">        return expandCompleteChains(directResourcesAndRefs);</span>
     }
 
     /**
@@ -129,42 +140,40 @@ import org.slf4j.LoggerFactory;
      *
      * @param cardContentId The id of the card content
      *
-     * @return For each abstract resource, the chain of abstract resources until the resource
+     * @return For each direct abstract resource, the chain of abstract resources to the resource
      */
-    public List&lt;List&lt;AbstractResource&gt;&gt; getResourceChainForCardContent(Long cardContentId) {
-<span class="nc" id="L135">        logger.debug(&quot;get resource chain linked to card content #{}&quot;, cardContentId);</span>
+    public List&lt;List&lt;AbstractResource&gt;&gt; getExpandedResourcesForCardContent(Long cardContentId) {
+<span class="nc" id="L146">        logger.debug(&quot;get expanded resources linked to card content #{}&quot;, cardContentId);</span>
 
-<span class="nc" id="L137">        CardContent cardContent = cardContentManager.assertAndGetCardContent(cardContentId);</span>
+<span class="nc" id="L148">        CardContent cardContent = cardContentManager.assertAndGetCardContent(cardContentId);</span>
 
-<span class="nc" id="L139">        List&lt;AbstractResource&gt; directResourceOrRefs = cardContent.getDirectAbstractResources();</span>
+<span class="nc" id="L150">        List&lt;AbstractResource&gt; directResourcesAndRefs = cardContent.getDirectAbstractResources();</span>
 
-<span class="nc" id="L141">        return expandCompleteChains(directResourceOrRefs);</span>
+<span class="nc" id="L152">        return expandCompleteChains(directResourcesAndRefs);</span>
     }
 
     /**
-     * @param directResourceOrRefs List of resources or references
+     * @param directResourcesAndRefs List of resources or references
      *
      * @return for each resource / resource reference, retrieve the all chain from it until a
      *         concrete resource
      */
     private List&lt;List&lt;AbstractResource&gt;&gt; expandCompleteChains(
-        List&lt;AbstractResource&gt; directResourceOrRefs) {
-<span class="nc" id="L152">        List&lt;List&lt;AbstractResource&gt;&gt; allResults = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L153">        directResourceOrRefs.forEach(resourceOrRef -&gt; {</span>
-<span class="nc" id="L154">            allResults.add(resourceOrRef.expand());</span>
-<span class="nc" id="L155">        });</span>
-
-<span class="nc" id="L157">        return allResults;</span>
+        List&lt;AbstractResource&gt; directResourcesAndRefs) {
+<span class="nc" id="L163">        return directResourcesAndRefs</span>
+<span class="nc" id="L164">            .stream()</span>
+<span class="nc" id="L165">            .map(resourceOrRef -&gt; resourceOrRef.expand())</span>
+<span class="nc" id="L166">            .collect(Collectors.toList());</span>
     }
 
     // *********************************************************************************************
-    // resource creation
+    // life cycle
     // *********************************************************************************************
 
     /**
-     * Create a new resource.
+     * Complete and persist the given resource and create all the references needed.
      * &lt;p&gt;
-     * Every child of the card type acquires a reference to that resource.&lt;br&gt;
+     * Every child of the entity acquires a reference to that resource.&lt;br&gt;
      * And recursively the grand children acquires a reference to the reference of their parent.
      *
      * @param resource the resource to create
@@ -172,185 +181,187 @@ import org.slf4j.LoggerFactory;
      * @return the brand new resource
      */
     public Resource createResource(Resource resource) {
-<span class="nc" id="L175">        logger.debug(&quot;create a resource {}&quot;, resource);</span>
+<span class="nc" id="L184">        logger.debug(&quot;create resource {}&quot;, resource);</span>
 
-<span class="nc bnc" id="L177" title="All 2 branches missed.">        if (resource.getDocument() == null) {</span>
-<span class="nc" id="L178">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (resource.getDocument() == null) {</span>
+<span class="nc" id="L187">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (resource.getTeaser() == null) {</span>
-<span class="nc" id="L182">            initTeaser(resource);</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (resource.getTeaser() == null) {</span>
+<span class="nc" id="L191">            initTeaser(resource);</span>
         }
 
-<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (resource.getAbstractCardTypeId() != null) {</span>
-<span class="nc" id="L186">            return createResourceForAbstractCardType(resource);</span>
+        // implicitly resource.setPublished(false);
+        // implicitly resource.setRequestingForGlory(false);
+        // implicitly resource.setDeprecated(false);
+
+<span class="nc bnc" id="L198" title="All 2 branches missed.">        if (resource.getAbstractCardTypeId() != null) {</span>
+<span class="nc" id="L199">            AbstractCardType abstractCardType = cardTypeManager</span>
+<span class="nc" id="L200">                .assertAndGetCardTypeOrRef(resource.getAbstractCardTypeId());</span>
+
+<span class="nc" id="L202">            resource.setAbstractCardType(abstractCardType);</span>
+<span class="nc" id="L203">            abstractCardType.getDirectAbstractResources().add(resource);</span>
+
+<span class="nc" id="L205">            ResourceReferenceSpreadingHelper.spreadReferenceDown(abstractCardType, resource);</span>
+
+<span class="nc bnc" id="L207" title="All 2 branches missed.">        } else if (resource.getCardId() != null) {</span>
+<span class="nc" id="L208">            Card card = cardManager.assertAndGetCard(resource.getCardId());</span>
+
+<span class="nc" id="L210">            resource.setCard(card);</span>
+<span class="nc" id="L211">            card.getDirectAbstractResources().add(resource);</span>
+
+<span class="nc" id="L213">            ResourceReferenceSpreadingHelper.spreadReferenceDown(card, resource);</span>
+
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        } else if (resource.getCardContentId() != null) {</span>
+<span class="nc" id="L216">            CardContent cardContent = cardContentManager</span>
+<span class="nc" id="L217">                .assertAndGetCardContent(resource.getCardContentId());</span>
+
+<span class="nc" id="L219">            resource.setCardContent(cardContent);</span>
+<span class="nc" id="L220">            cardContent.getDirectAbstractResources().add(resource);</span>
+
+<span class="nc" id="L222">            ResourceReferenceSpreadingHelper.spreadReferenceDown(cardContent, resource);</span>
         }
 
-<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (resource.getCardId() != null) {</span>
-<span class="nc" id="L190">            return createResourceForCard(resource);</span>
-        }
-
-<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (resource.getCardContentId() != null) {</span>
-<span class="nc" id="L194">            return createResourceForCardContent(resource);</span>
-        }
-
-<span class="nc" id="L197">        throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L225">        return resourceAndRefDao.persistResource(resource);</span>
     }
 
+    /**
+     * Initialize the teaser of the given resource.
+     *
+     * @param resource the resource
+     */
     private void initTeaser(Resource resource) {
-<span class="nc" id="L201">        resource.setTeaser(Block.initNewDefaultBlock());</span>
-<span class="nc" id="L202">    }</span>
+<span class="nc" id="L234">        resource.setTeaser(Block.initNewDefaultBlock());</span>
+<span class="nc" id="L235">    }</span>
 
     /**
-     * Create a new resource linked to a card type (or a card type reference).
-     * &lt;p&gt;
-     * Every child of the card type acquires a reference to that resource.&lt;br&gt;
-     * And recursively the grand children acquires a reference to the reference of their parent.
-     *
-     * @param resource the resource to create
-     *
-     * @return the brand new resource
-     */
-    private Resource createResourceForAbstractCardType(Resource resource) {
-<span class="nc" id="L215">        logger.debug(&quot;create the resource {} for abstract card type&quot;, resource);</span>
-
-<span class="nc" id="L217">        AbstractCardType abstractCardType = cardTypeManager</span>
-<span class="nc" id="L218">            .assertAndGetCardTypeOrRef(resource.getAbstractCardTypeId());</span>
-
-<span class="nc" id="L220">        resource.setAbstractCardType(abstractCardType);</span>
-<span class="nc" id="L221">        abstractCardType.getDirectAbstractResources().add(resource);</span>
-
-<span class="nc" id="L223">        ResourceReferenceSpreadingHelper.spreadReferenceDown(abstractCardType, resource);</span>
-
-<span class="nc" id="L225">        resourceAndRefDao.persistResource(resource);</span>
-
-<span class="nc" id="L227">        return resource;</span>
-    }
-
-    /**
-     * Create a new resource linked to a card
-     * &lt;p&gt;
-     * Every direct child of the card acquires a reference to that resource.&lt;br&gt;
-     * And recursively the grand children acquires a reference to the reference of their parent.
-     *
-     * @param resource The resource to create
-     *
-     * @return the brand new resource
-     */
-    private Resource createResourceForCard(Resource resource) {
-<span class="nc" id="L241">        logger.debug(&quot;create the resource {} for card&quot;, resource);</span>
-
-<span class="nc" id="L243">        Card card = cardManager.assertAndGetCard(resource.getCardId());</span>
-
-<span class="nc" id="L245">        resource.setCard(card);</span>
-<span class="nc" id="L246">        card.getDirectAbstractResources().add(resource);</span>
-
-<span class="nc" id="L248">        ResourceReferenceSpreadingHelper.spreadReferenceDown(card, resource);</span>
-
-<span class="nc" id="L250">        resourceAndRefDao.persistResource(resource);</span>
-
-<span class="nc" id="L252">        return resource;</span>
-    }
-
-    /**
-     * Create a new resource for the document linked to the card content
-     * &lt;p&gt;
-     * Every child of the card content acquires a reference to that resource.&lt;br&gt;
-     * And recursively the grand children acquires a reference to the reference of their parent.
-     *
-     * @param resource the resource to create
-     *
-     * @return the brand new resource
-     */
-    private Resource createResourceForCardContent(Resource resource) {
-<span class="nc" id="L266">        logger.debug(&quot;create the resource {} for card content&quot;, resource);</span>
-
-<span class="nc" id="L268">        CardContent cardContent = cardContentManager.assertAndGetCardContent(resource.getCardContentId());</span>
-
-<span class="nc" id="L270">        resource.setCardContent(cardContent);</span>
-<span class="nc" id="L271">        cardContent.getDirectAbstractResources().add(resource);</span>
-
-<span class="nc" id="L273">        ResourceReferenceSpreadingHelper.spreadReferenceDown(cardContent, resource);</span>
-
-<span class="nc" id="L275">        resourceAndRefDao.persistResource(resource);</span>
-
-<span class="nc" id="L277">        return resource;</span>
-    }
-
-    // *********************************************************************************************
-    // resource deletion
-    // *********************************************************************************************
-
-    /**
-     * Delete a resource
+     * Delete the given resource
      *
      * @param resourceId the id of the resource to delete
      */
     public void deleteResource(Long resourceId) {
-<span class="nc" id="L290">        logger.debug(&quot;delete resource #{}&quot;, resourceId);</span>
+<span class="nc" id="L243">        logger.debug(&quot;delete resource #{}&quot;, resourceId);</span>
 
-<span class="nc" id="L292">        AbstractResource resource = resourceAndRefDao.findResourceOrRef(resourceId);</span>
-<span class="nc bnc" id="L293" title="All 2 branches missed.">        if (resource == null) {</span>
-<span class="nc" id="L294">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
-            // FIXME or just return. see what is best
+<span class="nc" id="L245">        AbstractResource resource = assertAndGetResourceOrRef(resourceId);</span>
+
+<span class="nc bnc" id="L247" title="All 2 branches missed.">        if (!checkDeletionAcceptability(resource)) {</span>
+<span class="nc" id="L248">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc bnc" id="L298" title="All 2 branches missed.">        if (!(resource instanceof Resource)) {</span>
-<span class="nc" id="L299">            throw HttpErrorMessage.dataIntegrityFailure();</span>
-        }
-
-<span class="nc" id="L302">        deleteResourceAndRefs(resource);</span>
-
-        // Note : the document is deleted by cascade
-<span class="nc" id="L305">    }</span>
+<span class="nc" id="L251">        deleteResourceAndRefs(resource);</span>
+<span class="nc" id="L252">    }</span>
 
     /**
-     * Delete each reference pointing at the given resourceOrRef
+     * Ascertain that the resource can be deleted.
+     *
+     * @param resourceOrRef the resource (or reference) to check for deletion
+     *
+     * @return True iff it can be safely deleted
+     */
+    private boolean checkDeletionAcceptability(AbstractResource resourceOrRef) {
+        // the only resources we delete manually are the concrete resources
+<span class="nc bnc" id="L263" title="All 2 branches missed.">        if (!(resourceOrRef instanceof Resource)) {</span>
+<span class="nc" id="L264">            return false;</span>
+        }
+
+<span class="nc" id="L267">        return true;</span>
+    }
+
+    /**
+     * Delete each reference pointing at the given resourceOrRef and remove the resource from the
+     * card type / card / card content.
      *
      * @param resourceOrRef The initial abstract resource to delete
      */
     private void deleteResourceAndRefs(AbstractResource resourceOrRef) {
-<span class="nc" id="L313">        List&lt;ResourceRef&gt; references = resourceOrRef.getDirectReferences();</span>
-<span class="nc bnc" id="L314" title="All 2 branches missed.">        if (references != null) {</span>
-<span class="nc" id="L315">            references.stream().forEach(ref -&gt; deleteResourceAndRefs(ref));</span>
+<span class="nc" id="L277">        List&lt;ResourceRef&gt; references = resourceOrRef.getDirectReferences();</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">        if (references != null) {</span>
+<span class="nc" id="L279">            references.stream().forEach(ref -&gt; deleteResourceAndRefs(ref));</span>
         }
 
-<span class="nc bnc" id="L318" title="All 2 branches missed.">        if (resourceOrRef.hasAbstractCardType()) {</span>
-<span class="nc" id="L319">            AbstractCardType cardTypeOrRef = resourceOrRef.getAbstractCardType();</span>
-<span class="nc" id="L320">            cardTypeOrRef.getDirectAbstractResources().remove(resourceOrRef);</span>
+<span class="nc bnc" id="L282" title="All 2 branches missed.">        if (resourceOrRef.getAbstractCardType() != null) {</span>
+<span class="nc" id="L283">            AbstractCardType cardTypeOrRef = resourceOrRef.getAbstractCardType();</span>
+<span class="nc" id="L284">            cardTypeOrRef.getDirectAbstractResources().remove(resourceOrRef);</span>
         }
 
-<span class="nc bnc" id="L323" title="All 2 branches missed.">        if (resourceOrRef.hasCard()) {</span>
-<span class="nc" id="L324">            Card card = resourceOrRef.getCard();</span>
-<span class="nc" id="L325">            card.getDirectAbstractResources().remove(resourceOrRef);</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">        if (resourceOrRef.getCard() != null) {</span>
+<span class="nc" id="L288">            Card card = resourceOrRef.getCard();</span>
+<span class="nc" id="L289">            card.getDirectAbstractResources().remove(resourceOrRef);</span>
         }
 
-<span class="nc bnc" id="L328" title="All 2 branches missed.">        if (resourceOrRef.hasCardContent()) {</span>
-<span class="nc" id="L329">            CardContent cardContent = resourceOrRef.getCardContent();</span>
-<span class="nc" id="L330">            cardContent.getDirectAbstractResources().remove(resourceOrRef);</span>
+<span class="nc bnc" id="L292" title="All 2 branches missed.">        if (resourceOrRef.getCardContent() != null) {</span>
+<span class="nc" id="L293">            CardContent cardContent = resourceOrRef.getCardContent();</span>
+<span class="nc" id="L294">            cardContent.getDirectAbstractResources().remove(resourceOrRef);</span>
         }
 
-<span class="nc" id="L333">        resourceAndRefDao.deleteResourceOrRef(resourceOrRef.getId());</span>
-<span class="nc" id="L334">    }</span>
+<span class="nc" id="L297">        resourceAndRefDao.deleteResourceOrRef(resourceOrRef.getId());</span>
+
+        // Note : the document is deleted by cascade
+<span class="nc" id="L300">    }</span>
 
     // *********************************************************************************************
-    // Links
+    // retrieve the elements of a resource
     // *********************************************************************************************
 
     /**
-     * Get all sticky note links of which the given resource / resource reference is the source
+     * Get all sticky note links whose source is the given resource / resource reference
      *
      * @param resourceOrRefId the id of the resource / resource reference
      *
      * @return all sticky note links linked to the resource / resource reference
      */
     public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrc(Long resourceOrRefId) {
-<span class="nc" id="L348">        logger.debug(&quot;get sticky note links where the abstract resource #{} is the source&quot;,</span>
+<span class="nc" id="L314">        logger.debug(&quot;get sticky note links where the abstract resource #{} is the source&quot;,</span>
             resourceOrRefId);
 
-<span class="nc" id="L351">        AbstractResource resource = assertAndGetResourceOrRef(resourceOrRefId);</span>
+<span class="nc" id="L317">        AbstractResource resource = assertAndGetResourceOrRef(resourceOrRefId);</span>
 
-<span class="nc" id="L353">        return resource.getStickyNoteLinksAsSrc();</span>
+<span class="nc" id="L319">        return resource.getStickyNoteLinksAsSrc();</span>
+    }
+
+    // *********************************************************************************************
+    // dedicated to access control
+    // *********************************************************************************************
+
+    // *********************************************************************************************
+    // integrity check
+    // *********************************************************************************************
+
+    /**
+     * Check the integrity of the card type (or reference)
+     *
+     * @param resourceOrRef the resource (or reference) to check
+     *
+     * @return true iff the project is complete and safe
+     */
+    public boolean checkIntegrity(AbstractResource resourceOrRef) {
+<span class="nc bnc" id="L338" title="All 2 branches missed.">        if (resourceOrRef == null) {</span>
+<span class="nc" id="L339">            return false;</span>
+        }
+
+<span class="nc bnc" id="L342" title="All 2 branches missed.">        if (resourceOrRef instanceof Resource) {</span>
+<span class="nc" id="L343">            Resource resource = (Resource) resourceOrRef;</span>
+<span class="nc bnc" id="L344" title="All 2 branches missed.">            if (resource.getDocument() == null) {</span>
+<span class="nc" id="L345">                return false;</span>
+            }
+        }
+
+<span class="nc bnc" id="L349" title="All 2 branches missed.">        if (resourceOrRef instanceof ResourceRef) {</span>
+<span class="nc" id="L350">            ResourceRef reference = (ResourceRef) resourceOrRef;</span>
+<span class="nc" id="L351">            Resource finalTarget = reference.resolve();</span>
+<span class="nc bnc" id="L352" title="All 2 branches missed.">            if (finalTarget == null) {</span>
+<span class="nc" id="L353">                return false;</span>
+            }
+        }
+
+<span class="nc bnc" id="L357" title="All 2 branches missed.">        int nbCardType = resourceOrRef.getAbstractCardType() == null ? 0 : 1;</span>
+<span class="nc bnc" id="L358" title="All 2 branches missed.">        int nbCard = resourceOrRef.getCard() == null ? 0 : 1;</span>
+<span class="nc bnc" id="L359" title="All 2 branches missed.">        int nbCardContent = resourceOrRef.getCardContent() == null ? 0 : 1;</span>
+<span class="nc bnc" id="L360" title="All 2 branches missed.">        if ((nbCardType + nbCard + nbCardContent) != 1) {</span>
+<span class="nc" id="L361">            return false;</span>
+        }
+
+<span class="nc" id="L364">        return true;</span>
     }
 
     // *********************************************************************************************
