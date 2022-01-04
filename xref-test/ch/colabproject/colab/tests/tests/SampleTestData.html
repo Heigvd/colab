@@ -84,8 +84,8 @@
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>      }
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> initData(ColabClient client) {
-<a class="jxr_linenumber" name="L79" href="#L79">79</a>          unpublishedGlobalCardTypeId = ColabFactory.createCardType(client, <strong class="jxr_keyword">null</strong>).getId();
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>          publishedGlobalCardTypeId = ColabFactory.createPublishedCardType(client, <strong class="jxr_keyword">null</strong>).getId();
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>          unpublishedGlobalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          publishedGlobalCardTypeId = ColabFactory.createGlobalPublishedCardType(client).getId();
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>  
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>          Project theProject = ColabFactory.createProject(client, <span class="jxr_string">"THE Sample test data project"</span>);
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>          theProjectId = theProject.getId();
@@ -434,6 +434,6 @@
 <a class="jxr_linenumber" name="L426" href="#L426">426</a> }
 </pre>
 <hr/>
-<div id="footer">Copyright &#169; 2021 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>
+<div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>
 </body>
 </html>

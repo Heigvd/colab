@@ -23,7 +23,7 @@ under the License.
     <link>${project.url}</link>
     <description>colab-tests - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2021 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
+    <copyright>&#169;2022 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
       <title>File: 0,
              Errors: 0,

@@ -491,44 +491,36 @@ import javax.validation.constraints.NotNull;
     public void setSrc(StickyNoteSourceable src) {
 <span class="nc bnc" id="L492" title="All 2 branches missed.">        if (src == null) {</span>
 <span class="nc" id="L493">            resetSrc();</span>
-<span class="nc" id="L494">            return;</span>
+<span class="nc bnc" id="L494" title="All 2 branches missed.">        } else if (src instanceof Card) {</span>
+<span class="nc" id="L495">            resetSrc();</span>
+<span class="nc" id="L496">            setSrcCard((Card) src);</span>
+<span class="nc bnc" id="L497" title="All 2 branches missed.">        } else if (src instanceof CardContent) {</span>
+<span class="nc" id="L498">            resetSrc();</span>
+<span class="nc" id="L499">            setSrcCardContent((CardContent) src);</span>
+<span class="nc bnc" id="L500" title="All 2 branches missed.">        } else if (src instanceof AbstractResource) {</span>
+<span class="nc" id="L501">            resetSrc();</span>
+<span class="nc" id="L502">            setSrcResourceOrRef((AbstractResource) src);</span>
+<span class="nc bnc" id="L503" title="All 2 branches missed.">        } else if (src instanceof Block) {</span>
+<span class="nc" id="L504">            resetSrc();</span>
+<span class="nc" id="L505">            setSrcBlock((Block) src);</span>
+        } else {
+<span class="nc" id="L507">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
-<span class="nc bnc" id="L496" title="All 2 branches missed.">        if (src instanceof Card) {</span>
-<span class="nc" id="L497">            resetSrc();</span>
-<span class="nc" id="L498">            setSrcCard((Card) src);</span>
-<span class="nc" id="L499">            return;</span>
-        }
-<span class="nc bnc" id="L501" title="All 2 branches missed.">        if (src instanceof CardContent) {</span>
-<span class="nc" id="L502">            resetSrc();</span>
-<span class="nc" id="L503">            setSrcCardContent((CardContent) src);</span>
-<span class="nc" id="L504">            return;</span>
-        }
-<span class="nc bnc" id="L506" title="All 2 branches missed.">        if (src instanceof AbstractResource) {</span>
-<span class="nc" id="L507">            resetSrc();</span>
-<span class="nc" id="L508">            setSrcResourceOrRef((AbstractResource) src);</span>
-<span class="nc" id="L509">            return;</span>
-        }
-<span class="nc bnc" id="L511" title="All 2 branches missed.">        if (src instanceof Block) {</span>
-<span class="nc" id="L512">            resetSrc();</span>
-<span class="nc" id="L513">            setSrcBlock((Block) src);</span>
-<span class="nc" id="L514">            return;</span>
-        }
-<span class="nc" id="L516">        throw HttpErrorMessage.dataIntegrityFailure();</span>
-    }
+<span class="nc" id="L509">    }</span>
 
     /**
      * Set every source to null
      */
     private void resetSrc() {
-<span class="nc" id="L523">        setSrcCard(null);</span>
-<span class="nc" id="L524">        setSrcCardId(null);</span>
-<span class="nc" id="L525">        setSrcCardContent(null);</span>
-<span class="nc" id="L526">        setSrcCardContentId(null);</span>
-<span class="nc" id="L527">        setSrcResourceOrRef(null);</span>
-<span class="nc" id="L528">        setSrcResourceOrRefId(null);</span>
-<span class="nc" id="L529">        setSrcBlock(null);</span>
-<span class="nc" id="L530">        setSrcBlockId(null);</span>
-<span class="nc" id="L531">    }</span>
+<span class="nc" id="L515">        setSrcCard(null);</span>
+<span class="nc" id="L516">        setSrcCardId(null);</span>
+<span class="nc" id="L517">        setSrcCardContent(null);</span>
+<span class="nc" id="L518">        setSrcCardContentId(null);</span>
+<span class="nc" id="L519">        setSrcResourceOrRef(null);</span>
+<span class="nc" id="L520">        setSrcResourceOrRefId(null);</span>
+<span class="nc" id="L521">        setSrcBlock(null);</span>
+<span class="nc" id="L522">        setSrcBlockId(null);</span>
+<span class="nc" id="L523">    }</span>
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
@@ -538,51 +530,51 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-<span class="nc bnc" id="L541" title="All 2 branches missed.">        if (other instanceof StickyNoteLink) {</span>
-<span class="nc" id="L542">            StickyNoteLink o = (StickyNoteLink) other;</span>
-<span class="nc" id="L543">            this.setTeaser(o.getTeaser());</span>
-<span class="nc" id="L544">        } else {</span>
-<span class="nc" id="L545">            throw new ColabMergeException(this, other);</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">        if (other instanceof StickyNoteLink) {</span>
+<span class="nc" id="L534">            StickyNoteLink o = (StickyNoteLink) other;</span>
+<span class="nc" id="L535">            this.setTeaser(o.getTeaser());</span>
+<span class="nc" id="L536">        } else {</span>
+<span class="nc" id="L537">            throw new ColabMergeException(this, other);</span>
         }
-<span class="nc" id="L547">    }</span>
+<span class="nc" id="L539">    }</span>
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L552">        return new Conditions.Or(</span>
-<span class="nc" id="L553">            this.getSrc().getReadCondition(),</span>
-<span class="nc" id="L554">            this.getDestinationCard().getReadCondition()</span>
+<span class="nc" id="L544">        return new Conditions.Or(</span>
+<span class="nc" id="L545">            this.getSrc().getReadCondition(),</span>
+<span class="nc" id="L546">            this.getDestinationCard().getReadCondition()</span>
         );
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-<span class="nc" id="L560">        return this.getSrc().getUpdateCondition();</span>
+<span class="nc" id="L552">        return this.getSrc().getUpdateCondition();</span>
     }
 
     @Override
     public Set&lt;WebsocketChannel&gt; getChannels() {
-<span class="nc bnc" id="L565" title="All 2 branches missed.">        if (this.destinationCard != null) {</span>
-<span class="nc" id="L566">            return this.destinationCard.getChannels();</span>
+<span class="nc bnc" id="L557" title="All 2 branches missed.">        if (this.destinationCard != null) {</span>
+<span class="nc" id="L558">            return this.destinationCard.getChannels();</span>
         } else {
-<span class="nc" id="L568">            return Set.of();</span>
+<span class="nc" id="L560">            return Set.of();</span>
         }
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L574">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L566">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L580">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L572">        return EntityHelper.equals(this, obj);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L585">        return &quot;StickyNoteLink{&quot; + &quot;id=&quot; + id + &quot;, srcCardId=&quot; + srcCardId</span>
+<span class="nc" id="L577">        return &quot;StickyNoteLink{&quot; + &quot;id=&quot; + id + &quot;, srcCardId=&quot; + srcCardId</span>
             + &quot;, srcCardContentId=&quot; + srcCardContentId + &quot;, srcResourceOrRefId=&quot;
             + srcResourceOrRefId + &quot;, srcBlockId=&quot; + srcBlockId + &quot;, destinationCardId=&quot;
             + destinationCardId + &quot;, teaser=&quot; + teaser + &quot;}&quot;;
