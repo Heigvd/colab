@@ -7,8 +7,8 @@
 package ch.colabproject.colab.api.controller.document;
 
 import ch.colabproject.colab.api.controller.card.CardContentManager;
+import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
-import ch.colabproject.colab.api.ejb.CardFacade;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -54,7 +54,7 @@ public class ResourceCategoryHelper {
      * Card specific logic management
      */
     @Inject
-    private CardFacade cardManager;
+    private CardManager cardManager;
 
     /**
      * Card content specific logic management

@@ -13,7 +13,7 @@ import ch.colabproject.colab.api.model.card.CardTypeRef;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.rest.card.CardTypeCreationBean;
+import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationBean;
 import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
 import ch.colabproject.colab.client.ColabClient;
@@ -70,7 +70,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(cardType.getPurposeId());
         Assertions.assertNotNull(cardType.getTags());
 
-        Block persistedPurpose = client.blockRestEndPoint.getBlock(cardType.getPurposeId());
+        Block persistedPurpose = client.blockRestEndpoint.getBlock(cardType.getPurposeId());
         Assertions.assertNotNull(persistedPurpose);
         Assertions.assertTrue(persistedPurpose instanceof TextDataBlock);
         TextDataBlock persistedPurposeTextDataBlock = (TextDataBlock) persistedPurpose;
@@ -192,7 +192,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         throws DeploymentException, IOException, URISyntaxException, InterruptedException {
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketHelper.class), Level.TRACE);
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketClient.class), Level.TRACE);
-//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketFacade.class), Level.TRACE);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketManager.class), Level.TRACE);
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(TransactionManager.class), Level.TRACE);
 
         // create some goulash user with its own clients
@@ -353,7 +353,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         CardType cardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
         Assertions.assertNull(cardType.getTitle());
         Assertions.assertNotNull(cardType.getPurposeId());
-        Block persistedPurpose = client.blockRestEndPoint.getBlock(cardType.getPurposeId());
+        Block persistedPurpose = client.blockRestEndpoint.getBlock(cardType.getPurposeId());
         Assertions.assertNotNull(persistedPurpose);
         Assertions.assertTrue(persistedPurpose instanceof TextDataBlock);
 
