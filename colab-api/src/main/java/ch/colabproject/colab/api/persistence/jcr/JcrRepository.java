@@ -6,6 +6,10 @@
  */
 package ch.colabproject.colab.api.persistence.jcr;
 
+import ch.colabproject.colab.api.setup.ColabConfiguration;
+import com.mongodb.client.MongoClients;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.annotation.PreDestroy;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
@@ -15,8 +19,11 @@ import javax.jcr.Repository;
 import org.apache.jackrabbit.oak.Oak;
 import org.apache.jackrabbit.oak.jcr.Jcr;
 import org.apache.jackrabbit.oak.segment.file.FileStore;
+import org.apache.jackrabbit.oak.plugins.document.LeaseCheckMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.jackrabbit.oak.plugins.document.DocumentNodeStore;
+import static org.apache.jackrabbit.oak.plugins.document.mongo.MongoDocumentNodeStoreBuilder.newMongoDocumentNodeStoreBuilder;
 
 /**
  * Access to the JCR repository
@@ -43,9 +50,34 @@ public class JcrRepository {
     public void init() {
         if (repository == null) {
             logger.trace("Init JCR Repository");
+
+            var mongoUri = ColabConfiguration.getJcrMongoDbUri();
+            if(mongoUri == null || mongoUri.isBlank()){
+                repository = new Jcr(new Oak()).createRepository();
+            }else{
+                try {
+                    final URI uri = new URI(mongoUri);
+
+                    if (uri.getScheme().equals("mongodb")) {
+                        String hostPort = uri.getHost();
+                        if (uri.getPort() > -1) {
+                            hostPort += ":" + uri.getPort();
+                        }
+                        String dbName = uri.getPath().replaceFirst("/", "");
+
+                        DocumentNodeStore nodeStore = newMongoDocumentNodeStoreBuilder()
+                            .setLeaseCheckMode(LeaseCheckMode.DISABLED)
+                            .setMongoDB("mongodb://" + hostPort + "/?readConcernLevel=majority", dbName, 0)
+                            .build();
+
+                        repository = new Jcr(new Oak(nodeStore)).createRepository();
+                    }
+                } catch (URISyntaxException e) {
+
+                }
+            }
 //            if (inMemoryStorage) {
                 // in-memory is a very stupid backend
-                repository = new Jcr(new Oak()).createRepository();
 //            } else {
 //                // TODO: use a real backend...
 //                // stupid filesystem backend

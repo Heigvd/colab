@@ -9,6 +9,7 @@ import ch.colabproject.colab.api.model.document.HostedDocLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.jcr.JcrManager;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
+import ch.colabproject.colab.api.setup.ColabConfiguration;
 import java.io.InputStream;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -64,6 +65,15 @@ public class FileManager {
         var fileName = details.getFileName();
         FileManager.logger.debug("Updating file {} with id {}", fileName, docId);
 
+        var fileSize = details.getSize();
+        if(fileSize > ColabConfiguration.getJcrRepositoryFileSizeLimit()){
+            FileManager.logger.debug("File exceeds authorized size ({} bytes)"
+                + ", size limit is {} bytes"
+                , fileSize, ColabConfiguration.getJcrRepositoryFileSizeLimit());
+
+            throw HttpErrorMessage.internalServerError();
+        }
+        
         Document doc = documentDao.findDocument(docId);
         if(doc == null || !(doc instanceof HostedDocLink))
         {
@@ -72,7 +82,7 @@ public class FileManager {
 
         HostedDocLink hostedDoc = (HostedDocLink)doc;
         hostedDoc.setFileName(fileName);
-        hostedDoc.setFileSize(details.getSize());
+        hostedDoc.setFileSize(fileSize);
         hostedDoc.setMimeType(body.getMediaType().toString());
 
         Project project = doc.getProject();
