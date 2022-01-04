@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.ejb;
 
 import ch.colabproject.colab.api.controller.card.CardTypeManager;
-import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.project.Project;
@@ -60,7 +59,7 @@ public class SecurityFacade {
      * Project specific logic
      */
     @Inject
-    private ProjectManager projectManager;
+    private ProjectFacade projectFacade;
 
     /**
      * Get the current user if it exists.
@@ -219,7 +218,7 @@ public class SecurityFacade {
     }
 
     /**
-     * Are two user teammate?
+     * Are two user team mate?
      *
      * @param a a user
      * @param b another user
@@ -231,7 +230,7 @@ public class SecurityFacade {
     }
 
     /**
-     * Has the current user readwrite access to the given card
+     * Has the current user read/write access to the given card
      *
      * @param card the card
      *
@@ -381,13 +380,13 @@ public class SecurityFacade {
             return false;
         }
 
-        List<Long> directProjects = projectManager.findIdsOfProjectsCurrentUserIsMemberOf();
+        List<Long> directProjects = projectFacade.findIdsOfProjectsOfCurrentUser();
         if (directProjects.contains(projectId)) {
             return true;
         }
 
-        List<Long> accessibleByCardTypes = projectManager
-            .findProjectsIdsReadableByCardTypes();
+        List<Long> accessibleByCardTypes = projectFacade
+            .findIdsOfProjectsReadableThroughCardTypes();
         if (accessibleByCardTypes.contains(projectId)) {
             return true;
         }

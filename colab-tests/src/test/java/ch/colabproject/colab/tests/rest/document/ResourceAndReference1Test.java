@@ -7,8 +7,6 @@
 package ch.colabproject.colab.tests.rest.document;
 
 import ch.colabproject.colab.api.model.document.AbstractResource;
-import ch.colabproject.colab.api.model.document.Block;
-import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
@@ -27,9 +25,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author sandra
  */
-// TODO refuse stuff
-// TODO publish / requestForGlory / deprecated stuff
-public class ResourceAndReferenceTest extends AbstractArquillianTest {
+public class ResourceAndReference1Test extends AbstractArquillianTest {
 
     @Test
     public void testOnGlobalCardType() {
@@ -87,13 +83,14 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
     }
 
     private void doTest(Access resourceLocation, Set<Access> accessToResourceRef) {
-        // creation of the context : project, global card type, card type, card, sub card
+        // creation of the context :
+        // project, global card type, card type, card, local card type, sub card
         Project project = ColabFactory.createProject(client, "testResource");
         Long projectId = project.getId();
 
         Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
 
-        Long globalCardTypeId = ColabFactory.createCardType(client, null).getId();
+        Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
 
         Long cardId = ColabFactory.createNewCard(client, rootCardContentId, globalCardTypeId)
             .getId();
@@ -104,7 +101,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
 
         Long subCardLocalTypeId = ColabFactory.createCardType(client, projectId).getId();
 
-        Long subCardId = ColabFactory.createNewCard(client, cardContentId, subCardLocalTypeId).getId();
+        Long subCardId = ColabFactory.createNewCard(client, cardContentId, subCardLocalTypeId)
+            .getId();
 
         Long subCardContentId = ColabFactory.getCardContent(client, subCardId).getId();
 
@@ -119,9 +117,6 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         ExternalLink doc = new ExternalLink();
         doc.setUrl(url);
 
-        Long persistedResourceId;
-        Resource persistedResource;
-
         TextDataBlock tea = new TextDataBlock();
         tea.setMimeType(mimeType);
         tea.setTextData(teaser);
@@ -131,6 +126,9 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         toCreate.setTeaser(tea);
         toCreate.setDocument(doc);
         toCreate.setCategory(category);
+
+        Long persistedResourceId;
+        Resource persistedResource;
 
         switch (resourceLocation) {
             case GLOBAL_CARD_TYPE:
@@ -176,12 +174,13 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
                     .getAbstractResource(persistedResourceId);
                 break;
             default:
-                Assertions.fail();
+                Assertions.fail("if you set a new access, fill the card creation for this case");
                 persistedResource = new Resource(); // just for compilation / code checks
                 break;
         }
 
         // create sister card and variant after the resource creation
+        // to check that the resource are spread for cards created after the resource
 
         Long otherCardContentId = ColabFactory.createNewCardContent(client, cardId).getId();
 
@@ -223,7 +222,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
                 Assertions.assertEquals(cardContentId, persistedResource.getCardContentId());
                 break;
             case SUB_CARD_TYPE:
-                Assertions.assertEquals(subCardLocalTypeId, persistedResource.getAbstractCardTypeId());
+                Assertions.assertEquals(subCardLocalTypeId,
+                    persistedResource.getAbstractCardTypeId());
                 Assertions.assertNull(persistedResource.getCardId());
                 Assertions.assertNull(persistedResource.getCardContentId());
                 break;
@@ -238,30 +238,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
                 Assertions.assertEquals(subCardContentId, persistedResource.getCardContentId());
                 break;
             default:
-                Assertions.fail();
+                Assertions.fail("if you set a new access, fill the link check for this case");
         }
-
-        // check the teaser
-
-        Long teaserId = persistedResource.getTeaserId();
-        Block persistedTeaserBlock = client.blockRestEndPoint.getBlock(teaserId);
-        Assertions.assertNotNull(persistedTeaserBlock);
-        Assertions.assertEquals(teaserId, persistedTeaserBlock.getId());
-        Assertions.assertTrue(persistedTeaserBlock instanceof TextDataBlock);
-        TextDataBlock persistedTeaserTextDataBlock = (TextDataBlock) persistedTeaserBlock;
-        Assertions.assertEquals(mimeType, persistedTeaserTextDataBlock.getMimeType());
-        Assertions.assertEquals(teaser, persistedTeaserTextDataBlock.getTextData());
-
-        // check the document
-
-        Long documentId = persistedResource.getDocumentId();
-        Document persistedDocument = client.documentRestEndPoint.getDocument(documentId);
-        Assertions.assertNotNull(persistedDocument);
-        Assertions.assertEquals(documentId, persistedDocument.getId());
-        Assertions.assertTrue(persistedDocument instanceof ExternalLink);
-        ExternalLink persistedExtDocLink = (ExternalLink) persistedDocument;
-        Assertions.assertEquals(url, persistedExtDocLink.getUrl());
-        Assertions.assertEquals(persistedResource.getId(), persistedDocument.getResourceId());
 
         // check the resource references
 
@@ -271,7 +249,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         if (resourceLocation == Access.GLOBAL_CARD_TYPE) {
             Assertions.assertNotNull(persistedGlobalCardTypeResources);
             Assertions.assertEquals(1, persistedGlobalCardTypeResources.size());
-            Assertions.assertEquals(1, persistedGlobalCardTypeResources.get(0).size());
+            Assertions.assertEquals(1, persistedGlobalCardTypeResources.get(0).size(),
+                "There should be a resource on the global card type");
             Assertions.assertNotNull(persistedGlobalCardTypeResources.get(0).get(0));
             Assertions
                 .assertTrue(persistedGlobalCardTypeResources.get(0).get(0) instanceof Resource);
@@ -280,7 +259,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
             Assertions.assertEquals(persistedResource, persistedGlobalCardTypeAbstractResource);
         } else {
             Assertions.assertNotNull(persistedGlobalCardTypeResources);
-            Assertions.assertEquals(0, persistedGlobalCardTypeResources.size());
+            Assertions.assertEquals(0, persistedGlobalCardTypeResources.size(),
+                "There should be no resource on the global card type");
         }
 
         AbstractResource persistedCardTypeRefAbstractResource = null;
@@ -289,7 +269,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         if (resourceLocation == Access.CARD_TYPE_REF) {
             Assertions.assertNotNull(persistedCardTypeRefResources);
             Assertions.assertEquals(1, persistedCardTypeRefResources.size());
-            Assertions.assertEquals(1, persistedCardTypeRefResources.get(0).size());
+            Assertions.assertEquals(1, persistedCardTypeRefResources.get(0).size(),
+                "There should be a resource on the card type reference");
             Assertions.assertNotNull(persistedCardTypeRefResources.get(0).get(0));
             Assertions.assertTrue(persistedCardTypeRefResources.get(0).get(0) instanceof Resource);
             persistedCardTypeRefAbstractResource = persistedCardTypeRefResources.get(0).get(0);
@@ -297,7 +278,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         } else if (accessToResourceRef.contains(Access.CARD_TYPE_REF)) {
             Assertions.assertNotNull(persistedCardTypeRefResources);
             Assertions.assertEquals(1, persistedCardTypeRefResources.size());
-            Assertions.assertTrue(persistedCardTypeRefResources.get(0).size() > 1);
+            Assertions.assertTrue(persistedCardTypeRefResources.get(0).size() > 1,
+                "There should be resource reference on the card type reference");
             Assertions
                 .assertTrue(persistedCardTypeRefResources.get(0).get(0) instanceof ResourceRef);
             persistedCardTypeRefAbstractResource = persistedCardTypeRefResources
@@ -307,7 +289,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
                 ((ResourceRef) persistedCardTypeRefAbstractResource).getTargetId());
         } else {
             Assertions.assertNotNull(persistedCardTypeRefResources);
-            Assertions.assertEquals(0, persistedCardTypeRefResources.size());
+            Assertions.assertEquals(0, persistedCardTypeRefResources.size(),
+                "There should be no resource on the card type reference");
         }
 
         AbstractResource persistedCardAbstractResource = null;
@@ -316,7 +299,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         if (resourceLocation == Access.CARD) {
             Assertions.assertNotNull(persistedCardResources);
             Assertions.assertEquals(1, persistedCardResources.size());
-            Assertions.assertEquals(1, persistedCardResources.get(0).size());
+            Assertions.assertEquals(1, persistedCardResources.get(0).size(),
+                "There should be a resource on the card");
             Assertions.assertNotNull(persistedCardResources.get(0).get(0));
             Assertions.assertTrue(persistedCardResources.get(0).get(0) instanceof Resource);
             persistedCardAbstractResource = persistedCardResources.get(0).get(0);
@@ -324,7 +308,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         } else if (accessToResourceRef.contains(Access.CARD)) {
             Assertions.assertNotNull(persistedCardResources);
             Assertions.assertEquals(1, persistedCardResources.size());
-            Assertions.assertTrue(persistedCardResources.get(0).size() > 1);
+            Assertions.assertTrue(persistedCardResources.get(0).size() > 1,
+                "There should be resource reference on the card");
             Assertions.assertTrue(persistedCardResources.get(0).get(0) instanceof ResourceRef);
             persistedCardAbstractResource = persistedCardResources.get(0).get(0);
             Assertions.assertNotNull(persistedCardTypeRefAbstractResource);
@@ -332,7 +317,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
                 ((ResourceRef) persistedCardAbstractResource).getTargetId());
         } else {
             Assertions.assertNotNull(persistedCardResources);
-            Assertions.assertEquals(0, persistedCardResources.size());
+            Assertions.assertEquals(0, persistedCardResources.size(),
+                "There should be no resource on the card");
         }
 
         AbstractResource persistedSisterCardAbstractResource = null;
@@ -341,7 +327,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         if (accessToResourceRef.contains(Access.CARD)) {
             Assertions.assertNotNull(persistedSisterCardResources);
             Assertions.assertEquals(1, persistedSisterCardResources.size());
-            Assertions.assertTrue(persistedSisterCardResources.get(0).size() > 1);
+            Assertions.assertTrue(persistedSisterCardResources.get(0).size() > 1,
+                "There should be resource reference on the sister card");
             Assertions
                 .assertTrue(persistedSisterCardResources.get(0).get(0) instanceof ResourceRef);
             persistedSisterCardAbstractResource = persistedSisterCardResources.get(0).get(0);
@@ -350,7 +337,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
                 ((ResourceRef) persistedSisterCardAbstractResource).getTargetId());
         } else {
             Assertions.assertNotNull(persistedSisterCardResources);
-            Assertions.assertEquals(0, persistedSisterCardResources.size());
+            Assertions.assertEquals(0, persistedSisterCardResources.size(),
+                "There should be no resource on the sister card");
         }
 
         AbstractResource persistedCardContentAbstractResource = null;
@@ -359,7 +347,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         if (resourceLocation == Access.CARD_CONTENT) {
             Assertions.assertNotNull(persistedCardContentResources);
             Assertions.assertEquals(1, persistedCardContentResources.size());
-            Assertions.assertEquals(1, persistedCardContentResources.get(0).size());
+            Assertions.assertEquals(1, persistedCardContentResources.get(0).size(),
+                "There should be a resource on the card content");
             Assertions.assertNotNull(persistedCardContentResources.get(0).get(0));
             Assertions.assertTrue(persistedCardContentResources.get(0).get(0) instanceof Resource);
             persistedCardContentAbstractResource = persistedCardContentResources.get(0).get(0);
@@ -367,7 +356,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         } else if (accessToResourceRef.contains(Access.CARD_CONTENT)) {
             Assertions.assertNotNull(persistedCardContentResources);
             Assertions.assertEquals(1, persistedCardContentResources.size());
-            Assertions.assertTrue(persistedCardContentResources.get(0).size() > 1);
+            Assertions.assertTrue(persistedCardContentResources.get(0).size() > 1,
+                "There should be resource reference on the card content");
             Assertions
                 .assertTrue(persistedCardContentResources.get(0).get(0) instanceof ResourceRef);
             persistedCardContentAbstractResource = persistedCardContentResources
@@ -377,7 +367,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
                 ((ResourceRef) persistedCardContentAbstractResource).getTargetId());
         } else {
             Assertions.assertNotNull(persistedCardContentResources);
-            Assertions.assertEquals(0, persistedCardContentResources.size());
+            Assertions.assertEquals(0, persistedCardContentResources.size(),
+                "There should be no resource on the card content");
         }
 
         AbstractResource persistedSisterCardContentAbstractResource = null;
@@ -386,7 +377,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         if (accessToResourceRef.contains(Access.CARD_CONTENT) && resourceLocation != Access.CARD) {
             Assertions.assertNotNull(persistedSisterCardContentResources);
             Assertions.assertEquals(1, persistedSisterCardContentResources.size());
-            Assertions.assertTrue(persistedSisterCardContentResources.get(0).size() > 1);
+            Assertions.assertTrue(persistedSisterCardContentResources.get(0).size() > 1,
+                "There should be resource reference on the sister card content");
             Assertions
                 .assertTrue(
                     persistedSisterCardContentResources.get(0).get(0) instanceof ResourceRef);
@@ -397,7 +389,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
                 ((ResourceRef) persistedSisterCardContentAbstractResource).getTargetId());
         } else {
             Assertions.assertNotNull(persistedSisterCardContentResources);
-            Assertions.assertEquals(0, persistedSisterCardContentResources.size());
+            Assertions.assertEquals(0, persistedSisterCardContentResources.size(),
+                "There should be no resource on the sister card content");
         }
 
         AbstractResource persistedOtherCardContentAbstractResource = null;
@@ -406,7 +399,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         if (accessToResourceRef.contains(Access.CARD_CONTENT)) {
             Assertions.assertNotNull(persistedOtherCardContentResources);
             Assertions.assertEquals(1, persistedOtherCardContentResources.size());
-            Assertions.assertTrue(persistedOtherCardContentResources.get(0).size() > 1);
+            Assertions.assertTrue(persistedOtherCardContentResources.get(0).size() > 1,
+                "There should be resource reference on the other card content");
             Assertions.assertTrue(
                 persistedOtherCardContentResources.get(0).get(0) instanceof ResourceRef);
             persistedOtherCardContentAbstractResource = persistedOtherCardContentResources.get(0)
@@ -416,7 +410,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
                 ((ResourceRef) persistedOtherCardContentAbstractResource).getTargetId());
         } else {
             Assertions.assertNotNull(persistedOtherCardContentResources);
-            Assertions.assertEquals(0, persistedOtherCardContentResources.size());
+            Assertions.assertEquals(0, persistedOtherCardContentResources.size(),
+                "There should be no resource on the other card content");
         }
 
         AbstractResource persistedSubCardTypeAbstractResource = null;
@@ -425,7 +420,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         if (resourceLocation == Access.SUB_CARD_TYPE) {
             Assertions.assertNotNull(persistedSubCardTypeResources);
             Assertions.assertEquals(1, persistedSubCardTypeResources.size());
-            Assertions.assertEquals(1, persistedSubCardTypeResources.get(0).size());
+            Assertions.assertEquals(1, persistedSubCardTypeResources.get(0).size(),
+                "There should be a resource on the sub card type");
             Assertions.assertNotNull(persistedSubCardTypeResources.get(0).get(0));
             Assertions.assertTrue(persistedSubCardTypeResources.get(0).get(0) instanceof Resource);
             persistedSubCardTypeAbstractResource = persistedSubCardTypeResources.get(0).get(0);
@@ -434,7 +430,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
             Assertions.fail("not handled in current example");
         } else {
             Assertions.assertNotNull(persistedSubCardTypeResources);
-            Assertions.assertEquals(0, persistedSubCardTypeResources.size());
+            Assertions.assertEquals(0, persistedSubCardTypeResources.size(),
+                "There should be no resource on the local type");
         }
 
         AbstractResource persistedSubCardResourceRef = null;
@@ -443,7 +440,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         if (resourceLocation == Access.SUB_CARD) {
             Assertions.assertNotNull(persistedSubCardResources);
             Assertions.assertEquals(1, persistedSubCardResources.size());
-            Assertions.assertEquals(1, persistedSubCardResources.get(0).size());
+            Assertions.assertEquals(1, persistedSubCardResources.get(0).size(),
+                "There should be a resource on the sub card");
             Assertions.assertNotNull(persistedSubCardResources.get(0).get(0));
             Assertions.assertTrue(persistedSubCardResources.get(0).get(0) instanceof Resource);
             persistedSubCardResourceRef = persistedSubCardResources.get(0).get(0);
@@ -451,7 +449,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         } else if (accessToResourceRef.contains(Access.SUB_CARD)) {
             Assertions.assertNotNull(persistedSubCardResources);
             Assertions.assertEquals(1, persistedSubCardResources.size());
-            Assertions.assertTrue(persistedSubCardResources.get(0).size() > 1);
+            Assertions.assertTrue(persistedSubCardResources.get(0).size() > 1,
+                "There should be resource reference on the sub card");
             Assertions.assertTrue(persistedSubCardResources.get(0).get(0) instanceof ResourceRef);
             persistedSubCardResourceRef = persistedSubCardResources.get(0).get(0);
             Assertions.assertTrue(persistedCardContentAbstractResource != null
@@ -468,7 +467,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
             }
         } else {
             Assertions.assertNotNull(persistedSubCardResources);
-            Assertions.assertEquals(0, persistedSubCardResources.size());
+            Assertions.assertEquals(0, persistedSubCardResources.size(),
+                "There should be no resource on the sub card");
         }
 
         AbstractResource persistedSisterSubCardResourceRef = null;
@@ -477,7 +477,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         if (accessToResourceRef.contains(Access.SUB_CARD)) {
             Assertions.assertNotNull(persistedSisterSubCardResources);
             Assertions.assertEquals(1, persistedSisterSubCardResources.size());
-            Assertions.assertTrue(persistedSisterSubCardResources.get(0).size() > 1);
+            Assertions.assertTrue(persistedSisterSubCardResources.get(0).size() > 1,
+                "There should be resource reference on the sister sub card");
             Assertions
                 .assertTrue(persistedSisterSubCardResources.get(0).get(0) instanceof ResourceRef);
             persistedSisterSubCardResourceRef = persistedSisterSubCardResources.get(0).get(0);
@@ -495,7 +496,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
             }
         } else {
             Assertions.assertNotNull(persistedSisterSubCardResources);
-            Assertions.assertEquals(0, persistedSisterSubCardResources.size());
+            Assertions.assertEquals(0, persistedSisterSubCardResources.size(),
+                "There should be no resource on the sister sub card");
         }
 
         AbstractResource persistedSubCardContentResourceRef = null;
@@ -504,7 +506,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         if (resourceLocation == Access.SUB_CARD_CONTENT) {
             Assertions.assertNotNull(persistedSubCardContentResources);
             Assertions.assertEquals(1, persistedSubCardContentResources.size());
-            Assertions.assertEquals(1, persistedSubCardContentResources.get(0).size());
+            Assertions.assertEquals(1, persistedSubCardContentResources.get(0).size(),
+                "There should be a resource on the sub card content");
             Assertions.assertNotNull(persistedSubCardContentResources.get(0).get(0));
             Assertions
                 .assertTrue(persistedSubCardContentResources.get(0).get(0) instanceof Resource);
@@ -515,7 +518,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         } else if (accessToResourceRef.contains(Access.SUB_CARD_CONTENT)) {
             Assertions.assertNotNull(persistedSubCardContentResources);
             Assertions.assertEquals(1, persistedSubCardContentResources.size());
-            Assertions.assertTrue(persistedSubCardContentResources.get(0).size() > 1);
+            Assertions.assertTrue(persistedSubCardContentResources.get(0).size() > 1,
+                "There should be resource reference on the sub card content");
             Assertions
                 .assertTrue(persistedSubCardContentResources.get(0).get(0) instanceof ResourceRef);
             persistedSubCardContentResourceRef = persistedSubCardContentResources
@@ -525,7 +529,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
                 ((ResourceRef) persistedSubCardContentResourceRef).getTargetId());
         } else {
             Assertions.assertNotNull(persistedSubCardContentResources);
-            Assertions.assertEquals(0, persistedSubCardContentResources.size());
+            Assertions.assertEquals(0, persistedSubCardContentResources.size(),
+                "There should be no resource on the sub card content");
         }
 
         AbstractResource persistedSisterSubCardContentResourceRef = null;
@@ -535,7 +540,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
             && resourceLocation != Access.SUB_CARD) {
             Assertions.assertNotNull(persistedSisterSubCardContentResources);
             Assertions.assertEquals(1, persistedSisterSubCardContentResources.size());
-            Assertions.assertTrue(persistedSisterSubCardContentResources.get(0).size() > 1);
+            Assertions.assertTrue(persistedSisterSubCardContentResources.get(0).size() > 1,
+                "There should be resource reference on the sister sub card content");
             Assertions
                 .assertTrue(
                     persistedSisterSubCardContentResources.get(0).get(0) instanceof ResourceRef);
@@ -546,7 +552,8 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
                 ((ResourceRef) persistedSisterSubCardContentResourceRef).getTargetId());
         } else {
             Assertions.assertNotNull(persistedSisterSubCardContentResources);
-            Assertions.assertEquals(0, persistedSisterSubCardContentResources.size());
+            Assertions.assertEquals(0, persistedSisterSubCardContentResources.size(),
+                "There should be no resource on the sister sub card content");
         }
 
         // And now, delete the resource
@@ -560,36 +567,43 @@ public class ResourceAndReferenceTest extends AbstractArquillianTest {
         persistedGlobalCardTypeResources = client.resourceRestEndpoint
             .getResourceChainForAbstractCardType(globalCardTypeId);
         Assertions.assertNotNull(persistedGlobalCardTypeResources);
-        Assertions.assertEquals(0, persistedGlobalCardTypeResources.size());
+        Assertions.assertEquals(0, persistedGlobalCardTypeResources.size(),
+            "after deletion, there should be no reference left");
 
         persistedCardTypeRefResources = client.resourceRestEndpoint
             .getResourceChainForAbstractCardType(cardTypeRefId);
         Assertions.assertNotNull(persistedCardTypeRefResources);
-        Assertions.assertEquals(0, persistedCardTypeRefResources.size());
+        Assertions.assertEquals(0, persistedCardTypeRefResources.size(),
+            "after deletion, there should be no reference left");
 
         persistedCardResources = client.resourceRestEndpoint
             .getResourceChainForCard(cardId);
         Assertions.assertNotNull(persistedCardResources);
-        Assertions.assertEquals(0, persistedCardResources.size());
+        Assertions.assertEquals(0, persistedCardResources.size(),
+            "after deletion, there should be no reference left");
 
         persistedCardContentResources = client.resourceRestEndpoint
             .getResourceChainForCardContent(cardContentId);
         Assertions.assertNotNull(persistedCardContentResources);
-        Assertions.assertEquals(0, persistedCardContentResources.size());
+        Assertions.assertEquals(0, persistedCardContentResources.size(),
+            "after deletion, there should be no reference left");
 
         persistedSubCardTypeResources = client.resourceRestEndpoint
             .getResourceChainForAbstractCardType(subCardLocalTypeId);
         Assertions.assertNotNull(persistedSubCardTypeResources);
-        Assertions.assertEquals(0, persistedSubCardTypeResources.size());
+        Assertions.assertEquals(0, persistedSubCardTypeResources.size(),
+            "after deletion, there should be no reference left");
 
         persistedSubCardResources = client.resourceRestEndpoint
             .getResourceChainForCard(subCardId);
         Assertions.assertNotNull(persistedSubCardResources);
-        Assertions.assertEquals(0, persistedSubCardResources.size());
+        Assertions.assertEquals(0, persistedSubCardResources.size(),
+            "after deletion, there should be no reference left");
 
         persistedSubCardContentResources = client.resourceRestEndpoint
             .getResourceChainForCardContent(subCardContentId);
         Assertions.assertNotNull(persistedSubCardContentResources);
-        Assertions.assertEquals(0, persistedSubCardContentResources.size());
+        Assertions.assertEquals(0, persistedSubCardContentResources.size(),
+            "after deletion, there should be no reference left");
     }
 }

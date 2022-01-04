@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.card;
 
-import ch.colabproject.colab.api.ejb.CardFacade;
+import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -50,10 +50,10 @@ public class CardContentRestEndpoint {
     private CardContentDao cardContentDao;
 
     /**
-     * The card-related logic
+     * Card content specific logic management
      */
     @Inject
-    private CardFacade cardFacade;
+    private CardContentManager cardContentManager;
 
     /**
      * Retrieve the list of all card contents. This is available to admin only
@@ -111,7 +111,7 @@ public class CardContentRestEndpoint {
     @Path("create/{cardId}")
     public CardContent createNewCardContent(@PathParam("cardId") Long cardId) {
         logger.debug("create a new card content for the card #{}", cardId);
-        return cardFacade.createNewCardContent(cardId);
+        return cardContentManager.createNewCardContent(cardId);
     }
 
     /**
@@ -127,9 +127,9 @@ public class CardContentRestEndpoint {
     public CardContent createNewCardContentWithDeliverable(@PathParam("cardId") Long cardId,
         Document document) {
         logger.debug("create a new card content for the card #{} and document {}", cardId, document);
-        CardContent cardContent = cardFacade.createNewCardContent(cardId);
+        CardContent cardContent = cardContentManager.createNewCardContent(cardId);
 
-        cardFacade.assignDeliverable(cardContent.getId(), document);
+        cardContentManager.assignDeliverable(cardContent.getId(), document);
 
         return cardContent;
     }
@@ -156,7 +156,7 @@ public class CardContentRestEndpoint {
     @Path("{id}")
     public void deleteCardContent(@PathParam("id") Long id) {
         logger.debug("Delete card #{}", id);
-        cardFacade.deleteCardContent(id);
+        cardContentManager.deleteCardContent(id);
     }
 
     /**
@@ -170,7 +170,7 @@ public class CardContentRestEndpoint {
     @Path("{id}/StickyNoteLinks")
     public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long cardContentId) {
         logger.debug("Get sticky note links where card #{} is the source", cardContentId);
-        return cardFacade.getStickyNoteLinkAsSrcCardContent(cardContentId);
+        return cardContentManager.getStickyNoteLinkAsSrcCardContent(cardContentId);
     }
 
     /**
@@ -184,7 +184,7 @@ public class CardContentRestEndpoint {
     @Path("{id}/Subcards")
     public List<Card> getSubCards(@PathParam("id") Long parentId) {
         logger.debug("Get parent #{} sub cards", parentId);
-        return cardFacade.getSubCards(parentId);
+        return cardContentManager.getSubCards(parentId);
     }
 
     /**
@@ -198,7 +198,7 @@ public class CardContentRestEndpoint {
     @Path("{id}/Deliverable")
     public Document getDeliverableOfCardContent(@PathParam("id") Long cardContentId) {
         logger.debug("Get deliverable of card content #{}", cardContentId);
-        return cardFacade.getDeliverableOfCardContent(cardContentId);
+        return cardContentManager.getDeliverableOfCardContent(cardContentId);
     }
 
     /**
@@ -213,7 +213,7 @@ public class CardContentRestEndpoint {
     @Path("{id}/setDeliverable")
     public Document assignDeliverable(@PathParam("id") Long cardContentId, Document document) {
         logger.debug("add the deliverable {} for the card content #{}", document, cardContentId);
-        return cardFacade.assignDeliverable(cardContentId, document);
+        return cardContentManager.assignDeliverable(cardContentId, document);
     }
 
 }

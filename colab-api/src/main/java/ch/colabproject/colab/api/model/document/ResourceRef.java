@@ -130,11 +130,10 @@ public class ResourceRef extends AbstractResource {
 
     @Override
     public Resource resolve() {
-        if (this.target instanceof Resource) {
-            return (Resource) this.target;
-        } else if (this.target instanceof ResourceRef) {
-            return ((ResourceRef) target).resolve();
+        if (this.target != null) {
+            return this.target.resolve();
         }
+
         return null;
     }
 

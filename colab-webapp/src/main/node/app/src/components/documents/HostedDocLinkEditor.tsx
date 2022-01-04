@@ -39,7 +39,7 @@ export function HostedDocLinkEditor({ document }: HostedDocLinkProps): JSX.Eleme
         }
       }
     },
-    [dispatch],
+      [dispatch, document.id],
   );
   
   const downloadCb = React.useCallback(

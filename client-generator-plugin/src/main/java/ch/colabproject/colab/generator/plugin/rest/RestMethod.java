@@ -405,7 +405,7 @@ public class RestMethod {
     }
 
     /**
-     * Get all parameters. PathParams + queryParams + body
+     * Get all parameters. PathParams + queryParams + fromParam + body
      *
      * @return list of all non-null parameters
      */
@@ -418,6 +418,19 @@ public class RestMethod {
         if (bodyParam != null) {
             list.add(bodyParam);
         }
+        return list;
+    }
+
+    /**
+     * Get URL parameters. PathParams + queryParams
+     *
+     * @return list of all non-null parameters
+     */
+    public List<Param> getUrlParameters() {
+        List<Param> list = new ArrayList<>();
+        list.addAll(this.pathParameters);
+        list.addAll(this.queryParameters);
+
         return list;
     }
 

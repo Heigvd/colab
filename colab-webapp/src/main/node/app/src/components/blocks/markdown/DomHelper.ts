@@ -452,6 +452,9 @@ function spreadTag(start: CaretPosition, end: CaretPosition, tagName: MinorTag, 
       let rightPosition: { node: Node | undefined; offset: number } = end;
       while (rightPosition.node != null) {
         const previousPosition = { node: findPreviousNode(rightPosition.node, top), offset: 0 };
+        if (previousPosition.node instanceof Text) {
+          previousPosition.offset = previousPosition.node.length;
+        }
         if (rightPosition.node instanceof Text) {
           if (rightPosition.offset > 0) {
             const tag = document.createElement(tagName);

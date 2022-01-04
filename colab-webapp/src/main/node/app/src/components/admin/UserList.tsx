@@ -111,7 +111,7 @@ const Headers = () => {
   );
 };
 
-export default ({ users }: UserListProps): JSX.Element => {
+export default function UserList({ users }: UserListProps): JSX.Element {
   const [search, setSearch] = React.useState('');
 
   const [sortBy, setSortBy] = React.useState<{ key: keyof User; direction: 1 | -1 }>({
@@ -195,4 +195,4 @@ export default ({ users }: UserListProps): JSX.Element => {
       </div>
     </>
   );
-};
+}

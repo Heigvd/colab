@@ -7,6 +7,7 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
+import { PasswordFeedback } from 'react-password-strength-bar';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/notification';
@@ -66,6 +67,11 @@ export interface SelectNumberField<T> extends BaseField<T> {
 //  type: 'select';
 //  options: {label: string, value: T[BaseField<T>['key']]}[];
 //}
+
+export interface PasswordScore {
+  score: 0 | 1 | 2 | 3 | 4;
+  feedback: PasswordFeedback;
+}
 
 export interface PasswordField<T> extends BaseField<T> {
   type: 'password';
@@ -222,19 +228,21 @@ export default function Form<T>({
             readonly={field.readonly}
           />
           {field.fieldFooter != null ? field.fieldFooter : null}
-          {field.showStrenghBar ? (
-            <React.Suspense fallback={<InlineLoading />}>
-              <PasswordStrengthBar
-                barColors={['#ddd', '#ef4836', 'rgb(118, 176, 232)', '#2b90ef', '#01f590']}
-                scoreWordStyle={{ color: 'var(--fgColor)' }}
-                onChangeScore={(value, feedback) => {
-                  if (field.strengthProp != null) {
-                    setFormValue(field.strengthProp, { score: value, feedback: feedback });
-                  }
-                }}
-                password={String(state[field.key] || '')}
-              />
-            </React.Suspense>
+          {field.strengthProp != null ? (
+            <div className={field.showStrenghBar ? undefined : css({ display: 'none' })}>
+              <React.Suspense fallback={<InlineLoading />}>
+                <PasswordStrengthBar
+                  barColors={['#ddd', '#ef4836', 'rgb(118, 176, 232)', '#2b90ef', '#01f590']}
+                  scoreWordStyle={{ color: 'var(--fgColor)' }}
+                  onChangeScore={(value, feedback) => {
+                    if (field.strengthProp != null) {
+                      setFormValue(field.strengthProp, { score: value, feedback: feedback });
+                    }
+                  }}
+                  password={String(state[field.key] || '')}
+                />
+              </React.Suspense>
+            </div>
           ) : null}
         </div>
       );

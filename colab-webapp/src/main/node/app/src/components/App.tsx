@@ -69,38 +69,40 @@ function App(): JSX.Element {
 
   return (
     <div className={cx(lightTheme, normalThemeMode)}>
-      <ErrorBoundary>
-        <Suspense fallback={<Loading />}>
-          <Provider store={getStore()}>
-            <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
-              <TipsCtx.Provider
-                value={{
-                  TODO: {
-                    value: tipsConfig.TODO,
-                    set: setTodoCb,
-                  },
-                  TIPS: {
-                    value: tipsConfig.TIPS,
-                    set: setTipsCb,
-                  },
-                  NEWS: {
-                    value: tipsConfig.NEWS,
-                    set: setNewsCb,
-                  },
-                }}
-              >
-                <Notifier />
-                <HashRouter>
-                  <Routes>
-                    <Route path="/token/:id/:token" element={<TokenWrapper />} />
-                    <Route path="*" element={<MainApp />} />
-                  </Routes>
-                </HashRouter>
-              </TipsCtx.Provider>
-            </I18nCtx.Provider>
-          </Provider>
-        </Suspense>
-      </ErrorBoundary>
+      <React.StrictMode>
+        <ErrorBoundary>
+          <Suspense fallback={<Loading />}>
+            <Provider store={getStore()}>
+              <I18nCtx.Provider value={{ lang: lang, setLang: setLang }}>
+                <TipsCtx.Provider
+                  value={{
+                    TODO: {
+                      value: tipsConfig.TODO,
+                      set: setTodoCb,
+                    },
+                    TIPS: {
+                      value: tipsConfig.TIPS,
+                      set: setTipsCb,
+                    },
+                    NEWS: {
+                      value: tipsConfig.NEWS,
+                      set: setNewsCb,
+                    },
+                  }}
+                >
+                  <Notifier />
+                  <HashRouter>
+                    <Routes>
+                      <Route path="/token/:id/:token" element={<TokenWrapper />} />
+                      <Route path="*" element={<MainApp />} />
+                    </Routes>
+                  </HashRouter>
+                </TipsCtx.Provider>
+              </I18nCtx.Provider>
+            </Provider>
+          </Suspense>
+        </ErrorBoundary>
+      </React.StrictMode>
     </div>
   );
 }

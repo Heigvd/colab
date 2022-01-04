@@ -138,6 +138,27 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
+    public void testMoveCard() {
+        Project project = ColabFactory.createProject(client, "testMoveCard");
+
+        Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
+
+        Long card1Id = ColabFactory.createNewCard(client, project).getId();
+        Long cardContent1Id = ColabFactory.getCardContent(client, card1Id).getId();
+
+        Card card2 = ColabFactory.createNewCard(client, project);
+        Long card2Id = card2.getId();
+
+        Card persistedCard2 = client.cardRestEndpoint.getCard(card2Id);
+        Assertions.assertEquals(rootCardContentId, persistedCard2.getParentId());
+
+        client.cardRestEndpoint.moveCard(card2Id, cardContent1Id);
+
+        persistedCard2 = client.cardRestEndpoint.getCard(card2Id);
+        Assertions.assertEquals(cardContent1Id, persistedCard2.getParentId());
+    }
+
+    @Test
     public void testSubCardAccess() {
         Project project = ColabFactory.createProject(client, "testSubCardAccess");
         Long projectId = project.getId();
@@ -186,7 +207,7 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Project project = ColabFactory.createProject(client, "testProjectRootCardAccess");
         Long projectId = project.getId();
 
-        Card rootCard = client.cardRestEndpoint.getCard(project.getRootCardId());
+        Card rootCard = client.projectRestEndpoint.getRootCardOfProject(projectId);
         Long rootCardId = rootCard.getId();
 
         Assertions.assertEquals(projectId, rootCard.getRootCardProjectId());

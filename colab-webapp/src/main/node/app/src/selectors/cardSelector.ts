@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { Card, CardContent, InvolvementLevel } from 'colab-rest-client';
+import { Card, CardContent, InvolvementLevel, Project } from 'colab-rest-client';
 import { mapValues, uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../API/api';
@@ -17,8 +17,39 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../store/hooks';
+import { LoadingStatus } from '../store/store';
 import { useMyMember, useProjectBeingEdited } from './projectSelector';
 import { useCurrentUser } from './userSelector';
+
+export const useProjectRootCard = (project: Project | null | undefined): Card | LoadingStatus => {
+  const dispatch = useAppDispatch();
+
+  return useAppSelector(state => {
+    if (project != null) {
+      if (typeof state.cards.rootCardId === 'string') {
+        if (state.cards.rootCardId === 'NOT_INITIALIZED') {
+          dispatch(API.getRootCardOfProject(project.id!));
+        }
+        return 'LOADING';
+      } else {
+        const cardDetail = state.cards.cards[state.cards.rootCardId];
+
+        if (cardDetail != null) {
+          const rootCard = cardDetail.card;
+          if (rootCard != null) {
+            return rootCard;
+          } else {
+            return 'LOADING';
+          }
+        } else {
+          dispatch(API.getRootCardOfProject(project.id!));
+          return 'LOADING';
+        }
+      }
+    }
+    return 'NOT_INITIALIZED';
+  });
+};
 
 export const useAllProjectCards = (): Card[] => {
   return useAppSelector(state => {
@@ -29,12 +60,17 @@ export const useAllProjectCards = (): Card[] => {
   });
 };
 
-export function useVariants(card?: Card): CardContent[] | null | undefined {
+export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined {
+  const dispatch = useAppDispatch();
+
   return useAppSelector(state => {
     if (card?.id && state.cards.cards[card.id]) {
       const cardState = state.cards.cards[card.id]!;
-      if (cardState.contents == null) {
-        return cardState.contents;
+      if (cardState.contents === undefined) {
+        dispatch(API.getCardContents(card.id));
+        return null;
+      } else if (cardState.contents === null) {
+        return null;
       } else {
         const contentState = state.cards.contents;
         return cardState.contents.flatMap(contentId => {
@@ -46,19 +82,6 @@ export function useVariants(card?: Card): CardContent[] | null | undefined {
       return null;
     }
   }, shallowEqual);
-}
-
-export function useVariantsOrLoad(card?: Card): CardContent[] | null | undefined {
-  const dispatch = useAppDispatch();
-  const contents = useVariants(card);
-
-  React.useEffect(() => {
-    if (contents === undefined && card?.id != null) {
-      dispatch(API.getCardContents(card.id));
-    }
-  }, [contents, card?.id, dispatch]);
-
-  return contents;
 }
 
 export const useCard = (id: number): Card | 'LOADING' | undefined => {

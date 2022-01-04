@@ -110,7 +110,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         // -----
         adminWsClient.clearMessages();
         wsGoulashClient.clearMessages();
-        CardType globalType = ColabFactory.createCardType(client, null);
+        CardType globalType = ColabFactory.createGlobalCardType(client);
 
         // admin should have receive the type by websocket
         WsUpdateMessage adminWsType = TestHelper.waitForMessagesAndAssert(

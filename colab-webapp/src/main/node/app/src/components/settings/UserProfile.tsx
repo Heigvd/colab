@@ -16,7 +16,7 @@ interface UserProfileProps {
   user: User;
 }
 
-export default ({ user }: UserProfileProps): JSX.Element => {
+export default function UserProfile({ user }: UserProfileProps): JSX.Element {
   const dispatch = useAppDispatch();
   const i18n = useTranslations();
 
@@ -76,4 +76,4 @@ export default ({ user }: UserProfileProps): JSX.Element => {
       </div>
     );
   }
-};
+}

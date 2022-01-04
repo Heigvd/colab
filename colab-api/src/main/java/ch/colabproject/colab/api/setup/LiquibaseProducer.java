@@ -15,14 +15,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.resource.ResourceAccessor;
 
 /**
- * LiquiBase Singleton. To manage database migrations.
- *
- * DB Migration is not enable for the time. We'll wait for a first stable version of the model
- *
- * Morover it seems there is an issue setting the Liquibase config with such CDI injections
- * when used within arquillian containers...
- *
- * We may want to setup a liquibase servlet in web.xml to replace this
+ * LiquiBase Producer. To manage database migrations.
  *
  * @author maxence
  */

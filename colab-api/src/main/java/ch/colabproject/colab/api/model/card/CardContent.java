@@ -128,8 +128,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
     /**
      * The deliverable of this card content
      */
-    // TODO challenge the cascade
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonbTransient
     private Document deliverable;
 

@@ -23,11 +23,11 @@ import java.util.List;
 public final class ResourceReferenceSpreadingHelper {
 
     private ResourceReferenceSpreadingHelper() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("do not instantiate a utility class");
     }
 
     // *********************************************************************************************
-    // when a resource / resource reference is created, spread it down stream with references
+    // when a resource / resource reference is added, spread it down stream with references
     // *********************************************************************************************
 
     /**
@@ -38,29 +38,13 @@ public final class ResourceReferenceSpreadingHelper {
      */
     public static void spreadReferenceDown(AbstractCardType cardTypeOrRef,
         AbstractResource resourceOrRef) {
-        if (mustSpreadReference(resourceOrRef)) {
+        if (mustSpreadReferenceDown(resourceOrRef)) {
             for (AbstractCardType cardTypeRef : cardTypeOrRef.getDirectReferences()) {
-                ResourceRef resourceRef = initNewResourceRef();
-
-                resourceRef.setTarget(resourceOrRef);
-                resourceOrRef.getDirectReferences().add(resourceRef);
-
-                resourceRef.setAbstractCardType(cardTypeRef);
-                cardTypeRef.getDirectAbstractResources().add(resourceRef);
-
-                spreadReferenceDown(cardTypeRef, resourceRef);
+                makeResourceReference(cardTypeRef, resourceOrRef);
             }
 
             for (Card card : cardTypeOrRef.getImplementingCards()) {
-                ResourceRef cardResourceRef = initNewResourceRef();
-
-                cardResourceRef.setTarget(resourceOrRef);
-                resourceOrRef.getDirectReferences().add(cardResourceRef);
-
-                cardResourceRef.setCard(card);
-                card.getDirectAbstractResources().add(cardResourceRef);
-
-                spreadReferenceDown(card, cardResourceRef);
+                makeResourceReference(card, resourceOrRef);
             }
         }
     }
@@ -72,17 +56,9 @@ public final class ResourceReferenceSpreadingHelper {
      * @param resourceOrRef the resource we are linking
      */
     public static void spreadReferenceDown(Card card, AbstractResource resourceOrRef) {
-        if (mustSpreadReference(resourceOrRef)) {
+        if (mustSpreadReferenceDown(resourceOrRef)) {
             for (CardContent cardContent : card.getContentVariants()) {
-                ResourceRef resourceRef = initNewResourceRef();
-
-                resourceRef.setTarget(resourceOrRef);
-                resourceOrRef.getDirectReferences().add(resourceRef);
-
-                resourceRef.setCardContent(cardContent);
-                cardContent.getDirectAbstractResources().add(resourceRef);
-
-                spreadReferenceDown(cardContent, resourceRef);
+                makeResourceReference(cardContent, resourceOrRef);
             }
         }
     }
@@ -95,49 +71,15 @@ public final class ResourceReferenceSpreadingHelper {
      */
     public static void spreadReferenceDown(CardContent cardContent,
         AbstractResource resourceOrRef) {
-        if (mustSpreadReference(resourceOrRef)) {
+        if (mustSpreadReferenceDown(resourceOrRef)) {
             for (Card card : cardContent.getSubCards()) {
-                ResourceRef resourceRef = initNewResourceRef();
-
-                resourceRef.setTarget(resourceOrRef);
-                resourceOrRef.getDirectReferences().add(resourceRef);
-
-                resourceRef.setCard(card);
-                card.getDirectAbstractResources().add(resourceRef);
-
-                spreadReferenceDown(card, resourceRef);
+                makeResourceReference(card, resourceOrRef);
             }
         }
     }
 
-    /**
-     * Ascertain if we must create resource references down stream
-     *
-     * @param resourceOrRef Resource / resource reference
-     *
-     * @return True if the resource must be spread down
-     */
-    private static boolean mustSpreadReference(AbstractResource resourceOrRef) {
-        // do not spread references of a type from a card content to its subcards
-        if (resourceOrRef.hasCardContent()) {
-            Resource concreteResource = resourceOrRef.resolve();
-            return concreteResource != null && !concreteResource.hasAbstractCardType();
-        }
-
-        // in all other cases, spread
-        return true;
-    }
-
-    /**
-     * @return an initialized new resource reference
-     */
-    private static ResourceRef initNewResourceRef() {
-        // implicitly setRefused(false)
-        return new ResourceRef();
-    }
-
     // *********************************************************************************************
-    // when a card / card content is created,
+    // when a card type reference / card / card content is added,
     // initialize the references from parent's resources / resource references
     // *********************************************************************************************
 
@@ -148,18 +90,12 @@ public final class ResourceReferenceSpreadingHelper {
      * @param cardTypeRefToFill A new card type reference that need references to the up stream
      *                          resources
      */
-    public static void spreadResourceFromUp(CardTypeRef cardTypeRefToFill) {
-        AbstractCardType parent = cardTypeRefToFill.getTarget();
+    public static void spreadResourcesFromUp(CardTypeRef cardTypeRefToFill) {
+        AbstractCardType target = cardTypeRefToFill.getTarget();
 
-        List<AbstractResource> parentResources = parent.getDirectAbstractResources();
-        for (AbstractResource parentResource : parentResources) {
-            if (mustSpreadReference(parentResource)) {
-                ResourceRef reference = initNewReferenceFrom(parentResource);
-
-                reference.setAbstractCardType(cardTypeRefToFill);
-                cardTypeRefToFill.getDirectAbstractResources().add(reference);
-
-                spreadReferenceDown(cardTypeRefToFill, reference);
+        for (AbstractResource targetResource : target.getDirectAbstractResources()) {
+            if (mustSpreadReferenceDown(targetResource)) {
+                makeResourceReference(cardTypeRefToFill, targetResource);
             }
         }
     }
@@ -170,31 +106,20 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @param cardToFill A new card that need references to the up stream resources
      */
-    public static void spreadResourceFromUp(Card cardToFill) {
+    public static void spreadResourcesFromUp(Card cardToFill) {
         CardContent parent = cardToFill.getParent();
 
-        List<AbstractResource> parentResources = parent.getDirectAbstractResources();
-        for (AbstractResource parentResource : parentResources) {
-            if (mustSpreadReference(parentResource)) {
-                ResourceRef reference = initNewReferenceFrom(parentResource);
-
-                reference.setCard(cardToFill);
-                cardToFill.getDirectAbstractResources().add(reference);
-
-                spreadReferenceDown(cardToFill, reference);
+        for (AbstractResource parentResource : parent.getDirectAbstractResources()) {
+            if (mustSpreadReferenceDown(parentResource)) {
+                makeResourceReference(cardToFill, parentResource);
             }
         }
 
         AbstractCardType type = cardToFill.getCardType();
-        List<AbstractResource> typeResources = type.getDirectAbstractResources();
-        for (AbstractResource typeResource : typeResources) {
-            if (mustSpreadReference(typeResource)) {
-                ResourceRef reference = initNewReferenceFrom(typeResource);
 
-                reference.setCard(cardToFill);
-                cardToFill.getDirectAbstractResources().add(reference);
-
-                spreadReferenceDown(cardToFill, reference);
+        for (AbstractResource typeResource : type.getDirectAbstractResources()) {
+            if (mustSpreadReferenceDown(typeResource)) {
+                makeResourceReference(cardToFill, typeResource);
             }
         }
     }
@@ -205,20 +130,92 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @param cardContentToFill A new card content that need references to the up stream resources
      */
-    public static void spreadResourceFromUp(CardContent cardContentToFill) {
+    public static void spreadResourcesFromUp(CardContent cardContentToFill) {
         Card parent = cardContentToFill.getCard();
 
         List<AbstractResource> parentResources = parent.getDirectAbstractResources();
         for (AbstractResource parentResource : parentResources) {
-            if (mustSpreadReference(parentResource)) {
-                ResourceRef reference = initNewReferenceFrom(parentResource);
-
-                reference.setCardContent(cardContentToFill);
-                cardContentToFill.getDirectAbstractResources().add(reference);
-
-                spreadReferenceDown(cardContentToFill, reference);
+            if (mustSpreadReferenceDown(parentResource)) {
+                makeResourceReference(cardContentToFill, parentResource);
             }
         }
+    }
+
+    // *********************************************************************************************
+    // do it
+    // *********************************************************************************************
+
+    /**
+     * Ascertain if we must create resource references down stream
+     *
+     * @param resourceOrRef Resource / resource reference
+     *
+     * @return True iff the resource must be spread down
+     */
+    private static boolean mustSpreadReferenceDown(AbstractResource resourceOrRef) {
+        // do not spread references of a type from a card content to its sub cards
+        boolean isResourceOrRefLinkedToACardContent = resourceOrRef.hasCardContent();
+        if (isResourceOrRefLinkedToACardContent) {
+            Resource concreteResource = resourceOrRef.resolve();
+
+            boolean isConcreteResourceLinkedToACardType = concreteResource != null
+                && concreteResource.hasAbstractCardType();
+
+            return !isConcreteResourceLinkedToACardType;
+        }
+
+        // in all other cases, spread
+        return true;
+    }
+
+    /**
+     * Make a resource reference to link to the given owner, from the given resource or reference
+     * (or reference)
+     *
+     * @param owner         the entity the new resource reference will be linked to
+     * @param resourceOrRef the resource (or reference) target of the new resource reference
+     */
+    private static void makeResourceReference(AbstractCardType owner,
+        AbstractResource resourceOrRef) {
+
+        ResourceRef resourceRef = initNewReferenceFrom(resourceOrRef);
+
+        resourceRef.setAbstractCardType(owner);
+        owner.getDirectAbstractResources().add(resourceRef);
+
+        spreadReferenceDown(owner, resourceRef);
+    }
+
+    /**
+     * Make a resource reference to link to the given owner, from the given resource or reference
+     * (or reference)
+     *
+     * @param owner         the entity the new resource reference will be linked to
+     * @param resourceOrRef the resource (or reference) target of the new resource reference
+     */
+    private static void makeResourceReference(CardContent owner, AbstractResource resourceOrRef) {
+        ResourceRef resourceRef = initNewReferenceFrom(resourceOrRef);
+
+        resourceRef.setCardContent(owner);
+        owner.getDirectAbstractResources().add(resourceRef);
+
+        spreadReferenceDown(owner, resourceRef);
+    }
+
+    /**
+     * Make a resource reference to link to the given owner, from the given resource or reference
+     * (or reference)
+     *
+     * @param owner         the entity the new resource reference will be linked to
+     * @param resourceOrRef the resource (or reference) target of the new resource reference
+     */
+    private static void makeResourceReference(Card owner, AbstractResource resourceOrRef) {
+        ResourceRef resourceRef = initNewReferenceFrom(resourceOrRef);
+
+        resourceRef.setCard(owner);
+        owner.getDirectAbstractResources().add(resourceRef);
+
+        spreadReferenceDown(owner, resourceRef);
     }
 
     /**
@@ -226,26 +223,40 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @param target Base resource / resource reference
      *
-     * @return The new resource reference
+     * @return the new resource reference
      */
     private static ResourceRef initNewReferenceFrom(AbstractResource target) {
         ResourceRef reference = new ResourceRef();
 
         reference.setCategory(target.getCategory());
 
-        if (target instanceof ResourceRef) {
-            Resource concreteResource = ((ResourceRef) target).resolve();
-            if (concreteResource != null && concreteResource.isDeprecated()) {
-                reference.setRefused(true);
-            } else {
-                reference.setRefused(((ResourceRef) target).isRefused());
-            }
-        }
+        reference.setRefused(isNewReferenceInitiallyRefused(target));
 
         reference.setTarget(target);
         target.getDirectReferences().add(reference);
 
         return reference;
+    }
+
+    /**
+     * Determine if the new reference must be initiated as refused
+     *
+     * @param target Base resource / resource reference
+     *
+     * @return how the new reference refused field must be initialized
+     */
+    private static boolean isNewReferenceInitiallyRefused(AbstractResource target) {
+        if (target instanceof ResourceRef) {
+            // if it is from a reference, just copy the refused state
+            return ((ResourceRef) target).isRefused();
+        }
+
+        // if it is from a concrete resource, set to true if deprecated
+        if (target instanceof Resource && ((Resource) target).resolve().isDeprecated()) {
+            return true;
+        }
+
+        return false;
     }
 
     // *********************************************************************************************

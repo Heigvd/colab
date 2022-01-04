@@ -120,5 +120,6 @@ export const fr /*: ColabTranslations */ = {
     SMTP_ERROR: 'e-mail server error',
     EMAIL_MESSAGE_ERROR: 'e-mail not sent',
     BAD_REQUEST: 'Bad request',
+    TOO_MANY_REQUEST: 'too many request',
   },
 };

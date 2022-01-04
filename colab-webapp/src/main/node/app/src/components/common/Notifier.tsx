@@ -38,6 +38,8 @@ function translateErrorCode(
       return i18n.errors.SMTP_ERROR;
     case 'EMAIL_MESSAGE_ERROR':
       return i18n.errors.EMAIL_MESSAGE_ERROR;
+    case 'TOO_MANY_REQUESTS':
+      return i18n.errors.TOO_MANY_REQUEST;
     case 'BAD_REQUEST':
     default:
       return i18n.errors.BAD_REQUEST;

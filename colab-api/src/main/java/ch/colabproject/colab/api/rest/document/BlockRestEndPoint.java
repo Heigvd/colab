@@ -133,7 +133,7 @@ public class BlockRestEndPoint {
     @POST
     public Long createBlock(Block block) {
         logger.debug("create block {}", block);
-        return blockFacade.persistBlock(block).getId();
+        return blockFacade.createBlock(block).getId();
     }
 
     /**
@@ -147,7 +147,7 @@ public class BlockRestEndPoint {
     @Path("newTextData/{documentId}")
     public Block createNewTextDataBlock(@PathParam("documentId") Long documentId) {
         logger.debug("create new text data block for document #{}", documentId);
-        return blockFacade.createNewTextDataBlock(documentId);
+        return blockFacade.createTextDataBlock(documentId);
     }
 
     /**

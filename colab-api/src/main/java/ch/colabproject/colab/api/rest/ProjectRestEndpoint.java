@@ -14,12 +14,11 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
@@ -32,8 +31,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,7 +85,7 @@ public class ProjectRestEndpoint {
     @Path("MyOwn")
     public List<Project> getUserProjects() {
         logger.debug("Get user projects");
-        return projectFacade.getCurrentUserProject();
+        return projectFacade.findProjectsOfCurrentUser();
     }
 
     /**
@@ -115,7 +112,7 @@ public class ProjectRestEndpoint {
     @POST
     public Long createProject(Project project) {
         logger.debug("Create project {}", project);
-        return projectFacade.createNewProject(project).getId();
+        return projectFacade.createProject(project).getId();
     }
 
     /**
@@ -141,6 +138,20 @@ public class ProjectRestEndpoint {
     public void deleteProject(@PathParam("id") Long id) {
         logger.debug("Delete project #{}", id);
         projectDao.deleteProject(id);
+    }
+
+    /**
+     * Get the root card of the project
+     *
+     * @param projectId the id of the project
+     *
+     * @return the matching card
+     */
+    @GET
+    @Path("{projectId}/RootCard")
+    public Card getRootCardOfProject(@PathParam("projectId") Long projectId) {
+        logger.debug("get the root card of the project #{}", projectId);
+        return projectFacade.getRootCard(projectId);
     }
 
     /**
@@ -227,55 +238,4 @@ public class ProjectRestEndpoint {
         return projectFacade.getActivityFlowLinks(id);
     }
 
-//    /**
-//     * TODO delete
-//     *
-//     * @param file    the file
-//     * @param details some details
-//     *
-//     * @return some random data
-//     */
-//    @POST
-//    @Consumes(MediaType.MULTIPART_FORM_DATA)
-//    public String postFile(
-//        @FormDataParam("file") InputStream file,
-//        @FormDataParam("file") FormDataContentDisposition details) {
-//        return "Salut";
-//    }
-
-    /**
-     * Dummy method for test purpose only. Should be deleted ASAP
-     *
-     * @param id      id of the project
-     * @param name    name of the file
-     * @param content new content of the file
-     *
-     * @return the saved content
-     */
-    @GET
-    @Path("{id}/TouchFile/{name}/{content}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String touchFile(
-        @PathParam("id") Long id,
-        @PathParam("name") String name,
-        @PathParam("content") String content) {
-        return projectFacade.touchFile(id, name, content);
-    }
-
-//    /**
-//     * Get file content
-//     *
-//     * @param id   id of the project
-//     * @param name name of the file
-//     *
-//     * @return file content
-//     */
-//    @GET
-//    @Path("{id}/GetFile/{name}")
-//    @Produces(MediaType.TEXT_PLAIN)
-//    public String getFileContent(
-//        @PathParam("id") Long id,
-//        @PathParam("name") String name) {
-//        return projectFacade.getFile(id, name);
-//    }
 }

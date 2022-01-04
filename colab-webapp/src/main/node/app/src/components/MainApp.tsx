@@ -5,7 +5,8 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationTriangle, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API/api';
@@ -95,6 +96,8 @@ export default function MainApp(): JSX.Element {
     }
   }, [currentUserStatus, dispatch]);
 
+  const passwordScore = useAppSelector(state => state.auth.localAccountPasswordScore);
+
   const reconnecting =
     socketId == null ? (
       <Overlay>
@@ -171,6 +174,9 @@ export default function MainApp(): JSX.Element {
                 flexGrow: 1,
               })}
             ></div>
+            {passwordScore != null && passwordScore.score < 2 ? (
+              <FontAwesomeIcon title={'your password is weak'} icon={faExclamationTriangle} />
+            ) : null}
 
             <InlineLink to="/settings/user">{getDisplayName(currentUser)}</InlineLink>
             <IconButton onClick={logout} icon={faSignOutAlt} />

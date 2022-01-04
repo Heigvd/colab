@@ -22,7 +22,14 @@ test.each([
     md: 'some **bold with nested /it_a_lic/ inside**',
     html: '<p>some <strong>bold with nested <em>it<u>a</u>lic</em> inside</strong></p>',
     message: 'nested italic partially underlined'
+  },
+  {
+    md: 'some data with /consecutive /~tags~',
+    html: '<p>some data with <em>consecutive </em><strike>tags</strike></p>',
+    message: ''
   }
+
+
 ])("Markdown2html $message ->$md<- => ->$html<-", (data: MdToHtmlTuple) => {
   doTest(data);
 });

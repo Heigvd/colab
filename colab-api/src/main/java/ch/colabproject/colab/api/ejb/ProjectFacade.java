@@ -6,17 +6,20 @@
  */
 package ch.colabproject.colab.api.ejb;
 
+import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jcr.JcrSession;
 import ch.colabproject.colab.api.persistence.jcr.JcrSessionManager;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,9 +33,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Some project logic
+ * Project specific logic
  *
  * @author maxence
+ * @author sandra
  */
 @Stateless
 @LocalBean
@@ -41,6 +45,10 @@ public class ProjectFacade {
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(ProjectFacade.class);
 
+    // *********************************************************************************************
+    // injections
+    // *********************************************************************************************
+
     /**
      * To control access
      */
@@ -48,26 +56,34 @@ public class ProjectFacade {
     private SecurityFacade securityFacade;
 
     /**
-     * To control access
+     * Request management
      */
     @Inject
     private RequestManager requestManager;
 
     /**
-     * Project persistence
+     * Project persistence handler
      */
     @Inject
     private ProjectDao projectDao;
 
-    /** Team management */
-    @Inject
-    private TeamFacade teamFacade;
-
     /**
-     * Cards-related logic
+     * Team specific logic management
      */
     @Inject
-    private CardFacade cardFacade;
+    private TeamFacade teamManager;
+
+    /**
+     * Card specific logic management
+     */
+    @Inject
+    private CardFacade cardManager;
+
+    /**
+     * Card type specific logic management
+     */
+    @Inject
+    private CardTypeManager cardTypeManager;
 
     /**
      * to get session to workspace
@@ -76,35 +92,67 @@ public class ProjectFacade {
     private JcrSessionManager jcrSessionManager;
 
     // *********************************************************************************************
-    // pure projects
+    // find projects
     // *********************************************************************************************
+
     /**
-     * Get all projects the current user is member of
+     * Retrieve the project. If not found, throw a {@link HttpErrorMessage}.
      *
-     * @return list of projects
+     * @param projectId the id of the project
+     *
+     * @return the project if found
+     *
+     * @throws HttpErrorMessage if the project was not found
      */
-    public List<Project> getCurrentUserProject() {
-        User user = securityFacade.assertAndGetCurrentUser();
-        return projectDao.getUserProject(user.getId());
+    public Project assertAndGetProject(Long projectId) {
+        Project project = projectDao.getProject(projectId);
+
+        if (project == null) {
+            logger.error("project #{} not found", projectId);
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return project;
     }
 
     /**
-     * Persist the given project and add the current user to the project team
+     * Retrieve all projects the current user is member of
+     *
+     * @return list of matching projects
+     */
+    public List<Project> findProjectsOfCurrentUser() {
+        User user = securityFacade.assertAndGetCurrentUser();
+
+        List<Project> projects = projectDao.getUserProject(user.getId());
+
+        logger.debug("found projects where the user {} is a team member : {}", user, projects);
+
+        return projects;
+    }
+
+    // *********************************************************************************************
+    // life cycle
+    // *********************************************************************************************
+
+    /**
+     * Complete and persist the given project and add the current user to the project team
      *
      * @param project project to persist
      *
      * @return the new persisted project
      */
-    public Project createNewProject(Project project) {
+    public Project createProject(Project project) {
         try {
             return requestManager.sudo(() -> {
-                logger.debug("Create new project: {}", project);
-                Card rootCard = cardFacade.initNewRootCard();
+                logger.debug("Create project: {}", project);
+
+                Card rootCard = cardManager.initNewRootCard();
+
                 project.setRootCard(rootCard);
                 rootCard.setRootCardProject(project);
 
                 User user = securityFacade.assertAndGetCurrentUser();
-                teamFacade.addMember(project, user, HierarchicalPosition.OWNER);
+                teamManager.addMember(project, user, HierarchicalPosition.OWNER);
 
                 return projectDao.createProject(project);
             });
@@ -116,138 +164,158 @@ public class ProjectFacade {
     }
 
     // *********************************************************************************************
-    // cards
+    // retrieve the elements of a project
     // *********************************************************************************************
+
+    /**
+     * Get the root card of the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return The root card linked to the project
+     */
+    public Card getRootCard(Long projectId) {
+        logger.debug("get the root card of the project #{}", projectId);
+
+        Project project = assertAndGetProject(projectId);
+
+        return project.getRootCard();
+    }
+
     /**
      * Get all cards of the given project
      *
-     * @param projectId id of the project
+     * @param projectId the id of the project
      *
      * @return all cards of the project
      */
     public Set<Card> getCards(Long projectId) {
-        Project project = projectDao.getProject(projectId);
-        logger.debug("Get card types of project {}", project);
-        if (project == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        logger.debug("get all card of project #{}", projectId);
 
-        return cardFacade.getAllCards(project.getRootCard());
+        Project project = assertAndGetProject(projectId);
+
+        return cardManager.getAllCards(project.getRootCard());
     }
 
     /**
      * Get all cardContents of the given project
      *
-     * @param projectId id of the project
+     * @param projectId the id of the project
      *
      * @return all cards contents of the project
      */
     public Set<CardContent> getCardContents(Long projectId) {
-        Project project = projectDao.getProject(projectId);
-        logger.debug("Get card types of project {}", project);
-        if (project == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        logger.debug("get all card contents of project #{}", projectId);
 
-        return cardFacade.getAllCardContents(project.getRootCard());
+        Project project = assertAndGetProject(projectId);
+
+        return cardManager.getAllCardContents(project.getRootCard());
     }
 
     /**
      * Get all card types of the given project
      *
-     * @param projectId id of the project
+     * @param projectId the id of the project
      *
      * @return all card types of the project
      */
     public Set<AbstractCardType> getCardTypes(Long projectId) {
-        Project project = projectDao.getProject(projectId);
-        logger.debug("Get card types of project {}", project);
-        if (project == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        logger.debug("get card types of project #{}", projectId);
 
-        return cardFacade.getExpandedProjectType(project);
+        Project project = assertAndGetProject(projectId);
+
+        return cardTypeManager.getExpandedProjectTypes(project);
     }
 
     /**
-     * Get all activityflowlinks belonging to a project
+     * Get all activity flow links belonging to the given project
      *
-     * @param projectId ID of the project activityflowlinks belong to
+     * @param projectId the id of the project
      *
      * @return all activityFlowLinks linked to the project
      */
     public Set<ActivityFlowLink> getActivityFlowLinks(Long projectId) {
-        Project project = projectDao.getProject(projectId);
-        logger.debug("Get activityflowlinks of project {}", project);
-        if (project == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        logger.debug("Get activity flow links of project #{}", projectId);
 
-        return cardFacade
+        Project project = assertAndGetProject(projectId);
+
+        return cardManager
             .getAllCards(project.getRootCard())
             .stream().flatMap(card -> {
                 return card.getActivityFlowLinksAsPrevious().stream();
             }).collect(Collectors.toSet());
     }
 
+    // *********************************************************************************************
+    // dedicated to access control
+    // *********************************************************************************************
+
     /**
-     * Touch a file in project workspace
+     * Retrieve the ids of the projects the current user is a member of.
+     * <p>
+     * We do not load the java objects. Just work with the ids. Two reasons : 1. the ids are enough,
+     * so it is lighter + 2. prevent from loading object the user is not allowed to read
      *
-     * @param projectId id of the project
-     * @param name      name of the node/file to create
-     * @param content   node data content
-     *
-     * @return persisted data content
+     * @return the ids of the matching projects
      */
-    public String touchFile(Long projectId, String name, String content) {
-        Project project = projectDao.getProject(projectId);
+    public List<Long> findIdsOfProjectsOfCurrentUser() {
+        User user = securityFacade.assertAndGetCurrentUser();
 
-        try {
-            JcrSession session = jcrSessionManager.getSession(project);
+        List<Long> projectsIds = projectDao.getIdsOfProjectUserIsMemberOf(user.getId());
 
-            Node node;
-            if (session.nodeExists(name)) {
-                node = session.getNode(name);
-            } else {
-                Node root = session.getWorkspaceRoot();
-                root.addNode(name);
-                node = session.getNode(name);
-            }
+        logger.debug("found projects' id where the user {} is a team member : {}", user,
+            projectsIds);
 
-            node.setProperty("data", content);
-            return node.getProperty("data").getString();
-        } catch (RepositoryException ex) {
-            logger.error("Error: {}", ex);
-            return null;
-        }
+        return projectsIds;
     }
 
     /**
-     * Get a file in project workspace
+     * Retrieve the ids of the project for which the current user can read at least one local card
+     * type or reference
+     * <p>
+     * We do not load the java objects. Just work with the ids. Two reasons : 1. the ids are enough,
+     * so it is lighter + 2. prevent from loading object the user is not allowed to read
      *
-     * @param projectId id of the project
-     * @param name      name of the file
-     *
-     * @return data content
-     *
+     * @return the ids of the matching projects
      */
-    public String getFile(Long projectId, String name) {
-        Project project = projectDao.getProject(projectId);
+    public List<Long> findIdsOfProjectsReadableThroughCardTypes() {
+        List<Long> cardTypeOrRefIds = cardTypeManager.findCurrentUserReadableProjectsCardTypesIds();
 
-        try {
-            JcrSession session = jcrSessionManager.getSession(project);
-            Node node;
-            if (session.nodeExists(name)) {
-                node = session.getNode(name);
-                Property property = node.getProperty("data");
-                return property.getString();
-            } else {
-                return null;
-            }
+        List<Long> projectsIds = cardTypeManager.findProjectIdsFromCardTypeIds(cardTypeOrRefIds);
 
-        } catch (RepositoryException ex) {
-            logger.error("Error: {}", ex);
-            return null;
-        }
+        logger.debug("found projects from readable card types {} : {}", cardTypeOrRefIds,
+            projectsIds);
+
+        return projectsIds;
     }
+
+    // *********************************************************************************************
+    // integrity check
+    // *********************************************************************************************
+
+    /**
+     * Check the integrity of the project
+     *
+     * @param project the project to check
+     *
+     * @return true iff the project is complete and safe
+     */
+    public boolean checkIntegrity(Project project) {
+        if (project == null) {
+            return false;
+        }
+
+        if (project.getRootCard() == null) {
+            return false;
+        }
+
+        List<TeamMember> teamMembers = new ArrayList<>(project.getTeamMembers());
+        if (teamMembers == null
+            || teamMembers.stream().noneMatch(m -> m.getPosition() == HierarchicalPosition.OWNER)) {
+            return false;
+        }
+
+        return true;
+    }
+
 }

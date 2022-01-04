@@ -12,6 +12,6 @@ export interface PictoProps {
   className?: string;
 }
 
-export default ({ className }: PictoProps): JSX.Element => {
+export default function PictoBw({ className }: PictoProps): JSX.Element {
   return <Picto className={className} />;
-};
+}

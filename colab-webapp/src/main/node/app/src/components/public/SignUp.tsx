@@ -46,7 +46,7 @@ const defData: Data = {
   },
 };
 
-export default (props: Props): JSX.Element => {
+export default function SignUp(props: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
@@ -115,4 +115,4 @@ export default (props: Props): JSX.Element => {
       </Form>
     </FormContainer>
   );
-};
+}

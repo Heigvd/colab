@@ -186,11 +186,12 @@ public class CardTypeDao {
     /**
      * Persist a brand new card type to database
      *
+     * @param <T> a sub type of AbstractCardType
      * @param cardTypeOrRef new card type to persist
      *
      * @return the new persisted card type
      */
-    public AbstractCardType createCardType(AbstractCardType cardTypeOrRef) {
+    public <T extends AbstractCardType> T createCardType(T cardTypeOrRef) {
         logger.debug("create card type {}", cardTypeOrRef);
         em.persist(cardTypeOrRef);
         return cardTypeOrRef;
