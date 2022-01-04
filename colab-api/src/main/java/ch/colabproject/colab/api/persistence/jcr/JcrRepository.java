@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.persistence.jcr;
 
 import ch.colabproject.colab.api.setup.ColabConfiguration;
-import com.mongodb.client.MongoClients;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.annotation.PreDestroy;
@@ -18,7 +17,7 @@ import javax.ejb.Startup;
 import javax.jcr.Repository;
 import org.apache.jackrabbit.oak.Oak;
 import org.apache.jackrabbit.oak.jcr.Jcr;
-import org.apache.jackrabbit.oak.segment.file.FileStore;
+//import org.apache.jackrabbit.oak.segment.file.FileStore;
 import org.apache.jackrabbit.oak.plugins.document.LeaseCheckMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +40,9 @@ public class JcrRepository {
     private Repository repository;
 
     /** File store */
-    private static FileStore fileStore;
+//    private static FileStore fileStore;
+    
+    private static DocumentNodeStore nodeStore;
 
     /**
      * Initialize the repository
@@ -65,7 +66,7 @@ public class JcrRepository {
                         }
                         String dbName = uri.getPath().replaceFirst("/", "");
 
-                        DocumentNodeStore nodeStore = newMongoDocumentNodeStoreBuilder()
+                        nodeStore = newMongoDocumentNodeStoreBuilder()
                             .setLeaseCheckMode(LeaseCheckMode.DISABLED)
                             .setMongoDB("mongodb://" + hostPort + "/?readConcernLevel=majority", dbName, 0)
                             .build();
@@ -73,7 +74,7 @@ public class JcrRepository {
                         repository = new Jcr(new Oak(nodeStore)).createRepository();
                     }
                 } catch (URISyntaxException e) {
-
+                    logger.error("Could not init JCR : {}", e.getMessage());
                 }
             }
 //            if (inMemoryStorage) {
@@ -113,15 +114,15 @@ public class JcrRepository {
     @PreDestroy
     public void preDestroy() {
         logger.trace("Close JCR Repository");
-        // TODO
-//        if (nodeStore != null) {
-//            nodeStore.dispose();
-//            nodeStore = null;
-//        }
-        if (fileStore != null) {
-            fileStore.close();
-            fileStore = null;
+        
+        if (nodeStore != null) {
+            nodeStore.dispose();
+            nodeStore = null;
         }
+//        if (fileStore != null) {
+//            fileStore.close();
+//            fileStore = null;
+//        }
 
         repository = null;
     }

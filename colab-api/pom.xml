@@ -156,10 +156,10 @@
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>jackrabbit-core</artifactId>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>oak-segment-tar</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.apache.jackrabbit</groupId>
             <artifactId>oak-store-document</artifactId>

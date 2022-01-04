@@ -910,3 +910,28 @@ export const deleteActivityFlowLink = createAsyncThunk(
     return await restClient.ActivityFlowLinkRestEndpoint.deleteLink(id);
   },
 );
+
+/////////////////////////////////////////////////////////////////////////////
+// Document Files
+/////////////////////////////////////////////////////////////////////////////
+
+export const uploadFile = createAsyncThunk(
+  'files',
+  async ({docId , file} : {docId: number, file: File}) => {
+    return await restClient.DocumentFileRestEndPoint.updateFile(docId, file);
+  }
+);
+
+export const getFile = createAsyncThunk(
+  'files/GetFile',
+  async (id: number ) => {
+    return await restClient.DocumentFileRestEndPoint.getFileContent(id);
+  }
+);
+
+export const deleteFile = createAsyncThunk(
+  'files/DeleteFile',
+  async (id: number) => {
+    return await restClient.DocumentFileRestEndPoint.deleteFile(id);
+  }
+);
