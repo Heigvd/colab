@@ -139,6 +139,9 @@ public class RestClient {
             if (response.getStatus() == 204) {
                 return null;
             } else {
+                if(Response.class.isAssignableFrom(type.getRawType())){
+                    return (T)response;
+                }
                 Object entity = response.getEntity();
                 if (entity instanceof InputStream) {
                     InputStream stream = (InputStream) entity;

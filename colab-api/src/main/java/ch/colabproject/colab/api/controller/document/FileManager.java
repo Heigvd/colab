@@ -25,7 +25,7 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 
 
 /**
- * Handles files
+ * Handles DocumentFiles instances
  * @author xaviergood
  * 
  */
@@ -36,7 +36,7 @@ public class FileManager {
     private static final Logger logger = LoggerFactory.getLogger(ProjectFacade.class);
 
     /**
-     * to get session to workspace
+     * File persistence management
      */
     @Inject
     private JcrManager jcrManager;
@@ -47,33 +47,43 @@ public class FileManager {
     @Inject
     private DocumentDao documentDao;
     
-//    @Inject
-//    private ResourceAndRefDao resourceDao;
-    
+    /**
+     * Update an existing document's file content
+     * @param docId document id
+     * @param file file contents
+     * @param body body of the request, containing all meta
+     * @throws RepositoryException 
+     */
     public void updateFile(
             Long docId, 
             InputStream file, 
-            FormDataContentDisposition details,
             FormDataBodyPart body) 
             throws RepositoryException
     {
-        
+        FormDataContentDisposition details = body.getFormDataContentDisposition();
+        var fileName = details.getFileName();
+        FileManager.logger.debug("Updating file {} with id {}", fileName, docId);
+
         Document doc = documentDao.findDocument(docId);
         if(doc == null || !(doc instanceof HostedDocLink))
         {
             throw HttpErrorMessage.notFound();
         }
-        
+
         HostedDocLink hostedDoc = (HostedDocLink)doc;
-        hostedDoc.setFileName(details.getFileName());
+        hostedDoc.setFileName(fileName);
         hostedDoc.setFileSize(details.getSize());
         hostedDoc.setMimeType(body.getMediaType().toString());
 
         Project project = doc.getProject();
         this.jcrManager.updateOrCreateFile(project, docId, file);
-        FileManager.logger.debug("Updated file {} with id {}", hostedDoc.getFileName(), hostedDoc.getId());
     }
     
+    /**
+     * Delete the file contents, and resets size and mime type
+     * @param docId id of hosted document
+     * @throws RepositoryException 
+     */
     public void deleteFile(Long docId) throws RepositoryException{
     
         Document doc = documentDao.findDocument(docId);
@@ -84,14 +94,22 @@ public class FileManager {
         
         Project project = doc.getProject();
         HostedDocLink hostedDoc = (HostedDocLink)doc;
+        FileManager.logger.debug("Deleting file '{}' with id {}", hostedDoc.getFileName(), doc.getId());
 
-        this.documentDao.deleteDocument(docId);
-
+        hostedDoc.setFileName(null);
+        hostedDoc.setFileSize(0L);
+        hostedDoc.setMimeType(MediaType.APPLICATION_OCTET_STREAM);
+        
         this.jcrManager.deleteFile(project, docId);
         
-        FileManager.logger.debug("Deleted file '{}' with id {}", hostedDoc.getFileName(), doc.getId());
     }
     
+    /**
+     * Retrieves the file content
+     * @param documentId id of the requested document
+     * @return a stream to the file contents
+     * @throws RepositoryException 
+     */
     public InputStream getFileStream(Long documentId) throws RepositoryException {
         var doc = this.documentDao.findDocument(documentId);
 
@@ -105,6 +123,11 @@ public class FileManager {
         return new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));
     }
     
+    /**
+     * 
+     * @param documentId id of the requested document
+     * @return the mime type of the file
+     */
     public String getFileMimeType(Long documentId){
         var doc = this.documentDao.findDocument(documentId);
 

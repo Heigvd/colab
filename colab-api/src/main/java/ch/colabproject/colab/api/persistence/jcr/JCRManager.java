@@ -60,6 +60,7 @@ public class JcrManager {
         }
 
         var prop = node.getProperty(CONTENT);
+
         //TODO figure out when to call dispose
         return prop.getBinary().getStream();
     }

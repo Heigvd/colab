@@ -83,7 +83,7 @@ export default function ResourceCreator({
       options: [
         { label: 'Document', value: 'BlockDocument' },
         { label: 'Link', value: 'ExternalLink' },
-        //{label: File', value: 'HostedDocLink'}
+        { label: 'File', value: 'HostedDocLink'}
       ],
       isMandatory: true,
     }),
@@ -128,9 +128,16 @@ export default function ResourceCreator({
                     abstractCardTypeId: cardTypeId,
                     cardId: cardId,
                     cardContentId: cardContentId,
-                    document: {
-                      '@class': state.docType,
-                    },
+                    document:
+                      state.docType === 'HostedDocLink'
+                        ? {
+                            '@class': state.docType,
+                            fileSize: 0,
+                            mimeType: 'application/octet-stream',
+                          }
+                        : {
+                            '@class': state.docType,
+                          },
                     title: state.title,
                     teaser: {
                       '@class': 'TextDataBlock',

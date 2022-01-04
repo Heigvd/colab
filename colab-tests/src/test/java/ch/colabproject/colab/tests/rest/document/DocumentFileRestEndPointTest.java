@@ -31,9 +31,11 @@ import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.rest.document.ResourceCreationBean;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.plugin.rest.FormField;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
+import ch.colabproject.colab.tests.tests.TestHelper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -49,7 +51,7 @@ import org.junit.jupiter.api.Test;
  * @author xaviergood
  */
 public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
-    
+
     @Test
     public void testCreateHostedDocLink() {
         String path = "someWayToAccessTheMongoDBData #" + ((int) (Math.random() * 1000));
@@ -67,7 +69,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
 //        Assertions.assertEquals(path, persistedHostedDocLink.getFilePath());
     }
-    
+
     @Test
     public void testUpdateHostedDocLink() {
         Long docId = client.documentRestEndPoint.createDocument(new HostedDocLink());
@@ -91,104 +93,112 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         Assertions.assertEquals(docId, persistedHostedDocLink.getId());
         Assertions.assertEquals(path, persistedHostedDocLink.getFileName());
     }
-    
+
     /**
-     * Create a hosted document, and get it
+     * Create a hosted document, uploaded contents and get it back
      */
     @Test
     public void testCreateHostedDoc(){
+//        if(true) return; //TODO remove
+
         var resource = createHostedDocResource();
         var docId = resource.getDocumentId();
-        
-        var fileName = "test.txt";
+
         var fileContent = "Testing is very important, always write tests";
         var size = fileContent.length();
         MediaType mime = MediaType.TEXT_PLAIN_TYPE;
-        var file = createFileField(fileName, fileContent, mime);
+        var file = createFileFormField(fileContent, mime);
+        var fileName = file.getData().getName();
         FormField<Long> id = new FormField<>();
         id.setMimeType(MediaType.WILDCARD_TYPE);
         id.setData(docId);
 
         //save file
         client.documentFileRestEndPoint.updateFile(id, file);
-        
+
         // fetch document
         var document = client.documentRestEndPoint.getDocument(docId);
         Assertions.assertInstanceOf(HostedDocLink.class, document);
         var fileDocument = (HostedDocLink) document;
-        
+
         Assertions.assertEquals(fileName, fileDocument.getFileName());
         Assertions.assertEquals(size, fileDocument.getFileSize().intValue());
         Assertions.assertEquals(mime.toString(), fileDocument.getMimeType());
-        
+
         var response = client.documentFileRestEndPoint.getFileContent(docId);
         var responseContent = response.readEntity(String.class);
 
         Assertions.assertEquals(mime, response.getMediaType());
         Assertions.assertEquals(fileContent, responseContent);
+
     }
-   
+
+    /**
+     * Tests the state of document that has been created but no file content
+     * was added
+     */
     @Test
-    public void emptyDocErrorsTest(){
+    public void emptyDocTest(){
+
         var resource = createHostedDocResource();
         var docId = resource.getDocumentId();
-        
-        var document = client.documentRestEndPoint.getDocument(docId);
-        Assertions.assertInstanceOf(HostedDocLink.class, document);
-        var fileDocument = (HostedDocLink) document;
-        
-        Assertions.assertNull(fileDocument.getFileName());
-        Assertions.assertEquals(0L, fileDocument.getFileSize().longValue());
-        Assertions.assertEquals(MediaType.APPLICATION_OCTET_STREAM, fileDocument.getMimeType());
-        
-        var response = client.documentFileRestEndPoint.getFileContent(docId);
-        var responseContent = response.readEntity(String.class);
 
-        Assertions.assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE, response.getMediaType());
-        Assertions.assertEquals(0, responseContent.length());
+        var document = client.documentRestEndPoint.getDocument(docId);
+        testEmptyDoc(document);
     }
 
+
+    /**
+     * Tests the state of a deleted document
+     */
     @Test
     public void deletionTest(){
         var resource = createHostedDocResource();
         var docId = resource.getDocumentId();
-        
-        var fileName = "test.txt";
+
         var fileContent = "Testing is very important, always write tests";
         MediaType mime = MediaType.TEXT_PLAIN_TYPE;
-        var file = createFileField(fileName, fileContent, mime);
+        var file = createFileFormField(fileContent, mime);
         FormField<Long> id = new FormField<>();
         id.setData(docId);
 
         client.documentFileRestEndPoint.updateFile(id, file);
-        
+
         client.documentFileRestEndPoint.deleteFile(docId);
-        
-        //should throw 404
-        client.documentRestEndPoint.getDocument(docId);
-        client.documentFileRestEndPoint.updateFile(id, file);
-        client.documentFileRestEndPoint.deleteFile(docId);
-        client.documentFileRestEndPoint.getFileContent(docId);
-        //Can I simulate the http exceptions here ?
+        var document = client.documentRestEndPoint.getDocument(docId);
+
+        testEmptyDoc(document);
+
     }
 
-    private static FormField createFileField(String path, String content, MediaType mimeType) {
-        
+    private void testEmptyDoc(Document document){
+
+        Assertions.assertInstanceOf(HostedDocLink.class, document);
+        var fileDocument = (HostedDocLink) document;
+
+        Assertions.assertNull(fileDocument.getFileName());
+        Assertions.assertEquals(0L, fileDocument.getFileSize().longValue());
+        Assertions.assertEquals(MediaType.APPLICATION_OCTET_STREAM, fileDocument.getMimeType());
+
+        var response = client.documentFileRestEndPoint.getFileContent(document.getId());
+        var responseContent = response.readEntity(String.class);
+
+        Assertions.assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE, response.getMediaType());
+        Assertions.assertEquals(0, responseContent.length());
+//        Assertions.assertThrows(expectedType, () -> func())
+//        TestHelper.assertThrows(HttpErrorMessage.MessageCode.NOT_FOUND, executable);
+    }
+
+    private static FormField<File> createFileFormField(String content, MediaType mimeType) {
+
         try{
-            // create file if it doesn't exist and set its content
-            var f = new File(path);
-            if(f.exists() && f.isFile()){
-                f.delete();
-            }
-            f.createNewFile();
-            f.deleteOnExit();// deleted when VM ends
-            try (java.io.PrintWriter writer = new PrintWriter(path)) {
+            var f = File.createTempFile("test_", ".tmp");
+            try (java.io.PrintWriter writer = new PrintWriter(f)) {
                 writer.print(content);
             }
 
-            FormField field = new FormField<>();
-//            field.setData(new FileInputStream(new File(path)));
-            field.setData(new File(path));
+            FormField<File> field = new FormField<>();
+            field.setData(f);
             field.setMimeType(mimeType);
             return field;
         }catch (IOException ex){
@@ -196,13 +206,13 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         }
 
     }
-    
+
     /**
-     * Creates a random resource linked to a hosted document 
+     * Creates a random resource linked to a hosted document
      * @return the created resource
      */
     private Resource createHostedDocResource(){
-    
+
         ResourceCreationBean toCreate = new ResourceCreationBean();
         String title = "The game encyclopedia #" + ((int) (Math.random() * 1000));
         toCreate.setTitle(title);
@@ -215,10 +225,10 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         Long globalCardTypeId = ColabFactory.createCardType(client, null).getId();
         Long cardId = ColabFactory.createNewCard(client, rootCardContentId, globalCardTypeId).getId();
         toCreate.setCardId(cardId);
-        
+
         var resourceId = client.resourceRestEndpoint.createResource(toCreate);
         return (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
     }
-    
-    
+
+
 }

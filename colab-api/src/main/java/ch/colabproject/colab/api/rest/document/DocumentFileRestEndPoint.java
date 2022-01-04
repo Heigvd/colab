@@ -44,7 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * EndPoint to managed hosted files
  * @author xaviergood
  */
 
@@ -69,10 +69,10 @@ public class DocumentFileRestEndPoint {
     public void updateFile(
         @FormDataParam("documentId") Long docId,
         @FormDataParam("file") InputStream file,
-        @FormDataParam("file") FormDataBodyPart bodypart //TODO does that work ?
+        @FormDataParam("file") FormDataBodyPart bodypart
         ) {
         try{
-            fileManager.updateFile(docId, file, bodypart.getFormDataContentDisposition(), bodypart);
+            fileManager.updateFile(docId, file, bodypart);
         }catch(RepositoryException ex){
             logger.debug("Could not update file with id {} : {}", docId, ex);
             throw HttpErrorMessage.internalServerError();
@@ -84,7 +84,7 @@ public class DocumentFileRestEndPoint {
      * @param documentId 
      */
     @DELETE
-    @Path("{projectId}/DeleteFile/{documentId}/{name}")
+    @Path("DeleteFile/{documentId}")
     @Produces(MediaType.TEXT_PLAIN)
     public void deleteFile(
         @PathParam("documentId") Long documentId){
@@ -92,6 +92,7 @@ public class DocumentFileRestEndPoint {
             fileManager.deleteFile(documentId);
         } catch (RepositoryException ex) {
             logger.debug("Could not delete file with id {} : {}", documentId, ex);
+            throw HttpErrorMessage.internalServerError();
         }
     }
     
@@ -102,7 +103,7 @@ public class DocumentFileRestEndPoint {
      * @return file content, if no file has been set, return an empty stream (0 bytes)
      */
     @GET
-    @Path("GetFile/{documentId}/{name}")
+    @Path("GetFile/{documentId}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getFileContent(@PathParam("documentId") Long documentId) {
         
@@ -113,7 +114,7 @@ public class DocumentFileRestEndPoint {
             return response.build();
         } catch (RepositoryException ex) {
             logger.debug("Could not get file content {}", ex);
-            return null;
+            throw HttpErrorMessage.internalServerError();
         }
     }
     

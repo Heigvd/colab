@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -32,6 +33,7 @@ public class HostedDocLink extends Document {
     /**
      * Size of the file in bytes
      */
+    @NotNull
     private Long fileSize = 0L;
     
     /**
@@ -42,6 +44,7 @@ public class HostedDocLink extends Document {
     /**
      * mime type of file
      */
+    @NotNull
     private String mimeType = MediaType.APPLICATION_OCTET_STREAM;
 
     // ---------------------------------------------------------------------------------------------

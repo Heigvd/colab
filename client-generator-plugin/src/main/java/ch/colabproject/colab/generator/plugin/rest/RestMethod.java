@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.generator.plugin.rest;
 
-import ch.colabproject.colab.generator.plugin.Logger;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -14,7 +13,8 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.glassfish.jersey.media.multipart.ContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
 /**
@@ -394,7 +394,8 @@ public class RestMethod {
             param.setType(type);
 
             // hack: MultiPartFile
-            if (FormDataMultiPart.class.isAssignableFrom((Class) type)
+            if (FormDataBodyPart.class.isAssignableFrom((Class) type)
+                || FormDataContentDisposition.class.isAssignableFrom((Class) type)
                 || InputStream.class.isAssignableFrom((Class) type)) {
                 param.setType(File.class);
             }

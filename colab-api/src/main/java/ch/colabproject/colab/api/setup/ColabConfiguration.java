@@ -120,6 +120,18 @@ public class ColabConfiguration {
      */
     public static final String LOCAL_ACCOUNT_BUTTON_VALUE = "true";
 
+    // TODO 
+    /**
+     * Maximum file upload size
+     */
+    public static final String JCR_REPOSITORY_MAX_FILE_SIZE_MB = "colab.jcr.maxfilesize";
+
+    /**
+     * Maximum file upload size default value
+     */
+    public static final String JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT = "50";
+    
+    
     /**
      * never-called private constructor
      */

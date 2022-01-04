@@ -19,7 +19,7 @@ export function HostedDocLinkEditor({ document }: HostedDocLinkProps): JSX.Eleme
   return (
     <div>
       <FontAwesomeIcon icon={faDownload} />
-      {document.filePath}
+      {document.fileName}
     </div>
   );
 }
