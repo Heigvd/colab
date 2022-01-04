@@ -90,7 +90,7 @@ public class ResourceAndReference1Test extends AbstractArquillianTest {
 
         Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
 
-        Long globalCardTypeId = ColabFactory.createCardType(client, null).getId();
+        Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
 
         Long cardId = ColabFactory.createNewCard(client, rootCardContentId, globalCardTypeId)
             .getId();

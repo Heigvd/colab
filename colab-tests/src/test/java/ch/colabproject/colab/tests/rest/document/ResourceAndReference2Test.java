@@ -54,7 +54,7 @@ public class ResourceAndReference2Test extends AbstractArquillianTest {
         client.resourceRestEndpoint.createResource(rootCardVariantResource);
         // referenced by nothing
 
-        Long globalCardTypeId = ColabFactory.createCardType(client, null).getId();
+        Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
         ResourceCreationBean globalCardTypeResource = new ResourceCreationBean();
         globalCardTypeResource.setDocument(new BlockDocument());
         globalCardTypeResource.setAbstractCardTypeId(globalCardTypeId);
@@ -105,7 +105,7 @@ public class ResourceAndReference2Test extends AbstractArquillianTest {
 
         // now add variants and cards and check that all resources are spread
 
-        Long anotherGlobalCardTypeId = ColabFactory.createCardType(client, null).getId();
+        Long anotherGlobalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
         ResourceCreationBean anotherGlobalCardTypeResource = new ResourceCreationBean();
         anotherGlobalCardTypeResource.setDocument(new BlockDocument());
         anotherGlobalCardTypeResource.setAbstractCardTypeId(anotherGlobalCardTypeId);
@@ -218,7 +218,7 @@ public class ResourceAndReference2Test extends AbstractArquillianTest {
         Long rootCardVariantId = ColabFactory.createNewCardContent(client, rootCardId).getId();
         // referenced by nothing
 
-        Long globalCardTypeId = ColabFactory.createCardType(client, null).getId();
+        Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
 
         Long card1Id = ColabFactory.createNewCard(client, rootCardContentId, globalCardTypeId)
             .getId();
@@ -234,7 +234,7 @@ public class ResourceAndReference2Test extends AbstractArquillianTest {
 
         Long card2ContentId = ColabFactory.getCardContent(client, card2Id).getId();
 
-        Long anotherGlobalCardTypeId = ColabFactory.createCardType(client, null).getId();
+        Long anotherGlobalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
 
         Long anotherLocalCardTypeId = ColabFactory.createCardType(client, projectId).getId();
 

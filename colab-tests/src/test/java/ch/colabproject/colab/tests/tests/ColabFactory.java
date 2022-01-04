@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.tests.tests;
 
+import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
@@ -42,6 +43,30 @@ public class ColabFactory {
     }
 
     /**
+     * Create a brand new global card type.
+     *
+     * @param client  rest client to execute HTTP requests
+     *
+     * @return the CardType
+     */
+    public static CardType createGlobalCardType(ColabClient client) {
+        return createCardType(client, (Long) null);
+    }
+
+    /**
+     * Create a brand new card type in the given project.
+     *
+     * @param client  rest client to execute HTTP requests
+     * @param project the project the card type will belongs to. If the project is null the type
+     *                will be a global type
+     *
+     * @return the CardType
+     */
+    public static CardType createCardType(ColabClient client, Project project) {
+        return createCardType(client, project.getId());
+    }
+
+    /**
      * Create a brand new card type in the given project.
      *
      * @param client    rest client to execute HTTP requests
@@ -60,21 +85,33 @@ public class ColabFactory {
     }
 
     /**
-     * Create a brand new card type in the given project.
+     * Create a brand new global card type.
      * <p>
      * The card type is published
      *
      * @param client    rest client to execute HTTP requests
-     * @param projectId id of the project the card type will belongs to. If this id is null the type
-     *                  will be a global type
      *
      * @return the CardType
      */
-    public static CardType createPublishedCardType(ColabClient client, Long projectId) {
-        CardType cardType = createCardType(client, projectId);
+    public static CardType createGlobalPublishedCardType(ColabClient client) {
+        CardType cardType = createGlobalCardType(client);
         cardType.setPublished(true);
         client.cardTypeRestEndpoint.updateCardType(cardType);
         return (CardType) client.cardTypeRestEndpoint.getCardType(cardType.getId());
+    }
+
+    /**
+     * Create a brand new card in the given parent with the given type
+     *
+     * @param client   rest client to execute HTTP requests
+     * @param parent   the card content the card will belong to
+     * @param cardType the card type
+     *
+     * @return the newly created card
+     */
+    public static Card createNewCard(ColabClient client, CardContent parent,
+        AbstractCardType cardType) {
+        return client.cardRestEndpoint.createNewCard(parent.getId(), cardType.getId());
     }
 
     /**

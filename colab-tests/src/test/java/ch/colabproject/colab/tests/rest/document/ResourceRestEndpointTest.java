@@ -37,7 +37,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
     @Test
     public void testCreateResource() {
         // creation of the context : global card type
-        Long globalCardTypeId = ColabFactory.createCardType(client, null).getId();
+        Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
 
         String title = "the guide " + ((int) (Math.random() * 1000));
         String teaser = "everything you need to know " + ((int) (Math.random() * 1000));
@@ -97,7 +97,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
     @Test
     public void testUpdateResource() {
         // creation of the context : global card type
-        Long globalCardTypeId = ColabFactory.createCardType(client, null).getId();
+        Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
 
         String url = "http://www.123soleil.chat/theGameEncyclopedia.pdf";
 
@@ -186,7 +186,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
     @Test
     public void testDeleteResource() {
         // creation of the context : global card type
-        Long globalCardTypeId = ColabFactory.createCardType(client, null).getId();
+        Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
 
         String url = "http://www.123soleil.chat/theGameEncyclopedia.pdf";
 
@@ -236,7 +236,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
 
-        Long globalCardTypeId = ColabFactory.createCardType(client, null).getId();
+        Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
 
         Long cardId = ColabFactory.createNewCard(client, rootCardContentId, globalCardTypeId)
             .getId();
