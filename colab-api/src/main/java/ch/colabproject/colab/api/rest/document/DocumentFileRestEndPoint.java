@@ -28,6 +28,7 @@ import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.io.InputStream;
 import javax.inject.Inject;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -54,7 +55,7 @@ import org.slf4j.LoggerFactory;
 @AuthenticationRequired
 public class DocumentFileRestEndPoint {
     
-    private static final Logger logger = LoggerFactory.getLogger(DocumentRestEndPoint.class);
+    private static final Logger logger = LoggerFactory.getLogger(DocumentFileRestEndPoint.class);
 
     @Inject
     private FileManager fileManager;
@@ -108,11 +109,11 @@ public class DocumentFileRestEndPoint {
     public Response getFileContent(@PathParam("documentId") Long documentId) {
         
         try {
-            var response = Response.ok(fileManager.getFileStream(documentId));
-            response.header("Content-Type", fileManager.getFileMimeType(documentId));
-            
+            var response = fileManager.getDownloadResponse(documentId);
             return response.build();
-        } catch (RepositoryException ex) {
+        } catch (PathNotFoundException pnfe){
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }catch (RepositoryException ex) {
             logger.debug("Could not get file content {}", ex);
             throw HttpErrorMessage.internalServerError();
         }
