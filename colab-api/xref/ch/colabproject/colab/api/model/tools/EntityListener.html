@@ -14,9 +14,9 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.model.tools;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.RequestManager;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.SecurityFacade;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.EntityGatheringBagForPropagation;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.RequestManager;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.security.SecurityManager;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.WithPermission;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.WithTrackingData;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.WithWebsocketChannels;
@@ -52,15 +52,15 @@
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>      <em class="jxr_javadoccomment">/** To collect entities for later propagation */</em>
 <a class="jxr_linenumber" name="L46" href="#L46">46</a>      @Inject
-<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">private</strong> <a name="EntityGatheringBagForPropagation" href="../../../../../../ch/colabproject/colab/api/ejb/EntityGatheringBagForPropagation.html#EntityGatheringBagForPropagation">EntityGatheringBagForPropagation</a> wsEntityBag;
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      <strong class="jxr_keyword">private</strong> <a name="EntityGatheringBagForPropagation" href="../../../../../../ch/colabproject/colab/api/controller/EntityGatheringBagForPropagation.html#EntityGatheringBagForPropagation">EntityGatheringBagForPropagation</a> wsEntityBag;
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      <em class="jxr_javadoccomment">/** Security check */</em>
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>      @Inject
-<a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">private</strong> <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade;
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>      <strong class="jxr_keyword">private</strong> <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager;
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      <em class="jxr_javadoccomment">/** request manager */</em>
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      @Inject
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">private</strong> <a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">private</strong> <a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager;
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>      <em class="jxr_javadoccomment">/** activity date cache */</em>
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      @Inject
@@ -76,7 +76,7 @@
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          logger.trace(<span class="jxr_string">"Load {}"</span>, o);
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>          <em class="jxr_comment">// Skip permission check if a condition assertion is already in progress</em>
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">if</strong> (o instanceof <a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a> &amp;&amp; !requestManager.isInSecurityTx()) {
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>              securityFacade.assertReadPermissionTx((<a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a>) o);
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>              securityManager.assertReadPermissionTx((<a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a>) o);
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          }
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>          <strong class="jxr_keyword">if</strong> (o instanceof User){
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>              OffsetDateTime activityDate = sessionManager.getActivityDate((User) o);
@@ -95,7 +95,7 @@
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>  
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>          <em class="jxr_comment">// Skip permission check if a condition assertion is already in progress</em>
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>          <strong class="jxr_keyword">if</strong> (o instanceof <a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a> &amp;&amp; !requestManager.isInSecurityTx()) {
-<a class="jxr_linenumber" name="L90" href="#L90">90</a>              securityFacade.assertCreatePermissionTx((<a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a>) o);
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>              securityManager.assertCreatePermissionTx((<a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a>) o);
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>          }
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>  
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>          <strong class="jxr_keyword">if</strong> (o instanceof <a name="WithWebsocketChannels" href="../../../../../../ch/colabproject/colab/api/model/WithWebsocketChannels.html#WithWebsocketChannels">WithWebsocketChannels</a>) {
@@ -113,7 +113,7 @@
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>         logger.trace(<span class="jxr_string">"Update {}"</span>, o);
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         <em class="jxr_comment">// Skip permission check if a condition assertion is already in progress</em>
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         <strong class="jxr_keyword">if</strong> (o instanceof <a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a> &amp;&amp; !requestManager.isInSecurityTx()) {
-<a class="jxr_linenumber" name="L108" href="#L108">108</a>             securityFacade.assertUpdatePermissionTx((<a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a>) o);
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>             securityManager.assertUpdatePermissionTx((<a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a>) o);
 <a class="jxr_linenumber" name="L109" href="#L109">109</a>         }
 <a class="jxr_linenumber" name="L110" href="#L110">110</a> 
 <a class="jxr_linenumber" name="L111" href="#L111">111</a>         <strong class="jxr_keyword">if</strong> (o instanceof <a name="WithWebsocketChannels" href="../../../../../../ch/colabproject/colab/api/model/WithWebsocketChannels.html#WithWebsocketChannels">WithWebsocketChannels</a>) {
@@ -144,7 +144,7 @@
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         logger.trace(<span class="jxr_string">"Destroy {}"</span>, o);
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>         <em class="jxr_comment">// Skip permission check if a condition assertion is already in progress</em>
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>         <strong class="jxr_keyword">if</strong> (o instanceof <a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a> &amp;&amp; !requestManager.isInSecurityTx()) {
-<a class="jxr_linenumber" name="L139" href="#L139">139</a>             securityFacade.assertDeletePermissionTx((<a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a>) o);
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>             securityManager.assertDeletePermissionTx((<a name="WithPermission" href="../../../../../../ch/colabproject/colab/api/model/WithPermission.html#WithPermission">WithPermission</a>) o);
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>         }
 <a class="jxr_linenumber" name="L141" href="#L141">141</a> 
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         <strong class="jxr_keyword">if</strong> (o instanceof <a name="WithWebsocketChannels" href="../../../../../../ch/colabproject/colab/api/model/WithWebsocketChannels.html#WithWebsocketChannels">WithWebsocketChannels</a>) {

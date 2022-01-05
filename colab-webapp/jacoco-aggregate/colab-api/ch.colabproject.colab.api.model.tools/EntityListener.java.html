@@ -6,9 +6,9 @@
  */
 package ch.colabproject.colab.api.model.tools;
 
-import ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
-import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.api.ejb.SecurityFacade;
+import ch.colabproject.colab.api.controller.EntityGatheringBagForPropagation;
+import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithTrackingData;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
     /** Security check */
     @Inject
-    private SecurityFacade securityFacade;
+    private SecurityManager securityManager;
 
     /** request manager */
     @Inject
@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L68">        logger.trace(&quot;Load {}&quot;, o);</span>
         // Skip permission check if a condition assertion is already in progress
 <span class="nc bnc" id="L70" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L71">            securityFacade.assertReadPermissionTx((WithPermission) o);</span>
+<span class="nc" id="L71">            securityManager.assertReadPermissionTx((WithPermission) o);</span>
         }
 <span class="nc bnc" id="L73" title="All 2 branches missed.">        if (o instanceof User){</span>
 <span class="nc" id="L74">            OffsetDateTime activityDate = sessionManager.getActivityDate((User) o);</span>
@@ -87,7 +87,7 @@ import org.slf4j.LoggerFactory;
 
         // Skip permission check if a condition assertion is already in progress
 <span class="nc bnc" id="L89" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L90">            securityFacade.assertCreatePermissionTx((WithPermission) o);</span>
+<span class="nc" id="L90">            securityManager.assertCreatePermissionTx((WithPermission) o);</span>
         }
 
 <span class="nc bnc" id="L93" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
@@ -105,7 +105,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L105">        logger.trace(&quot;Update {}&quot;, o);</span>
         // Skip permission check if a condition assertion is already in progress
 <span class="nc bnc" id="L107" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L108">            securityFacade.assertUpdatePermissionTx((WithPermission) o);</span>
+<span class="nc" id="L108">            securityManager.assertUpdatePermissionTx((WithPermission) o);</span>
         }
 
 <span class="nc bnc" id="L111" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
@@ -136,7 +136,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L136">        logger.trace(&quot;Destroy {}&quot;, o);</span>
         // Skip permission check if a condition assertion is already in progress
 <span class="nc bnc" id="L138" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L139">            securityFacade.assertDeletePermissionTx((WithPermission) o);</span>
+<span class="nc" id="L139">            securityManager.assertDeletePermissionTx((WithPermission) o);</span>
         }
 
 <span class="nc bnc" id="L142" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>

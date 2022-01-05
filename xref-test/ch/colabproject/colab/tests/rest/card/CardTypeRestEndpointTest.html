@@ -21,7 +21,7 @@
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.Block;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.document.TextDataBlock;
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.project.Project;
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.card.CardTypeCreationBean;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.card.bean.CardTypeCreationBean;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.message.WsUpdateMessage;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.client.ColabClient;
@@ -78,7 +78,7 @@
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>          Assertions.assertNotNull(cardType.getPurposeId());
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>          Assertions.assertNotNull(cardType.getTags());
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>          Block persistedPurpose = client.blockRestEndPoint.getBlock(cardType.getPurposeId());
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          Block persistedPurpose = client.blockRestEndpoint.getBlock(cardType.getPurposeId());
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>          Assertions.assertNotNull(persistedPurpose);
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>          Assertions.assertTrue(persistedPurpose instanceof TextDataBlock);
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>          TextDataBlock persistedPurposeTextDataBlock = (TextDataBlock) persistedPurpose;
@@ -200,7 +200,7 @@
 <a class="jxr_linenumber" name="L192" href="#L192">192</a>         <strong class="jxr_keyword">throws</strong> DeploymentException, IOException, URISyntaxException, InterruptedException {
 <a class="jxr_linenumber" name="L193" href="#L193">193</a> <em class="jxr_comment">//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketHelper.class), Level.TRACE);</em>
 <a class="jxr_linenumber" name="L194" href="#L194">194</a> <em class="jxr_comment">//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketClient.class), Level.TRACE);</em>
-<a class="jxr_linenumber" name="L195" href="#L195">195</a> <em class="jxr_comment">//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketFacade.class), Level.TRACE);</em>
+<a class="jxr_linenumber" name="L195" href="#L195">195</a> <em class="jxr_comment">//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketManager.class), Level.TRACE);</em>
 <a class="jxr_linenumber" name="L196" href="#L196">196</a> <em class="jxr_comment">//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(TransactionManager.class), Level.TRACE);</em>
 <a class="jxr_linenumber" name="L197" href="#L197">197</a> 
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>         <em class="jxr_comment">// create some goulash user with its own clients</em>
@@ -361,7 +361,7 @@
 <a class="jxr_linenumber" name="L353" href="#L353">353</a>         CardType cardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>         Assertions.assertNull(cardType.getTitle());
 <a class="jxr_linenumber" name="L355" href="#L355">355</a>         Assertions.assertNotNull(cardType.getPurposeId());
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>         Block persistedPurpose = client.blockRestEndPoint.getBlock(cardType.getPurposeId());
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>         Block persistedPurpose = client.blockRestEndpoint.getBlock(cardType.getPurposeId());
 <a class="jxr_linenumber" name="L357" href="#L357">357</a>         Assertions.assertNotNull(persistedPurpose);
 <a class="jxr_linenumber" name="L358" href="#L358">358</a>         Assertions.assertTrue(persistedPurpose instanceof TextDataBlock);
 <a class="jxr_linenumber" name="L359" href="#L359">359</a> 

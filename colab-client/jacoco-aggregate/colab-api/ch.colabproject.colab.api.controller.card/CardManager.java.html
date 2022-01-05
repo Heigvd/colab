@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CardManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.card</a> &gt; <span class="el_source">CardManager.java</span></div><h1>CardManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.card;
+
+import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
+import ch.colabproject.colab.api.model.card.AbstractCardType;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.acl.AccessControl;
+import ch.colabproject.colab.api.persistence.card.CardDao;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Card, card type and card content specific logic
+ *
+ * @author sandra
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L39">public class CardManager {</span>
+
+    /** logger */
+<span class="nc" id="L42">    private static final Logger logger = LoggerFactory.getLogger(CardManager.class);</span>
+
+    // *********************************************************************************************
+    // injections
+    // *********************************************************************************************
+
+    /**
+     * Card persistence handler
+     */
+    @Inject
+    private CardDao cardDao;
+
+    /**
+     * Card type specific logic management
+     */
+    @Inject
+    private CardTypeManager cardTypeManager;
+
+    /**
+     * Card content specific logic management
+     */
+    @Inject
+    private CardContentManager cardContentManager;
+
+    // *********************************************************************************************
+    // find cards
+    // *********************************************************************************************
+
+    /**
+     * Retrieve the card. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param cardId the id of the card
+     *
+     * @return the card if found
+     *
+     * @throws HttpErrorMessage if the card was not found
+     */
+    public Card assertAndGetCard(Long cardId) {
+<span class="nc" id="L80">        Card card = cardDao.getCard(cardId);</span>
+
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L83">            logger.error(&quot;card #{} not found&quot;, cardId);</span>
+<span class="nc" id="L84">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+
+<span class="nc" id="L87">        return card;</span>
+    }
+
+    // *********************************************************************************************
+    // find all recursively
+    // *********************************************************************************************
+
+    /**
+     * Get a card and all cards within in one set.
+     *
+     * @param rootCard the first card
+     *
+     * @return the rootCard + all cards within
+     */
+    public Set&lt;Card&gt; getAllCards(Card rootCard) {
+<span class="nc" id="L102">        Set&lt;Card&gt; cards = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L103">        List&lt;Card&gt; queue = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L104">        queue.add(rootCard);</span>
+
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        while (!queue.isEmpty()) {</span>
+<span class="nc" id="L107">            Card card = queue.remove(0);</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">            if (!cards.contains(card)) { // prevent cycles</span>
+<span class="nc" id="L109">                cards.add(card);</span>
+<span class="nc" id="L110">                card.getContentVariants().forEach(content -&gt; queue.addAll(content.getSubCards()));</span>
+            }
+<span class="nc" id="L112">        }</span>
+
+<span class="nc" id="L114">        return cards;</span>
+    }
+
+    /**
+     * Get all cardContents
+     *
+     * @param rootCard the first card
+     *
+     * @return all cardContent in the card hierarchy
+     */
+    public Set&lt;CardContent&gt; getAllCardContents(Card rootCard) {
+<span class="nc" id="L125">        return this.getAllCards(rootCard).stream().flatMap(card -&gt; {</span>
+<span class="nc" id="L126">            return card.getContentVariants().stream();</span>
+<span class="nc" id="L127">        }).collect(Collectors.toSet());</span>
+    }
+
+    // *********************************************************************************************
+    // helper
+    // *********************************************************************************************
+
+    /**
+     * @param card the card to check
+     *
+     * @return True if the card is the root card of a project
+     */
+    private boolean isARootCard(Card card) {
+<span class="nc" id="L140">        return card.hasRootCardProject();</span>
+    }
+
+    // *********************************************************************************************
+    // life cycle
+    // *********************************************************************************************
+
+    /**
+     * Complete and persist a new card into the given card content with the given card type.
+     * &lt;p&gt;
+     * Also create its default resource references.
+     *
+     * @param parentId   the id of the parent of the new card
+     * @param cardTypeId the id of the card type of the new card
+     *
+     * @return a new, initialized and persisted card
+     */
+    public Card createNewCard(Long parentId, Long cardTypeId) {
+<span class="nc" id="L158">        logger.debug(&quot;create a new sub card of #{} with the type of #{}&quot;, parentId,</span>
+            cardTypeId);
+
+<span class="nc" id="L161">        CardContent parent = cardContentManager.assertAndGetCardContent(parentId);</span>
+
+<span class="nc" id="L163">        AbstractCardType cardType = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeId);</span>
+
+<span class="nc" id="L165">        Card card = initNewCard(parent, cardType);</span>
+
+<span class="nc" id="L167">        ResourceReferenceSpreadingHelper.spreadResourcesFromUp(card);</span>
+
+<span class="nc" id="L169">        return cardDao.createCard(card);</span>
+    }
+
+    /**
+     * Initialize a new card. Card will be bound to the given type.
+     * &lt;p&gt;
+     * If the type does not belongs to the same project as the card do, a type ref is created.
+     *
+     * @param parent   the parent of the new card
+     * @param cardType the related card type
+     *
+     * @return a new card containing a new card content with cardType
+     */
+    private Card initNewCard(CardContent parent, AbstractCardType cardType) {
+<span class="nc" id="L183">        Card card = initNewCard();</span>
+
+<span class="nc" id="L185">        card.setParent(parent);</span>
+<span class="nc" id="L186">        parent.getSubCards().add(card);</span>
+
+<span class="nc" id="L188">        Project project = parent.getProject();</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (project != null) {</span>
+<span class="nc" id="L190">            AbstractCardType effectiveType = cardTypeManager.computeEffectiveCardTypeOrRef(cardType,</span>
+                project);
+
+<span class="nc bnc" id="L193" title="All 2 branches missed.">            if (effectiveType != null) {</span>
+
+<span class="nc" id="L195">                card.setCardType(effectiveType);</span>
+<span class="nc" id="L196">                effectiveType.getImplementingCards().add(card);</span>
+
+<span class="nc" id="L198">                CardType resolved = effectiveType.resolve();</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">                if (resolved != null) {</span>
+<span class="nc" id="L200">                    card.setTitle(resolved.getTitle());</span>
+                } else {
+<span class="nc" id="L202">                    logger.error(&quot;Unresolvable card type {}&quot;, effectiveType);</span>
+                }
+<span class="nc" id="L204">            } else {</span>
+<span class="nc" id="L205">                logger.error(&quot;Unable to find effective type for {}&quot;, cardType);</span>
+<span class="nc" id="L206">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+            }
+        }
+
+<span class="nc" id="L210">        return card;</span>
+    }
+
+    /**
+     * Initialize a new root card. This card contains every other cards of a project.
+     * &lt;p&gt;
+     * No persistence stuff in there
+     *
+     * @return a new card dedicated to be the root card of a project
+     */
+    public Card initNewRootCard() {
+<span class="nc" id="L221">        logger.debug(&quot;initialize a new root card&quot;);</span>
+
+<span class="nc" id="L223">        Card rootCard = initNewCard();</span>
+
+<span class="nc" id="L225">        return rootCard;</span>
+    }
+
+    /**
+     * Initialize a new card.
+     *
+     * @return a new card containing a new card content
+     */
+    private Card initNewCard() {
+<span class="nc" id="L234">        Card card = new Card();</span>
+
+<span class="nc" id="L236">        cardContentManager.initNewCardContentForCard(card);</span>
+
+<span class="nc" id="L238">        return card;</span>
+    }
+
+    /**
+     * Delete the given card
+     *
+     * @param cardId the id of the card to delete
+     *
+     * @return the freshly deleted card
+     */
+    public Card deleteCard(Long cardId) {
+<span class="nc" id="L249">        Card card = assertAndGetCard(cardId);</span>
+
+<span class="nc bnc" id="L251" title="All 2 branches missed.">        if (!checkDeletionAcceptability(card)) {</span>
+<span class="nc" id="L252">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+        }
+
+<span class="nc" id="L255">        card.getParent().getSubCards().remove(card);</span>
+
+<span class="nc" id="L257">        card.getCardType().getImplementingCards().remove(card);</span>
+
+<span class="nc" id="L259">        return cardDao.deleteCard(cardId);</span>
+    }
+
+    /**
+     * Ascertain that the card can be deleted
+     *
+     * @param card the card to check for deletion
+     *
+     * @return True iff it can be safely deleted
+     */
+    private boolean checkDeletionAcceptability(Card card) {
+        // no way to delete the root card
+<span class="nc bnc" id="L271" title="All 2 branches missed.">        if (card.getRootCardProject() != null) {</span>
+<span class="nc" id="L272">            return false;</span>
+        }
+
+<span class="nc" id="L275">        return true;</span>
+    }
+
+    /**
+     * Move a card to a new parent
+     *
+     * @param cardId      id of the card to move
+     * @param newParentId id of the new parent
+     *
+     * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
+     */
+    public void moveCard(Long cardId, Long newParentId) {
+<span class="nc" id="L287">        Card card = this.assertAndGetCard(cardId);</span>
+<span class="nc" id="L288">        CardContent parent = cardContentManager.assertAndGetCardContent(newParentId);</span>
+<span class="nc" id="L289">        this.moveCard(card, parent);</span>
+<span class="nc" id="L290">    }</span>
+
+    /**
+     * Move a card to a new parent
+     *
+     * @param card      the card to move
+     * @param newParent the new parent
+     *
+     * @throws HttpErrorMessage if card or parent does not exist or if parent if a child of the card
+     */
+    private void moveCard(Card card, CardContent newParent) {
+<span class="nc bnc" id="L301" title="All 2 branches missed.">        if (!checkMoveAcceptability(card, newParent)) {</span>
+<span class="nc" id="L302">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+        }
+
+<span class="nc bnc" id="L305" title="All 2 branches missed.">        if (!Objects.equals(card.getParent(), newParent)) {</span>
+
+<span class="nc" id="L307">            CardContent previousParent = card.getParent();</span>
+<span class="nc bnc" id="L308" title="All 2 branches missed.">            if (previousParent != null) {</span>
+<span class="nc" id="L309">                previousParent.getSubCards().remove(card);</span>
+            }
+
+<span class="nc" id="L312">            card.setParent(newParent);</span>
+<span class="nc" id="L313">            newParent.getSubCards().add(card);</span>
+
+            // TODO handle the resources
+        }
+<span class="nc" id="L317">    }</span>
+
+    /**
+     * Ascertain that the given card can be moved to the given card content
+     * @param card the card to move
+     * @param newParent the new potential parent of the card
+     * @return True iff it can be safely moved
+     */
+    private boolean checkMoveAcceptability(Card card, CardContent newParent) {
+<span class="nc bnc" id="L326" title="All 2 branches missed.">        if (card == null ) {</span>
+<span class="nc" id="L327">            return false;</span>
+        }
+
+<span class="nc bnc" id="L330" title="All 2 branches missed.">        if (newParent == null) {</span>
+<span class="nc" id="L331">            return false;</span>
+        }
+
+        // Do never move the root card
+<span class="nc bnc" id="L335" title="All 2 branches missed.">        if (isARootCard(card)) {</span>
+<span class="nc" id="L336">            return false;</span>
+        }
+
+        // check if newParent is a child of the card
+<span class="nc" id="L340">        Card ancestorOfParent = newParent.getCard();</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">        while (ancestorOfParent != null) {</span>
+<span class="nc bnc" id="L342" title="All 2 branches missed.">            if (ancestorOfParent.equals(card)) {</span>
+<span class="nc" id="L343">                return false;</span>
+            }
+<span class="nc" id="L345">            CardContent parent = ancestorOfParent.getParent();</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">            if (parent != null) {</span>
+<span class="nc" id="L347">                ancestorOfParent = parent.getCard();</span>
+            } else {
+<span class="nc" id="L349">                ancestorOfParent = null;</span>
+            }
+<span class="nc" id="L351">        }</span>
+
+<span class="nc" id="L353">        return true;</span>
+    }
+
+    // *********************************************************************************************
+    // retrieve the elements of a card
+    // *********************************************************************************************
+
+    /**
+     * Get all variants content for the given card
+     *
+     * @param cardId the id of the card
+     *
+     * @return all card contents of the card
+     */
+    public List&lt;CardContent&gt; getContentVariants(Long cardId) {
+<span class="nc" id="L368">        logger.debug(&quot;Get card contents of card #{}&quot;, cardId);</span>
+
+<span class="nc" id="L370">        Card card = assertAndGetCard(cardId);</span>
+
+<span class="nc" id="L372">        return card.getContentVariants();</span>
+    }
+
+    /**
+     * Get all sticky note links of which the given card is the destination
+     *
+     * @param cardId the id of the card
+     *
+     * @return all sticky note links linked from the card
+     */
+    public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsDest(Long cardId) {
+<span class="nc" id="L383">        logger.debug(&quot;get sticky note links where the card #{} is the destination&quot;, cardId);</span>
+
+<span class="nc" id="L385">        Card card = assertAndGetCard(cardId);</span>
+
+<span class="nc" id="L387">        return card.getStickyNoteLinksAsDest();</span>
+    }
+
+    /**
+     * Get all sticky note links of which the given card is the source
+     *
+     * @param cardId the id of the card
+     *
+     * @return all sticky note links linked to the card
+     */
+    public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrcCard(Long cardId) {
+<span class="nc" id="L398">        logger.debug(&quot;get sticky note links where the card #{} is the source&quot;, cardId);</span>
+
+<span class="nc" id="L400">        Card card = assertAndGetCard(cardId);</span>
+
+<span class="nc" id="L402">        return card.getStickyNoteLinksAsSrc();</span>
+    }
+
+    /**
+     * Get all activity flow links of which the given card is the previous one
+     *
+     * @param cardId the id of the card
+     *
+     * @return all activity flow links linked to the card
+     */
+    public List&lt;ActivityFlowLink&gt; getActivityFlowLinkAsPrevious(Long cardId) {
+<span class="nc" id="L413">        logger.debug(&quot;get activity flow links where the card #{} is the previous one&quot;, cardId);</span>
+
+<span class="nc" id="L415">        Card card = assertAndGetCard(cardId);</span>
+
+<span class="nc" id="L417">        return card.getActivityFlowLinksAsPrevious();</span>
+    }
+
+    /**
+     * Get all activity flow links of which the given card is the next one
+     *
+     * @param cardId the id of the card
+     *
+     * @return all activity flow links linked from the card
+     */
+    public List&lt;ActivityFlowLink&gt; getActivityFlowLinkAsNext(Long cardId) {
+<span class="nc" id="L428">        logger.debug(&quot;get activity flow links where the card #{} is the next one&quot;, cardId);</span>
+
+<span class="nc" id="L430">        Card card = assertAndGetCard(cardId);</span>
+
+<span class="nc" id="L432">        return card.getActivityFlowLinksAsNext();</span>
+    }
+
+    /**
+     * Retrieve the list of access-control for the given card
+     *
+     * @param cardId id of the card
+     *
+     * @return list of access-control
+     */
+    public List&lt;AccessControl&gt; getAcls(Long cardId) {
+<span class="nc" id="L443">        logger.debug(&quot;Get Card #{} access-control list&quot;, cardId);</span>
+
+<span class="nc" id="L445">        Card card = assertAndGetCard(cardId);</span>
+
+<span class="nc" id="L447">        return card.getAccessControlList();</span>
+    }
+
+    // *********************************************************************************************
+    // dedicated to access control
+    // *********************************************************************************************
+
+    // *********************************************************************************************
+    // integrity check
+    // *********************************************************************************************
+
+    /**
+     * Check the integrity of the card
+     *
+     * @param card the card to check
+     *
+     * @return true iff the card is complete and safe
+     */
+    public boolean checkIntegrity(Card card) {
+<span class="nc bnc" id="L466" title="All 2 branches missed.">        if (card == null) {</span>
+<span class="nc" id="L467">            return false;</span>
+        }
+
+<span class="nc bnc" id="L470" title="All 4 branches missed.">        if (!(isARootCard(card) || card.hasCardType())) {</span>
+<span class="nc" id="L471">            return false;</span>
+        }
+
+<span class="nc" id="L474">        return true;</span>
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.security.permissions;
 
-import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.api.ejb.SecurityFacade;
+import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
@@ -65,17 +65,17 @@ public final class Conditions {
          * Evaluate the condition
          *
          * @param requestManager the request Manager
-         * @param securityFacade the security facade
+         * @param securityManager the security manager
          *
          * @return evaluation result
          */
-        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
+        public boolean eval(RequestManager requestManager, SecurityManager securityManager) {
 <span class="nc" id="L73">            Boolean cachedResult = requestManager.getConditionResult(this);</span>
 <span class="nc bnc" id="L74" title="All 2 branches missed.">            if (cachedResult != null) {</span>
 <span class="nc" id="L75">                logger.trace(&quot;Condition {} is cached and {}&quot;, this, cachedResult);</span>
 <span class="nc" id="L76">                return cachedResult;</span>
             } else {
-<span class="nc" id="L78">                boolean result = this.internalEval(requestManager, securityFacade);</span>
+<span class="nc" id="L78">                boolean result = this.internalEval(requestManager, securityManager);</span>
 <span class="nc" id="L79">                logger.trace(&quot;Condition {} is not cached and {}&quot;, this, result);</span>
 <span class="nc" id="L80">                requestManager.registerConditionResult(this, result);</span>
 <span class="nc" id="L81">                return result;</span>
@@ -86,12 +86,12 @@ public final class Conditions {
          * Evaluate the condition
          *
          * @param requestManager the request Manager
-         * @param securityFacade the security facade
+         * @param securityManager the security manager
          *
          * @return evaluation result
          */
         protected abstract boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade);
+            SecurityManager securityManager);
     }
 
     /**
@@ -101,7 +101,7 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
 <span class="nc" id="L105">            return true;</span>
         }
 
@@ -130,7 +130,7 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
 <span class="nc" id="L134">            return false;</span>
         }
 
@@ -172,9 +172,9 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
 <span class="nc bnc" id="L176" title="All 2 branches missed.">            for (Condition c : conditions) {</span>
-<span class="nc bnc" id="L177" title="All 2 branches missed.">                if (!c.eval(requestManager, securityFacade)) {</span>
+<span class="nc bnc" id="L177" title="All 2 branches missed.">                if (!c.eval(requestManager, securityManager)) {</span>
                     // not all conditions are true =&gt; false
 <span class="nc" id="L179">                    return false;</span>
                 }
@@ -233,9 +233,9 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
 <span class="nc bnc" id="L237" title="All 2 branches missed.">            for (Condition c : conditions) {</span>
-<span class="nc bnc" id="L238" title="All 2 branches missed.">                if (c.eval(requestManager, securityFacade)) {</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">                if (c.eval(requestManager, securityManager)) {</span>
                     // at least on sub condition is true =&gt; true
 <span class="nc" id="L240">                    return true;</span>
                 }
@@ -295,9 +295,9 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
             // just invert the given sub-conditions
-<span class="nc bnc" id="L300" title="All 2 branches missed.">            return !condition.eval(requestManager, securityFacade);</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">            return !condition.eval(requestManager, securityManager);</span>
         }
 
         @Override
@@ -350,7 +350,7 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
 <span class="nc" id="L354">            User currentUser = requestManager.getCurrentUser();</span>
 <span class="nc bnc" id="L355" title="All 4 branches missed.">            return currentUser != null &amp;&amp; currentUser.equals(user);</span>
         }
@@ -405,8 +405,8 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-<span class="nc" id="L409">            return securityFacade.isCurrentUserMemberOfTheProjectTeam(project);</span>
+            SecurityManager securityManager) {
+<span class="nc" id="L409">            return securityManager.isCurrentUserMemberOfTheProjectTeam(project);</span>
         }
 
         @Override
@@ -459,8 +459,8 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-<span class="nc" id="L463">            return securityFacade.isCurrentUserOwnerOfTheProject(project);</span>
+            SecurityManager securityManager) {
+<span class="nc" id="L463">            return securityManager.isCurrentUserOwnerOfTheProject(project);</span>
         }
 
         @Override
@@ -513,8 +513,8 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-<span class="nc" id="L517">            return securityFacade.isCurrentUserLeaderOfTheProject(project);</span>
+            SecurityManager securityManager) {
+<span class="nc" id="L517">            return securityManager.isCurrentUserLeaderOfTheProject(project);</span>
         }
 
         @Override
@@ -567,8 +567,8 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-<span class="nc" id="L571">            return securityFacade.isCurrentUserInternToProject(project);</span>
+            SecurityManager securityManager) {
+<span class="nc" id="L571">            return securityManager.isCurrentUserInternToProject(project);</span>
         }
 
         @Override
@@ -621,9 +621,9 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
 <span class="nc" id="L625">            User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L626" title="All 4 branches missed.">            return currentUser != null &amp;&amp; securityFacade.areUserTeammate(currentUser, this.user);</span>
+<span class="nc bnc" id="L626" title="All 4 branches missed.">            return currentUser != null &amp;&amp; securityManager.areUserTeammate(currentUser, this.user);</span>
         }
 
         @Override
@@ -664,7 +664,7 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
 <span class="nc" id="L668">            return requestManager.isAuthenticated();</span>
         }
 
@@ -705,8 +705,8 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-<span class="nc" id="L709">            return securityFacade.hasReadWriteAccess(card);</span>
+            SecurityManager securityManager) {
+<span class="nc" id="L709">            return securityManager.hasReadWriteAccess(card);</span>
         }
 
         @Override
@@ -768,8 +768,8 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-<span class="nc" id="L772">            return securityFacade.hasReadAccess(card);</span>
+            SecurityManager securityManager) {
+<span class="nc" id="L772">            return securityManager.hasReadAccess(card);</span>
         }
 
         @Override

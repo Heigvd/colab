@@ -28,9 +28,9 @@
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.team.TeamRole;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.token.InvitationToken;
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.token.Token;
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.card.CardTypeCreationBean;
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.document.ResourceCreationBean;
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.link.StickyNoteLinkCreationBean;
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.card.bean.CardTypeCreationBean;
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.document.bean.ResourceCreationBean;
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.<strong class="jxr_keyword">rest</strong>.link.bean.StickyNoteLinkCreationBean;
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.client.ColabClient;
 <a class="jxr_linenumber" name="L27" href="#L27">27</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.mailhog.MailhogClient;
 <a class="jxr_linenumber" name="L28" href="#L28">28</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.tests.mailhog.model.Message;
@@ -241,7 +241,7 @@
 <a class="jxr_linenumber" name="L233" href="#L233">233</a> <em class="jxr_javadoccomment">     * @return the new block</em>
 <a class="jxr_linenumber" name="L234" href="#L234">234</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> Block addBlockToDocument(ColabClient client, Long documentId) {
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>         <strong class="jxr_keyword">return</strong> client.blockRestEndPoint.createNewTextDataBlock(documentId);
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>         <strong class="jxr_keyword">return</strong> client.blockRestEndpoint.createNewTextDataBlock(documentId);
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>     }
 <a class="jxr_linenumber" name="L238" href="#L238">238</a> 
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>     <em class="jxr_javadoccomment">/**</em>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ApplicationLifecycleManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.setup</a> &gt; <span class="el_source">ApplicationLifecycleManager.java</span></div><h1>ApplicationLifecycleManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.setup;
+
+import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.user.UserManager;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.setup.ColabConfiguration;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Some business method required by {@link ApplicationLifecycleManager}.
+ * &lt;p&gt;
+ * This is a required step. Without this step, beans injection and CCI context are quite messed up.
+ * &lt;p&gt;
+ * This beans shall only call methods with annotation {@link javax.ejb.TransactionAttribute} set to
+ * {@link javax.ejb.TransactionAttributeType#REQUIRES_NEW}.
+ * &lt;p&gt;
+ * @author maxence
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L33">public class ApplicationLifecycleManager {</span>
+
+    /**
+     * Logger. Default level, set in logback.xml, is INFO
+     */
+<span class="nc" id="L38">    private static final Logger logger = LoggerFactory.getLogger(ApplicationLifecycleManager.class);</span>
+
+    /**
+     * User persistence
+     */
+    @Inject
+    private UserDao userDao;
+
+    /**
+     * User management
+     */
+    @Inject
+    private UserManager userManager;
+
+    /**
+     * request manager
+     */
+    @Inject
+    private RequestManager requestManager;
+
+    /**
+     * Create a default admin user if there is no admin at all.
+     */
+    public void createDefaultAdminIfNone() {
+<span class="nc" id="L62">        requestManager.sudo(() -&gt; {</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">            if (userDao.findAllAdmin().isEmpty()) {</span>
+                try {
+<span class="nc" id="L65">                    logger.info(&quot;No admin exists, create one&quot;);</span>
+                    //make sure to create the user within a brand new transaction
+<span class="nc" id="L67">                    User admin = userManager.createAdminUserTx(</span>
+<span class="nc" id="L68">                        ColabConfiguration.getDefaultAdminUsername(),</span>
+<span class="nc" id="L69">                        ColabConfiguration.getDefaultAdminEmail(),</span>
+<span class="nc" id="L70">                        ColabConfiguration.getDefaultAdminPassword()</span>
+                    );
+<span class="nc" id="L72">                    logger.info(&quot;New admin user: {}&quot;, admin);</span>
+<span class="nc" id="L73">                } catch (HttpErrorMessage ex) {</span>
+<span class="nc" id="L74">                    logger.error(</span>
+                        &quot;Fails to create default amdin user. Does non-admin user exists with same username or email address&quot;);
+<span class="nc" id="L76">                } catch (RuntimeException ex) {</span>
+<span class="nc" id="L77">                    logger.error(</span>
+                        &quot;Fails to create default amdin user for some unknown reason. Please check config&quot;,
+                        ex);
+<span class="nc" id="L80">                }</span>
+            }
+<span class="nc" id="L82">        });</span>
+<span class="nc" id="L83">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

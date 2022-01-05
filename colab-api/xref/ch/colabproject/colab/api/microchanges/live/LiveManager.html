@@ -14,8 +14,8 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.microchanges.live;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.RequestManager;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.EntityGatheringBagForPropagation;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.RequestManager;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.exceptions.ColabMergeException;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.microchanges.model.Change;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.microchanges.tools.CancelDebounce;
@@ -76,13 +76,13 @@
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      <em class="jxr_javadoccomment">/** The request manager */</em>
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      @Inject
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>      <strong class="jxr_keyword">private</strong> <a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager;
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      <strong class="jxr_keyword">private</strong> <a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager;
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">     * To register changes as updated object</em>
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>      @Inject
-<a class="jxr_linenumber" name="L77" href="#L77">77</a>      <strong class="jxr_keyword">private</strong> <a name="EntityGatheringBagForPropagation" href="../../../../../../ch/colabproject/colab/api/ejb/EntityGatheringBagForPropagation.html#EntityGatheringBagForPropagation">EntityGatheringBagForPropagation</a> transactionManager;
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>      <strong class="jxr_keyword">private</strong> <a name="EntityGatheringBagForPropagation" href="../../../../../../ch/colabproject/colab/api/controller/EntityGatheringBagForPropagation.html#EntityGatheringBagForPropagation">EntityGatheringBagForPropagation</a> transactionManager;
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>  <em class="jxr_javadoccomment">     * Get the lock for the given block id</em>
@@ -199,7 +199,7 @@
 <a class="jxr_linenumber" name="L191" href="#L191">191</a> 
 <a class="jxr_linenumber" name="L192" href="#L192">192</a> <em class="jxr_comment">//                try {</em>
 <a class="jxr_linenumber" name="L193" href="#L193">193</a> <em class="jxr_comment">//                    PrecomputedWsMessages msg = WebsocketHelper.prepareWsMessage(userDao, block.getChannels(), message);</em>
-<a class="jxr_linenumber" name="L194" href="#L194">194</a> <em class="jxr_comment">//                    websocketFacade.propagate(msg);</em>
+<a class="jxr_linenumber" name="L194" href="#L194">194</a> <em class="jxr_comment">//                    websocketManager.propagate(msg);</em>
 <a class="jxr_linenumber" name="L195" href="#L195">195</a> <em class="jxr_comment">//                } catch (EncodeException ex) {</em>
 <a class="jxr_linenumber" name="L196" href="#L196">196</a> <em class="jxr_comment">//                    logger.error("Live update error: precompute failed");</em>
 <a class="jxr_linenumber" name="L197" href="#L197">197</a> <em class="jxr_comment">//                }</em>
@@ -279,7 +279,7 @@
 <a class="jxr_linenumber" name="L271" href="#L271">271</a> <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="L272" href="#L272">272</a> <em class="jxr_comment">//            try {</em>
 <a class="jxr_linenumber" name="L273" href="#L273">273</a> <em class="jxr_comment">//                PrecomputedWsMessages msg = WebsocketHelper.prepareWsMessage(userDao, block.getChannels(), message);</em>
-<a class="jxr_linenumber" name="L274" href="#L274">274</a> <em class="jxr_comment">//                websocketFacade.propagate(msg);</em>
+<a class="jxr_linenumber" name="L274" href="#L274">274</a> <em class="jxr_comment">//                websocketManager.propagate(msg);</em>
 <a class="jxr_linenumber" name="L275" href="#L275">275</a> <em class="jxr_comment">//            } catch (EncodeException ex) {</em>
 <a class="jxr_linenumber" name="L276" href="#L276">276</a> <em class="jxr_comment">//                logger.error("Live update error: precompute failed");</em>
 <a class="jxr_linenumber" name="L277" href="#L277">277</a> <em class="jxr_comment">//            }</em>

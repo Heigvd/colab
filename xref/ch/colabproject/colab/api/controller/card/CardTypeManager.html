@@ -15,8 +15,8 @@
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.controller.card;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.ProjectFacade;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.SecurityFacade;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.project.ProjectManager;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.security.SecurityManager;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.AbstractCardType;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.CardType;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.CardTypeRef;
@@ -60,7 +60,7 @@
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  <em class="jxr_javadoccomment">     * Access control manager</em>
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      @Inject
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">private</strong> <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">private</strong> <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager;
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  <em class="jxr_javadoccomment">     * Card type persistence handler</em>
@@ -72,7 +72,7 @@
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">     * Project specific logic management</em>
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      @Inject
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">private</strong> <a name="ProjectFacade" href="../../../../../../ch/colabproject/colab/api/ejb/ProjectFacade.html#ProjectFacade">ProjectFacade</a> projectManager;
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>      <strong class="jxr_keyword">private</strong> <a name="ProjectManager" href="../../../../../../ch/colabproject/colab/api/controller/project/ProjectManager.html#ProjectManager">ProjectManager</a> projectManager;
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      <em class="jxr_comment">// *********************************************************************************************</em>
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>      <em class="jxr_comment">// find card types and references</em>
@@ -359,7 +359,7 @@
 <a class="jxr_linenumber" name="L351" href="#L351">351</a> <em class="jxr_javadoccomment">     * @return the ids of the matching card types or references</em>
 <a class="jxr_linenumber" name="L352" href="#L352">352</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L353" href="#L353">353</a>     <strong class="jxr_keyword">private</strong> List&lt;Long&gt; findCurrentUserDirectProjectsCardTypesIds() {
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>         User user = securityFacade.assertAndGetCurrentUser();
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>         User user = securityManager.assertAndGetCurrentUser();
 <a class="jxr_linenumber" name="L355" href="#L355">355</a> 
 <a class="jxr_linenumber" name="L356" href="#L356">356</a>         List&lt;Long&gt; cardTypeOrRefIds = cardTypeDao.getUserProjectCardTypeIds(user.getId());
 <a class="jxr_linenumber" name="L357" href="#L357">357</a> 

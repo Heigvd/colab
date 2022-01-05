@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ProjectManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.project</a> &gt; <span class="el_source">ProjectManager.java</span></div><h1>ProjectManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.project;
+
+import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.card.CardManager;
+import ch.colabproject.colab.api.controller.card.CardTypeManager;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
+import ch.colabproject.colab.api.controller.team.TeamManager;
+import ch.colabproject.colab.api.model.card.AbstractCardType;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.project.ProjectDao;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Project specific logic
+ *
+ * @author maxence
+ * @author sandra
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L42">public class ProjectManager {</span>
+
+    /** logger */
+<span class="nc" id="L45">    private static final Logger logger = LoggerFactory.getLogger(ProjectManager.class);</span>
+
+    // *********************************************************************************************
+    // injections
+    // *********************************************************************************************
+
+    /**
+     * To control access
+     */
+    @Inject
+    private SecurityManager securityManager;
+
+    /**
+     * Request management
+     */
+    @Inject
+    private RequestManager requestManager;
+
+    /**
+     * Project persistence handler
+     */
+    @Inject
+    private ProjectDao projectDao;
+
+    /**
+     * Team specific logic management
+     */
+    @Inject
+    private TeamManager teamManager;
+
+    /**
+     * Card specific logic management
+     */
+    @Inject
+    private CardManager cardManager;
+
+    /**
+     * Card type specific logic management
+     */
+    @Inject
+    private CardTypeManager cardTypeManager;
+
+    // *********************************************************************************************
+    // find projects
+    // *********************************************************************************************
+
+    /**
+     * Retrieve the project. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param projectId the id of the project
+     *
+     * @return the project if found
+     *
+     * @throws HttpErrorMessage if the project was not found
+     */
+    public Project assertAndGetProject(Long projectId) {
+<span class="nc" id="L101">        Project project = projectDao.getProject(projectId);</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (project == null) {</span>
+<span class="nc" id="L104">            logger.error(&quot;project #{} not found&quot;, projectId);</span>
+<span class="nc" id="L105">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+
+<span class="nc" id="L108">        return project;</span>
+    }
+
+    /**
+     * Retrieve all projects the current user is member of
+     *
+     * @return list of matching projects
+     */
+    public List&lt;Project&gt; findProjectsOfCurrentUser() {
+<span class="nc" id="L117">        User user = securityManager.assertAndGetCurrentUser();</span>
+
+<span class="nc" id="L119">        List&lt;Project&gt; projects = projectDao.getUserProject(user.getId());</span>
+
+<span class="nc" id="L121">        logger.debug(&quot;found projects where the user {} is a team member : {}&quot;, user, projects);</span>
+
+<span class="nc" id="L123">        return projects;</span>
+    }
+
+    // *********************************************************************************************
+    // life cycle
+    // *********************************************************************************************
+
+    /**
+     * Complete and persist the given project and add the current user to the project team
+     *
+     * @param project project to persist
+     *
+     * @return the new persisted project
+     */
+    public Project createProject(Project project) {
+        try {
+<span class="nc" id="L139">            return requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L140">                logger.debug(&quot;Create project: {}&quot;, project);</span>
+
+<span class="nc" id="L142">                Card rootCard = cardManager.initNewRootCard();</span>
+
+<span class="nc" id="L144">                project.setRootCard(rootCard);</span>
+<span class="nc" id="L145">                rootCard.setRootCardProject(project);</span>
+
+<span class="nc" id="L147">                User user = securityManager.assertAndGetCurrentUser();</span>
+<span class="nc" id="L148">                teamManager.addMember(project, user, HierarchicalPosition.OWNER);</span>
+
+<span class="nc" id="L150">                return projectDao.createProject(project);</span>
+            });
+<span class="nc" id="L152">        } catch (RuntimeException ex) {</span>
+<span class="nc" id="L153">            throw ex;</span>
+<span class="nc" id="L154">        } catch (Exception ex) {</span>
+<span class="nc" id="L155">            return null;</span>
+        }
+    }
+
+    // *********************************************************************************************
+    // retrieve the elements of a project
+    // *********************************************************************************************
+
+    /**
+     * Get the root card of the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return The root card linked to the project
+     */
+    public Card getRootCard(Long projectId) {
+<span class="nc" id="L171">        logger.debug(&quot;get the root card of the project #{}&quot;, projectId);</span>
+
+<span class="nc" id="L173">        Project project = assertAndGetProject(projectId);</span>
+
+<span class="nc" id="L175">        return project.getRootCard();</span>
+    }
+
+    /**
+     * Get all cards of the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return all cards of the project
+     */
+    public Set&lt;Card&gt; getCards(Long projectId) {
+<span class="nc" id="L186">        logger.debug(&quot;get all card of project #{}&quot;, projectId);</span>
+
+<span class="nc" id="L188">        Project project = assertAndGetProject(projectId);</span>
+
+<span class="nc" id="L190">        return cardManager.getAllCards(project.getRootCard());</span>
+    }
+
+    /**
+     * Get all cardContents of the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return all cards contents of the project
+     */
+    public Set&lt;CardContent&gt; getCardContents(Long projectId) {
+<span class="nc" id="L201">        logger.debug(&quot;get all card contents of project #{}&quot;, projectId);</span>
+
+<span class="nc" id="L203">        Project project = assertAndGetProject(projectId);</span>
+
+<span class="nc" id="L205">        return cardManager.getAllCardContents(project.getRootCard());</span>
+    }
+
+    /**
+     * Get all card types of the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return all card types of the project
+     */
+    public Set&lt;AbstractCardType&gt; getCardTypes(Long projectId) {
+<span class="nc" id="L216">        logger.debug(&quot;get card types of project #{}&quot;, projectId);</span>
+
+<span class="nc" id="L218">        Project project = assertAndGetProject(projectId);</span>
+
+<span class="nc" id="L220">        return cardTypeManager.getExpandedProjectTypes(project);</span>
+    }
+
+    /**
+     * Get all activity flow links belonging to the given project
+     *
+     * @param projectId the id of the project
+     *
+     * @return all activityFlowLinks linked to the project
+     */
+    public Set&lt;ActivityFlowLink&gt; getActivityFlowLinks(Long projectId) {
+<span class="nc" id="L231">        logger.debug(&quot;Get activity flow links of project #{}&quot;, projectId);</span>
+
+<span class="nc" id="L233">        Project project = assertAndGetProject(projectId);</span>
+
+<span class="nc" id="L235">        return cardManager</span>
+<span class="nc" id="L236">            .getAllCards(project.getRootCard())</span>
+<span class="nc" id="L237">            .stream().flatMap(card -&gt; {</span>
+<span class="nc" id="L238">                return card.getActivityFlowLinksAsPrevious().stream();</span>
+<span class="nc" id="L239">            }).collect(Collectors.toSet());</span>
+    }
+
+    // *********************************************************************************************
+    // dedicated to access control
+    // *********************************************************************************************
+
+    /**
+     * Retrieve the ids of the projects the current user is a member of.
+     * &lt;p&gt;
+     * We do not load the java objects. Just work with the ids. Two reasons : 1. the ids are enough,
+     * so it is lighter + 2. prevent from loading object the user is not allowed to read
+     *
+     * @return the ids of the matching projects
+     */
+    public List&lt;Long&gt; findIdsOfProjectsOfCurrentUser() {
+<span class="nc" id="L255">        User user = securityManager.assertAndGetCurrentUser();</span>
+
+<span class="nc" id="L257">        List&lt;Long&gt; projectsIds = projectDao.getIdsOfProjectUserIsMemberOf(user.getId());</span>
+
+<span class="nc" id="L259">        logger.debug(&quot;found projects' id where the user {} is a team member : {}&quot;, user,</span>
+            projectsIds);
+
+<span class="nc" id="L262">        return projectsIds;</span>
+    }
+
+    /**
+     * Retrieve the ids of the project for which the current user can read at least one local card
+     * type or reference
+     * &lt;p&gt;
+     * We do not load the java objects. Just work with the ids. Two reasons : 1. the ids are enough,
+     * so it is lighter + 2. prevent from loading object the user is not allowed to read
+     *
+     * @return the ids of the matching projects
+     */
+    public List&lt;Long&gt; findIdsOfProjectsReadableThroughCardTypes() {
+<span class="nc" id="L275">        List&lt;Long&gt; cardTypeOrRefIds = cardTypeManager.findCurrentUserReadableProjectsCardTypesIds();</span>
+
+<span class="nc" id="L277">        List&lt;Long&gt; projectsIds = cardTypeManager.findProjectIdsFromCardTypeIds(cardTypeOrRefIds);</span>
+
+<span class="nc" id="L279">        logger.debug(&quot;found projects from readable card types {} : {}&quot;, cardTypeOrRefIds,</span>
+            projectsIds);
+
+<span class="nc" id="L282">        return projectsIds;</span>
+    }
+
+    // *********************************************************************************************
+    // integrity check
+    // *********************************************************************************************
+
+    /**
+     * Check the integrity of the project
+     *
+     * @param project the project to check
+     *
+     * @return true iff the project is complete and safe
+     */
+    public boolean checkIntegrity(Project project) {
+<span class="nc bnc" id="L297" title="All 2 branches missed.">        if (project == null) {</span>
+<span class="nc" id="L298">            return false;</span>
+        }
+
+<span class="nc bnc" id="L301" title="All 2 branches missed.">        if (project.getRootCard() == null) {</span>
+<span class="nc" id="L302">            return false;</span>
+        }
+
+<span class="nc" id="L305">        List&lt;TeamMember&gt; teamMembers = new ArrayList&lt;&gt;(project.getTeamMembers());</span>
+<span class="nc bnc" id="L306" title="All 2 branches missed.">        if (teamMembers == null</span>
+<span class="nc bnc" id="L307" title="All 4 branches missed.">            || teamMembers.stream().noneMatch(m -&gt; m.getPosition() == HierarchicalPosition.OWNER)) {</span>
+<span class="nc" id="L308">            return false;</span>
+        }
+
+<span class="nc" id="L311">        return true;</span>
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>BlockRestEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.document</a> &gt; <span class="el_source">BlockRestEndpoint.java</span></div><h1>BlockRestEndpoint.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.document;
+
+import ch.colabproject.colab.api.controller.document.BlockManager;
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.microchanges.live.LiveManager;
+import ch.colabproject.colab.api.microchanges.model.Change;
+import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import ch.colabproject.colab.api.persistence.document.BlockDao;
+import ch.colabproject.colab.generator.model.annotations.AdminResource;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import java.util.List;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * REST block controller
+ *
+ * @author sandra
+ */
+@Path(&quot;blocks&quot;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@AuthenticationRequired
+<span class="nc" id="L41">public class BlockRestEndpoint {</span>
+
+    /** logger */
+<span class="nc" id="L44">    private static final Logger logger = LoggerFactory.getLogger(BlockRestEndpoint.class);</span>
+
+    /**
+     * The block persistence manager
+     */
+    @Inject
+    private BlockDao blockDao;
+
+    /**
+     * The block-related logic
+     */
+    @Inject
+    private BlockManager blockManager;
+
+    /** Live changes manager */
+    @Inject
+    private LiveManager liveManager;
+
+    /**
+     * Get the block identified by the given id
+     *
+     * @param id id of the block to fetch
+     *
+     * @return the block or null
+     */
+    @GET
+    @Path(&quot;{id}&quot;)
+    public Block getBlock(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L72">        logger.debug(&quot;get block #{}&quot;, id);</span>
+<span class="nc" id="L73">        return blockDao.findBlock(id);</span>
+    }
+
+    /**
+     * Save changes to database
+     *
+     * @param block block to update
+     *
+     * @throws ColabMergeException if the merge is impossible
+     */
+    @PUT
+    public void updateBlock(Block block) throws ColabMergeException {
+<span class="nc" id="L85">        logger.debug(&quot;update block {}&quot;, block);</span>
+<span class="nc" id="L86">        blockDao.updateBlock(block);</span>
+<span class="nc" id="L87">    }</span>
+
+    /**
+     * Get all pending changes for given block.
+     *
+     * @param id id of the block
+     *
+     * @return list of changes.
+     */
+    @GET
+    @Path(&quot;/{id}/changes&quot;)
+    public List&lt;Change&gt; getChanges(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L99">        return liveManager.getPendingChanges(id);</span>
+    }
+
+    /**
+     * Patch a block with a change
+     *
+     * @param id     id of the block
+     * @param change change
+     */
+    @PUT
+    @Path(&quot;/{id}&quot;)
+    public void patchBlock(@PathParam(&quot;id&quot;) Long id, Change change) {
+<span class="nc" id="L111">        liveManager.patchBlock(id, change);</span>
+<span class="nc" id="L112">    }</span>
+
+    /**
+     * Patch a block with a change
+     *
+     * @param id id of the block
+     */
+    @PUT
+    @Path(&quot;/{id}/dropChanges&quot;)
+    @AdminResource
+    public void deletePendingChanges(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L123">        liveManager.deletePendingChangesAndPropagate(id);</span>
+<span class="nc" id="L124">    }</span>
+
+    /**
+     * Persist the block
+     *
+     * @param block the block to persist
+     *
+     * @return id of the persisted new block
+     */
+    @POST
+    public Long createBlock(Block block) {
+<span class="nc" id="L135">        logger.debug(&quot;create block {}&quot;, block);</span>
+<span class="nc" id="L136">        return blockManager.createBlock(block).getId();</span>
+    }
+
+    /**
+     * Create and persist a new text data block
+     *
+     * @param documentId the id of the document it belongs to
+     *
+     * @return the new persisted text data block
+     */
+    @POST
+    @Path(&quot;newTextData/{documentId}&quot;)
+    public Block createNewTextDataBlock(@PathParam(&quot;documentId&quot;) Long documentId) {
+<span class="nc" id="L149">        logger.debug(&quot;create new text data block for document #{}&quot;, documentId);</span>
+<span class="nc" id="L150">        return blockManager.createTextDataBlock(documentId);</span>
+    }
+
+    /**
+     * Permanently delete a block
+     *
+     * @param id id of the block to delete
+     */
+    @DELETE
+    @Path(&quot;{id}&quot;)
+    public void deleteBlock(@PathParam(&quot;id&quot;) Long id) {
+<span class="nc" id="L161">        logger.debug(&quot;delete block #{}&quot;, id);</span>
+<span class="nc" id="L162">        blockManager.deleteBlock(id);</span>
+<span class="nc" id="L163">    }</span>
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    /**
+     * Get all sticky note links where the block is the source
+     *
+     * @param blockId the id of the block
+     *
+     * @return list of links
+     */
+    @GET
+    @Path(&quot;{id}/StickyNoteLinks&quot;)
+    public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long blockId) {
+<span class="nc" id="L179">        logger.debug(&quot;Get sticky note links where block #{} is the source&quot;, blockId);</span>
+<span class="nc" id="L180">        return blockManager.getStickyNoteLinkAsSrc(blockId);</span>
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

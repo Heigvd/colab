@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model.token;
 
-import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;

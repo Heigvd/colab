@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>TokenManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.token</a> &gt; <span class="el_source">TokenManager.java</span></div><h1>TokenManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.token;
+
+import ch.colabproject.colab.api.Helper;
+import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
+import ch.colabproject.colab.api.controller.team.TeamManager;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
+import ch.colabproject.colab.api.model.token.InvitationToken;
+import ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken;
+import ch.colabproject.colab.api.model.token.Token;
+import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
+import ch.colabproject.colab.api.model.user.HashMethod;
+import ch.colabproject.colab.api.model.user.LocalAccount;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.token.TokenDao;
+import ch.colabproject.colab.api.service.smtp.Message;
+import ch.colabproject.colab.api.service.smtp.Sendmail;
+import ch.colabproject.colab.api.setup.ColabConfiguration;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.mail.MessagingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Process tokens
+ *
+ * @author maxence
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L45">public class TokenManager {</span>
+
+    /** logger */
+<span class="nc" id="L48">    private static final Logger logger = LoggerFactory.getLogger(TokenDao.class);</span>
+    /**
+     * to create team member
+     */
+    @Inject
+    private TeamManager teamManager;
+
+    /**
+     * To check access rights
+     */
+    @Inject
+    private SecurityManager securityManager;
+
+    /**
+     * Token persistence
+     */
+    @Inject
+    private TokenDao tokenDao;
+
+    /**
+     * request context
+     */
+    @Inject
+    private RequestManager requestManager;
+
+    /**
+     * Finalize initialization of the token and send it to the recipient.
+     * &lt;p&gt;
+     * As the plain token is not stored in the database, the token is regenerated in this method.
+     *
+     * @param token     the token to send
+     * @param recipient recipient email address
+     *
+     * @throws javax.mail.MessagingException if sending the message fails
+     */
+    public void sendTokenByEmail(Token token, String recipient) throws MessagingException {
+<span class="nc" id="L84">        logger.debug(&quot;Send token {} to {}&quot;, token, recipient);</span>
+<span class="nc" id="L85">        String plainToken = Helper.generateHexSalt(64);</span>
+<span class="nc" id="L86">        HashMethod hashMethod = Helper.getDefaultHashMethod();</span>
+<span class="nc" id="L87">        byte[] hashedToken = hashMethod.hash(plainToken, Token.SALT);</span>
+
+<span class="nc" id="L89">        token.setHashMethod(hashMethod);</span>
+<span class="nc" id="L90">        token.setHashedToken(hashedToken);</span>
+
+<span class="nc" id="L92">        String baseUrl = requestManager.getBaseUrl();</span>
+
+        // todo generate URL
+<span class="nc" id="L95">        String body = token.getEmailBody(baseUrl + &quot;/#/token/&quot; + token.getId()</span>
+            + &quot;/&quot; + plainToken);
+
+<span class="nc" id="L98">        String footer = &quot;&quot;;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (token.getExpirationDate() != null) {</span>
+<span class="nc" id="L100">            footer = &quot;&lt;br /&gt;&lt;br /&gt;&lt;i&gt;This link can be used until &quot;</span>
+<span class="nc" id="L101">                + token.getExpirationDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)</span>
+                + &quot; GMT&lt;/i&gt;&quot;;
+        }
+
+        // this log message contains sensitive information (body contains the plain-text token)
+<span class="nc" id="L106">        logger.trace(&quot;Send token {} to {} with body {}&quot;, token, recipient, body);</span>
+<span class="nc" id="L107">        Sendmail.send(</span>
+<span class="nc" id="L108">            Message.create()</span>
+<span class="nc" id="L109">                .from(&quot;noreply@&quot; + ColabConfiguration.getSmtpDomain())</span>
+<span class="nc" id="L110">                .to(recipient)</span>
+<span class="nc" id="L111">                .subject(token.getSubject())</span>
+<span class="nc" id="L112">                .htmlBody(body + footer)</span>
+<span class="nc" id="L113">                .build()</span>
+        );
+<span class="nc" id="L115">    }</span>
+
+    /**
+     * Consume the token
+     *
+     * @param id         id of the token to consume
+     * @param plainToken the plain secret token as sent by e-mail
+     *
+     * @return the consumed token
+     *
+     * @throws HttpErrorMessage notFound if the token does not exists; badRequest if token does not
+     *                          match; authenticationRequired if token requires authentication but
+     *                          current user id not
+     */
+    public Token consume(Long id, String plainToken) {
+<span class="nc" id="L130">        logger.debug(&quot;Consume token #{}&quot;, id);</span>
+<span class="nc" id="L131">        Token token = tokenDao.getToken(id);</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (token != null) {</span>
+<span class="nc bnc" id="L133" title="All 4 branches missed.">            if (token.isAuthenticationRequired() &amp;&amp; !requestManager.isAuthenticated()) {</span>
+<span class="nc" id="L134">                logger.debug(&quot;Token requires an authenticated user&quot;);</span>
+<span class="nc" id="L135">                throw HttpErrorMessage.authenticationRequired();</span>
+            } else {
+<span class="nc bnc" id="L137" title="All 2 branches missed.">                if (token.checkHash(plainToken)) {</span>
+<span class="nc" id="L138">                    requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L139">                        token.consume(requestManager);</span>
+<span class="nc" id="L140">                        tokenDao.deleteToken(token);</span>
+<span class="nc" id="L141">                    });</span>
+<span class="nc" id="L142">                    return token;</span>
+                } else {
+<span class="nc" id="L144">                    logger.debug(&quot;Provided plain-token does not match&quot;);</span>
+<span class="nc" id="L145">                    throw HttpErrorMessage.badRequest();</span>
+                }
+            }
+        } else {
+<span class="nc" id="L149">            logger.debug(&quot;There is no token #{}&quot;, id);</span>
+<span class="nc" id="L150">            throw HttpErrorMessage.notFound();</span>
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Verify email address
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Create or update a validation token.
+     * &lt;p&gt;
+     * If a validate token already exists for the given account, it will be update so there is never
+     * more than one validation token per localAccount.
+     *
+     * @param account token owner
+     *
+     * @return a brand new token or a refresh
+     */
+    public VerifyLocalAccountToken getOrCreateVerifyAccountToken(LocalAccount account) {
+<span class="nc" id="L168">        logger.debug(&quot;getOrCreate VerifyToken for {}&quot;, account);</span>
+<span class="nc" id="L169">        VerifyLocalAccountToken token = tokenDao.findVerifyTokenByAccount(account);</span>
+
+<span class="nc bnc" id="L171" title="All 2 branches missed.">        if (token == null) {</span>
+<span class="nc" id="L172">            logger.debug(&quot;no token, create one&quot;);</span>
+<span class="nc" id="L173">            token = new VerifyLocalAccountToken();</span>
+<span class="nc" id="L174">            token.setAuthenticationRequired(false);</span>
+<span class="nc" id="L175">            token.setLocalAccount(account);</span>
+<span class="nc" id="L176">            tokenDao.persistToken(token);</span>
+        }
+        //token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.WEEKS));
+<span class="nc" id="L179">        token.setExpirationDate(null);</span>
+
+<span class="nc" id="L181">        return token;</span>
+    }
+
+    /**
+     * Send a &quot;Please verify your email address&quot; message.
+     *
+     * @param account      account to verify
+     * @param failsOnError if false, silent SMTP error
+     *
+     * @throws HttpErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
+     *                          messageError if the message contains errors (eg. malformed
+     *                          addresses)
+     */
+    public void requestEmailAddressVerification(LocalAccount account, boolean failsOnError) {
+        try {
+<span class="nc" id="L196">            VerifyLocalAccountToken token = this.getOrCreateVerifyAccountToken(account);</span>
+<span class="nc" id="L197">            sendTokenByEmail(token, account.getEmail());</span>
+<span class="nc" id="L198">        } catch (MessagingException ex) {</span>
+<span class="nc" id="L199">            logger.error(&quot;Fails to send email address verification email&quot;, ex);</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">            if (failsOnError) {</span>
+<span class="nc" id="L201">                throw HttpErrorMessage.smtpError();</span>
+            }
+<span class="nc" id="L203">        }</span>
+<span class="nc" id="L204">    }</span>
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // RESET PASSWORD
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * get existing reset password token if it exists or create new one otherwise.
+     *
+     * @param account token owner
+     *
+     * @return the token to user
+     */
+    private ResetLocalAccountPasswordToken getOrCreateResetToken(LocalAccount account) {
+<span class="nc" id="L217">        logger.debug(&quot;getOrCreate Reset for {}&quot;, account);</span>
+<span class="nc" id="L218">        ResetLocalAccountPasswordToken token = tokenDao.findResetTokenByAccount(account);</span>
+
+<span class="nc bnc" id="L220" title="All 2 branches missed.">        if (token == null) {</span>
+<span class="nc" id="L221">            token = new ResetLocalAccountPasswordToken();</span>
+<span class="nc" id="L222">            logger.debug(&quot;no token, create one&quot;);</span>
+<span class="nc" id="L223">            token.setAuthenticationRequired(false);</span>
+<span class="nc" id="L224">            token.setLocalAccount(account);</span>
+<span class="nc" id="L225">            tokenDao.persistToken(token);</span>
+        }
+<span class="nc" id="L227">        token.setExpirationDate(OffsetDateTime.now().plus(1, ChronoUnit.HOURS));</span>
+
+<span class="nc" id="L229">        return token;</span>
+    }
+
+    /**
+     * Send a &quot;Click here the reset your password&quot; message.
+     *
+     * @param account      The account whose password is to be reset
+     * @param failsOnError if false, silent SMTP error
+     *
+     * @throws HttpErrorMessage smtpError if there is a SMPT error AND failsOnError is set to true
+     *                          messageError if the message contains errors (eg. malformed
+     *                          addresses)
+     */
+    public void sendResetPasswordToken(LocalAccount account, boolean failsOnError) {
+        try {
+<span class="nc" id="L244">            logger.debug(&quot;Send reset password token to {}&quot;, account);</span>
+<span class="nc" id="L245">            ResetLocalAccountPasswordToken token = this.getOrCreateResetToken(account);</span>
+<span class="nc" id="L246">            sendTokenByEmail(token, account.getEmail());</span>
+<span class="nc" id="L247">        } catch (MessagingException ex) {</span>
+<span class="nc" id="L248">            logger.error(&quot;Failed to send pssword reset email&quot;, ex);</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">            if (failsOnError) {</span>
+<span class="nc" id="L250">                throw HttpErrorMessage.smtpError();</span>
+            }
+<span class="nc" id="L252">        }</span>
+<span class="nc" id="L253">    }</span>
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Invite a new team member
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Send invitation to join the project team to the recipient.
+     *
+     * @param project   the project to join
+     * @param recipient email address to send invitation to
+     *
+     * @return the pending teamMember of null if none was sent
+     */
+    public TeamMember sendMembershipInvitation(Project project, String recipient) {
+<span class="nc" id="L267">        User currentUser = securityManager.assertAndGetCurrentUser();</span>
+
+<span class="nc" id="L269">        InvitationToken token = tokenDao.findInvitationByProjectAndRecipient(project, recipient);</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (token == null) {</span>
+            // create a member and link it to the project, but do not link it to any user
+            // this link will be set during token consumtion
+<span class="nc" id="L273">            TeamMember newMember = teamManager.addMember(project, null,</span>
+                HierarchicalPosition.INTERN);
+<span class="nc" id="L275">            token = new InvitationToken();</span>
+
+<span class="nc" id="L277">            token.setTeamMember(newMember);</span>
+            // never expire
+<span class="nc" id="L279">            token.setExpirationDate(null);</span>
+<span class="nc" id="L280">            token.setAuthenticationRequired(Boolean.TRUE);</span>
+<span class="nc" id="L281">            token.setRecipient(recipient);</span>
+
+<span class="nc" id="L283">            newMember.setDisplayName(recipient);</span>
+
+<span class="nc" id="L285">            tokenDao.persistToken(token);</span>
+        }
+
+<span class="nc" id="L288">        token.setSender(currentUser.getDisplayName());</span>
+        try {
+<span class="nc" id="L290">            sendTokenByEmail(token, recipient);</span>
+<span class="nc" id="L291">        } catch (MessagingException ex) {</span>
+<span class="nc" id="L292">            logger.error(&quot;Failed to send pssword reset email&quot;, ex);</span>
+<span class="nc" id="L293">            throw HttpErrorMessage.smtpError();</span>
+<span class="nc" id="L294">        }</span>
+<span class="nc" id="L295">        return token.getTeamMember();</span>
+    }
+
+    /**
+     * Fetch token with given id from DAO. If it's outdated, it will be destroyed and null will be
+     * returned
+     *
+     * @param id id of the token
+     *
+     * @return token if it exists and is not outdated, null otherwise
+     */
+    public Token getNotExpiredToken(Long id) {
+<span class="nc" id="L307">        Token token = tokenDao.getToken(id);</span>
+<span class="nc bnc" id="L308" title="All 4 branches missed.">        if (token != null &amp;&amp; token.isOutdated()) {</span>
+<span class="nc" id="L309">            requestManager.sudo(() -&gt; tokenDao.deleteToken(token));</span>
+<span class="nc" id="L310">            return null;</span>
+        } else {
+<span class="nc" id="L312">            return token;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

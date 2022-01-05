@@ -14,8 +14,8 @@
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">package</strong> ch.colabproject.colab.api.security.permissions;
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
-<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.RequestManager;
-<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ejb.SecurityFacade;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.RequestManager;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.security.SecurityManager;
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.Card;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.card.CardContent;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.project.Project;
@@ -73,17 +73,17 @@
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>  <em class="jxr_javadoccomment">         * Evaluate the condition</em>
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  <em class="jxr_javadoccomment">         *</em>
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">         * @param requestManager the request Manager</em>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">         * @param securityFacade the security facade</em>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">         * @param securityManager the security manager</em>
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment">         *</em>
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment">         * @return evaluation result</em>
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>  <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L72" href="#L72">72</a>          <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> eval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager, <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> eval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager, <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>              Boolean cachedResult = requestManager.getConditionResult(<strong class="jxr_keyword">this</strong>);
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>              <strong class="jxr_keyword">if</strong> (cachedResult != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>                  logger.trace(<span class="jxr_string">"Condition {} is cached and {}"</span>, <strong class="jxr_keyword">this</strong>, cachedResult);
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>                  <strong class="jxr_keyword">return</strong> cachedResult;
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>              } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L78" href="#L78">78</a>                  <strong class="jxr_keyword">boolean</strong> result = <strong class="jxr_keyword">this</strong>.internalEval(requestManager, securityFacade);
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>                  <strong class="jxr_keyword">boolean</strong> result = <strong class="jxr_keyword">this</strong>.internalEval(requestManager, securityManager);
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>                  logger.trace(<span class="jxr_string">"Condition {} is not cached and {}"</span>, <strong class="jxr_keyword">this</strong>, result);
 <a class="jxr_linenumber" name="L80" href="#L80">80</a>                  requestManager.registerConditionResult(<strong class="jxr_keyword">this</strong>, result);
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>                  <strong class="jxr_keyword">return</strong> result;
@@ -94,12 +94,12 @@
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  <em class="jxr_javadoccomment">         * Evaluate the condition</em>
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>  <em class="jxr_javadoccomment">         *</em>
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  <em class="jxr_javadoccomment">         * @param requestManager the request Manager</em>
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">         * @param securityFacade the security facade</em>
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">         * @param securityManager the security manager</em>
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">         *</em>
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">         * @return evaluation result</em>
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>  <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>          <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L94" href="#L94">94</a>              <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade);
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>          <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">abstract</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>              <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager);
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      }
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>  
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>      <em class="jxr_javadoccomment">/**</em>
@@ -108,8 +108,8 @@
 <a class="jxr_linenumber" name="L100" href="#L100">100</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> AlwaysTrue <strong class="jxr_keyword">extends</strong> Condition {
 <a class="jxr_linenumber" name="L101" href="#L101">101</a> 
 <a class="jxr_linenumber" name="L102" href="#L102">102</a>         @Override
-<a class="jxr_linenumber" name="L103" href="#L103">103</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
+<a class="jxr_linenumber" name="L103" href="#L103">103</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>         }
 <a class="jxr_linenumber" name="L107" href="#L107">107</a> 
@@ -137,8 +137,8 @@
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> AlwaysFalse <strong class="jxr_keyword">extends</strong> Condition {
 <a class="jxr_linenumber" name="L130" href="#L130">130</a> 
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>         @Override
-<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>             <strong class="jxr_keyword">return</strong> false;
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         }
 <a class="jxr_linenumber" name="L136" href="#L136">136</a> 
@@ -179,10 +179,10 @@
 <a class="jxr_linenumber" name="L171" href="#L171">171</a>         }
 <a class="jxr_linenumber" name="L172" href="#L172">172</a> 
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>         @Override
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>             <strong class="jxr_keyword">for</strong> (Condition c : conditions) {
-<a class="jxr_linenumber" name="L177" href="#L177">177</a>                 <strong class="jxr_keyword">if</strong> (!c.eval(requestManager, securityFacade)) {
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>                 <strong class="jxr_keyword">if</strong> (!c.eval(requestManager, securityManager)) {
 <a class="jxr_linenumber" name="L178" href="#L178">178</a>                     <em class="jxr_comment">// not all conditions are true =&gt; false</em>
 <a class="jxr_linenumber" name="L179" href="#L179">179</a>                     <strong class="jxr_keyword">return</strong> false;
 <a class="jxr_linenumber" name="L180" href="#L180">180</a>                 }
@@ -240,10 +240,10 @@
 <a class="jxr_linenumber" name="L232" href="#L232">232</a>         }
 <a class="jxr_linenumber" name="L233" href="#L233">233</a> 
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>         @Override
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>             <strong class="jxr_keyword">for</strong> (Condition c : conditions) {
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>                 <strong class="jxr_keyword">if</strong> (c.eval(requestManager, securityFacade)) {
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>                 <strong class="jxr_keyword">if</strong> (c.eval(requestManager, securityManager)) {
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>                     <em class="jxr_comment">// at least on sub condition is true =&gt; true</em>
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>                     <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>                 }
@@ -302,10 +302,10 @@
 <a class="jxr_linenumber" name="L294" href="#L294">294</a>         }
 <a class="jxr_linenumber" name="L295" href="#L295">295</a> 
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>         @Override
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
 <a class="jxr_linenumber" name="L299" href="#L299">299</a>             <em class="jxr_comment">// just invert the given sub-conditions</em>
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>             <strong class="jxr_keyword">return</strong> !condition.eval(requestManager, securityFacade);
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>             <strong class="jxr_keyword">return</strong> !condition.eval(requestManager, securityManager);
 <a class="jxr_linenumber" name="L301" href="#L301">301</a>         }
 <a class="jxr_linenumber" name="L302" href="#L302">302</a> 
 <a class="jxr_linenumber" name="L303" href="#L303">303</a>         @Override
@@ -357,8 +357,8 @@
 <a class="jxr_linenumber" name="L349" href="#L349">349</a>         }
 <a class="jxr_linenumber" name="L350" href="#L350">350</a> 
 <a class="jxr_linenumber" name="L351" href="#L351">351</a>         @Override
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
 <a class="jxr_linenumber" name="L354" href="#L354">354</a>             User currentUser = requestManager.getCurrentUser();
 <a class="jxr_linenumber" name="L355" href="#L355">355</a>             <strong class="jxr_keyword">return</strong> currentUser != <strong class="jxr_keyword">null</strong> &amp;&amp; currentUser.equals(user);
 <a class="jxr_linenumber" name="L356" href="#L356">356</a>         }
@@ -412,9 +412,9 @@
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>         }
 <a class="jxr_linenumber" name="L405" href="#L405">405</a> 
 <a class="jxr_linenumber" name="L406" href="#L406">406</a>         @Override
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>             <strong class="jxr_keyword">return</strong> securityFacade.isCurrentUserMemberOfTheProjectTeam(project);
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>             <strong class="jxr_keyword">return</strong> securityManager.isCurrentUserMemberOfTheProjectTeam(project);
 <a class="jxr_linenumber" name="L410" href="#L410">410</a>         }
 <a class="jxr_linenumber" name="L411" href="#L411">411</a> 
 <a class="jxr_linenumber" name="L412" href="#L412">412</a>         @Override
@@ -466,9 +466,9 @@
 <a class="jxr_linenumber" name="L458" href="#L458">458</a>         }
 <a class="jxr_linenumber" name="L459" href="#L459">459</a> 
 <a class="jxr_linenumber" name="L460" href="#L460">460</a>         @Override
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>             <strong class="jxr_keyword">return</strong> securityFacade.isCurrentUserOwnerOfTheProject(project);
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>             <strong class="jxr_keyword">return</strong> securityManager.isCurrentUserOwnerOfTheProject(project);
 <a class="jxr_linenumber" name="L464" href="#L464">464</a>         }
 <a class="jxr_linenumber" name="L465" href="#L465">465</a> 
 <a class="jxr_linenumber" name="L466" href="#L466">466</a>         @Override
@@ -520,9 +520,9 @@
 <a class="jxr_linenumber" name="L512" href="#L512">512</a>         }
 <a class="jxr_linenumber" name="L513" href="#L513">513</a> 
 <a class="jxr_linenumber" name="L514" href="#L514">514</a>         @Override
-<a class="jxr_linenumber" name="L515" href="#L515">515</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L516" href="#L516">516</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
-<a class="jxr_linenumber" name="L517" href="#L517">517</a>             <strong class="jxr_keyword">return</strong> securityFacade.isCurrentUserLeaderOfTheProject(project);
+<a class="jxr_linenumber" name="L515" href="#L515">515</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L516" href="#L516">516</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
+<a class="jxr_linenumber" name="L517" href="#L517">517</a>             <strong class="jxr_keyword">return</strong> securityManager.isCurrentUserLeaderOfTheProject(project);
 <a class="jxr_linenumber" name="L518" href="#L518">518</a>         }
 <a class="jxr_linenumber" name="L519" href="#L519">519</a> 
 <a class="jxr_linenumber" name="L520" href="#L520">520</a>         @Override
@@ -574,9 +574,9 @@
 <a class="jxr_linenumber" name="L566" href="#L566">566</a>         }
 <a class="jxr_linenumber" name="L567" href="#L567">567</a> 
 <a class="jxr_linenumber" name="L568" href="#L568">568</a>         @Override
-<a class="jxr_linenumber" name="L569" href="#L569">569</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L570" href="#L570">570</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
-<a class="jxr_linenumber" name="L571" href="#L571">571</a>             <strong class="jxr_keyword">return</strong> securityFacade.isCurrentUserInternToProject(project);
+<a class="jxr_linenumber" name="L569" href="#L569">569</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L570" href="#L570">570</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
+<a class="jxr_linenumber" name="L571" href="#L571">571</a>             <strong class="jxr_keyword">return</strong> securityManager.isCurrentUserInternToProject(project);
 <a class="jxr_linenumber" name="L572" href="#L572">572</a>         }
 <a class="jxr_linenumber" name="L573" href="#L573">573</a> 
 <a class="jxr_linenumber" name="L574" href="#L574">574</a>         @Override
@@ -628,10 +628,10 @@
 <a class="jxr_linenumber" name="L620" href="#L620">620</a>         }
 <a class="jxr_linenumber" name="L621" href="#L621">621</a> 
 <a class="jxr_linenumber" name="L622" href="#L622">622</a>         @Override
-<a class="jxr_linenumber" name="L623" href="#L623">623</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L624" href="#L624">624</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
+<a class="jxr_linenumber" name="L623" href="#L623">623</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L624" href="#L624">624</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
 <a class="jxr_linenumber" name="L625" href="#L625">625</a>             User currentUser = requestManager.getCurrentUser();
-<a class="jxr_linenumber" name="L626" href="#L626">626</a>             <strong class="jxr_keyword">return</strong> currentUser != <strong class="jxr_keyword">null</strong> &amp;&amp; securityFacade.areUserTeammate(currentUser, <strong class="jxr_keyword">this</strong>.user);
+<a class="jxr_linenumber" name="L626" href="#L626">626</a>             <strong class="jxr_keyword">return</strong> currentUser != <strong class="jxr_keyword">null</strong> &amp;&amp; securityManager.areUserTeammate(currentUser, <strong class="jxr_keyword">this</strong>.user);
 <a class="jxr_linenumber" name="L627" href="#L627">627</a>         }
 <a class="jxr_linenumber" name="L628" href="#L628">628</a> 
 <a class="jxr_linenumber" name="L629" href="#L629">629</a>         @Override
@@ -671,8 +671,8 @@
 <a class="jxr_linenumber" name="L663" href="#L663">663</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> IsAuthenticated <strong class="jxr_keyword">extends</strong> Condition {
 <a class="jxr_linenumber" name="L664" href="#L664">664</a> 
 <a class="jxr_linenumber" name="L665" href="#L665">665</a>         @Override
-<a class="jxr_linenumber" name="L666" href="#L666">666</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L667" href="#L667">667</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
+<a class="jxr_linenumber" name="L666" href="#L666">666</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L667" href="#L667">667</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
 <a class="jxr_linenumber" name="L668" href="#L668">668</a>             <strong class="jxr_keyword">return</strong> requestManager.isAuthenticated();
 <a class="jxr_linenumber" name="L669" href="#L669">669</a>         }
 <a class="jxr_linenumber" name="L670" href="#L670">670</a> 
@@ -712,9 +712,9 @@
 <a class="jxr_linenumber" name="L704" href="#L704">704</a>         }
 <a class="jxr_linenumber" name="L705" href="#L705">705</a> 
 <a class="jxr_linenumber" name="L706" href="#L706">706</a>         @Override
-<a class="jxr_linenumber" name="L707" href="#L707">707</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L708" href="#L708">708</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
-<a class="jxr_linenumber" name="L709" href="#L709">709</a>             <strong class="jxr_keyword">return</strong> securityFacade.hasReadWriteAccess(card);
+<a class="jxr_linenumber" name="L707" href="#L707">707</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L708" href="#L708">708</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
+<a class="jxr_linenumber" name="L709" href="#L709">709</a>             <strong class="jxr_keyword">return</strong> securityManager.hasReadWriteAccess(card);
 <a class="jxr_linenumber" name="L710" href="#L710">710</a>         }
 <a class="jxr_linenumber" name="L711" href="#L711">711</a> 
 <a class="jxr_linenumber" name="L712" href="#L712">712</a>         @Override
@@ -775,9 +775,9 @@
 <a class="jxr_linenumber" name="L767" href="#L767">767</a>         }
 <a class="jxr_linenumber" name="L768" href="#L768">768</a> 
 <a class="jxr_linenumber" name="L769" href="#L769">769</a>         @Override
-<a class="jxr_linenumber" name="L770" href="#L770">770</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/ejb/RequestManager.html#RequestManager">RequestManager</a> requestManager,
-<a class="jxr_linenumber" name="L771" href="#L771">771</a>             <a name="SecurityFacade" href="../../../../../../ch/colabproject/colab/api/ejb/SecurityFacade.html#SecurityFacade">SecurityFacade</a> securityFacade) {
-<a class="jxr_linenumber" name="L772" href="#L772">772</a>             <strong class="jxr_keyword">return</strong> securityFacade.hasReadAccess(card);
+<a class="jxr_linenumber" name="L770" href="#L770">770</a>         <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">boolean</strong> internalEval(<a name="RequestManager" href="../../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L771" href="#L771">771</a>             <a name="SecurityManager" href="../../../../../../ch/colabproject/colab/api/controller/security/SecurityManager.html#SecurityManager">SecurityManager</a> securityManager) {
+<a class="jxr_linenumber" name="L772" href="#L772">772</a>             <strong class="jxr_keyword">return</strong> securityManager.hasReadAccess(card);
 <a class="jxr_linenumber" name="L773" href="#L773">773</a>         }
 <a class="jxr_linenumber" name="L774" href="#L774">774</a> 
 <a class="jxr_linenumber" name="L775" href="#L775">775</a>         @Override

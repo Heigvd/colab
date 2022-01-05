@@ -6,11 +6,12 @@
  */
 package ch.colabproject.colab.api.rest.link;
 
-import ch.colabproject.colab.api.ejb.StickyNoteLinkFacade;
-import ch.colabproject.colab.api.ejb.StickyNoteLinkFacade.SrcType;
+import ch.colabproject.colab.api.controller.link.StickyNoteLinkManager;
+import ch.colabproject.colab.api.controller.link.StickyNoteLinkManager.SrcType;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.link.StickyNoteLinkDao;
+import ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationBean;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -34,10 +35,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L37">public class StickyNoteLinkRestEndpoint {</span>
+<span class="nc" id="L38">public class StickyNoteLinkRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(StickyNoteLinkRestEndpoint.class);</span>
+<span class="nc" id="L41">    private static final Logger logger = LoggerFactory.getLogger(StickyNoteLinkRestEndpoint.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -53,7 +54,7 @@ import org.slf4j.LoggerFactory;
      * The sticky note link related logic
      */
     @Inject
-    private StickyNoteLinkFacade linkFacade;
+    private StickyNoteLinkManager linkManager;
 
     // *********************************************************************************************
     //
@@ -69,8 +70,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public StickyNoteLink getLink(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L72">        logger.debug(&quot;get link #{}&quot;, id);</span>
-<span class="nc" id="L73">        return linkDao.findStickyNoteLink(id);</span>
+<span class="nc" id="L73">        logger.debug(&quot;get link #{}&quot;, id);</span>
+<span class="nc" id="L74">        return linkDao.findStickyNoteLink(id);</span>
     }
 
     /**
@@ -82,9 +83,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateLink(StickyNoteLink link) throws ColabMergeException {
-<span class="nc" id="L85">        logger.debug(&quot;update link {}&quot;, link);</span>
-<span class="nc" id="L86">        linkDao.updateStickyNoteLink(link);</span>
-<span class="nc" id="L87">    }</span>
+<span class="nc" id="L86">        logger.debug(&quot;update link {}&quot;, link);</span>
+<span class="nc" id="L87">        linkDao.updateStickyNoteLink(link);</span>
+<span class="nc" id="L88">    }</span>
 
     /**
      * Persist the link
@@ -95,18 +96,18 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createLink(StickyNoteLinkCreationBean linkCreationBean) {
-<span class="nc" id="L98">        logger.debug(&quot;create link {}&quot;, linkCreationBean);</span>
+<span class="nc" id="L99">        logger.debug(&quot;create link {}&quot;, linkCreationBean);</span>
 
-<span class="nc" id="L100">        StickyNoteLink link = new StickyNoteLink();</span>
-<span class="nc" id="L101">        link.setSrcCardId(linkCreationBean.getSrcCardId());</span>
-<span class="nc" id="L102">        link.setSrcCardContentId(linkCreationBean.getSrcCardContentId());</span>
-<span class="nc" id="L103">        link.setSrcResourceOrRefId(linkCreationBean.getSrcResourceOrRefId());</span>
-<span class="nc" id="L104">        link.setSrcBlockId(linkCreationBean.getSrcBlockId());</span>
-<span class="nc" id="L105">        link.setDestinationCardId(linkCreationBean.getDestinationCardId());</span>
-<span class="nc" id="L106">        link.setTeaser(linkCreationBean.getTeaser());</span>
-<span class="nc" id="L107">        link.setExplanation(linkCreationBean.getExplanation());</span>
+<span class="nc" id="L101">        StickyNoteLink link = new StickyNoteLink();</span>
+<span class="nc" id="L102">        link.setSrcCardId(linkCreationBean.getSrcCardId());</span>
+<span class="nc" id="L103">        link.setSrcCardContentId(linkCreationBean.getSrcCardContentId());</span>
+<span class="nc" id="L104">        link.setSrcResourceOrRefId(linkCreationBean.getSrcResourceOrRefId());</span>
+<span class="nc" id="L105">        link.setSrcBlockId(linkCreationBean.getSrcBlockId());</span>
+<span class="nc" id="L106">        link.setDestinationCardId(linkCreationBean.getDestinationCardId());</span>
+<span class="nc" id="L107">        link.setTeaser(linkCreationBean.getTeaser());</span>
+<span class="nc" id="L108">        link.setExplanation(linkCreationBean.getExplanation());</span>
 
-<span class="nc" id="L109">        return linkFacade.createStickyNoteLink(link).getId();</span>
+<span class="nc" id="L110">        return linkManager.createStickyNoteLink(link).getId();</span>
     }
 
     /**
@@ -117,9 +118,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteLink(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L120">        logger.debug(&quot;delete link #{}&quot;, id);</span>
-<span class="nc" id="L121">        linkFacade.deleteStickyNoteLink(id);</span>
-<span class="nc" id="L122">    }</span>
+<span class="nc" id="L121">        logger.debug(&quot;delete link #{}&quot;, id);</span>
+<span class="nc" id="L122">        linkManager.deleteStickyNoteLink(id);</span>
+<span class="nc" id="L123">    }</span>
 
     /**
      * Change the source for a card
@@ -130,9 +131,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeSrc/{linkId}/Card&quot;)
     public void changeSrcWithCard(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
-<span class="nc" id="L133">        logger.debug(&quot;change link #{} with new card source #{}&quot;, linkId, cardId);</span>
-<span class="nc" id="L134">        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.CARD, cardId);</span>
-<span class="nc" id="L135">    }</span>
+<span class="nc" id="L134">        logger.debug(&quot;change link #{} with new card source #{}&quot;, linkId, cardId);</span>
+<span class="nc" id="L135">        linkManager.changeStickyNoteLinkSource(linkId, SrcType.CARD, cardId);</span>
+<span class="nc" id="L136">    }</span>
 
     /**
      * Change the source for a card content
@@ -143,9 +144,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeSrc/{linkId}/CardContent&quot;)
     public void changeSrcWithCardContent(@PathParam(&quot;linkId&quot;) Long linkId, Long cardContentId) {
-<span class="nc" id="L146">        logger.debug(&quot;change link #{} with new card content source #{}&quot;, linkId, cardContentId);</span>
-<span class="nc" id="L147">        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.CARD_CONTENT, cardContentId);</span>
-<span class="nc" id="L148">    }</span>
+<span class="nc" id="L147">        logger.debug(&quot;change link #{} with new card content source #{}&quot;, linkId, cardContentId);</span>
+<span class="nc" id="L148">        linkManager.changeStickyNoteLinkSource(linkId, SrcType.CARD_CONTENT, cardContentId);</span>
+<span class="nc" id="L149">    }</span>
 
     /**
      * Change the source for a resource / resource reference
@@ -156,10 +157,10 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeSrc/{linkId}/ResourceOrRef&quot;)
     public void changeSrcWithResourceOrRef(@PathParam(&quot;linkId&quot;) Long linkId, Long resourceOrRefId) {
-<span class="nc" id="L159">        logger.debug(&quot;change link #{} with new abstract resource source #{}&quot;, linkId,</span>
+<span class="nc" id="L160">        logger.debug(&quot;change link #{} with new abstract resource source #{}&quot;, linkId,</span>
             resourceOrRefId);
-<span class="nc" id="L161">        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.RESOURCE_OR_REF, resourceOrRefId);</span>
-<span class="nc" id="L162">    }</span>
+<span class="nc" id="L162">        linkManager.changeStickyNoteLinkSource(linkId, SrcType.RESOURCE_OR_REF, resourceOrRefId);</span>
+<span class="nc" id="L163">    }</span>
 
     /**
      * Change the source for a block
@@ -170,9 +171,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeSrc/{linkId}/Block&quot;)
     public void changeSrcWithBlock(@PathParam(&quot;linkId&quot;) Long linkId, Long blockId) {
-<span class="nc" id="L173">        logger.debug(&quot;change link #{} with new block source #{}&quot;, linkId, blockId);</span>
-<span class="nc" id="L174">        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.BLOCK, blockId);</span>
-<span class="nc" id="L175">    }</span>
+<span class="nc" id="L174">        logger.debug(&quot;change link #{} with new block source #{}&quot;, linkId, blockId);</span>
+<span class="nc" id="L175">        linkManager.changeStickyNoteLinkSource(linkId, SrcType.BLOCK, blockId);</span>
+<span class="nc" id="L176">    }</span>
 
     /**
      * Change the destination
@@ -183,9 +184,9 @@ import org.slf4j.LoggerFactory;
     @PUT
     @Path(&quot;changeDest/{linkId}&quot;)
     public void changeDestination(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
-<span class="nc" id="L186">        logger.debug(&quot;change link #{} with new destination card #{}&quot;, linkId, cardId);</span>
-<span class="nc" id="L187">        linkFacade.changeStickyNoteLinkDestination(linkId, cardId);</span>
-<span class="nc" id="L188">    }</span>
+<span class="nc" id="L187">        logger.debug(&quot;change link #{} with new destination card #{}&quot;, linkId, cardId);</span>
+<span class="nc" id="L188">        linkManager.changeStickyNoteLinkDestination(linkId, cardId);</span>
+<span class="nc" id="L189">    }</span>
 
     // *********************************************************************************************
     //

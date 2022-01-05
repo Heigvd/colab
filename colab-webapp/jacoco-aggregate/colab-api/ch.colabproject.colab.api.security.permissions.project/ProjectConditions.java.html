@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.security.permissions.project;
 
-import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.api.ejb.SecurityFacade;
+import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
 import java.util.Objects;
 
@@ -46,8 +46,8 @@ public final class ProjectConditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-<span class="nc" id="L50">            return securityFacade.isProjectReadableByCurrentUser(this.projectId);</span>
+            SecurityManager securityManager) {
+<span class="nc" id="L50">            return securityManager.isProjectReadableByCurrentUser(this.projectId);</span>
         }
 
         @Override

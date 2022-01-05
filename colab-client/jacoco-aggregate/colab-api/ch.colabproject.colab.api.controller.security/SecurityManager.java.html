@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>SecurityManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.security</a> &gt; <span class="el_source">SecurityManager.java</span></div><h1>SecurityManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.security;
+
+import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.card.CardTypeManager;
+import ch.colabproject.colab.api.controller.project.ProjectManager;
+import ch.colabproject.colab.api.controller.team.TeamManager;
+import ch.colabproject.colab.api.model.WithPermission;
+import ch.colabproject.colab.api.model.card.Card;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
+import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.List;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * To check access rights.
+ *
+ * @author maxence
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L38">public class SecurityManager {</span>
+
+    /** logger */
+<span class="nc" id="L41">    private static final Logger logger = LoggerFactory.getLogger(SecurityManager.class);</span>
+
+    /**
+     * As check are done against current authenticated user, we need access to the requestManager:
+     */
+    @Inject
+    private RequestManager requestManager;
+
+    /**
+     * To check membership-ness
+     */
+    @Inject
+    private TeamManager teamManager;
+
+    /**
+     * Card type specific logic
+     */
+    @Inject
+    private CardTypeManager cardTypeManager;
+
+    /**
+     * Project specific logic
+     */
+    @Inject
+    private ProjectManager projectManager;
+
+    /**
+     * Get the current user if it exists.
+     *
+     * @return the current user
+     *
+     * @throws HttpErrorMessage authRequired if currentUser is not authenticated
+     */
+    public User assertAndGetCurrentUser() {
+<span class="nc" id="L75">        User user = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (user != null) {</span>
+<span class="nc" id="L77">            return user;</span>
+        } else {
+<span class="nc" id="L79">            throw HttpErrorMessage.authenticationRequired();</span>
+        }
+    }
+
+    /**
+     * Mark the current request as {@link RequestManager#setInSecurityTx(boolean) in-security-tx}
+     * and run the given action.
+     *
+     * @param action action to run
+     */
+    private void runInSecurityTx(Runnable action) {
+<span class="nc" id="L90">        requestManager.setInSecurityTx(true);</span>
+<span class="nc" id="L91">        action.run();</span>
+<span class="nc" id="L92">        requestManager.setInSecurityTx(false);</span>
+<span class="nc" id="L93">    }</span>
+
+    /**
+     * Assert the given condition is true
+     *
+     * @param condition the condition to check
+     * @param message   message to log in case the assertion failed
+     *
+     * @throws HttpErrorMessage &lt;ul&gt;
+     * &lt;li&gt;with authenticationRequired if assertion fails and current user is not authenticated;
+     * &lt;li&gt;with forbidden if the authenticated user does not have enough permission
+     * &lt;/ul&gt;
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertConditionTx(Condition condition, String message) {
+<span class="nc" id="L108">        runInSecurityTx(() -&gt; this.assertCondition(condition, message, null));</span>
+<span class="nc" id="L109">    }</span>
+
+    /**
+     * Assert the given condition is true. If the current user is an admin, this assertion will
+     * never fail
+     *
+     * @param condition the condition to evaluate
+     * @param message   message to display if the assertion failed
+     * @param o         related object to log, may be null
+     *
+     * @throws HttpErrorMessage &lt;ul&gt;
+     * &lt;li&gt;with authenticationRequired if assertion fails and current user is not authenticated;
+     * &lt;li&gt;with forbidden if the authenticated user does not have enough permission
+     * &lt;/ul&gt;
+     */
+    private void assertCondition(Condition condition, String message, WithPermission o) {
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        if (!requestManager.isAdmin()) {</span>
+<span class="nc" id="L126">            requestManager.sudo(() -&gt; {</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">                if (!condition.eval(requestManager, this)) {</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">                    if (logger.isErrorEnabled()) {</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">                        if (o != null) {</span>
+<span class="nc" id="L130">                            logger.error(&quot;{} Permission denied: {} ({}) currentUser: {}&quot;,</span>
+<span class="nc" id="L131">                                message, o, condition, requestManager.getCurrentUser());</span>
+                        } else {
+<span class="nc" id="L133">                            logger.error(&quot;{} Permission denied: ({}) currentUser: {}&quot;,</span>
+<span class="nc" id="L134">                                message, condition, requestManager.getCurrentUser());</span>
+                        }
+                    }
+<span class="nc bnc" id="L137" title="All 2 branches missed.">                    if (requestManager.isAuthenticated()) {</span>
+<span class="nc" id="L138">                        throw HttpErrorMessage.forbidden();</span>
+                    } else {
+<span class="nc" id="L140">                        throw HttpErrorMessage.authenticationRequired();</span>
+                    }
+                }
+<span class="nc" id="L143">            });</span>
+        }
+<span class="nc" id="L145">    }</span>
+
+    /**
+     * Assert the currentUser has right to create the given object
+     *
+     * @param o object the user want to create
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertCreatePermissionTx(WithPermission o) {
+<span class="nc" id="L154">        runInSecurityTx(() -&gt; this.assertCreatePermission(o));</span>
+<span class="nc" id="L155">    }</span>
+
+    /**
+     * Assert the currentUser has right to create the given object
+     *
+     * @param o object the user want to create
+     */
+    private void assertCreatePermission(WithPermission o) {
+<span class="nc" id="L163">        this.assertCondition(o.getCreateCondition(), &quot;Create&quot;, o);</span>
+<span class="nc" id="L164">    }</span>
+
+    /**
+     * Assert the currentUser has right to read the given object
+     *
+     * @param o object the user want to read
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertReadPermissionTx(WithPermission o) {
+<span class="nc" id="L173">        runInSecurityTx(() -&gt; this.assertReadPermission(o));</span>
+<span class="nc" id="L174">    }</span>
+
+    /**
+     * Assert the currentUser has right to read the given object
+     *
+     * @param o object the user want to read
+     */
+    private void assertReadPermission(WithPermission o) {
+<span class="nc" id="L182">        this.assertCondition(o.getReadCondition(), &quot;Read&quot;, o);</span>
+<span class="nc" id="L183">    }</span>
+
+    /**
+     * Assert the currentUser has right to update the given object
+     *
+     * @param o object the user want to update
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertUpdatePermissionTx(WithPermission o) {
+<span class="nc" id="L192">        runInSecurityTx(() -&gt; this.assertUpdatePermission(o));</span>
+<span class="nc" id="L193">    }</span>
+
+    /**
+     * Assert the currentUser has right to update the given object
+     *
+     * @param o object the user want to update
+     */
+    private void assertUpdatePermission(WithPermission o) {
+<span class="nc" id="L201">        this.assertCondition(o.getUpdateCondition(), &quot;Update&quot;, o);</span>
+<span class="nc" id="L202">    }</span>
+
+    /**
+     * Assert the currentUser has right to update the given object
+     *
+     * @param o object the user want to delete
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void assertDeletePermissionTx(WithPermission o) {
+<span class="nc" id="L211">        runInSecurityTx(() -&gt; this.assertDeletePermission(o));</span>
+<span class="nc" id="L212">    }</span>
+
+    /**
+     * Assert the currentUser has right to update the given object
+     *
+     * @param o object the user want to delete
+     */
+    private void assertDeletePermission(WithPermission o) {
+<span class="nc" id="L220">        this.assertCondition(o.getDeleteCondition(), &quot;Delete&quot;, o);</span>
+<span class="nc" id="L221">    }</span>
+
+    /**
+     * Are two user team mate?
+     *
+     * @param a a user
+     * @param b another user
+     *
+     * @return true if both user are both member of the same team
+     */
+    public boolean areUserTeammate(User a, User b) {
+<span class="nc" id="L232">        return teamManager.areUserTeammate(a, b);</span>
+    }
+
+    /**
+     * Has the current user read/write access to the given card
+     *
+     * @param card the card
+     *
+     * @return true if current user can write the card
+     */
+    public boolean hasReadWriteAccess(Card card) {
+<span class="nc" id="L243">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L244" title="All 4 branches missed.">        if (card == null || currentUser == null) {</span>
+<span class="nc" id="L245">            return false;</span>
+        }
+<span class="nc" id="L247">        TeamMember member = teamManager.findMemberByUserAndProject(card.getProject(), currentUser);</span>
+<span class="nc bnc" id="L248" title="All 4 branches missed.">        return member != null &amp;&amp; (member.getPosition() == HierarchicalPosition.OWNER</span>
+<span class="nc bnc" id="L249" title="All 2 branches missed.">            || teamManager.getEffectiveInvolvementLevel(card, member).isRw());</span>
+    }
+
+    /**
+     * Has the current user the right to read the given card ?
+     *
+     * @param card the card to read
+     *
+     * @return true if current user can read the card
+     */
+    public boolean hasReadAccess(Card card) {
+
+<span class="nc" id="L261">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L262" title="All 4 branches missed.">        if (card == null || currentUser == null) {</span>
+<span class="nc" id="L263">            return false;</span>
+        }
+<span class="nc" id="L265">        TeamMember member = teamManager.findMemberByUserAndProject(card.getProject(), currentUser);</span>
+<span class="nc bnc" id="L266" title="All 4 branches missed.">        return member != null &amp;&amp; (member.getPosition() == HierarchicalPosition.OWNER</span>
+<span class="nc bnc" id="L267" title="All 2 branches missed.">            || teamManager.getEffectiveInvolvementLevel(card, member)</span>
+            != InvolvementLevel.OUT_OF_THE_LOOP);
+    }
+
+    /**
+     * Is the current user member of the team of the given project?
+     *
+     * @param project the project
+     *
+     * @return true if the user if member of the project team
+     */
+    public boolean isCurrentUserMemberOfTheProjectTeam(Project project) {
+<span class="nc" id="L279">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L280" title="All 4 branches missed.">        if (project == null || currentUser == null) {</span>
+<span class="nc" id="L281">            return false;</span>
+        }
+<span class="nc" id="L283">        TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">        return member != null;</span>
+    }
+
+    /**
+     * Is the current user the project owner ?
+     *
+     * @param project the project
+     *
+     * @return true if the current user is owner of the project
+     */
+    public boolean isCurrentUserOwnerOfTheProject(Project project) {
+<span class="nc" id="L295">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L296" title="All 4 branches missed.">        if (project == null || currentUser == null) {</span>
+<span class="nc" id="L297">            return false;</span>
+        }
+<span class="nc" id="L299">        TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);</span>
+<span class="nc bnc" id="L300" title="All 4 branches missed.">        return member != null &amp;&amp; member.getPosition() == HierarchicalPosition.OWNER;</span>
+    }
+
+    /**
+     * Is the current user the project leader?
+     *
+     * @param project the project
+     *
+     * @return true if the current user is owner of the project
+     */
+    public boolean isCurrentUserLeaderOfTheProject(Project project) {
+<span class="nc" id="L311">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L312" title="All 4 branches missed.">        if (project == null || currentUser == null) {</span>
+<span class="nc" id="L313">            return false;</span>
+        }
+<span class="nc" id="L315">        TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);</span>
+<span class="nc bnc" id="L316" title="All 4 branches missed.">        return member != null &amp;&amp; (member.getPosition() == HierarchicalPosition.OWNER</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">            || member.getPosition() == HierarchicalPosition.LEAD);</span>
+    }
+
+    /**
+     * Is the current user intern to the project team?
+     *
+     * @param project the project
+     *
+     * @return true if the current user is intern to the project
+     */
+    public boolean isCurrentUserInternToProject(Project project) {
+<span class="nc" id="L328">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L329" title="All 4 branches missed.">        if (project == null || currentUser == null) {</span>
+<span class="nc" id="L330">            return false;</span>
+        }
+<span class="nc" id="L332">        TeamMember member = teamManager.findMemberByUserAndProject(project, currentUser);</span>
+<span class="nc bnc" id="L333" title="All 4 branches missed.">        return member != null &amp;&amp; member.getPosition() != HierarchicalPosition.EXTERN;</span>
+    }
+
+    /**
+     * Has the current user the right to read the card type (/ reference) ?
+     * &lt;p&gt;
+     * A user can read
+     * &lt;ul&gt;
+     * &lt;li&gt;any global published card type&lt;/li&gt;
+     * &lt;li&gt;any card type (/ reference) defined in a project he is member of&lt;/li&gt;
+     * &lt;li&gt;and all the chain of targets of those card types references&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * @param cardTypeOrRefId the id of the card type or reference
+     *
+     * @return true if the current user can read the card type or reference
+     */
+    public boolean isCardTypeOrRefReadableByCurrentUser(Long cardTypeOrRefId) {
+<span class="nc" id="L351">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L352" title="All 4 branches missed.">        if (cardTypeOrRefId == null || currentUser == null) {</span>
+<span class="nc" id="L353">            return false;</span>
+        }
+
+<span class="nc" id="L356">        List&lt;Long&gt; globalPublished = cardTypeManager.findGlobalPublishedCardTypeIds();</span>
+<span class="nc bnc" id="L357" title="All 2 branches missed.">        if (globalPublished.contains(cardTypeOrRefId)) {</span>
+<span class="nc" id="L358">            return true;</span>
+        }
+
+<span class="nc" id="L361">        List&lt;Long&gt; accessibleFromProjects = cardTypeManager</span>
+<span class="nc" id="L362">            .findCurrentUserReadableProjectsCardTypesIds();</span>
+<span class="nc bnc" id="L363" title="All 2 branches missed.">        if (accessibleFromProjects.contains(cardTypeOrRefId)) {</span>
+<span class="nc" id="L364">            return true;</span>
+        }
+
+<span class="nc" id="L367">        return false;</span>
+    }
+
+    /**
+     * Has the current user the right to read the project ?
+     * &lt;p&gt;
+     * A user can read any project he is a member of and any project which contains a card type or
+     * reference the current user has a read access.
+     *
+     * @param projectId the id of the project
+     *
+     * @return True if the current user can read the project
+     */
+    public boolean isProjectReadableByCurrentUser(Long projectId) {
+<span class="nc" id="L381">        User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L382" title="All 4 branches missed.">        if (projectId == null || currentUser == null) {</span>
+<span class="nc" id="L383">            return false;</span>
+        }
+
+<span class="nc" id="L386">        List&lt;Long&gt; directProjects = projectManager.findIdsOfProjectsOfCurrentUser();</span>
+<span class="nc bnc" id="L387" title="All 2 branches missed.">        if (directProjects.contains(projectId)) {</span>
+<span class="nc" id="L388">            return true;</span>
+        }
+
+<span class="nc" id="L391">        List&lt;Long&gt; accessibleByCardTypes = projectManager</span>
+<span class="nc" id="L392">            .findIdsOfProjectsReadableThroughCardTypes();</span>
+<span class="nc bnc" id="L393" title="All 2 branches missed.">        if (accessibleByCardTypes.contains(projectId)) {</span>
+<span class="nc" id="L394">            return true;</span>
+        }
+
+<span class="nc" id="L397">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

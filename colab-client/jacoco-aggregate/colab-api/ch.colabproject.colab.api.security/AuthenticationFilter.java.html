@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.security;
 
-import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * Intercept all request to the API and check user has required permission.
  * &lt;p&gt;
  * This filter has a priority of 10, which means it is executed after {@link CookieFilter } and
- * {@link  ch.colabproject.colab.api.rest.utils.RequestFilter RequestFilter}
+ * {@link  ch.colabproject.colab.api.rest.utils.filter.RequestFilter RequestFilter}
  *
  * @author maxence
  */

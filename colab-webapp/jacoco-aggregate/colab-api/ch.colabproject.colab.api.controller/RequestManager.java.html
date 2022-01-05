@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>RequestManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller</a> &gt; <span class="el_source">RequestManager.java</span></div><h1>RequestManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller;
+
+import ch.colabproject.colab.api.model.tracking.Tracking;
+import ch.colabproject.colab.api.model.user.Account;
+import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.security.HttpSession;
+import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Request sidekick.
+ *
+ * @author maxence
+ */
+@RequestScoped
+<span class="nc" id="L31">public class RequestManager {</span>
+
+    /** logger */
+<span class="nc" id="L34">    private static final Logger logger = LoggerFactory.getLogger(RequestManager.class);</span>
+
+    /**
+     * Access to the persistence unit
+     */
+    @PersistenceContext(unitName = &quot;COLAB_PU&quot;)
+    private EntityManager em;
+
+    /**
+     * User-related business logic
+     */
+    @Inject
+    private UserDao userDao;
+
+    /**
+     * Websocket business logic
+     */
+    @Inject
+    private WebsocketManager websocketManager;
+
+    /**
+     * HTTP session associated to current request
+     */
+    private HttpSession httpSession;
+
+    /**
+     * Timestamp as return by {@link System#currentTimeMillis() } the request starts at
+     */
+    private long startTime;
+
+    /**
+     * Base url request URL
+     */
+    private String baseUrl;
+
+    /**
+     * Id of the current user account
+     */
+    private Long currentAccountId;
+
+    /**
+     * To store condition which have already been evaluated
+     */
+<span class="nc" id="L77">    private final Map&lt;Condition, Boolean&gt; conditionCache = new HashMap&lt;&gt;();</span>
+
+    /**
+     * Indicates if current user can act as an admin. 0 = no sudo greater than 0 =&gt; sudo
+     */
+<span class="nc" id="L82">    private int sudoAsAdmin = 0;</span>
+
+    /**
+     * is the thread run in the so-called security transaction ?
+     */
+<span class="nc" id="L87">    private boolean inSecurityTx = false;</span>
+
+    /**
+     * Is the current transaction already completed ?
+     */
+<span class="nc" id="L92">    private boolean txDone = false;</span>
+
+    /**
+     * In some case, {@link Tracking tracking data} shouldn't be updated. Setting this boolean to
+     * prevent allow such behaviour.
+     */
+<span class="nc" id="L98">    private boolean doNotTrackChange = false;</span>
+
+    /**
+     * Get request base url
+     *
+     * @return url
+     */
+    public String getBaseUrl() {
+<span class="nc" id="L106">        return baseUrl;</span>
+    }
+
+    /**
+     * Set the request base url
+     *
+     * @param baseUrl request base url
+     */
+    public void setBaseUrl(String baseUrl) {
+<span class="nc" id="L115">        this.baseUrl = baseUrl;</span>
+<span class="nc" id="L116">    }</span>
+
+    /**
+     *
+     * @return the current http session
+     */
+    public HttpSession getHttpSession() {
+<span class="nc" id="L123">        return this.httpSession;</span>
+    }
+
+    /**
+     * Attach httpSession to this request
+     *
+     * @param httpSession http session
+     */
+    public void setHttpSession(HttpSession httpSession) {
+<span class="nc" id="L132">        this.httpSession = httpSession;</span>
+<span class="nc" id="L133">    }</span>
+
+    /**
+     * Get the current authenticated account
+     *
+     * @return the current account or null if none
+     */
+    public Account getCurrentAccount() {
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (this.httpSession != null) {</span>
+<span class="nc" id="L142">            return userDao.findAccount(this.httpSession.getAccountId());</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        } else if (this.currentAccountId != null) {</span>
+<span class="nc" id="L144">            return userDao.findAccount(this.currentAccountId);</span>
+        }
+<span class="nc" id="L146">        return null;</span>
+    }
+
+    /**
+     * Get the current authenticated user
+     *
+     * @return the current user or null if none
+     */
+    public User getCurrentUser() {
+<span class="nc" id="L155">        Account account = this.getCurrentAccount();</span>
+
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        if (account != null) {</span>
+<span class="nc" id="L158">            return account.getUser();</span>
+        } else {
+<span class="nc" id="L160">            return null;</span>
+        }
+    }
+
+    /**
+     * set time the current request started
+     *
+     * @param timestamp start timestamp
+     *
+     */
+    public void setStartTime(long timestamp) {
+<span class="nc" id="L171">        this.startTime = timestamp;</span>
+<span class="nc" id="L172">    }</span>
+
+    /**
+     * Return the time the request started
+     *
+     * @return start time timestamp in ms
+     */
+    public long getStartTime() {
+<span class="nc" id="L180">        return startTime;</span>
+    }
+
+    /**
+     * Is the request ran by an authenticated user ?
+     *
+     * @return true if the current user is fully authenticated
+     */
+    public Boolean isAuthenticated() {
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        return this.getCurrentAccount() != null;</span>
+    }
+
+    /**
+     * Set the current account.
+     *
+     * @param account new current account
+     */
+    public void login(Account account) {
+<span class="nc" id="L198">        HttpSession session = this.getHttpSession();</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        if (session != null) {</span>
+<span class="nc" id="L200">            session.setAccountId(account.getId());</span>
+        }
+<span class="nc" id="L202">        this.currentAccountId = account.getId();</span>
+<span class="nc" id="L203">    }</span>
+
+    /**
+     * Clear current account and unsubscribe from all websocket channels.
+     */
+    public void logout() {
+<span class="nc" id="L209">        HttpSession session = this.getHttpSession();</span>
+<span class="nc" id="L210">        this.currentAccountId = null;</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">        if (session != null) {</span>
+<span class="nc" id="L212">            session.setAccountId(null);</span>
+<span class="nc" id="L213">            conditionCache.clear();</span>
+<span class="nc" id="L214">            websocketManager.signoutAndUnsubscribeFromAll(this.getHttpSession().getSessionId());</span>
+        }
+<span class="nc" id="L216">    }</span>
+
+    /**
+     * Is current transaction still alive ?
+     *
+     * @return true if current tx is not dead
+     */
+    private boolean txExists() {
+<span class="nc bnc" id="L224" title="All 2 branches missed.">        return !this.txDone;</span>
+    }
+
+    /**
+     * Synchronize the persistence context to the underlying database.
+     */
+    public void flush() {
+<span class="nc bnc" id="L231" title="All 2 branches missed.">        if (txExists()) {</span>
+<span class="nc" id="L232">            em.flush();</span>
+        }
+<span class="nc" id="L234">    }</span>
+
+    /**
+     * Execute some piece of code with admin privileges.
+     *
+     * @param action code to execute with admin privileges
+     */
+    public void sudo(Runnable action) {
+<span class="nc bnc" id="L242" title="All 2 branches missed.">        if (txExists()) {</span>
+            // make sure to flush to check every pending changes before granting admin rights
+<span class="nc" id="L244">            em.flush();</span>
+        }
+
+<span class="nc" id="L247">        this.sudoAsAdmin++;</span>
+<span class="nc" id="L248">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="nc" id="L249">        action.run();</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">        if (txExists()) {</span>
+            // make sure to flush to apply all pending changes with admin rights
+<span class="nc" id="L252">            em.flush();</span>
+        }
+
+<span class="nc" id="L255">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
+
+<span class="nc" id="L257">        this.sudoAsAdmin--;</span>
+<span class="nc" id="L258">    }</span>
+
+    /**
+     * Execute some piece of code with admin privileges and return something.
+     *
+     * @param &lt;R&gt;    return type
+     * @param action code to execute with admin privileges
+     *
+     * @return action result
+     *
+     * @throws java.lang.Exception if something is thrown during the call
+     */
+    public &lt;R&gt; R sudo(Callable&lt;R&gt; action) throws Exception {
+<span class="nc bnc" id="L271" title="All 2 branches missed.">        if (txExists()) {</span>
+            // make sure to flush to check every pending changes before granting admin rights
+<span class="nc" id="L273">            em.flush();</span>
+        }
+<span class="nc" id="L275">        this.sudoAsAdmin++;</span>
+<span class="nc" id="L276">        logger.trace(&quot;Sudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="nc" id="L277">        R result = action.call();</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">        if (txExists()) {</span>
+            // make sure to flush to apply all pending changes with admin rights
+<span class="nc" id="L280">            em.flush();</span>
+        }
+<span class="nc" id="L282">        logger.trace(&quot;EndOfSudo #{}&quot;, this.sudoAsAdmin);</span>
+<span class="nc" id="L283">        this.sudoAsAdmin--;</span>
+
+<span class="nc" id="L285">        return result;</span>
+    }
+
+    /**
+     * Is the currentUser is an admin or sudo as an admin ?
+     *
+     * @return true if current user can act as an admin
+     */
+    public boolean isAdmin() {
+        // the sudoAsAdmin is done at first,
+        // so we do not need to get the current user if this condition is fulfilled
+<span class="nc bnc" id="L296" title="All 2 branches missed.">        if (sudoAsAdmin &gt; 0) {</span>
+<span class="nc" id="L297">            return true;</span>
+        }
+
+<span class="nc" id="L300">        User currentUser = this.getCurrentUser();</span>
+<span class="nc bnc" id="L301" title="All 4 branches missed.">        return currentUser != null &amp;&amp; currentUser.isAdmin();</span>
+    }
+
+    /**
+     * Register condition result
+     *
+     * @param condition the condition
+     * @param result    the result
+     */
+    public void registerConditionResult(Condition condition, Boolean result) {
+<span class="nc" id="L311">        this.conditionCache.put(condition, result);</span>
+<span class="nc" id="L312">    }</span>
+
+    /**
+     * Get the cached condition result
+     *
+     * @param condition condition
+     *
+     * @return true or false if the condition is cached, null if the condition has not been
+     *         evaluated yet
+     */
+    public Boolean getConditionResult(Condition condition) {
+<span class="nc" id="L323">        return this.conditionCache.get(condition);</span>
+    }
+
+    /**
+     * Is the thread run in a transaction dedicated to security condition evaluation
+     *
+     * @return true/false
+     */
+    public boolean isInSecurityTx() {
+<span class="nc" id="L332">        return inSecurityTx;</span>
+    }
+
+    /**
+     * Change the inSecurityTx flag
+     *
+     * @param inSecurityTx new flag
+     */
+    public void setInSecurityTx(boolean inSecurityTx) {
+<span class="nc" id="L341">        this.inSecurityTx = inSecurityTx;</span>
+<span class="nc" id="L342">    }</span>
+
+    /**
+     * Check if the current transaction is already done
+     *
+     * @return whether or not the current transaction is already done
+     */
+    public boolean isTxDone() {
+<span class="nc" id="L350">        return txDone;</span>
+    }
+
+    /**
+     * Mark the current transaction as done or undone
+     *
+     * @param txDone whether or not the current transaction is already done
+     */
+    public void setTxDone(boolean txDone) {
+<span class="nc" id="L359">        this.txDone = txDone;</span>
+<span class="nc" id="L360">    }</span>
+
+    /**
+     * Set Do-Not-Track-Change boolean
+     *
+     * @param value the new value
+     */
+    public void setDoNotTrackChange(boolean value) {
+<span class="nc" id="L368">        this.doNotTrackChange = value;</span>
+<span class="nc" id="L369">    }</span>
+
+    /**
+     * Get Do-Not-Track-Change value
+     *
+     * @return should or shouldn't track entity updates?
+     */
+    public boolean isDoNotTrackChange() {
+<span class="nc" id="L377">        return doNotTrackChange;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

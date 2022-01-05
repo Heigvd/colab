@@ -215,8 +215,8 @@ import javax.validation.constraints.NotNull;
     public void merge(ColabEntity other) throws ColabMergeException {
 //        if (other instanceof ActivityFlowLink) {
         // ActivityFlowLink o = (ActivityFlowLink) other;
-        // previousCard is managed separately in the Facade
-        // nextCard is managed separately in the Facade
+        // previousCard is managed separately in the Manager
+        // nextCard is managed separately in the Manager
 //        } else {
 <span class="nc bnc" id="L221" title="All 2 branches missed.">        if (!(other instanceof ActivityFlowLink)) {</span>
 <span class="nc" id="L222">            throw new ColabMergeException(this, other);</span>

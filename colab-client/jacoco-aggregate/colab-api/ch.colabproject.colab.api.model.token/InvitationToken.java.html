@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model.token;
 
-import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.user.User;

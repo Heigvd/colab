@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.link;
 
-import ch.colabproject.colab.api.ejb.ActivityFlowLinkFacade;
+import ch.colabproject.colab.api.controller.link.ActivityFlowLinkManager;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.persistence.link.ActivityFlowLinkDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
      * The activity flow link related logic
      */
     @Inject
-    private ActivityFlowLinkFacade linkFacade;
+    private ActivityFlowLinkManager linkManager;
 
     // *********************************************************************************************
     //
@@ -95,7 +95,7 @@ import org.slf4j.LoggerFactory;
     @POST
     public Long createLink(ActivityFlowLink link) {
 <span class="nc" id="L97">        logger.debug(&quot;create activity flow link {}&quot;, link);</span>
-<span class="nc" id="L98">        return linkFacade.createActivityFlowLink(link).getId();</span>
+<span class="nc" id="L98">        return linkManager.createActivityFlowLink(link).getId();</span>
     }
 
     /**
@@ -107,7 +107,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;{id}&quot;)
     public void deleteLink(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L109">        logger.debug(&quot;delete activity flow link #{}&quot;, id);</span>
-<span class="nc" id="L110">        linkFacade.deleteActivityFlowLink(id);</span>
+<span class="nc" id="L110">        linkManager.deleteActivityFlowLink(id);</span>
 <span class="nc" id="L111">    }</span>
 
     /**
@@ -120,7 +120,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;changePrevious/{linkId}&quot;)
     public void changePreviousCard(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
 <span class="nc" id="L122">        logger.debug(&quot;change activity flow link #{} previous card to #{}&quot;, linkId, cardId);</span>
-<span class="nc" id="L123">        linkFacade.changeActivityFlowLinkPrevious(linkId, cardId);</span>
+<span class="nc" id="L123">        linkManager.changeActivityFlowLinkPrevious(linkId, cardId);</span>
 <span class="nc" id="L124">    }</span>
 
     /**
@@ -133,7 +133,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;changeNext/{linkId}&quot;)
     public void changeNextCard(@PathParam(&quot;linkId&quot;) Long linkId, Long cardId) {
 <span class="nc" id="L135">        logger.debug(&quot;change activity flow link #{} next card to #{}&quot;, linkId, cardId);</span>
-<span class="nc" id="L136">        linkFacade.changeActivityFlowLinkNext(linkId, cardId);</span>
+<span class="nc" id="L136">        linkManager.changeActivityFlowLinkNext(linkId, cardId);</span>
 <span class="nc" id="L137">    }</span>
 
     // *********************************************************************************************

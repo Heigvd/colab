@@ -979,7 +979,7 @@
 <a class="jxr_linenumber" name="L971" href="#L971">971</a> 
 <a class="jxr_linenumber" name="L972" href="#L972">972</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> hasDeliverableDocumentReadAccess() {
 <a class="jxr_linenumber" name="L973" href="#L973">973</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L974" href="#L974">974</a>             aclTestClient.documentRestEndPoint.getDocument(data.getDeliverableDocumentId());
+<a class="jxr_linenumber" name="L974" href="#L974">974</a>             aclTestClient.documentRestEndpoint.getDocument(data.getDeliverableDocumentId());
 <a class="jxr_linenumber" name="L975" href="#L975">975</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L976" href="#L976">976</a>         } <strong class="jxr_keyword">catch</strong> (HttpErrorMessage hem) {
 <a class="jxr_linenumber" name="L977" href="#L977">977</a>             <strong class="jxr_keyword">if</strong> (MessageCode.ACCESS_DENIED == hem.getMessageCode()) {
@@ -993,15 +993,15 @@
 <a class="jxr_linenumber" name="L985" href="#L985">985</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> hasDeliverableDocumentReadWriteAccess() {
 <a class="jxr_linenumber" name="L986" href="#L986">986</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L987" href="#L987">987</a>             <em class="jxr_comment">// TODO find another way</em>
-<a class="jxr_linenumber" name="L988" href="#L988">988</a>             Document document = aclTestClient.documentRestEndPoint
+<a class="jxr_linenumber" name="L988" href="#L988">988</a>             Document document = aclTestClient.documentRestEndpoint
 <a class="jxr_linenumber" name="L989" href="#L989">989</a>                 .getDocument(data.getDeliverableDocumentId());
 <a class="jxr_linenumber" name="L990" href="#L990">990</a>             <em class="jxr_comment">//document.setTeaser("incredible");</em>
-<a class="jxr_linenumber" name="L991" href="#L991">991</a>             aclTestClient.documentRestEndPoint.updateDocument(document);
+<a class="jxr_linenumber" name="L991" href="#L991">991</a>             aclTestClient.documentRestEndpoint.updateDocument(document);
 <a class="jxr_linenumber" name="L992" href="#L992">992</a> 
-<a class="jxr_linenumber" name="L993" href="#L993">993</a>             document = aclTestClient.documentRestEndPoint
+<a class="jxr_linenumber" name="L993" href="#L993">993</a>             document = aclTestClient.documentRestEndpoint
 <a class="jxr_linenumber" name="L994" href="#L994">994</a>                 .getDocument(data.getDeliverableDocumentId());
 <a class="jxr_linenumber" name="L995" href="#L995">995</a>             <em class="jxr_comment">//document.setTeaser("awesome");</em>
-<a class="jxr_linenumber" name="L996" href="#L996">996</a>             aclTestClient.documentRestEndPoint.updateDocument(document);
+<a class="jxr_linenumber" name="L996" href="#L996">996</a>             aclTestClient.documentRestEndpoint.updateDocument(document);
 <a class="jxr_linenumber" name="L997" href="#L997">997</a> 
 <a class="jxr_linenumber" name="L998" href="#L998">998</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L999" href="#L999">999</a>         } <strong class="jxr_keyword">catch</strong> (HttpErrorMessage hem) {
@@ -1015,7 +1015,7 @@
 <a class="jxr_linenumber" name="L1007" href="#L1007">1007</a> 
 <a class="jxr_linenumber" name="L1008" href="#L1008">1008</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> hasDeliverableBlockReadAccess() {
 <a class="jxr_linenumber" name="L1009" href="#L1009">1009</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L1010" href="#L1010">1010</a>             aclTestClient.blockRestEndPoint.getBlock(data.getDeliverableBlockId());
+<a class="jxr_linenumber" name="L1010" href="#L1010">1010</a>             aclTestClient.blockRestEndpoint.getBlock(data.getDeliverableBlockId());
 <a class="jxr_linenumber" name="L1011" href="#L1011">1011</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L1012" href="#L1012">1012</a>         } <strong class="jxr_keyword">catch</strong> (HttpErrorMessage hem) {
 <a class="jxr_linenumber" name="L1013" href="#L1013">1013</a>             <strong class="jxr_keyword">if</strong> (MessageCode.ACCESS_DENIED == hem.getMessageCode()) {
@@ -1028,13 +1028,13 @@
 <a class="jxr_linenumber" name="L1020" href="#L1020">1020</a> 
 <a class="jxr_linenumber" name="L1021" href="#L1021">1021</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> hasDeliverableBlockReadWriteAccess() {
 <a class="jxr_linenumber" name="L1022" href="#L1022">1022</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L1023" href="#L1023">1023</a>             Block block = aclTestClient.blockRestEndPoint.getBlock(data.getDeliverableBlockId());
+<a class="jxr_linenumber" name="L1023" href="#L1023">1023</a>             Block block = aclTestClient.blockRestEndpoint.getBlock(data.getDeliverableBlockId());
 <a class="jxr_linenumber" name="L1024" href="#L1024">1024</a>             block.setIndex(5);
-<a class="jxr_linenumber" name="L1025" href="#L1025">1025</a>             aclTestClient.blockRestEndPoint.updateBlock(block);
+<a class="jxr_linenumber" name="L1025" href="#L1025">1025</a>             aclTestClient.blockRestEndpoint.updateBlock(block);
 <a class="jxr_linenumber" name="L1026" href="#L1026">1026</a> 
-<a class="jxr_linenumber" name="L1027" href="#L1027">1027</a>             block = aclTestClient.blockRestEndPoint.getBlock(data.getDeliverableBlockId());
+<a class="jxr_linenumber" name="L1027" href="#L1027">1027</a>             block = aclTestClient.blockRestEndpoint.getBlock(data.getDeliverableBlockId());
 <a class="jxr_linenumber" name="L1028" href="#L1028">1028</a>             block.setIndex(7);
-<a class="jxr_linenumber" name="L1029" href="#L1029">1029</a>             aclTestClient.blockRestEndPoint.updateBlock(block);
+<a class="jxr_linenumber" name="L1029" href="#L1029">1029</a>             aclTestClient.blockRestEndpoint.updateBlock(block);
 <a class="jxr_linenumber" name="L1030" href="#L1030">1030</a> 
 <a class="jxr_linenumber" name="L1031" href="#L1031">1031</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L1032" href="#L1032">1032</a>         } <strong class="jxr_keyword">catch</strong> (HttpErrorMessage hem) {
@@ -1112,7 +1112,7 @@
 <a class="jxr_linenumber" name="L1104" href="#L1104">1104</a> 
 <a class="jxr_linenumber" name="L1105" href="#L1105">1105</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> hasDocumentReadAccess() {
 <a class="jxr_linenumber" name="L1106" href="#L1106">1106</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L1107" href="#L1107">1107</a>             aclTestClient.documentRestEndPoint.getDocument(data.getDocumentId());
+<a class="jxr_linenumber" name="L1107" href="#L1107">1107</a>             aclTestClient.documentRestEndpoint.getDocument(data.getDocumentId());
 <a class="jxr_linenumber" name="L1108" href="#L1108">1108</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L1109" href="#L1109">1109</a>         } <strong class="jxr_keyword">catch</strong> (@SuppressWarnings(<span class="jxr_string">"unused"</span>) Exception e) {
 <a class="jxr_linenumber" name="L1110" href="#L1110">1110</a>             <strong class="jxr_keyword">return</strong> false;
@@ -1124,15 +1124,15 @@
 <a class="jxr_linenumber" name="L1116" href="#L1116">1116</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> hasDocumentReadWriteAccess() {
 <a class="jxr_linenumber" name="L1117" href="#L1117">1117</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L1118" href="#L1118">1118</a>             <em class="jxr_comment">// TODO find another way</em>
-<a class="jxr_linenumber" name="L1119" href="#L1119">1119</a>             Document document = aclTestClient.documentRestEndPoint
+<a class="jxr_linenumber" name="L1119" href="#L1119">1119</a>             Document document = aclTestClient.documentRestEndpoint
 <a class="jxr_linenumber" name="L1120" href="#L1120">1120</a>                 .getDocument(data.getDocumentId());
 <a class="jxr_linenumber" name="L1121" href="#L1121">1121</a>            <em class="jxr_comment">// document.setTeaser("incredible");</em>
-<a class="jxr_linenumber" name="L1122" href="#L1122">1122</a>             aclTestClient.documentRestEndPoint.updateDocument(document);
+<a class="jxr_linenumber" name="L1122" href="#L1122">1122</a>             aclTestClient.documentRestEndpoint.updateDocument(document);
 <a class="jxr_linenumber" name="L1123" href="#L1123">1123</a> 
-<a class="jxr_linenumber" name="L1124" href="#L1124">1124</a>             document = aclTestClient.documentRestEndPoint
+<a class="jxr_linenumber" name="L1124" href="#L1124">1124</a>             document = aclTestClient.documentRestEndpoint
 <a class="jxr_linenumber" name="L1125" href="#L1125">1125</a>                 .getDocument(data.getDocumentId());
 <a class="jxr_linenumber" name="L1126" href="#L1126">1126</a>             <em class="jxr_comment">//document.setTeaser("awesome");</em>
-<a class="jxr_linenumber" name="L1127" href="#L1127">1127</a>             aclTestClient.documentRestEndPoint.updateDocument(document);
+<a class="jxr_linenumber" name="L1127" href="#L1127">1127</a>             aclTestClient.documentRestEndpoint.updateDocument(document);
 <a class="jxr_linenumber" name="L1128" href="#L1128">1128</a> 
 <a class="jxr_linenumber" name="L1129" href="#L1129">1129</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L1130" href="#L1130">1130</a>         } <strong class="jxr_keyword">catch</strong> (@SuppressWarnings(<span class="jxr_string">"unused"</span>) Exception e) { <em class="jxr_comment">// ServerException</em>
@@ -1144,7 +1144,7 @@
 <a class="jxr_linenumber" name="L1136" href="#L1136">1136</a> 
 <a class="jxr_linenumber" name="L1137" href="#L1137">1137</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> hasBlockReadAccess() {
 <a class="jxr_linenumber" name="L1138" href="#L1138">1138</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L1139" href="#L1139">1139</a>             aclTestClient.blockRestEndPoint.getBlock(data.getBlockId());
+<a class="jxr_linenumber" name="L1139" href="#L1139">1139</a>             aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
 <a class="jxr_linenumber" name="L1140" href="#L1140">1140</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L1141" href="#L1141">1141</a>         } <strong class="jxr_keyword">catch</strong> (@SuppressWarnings(<span class="jxr_string">"unused"</span>) Exception e) {
 <a class="jxr_linenumber" name="L1142" href="#L1142">1142</a>             <strong class="jxr_keyword">return</strong> false;
@@ -1155,13 +1155,13 @@
 <a class="jxr_linenumber" name="L1147" href="#L1147">1147</a> 
 <a class="jxr_linenumber" name="L1148" href="#L1148">1148</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">boolean</strong> hasBlockReadWriteAccess() {
 <a class="jxr_linenumber" name="L1149" href="#L1149">1149</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L1150" href="#L1150">1150</a>             Block block = aclTestClient.blockRestEndPoint.getBlock(data.getBlockId());
+<a class="jxr_linenumber" name="L1150" href="#L1150">1150</a>             Block block = aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
 <a class="jxr_linenumber" name="L1151" href="#L1151">1151</a>             block.setIndex(5);
-<a class="jxr_linenumber" name="L1152" href="#L1152">1152</a>             aclTestClient.blockRestEndPoint.updateBlock(block);
+<a class="jxr_linenumber" name="L1152" href="#L1152">1152</a>             aclTestClient.blockRestEndpoint.updateBlock(block);
 <a class="jxr_linenumber" name="L1153" href="#L1153">1153</a> 
-<a class="jxr_linenumber" name="L1154" href="#L1154">1154</a>             block = aclTestClient.blockRestEndPoint.getBlock(data.getBlockId());
+<a class="jxr_linenumber" name="L1154" href="#L1154">1154</a>             block = aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
 <a class="jxr_linenumber" name="L1155" href="#L1155">1155</a>             block.setIndex(7);
-<a class="jxr_linenumber" name="L1156" href="#L1156">1156</a>             aclTestClient.blockRestEndPoint.updateBlock(block);
+<a class="jxr_linenumber" name="L1156" href="#L1156">1156</a>             aclTestClient.blockRestEndpoint.updateBlock(block);
 <a class="jxr_linenumber" name="L1157" href="#L1157">1157</a> 
 <a class="jxr_linenumber" name="L1158" href="#L1158">1158</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">true</strong>;
 <a class="jxr_linenumber" name="L1159" href="#L1159">1159</a>         } <strong class="jxr_keyword">catch</strong> (@SuppressWarnings(<span class="jxr_string">"unused"</span>) Exception e) { <em class="jxr_comment">// ServerException</em>

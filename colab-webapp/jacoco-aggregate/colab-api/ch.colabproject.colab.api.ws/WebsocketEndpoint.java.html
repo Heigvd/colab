@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.ws;
 
-import ch.colabproject.colab.api.ejb.WebsocketFacade;
+import ch.colabproject.colab.api.controller.WebsocketManager;
 import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
 import ch.colabproject.colab.api.ws.utils.JsonDecoder;
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
      * Websocket business logic.
      */
     @Inject
-    private WebsocketFacade websocketFacade;
+    private WebsocketManager websocketManager;
 
     /**
      * Logger
@@ -144,7 +144,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L144">        String id = sessionToIds.get(session);</span>
 <span class="nc" id="L145">        idsToSessions.remove(id);</span>
 <span class="nc" id="L146">        sessionToIds.remove(session);</span>
-<span class="nc" id="L147">        websocketFacade.unsubscribeFromAll(session);</span>
+<span class="nc" id="L147">        websocketManager.unsubscribeFromAll(session);</span>
 <span class="nc" id="L148">    }</span>
 
     /**

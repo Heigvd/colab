@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.persistence.card.CardTypeDao;
+import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationBean;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -38,10 +39,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L41">public class CardTypeRestEndpoint {</span>
+<span class="nc" id="L42">public class CardTypeRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L44">    private static final Logger logger = LoggerFactory.getLogger(CardTypeRestEndpoint.class);</span>
+<span class="nc" id="L45">    private static final Logger logger = LoggerFactory.getLogger(CardTypeRestEndpoint.class);</span>
 
     /**
      * The card type persistence manager
@@ -63,8 +64,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;CardType&gt; getAllCardTypes() {
-<span class="nc" id="L66">        logger.debug(&quot;get all card types&quot;);</span>
-<span class="nc" id="L67">        return cardTypeDao.getAllCardType();</span>
+<span class="nc" id="L67">        logger.debug(&quot;get all card types&quot;);</span>
+<span class="nc" id="L68">        return cardTypeDao.getAllCardType();</span>
     }
 
     /**
@@ -76,8 +77,8 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;allGlobals&quot;)
     @AdminResource
     public List&lt;CardType&gt; getAllGlobalCardTypes() {
-<span class="nc" id="L79">        logger.debug(&quot;get all global card types&quot;);</span>
-<span class="nc" id="L80">        return cardTypeDao.getGlobalCardType();</span>
+<span class="nc" id="L80">        logger.debug(&quot;get all global card types&quot;);</span>
+<span class="nc" id="L81">        return cardTypeDao.getGlobalCardType();</span>
     }
 
     /**
@@ -88,8 +89,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;publishedGlobals&quot;)
     public List&lt;CardType&gt; getPublishedGlobalsCardTypes() {
-<span class="nc" id="L91">        logger.debug(&quot;get published global card types&quot;);</span>
-<span class="nc" id="L92">        return cardTypeDao.getPublishedGlobalCardType();</span>
+<span class="nc" id="L92">        logger.debug(&quot;get published global card types&quot;);</span>
+<span class="nc" id="L93">        return cardTypeDao.getPublishedGlobalCardType();</span>
     }
 
     /**
@@ -101,8 +102,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;allProjectsPublished&quot;)
     public Set&lt;AbstractCardType&gt; getPublishedCardTypes() {
-<span class="nc" id="L104">        logger.debug(&quot;get published projects card types&quot;);</span>
-<span class="nc" id="L105">        return cardTypeManager.getExpandedPublishedProjectTypes();</span>
+<span class="nc" id="L105">        logger.debug(&quot;get published projects card types&quot;);</span>
+<span class="nc" id="L106">        return cardTypeManager.getExpandedPublishedProjectTypes();</span>
     }
 
     /**
@@ -115,8 +116,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public AbstractCardType getCardType(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L118">        logger.debug(&quot;get card type #{}&quot;, id);</span>
-<span class="nc" id="L119">        return cardTypeDao.getAbstractCardType(id);</span>
+<span class="nc" id="L119">        logger.debug(&quot;get card type #{}&quot;, id);</span>
+<span class="nc" id="L120">        return cardTypeDao.getAbstractCardType(id);</span>
     }
 
     /**
@@ -128,15 +129,15 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createCardType(CardTypeCreationBean cardTypeCreationBean) {
-<span class="nc" id="L131">        logger.debug(&quot;create card type {}&quot;, cardTypeCreationBean);</span>
+<span class="nc" id="L132">        logger.debug(&quot;create card type {}&quot;, cardTypeCreationBean);</span>
 
-<span class="nc" id="L133">        CardType cardType = new CardType();</span>
-<span class="nc" id="L134">        cardType.setProjectId(cardTypeCreationBean.getProjectId());</span>
-<span class="nc" id="L135">        cardType.setTitle(cardTypeCreationBean.getTitle());</span>
-<span class="nc" id="L136">        cardType.setPurpose(cardTypeCreationBean.getPurpose());</span>
-<span class="nc" id="L137">        cardType.setTags(cardTypeCreationBean.getTags());</span>
+<span class="nc" id="L134">        CardType cardType = new CardType();</span>
+<span class="nc" id="L135">        cardType.setProjectId(cardTypeCreationBean.getProjectId());</span>
+<span class="nc" id="L136">        cardType.setTitle(cardTypeCreationBean.getTitle());</span>
+<span class="nc" id="L137">        cardType.setPurpose(cardTypeCreationBean.getPurpose());</span>
+<span class="nc" id="L138">        cardType.setTags(cardTypeCreationBean.getTags());</span>
 
-<span class="nc" id="L139">        return cardTypeManager.createCardType(cardType).getId();</span>
+<span class="nc" id="L140">        return cardTypeManager.createCardType(cardType).getId();</span>
     }
 
 //    /**
@@ -150,7 +151,7 @@ import org.slf4j.LoggerFactory;
 //    @Path(&quot;create/{projectId}&quot;)
 //    public CardType createNewCardType(@PathParam(&quot;projectId&quot;) Long projectId) {
 //        logger.debug(&quot;create new card type for the project #{}&quot;, projectId);
-//        return facade.createNewCardType(projectId);
+//        return cardTypeManager.createNewCardType(projectId);
 //    }
 
     /**
@@ -162,9 +163,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCardType(AbstractCardType cardType) throws ColabMergeException {
-<span class="nc" id="L165">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
-<span class="nc" id="L166">        cardTypeDao.updateCardType(cardType);</span>
-<span class="nc" id="L167">    }</span>
+<span class="nc" id="L166">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
+<span class="nc" id="L167">        cardTypeDao.updateCardType(cardType);</span>
+<span class="nc" id="L168">    }</span>
 
     /**
      * Permanently delete a card type
@@ -174,9 +175,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteCardType(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L177">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
-<span class="nc" id="L178">        cardTypeManager.deleteCardType(id);</span>
-<span class="nc" id="L179">    }</span>
+<span class="nc" id="L178">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
+<span class="nc" id="L179">        cardTypeManager.deleteCardType(id);</span>
+<span class="nc" id="L180">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

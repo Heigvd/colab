@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.microchanges.tools;
 
 import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.ejb.CdiBridgeSingleton;
+import ch.colabproject.colab.api.controller.CdiBridgeSingleton;
 import java.io.Serializable;
 import java.util.concurrent.Callable;
 

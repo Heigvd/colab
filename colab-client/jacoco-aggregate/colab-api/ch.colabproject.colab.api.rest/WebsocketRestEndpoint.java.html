@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest;
 
-import ch.colabproject.colab.api.ejb.WebsocketFacade;
+import ch.colabproject.colab.api.controller.WebsocketManager;
 import ch.colabproject.colab.api.ws.channel.ChannelOverview;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
      * Websocket business logic
      */
     @Inject
-    private WebsocketFacade wsFacade;
+    private WebsocketManager wsManager;
 
     /**
      * Get the list of all occupied channels.
@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
     @AdminResource
     public Set&lt;ChannelOverview&gt; getExistingChannels() {
 <span class="nc" id="L60">        logger.debug(&quot;Get all existing channels&quot;);</span>
-<span class="nc" id="L61">        return wsFacade.getExistingChannels();</span>
+<span class="nc" id="L61">        return wsManager.getExistingChannels();</span>
     }
 
     /**
@@ -70,7 +70,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;SubscribeToBroadcastChannel&quot;)
     public void subscribeToBroadcastChannel(WsSessionIdentifier sessionId) {
 <span class="nc" id="L72">        logger.debug(&quot;Subscribe to broadcast channel with session id {}&quot;, sessionId);</span>
-<span class="nc" id="L73">        wsFacade.subscribeToBroadcastChannel(sessionId);</span>
+<span class="nc" id="L73">        wsManager.subscribeToBroadcastChannel(sessionId);</span>
 <span class="nc" id="L74">    }</span>
 
     /**
@@ -82,7 +82,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;UnSubscribeFromBroadcastChannel&quot;)
     public void unsubscribeFromBroadcastChannel(WsSessionIdentifier sessionId) {
 <span class="nc" id="L84">        logger.debug(&quot;Unsubscribe from broadcast channel with session id {}&quot;, sessionId);</span>
-<span class="nc" id="L85">        wsFacade.unsubscribeFromBroadcastChannel(sessionId);</span>
+<span class="nc" id="L85">        wsManager.unsubscribeFromBroadcastChannel(sessionId);</span>
 <span class="nc" id="L86">    }</span>
 
     /**
@@ -95,7 +95,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;SubscribeToUserChannel&quot;)
     public void subscribeToUserChannel(WsSessionIdentifier sessionId) {
 <span class="nc" id="L97">        logger.debug(&quot;Subscribe to its own userchanell with session id {}&quot;, sessionId);</span>
-<span class="nc" id="L98">        wsFacade.subscribeToUserChannel(sessionId);</span>
+<span class="nc" id="L98">        wsManager.subscribeToUserChannel(sessionId);</span>
 <span class="nc" id="L99">    }</span>
 
     /**
@@ -108,7 +108,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;UnsubscribeFromUserChannel&quot;)
     public void unsubscribeFromUserChannel(WsSessionIdentifier sessionId) {
 <span class="nc" id="L110">        logger.debug(&quot;Unsubscribe from its own userchanell with session id {}&quot;, sessionId);</span>
-<span class="nc" id="L111">        wsFacade.unsubscribeFromUserChannel(sessionId);</span>
+<span class="nc" id="L111">        wsManager.unsubscribeFromUserChannel(sessionId);</span>
 <span class="nc" id="L112">    }</span>
 
     /**
@@ -125,7 +125,7 @@ import org.slf4j.LoggerFactory;
     ) {
 <span class="nc" id="L126">        logger.debug(&quot;Subscribe to project #{} channel with session id {}&quot;,</span>
             projectId, sessionId);
-<span class="nc" id="L128">        wsFacade.subscribeToProjectChannel(sessionId, projectId);</span>
+<span class="nc" id="L128">        wsManager.subscribeToProjectChannel(sessionId, projectId);</span>
 <span class="nc" id="L129">    }</span>
 
     /**
@@ -142,7 +142,7 @@ import org.slf4j.LoggerFactory;
     ) {
 <span class="nc" id="L143">        logger.debug(&quot;Unsubscribe from project #{} channel with session id {}&quot;,</span>
             projectId, sessionId);
-<span class="nc" id="L145">        wsFacade.unsubscribeFromProjectChannel(sessionId, projectId);</span>
+<span class="nc" id="L145">        wsManager.unsubscribeFromProjectChannel(sessionId, projectId);</span>
 <span class="nc" id="L146">    }</span>
 
     /**
@@ -158,7 +158,7 @@ import org.slf4j.LoggerFactory;
         WsSessionIdentifier sessionId
     ) {
 <span class="nc" id="L160">        logger.debug(&quot;Subscribe to block #{} channel with session id {}&quot;, blockId, sessionId);</span>
-<span class="nc" id="L161">        wsFacade.subscribeToBlockChannel(sessionId, blockId);</span>
+<span class="nc" id="L161">        wsManager.subscribeToBlockChannel(sessionId, blockId);</span>
 <span class="nc" id="L162">    }</span>
 
     /**
@@ -174,7 +174,7 @@ import org.slf4j.LoggerFactory;
         WsSessionIdentifier sessionId
     ) {
 <span class="nc" id="L176">        logger.debug(&quot;Unsubscribe from block #{} channel with session id {}&quot;, blockId, sessionId);</span>
-<span class="nc" id="L177">        wsFacade.unsubscribeFromBlockChannel(sessionId, blockId);</span>
+<span class="nc" id="L177">        wsManager.unsubscribeFromBlockChannel(sessionId, blockId);</span>
 <span class="nc" id="L178">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

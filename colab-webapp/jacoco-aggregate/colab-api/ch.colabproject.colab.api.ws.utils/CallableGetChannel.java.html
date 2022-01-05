@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.ws.utils;
 
 import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.ejb.CdiBridgeSingleton;
+import ch.colabproject.colab.api.controller.CdiBridgeSingleton;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
 import java.io.Serializable;
 import java.util.Map;
