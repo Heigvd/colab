@@ -491,29 +491,21 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     public void setSrc(StickyNoteSourceable src) {
         if (src == null) {
             resetSrc();
-            return;
-        }
-        if (src instanceof Card) {
+        } else if (src instanceof Card) {
             resetSrc();
             setSrcCard((Card) src);
-            return;
-        }
-        if (src instanceof CardContent) {
+        } else if (src instanceof CardContent) {
             resetSrc();
             setSrcCardContent((CardContent) src);
-            return;
-        }
-        if (src instanceof AbstractResource) {
+        } else if (src instanceof AbstractResource) {
             resetSrc();
             setSrcResourceOrRef((AbstractResource) src);
-            return;
-        }
-        if (src instanceof Block) {
+        } else if (src instanceof Block) {
             resetSrc();
             setSrcBlock((Block) src);
-            return;
+        } else {
+            throw HttpErrorMessage.dataIntegrityFailure();
         }
-        throw HttpErrorMessage.dataIntegrityFailure();
     }
 
     /**

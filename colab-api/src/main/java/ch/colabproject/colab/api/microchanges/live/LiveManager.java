@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.microchanges.live;
 
-import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
+import ch.colabproject.colab.api.controller.EntityGatheringBagForPropagation;
+import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.microchanges.tools.CancelDebounce;
@@ -191,7 +191,7 @@ public class LiveManager implements Serializable {
 
 //                try {
 //                    PrecomputedWsMessages msg = WebsocketHelper.prepareWsMessage(userDao, block.getChannels(), message);
-//                    websocketFacade.propagate(msg);
+//                    websocketManager.propagate(msg);
 //                } catch (EncodeException ex) {
 //                    logger.error("Live update error: precompute failed");
 //                }
@@ -271,7 +271,7 @@ public class LiveManager implements Serializable {
 //
 //            try {
 //                PrecomputedWsMessages msg = WebsocketHelper.prepareWsMessage(userDao, block.getChannels(), message);
-//                websocketFacade.propagate(msg);
+//                websocketManager.propagate(msg);
 //            } catch (EncodeException ex) {
 //                logger.error("Live update error: precompute failed");
 //            }

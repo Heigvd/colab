@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest;
 
-import ch.colabproject.colab.api.ejb.WebsocketFacade;
+import ch.colabproject.colab.api.controller.WebsocketManager;
 import ch.colabproject.colab.api.ws.channel.ChannelOverview;
 import ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
@@ -47,7 +47,7 @@ public class WebsocketRestEndpoint {
      * Websocket business logic
      */
     @Inject
-    private WebsocketFacade wsFacade;
+    private WebsocketManager wsManager;
 
     /**
      * Get the list of all occupied channels.
@@ -58,7 +58,7 @@ public class WebsocketRestEndpoint {
     @AdminResource
     public Set<ChannelOverview> getExistingChannels() {
         logger.debug("Get all existing channels");
-        return wsFacade.getExistingChannels();
+        return wsManager.getExistingChannels();
     }
 
     /**
@@ -70,7 +70,7 @@ public class WebsocketRestEndpoint {
     @Path("SubscribeToBroadcastChannel")
     public void subscribeToBroadcastChannel(WsSessionIdentifier sessionId) {
         logger.debug("Subscribe to broadcast channel with session id {}", sessionId);
-        wsFacade.subscribeToBroadcastChannel(sessionId);
+        wsManager.subscribeToBroadcastChannel(sessionId);
     }
 
     /**
@@ -82,7 +82,7 @@ public class WebsocketRestEndpoint {
     @Path("UnSubscribeFromBroadcastChannel")
     public void unsubscribeFromBroadcastChannel(WsSessionIdentifier sessionId) {
         logger.debug("Unsubscribe from broadcast channel with session id {}", sessionId);
-        wsFacade.unsubscribeFromBroadcastChannel(sessionId);
+        wsManager.unsubscribeFromBroadcastChannel(sessionId);
     }
 
     /**
@@ -95,7 +95,7 @@ public class WebsocketRestEndpoint {
     @Path("SubscribeToUserChannel")
     public void subscribeToUserChannel(WsSessionIdentifier sessionId) {
         logger.debug("Subscribe to its own userchanell with session id {}", sessionId);
-        wsFacade.subscribeToUserChannel(sessionId);
+        wsManager.subscribeToUserChannel(sessionId);
     }
 
     /**
@@ -108,7 +108,7 @@ public class WebsocketRestEndpoint {
     @Path("UnsubscribeFromUserChannel")
     public void unsubscribeFromUserChannel(WsSessionIdentifier sessionId) {
         logger.debug("Unsubscribe from its own userchanell with session id {}", sessionId);
-        wsFacade.unsubscribeFromUserChannel(sessionId);
+        wsManager.unsubscribeFromUserChannel(sessionId);
     }
 
     /**
@@ -125,7 +125,7 @@ public class WebsocketRestEndpoint {
     ) {
         logger.debug("Subscribe to project #{} channel with session id {}",
             projectId, sessionId);
-        wsFacade.subscribeToProjectChannel(sessionId, projectId);
+        wsManager.subscribeToProjectChannel(sessionId, projectId);
     }
 
     /**
@@ -142,7 +142,7 @@ public class WebsocketRestEndpoint {
     ) {
         logger.debug("Unsubscribe from project #{} channel with session id {}",
             projectId, sessionId);
-        wsFacade.unsubscribeFromProjectChannel(sessionId, projectId);
+        wsManager.unsubscribeFromProjectChannel(sessionId, projectId);
     }
 
     /**
@@ -158,7 +158,7 @@ public class WebsocketRestEndpoint {
         WsSessionIdentifier sessionId
     ) {
         logger.debug("Subscribe to block #{} channel with session id {}", blockId, sessionId);
-        wsFacade.subscribeToBlockChannel(sessionId, blockId);
+        wsManager.subscribeToBlockChannel(sessionId, blockId);
     }
 
     /**
@@ -174,6 +174,6 @@ public class WebsocketRestEndpoint {
         WsSessionIdentifier sessionId
     ) {
         logger.debug("Unsubscribe from block #{} channel with session id {}", blockId, sessionId);
-        wsFacade.unsubscribeFromBlockChannel(sessionId, blockId);
+        wsManager.unsubscribeFromBlockChannel(sessionId, blockId);
     }
 }

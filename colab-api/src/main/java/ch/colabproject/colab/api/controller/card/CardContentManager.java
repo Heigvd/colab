@@ -6,9 +6,8 @@
  */
 package ch.colabproject.colab.api.controller.card;
 
+import ch.colabproject.colab.api.controller.document.DocumentManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
-import ch.colabproject.colab.api.ejb.CardFacade;
-import ch.colabproject.colab.api.ejb.DocumentFacade;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
@@ -65,13 +64,13 @@ public class CardContentManager {
      * Card specific logic management
      */
     @Inject
-    private CardFacade cardManager;
+    private CardManager cardManager;
 
     /**
      * Document specific logic management
      */
     @Inject
-    private DocumentFacade documentManager;
+    private DocumentManager documentManager;
 
     // *********************************************************************************************
     // find card contents
@@ -90,6 +89,7 @@ public class CardContentManager {
         CardContent cardContent = cardContentDao.getCardContent(cardContentId);
 
         if (cardContent == null) {
+            logger.error("card content #{} not found", cardContentId);
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
@@ -116,7 +116,7 @@ public class CardContentManager {
 
         CardContent cardContent = initNewCardContentForCard(card);
 
-        ResourceReferenceSpreadingHelper.spreadResourceFromUp(cardContent);
+        ResourceReferenceSpreadingHelper.spreadResourcesFromUp(cardContent);
 
         return cardContentDao.createCardContent(cardContent);
     }
@@ -150,7 +150,7 @@ public class CardContentManager {
     public CardContent deleteCardContent(Long cardContentId) {
         CardContent cardContent = assertAndGetCardContent(cardContentId);
 
-        if (!(checkDeletionAcceptability(cardContent))) {
+        if (!checkDeletionAcceptability(cardContent)) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 

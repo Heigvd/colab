@@ -76,8 +76,8 @@ public class SampleTestData {
     }
 
     private void initData(ColabClient client) {
-        unpublishedGlobalCardTypeId = ColabFactory.createCardType(client, null).getId();
-        publishedGlobalCardTypeId = ColabFactory.createPublishedCardType(client, null).getId();
+        unpublishedGlobalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
+        publishedGlobalCardTypeId = ColabFactory.createGlobalPublishedCardType(client).getId();
 
         Project theProject = ColabFactory.createProject(client, "THE Sample test data project");
         theProjectId = theProject.getId();
