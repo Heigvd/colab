@@ -104,7 +104,7 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
       with:
-        context: src/main/docker/
+        context: colab-webapp/src/main/docker/colab
         platforms: linux/amd64,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
         push: true
         tags: ${{ steps.docker-meta.outputs.tags }}
