@@ -20,9 +20,9 @@ import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.Token;
-import ch.colabproject.colab.api.rest.card.CardTypeCreationBean;
-import ch.colabproject.colab.api.rest.document.ResourceCreationBean;
-import ch.colabproject.colab.api.rest.link.StickyNoteLinkCreationBean;
+import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationBean;
+import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
+import ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationBean;
 import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
 import ch.colabproject.colab.tests.mailhog.model.Message;
@@ -233,7 +233,7 @@ public class ColabFactory {
      * @return the new block
      */
     public static Block addBlockToDocument(ColabClient client, Long documentId) {
-        return client.blockRestEndPoint.createNewTextDataBlock(documentId);
+        return client.blockRestEndpoint.createNewTextDataBlock(documentId);
     }
 
     /**

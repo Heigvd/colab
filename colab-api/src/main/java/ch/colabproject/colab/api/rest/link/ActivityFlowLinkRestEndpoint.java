@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.link;
 
-import ch.colabproject.colab.api.ejb.ActivityFlowLinkFacade;
+import ch.colabproject.colab.api.controller.link.ActivityFlowLinkManager;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.persistence.link.ActivityFlowLinkDao;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -52,7 +52,7 @@ public class ActivityFlowLinkRestEndpoint {
      * The activity flow link related logic
      */
     @Inject
-    private ActivityFlowLinkFacade linkFacade;
+    private ActivityFlowLinkManager linkManager;
 
     // *********************************************************************************************
     //
@@ -95,7 +95,7 @@ public class ActivityFlowLinkRestEndpoint {
     @POST
     public Long createLink(ActivityFlowLink link) {
         logger.debug("create activity flow link {}", link);
-        return linkFacade.createActivityFlowLink(link).getId();
+        return linkManager.createActivityFlowLink(link).getId();
     }
 
     /**
@@ -107,7 +107,7 @@ public class ActivityFlowLinkRestEndpoint {
     @Path("{id}")
     public void deleteLink(@PathParam("id") Long id) {
         logger.debug("delete activity flow link #{}", id);
-        linkFacade.deleteActivityFlowLink(id);
+        linkManager.deleteActivityFlowLink(id);
     }
 
     /**
@@ -120,7 +120,7 @@ public class ActivityFlowLinkRestEndpoint {
     @Path("changePrevious/{linkId}")
     public void changePreviousCard(@PathParam("linkId") Long linkId, Long cardId) {
         logger.debug("change activity flow link #{} previous card to #{}", linkId, cardId);
-        linkFacade.changeActivityFlowLinkPrevious(linkId, cardId);
+        linkManager.changeActivityFlowLinkPrevious(linkId, cardId);
     }
 
     /**
@@ -133,7 +133,7 @@ public class ActivityFlowLinkRestEndpoint {
     @Path("changeNext/{linkId}")
     public void changeNextCard(@PathParam("linkId") Long linkId, Long cardId) {
         logger.debug("change activity flow link #{} next card to #{}", linkId, cardId);
-        linkFacade.changeActivityFlowLinkNext(linkId, cardId);
+        linkManager.changeActivityFlowLinkNext(linkId, cardId);
     }
 
     // *********************************************************************************************

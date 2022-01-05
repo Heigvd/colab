@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel;
 
-import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.persistence.user.UserDao;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.Set;
