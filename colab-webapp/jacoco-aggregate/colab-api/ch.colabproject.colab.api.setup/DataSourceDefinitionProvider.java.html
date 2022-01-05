@@ -19,12 +19,12 @@ import org.postgresql.xa.PGXADataSource;
 @DataSourceDefinition(
     name = &quot;java:global/colabDS&quot;,
     className = &quot;org.postgresql.xa.PGXADataSource&quot;,
-    serverName = &quot;${colab.database.host}&quot;,
-    portNumber = 5432,//how to interpolate variable properties to int ?
-    databaseName = &quot;${colab.database.name}&quot;,
+    //serverName = &quot;${colab.database.host:-localhost}&quot;,
+    //portNumber = 5432,//how to interpolate variable properties to int ?
+    //databaseName = &quot;${colab.database.name}&quot;,
     user = &quot;${colab.database.user}&quot;,
     password = &quot;${colab.database.password}&quot;,
-    url = &quot;jdbc:h2:~/${colab.database.name}.h2&quot;
+    url = &quot;jdbc:postgresql://${colab.database.host}:${colab.database.port}/${colab.database.name}&quot;
 )
 <span class="nc" id="L29">public class DataSourceDefinitionProvider {</span>
 
