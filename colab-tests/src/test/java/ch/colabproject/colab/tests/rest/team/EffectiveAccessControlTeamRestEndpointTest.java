@@ -128,7 +128,7 @@ public class EffectiveAccessControlTeamRestEndpointTest extends AbstractArquilli
 
         Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
 
-        Long globalCardTypeId = ColabFactory.createPublishedCardType(client, null).getId();
+        Long globalCardTypeId = ColabFactory.createGlobalPublishedCardType(client).getId();
 
         Card card = ColabFactory.createNewCard(client, rootCardContentId, globalCardTypeId);
         Long cardId = card.getId();

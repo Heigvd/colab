@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.document.ResourceAndRefDao;
+import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
@@ -96,7 +97,7 @@ public class ResourceRestEndpoint {
     public List<List<AbstractResource>> getResourceChainForAbstractCardType(
         @PathParam("cardTypeOrRefId") Long cardTypeOrRefId) {
         logger.debug("get resource chain for card content #{}", cardTypeOrRefId);
-        return resourceManager.getResourceChainForAbstractCardType(cardTypeOrRefId);
+        return resourceManager.getExpandedResourcesForAbstractCardType(cardTypeOrRefId);
     }
 
     /**
@@ -112,7 +113,7 @@ public class ResourceRestEndpoint {
     public List<List<AbstractResource>> getResourceChainForCard(
         @PathParam("cardId") Long cardId) {
         logger.debug("get resource chain for card content #{}", cardId);
-        return resourceManager.getResourceChainForCard(cardId);
+        return resourceManager.getExpandedResourcesForCard(cardId);
     }
 
     /**
@@ -128,7 +129,7 @@ public class ResourceRestEndpoint {
     public List<List<AbstractResource>> getResourceChainForCardContent(
         @PathParam("cardContentId") Long cardContentId) {
         logger.debug("get resource chain for card content #{}", cardContentId);
-        return resourceManager.getResourceChainForCardContent(cardContentId);
+        return resourceManager.getExpandedResourcesForCardContent(cardContentId);
     }
 
     // *********************************************************************************************
@@ -188,10 +189,6 @@ public class ResourceRestEndpoint {
         resource.setAbstractCardTypeId(resourceCreationBean.getAbstractCardTypeId());
         resource.setCardId(resourceCreationBean.getCardId());
         resource.setCardContentId(resourceCreationBean.getCardContentId());
-
-        // implicitly setPublished(false);
-        // implicitly setRequestingForGlory(false);
-        // implicitly setDeprecated(false);
 
         resourceCreationBean.getDocument().setResource(resource);
 

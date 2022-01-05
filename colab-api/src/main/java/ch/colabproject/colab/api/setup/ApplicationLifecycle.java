@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.setup;
 
-import ch.colabproject.colab.api.ejb.ApplicationLifecycleFacade;
-import ch.colabproject.colab.api.ejb.CdiBridgeSingleton;
+import ch.colabproject.colab.api.controller.CdiBridgeSingleton;
+import ch.colabproject.colab.api.controller.setup.ApplicationLifecycleManager;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import com.hazelcast.cluster.Member;
 import com.hazelcast.core.HazelcastInstance;
@@ -42,7 +42,7 @@ public class ApplicationLifecycle extends HttpServlet {
      * User related methods
      */
     @Inject
-    private ApplicationLifecycleFacade applicationLifecycleFacade;
+    private ApplicationLifecycleManager applicationLifecycleManager;
 
     /**
      * CDI bridge
@@ -72,7 +72,7 @@ public class ApplicationLifecycle extends HttpServlet {
         logger.info("Update PolymorphicDeserializer: {} new types", newTypeCount);
 
         logger.info("Create a default admin user if none exists");
-        applicationLifecycleFacade.createDefaultAdminIfNone();
+        applicationLifecycleManager.createDefaultAdminIfNone();
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override

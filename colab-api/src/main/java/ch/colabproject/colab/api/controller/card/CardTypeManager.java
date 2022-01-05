@@ -7,8 +7,8 @@
 package ch.colabproject.colab.api.controller.card;
 
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
-import ch.colabproject.colab.api.ejb.ProjectFacade;
-import ch.colabproject.colab.api.ejb.SecurityFacade;
+import ch.colabproject.colab.api.controller.project.ProjectManager;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
@@ -52,7 +52,7 @@ public class CardTypeManager {
      * Access control manager
      */
     @Inject
-    private SecurityFacade securityFacade;
+    private SecurityManager securityManager;
 
     /**
      * Card type persistence handler
@@ -64,7 +64,7 @@ public class CardTypeManager {
      * Project specific logic management
      */
     @Inject
-    private ProjectFacade projectManager;
+    private ProjectManager projectManager;
 
     // *********************************************************************************************
     // find card types and references
@@ -83,6 +83,7 @@ public class CardTypeManager {
         AbstractCardType cardTypeOrRef = cardTypeDao.getAbstractCardType(cardTypeOrRefId);
 
         if (cardTypeOrRef == null) {
+            logger.error("card type or reference #{} not found", cardTypeOrRefId);
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
@@ -279,7 +280,7 @@ public class CardTypeManager {
         ref.setTarget(cardType);
         cardType.getDirectReferences().add(ref);
 
-        ResourceReferenceSpreadingHelper.spreadResourceFromUp(ref);
+        ResourceReferenceSpreadingHelper.spreadResourcesFromUp(ref);
 
         return cardTypeDao.createCardType(ref);
     }
@@ -350,7 +351,7 @@ public class CardTypeManager {
      * @return the ids of the matching card types or references
      */
     private List<Long> findCurrentUserDirectProjectsCardTypesIds() {
-        User user = securityFacade.assertAndGetCurrentUser();
+        User user = securityManager.assertAndGetCurrentUser();
 
         List<Long> cardTypeOrRefIds = cardTypeDao.getUserProjectCardTypeIds(user.getId());
 
@@ -442,7 +443,7 @@ public class CardTypeManager {
             }
         }
 
-        // just one ref with target/project
+        // just one ref by target/project
 
         return true;
     }

@@ -152,7 +152,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         throws URISyntaxException, DeploymentException, IOException, InterruptedException {
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketHelper.class), Level.TRACE);
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketClient.class), Level.TRACE);
-//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketFacade.class), Level.TRACE);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketManager.class), Level.TRACE);
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(TransactionManager.class), Level.TRACE);
 
         ////////////////////////////////////////////////////////////////////////////////////////////

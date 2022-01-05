@@ -90,7 +90,7 @@ public final class ResourceReferenceSpreadingHelper {
      * @param cardTypeRefToFill A new card type reference that need references to the up stream
      *                          resources
      */
-    public static void spreadResourceFromUp(CardTypeRef cardTypeRefToFill) {
+    public static void spreadResourcesFromUp(CardTypeRef cardTypeRefToFill) {
         AbstractCardType target = cardTypeRefToFill.getTarget();
 
         for (AbstractResource targetResource : target.getDirectAbstractResources()) {
@@ -106,7 +106,7 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @param cardToFill A new card that need references to the up stream resources
      */
-    public static void spreadResourceFromUp(Card cardToFill) {
+    public static void spreadResourcesFromUp(Card cardToFill) {
         CardContent parent = cardToFill.getParent();
 
         for (AbstractResource parentResource : parent.getDirectAbstractResources()) {
@@ -130,7 +130,7 @@ public final class ResourceReferenceSpreadingHelper {
      *
      * @param cardContentToFill A new card content that need references to the up stream resources
      */
-    public static void spreadResourceFromUp(CardContent cardContentToFill) {
+    public static void spreadResourcesFromUp(CardContent cardContentToFill) {
         Card parent = cardContentToFill.getCard();
 
         List<AbstractResource> parentResources = parent.getDirectAbstractResources();

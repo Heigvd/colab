@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.security.permissions.card;
 
-import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.api.ejb.SecurityFacade;
+import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
 import java.util.Objects;
 
@@ -46,8 +46,8 @@ public final class CardTypeOrRefConditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-            return securityFacade.isCardTypeOrRefReadableByCurrentUser(this.cardTypeOrRefId);
+            SecurityManager securityManager) {
+            return securityManager.isCardTypeOrRefReadableByCurrentUser(this.cardTypeOrRefId);
         }
 
         @Override
