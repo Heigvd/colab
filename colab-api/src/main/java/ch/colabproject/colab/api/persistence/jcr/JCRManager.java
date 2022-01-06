@@ -31,6 +31,8 @@ import javax.inject.Inject;
 import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manages the persistence of files with JackRabbit Oak
@@ -45,6 +47,8 @@ public class JcrManager {
     
     private static final String CONTENT = "CONTENT";
     
+    private static final Logger logger = LoggerFactory.getLogger(JcrManager.class);
+
     /**
      * @param project related project
      * @param identifier document id
@@ -114,5 +118,33 @@ public class JcrManager {
             session.removeNode(identifier.toString());
         }
         
+    }
+    
+    /**
+     * Computes the disk space used by a project
+     * @param project
+     * @return used memory in bytes
+     * @throws RepositoryException 
+     */
+    public Long computeMemoryUsage(Project project) throws RepositoryException {
+        
+        var session = this.jcrSessionManager.getSession(project);
+        
+        var node = session.getWorkspaceRoot();
+        Long total = 0L;
+
+        try {
+            var iterator = node.getNodes();
+            while(iterator.hasNext()){
+                Node next = iterator.nextNode();
+                total += next.getProperty("CONTENT").getLength();
+            }
+            
+        } catch(RepositoryException re){
+            logger.warn("Could not compute memeory usage of project {} id {}. "
+                    + "Exception : {}", 
+                    project.getName(), project.getId(), re.getMessage());
+        }
+        return total;
     }
 }

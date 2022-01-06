@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.persistence.jcr;
 
 import ch.colabproject.colab.api.setup.ColabConfiguration;
+import com.mongodb.MongoClient;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.annotation.PreDestroy;
@@ -55,11 +56,13 @@ public class JcrRepository {
             var mongoUri = ColabConfiguration.getJcrMongoDbUri();
             if(mongoUri == null || mongoUri.isBlank()){
                 repository = new Jcr(new Oak()).createRepository();
+                logger.debug("Using in memory JCR repository");
             }else{
                 try {
                     final URI uri = new URI(mongoUri);
 
                     if (uri.getScheme().equals("mongodb")) {
+                        logger.info("Setting up JCR Oak MongoDB based repository");
                         String hostPort = uri.getHost();
                         if (uri.getPort() > -1) {
                             hostPort += ":" + uri.getPort();
@@ -72,6 +75,8 @@ public class JcrRepository {
                             .build();
 
                         repository = new Jcr(new Oak(nodeStore)).createRepository();
+                        logger.info("JCR repository initialized");
+
                     }
                 } catch (URISyntaxException e) {
                     logger.error("Could not init JCR : {}", e.getMessage());

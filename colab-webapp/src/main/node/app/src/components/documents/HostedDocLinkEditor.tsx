@@ -14,6 +14,7 @@ import InlineLoading from '../common/InlineLoading';
 import * as API from '../../API/api';
 import * as React from 'react';
 import IconButton from '../common/IconButton';
+import {getLogger} from '../../logger';
 
 export interface HostedDocLinkProps {
   document: HostedDocLink;
@@ -33,7 +34,9 @@ export function HostedDocLinkEditor({ document }: HostedDocLinkProps): JSX.Eleme
         setState('LOADING');
         const file = v.target.files[0];
 
-        console.log('Uploading file *********** ' + file!.name);
+        const logger = getLogger('HostedDocLinkEditor');
+        logger.info('Uploading file *********** ' + file!.name);
+
         if(file){
           dispatch(API.uploadFile({docId: document.id!, file: file })).then(() => setState('DONE'));
         }
@@ -45,7 +48,7 @@ export function HostedDocLinkEditor({ document }: HostedDocLinkProps): JSX.Eleme
     () => {
       const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(document.id!);
       window.open(downloadUrl);
-    }, [dispatch, document.id]
+    }, [document.id]
   )
 
   React.useEffect(() => {

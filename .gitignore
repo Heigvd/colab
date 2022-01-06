@@ -40,3 +40,7 @@ nbproject
 /colab-tests/colab.properties
 /colab-tests/src/test/node/cypress/videos/
 /colab-tests/src/test/node/cypress/screenshots/
+
+# Vim
+*.swp
+

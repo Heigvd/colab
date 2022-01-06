@@ -117,8 +117,8 @@ public class JcrSession implements Serializable {
     /**
      * Get a node
      *
-     * @param relativePath relativePath relativePath relative to the workspace root. May starts with a / or
-                     not
+     * @param relativePath relativePath relative to the workspace root. 
+     * May starts with a / or not
      *
      * @return the node or null if it does not exist
      */

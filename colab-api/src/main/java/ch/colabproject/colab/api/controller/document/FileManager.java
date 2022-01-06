@@ -1,5 +1,8 @@
-/**
+/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
  *
+ * Licensed under the MIT License
  */
 package ch.colabproject.colab.api.controller.document;
 
@@ -76,6 +79,8 @@ public class FileManager {
             throw HttpErrorMessage.notFound();
         }
 
+        //TODO check project quota
+
         var fileSize = details.getSize();
         if(fileSize > ColabConfiguration.getJcrRepositoryFileSizeLimit()){
             FileManager.logger.debug("File exceeds authorized size ({} bytes)"
@@ -84,6 +89,7 @@ public class FileManager {
 
             throw HttpErrorMessage.internalServerError();
         }
+
 
         HostedDocLink hostedDoc = (HostedDocLink)doc;
         hostedDoc.setFileName(fileName);

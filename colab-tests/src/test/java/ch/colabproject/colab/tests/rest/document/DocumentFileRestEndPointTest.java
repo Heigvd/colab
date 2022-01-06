@@ -222,7 +222,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         // create project and bind to resource
         Project project = ColabFactory.createProject(client, "testResource");
         Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
-        Long globalCardTypeId = ColabFactory.createCardType(client, null).getId();
+        Long globalCardTypeId = ColabFactory.createCardType(client, project).getId();
         Long cardId = ColabFactory.createNewCard(client, rootCardContentId, globalCardTypeId).getId();
         toCreate.setCardId(cardId);
 
