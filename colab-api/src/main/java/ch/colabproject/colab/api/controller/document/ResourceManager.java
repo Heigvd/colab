@@ -16,8 +16,9 @@ import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
+import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
-import ch.colabproject.colab.api.persistence.document.ResourceAndRefDao;
+import ch.colabproject.colab.api.persistence.document.ResourceDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,7 +50,7 @@ public class ResourceManager {
      * Resource / resource reference persistence handling
      */
     @Inject
-    private ResourceAndRefDao resourceAndRefDao;
+    private ResourceDao resourceAndRefDao;
 
     /**
      * Card type specific logic management
@@ -220,6 +221,8 @@ public class ResourceManager {
             cardContent.getDirectAbstractResources().add(resource);
 
             ResourceReferenceSpreadingHelper.spreadReferenceDown(cardContent, resource);
+        } else {
+            throw HttpErrorMessage.dataIntegrityFailure();
         }
 
         return resourceAndRefDao.persistResource(resource);
@@ -279,19 +282,9 @@ public class ResourceManager {
             references.stream().forEach(ref -> deleteResourceAndRefs(ref));
         }
 
-        if (resourceOrRef.getAbstractCardType() != null) {
-            AbstractCardType cardTypeOrRef = resourceOrRef.getAbstractCardType();
-            cardTypeOrRef.getDirectAbstractResources().remove(resourceOrRef);
-        }
-
-        if (resourceOrRef.getCard() != null) {
-            Card card = resourceOrRef.getCard();
-            card.getDirectAbstractResources().remove(resourceOrRef);
-        }
-
-        if (resourceOrRef.getCardContent() != null) {
-            CardContent cardContent = resourceOrRef.getCardContent();
-            cardContent.getDirectAbstractResources().remove(resourceOrRef);
+        if (resourceOrRef.getOwner() != null) {
+            Resourceable owner = resourceOrRef.getOwner();
+            owner.getDirectAbstractResources().remove(resourceOrRef);
         }
 
         resourceAndRefDao.deleteResourceOrRef(resourceOrRef.getId());

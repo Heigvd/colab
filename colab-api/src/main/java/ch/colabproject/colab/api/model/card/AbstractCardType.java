@@ -7,11 +7,11 @@
 package ch.colabproject.colab.api.model.card;
 
 import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
-
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.document.AbstractResource;
+import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
@@ -58,10 +58,10 @@ import javax.persistence.Transient;
     }
 )
 @NamedQuery(name = "AbstractCardType.findPublishedFromProjects",
-query = "SELECT ct FROM AbstractCardType ct "
-    + "JOIN ct.project proj "
-    + "JOIN proj.teamMembers memb "
-    + "WHERE ct.published = TRUE AND memb.user.id = :userId")
+    query = "SELECT ct FROM AbstractCardType ct "
+        + "JOIN ct.project proj "
+        + "JOIN proj.teamMembers memb "
+        + "WHERE ct.published = TRUE AND memb.user.id = :userId")
 @NamedQuery(name = "AbstractCardType.findIdOfUserProjectDirectCardType",
     query = "SELECT act.id FROM AbstractCardType act"
         + " JOIN act.project p"
@@ -71,7 +71,7 @@ query = "SELECT ct FROM AbstractCardType ct "
     query = "SELECT act.project.id FROM AbstractCardType act WHERE act.id in :listId")
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public abstract class AbstractCardType implements ColabEntity, WithWebsocketChannels {
+public abstract class AbstractCardType implements ColabEntity, WithWebsocketChannels, Resourceable {
 
     private static final long serialVersionUID = 1L;
 
@@ -248,6 +248,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
     /**
      * @return the list of abstract resources directly linked to this card definition
      */
+    @Override
     public List<AbstractResource> getDirectAbstractResources() {
         return directAbstractResources;
     }
@@ -367,7 +368,7 @@ public abstract class AbstractCardType implements ColabEntity, WithWebsocketChan
                 });
             }
         } else {
-            //This is a global type
+            // This is a global type
             if (isOrWasPublished) {
                 // As the type is published, everyone may use this type -> broadcast
                 channels.add(BroadcastChannel.build());

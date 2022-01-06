@@ -6,12 +6,12 @@
  */
 package ch.colabproject.colab.api.model.document;
 
+import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
-import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
@@ -20,6 +20,7 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +48,8 @@ import javax.persistence.Transient;
  * An abstract resource is either a resource directly representing a document or a reference to
  * another abstract resource.
  * <p>
- * An abstract resource can be linked either to a card type / card type reference, or to a card or
- * to a card content.
+ * An abstract resource can be owned either by a card type / card type reference, or by a card by to
+ * a card content.
  *
  * @author sandra
  */
@@ -57,7 +58,8 @@ import javax.persistence.Transient;
     indexes = {
         @Index(columnList = "abstractcardtype_id"),
         @Index(columnList = "card_id"),
-        @Index(columnList = "cardcontent_id"),}
+        @Index(columnList = "cardcontent_id"),
+    }
 )
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
@@ -354,6 +356,59 @@ public abstract class AbstractResource
     public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
         this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
     }
+
+    // ---------------------------------------------------------------------------------------------
+    // helpers
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * @return the owner of the resource
+     */
+    @JsonbTransient
+    public Resourceable getOwner() {
+        if (this.card != null) {
+            return this.card;
+        }
+        if (this.cardContent != null) {
+            return this.cardContent;
+        }
+        if (this.abstractCardType != null) {
+            return this.abstractCardType;
+        }
+        throw HttpErrorMessage.dataIntegrityFailure();
+    }
+
+//    /**
+//     * @param owner the owner of the resource
+//     */
+//    public void setOwner(Resourceable owner) {
+//        if (owner == null) {
+//            resetOwner();
+//        } else if (owner instanceof Card) {
+//            resetOwner();
+//            setCard((Card) owner);
+//        } else if (owner instanceof CardContent) {
+//            resetOwner();
+//            setCardContent((CardContent) owner);
+//        } else if (owner instanceof AbstractCardType) {
+//            resetOwner();
+//            setAbstractCardType((AbstractCardType) owner);
+//        } else {
+//            throw HttpErrorMessage.dataIntegrityFailure();
+//        }
+//    }
+//
+//    /**
+//     * Set every owner to null
+//     */
+//    private void resetOwner() {
+//        setCard(null);
+//        setCardId(null);
+//        setCardContent(null);
+//        setCardContentId(null);
+//        setAbstractCardType(null);
+//        setAbstractCardTypeId(null);
+//    }
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
