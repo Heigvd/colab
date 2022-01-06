@@ -378,37 +378,37 @@ public abstract class AbstractResource
         throw HttpErrorMessage.dataIntegrityFailure();
     }
 
-//    /**
-//     * @param owner the owner of the resource
-//     */
-//    public void setOwner(Resourceable owner) {
-//        if (owner == null) {
-//            resetOwner();
-//        } else if (owner instanceof Card) {
-//            resetOwner();
-//            setCard((Card) owner);
-//        } else if (owner instanceof CardContent) {
-//            resetOwner();
-//            setCardContent((CardContent) owner);
-//        } else if (owner instanceof AbstractCardType) {
-//            resetOwner();
-//            setAbstractCardType((AbstractCardType) owner);
-//        } else {
-//            throw HttpErrorMessage.dataIntegrityFailure();
-//        }
-//    }
-//
-//    /**
-//     * Set every owner to null
-//     */
-//    private void resetOwner() {
-//        setCard(null);
-//        setCardId(null);
-//        setCardContent(null);
-//        setCardContentId(null);
-//        setAbstractCardType(null);
-//        setAbstractCardTypeId(null);
-//    }
+    /**
+     * @param owner the owner of the resource
+     */
+    public void setOwner(Resourceable owner) {
+        if (owner == null) {
+            resetOwner();
+        } else if (owner instanceof Card) {
+            resetOwner();
+            setCard((Card) owner);
+        } else if (owner instanceof CardContent) {
+            resetOwner();
+            setCardContent((CardContent) owner);
+        } else if (owner instanceof AbstractCardType) {
+            resetOwner();
+            setAbstractCardType((AbstractCardType) owner);
+        } else {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+    }
+
+    /**
+     * Set every owner to null
+     */
+    private void resetOwner() {
+        setCard(null);
+        setCardId(null);
+        setCardContent(null);
+        setCardContentId(null);
+        setAbstractCardType(null);
+        setAbstractCardTypeId(null);
+    }
 
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class

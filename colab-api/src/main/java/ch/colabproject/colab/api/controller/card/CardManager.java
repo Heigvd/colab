@@ -164,7 +164,7 @@ public class CardManager {
 
         Card card = initNewCard(parent, cardType);
 
-        ResourceReferenceSpreadingHelper.spreadResourcesFromUp(card);
+        ResourceReferenceSpreadingHelper.extractReferencesFromUp(card);
 
         return cardDao.createCard(card);
     }
@@ -306,13 +306,19 @@ public class CardManager {
 
             CardContent previousParent = card.getParent();
             if (previousParent != null) {
+//                Function<ResourceRef, Void> setReferencesAsResidual = (ref) -> {
+//                    ref.setResidual(true);
+//                    return null;
+//                };
+//                ResourceReferenceSpread.alterReferencesTargetingParentResources(card, setReferencesAsResidual);
+
                 previousParent.getSubCards().remove(card);
             }
 
             card.setParent(newParent);
             newParent.getSubCards().add(card);
 
-            // TODO handle the resources
+//            ResourceReferenceSpreadingHelper.extractReferencesFromUp(card);
         }
     }
 

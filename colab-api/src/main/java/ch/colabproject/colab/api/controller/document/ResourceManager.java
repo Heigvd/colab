@@ -196,34 +196,24 @@ public class ResourceManager {
         // implicitly resource.setRequestingForGlory(false);
         // implicitly resource.setDeprecated(false);
 
+        Resourceable owner;
         if (resource.getAbstractCardTypeId() != null) {
-            AbstractCardType abstractCardType = cardTypeManager
-                .assertAndGetCardTypeOrRef(resource.getAbstractCardTypeId());
-
-            resource.setAbstractCardType(abstractCardType);
-            abstractCardType.getDirectAbstractResources().add(resource);
-
-            ResourceReferenceSpreadingHelper.spreadReferenceDown(abstractCardType, resource);
+            owner = cardTypeManager.assertAndGetCardTypeOrRef(resource.getAbstractCardTypeId());
 
         } else if (resource.getCardId() != null) {
-            Card card = cardManager.assertAndGetCard(resource.getCardId());
-
-            resource.setCard(card);
-            card.getDirectAbstractResources().add(resource);
-
-            ResourceReferenceSpreadingHelper.spreadReferenceDown(card, resource);
+            owner = cardManager.assertAndGetCard(resource.getCardId());
 
         } else if (resource.getCardContentId() != null) {
-            CardContent cardContent = cardContentManager
-                .assertAndGetCardContent(resource.getCardContentId());
+            owner = cardContentManager.assertAndGetCardContent(resource.getCardContentId());
 
-            resource.setCardContent(cardContent);
-            cardContent.getDirectAbstractResources().add(resource);
-
-            ResourceReferenceSpreadingHelper.spreadReferenceDown(cardContent, resource);
         } else {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
+
+        resource.setOwner(owner);
+        owner.getDirectAbstractResources().add(resource);
+
+        ResourceReferenceSpreadingHelper.spreadNewResourceDown(resource);
 
         return resourceAndRefDao.persistResource(resource);
     }
