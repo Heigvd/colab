@@ -13,9 +13,12 @@ DEBUG_OPTS=
 JAVA_HOME=${JAVA_HOME}
 JAVA_EXECUTABLE=""
 
-INTERFACE="${INTERFACE:-127.0.0.1}"
+INTERFACES="${INTERFACES:-127.0.0.1}"
 CLUSTER_MODE="${CLUSTER_MODE:-DEFAULT}"
 CLUSTER_NAME="${CLUSTER_NAME:-colabLocal_$(hostname)}"
+
+MIN_HTTP_THREAD=${MIN_HTTP_THREAD}
+MAX_HTTP_THREAD=${MAX_HTTP_THREAD}
 
 GC=${GC:-G1GC}
 
@@ -44,7 +47,7 @@ function show_help {
     echo " -d              debug modei (env var: DEBUG)"
     echo " -g GC           garbage collector ZGC or G1GC (default is ${GC})"
     echo " -h              this help message"
-    echo " -i INTERFACE    datagrid discovery interface (default is ${INTERFACE})"
+    echo " -i INTERFACES   datagrid discovery interface (default is ${INTERFACES})"
     echo " -j JAVA_HOME    java path (default is ${JAVA_HOME})"
     echo " -m HEAP_SIZE    heap size (default is ${HEAP_SIZE})"
     echo " -n CLUSTER_NAME cluster name (default is ${CLUSTER_NAME})"
@@ -56,7 +59,7 @@ function show_help {
     echo "Options may be set with environment variables."
     echo "   eg. HEAP_SIZE=\"1G\" ./run"
     echo
-    echo "Others ENV variables are: COLAB_DATABASE_{HOST,PORT,NAME,USER,PASSWORD}, COLAB_DEFAULT_ADMIN_{USERNAME,EMAIL,PASSWORD}"
+    echo "Others ENV variables are: COLAB_DATABASE_{HOST,PORT,NAME,USER,PASSWORD}, COLAB_DEFAULT_ADMIN_{USERNAME,EMAIL,PASSWORD}, COLAB_JCR_MONGODB_URI, {MIN,MAX}_HTTP_THREADS"
 }
 
 # A POSIX variable
@@ -74,7 +77,7 @@ while getopts "h?dg:m:p:w:j:i:c:n:y:" opt; do
         show_help
         exit 0
         ;;
-    i)  INTERFACE=$OPTARG
+    i)  INTERFACES=$OPTARG
         ;;
     j)  JAVA_HOME=$OPTARG
         ;;
@@ -99,7 +102,7 @@ echo "  DEBUG_PORT=${DEBUG_PORT}"
 echo "  GC=${GC}"
 echo "  HEAP_SIZE=${HEAP_SIZE}"
 echo "  THE_WAR=${THE_WAR}"
-echo "  INTERFACE=${INTERFACE}"
+echo "  INTERFACES=${INTERFACES}"
 echo "  CLUSTER_MODE=${CLUSTER_MODE}"
 echo "  CLUSTER_NAME=${CLUSTER_NAME}"
 echo "  PAYARA=${PAYARA}"
@@ -170,6 +173,18 @@ if [ "${SYSTEM_PROPS}xxx" != "xxx" ]; then
     echo "" >> ${CUSTOM_PROPERTIES}
 fi
 
+if [ "${MIN_HTTP_THREADS}xxx" != "xxx" ]; then
+    MIN_HTTP_THREADS_OPT="--minhttpthreads ${MIN_HTTP_THREADS}"
+else
+    MIN_HTTP_THREADS_OPT=""
+fi
+
+if [ "${MAX_HTTP_THREADS}xxx" != "xxx" ]; then
+    MAX_HTTP_THREADS_OPT="--maxhttpthreads ${MAX_HTTP_THREADS}"
+else
+    MAX_HTTP_THREADS_OPT=""
+fi
+
 ## Inject properties from env in temp properies file
 ## Such properties (if set) will override the ones in the user-provided file
 for t in ${javaPropertiesFromEnv[@]}; do
@@ -197,8 +212,10 @@ ${JAVA_EXECUTABLE} ${DEBUG_OPTS} ${JDK_EXTRA_OPTS} ${SSL_OPTS} ${GC_OPT} ${HTTP2
     -Declipselink.cache.coordination.protocol=fish.payara.persistence.eclipselink.cache.coordination.HazelcastPublishingTransportManager \
     -Declipselink.cache.coordination.channel=${CLUSTER_NAME} \
     -jar ${PAYARA} --deploy ${THE_WAR} --clusterName ${CLUSTER_NAME} \
-    --interfaces "${INTERFACE}" \
+    --interfaces "${INTERFACES}" \
     ${CLUSTERMODE_OPT} \
+    ${MIN_HTTP_THREADS_OPT} \
+    ${MAX_HTTP_THREADS_OPT} \
     --contextroot "" \
     ${SYSTEMPROPS_OPT} \
     --autobindhttp --autobindssl &
