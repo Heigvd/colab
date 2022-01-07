@@ -221,7 +221,7 @@ public final class ResourceReferenceSpreadingHelper {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        activateRecursively(resourceReference);
+        reviveRecursively(resourceReference);
 
         AbstractResource olderTarget = resourceReference.getTarget();
 
@@ -234,15 +234,15 @@ public final class ResourceReferenceSpreadingHelper {
     }
 
     /**
-     * Set "residual" to false for the given reference and recursively for all its references.
+     * Mark the resource reference as not residual. Do it as well for all its descendants.
      *
      * @param resourceReference the reference to update
      */
-    private static void activateRecursively(ResourceRef resourceReference) {
+    private static void reviveRecursively(ResourceRef resourceReference) {
         resourceReference.setResidual(false);
 
         for (ResourceRef childRef : resourceReference.getDirectReferences()) {
-            activateRecursively(childRef);
+            reviveRecursively(childRef);
         }
     }
 
@@ -310,6 +310,38 @@ public final class ResourceReferenceSpreadingHelper {
         }
 
         return false;
+    }
+
+    // *********************************************************************************************
+    // when something is moved, mark the former ancestors resource references as residual
+    // *********************************************************************************************
+
+    /**
+     * Each resource reference of the given owner that is linked to a resource of the given former
+     * related is marked as residual. As well as all its descendants.
+     *
+     * @param owner         the owner of the resource references to mark
+     * @param formerRelated the not-any-more-related target of the references
+     */
+    public static void spreadResidualMark(Resourceable owner, Resourceable formerRelated) {
+        owner.getDirectAbstractResources().stream()
+            .filter(resOrRef -> (resOrRef instanceof ResourceRef))
+            .map(resOrRef -> ((ResourceRef) resOrRef))
+            .filter(ref -> Objects.equals(ref.getTarget().getOwner(), formerRelated))
+            .forEach(ref -> markAsResidualRecursively(ref));
+    }
+
+    /**
+     * Mark the resource reference as residual. Do it as well for all its descendants.
+     *
+     * @param resourceReference the reference to update
+     */
+    private static void markAsResidualRecursively(ResourceRef resourceReference) {
+        resourceReference.setResidual(true);
+
+        for (ResourceRef childRef : resourceReference.getDirectReferences()) {
+            markAsResidualRecursively(childRef);
+        }
     }
 
     // *********************************************************************************************

@@ -290,7 +290,11 @@ public class CardManager {
     }
 
     /**
-     * Move a card to a new parent
+     * Move a card to a new parent.
+     * <p>
+     * Mark all the resource references to the former parent as residual.
+     * <p>
+     * Make resource references to the new parent.
      *
      * @param card      the card to move
      * @param newParent the new parent
@@ -306,11 +310,7 @@ public class CardManager {
 
             CardContent previousParent = card.getParent();
             if (previousParent != null) {
-//                Function<ResourceRef, Void> setReferencesAsResidual = (ref) -> {
-//                    ref.setResidual(true);
-//                    return null;
-//                };
-//                ResourceReferenceSpread.alterReferencesTargetingParentResources(card, setReferencesAsResidual);
+                ResourceReferenceSpreadingHelper.spreadResidualMark(card, previousParent);
 
                 previousParent.getSubCards().remove(card);
             }
@@ -318,18 +318,20 @@ public class CardManager {
             card.setParent(newParent);
             newParent.getSubCards().add(card);
 
-//            ResourceReferenceSpreadingHelper.extractReferencesFromUp(card);
+            ResourceReferenceSpreadingHelper.extractReferencesFromUp(card);
         }
     }
 
     /**
      * Ascertain that the given card can be moved to the given card content
-     * @param card the card to move
+     *
+     * @param card      the card to move
      * @param newParent the new potential parent of the card
+     *
      * @return True iff it can be safely moved
      */
     private boolean checkMoveAcceptability(Card card, CardContent newParent) {
-        if (card == null ) {
+        if (card == null) {
             return false;
         }
 
