@@ -156,7 +156,7 @@ fi
 if [ "${CLUSTER_MODE}" = "DEFAULT" ]; then
     CLUSTERMODE_OPT="";
 else
-    CLUSTERMODE_OPT="--clustermode=${CLUSTER_MODE}";
+    CLUSTERMODE_OPT="--clustermode ${CLUSTER_MODE}";
 fi
 
 ## Create temp property file
