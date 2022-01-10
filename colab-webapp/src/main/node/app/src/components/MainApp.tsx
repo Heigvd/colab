@@ -5,13 +5,8 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-<<<<<<< HEAD
 import { faCog, faExclamationTriangle, faSignOutAlt, faTimes, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-=======
-import { faExclamationTriangle, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
->>>>>>> origin/main
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../API/api';

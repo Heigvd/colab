@@ -143,6 +143,7 @@ export default function CardCreator({
                       className={cx(categoryTabStyle, {
                         [checkedCategoryTabStyle]: tagState && tagState[tag],
                       })}
+                      key={tag}
                     >
                       <Checkbox
                         key={tag}
