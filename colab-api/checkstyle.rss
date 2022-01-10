@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2022 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 155,
+      <title>File: 156,
              Errors: 0,
-             Warnings: 113,
+             Warnings: 109,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -368,20 +368,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.ResourceAndRefDao.java">ch/colabproject/colab/api/persistence/document/ResourceAndRefDao.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.link.ActivityFlowLinkManager.java">ch/colabproject/colab/api/controller/link/ActivityFlowLinkManager.java</a>
                 </td>
                 <td>
@@ -612,7 +598,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  0
                 </td>
                 <td>
                   0
@@ -1046,7 +1032,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  1
                 </td>
                 <td>
                   0
@@ -1466,7 +1452,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  1
                 </td>
                 <td>
                   0
@@ -1615,6 +1601,20 @@ under the License.
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.WithTrackingData.java">ch/colabproject/colab/api/model/WithTrackingData.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.document.Resourceable.java">ch/colabproject/colab/api/model/document/Resourceable.java</a>
                 </td>
                 <td>
                   0
@@ -2027,6 +2027,20 @@ under the License.
                 </td>
                 <td>
                   0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.ResourceDao.java">ch/colabproject/colab/api/persistence/document/ResourceDao.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
                 </td>
                 <td>
                   0

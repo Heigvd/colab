@@ -116,7 +116,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L117">        CardContent cardContent = initNewCardContentForCard(card);</span>
 
-<span class="nc" id="L119">        ResourceReferenceSpreadingHelper.spreadResourcesFromUp(cardContent);</span>
+<span class="nc" id="L119">        ResourceReferenceSpreadingHelper.extractReferencesFromUp(cardContent);</span>
 
 <span class="nc" id="L121">        return cardContentDao.createCardContent(cardContent);</span>
     }

@@ -280,7 +280,7 @@ import com.google.common.collect.Lists;
 <span class="nc" id="L280">        ref.setTarget(cardType);</span>
 <span class="nc" id="L281">        cardType.getDirectReferences().add(ref);</span>
 
-<span class="nc" id="L283">        ResourceReferenceSpreadingHelper.spreadResourcesFromUp(ref);</span>
+<span class="nc" id="L283">        ResourceReferenceSpreadingHelper.extractReferencesFromUp(ref);</span>
 
 <span class="nc" id="L285">        return cardTypeDao.createCardType(ref);</span>
     }
