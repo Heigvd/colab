@@ -36,6 +36,11 @@ public class Param {
     private Type type;
 
     /**
+     * Is the parameter optional ?
+     */
+    private boolean optional = false;
+
+    /**
      * Get the value of type
      *
      * @return the value of type
@@ -107,4 +112,21 @@ public class Param {
         this.javadoc = javadoc;
     }
 
+    /**
+     * Is the parameter optional?
+     *
+     * @return is optional or mandatory
+     */
+    public boolean isOptional() {
+        return optional;
+    }
+
+    /**
+     * Set parameter optional-ness
+     *
+     * @param optional new optional value
+     */
+    public void setOptional(boolean optional) {
+        this.optional = optional;
+    }
 }

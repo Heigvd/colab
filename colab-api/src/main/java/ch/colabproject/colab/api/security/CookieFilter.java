@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.security;
 
-import ch.colabproject.colab.api.ejb.RequestManager;
+import ch.colabproject.colab.api.controller.RequestManager;
 import java.io.IOException;
 import javax.annotation.Priority;
 import javax.inject.Inject;

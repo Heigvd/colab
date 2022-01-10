@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.document.AbstractResource;
+import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
@@ -58,10 +59,12 @@ import javax.persistence.Transient;
 @Table(
     indexes = {
         @Index(columnList = "cardtype_id"),
-        @Index(columnList = "parent_id"),}
+        @Index(columnList = "parent_id"),
+    }
 )
 @NamedQuery(name = "Card.findAll", query = "SELECT c FROM Card c")
-public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {
+public class Card
+    implements ColabEntity, WithWebsocketChannels, Resourceable, StickyNoteSourceable {
 
     /** Name of the project structure sequence */
     public static final String STRUCTURE_SEQUENCE_NAME = "structure_seq";
@@ -374,9 +377,16 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     }
 
     /**
+     * @return True if it has a card type
+     */
+    public boolean hasCardType() {
+        return cardType != null || cardTypeId != null;
+    }
+
+    /**
      * @return the parent card content
-     * <p>
-     * A card can either be the root card of a project or be within a card content
+     *         <p>
+     *         A card can either be the root card of a project or be within a card content
      */
     public CardContent getParent() {
         return parent;
@@ -452,6 +462,13 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     }
 
     /**
+     * @return True if there is a project whose root card is this one
+     */
+    public boolean hasRootCardProject() {
+        return rootCardProject != null || rootCardProjectId != null;
+    }
+
+    /**
      * @return the list of variants of card content
      */
     public List<CardContent> getContentVariants() {
@@ -468,6 +485,7 @@ public class Card implements ColabEntity, WithWebsocketChannels, StickyNoteSourc
     /**
      * @return the list of abstract resources directly linked to this card
      */
+    @Override
     public List<AbstractResource> getDirectAbstractResources() {
         return directAbstractResources;
     }

@@ -35,11 +35,22 @@ import {
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
+import { PasswordScore } from '../components/common/Form/Form';
 import { hashPassword } from '../SecurityHelper';
 import { addNotification } from '../store/notification';
 import { ColabState, getStore } from '../store/store';
 
-const restClient = ColabClient('', error => {
+const winPath = window.location.pathname;
+
+/**
+ * Get application path. With a leading / and no leading slash.
+ * If application is deployed on ROOT, empty path is returned
+ */
+export const getApplicationPath = () => {
+  return winPath.endsWith('/') ? winPath.substring(0, winPath.length - 1) : winPath;
+};
+
+const restClient = ColabClient(getApplicationPath(), error => {
   if (entityIs(error, 'HttpException')) {
     getStore().dispatch(
       addNotification({
@@ -95,6 +106,14 @@ export const initSocketId = createAsyncThunk(
 );
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Configuration & Application Properties
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const getAccountConfig = createAsyncThunk('config/getAccountConfig', async () => {
+  return await restClient.ConfigRestEndpoint.getAccountConfig();
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Admin & Monitoring
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,6 +154,7 @@ export const signInWithLocalAccount = createAsyncThunk(
     a: {
       identifier: string;
       password: string;
+      passwordScore: PasswordScore;
     },
     thunkApi,
   ) => {
@@ -154,7 +174,7 @@ export const signInWithLocalAccount = createAsyncThunk(
 
 export const updateLocalAccountPassword = createAsyncThunk(
   'user/updatePassword',
-  async (a: { email: string; password: string }) => {
+  async (a: { email: string; password: string; passwordScore: PasswordScore }) => {
     // first, fetch the authenatication method fot the account
     const authMethod = await restClient.UserRestEndpoint.getAuthMethod(a.email);
 
@@ -181,6 +201,7 @@ export const signUp = createAsyncThunk(
       username: string;
       email: string;
       password: string;
+      passwordScore: PasswordScore;
     },
     thunkApi,
   ) => {
@@ -198,7 +219,13 @@ export const signUp = createAsyncThunk(
     await restClient.UserRestEndpoint.signUp(signUpInfo);
 
     // go back to login page
-    thunkApi.dispatch(signInWithLocalAccount({ identifier: a.email, password: a.password }));
+    thunkApi.dispatch(
+      signInWithLocalAccount({
+        identifier: a.email,
+        password: a.password,
+        passwordScore: a.passwordScore,
+      }),
+    );
   },
 );
 
@@ -288,6 +315,13 @@ export const deleteProject = createAsyncThunk('project/delete', async (project: 
   }
 });
 
+export const getRootCardOfProject = createAsyncThunk<Card, number>(
+  'project/getRootCard',
+  async (projectId: number) => {
+    return await restClient.ProjectRestEndpoint.getRootCardOfProject(projectId);
+  },
+);
+
 export const startProjectEdition = createAsyncThunk(
   'project/startEditing',
   async (project: Project, thunkApi) => {
@@ -305,9 +339,7 @@ export const startProjectEdition = createAsyncThunk(
       });
 
       // initialized project content
-      if (project.rootCardId != null) {
-        await thunkApi.dispatch(getCard(project.rootCardId));
-      }
+      await thunkApi.dispatch(getRootCardOfProject(project.id));
     }
     return project;
   },
@@ -713,12 +745,12 @@ export const removeAccessToResource = createAsyncThunk(
 export const getDocument = createAsyncThunk<Document, number>(
   'document/get',
   async (id: number) => {
-    return await restClient.DocumentRestEndPoint.getDocument(id);
+    return await restClient.DocumentRestEndpoint.getDocument(id);
   },
 );
 
 export const updateDocument = createAsyncThunk('document/update', async (document: Document) => {
-  return await restClient.DocumentRestEndPoint.updateDocument(document);
+  return await restClient.DocumentRestEndpoint.updateDocument(document);
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -729,7 +761,7 @@ export const getDocumentBlocksIds = createAsyncThunk(
   'block/getIdsFromDoc',
   async (document: BlockDocument) => {
     if (document.id) {
-      return await restClient.DocumentRestEndPoint.getBlocksDocumentIds(document.id);
+      return await restClient.DocumentRestEndpoint.getBlocksDocumentIds(document.id);
     }
   },
 );
@@ -737,7 +769,7 @@ export const getDocumentBlocksIds = createAsyncThunk(
 export const createBlock = createAsyncThunk(
   'block/create',
   async (payload: { document: BlockDocument; block: Block }) => {
-    return await restClient.BlockRestEndPoint.createBlock({
+    return await restClient.BlockRestEndpoint.createBlock({
       ...payload.block,
       documentId: payload.document.id,
     });
@@ -745,7 +777,7 @@ export const createBlock = createAsyncThunk(
 );
 
 export const getBlock = createAsyncThunk('block/get', async (id: number) => {
-  return await restClient.BlockRestEndPoint.getBlock(id);
+  return await restClient.BlockRestEndpoint.getBlock(id);
 });
 
 export const subscribeToBlockChannel = createAsyncThunk(
@@ -781,28 +813,28 @@ export const unsubscribeFromBlockChannel = createAsyncThunk(
 export const getBlockPendingChanges = createAsyncThunk(
   'block/getPendingChanges',
   async (id: number) => {
-    return await restClient.BlockRestEndPoint.getChanges(id);
+    return await restClient.BlockRestEndpoint.getChanges(id);
   },
 );
 
 export const updateBlock = createAsyncThunk('block/update', async (block: Block) => {
-  return await restClient.BlockRestEndPoint.updateBlock(block);
+  return await restClient.BlockRestEndpoint.updateBlock(block);
 });
 
 export const patchBlock = createAsyncThunk(
   'block/patch',
   async (payload: { id: number; change: Change }) => {
-    return await restClient.BlockRestEndPoint.patchBlock(payload.id, payload.change);
+    return await restClient.BlockRestEndpoint.patchBlock(payload.id, payload.change);
   },
 );
 
 export const deletePendingChanges = createAsyncThunk('block/deleteChanges', async (id: number) => {
-  return await restClient.BlockRestEndPoint.deletePendingChanges(id);
+  return await restClient.BlockRestEndpoint.deletePendingChanges(id);
 });
 
 export const deleteBlock = createAsyncThunk('block/delete', async (block: Block) => {
   if (block.id != null) {
-    return await restClient.BlockRestEndPoint.deleteBlock(block.id);
+    return await restClient.BlockRestEndpoint.deleteBlock(block.id);
   }
 });
 

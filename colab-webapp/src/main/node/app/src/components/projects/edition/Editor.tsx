@@ -18,6 +18,7 @@ import {
   useAncestors,
   useCard,
   useCardContent,
+  useProjectRootCard,
   useVariantsOrLoad,
 } from '../../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
@@ -186,19 +187,10 @@ export default function Editor(): JSX.Element {
   const { project, status } = useProjectBeingEdited();
   const navigate = useNavigate();
 
-  const root = useAppSelector(state => {
-    if (project != null && project.rootCardId != null) {
-      const rootState = state.cards.cards[project.rootCardId];
-      if (rootState) {
-        return rootState.card;
-      }
-    } else {
-      return null;
-    }
-  });
+  const root = useProjectRootCard(project);
 
   const rootContent = useAppSelector(state => {
-    if (root != null && root.id != null) {
+    if (entityIs(root, 'Card') && root.id != null) {
       const card = state.cards.cards[root.id];
       if (card != null) {
         if (card.contents === undefined) {
@@ -218,10 +210,10 @@ export default function Editor(): JSX.Element {
   });
 
   React.useEffect(() => {
-    if (root != null && root.id != null && rootContent === undefined) {
+    if (entityIs(root, 'Card') && root.id != null && rootContent === undefined) {
       dispatch(API.getCardContents(root.id));
     }
-  }, [dispatch, root, root?.id, rootContent]);
+  }, [dispatch, root, rootContent]);
 
   if (status == 'LOADING') {
     return <InlineLoading />;
@@ -231,7 +223,7 @@ export default function Editor(): JSX.Element {
         <i>Error: no project selected</i>
       </div>
     );
-  } else if (status != 'READY' || root == null || root.id == null) {
+  } else if (status != 'READY' || typeof root === 'string' || root.id == null) {
     return <InlineLoading />;
   } else {
     return (

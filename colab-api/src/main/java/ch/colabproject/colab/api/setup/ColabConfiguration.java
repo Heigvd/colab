@@ -111,6 +111,16 @@ public class ColabConfiguration {
     public static final String SMTP_STARTTLS_DEFAULT_VALUE = "false";
 
     /**
+     * Display "create an account" button or not
+     */
+    public static final String LOCAL_ACCOUNT_BUTTON = "colab.localaccount.showcreatebutton";
+
+    /**
+     * Display "create an account" button or not default value
+     */
+    public static final String LOCAL_ACCOUNT_BUTTON_VALUE = "true";
+
+    /**
      * never-called private constructor
      */
     private ColabConfiguration() {
@@ -196,7 +206,18 @@ public class ColabConfiguration {
      *
      * @return "true" or "false"
      */
-    public static String getSmtpStartTls() {
-        return System.getProperty(SMTP_STARTTLS, SMTP_STARTTLS_DEFAULT_VALUE);
+    public static boolean getSmtpStartTls() {
+        return System.getProperty(SMTP_STARTTLS,
+            SMTP_STARTTLS_DEFAULT_VALUE).equals("true");
+    }
+
+    /**
+     * Show create an account or not?
+     *
+     * @return show create an account button or not?
+     */
+    public static boolean getDisplayLocalAccountButton() {
+        return System.getProperty(LOCAL_ACCOUNT_BUTTON,
+            LOCAL_ACCOUNT_BUTTON_VALUE).equals("true");
     }
 }

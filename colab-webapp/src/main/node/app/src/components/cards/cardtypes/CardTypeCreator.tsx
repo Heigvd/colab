@@ -29,7 +29,7 @@ interface NewType {
   tags: string[];
 }
 
-export default ({ afterCreation, global = false }: Props): JSX.Element => {
+export default function ({ afterCreation, global = false }: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const { project } = useProjectBeingEdited();
 
@@ -118,5 +118,4 @@ export default ({ afterCreation, global = false }: Props): JSX.Element => {
       }
     </OpenCloseModal>
     );
- // }
-};
+  }

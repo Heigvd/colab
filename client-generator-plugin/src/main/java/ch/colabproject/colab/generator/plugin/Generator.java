@@ -298,7 +298,7 @@ public class Generator {
                 + "* The ").append(clientName).append(" REST client\n"
             + " */\n"
             + "export const ").append(clientName)
-            .append(" = function (baseUrl: string, errorHandler: (error: unknown) => void) {")
+            .append(" = function (baseUrl: string, defaultErrorHandler: (error: unknown) => void) {")
             .append("\n    return {")
             .append(modules)
             .append("    }\n")

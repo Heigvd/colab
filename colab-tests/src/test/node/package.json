@@ -1,0 +1,20 @@
+{
+  "name": "colab-e2e-tests",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "format": "prettier --write cypress"
+  },
+  "devDependencies": {
+    "cypress": "^9.2.0",
+    "cypress-react-selector": "^2.3.13",
+    "eslint": "^8.2.0",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier-plugin-organize-imports": "^2.3.4",
+    "prettier": "^2.4.1"
+  },
+  "dependencies": {
+    "typescript": "^4.5.4"
+  }
+}

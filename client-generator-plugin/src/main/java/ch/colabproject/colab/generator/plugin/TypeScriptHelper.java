@@ -8,6 +8,9 @@ package ch.colabproject.colab.generator.plugin;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
 import ch.colabproject.colab.generator.model.tools.ClassDoc;
+import ch.colabproject.colab.generator.plugin.rest.ErrorHandler;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -32,6 +35,7 @@ import javax.json.stream.JsonParser;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.ws.rs.core.Response;
 import org.apache.maven.plugin.MojoFailureException;
 import org.reflections.Reflections;
 
@@ -124,7 +128,7 @@ public class TypeScriptHelper {
 
             int modifiers = javaClass.getModifiers();
 
-            if (javaClass.isEnum()){
+            if (javaClass.isEnum()) {
                 String joinType = Arrays.stream(javaClass.getEnumConstants())
                     .map(item -> "'" + item.toString() + "'")
                     .collect(Collectors.joining(" | "));
@@ -223,7 +227,7 @@ public class TypeScriptHelper {
                             }
                             if (fields != null) {
                                 String fieldDoc = fields.getOrDefault(key, "");
-                                sb.append("  /**\n  ").append(fieldDoc).append("\n  */");
+                                sb.append("  /**\n  ").append(fieldDoc).append("  */\n");
                             }
 
                             sb.append("  '").append(key).append("'");
@@ -303,6 +307,13 @@ public class TypeScriptHelper {
                 return "boolean";
             } else if (void.class.isAssignableFrom(javaClass)) {
                 return "void";
+            } else if (InputStream.class.isAssignableFrom(javaClass)
+                || OutputStream.class.isAssignableFrom(javaClass)) {
+                return "File";
+            } else if (Response.class.isAssignableFrom(javaClass)) {
+                return "HttpResponse";
+            } else if (ErrorHandler.class.isAssignableFrom(javaClass)) {
+                return "ErrorHandler";
             } else if (isArrayLike(javaClass)) {
                 return "unknown[]";
 //            } else if (javaClass.isEnum()) {

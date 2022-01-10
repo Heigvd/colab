@@ -4,15 +4,17 @@
  *
  * Licensed under the MIT License
  */
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { css } from '@emotion/css';
+import { faPlus, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithLocalAccount } from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
 import useTranslations from '../../i18n/I18nContext';
+import { useAccountConfig } from '../../selectors/configSelector';
 import { useAppDispatch } from '../../store/hooks';
-import Form, { Field } from '../common/Form/Form';
+import Form, { Field, PasswordScore } from '../common/Form/Form';
 import FormContainer from '../common/FormContainer';
 import { InlineLink } from '../common/Link';
 import { marginAroundStyle, space_M } from '../styling/style';
@@ -24,11 +26,19 @@ interface Props {
 interface Credentials {
   identifier: string;
   password: string;
+  passwordScore: PasswordScore;
 }
 
 const defCred: Credentials = {
   identifier: '',
   password: '',
+  passwordScore: {
+    score: 0,
+    feedback: {
+      warning: '',
+      suggestions: [],
+    },
+  },
 };
 
 export default function SignInForm({ redirectTo }: Props): JSX.Element {
@@ -36,6 +46,8 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
   const i18n = useTranslations();
 
   const navigate = useNavigate();
+
+  const accountConfig = useAccountConfig();
 
   const formFields: Field<Credentials>[] = [
     {
@@ -52,13 +64,20 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
       placeholder: i18n.model.user.password,
       type: 'password',
       isMandatory: false,
+      strengthProp: 'passwordScore',
       showStrenghBar: false,
     },
   ];
 
   const onSubmitCb = React.useCallback(
     (credentials: Credentials) => {
-      dispatch(signInWithLocalAccount(credentials)).then(action => {
+      dispatch(
+        signInWithLocalAccount({
+          identifier: credentials.identifier,
+          password: credentials.password,
+          passwordScore: credentials.passwordScore,
+        }),
+      ).then(action => {
         // is that a hack or not ???
         if (redirectTo && action.meta.requestStatus === 'fulfilled') {
           navigate(redirectTo);
@@ -87,6 +106,14 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
         >
           <FontAwesomeIcon icon={faPlus} /> {i18n.createAnAccount}{' '}
         </InlineLink>
+        {accountConfig.showCreateAccountButton ? (
+          <InlineLink
+            className={css({ alignSelf: 'center' })}
+            to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
+          >
+            <FontAwesomeIcon icon={faPlusCircle} /> {i18n.createAnAccount}{' '}
+          </InlineLink>
+        ) : null}
       </Form>
     </FormContainer>
   );

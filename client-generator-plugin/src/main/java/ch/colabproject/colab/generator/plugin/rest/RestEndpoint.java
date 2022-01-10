@@ -26,10 +26,15 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.uri.PathPattern;
 import org.glassfish.jersey.uri.UriTemplate;
 import org.reflections.Reflections;
@@ -80,6 +85,20 @@ public class RestEndpoint {
      * List of rest methods defined in this controller.
      */
     private List<RestMethod> restMethods = new ArrayList<>();
+
+    /**
+     * optional errorHandler parameter definition
+     */
+    private static final Param optionalErrorHandler;
+
+    static {
+        optionalErrorHandler = new Param();
+        optionalErrorHandler.setName("errorHandler");
+        optionalErrorHandler.setInAnnotationName("errorHandler");
+        optionalErrorHandler.setJavadoc("optional custom error handler");
+        optionalErrorHandler.setOptional(true);
+        optionalErrorHandler.setType(ErrorHandler.class);
+    }
 
     /**
      * Get the value of authenticationRequired
@@ -175,10 +194,16 @@ public class RestEndpoint {
      *
      * @param javadoc     javadoc text
      * @param reflections reflections store
+     * @param parameters  list of parameters to keep
      *
      * @return processed javadoc
      */
-    private String processJavaDoc(String javadoc, boolean keepJava, Reflections reflections) {
+    private String processJavaDoc(
+        String javadoc,
+        boolean keepJava,
+        Reflections reflections,
+        List<String> parameters
+    ) {
         Pattern atLink = Pattern.compile("\\{@link ([a-zA-Z]+)\\}");
         Matcher atLinkMatcher = atLink.matcher(javadoc);
         String atLinkProcessed = atLinkMatcher.replaceAll(match -> {
@@ -190,8 +215,20 @@ public class RestEndpoint {
             }
         });
 
+        Pattern paramPattern = Pattern.compile("@param ([a-zA-Z]+)(.*)");
+        Matcher paramMatcher = paramPattern.matcher(atLinkProcessed);
+
+        String pCleaned = paramMatcher.replaceAll(match -> {
+            String pName = match.group(1);
+            if (parameters.contains(pName)) {
+                return "@param " + match.group(1) + " " + match.group(2);
+            } else {
+                return "";
+            }
+        });
+
         Pattern throwsPattern = Pattern.compile("@throws ([a-zA-Z]+)");
-        Matcher throwsMatcher = throwsPattern.matcher(atLinkProcessed);
+        Matcher throwsMatcher = throwsPattern.matcher(pCleaned);
 
         return throwsMatcher.replaceAll(match -> {
             Class<? extends Serializable> klass
@@ -228,11 +265,17 @@ public class RestEndpoint {
      * @param block       block to append
      * @param keepJava    should keep java specific tags (eg @link)
      * @param reflections reflections store
+     * @param parameters  parameters to keep
      */
     private void appendJavadocBlock(
-        StringBuilder sb, String prefix, String block, boolean keepJava, Reflections reflections
+        StringBuilder sb,
+        String prefix,
+        String block,
+        boolean keepJava,
+        Reflections reflections,
+        List<String> parameters
     ) {
-        this.appendBlock(sb, prefix, processJavaDoc(block, keepJava, reflections));
+        this.appendBlock(sb, prefix, processJavaDoc(block, keepJava, reflections, parameters));
     }
 
     /**
@@ -330,6 +373,13 @@ public class RestEndpoint {
         return firstChar.toLowerCase() + simpleClassName.substring(1);
     }
 
+    private List<String> processParameters(List<Param> params, Map<String, String> imports) {
+        return params.stream()
+            .map(param -> resolveImport(param.getType().getTypeName(), imports)
+            + " " + param.getName())
+            .collect(Collectors.toList());
+    }
+
     /**
      * Write java class as string.The generated class is an inner class which has to be included in
      * a main class.
@@ -356,7 +406,7 @@ public class RestEndpoint {
         sb.append("/**");
         ClassDoc classDoc = javadoc.get(this.className);
         if (classDoc != null) {
-            appendJavadocBlock(sb, " *", classDoc.getDoc(), true, reflections);
+            appendJavadocBlock(sb, " *", classDoc.getDoc(), true, reflections, List.of());
             newLine(sb);
             sb.append(" * <p>");
             newLine(sb);
@@ -396,9 +446,15 @@ public class RestEndpoint {
                 .append("#").append(method.getName()).append("}");
 
             String methodDoc = classDoc.getMethods().getOrDefault(method.getName(), "");
+
             newLine(sb);
             sb.append(" *");
-            appendJavadocBlock(sb, " *", methodDoc, true, reflections);
+
+            List<String> paramNames = method.getAllParameters().stream()
+                .map(param -> param.getName())
+                .collect(Collectors.toList());
+
+            appendJavadocBlock(sb, " *", methodDoc, true, reflections, paramNames);
 
             newLine(sb);
             sb.append(" */");
@@ -412,12 +468,21 @@ public class RestEndpoint {
                 .append(" ").append(method.getName()).append("(");
 
             // parameters
-            List<Param> params = new ArrayList<>(this.getPathParameters());
-            params.addAll(method.getAllParameters());
-            sb.append(params.stream()
-                .map(param -> resolveImport(
-                param.getType().getTypeName(), imports) + " " + param.getName())
-                .collect(Collectors.joining(", ")));
+            List<String> params = new ArrayList<>();
+            params.addAll(processParameters(this.getPathParameters(), imports));
+            params.addAll(processParameters(method.getPathParameters(), imports));
+            params.addAll(processParameters(method.getQueryParameters(), imports));
+
+            if (method.getBodyParam() != null) {
+                params.addAll(processParameters(List.of(method.getBodyParam()), imports));
+            }
+
+            method.getFormParameters().forEach(param -> {
+                String type = resolveImport(param.getType().getTypeName(), imports);
+                params.add("FormField<" + type + "> " + param.getName());
+            });
+
+            sb.append(params.stream().collect(Collectors.joining(", ")));
             sb.append(") ");
 
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -450,7 +515,7 @@ public class RestEndpoint {
             if (!method.getQueryParameters().isEmpty()) {
                 sb.append("List<String> qs =new ArrayList<>();");
                 newLine(sb);
-                if (method.getQueryParameters().size() > 0) {
+                if (!method.getQueryParameters().isEmpty()) {
                     imports.put("ArrayList", "java.util.ArrayList");
                     imports.put("URLEncoder", "java.net.URLEncoder");
                     imports.put("StandardCharsets;", "java.nio.charset.StandardCharsets");
@@ -471,6 +536,26 @@ public class RestEndpoint {
                 newLine(sb);
             }
 
+            boolean forDataRequest = method.getConsumes().contains(MediaType.MULTIPART_FORM_DATA);
+
+            if (forDataRequest) {
+                imports.put("Map", "java.util.Map");
+                imports.put("HashMap", "java.util.HashMap");
+                imports.put("FormField", "ch.colabproject.colab.generator.plugin.rest.FormField");
+
+                sb.append("Map<String, FormField> formData = new HashMap<>();");
+                newLine(sb);
+                method.getFormParameters().forEach(param -> {
+                    sb.append("formData.put(\"")
+                        .append(param.getInAnnotationName())
+                        .append("\", ")
+                        .append(param.getName())
+                        .append(");");
+
+                    newLine(sb);
+                });
+            }
+
             // make http request
             //////////////////////
             if (!method.getReturnType().equals(void.class)) {
@@ -481,7 +566,9 @@ public class RestEndpoint {
                 .append(method.getHttpMethod().toLowerCase())
                 .append("(path, ");
 
-            if (method.getBodyParam() != null) {
+            if (forDataRequest) {
+                sb.append(" formData").append(", ");
+            } else if (method.getBodyParam() != null) {
                 sb.append(method.getBodyParam().getName()).append(", ");
             }
 
@@ -501,6 +588,68 @@ public class RestEndpoint {
         sb.append("}");
 
         return sb.toString();
+    }
+
+    /**
+     *
+     * @param sb
+     * @param functionName
+     * @param params
+     * @param returnType
+     */
+    private void generateTypescriptFunction(
+        StringBuilder sb,
+        RestMethod method,
+        String functionName,
+        List<Param> params,
+        ClassDoc classDoc,
+        Map<String, Type> types,
+        Reflections reflections,
+        Runnable bodyGenerator
+    ) {
+
+        Logger.debug(" * generate " + functionName);
+
+        // JSDOC
+        ////////////////////////
+        newLine(sb);
+        sb.append("/**");
+        newLine(sb);
+        sb.append(" * ").append(method.getHttpMethod()).append(" ")
+            .append(method.getFullPath());
+        newLine(sb);
+        sb.append(" * <p> ");
+        String methodDoc = classDoc != null
+            ? classDoc.getMethods().getOrDefault(method.getName(), "")
+            : "";
+
+        List<String> paramNames = params.stream()
+            .map(param -> param.getName())
+            .collect(Collectors.toList());
+
+        appendJavadocBlock(sb, " *", methodDoc, false, reflections, paramNames);
+        newLine(sb);
+        sb.append(" */");
+        newLine(sb);
+        // Signature
+        /////////////////////////////
+        sb.append(functionName)
+            .append(": function(")
+            .append(params.stream()
+                .map(param -> param.getName()
+                + (param.isOptional() ? "?" : "")
+                + ": "
+                + TypeScriptHelper.convertType(param.getType(), types))
+                .collect(Collectors.joining(", ")))
+            .append(") {");
+        indent++;
+        newLine(sb);
+
+        bodyGenerator.run();
+
+        indent--;
+        newLine(sb);
+        sb.append("},");
     }
 
     /**
@@ -526,7 +675,7 @@ public class RestEndpoint {
         sb.append("/**");
         ClassDoc classDoc = javadoc.get(this.className);
         if (classDoc != null) {
-            appendJavadocBlock(sb, " *", classDoc.getDoc(), false, reflections);
+            appendJavadocBlock(sb, " *", classDoc.getDoc(), false, reflections, List.of());
         }
         newLine(sb);
         sb.append(" */");
@@ -536,79 +685,109 @@ public class RestEndpoint {
         newLine(sb);
 
         restMethods.forEach(method -> {
-            Logger.debug(" * generate " + method);
 
-            // JSDOC
-            ////////////////////////
-            newLine(sb);
-            sb.append("/**");
-            newLine(sb);
-            sb.append(" * ").append(method.getHttpMethod()).append(" ")
-                .append(method.getFullPath());
-            newLine(sb);
-            sb.append(" * <p> ");
-            String methodDoc = classDoc.getMethods().getOrDefault(method.getName(), "");
-            appendJavadocBlock(sb, " *", methodDoc, false, reflections);
-            newLine(sb);
-            sb.append(" */");
-            newLine(sb);
-            // Signature
-            /////////////////////////////
-            sb.append(method.getName()).append(": function(");
-            List<Param> params = new ArrayList<>(this.getPathParameters());
-            params.addAll(method.getAllParameters());
-            sb.append(params.stream()
-                .map(param -> param.getName() + ": "
-                + TypeScriptHelper.convertType(param.getType(), types))
-                .collect(Collectors.joining(", ")));
-            sb.append(") {");
+            // 1 Generate getPath function
+            List<Param> urlParams = new ArrayList<>(this.getPathParameters());
+            urlParams.addAll(method.getUrlParameters());
+            String getPathFunctionName = method.getName() + "Path";
 
-            // Body
-            /////////////////////////////
-            indent++;
-            newLine(sb);
-            sb.append("const queryString : string[] = [];");
-            newLine(sb);
-
-            method.getQueryParameters().forEach(queryParam -> {
-                sb.append("if (").append(queryParam.getName()).append(" != null){");
-                indent++;
+            Runnable buildPath = () -> {
+                sb.append("const queryString : string[] = [];");
                 newLine(sb);
-                sb.append("queryString.push('")
-                    .append(queryParam.getInAnnotationName())
-                    .append("=' + encodeURIComponent(").append(queryParam.getName())
-                    .append("+')'));");
-                indent--;
+
+                method.getQueryParameters().forEach(queryParam -> {
+                    sb.append("if (").append(queryParam.getName()).append(" != null){");
+                    indent++;
+                    newLine(sb);
+                    sb.append("queryString.push('")
+                        .append(queryParam.getInAnnotationName())
+                        .append("=' + encodeURIComponent(").append(queryParam.getName())
+                        .append("+')'));");
+                    indent--;
+                    newLine(sb);
+                    sb.append("}");
+                });
                 newLine(sb);
-                sb.append("}");
-            });
-            newLine(sb);
 
-            Map<String, String> pathParams = method.getPathParameters().stream()
-                .collect(Collectors.toMap(
-                    p -> p.getInAnnotationName(),
-                    p -> "${" + p.getName() + "}")
-                );
+                Map<String, String> pathParams = method.getPathParameters().stream()
+                    .collect(Collectors.toMap(
+                        p -> p.getInAnnotationName(),
+                        p -> "${" + p.getName() + "}")
+                    );
 
-            UriTemplate pathTemplate = new PathPattern(method.getFullPath()).getTemplate();
-            String tsPath = pathTemplate.createURI(pathParams);
-            sb.append("const path = `${baseUrl}").append(tsPath)
-                .append("` + (queryString.length > 0 ? '?' + queryString.join('&') : '');");
-            newLine(sb);
+                UriTemplate pathTemplate = new PathPattern(method.getFullPath()).getTemplate();
+                String tsPath = pathTemplate.createURI(pathParams);
+                sb.append("const path = `${baseUrl}").append(tsPath)
+                    .append("${queryString.length > 0 ? '?' + queryString.join('&') : ''}`;");
+            };
 
-            sb.append("return sendRequest")
-                .append("<")
-                .append(TypeScriptHelper.convertType(method.getReturnType(), types))
-                .append(">('").append(method.getHttpMethod())
-                .append("', path")
-                .append(", ")
-                .append(method.getBodyParam() != null
-                    ? method.getBodyParam().getName()
-                    : "undefined")
-                .append(", errorHandler);");
-            indent--;
-            newLine(sb);
-            sb.append("},");
+            this.generateTypescriptFunction(sb, method, getPathFunctionName, urlParams,
+                classDoc, types, reflections,
+                () -> {
+                    buildPath.run();
+                    newLine(sb);
+                    sb.append("return path;");
+                }
+            );
+
+            List<Param> allParams = new ArrayList<>(this.getPathParameters());
+            allParams.addAll(method.getAllParameters());
+
+            allParams.add(optionalErrorHandler);
+
+            // 2 generate API call function
+            this.generateTypescriptFunction(sb, method, method.getName(), allParams,
+                classDoc, types, reflections,
+                () -> {
+                    buildPath.run();
+                    newLine(sb);
+
+                    // JSDOC
+                    ////////////////////////
+                    if (!method.getFormParameters().isEmpty()) {
+                        sb.append("const formData = new FormData();");
+                        method.getFormParameters().forEach(formParam -> {
+                            //indent++;
+                            newLine(sb);
+                            sb.append("formData.append('")
+                                .append(formParam.getInAnnotationName())
+                                .append("', ")
+                                .append(formParam.getName())
+                                .append(");");
+                            //indent--;
+                            newLine(sb);
+                        });
+                        newLine(sb);
+                    }
+
+                    boolean forDataRequest = method.getConsumes().contains(MediaType.MULTIPART_FORM_DATA);
+
+                    String fn = method.getReturnType() == Response.class ? "sendHttpRequest" : "sendJsonRequest";
+                    String fnTemplate = method.getReturnType() == Response.class ? "" : "<" +
+                            TypeScriptHelper.convertType(method.getReturnType(), types)
+                        +">";
+
+                    if (forDataRequest) {
+                        sb.append("return ").append(fn).append(fnTemplate)
+                            .append("('").append(method.getHttpMethod())
+                            .append("', path")
+                            .append(", formData")
+                            .append(", errorHandler || defaultErrorHandler")
+                            .append(", '").append(MediaType.MULTIPART_FORM_DATA).append("'")
+                            .append(");");
+                    } else {
+                        sb.append("return ").append(fn).append(fnTemplate)
+                            .append("('").append(method.getHttpMethod())
+                            .append("', path")
+                            .append(", ")
+                            .append(method.getBodyParam() != null
+                                ? method.getBodyParam().getName()
+                                : "undefined")
+                            .append(", errorHandler || defaultErrorHandler")
+                            .append(", '").append(MediaType.APPLICATION_JSON).append("'")
+                            .append(");");
+                    }
+                });
         });
 
         indent--;
@@ -699,6 +878,10 @@ public class RestEndpoint {
     public static RestEndpoint build(Class<?> klass, String applicationPath) {
         RestEndpoint restEndpoint = new RestEndpoint();
 
+        Consumes defaultConsumes = klass.getAnnotation(Consumes.class);
+
+        Produces defautProduces = klass.getAnnotation(Produces.class);
+
         restEndpoint.setAdminResource(klass.getAnnotation(AdminResource.class) != null);
         restEndpoint.setAuthenticationRequired(
             klass.getAnnotation(AuthenticationRequired.class) != null);
@@ -728,6 +911,19 @@ public class RestEndpoint {
 
                     Path methodPath = method.getAnnotation(Path.class);
 
+                    Consumes methodConsumes = method.getAnnotation(Consumes.class);
+                    Consumes consumes = methodConsumes != null ? methodConsumes : defaultConsumes;
+                    if (consumes != null) {
+                        restMethod.setConsumes(List.of(consumes.value()));
+                    }
+
+                    Produces methodProduces = method.getAnnotation(Produces.class);
+                    Produces produces = methodProduces != null ? methodProduces : defautProduces;
+
+                    if (produces != null) {
+                        restMethod.setProduces(List.of(produces.value()));
+                    }
+
                     restMethod
                         .setAdminResource(method.getAnnotation(AdminResource.class) != null);
                     restMethod.setAuthenticationRequired(
@@ -753,6 +949,7 @@ public class RestEndpoint {
                     for (Parameter p : method.getParameters()) {
                         PathParam pathParam = p.getAnnotation(PathParam.class);
                         QueryParam queryParam = p.getAnnotation(QueryParam.class);
+                        FormDataParam formDataParam = p.getAnnotation(FormDataParam.class);
 
                         if (pathParam != null) {
                             // Path param may be a method specific param or a class one
@@ -781,6 +978,12 @@ public class RestEndpoint {
                             restMethod.addQueryParameter(
                                 p.getName(),
                                 queryParam.value(),
+                                "query param",
+                                p.getType());
+                        } else if (formDataParam != null) {
+                            restMethod.addFormParameter(
+                                p.getName(),
+                                formDataParam.value(),
                                 "query param",
                                 p.getType());
                         } else if (p.getAnnotations().length == 0) {

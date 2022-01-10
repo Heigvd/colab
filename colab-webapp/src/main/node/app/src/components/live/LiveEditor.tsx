@@ -6,15 +6,16 @@
  */
 
 import { css } from '@emotion/css';
-import { faPen, faProjectDiagram, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
+import WysiwygEditor from '../blocks/markdown/WysiwygEditor';
 import CleverTextarea from '../common/CleverTextarea';
+import Flex from '../common/Flex';
+import Toggler from '../common/Form/Toggler';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
-//import ToastFnMarkdownEditor from '../blocks/markdown/ToastFnMarkdownEditor';
-import OpenClose from '../common/OpenClose';
 import Tips from '../common/Tips';
 import WithToolbar from '../common/WithToolbar';
 import ChangeTree from './ChangeTree';
@@ -59,6 +60,9 @@ export default function LiveEditor({
     revision: revision,
   });
 
+  const [wysiwyg, setWysiwyg] = React.useState(false);
+  const [showTree, setShowTree] = React.useState(false);
+
   const [state, setState] = React.useState<State>({
     status: 'VIEW',
   });
@@ -100,28 +104,34 @@ export default function LiveEditor({
       );
     } else if (state.status === 'EDIT') {
       return (
-        <div
-          className={css({
-            display: 'flex',
-            flexDirection: 'row',
-          })}
-        >
-          <Tips tipsType="TODO">Lot of work... custom WYSIWYG editor with live capabilities</Tips>
-          {/*<ToastClsMarkdownEditor value={valueRef.current.current} onChange={onInternalChange} />*/}
-          <CleverTextarea className={grow} value={currentValue} onChange={onChange} />
-          <MarkdownViewer className={grow} md={currentValue} />
-          <div className={shrink}>
-            <OpenClose collapsedChildren={<IconButton icon={faProjectDiagram} />}>
-              {() => <ChangeTree atClass={atClass} atId={atId} value={value} revision={revision} />}
-            </OpenClose>
-          </div>
+        <Flex direction="column">
+          <Flex>
+            <Tips tipsType="TODO">Lot of work... custom WYSIWYG editor with live capabilities</Tips>
+            <Toggler label="Show Tree" value={showTree} onChange={setShowTree} />
+            <Toggler label="WYSIWYG" value={wysiwyg} onChange={setWysiwyg} />
+          </Flex>
+          <Flex>
+            {wysiwyg ? (
+              <WysiwygEditor className={grow} value={currentValue} onChange={onChange} />
+            ) : (
+              <>
+                <CleverTextarea className={grow} value={currentValue} onChange={onChange} />
+                <MarkdownViewer className={grow} md={currentValue} />
+              </>
+            )}
+            {showTree ? (
+              <div className={shrink}>
+                <ChangeTree atClass={atClass} atId={atId} value={value} revision={revision} />
+              </div>
+            ) : null}
+          </Flex>
           <IconButton
             title="close editor"
             className={shrink}
             onClick={() => setState({ ...state, status: 'VIEW' })}
             icon={faTimes}
           />
-        </div>
+        </Flex>
       );
     }
   }

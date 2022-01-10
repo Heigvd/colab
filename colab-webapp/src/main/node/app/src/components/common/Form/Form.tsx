@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { PasswordFeedback } from 'react-password-strength-bar';
 import useTranslations from '../../../i18n/I18nContext';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/notification';
@@ -29,7 +30,7 @@ export interface BaseField<T> {
   placeholder?: string;
   isMandatory: boolean;
   isErroneous?: (entity: T) => boolean;
-  errorMessage?: string;
+  errorMessage?: React.ReactNode | ((data: T) => React.ReactNode);
 }
 
 export interface TextualField<T> extends BaseField<T> {
@@ -67,6 +68,11 @@ export interface SelectNumberField<T> extends BaseField<T> {
 //  type: 'select';
 //  options: {label: string, value: T[BaseField<T>['key']]}[];
 //}
+
+export interface PasswordScore {
+  score: 0 | 1 | 2 | 3 | 4;
+  feedback: PasswordFeedback;
+}
 
 export interface PasswordField<T> extends BaseField<T> {
   type: 'password';
@@ -154,6 +160,13 @@ export default function Form<T>({
     globalErroneous = globalErroneous || isErroneous;
     const fieldKey = `field-${field.key}`;
 
+    const errorMessage =
+      erroneous && isErroneous && field.errorMessage != null
+        ? typeof field.errorMessage === 'function'
+          ? field.errorMessage(state)
+          : field.errorMessage
+        : undefined;
+
     if (field.type == 'text' || field.type === 'textarea') {
       return (
         <div key={fieldKey}>
@@ -163,7 +176,7 @@ export default function Form<T>({
             value={String(state[field.key] || '')}
             label={field.label}
             placeholder={field.placeholder}
-            warning={erroneous && isErroneous ? field.errorMessage : undefined}
+            warning={errorMessage}
             mandatory={field.isMandatory}
             onChange={value => setFormValue(field.key, value)}
             readonly={field.readonly}
@@ -179,7 +192,7 @@ export default function Form<T>({
             label={field.label}
             placeholder={field.placeholder}
             options={field.options}
-            warning={erroneous && isErroneous ? field.errorMessage : undefined}
+            warning={errorMessage}
             mandatory={field.isMandatory}
             isMulti={field.isMulti}
             onChange={value => setFormValue(field.key, value)}
@@ -197,7 +210,7 @@ export default function Form<T>({
             label={field.label}
             placeholder={field.placeholder}
             options={field.options}
-            warning={erroneous && isErroneous ? field.errorMessage : undefined}
+            warning={errorMessage}
             mandatory={field.isMandatory}
             isMulti={false}
             onChange={value => setFormValue(field.key, value)}
@@ -214,25 +227,27 @@ export default function Form<T>({
             value={String(state[field.key] || '')}
             label={field.label}
             placeholder={field.placeholder}
-            warning={erroneous && isErroneous ? field.errorMessage : undefined}
+            warning={errorMessage}
             mandatory={field.isMandatory}
             onChange={value => setFormValue(field.key, value)}
             readonly={field.readonly}
           />
           {field.fieldFooter != null ? field.fieldFooter : null}
-          {field.showStrenghBar ? (
-            <React.Suspense fallback={<InlineLoading />}>
-              <PasswordStrengthBar
-                barColors={['#ddd', '#ef4836', 'rgb(118, 176, 232)', '#2b90ef', '#01f590']}
-                scoreWordStyle={{ color: 'var(--fgColor)' }}
-                onChangeScore={value => {
-                  if (field.strengthProp != null) {
-                    setFormValue(field.strengthProp, value);
-                  }
-                }}
-                password={String(state[field.key] || '')}
-              />
-            </React.Suspense>
+          {field.strengthProp != null ? (
+            <div className={field.showStrenghBar ? undefined : css({ display: 'none' })}>
+              <React.Suspense fallback={<InlineLoading />}>
+                <PasswordStrengthBar
+                  barColors={['#ddd', '#ef4836', 'rgb(118, 176, 232)', '#2b90ef', '#01f590']}
+                  scoreWordStyle={{ color: 'var(--fgColor)' }}
+                  onChangeScore={(value, feedback) => {
+                    if (field.strengthProp != null) {
+                      setFormValue(field.strengthProp, { score: value, feedback: feedback });
+                    }
+                  }}
+                  password={String(state[field.key] || '')}
+                />
+              </React.Suspense>
+            </div>
           ) : null}
         </div>
       );

@@ -11,17 +11,24 @@ import * as React from 'react';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import { updateLocalAccountPassword } from '../../API/api';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { PasswordScore } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
+import PasswordFeedbackDisplay from '../public/PasswordFeedbackDisplay';
 import { linkStyle } from '../styling/style';
 
 export interface Props {
   accountId: number;
 }
 
-export default (props: Props): JSX.Element => {
+export default function LocalAccount(props: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const [pwState, setPwState] = React.useState<'SET' | 'CHANGE_PASSWORD'>('SET');
   const [newPassword, setNewPassword] = React.useState('');
+
+  const [score, setScore] = React.useState<PasswordScore>({
+    score: 0,
+    feedback: { warning: '', suggestions: [] },
+  });
 
   const account = useAppSelector(state => state.users.accounts[props.accountId]);
 
@@ -56,7 +63,16 @@ export default (props: Props): JSX.Element => {
                   onChange={e => setNewPassword(e.target.value)}
                   value={newPassword}
                 />
-                <PasswordStrengthBar password={newPassword} />
+                {score != null ? <PasswordFeedbackDisplay feedback={score.feedback} /> : null}
+                <PasswordStrengthBar
+                  password={newPassword}
+                  onChangeScore={(score, feedback) => {
+                    setScore({
+                      score: score as unknown as PasswordScore['score'],
+                      feedback: feedback,
+                    });
+                  }}
+                />
               </label>
 
               <IconButton
@@ -71,7 +87,11 @@ export default (props: Props): JSX.Element => {
                 icon={faSave}
                 onClick={() => {
                   dispatch(
-                    updateLocalAccountPassword({ email: account.email, password: newPassword }),
+                    updateLocalAccountPassword({
+                      email: account.email,
+                      password: newPassword,
+                      passwordScore: score,
+                    }),
                   );
                 }}
               />
@@ -87,4 +107,4 @@ export default (props: Props): JSX.Element => {
       </div>
     );
   }
-};
+}

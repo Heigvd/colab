@@ -6,11 +6,12 @@
  */
 package ch.colabproject.colab.api.rest.card;
 
-import ch.colabproject.colab.api.ejb.CardFacade;
+import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.persistence.card.CardTypeDao;
+import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationBean;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -50,10 +51,10 @@ public class CardTypeRestEndpoint {
     private CardTypeDao cardTypeDao;
 
     /**
-     * The card-related logic
+     * Card type specific logic management
      */
     @Inject
-    private CardFacade cardFacade;
+    private CardTypeManager cardTypeManager;
 
     /**
      * Retrieve the list of all card types. This is available to admin only
@@ -102,7 +103,7 @@ public class CardTypeRestEndpoint {
     @Path("allProjectsPublished")
     public Set<AbstractCardType> getPublishedCardTypes() {
         logger.debug("get published projects card types");
-        return cardFacade.getExpandedPublishedTypes();
+        return cardTypeManager.getExpandedPublishedProjectTypes();
     }
 
     /**
@@ -136,7 +137,7 @@ public class CardTypeRestEndpoint {
         cardType.setPurpose(cardTypeCreationBean.getPurpose());
         cardType.setTags(cardTypeCreationBean.getTags());
 
-        return cardFacade.createNewCardType(cardType).getId();
+        return cardTypeManager.createCardType(cardType).getId();
     }
 
 //    /**
@@ -150,7 +151,7 @@ public class CardTypeRestEndpoint {
 //    @Path("create/{projectId}")
 //    public CardType createNewCardType(@PathParam("projectId") Long projectId) {
 //        logger.debug("create new card type for the project #{}", projectId);
-//        return facade.createNewCardType(projectId);
+//        return cardTypeManager.createNewCardType(projectId);
 //    }
 
     /**
@@ -175,7 +176,7 @@ public class CardTypeRestEndpoint {
     @Path("{id}")
     public void deleteCardType(@PathParam("id") Long id) {
         logger.debug("delete card type #{}", id);
-        cardFacade.deleteCardType(id);
+        cardTypeManager.deleteCardType(id);
     }
 
 }

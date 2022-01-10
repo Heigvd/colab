@@ -6,6 +6,7 @@
  */
 import { css } from '@emotion/css';
 import * as React from 'react';
+import { PasswordFeedback } from 'react-password-strength-bar';
 import { useNavigate } from 'react-router-dom';
 import { signUp } from '../../API/api';
 import { buildLinkWithQueryParam } from '../../helper';
@@ -14,6 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import Form, { Field } from '../common/Form/Form';
 import FormContainer from '../common/FormContainer';
 import { InlineLink } from '../common/Link';
+import PasswordFeedbackDisplay from './PasswordFeedbackDisplay';
 
 interface Props {
   redirectTo: string | null;
@@ -24,7 +26,10 @@ interface Data {
   email: string;
   password: string;
   confirm: string;
-  passwordScore: number;
+  passwordScore: {
+    score: number;
+    feedback: PasswordFeedback;
+  };
 }
 
 const defData: Data = {
@@ -32,10 +37,16 @@ const defData: Data = {
   email: '',
   password: '',
   confirm: '',
-  passwordScore: 0,
+  passwordScore: {
+    score: 0,
+    feedback: {
+      warning: '',
+      suggestions: [],
+    },
+  },
 };
 
-export default (props: Props): JSX.Element => {
+export default function SignUp(props: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const i18n = useTranslations();
@@ -56,8 +67,8 @@ export default (props: Props): JSX.Element => {
       placeholder: i18n.model.user.password,
       type: 'password',
       isMandatory: false,
-      isErroneous: data => data.passwordScore < 2,
-      errorMessage: i18n.weakPassword,
+      isErroneous: data => data.passwordScore.score < 2,
+      errorMessage: data => <PasswordFeedbackDisplay feedback={data.passwordScore.feedback} />,
       showStrenghBar: true,
       strengthProp: 'passwordScore',
     },
@@ -104,4 +115,4 @@ export default (props: Props): JSX.Element => {
       </Form>
     </FormContainer>
   );
-};
+}

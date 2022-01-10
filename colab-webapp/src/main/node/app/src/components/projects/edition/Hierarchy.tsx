@@ -9,11 +9,12 @@ import { css, cx } from '@emotion/css';
 import { BrowserJsPlumbInstance, newInstance } from '@jsplumb/browser-ui';
 import '@jsplumb/connector-flowchart';
 import { Connection } from '@jsplumb/core';
-import { Card, CardContent } from 'colab-rest-client';
+import { Card, CardContent, entityIs } from 'colab-rest-client';
 import { throttle } from 'lodash';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import { getLogger } from '../../../logger';
+import { useProjectRootCard } from '../../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { CardContentDetail } from '../../../store/card';
 import {
@@ -386,6 +387,10 @@ export function CardHierarchy({
 
   const { project, status } = useProjectBeingEdited();
 
+  const rootCard = useProjectRootCard(project);
+
+  const projectRootCardId = entityIs(rootCard, 'Card') ? rootCard.id : undefined;
+
   const root = useAppSelector(state => {
     const rootState = state.cards.cards[rootId];
     if (rootState) {
@@ -496,7 +501,7 @@ export function CardHierarchy({
           assignDiv(divRefs, ref, `CardHierarchy-${rootId}`);
         }}
       >
-        {project.rootCardId !== rootId ? <CardGroup card={root.card} divRefs={divRefs} /> : null}
+        {projectRootCardId !== rootId ? <CardGroup card={root.card} divRefs={divRefs} /> : null}
         <AllSubsContainer
           contents={contents}
           subs={subs}

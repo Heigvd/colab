@@ -38,7 +38,8 @@ public class BlockDocument extends Document {
      */
     @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
     @JsonbTransient
-    // TODO see where do the order by index
+    // Note : do not sort with JPA. It does not work well with our production environment
+    // The client is in charge of the sort
     private List<Block> blocks = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------

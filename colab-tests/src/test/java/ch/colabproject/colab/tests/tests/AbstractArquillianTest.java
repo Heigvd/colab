@@ -7,7 +7,7 @@
 package ch.colabproject.colab.tests.tests;
 
 import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.ejb.UserManagement;
+import ch.colabproject.colab.api.controller.user.UserManager;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.AuthInfo;
@@ -41,9 +41,11 @@ import org.eu.ingwar.tools.arquillian.extension.suite.annotations.ArquillianSuit
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -77,6 +79,10 @@ public abstract class AbstractArquillianTest {
 
     private boolean hasDbBeenInitialized = false;
 
+    protected static final String ADMIN_USERNAME = "admin";
+    protected static final String ADMIN_EMAIL = "admin@colab.local";
+    protected static final String ADMIN_PASSWORD = "MyPasswordIsSoSafe";
+
     static {
         reflections = new Reflections("ch.colabproject.colab");
     }
@@ -91,7 +97,7 @@ public abstract class AbstractArquillianTest {
      * Provide user management internal logic
      */
     @Inject
-    private UserManagement userManagement;
+    private UserManager userManager;
 
     @Inject
     private TestFacade testFacade;
@@ -150,6 +156,22 @@ public abstract class AbstractArquillianTest {
      */
     protected Long adminUserId;
 
+    private static void addFiles(WebArchive war, File file, String to) {
+
+        if (file.isDirectory()) {
+
+            for (File child : file.listFiles()) {
+                if (child.isFile()) {
+                    war.addAsWebResource(child, to + "/" + child.getName());
+                } else {
+                    addFiles(war, child, to + "/" + child.getName());
+                }
+            }
+        } else {
+            war.addAsWebResource(file, to);
+        }
+    }
+
     /**
      * Create deployment
      *
@@ -157,17 +179,21 @@ public abstract class AbstractArquillianTest {
      */
     @Deployment
     public static JavaArchive createDeployement() {
-        JavaArchive war = ShrinkWrap.create(JavaArchive.class)
-            .as(ExplodedImporter.class)
-            .importDirectory(new File("../colab-api/target/classes/"))
-            .importDirectory(new File("target/test-classes/"))
-            .as(JavaArchive.class);
-        //.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+        //.addAsWebInfResources(new File("target/test-classes/"), "classes")
+        //.addAsWebInfResource(new File("../colab-api/target/classes/"), "classes")
 
-        //war.addPackages(true, "com.wegas");
-        //war.addAsDirectory("target/embed-classes/");
-        //war.addAsResource("./src/test/resources/META-INF/persistence.xml", "META-INF/persistence.xml");
-        //logger.error("MyWegasArchive: {}", war.toString(true));
+        WebArchive war = ShrinkWrap.create(WebArchive.class)
+            .as(ExplodedImporter.class)
+            // import the whole webapp but the colab-api jar
+            .importDirectory(new File("../colab-webapp/target/coLAB/"), (ArchivePath path) -> {
+                return !path.get().startsWith("/WEB-INF/lib/colab-api");
+            })
+            .as(WebArchive.class);
+
+        // add colab-api classes
+        addFiles(war, new File("../colab-api/target/classes"), "WEB-INF/classes");
+        // add test classes
+        addFiles(war, new File("target/test-classes"), "WEB-INF/classes");
 
         /* Log Levels */
         java.util.logging.Logger.getLogger("javax.enterprise.system.tools.deployment")
@@ -177,7 +203,7 @@ public abstract class AbstractArquillianTest {
         java.util.logging.Logger.getLogger("fish.payara.nucleus.healthcheck").setLevel(Level.SEVERE);
         org.glassfish.ejb.LogFacade.getLogger().setLevel(Level.SEVERE);
 
-        return war;
+        return war.as(JavaArchive.class);
     }
 
     /**
@@ -383,7 +409,7 @@ public abstract class AbstractArquillianTest {
      */
     @BeforeEach
     public void init(TestInfo info) throws SQLException {
-        if (userManagement != null) {
+        if (userManager != null) {
             this.mailClient = new MailhogClient();
             try {
                 mailClient.deleteAllMessages();
@@ -400,7 +426,7 @@ public abstract class AbstractArquillianTest {
             resetDatabase();
 
             // create one admin
-            this.admin = this.signup("admin", "admin@colab.local", "MyPasswordIsSoSafe");
+            this.admin = this.signup(ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD);
 
             verifyAccounts();
 
@@ -423,7 +449,7 @@ public abstract class AbstractArquillianTest {
      */
     @AfterEach
     public void clean(TestInfo info) {
-        if (userManagement != null) {
+        if (userManager != null) {
             if (wsClients != null) {
                 wsClients.forEach(wsClient -> {
                     try {

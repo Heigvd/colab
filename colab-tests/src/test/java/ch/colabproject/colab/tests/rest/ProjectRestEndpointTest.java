@@ -9,8 +9,8 @@ package ch.colabproject.colab.tests.rest;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
+import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.token.InvitationToken;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.user.User;
@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * @author maxence
+ * @author sandra
  */
 public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
@@ -53,12 +54,13 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedProject.getId());
         Assertions.assertEquals(persistedProject.getId(), projectId);
 
-        Assertions.assertNotNull(persistedProject.getRootCardId());
-        Long rootCardId = persistedProject.getRootCardId();
-        Card rootCard = client.cardRestEndpoint.getCard(rootCardId);
+        Card rootCard = client.projectRestEndpoint.getRootCardOfProject(projectId);
         Assertions.assertNotNull(rootCard);
+        Long rootCardId = rootCard.getId();
+        Assertions.assertNotNull(rootCardId);
+
         List<CardContent> rootCardContents = client.cardRestEndpoint
-            .getContentVariantsOfCard(rootCard.getId());
+            .getContentVariantsOfCard(rootCardId);
         Assertions.assertNotNull(rootCardContents);
         Assertions.assertEquals(1, rootCardContents.size());
 
@@ -75,10 +77,22 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         persistedProject = client.projectRestEndpoint.getProject(projectId);
         Assertions.assertNull(persistedProject);
 
+        boolean wasError = false;
+        try {
+            rootCard = client.projectRestEndpoint.getRootCardOfProject(projectId);
+        } catch(HttpErrorMessage hem) {
+            Assertions.assertEquals(HttpErrorMessage.MessageCode.RELATED_OBJECT_NOT_FOUND,
+                hem.getMessageCode());
+            wasError = true;
+        }
+        if (!wasError) {
+            Assertions.fail();
+        }
+
         rootCard = client.cardRestEndpoint.getCard(rootCardId);
         Assertions.assertNull(rootCard);
 
-        boolean wasError = false;
+        wasError = false;
         try {
             rootCardContents = client.cardRestEndpoint.getContentVariantsOfCard(rootCardId);
         } catch (HttpErrorMessage hem) {
@@ -138,7 +152,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         throws URISyntaxException, DeploymentException, IOException, InterruptedException {
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketHelper.class), Level.TRACE);
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketClient.class), Level.TRACE);
-//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketFacade.class), Level.TRACE);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketManager.class), Level.TRACE);
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(TransactionManager.class), Level.TRACE);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,13 +275,13 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         List<TeamMember> members = client.projectRestEndpoint.getMembers(projectId);
         Assertions.assertEquals(2, members.size());
 
-        // assert currentUser can read user of teammate
+        // assert currentUser can read user of team mate
         members.forEach((TeamMember member) -> {
             User u = client.userRestEndpoint.getUserById(member.getUserId());
             Assertions.assertNotNull(u);
         });
 
-        // assert currentuser can not read other users
+        // assert the current user can not read other users
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.userRestEndpoint.getUserById(this.adminUserId);
         });

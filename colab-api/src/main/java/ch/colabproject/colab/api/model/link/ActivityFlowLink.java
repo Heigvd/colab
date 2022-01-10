@@ -215,8 +215,8 @@ public class ActivityFlowLink implements ColabEntity, WithWebsocketChannels {
     public void merge(ColabEntity other) throws ColabMergeException {
 //        if (other instanceof ActivityFlowLink) {
         // ActivityFlowLink o = (ActivityFlowLink) other;
-        // previousCard is managed separately in the Facade
-        // nextCard is managed separately in the Facade
+        // previousCard is managed separately in the Manager
+        // nextCard is managed separately in the Manager
 //        } else {
         if (!(other instanceof ActivityFlowLink)) {
             throw new ColabMergeException(this, other);

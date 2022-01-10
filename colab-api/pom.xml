@@ -102,7 +102,7 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-        
+
         <!-- Utility classes for Java Collections Framework -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -114,6 +114,17 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <type>jar</type>
+        </dependency>
+
+        <!-- To create Multipart form data REST path easily -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
         </dependency>
 
         <!--*****************************************************************-->

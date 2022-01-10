@@ -38,7 +38,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  * C
@@ -99,11 +98,9 @@ public class Project implements ColabEntity, WithWebsocketChannels {
     @JsonbTransient
     private Card rootCard;
 
-    /**
-     * The ID of the root card (serialization sugar)
-     */
-    @Transient
-    private Long rootCardId;
+    // No need to have a rootCardId
+    // We do not want to serialize the root card it of the project when sending to client
+    // It could cause access control problems. A user can read some project, but not its cards
 
     /**
      * Roles
@@ -186,28 +183,6 @@ public class Project implements ColabEntity, WithWebsocketChannels {
      */
     public void setRootCard(Card rootCard) {
         this.rootCard = rootCard;
-    }
-
-    /**
-     * get the id of the root card. To be sent to client
-     *
-     * @return id of the root card or null
-     */
-    public Long getRootCardId() {
-        if (this.getRootCard() != null) {
-            return this.getRootCard().getId();
-        } else {
-            return rootCardId;
-        }
-    }
-
-    /**
-     * set the id of the root card. For serialization only
-     *
-     * @param rootCardId the rootCardId to set
-     */
-    public void setRootCardId(Long rootCardId) {
-        this.rootCardId = rootCardId;
     }
 
     /**

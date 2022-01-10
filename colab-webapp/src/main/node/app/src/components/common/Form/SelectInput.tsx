@@ -22,8 +22,8 @@ export interface Props<T, IsMulti extends boolean> {
   label?: React.ReactNode;
   value?: T;
   options: Opt<T>[];
-  warning?: string;
-  error?: string;
+  warning?: React.ReactNode;
+  error?: React.ReactNode;
   mandatory?: boolean;
   onChange: (newValue: ValueType<T, IsMulti>) => void;
   placeholder?: string;

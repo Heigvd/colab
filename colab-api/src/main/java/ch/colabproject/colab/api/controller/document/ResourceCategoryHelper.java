@@ -6,7 +6,9 @@
  */
 package ch.colabproject.colab.api.controller.document;
 
-import ch.colabproject.colab.api.ejb.CardFacade;
+import ch.colabproject.colab.api.controller.card.CardContentManager;
+import ch.colabproject.colab.api.controller.card.CardManager;
+import ch.colabproject.colab.api.controller.card.CardTypeManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -43,10 +45,22 @@ public class ResourceCategoryHelper {
     private ResourceManager resourceManager;
 
     /**
-     * Card type, card, card content related logic
+     * Card type specific logic management
      */
     @Inject
-    private CardFacade cardFacade;
+    private CardTypeManager cardTypeManager;
+
+    /**
+     * Card specific logic management
+     */
+    @Inject
+    private CardManager cardManager;
+
+    /**
+     * Card content specific logic management
+     */
+    @Inject
+    private CardContentManager cardContentManager;
 
     // *********************************************************************************************
     // Category management
@@ -134,7 +148,7 @@ public class ResourceCategoryHelper {
         logger.debug("rename category {} to {} in the abstract card type #{}", oldName, newName,
             cardTypeOrRefId);
 
-        AbstractCardType cardTypeOrRef = cardFacade.assertAndGetAbstractCardType(cardTypeOrRefId);
+        AbstractCardType cardTypeOrRef = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeOrRefId);
 
         Long effectiveProjectId = projectId;
         if (projectId == null) {
@@ -154,7 +168,7 @@ public class ResourceCategoryHelper {
     public void renameCategoryInCard(Long cardId, String oldName, String newName) {
         logger.debug("rename category {} to {} in the card #{}", oldName, newName, cardId);
 
-        Card card = cardFacade.assertAndGetCard(cardId);
+        Card card = cardManager.assertAndGetCard(cardId);
 
         renameCategory(card, oldName, newName);
     }
@@ -170,7 +184,7 @@ public class ResourceCategoryHelper {
         logger.debug("rename category {} to {} in the card content #{}", oldName, newName,
             cardContentId);
 
-        CardContent cardContent = cardFacade.assertAndGetCardContent(cardContentId);
+        CardContent cardContent = cardContentManager.assertAndGetCardContent(cardContentId);
 
         renameCategory(cardContent, oldName, newName);
     }

@@ -11,7 +11,7 @@ import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks'
 import InlineLoading from '../common/InlineLoading';
 import UserList from './UserList';
 
-export default (): JSX.Element => {
+export default function AllUsers(): JSX.Element {
   const dispatch = useAppDispatch();
 
   const status = useAppSelector(state => state.admin.userStatus);
@@ -36,4 +36,4 @@ export default (): JSX.Element => {
       <div>{status !== 'INITIALIZED' ? <InlineLoading /> : <UserList users={users} />}</div>
     </div>
   );
-};
+}

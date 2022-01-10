@@ -5,7 +5,13 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { faCog, faSignOutAlt, faTimes, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+<<<<<<< HEAD
+import { faCog, faExclamationTriangle, faSignOutAlt, faTimes, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+=======
+import { faExclamationTriangle, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+>>>>>>> origin/main
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import * as API from '../API/api';
@@ -97,6 +103,8 @@ export default function MainApp(): JSX.Element {
       dispatch(API.reloadCurrentUser());
     }
   }, [currentUserStatus, dispatch]);
+
+  const passwordScore = useAppSelector(state => state.auth.localAccountPasswordScore);
 
   const reconnecting =
     socketId == null ? (
@@ -215,6 +223,9 @@ export default function MainApp(): JSX.Element {
                 val.action != null ? val.action() : navigate(val.value)}}
               buttonClassName={cx(invertedThemeMode, css({marginLeft: space_S}))}
             />
+            {passwordScore != null && passwordScore.score < 2 ? (
+              <FontAwesomeIcon title={'your password is weak'} icon={faExclamationTriangle} />
+            ) : null}
           </div>
 
           <div

@@ -971,7 +971,7 @@ public class AccessControlTest extends AbstractArquillianTest {
 
     private boolean hasDeliverableDocumentReadAccess() {
         try {
-            aclTestClient.documentRestEndPoint.getDocument(data.getDeliverableDocumentId());
+            aclTestClient.documentRestEndpoint.getDocument(data.getDeliverableDocumentId());
             return true;
         } catch (HttpErrorMessage hem) {
             if (MessageCode.ACCESS_DENIED == hem.getMessageCode()) {
@@ -985,15 +985,15 @@ public class AccessControlTest extends AbstractArquillianTest {
     private boolean hasDeliverableDocumentReadWriteAccess() {
         try {
             // TODO find another way
-            Document document = aclTestClient.documentRestEndPoint
+            Document document = aclTestClient.documentRestEndpoint
                 .getDocument(data.getDeliverableDocumentId());
             //document.setTeaser("incredible");
-            aclTestClient.documentRestEndPoint.updateDocument(document);
+            aclTestClient.documentRestEndpoint.updateDocument(document);
 
-            document = aclTestClient.documentRestEndPoint
+            document = aclTestClient.documentRestEndpoint
                 .getDocument(data.getDeliverableDocumentId());
             //document.setTeaser("awesome");
-            aclTestClient.documentRestEndPoint.updateDocument(document);
+            aclTestClient.documentRestEndpoint.updateDocument(document);
 
             return true;
         } catch (HttpErrorMessage hem) {
@@ -1007,7 +1007,7 @@ public class AccessControlTest extends AbstractArquillianTest {
 
     private boolean hasDeliverableBlockReadAccess() {
         try {
-            aclTestClient.blockRestEndPoint.getBlock(data.getDeliverableBlockId());
+            aclTestClient.blockRestEndpoint.getBlock(data.getDeliverableBlockId());
             return true;
         } catch (HttpErrorMessage hem) {
             if (MessageCode.ACCESS_DENIED == hem.getMessageCode()) {
@@ -1020,13 +1020,13 @@ public class AccessControlTest extends AbstractArquillianTest {
 
     private boolean hasDeliverableBlockReadWriteAccess() {
         try {
-            Block block = aclTestClient.blockRestEndPoint.getBlock(data.getDeliverableBlockId());
+            Block block = aclTestClient.blockRestEndpoint.getBlock(data.getDeliverableBlockId());
             block.setIndex(5);
-            aclTestClient.blockRestEndPoint.updateBlock(block);
+            aclTestClient.blockRestEndpoint.updateBlock(block);
 
-            block = aclTestClient.blockRestEndPoint.getBlock(data.getDeliverableBlockId());
+            block = aclTestClient.blockRestEndpoint.getBlock(data.getDeliverableBlockId());
             block.setIndex(7);
-            aclTestClient.blockRestEndPoint.updateBlock(block);
+            aclTestClient.blockRestEndpoint.updateBlock(block);
 
             return true;
         } catch (HttpErrorMessage hem) {
@@ -1104,7 +1104,7 @@ public class AccessControlTest extends AbstractArquillianTest {
 
     private boolean hasDocumentReadAccess() {
         try {
-            aclTestClient.documentRestEndPoint.getDocument(data.getDocumentId());
+            aclTestClient.documentRestEndpoint.getDocument(data.getDocumentId());
             return true;
         } catch (@SuppressWarnings("unused") Exception e) {
             return false;
@@ -1116,15 +1116,15 @@ public class AccessControlTest extends AbstractArquillianTest {
     private boolean hasDocumentReadWriteAccess() {
         try {
             // TODO find another way
-            Document document = aclTestClient.documentRestEndPoint
+            Document document = aclTestClient.documentRestEndpoint
                 .getDocument(data.getDocumentId());
            // document.setTeaser("incredible");
-            aclTestClient.documentRestEndPoint.updateDocument(document);
+            aclTestClient.documentRestEndpoint.updateDocument(document);
 
-            document = aclTestClient.documentRestEndPoint
+            document = aclTestClient.documentRestEndpoint
                 .getDocument(data.getDocumentId());
             //document.setTeaser("awesome");
-            aclTestClient.documentRestEndPoint.updateDocument(document);
+            aclTestClient.documentRestEndpoint.updateDocument(document);
 
             return true;
         } catch (@SuppressWarnings("unused") Exception e) { // ServerException
@@ -1136,7 +1136,7 @@ public class AccessControlTest extends AbstractArquillianTest {
 
     private boolean hasBlockReadAccess() {
         try {
-            aclTestClient.blockRestEndPoint.getBlock(data.getBlockId());
+            aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
             return true;
         } catch (@SuppressWarnings("unused") Exception e) {
             return false;
@@ -1147,13 +1147,13 @@ public class AccessControlTest extends AbstractArquillianTest {
 
     private boolean hasBlockReadWriteAccess() {
         try {
-            Block block = aclTestClient.blockRestEndPoint.getBlock(data.getBlockId());
+            Block block = aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
             block.setIndex(5);
-            aclTestClient.blockRestEndPoint.updateBlock(block);
+            aclTestClient.blockRestEndpoint.updateBlock(block);
 
-            block = aclTestClient.blockRestEndPoint.getBlock(data.getBlockId());
+            block = aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
             block.setIndex(7);
-            aclTestClient.blockRestEndPoint.updateBlock(block);
+            aclTestClient.blockRestEndpoint.updateBlock(block);
 
             return true;
         } catch (@SuppressWarnings("unused") Exception e) { // ServerException
