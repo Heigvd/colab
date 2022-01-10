@@ -7,7 +7,6 @@
 package ch.colabproject.colab.api.persistence.jcr;
 
 import ch.colabproject.colab.api.setup.ColabConfiguration;
-import com.mongodb.MongoClient;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.annotation.PreDestroy;

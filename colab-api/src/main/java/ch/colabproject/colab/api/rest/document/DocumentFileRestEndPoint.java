@@ -27,6 +27,8 @@ import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -54,7 +56,7 @@ import org.slf4j.LoggerFactory;
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
 public class DocumentFileRestEndPoint {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(DocumentFileRestEndPoint.class);
 
     @Inject
@@ -79,10 +81,10 @@ public class DocumentFileRestEndPoint {
             throw HttpErrorMessage.internalServerError();
         }
     }
-    
+
     /**
-     * 
-     * @param documentId 
+     *
+     * @param documentId
      */
     @DELETE
     @Path("DeleteFile/{documentId}")
@@ -96,7 +98,7 @@ public class DocumentFileRestEndPoint {
             throw HttpErrorMessage.internalServerError();
         }
     }
-    
+
     /**
      * Get the file content
      *
@@ -107,16 +109,39 @@ public class DocumentFileRestEndPoint {
     @Path("GetFile/{documentId}")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getFileContent(@PathParam("documentId") Long documentId) {
-        
+
         try {
             var response = fileManager.getDownloadResponse(documentId);
             return response.build();
         } catch (PathNotFoundException pnfe){
             throw HttpErrorMessage.dataIntegrityFailure();
-        }catch (RepositoryException ex) {
+        } catch (RepositoryException ex) {
             logger.debug("Could not get file content {}", ex);
             throw HttpErrorMessage.internalServerError();
         }
     }
-    
+
+    /**
+     * Retrieves a project's disk space file usage and the maximum authorized
+     * quota
+     * @param projectId
+     * @return a list of 2 elements, first is usage second is maximum quota
+     * expressed in bytes
+     */
+
+    @GET
+    @Path("GetProjectQuotaUsage/{projectId}")
+    public List<Long> getQuotaUsage(@PathParam("projectId") Long projectId){
+
+        try{
+            var result = new ArrayList<Long>();
+            result.add(fileManager.getUsage(projectId));
+            result.add(FileManager.getQuota());
+            return result;
+        } catch(RepositoryException re){
+            logger.debug("Could not get project quota usage {}", re);
+            throw HttpErrorMessage.internalServerError();
+        }
+    }
+
 }

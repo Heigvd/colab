@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.model.document.HostedDocLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.jcr.JcrManager;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
+import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import java.io.InputStream;
 import javax.ejb.LocalBean;
@@ -53,6 +54,12 @@ public class FileManager {
     private DocumentDao documentDao;
 
     /**
+     * Project persistence
+     */
+    @Inject
+    private ProjectDao projectDao;
+
+    /**
      * Update an existing document's file content
      * @param docId document id
      * @param file file contents
@@ -71,7 +78,7 @@ public class FileManager {
         var fileNameBytes = details.getFileName().getBytes(StandardCharsets.ISO_8859_1);
         var fileName = new String(fileNameBytes, StandardCharsets.UTF_8);
 
-        FileManager.logger.info("Updating file {} with id {}", fileName, docId);
+        FileManager.logger.debug("Updating file {} with id {}", fileName, docId);
 
         Document doc = documentDao.findDocument(docId);
         if(doc == null || !(doc instanceof HostedDocLink))
@@ -79,9 +86,8 @@ public class FileManager {
             throw HttpErrorMessage.notFound();
         }
 
-        //TODO check project quota
-
         var fileSize = details.getSize();
+        // Check file size limit
         if(fileSize > ColabConfiguration.getJcrRepositoryFileSizeLimit()){
             FileManager.logger.debug("File exceeds authorized size ({} bytes)"
                 + ", size limit is {} bytes"
@@ -90,13 +96,21 @@ public class FileManager {
             throw HttpErrorMessage.internalServerError();
         }
 
+        // Check quota limit
+        Project project = doc.getProject();
+        var usedQuota = jcrManager.computeMemoryUsage(project);
+        if(usedQuota + fileSize > getQuota()){
+            FileManager.logger.debug("Quota exceeded. Used : {}, Authorized : {}"
+                , usedQuota + fileSize, ColabConfiguration.getJcrRepositoryProjectQuota());
+
+            throw HttpErrorMessage.internalServerError();
+        }
 
         HostedDocLink hostedDoc = (HostedDocLink)doc;
         hostedDoc.setFileName(fileName);
         hostedDoc.setFileSize(fileSize);
         hostedDoc.setMimeType(body.getMediaType().toString());
 
-        Project project = doc.getProject();
         this.jcrManager.updateOrCreateFile(project, docId, file);
     }
 
@@ -164,14 +178,38 @@ public class FileManager {
 
         var stream = new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));
         ResponseBuilder res = Response.ok(stream, mediaType);
-        var safeFilename = URLEncoder.encode(hostedDoc.getFileName(), StandardCharsets.UTF_8);
+
+        var fileName = hostedDoc.getFileName();
+        var safeFileName = "";
+        if(fileName != null){
+            safeFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+        }
 
         // set file name for browser download prompt
-        var attachment = "attachment; filename=" + safeFilename;
+        var attachment = "attachment; filename=" + safeFileName;
         res.header("Content-Disposition", attachment);
 
-        logger.info("Generated response for file : {}, mime {}", hostedDoc.getFileName(), hostedDoc.getMimeType());
+        logger.debug("Generated response for file : {}, mime {}", safeFileName, mediaType);
 
         return res;
+    }
+
+    /**
+     * Gets projects quota
+     * @return the quota of disk space usage for files per project in bytes
+     */
+    public static Long getQuota(){
+        return ColabConfiguration.getJcrRepositoryProjectQuota();
+    }
+
+    /**
+     * Computes the current disk space usage of a given project
+     * @param projectId
+     * @return used space in bytes
+     * @throws RepositoryException
+     */
+    public Long getUsage(Long projectId) throws RepositoryException{
+        Project project = projectDao.getProject(projectId);
+        return jcrManager.computeMemoryUsage(project);
     }
 }

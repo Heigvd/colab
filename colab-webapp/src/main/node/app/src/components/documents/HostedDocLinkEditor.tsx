@@ -8,7 +8,7 @@
 import { faCheck, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HostedDocLink } from 'colab-rest-client';
-import useTranslations from '../../i18n/I18nContext';
+//import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import * as API from '../../API/api';
@@ -22,7 +22,7 @@ export interface HostedDocLinkProps {
 }
 
 export function HostedDocLinkEditor({ document }: HostedDocLinkProps): JSX.Element {
-  const i18n = useTranslations();
+  //const i18n = useTranslations();
 
   const dispatch = useAppDispatch();
 
@@ -35,7 +35,7 @@ export function HostedDocLinkEditor({ document }: HostedDocLinkProps): JSX.Eleme
         const file = v.target.files[0];
 
         const logger = getLogger('HostedDocLinkEditor');
-        logger.info('Uploading file *********** ' + file!.name);
+        logger.debug('Uploading file *********** ' + file!.name);
 
         if(file){
           dispatch(API.uploadFile({docId: document.id!, file: file })).then(() => setState('DONE'));
@@ -68,8 +68,7 @@ export function HostedDocLinkEditor({ document }: HostedDocLinkProps): JSX.Eleme
 
   return (
     <div>
-      <h1>Here is your awesome file uploader</h1>
-      <h2>{i18n.nothingToDisplay}Translation test</h2>
+      <h3>Here is your awesome file uploader</h3>
       <IconButton icon={faDownload} onClick={downloadCb} />
       {document.fileName}
       <div>

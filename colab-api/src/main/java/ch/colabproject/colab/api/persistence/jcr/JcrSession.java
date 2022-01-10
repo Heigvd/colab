@@ -42,7 +42,7 @@ public class JcrSession implements Serializable {
 
     /** Session workspace path */
     private final String workspacePath;
-    
+
     /**
      * Open a JCR session to the repository
      *
@@ -53,8 +53,8 @@ public class JcrSession implements Serializable {
      */
     public JcrSession(Repository repository, Project project) throws RepositoryException {
         logger.trace("Create JCR Session for {}", project);
-        //TODO create user if not present in 
-        //TODO long term : 
+        //TODO create user if not present in
+        //TODO long term :
         this.session = repository.login(credentials);
         this.workspace = "project_" + project.getId();
         this.workspacePath = "/" + this.workspace;
@@ -117,7 +117,7 @@ public class JcrSession implements Serializable {
     /**
      * Get a node
      *
-     * @param relativePath relativePath relative to the workspace root. 
+     * @param relativePath relativePath relative to the workspace root.
      * May starts with a / or not
      *
      * @return the node or null if it does not exist
@@ -131,9 +131,9 @@ public class JcrSession implements Serializable {
             return null;
         }
     }
-    
+
     /**
-     * 
+     *
      * @param relativePath relative path from workspace root
      */
     public void removeNode(String relativePath) {
@@ -142,7 +142,7 @@ public class JcrSession implements Serializable {
         }catch(RepositoryException ex){
             logger.warn("removeNode: node could not be removed", ex);
         }
-        
+
     }
 
     /**
@@ -168,12 +168,12 @@ public class JcrSession implements Serializable {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
     }
-    
+
     /**
      *  creates a new binary object to be stored
      * @param content
      * @return
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     public Binary createBinary(InputStream content) throws RepositoryException{
        return this.session.getValueFactory().createBinary(content);

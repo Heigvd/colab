@@ -42,11 +42,11 @@ import org.slf4j.LoggerFactory;
 @Stateless
 public class JcrManager {
 
-    @Inject 
+    @Inject
     private JcrSessionManager jcrSessionManager;
-    
+
     private static final String CONTENT = "CONTENT";
-    
+
     private static final Logger logger = LoggerFactory.getLogger(JcrManager.class);
 
     /**
@@ -73,11 +73,11 @@ public class JcrManager {
      * @param project project related to file
      * @param identifier document id
      * @param fileContent file content
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     public void updateOrCreateFile(Project project, Long identifier, InputStream fileContent) throws RepositoryException {
         var session = this.jcrSessionManager.getSession(project);
-        
+
         if(!session.nodeExists(identifier.toString())){
             createFile(project, identifier, fileContent);
         }else{
@@ -87,20 +87,20 @@ public class JcrManager {
             prop.setValue(binary);
         }
     }
-    
+
     /**
      * Creates a node for the given file id, and store its content
      * @param project related project
-     * @param identifier document id 
+     * @param identifier document id
      * @param content file content
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     private void createFile(Project project, Long identifier, InputStream content) throws RepositoryException{
         var session = this.jcrSessionManager.getSession(project);
-        
+
         Node root = session.getWorkspaceRoot();
         Node newNode = root.addNode(identifier.toString());
-        
+
         var prop = newNode.setProperty(CONTENT, identifier.toString());
         Binary binary = session.createBinary(content);
         prop.setValue(binary);
@@ -110,40 +110,43 @@ public class JcrManager {
      * Deletes any existing node. Call is ignored if the file doesn't exist
      * @param project related project
      * @param identifier doc id
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     public void deleteFile(Project project, Long identifier) throws RepositoryException {
         var session = this.jcrSessionManager.getSession(project);
         if(session.nodeExists(identifier.toString())){
             session.removeNode(identifier.toString());
         }
-        
+
     }
-    
+
     /**
      * Computes the disk space used by a project
      * @param project
      * @return used memory in bytes
-     * @throws RepositoryException 
+     * @throws RepositoryException
      */
     public Long computeMemoryUsage(Project project) throws RepositoryException {
-        
+
         var session = this.jcrSessionManager.getSession(project);
-        
+
         var node = session.getWorkspaceRoot();
+        if(node == null)
+            return 0L;
+
         Long total = 0L;
 
         try {
             var iterator = node.getNodes();
             while(iterator.hasNext()){
                 Node next = iterator.nextNode();
-                total += next.getProperty("CONTENT").getLength();
+                total += next.getProperty(CONTENT).getLength();//getSize()?
             }
-            
+
         } catch(RepositoryException re){
-            logger.warn("Could not compute memeory usage of project {} id {}. "
-                    + "Exception : {}", 
-                    project.getName(), project.getId(), re.getMessage());
+            logger.warn("Could not compute memory usage of project {} id {}. "
+                + "Exception : {}",
+                project.getName(), project.getId(), re.getMessage());
         }
         return total;
     }

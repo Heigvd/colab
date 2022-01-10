@@ -23,26 +23,22 @@
  */
 package ch.colabproject.colab.tests.rest.document;
 
-import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.document.HostedDocLink;
 import ch.colabproject.colab.api.model.document.Resource;
-import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.rest.document.ResourceCreationBean;
-import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.plugin.rest.FormField;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
-import ch.colabproject.colab.tests.tests.TestHelper;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.ws.rs.core.MediaType;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -52,12 +48,15 @@ import org.junit.jupiter.api.Test;
  */
 public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
 
+    /**
+     * Test DB creation of HostedDocLink
+     */
     @Test
     public void testCreateHostedDocLink() {
-        String path = "someWayToAccessTheMongoDBData #" + ((int) (Math.random() * 1000));
+        String fileName = "random file #" + ((int) (Math.random() * 1000));
 
         HostedDocLink doc = new HostedDocLink();
-//        doc.setFilePath(path);
+        doc.setFileName(fileName);
 
         Long docId = client.documentRestEndPoint.createDocument(doc);
 
@@ -67,9 +66,12 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
 
         Assertions.assertTrue(persistedDoc instanceof HostedDocLink);
         HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
-//        Assertions.assertEquals(path, persistedHostedDocLink.getFilePath());
+        Assertions.assertEquals(fileName, persistedHostedDocLink.getFileName());
     }
 
+    /**
+     * Test DB update of hosted doc link
+     */
     @Test
     public void testUpdateHostedDocLink() {
         Long docId = client.documentRestEndPoint.createDocument(new HostedDocLink());
@@ -81,9 +83,9 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         Assertions.assertEquals(docId, hostedDocLink.getId());
         Assertions.assertNull(hostedDocLink.getFileName());
 
-        String path = "aWayToAccessTheMongoDBData #" + ((int) (Math.random() * 1000));
+        String fileName = "random file #" + ((int) (Math.random() * 1000));
 
-        hostedDocLink.setFileName(path);
+        hostedDocLink.setFileName(fileName);
         client.documentRestEndPoint.updateDocument(hostedDocLink);
 
         Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
@@ -91,7 +93,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
         Assertions.assertNotNull(persistedHostedDocLink);
         Assertions.assertEquals(docId, persistedHostedDocLink.getId());
-        Assertions.assertEquals(path, persistedHostedDocLink.getFileName());
+        Assertions.assertEquals(fileName, persistedHostedDocLink.getFileName());
     }
 
     /**
@@ -99,10 +101,8 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
      */
     @Test
     public void testCreateHostedDoc(){
-//        if(true) return; //TODO remove
-
         var resource = createHostedDocResource();
-        var docId = resource.getDocumentId();
+        var docId = resource.left.getDocumentId();
 
         var fileContent = "Testing is very important, always write tests";
         var size = fileContent.length();
@@ -138,13 +138,13 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
      * was added
      */
     @Test
-    public void emptyDocTest(){
+    public void testEmptyDoc(){
 
-        var resource = createHostedDocResource();
+        var resource = createHostedDocResource().left;
         var docId = resource.getDocumentId();
 
         var document = client.documentRestEndPoint.getDocument(docId);
-        testEmptyDoc(document);
+        DocumentFileRestEndPointTest.this.testEmptyDoc(document);
     }
 
 
@@ -152,9 +152,9 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
      * Tests the state of a deleted document
      */
     @Test
-    public void deletionTest(){
+    public void testDeletion(){
         var resource = createHostedDocResource();
-        var docId = resource.getDocumentId();
+        var docId = resource.left.getDocumentId();
 
         var fileContent = "Testing is very important, always write tests";
         MediaType mime = MediaType.TEXT_PLAIN_TYPE;
@@ -167,7 +167,45 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         client.documentFileRestEndPoint.deleteFile(docId);
         var document = client.documentRestEndPoint.getDocument(docId);
 
-        testEmptyDoc(document);
+        DocumentFileRestEndPointTest.this.testEmptyDoc(document);
+
+    }
+
+    /**
+     * Test quota values and usage values
+     */
+    @Test
+    public void testQuotaUsage(){
+
+        var resourceAndProjId = createHostedDocResource();
+        var resource = resourceAndProjId.left;
+        Long projId = resourceAndProjId.right;
+        var docId = resource.getDocumentId();
+
+        // empty project
+        List<Long> usageQuota = client.documentFileRestEndPoint.getQuotaUsage(projId);
+        var usage = usageQuota.get(0);
+        var quota = usageQuota.get(1);
+        Assertions.assertEquals(0L, usage.longValue());
+        Assertions.assertEquals(ColabConfiguration.getJcrRepositoryProjectQuota(), quota);
+
+        // upload one file
+        var fileContent = "Testing is very important, always write tests";
+
+        MediaType mime = MediaType.TEXT_PLAIN_TYPE;
+        var file = createFileFormField(fileContent, mime);
+        FormField<Long> id = new FormField<>();
+        id.setData(docId);
+
+        client.documentFileRestEndPoint.updateFile(id, file);
+
+        usage = client.documentFileRestEndPoint.getQuotaUsage(projId).get(0);
+        Assertions.assertEquals(file.getData().length(), usage.longValue());
+
+        // delete file
+        client.documentFileRestEndPoint.deleteFile(docId);
+        usage = client.documentFileRestEndPoint.getQuotaUsage(projId).get(0);
+        Assertions.assertEquals(0L, usage.longValue());
 
     }
 
@@ -211,7 +249,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
      * Creates a random resource linked to a hosted document
      * @return the created resource
      */
-    private Resource createHostedDocResource(){
+    private ImmutablePair<Resource, Long> createHostedDocResource(){
 
         ResourceCreationBean toCreate = new ResourceCreationBean();
         String title = "The game encyclopedia #" + ((int) (Math.random() * 1000));
@@ -227,7 +265,9 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         toCreate.setCardId(cardId);
 
         var resourceId = client.resourceRestEndpoint.createResource(toCreate);
-        return (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
+        var r = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
+        return new ImmutablePair<>(r, project.getId());
+
     }
 
 
