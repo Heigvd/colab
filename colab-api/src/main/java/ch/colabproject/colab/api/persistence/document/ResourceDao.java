@@ -24,10 +24,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-public class ResourceAndRefDao {
+public class ResourceDao {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(ResourceAndRefDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResourceDao.class);
 
     /**
      * Access to the persistence unit

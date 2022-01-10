@@ -116,7 +116,7 @@ public class CardContentManager {
 
         CardContent cardContent = initNewCardContentForCard(card);
 
-        ResourceReferenceSpreadingHelper.spreadResourcesFromUp(cardContent);
+        ResourceReferenceSpreadingHelper.extractReferencesFromUp(cardContent);
 
         return cardContentDao.createCardContent(cardContent);
     }
