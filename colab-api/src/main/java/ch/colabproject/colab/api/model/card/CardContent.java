@@ -6,14 +6,15 @@
  */
 package ch.colabproject.colab.api.model.card;
 
+import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
+import ch.colabproject.colab.api.model.document.Resourceable;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
@@ -53,10 +54,12 @@ import javax.validation.constraints.NotNull;
 @Table(
     indexes = {
         @Index(columnList = "card_id"),
-        @Index(columnList = "deliverable_id"),}
+        @Index(columnList = "deliverable_id"),
+    }
 )
 @NamedQuery(name = "CardContent.findAll", query = "SELECT c FROM CardContent c")
-public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {
+public class CardContent implements ColabEntity, WithWebsocketChannels,
+    Resourceable, StickyNoteSourceable {
 
     /**
      * Serial version UID
@@ -341,6 +344,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels, StickyNo
     /**
      * @return the list of abstract resources directly linked to this card content
      */
+    @Override
     public List<AbstractResource> getDirectAbstractResources() {
         return directAbstractResources;
     }

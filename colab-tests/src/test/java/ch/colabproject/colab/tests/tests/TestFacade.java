@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.tests.tests;
 
-import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.api.ejb.UserManagement;
+import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.user.UserManager;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,7 +26,7 @@ public class TestFacade {
      * Provide user management internal logic
      */
     @Inject
-    private UserManagement userManagement;
+    private UserManager userManager;
 
     @Inject
     private RequestManager requestManager;
@@ -38,6 +38,6 @@ public class TestFacade {
      * @param id id of user who will became an admin
      */
     public void grantAdminRight(Long id) {
-        requestManager.sudo(() -> userManagement.grantAdminRight(id));
+        requestManager.sudo(() -> userManager.grantAdminRight(id));
     }
 }

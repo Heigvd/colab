@@ -745,12 +745,12 @@ export const removeAccessToResource = createAsyncThunk(
 export const getDocument = createAsyncThunk<Document, number>(
   'document/get',
   async (id: number) => {
-    return await restClient.DocumentRestEndPoint.getDocument(id);
+    return await restClient.DocumentRestEndpoint.getDocument(id);
   },
 );
 
 export const updateDocument = createAsyncThunk('document/update', async (document: Document) => {
-  return await restClient.DocumentRestEndPoint.updateDocument(document);
+  return await restClient.DocumentRestEndpoint.updateDocument(document);
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -761,7 +761,7 @@ export const getDocumentBlocksIds = createAsyncThunk(
   'block/getIdsFromDoc',
   async (document: BlockDocument) => {
     if (document.id) {
-      return await restClient.DocumentRestEndPoint.getBlocksDocumentIds(document.id);
+      return await restClient.DocumentRestEndpoint.getBlocksDocumentIds(document.id);
     }
   },
 );
@@ -769,7 +769,7 @@ export const getDocumentBlocksIds = createAsyncThunk(
 export const createBlock = createAsyncThunk(
   'block/create',
   async (payload: { document: BlockDocument; block: Block }) => {
-    return await restClient.BlockRestEndPoint.createBlock({
+    return await restClient.BlockRestEndpoint.createBlock({
       ...payload.block,
       documentId: payload.document.id,
     });
@@ -777,7 +777,7 @@ export const createBlock = createAsyncThunk(
 );
 
 export const getBlock = createAsyncThunk('block/get', async (id: number) => {
-  return await restClient.BlockRestEndPoint.getBlock(id);
+  return await restClient.BlockRestEndpoint.getBlock(id);
 });
 
 export const subscribeToBlockChannel = createAsyncThunk(
@@ -813,28 +813,28 @@ export const unsubscribeFromBlockChannel = createAsyncThunk(
 export const getBlockPendingChanges = createAsyncThunk(
   'block/getPendingChanges',
   async (id: number) => {
-    return await restClient.BlockRestEndPoint.getChanges(id);
+    return await restClient.BlockRestEndpoint.getChanges(id);
   },
 );
 
 export const updateBlock = createAsyncThunk('block/update', async (block: Block) => {
-  return await restClient.BlockRestEndPoint.updateBlock(block);
+  return await restClient.BlockRestEndpoint.updateBlock(block);
 });
 
 export const patchBlock = createAsyncThunk(
   'block/patch',
   async (payload: { id: number; change: Change }) => {
-    return await restClient.BlockRestEndPoint.patchBlock(payload.id, payload.change);
+    return await restClient.BlockRestEndpoint.patchBlock(payload.id, payload.change);
   },
 );
 
 export const deletePendingChanges = createAsyncThunk('block/deleteChanges', async (id: number) => {
-  return await restClient.BlockRestEndPoint.deletePendingChanges(id);
+  return await restClient.BlockRestEndpoint.deletePendingChanges(id);
 });
 
 export const deleteBlock = createAsyncThunk('block/delete', async (block: Block) => {
   if (block.id != null) {
-    return await restClient.BlockRestEndPoint.deleteBlock(block.id);
+    return await restClient.BlockRestEndpoint.deleteBlock(block.id);
   }
 });
 

@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.persistence.jpa.card;
 
-import ch.colabproject.colab.api.ejb.SecurityFacade;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
@@ -39,7 +39,7 @@ public class CardTypeDao {
      * ACL purpose
      */
     @Inject
-    private SecurityFacade securityFacade;
+    private SecurityManager securityManager;
 
     /**
      * Access to the persistence unit
@@ -101,7 +101,7 @@ public class CardTypeDao {
     public List<AbstractCardType> getPublishedProjectsCardType() {
         logger.debug("get published global card types");
 
-        User user = securityFacade.assertAndGetCurrentUser();
+        User user = securityManager.assertAndGetCurrentUser();
         TypedQuery<AbstractCardType> query = em
             .createNamedQuery("AbstractCardType.findPublishedFromProjects", AbstractCardType.class);
         query.setParameter("userId", user.getId());

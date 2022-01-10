@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.rest.card;
 
 import ch.colabproject.colab.api.controller.card.CardContentManager;
-import ch.colabproject.colab.api.ejb.CardFacade;
+import ch.colabproject.colab.api.controller.card.CardManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -57,7 +57,7 @@ public class CardRestEndpoint {
      * The card-related logic
      */
     @Inject
-    private CardFacade cardFacade;
+    private CardManager cardManager;
 
     /**
      * Card content specific logic management
@@ -124,7 +124,7 @@ public class CardRestEndpoint {
         @PathParam("cardTypeId") Long cardTypeId) {
         logger.debug("create a new card for the parent #{} and the type #{}", parentId,
             cardTypeId);
-        return cardFacade.createNewCard(parentId, cardTypeId);
+        return cardManager.createNewCard(parentId, cardTypeId);
     }
 
     /**
@@ -142,7 +142,7 @@ public class CardRestEndpoint {
         @PathParam("cardTypeId") Long cardTypeId, Document document) {
         logger.debug("create a new card in the parent #{} for the type #{} with the deliverable {}",
             parentId, cardTypeId, document);
-        Card card = cardFacade.createNewCard(parentId, cardTypeId);
+        Card card = cardManager.createNewCard(parentId, cardTypeId);
 
         List<CardContent> variants = card.getContentVariants();
         if (variants != null && variants.size() == 1 && variants.get(0) != null) {
@@ -180,7 +180,7 @@ public class CardRestEndpoint {
     public void moveCard(
         @PathParam("cardId") Long cardId,
         @PathParam("newParentId") Long newParentId) {
-        cardFacade.moveCard(cardId, newParentId);
+        cardManager.moveCard(cardId, newParentId);
     }
 
     /**
@@ -192,7 +192,7 @@ public class CardRestEndpoint {
     @Path("{id}")
     public void deleteCard(@PathParam("id") Long id) {
         logger.debug("delete card #{}", id);
-        cardFacade.deleteCard(id);
+        cardManager.deleteCard(id);
     }
 
     /**
@@ -206,7 +206,7 @@ public class CardRestEndpoint {
     @Path("{id}/CardContents")
     public List<CardContent> getContentVariantsOfCard(@PathParam("id") Long cardId) {
         logger.debug("Get card #{} content variants", cardId);
-        return cardFacade.getContentVariants(cardId);
+        return cardManager.getContentVariants(cardId);
     }
 
     /**
@@ -220,7 +220,7 @@ public class CardRestEndpoint {
     @Path("{id}/StickyNoteLinksDestinationCard")
     public List<StickyNoteLink> getStickyNoteLinksAsDest(@PathParam("id") Long cardId) {
         logger.debug("Get sticky note links to card #{} as destination", cardId);
-        return cardFacade.getStickyNoteLinkAsDest(cardId);
+        return cardManager.getStickyNoteLinkAsDest(cardId);
     }
 
     /**
@@ -234,7 +234,7 @@ public class CardRestEndpoint {
     @Path("{id}/StickyNoteLinksSrcCard")
     public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long cardId) {
         logger.debug("Get sticky note links to card #{} as source", cardId);
-        return cardFacade.getStickyNoteLinkAsSrcCard(cardId);
+        return cardManager.getStickyNoteLinkAsSrcCard(cardId);
     }
 
     /**
@@ -248,7 +248,7 @@ public class CardRestEndpoint {
     @Path("{id}/ActivityFlowLinksPreviousCard")
     public List<ActivityFlowLink> getActivityFlowLinksAsPrevious(@PathParam("id") Long cardId) {
         logger.debug("Get activity flow links to card #{} as previous", cardId);
-        return cardFacade.getActivityFlowLinkAsPrevious(cardId);
+        return cardManager.getActivityFlowLinkAsPrevious(cardId);
     }
 
     /**
@@ -262,7 +262,7 @@ public class CardRestEndpoint {
     @Path("{id}/ActivityFlowLinksNextCard")
     public List<ActivityFlowLink> getActivityFlowLinksAsNext(@PathParam("id") Long cardId) {
         logger.debug("Get activity flow links to card #{} as next", cardId);
-        return cardFacade.getActivityFlowLinkAsNext(cardId);
+        return cardManager.getActivityFlowLinkAsNext(cardId);
     }
 
     /**
@@ -276,6 +276,6 @@ public class CardRestEndpoint {
     @Path("{cardId}/ACLs")
     public List<AccessControl> getAcls(@PathParam("cardId") Long cardId) {
         logger.debug("Get Card #{} access-control list", cardId);
-        return cardFacade.getAcls(cardId);
+        return cardManager.getAcls(cardId);
     }
 }

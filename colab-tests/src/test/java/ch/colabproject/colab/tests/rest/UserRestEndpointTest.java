@@ -230,7 +230,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(pendingAuthMethod.getNewSalt(), newAuthMethod.getSalt());
         Assertions.assertEquals(pendingAuthMethod.getOptionalMethod(), newAuthMethod
             .getMandatoryMethod());
-        // there is no optinal method any longer
+        // there is no optional method any longer
         Assertions.assertNull(newAuthMethod.getNewSalt());
         Assertions.assertNull(newAuthMethod.getOptionalMethod());
 
@@ -390,7 +390,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
 
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketHelper.class), Level.DEBUG);
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketClient.class), Level.DEBUG);
-//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketFacade.class), Level.DEBUG);
+//        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketManager.class), Level.DEBUG);
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(TransactionManager.class), Level.DEBUG);
 
         WebsocketClient wsClient = this.createWsClient();

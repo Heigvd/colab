@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.config;
 
-import ch.colabproject.colab.api.ejb.config.ConfigurationFacade;
+import ch.colabproject.colab.api.controller.config.ConfigurationManager;
 import ch.colabproject.colab.api.rest.config.bean.AccountConfig;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -29,7 +29,7 @@ public class ConfigRestEndpoint {
      * Monitoring business logic
      */
     @Inject
-    private ConfigurationFacade configFacade;
+    private ConfigurationManager configManager;
 
     /**
      * Get account-related configuration
@@ -39,7 +39,7 @@ public class ConfigRestEndpoint {
     @GET
     @Path("AccountConfig")
     public AccountConfig getAccountConfig() {
-        return configFacade.getAccountConfig();
+        return configManager.getAccountConfig();
     }
 
 }

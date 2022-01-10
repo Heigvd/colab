@@ -7,7 +7,7 @@
 package ch.colabproject.colab.tests.tests;
 
 import ch.colabproject.colab.api.Helper;
-import ch.colabproject.colab.api.ejb.UserManagement;
+import ch.colabproject.colab.api.controller.user.UserManager;
 import ch.colabproject.colab.api.model.token.Token;
 import ch.colabproject.colab.api.model.token.VerifyLocalAccountToken;
 import ch.colabproject.colab.api.model.user.AuthInfo;
@@ -97,7 +97,7 @@ public abstract class AbstractArquillianTest {
      * Provide user management internal logic
      */
     @Inject
-    private UserManagement userManagement;
+    private UserManager userManager;
 
     @Inject
     private TestFacade testFacade;
@@ -409,7 +409,7 @@ public abstract class AbstractArquillianTest {
      */
     @BeforeEach
     public void init(TestInfo info) throws SQLException {
-        if (userManagement != null) {
+        if (userManager != null) {
             this.mailClient = new MailhogClient();
             try {
                 mailClient.deleteAllMessages();
@@ -449,7 +449,7 @@ public abstract class AbstractArquillianTest {
      */
     @AfterEach
     public void clean(TestInfo info) {
-        if (userManagement != null) {
+        if (userManager != null) {
             if (wsClients != null) {
                 wsClients.forEach(wsClient -> {
                     try {

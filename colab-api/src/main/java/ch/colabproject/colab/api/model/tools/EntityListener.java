@@ -6,9 +6,9 @@
  */
 package ch.colabproject.colab.api.model.tools;
 
-import ch.colabproject.colab.api.ejb.EntityGatheringBagForPropagation;
-import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.api.ejb.SecurityFacade;
+import ch.colabproject.colab.api.controller.EntityGatheringBagForPropagation;
+import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithTrackingData;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
@@ -48,7 +48,7 @@ public class EntityListener {
 
     /** Security check */
     @Inject
-    private SecurityFacade securityFacade;
+    private SecurityManager securityManager;
 
     /** request manager */
     @Inject
@@ -68,7 +68,7 @@ public class EntityListener {
         logger.trace("Load {}", o);
         // Skip permission check if a condition assertion is already in progress
         if (o instanceof WithPermission && !requestManager.isInSecurityTx()) {
-            securityFacade.assertReadPermissionTx((WithPermission) o);
+            securityManager.assertReadPermissionTx((WithPermission) o);
         }
         if (o instanceof User){
             OffsetDateTime activityDate = sessionManager.getActivityDate((User) o);
@@ -87,7 +87,7 @@ public class EntityListener {
 
         // Skip permission check if a condition assertion is already in progress
         if (o instanceof WithPermission && !requestManager.isInSecurityTx()) {
-            securityFacade.assertCreatePermissionTx((WithPermission) o);
+            securityManager.assertCreatePermissionTx((WithPermission) o);
         }
 
         if (o instanceof WithWebsocketChannels) {
@@ -105,7 +105,7 @@ public class EntityListener {
         logger.trace("Update {}", o);
         // Skip permission check if a condition assertion is already in progress
         if (o instanceof WithPermission && !requestManager.isInSecurityTx()) {
-            securityFacade.assertUpdatePermissionTx((WithPermission) o);
+            securityManager.assertUpdatePermissionTx((WithPermission) o);
         }
 
         if (o instanceof WithWebsocketChannels) {
@@ -136,7 +136,7 @@ public class EntityListener {
         logger.trace("Destroy {}", o);
         // Skip permission check if a condition assertion is already in progress
         if (o instanceof WithPermission && !requestManager.isInSecurityTx()) {
-            securityFacade.assertDeletePermissionTx((WithPermission) o);
+            securityManager.assertDeletePermissionTx((WithPermission) o);
         }
 
         if (o instanceof WithWebsocketChannels) {

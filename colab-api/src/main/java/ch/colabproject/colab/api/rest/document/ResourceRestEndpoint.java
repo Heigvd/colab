@@ -13,7 +13,8 @@ import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
-import ch.colabproject.colab.api.persistence.jpa.document.ResourceAndRefDao;
+import ch.colabproject.colab.api.persistence.document.ResourceDao;
+import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
@@ -50,7 +51,7 @@ public class ResourceRestEndpoint {
      * The resource / resource reference persistence manager
      */
     @Inject
-    private ResourceAndRefDao resourceAndRefDao;
+    private ResourceDao resourceAndRefDao;
 
     /**
      * The resource and resource reference related logic

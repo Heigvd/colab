@@ -6,11 +6,12 @@
  */
 package ch.colabproject.colab.api.rest.link;
 
-import ch.colabproject.colab.api.ejb.StickyNoteLinkFacade;
-import ch.colabproject.colab.api.ejb.StickyNoteLinkFacade.SrcType;
+import ch.colabproject.colab.api.controller.link.StickyNoteLinkManager;
+import ch.colabproject.colab.api.controller.link.StickyNoteLinkManager.SrcType;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.link.StickyNoteLinkDao;
+import ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationBean;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -53,7 +54,7 @@ public class StickyNoteLinkRestEndpoint {
      * The sticky note link related logic
      */
     @Inject
-    private StickyNoteLinkFacade linkFacade;
+    private StickyNoteLinkManager linkManager;
 
     // *********************************************************************************************
     //
@@ -106,7 +107,7 @@ public class StickyNoteLinkRestEndpoint {
         link.setTeaser(linkCreationBean.getTeaser());
         link.setExplanation(linkCreationBean.getExplanation());
 
-        return linkFacade.createStickyNoteLink(link).getId();
+        return linkManager.createStickyNoteLink(link).getId();
     }
 
     /**
@@ -118,7 +119,7 @@ public class StickyNoteLinkRestEndpoint {
     @Path("{id}")
     public void deleteLink(@PathParam("id") Long id) {
         logger.debug("delete link #{}", id);
-        linkFacade.deleteStickyNoteLink(id);
+        linkManager.deleteStickyNoteLink(id);
     }
 
     /**
@@ -131,7 +132,7 @@ public class StickyNoteLinkRestEndpoint {
     @Path("changeSrc/{linkId}/Card")
     public void changeSrcWithCard(@PathParam("linkId") Long linkId, Long cardId) {
         logger.debug("change link #{} with new card source #{}", linkId, cardId);
-        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.CARD, cardId);
+        linkManager.changeStickyNoteLinkSource(linkId, SrcType.CARD, cardId);
     }
 
     /**
@@ -144,7 +145,7 @@ public class StickyNoteLinkRestEndpoint {
     @Path("changeSrc/{linkId}/CardContent")
     public void changeSrcWithCardContent(@PathParam("linkId") Long linkId, Long cardContentId) {
         logger.debug("change link #{} with new card content source #{}", linkId, cardContentId);
-        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.CARD_CONTENT, cardContentId);
+        linkManager.changeStickyNoteLinkSource(linkId, SrcType.CARD_CONTENT, cardContentId);
     }
 
     /**
@@ -158,7 +159,7 @@ public class StickyNoteLinkRestEndpoint {
     public void changeSrcWithResourceOrRef(@PathParam("linkId") Long linkId, Long resourceOrRefId) {
         logger.debug("change link #{} with new abstract resource source #{}", linkId,
             resourceOrRefId);
-        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.RESOURCE_OR_REF, resourceOrRefId);
+        linkManager.changeStickyNoteLinkSource(linkId, SrcType.RESOURCE_OR_REF, resourceOrRefId);
     }
 
     /**
@@ -171,7 +172,7 @@ public class StickyNoteLinkRestEndpoint {
     @Path("changeSrc/{linkId}/Block")
     public void changeSrcWithBlock(@PathParam("linkId") Long linkId, Long blockId) {
         logger.debug("change link #{} with new block source #{}", linkId, blockId);
-        linkFacade.changeStickyNoteLinkSource(linkId, SrcType.BLOCK, blockId);
+        linkManager.changeStickyNoteLinkSource(linkId, SrcType.BLOCK, blockId);
     }
 
     /**
@@ -184,7 +185,7 @@ public class StickyNoteLinkRestEndpoint {
     @Path("changeDest/{linkId}")
     public void changeDestination(@PathParam("linkId") Long linkId, Long cardId) {
         logger.debug("change link #{} with new destination card #{}", linkId, cardId);
-        linkFacade.changeStickyNoteLinkDestination(linkId, cardId);
+        linkManager.changeStickyNoteLinkDestination(linkId, cardId);
     }
 
     // *********************************************************************************************

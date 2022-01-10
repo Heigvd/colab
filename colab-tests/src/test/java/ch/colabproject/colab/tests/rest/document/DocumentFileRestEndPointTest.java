@@ -27,7 +27,7 @@ import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.HostedDocLink;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.rest.document.ResourceCreationBean;
+import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.colabproject.colab.generator.plugin.rest.FormField;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
@@ -38,7 +38,6 @@ import java.io.PrintWriter;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -58,9 +57,9 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         HostedDocLink doc = new HostedDocLink();
         doc.setFileName(fileName);
 
-        Long docId = client.documentRestEndPoint.createDocument(doc);
+        Long docId = client.documentRestEndpoint.createDocument(doc);
 
-        Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
+        Document persistedDoc = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNotNull(persistedDoc);
         Assertions.assertEquals(docId, persistedDoc.getId());
 
@@ -74,9 +73,9 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
      */
     @Test
     public void testUpdateHostedDocLink() {
-        Long docId = client.documentRestEndPoint.createDocument(new HostedDocLink());
+        Long docId = client.documentRestEndpoint.createDocument(new HostedDocLink());
 
-        Document doc = client.documentRestEndPoint.getDocument(docId);
+        Document doc = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNotNull(doc);
         Assertions.assertTrue(doc instanceof HostedDocLink);
         HostedDocLink hostedDocLink = (HostedDocLink) doc;
@@ -86,9 +85,9 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         String fileName = "random file #" + ((int) (Math.random() * 1000));
 
         hostedDocLink.setFileName(fileName);
-        client.documentRestEndPoint.updateDocument(hostedDocLink);
+        client.documentRestEndpoint.updateDocument(hostedDocLink);
 
-        Document persistedDoc = client.documentRestEndPoint.getDocument(docId);
+        Document persistedDoc = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertTrue(persistedDoc instanceof HostedDocLink);
         HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
         Assertions.assertNotNull(persistedHostedDocLink);
@@ -117,7 +116,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         client.documentFileRestEndPoint.updateFile(id, file);
 
         // fetch document
-        var document = client.documentRestEndPoint.getDocument(docId);
+        var document = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertInstanceOf(HostedDocLink.class, document);
         var fileDocument = (HostedDocLink) document;
 
@@ -143,7 +142,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         var resource = createHostedDocResource().left;
         var docId = resource.getDocumentId();
 
-        var document = client.documentRestEndPoint.getDocument(docId);
+        var document = client.documentRestEndpoint.getDocument(docId);
         DocumentFileRestEndPointTest.this.testEmptyDoc(document);
     }
 
@@ -165,7 +164,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         client.documentFileRestEndPoint.updateFile(id, file);
 
         client.documentFileRestEndPoint.deleteFile(docId);
-        var document = client.documentRestEndPoint.getDocument(docId);
+        var document = client.documentRestEndpoint.getDocument(docId);
 
         DocumentFileRestEndPointTest.this.testEmptyDoc(document);
 

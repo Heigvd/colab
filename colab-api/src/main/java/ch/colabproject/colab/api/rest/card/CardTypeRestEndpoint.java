@@ -11,6 +11,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
+import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationBean;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -150,7 +151,7 @@ public class CardTypeRestEndpoint {
 //    @Path("create/{projectId}")
 //    public CardType createNewCardType(@PathParam("projectId") Long projectId) {
 //        logger.debug("create new card type for the project #{}", projectId);
-//        return facade.createNewCardType(projectId);
+//        return cardTypeManager.createNewCardType(projectId);
 //    }
 
     /**

@@ -22,6 +22,9 @@
             <property name="eclipselink.weaving" value="static"/>
             <property name="eclipselink.flush-clear.cache" value="Merge"/>
             <property name="eclipselink.cache.type.default" value="Soft"/>
+            <property name="javax.persistence.schema-generation.drop-source" value="script" />
+            <property name="javax.persistence.schema-generation.drop-script-source"
+                      value="META-INF/jpa/drop.sql" />
         </properties>
     </persistence-unit>
 </persistence>

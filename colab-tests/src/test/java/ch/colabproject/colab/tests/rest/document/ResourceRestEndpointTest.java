@@ -14,7 +14,7 @@ import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
-import ch.colabproject.colab.api.rest.document.ResourceCreationBean;
+import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
 import java.util.List;
@@ -71,7 +71,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertFalse(persistedResource.isDeprecated());
 
         Assertions.assertNotNull(persistedResource.getDocumentId());
-        Document persistedDocument = client.documentRestEndPoint
+        Document persistedDocument = client.documentRestEndpoint
             .getDocument(persistedResource.getDocumentId());
         Assertions.assertNotNull(persistedDocument);
         Assertions.assertEquals(persistedResource.getDocumentId(), persistedDocument.getId());
@@ -82,7 +82,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(resourceId, persistedExtDoc.getResourceId());
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
-        Block persistedTeaserBlock = client.blockRestEndPoint
+        Block persistedTeaserBlock = client.blockRestEndpoint
             .getBlock(persistedResource.getTeaserId());
         Assertions.assertNotNull(persistedTeaserBlock);
         Assertions.assertEquals(persistedResource.getTeaserId(), persistedTeaserBlock.getId());
@@ -121,7 +121,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertFalse(persistedResource.isDeprecated());
 
         Assertions.assertNotNull(persistedResource.getDocumentId());
-        Document persistedDocument = client.documentRestEndPoint
+        Document persistedDocument = client.documentRestEndpoint
             .getDocument(persistedResource.getDocumentId());
         Assertions.assertNotNull(persistedDocument);
         Assertions.assertTrue(persistedDocument instanceof ExternalLink);
@@ -131,7 +131,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(resourceId, persistedExtDoc.getResourceId());
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
-        Block persistedTeaserBlock = client.blockRestEndPoint
+        Block persistedTeaserBlock = client.blockRestEndpoint
             .getBlock(persistedResource.getTeaserId());
         Assertions.assertNotNull(persistedTeaserBlock);
         Assertions.assertTrue(persistedTeaserBlock instanceof TextDataBlock);
@@ -163,7 +163,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(category, persistedResource.getCategory());
 
         Assertions.assertNotNull(persistedResource.getDocumentId());
-        persistedDocument = client.documentRestEndPoint
+        persistedDocument = client.documentRestEndpoint
             .getDocument(persistedResource.getDocumentId());
         Assertions.assertNotNull(persistedDocument);
         Assertions.assertTrue(persistedDocument instanceof ExternalLink);
@@ -173,7 +173,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(resourceId, persistedExtDoc.getResourceId());
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
-        persistedTeaserBlock = client.blockRestEndPoint.getBlock(persistedResource.getTeaserId());
+        persistedTeaserBlock = client.blockRestEndpoint.getBlock(persistedResource.getTeaserId());
         Assertions.assertNotNull(persistedTeaserBlock);
         Assertions.assertTrue(persistedTeaserBlock instanceof TextDataBlock);
         persistedTeaserTextDataBlock = (TextDataBlock) persistedTeaserBlock;
@@ -205,12 +205,12 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         Assertions.assertNotNull(persistedResource.getDocumentId());
         Long docId = persistedResource.getDocumentId();
-        Document persistedDocument = client.documentRestEndPoint.getDocument(docId);
+        Document persistedDocument = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNotNull(persistedDocument);
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
         Long teaserId = persistedResource.getTeaserId();
-        Block persistedTeaserBlock = client.blockRestEndPoint.getBlock(teaserId);
+        Block persistedTeaserBlock = client.blockRestEndpoint.getBlock(teaserId);
         Assertions.assertNotNull(persistedTeaserBlock);
 
         client.resourceRestEndpoint.deleteResource(resourceId);
@@ -218,10 +218,10 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         persistedResource = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
         Assertions.assertNull(persistedResource);
 
-        persistedDocument = client.documentRestEndPoint.getDocument(docId);
+        persistedDocument = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNull(persistedDocument);
 
-        persistedTeaserBlock = client.blockRestEndPoint.getBlock(teaserId);
+        persistedTeaserBlock = client.blockRestEndpoint.getBlock(teaserId);
         Assertions.assertNull(persistedTeaserBlock);
     }
 

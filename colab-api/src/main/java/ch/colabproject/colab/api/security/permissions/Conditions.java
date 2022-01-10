@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.security.permissions;
 
-import ch.colabproject.colab.api.ejb.RequestManager;
-import ch.colabproject.colab.api.ejb.SecurityFacade;
+import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
@@ -65,17 +65,17 @@ public final class Conditions {
          * Evaluate the condition
          *
          * @param requestManager the request Manager
-         * @param securityFacade the security facade
+         * @param securityManager the security manager
          *
          * @return evaluation result
          */
-        public boolean eval(RequestManager requestManager, SecurityFacade securityFacade) {
+        public boolean eval(RequestManager requestManager, SecurityManager securityManager) {
             Boolean cachedResult = requestManager.getConditionResult(this);
             if (cachedResult != null) {
                 logger.trace("Condition {} is cached and {}", this, cachedResult);
                 return cachedResult;
             } else {
-                boolean result = this.internalEval(requestManager, securityFacade);
+                boolean result = this.internalEval(requestManager, securityManager);
                 logger.trace("Condition {} is not cached and {}", this, result);
                 requestManager.registerConditionResult(this, result);
                 return result;
@@ -86,12 +86,12 @@ public final class Conditions {
          * Evaluate the condition
          *
          * @param requestManager the request Manager
-         * @param securityFacade the security facade
+         * @param securityManager the security manager
          *
          * @return evaluation result
          */
         protected abstract boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade);
+            SecurityManager securityManager);
     }
 
     /**
@@ -101,7 +101,7 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
             return true;
         }
 
@@ -130,7 +130,7 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
             return false;
         }
 
@@ -172,9 +172,9 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
             for (Condition c : conditions) {
-                if (!c.eval(requestManager, securityFacade)) {
+                if (!c.eval(requestManager, securityManager)) {
                     // not all conditions are true => false
                     return false;
                 }
@@ -233,9 +233,9 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
             for (Condition c : conditions) {
-                if (c.eval(requestManager, securityFacade)) {
+                if (c.eval(requestManager, securityManager)) {
                     // at least on sub condition is true => true
                     return true;
                 }
@@ -295,9 +295,9 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
             // just invert the given sub-conditions
-            return !condition.eval(requestManager, securityFacade);
+            return !condition.eval(requestManager, securityManager);
         }
 
         @Override
@@ -350,7 +350,7 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
             User currentUser = requestManager.getCurrentUser();
             return currentUser != null && currentUser.equals(user);
         }
@@ -405,8 +405,8 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-            return securityFacade.isCurrentUserMemberOfTheProjectTeam(project);
+            SecurityManager securityManager) {
+            return securityManager.isCurrentUserMemberOfTheProjectTeam(project);
         }
 
         @Override
@@ -459,8 +459,8 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-            return securityFacade.isCurrentUserOwnerOfTheProject(project);
+            SecurityManager securityManager) {
+            return securityManager.isCurrentUserOwnerOfTheProject(project);
         }
 
         @Override
@@ -513,8 +513,8 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-            return securityFacade.isCurrentUserLeaderOfTheProject(project);
+            SecurityManager securityManager) {
+            return securityManager.isCurrentUserLeaderOfTheProject(project);
         }
 
         @Override
@@ -567,8 +567,8 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-            return securityFacade.isCurrentUserInternToProject(project);
+            SecurityManager securityManager) {
+            return securityManager.isCurrentUserInternToProject(project);
         }
 
         @Override
@@ -621,9 +621,9 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
             User currentUser = requestManager.getCurrentUser();
-            return currentUser != null && securityFacade.areUserTeammate(currentUser, this.user);
+            return currentUser != null && securityManager.areUserTeammate(currentUser, this.user);
         }
 
         @Override
@@ -664,7 +664,7 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
+            SecurityManager securityManager) {
             return requestManager.isAuthenticated();
         }
 
@@ -705,8 +705,8 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-            return securityFacade.hasReadWriteAccess(card);
+            SecurityManager securityManager) {
+            return securityManager.hasReadWriteAccess(card);
         }
 
         @Override
@@ -768,8 +768,8 @@ public final class Conditions {
 
         @Override
         protected boolean internalEval(RequestManager requestManager,
-            SecurityFacade securityFacade) {
-            return securityFacade.hasReadAccess(card);
+            SecurityManager securityManager) {
+            return securityManager.hasReadAccess(card);
         }
 
         @Override
