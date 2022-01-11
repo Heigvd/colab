@@ -24,7 +24,7 @@ export type ResourceCreatorProps = { contextInfo: ResourceCallContext; categorie
 const defaultDocType = 'BlockDocument';
 
 interface ResourceType {
-  docType: 'BlockDocument' | 'ExternalLink' | 'HostedDocLink';
+  docType: 'BlockDocument' | 'ExternalLink' | 'DocumentFile';
   title: string;
   teaser: string;
   category: string;
@@ -83,7 +83,7 @@ export default function ResourceCreator({
       options: [
         { label: 'Document', value: 'BlockDocument' },
         { label: 'Link', value: 'ExternalLink' },
-        { label: 'File', value: 'HostedDocLink'}
+        { label: 'File', value: 'DocumentFile'}
       ],
       isMandatory: true,
     }),
@@ -129,7 +129,7 @@ export default function ResourceCreator({
                     cardId: cardId,
                     cardContentId: cardContentId,
                     document:
-                      state.docType === 'HostedDocLink'
+                      state.docType === 'DocumentFile'
                         ? {
                             '@class': state.docType,
                             fileSize: 0,

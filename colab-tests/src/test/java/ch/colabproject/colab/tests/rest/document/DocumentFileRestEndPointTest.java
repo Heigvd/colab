@@ -24,7 +24,7 @@
 package ch.colabproject.colab.tests.rest.document;
 
 import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.model.document.HostedDocLink;
+import ch.colabproject.colab.api.model.document.DocumentFile;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
@@ -48,13 +48,13 @@ import org.junit.jupiter.api.Test;
 public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
 
     /**
-     * Test DB creation of HostedDocLink
+     * Test DB creation of DocumentFile
      */
     @Test
-    public void testCreateHostedDocLink() {
+    public void testCreateDocumentFile() {
         String fileName = "random file #" + ((int) (Math.random() * 1000));
 
-        HostedDocLink doc = new HostedDocLink();
+        DocumentFile doc = new DocumentFile();
         doc.setFileName(fileName);
 
         Long docId = client.documentRestEndpoint.createDocument(doc);
@@ -63,36 +63,36 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         Assertions.assertNotNull(persistedDoc);
         Assertions.assertEquals(docId, persistedDoc.getId());
 
-        Assertions.assertTrue(persistedDoc instanceof HostedDocLink);
-        HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
-        Assertions.assertEquals(fileName, persistedHostedDocLink.getFileName());
+        Assertions.assertTrue(persistedDoc instanceof DocumentFile);
+        DocumentFile persistedDocumentFile = (DocumentFile) persistedDoc;
+        Assertions.assertEquals(fileName, persistedDocumentFile.getFileName());
     }
 
     /**
      * Test DB update of hosted doc link
      */
     @Test
-    public void testUpdateHostedDocLink() {
-        Long docId = client.documentRestEndpoint.createDocument(new HostedDocLink());
+    public void testUpdateDocumentFile() {
+        Long docId = client.documentRestEndpoint.createDocument(new DocumentFile());
 
         Document doc = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNotNull(doc);
-        Assertions.assertTrue(doc instanceof HostedDocLink);
-        HostedDocLink hostedDocLink = (HostedDocLink) doc;
-        Assertions.assertEquals(docId, hostedDocLink.getId());
-        Assertions.assertNull(hostedDocLink.getFileName());
+        Assertions.assertTrue(doc instanceof DocumentFile);
+        DocumentFile documentFile = (DocumentFile) doc;
+        Assertions.assertEquals(docId, documentFile.getId());
+        Assertions.assertNull(documentFile.getFileName());
 
         String fileName = "random file #" + ((int) (Math.random() * 1000));
 
-        hostedDocLink.setFileName(fileName);
-        client.documentRestEndpoint.updateDocument(hostedDocLink);
+        documentFile.setFileName(fileName);
+        client.documentRestEndpoint.updateDocument(documentFile);
 
         Document persistedDoc = client.documentRestEndpoint.getDocument(docId);
-        Assertions.assertTrue(persistedDoc instanceof HostedDocLink);
-        HostedDocLink persistedHostedDocLink = (HostedDocLink) persistedDoc;
-        Assertions.assertNotNull(persistedHostedDocLink);
-        Assertions.assertEquals(docId, persistedHostedDocLink.getId());
-        Assertions.assertEquals(fileName, persistedHostedDocLink.getFileName());
+        Assertions.assertTrue(persistedDoc instanceof DocumentFile);
+        DocumentFile persistedDocumentFile = (DocumentFile) persistedDoc;
+        Assertions.assertNotNull(persistedDocumentFile);
+        Assertions.assertEquals(docId, persistedDocumentFile.getId());
+        Assertions.assertEquals(fileName, persistedDocumentFile.getFileName());
     }
 
     /**
@@ -117,8 +117,8 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
 
         // fetch document
         var document = client.documentRestEndpoint.getDocument(docId);
-        Assertions.assertInstanceOf(HostedDocLink.class, document);
-        var fileDocument = (HostedDocLink) document;
+        Assertions.assertInstanceOf(DocumentFile.class, document);
+        var fileDocument = (DocumentFile) document;
 
         Assertions.assertEquals(fileName, fileDocument.getFileName());
         Assertions.assertEquals(size, fileDocument.getFileSize().intValue());
@@ -145,7 +145,6 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         var document = client.documentRestEndpoint.getDocument(docId);
         DocumentFileRestEndPointTest.this.testEmptyDoc(document);
     }
-
 
     /**
      * Tests the state of a deleted document
@@ -210,8 +209,8 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
 
     private void testEmptyDoc(Document document){
 
-        Assertions.assertInstanceOf(HostedDocLink.class, document);
-        var fileDocument = (HostedDocLink) document;
+        Assertions.assertInstanceOf(DocumentFile.class, document);
+        var fileDocument = (DocumentFile) document;
 
         Assertions.assertNull(fileDocument.getFileName());
         Assertions.assertEquals(0L, fileDocument.getFileSize().longValue());
@@ -222,8 +221,6 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
 
         Assertions.assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE, response.getMediaType());
         Assertions.assertEquals(0, responseContent.length());
-//        Assertions.assertThrows(expectedType, () -> func())
-//        TestHelper.assertThrows(HttpErrorMessage.MessageCode.NOT_FOUND, executable);
     }
 
     private static FormField<File> createFileFormField(String content, MediaType mimeType) {
@@ -253,7 +250,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         ResourceCreationBean toCreate = new ResourceCreationBean();
         String title = "The game encyclopedia #" + ((int) (Math.random() * 1000));
         toCreate.setTitle(title);
-        var doc = new HostedDocLink();// rename to DocumentFile
+        var doc = new DocumentFile();// rename to DocumentFile
         toCreate.setDocument(doc);
 
         // create project and bind to resource

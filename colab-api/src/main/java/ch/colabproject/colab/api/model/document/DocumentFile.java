@@ -21,8 +21,8 @@ import javax.ws.rs.core.MediaType;
  */
 //TODO adjust the constraints / indexes
 @Entity
-@DiscriminatorValue("HOSTED_DOC_LINK")
-public class HostedDocLink extends Document {
+@DiscriminatorValue("DOCUMENT_FILE")
+public class DocumentFile extends Document {
 
     private static final long serialVersionUID = 1L;
 
@@ -80,8 +80,8 @@ public class HostedDocLink extends Document {
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof HostedDocLink) {
-            HostedDocLink o = (HostedDocLink) other;
+        if (other instanceof DocumentFile) {
+            DocumentFile o = (DocumentFile) other;
             super.merge(o);
             this.setFileName(o.getFileName());
             this.setFileSize(o.getFileSize());
@@ -104,7 +104,7 @@ public class HostedDocLink extends Document {
 
     @Override
     public String toString() {
-        return "HostedDocLink{" + super.toPartialString() + ", fileName=" + fileName + "}";
+        return "DocumentFile{" + super.toPartialString() + ", fileName=" + fileName + "}";
     }
 
 }

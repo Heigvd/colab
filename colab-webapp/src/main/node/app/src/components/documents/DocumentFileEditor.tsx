@@ -7,7 +7,7 @@
 
 import { faCheck, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { HostedDocLink } from 'colab-rest-client';
+import { DocumentFile } from 'colab-rest-client';
 //import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
@@ -16,12 +16,12 @@ import * as React from 'react';
 import IconButton from '../common/IconButton';
 import {getLogger} from '../../logger';
 
-export interface HostedDocLinkProps {
-  document: HostedDocLink;
+export interface DocumentFileProps {
+  document: DocumentFile;
   allowEdition?: boolean;
 }
 
-export function HostedDocLinkEditor({ document }: HostedDocLinkProps): JSX.Element {
+export function DocumentFileEditor({ document }: DocumentFileProps): JSX.Element {
   //const i18n = useTranslations();
 
   const dispatch = useAppDispatch();
@@ -34,7 +34,7 @@ export function HostedDocLinkEditor({ document }: HostedDocLinkProps): JSX.Eleme
         setState('LOADING');
         const file = v.target.files[0];
 
-        const logger = getLogger('HostedDocLinkEditor');
+        const logger = getLogger('DocumentFileEditor');
         logger.debug('Uploading file *********** ' + file!.name);
 
         if(file){

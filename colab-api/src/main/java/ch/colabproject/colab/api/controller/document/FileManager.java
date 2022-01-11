@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.controller.document;
 
 import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.model.document.HostedDocLink;
+import ch.colabproject.colab.api.model.document.DocumentFile;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.persistence.jcr.JcrManager;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
@@ -81,7 +81,7 @@ public class FileManager {
         FileManager.logger.debug("Updating file {} with id {}", fileName, docId);
 
         Document doc = documentDao.findDocument(docId);
-        if(doc == null || !(doc instanceof HostedDocLink))
+        if(doc == null || !(doc instanceof DocumentFile))
         {
             throw HttpErrorMessage.notFound();
         }
@@ -106,7 +106,7 @@ public class FileManager {
             throw HttpErrorMessage.internalServerError();
         }
 
-        HostedDocLink hostedDoc = (HostedDocLink)doc;
+        DocumentFile hostedDoc = (DocumentFile)doc;
         hostedDoc.setFileName(fileName);
         hostedDoc.setFileSize(fileSize);
         hostedDoc.setMimeType(body.getMediaType().toString());
@@ -122,13 +122,13 @@ public class FileManager {
     public void deleteFile(Long docId) throws RepositoryException{
 
         Document doc = documentDao.findDocument(docId);
-        if(doc == null || !(doc instanceof HostedDocLink))
+        if(doc == null || !(doc instanceof DocumentFile))
         {
             throw HttpErrorMessage.notFound();
         }
 
         Project project = doc.getProject();
-        HostedDocLink hostedDoc = (HostedDocLink)doc;
+        DocumentFile hostedDoc = (DocumentFile)doc;
         FileManager.logger.debug("Deleting file '{}' with id {}", hostedDoc.getFileName(), doc.getId());
 
         hostedDoc.setFileName(null);
@@ -148,7 +148,7 @@ public class FileManager {
     public InputStream getFileStream(Long documentId) throws RepositoryException {
         var doc = this.documentDao.findDocument(documentId);
 
-        if(doc == null || doc.getClass() != HostedDocLink.class)
+        if(doc == null || doc.getClass() != DocumentFile.class)
         {
             throw HttpErrorMessage.notFound();
         }
@@ -167,13 +167,13 @@ public class FileManager {
     public ResponseBuilder getDownloadResponse(Long documentId) throws RepositoryException{
         var doc = this.documentDao.findDocument(documentId);
 
-        if(doc == null || doc.getClass() != HostedDocLink.class)
+        if(doc == null || doc.getClass() != DocumentFile.class)
         {
             throw HttpErrorMessage.notFound();
         }
 
         Project project = doc.getProject();
-        var hostedDoc = (HostedDocLink)doc;
+        var hostedDoc = (DocumentFile)doc;
         var mediaType = MediaType.valueOf(hostedDoc.getMimeType());
 
         var stream = new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));
