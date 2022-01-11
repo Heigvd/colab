@@ -28,9 +28,9 @@ import { InlineLink } from '../common/Link';
 import OpenCloseModal from '../common/OpenCloseModal';
 import { cardStyle, errorColor, fixedButtonStyle, flex, space_M, space_S } from '../styling/style';
 
-const cardInfoStyle = css({
+/* const cardInfoStyle = css({
   margin: space_S + ' 0',
-});
+}); */
 
 const projectListStyle = css({
   margin: 'auto',

@@ -6,16 +6,10 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faPen, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import * as API from '../../API/api';
-import { useAppDispatch } from '../../store/hooks';
-import { Destroyer } from '../common/Destroyer';
-import Flex from '../common/Flex';
-import IconButton from '../common/IconButton';
-import WithToolbar from '../common/WithToolbar';
+import { useSingleAndDoubleClick } from '../../store/hooks';
 import { cardShadow, cardStyle } from '../styling/style';
 
 const progressBarContainer = css({
@@ -57,10 +51,34 @@ export default function CardLayout({
   extraTools,
   showProgressBar = true,
 }: Props): JSX.Element {
-  const dispatch = useAppDispatch();
-
   const navigate = useNavigate();
   const location = useLocation();
+  const click = useSingleAndDoubleClick(
+    e => {
+      if (variant != null) {
+        const path = `card/${card.id}`;
+        if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+          navigate(`../${path}`);
+          e?.stopPropagation();
+        } else {
+          navigate(path);
+          e?.stopPropagation();
+        }
+      }
+    },
+    e => {
+      if (variant != null) {
+        const path = `edit/${card.id}/v/${variant.id}`;
+        if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+          navigate(`../${path}`);
+          e?.stopPropagation();
+        } else {
+          navigate(`${path}`);
+          e?.stopPropagation();
+        }
+      }
+    },
+  );
 
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
@@ -68,77 +86,26 @@ export default function CardLayout({
     const color = card.color || 'white';
 
     return (
-      <WithToolbar
-        offsetY={-0.5}
-        toolbar={
-          <>
-            {extraTools}
-
-            {variant != null ? (
-              <>
-                <IconButton
-                  icon={faSearch}
-                  onClick={() => {
-                    const path = `card/${card.id}`;
-                    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
-                      navigate(`../${path}`);
-                    } else {
-                      navigate(path);
-                    }
-                  }}
-                />
-                <IconButton
-                  icon={faPen}
-                  onClick={() => {
-                    const path = `edit/${card.id}/v/${variant.id}`;
-                    if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
-                      navigate(`../${path}`);
-                    } else {
-                      navigate(`${path}`);
-                    }
-                  }}
-                />
-              </>
-            ) : null}
-
-            {variants.length > 1 && variant != null ? (
-              // several variants, delete the current one
-              <Destroyer
-                title="Delete this variant"
-                onDelete={() => {
-                  dispatch(API.deleteCardContent(variant));
-                }}
-              />
-            ) : (
-              // last variant : delete the whole card
-              <Destroyer
-                title="Delete the card"
-                onDelete={() => {
-                  dispatch(API.deleteCard(card));
-                }}
-              />
-            )}
-          </>
-        }
+      <div
+        className={cx(
+          cardStyle,
+          css({
+            backgroundColor: color,
+            boxShadow:
+              variants.length > 1
+                ? `${cardShadow}, 3px 3px 0px -1px white, 4px 4px 0px 0px ${color}`
+                : undefined,
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            display: 'flex',
+          }),
+        )}
+        onClick={click}
       >
-        <Flex
-          direction="column"
-          justify="space-between"
-          className={cx(
-            cardStyle,
-            css({
-              backgroundColor: color,
-              boxShadow:
-                variants.length > 1
-                  ? `${cardShadow}, 3px 3px 0px -1px white, 4px 4px 0px 0px ${color}`
-                  : undefined,
-            }),
-          )}
-        >
-          {children}
-          {showProgressBar ? <ProgressBar variant={variant} /> : null}
-        </Flex>
-      </WithToolbar>
+        {extraTools}
+        {children}
+        {showProgressBar ? <ProgressBar variant={variant} /> : null}
+      </div>
     );
   }
 }

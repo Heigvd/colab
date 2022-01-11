@@ -262,6 +262,7 @@ export const fixedButtonStyle = css({
 });
 
 export const cardShadow = '0px 0px 7px rgba(0, 0, 0, 0.2)';
+export const cardShadowHover = '0px 0px 9px rgba(0, 0, 0, 0.2)';
 
 export const cardStyle = cx(
   normalThemeMode,
@@ -270,6 +271,9 @@ export const cardStyle = cx(
     boxShadow: cardShadow,
     borderRadius: '5px',
     //    overflow: 'hidden',
+    '&:hover': {
+      boxShadow: cardShadowHover,
+    }
   }),
 );
 

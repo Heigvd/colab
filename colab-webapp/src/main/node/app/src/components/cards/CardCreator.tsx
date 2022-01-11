@@ -125,7 +125,20 @@ export default function CardCreator({
         ' - choose the type'
       }
       collapsedChildren={
-        customButton ? customButton : <FontAwesomeIcon icon={faPlus} title="Add a card" />
+        customButton ? (
+          customButton
+        ) : (
+          <FontAwesomeIcon
+            icon={faPlus}
+            className={css({
+              padding: space_S,
+              borderRadius: '50%',
+              border: '1px solid var(--pictoGrey)',
+              color: 'var(--pictoGrey)',
+            })}
+            title="Add a card"
+          />
+        )
       }
       className={className}
       modalClassName={css({ width: '800px' })}
@@ -135,7 +148,7 @@ export default function CardCreator({
           return <InlineLoading />;
         } else {
           return (
-            <div className={css({width: '100%'})}>
+            <div className={css({ width: '100%' })}>
               <Flex>
                 {allTags.map(tag => {
                   return (

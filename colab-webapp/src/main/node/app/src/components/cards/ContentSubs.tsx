@@ -35,6 +35,7 @@ const flexWrap = css({
   display: 'flex',
   justifyContent: 'space-evenly',
   flexWrap: 'wrap',
+  flexGrow: 1,
 });
 
 const voidStyle = css({
@@ -89,36 +90,50 @@ export default function ContentSubs({
       return (
         <div className={voidStyle}>
           <p>This project has no card yet. Add some to begin this co-design journey!</p>
-          <CardCreator 
-            parent={cardContent} 
-            customButton={<Button 
-                label={<><FontAwesomeIcon icon={faPlus} /> Add the first card</>} 
+          <CardCreator
+            parent={cardContent}
+            customButton={
+              <Button
+                label={
+                  <>
+                    <FontAwesomeIcon icon={faPlus} /> Add the first card
+                  </>
+                }
                 title="Add first card"
                 clickable
-                />}
-                className={css({display: 'block'})}
+              />
+            }
+            className={css({ display: 'block' })}
           />
         </div>
       );
     } else {
       return depth > 0 ? (
         <div className={flexWrap}>
-          {subCards.map(sub => (
-            <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
-          ))}
-          <CardCreator 
-            parent={cardContent} 
-            customButton={ 
-              depth === depthMax 
-              ? <Button 
-                label={<><FontAwesomeIcon icon={faPlus} /> Add Card</>} 
-                title="Add Card"
-                className={fixedButtonStyle}
-                clickable
-                />
-              : undefined 
-            } 
-          />
+          <div className={css({ flexDirection: 'row', display: 'flex', flexWrap: 'wrap', flexGrow: 1 })}>
+            {subCards.map(sub => (
+              <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
+            ))}
+          </div>
+          <div className={css({ width: '100%', textAlign: 'center' })}>
+            <CardCreator
+              parent={cardContent}
+              customButton={
+                depth === depthMax ? (
+                  <Button
+                    label={
+                      <>
+                        <FontAwesomeIcon icon={faPlus} /> Add Card
+                      </>
+                    }
+                    title="Add Card"
+                    className={fixedButtonStyle}
+                    clickable
+                  />
+                ) : undefined
+              }
+            />
+          </div>
         </div>
       ) : (
         <div className={flexWrap}>

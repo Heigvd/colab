@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { useEffect, useState } from 'react';
 import { shallowEqual, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, ColabState } from './store';
 
@@ -63,3 +64,27 @@ export const customColabStateEquals = (a: unknown, b: unknown): boolean => {
     return false;
   }
 };
+
+/**
+ * Allows to use both onClick and onDoubleClick on the same component.
+ */
+export function useSingleAndDoubleClick(actionSimpleClick:(e?:React.MouseEvent)=>void, actionDoubleClick:(e?:React.MouseEvent)=>void, delay = 250) {
+  const [click, setClick] = useState(0);
+
+  useEffect(() => {
+      const timer = setTimeout(() => {
+          // simple click
+          if (click === 1) actionSimpleClick();
+          setClick(0);
+      }, delay);
+
+      // the duration between this click and the previous one
+      // is less than the value of delay = double-click
+      if (click === 2) actionDoubleClick();
+
+      return () => clearTimeout(timer);
+      
+  }, [click]);
+
+  return () => setClick(prev => prev + 1);
+}

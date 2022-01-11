@@ -33,7 +33,7 @@ import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
 import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
-import { invertedThemeMode, space_M } from '../../styling/style';
+import { invertedThemeMode, space_L, space_M } from '../../styling/style';
 import Team from '../Team';
 import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
@@ -276,7 +276,7 @@ export default function Editor(): JSX.Element {
         className={css({
           display: 'flex',
           flexDirection: 'column',
-          padding: '30px',
+          padding: space_L,
           overflow: 'auto',
         })}
       >
@@ -287,6 +287,7 @@ export default function Editor(): JSX.Element {
             <Route path="flow" element={<ActivityFlowChart />} />
             <Route path="defs" element={<CardTypeList />} />
             <Route path="card/:id" element={<DefaultVariantDetector />} />
+            {/* Zooom sur une carte */}
             <Route
               path="card/:id/v/:vId/*"
               element={
@@ -295,7 +296,9 @@ export default function Editor(): JSX.Element {
                 </CardWrapper>
               }
             />
+            {/* Edition d'une carte qui renvoie sur la variante par default */}
             <Route path="edit/:id" element={<DefaultVariantDetector />} />
+            {/* Edition d'une carte */}
             <Route
               path="edit/:id/v/:vId/*"
               element={
@@ -304,6 +307,7 @@ export default function Editor(): JSX.Element {
                 </CardWrapper>
               }
             />
+            {/* Toutes les cards. Route root */}
             <Route
               path="*"
               element={
