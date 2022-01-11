@@ -110,3 +110,19 @@ jobs:
         tags: ${{ steps.docker-meta.outputs.tags }}
         labels: ${{ steps.docker-meta.outputs.labels }}
 
+  update-dev-fleet:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+    - name: Update VERSION.md in colab-dev-fleet
+      shell: bash
+      run: |
+        git clone --single-branch --branch main "https://${{ secrets.GITHUB_TOKEN }}@github.com/Heigvd/colab-dev-fleet.git" colab-dev-fleet
+        echo "GitHub Build #${GITHUB_RUN_NUMBER}, based on ${GITHUB_REF} @ ${GITHUB_SHA}" > my-fleet/VERSION.md
+        cd colab-dev-fleet
+        git config user.email "albasim@heig-vd.ch"
+        git config user.name "albasim-ci"
+        git add VERSION.md
+        git commit -m "Update version"
+        git push
+
