@@ -4,8 +4,7 @@
  *
  * Licensed under the MIT License
  */
-import { css } from '@emotion/css';
-import { faPlus, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -101,17 +100,11 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
         >
           {i18n.forgottenPassword}
         </InlineLink>
-        <InlineLink
-          to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
-        >
-          <FontAwesomeIcon icon={faPlus} /> {i18n.createAnAccount}{' '}
-        </InlineLink>
         {accountConfig.showCreateAccountButton ? (
           <InlineLink
-            className={css({ alignSelf: 'center' })}
-            to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
+          to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
           >
-            <FontAwesomeIcon icon={faPlusCircle} /> {i18n.createAnAccount}{' '}
+            <FontAwesomeIcon icon={faPlus} /> {i18n.createAnAccount}{' '}
           </InlineLink>
         ) : null}
       </Form>

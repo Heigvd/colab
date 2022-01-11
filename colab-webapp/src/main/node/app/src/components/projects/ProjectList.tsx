@@ -28,18 +28,25 @@ import { InlineLink } from '../common/Link';
 import OpenCloseModal from '../common/OpenCloseModal';
 import { cardStyle, errorColor, fixedButtonStyle, flex, space_M, space_S } from '../styling/style';
 
-
 const cardInfoStyle = css({
-  margin: space_S + ' 0'
-})
+  margin: space_S + ' 0',
+});
 
+const projectListStyle = css({
+  margin: 'auto',
+  width: '80%',
+  display: 'grid',
+gridTemplateColumns: 'repeat(3, 1fr)',
+gridColumnGap: space_M,
+gridRowGap: space_S,
+});
 interface Props {
   project: Project;
 }
 
 // Display one project and allow to edit it
 const ProjectDisplay = ({ project }: Props) => {
-const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <div
@@ -48,6 +55,8 @@ const dispatch = useAppDispatch();
         css({
           margin: '20px 0',
           width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
         }),
       )}
     >
@@ -63,12 +72,12 @@ const dispatch = useAppDispatch();
           placeholder="unnamed"
           value={project.name || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
-          className={css({ fontWeight: 'bold'})}
+          className={css({ fontWeight: 'bold' })}
         />
         <DropDownMenu
           icon={faEllipsisV}
           valueComp={{ value: '', label: '' }}
-          buttonClassName={css({marginLeft: '40px'})}
+          buttonClassName={css({ marginLeft: '40px' })}
           entries={[
             {
               value: 'Delete project',
@@ -90,11 +99,16 @@ const dispatch = useAppDispatch();
                         <FontAwesomeIcon icon={faExclamationTriangle} />
                         <FontAwesomeIcon icon={faExclamationTriangle} />
                         <p>
-                          Are you <strong>sure</strong> you want to delete the whole project? 
-                          This will delete all cards inside.
+                          Are you <strong>sure</strong> you want to delete the whole project? This
+                          will delete all cards inside.
                         </p>
                         <div className={flex}>
-                          <Button label="Delete project" title="Confirm delete" onClick={()=>dispatch(API.deleteProject(project))} className={css({backgroundColor: errorColor, marginRight: space_M})}/>
+                          <Button
+                            label="Delete project"
+                            title="Confirm delete"
+                            onClick={() => dispatch(API.deleteProject(project))}
+                            className={css({ backgroundColor: errorColor, marginRight: space_M })}
+                          />
                           <Button label="Cancel" title="Cancel delete" onClick={() => collapse()} />
                         </div>
                       </div>
@@ -111,6 +125,9 @@ const dispatch = useAppDispatch();
           padding: space_M,
           paddingRight: '40px',
           borderBottom: '1px solid #ddd',
+          display:'flex',
+          flexDirection: 'column',
+          flexGrow: 1,
         })}
       >
         <AutoSaveInput
@@ -119,18 +136,22 @@ const dispatch = useAppDispatch();
           value={project.description || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
         />
-        <div className={css({
-          fontSize: '0.8em',
-          opacity: 0.4,
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          marginTop: space_M,
-          })}>
-            <p className={cardInfoStyle}>Number of Cards?</p>
-            <p className={cardInfoStyle}>Created by: {project.trackingData?.createdBy} </p>
-            <p className={cardInfoStyle}>Number of people involved?</p>
-            <p className={cardInfoStyle}>Last update: {project.trackingData?.modificationDate}</p>
-        </div>
+        {/* 
+        //FUTURE block of infos on the project
+        <div
+          className={css({
+            fontSize: '0.8em',
+            opacity: 0.4,
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            marginTop: space_M,
+          })}
+        >
+          <p className={cardInfoStyle}>Number of Cards?</p>
+          <p className={cardInfoStyle}>Created by: {project.trackingData?.createdBy} </p>
+          <p className={cardInfoStyle}>Number of people involved?</p>
+          <p className={cardInfoStyle}>Last update: {project.trackingData?.modificationDate}</p>
+        </div> */}
       </div>
       <div
         className={css({
@@ -140,7 +161,10 @@ const dispatch = useAppDispatch();
           padding: space_M,
         })}
       >
-        <InlineLink to={`/editor/${project.id}`} className={css({margin:'auto', textDecoration: 'none'})}>
+        <InlineLink
+          to={`/editor/${project.id}`}
+          className={css({ margin: 'auto', textDecoration: 'none' })}
+        >
           <Button
             title="Edit project"
             label={
@@ -178,7 +202,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
   } else {
     return (
       <div>
-        <div className={css({margin: 'auto', width: '80%'})}>
+        <div className={projectListStyle}>
           {projects
             .sort((a, b) => (a.id || 0) - (b.id || 0))
             .map(project => {
