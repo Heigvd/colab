@@ -13,7 +13,11 @@ import ch.colabproject.colab.api.model.card.CardTypeRef;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
+import ch.colabproject.colab.api.model.document.Resourceable;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Resource and resource reference spread specific logic
@@ -31,49 +35,36 @@ public final class ResourceReferenceSpreadingHelper {
     // *********************************************************************************************
 
     /**
-     * Each child of the card type acquires a reference to the resource.
+     * Each child of the resource owner acquires a reference to the resource.
      *
-     * @param cardTypeOrRef the card type or card type reference
-     * @param resourceOrRef the resource we are linking
+     * @param resourceOrRef the resource to reference
      */
-    public static void spreadReferenceDown(AbstractCardType cardTypeOrRef,
-        AbstractResource resourceOrRef) {
-        if (mustSpreadReferenceDown(resourceOrRef)) {
-            for (AbstractCardType cardTypeRef : cardTypeOrRef.getDirectReferences()) {
-                makeResourceReference(cardTypeRef, resourceOrRef);
+    public static void spreadNewResourceDown(AbstractResource resourceOrRef) {
+        if (resourceOrRef.getAbstractCardType() != null) {
+            AbstractCardType resourceOwner = resourceOrRef.getAbstractCardType();
+
+            for (AbstractCardType cardTypeRef : resourceOwner.getDirectReferences()) {
+                makeActiveReference(cardTypeRef, resourceOrRef);
             }
 
-            for (Card card : cardTypeOrRef.getImplementingCards()) {
-                makeResourceReference(card, resourceOrRef);
-            }
-        }
-    }
-
-    /**
-     * Each child of the card acquires a reference to the resource.
-     *
-     * @param card          the card
-     * @param resourceOrRef the resource we are linking
-     */
-    public static void spreadReferenceDown(Card card, AbstractResource resourceOrRef) {
-        if (mustSpreadReferenceDown(resourceOrRef)) {
-            for (CardContent cardContent : card.getContentVariants()) {
-                makeResourceReference(cardContent, resourceOrRef);
+            for (Card implementingCard : resourceOwner.getImplementingCards()) {
+                makeActiveReference(implementingCard, resourceOrRef);
             }
         }
-    }
 
-    /**
-     * Each child of the card content acquires a reference to the resource.
-     *
-     * @param cardContent   the card content
-     * @param resourceOrRef the resource we are linking
-     */
-    public static void spreadReferenceDown(CardContent cardContent,
-        AbstractResource resourceOrRef) {
-        if (mustSpreadReferenceDown(resourceOrRef)) {
-            for (Card card : cardContent.getSubCards()) {
-                makeResourceReference(card, resourceOrRef);
+        if (resourceOrRef.getCard() != null) {
+            Card resourceOwner = resourceOrRef.getCard();
+
+            for (CardContent variant : resourceOwner.getContentVariants()) {
+                makeActiveReference(variant, resourceOrRef);
+            }
+        }
+
+        if (resourceOrRef.getCardContent() != null) {
+            CardContent resourceOwner = resourceOrRef.getCardContent();
+
+            for (Card subCard : resourceOwner.getSubCards()) {
+                makeActiveReference(subCard, resourceOrRef);
             }
         }
     }
@@ -84,60 +75,48 @@ public final class ResourceReferenceSpreadingHelper {
     // *********************************************************************************************
 
     /**
-     * Create a resource reference for each resource / resource reference of the parent that must be
-     * spread
+     * Create a resource reference for each resource / resource reference of the parent.
      *
-     * @param cardTypeRefToFill A new card type reference that need references to the up stream
+     * @param cardTypeRefToFill A card type reference that need references to the up stream
      *                          resources
      */
-    public static void spreadResourcesFromUp(CardTypeRef cardTypeRefToFill) {
-        AbstractCardType target = cardTypeRefToFill.getTarget();
+    public static void extractReferencesFromUp(CardTypeRef cardTypeRefToFill) {
+        AbstractCardType targetType = cardTypeRefToFill.getTarget();
 
-        for (AbstractResource targetResource : target.getDirectAbstractResources()) {
-            if (mustSpreadReferenceDown(targetResource)) {
-                makeResourceReference(cardTypeRefToFill, targetResource);
-            }
+        for (AbstractResource targetResourceOrRef : targetType.getDirectAbstractResources()) {
+            makeActiveReference(cardTypeRefToFill, targetResourceOrRef);
         }
     }
 
     /**
-     * Create a resource reference for each resource / resource reference of the parent that must be
-     * spread
+     * Create a resource reference for each resource / resource reference of the parent.
      *
-     * @param cardToFill A new card that need references to the up stream resources
+     * @param cardToFill A card that need references to the up stream resources
      */
-    public static void spreadResourcesFromUp(Card cardToFill) {
+    public static void extractReferencesFromUp(Card cardToFill) {
         CardContent parent = cardToFill.getParent();
 
-        for (AbstractResource parentResource : parent.getDirectAbstractResources()) {
-            if (mustSpreadReferenceDown(parentResource)) {
-                makeResourceReference(cardToFill, parentResource);
-            }
+        for (AbstractResource parentResourceOrRef : parent.getDirectAbstractResources()) {
+            makeActiveReference(cardToFill, parentResourceOrRef);
         }
 
         AbstractCardType type = cardToFill.getCardType();
 
-        for (AbstractResource typeResource : type.getDirectAbstractResources()) {
-            if (mustSpreadReferenceDown(typeResource)) {
-                makeResourceReference(cardToFill, typeResource);
-            }
+        for (AbstractResource typeResourceOrRef : type.getDirectAbstractResources()) {
+            makeActiveReference(cardToFill, typeResourceOrRef);
         }
     }
 
     /**
-     * Create a resource reference for each resource / resource reference of the parent that must be
-     * spread
+     * Create a resource reference for each resource / resource reference of the parent.
      *
-     * @param cardContentToFill A new card content that need references to the up stream resources
+     * @param cardContentToFill A card content that need references to the up stream resources
      */
-    public static void spreadResourcesFromUp(CardContent cardContentToFill) {
+    public static void extractReferencesFromUp(CardContent cardContentToFill) {
         Card parent = cardContentToFill.getCard();
 
-        List<AbstractResource> parentResources = parent.getDirectAbstractResources();
-        for (AbstractResource parentResource : parentResources) {
-            if (mustSpreadReferenceDown(parentResource)) {
-                makeResourceReference(cardContentToFill, parentResource);
-            }
+        for (AbstractResource parentResourceOrRef : parent.getDirectAbstractResources()) {
+            makeActiveReference(cardContentToFill, parentResourceOrRef);
         }
     }
 
@@ -146,20 +125,47 @@ public final class ResourceReferenceSpreadingHelper {
     // *********************************************************************************************
 
     /**
-     * Ascertain if we must create resource references down stream
+     * If the given target resource (or reference) can have references, ensure that there is an
+     * active reference to the given target resource (or reference) for the given owner.
+     * <p>
+     * For that either be sure the already existing reference for the owner and targeting the same
+     * final resource is active or make a new reference.
      *
-     * @param resourceOrRef Resource / resource reference
-     *
-     * @return True iff the resource must be spread down
+     * @param owner               the owner of the wanted reference
+     * @param targetResourceOrRef the target of the wanted reference
      */
-    private static boolean mustSpreadReferenceDown(AbstractResource resourceOrRef) {
-        // do not spread references of a type from a card content to its sub cards
-        boolean isResourceOrRefLinkedToACardContent = resourceOrRef.hasCardContent();
-        if (isResourceOrRefLinkedToACardContent) {
-            Resource concreteResource = resourceOrRef.resolve();
+    private static void makeActiveReference(Resourceable owner,
+        AbstractResource targetResourceOrRef) {
 
-            boolean isConcreteResourceLinkedToACardType = concreteResource != null
-                && concreteResource.hasAbstractCardType();
+        if (canHaveReferences(targetResourceOrRef)) {
+
+            ResourceRef existingMatchingReference = findMatchingResourceRef(owner,
+                targetResourceOrRef);
+
+            if (existingMatchingReference != null) {
+                reviveAndRetarget(existingMatchingReference, targetResourceOrRef);
+            } else {
+                makeNewReference(owner, targetResourceOrRef);
+            }
+        }
+    }
+
+    /**
+     * Ascertain if we must create resource references down stream for the given target resource (or
+     * reference).
+     *
+     * @param targetResourceOrRef Resource / resource reference
+     *
+     * @return true iff the resource can have references
+     */
+    private static boolean canHaveReferences(AbstractResource targetResourceOrRef) {
+        // do not spread references of a type from a card content to its sub cards
+        boolean isResourceOrRefLinkedToACardContent = targetResourceOrRef.getCardContent() != null;
+        if (isResourceOrRefLinkedToACardContent) {
+            Resource concreteTargetResource = targetResourceOrRef.resolve();
+
+            boolean isConcreteResourceLinkedToACardType = concreteTargetResource != null
+                && concreteTargetResource.getAbstractCardType() != null;
 
             return !isConcreteResourceLinkedToACardType;
         }
@@ -169,94 +175,173 @@ public final class ResourceReferenceSpreadingHelper {
     }
 
     /**
-     * Make a resource reference to link to the given owner, from the given resource or reference
-     * (or reference)
+     * Search for an existing resource reference owned by the given owner and targeting the same
+     * final resource as the given target.
+     * <p>
+     * It ensures that the matching reference is unique.
+     *
+     * @param owner               the owner of the wanted reference
+     * @param targetResourceOrRef the target of the wanted reference
+     *
+     * @return the matching resource reference
+     */
+    private static ResourceRef findMatchingResourceRef(Resourceable owner,
+        AbstractResource targetResourceOrRef) {
+        List<ResourceRef> refsOfOwnerWithSameFinalTarget = owner.getDirectAbstractResources()
+            .stream()
+            .filter(resOrRef -> resOrRef instanceof ResourceRef)
+            .map(resOrRef -> (ResourceRef) resOrRef)
+            .filter(resOrRef -> Objects.equals(resOrRef.resolve(), targetResourceOrRef.resolve()))
+            .collect(Collectors.toList());
+
+        if (refsOfOwnerWithSameFinalTarget.size() == 1) {
+            return refsOfOwnerWithSameFinalTarget.get(0);
+        }
+
+        if (refsOfOwnerWithSameFinalTarget.size() > 1) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        return null;
+    }
+
+    /**
+     * Update the given resource reference so that it is not set as residual, make the same for its
+     * descendants. Make the given resource reference target the given target.
+     * <p>
+     * It can be done only if the resource reference and the new target have the same final concrete
+     * resource.
+     *
+     * @param resourceReference the resource reference to update
+     * @param newTarget         the new target of the resource reference
+     */
+    private static void reviveAndRetarget(ResourceRef resourceReference,
+        AbstractResource newTarget) {
+        if (!Objects.equals(resourceReference.resolve(), newTarget.resolve())) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        reviveRecursively(resourceReference);
+
+        AbstractResource olderTarget = resourceReference.getTarget();
+
+        if (!Objects.equals(olderTarget, newTarget)) {
+            resourceReference.setTarget(newTarget);
+            newTarget.getDirectReferences().add(resourceReference);
+
+            olderTarget.getDirectReferences().remove(resourceReference);
+        }
+    }
+
+    /**
+     * Mark the resource reference as not residual. Do it as well for all its descendants.
+     *
+     * @param resourceReference the reference to update
+     */
+    private static void reviveRecursively(ResourceRef resourceReference) {
+        resourceReference.setResidual(false);
+
+        for (ResourceRef childRef : resourceReference.getDirectReferences()) {
+            reviveRecursively(childRef);
+        }
+    }
+
+    /**
+     * Make a new resource reference to link to the given owner, targeting the given resource (or
+     * reference).
      *
      * @param owner         the entity the new resource reference will be linked to
      * @param resourceOrRef the resource (or reference) target of the new resource reference
      */
-    private static void makeResourceReference(AbstractCardType owner,
-        AbstractResource resourceOrRef) {
+    private static void makeNewReference(Resourceable owner, AbstractResource targetResourceOrRef) {
+        ResourceRef newRef = initNewReferenceFrom(targetResourceOrRef);
 
-        ResourceRef resourceRef = initNewReferenceFrom(resourceOrRef);
+        newRef.setOwner(owner);
+        owner.getDirectAbstractResources().add(newRef);
 
-        resourceRef.setAbstractCardType(owner);
-        owner.getDirectAbstractResources().add(resourceRef);
+        newRef.setTarget(targetResourceOrRef);
+        targetResourceOrRef.getDirectReferences().add(newRef);
 
-        spreadReferenceDown(owner, resourceRef);
+        spreadNewResourceDown(newRef);
+
+        // no need to persist, it will be done at once
     }
 
     /**
-     * Make a resource reference to link to the given owner, from the given resource or reference
-     * (or reference)
+     * Initialize a new reference which will have the given resource (or reference) as target.
      *
-     * @param owner         the entity the new resource reference will be linked to
-     * @param resourceOrRef the resource (or reference) target of the new resource reference
-     */
-    private static void makeResourceReference(CardContent owner, AbstractResource resourceOrRef) {
-        ResourceRef resourceRef = initNewReferenceFrom(resourceOrRef);
-
-        resourceRef.setCardContent(owner);
-        owner.getDirectAbstractResources().add(resourceRef);
-
-        spreadReferenceDown(owner, resourceRef);
-    }
-
-    /**
-     * Make a resource reference to link to the given owner, from the given resource or reference
-     * (or reference)
-     *
-     * @param owner         the entity the new resource reference will be linked to
-     * @param resourceOrRef the resource (or reference) target of the new resource reference
-     */
-    private static void makeResourceReference(Card owner, AbstractResource resourceOrRef) {
-        ResourceRef resourceRef = initNewReferenceFrom(resourceOrRef);
-
-        resourceRef.setCard(owner);
-        owner.getDirectAbstractResources().add(resourceRef);
-
-        spreadReferenceDown(owner, resourceRef);
-    }
-
-    /**
-     * Initialize a new reference to the target resource / resource reference
-     *
-     * @param target Base resource / resource reference
+     * @param targetResourceOrRef The target of the new resource reference
      *
      * @return the new resource reference
      */
-    private static ResourceRef initNewReferenceFrom(AbstractResource target) {
-        ResourceRef reference = new ResourceRef();
+    private static ResourceRef initNewReferenceFrom(AbstractResource targetResourceOrRef) {
+        ResourceRef newRef = new ResourceRef();
 
-        reference.setCategory(target.getCategory());
+        newRef.setCategory(targetResourceOrRef.getCategory());
 
-        reference.setRefused(isNewReferenceInitiallyRefused(target));
+        newRef.setRefused(isNewReferenceInitiallyRefused(targetResourceOrRef));
 
-        reference.setTarget(target);
-        target.getDirectReferences().add(reference);
+        if (targetResourceOrRef instanceof ResourceRef) {
+            newRef.setResidual(((ResourceRef) targetResourceOrRef).isResidual());
+        }
 
-        return reference;
+        return newRef;
     }
 
     /**
-     * Determine if the new reference must be initiated as refused
+     * Determine if the new reference must be initiated as refused.
      *
-     * @param target Base resource / resource reference
+     * @param targetResource the target resource of the new reference
      *
      * @return how the new reference refused field must be initialized
      */
-    private static boolean isNewReferenceInitiallyRefused(AbstractResource target) {
-        if (target instanceof ResourceRef) {
+    private static boolean isNewReferenceInitiallyRefused(AbstractResource targetResource) {
+        if (targetResource instanceof ResourceRef) {
             // if it is from a reference, just copy the refused state
-            return ((ResourceRef) target).isRefused();
+            return ((ResourceRef) targetResource).isRefused();
         }
 
-        // if it is from a concrete resource, set to true if deprecated
-        if (target instanceof Resource && ((Resource) target).resolve().isDeprecated()) {
-            return true;
+        if (targetResource instanceof Resource) {
+            // if it is from a concrete resource, set to true if deprecated
+            Resource targetConcreteResource = (Resource) targetResource;
+            if (targetConcreteResource.isDeprecated()) {
+                return true;
+            }
         }
 
         return false;
+    }
+
+    // *********************************************************************************************
+    // when something is moved, mark the former ancestors resource references as residual
+    // *********************************************************************************************
+
+    /**
+     * Each resource reference of the given owner that is linked to a resource of the given former
+     * related is marked as residual. As well as all its descendants.
+     *
+     * @param owner         the owner of the resource references to mark
+     * @param formerRelated the not-any-more-related target of the references
+     */
+    public static void spreadResidualMark(Resourceable owner, Resourceable formerRelated) {
+        owner.getDirectAbstractResources().stream()
+            .filter(resOrRef -> (resOrRef instanceof ResourceRef))
+            .map(resOrRef -> ((ResourceRef) resOrRef))
+            .filter(ref -> Objects.equals(ref.getTarget().getOwner(), formerRelated))
+            .forEach(ref -> markAsResidualRecursively(ref));
+    }
+
+    /**
+     * Mark the resource reference as residual. Do it as well for all its descendants.
+     *
+     * @param resourceReference the reference to update
+     */
+    private static void markAsResidualRecursively(ResourceRef resourceReference) {
+        resourceReference.setResidual(true);
+
+        for (ResourceRef childRef : resourceReference.getDirectReferences()) {
+            markAsResidualRecursively(childRef);
+        }
     }
 
     // *********************************************************************************************

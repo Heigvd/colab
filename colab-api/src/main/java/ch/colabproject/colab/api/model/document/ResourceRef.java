@@ -55,6 +55,14 @@ public class ResourceRef extends AbstractResource {
     private boolean refused;
 
     /**
+     * The reference is a rest of a former ancestor.
+     * <p>
+     * It is always kept for a possible rollback without loss of data
+     */
+    @NotNull
+    private boolean residual;
+
+    /**
      * The abstract resource this reference aims at
      */
     @OneToOne(fetch = FetchType.LAZY)
@@ -84,6 +92,20 @@ public class ResourceRef extends AbstractResource {
      */
     public void setRefused(boolean refused) {
         this.refused = refused;
+    }
+
+    /**
+     * @return if it is a rest of a former ancestor
+     */
+    public boolean isResidual() {
+        return residual;
+    }
+
+    /**
+     * @param residual if it is a rest of a former ancestor
+     */
+    public void setResidual(boolean residual) {
+        this.residual = residual;
     }
 
     /**
@@ -154,6 +176,7 @@ public class ResourceRef extends AbstractResource {
             ResourceRef o = (ResourceRef) other;
             super.merge(o);
             this.setRefused(o.isRefused());
+            this.setResidual(o.isResidual());
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -173,7 +196,7 @@ public class ResourceRef extends AbstractResource {
     @Override
     public String toString() {
         return "ResourceRef{" + toPartialString() + ", refused=" + refused
-            + ", targetId=" + targetId + "}";
+            + ", residual=" + residual + ", targetId=" + targetId + "}";
     }
 
 }
