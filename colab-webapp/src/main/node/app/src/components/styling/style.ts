@@ -122,6 +122,18 @@ export function marginAroundStyle(marginPos: blockSide[], marginSize: string) {
   `;
 }
 
+const blockPadding = {
+  1: 'padding-top',
+  2: 'padding-right',
+  3: 'padding-bottom',
+  4: 'padding-left',
+};
+export function paddingAroundStyle(paddingPos: blockSide[], paddingSize: string) {
+  return css`
+    ${paddingPos.map(pos => `${blockPadding[pos]}: ${paddingSize};`).join('\n')}
+  `;
+}
+
 export const fullPageStyle = cx(
   normalThemeMode,
   css({
@@ -300,10 +312,8 @@ export const cardShadowHover = '0px 0px 9px rgba(0, 0, 0, 0.2)';
 export const cardStyle = cx(
   normalThemeMode,
   css({
-    //    border: `1px solid lightgrey`,
     boxShadow: cardShadow,
     borderRadius: '5px',
-    //    overflow: 'hidden',
     '&:hover': {
       boxShadow: cardShadowHover,
     }

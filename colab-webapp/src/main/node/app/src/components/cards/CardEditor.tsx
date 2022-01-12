@@ -34,6 +34,7 @@ import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
 import { cardStyle, cardTitle } from '../styling/style';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
+import SideCollapsiblePanel from './SideCollapsiblePanel';
 import { VariantPager } from './VariantSelector';
 
 interface Props {
@@ -139,14 +140,13 @@ Props): JSX.Element {
     return <i>Card without id is invalid...</i>;
   } else {
     return (
-      <Flex direction="column" grow={1}>
-        <Flex grow={1} direction="row">
-          {showStickyNote ? <StickyNoteWrapper destCardId={card.id} showSrc /> : null}
-
+      <Flex direction="column" grow={1} >
+        <Flex grow={1} direction="row" className={css({width: '100%'})}>
           <Flex
             grow={1}
-            direction="column"
+            direction="row"
             justify="space-between"
+            align="stretch"
             className={cx(
               cardStyle,
               css({
@@ -154,7 +154,9 @@ Props): JSX.Element {
               }),
             )}
           >
-            <Flex direction="row" grow={1}>
+            <SideCollapsiblePanel open={showStickyNote} toggleOpen={toggleShowStickyNotes} icon={faStickyNote}>
+              <StickyNoteWrapper destCardId={card.id} showSrc />  
+            </SideCollapsiblePanel>
               <Flex direction="column" grow={1}>
                 <Flex
                   direction="column"
@@ -286,7 +288,6 @@ Props): JSX.Element {
                     : null}
                 </Flex>
               ) : null}
-            </Flex>
           </Flex>
         </Flex>
         {showSubcards ? <ContentSubs depth={1} cardContent={variant} /> : null}

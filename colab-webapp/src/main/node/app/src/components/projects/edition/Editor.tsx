@@ -6,7 +6,13 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faClone, faCog, faEye, faNetworkWired, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
+import {
+  faClone,
+  faCog,
+  faEye,
+  faNetworkWired,
+  faProjectDiagram,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
@@ -173,7 +179,7 @@ const CardWrapper = ({ children, grow = 1, align = 'normal' }: CardWrapperProps)
             <Ancestor key={x} card={ancestor.card} content={ancestor.content} />
           ))}
         </div>
-        <Flex direction="column" grow={grow} align={align}>
+        <Flex direction="column" grow={grow} align={align} className={css({ width: '100%' })}>
           {children(card, content)}
         </Flex>
       </>
@@ -229,100 +235,130 @@ export default function Editor(): JSX.Element {
     return (
       <>
         <div
-          className={cx(invertedThemeMode, css({
-            display: 'inline-grid',
-            gridTemplateColumns: '1fr 3fr 1fr',
-            flexGrow: 0,
-            padding: `${space_M} ${space_M}` ,
-            backgroundColor: 'var(--hoverBgColor)',
-          }))}
+          className={cx(
+            invertedThemeMode,
+            css({
+              display: 'inline-grid',
+              gridTemplateColumns: '1fr 3fr 1fr',
+              flexGrow: 0,
+              padding: `${space_M} ${space_M}`,
+              backgroundColor: 'var(--hoverBgColor)',
+            }),
+          )}
         >
-            <div className={css({ gridColumn: '2/3', placeSelf: 'center', display:'flex'})}>
-              <div className={css({marginRight: '30px'})}>
+          <div className={css({ gridColumn: '2/3', placeSelf: 'center', display: 'flex' })}>
+            <div className={css({ marginRight: '30px' })}>
               <AutoSaveInput
                 placeholder="unnamed"
                 value={project.name || ''}
                 onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
               />
-              </div>
-              <DropDownMenu
-              icon={faEye}
-              valueComp={{value: '', label: ""}}
-              entries={[
-                {value: './', label: <><FontAwesomeIcon icon={faClone}/> Project</>},
-                {value: './hierarchy', label: <><FontAwesomeIcon icon={faNetworkWired}/> Hierarchy</>},
-                {value: './flow', label: <><FontAwesomeIcon icon={faProjectDiagram}/> Activity Flow</>},
-              ]}
-              onSelect={(val)=>{
-                val.action != null ? val.action() : navigate(val.value)}}
-              buttonClassName={css({textAlign: 'right', alignSelf: 'center', marginLeft: 'auto'})}
-              menuIcon="CARET"
-            />
             </div>
             <DropDownMenu
-              icon={faCog}
-              valueComp={{value: '', label: ""}}
+              icon={faEye}
+              valueComp={{ value: '', label: '' }}
               entries={[
-                {value: './defs', label: "Card Types"},
-                {value: './team', label: "Team"},
+                {
+                  value: './',
+                  label: (
+                    <>
+                      <FontAwesomeIcon icon={faClone} /> Project
+                    </>
+                  ),
+                },
+                {
+                  value: './hierarchy',
+                  label: (
+                    <>
+                      <FontAwesomeIcon icon={faNetworkWired} /> Hierarchy
+                    </>
+                  ),
+                },
+                {
+                  value: './flow',
+                  label: (
+                    <>
+                      <FontAwesomeIcon icon={faProjectDiagram} /> Activity Flow
+                    </>
+                  ),
+                },
               ]}
-              onSelect={(val)=>{
-                val.action != null ? val.action() : navigate(val.value)}}
-              buttonClassName={css({textAlign: 'right', alignSelf: 'center', marginLeft: 'auto'})}
+              onSelect={val => {
+                val.action != null ? val.action() : navigate(val.value);
+              }}
+              buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
               menuIcon="CARET"
             />
+          </div>
+          <DropDownMenu
+            icon={faCog}
+            valueComp={{ value: '', label: '' }}
+            entries={[
+              { value: './defs', label: 'Card Types' },
+              { value: './team', label: 'Team' },
+            ]}
+            onSelect={val => {
+              val.action != null ? val.action() : navigate(val.value);
+            }}
+            buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
+            menuIcon="CARET"
+          />
         </div>
-      <div
-        className={css({
-          display: 'flex',
-          flexDirection: 'column',
-          padding: space_L,
-          overflow: 'auto',
-        })}
-      >
-        <Flex direction="column" grow={1}>
-          <Routes>
-            <Route path="team" element={<Team project={project} />} />
-            <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
-            <Route path="flow" element={<ActivityFlowChart />} />
-            <Route path="defs" element={<CardTypeList />} />
-            <Route path="card/:id" element={<DefaultVariantDetector />} />
-            {/* Zooom sur une carte */}
-            <Route
-              path="card/:id/v/:vId/*"
-              element={
-                <CardWrapper grow={0} align="center">
-                  {card => <CardThumbWithSelector depth={2} card={card} />}
-                </CardWrapper>
-              }
-            />
-            {/* Edition d'une carte qui renvoie sur la variante par default */}
-            <Route path="edit/:id" element={<DefaultVariantDetector />} />
-            {/* Edition d'une carte */}
-            <Route
-              path="edit/:id/v/:vId/*"
-              element={
-                <CardWrapper>
-                  {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
-                </CardWrapper>
-              }
-            />
-            {/* Toutes les cards. Route root */}
-            <Route
-              path="*"
-              element={
-                <div>
-                  {rootContent != null ? (
-                    <ContentSubs showEmptiness={true} depth={depthMax} cardContent={rootContent} />
-                  ) : (
-                    <InlineLoading />
-                  )}
-                </div>
-              }
-            />
-          </Routes>
-        </Flex>
-      </div>
+        <div
+          className={css({
+            display: 'flex',
+            flexDirection: 'column',
+            padding: space_L,
+            overflow: 'auto',
+          })}
+        >
+          <Flex direction="column" grow={1}>
+            <Routes>
+              <Route path="team" element={<Team project={project} />} />
+              <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
+              <Route path="flow" element={<ActivityFlowChart />} />
+              <Route path="defs" element={<CardTypeList />} />
+              <Route path="card/:id" element={<DefaultVariantDetector />} />
+              {/* Zooom sur une carte */}
+              <Route
+                path="card/:id/v/:vId/*"
+                element={
+                  <CardWrapper grow={0} align="center">
+                    {card => <CardThumbWithSelector depth={2} card={card} />}
+                  </CardWrapper>
+                }
+              />
+              {/* Edition d'une carte qui renvoie sur la variante par default */}
+              <Route path="edit/:id" element={<DefaultVariantDetector />} />
+              {/* Edition d'une carte */}
+              <Route
+                path="edit/:id/v/:vId/*"
+                element={
+                  <CardWrapper>
+                    {(card, variant) => <CardEditor card={card} variant={variant} showSubcards />}
+                  </CardWrapper>
+                }
+              />
+              {/* Toutes les cards. Route root */}
+              <Route
+                path="*"
+                element={
+                  <div>
+                    {rootContent != null ? (
+                      <ContentSubs
+                        showEmptiness={true}
+                        depth={depthMax}
+                        cardContent={rootContent}
+                      />
+                    ) : (
+                      <InlineLoading />
+                    )}
+                  </div>
+                }
+              />
+            </Routes>
+          </Flex>
+        </div>
       </>
     );
   }
