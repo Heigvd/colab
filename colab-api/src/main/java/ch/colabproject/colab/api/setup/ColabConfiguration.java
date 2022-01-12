@@ -272,6 +272,9 @@ public class ColabConfiguration {
         return parsed << 20;//convert to bytes
     }
 
+    /**
+     * @return The URI to access the MongoDB container. Used for file persistence with JCR
+     */
     public static String getJcrMongoDbUri(){
         return System.getProperty(JCR_MONGO_DB_URI, JCR_MONGO_DB_URI_DEFAULT);
     }

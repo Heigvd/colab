@@ -19,8 +19,6 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.jcr.JcrSession;
-import ch.colabproject.colab.api.persistence.jcr.JcrSessionManager;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.ArrayList;
@@ -30,9 +28,6 @@ import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,11 +84,6 @@ public class ProjectManager {
     @Inject
     private CardTypeManager cardTypeManager;
 
-    /**
-     * to get session to workspace
-     */
-    @Inject
-    private JcrSessionManager jcrSessionManager;
 
     // *********************************************************************************************
     // find projects
@@ -314,8 +304,7 @@ public class ProjectManager {
         }
 
         List<TeamMember> teamMembers = new ArrayList<>(project.getTeamMembers());
-        if (teamMembers == null
-            || teamMembers.stream().noneMatch(m -> m.getPosition() == HierarchicalPosition.OWNER)) {
+        if (teamMembers.stream().noneMatch(m -> m.getPosition() == HierarchicalPosition.OWNER)) {
             return false;
         }
 

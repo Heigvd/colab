@@ -42,11 +42,20 @@ import org.slf4j.LoggerFactory;
 @Stateless
 public class JcrManager {
 
+    /**
+     * Session manager
+     */
     @Inject
     private JcrSessionManager jcrSessionManager;
 
+    /**
+     * Key of node property containing file contents
+     */
     private static final String CONTENT = "COLAB_CONTENT";
 
+    /**
+     * Logger
+     */
     private static final Logger logger = LoggerFactory.getLogger(JcrManager.class);
 
     /**
@@ -129,8 +138,9 @@ public class JcrManager {
         var session = this.jcrSessionManager.getSession(project);
 
         var node = session.getWorkspaceRoot();
-        if(node == null)
+        if(node == null){
             return 0L;
+        }
 
         Long total = 0L;
 

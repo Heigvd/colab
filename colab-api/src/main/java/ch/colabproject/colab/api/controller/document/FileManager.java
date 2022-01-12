@@ -40,6 +40,9 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 @Stateless
 public class FileManager {
 
+    /**
+     * Logger
+     */
     private static final Logger logger = LoggerFactory.getLogger(FileManager.class);
 
     /**
@@ -84,7 +87,7 @@ public class FileManager {
         FileManager.logger.debug("Updating file {} with id {}", fileName, docId);
 
         Document doc = documentDao.findDocument(docId);
-        if(doc == null || !(doc instanceof DocumentFile))
+        if(!(doc instanceof DocumentFile))
         {
             throw HttpErrorMessage.notFound();
         }
@@ -99,7 +102,7 @@ public class FileManager {
 
         // Check quota limit
         Project project = doc.getProject();
-        var usedQuota = jcrManager.computeMemoryUsage(project);
+        var usedQuota = getUsage(project.getId());
         if(usedQuota + fileSize > getQuota()){
             FileManager.logger.debug("Quota exceeded. Used : {}, Authorized : {}"
                 , usedQuota + fileSize, ColabConfiguration.getJcrRepositoryProjectQuota());
@@ -123,7 +126,7 @@ public class FileManager {
     public void deleteFile(Long docId) throws RepositoryException{
 
         Document doc = documentDao.findDocument(docId);
-        if(doc == null || !(doc instanceof DocumentFile))
+        if(!(doc instanceof DocumentFile))
         {
             throw HttpErrorMessage.notFound();
         }
@@ -149,7 +152,7 @@ public class FileManager {
     public InputStream getFileStream(Long documentId) throws RepositoryException {
         var doc = this.documentDao.findDocument(documentId);
 
-        if(doc == null || doc.getClass() != DocumentFile.class)
+        if(!(doc instanceof DocumentFile))
         {
             throw HttpErrorMessage.notFound();
         }
@@ -168,7 +171,7 @@ public class FileManager {
     public ResponseBuilder getDownloadResponse(Long documentId) throws RepositoryException{
         var doc = this.documentDao.findDocument(documentId);
 
-        if(doc == null || doc.getClass() != DocumentFile.class)
+        if(!(doc instanceof DocumentFile))
         {
             throw HttpErrorMessage.notFound();
         }

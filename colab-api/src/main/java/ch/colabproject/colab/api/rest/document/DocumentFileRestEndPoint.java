@@ -57,8 +57,14 @@ import org.slf4j.LoggerFactory;
 @AuthenticationRequired
 public class DocumentFileRestEndPoint {
 
+    /**
+     * Logger
+     */
     private static final Logger logger = LoggerFactory.getLogger(DocumentFileRestEndPoint.class);
 
+    /**
+     * File manager
+     */
     @Inject
     private FileManager fileManager;
 
