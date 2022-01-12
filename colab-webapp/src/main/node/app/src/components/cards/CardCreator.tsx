@@ -23,6 +23,7 @@ import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
 import {
   borderRadius,
+  greyIconButtonChipStyle,
   lightTheme,
   marginAroundStyle,
   noOutlineStyle,
@@ -130,16 +131,7 @@ export default function CardCreator({
         ) : (
           <IconButton
             icon={faPlus}
-            className={css({
-              padding: space_S,
-              borderRadius: '50%',
-              border: '1px solid var(--pictoGrey)',
-              color: 'var(--pictoGrey)',
-              '&:hover': {
-                color: 'black',
-                backgroundColor: 'transparent',
-              },
-            })}
+            className={greyIconButtonChipStyle}
             title="Add a card"
           />
         )

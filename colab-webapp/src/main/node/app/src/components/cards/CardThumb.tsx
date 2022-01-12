@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import {
   faEllipsisV,
   faExclamationTriangle,
@@ -22,7 +22,7 @@ import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
 import DropDownMenu from '../common/DropDownMenu';
 import OpenCloseModal from '../common/OpenCloseModal';
-import { errorColor, flex, space_M, space_S } from '../styling/style';
+import { errorColor, flex, lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import CardLayout from './CardLayout';
 import ContentSubs from './ContentSubs';
 
@@ -71,7 +71,7 @@ export default function CardThumb({
               <DropDownMenu
                 icon={faEllipsisV}
                 valueComp={{ value: '', label: '' }}
-                buttonClassName={css({ color: 'var(--pictoGrey)', marginLeft: space_S })}
+                buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
                 entries={[
                   {
                     value: 'edit card',

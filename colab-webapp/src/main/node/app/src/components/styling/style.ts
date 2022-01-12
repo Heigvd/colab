@@ -45,6 +45,8 @@ export const lightTheme = cx(
     '--secondaryColorContrast': '#FFF',
     '--secondaryColorContrastShade': '#FFF',
 
+    '--lightDisabledGrey': '#ccc',
+    '--darkDisabledGrey': '#444',
     '--themeSuccessColor': successColor,
     '--themeWarningColor': warningColor,
     '--themeErrorColor': errorColor,
@@ -62,6 +64,7 @@ export const normalThemeMode = css({
   '--linkBgColor': 'var(--secondaryColorContrast)',
   '--linkHoverBgColor': 'var(--secondaryColorContrastShade)',
 
+  '--disabledGrey': 'var(--lightDisabledGrey)',
   '--focusColor': 'var(--secondaryColor)',
   '--successColor': 'var(--themeSuccessColor)',
   '--warningColor': 'var(--themeWarningColor)',
@@ -83,6 +86,8 @@ export const invertedThemeMode = cx(
     '--linkHoverBgColor': 'var(--primaryColorShade)',
     '--linkColor': 'var(--primaryColorContrast)',
     '--linkHoverColor': 'var(--primaryColorContrastShade)',
+
+    '--disabledGrey': 'var(--darkDisabledGrey)',
   }),
 );
 
@@ -160,6 +165,9 @@ export const pulseLinear = css`
 export const pulseEase = css`
   animation: ${pulseKeyframes} 2s ease 10;
 `;
+
+
+/**BUTTONS */
 
 export const linkStyle = css({
   cursor: 'pointer',
@@ -247,9 +255,6 @@ export const inactiveInvertedButtonStyle = cx(
   }),
 );
 
-
-export const disabledIconStyle = iconStyle;
-
 export const sideTabButton = css({
   writingMode: 'sideways-lr',
   textOrientation: 'sideways',
@@ -262,6 +267,32 @@ export const fixedButtonStyle = css({
   right: '4vw',
   boxShadow: boxShadow,
 });
+
+export const lightIconButtonStyle = css({
+  color: 'var(--disabledGrey)',
+  '&:hover': {
+    color: 'var(--hoverFgColor)',
+  },
+});
+export const greyIconButtonChipStyle = cx(
+  lightIconButtonStyle,
+  css({
+  padding: space_S,
+  height: '20px',
+  width: '20px',
+  display: 'inline-flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderRadius: '50%',
+  border: '1px solid var(--disabledGrey)',
+  '&:hover': {
+    border: '1px solid var(--hoverFgColor)',
+  },
+}));
+
+
+
+
 
 export const cardShadow = '0px 0px 7px rgba(0, 0, 0, 0.2)';
 export const cardShadowHover = '0px 0px 9px rgba(0, 0, 0, 0.2)';

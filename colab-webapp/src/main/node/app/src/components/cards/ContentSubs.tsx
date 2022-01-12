@@ -14,7 +14,7 @@ import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks'
 import Button from '../common/Button';
 import InlineLoading from '../common/InlineLoading';
 import { depthMax } from '../projects/edition/Editor';
-import { fixedButtonStyle } from '../styling/style';
+import { fixedButtonStyle, flex } from '../styling/style';
 import CardCreator from './CardCreator';
 import CardThumbWithSelector from './CardThumbWithSelector';
 
@@ -102,7 +102,7 @@ export default function ContentSubs({
       );
     } else {
       return depth > 0 ? (
-        <div className={flexWrap}>
+        <div className={cx(flexWrap, css({flexDirection: 'column'}))}>
           <div
             className={css({
               flexDirection: 'row',
@@ -115,7 +115,7 @@ export default function ContentSubs({
               <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
             ))}
           </div>
-          <div className={css({ width: '100%', textAlign: 'center' })}>
+          <div className={cx(flex, css({justifyContent: 'center'}))}>
             <CardCreator
               parent={cardContent}
               customButton={
