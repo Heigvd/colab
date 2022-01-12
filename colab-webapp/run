@@ -1,59 +1,113 @@
 #!/bin/bash
 
-PAYARA_MICRO=target/payara-micro.current.jar
+PAYARA="${PAYARA:-target/payara-micro.current.jar}"
 
-HZ_CLUSTER_NAME="colabLocal_$(hostname)"
+HEAP_SIZE="${HEAP_SIZE:-512M}"
 
-HEAP=512M
+THE_WAR=${THE_WAR:-./target/coLAB/}
 
-THE_WAR=./target/coLAB/
-
-DEBUG_PORT=9009
-DEBUG="false"
+DEBUG_PORT="${DEBUG_PORT:-9009}"
+DEBUG="${DEBUG:-false}"
 DEBUG_OPTS=
 
-JAVA_HOME=""
+JAVA_HOME=${JAVA_HOME}
 JAVA_EXECUTABLE=""
-INTERFACE=127.0.0.1
-CLUSTERMODE=DEFAULT
+
+INTERFACES="${INTERFACES:-127.0.0.1}"
+CLUSTER_MODE="${CLUSTER_MODE:-DEFAULT}"
+CLUSTER_NAME="${CLUSTER_NAME:-colabLocal_$(hostname)}"
+
+MIN_HTTP_THREAD=${MIN_HTTP_THREAD}
+MAX_HTTP_THREAD=${MAX_HTTP_THREAD}
+
+GC=${GC:-G1GC}
+
+javaPropertiesFromEnv=(
+    ## PostgreSQL backend from ENV
+    COLAB_DATABASE_HOST \
+    COLAB_DATABASE_PORT \
+    COLAB_DATABASE_NAME \
+    COLAB_DATABASE_USER \
+    COLAB_DATABASE_PASSWORD \
+    ## Oak/JCR backend
+    COLAB_JCR_MONGODB_URI
+    ## admin credentials env variables
+    COLAB_DEFAULT_ADMIN_USERNAME \
+    COLAB_DEFAULT_ADMIN_EMAIL \
+    COLAB_DEFAULT_ADMIN_PASSWORD \
+)
+
+if [ -z "${SYSTEM_PROPS+xxx}" ]; then
+    SYSTEM_PROPS="colab.properties"
+fi
 
 function show_help {
     echo "Usage: ./run [OPTIONS]"
-    echo " -g             debug mode"
-    echo " -j JAVA_PATH   java path (default is ${JAVA_HOME})"
-    echo " -m HEAP        heap size (default is ${HEAP})"
-    echo " -p PORT        debug port (default is ${DEBUG_PORT})"
-    echo " -w WAR_PATH    war path (default is ${THE_WAR})"
-    echo " -i INTERFACE   datagrid discovery interface (default is ${INTERFACE})"
-    echo " -m CLUSTERMODE datagrid discovery mode (default is ${CLUSTERMODE})"
+    echo " -c CLUSTER_MODE datagrid discovery mode (default is ${CLUSTER_MODE})"
+    echo " -d              debug modei (env var: DEBUG)"
+    echo " -g GC           garbage collector ZGC or G1GC (default is ${GC})"
+    echo " -h              this help message"
+    echo " -i INTERFACES   datagrid discovery interface (default is ${INTERFACES})"
+    echo " -j JAVA_HOME    java path (default is ${JAVA_HOME})"
+    echo " -m HEAP_SIZE    heap size (default is ${HEAP_SIZE})"
+    echo " -n CLUSTER_NAME cluster name (default is ${CLUSTER_NAME})"
+    echo " -p DEBUG_PORT   debug port (default is ${DEBUG_PORT})"
+    echo " -s SYSTEM_PROPS system properties path (default is ${SYSTEM_PROPS})"
+    echo " -w THE_WAR      war path (default is ${THE_WAR})"
+    echo " -y PAYARA       path to payara jar (default is ${PAYARA})"
+    echo
+    echo "Options may be set with environment variables."
+    echo "   eg. HEAP_SIZE=\"1G\" ./run"
+    echo
+    echo "Others ENV variables are: COLAB_DATABASE_{HOST,PORT,NAME,USER,PASSWORD}, COLAB_DEFAULT_ADMIN_{USERNAME,EMAIL,PASSWORD}, COLAB_JCR_MONGODB_URI, {MIN,MAX}_HTTP_THREADS"
 }
 
 # A POSIX variable
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
-while getopts "h?gm:p:w:j:i:m:" opt; do
+while getopts "h?dg:m:p:w:j:i:c:n:y:" opt; do
     case "$opt" in
+    c)  CLUSTER_MODE=$OPTARG
+        ;;
+    d)  DEBUG="true"
+        ;;
+    g)  GC=$OPTARG
+        ;;
     h|\?)
         show_help
         exit 0
         ;;
-    g)  DEBUG="true"
+    i)  INTERFACES=$OPTARG
         ;;
     j)  JAVA_HOME=$OPTARG
         ;;
-    m)  HEAP=$OPTARG
+    m)  HEAP_SIZE=$OPTARG
+        ;;
+    n)  CLUSTER_NAME=$OPTARG
         ;;
     p)  DEBUG_PORT=$OPTARG
         ;;
     w)  THE_WAR=$OPTARG
         ;;
-    i)  INTERFACE=$OPTARG
-        ;;
-    m)  CLUSTERMODE=$OPTARG
+    y)  PAYARA=$OPTARG
         ;;
     esac
 done
 
+echo
+echo "Options sumary"
+echo "  JAVA_HOME=${JAVA_HOME}"
+echo "  DEBUG=${DEBUG}"
+echo "  DEBUG_PORT=${DEBUG_PORT}"
+echo "  GC=${GC}"
+echo "  HEAP_SIZE=${HEAP_SIZE}"
+echo "  THE_WAR=${THE_WAR}"
+echo "  INTERFACES=${INTERFACES}"
+echo "  CLUSTER_MODE=${CLUSTER_MODE}"
+echo "  CLUSTER_NAME=${CLUSTER_NAME}"
+echo "  PAYARA=${PAYARA}"
+echo "  SYSTEM_PROPS=${SYSTEM_PROPS}"
+echo
 
 if [ ${DEBUG} == "true" ]; then
     DEBUG_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=${DEBUG_PORT},server=y,suspend=n"
@@ -61,7 +115,7 @@ if [ ${DEBUG} == "true" ]; then
     echo DEBUG_PORT ${DEBUG_PORT}
 fi
 
-echo HEAP ${HEAP}
+echo HEAP_SIZE ${HEAP_SIZE}
 echo WAR ${THE_WAR}
 
 trap 'echo "TERM";kill -TERM $PID;' TERM INT
@@ -69,65 +123,110 @@ trap 'echo "TERM";kill -TERM $PID;' TERM INT
 # to enable http2 support
 HTTP2_OPTS=-Xbootclasspath/a:grizzly-npn-bootstrap.jar
 
-#if java home is empty, use java, if not, use JAVA_HOME/java
-if [ "${JAVA_HOME}xxx" = "xxx" ]; then JAVA_EXECUTABLE=java; else JAVA_EXECUTABLE="${JAVA_HOME}/java"; fi
+#if java home is empty, use java, if not, use JAVA_HOME/bin/java
+if [ "${JAVA_HOME}xxx" = "xxx" ]; then JAVA_EXECUTABLE=java; else JAVA_EXECUTABLE="${JAVA_HOME}/bin/java"; fi
 
 
-# if java has the list-modules options, it's java 9+
-${JAVA_EXECUTABLE} --list-modules > /dev/null 2> /dev/null
+echo JAVA 9+: enable extra options
+JDK_EXTRA_OPTS="--add-modules java.se
+    --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED
+    --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED
+    --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED
+    --add-opens=java.base/java.lang=ALL-UNNAMED
+    --add-opens=java.base/java.net=ALL-UNNAMED
+    --add-opens=java.base/java.nio=ALL-UNNAMED
+    --add-opens=java.base/java.util=ALL-UNNAMED
+    --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
+    --add-opens=java.base/sun.net.www.protocol.jar=ALL-UNNAMED
+    --add-opens=java.naming/javax.naming.spi=ALL-UNNAMED
+    --add-opens=java.logging/java.util.logging=ALL-UNNAMED
+    --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED
+    --add-opens=java.management/sun.management=ALL-UNNAMED
+    --add-opens=java.base/sun.net.www.protocol.jrt=ALL-UNNAMED"
+#-XX:ConcGCThreads=<number> – Basic logging: -Xlog:gc – Detailed logging useful when tuning: -Xlog:gc*
 
-if [ $? -eq 0 ]; then
-    echo JAVA 9+ detected: enable extra options
-    JDK_EXTRA_OPTS="--add-modules java.se
-        --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED
-        --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED
-        --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED
-        --add-opens=java.base/java.lang=ALL-UNNAMED
-        --add-opens=java.base/java.net=ALL-UNNAMED
-        --add-opens=java.base/java.nio=ALL-UNNAMED
-        --add-opens=java.base/java.util=ALL-UNNAMED
-        --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
-        --add-opens=java.base/sun.net.www.protocol.jar=ALL-UNNAMED
-        --add-opens=java.naming/javax.naming.spi=ALL-UNNAMED
-        --add-opens=java.logging/java.util.logging=ALL-UNNAMED
-        --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED
-        --add-opens=java.management/sun.management=ALL-UNNAMED
-        --add-opens=java.base/sun.net.www.protocol.jrt=ALL-UNNAMED"
-    GC="-XX:+UnlockExperimentalVMOptions -XX:+UseZGC"
-    GC="-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1MaxNewSizePercent=75 -XX:G1NewSizePercent=40 -XX:MaxGCPauseMillis=2500"
-    #-XX:ConcGCThreads=<number> – Basic logging: -Xlog:gc – Detailed logging useful when tuning: -Xlog:gc*
+
+if [ "${GC}" = "ZGC" ]; then
+    GC_OPT="-XX:+UnlockExperimentalVMOptions -XX:+UseZGC"
 else
-    echo JAVA 8 detected
-    JDK_EXTRA_OPTS=""
-    GC="-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1MaxNewSizePercent=75 -XX:G1NewSizePercent=40 -XX:MaxGCPauseMillis=2500"
+    GC_OPT="-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1MaxNewSizePercent=75 -XX:G1NewSizePercent=40 -XX:MaxGCPauseMillis=2500"
 fi
 
-if [ "${CLUSTERMODE}" = "DEFAULT" ]; then CLUSTERMODE_OPT=""; else CLUSTERMODE_OPT="--clustermode=${CLUSTERMODE}"; fi
 
+if [ "${CLUSTER_MODE}" = "DEFAULT" ]; then
+    CLUSTERMODE_OPT="";
+else
+    CLUSTERMODE_OPT="--clustermode ${CLUSTER_MODE}";
+fi
 
-${JAVA_EXECUTABLE} ${DEBUG_OPTS} ${JDK_EXTRA_OPTS} ${SSL_OPTS} ${GC} ${HTTP2_OPTS} \
+## Create temp property file
+CUSTOM_PROPERTIES="$(mktemp colab.properties_XXXXXX)"
+
+if [ "${SYSTEM_PROPS}xxx" != "xxx" ]; then
+    echo Copy user properties to temp file
+    # User provides their own properties
+    # Let's copy them to the temp properties file
+    echo user properties ${SYSTEM_PROPS}
+    echo custom properties ${CUSTOM_PROPERTIES}
+    cp -v ${SYSTEM_PROPS} ${CUSTOM_PROPERTIES}
+    echo "" >> ${CUSTOM_PROPERTIES}
+    echo "" >> ${CUSTOM_PROPERTIES}
+fi
+
+if [ "${MIN_HTTP_THREADS}xxx" != "xxx" ]; then
+    MIN_HTTP_THREADS_OPT="--minhttpthreads ${MIN_HTTP_THREADS}"
+else
+    MIN_HTTP_THREADS_OPT=""
+fi
+
+if [ "${MAX_HTTP_THREADS}xxx" != "xxx" ]; then
+    MAX_HTTP_THREADS_OPT="--maxhttpthreads ${MAX_HTTP_THREADS}"
+else
+    MAX_HTTP_THREADS_OPT=""
+fi
+
+## Inject properties from env in temp properies file
+## Such properties (if set) will override the ones in the user-provided file
+for t in ${javaPropertiesFromEnv[@]}; do
+    # Make sure the variable is set in ENV
+    if [ "${!t}xxx" != "xxx" ]; then
+        # t variable is set -> inject in custom properties
+        echo $t=${!t}
+        # convert variable name to java property name
+        # ie lowercase and dot-separated
+        jProps=$(echo ${t} | sed -e 's/\(.*\)/\L\1/' |  sed -e 's/_/./g')
+        echo "# Injected from ENV ${t}" >> ${CUSTOM_PROPERTIES}
+        echo $jProps=${!t} >> ${CUSTOM_PROPERTIES}
+    fi
+done
+
+SYSTEMPROPS_OPT="--systemproperties ${CUSTOM_PROPERTIES}";
+
+${JAVA_EXECUTABLE} ${DEBUG_OPTS} ${JDK_EXTRA_OPTS} ${SSL_OPTS} ${GC_OPT} ${HTTP2_OPTS} \
     -XX:+UseStringDeduplication -XX:+UnlockDiagnosticVMOptions \
     -Dproduct.name= -XX:+ParallelRefProcEnabled -XX:+UseCompressedOops -XX:-UseLoopPredicate \
-    -Xms${HEAP} -Xmx${HEAP} \
+    -Xms${HEAP_SIZE} -Xmx${HEAP_SIZE} \
     -Djava.security.egd=file:/dev/urandom \
     -Dfish.payara.shutdowngrace=0 \
     -Dhazelcast.shutdownhook.enabled=false \
     -Declipselink.cache.coordination.protocol=fish.payara.persistence.eclipselink.cache.coordination.HazelcastPublishingTransportManager \
-    -Declipselink.cache.coordination.channel=${HZ_CLUSTER_NAME} \
-    -jar ${PAYARA_MICRO} --deploy ${THE_WAR} --clusterName ${HZ_CLUSTER_NAME} \
-    --interfaces "${INTERFACE}" \
+    -Declipselink.cache.coordination.channel=${CLUSTER_NAME} \
+    -jar ${PAYARA} --deploy ${THE_WAR} --clusterName ${CLUSTER_NAME} \
+    --interfaces "${INTERFACES}" \
     ${CLUSTERMODE_OPT} \
+    ${MIN_HTTP_THREADS_OPT} \
+    ${MAX_HTTP_THREADS_OPT} \
     --contextroot "" \
-    --systemproperties colab.properties \
+    ${SYSTEMPROPS_OPT} \
     --autobindhttp --autobindssl &
 PID=$!
-
-
-    #-Dcolab.database=colab_prod \
 
 wait $PID
 trap - TERM INT
 wait $PID
 EXIT_STATUS=$?
+
+echo Clear temp files: ${CUSTOM_PROPERTIES}
+rm ${CUSTOM_PROPERTIES}
 
 echo "Terminated"

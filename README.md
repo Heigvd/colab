@@ -221,7 +221,7 @@ re-deploy is required
 
 ### Webapp
 The `mvn -pl colab-webapp install` command will compile a production version of the webapp.
-This is not required for lcoal developemnt.
+This is not required for local developemnt.
 
 In this case, one would run the webpack dev-server with
 ```bash
