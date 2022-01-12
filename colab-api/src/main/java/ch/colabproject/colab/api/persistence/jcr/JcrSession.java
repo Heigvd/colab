@@ -26,30 +26,40 @@ import org.slf4j.LoggerFactory;
  */
 public class JcrSession implements Serializable {
 
-    /** logger */
+    /**
+     * logger
+     */
     private static final Logger logger = LoggerFactory.getLogger(JcrSession.class);
 
-    /** Default credentials */
+    /**
+     * Default credentials
+     */
     private static final Credentials credentials = new SimpleCredentials(
         "admin",
         "admin".toCharArray());
 
-    /** The session itself */
+    /**
+     * The session itself
+     */
     private Session session;
 
-    /** Session workspace */
+    /**
+     * Session workspace
+     */
     private final String workspace;
 
-    /** Session workspace path */
+    /**
+     * Session workspace path
+     */
     private final String workspacePath;
 
     /**
      * Open a JCR session to the repository
      *
      * @param repository the repository to log in
-     * @param project
+     * @param project    project
      *
-     * @throws javax.jcr.RepositoryException
+     * @throws javax.jcr.RepositoryException in case of JCR issue
      */
     public JcrSession(Repository repository, Project project) throws RepositoryException {
         logger.trace("Create JCR Session for {}", project);
@@ -86,7 +96,7 @@ public class JcrSession implements Serializable {
      * @param relativePath relativePath path relative to the workspace root. May starts with a / or
      *                     not
      *
-     * @return absolute relativePath (ie <code>workspacePath</code>/<code>relativePath</code>)
+     * @return absolute relativePath (i.e. <code>workspacePath</code>/<code>relativePath</code>)
      */
     public String getFullPath(String relativePath) {
         if (relativePath.charAt(0) == '/') {
@@ -117,8 +127,7 @@ public class JcrSession implements Serializable {
     /**
      * Get a node
      *
-     * @param relativePath relativePath relative to the workspace root.
-     * May starts with a / or not
+     * @param relativePath relativePath relative to the workspace root. May starts with a / or not
      *
      * @return the node or null if it does not exist
      */
@@ -133,13 +142,12 @@ public class JcrSession implements Serializable {
     }
 
     /**
-     *
      * @param relativePath relative path from workspace root
      */
     public void removeNode(String relativePath) {
-        try{
+        try {
             session.removeItem(getFullPath(relativePath));
-        }catch(RepositoryException ex){
+        } catch (RepositoryException ex) {
             logger.warn("removeNode: node could not be removed", ex);
         }
 
@@ -170,13 +178,16 @@ public class JcrSession implements Serializable {
     }
 
     /**
-     *  creates a new binary object to be stored
-     * @param content
-     * @return
-     * @throws RepositoryException
+     * creates a new binary object to be stored
+     *
+     * @param content content to be stored in the binary
+     *
+     * @return The created binary
+     *
+     * @throws RepositoryException JCR issue
      */
-    public Binary createBinary(InputStream content) throws RepositoryException{
-       return this.session.getValueFactory().createBinary(content);
+    public Binary createBinary(InputStream content) throws RepositoryException {
+        return this.session.getValueFactory().createBinary(content);
     }
 
     /**

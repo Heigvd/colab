@@ -48,9 +48,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * EndPoint to managed hosted files
+ *
  * @author xaviergood
  */
-
 @Path("files")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -70,9 +70,10 @@ public class DocumentFileRestEndPoint {
 
     /**
      * Overwrites existing file if any
-     * @param docId   document id
+     *
+     * @param docId    document id
      * @param fileSize the file size in bytes
-     * @param file    the file bytes
+     * @param file     the file bytes
      * @param bodypart file meta data
      */
     @PUT
@@ -82,23 +83,24 @@ public class DocumentFileRestEndPoint {
         @FormDataParam("fileSize") Long fileSize,
         @FormDataParam("file") InputStream file,
         @FormDataParam("file") FormDataBodyPart bodypart
-        ) {
-        try{
+    ) {
+        try {
             fileManager.updateFile(docId, fileSize, file, bodypart);
-        }catch(RepositoryException ex){
+        } catch (RepositoryException ex) {
             logger.debug("Could not update file with id {} : {}", docId, ex);
             throw HttpErrorMessage.internalServerError();
-        } 
+        }
     }
 
     /**
      * Deletes the file associated with the document
-     * @param documentId
+     *
+     * @param documentId document id
      */
     @DELETE
     @Path("DeleteFile/{documentId}")
     public void deleteFile(
-        @PathParam("documentId") Long documentId){
+        @PathParam("documentId") Long documentId) {
         try {
             fileManager.deleteFile(documentId);
         } catch (RepositoryException ex) {
@@ -111,6 +113,7 @@ public class DocumentFileRestEndPoint {
      * Get the file's content and meta data
      *
      * @param documentId document id
+     *
      * @return file content, if no file has been set, return an empty stream (0 bytes)
      */
     @GET
@@ -120,7 +123,7 @@ public class DocumentFileRestEndPoint {
         try {
             var response = fileManager.getDownloadResponse(documentId);
             return response.build();
-        } catch (PathNotFoundException pnfe){
+        } catch (PathNotFoundException pnfe) {
             throw HttpErrorMessage.dataIntegrityFailure();
         } catch (RepositoryException ex) {
             logger.debug("Could not get file content {}", ex);
@@ -129,22 +132,22 @@ public class DocumentFileRestEndPoint {
     }
 
     /**
-     * Retrieves a project's disk space file usage and the maximum authorized
-     * quota
-     * @param projectId
-     * @return a list of 2 elements, first is usage second is maximum quota
-     * expressed in bytes
+     * Retrieves a project's disk space file usage and the maximum authorized quota
+     *
+     * @param projectId project id
+     *
+     * @return a list of 2 elements, first is usage second is maximum quota expressed in bytes
      */
     @GET
     @Path("GetProjectQuotaUsage/{projectId}")
-    public List<Long> getQuotaUsage(@PathParam("projectId") Long projectId){
+    public List<Long> getQuotaUsage(@PathParam("projectId") Long projectId) {
 
-        try{
+        try {
             var result = new ArrayList<Long>();
             result.add(fileManager.getUsage(projectId));
             result.add(FileManager.getQuota());
             return result;
-        } catch(RepositoryException re){
+        } catch (RepositoryException re) {
             logger.debug("Could not get project quota usage {}", re);
             throw HttpErrorMessage.internalServerError();
         }

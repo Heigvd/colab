@@ -45,7 +45,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author xaviergood
  */
-public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
+public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
 
     private final static String TEST_CONTENT = "Testing is very important, always write tests";
 
@@ -101,7 +101,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
      * Create a hosted document, upload content and get it back
      */
     @Test
-    public void testUpdateDocumentFileData(){
+    public void testUpdateDocumentFileData() {
         var resource = createHostedDocResource();
         var docId = resource.left.getDocumentId();
 
@@ -125,11 +125,10 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
     }
 
     /**
-     * Tests the state of document that has been created but no file content
-     * was added
+     * Tests the state of document that has been created but no file content was added
      */
     @Test
-    public void testEmptyDoc(){
+    public void testEmptyDoc() {
 
         var resource = createHostedDocResource().left;
         var docId = resource.getDocumentId();
@@ -142,7 +141,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
      * Tests the state of a deleted document
      */
     @Test
-    public void testDeletion(){
+    public void testDeletion() {
         var resource = createHostedDocResource();
         var docId = resource.left.getDocumentId();
 
@@ -159,7 +158,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
      * Test quota values and usage values
      */
     @Test
-    public void testQuotaUsage(){
+    public void testQuotaUsage() {
 
         var resourceAndProjId = createHostedDocResource();
         var resource = resourceAndProjId.left;
@@ -187,8 +186,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
     }
 
     ////// HELPER METHODS //////////////////////
-
-    private void testEmptyDoc(Document document){
+    private void testEmptyDoc(Document document) {
 
         Assertions.assertInstanceOf(DocumentFile.class, document);
         var fileDocument = (DocumentFile) document;
@@ -206,9 +204,9 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
 
     private static FormField<File> createFileFormField(String content, MediaType mimeType) {
 
-        try{
+        try {
             var f = File.createTempFile("test_", ".tmp");
-            try (java.io.PrintWriter writer = new PrintWriter(f)) {
+            try ( java.io.PrintWriter writer = new PrintWriter(f)) {
                 writer.print(content);
             }
 
@@ -216,7 +214,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
             field.setData(f);
             field.setMimeType(mimeType);
             return field;
-        }catch (IOException ex){
+        } catch (IOException ex) {
             return null;
         }
 
@@ -224,9 +222,10 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
 
     /**
      * Creates a random resource linked to a hosted document
+     *
      * @return the created resource
      */
-    private ImmutablePair<Resource, Long> createHostedDocResource(){
+    private ImmutablePair<Resource, Long> createHostedDocResource() {
 
         ResourceCreationBean toCreate = new ResourceCreationBean();
         String title = "The game encyclopedia #" + ((int) (Math.random() * 1000));
@@ -247,14 +246,14 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
 
     }
 
-    private static FormField<Long> createFormField(Long value){
+    private static FormField<Long> createFormField(Long value) {
         var field = new FormField<Long>();
         field.setMimeType(MediaType.WILDCARD_TYPE);
         field.setData(value);
         return field;
     }
 
-    private String updateFileDoc(Long docId, MediaType mime, String content){
+    private String updateFileDoc(Long docId, MediaType mime, String content) {
         long size = content.length();
         var file = createFileFormField(content, mime);
         var fileName = file.getData().getName();
@@ -265,6 +264,5 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         client.documentFileRestEndPoint.updateFile(docIdF, sizeF, file);
         return fileName;
     }
-
 
 }

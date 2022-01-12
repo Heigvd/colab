@@ -33,6 +33,7 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 
 /**
  * Handles DocumentFiles instances both DB and Jcr persistence
+ *
  * @author xaviergood
  *
  */
@@ -65,19 +66,20 @@ public class FileManager {
 
     /**
      * Update an existing document's file content
-     * @param docId document id
+     *
+     * @param docId    document id
      * @param fileSize size of the file in bytes
-     * @param file file contents
-     * @param body body of the request, containing all meta
-     * @throws RepositoryException
+     * @param file     file contents
+     * @param body     body of the request, containing all meta
+     *
+     * @throws RepositoryException in case of a JCR issue
      */
     public void updateFile(
-            Long docId,
-            Long fileSize,
-            InputStream file,
-            FormDataBodyPart body)
-            throws RepositoryException
-    {
+        Long docId,
+        Long fileSize,
+        InputStream file,
+        FormDataBodyPart body)
+        throws RepositoryException {
         FormDataContentDisposition details = body.getFormDataContentDisposition();
 
         //charset black magic
@@ -87,15 +89,14 @@ public class FileManager {
         FileManager.logger.debug("Updating file {} with id {}", fileName, docId);
 
         Document doc = documentDao.findDocument(docId);
-        if(!(doc instanceof DocumentFile))
-        {
+        if (!(doc instanceof DocumentFile)) {
             throw HttpErrorMessage.notFound();
         }
         // Check file size limit
-        if(fileSize > ColabConfiguration.getJcrRepositoryFileSizeLimit()){
+        if (fileSize > ColabConfiguration.getJcrRepositoryFileSizeLimit()) {
             FileManager.logger.debug("File exceeds authorized size ({} bytes)"
-                + ", size limit is {} bytes"
-                , fileSize, ColabConfiguration.getJcrRepositoryFileSizeLimit());
+                + ", size limit is {} bytes",
+                 fileSize, ColabConfiguration.getJcrRepositoryFileSizeLimit());
 
             throw HttpErrorMessage.internalServerError();
         }
@@ -103,14 +104,14 @@ public class FileManager {
         // Check quota limit
         Project project = doc.getProject();
         var usedQuota = getUsage(project.getId());
-        if(usedQuota + fileSize > getQuota()){
-            FileManager.logger.debug("Quota exceeded. Used : {}, Authorized : {}"
-                , usedQuota + fileSize, ColabConfiguration.getJcrRepositoryProjectQuota());
+        if (usedQuota + fileSize > getQuota()) {
+            FileManager.logger.debug("Quota exceeded. Used : {}, Authorized : {}",
+                 usedQuota + fileSize, ColabConfiguration.getJcrRepositoryProjectQuota());
 
             throw HttpErrorMessage.internalServerError();
         }
 
-        DocumentFile hostedDoc = (DocumentFile)doc;
+        DocumentFile hostedDoc = (DocumentFile) doc;
         hostedDoc.setFileName(fileName);
         hostedDoc.setFileSize(fileSize);
         hostedDoc.setMimeType(body.getMediaType().toString());
@@ -120,19 +121,20 @@ public class FileManager {
 
     /**
      * Delete the file contents, and resets size and mime type
-     * @param docId id of hosted document
-     * @throws RepositoryException
+     *
+     * @param docId id of document
+     *
+     * @throws RepositoryException in case of a JCR issue
      */
-    public void deleteFile(Long docId) throws RepositoryException{
+    public void deleteFile(Long docId) throws RepositoryException {
 
         Document doc = documentDao.findDocument(docId);
-        if(!(doc instanceof DocumentFile))
-        {
+        if (!(doc instanceof DocumentFile)) {
             throw HttpErrorMessage.notFound();
         }
 
         Project project = doc.getProject();
-        DocumentFile hostedDoc = (DocumentFile)doc;
+        DocumentFile hostedDoc = (DocumentFile) doc;
         FileManager.logger.debug("Deleting file '{}' with id {}", hostedDoc.getFileName(), doc.getId());
 
         hostedDoc.setFileName(null);
@@ -145,15 +147,17 @@ public class FileManager {
 
     /**
      * Retrieves the file content. Not used yet
+     *
      * @param documentId id of the requested document
+     *
      * @return a stream to the file contents
-     * @throws RepositoryException
+     *
+     * @throws RepositoryException in case of a JCR issue
      */
     public InputStream getFileStream(Long documentId) throws RepositoryException {
         var doc = this.documentDao.findDocument(documentId);
 
-        if(!(doc instanceof DocumentFile))
-        {
+        if (!(doc instanceof DocumentFile)) {
             throw HttpErrorMessage.notFound();
         }
 
@@ -164,20 +168,22 @@ public class FileManager {
 
     /**
      * Builds a well formatted response with a stream to the content and correct content headers
-     * @param documentId
+     *
+     * @param documentId document id
+     *
      * @return a response builder
-     * @throws RepositoryException
+     *
+     * @throws RepositoryException in case of a JCR issue
      */
-    public ResponseBuilder getDownloadResponse(Long documentId) throws RepositoryException{
+    public ResponseBuilder getDownloadResponse(Long documentId) throws RepositoryException {
         var doc = this.documentDao.findDocument(documentId);
 
-        if(!(doc instanceof DocumentFile))
-        {
+        if (!(doc instanceof DocumentFile)) {
             throw HttpErrorMessage.notFound();
         }
 
         Project project = doc.getProject();
-        var hostedDoc = (DocumentFile)doc;
+        var hostedDoc = (DocumentFile) doc;
         var mediaType = MediaType.valueOf(hostedDoc.getMimeType());
 
         var stream = new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));
@@ -185,7 +191,7 @@ public class FileManager {
 
         var fileName = hostedDoc.getFileName();
         var safeFileName = "";
-        if(fileName != null){
+        if (fileName != null) {
             try {
                 safeFileName = URIUtil.encodePath(fileName);
             } catch (URIException ex) {
@@ -204,19 +210,23 @@ public class FileManager {
 
     /**
      * Gets projects quota
+     *
      * @return the quota of disk space usage for files per project in bytes
      */
-    public static Long getQuota(){
+    public static Long getQuota() {
         return ColabConfiguration.getJcrRepositoryProjectQuota();
     }
 
     /**
      * Computes the current disk space usage of a given project
-     * @param projectId
+     *
+     * @param projectId project id
+     *
      * @return used space in bytes
-     * @throws RepositoryException
+     *
+     * @throws RepositoryException in case of a JCR issue
      */
-    public Long getUsage(Long projectId) throws RepositoryException{
+    public Long getUsage(Long projectId) throws RepositoryException {
         Project project = projectDao.getProject(projectId);
         return jcrManager.computeMemoryUsage(project);
     }
