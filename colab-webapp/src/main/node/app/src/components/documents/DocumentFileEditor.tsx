@@ -14,7 +14,6 @@ import InlineLoading from '../common/InlineLoading';
 import * as API from '../../API/api';
 import * as React from 'react';
 import IconButton from '../common/IconButton';
-import {getLogger} from '../../logger';
 
 export interface DocumentFileProps {
   document: DocumentFile;
@@ -34,11 +33,8 @@ export function DocumentFileEditor({ document }: DocumentFileProps): JSX.Element
         setState('LOADING');
         const file = v.target.files[0];
 
-        const logger = getLogger('DocumentFileEditor');
-        logger.debug('Uploading file *********** ' + file!.name);
-
         if(file){
-          dispatch(API.uploadFile({docId: document.id!, file: file })).then(() => setState('DONE'));
+          dispatch(API.uploadFile({docId: document.id!, file: file, fileSize: file.size })).then(() => setState('DONE'));
         }
       }
     }, [dispatch, document.id],

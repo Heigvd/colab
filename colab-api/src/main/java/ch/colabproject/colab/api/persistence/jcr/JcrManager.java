@@ -45,7 +45,7 @@ public class JcrManager {
     @Inject
     private JcrSessionManager jcrSessionManager;
 
-    private static final String CONTENT = "CONTENT";
+    private static final String CONTENT = "COLAB_CONTENT";
 
     private static final Logger logger = LoggerFactory.getLogger(JcrManager.class);
 
@@ -82,9 +82,8 @@ public class JcrManager {
             createFile(project, identifier, fileContent);
         }else{
             var node = session.getNode(identifier.toString());
-            var prop = node.getProperty(CONTENT);
-            Binary binary = session.getSession().getValueFactory().createBinary(fileContent);
-            prop.setValue(binary);
+            Binary binary = session.createBinary(fileContent);
+            node.setProperty(CONTENT, binary);
         }
     }
 
@@ -101,9 +100,8 @@ public class JcrManager {
         Node root = session.getWorkspaceRoot();
         Node newNode = root.addNode(identifier.toString());
 
-        var prop = newNode.setProperty(CONTENT, identifier.toString());
         Binary binary = session.createBinary(content);
-        prop.setValue(binary);
+        newNode.setProperty(CONTENT, binary);
     }
 
     /**

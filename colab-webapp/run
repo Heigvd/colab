@@ -4,7 +4,7 @@ PAYARA_MICRO=target/payara-micro.current.jar
 
 HZ_CLUSTER_NAME="colabLocal_$(hostname)"
 
-HEAP=256M
+HEAP=512M
 
 THE_WAR=./target/coLAB/
 

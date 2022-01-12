@@ -23,15 +23,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.io.BufferedInputStream;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 
 /**
- * Handles DocumentFiles instances
+ * Handles DocumentFiles instances both DB and Jcr persistence
  * @author xaviergood
  *
  */
@@ -62,12 +63,14 @@ public class FileManager {
     /**
      * Update an existing document's file content
      * @param docId document id
+     * @param fileSize size of the file in bytes
      * @param file file contents
      * @param body body of the request, containing all meta
      * @throws RepositoryException
      */
     public void updateFile(
             Long docId,
+            Long fileSize,
             InputStream file,
             FormDataBodyPart body)
             throws RepositoryException
@@ -85,8 +88,6 @@ public class FileManager {
         {
             throw HttpErrorMessage.notFound();
         }
-
-        var fileSize = details.getSize();
         // Check file size limit
         if(fileSize > ColabConfiguration.getJcrRepositoryFileSizeLimit()){
             FileManager.logger.debug("File exceeds authorized size ({} bytes)"
@@ -182,14 +183,18 @@ public class FileManager {
         var fileName = hostedDoc.getFileName();
         var safeFileName = "";
         if(fileName != null){
-            safeFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8);
+            try {
+                safeFileName = URIUtil.encodePath(fileName);
+            } catch (URIException ex) {
+                FileManager.logger.debug("Deleting file '{}' with id {}", hostedDoc.getFileName(), doc.getId());
+            }
         }
 
         // set file name for browser download prompt
         var attachment = "attachment; filename=" + safeFileName;
         res.header("Content-Disposition", attachment);
 
-        logger.debug("Generated response for file : {}, mime {}", safeFileName, mediaType);
+        logger.info("Generated response for file : {}, mime {}", safeFileName, mediaType);
 
         return res;
     }

@@ -941,8 +941,8 @@ export const deleteActivityFlowLink = createAsyncThunk(
 
 export const uploadFile = createAsyncThunk(
   'files',
-  async ({docId , file} : {docId: number, file: File}) => {
-    return await restClient.DocumentFileRestEndPoint.updateFile(docId, file);
+  async ({docId, file, fileSize} : {docId: number, file: File, fileSize: number}) => {
+    return await restClient.DocumentFileRestEndPoint.updateFile(docId, fileSize, file);
   }
 );
 

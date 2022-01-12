@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
 /**
  * Represent a rest method

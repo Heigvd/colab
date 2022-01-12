@@ -63,7 +63,9 @@ public class DocumentFileRestEndPoint {
     private FileManager fileManager;
 
     /**
+     * Overwrites existing file if any
      * @param docId   document id
+     * @param fileSize the file size in bytes
      * @param file    the file bytes
      * @param bodypart file meta data
      */
@@ -71,24 +73,24 @@ public class DocumentFileRestEndPoint {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public void updateFile(
         @FormDataParam("documentId") Long docId,
+        @FormDataParam("fileSize") Long fileSize,
         @FormDataParam("file") InputStream file,
         @FormDataParam("file") FormDataBodyPart bodypart
         ) {
         try{
-            fileManager.updateFile(docId, file, bodypart);
+            fileManager.updateFile(docId, fileSize, file, bodypart);
         }catch(RepositoryException ex){
             logger.debug("Could not update file with id {} : {}", docId, ex);
             throw HttpErrorMessage.internalServerError();
-        }
+        } 
     }
 
     /**
-     *
+     * Deletes the file associated with the document
      * @param documentId
      */
     @DELETE
     @Path("DeleteFile/{documentId}")
-    @Produces(MediaType.TEXT_PLAIN)
     public void deleteFile(
         @PathParam("documentId") Long documentId){
         try {
@@ -100,14 +102,13 @@ public class DocumentFileRestEndPoint {
     }
 
     /**
-     * Get the file content
+     * Get the file's content and meta data
      *
      * @param documentId document id
      * @return file content, if no file has been set, return an empty stream (0 bytes)
      */
     @GET
     @Path("GetFile/{documentId}")
-    @Produces(MediaType.TEXT_PLAIN)
     public Response getFileContent(@PathParam("documentId") Long documentId) {
 
         try {
@@ -128,7 +129,6 @@ public class DocumentFileRestEndPoint {
      * @return a list of 2 elements, first is usage second is maximum quota
      * expressed in bytes
      */
-
     @GET
     @Path("GetProjectQuotaUsage/{projectId}")
     public List<Long> getQuotaUsage(@PathParam("projectId") Long projectId){

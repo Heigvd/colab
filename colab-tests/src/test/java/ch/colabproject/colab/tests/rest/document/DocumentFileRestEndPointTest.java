@@ -47,6 +47,8 @@ import org.junit.jupiter.api.Test;
  */
 public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
 
+    private final static String TEST_CONTENT = "Testing is very important, always write tests";
+
     /**
      * Test DB creation of DocumentFile
      */
@@ -69,7 +71,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
     }
 
     /**
-     * Test DB update of hosted doc link
+     * Test DB update of document file
      */
     @Test
     public void testUpdateDocumentFile() {
@@ -96,39 +98,29 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
     }
 
     /**
-     * Create a hosted document, uploaded contents and get it back
+     * Create a hosted document, upload content and get it back
      */
     @Test
-    public void testCreateHostedDoc(){
+    public void testUpdateDocumentFileData(){
         var resource = createHostedDocResource();
         var docId = resource.left.getDocumentId();
 
-        var fileContent = "Testing is very important, always write tests";
-        var size = fileContent.length();
         MediaType mime = MediaType.TEXT_PLAIN_TYPE;
-        var file = createFileFormField(fileContent, mime);
-        var fileName = file.getData().getName();
-        FormField<Long> id = new FormField<>();
-        id.setMimeType(MediaType.WILDCARD_TYPE);
-        id.setData(docId);
-
-        //save file
-        client.documentFileRestEndPoint.updateFile(id, file);
-
+        var fileName = this.updateFileDoc(docId, mime, TEST_CONTENT);
         // fetch document
         var document = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertInstanceOf(DocumentFile.class, document);
         var fileDocument = (DocumentFile) document;
 
         Assertions.assertEquals(fileName, fileDocument.getFileName());
-        Assertions.assertEquals(size, fileDocument.getFileSize().intValue());
+        Assertions.assertEquals(TEST_CONTENT.length(), fileDocument.getFileSize().intValue());
         Assertions.assertEquals(mime.toString(), fileDocument.getMimeType());
 
         var response = client.documentFileRestEndPoint.getFileContent(docId);
         var responseContent = response.readEntity(String.class);
 
         Assertions.assertEquals(mime, response.getMediaType());
-        Assertions.assertEquals(fileContent, responseContent);
+        Assertions.assertEquals(TEST_CONTENT, responseContent);
 
     }
 
@@ -154,13 +146,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         var resource = createHostedDocResource();
         var docId = resource.left.getDocumentId();
 
-        var fileContent = "Testing is very important, always write tests";
-        MediaType mime = MediaType.TEXT_PLAIN_TYPE;
-        var file = createFileFormField(fileContent, mime);
-        FormField<Long> id = new FormField<>();
-        id.setData(docId);
-
-        client.documentFileRestEndPoint.updateFile(id, file);
+        this.updateFileDoc(docId, MediaType.TEXT_PLAIN_TYPE, TEST_CONTENT);
 
         client.documentFileRestEndPoint.deleteFile(docId);
         var document = client.documentRestEndpoint.getDocument(docId);
@@ -188,17 +174,10 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         Assertions.assertEquals(ColabConfiguration.getJcrRepositoryProjectQuota(), quota);
 
         // upload one file
-        var fileContent = "Testing is very important, always write tests";
-
-        MediaType mime = MediaType.TEXT_PLAIN_TYPE;
-        var file = createFileFormField(fileContent, mime);
-        FormField<Long> id = new FormField<>();
-        id.setData(docId);
-
-        client.documentFileRestEndPoint.updateFile(id, file);
+        this.updateFileDoc(docId, MediaType.TEXT_PLAIN_TYPE, TEST_CONTENT);
 
         usage = client.documentFileRestEndPoint.getQuotaUsage(projId).get(0);
-        Assertions.assertEquals(file.getData().length(), usage.longValue());
+        Assertions.assertEquals(TEST_CONTENT.length(), usage.longValue());
 
         // delete file
         client.documentFileRestEndPoint.deleteFile(docId);
@@ -206,6 +185,8 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         Assertions.assertEquals(0L, usage.longValue());
 
     }
+
+    ////// HELPER METHODS //////////////////////
 
     private void testEmptyDoc(Document document){
 
@@ -264,6 +245,25 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest{
         var r = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
         return new ImmutablePair<>(r, project.getId());
 
+    }
+
+    private static FormField<Long> createFormField(Long value){
+        var field = new FormField<Long>();
+        field.setMimeType(MediaType.WILDCARD_TYPE);
+        field.setData(value);
+        return field;
+    }
+
+    private String updateFileDoc(Long docId, MediaType mime, String content){
+        long size = content.length();
+        var file = createFileFormField(content, mime);
+        var fileName = file.getData().getName();
+        FormField<Long> docIdF = createFormField(docId);
+        var sizeF = createFormField(size);
+
+        //save file
+        client.documentFileRestEndPoint.updateFile(docIdF, sizeF, file);
+        return fileName;
     }
 
 
