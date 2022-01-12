@@ -9,21 +9,24 @@ import { cx, css } from '@emotion/css';
 import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { iconButton, iconStyle, linkStyle, space_S } from '../styling/style';
-import Clickable, { ClickablenProps } from './Clickable';
+import { iconButton, linkStyle, space_S } from '../styling/style';
+import Clickable from './Clickable';
 
-export interface IconButtonProps extends Omit<ClickablenProps, "clickableClassName">{
+export interface IconButtonProps {
   icon: IconProp;
   iconSize?: SizeProp;
   reverseOrder?: boolean;
   iconColor?: string;
+  onClick?: (e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => void;
+  clickable?: boolean;
+  title: string;
+  className?: string;
 }
 
 export default function IconButton({
   onClick,
   icon,
   title,
-  children,
   className,
   reverseOrder,
   iconColor,
@@ -33,12 +36,10 @@ export default function IconButton({
     <Clickable
       onClick={onClick}
       title={title}
-      className={cx(iconStyle, iconButton, className)}
-      clickableClassName={cx(linkStyle, className)}
+      className={className}
+      clickableClassName={cx(linkStyle, iconButton, className)}
     >
-      {reverseOrder ? children : null}
       <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} className={reverseOrder ? css({marginLeft: space_S}) : css({marginRight: space_S})}/>
-      {!reverseOrder ? children : null}
     </Clickable>
   );
 }

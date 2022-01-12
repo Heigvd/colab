@@ -136,7 +136,7 @@ const Member = ({ member, roles }: MemberProps) => {
     username = (
       <>
         <OnBlurInput value={member.displayName || ''} onChange={updateDisplayName} />
-        <IconButton icon={faEraser} onClick={clearDisplayName} />
+        <IconButton icon={faEraser} title="Clear" onClick={clearDisplayName} />
       </>
     );
   } else if (member.displayName && member.userId == null) {
@@ -159,7 +159,7 @@ const Member = ({ member, roles }: MemberProps) => {
       <>
         {cn}
         {user.affiliation ? ` (${user.affiliation})` : ''}
-        <IconButton icon={faPen} onClick={() => updateDisplayName(cn)} />
+        <IconButton icon={faPen} title="Edit" onClick={() => updateDisplayName(cn)} />
       </>
     );
   }
@@ -180,6 +180,7 @@ const Member = ({ member, roles }: MemberProps) => {
           <IconButton
             key={role.id}
             icon={hasRole ? faCheck : faTimes}
+            title={hasRole ? "Remove role" : "Give role"}
             onClick={() => {
               if (hasRole) {
                 dispatch(API.removeRole({ roleId: role.id!, memberId: member.id! }));
@@ -203,13 +204,14 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
   }, []);
 
   return (
-    <OpenClose showCloseIcon="NONE" collapsedChildren={<IconButton icon={faPlus} />}>
+    <OpenClose showCloseIcon="NONE" collapsedChildren={<FontAwesomeIcon icon={faPlus} />}>
       {collapse => (
         <>
           <input onChange={onChange} value={name} />
           <IconButton
             className={linkStyle}
             icon={faSave}
+            title="Save"
             onClick={() =>
               dispatch(
                 API.createRole({
@@ -227,7 +229,7 @@ function CreateRole({ project }: { project: Project }): JSX.Element {
               })
             }
           />
-          <IconButton icon={faTimes} onClick={collapse} />
+          <IconButton icon={faTimes} title="Save" onClick={collapse} />
         </>
       )}
     </OpenClose>
@@ -319,6 +321,7 @@ export default function Team({ project }: Props): JSX.Element {
           <IconButton
             className={linkStyle}
             icon={faPaperPlane}
+            title="Send"
             onClick={() =>
               dispatch(
                 API.sendInvitation({

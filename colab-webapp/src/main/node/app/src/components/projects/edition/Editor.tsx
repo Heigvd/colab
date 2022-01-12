@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { faClone, faCog, faEye, faNetworkWired, faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -31,7 +32,6 @@ import AutoSaveInput from '../../common/AutoSaveInput';
 import Clickable from '../../common/Clickable';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
-import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
 import { invertedThemeMode, space_L, space_M } from '../../styling/style';
 import Team from '../Team';
@@ -249,9 +249,9 @@ export default function Editor(): JSX.Element {
               icon={faEye}
               valueComp={{value: '', label: ""}}
               entries={[
-                {value: './', label: <><IconButton icon={faClone}/> Project</>},
-                {value: './hierarchy', label: <><IconButton icon={faNetworkWired}/> Hierarchy</>},
-                {value: './flow', label: <><IconButton icon={faProjectDiagram}/> Activity Flow</>},
+                {value: './', label: <><FontAwesomeIcon icon={faClone}/> Project</>},
+                {value: './hierarchy', label: <><FontAwesomeIcon icon={faNetworkWired}/> Hierarchy</>},
+                {value: './flow', label: <><FontAwesomeIcon icon={faProjectDiagram}/> Activity Flow</>},
               ]}
               onSelect={(val)=>{
                 val.action != null ? val.action() : navigate(val.value)}}

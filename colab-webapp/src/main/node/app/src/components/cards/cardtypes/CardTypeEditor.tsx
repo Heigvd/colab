@@ -15,7 +15,7 @@ import { useCardTypeTags } from '../../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
 import AutoSaveInput from '../../common/AutoSaveInput';
-import IconButton from '../../common/IconButton';
+import Button from '../../common/Button';
 import OpenClose from '../../common/OpenClose';
 import { ResourceContextScope } from '../../resources/ResourceCommonType';
 import ResourcesWrapper from '../../resources/ResourcesWrapper';
@@ -78,22 +78,22 @@ export default function CardTypeEditor({ cardType }: DisplayProps): JSX.Element 
               {cardType.purposeId && (
                 <BlockEditorWrapper blockId={cardType.purposeId} allowEdition={true} />
               )}
-              <IconButton
+              <Button
                 icon={cardType.deprecated ? faCheckSquare : faSquare}
                 onClick={() =>
                   dispatch(API.updateCardType({ ...cardType, deprecated: !cardType.deprecated }))
                 }
               >
                 Deprecated
-              </IconButton>
-              <IconButton
+              </Button>
+              <Button
                 icon={cardType.published ? faCheckSquare : faSquare}
                 onClick={() =>
                   dispatch(API.updateCardType({ ...cardType, published: !cardType.published }))
                 }
               >
                 Published
-              </IconButton>
+              </Button>
             </div>
           </div>
           <OpenClose collapsedChildren={<span className={sideTabButton}>Resources</span>}>

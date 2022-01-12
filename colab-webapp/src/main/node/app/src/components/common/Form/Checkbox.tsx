@@ -5,12 +5,12 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { errorStyle, warningStyle } from '../../styling/style';
+import { errorStyle, space_S, warningStyle } from '../../styling/style';
 import Flex from '../Flex';
-import IconButton from '../IconButton';
 
 export interface Props {
   label?: React.ReactNode;
@@ -51,9 +51,8 @@ export default function Checkbox({
         justify="flex-start"
         onClick={disabled ? undefined : () => onChange(!value)}
       >
-        <IconButton title={title} icon={value ? faCheckSquare : faSquare} className={className}>
-          {label}
-        </IconButton>
+        <FontAwesomeIcon title={title} icon={value ? faCheckSquare : faSquare} className={cx(css({marginRight: space_S}), className)}/>
+        {label}
       </Flex>
     </Flex>
   );

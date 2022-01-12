@@ -41,7 +41,7 @@ export default function LocalAccount(props: Props): JSX.Element {
             <span>email:</span>
             <span>{account.email} </span>
           </div>
-          <IconButton icon={faSave} onClick={() => {}} />
+          <IconButton icon={faSave} title="Save" />
         </div>
         <div>
           {pwState === 'SET' ? (
@@ -81,6 +81,7 @@ export default function LocalAccount(props: Props): JSX.Element {
                   setPwState('SET');
                   setNewPassword('');
                 }}
+                title="Close"
               />
 
               <IconButton
@@ -94,6 +95,7 @@ export default function LocalAccount(props: Props): JSX.Element {
                     }),
                   );
                 }}
+                title="Save"
               />
             </div>
           )}

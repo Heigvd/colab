@@ -38,7 +38,7 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
   return (
     <div>
       <Flex>
-        <IconButton icon={faArrowLeft} onClick={onClose} />
+        <IconButton icon={faArrowLeft} title="Back" onClick={onClose} />
         <div>
           {entityIs(document, 'Document') ? (
             resourceAndRef.targetResource.title || i18n.resource.untitled

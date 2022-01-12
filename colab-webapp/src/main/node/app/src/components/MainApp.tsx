@@ -174,6 +174,7 @@ export default function MainApp(): JSX.Element {
                           dispatch(API.closeCurrentProject());
                         }}
                         icon={faTimes}
+                        title="Close current project" 
                         className={css({
                           pointerEvents: 'auto', 
                           marginLeft: space_M, 
@@ -211,7 +212,7 @@ export default function MainApp(): JSX.Element {
                 ...(currentAccounts.map(account => {
                   return {value: `/settings/account/${account.id}`, label: `Edit ${account.email}`}
                 })),
-                {value: 'logout', label: <>Logout <IconButton icon={faSignOutAlt} /></>, action: logout},
+                {value: 'logout', label: <>Logout <FontAwesomeIcon icon={faSignOutAlt} /></>, action: logout},
 
               ]}
               onSelect={(val)=>{

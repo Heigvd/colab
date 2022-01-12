@@ -198,7 +198,7 @@ export function ChangeTreeRaw({
   return (
     <div>
       <h4>Tree</h4>
-      {onDelete ? <IconButton icon={faTrash} onClick={onDelete} /> : null}
+      {onDelete ? <IconButton icon={faTrash} title="Delete" onClick={onDelete} /> : null}
       <div
         ref={ref => {
           if (ref != null) {

@@ -53,6 +53,7 @@ export default ({
 
         <IconButton
           icon={faCheck}
+          title="Confirm"
           onClick={() => {
             setState({
               ...state,
@@ -69,6 +70,7 @@ export default ({
 
         <IconButton
           icon={faPen}
+          title="Edit"
           onClick={() => {
             setState({
               ...state,

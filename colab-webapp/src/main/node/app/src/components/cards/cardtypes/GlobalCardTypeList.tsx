@@ -46,7 +46,7 @@ export default function GlobalCardTypeList(): JSX.Element {
     return (
       <div>
         <h3>Global Card Types</h3>
-        <IconButton onClick={createNewCb} icon={faPlus} />
+        <IconButton onClick={createNewCb} icon={faPlus} title="Create new" />
         <div className={flexWrap}>
           {cardTypes.types.map(cardType => (
             <CardTypeEditor key={cardType.id} cardType={cardType} />

@@ -11,7 +11,7 @@ import { BlockDocument, TextDataBlock } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../../API/api';
 import { useAppDispatch } from '../../../store/hooks';
-import IconButton from '../../common/IconButton';
+import Button from '../../common/Button';
 
 export interface BlockDocProps {
   doc: BlockDocument;
@@ -32,8 +32,8 @@ export function CreateBlockButton({ doc }: BlockDocProps): JSX.Element {
   }, [doc, dispatch]);
 
   return (
-    <IconButton className={addButtonStyle} icon={faPlus} onClick={createBlock}>
+    <Button className={addButtonStyle} icon={faPlus} onClick={createBlock}>
       Create a new block
-    </IconButton>
+    </Button>
   );
 }

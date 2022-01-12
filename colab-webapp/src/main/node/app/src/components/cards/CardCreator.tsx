@@ -8,7 +8,6 @@
 import { css, cx } from '@emotion/css';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardContent, CardType } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -18,6 +17,7 @@ import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
 import Checkbox from '../common/Form/Checkbox';
+import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
@@ -128,13 +128,17 @@ export default function CardCreator({
         customButton ? (
           customButton
         ) : (
-          <FontAwesomeIcon
+          <IconButton
             icon={faPlus}
             className={css({
               padding: space_S,
               borderRadius: '50%',
               border: '1px solid var(--pictoGrey)',
               color: 'var(--pictoGrey)',
+              '&:hover': {
+                color: 'black',
+                backgroundColor: 'transparent',
+              },
             })}
             title="Add a card"
           />
@@ -148,7 +152,7 @@ export default function CardCreator({
           return <InlineLoading />;
         } else {
           return (
-            <div className={css({ width: '100%' })}>
+            <div className={css({ width: '100%', textAlign: 'left' })}>
               <Flex>
                 {allTags.map(tag => {
                   return (
@@ -287,7 +291,6 @@ export default function CardCreator({
                 {selectedType != null ? (
                   <Button
                     title="Create card"
-                    label="Create card"
                     onClick={() => {
                       dispatch(
                         API.createSubCardWithBlockDoc({
@@ -298,15 +301,18 @@ export default function CardCreator({
                         close();
                       });
                     }}
-                  />
+                  >
+                    Create card
+                  </Button>
                 ) : null}
                 <Button
                   title="Cancel"
-                  label="Cancel"
                   onClick={close}
                   invertedButton
                   className={marginAroundStyle([4], space_S)}
-                />
+                >
+                  Cancel
+                </Button>
               </Flex>
             </div>
           );

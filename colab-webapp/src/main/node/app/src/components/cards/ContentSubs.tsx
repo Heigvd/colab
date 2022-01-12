@@ -7,7 +7,6 @@
 
 import { css, cx } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { getSubCards } from '../../API/api';
@@ -93,15 +92,9 @@ export default function ContentSubs({
           <CardCreator
             parent={cardContent}
             customButton={
-              <Button
-                label={
-                  <>
-                    <FontAwesomeIcon icon={faPlus} /> Add the first card
-                  </>
-                }
-                title="Add first card"
-                clickable
-              />
+              <Button icon={faPlus} title="Add first card" clickable>
+                Add the first card
+              </Button>
             }
             className={css({ display: 'block' })}
           />
@@ -110,7 +103,14 @@ export default function ContentSubs({
     } else {
       return depth > 0 ? (
         <div className={flexWrap}>
-          <div className={css({ flexDirection: 'row', display: 'flex', flexWrap: 'wrap', flexGrow: 1 })}>
+          <div
+            className={css({
+              flexDirection: 'row',
+              display: 'flex',
+              flexWrap: 'wrap',
+              flexGrow: 1,
+            })}
+          >
             {subCards.map(sub => (
               <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
             ))}
@@ -120,16 +120,9 @@ export default function ContentSubs({
               parent={cardContent}
               customButton={
                 depth === depthMax ? (
-                  <Button
-                    label={
-                      <>
-                        <FontAwesomeIcon icon={faPlus} /> Add Card
-                      </>
-                    }
-                    title="Add Card"
-                    className={fixedButtonStyle}
-                    clickable
-                  />
+                  <Button icon={faPlus} title="Add Card" className={fixedButtonStyle} clickable>
+                    Add Card
+                  </Button>
                 ) : undefined
               }
             />

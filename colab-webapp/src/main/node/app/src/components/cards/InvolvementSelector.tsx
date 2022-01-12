@@ -86,11 +86,11 @@ export default function InvolvementSelector({
           value={buildOption(self)}
           onChange={onChangeCb}
         />
-        <IconButton icon={faEraser} onClick={clearCb} />
+        <IconButton icon={faEraser} title="Clear" onClick={clearCb} />
       </Flex>
     );
   } else {
-    const creator = <IconButton icon={faPen} onClick={createCb} />;
+    const creator = <IconButton icon={faPen} title="Edit" onClick={createCb} />;
     if (effectives != null && effectives.length > 0) {
       return (
         <Flex>

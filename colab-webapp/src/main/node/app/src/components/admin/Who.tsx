@@ -79,6 +79,7 @@ export default function Who(): JSX.Element {
             dispatch(getOccupiedChannels());
           }}
           icon={faSync}
+          title="Sync" 
         />
 
         <div>

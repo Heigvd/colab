@@ -5,9 +5,9 @@
  * Licensed under the MIT License
  */
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { checkedIcon, uncheckedIcon } from '../styling/defaultIcons';
-import IconButton from './IconButton';
 
 export interface CheckBoxProps {
   label?: string;
@@ -17,8 +17,9 @@ export interface CheckBoxProps {
 
 export default function CheckBox({ label, value, onChange }: CheckBoxProps): JSX.Element {
   return (
-    <IconButton icon={value ? checkedIcon : uncheckedIcon} onClick={onChange}>
+    <>
+      <FontAwesomeIcon icon={value ? checkedIcon : uncheckedIcon} onClick={onChange} />
       {label}
-    </IconButton>
+    </>
   );
 }

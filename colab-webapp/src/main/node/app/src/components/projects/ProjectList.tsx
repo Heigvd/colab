@@ -36,9 +36,9 @@ const projectListStyle = css({
   margin: 'auto',
   width: '80%',
   display: 'grid',
-gridTemplateColumns: 'repeat(3, 1fr)',
-gridColumnGap: space_M,
-gridRowGap: space_S,
+  gridTemplateColumns: 'repeat(3, 1fr)',
+  gridColumnGap: space_M,
+  gridRowGap: space_S,
 });
 interface Props {
   project: Project;
@@ -104,12 +104,15 @@ const ProjectDisplay = ({ project }: Props) => {
                         </p>
                         <div className={flex}>
                           <Button
-                            label="Delete project"
                             title="Confirm delete"
                             onClick={() => dispatch(API.deleteProject(project))}
                             className={css({ backgroundColor: errorColor, marginRight: space_M })}
-                          />
-                          <Button label="Cancel" title="Cancel delete" onClick={() => collapse()} />
+                          >
+                            Delete project
+                          </Button>
+                          <Button title="Cancel delete" onClick={() => collapse()}>
+                            Cancel
+                          </Button>
                         </div>
                       </div>
                     )}
@@ -125,7 +128,7 @@ const ProjectDisplay = ({ project }: Props) => {
           padding: space_M,
           paddingRight: '40px',
           borderBottom: '1px solid #ddd',
-          display:'flex',
+          display: 'flex',
           flexDirection: 'column',
           flexGrow: 1,
         })}
@@ -165,14 +168,9 @@ const ProjectDisplay = ({ project }: Props) => {
           to={`/editor/${project.id}`}
           className={css({ margin: 'auto', textDecoration: 'none' })}
         >
-          <Button
-            title="Edit project"
-            label={
-              <>
-                <FontAwesomeIcon icon={faEdit} /> Edit
-              </>
-            }
-          />
+          <Button title="Edit project" icon={faEdit}>
+            Edit
+          </Button>
         </InlineLink>
       </div>
     </div>
@@ -222,14 +220,12 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
               }),
             );
           }}
-          label={
-            <>
-              <FontAwesomeIcon icon={faPlus} /> Create new project
-            </>
-          }
+          icon={faPlus}
           title={'Create new project'}
           className={fixedButtonStyle}
-        />
+        >
+          Create new project
+        </Button>
       </div>
     );
   }

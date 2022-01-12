@@ -13,8 +13,8 @@ import { useSingleAndDoubleClick } from '../../store/hooks';
 import { cardShadow, cardStyle } from '../styling/style';
 
 const progressBarContainer = css({
-  height: '4px',
-  backgroundColor: '#c2c2c2',
+  height: '5px',
+  backgroundColor: 'var(--pictoGrey)',
   width: '100%',
 });
 
@@ -22,7 +22,7 @@ const progressBarStyle = (width: number) =>
   css({
     width: `${width}%`,
     height: 'inherit',
-    backgroundColor: '#2674AC',
+    backgroundColor: 'var(--successColor)',
   });
 
 export function ProgressBar({ variant }: { variant: CardContent | undefined }): JSX.Element {

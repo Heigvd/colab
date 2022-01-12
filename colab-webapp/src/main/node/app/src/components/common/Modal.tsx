@@ -85,7 +85,7 @@ export default function Modal({
             {title}
           </Flex>
           {showCloseButton ? (
-            <IconButton className={closeIconStyle} iconSize="2x" icon={faTimes} onClick={onClose} />
+            <IconButton className={closeIconStyle} iconSize="2x" title="Close" icon={faTimes} onClick={onClose} />
           ) : null}
         </div>
         <Flex grow={1} direction="column" overflow="auto" className={modalBody}>

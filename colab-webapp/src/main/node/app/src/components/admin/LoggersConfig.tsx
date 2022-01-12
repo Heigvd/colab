@@ -52,7 +52,7 @@ function LoggerGrid({ title, levels, changeLevel }: LoggerGridProps) {
       <h3>{title}</h3>
       <div>
         <label>
-          <IconButton icon={faSearch} />
+          <IconButton icon={faSearch} title="Search"/>
           <input type="text" onChange={e => setSearch(e.target.value)} />
         </label>
       </div>
@@ -183,6 +183,7 @@ export default function (): JSX.Element {
         <h2>Loggers Config</h2>
         <IconButton
           icon={faSync}
+          title='Sync'
           onClick={() => {
             dispatch(getLoggerLevels());
           }}

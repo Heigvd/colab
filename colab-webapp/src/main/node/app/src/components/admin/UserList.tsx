@@ -20,6 +20,7 @@ import { grantAdminRight, revokeAdminRight } from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useCurrentUser } from '../../selectors/userSelector';
 import { useAppDispatch } from '../../store/hooks';
+import Button from '../common/Button';
 import IconButton from '../common/IconButton';
 
 const UserComp = ({ user }: { user: User }) => {
@@ -43,6 +44,7 @@ const UserComp = ({ user }: { user: User }) => {
           onClick={() => {
             dispatch(user.admin ? revokeAdminRight(user) : grantAdminRight(user));
           }}
+          title={user.admin ? "Grant right" : "Revoke right"}
         />
       </div>
       <div>
@@ -83,9 +85,9 @@ const Header = ({ sortKey, text }: HeaderProps) => {
     const colour = sortKey === sortBy.key ? 'black' : 'lightgrey';
     const icon = sortBy.direction > 0 || sortKey != sortBy.key ? faSortAlphaDown : faSortAlphaUp;
     return (
-      <IconButton reverseOrder icon={icon} iconColor={colour} onClick={onClickCk}>
+      <Button reverseOrder icon={icon} iconColor={colour} onClick={onClickCk}>
         {text}
-      </IconButton>
+      </Button>
     );
   } else {
     return <div>{text}</div>;

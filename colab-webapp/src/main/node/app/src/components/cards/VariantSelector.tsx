@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useAppDispatch } from '../../store/hooks';
+import Button from '../common/Button';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
@@ -176,7 +177,7 @@ export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.
         </Flex>
         <Flex basis="1px" grow={1} justify="flex-end">
           {allowCreation ? (
-            <IconButton
+            <Button
               icon={faWindowRestore}
               title="Create new variant"
               onClick={() => {
@@ -190,7 +191,7 @@ export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.
               }}
             >
               Create a new variant
-            </IconButton>
+            </Button>
           ) : null}
         </Flex>
       </Flex>

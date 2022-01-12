@@ -11,6 +11,7 @@ import {
   faStickyNote as farStickyNote,
 } from '@fortawesome/free-regular-svg-icons/';
 import { faCog, faFile, faStickyNote } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -195,18 +196,20 @@ Props): JSX.Element {
                           title="Card Settings"
                           route="settings"
                           showCloseButton={true}
-                          collapsedChildren={<IconButton icon={faCog} />}
+                          collapsedChildren={<FontAwesomeIcon icon={faCog} />}
                         >
                           {close => <CardSettings onClose={close} card={card} variant={variant} />}
                         </OpenCloseModal>
 
                         <IconButton
                           icon={showStickyNote ? faStickyNote : farStickyNote}
+                          title="Toggle sticky notes" 
                           onClick={toggleShowStickyNotes}
                         />
 
                         <IconButton
                           icon={rightPanel === 'RESOURCES' ? faFile : farFile}
+                          title="Toggle references" 
                           onClick={toggleResourcePanel}
                         />
                       </Flex>

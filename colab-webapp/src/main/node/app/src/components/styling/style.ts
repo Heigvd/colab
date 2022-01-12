@@ -165,7 +165,6 @@ export const linkStyle = css({
   cursor: 'pointer',
   ':hover': {
     color: 'var(--hoverFgColor)',
-    backgroundColor: 'var(--hoverBgColor)',
   },
   ':focus': {
     outline: 'none',
@@ -206,6 +205,9 @@ export const buttonStyle = cx(
   css({
     padding: '8px 14px',
     borderRadius: borderRadius,
+    ':hover': {
+      backgroundColor: 'var(--hoverBgColor)',
+    },
   }),
 );
 

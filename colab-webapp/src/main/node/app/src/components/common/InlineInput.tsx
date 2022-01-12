@@ -98,8 +98,8 @@ export default function InlineInput({
           ) : null}
           {mode === 'EDIT' && updated ? (
             <>
-              <IconButton icon={faCheck} onClick={saveCb} />
-              <IconButton icon={faTimes} onClick={cancelCb} />
+              <IconButton icon={faCheck} title="Save" onClick={saveCb} />
+              <IconButton icon={faTimes} title="Cancel" onClick={cancelCb} />
             </>
           ) : null}
         </>

@@ -288,19 +288,15 @@ export default function Form<T>({
             padding: space_S + ' 0',
           },
         }),
-        className || ''
+        className || '',
       )}
       onKeyDown={onEnterCb}
     >
       {fieldComps}
       {autoSubmit ? null : (
-        <Button
-          key="submit"
-          label={submitLabel || i18n.submit}
-          title="Submit"
-          className={buttonClassName || ''}
-          onClick={submitCb}
-        />
+        <Button key="submit" title="Submit" className={buttonClassName || ''} onClick={submitCb}>
+          {submitLabel || i18n.submit}
+        </Button>
       )}
       {children}
     </div>

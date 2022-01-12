@@ -5,22 +5,40 @@
  * Licensed under the MIT License
  */
 
-import { cx } from '@emotion/css';
-import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
+import { css, cx } from '@emotion/css';
+import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { buttonStyle, inactiveButtonStyle, inactiveInvertedButtonStyle, invertedButtonStyle } from '../styling/style';
-import Clickable from './Clickable';
+import {
+  buttonStyle,
+  inactiveButtonStyle,
+  inactiveInvertedButtonStyle,
+  invertedButtonStyle,
+  space_S,
+} from '../styling/style';
+import Clickable, { ClickablenProps } from './Clickable';
 
-export interface ButtonProps {
-  onClick?: () => void;
-  clickable?: boolean;
-  label: string | ReactJSXElement;
-  title: string;
-  className?: string;
+export interface ButtonProps extends Omit<ClickablenProps, "clickableClassName">{
   invertedButton?: boolean;
+  icon?: IconProp;
+  iconSize?: SizeProp;
+  reverseOrder?: boolean;
+  iconColor?: string;
 }
 
-export default function Button({ onClick, clickable, label, title, className, invertedButton }: ButtonProps): JSX.Element {
+export default function Button({
+  onClick,
+  clickable,
+  children,
+  title,
+  className,
+  invertedButton,
+  icon,
+  iconColor,
+  iconSize,
+  reverseOrder,
+  
+}: ButtonProps): JSX.Element {
   return (
     <Clickable
       onClick={onClick}
@@ -29,7 +47,9 @@ export default function Button({ onClick, clickable, label, title, className, in
       clickableClassName={cx(invertedButton ? invertedButtonStyle : buttonStyle, className)}
       clickable={clickable}
     >
-      {label}
+      {reverseOrder ? children : null}
+      {icon && <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} className={reverseOrder ? css({marginLeft: space_S}) : css({marginRight: space_S})}/>}
+      {!reverseOrder ? children : null}
     </Clickable>
   );
 }

@@ -121,31 +121,31 @@ export default function CardThumb({
                                 {variants.length > 1 && variant != null ? (
                                   // several variants, delete the current one
                                   <Button
-                                    label="Delete variant"
                                     title="Confirm delete"
                                     onClick={() => dispatch(API.deleteCardContent(variant))}
                                     className={css({
                                       backgroundColor: errorColor,
                                       marginRight: space_M,
                                     })}
-                                  />
+                                  >
+                                    Delete variant
+                                  </Button>
                                 ) : (
                                   // last variant : delete the whole card
                                   <Button
-                                    label="Delete card"
                                     title="Confirm delete"
                                     onClick={() => dispatch(API.deleteCard(card))}
                                     className={css({
                                       backgroundColor: errorColor,
                                       marginRight: space_M,
                                     })}
-                                  />
+                                  >
+                                    Delete card
+                                  </Button>
                                 )}
-                                <Button
-                                  label="Cancel"
-                                  title="Cancel delete"
-                                  onClick={() => collapse()}
-                                />
+                                <Button title="Cancel delete" onClick={() => collapse()}>
+                                  Cancel
+                                </Button>
                               </div>
                             </div>
                           )}
@@ -175,13 +175,13 @@ export default function CardThumb({
               flexGrow: 1,
             })}
           >
-              {showSubcards ? (
-                variant != null ? (
-                  <ContentSubs depth={depth} cardContent={variant} />
-                ) : (
-                  <i>{i18n.content.none}</i>
-                )
-              ) : null}
+            {showSubcards ? (
+              variant != null ? (
+                <ContentSubs depth={depth} cardContent={variant} />
+              ) : (
+                <i>{i18n.content.none}</i>
+              )
+            ) : null}
           </div>
         </>
       </CardLayout>
