@@ -25,10 +25,9 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.io.BufferedInputStream;
 import java.nio.charset.StandardCharsets;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.util.URIUtil;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 
 /**
@@ -96,9 +95,9 @@ public class FileManager {
         if (fileSize > ColabConfiguration.getJcrRepositoryFileSizeLimit()) {
             FileManager.logger.debug("File exceeds authorized size ({} bytes)"
                 + ", size limit is {} bytes",
-                 fileSize, ColabConfiguration.getJcrRepositoryFileSizeLimit());
+                fileSize, ColabConfiguration.getJcrRepositoryFileSizeLimit());
 
-            throw HttpErrorMessage.internalServerError();
+            throw HttpErrorMessage.fileSizeLimitExceededError();
         }
 
         // Check quota limit
@@ -106,9 +105,9 @@ public class FileManager {
         var usedQuota = getUsage(project.getId());
         if (usedQuota + fileSize > getQuota()) {
             FileManager.logger.debug("Quota exceeded. Used : {}, Authorized : {}",
-                 usedQuota + fileSize, ColabConfiguration.getJcrRepositoryProjectQuota());
+                usedQuota + fileSize, ColabConfiguration.getJcrRepositoryProjectQuota());
 
-            throw HttpErrorMessage.internalServerError();
+            throw HttpErrorMessage.projectQuotaExceededError();
         }
 
         DocumentFile hostedDoc = (DocumentFile) doc;
@@ -171,11 +170,13 @@ public class FileManager {
      *
      * @param documentId document id
      *
-     * @return a response builder
+     * @return a triplet containing in order : a stream to the file (empty stream if no file), the
+     *         file name in UTF-8 or an empty string if no file has been uploaded, the media type of
+     *         the file or MediaType.APPLICATION_OCTET_STREAM if no file present
      *
      * @throws RepositoryException in case of a JCR issue
      */
-    public ResponseBuilder getDownloadResponse(Long documentId) throws RepositoryException {
+    public ImmutableTriple<BufferedInputStream, String, MediaType> getDownloadFileInfo(Long documentId) throws RepositoryException {
         var doc = this.documentDao.findDocument(documentId);
 
         if (!(doc instanceof DocumentFile)) {
@@ -184,28 +185,23 @@ public class FileManager {
 
         Project project = doc.getProject();
         var hostedDoc = (DocumentFile) doc;
-        var mediaType = MediaType.valueOf(hostedDoc.getMimeType());
 
         var stream = new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));
-        ResponseBuilder res = Response.ok(stream, mediaType);
 
         var fileName = hostedDoc.getFileName();
-        var safeFileName = "";
+        String safeFileName = "";
         if (fileName != null) {
             try {
                 safeFileName = URIUtil.encodePath(fileName);
             } catch (URIException ex) {
-                FileManager.logger.debug("Deleting file '{}' with id {}", hostedDoc.getFileName(), doc.getId());
+                logger.warn("Issue with filename '{}' with id {}", hostedDoc.getFileName(), doc.getId());
+                safeFileName = fileName;// best effort
             }
         }
 
-        // set file name for browser download prompt
-        var attachment = "attachment; filename=" + safeFileName;
-        res.header("Content-Disposition", attachment);
+        MediaType mediaType = MediaType.valueOf(hostedDoc.getMimeType());
 
-        logger.info("Generated response for file : {}, mime {}", safeFileName, mediaType);
-
-        return res;
+        return new ImmutableTriple<>(stream, safeFileName, mediaType);
     }
 
     /**

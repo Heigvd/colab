@@ -26,6 +26,7 @@ package ch.colabproject.colab.api.rest.document;
 import ch.colabproject.colab.api.controller.document.FileManager;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
@@ -93,7 +95,7 @@ public class DocumentFileRestEndPoint {
     }
 
     /**
-     * Deletes the file associated with the document
+     * Deletes the file associated with the document Does nothing if no file was present
      *
      * @param documentId document id
      */
@@ -121,8 +123,23 @@ public class DocumentFileRestEndPoint {
     public Response getFileContent(@PathParam("documentId") Long documentId) {
 
         try {
-            var response = fileManager.getDownloadResponse(documentId);
+            ImmutableTriple<BufferedInputStream, String, MediaType> filedata;
+            filedata = fileManager.getDownloadFileInfo(documentId);
+
+            var stream = filedata.left;
+            var filename = filedata.middle;
+            var mime = filedata.right;
+
+            Response.ResponseBuilder response = Response.ok(stream, mime);
+
+            // set file name for browser download prompt
+            var attachment = "attachment; filename=" + filename;
+            response.header("Content-Disposition", attachment);
+
+            logger.debug("Generated response for file : {}, mime {}", filename, mime);
+
             return response.build();
+
         } catch (PathNotFoundException pnfe) {
             throw HttpErrorMessage.dataIntegrityFailure();
         } catch (RepositoryException ex) {

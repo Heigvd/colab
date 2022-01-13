@@ -28,6 +28,8 @@ public class HttpErrorMessage extends HttpException {
         DATA_INTEGRITY_FAILURE,
         EMAIL_MESSAGE_ERROR,
         INTERNAL_SERVER_ERROR,
+        PROJECT_QUOTA_EXCEEDED,
+        FILE_TOO_BIG,
         RELATED_OBJECT_NOT_FOUND,
         NOT_FOUND,
         SMTP_ERROR,
@@ -166,9 +168,22 @@ public class HttpErrorMessage extends HttpException {
 
     /**
      * @return 500 internal server error
-     */    
+     */
     public static HttpErrorMessage internalServerError() {
-        return new HttpErrorMessage(HttpErrorMessage.MessageCode.INTERNAL_SERVER_ERROR);
+        return new HttpErrorMessage(Response.Status.INTERNAL_SERVER_ERROR,HttpErrorMessage.MessageCode.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * @return 413 project quota exceeded
+     */
+    public static HttpErrorMessage projectQuotaExceededError() {
+        return new HttpErrorMessage(Response.Status.REQUEST_ENTITY_TOO_LARGE,HttpErrorMessage.MessageCode.PROJECT_QUOTA_EXCEEDED);
+    }
+    /**
+     * @return 413 file size limit exceeded
+     */
+    public static HttpErrorMessage fileSizeLimitExceededError() {
+        return new HttpErrorMessage(Response.Status.REQUEST_ENTITY_TOO_LARGE,HttpErrorMessage.MessageCode.FILE_TOO_BIG);
     }
 
 }

@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.core.MediaType;
 
 /**
- * Document referenced by a link to a record of the co.LAB internal document-based database
+ * Document referencing a file stored internally
  *
  * @author sandra
  */
@@ -35,14 +35,14 @@ public class DocumentFile extends Document {
      */
     @NotNull
     private Long fileSize = 0L;
-    
+
     /**
      * Original file name
      */
     private String fileName;
-    
+
     /**
-     * mime type of file
+     * Mime type of file
      */
     @NotNull
     private String mimeType = MediaType.APPLICATION_OCTET_STREAM;
@@ -51,6 +51,9 @@ public class DocumentFile extends Document {
     // getters and setters
     // ---------------------------------------------------------------------------------------------
 
+    /**
+     * @return length in byte or 0 if no file has been set
+     */
     public Long getFileSize() {
         return fileSize;
     }
@@ -59,6 +62,9 @@ public class DocumentFile extends Document {
         this.fileSize = fileSize;
     }
 
+    /**
+     * @return The original name of the uploaded file or null if no file has been set
+     */
     public String getFileName() {
         return fileName;
     }
@@ -66,7 +72,10 @@ public class DocumentFile extends Document {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
-    
+
+    /**
+     * @return The mime type of the file or MediaType.APPLICATION_OCTET_STREAM if no file has been set
+     */
     public String getMimeType() {
         return mimeType;
     }
