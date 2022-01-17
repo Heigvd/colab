@@ -185,6 +185,7 @@ export const linkStyle = css({
   cursor: 'pointer',
   ':hover': {
     color: 'var(--hoverFgColor)',
+    textDecoration: 'underline'
   },
   ':focus': {
     outline: 'none',
@@ -227,6 +228,7 @@ export const buttonStyle = cx(
     borderRadius: borderRadius,
     ':hover': {
       backgroundColor: 'var(--hoverBgColor)',
+      textDecoration: 'none',
     },
   }),
 );
@@ -416,5 +418,6 @@ export const smallInputStyle = cx(
 );
 
 export const cardTitle = css({
-  fontSize: '2em',
+  fontSize: '1.2em',
+  fontWeight: 'bold',
 });

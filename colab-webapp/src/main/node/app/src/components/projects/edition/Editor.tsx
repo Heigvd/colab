@@ -85,7 +85,7 @@ const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
             navigate(`../${t}/${content.cardId}/v/${content.id}`);
           }}
         >
-          {card.title ? card.title : i18n.card.untitled}/{content.title ? content.title : ''}
+          {card.title ? card.title : i18n.card.untitled + ' ' + content.title ? content.title : ''}
         </Clickable>
         &nbsp;&gt;&nbsp;
       </>
@@ -174,7 +174,7 @@ const CardWrapper = ({ children, grow = 1, align = 'normal' }: CardWrapperProps)
   } else {
     return (
       <>
-        <div>
+        <div className={css({ paddingBottom: space_M })}>
           {ancestors.map((ancestor, x) => (
             <Ancestor key={x} card={ancestor.card} content={ancestor.content} />
           ))}

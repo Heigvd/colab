@@ -34,7 +34,6 @@ const flexWrap = css({
   display: 'flex',
   justifyContent: 'space-evenly',
   flexWrap: 'wrap',
-  flexGrow: 1,
 });
 
 const voidStyle = css({
@@ -108,7 +107,6 @@ export default function ContentSubs({
               flexDirection: 'row',
               display: 'flex',
               flexWrap: 'wrap',
-              flexGrow: 1,
             })}
           >
             {subCards.map(sub => (

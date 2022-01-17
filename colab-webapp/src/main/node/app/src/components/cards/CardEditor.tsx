@@ -18,7 +18,6 @@ import { useCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AutoSaveInput from '../common/AutoSaveInput';
 import Flex from '../common/Flex';
-import OnBlurInput from '../common/OnBlurInput';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
 import { DocumentEditorAsDeliverableWrapper } from '../documents/DocumentEditorWrapper';
@@ -26,7 +25,7 @@ import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
-import { cardStyle, cardTitle } from '../styling/style';
+import { cardStyle, cardTitle, space_S } from '../styling/style';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
 import SideCollapsiblePanel from './SideCollapsiblePanel';
@@ -130,8 +129,8 @@ Props): JSX.Element {
     return <i>Card without id is invalid...</i>;
   } else {
     return (
-      <Flex direction="column" grow={1} >
-        <Flex grow={1} direction="row" className={css({width: '100%'})}>
+      <Flex direction="column" grow={1} align="stretch">
+        <Flex grow={1} direction="row" align="stretch" className={css({ paddingBottom: space_S })}>
           <Flex
             grow={1}
             direction="row"
@@ -144,129 +143,144 @@ Props): JSX.Element {
               }),
             )}
           >
-            <SideCollapsiblePanel open={showStickyNote} toggleOpen={toggleShowStickyNotes} icon={faStickyNote} title='sticky notes'>
-              <StickyNoteWrapper destCardId={card.id} showSrc />  
+            <SideCollapsiblePanel
+              open={showStickyNote}
+              toggleOpen={toggleShowStickyNotes}
+              icon={faStickyNote}
+              title="sticky notes"
+            >
+              <StickyNoteWrapper destCardId={card.id} showSrc />
             </SideCollapsiblePanel>
-              <Flex direction="column" grow={1}>
-                <Flex
-                  direction="column"
-                  grow={1}
-                  className={css({
-                    padding: '10px',
-                    flexGrow: 1,
-                  })}
-                >
-                  <div>
-                    <Flex justify="space-between">
-                      <Flex>
-                        <OnBlurInput
-                          className={cardTitle}
-                          value={card.title || ''}
-                          readOnly={readOnly}
-                          placeholder={i18n.card.untitled}
-                          onChange={newValue =>
-                            dispatch(API.updateCard({ ...card, title: newValue }))
-                          }
-                        />
-                        {variants.length > 1 ? (
-                          <>
-                            {'/'}
-                            <OnBlurInput
-                              className={cardTitle}
-                              value={variant.title || ''}
-                              readOnly={readOnly}
-                              placeholder={i18n.content.untitled}
-                              onChange={newValue =>
-                                dispatch(API.updateCardContent({ ...variant, title: newValue }))
-                              }
-                            />
-                          </>
-                        ) : null}
-                      </Flex>
-                      <Flex>
-                        <OpenCloseModal
-                          title="Card Settings"
-                          route="settings"
-                          showCloseButton={true}
-                          collapsedChildren={<FontAwesomeIcon icon={faCog} />}
-                        >
-                          {close => <CardSettings onClose={close} card={card} variant={variant} />}
-                        </OpenCloseModal>
-                      </Flex>
-                    </Flex>
-                    <h4>Purpose</h4>
-                    <div>
-                      <b>{cardType?.title}</b>: {purpose?.textData || ''}
-                    </div>
-                  </div>
-
-                  <Flex direction="column" grow={1}>
-                    <h5>Card Content #{variant.id}</h5>
-                    <div>
-                      {userAcl.read ? (
-                        variant.id ? (
-                          <DocumentEditorAsDeliverableWrapper
-                            cardContentId={variant.id}
-                            allowEdition={!readOnly}
+            <Flex direction="column" grow={1} align="stretch">
+              <Flex
+                direction="column"
+                grow={1}
+                className={css({
+                  padding: '10px',
+                  flexGrow: 1,
+                })}
+                align="stretch"
+              >
+                <Flex direction="column" align="stretch">
+                  <Flex justify="space-between">
+                    <Flex>
+                      <AutoSaveInput
+                        placeholder={i18n.card.untitled}
+                        readOnly={readOnly}
+                        inputType="INPUT"
+                        value={card.title || ''}
+                        onChange={newValue =>
+                          dispatch(API.updateCard({ ...card, title: newValue }))
+                        }
+                        className={cardTitle}
+                      />
+                      {variants.length > 1 ? (
+                        <>
+                          {'/'}
+                          <AutoSaveInput
+                            className={cardTitle}
+                            value={variant.title || ''}
+                            readOnly={readOnly}
+                            placeholder={i18n.content.untitled}
+                            onChange={newValue =>
+                              dispatch(API.updateCardContent({ ...variant, title: newValue }))
+                            }
                           />
-                        ) : (
-                          <span>no deliverable available</span>
-                        )
-                      ) : (
-                        <span>Access Denied</span>
-                      )}
-                    </div>
+                        </>
+                      ) : null}
+                    </Flex>
+                    <Flex>
+                      <OpenCloseModal
+                        title="Card Settings"
+                        route="settings"
+                        showCloseButton={true}
+                        collapsedChildren={<FontAwesomeIcon icon={faCog} />}
+                      >
+                        {close => <CardSettings onClose={close} card={card} variant={variant} />}
+                      </OpenCloseModal>
+                    </Flex>
                   </Flex>
-                  <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
+                  <h4>Purpose</h4>
+                  <div>
+                    <b>{cardType?.title}</b>: {purpose?.textData || ''}
+                  </div>
                 </Flex>
-                <Flex align="center">
-                  <OpenCloseModal
-                    title="Edit card completion"
-                    className={css({ width: '100%' })}
-                    showCloseButton={true}
-                    collapsedChildren={<ProgressBar variant={variant} />}
-                  >
-                    {() => (
-                      <Flex direction="column">
-                        <Tips tipsType="TODO">
-                          Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set
-                          completion; Auto: based on children; No: do not event diplay the bar
-                          <br />
-                          Shall we move all of this to card settings ??
-                        </Tips>
-                        <AutoSaveInput
-                          inputType="INPUT"
-                          value={String(variant.completionLevel || 0)}
-                          onChange={newValue =>
-                            dispatch(
-                              API.updateCardContent({ ...variant, completionLevel: +newValue }),
-                            )
-                          }
+
+                <Flex direction="column" grow={1}>
+                  <div>
+                    {userAcl.read ? (
+                      variant.id ? (
+                        <DocumentEditorAsDeliverableWrapper
+                          cardContentId={variant.id}
+                          allowEdition={!readOnly}
                         />
-                      </Flex>
+                      ) : (
+                        <span>no deliverable available</span>
+                      )
+                    ) : (
+                      <span>Access Denied</span>
                     )}
-                  </OpenCloseModal>
+                  </div>
                 </Flex>
               </Flex>
-              <SideCollapsiblePanel open={rightPanel === 'RESOURCES'} toggleOpen={toggleResourcePanel} icon={faFile} direction='RIGHT' title='Resources'>
-                <Flex shrink={1}>
-                  {rightPanel === 'RESOURCES'
-                    ? card.id &&
-                      variant?.id && (
-                        <ResourcesWrapper
-                          kind={ResourceContextScope.CardOrCardContent}
-                          accessLevel={
-                            !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
-                          }
-                          cardId={card.id}
-                          cardContentId={variant.id}
-                        />
-                      )
-                    : null}
-                </Flex>
-              </SideCollapsiblePanel>
+              <Flex align="center">
+                <OpenCloseModal
+                  title="Edit card completion"
+                  className={css({ width: '100%' })}
+                  showCloseButton={true}
+                  collapsedChildren={<ProgressBar variant={variant} />}
+                >
+                  {() => (
+                    <Flex direction="column">
+                      <Tips tipsType="TODO">
+                        Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set
+                        completion; Auto: based on children; No: do not event diplay the bar
+                        <br />
+                        Shall we move all of this to card settings ??
+                      </Tips>
+                      <AutoSaveInput
+                        inputType="INPUT"
+                        value={String(variant.completionLevel || 0)}
+                        onChange={newValue =>
+                          dispatch(
+                            API.updateCardContent({ ...variant, completionLevel: +newValue }),
+                          )
+                        }
+                      />
+                    </Flex>
+                  )}
+                </OpenCloseModal>
+              </Flex>
+            </Flex>
+            <SideCollapsiblePanel
+              open={rightPanel === 'RESOURCES'}
+              toggleOpen={toggleResourcePanel}
+              icon={faFile}
+              direction="RIGHT"
+              title="Resources"
+            >
+              <Flex shrink={1}>
+                {rightPanel === 'RESOURCES'
+                  ? card.id &&
+                    variant?.id && (
+                      <ResourcesWrapper
+                        kind={ResourceContextScope.CardOrCardContent}
+                        accessLevel={
+                          !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
+                        }
+                        cardId={card.id}
+                        cardContentId={variant.id}
+                      />
+                    )
+                  : null}
+              </Flex>
+            </SideCollapsiblePanel>
           </Flex>
         </Flex>
+        <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
+        <p>
+          <strong>Subcards</strong>
+        </p>
         {showSubcards ? <ContentSubs depth={1} cardContent={variant} /> : null}
       </Flex>
     );

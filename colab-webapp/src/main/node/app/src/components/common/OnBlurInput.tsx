@@ -85,7 +85,7 @@ export default function OnBlurInput({
       >
         <>
           <label>{label}</label>
-          {state ? state : <i>{placeholder}</i>}
+          <span className={className}>{state ? state : <i>{placeholder}</i>}</span>
         </>
       </WithToolbar>
     );
