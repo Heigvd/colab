@@ -6,10 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faFile as farFile,
-  faStickyNote as farStickyNote,
-} from '@fortawesome/free-regular-svg-icons/';
 import { faCog, faFile, faStickyNote } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent } from 'colab-rest-client';
@@ -22,7 +18,6 @@ import { useCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AutoSaveInput from '../common/AutoSaveInput';
 import Flex from '../common/Flex';
-import IconButton from '../common/IconButton';
 import OnBlurInput from '../common/OnBlurInput';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
@@ -42,11 +37,6 @@ interface Props {
   variant: CardContent;
   showSubcards?: boolean;
 }
-
-const rightPanelStyle = css({
-  borderLeft: '1px solid #c2c2c2',
-  paddingLeft: '5px',
-});
 
 const barHeight = '18px';
 
@@ -154,7 +144,7 @@ Props): JSX.Element {
               }),
             )}
           >
-            <SideCollapsiblePanel open={showStickyNote} toggleOpen={toggleShowStickyNotes} icon={faStickyNote}>
+            <SideCollapsiblePanel open={showStickyNote} toggleOpen={toggleShowStickyNotes} icon={faStickyNote} title='sticky notes'>
               <StickyNoteWrapper destCardId={card.id} showSrc />  
             </SideCollapsiblePanel>
               <Flex direction="column" grow={1}>
@@ -202,18 +192,6 @@ Props): JSX.Element {
                         >
                           {close => <CardSettings onClose={close} card={card} variant={variant} />}
                         </OpenCloseModal>
-
-                        <IconButton
-                          icon={showStickyNote ? faStickyNote : farStickyNote}
-                          title="Toggle sticky notes" 
-                          onClick={toggleShowStickyNotes}
-                        />
-
-                        <IconButton
-                          icon={rightPanel === 'RESOURCES' ? faFile : farFile}
-                          title="Toggle references" 
-                          onClick={toggleResourcePanel}
-                        />
                       </Flex>
                     </Flex>
                     <h4>Purpose</h4>
@@ -270,9 +248,8 @@ Props): JSX.Element {
                   </OpenCloseModal>
                 </Flex>
               </Flex>
-
-              {rightPanel !== 'NONE' ? (
-                <Flex shrink={1} className={rightPanelStyle}>
+              <SideCollapsiblePanel open={rightPanel === 'RESOURCES'} toggleOpen={toggleResourcePanel} icon={faFile} direction='RIGHT' title='Resources'>
+                <Flex shrink={1}>
                   {rightPanel === 'RESOURCES'
                     ? card.id &&
                       variant?.id && (
@@ -287,7 +264,7 @@ Props): JSX.Element {
                       )
                     : null}
                 </Flex>
-              ) : null}
+              </SideCollapsiblePanel>
           </Flex>
         </Flex>
         {showSubcards ? <ContentSubs depth={1} cardContent={variant} /> : null}

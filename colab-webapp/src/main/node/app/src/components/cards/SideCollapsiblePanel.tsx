@@ -11,15 +11,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
-import {paddingAroundStyle, space_M, space_S } from '../styling/style';
+import { paddingAroundStyle, space_M, space_S } from '../styling/style';
 
 export interface SideCollapsiblePanelProps {
   icon?: IconProp;
   open: boolean;
-  toggleOpen: ()=>void;
+  toggleOpen: () => void;
   children?: React.ReactNode;
   className?: string;
-  direction?: "LEFT" | "RIGHT";
+  direction?: 'LEFT' | 'RIGHT';
+  title?: string;
 }
 
 export default function SideCollapsiblePanel({
@@ -28,15 +29,41 @@ export default function SideCollapsiblePanel({
   toggleOpen,
   children,
   className,
-  direction = "LEFT",
+  direction = 'LEFT',
+  title,
 }: SideCollapsiblePanelProps): JSX.Element {
   return (
-      <Flex direction="row" className={cx(css({padding: space_M}), className)}>
-          <Flex direction='column'>
-              <IconButton icon={open ? faChevronLeft : faChevronRight} title={open ? "Close" : "Open"} onClick={toggleOpen} />
-              {icon && <FontAwesomeIcon icon={icon} />}
-          </Flex>
-          {open && children}
+    <Flex
+      direction="row"
+      align="stretch"
+      className={cx(
+        (direction === 'LEFT')
+          ? open && css({ borderRight: '1px solid var(--disabledGrey)' })
+          : open && css({ borderLeft: '1px solid var(--disabledGrey)' }),
+        className,
+      )}
+    >
+      {open && direction === 'RIGHT' && <Flex className={css({ padding: space_M })}>{children}</Flex>}
+      <Flex
+        direction="column"
+        justify="flex-start"
+        align="center"
+        grow={1}
+        className={cx(
+          direction === 'LEFT'
+            ? css({ borderRight: '1px solid var(--disabledGrey)' })
+            : css({ borderLeft: '1px solid var(--disabledGrey)' }),
+          css({ padding: space_M + ' ' + space_S }),
+        )}
+      >
+        <IconButton
+          icon={open ? (direction === 'LEFT' ? faChevronLeft : faChevronRight) : (direction === 'LEFT' ? faChevronRight : faChevronLeft)}
+          title={title ? (open ? 'Close ' + title : 'Open ' + title) : (open ? 'Close' : 'Open')}
+          onClick={toggleOpen}
+        />
+        {icon && <FontAwesomeIcon icon={icon} className={paddingAroundStyle([1, 3], space_S)} title={title} />}
       </Flex>
+      {open && direction === 'LEFT' && <Flex className={css({ padding: space_M })}>{children}</Flex>}
+    </Flex>
   );
 }
