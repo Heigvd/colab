@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
 import { linkStyle } from '../styling/style';
@@ -69,7 +69,9 @@ export default function OpenCloseModal({
         <Route
           path="*"
           element={
-            <NavLink className={linkStyle} to={route}>
+            <NavLink className={cx(linkStyle, css({'&:hover': {
+              textDecoration: 'none'
+            }}))} to={route}>
               {collapsedChildren}
             </NavLink>
           }

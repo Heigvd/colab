@@ -156,8 +156,7 @@ Props): JSX.Element {
                 direction="column"
                 grow={1}
                 className={css({
-                  padding: '10px',
-                  flexGrow: 1,
+                  padding: '10px',                  
                 })}
                 align="stretch"
               >

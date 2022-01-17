@@ -12,6 +12,7 @@ import * as React from 'react';
 import { getSubCards } from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import Button from '../common/Button';
+import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
 import { depthMax } from '../projects/edition/Editor';
 import { fixedButtonStyle, flex } from '../styling/style';
@@ -26,8 +27,8 @@ interface Props {
 const tinyCard = css({
   width: '30px',
   height: '20px',
-  border: '1px solid grey',
   borderRadius: '2px',
+  boxShadow: '0px 0px 3px 1px rgba(0, 0, 0, 0.1)',
 });
 
 const flexWrap = css({
@@ -101,19 +102,13 @@ export default function ContentSubs({
       );
     } else {
       return depth > 0 ? (
-        <div className={cx(flexWrap, css({flexDirection: 'column'}))}>
-          <div
-            className={css({
-              flexDirection: 'row',
-              display: 'flex',
-              flexWrap: 'wrap',
-            })}
-          >
+        <div className={cx(flexWrap, css({ flexDirection: 'column' }))}>
+          <Flex wrap="wrap" align="flex-start">
             {subCards.map(sub => (
               <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
             ))}
-          </div>
-          <div className={cx(flex, css({justifyContent: 'center'}))}>
+          </Flex>
+          <div className={cx(flex, css({ justifyContent: 'center' }))}>
             <CardCreator
               parent={cardContent}
               customButton={
@@ -131,7 +126,7 @@ export default function ContentSubs({
           {subCards.map(sub => (
             <div
               key={sub.id}
-              className={cx(tinyCard, css({ backgroundColor: sub.color || 'grey' }))}
+              className={cx(tinyCard, css({ backgroundColor: sub.color || 'var(--pictoGrey)' }))}
             ></div>
           ))}
         </div>

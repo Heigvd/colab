@@ -18,7 +18,7 @@ const progressBarContainer = css({
   width: '100%',
 });
 
-const progressBarStyle = (width: number) =>
+export const progressBarStyle = (width: number) =>
   css({
     width: `${width}%`,
     height: 'inherit',

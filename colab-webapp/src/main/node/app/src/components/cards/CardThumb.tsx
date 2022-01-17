@@ -6,6 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faFile, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import {
   faEllipsisV,
   faExclamationTriangle,
@@ -18,9 +19,11 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
+import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
 import DropDownMenu from '../common/DropDownMenu';
+import Flex from '../common/Flex';
 import OpenCloseModal from '../common/OpenCloseModal';
 import { errorColor, flex, lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import CardLayout from './CardLayout';
@@ -44,6 +47,7 @@ export default function CardThumb({
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const nbStickyNotes = card.id && useStickyNoteLinksForDest(card.id).stickyNotesForDest.length;
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
@@ -61,118 +65,146 @@ export default function CardThumb({
           >
             <div
               className={css({
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
                 padding: space_S + ' ' + space_S + ' ' + space_S + ' ' + space_M,
               })}
             >
-              <div className={css({ fontWeight: 'bold' })}>{card.title || i18n.card.untitled}</div>
-              <DropDownMenu
-                icon={faEllipsisV}
-                valueComp={{ value: '', label: '' }}
-                buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
-                entries={[
-                  {
-                    value: 'edit card',
-                    label: (
-                      <>
-                        <FontAwesomeIcon icon={faPen} /> Edit Card
-                      </>
-                    ),
-                    action: () => {
-                      const path = `edit/${card.id}/v/${variant?.id}`;
-                      if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
-                        navigate(`../${path}`);
-                      } else {
-                        navigate(`${path}`);
-                      }
+              <div
+                className={css({
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                })}
+              >
+                <div>
+                  <span className={css({ fontWeight: 'bold' })}>
+                    {card.title || i18n.card.untitled}
+                  </span>
+                  {variants.length > 1 ? (
+                    variant?.title ? (
+                      <span> - {variant.title}</span>
+                    ) : (
+                      <i> - {i18n.content.untitled}</i>
+                    )
+                  ) : null}
+                </div>
+                <DropDownMenu
+                  icon={faEllipsisV}
+                  valueComp={{ value: '', label: '' }}
+                  buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                  entries={[
+                    {
+                      value: 'edit card',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faPen} /> Edit Card
+                        </>
+                      ),
+                      action: () => {
+                        const path = `edit/${card.id}/v/${variant?.id}`;
+                        if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+                          navigate(`../${path}`);
+                        } else {
+                          navigate(`${path}`);
+                        }
+                      },
                     },
-                  },
-                  {
-                    value: 'Delete card',
-                    label: (
-                      <>
-                        <OpenCloseModal
-                          title="Delete card"
-                          collapsedChildren={
-                            <div className={css({ pointerEvents: 'none' })}>
-                              <FontAwesomeIcon icon={faTrash} /> Delete card
-                            </div>
-                          }
-                        >
-                          {collapse => (
-                            <div>
-                              <FontAwesomeIcon icon={faExclamationTriangle} />
-                              <FontAwesomeIcon icon={faExclamationTriangle} />
-                              <FontAwesomeIcon icon={faExclamationTriangle} />
-                              {variants.length > 1 && variant != null ? (
-                                <p>
-                                  Are you <strong>sure</strong> you want to delete this whole
-                                  variant? This will delete all subcards inside.
-                                </p>
-                              ) : (
-                                <p>
-                                  Are you <strong>sure</strong> you want to delete this whole card?
-                                  This will delete all subcards inside.
-                                </p>
-                              )}
-                              <div className={flex}>
+                    {
+                      value: 'Delete card',
+                      label: (
+                        <>
+                          <OpenCloseModal
+                            title="Delete card"
+                            collapsedChildren={
+                              <>
+                                <FontAwesomeIcon icon={faTrash} /> Delete card
+                              </>
+                            }
+                            className={css({ '&:hover': { textDecoration: 'none' } })}
+                          >
+                            {collapse => (
+                              <div>
+                                <FontAwesomeIcon icon={faExclamationTriangle} />
+                                <FontAwesomeIcon icon={faExclamationTriangle} />
+                                <FontAwesomeIcon icon={faExclamationTriangle} />
                                 {variants.length > 1 && variant != null ? (
-                                  // several variants, delete the current one
-                                  <Button
-                                    title="Confirm delete"
-                                    onClick={() => dispatch(API.deleteCardContent(variant))}
-                                    className={css({
-                                      backgroundColor: errorColor,
-                                      marginRight: space_M,
-                                    })}
-                                  >
-                                    Delete variant
-                                  </Button>
+                                  <p>
+                                    Are you <strong>sure</strong> you want to delete this whole
+                                    variant? This will delete all subcards inside.
+                                  </p>
                                 ) : (
-                                  // last variant : delete the whole card
-                                  <Button
-                                    title="Confirm delete"
-                                    onClick={() => dispatch(API.deleteCard(card))}
-                                    className={css({
-                                      backgroundColor: errorColor,
-                                      marginRight: space_M,
-                                    })}
-                                  >
-                                    Delete card
-                                  </Button>
+                                  <p>
+                                    Are you <strong>sure</strong> you want to delete this whole
+                                    card? This will delete all subcards inside.
+                                  </p>
                                 )}
-                                <Button title="Cancel delete" onClick={() => collapse()}>
-                                  Cancel
-                                </Button>
+                                <div className={flex}>
+                                  {variants.length > 1 && variant != null ? (
+                                    // several variants, delete the current one
+                                    <Button
+                                      title="Confirm delete"
+                                      onClick={() => {
+                                        dispatch(API.deleteCardContent(variant));
+                                        collapse();
+                                      }}
+                                      className={css({
+                                        backgroundColor: errorColor,
+                                        marginRight: space_M,
+                                      })}
+                                    >
+                                      Delete variant
+                                    </Button>
+                                  ) : (
+                                    // last variant : delete the whole card
+                                    <Button
+                                      title="Confirm delete"
+                                      onClick={() => dispatch(API.deleteCard(card))}
+                                      className={css({
+                                        backgroundColor: errorColor,
+                                        marginRight: space_M,
+                                      })}
+                                    >
+                                      Delete card
+                                    </Button>
+                                  )}
+                                  <Button title="Cancel delete" onClick={() => collapse()}>
+                                    Cancel
+                                  </Button>
+                                </div>
                               </div>
-                            </div>
-                          )}
-                        </OpenCloseModal>
-                      </>
-                    ),
-                  },
-                ]}
-                onSelect={val => {
-                  val.action != null ? val.action() : navigate(val.value);
-                }}
-              />
-            </div>
-            <div>
-              {variants.length > 1 ? (
-                variant?.title ? (
-                  <span>{variant.title}</span>
-                ) : (
-                  <i>{i18n.content.untitled}</i>
-                )
-              ) : null}
+                            )}
+                          </OpenCloseModal>
+                        </>
+                      ),
+                    },
+                  ]}
+                  onSelect={val => {
+                    val.action != null ? val.action() : navigate(val.value);
+                  }}
+                />
+              </div>
+              <Flex
+                className={css({
+                  color: 'var(--disabledGrey)',
+                  gap: space_M,
+                  fontSize: '0.85em',
+                  paddingRight: space_S,
+                })}
+              >
+                <div>
+                  <FontAwesomeIcon icon={faStickyNote} /> {nbStickyNotes}
+                </div>
+                {/* TODO get nb of resources (not in store)*/}
+                <div>
+                  <FontAwesomeIcon icon={faFile} /> 0
+                </div>
+              </Flex>
             </div>
           </div>
-          <div
+          <Flex
+            grow={1}
+            align="stretch"
             className={css({
-              padding: '10px',
-              flexGrow: 1,
+              padding: space_M,
             })}
           >
             {showSubcards ? (
@@ -182,7 +214,7 @@ export default function CardThumb({
                 <i>{i18n.content.none}</i>
               )
             ) : null}
-          </div>
+          </Flex>
         </>
       </CardLayout>
     );
