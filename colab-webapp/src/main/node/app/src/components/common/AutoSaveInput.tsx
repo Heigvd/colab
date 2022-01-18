@@ -81,6 +81,11 @@ export default function AutoSaveInput({
     },
     [debouncedOnChange],
   );
+  const onEnter = (event: React.KeyboardEvent) => {
+    if(event.key == "Enter") {
+      displayCb();
+    }
+  }
 
   const editCb = React.useCallback(() => {
     setState(state => ({ ...state, status: 'EDIT' }));
@@ -102,6 +107,7 @@ export default function AutoSaveInput({
               onChange={onInternalChangeCb}
               autoFocus
               className={cx(invisibleInputStyle, (className || ''))}
+              onKeyPress={onEnter}
             />
           ) : (
             <textarea
@@ -110,6 +116,7 @@ export default function AutoSaveInput({
               onChange={onInternalChangeCb}
               autoFocus
               className={cx(invisibleTextareaStyle, (className || ''))}
+              onKeyPress={onEnter}
             />
           )}
         </label>

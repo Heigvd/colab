@@ -69,12 +69,11 @@ export default function CardLayout({
     e => {
       if (variant != null) {
         const path = `edit/${card.id}/v/${variant.id}`;
+        e?.stopPropagation();
         if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
           navigate(`../${path}`);
-          e?.stopPropagation();
         } else {
           navigate(`${path}`);
-          e?.stopPropagation();
         }
       }
     },

@@ -405,6 +405,7 @@ export const invisibleInputStyle = cx(
     lineHeight: '120%',
     fontSize: 'inherit',
     '&:focus': { outline: 'none' },
+    width: 'fit-content',
   }),
 );
 

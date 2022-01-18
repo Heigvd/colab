@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { shallowEqual, TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, ColabState } from './store';
 
@@ -68,23 +68,28 @@ export const customColabStateEquals = (a: unknown, b: unknown): boolean => {
 /**
  * Allows to use both onClick and onDoubleClick on the same component.
  */
-export function useSingleAndDoubleClick(actionSimpleClick:(e?:React.MouseEvent)=>void, actionDoubleClick:(e?:React.MouseEvent)=>void, delay = 250) {
-  const [click, setClick] = useState(0);
+export function useSingleAndDoubleClick(actionSimpleClick:(e?:React.MouseEvent)=>void, actionDoubleClick:(e?:React.MouseEvent)=>void, stopPropag = true, delay = 250) {
+  const [clickEvent, setClickEvent] = useState<{nbClick: number, event?: React.MouseEvent}>({nbClick: 0, event: undefined});
 
   useEffect(() => {
+    if(stopPropag) {
+      clickEvent.event?.stopPropagation();
+    }
       const timer = setTimeout(() => {
           // simple click
-          if (click === 1) actionSimpleClick();
-          setClick(0);
+          if (clickEvent.nbClick === 1) actionSimpleClick(clickEvent.event);
+          setClickEvent({nbClick: 0, event: undefined});
       }, delay);
-
       // the duration between this click and the previous one
       // is less than the value of delay = double-click
-      if (click === 2) actionDoubleClick();
+      if (clickEvent.nbClick === 2) {
+        clearTimeout(timer);
+        actionDoubleClick(clickEvent.event);
+      }
 
       return () => clearTimeout(timer);
       
-  }, [click]);
+  }, [clickEvent]);
 
-  return () => setClick(prev => prev + 1);
+  return (e: React.MouseEvent) => setClickEvent(prev => ({nbClick: prev.nbClick + 1, event: e}));
 }
