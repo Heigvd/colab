@@ -92,7 +92,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
         />
       ) : (
         <Select
-          className={inputStyle}
+          //className={inputStyle}
           isMulti={isMulti}
           placeholder={placeholder}
           value={currentValue}

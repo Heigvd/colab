@@ -18,15 +18,16 @@ import { useCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AutoSaveInput from '../common/AutoSaveInput';
 import Flex from '../common/Flex';
+import Input from '../common/Form/Input';
+import SelectInput from '../common/Form/SelectInput';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
-import InlineInput from '../common/InlineInput';
 import { DocumentEditorAsDeliverableWrapper } from '../documents/DocumentEditorWrapper';
 import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
-import { cardStyle, cardTitle, space_S } from '../styling/style';
+import { cardStyle, cardTitle, space_M, space_S } from '../styling/style';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
 import SideCollapsiblePanel from './SideCollapsiblePanel';
@@ -62,7 +63,13 @@ const progressBar = (width: number) =>
     backgroundColor: '#00DDB3',
   });
 
-function ProgressBar({ variant, className }: { variant: CardContent | undefined, className?: string }) {
+function ProgressBar({
+  variant,
+  className,
+}: {
+  variant: CardContent | undefined;
+  className?: string;
+}) {
   const percent = variant != null ? variant.completionLevel : 0;
   return (
     <div className={cx(progressBarContainer, className)}>
@@ -157,7 +164,7 @@ Props): JSX.Element {
                 direction="column"
                 grow={1}
                 className={css({
-                  padding: '10px',                  
+                  padding: '10px',
                 })}
                 align="stretch"
               >
@@ -228,21 +235,22 @@ Props): JSX.Element {
                   title="Edit card completion"
                   className={css({ width: '100%' })}
                   showCloseButton={true}
-                  collapsedChildren={<ProgressBar variant={variant} className={css({'&:hover, &:hover div': {
-                    cursor: 'pointer',
-                    backgroundColor: 'var(--fgColor)',
-                  }})}/>}
+                  collapsedChildren={
+                    <ProgressBar
+                      variant={variant}
+                      className={css({
+                        '&:hover, &:hover div': {
+                          cursor: 'pointer',
+                          backgroundColor: 'var(--fgColor)',
+                        },
+                      })}
+                    />
+                  }
                 >
                   {() => (
                     <Flex direction="column">
-                      <Tips tipsType="TODO">
-                        Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set
-                        completion; Auto: based on children; No: do not event diplay the bar
-                        <br />
-                        Shall we move all of this to card settings ??
-                      </Tips>
-                      <InlineInput
-                        //label='Completion level'
+                      <Input
+                        label="Completion level"
                         //inputType="INPUT"
                         value={String(variant.completionLevel || 0)}
                         onChange={newValue =>
@@ -250,7 +258,24 @@ Props): JSX.Element {
                             API.updateCardContent({ ...variant, completionLevel: +newValue }),
                           )
                         }
+                        className={css({marginBottom: space_M})}
                       />
+                      <Flex>
+                        <SelectInput
+                          value={String(variant.completionMode)}
+                          label="Completion mode"
+                          placeholder={String(variant.completionMode)}
+                          options={[]}
+                          onChange={() => {}}
+                          isMulti={false}
+                        />
+                        <Tips tipsType="TODO">
+                          Select completion mode (MANUAL | AUTO | NO_OP). Manual: input to set
+                          completion; Auto: based on children; No: do not event diplay the bar
+                          <br />
+                          Shall we move all of this to card settings ??
+                        </Tips>
+                      </Flex>
                     </Flex>
                   )}
                 </OpenCloseModal>
