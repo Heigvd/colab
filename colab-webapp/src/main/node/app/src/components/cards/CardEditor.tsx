@@ -20,6 +20,7 @@ import AutoSaveInput from '../common/AutoSaveInput';
 import Flex from '../common/Flex';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
+import InlineInput from '../common/InlineInput';
 import { DocumentEditorAsDeliverableWrapper } from '../documents/DocumentEditorWrapper';
 import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
@@ -61,10 +62,10 @@ const progressBar = (width: number) =>
     backgroundColor: '#00DDB3',
   });
 
-function ProgressBar({ variant }: { variant: CardContent | undefined }) {
+function ProgressBar({ variant, className }: { variant: CardContent | undefined, className?: string }) {
   const percent = variant != null ? variant.completionLevel : 0;
   return (
-    <div className={progressBarContainer}>
+    <div className={cx(progressBarContainer, className)}>
       <div className={valueStyle}>{percent}%</div>
       <div className={progressBar(percent)}></div>
     </div>
@@ -227,7 +228,10 @@ Props): JSX.Element {
                   title="Edit card completion"
                   className={css({ width: '100%' })}
                   showCloseButton={true}
-                  collapsedChildren={<ProgressBar variant={variant} />}
+                  collapsedChildren={<ProgressBar variant={variant} className={css({'&:hover, &:hover div': {
+                    cursor: 'pointer',
+                    backgroundColor: 'var(--fgColor)',
+                  }})}/>}
                 >
                   {() => (
                     <Flex direction="column">
@@ -237,8 +241,9 @@ Props): JSX.Element {
                         <br />
                         Shall we move all of this to card settings ??
                       </Tips>
-                      <AutoSaveInput
-                        inputType="INPUT"
+                      <InlineInput
+                        //label='Completion level'
+                        //inputType="INPUT"
                         value={String(variant.completionLevel || 0)}
                         onChange={newValue =>
                           dispatch(
