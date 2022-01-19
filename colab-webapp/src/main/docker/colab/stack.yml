@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:4.4
+  db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+  colab:
+    image: ghcr.io/heigvd/colab:${COLAB_VERSION}
+    restart: always
+    depends_on:
+      - db
+      - mongo
+    ports:
+      - 8080:8080
+      - 8181:8181
+    environment:
+      INTERFACES: ${INTERFACES}
+      COLAB_DATABASE_HOST: db
+      COLAB_DATABASE_PORT: 5432
+      COLAB_DATABASE_NAME: ${DB_NAME}
+      COLAB_DATABASE_USER: ${DB_USER}
+      COLAB_DATABASE_PASSWORD: ${DB_PASSWORD}
+      COLAB_DEFAULT_ADMIN_EMAIL: ${ADMIN_EMAIL}
+      COLAB_DEFAULT_ADMIN_USERNAME: ${ADMIN_USERNAME}
+      COLAB_DEFAULT_ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      COLAB_JCR_MONGODB_URI: "mongodb://mongo/oak"
+    volumes:
+      - type: bind
+        source: ../../../../colab.properties
+        target: /var/lib/colab/colab.properties
+        read_only: true

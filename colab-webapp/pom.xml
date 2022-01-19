@@ -113,15 +113,15 @@
                   <goal>copy-resources</goal>
                 </goals>
                 <configuration>
-                    <outputDirectory>${basedir}/target/coLAB/</outputDirectory>
-                    <resources>
-                        <resource>
-                          <directory>src/main/node/app/public</directory>
-                          <includes>
-                            <include>**</include>
-                          </includes>
-                        </resource>
-                    </resources>
+                  <outputDirectory>${basedir}/target/coLAB/</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>src/main/node/app/public</directory>
+                      <includes>
+                        <include>**</include>
+                      </includes>
+                    </resource>
+                  </resources>
                 </configuration>
               </execution>
             </executions>
@@ -211,6 +211,41 @@
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
+      </plugin>
+
+
+      <!-- Due to docker build context design (no way to copy files from parent directories),
+          we have to copy required files to the docker directory ...-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>move file to docker build context</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/src/main/docker/colab/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}</directory>
+                  <includes>
+                    <include>run</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>${basedir}/target</directory>
+                  <includes>
+                    <include>coLAB.war</include>
+                    <include>payara-micro.current.jar</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>
