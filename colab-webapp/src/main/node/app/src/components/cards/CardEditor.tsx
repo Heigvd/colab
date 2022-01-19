@@ -359,7 +359,6 @@ Props): JSX.Element {
               direction="RIGHT"
               title="Resources"
             >
-              <Flex shrink={1}>
                 {rightPanel === 'RESOURCES'
                   ? card.id &&
                     variant?.id && (
@@ -373,7 +372,6 @@ Props): JSX.Element {
                       />
                     )
                   : null}
-              </Flex>
             </SideCollapsiblePanel>
           </Flex>
         </Flex>

@@ -19,7 +19,11 @@ import { ResourceCallContext, ResourceContextScope } from './ResourceCommonType'
  * the context in which we create a new resource
  */
 
-export type ResourceCreatorProps = { contextInfo: ResourceCallContext; categories: string[] };
+export type ResourceCreatorProps = {
+  contextInfo: ResourceCallContext;
+  categories: string[];
+  className?: string;
+};
 
 const defaultDocType = 'BlockDocument';
 
@@ -42,6 +46,7 @@ const defaultResource: ResourceType = {
 export default function ResourceCreator({
   contextInfo,
   categories,
+  className,
 }: ResourceCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
 
@@ -101,7 +106,7 @@ export default function ResourceCreator({
   return (
     <OpenCloseModal
       title="Create a resource"
-      collapsedChildren={<IconButton title="add a sticky note" icon={addIcon} />}
+      collapsedChildren={<IconButton title="add a sticky note" icon={addIcon} className={className}/>}
     >
       {collapse => (
         <div className={css({ padding: modalPadding })}>

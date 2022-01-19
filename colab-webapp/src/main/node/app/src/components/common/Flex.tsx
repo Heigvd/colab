@@ -12,6 +12,7 @@ export interface FlexProps {
   theRef?: React.Ref<HTMLDivElement>;
   direction?: 'row' | 'column';
   className?: string;
+  title?: string;
   onClick?: () => void;
   shrink?: CSSObject['flexShrink'];
   grow?: CSSObject['flexGrow'];
@@ -48,6 +49,7 @@ export default function Flex({
   onClick,
   overflow,
   className,
+  title,
   wrap,
   shrink,
   grow,
@@ -74,6 +76,7 @@ export default function Flex({
         }),
         className,
       )}
+      title={title}
     >
       {children}
     </div>
