@@ -108,7 +108,6 @@ Props): JSX.Element {
   const purpose = useBlock(cardType?.purposeId);
   const contents = useVariantsOrLoad(card);
   const variantPager = computeNav(contents, variant.id);
-  
 
   const [showStickyNote, setShowStickyNote] = useLocalStorage('showStickNotes', false);
 
@@ -211,14 +210,6 @@ Props): JSX.Element {
                       ) : null}
                     </Flex>
                     <Flex>
-                      <OpenCloseModal
-                        title="Card Settings"
-                        route="settings"
-                        showCloseButton={true}
-                        collapsedChildren={<FontAwesomeIcon icon={faCog} />}
-                      >
-                        {close => <CardSettings onClose={close} card={card} variant={variant} />}
-                      </OpenCloseModal>
                       <DropDownMenu
                         icon={faEllipsisV}
                         valueComp={{ value: '', label: '' }}
@@ -227,40 +218,58 @@ Props): JSX.Element {
                           {
                             value: 'Delete card or variant',
                             label: (
-                                <ConfirmDeleteModal
-                                  buttonLabel={
-                                    <>
-                                      <FontAwesomeIcon icon={faTrash} />
-                                      {hasVariants ? ' Delete variant' : ' Delete card'}
-                                    </>
+                              <ConfirmDeleteModal
+                                buttonLabel={
+                                  <>
+                                    <FontAwesomeIcon icon={faTrash} />
+                                    {hasVariants ? ' Delete variant' : ' Delete card'}
+                                  </>
+                                }
+                                message={
+                                  hasVariants ? (
+                                    <p>
+                                      Are you <strong>sure</strong> you want to delete this whole
+                                      variant? This will delete all subcards inside.
+                                    </p>
+                                  ) : (
+                                    <p>
+                                      Are you <strong>sure</strong> you want to delete this whole
+                                      card? This will delete all subcards inside.
+                                    </p>
+                                  )
+                                }
+                                onConfirm={() => {
+                                  if (hasVariants) {
+                                    dispatch(API.deleteCardContent(variant));
+                                    navigate(`../edit/${card.id}/v/${variantPager?.next.id}`);
+                                  } else {
+                                    dispatch(API.deleteCard(card));
+                                    navigate('../');
                                   }
-                                  message={
-                                    hasVariants ? (
-                                      <p>
-                                        Are you <strong>sure</strong> you want to delete this whole
-                                        variant? This will delete all subcards inside.
-                                      </p>
-                                    ) : (
-                                      <p>
-                                        Are you <strong>sure</strong> you want to delete this whole
-                                        card? This will delete all subcards inside.
-                                      </p>
-                                    )
-                                  }
-                                  onConfirm={() => {
-                                    if (hasVariants) {
-                                      dispatch(API.deleteCardContent(variant));
-                                      navigate(`../edit/${card.id}/v/${variantPager?.next.id}`);
-
-                                    } else {
-                                      dispatch(API.deleteCard(card));
-                                      navigate('../')
-                                    }
-                                  }}
-                                  confirmButtonLabel={
-                                    hasVariants ? 'Delete variant' : 'Delete card'
-                                  }
-                                />
+                                }}
+                                confirmButtonLabel={hasVariants ? 'Delete variant' : 'Delete card'}
+                              />
+                            ),
+                          },
+                          {
+                            value: 'Card settings',
+                            label: (
+                              <OpenCloseModal
+                                title="Card Settings"
+                                route="settings"
+                                showCloseButton={true}
+                                collapsedChildren={
+                                  <>
+                                    <FontAwesomeIcon icon={faCog} title="Card settings" /> Card
+                                    Settings
+                                  </>
+                                }
+                                className={css({ '&:hover': { textDecoration: 'none' } })}
+                              >
+                                {close => (
+                                  <CardSettings onClose={close} card={card} variant={variant} />
+                                )}
+                              </OpenCloseModal>
                             ),
                           },
                         ]}

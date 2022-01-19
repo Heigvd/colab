@@ -355,6 +355,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
 
   const entryStyle = css({
     textDecoration: 'none',
+    color: 'var(--fgColor)',
     padding: space_S,
     ':focus': {
       outlineStyle: 'inset',

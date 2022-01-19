@@ -183,6 +183,7 @@ export const pulseEase = css`
 
 export const linkStyle = css({
   cursor: 'pointer',
+  color: 'inherit',
   ':hover': {
     color: 'var(--hoverFgColor)',
     textDecoration: 'underline'

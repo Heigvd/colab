@@ -69,7 +69,7 @@ export default function OpenCloseModal({
         <Route
           path="*"
           element={
-            <NavLink className={cx(linkStyle, css({'&:hover': {
+            <NavLink className={cx(linkStyle, css({textDecoration: 'none', '&:hover': {
               textDecoration: 'none'
             }}))} to={route}>
               {collapsedChildren}
