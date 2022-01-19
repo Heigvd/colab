@@ -25,7 +25,7 @@ interface Props {
   children: (variant: CardContent | undefined, list: CardContent[]) => JSX.Element;
 }
 
-const computeNav = (
+export const computeNav = (
   contents: CardContent[] | null | undefined,
   currentId: number | null | undefined,
 ) => {

@@ -9,7 +9,6 @@ import { css, cx } from '@emotion/css';
 import { faFile, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import {
   faEllipsisV,
-  faExclamationTriangle,
   faPen,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -21,11 +20,10 @@ import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch } from '../../store/hooks';
-import Button from '../common/Button';
+import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
-import OpenCloseModal from '../common/OpenCloseModal';
-import { errorColor, flex, lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import CardLayout from './CardLayout';
 import ContentSubs from './ContentSubs';
 
@@ -47,6 +45,7 @@ export default function CardThumb({
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const hasVariants = variants.length > 1 && variant != null;
   const nbStickyNotes = card.id && useStickyNoteLinksForDest(card.id).stickyNotesForDest.length;
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
@@ -111,69 +110,38 @@ export default function CardThumb({
                     {
                       value: 'Delete card',
                       label: (
-                        <>
-                          <OpenCloseModal
-                            title="Delete card"
-                            collapsedChildren={
-                              <>
-                                <FontAwesomeIcon icon={faTrash} /> Delete card
-                              </>
-                            }
-                            className={css({ '&:hover': { textDecoration: 'none' } })}
-                          >
-                            {collapse => (
-                              <div>
-                                <FontAwesomeIcon icon={faExclamationTriangle} />
-                                <FontAwesomeIcon icon={faExclamationTriangle} />
-                                <FontAwesomeIcon icon={faExclamationTriangle} />
-                                {variants.length > 1 && variant != null ? (
-                                  <p>
-                                    Are you <strong>sure</strong> you want to delete this whole
-                                    variant? This will delete all subcards inside.
-                                  </p>
-                                ) : (
-                                  <p>
-                                    Are you <strong>sure</strong> you want to delete this whole
-                                    card? This will delete all subcards inside.
-                                  </p>
-                                )}
-                                <div className={flex}>
-                                  {variants.length > 1 && variant != null ? (
-                                    // several variants, delete the current one
-                                    <Button
-                                      title="Confirm delete"
-                                      onClick={() => {
-                                        dispatch(API.deleteCardContent(variant));
-                                        collapse();
-                                      }}
-                                      className={css({
-                                        backgroundColor: errorColor,
-                                        marginRight: space_M,
-                                      })}
-                                    >
-                                      Delete variant
-                                    </Button>
-                                  ) : (
-                                    // last variant : delete the whole card
-                                    <Button
-                                      title="Confirm delete"
-                                      onClick={() => dispatch(API.deleteCard(card))}
-                                      className={css({
-                                        backgroundColor: errorColor,
-                                        marginRight: space_M,
-                                      })}
-                                    >
-                                      Delete card
-                                    </Button>
-                                  )}
-                                  <Button title="Cancel delete" onClick={() => collapse()}>
-                                    Cancel
-                                  </Button>
-                                </div>
-                              </div>
-                            )}
-                          </OpenCloseModal>
-                        </>
+                          <ConfirmDeleteModal
+                                  buttonLabel={
+                                    <>
+                                      <FontAwesomeIcon icon={faTrash} />
+                                      {hasVariants ? ' Delete variant' : ' Delete card'}
+                                    </>
+                                  }
+                                  message={
+                                    hasVariants ? (
+                                      <p>
+                                        Are you <strong>sure</strong> you want to delete this whole
+                                        variant? This will delete all subcards inside.
+                                      </p>
+                                    ) : (
+                                      <p>
+                                        Are you <strong>sure</strong> you want to delete this whole
+                                        card? This will delete all subcards inside.
+                                      </p>
+                                    )
+                                  }
+                                  onConfirm={() => {
+                                    if (hasVariants) {
+                                      dispatch(API.deleteCardContent(variant));
+                                    } else {
+                                      dispatch(API.deleteCard(card));
+                                      navigate('../')
+                                    }
+                                  }}
+                                  confirmButtonLabel={
+                                    hasVariants ? 'Delete variant' : 'Delete card'
+                                  }
+                                />
                       ),
                     },
                   ]}

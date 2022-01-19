@@ -6,13 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import {
-  faEdit,
-  faEllipsisV,
-  faExclamationTriangle,
-  faPlus,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEllipsisV, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
@@ -22,11 +16,11 @@ import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks'
 import { StateStatus } from '../../store/project';
 import AutoSaveInput from '../common/AutoSaveInput';
 import Button from '../common/Button';
+import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import InlineLoading from '../common/InlineLoading';
 import { InlineLink } from '../common/Link';
-import OpenCloseModal from '../common/OpenCloseModal';
-import { cardStyle, errorColor, fixedButtonStyle, flex, space_M, space_S } from '../styling/style';
+import { cardStyle, fixedButtonStyle, space_M, space_S } from '../styling/style';
 
 /* const cardInfoStyle = css({
   margin: space_S + ' 0',
@@ -82,42 +76,21 @@ const ProjectDisplay = ({ project }: Props) => {
             {
               value: 'Delete project',
               label: (
-                <>
-                  <OpenCloseModal
-                    title="Delete project"
-                    collapsedChildren={
-                      <div className={css({ pointerEvents: 'none' })}>
-                        <FontAwesomeIcon icon={faTrash} /> Delete project
-                      </div>
-                    }
-                  >
-                    {collapse => (
-                      <div>
-                        <FontAwesomeIcon icon={faExclamationTriangle} />
-                        <FontAwesomeIcon icon={faExclamationTriangle} />
-                        <FontAwesomeIcon icon={faExclamationTriangle} />
-                        <FontAwesomeIcon icon={faExclamationTriangle} />
-                        <FontAwesomeIcon icon={faExclamationTriangle} />
-                        <p>
-                          Are you <strong>sure</strong> you want to delete the whole project? This
-                          will delete all cards inside.
-                        </p>
-                        <div className={flex}>
-                          <Button
-                            title="Confirm delete"
-                            onClick={() => dispatch(API.deleteProject(project))}
-                            className={css({ backgroundColor: errorColor, marginRight: space_M })}
-                          >
-                            Delete project
-                          </Button>
-                          <Button title="Cancel delete" onClick={() => collapse()}>
-                            Cancel
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </OpenCloseModal>
-                </>
+                <ConfirmDeleteModal
+                  buttonLabel={
+                    <>
+                      <FontAwesomeIcon icon={faTrash} /> Delete project
+                    </>
+                  }
+                  message={
+                    <p>
+                      Are you <strong>sure</strong> you want to delete the whole project? This will
+                      delete all cards inside.
+                    </p>
+                  }
+                  onConfirm={() => dispatch(API.deleteProject(project))}
+                  confirmButtonLabel="Delete project"
+                />
               ),
             },
           ]}

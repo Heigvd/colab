@@ -6,10 +6,17 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faCog, faFile, faStickyNote } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCog,
+  faEllipsisV,
+  faFile,
+  faStickyNote,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useLocalStorage } from '../../preferences';
@@ -17,6 +24,8 @@ import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/car
 import { useCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AutoSaveInput from '../common/AutoSaveInput';
+import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
+import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import Input from '../common/Form/Input';
 import SelectInput from '../common/Form/SelectInput';
@@ -27,11 +36,11 @@ import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
-import { cardStyle, cardTitle, space_M, space_S } from '../styling/style';
+import { cardStyle, cardTitle, lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
 import SideCollapsiblePanel from './SideCollapsiblePanel';
-import { VariantPager } from './VariantSelector';
+import { computeNav, VariantPager } from './VariantSelector';
 
 interface Props {
   card: Card;
@@ -88,13 +97,18 @@ export default function CardEditor({
 Props): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const cardTypeFull = useCardType(card.cardTypeId);
   const cardType = cardTypeFull.cardType;
 
   const variants = useVariantsOrLoad(card) || [];
+  const hasVariants = variants.length > 1 && variant != null;
 
   const purpose = useBlock(cardType?.purposeId);
+  const contents = useVariantsOrLoad(card);
+  const variantPager = computeNav(contents, variant.id);
+  
 
   const [showStickyNote, setShowStickyNote] = useLocalStorage('showStickNotes', false);
 
@@ -181,7 +195,7 @@ Props): JSX.Element {
                         }
                         className={cardTitle}
                       />
-                      {variants.length > 1 ? (
+                      {hasVariants ? (
                         <>
                           {'/'}
                           <AutoSaveInput
@@ -205,6 +219,55 @@ Props): JSX.Element {
                       >
                         {close => <CardSettings onClose={close} card={card} variant={variant} />}
                       </OpenCloseModal>
+                      <DropDownMenu
+                        icon={faEllipsisV}
+                        valueComp={{ value: '', label: '' }}
+                        buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                        entries={[
+                          {
+                            value: 'Delete card or variant',
+                            label: (
+                                <ConfirmDeleteModal
+                                  buttonLabel={
+                                    <>
+                                      <FontAwesomeIcon icon={faTrash} />
+                                      {hasVariants ? ' Delete variant' : ' Delete card'}
+                                    </>
+                                  }
+                                  message={
+                                    hasVariants ? (
+                                      <p>
+                                        Are you <strong>sure</strong> you want to delete this whole
+                                        variant? This will delete all subcards inside.
+                                      </p>
+                                    ) : (
+                                      <p>
+                                        Are you <strong>sure</strong> you want to delete this whole
+                                        card? This will delete all subcards inside.
+                                      </p>
+                                    )
+                                  }
+                                  onConfirm={() => {
+                                    if (hasVariants) {
+                                      dispatch(API.deleteCardContent(variant));
+                                      navigate(`../edit/${card.id}/v/${variantPager?.next.id}`);
+
+                                    } else {
+                                      dispatch(API.deleteCard(card));
+                                      navigate('../')
+                                    }
+                                  }}
+                                  confirmButtonLabel={
+                                    hasVariants ? 'Delete variant' : 'Delete card'
+                                  }
+                                />
+                            ),
+                          },
+                        ]}
+                        onSelect={val => {
+                          val.action != null ? val.action() : navigate(val.value);
+                        }}
+                      />
                     </Flex>
                   </Flex>
                   <h4>Purpose</h4>
@@ -251,14 +314,13 @@ Props): JSX.Element {
                     <Flex direction="column">
                       <Input
                         label="Completion level"
-                        //inputType="INPUT"
                         value={String(variant.completionLevel || 0)}
                         onChange={newValue =>
                           dispatch(
                             API.updateCardContent({ ...variant, completionLevel: +newValue }),
                           )
                         }
-                        className={css({marginBottom: space_M})}
+                        className={css({ marginBottom: space_M })}
                       />
                       <Flex>
                         <SelectInput
