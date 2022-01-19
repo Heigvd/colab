@@ -41,7 +41,7 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
         <IconButton icon={faArrowLeft} title="Back" onClick={onClose} />
         <div>
           {entityIs(document, 'Document') ? (
-            resourceAndRef.targetResource.title || i18n.resource.untitled
+            resourceAndRef.targetResource.title|| i18n.resource.untitled
           ) : (
             <InlineLoading />
           )}
