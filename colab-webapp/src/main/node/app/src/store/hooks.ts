@@ -88,8 +88,8 @@ export function useSingleAndDoubleClick(actionSimpleClick:(e?:React.MouseEvent)=
       }
 
       return () => clearTimeout(timer);
-      
-  }, [clickEvent]);
+
+  }, [clickEvent, actionSimpleClick, actionDoubleClick, stopPropag, delay]);
 
   return (e: React.MouseEvent) => setClickEvent(prev => ({nbClick: prev.nbClick + 1, event: e}));
 }
