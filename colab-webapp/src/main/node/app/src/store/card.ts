@@ -163,7 +163,7 @@ const cardsSlice = createSlice({
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
         action.payload.cards.updated.forEach(card => updateCard(state, card));
-        action.payload.blocks.deleted.forEach(entry => removeCard(state, entry.id));
+        action.payload.cards.deleted.forEach(entry => removeCard(state, entry.id));
         action.payload.contents.updated.forEach(content => updateContent(state, content));
         action.payload.contents.deleted.forEach(entry => removeContent(state, entry.id));
       })
