@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useResource } from '../../selectors/resourceSelector';
+import { useResources } from '../../selectors/resourceSelector';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import { ResourceAndRef, ResourceCallContext, ResourceContextScope } from './ResourceCommonType';
@@ -23,7 +23,7 @@ export type ResourcesWrapperProps = ResourceCallContext;
 export default function ResourcesWrapper(contextInfo: ResourcesWrapperProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const { resourcesAndRefs, status } = useResource(contextInfo);
+  const { resourcesAndRefs, status } = useResources(contextInfo);
   const [selectedResource, selectResource] = React.useState<ResourceAndRef | null>(null);
 
   React.useEffect(() => {

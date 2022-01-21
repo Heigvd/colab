@@ -16,7 +16,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useLocalStorage } from '../../preferences';
@@ -29,6 +29,7 @@ import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import Input from '../common/Form/Input';
 import SelectInput from '../common/Form/SelectInput';
+import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
 import { DocumentEditorAsDeliverableWrapper } from '../documents/DocumentEditorWrapper';
@@ -98,6 +99,7 @@ Props): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const cardTypeFull = useCardType(card.cardTypeId);
   const cardType = cardTypeFull.cardType;
@@ -145,6 +147,13 @@ Props): JSX.Element {
       }
     }
   }, [cardTypeFull, cardType, dispatch, card.cardTypeId]);
+
+  const closeRouteCb = React.useCallback(
+    route => {
+      navigate(location.pathname.replace(new RegExp(route + '$'), ''));
+    },
+    [location.pathname, navigate],
+  );
 
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
@@ -210,6 +219,23 @@ Props): JSX.Element {
                       ) : null}
                     </Flex>
                     <Flex>
+                      {/* handle modal routes*/}
+                      <Routes>
+                        <Route
+                          path="settings"
+                          element={
+                            <Modal
+                              title="Card Settings"
+                              onClose={() => closeRouteCb('settings')}
+                              showCloseButton
+                            >
+                              {closeModal => (
+                                <CardSettings onClose={closeModal} card={card} variant={variant} />
+                              )}
+                            </Modal>
+                          }
+                        />
+                      </Routes>
                       <DropDownMenu
                         icon={faEllipsisV}
                         valueComp={{ value: '', label: '' }}
@@ -217,6 +243,7 @@ Props): JSX.Element {
                         entries={[
                           {
                             value: 'Delete card or variant',
+                            action: () => {},
                             label: (
                               <ConfirmDeleteModal
                                 buttonLabel={
@@ -252,24 +279,11 @@ Props): JSX.Element {
                             ),
                           },
                           {
-                            value: 'Card settings',
+                            value: 'settings',
                             label: (
-                              <OpenCloseModal
-                                title="Card Settings"
-                                route="settings"
-                                showCloseButton={true}
-                                collapsedChildren={
-                                  <>
-                                    <FontAwesomeIcon icon={faCog} title="Card settings" /> Card
-                                    Settings
-                                  </>
-                                }
-                                className={css({ '&:hover': { textDecoration: 'none' } })}
-                              >
-                                {close => (
-                                  <CardSettings onClose={close} card={card} variant={variant} />
-                                )}
-                              </OpenCloseModal>
+                              <>
+                                <FontAwesomeIcon icon={faCog} title="Card settings" /> Card Settings
+                              </>
                             ),
                           },
                         ]}
@@ -359,19 +373,19 @@ Props): JSX.Element {
               direction="RIGHT"
               title="Resources"
             >
-                {rightPanel === 'RESOURCES'
-                  ? card.id &&
-                    variant?.id && (
-                      <ResourcesWrapper
-                        kind={ResourceContextScope.CardOrCardContent}
-                        accessLevel={
-                          !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
-                        }
-                        cardId={card.id}
-                        cardContentId={variant.id}
-                      />
-                    )
-                  : null}
+              {rightPanel === 'RESOURCES'
+                ? card.id &&
+                  variant?.id && (
+                    <ResourcesWrapper
+                      kind={ResourceContextScope.CardOrCardContent}
+                      accessLevel={
+                        !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
+                      }
+                      cardId={card.id}
+                      cardContentId={variant.id}
+                    />
+                  )
+                : null}
             </SideCollapsiblePanel>
           </Flex>
         </Flex>

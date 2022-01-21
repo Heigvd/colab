@@ -49,8 +49,8 @@ export type CardOrCardContentContext = {
   kind: ResourceContextScope.CardOrCardContent;
   accessLevel: 'READ' | 'WRITE' | 'DENIED';
   // TODO see if cardTypeId could be usefull
-  cardId: number;
-  cardContentId: number;
+  cardId: number | undefined;
+  cardContentId: number | undefined;
 };
 
 export type ResourceCallContext = CardTypeContext | CardOrCardContentContext;

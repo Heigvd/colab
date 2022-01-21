@@ -71,7 +71,7 @@ function isDirect(contextInfo: ResourceCallContext, resource: Resource): boolean
   return false;
 }
 
-export const useResource = (
+export const useResources = (
   contextInfo: ResourceCallContext,
 ): { resourcesAndRefs: ResourceAndRef[]; status: LoadingStatus } => {
   return useAppSelector(state => {
@@ -83,7 +83,8 @@ export const useResource = (
     let cardContentId = 0;
     if (
       contextInfo.kind === ResourceContextScope.CardOrCardContent &&
-      contextInfo.cardContentId != null
+      contextInfo.cardContentId != null &&
+      contextInfo.cardId != null
     ) {
       // Note : no need to get the resource for the card
       // as every card content has a reference to each resource (or reference) of its card

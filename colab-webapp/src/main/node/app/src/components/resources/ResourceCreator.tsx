@@ -123,9 +123,9 @@ export default function ResourceCreator({
                   cardTypeId = contextInfo.cardTypeId;
                 } else {
                   if (state.atCardContentLevel) {
-                    cardContentId = contextInfo.cardContentId;
+                    cardContentId = contextInfo.cardContentId || null;
                   } else {
-                    cardId = contextInfo.cardId;
+                    cardId = contextInfo.cardId || null;
                   }
                 }
                 dispatch(
