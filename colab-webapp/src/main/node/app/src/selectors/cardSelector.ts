@@ -9,6 +9,7 @@ import { Card, CardContent, InvolvementLevel, Project } from 'colab-rest-client'
 import { mapValues, uniq } from 'lodash';
 import * as React from 'react';
 import * as API from '../API/api';
+import logger from '../logger';
 import { CardContentDetail, CardDetail } from '../store/card';
 import {
   customColabStateEquals,
@@ -357,7 +358,7 @@ export const useAndLoadCardACL = (cardId: number | null | undefined): CardAcl =>
   const acl = useCardACL(cardId);
 
   React.useEffect(() => {
-      logger.debug('Effect ', acl.status.missingCardId, ' | ', acl.status.missingAclCardId); 
+      logger.debug('Effect ', acl.status.missingCardId, ' | ', acl.status.missingAclCardId);
     if (acl.status.missingCardId != null) {
       logger.debug('Load Card #', acl.status.missingCardId);
       dispatch(API.getCard(acl.status.missingCardId));
