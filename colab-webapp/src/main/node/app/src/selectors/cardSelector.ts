@@ -345,7 +345,7 @@ const useCardACL = (cardId: number | null | undefined): CardAcl => {
         shallowEqual(a.self.roles, b.self.roles) &&
         customColabStateEquals(a.effective.members, b.effective.members) &&
         shallowEqual(a.effective.roles, b.effective.roles);
-      //logger.info('ACL equals ? ', a, b, result);
+      logger.debug('ACL equals ? ', a, b, result);
 
       return result;
     },
