@@ -359,7 +359,7 @@ export const useAndLoadCardACL = (cardId: number | null | undefined): CardAcl =>
   React.useEffect(() => {
       logger.debug('Effect ', acl.status.missingCardId, ' | ', acl.status.missingAclCardId); 
     if (acl.status.missingCardId != null) {
-      //logger.info('Load Card #', acl.status.missingCardId);
+      logger.debug('Load Card #', acl.status.missingCardId);
       dispatch(API.getCard(acl.status.missingCardId));
     }
 
