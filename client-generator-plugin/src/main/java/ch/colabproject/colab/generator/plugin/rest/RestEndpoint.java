@@ -577,6 +577,15 @@ public class RestEndpoint {
             } else {
                 sb.append("new GenericType<>(").append(resolvedReturnType).append(".class)");
             }
+
+            List<String> produces = method.getProduces();
+            if (produces != null && !produces.isEmpty()) {
+                String accept = produces.stream()
+                    .map(type -> "\"" + type + "\"")
+                    .collect(Collectors.joining(", "));
+                sb.append(", ").append(accept);
+            }
+
             sb.append(");");
             indent--;
             newLine(sb);
@@ -699,6 +708,7 @@ public class RestEndpoint {
                     sb.append("if (").append(queryParam.getName()).append(" != null){");
                     indent++;
                     newLine(sb);
+
                     sb.append("queryString.push('")
                         .append(queryParam.getInAnnotationName())
                         .append("=' + encodeURIComponent(").append(queryParam.getName())
@@ -749,12 +759,34 @@ public class RestEndpoint {
                         method.getFormParameters().forEach(formParam -> {
                             //indent++;
                             newLine(sb);
+                            sb.append("if(")
+                                .append(formParam.getName())
+                                .append(" as unknown instanceof Blob) {");
+
+                            indent++;
+                            newLine(sb);
+
                             sb.append("formData.append('")
                                 .append(formParam.getInAnnotationName())
                                 .append("', ")
                                 .append(formParam.getName())
-                                .append(");");
+                                .append(" as unknown as Blob);");
                             //indent--;
+                            indent--;
+                            newLine(sb);
+                            sb.append("} else {");
+                            indent++;
+                            newLine(sb);
+                            sb.append("formData.append('")
+                                .append(formParam.getInAnnotationName())
+                                .append("', ")
+                                .append(formParam.getName())
+                                .append(" ? '' + ")
+                                .append(formParam.getName())
+                                .append(" : '')");
+                            indent--;
+                            newLine(sb);
+                            sb.append("}");
                             newLine(sb);
                         });
                         newLine(sb);

@@ -19,7 +19,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.project.ProjectDao;
+import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +83,7 @@ public class ProjectManager {
      */
     @Inject
     private CardTypeManager cardTypeManager;
+
 
     // *********************************************************************************************
     // find projects
@@ -303,16 +304,11 @@ public class ProjectManager {
         }
 
         List<TeamMember> teamMembers = new ArrayList<>(project.getTeamMembers());
-        if (teamMembers == null
-            || teamMembers.stream().noneMatch(m -> m.getPosition() == HierarchicalPosition.OWNER)) {
+        if (teamMembers.stream().noneMatch(m -> m.getPosition() == HierarchicalPosition.OWNER)) {
             return false;
         }
 
         return true;
     }
-
-    // *********************************************************************************************
-    //
-    // *********************************************************************************************
 
 }

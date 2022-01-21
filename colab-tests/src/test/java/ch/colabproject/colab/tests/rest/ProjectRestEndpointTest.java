@@ -313,4 +313,34 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
         TestHelper.assertEquals(Set.of(hitchhicker.getId()), me.getRoleIds());
         TestHelper.assertEquals(Set.of(me.getId()), hitchhicker.getMemberIds());
     }
+
+//    @Test TODO rewrite or remove
+//    public void testFileWorkspace() {
+//        Project projectOne = ColabFactory.createProject(client, "Project One");
+//
+//        String fileContent = client.projectRestEndpoint.touchFile(projectOne.getId(), "MyFile", "MyData");
+//        Assertions.assertEquals("MyData", fileContent);
+//
+//        String readContent = client.projectRestEndpoint.getFileContent(projectOne.getId(), "MyFile");
+//        Assertions.assertEquals(fileContent, readContent);
+//
+//        String otherContent = client.projectRestEndpoint.touchFile(projectOne.getId(), "OtherFile", "OtherData");
+//        Assertions.assertEquals("OtherData", otherContent);
+//
+//        String readOtherContent = client.projectRestEndpoint.getFileContent(projectOne.getId(), "OtherFile");
+//        Assertions.assertEquals(otherContent, readOtherContent);
+//
+//        Project projectTwo = ColabFactory.createProject(client, "Project Two");
+//        String readContentInTwo = client.projectRestEndpoint.getFileContent(projectTwo.getId(), "MyFile");
+//        Assertions.assertNull(readContentInTwo);
+//
+//        String fileContentInTwo = client.projectRestEndpoint.touchFile(projectTwo.getId(), "MyFile", "MyDataTwo");
+//        Assertions.assertEquals("MyDataTwo", fileContentInTwo);
+//
+//        readContentInTwo = client.projectRestEndpoint.getFileContent(projectTwo.getId(), "MyFile");
+//        Assertions.assertEquals(fileContentInTwo, readContentInTwo);
+//
+//        readContent = client.projectRestEndpoint.getFileContent(projectOne.getId(), "MyFile");
+//        Assertions.assertEquals(fileContent, readContent);
+//    }
 }

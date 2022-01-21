@@ -121,6 +121,37 @@ public class ColabConfiguration {
     public static final String LOCAL_ACCOUNT_BUTTON_VALUE = "true";
 
     /**
+     * Maximum file upload size
+     */
+    public static final String JCR_REPOSITORY_MAX_FILE_SIZE_MB = "colab.jcr.maxfile.size.mo";
+
+    /**
+     * Maximum file upload size default value
+     */
+    public static final String JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT = "50";
+
+    /**
+     * Maximum file upload size
+     */
+    public static final String JCR_REPOSITORY_PROJECT_QUOTA_MB = "colab.jcr.project.quota.mo";
+
+    /**
+     * Maximum file upload size default value
+     */
+    public static final String JCR_REPOSITORY_PROJECT_QUOTA_MB_DEFAULT = "2048";
+
+    /**
+     * Mongo DB access for JCR file storage. Empty string means non-persistent, i.e. stored in memory during run
+     */
+    public static final String JCR_MONGO_DB_URI = "colab.jcr.mongodb.uri";
+
+    /**
+     * Default Mongo DB access for JCR file storage.
+     */
+    public static final String JCR_MONGO_DB_URI_DEFAULT = "";
+
+
+    /**
      * never-called private constructor
      */
     private ColabConfiguration() {
@@ -219,5 +250,52 @@ public class ColabConfiguration {
     public static boolean getDisplayLocalAccountButton() {
         return System.getProperty(LOCAL_ACCOUNT_BUTTON,
             LOCAL_ACCOUNT_BUTTON_VALUE).equals("true");
+    }
+
+    /**
+     *
+     * @return The per file maximum size expressed in bytes
+     */
+    public static Long getJcrRepositoryFileSizeLimit() {
+        var value = System.getProperty(JCR_REPOSITORY_MAX_FILE_SIZE_MB, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
+        var parsed = tryParsePositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
+        return parsed << 20;//convert to bytes
+    }
+
+    /**
+     *
+     * @return The file storage quota per project expressed in bytes
+     */
+    public static Long getJcrRepositoryProjectQuota() {
+        var value = System.getProperty(JCR_REPOSITORY_PROJECT_QUOTA_MB, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
+        var parsed = tryParsePositive(value, JCR_REPOSITORY_MAX_FILE_SIZE_MB_DEFAULT);
+        return parsed << 20;//convert to bytes
+    }
+
+    /**
+     * @return The URI to access the MongoDB container. Used for file persistence with JCR
+     */
+    public static String getJcrMongoDbUri(){
+        return System.getProperty(JCR_MONGO_DB_URI, JCR_MONGO_DB_URI_DEFAULT);
+    }
+
+    /**
+     * Parses a long from a positive string value. Falls back on default value
+     * @param value
+     * @param dflt fallback value, used in case parsing fails or value is negative
+     * @return The parsed value or the default value
+     */
+    private static Long tryParsePositive(String value, String dflt) {
+        Long result;
+        try{
+            result = Long.parseLong(value);
+            if(result <= 0)
+            {
+                result = Long.parseLong(dflt);
+            }
+        }catch(NumberFormatException nfe){
+            result = Long.parseLong(dflt);
+        }
+        return result;
     }
 }

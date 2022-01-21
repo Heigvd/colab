@@ -14,7 +14,7 @@ import ch.colabproject.colab.api.microchanges.tools.CancelDebounce;
 import ch.colabproject.colab.api.microchanges.tools.Debouncer;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
-import ch.colabproject.colab.api.persistence.document.BlockDao;
+import ch.colabproject.colab.api.persistence.jpa.document.BlockDao;
 import com.hazelcast.cluster.Member;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IExecutorService;

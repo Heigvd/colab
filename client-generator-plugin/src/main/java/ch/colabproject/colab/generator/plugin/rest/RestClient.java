@@ -7,8 +7,10 @@
 package ch.colabproject.colab.generator.plugin.rest;
 
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,8 @@ import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
 /**
  * JakartaEE-based rest client.
@@ -63,6 +67,8 @@ public class RestClient {
      */
     public RestClient(String baseUri, String cookieName, Jsonb jsonb, Object... clientFeatures) {
         ClientBuilder builder = ClientBuilder.newBuilder();
+
+        builder.register(MultiPartFeature.class);
 
         for (Object feature : clientFeatures) {
             builder.register(feature);
@@ -111,15 +117,48 @@ public class RestClient {
         }
     }
 
+    /**
+     * Convert InputStream to string
+     *
+     * @param stream the stream to convert
+     *
+     * @return the content of the stream as string
+     */
+    private String readTextualEntity(InputStream stream) {
+        try {
+            return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            // silent ex
+            return null;
+        }
+    }
+
     private <T> T processResponse(Response response, GenericType<T> type) {
         Status.Family family = Status.Family.familyOf(response.getStatus());
         if (family == Status.Family.SUCCESSFUL) {
             if (response.getStatus() == 204) {
                 return null;
             } else {
+                if(Response.class.isAssignableFrom(type.getRawType())){
+                    return (T)response;
+                }
                 Object entity = response.getEntity();
                 if (entity instanceof InputStream) {
-                    return readEntity((InputStream) entity, type);
+                    InputStream stream = (InputStream) entity;
+                    String contentType = response.getHeaderString("Content-Type");
+                    if (contentType.equals("application/json")
+                        || contentType.equals("text/json")) {
+                        return readEntity(stream, type);
+                    } else if (contentType.equals("text/plain")
+                        || contentType.equals("text/html")) {
+                        if (type.getRawType() == String.class) {
+                            return (T) readTextualEntity(stream);
+                        } else {
+                            return null;
+                        }
+                    } else {
+                        return null;
+                    }
                 } else {
                     return null;
                 }
@@ -140,48 +179,82 @@ public class RestClient {
     }
 
     /**
+     * Create FormData to send
+     *
+     * @param fields form content
+     *
+     * @return the formdata to send
+     */
+    private FormDataMultiPart getFormData(Map<String, FormField> fields) {
+        FormDataMultiPart multipart = new FormDataMultiPart();
+
+        fields.forEach((fieldName, data) -> {
+            MediaType mimeType = data.getMimeType();
+            if (data.getData() instanceof File) {
+                FileDataBodyPart filePart;
+                if (mimeType != null) {
+                    filePart = new FileDataBodyPart(fieldName, (File) data.getData(), mimeType);
+                } else {
+                    filePart = new FileDataBodyPart(fieldName, (File) data.getData());
+                }
+                multipart.bodyPart(filePart);
+            } else {
+                if (mimeType != null) {
+                    multipart.field(fieldName, data.getData(), mimeType);
+                } else {
+                    multipart.field(fieldName, data.getData().toString());
+                }
+            }
+        });
+        return multipart;
+    }
+
+    /**
      * send GET request.
      *
-     * @param <T>  expected return type
-     * @param path rest path
-     * @param type expected return generic type
+     * @param <T>    expected return type
+     * @param path   rest path
+     * @param type   expected return generic type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public <T> T get(String path, GenericType<T> type) {
+    public <T> T get(String path, GenericType<T> type, String... accept) {
         return processResponse(webTarget.path(path).request()
-            .accept(MediaType.APPLICATION_JSON).get(),
+            .accept(accept).get(),
             type);
     }
 
     /**
      * send DELETE request.
      *
-     * @param <T>  expected return type
-     * @param path rest path
-     * @param type expected return type
+     * @param <T>    expected return type
+     * @param path   rest path
+     * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public <T> T delete(String path, GenericType<T> type) {
+    public <T> T delete(String path, GenericType<T> type, String... accept) {
         return processResponse(webTarget.path(path).request()
-            .accept(MediaType.APPLICATION_JSON).delete(),
+            .accept(accept).delete(),
             type);
     }
 
     /**
      * send JSON POST request.
      *
-     * @param <T>  expected return type
-     * @param path rest path
-     * @param body POST body
-     * @param type expected return type
+     * @param <T>    expected return type
+     * @param path   rest path
+     * @param body   POST body
+     * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public <T> T post(String path, Object body, GenericType<T> type) {
+    public <T> T post(String path, Object body, GenericType<T> type, String... accept) {
         return processResponse(webTarget.path(path).request()
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(accept)
             .post(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),
             type);
     }
@@ -193,18 +266,20 @@ public class RestClient {
      * @param path   rest path
      * @param fields form data
      * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public <T> T post(String path, Map<String, FormField> fields, GenericType<T> type) {
-        FormDataMultiPart multipart = new FormDataMultiPart();
-
-        fields.forEach((fieldName, data) -> {
-            multipart.field(fieldName, data.getData(), data.getMimeType());
-        });
+    public <T> T post(
+        String path,
+        Map<String, FormField> fields,
+        GenericType<T> type,
+        String... accept
+    ) {
+        FormDataMultiPart multipart = getFormData(fields);
 
         return processResponse(webTarget.path(path).request()
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(accept)
             .post(Entity.entity(multipart, multipart.getMediaType())),
             type);
     }
@@ -212,29 +287,31 @@ public class RestClient {
     /**
      * send POST request with an empty body.
      *
-     * @param <T>  expected return type
-     * @param path rest path
-     * @param type expected return type
+     * @param <T>    expected return type
+     * @param path   rest path
+     * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public <T> T post(String path, GenericType<T> type) {
-        return this.post(path, "", type);
+    public <T> T post(String path, GenericType<T> type, String... accept) {
+        return this.post(path, "", type, accept);
     }
 
     /**
      * send PUT request with JSON body.
      *
-     * @param <T>  expected return type
-     * @param path rest path
-     * @param body POST body
-     * @param type expected return type
+     * @param <T>    expected return type
+     * @param path   rest path
+     * @param body   POST body
+     * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public <T> T put(String path, Object body, GenericType<T> type) {
+    public <T> T put(String path, Object body, GenericType<T> type, String... accept) {
         return processResponse(webTarget.path(path).request()
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(accept)
             .put(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),
             type);
     }
@@ -246,18 +323,15 @@ public class RestClient {
      * @param path   rest path
      * @param fields form data
      * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public <T> T put(String path, Map<String, FormField> fields, GenericType<T> type) {
-        FormDataMultiPart multipart = new FormDataMultiPart();
-
-        fields.forEach((fieldName, data) -> {
-            multipart.field(fieldName, data.getData(), data.getMimeType());
-        });
+    public <T> T put(String path, Map<String, FormField> fields, GenericType<T> type, String... accept) {
+        FormDataMultiPart multipart = getFormData(fields);
 
         return processResponse(webTarget.path(path).request()
-            .accept(MediaType.APPLICATION_JSON)
+            .accept(accept)
             .put(Entity.entity(multipart, multipart.getMediaType())),
             type);
     }
@@ -265,14 +339,16 @@ public class RestClient {
     /**
      * send PUT request with an empty body.
      *
-     * @param <T>  expected return type
-     * @param path rest path
-     * @param type expected return type
+     * @param <T>    expected return type
+     * @param path   rest path
+     * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public <T> T put(String path, GenericType<T> type) {
-        return this.put(path, "", type);
+    public <T> T put(String path, GenericType<T> type, String... accept) {
+        return this.put(path, "", type, accept);
+
     }
 
     /**

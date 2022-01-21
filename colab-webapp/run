@@ -2,7 +2,7 @@
 
 PAYARA="${PAYARA:-target/payara-micro.current.jar}"
 
-HEAP_SIZE="${HEAP_SIZE:-256M}"
+HEAP_SIZE="${HEAP_SIZE:-512M}"
 
 THE_WAR=${THE_WAR:-./target/coLAB/}
 

@@ -6,14 +6,15 @@
  */
 package ch.colabproject.colab.generator.plugin.rest;
 
-import ch.colabproject.colab.generator.plugin.Logger;
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.glassfish.jersey.media.multipart.ContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 /**
  * Represent a rest method
@@ -368,31 +369,38 @@ public class RestMethod {
     public void addFormParameter(String name, String annotationName, String javadoc, Type type) {
         Optional<Param> findFirst
             = this.formParameters.stream().filter(p -> p.getInAnnotationName().equals(annotationName)).findFirst();
-        if (findFirst.isPresent()) {
-            Param param = findFirst.get();
-            // hack: Files are injected with two disctinct parameter: one InputStream for bytes, one
-            // FormDataBodyPart for metadata
-            if (param.getType() instanceof Class
-                && type instanceof Class
-                && ((InputStream.class.isAssignableFrom((Class) type)
-                && ContentDisposition.class.isAssignableFrom((Class) param.getType()))
-                || (InputStream.class.isAssignableFrom((Class) type)
-                && ContentDisposition.class.isAssignableFrom((Class) param.getType())))) {
-                // Both ContentDisposition and InputStream exists: only keep InputStream
-                param.setType(InputStream.class);
-            } else {
-                Logger.warn("Duplicate Form Data");
-            }
-
-        } else {
+        if (findFirst.isEmpty()) {
+//            Param param = findFirst.get();
+//            // hack: Files are injected with two disctinct parameter: one InputStream for bytes, one
+//            // FormDataBodyPart for metadata
+//            if (param.getType() instanceof Class
+//                && type instanceof Class
+//                && ((InputStream.class.isAssignableFrom((Class) type)
+//                && ContentDisposition.class.isAssignableFrom((Class) param.getType()))
+//                || (InputStream.class.isAssignableFrom((Class) type)
+//                && ContentDisposition.class.isAssignableFrom((Class) param.getType())))) {
+//                // Both ContentDisposition and InputStream exists: only keep InputStream
+//                param.setType(File.class);
+//            } else {
+//                Logger.warn("Duplicate Form Data");
+//            }
+//
+//        } else {
             Param param = new Param();
             param.setName(name);
             param.setInAnnotationName(annotationName);
             param.setJavadoc(javadoc);
             param.setType(type);
+
+            // hack: MultiPartFile
+            if (FormDataBodyPart.class.isAssignableFrom((Class) type)
+                || FormDataContentDisposition.class.isAssignableFrom((Class) type)
+                || InputStream.class.isAssignableFrom((Class) type)) {
+                param.setType(File.class);
+            }
+
             this.formParameters.add(param);
         }
-
     }
 
     /**

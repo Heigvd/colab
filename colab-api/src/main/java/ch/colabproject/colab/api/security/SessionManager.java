@@ -10,7 +10,7 @@ import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import java.time.OffsetDateTime;

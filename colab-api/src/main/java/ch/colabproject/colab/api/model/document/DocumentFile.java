@@ -11,16 +11,18 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.core.MediaType;
 
 /**
- * Document referenced by a link to a record of the co.LAB internal document-based database
+ * Document referencing a file stored internally
  *
  * @author sandra
  */
 //TODO adjust the constraints / indexes
 @Entity
-@DiscriminatorValue("HOSTED_DOC_LINK")
-public class HostedDocLink extends Document {
+@DiscriminatorValue("DOCUMENT_FILE")
+public class DocumentFile extends Document {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,38 +31,70 @@ public class HostedDocLink extends Document {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * The filePath to access the document
+     * Size of the file in bytes
      */
-    private String filePath;
+    @NotNull
+    private Long fileSize = 0L;
+
+    /**
+     * Original file name
+     */
+    private String fileName;
+
+    /**
+     * Mime type of file
+     */
+    @NotNull
+    private String mimeType = MediaType.APPLICATION_OCTET_STREAM;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * @return the filePath to access the document
+     * @return length in byte or 0 if no file has been set
      */
-    public String getFilePath() {
-        return filePath;
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
     }
 
     /**
-     * @param filePath the filePath to access the document to set
+     * @return The original name of the uploaded file or null if no file has been set
      */
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public String getFileName() {
+        return fileName;
     }
 
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    /**
+     * @return The mime type of the file or MediaType.APPLICATION_OCTET_STREAM if no file has been set
+     */
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof HostedDocLink) {
-            HostedDocLink o = (HostedDocLink) other;
+        if (other instanceof DocumentFile) {
+            DocumentFile o = (DocumentFile) other;
             super.merge(o);
-            this.setFilePath(o.getFilePath());
+            this.setFileName(o.getFileName());
+            this.setFileSize(o.getFileSize());
+            this.setMimeType(o.getMimeType());
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -79,7 +113,7 @@ public class HostedDocLink extends Document {
 
     @Override
     public String toString() {
-        return "HostedDocLink{" + super.toPartialString() + ", filePath=" + filePath + "}";
+        return "DocumentFile{" + super.toPartialString() + ", fileName=" + fileName + "}";
     }
 
 }

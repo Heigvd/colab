@@ -12,7 +12,7 @@ import ch.colabproject.colab.api.microchanges.live.LiveManager;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
-import ch.colabproject.colab.api.persistence.document.BlockDao;
+import ch.colabproject.colab.api.persistence.jpa.document.BlockDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;

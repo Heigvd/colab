@@ -1,5 +1,5 @@
 {
-    "name": "colab-webapp",
+    "name": "colab-webapp-react",
     "version": "0.0.1",
     "description": "coLAB project client application",
     "repository": "http://www.github.com/Heigvd/colab.git",
@@ -89,7 +89,7 @@
         "eslint": "^8.2.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-react": "^7.26.0",
-        "eslint-plugin-react-hooks": "^4.2.0",
+        "eslint-plugin-react-hooks": "^4.3.0",
         "jest": "^27.2.3",
         "jest-html-reporter": "^3.4.1",
         "prettier": "^2.4.1",
