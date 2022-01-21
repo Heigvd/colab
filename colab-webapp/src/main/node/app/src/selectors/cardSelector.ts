@@ -227,7 +227,7 @@ const useCardACL = (cardId: number | null | undefined): CardAcl => {
           result.status.missingAclCardId =
             aclState == null || aclState.status === 'NOT_INITIALIZED' ? nextCardId : undefined;
 
-          //logger.info('useACL status: ', result.status);
+          logger.debug('useACL status: ', result.status);
 
           nextCardId = undefined;
 
