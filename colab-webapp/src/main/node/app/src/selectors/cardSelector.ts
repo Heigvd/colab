@@ -369,7 +369,7 @@ export const useAndLoadCardACL = (cardId: number | null | undefined): CardAcl =>
     }
 
     if (acl.status.missingCardContentId != null) {
-      //logger.info('Load CardContent #', acl.status.missingCardContentId);
+      logger.debug('Load CardContent #', acl.status.missingCardContentId);
       dispatch(API.getCardContent(acl.status.missingCardContentId));
     }
   }, [
