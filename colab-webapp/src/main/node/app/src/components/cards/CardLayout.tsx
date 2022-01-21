@@ -9,7 +9,7 @@ import { css, cx } from '@emotion/css';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useSingleAndDoubleClick } from '../../store/hooks';
+import { useSingleAndDoubleClick } from '..//hooks/mouse';
 import { cardShadow, cardStyle } from '../styling/style';
 
 const progressBarContainer = css({
@@ -53,31 +53,32 @@ export default function CardLayout({
 }: Props): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
-  const click = useSingleAndDoubleClick(
-    e => {
-      if (variant != null) {
-        const path = `card/${card.id}`;
+
+  const singleClick = React.useCallback(() => {
+    if (variant != null) {
+      const path = `card/${card.id}`;
+      if (!location.pathname.match(path)) {
         if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
           navigate(`../${path}`);
-          e?.stopPropagation();
         } else {
           navigate(path);
-          e?.stopPropagation();
         }
       }
-    },
-    e => {
-      if (variant != null) {
-        const path = `edit/${card.id}/v/${variant.id}`;
-        e?.stopPropagation();
-        if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
-          navigate(`../${path}`);
-        } else {
-          navigate(`${path}`);
-        }
+    }
+  }, [variant, card.id, location.pathname, navigate]);
+
+  const doubleClick = React.useCallback(() => {
+    if (variant != null) {
+      const path = `edit/${card.id}/v/${variant.id}`;
+      if (location.pathname.match(/(edit|card)\/\d+\/v\/\d+/)) {
+        navigate(`../${path}`);
+      } else {
+        navigate(`${path}`);
       }
-    },
-  );
+    }
+  }, [variant, card.id, location.pathname, navigate]);
+
+  const click = useSingleAndDoubleClick(singleClick, doubleClick);
 
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
