@@ -13,7 +13,7 @@ import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import * as API from '../../API/api';
 import * as React from 'react';
-import IconButton from '../common/IconButton';
+import Button from '../common/Button';
 
 export interface DocumentFileProps {
   document: DocumentFile;
@@ -65,7 +65,7 @@ export function DocumentFileEditor({ document }: DocumentFileProps): JSX.Element
   return (
     <div>
       <h3>Here is your awesome file uploader</h3>
-      <IconButton icon={faDownload} onClick={downloadCb} />
+      <Button icon={faDownload} onClick={downloadCb} />
       {document.fileName}
       <div>
         {state === 'IDLE' ? (
