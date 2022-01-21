@@ -202,7 +202,7 @@ done
 
 SYSTEMPROPS_OPT="--systemproperties ${CUSTOM_PROPERTIES}";
 
-${JAVA_EXECUTABLE} ${DEBUG_OPTS} ${JDK_EXTRA_OPTS} ${SSL_OPTS} ${GC_OPT} ${HTTP2_OPTS} \
+"${JAVA_EXECUTABLE}" ${DEBUG_OPTS} ${JDK_EXTRA_OPTS} ${SSL_OPTS} ${GC_OPT} ${HTTP2_OPTS} \
     -XX:+UseStringDeduplication -XX:+UnlockDiagnosticVMOptions \
     -Dproduct.name= -XX:+ParallelRefProcEnabled -XX:+UseCompressedOops -XX:-UseLoopPredicate \
     -Xms${HEAP_SIZE} -Xmx${HEAP_SIZE} \
