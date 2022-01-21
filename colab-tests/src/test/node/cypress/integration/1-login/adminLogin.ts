@@ -13,7 +13,12 @@ describe("ch.colabproject.colab.tests.e2e.Login", () => {
     //    cy.react("Button").should("have.length", "1").click();
     cy.login(Cypress.env("ADMIN_USERNAME"), Cypress.env("ADMIN_PASSWORD"));
 
-    cy.react("IconButton", { props: { icon: { iconName: "sign-out-alt" } } })
+
+    cy.get("svg.fa-user-circle")
+      .should("have.length", "1")
+      .click();
+
+    cy.get("svg.fa-sign-out-alt")
       .should("have.length", "1")
       .click();
 
