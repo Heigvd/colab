@@ -128,7 +128,7 @@ export const en = {
     AUTHENTICATION_FAILED: 'Authentication failed',
     AUTHENTICATION_REQUIRED: 'Please authenticate',
     ACCESS_DENIED: 'Access denied',
-    NOT_FOUND: 'Not fouund',
+    NOT_FOUND: 'Not found',
     USERNAME_ALREADY_TAKEN: 'Please choose another username',
     SMTP_ERROR: 'e-mail server error',
     EMAIL_MESSAGE_ERROR: 'e-mail not sent',
