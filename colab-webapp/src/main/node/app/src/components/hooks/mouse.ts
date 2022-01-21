@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 /**
  * Allows to use both onClick and onDoubleClick on the same component.

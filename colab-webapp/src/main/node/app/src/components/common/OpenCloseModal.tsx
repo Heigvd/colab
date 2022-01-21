@@ -49,7 +49,7 @@ export default function OpenCloseModal({
 
   const onClose = React.useCallback(() => {
     if (route != null) {
-      navigate(location.pathname.replace(new RegExp(route + "$"), ''));
+      navigate(location.pathname.replace(new RegExp(route + '$'), ''));
     }
   }, [navigate, location, route]);
 
