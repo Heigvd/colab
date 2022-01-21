@@ -25,7 +25,7 @@ import { LoadingStatus } from '../store/store';
 //};
 
 export const useStickyNoteLinksForDest = (
-  cardDestId: number,
+  cardDestId: number | undefined | null,
 ): {
   stickyNotesForDest: StickyNoteLink[];
   status: LoadingStatus;

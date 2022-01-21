@@ -46,7 +46,7 @@ export default function CardThumb({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const hasVariants = variants.length > 1 && variant != null;
-  const nbStickyNotes = card.id && useStickyNoteLinksForDest(card.id).stickyNotesForDest.length;
+  const nbStickyNotes  = useStickyNoteLinksForDest(card.id).stickyNotesForDest.length;
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
