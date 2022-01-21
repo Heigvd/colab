@@ -73,16 +73,16 @@ export const normalThemeMode = css({
   backgroundColor: 'var(--bgColor)',
   color: 'var(--fgColor)',
   'h1, h2, h3': {
-    margin: '0 0 5px 0'
+    margin: '0 0 5px 0',
   },
-  'h1': {
-    fontSize: '1.5rem'
+  h1: {
+    fontSize: '1.5rem',
   },
-  'h2': {
-    fontSize: '1.2rem'
+  h2: {
+    fontSize: '1.2rem',
   },
-  'h3': {
-    fontSize: '1rem'
+  h3: {
+    fontSize: '1rem',
   },
 });
 
@@ -190,7 +190,6 @@ export const pulseEase = css`
   animation: ${pulseKeyframes} 2s ease 10;
 `;
 
-
 /**BUTTONS */
 
 export const linkStyle = css({
@@ -198,7 +197,7 @@ export const linkStyle = css({
   color: 'inherit',
   ':hover': {
     color: 'var(--hoverFgColor)',
-    textDecoration: 'underline'
+    textDecoration: 'underline',
   },
   ':focus': {
     outline: 'none',
@@ -216,7 +215,7 @@ export const noOutlineStyle = css({
   '&:focus-visible': {
     outline: '1px solid blue',
   },
-})
+});
 
 export const iconStyle = css({
   paddingLeft: '5px',
@@ -258,10 +257,10 @@ export const invertedButtonStyle = cx(
   css({
     backgroundColor: 'transparent',
     border: '1px solid var(--primaryColor)',
-    color:'var(--primaryColor)',
+    color: 'var(--primaryColor)',
     padding: '8px 14px',
     borderRadius: borderRadius,
-    cursor:'pointer',
+    cursor: 'pointer',
     ':hover': {
       backgroundColor: 'var(--hoverBgColor)',
     },
@@ -304,22 +303,19 @@ export const lightIconButtonStyle = css({
 export const greyIconButtonChipStyle = cx(
   lightIconButtonStyle,
   css({
-  padding: space_S,
-  height: '20px',
-  width: '20px',
-  display: 'inline-flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  borderRadius: '50%',
-  border: '1px solid var(--disabledGrey)',
-  '&:hover': {
-    border: '1px solid var(--hoverFgColor)',
-  },
-}));
-
-
-
-
+    padding: space_S,
+    height: '20px',
+    width: '20px',
+    display: 'inline-flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: '50%',
+    border: '1px solid var(--disabledGrey)',
+    '&:hover': {
+      border: '1px solid var(--hoverFgColor)',
+    },
+  }),
+);
 
 export const cardShadow = '0px 0px 7px rgba(0, 0, 0, 0.2)';
 export const cardShadowHover = '0px 0px 9px rgba(0, 0, 0, 0.2)';
@@ -331,7 +327,7 @@ export const cardStyle = cx(
     borderRadius: '5px',
     '&:hover': {
       boxShadow: cardShadowHover,
-    }
+    },
   }),
 );
 

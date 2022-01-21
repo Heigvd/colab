@@ -40,12 +40,12 @@ export const mainMenuLink = css({
 
 export const mainLinkActiveClass = cx(
   mainMenuLink,
-  css({ 
+  css({
     backgroundColor: 'var(--pictoSteelBlue)',
     pointerEvents: 'none',
     ':hover': {
       backgroundColor: 'var(--pictoSteelBlue)',
-    }
+    },
   }),
 );
 

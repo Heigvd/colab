@@ -227,7 +227,7 @@ const useCardACL = (cardId: number | null | undefined): CardAcl => {
           result.status.missingAclCardId =
             aclState == null || aclState.status === 'NOT_INITIALIZED' ? nextCardId : undefined;
 
-          //logger.info('useACL status: ', result.status);
+          logger.debug('useACL status: ', result.status);
 
           nextCardId = undefined;
 
@@ -345,7 +345,7 @@ const useCardACL = (cardId: number | null | undefined): CardAcl => {
         shallowEqual(a.self.roles, b.self.roles) &&
         customColabStateEquals(a.effective.members, b.effective.members) &&
         shallowEqual(a.effective.roles, b.effective.roles);
-      //logger.info('ACL equals ? ', a, b, result);
+      logger.debug('ACL equals ? ', a, b, result);
 
       return result;
     },
@@ -357,19 +357,19 @@ export const useAndLoadCardACL = (cardId: number | null | undefined): CardAcl =>
   const acl = useCardACL(cardId);
 
   React.useEffect(() => {
-    //logger.info('Effect ', acl.status.missingCardId, ' | ', acl.status.missingAclCardId);
+      logger.debug('Effect ', acl.status.missingCardId, ' | ', acl.status.missingAclCardId); 
     if (acl.status.missingCardId != null) {
-      //logger.info('Load Card #', acl.status.missingCardId);
+      logger.debug('Load Card #', acl.status.missingCardId);
       dispatch(API.getCard(acl.status.missingCardId));
     }
 
     if (acl.status.missingAclCardId != null) {
-      //logger.info('Load ACL Card #', acl.status.missingAclCardId);
+      logger.debug('Load ACL Card #', acl.status.missingAclCardId);
       dispatch(API.getACL(acl.status.missingAclCardId));
     }
 
     if (acl.status.missingCardContentId != null) {
-      //logger.info('Load CardContent #', acl.status.missingCardContentId);
+      logger.debug('Load CardContent #', acl.status.missingCardContentId);
       dispatch(API.getCardContent(acl.status.missingCardContentId));
     }
   }, [

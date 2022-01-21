@@ -129,11 +129,7 @@ export default function CardCreator({
         customButton ? (
           customButton
         ) : (
-          <IconButton
-            icon={faPlus}
-            className={greyIconButtonChipStyle}
-            title="Add a card"
-          />
+          <IconButton icon={faPlus} className={greyIconButtonChipStyle} title="Add a card" />
         )
       }
       className={className}

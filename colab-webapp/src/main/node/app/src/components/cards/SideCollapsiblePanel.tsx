@@ -37,13 +37,17 @@ export default function SideCollapsiblePanel({
       direction="row"
       align="stretch"
       className={cx(
-        (direction === 'LEFT')
+        direction === 'LEFT'
           ? open && css({ borderRight: '1px solid var(--disabledGrey)' })
           : open && css({ borderLeft: '1px solid var(--disabledGrey)' }),
         className,
       )}
     >
-      {open && direction === 'RIGHT' && <Flex align='stretch' className={css({ padding: space_M + ' 0 0 0' })}>{children}</Flex>}
+      {open && direction === 'RIGHT' && (
+        <Flex align="stretch" className={css({ padding: space_M + ' 0 0 0' })}>
+          {children}
+        </Flex>
+      )}
       <Flex
         direction="column"
         justify="flex-start"
@@ -57,13 +61,29 @@ export default function SideCollapsiblePanel({
         )}
       >
         <IconButton
-          icon={open ? (direction === 'LEFT' ? faChevronLeft : faChevronRight) : (direction === 'LEFT' ? faChevronRight : faChevronLeft)}
-          title={title ? (open ? 'Close ' + title : 'Open ' + title) : (open ? 'Close' : 'Open')}
+          icon={
+            open
+              ? direction === 'LEFT'
+                ? faChevronLeft
+                : faChevronRight
+              : direction === 'LEFT'
+              ? faChevronRight
+              : faChevronLeft
+          }
+          title={title ? (open ? 'Close ' + title : 'Open ' + title) : open ? 'Close' : 'Open'}
           onClick={toggleOpen}
         />
-        {icon && <FontAwesomeIcon icon={icon} className={paddingAroundStyle([1, 3], space_S)} title={title} />}
+        {icon && (
+          <FontAwesomeIcon
+            icon={icon}
+            className={paddingAroundStyle([1, 3], space_S)}
+            title={title}
+          />
+        )}
       </Flex>
-      {open && direction === 'LEFT' && <Flex className={css({ padding: space_M })}>{children}</Flex>}
+      {open && direction === 'LEFT' && (
+        <Flex className={css({ padding: space_M })}>{children}</Flex>
+      )}
     </Flex>
   );
 }

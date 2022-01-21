@@ -23,8 +23,8 @@ const thumbStyle = css({
 
 export default function Thumbnail({ children, onClick, className }: Props): JSX.Element {
   return (
-      <Clickable onClick={onClick} clickableClassName={cx(thumbStyle, className)}>
-        {children}
-      </Clickable>
+    <Clickable onClick={onClick} clickableClassName={cx(thumbStyle, className)}>
+      {children}
+    </Clickable>
   );
 }

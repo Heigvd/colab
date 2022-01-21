@@ -59,7 +59,7 @@ export default function CardTypeList(): JSX.Element {
         <div>
           <h3>Card Types</h3>
           <h4>Project own types</h4>
-          <IconButton onClick={createNewCb} icon={faPlus} title="Create new"  />
+          <IconButton onClick={createNewCb} icon={faPlus} title="Create new" />
           <div className={flexWrap}>
             {cardTypes.own.map(cardType => (
               <CardTypeEditor key={cardType.id} cardType={cardType} />
