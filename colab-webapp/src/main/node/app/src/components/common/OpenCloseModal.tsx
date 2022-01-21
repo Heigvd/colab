@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import { NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { linkStyle } from '../styling/style';
 import Modal from './Modal';
 import OpenClose from './OpenClose';
@@ -44,13 +44,14 @@ export default function OpenCloseModal({
   modalClassName,
 }: Props): JSX.Element {
   const navigate = useNavigate();
+  const location = useLocation();
   //const match = useRouteMatch();
 
   const onClose = React.useCallback(() => {
     if (route != null) {
-      navigate(-1);
+      navigate(location.pathname.replace(new RegExp(route + "$"), ''));
     }
-  }, [navigate, route]);
+  }, [navigate, location, route]);
 
   if (route != null) {
     return (
