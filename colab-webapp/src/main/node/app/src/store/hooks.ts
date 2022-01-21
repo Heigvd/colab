@@ -68,28 +68,35 @@ export const customColabStateEquals = (a: unknown, b: unknown): boolean => {
 /**
  * Allows to use both onClick and onDoubleClick on the same component.
  */
-export function useSingleAndDoubleClick(actionSimpleClick:(e?:React.MouseEvent)=>void, actionDoubleClick:(e?:React.MouseEvent)=>void, stopPropag = true, delay = 250) {
-  const [clickEvent, setClickEvent] = useState<{nbClick: number, event?: React.MouseEvent}>({nbClick: 0, event: undefined});
+export function useSingleAndDoubleClick(
+  actionSimpleClick: (e?: React.MouseEvent) => void,
+  actionDoubleClick: (e?: React.MouseEvent) => void,
+  stopPropag = true,
+  delay = 250,
+) {
+  const [clickEvent, setClickEvent] = useState<{ nbClick: number; event?: React.MouseEvent }>({
+    nbClick: 0,
+    event: undefined,
+  });
 
   useEffect(() => {
-    if(stopPropag) {
+    if (stopPropag) {
       clickEvent.event?.stopPropagation();
     }
-      const timer = setTimeout(() => {
-          // simple click
-          if (clickEvent.nbClick === 1) actionSimpleClick(clickEvent.event);
-          setClickEvent({nbClick: 0, event: undefined});
-      }, delay);
-      // the duration between this click and the previous one
-      // is less than the value of delay = double-click
-      if (clickEvent.nbClick === 2) {
-        clearTimeout(timer);
-        actionDoubleClick(clickEvent.event);
-      }
+    const timer = setTimeout(() => {
+      // simple click
+      if (clickEvent.nbClick === 1) actionSimpleClick(clickEvent.event);
+      setClickEvent({ nbClick: 0, event: undefined });
+    }, delay);
+    // the duration between this click and the previous one
+    // is less than the value of delay = double-click
+    if (clickEvent.nbClick === 2) {
+      clearTimeout(timer);
+      actionDoubleClick(clickEvent.event);
+    }
 
-      return () => clearTimeout(timer);
-
+    return () => clearTimeout(timer);
   }, [clickEvent, actionSimpleClick, actionDoubleClick, stopPropag, delay]);
 
-  return (e: React.MouseEvent) => setClickEvent(prev => ({nbClick: prev.nbClick + 1, event: e}));
+  return (e: React.MouseEvent) => setClickEvent(prev => ({ nbClick: prev.nbClick + 1, event: e }));
 }

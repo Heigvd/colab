@@ -69,9 +69,18 @@ export default function OpenCloseModal({
         <Route
           path="*"
           element={
-            <NavLink className={cx(linkStyle, css({textDecoration: 'none', '&:hover': {
-              textDecoration: 'none'
-            }}))} to={route}>
+            <NavLink
+              className={cx(
+                linkStyle,
+                css({
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'none',
+                  },
+                }),
+              )}
+              to={route}
+            >
               {collapsedChildren}
             </NavLink>
           }
@@ -87,7 +96,13 @@ export default function OpenCloseModal({
         status={status}
       >
         {onClose => (
-          <Modal title={title} onClose={onClose} showCloseButton={showCloseButton} className={modalClassName} footer={footer}>
+          <Modal
+            title={title}
+            onClose={onClose}
+            showCloseButton={showCloseButton}
+            className={modalClassName}
+            footer={footer}
+          >
             {onCloseModal => children(onCloseModal)}
           </Modal>
         )}

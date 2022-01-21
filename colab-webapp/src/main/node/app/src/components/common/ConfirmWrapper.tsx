@@ -7,22 +7,15 @@
 import * as React from 'react';
 import Button from './Button';
 interface ConfirmWrapperProps {
-    onConfirm: ()=>void;
-    message: string;
-
+  onConfirm: () => void;
+  message: string;
 }
 
-export function ConfirmWrapper({
-    onConfirm,
-    message,
-}: ConfirmWrapperProps): JSX.Element {
+export function ConfirmWrapper({ onConfirm, message }: ConfirmWrapperProps): JSX.Element {
   return (
     <>
-    <div>{message}</div>
-    <Button onClick={onConfirm}>
-        Confirm
-    </Button>
-        
+      <div>{message}</div>
+      <Button onClick={onConfirm}>Confirm</Button>
     </>
   );
 }

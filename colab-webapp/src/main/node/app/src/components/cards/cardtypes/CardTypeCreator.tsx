@@ -93,29 +93,32 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
     //TODO: global types
     return <i>No project</i>;
   }
-    return (
+  return (
     <OpenCloseModal
-      title={"Create new type"}
-      collapsedChildren={<><FontAwesomeIcon icon={faPlus} /> Create new type</>}
+      title={'Create new type'}
+      collapsedChildren={
+        <>
+          <FontAwesomeIcon icon={faPlus} /> Create new type
+        </>
+      }
       className={buttonStyle}
       footer={<></>}
       showCloseButton
     >
       {() => {
-          return (
-            <div>
-                <Form
-                  fields={fields}
-                  value={{ title: '', purpose: '', tags: [] }}
-                  autoSubmit={false}
-                  onSubmit={createTypeCb}
-                  className={marginAroundStyle([3], space_M)}
-                  buttonClassName={cx(buttonStyle, marginAroundStyle([1], space_M))}
-                />
-            </div>
-          );
-        }
-      }
+        return (
+          <div>
+            <Form
+              fields={fields}
+              value={{ title: '', purpose: '', tags: [] }}
+              autoSubmit={false}
+              onSubmit={createTypeCb}
+              className={marginAroundStyle([3], space_M)}
+              buttonClassName={cx(buttonStyle, marginAroundStyle([1], space_M))}
+            />
+          </div>
+        );
+      }}
     </OpenCloseModal>
-    );
-  }
+  );
+}

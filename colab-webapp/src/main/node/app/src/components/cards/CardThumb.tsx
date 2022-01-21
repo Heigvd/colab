@@ -7,11 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { faFile, faStickyNote } from '@fortawesome/free-regular-svg-icons';
-import {
-  faEllipsisV,
-  faPen,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisV, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent } from 'colab-rest-client';
 import * as React from 'react';
@@ -46,7 +42,7 @@ export default function CardThumb({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const hasVariants = variants.length > 1 && variant != null;
-  const nbStickyNotes  = useStickyNoteLinksForDest(card.id).stickyNotesForDest.length;
+  const nbStickyNotes = useStickyNoteLinksForDest(card.id).stickyNotesForDest.length;
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
@@ -110,38 +106,36 @@ export default function CardThumb({
                     {
                       value: 'Delete card',
                       label: (
-                          <ConfirmDeleteModal
-                                  buttonLabel={
-                                    <>
-                                      <FontAwesomeIcon icon={faTrash} />
-                                      {hasVariants ? ' Delete variant' : ' Delete card'}
-                                    </>
-                                  }
-                                  message={
-                                    hasVariants ? (
-                                      <p>
-                                        Are you <strong>sure</strong> you want to delete this whole
-                                        variant? This will delete all subcards inside.
-                                      </p>
-                                    ) : (
-                                      <p>
-                                        Are you <strong>sure</strong> you want to delete this whole
-                                        card? This will delete all subcards inside.
-                                      </p>
-                                    )
-                                  }
-                                  onConfirm={() => {
-                                    if (hasVariants) {
-                                      dispatch(API.deleteCardContent(variant));
-                                    } else {
-                                      dispatch(API.deleteCard(card));
-                                      navigate('../')
-                                    }
-                                  }}
-                                  confirmButtonLabel={
-                                    hasVariants ? 'Delete variant' : 'Delete card'
-                                  }
-                                />
+                        <ConfirmDeleteModal
+                          buttonLabel={
+                            <>
+                              <FontAwesomeIcon icon={faTrash} />
+                              {hasVariants ? ' Delete variant' : ' Delete card'}
+                            </>
+                          }
+                          message={
+                            hasVariants ? (
+                              <p>
+                                Are you <strong>sure</strong> you want to delete this whole variant?
+                                This will delete all subcards inside.
+                              </p>
+                            ) : (
+                              <p>
+                                Are you <strong>sure</strong> you want to delete this whole card?
+                                This will delete all subcards inside.
+                              </p>
+                            )
+                          }
+                          onConfirm={() => {
+                            if (hasVariants) {
+                              dispatch(API.deleteCardContent(variant));
+                            } else {
+                              dispatch(API.deleteCard(card));
+                              navigate('../');
+                            }
+                          }}
+                          confirmButtonLabel={hasVariants ? 'Delete variant' : 'Delete card'}
+                        />
                       ),
                     },
                   ]}

@@ -359,19 +359,19 @@ Props): JSX.Element {
               direction="RIGHT"
               title="Resources"
             >
-                {rightPanel === 'RESOURCES'
-                  ? card.id &&
-                    variant?.id && (
-                      <ResourcesWrapper
-                        kind={ResourceContextScope.CardOrCardContent}
-                        accessLevel={
-                          !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
-                        }
-                        cardId={card.id}
-                        cardContentId={variant.id}
-                      />
-                    )
-                  : null}
+              {rightPanel === 'RESOURCES'
+                ? card.id &&
+                  variant?.id && (
+                    <ResourcesWrapper
+                      kind={ResourceContextScope.CardOrCardContent}
+                      accessLevel={
+                        !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
+                      }
+                      cardId={card.id}
+                      cardContentId={variant.id}
+                    />
+                  )
+                : null}
             </SideCollapsiblePanel>
           </Flex>
         </Flex>

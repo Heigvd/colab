@@ -105,7 +105,7 @@ export default function ResourcesList({
                     key={getKey(resourceAndRef)}
                     resourceAndRef={resourceAndRef}
                     selectResource={selectResource}
-                  /> 
+                  />
                 ))}
               </Flex>
             </div>

@@ -106,7 +106,9 @@ export default function ResourceCreator({
   return (
     <OpenCloseModal
       title="Create a resource"
-      collapsedChildren={<IconButton title="add a sticky note" icon={addIcon} className={className}/>}
+      collapsedChildren={
+        <IconButton title="add a sticky note" icon={addIcon} className={className} />
+      }
     >
       {collapse => (
         <div className={css({ padding: modalPadding })}>

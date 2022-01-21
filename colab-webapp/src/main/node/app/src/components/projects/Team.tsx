@@ -180,7 +180,7 @@ const Member = ({ member, roles }: MemberProps) => {
           <IconButton
             key={role.id}
             icon={hasRole ? faCheck : faTimes}
-            title={hasRole ? "Remove role" : "Give role"}
+            title={hasRole ? 'Remove role' : 'Give role'}
             onClick={() => {
               if (hasRole) {
                 dispatch(API.removeRole({ roleId: role.id!, memberId: member.id! }));

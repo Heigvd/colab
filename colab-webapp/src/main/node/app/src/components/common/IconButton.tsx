@@ -43,7 +43,12 @@ export default function IconButton({
     >
       {layer ? (
         <span className="fa-layers fa-fw">
-          <FontAwesomeIcon icon={layer.layerIcon} color={iconColor} size={iconSize} transform={layer.transform} />
+          <FontAwesomeIcon
+            icon={layer.layerIcon}
+            color={iconColor}
+            size={iconSize}
+            transform={layer.transform}
+          />
           <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} mask={mask} />
         </span>
       ) : (

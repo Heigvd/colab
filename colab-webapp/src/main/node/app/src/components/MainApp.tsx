@@ -5,7 +5,13 @@
  * Licensed under the MIT License
  */
 import { css, cx } from '@emotion/css';
-import { faCog, faExclamationTriangle, faSignOutAlt, faTimes, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCog,
+  faExclamationTriangle,
+  faSignOutAlt,
+  faTimes,
+  faUserCircle,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -78,7 +84,7 @@ function useQuery() {
 export default function MainApp(): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
+
   const { currentUser, status: currentUserStatus } = useCurrentUser();
   const currentAccounts = useAppSelector(
     state => Object.values(state.users.accounts).filter(a => a.userId == state.auth.currentUserId),
@@ -163,27 +169,28 @@ export default function MainApp(): JSX.Element {
             <nav className={flex}>
               <MainMenuLink to="/">Projects</MainMenuLink>
               {projectBeingEdited != null ? (
-                  <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
-                    {projectBeingEdited.name}
-                    <IconButton
-                        onClick={(events) => {
-                          // make sure to go back to projects page before closing project
-                          // to avoid infinite loop
-                          events.preventDefault();
-                          navigate('/');
-                          dispatch(API.closeCurrentProject());
-                        }}
-                        icon={faTimes}
-                        title="Close current project" 
-                        className={css({
-                          pointerEvents: 'auto', 
-                          marginLeft: space_M, 
-                          padding: 0, 
-                          ':hover': {
-                            backgroundColor: 'transparent'
-                          }})}
-                      />
-                  </MainMenuLink>
+                <MainMenuLink to={`/editor/${projectBeingEdited.id}`}>
+                  {projectBeingEdited.name}
+                  <IconButton
+                    onClick={events => {
+                      // make sure to go back to projects page before closing project
+                      // to avoid infinite loop
+                      events.preventDefault();
+                      navigate('/');
+                      dispatch(API.closeCurrentProject());
+                    }}
+                    icon={faTimes}
+                    title="Close current project"
+                    className={css({
+                      pointerEvents: 'auto',
+                      marginLeft: space_M,
+                      padding: 0,
+                      ':hover': {
+                        backgroundColor: 'transparent',
+                      },
+                    })}
+                  />
+                </MainMenuLink>
               ) : null}
             </nav>
             <div
@@ -193,31 +200,43 @@ export default function MainApp(): JSX.Element {
             ></div>
             <DropDownMenu
               icon={faCog}
-              valueComp={{value: '', label: ""}}
+              valueComp={{ value: '', label: '' }}
               entries={[
-                {value: '/settings/display', label: "Display settings"},
-                {value: '/settings', label: "Other settings"},
-                ...(currentUser.admin ? [{value: '/debug', label: "Debug"}] : []),
-                ...(currentUser.admin ? [{value: '/admin', label: "Admin"}] : []),
+                { value: '/settings/display', label: 'Display settings' },
+                { value: '/settings', label: 'Other settings' },
+                ...(currentUser.admin ? [{ value: '/debug', label: 'Debug' }] : []),
+                ...(currentUser.admin ? [{ value: '/admin', label: 'Admin' }] : []),
               ]}
-              onSelect={(val)=>{
-                val.action != null ? val.action() : navigate(val.value)}}
+              onSelect={val => {
+                val.action != null ? val.action() : navigate(val.value);
+              }}
               buttonClassName={invertedThemeMode}
             />
             <DropDownMenu
               icon={faUserCircle}
-              valueComp={{value: '', label: ""}}
+              valueComp={{ value: '', label: '' }}
               entries={[
-                {value: '/settings/user', label: "Profile"},
-                ...(currentAccounts.map(account => {
-                  return {value: `/settings/account/${account.id}`, label: `Edit ${account.email}`}
-                })),
-                {value: 'logout', label: <>Logout <FontAwesomeIcon icon={faSignOutAlt} /></>, action: logout},
-
+                { value: '/settings/user', label: 'Profile' },
+                ...currentAccounts.map(account => {
+                  return {
+                    value: `/settings/account/${account.id}`,
+                    label: `Edit ${account.email}`,
+                  };
+                }),
+                {
+                  value: 'logout',
+                  label: (
+                    <>
+                      Logout <FontAwesomeIcon icon={faSignOutAlt} />
+                    </>
+                  ),
+                  action: logout,
+                },
               ]}
-              onSelect={(val)=>{
-                val.action != null ? val.action() : navigate(val.value)}}
-              buttonClassName={cx(invertedThemeMode, css({marginLeft: space_S}))}
+              onSelect={val => {
+                val.action != null ? val.action() : navigate(val.value);
+              }}
+              buttonClassName={cx(invertedThemeMode, css({ marginLeft: space_S }))}
             />
             {passwordScore != null && passwordScore.score < 2 ? (
               <FontAwesomeIcon title={'your password is weak'} icon={faExclamationTriangle} />

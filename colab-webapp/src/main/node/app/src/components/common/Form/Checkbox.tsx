@@ -51,7 +51,11 @@ export default function Checkbox({
         justify="flex-start"
         onClick={disabled ? undefined : () => onChange(!value)}
       >
-        <FontAwesomeIcon title={title} icon={value ? faCheckSquare : faSquare} className={cx(css({marginRight: space_S}), className)}/>
+        <FontAwesomeIcon
+          title={title}
+          icon={value ? faCheckSquare : faSquare}
+          className={cx(css({ marginRight: space_S }), className)}
+        />
         {label}
       </Flex>
     </Flex>

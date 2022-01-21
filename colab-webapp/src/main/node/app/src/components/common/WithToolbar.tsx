@@ -165,7 +165,6 @@ export default function WithToolbar({
 
   const cssPosition = cssPos(toolbarPosition, offsets.x, offsets.y);
 
-
   const posCb = React.useCallback(() => {
     if (toolbarRef.current != null && toolbarRef.current.offsetParent != null) {
       if (toolbarRef.current != null && toolbarRef.current.offsetParent != null) {
@@ -180,21 +179,20 @@ export default function WithToolbar({
 
   return (
     <div
-      onClick={onClick} 
+      onClick={onClick}
       onMouseEnter={posCb}
-      className={
-        css({
-          flexGrow: grow,
+      className={css({
+        flexGrow: grow,
+        display: 'flex',
+        flexDirection: 'column',
+        width: 'fit-content',
+        position: 'relative',
+        ':hover > .toolbar': {
           display: 'flex',
-          flexDirection: 'column',
-          width: 'fit-content',
-          position: 'relative',
-          ':hover > .toolbar': {
-            display: 'flex',
-          },
-        })}
+        },
+      })}
     >
-      {toolbar &&
+      {toolbar && (
         <div
           ref={toolbarRef}
           className={cx(
@@ -212,7 +210,8 @@ export default function WithToolbar({
           )}
         >
           {toolbar}
-        </div>}
+        </div>
+      )}
       {children}
     </div>
   );

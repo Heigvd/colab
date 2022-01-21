@@ -7,8 +7,8 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { fullPageStyle } from '../styling/style';
 import Logo from '../styling/Logo';
+import { fullPageStyle } from '../styling/style';
 
 interface Props {
   children: React.ReactNode;

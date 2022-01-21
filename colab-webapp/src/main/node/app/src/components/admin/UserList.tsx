@@ -44,7 +44,7 @@ const UserComp = ({ user }: { user: User }) => {
           onClick={() => {
             dispatch(user.admin ? revokeAdminRight(user) : grantAdminRight(user));
           }}
-          title={user.admin ? "Grant right" : "Revoke right"}
+          title={user.admin ? 'Grant right' : 'Revoke right'}
         />
       </div>
       <div>

@@ -82,10 +82,10 @@ export default function AutoSaveInput({
     [debouncedOnChange],
   );
   const onEnter = (event: React.KeyboardEvent) => {
-    if(event.key == "Enter") {
+    if (event.key == 'Enter') {
       displayCb();
     }
-  }
+  };
 
   const editCb = React.useCallback(() => {
     setState(state => ({ ...state, status: 'EDIT' }));
@@ -106,7 +106,7 @@ export default function AutoSaveInput({
               value={state.currentValue}
               onChange={onInternalChangeCb}
               autoFocus
-              className={cx(invisibleInputStyle, (className || ''))}
+              className={cx(invisibleInputStyle, className || '')}
               onKeyPress={onEnter}
             />
           ) : (
@@ -115,7 +115,7 @@ export default function AutoSaveInput({
               value={state.currentValue}
               onChange={onInternalChangeCb}
               autoFocus
-              className={cx(invisibleTextareaStyle, (className || ''))}
+              className={cx(invisibleTextareaStyle, className || '')}
               onKeyPress={onEnter}
             />
           )}
@@ -134,7 +134,7 @@ export default function AutoSaveInput({
       >
         <>
           <label>{label}</label>
-          <div className={cx(css({'&:hover': { opacity: 0.7 } }), (className || ''))}>
+          <div className={cx(css({ '&:hover': { opacity: 0.7 } }), className || '')}>
             {state.currentValue ? state.currentValue : <i>{placeholder}</i>}
           </div>
         </>

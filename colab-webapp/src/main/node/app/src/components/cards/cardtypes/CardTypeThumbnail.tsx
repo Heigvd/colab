@@ -23,8 +23,8 @@ const defaultStyle = css({
   boxShadow: cardShadow,
   borderRadius: borderRadius,
   '&:hover': {
-    backgroundColor: 'var(--primaryColorContrastShade)'
-  }
+    backgroundColor: 'var(--primaryColorContrastShade)',
+  },
 });
 
 const selected = cx(
@@ -35,7 +35,7 @@ const selected = cx(
     '&:hover': {
       backgroundColor: 'var(--primaryColor)',
       color: 'var(--bgColor)',
-    }
+    },
   }),
 );
 

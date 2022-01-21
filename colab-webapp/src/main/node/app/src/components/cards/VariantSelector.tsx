@@ -6,7 +6,12 @@
  */
 
 import { css } from '@emotion/css';
-import { faCaretLeft, faCaretRight, faPlus, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCaretLeft,
+  faCaretRight,
+  faPlus,
+  faWindowRestore,
+} from '@fortawesome/free-solid-svg-icons';
 import { Card, CardContent, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -136,11 +141,11 @@ export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.
     const cardId = card.id;
 
     return (
-      <Flex justify="space-between" className={css({marginTop: space_S})}>
+      <Flex justify="space-between" className={css({ marginTop: space_S })}>
         <Flex basis="1px" grow={1}>
           {/*space*/}
         </Flex>
-        <Flex basis="1px" grow={1} justify="center" className={css({fontSize: '0.9em'})}>
+        <Flex basis="1px" grow={1} justify="center" className={css({ fontSize: '0.9em' })}>
           {variantPager != null && variantPager.previous != variantPager.current ? (
             <IconButton
               icon={faCaretLeft}
@@ -179,7 +184,7 @@ export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.
           {allowCreation ? (
             <IconButton
               icon={faWindowRestore}
-              layer={{layerIcon: faPlus, transform: 'left-18'}}
+              layer={{ layerIcon: faPlus, transform: 'left-18' }}
               title="Create a new variant"
               onClick={() => {
                 dispatch(API.createCardContentVariantWithBlockDoc(cardId)).then(payload => {

@@ -18,7 +18,7 @@ import {
 } from '../styling/style';
 import Clickable, { ClickablenProps } from './Clickable';
 
-export interface ButtonProps extends Omit<ClickablenProps, "clickableClassName">{
+export interface ButtonProps extends Omit<ClickablenProps, 'clickableClassName'> {
   invertedButton?: boolean;
   icon?: IconProp;
   iconSize?: SizeProp;
@@ -37,7 +37,6 @@ export default function Button({
   iconColor,
   iconSize,
   reverseOrder,
-  
 }: ButtonProps): JSX.Element {
   return (
     <Clickable
@@ -48,7 +47,14 @@ export default function Button({
       clickable={clickable}
     >
       {reverseOrder ? children : null}
-      {icon && <FontAwesomeIcon icon={icon} color={iconColor} size={iconSize} className={reverseOrder ? css({marginLeft: space_S}) : css({marginRight: space_S})}/>}
+      {icon && (
+        <FontAwesomeIcon
+          icon={icon}
+          color={iconColor}
+          size={iconSize}
+          className={reverseOrder ? css({ marginLeft: space_S }) : css({ marginRight: space_S })}
+        />
+      )}
       {!reverseOrder ? children : null}
     </Clickable>
   );

@@ -132,8 +132,7 @@ function ajustVertically(values: ContainerValues) {
 }
 function ajustVerticalOverlap(values: ContainerValues, parent: HTMLElement) {
   let newTopUp = parent.getBoundingClientRect().top - values.height;
-  const newTopDown =
-    parent.getBoundingClientRect().top + parent.getBoundingClientRect().height;
+  const newTopDown = parent.getBoundingClientRect().top + parent.getBoundingClientRect().height;
   let newHeightUp = values.height;
   let newHeightDown = values.height;
 
@@ -162,8 +161,7 @@ function ajustVerticalOverlap(values: ContainerValues, parent: HTMLElement) {
 
 function ajustHorizontalOverlap(values: ContainerValues, parent: HTMLElement) {
   let newLeftUp = parent.getBoundingClientRect().left - values.width;
-  const newLeftDown =
-    parent.getBoundingClientRect().left + parent.getBoundingClientRect().width;
+  const newLeftDown = parent.getBoundingClientRect().left + parent.getBoundingClientRect().width;
   let newWidthUp = values.width;
   let newWidthDown = values.width;
 
@@ -201,10 +199,7 @@ interface ParentAndChildrenRectangles {
 }
 
 export type DropDownDirection = 'left' | 'down' | 'right' | 'up';
-function valuesToSides(
-  values: ContainerValues,
-  parent: HTMLElement,
-): ParentAndChildrenRectangles {
+function valuesToSides(values: ContainerValues, parent: HTMLElement): ParentAndChildrenRectangles {
   const { top: childrenTop, left: childrenLeft } = values;
   const childrenBottom = childrenTop + values.height;
   const childrenRight = childrenLeft + values.width;
@@ -224,12 +219,8 @@ function valuesToSides(
     parentRight,
   };
 }
-function isOverlappingHorizontally(
-  values: ContainerValues,
-  parent: HTMLElement,
-) {
-  const { childrenRight, parentLeft, childrenLeft, parentRight } =
-    valuesToSides(values, parent);
+function isOverlappingHorizontally(values: ContainerValues, parent: HTMLElement) {
+  const { childrenRight, parentLeft, childrenLeft, parentRight } = valuesToSides(values, parent);
   if (childrenRight <= parentLeft || childrenLeft >= parentRight) {
     return false;
   }
@@ -238,8 +229,7 @@ function isOverlappingHorizontally(
 }
 
 function isOverlappingVertically(values: ContainerValues, parent: HTMLElement) {
-  const { childrenBottom, parentTop, childrenTop, parentBottom } =
-    valuesToSides(values, parent);
+  const { childrenBottom, parentTop, childrenTop, parentBottom } = valuesToSides(values, parent);
   if (childrenBottom <= parentTop || childrenTop >= parentBottom) {
     return false;
   }
@@ -255,23 +245,20 @@ export function justifyDropMenu(
   const vertical = direction === 'down' || direction === 'up';
 
   if (menu != null && selector != null) {
-    const { width: containerWidth, height: containerHeight } =
-      menu.getBoundingClientRect();
+    const { width: containerWidth, height: containerHeight } = menu.getBoundingClientRect();
 
     let values: ContainerValues = {
       left: vertical
         ? selector.getBoundingClientRect().left
         : direction === 'left'
         ? selector.getBoundingClientRect().left - containerWidth
-        : selector.getBoundingClientRect().left +
-          selector.getBoundingClientRect().width,
+        : selector.getBoundingClientRect().left + selector.getBoundingClientRect().width,
       width: containerWidth,
       top: !vertical
         ? selector.getBoundingClientRect().top
         : direction === 'up'
         ? selector.getBoundingClientRect().top - containerHeight
-        : selector.getBoundingClientRect().top +
-          selector.getBoundingClientRect().height,
+        : selector.getBoundingClientRect().top + selector.getBoundingClientRect().height,
       height: containerHeight,
     };
 
@@ -298,7 +285,7 @@ export function justifyDropMenu(
 interface Entry<T> {
   value: T;
   label: React.ReactNode;
-  action?: ()=>void;
+  action?: () => void;
 }
 
 interface Props<T> {
@@ -327,10 +314,10 @@ export default function DropDownMenu<T extends string | number | symbol>({
   idleHoverStyle = 'FOREGROUND',
 }: Props<T>): JSX.Element {
   const [open, setOpen] = React.useState<boolean>(false);
-  
-  const dropRef= useRef<HTMLDivElement>(null);
 
-  const handleClickOutside = (event:Event) => {
+  const dropRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (event: Event) => {
     if (dropRef.current && !dropRef.current.contains(event.target as Node)) {
       setOpen(false);
     }
@@ -347,7 +334,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
     setOpen(open => !open);
   }, []);
 
-   const clickIn = React.useCallback((event: React.MouseEvent<HTMLDivElement> | undefined) => {
+  const clickIn = React.useCallback((event: React.MouseEvent<HTMLDivElement> | undefined) => {
     if (event != null) {
       event.stopPropagation();
     }
@@ -376,31 +363,31 @@ export default function DropDownMenu<T extends string | number | symbol>({
           <Flex
             align="center"
             onClick={toggle}
-            className={cx((idleHoverStyle === 'BACKGROUND' ? linkStyle : iconButton), buttonClassName || '')
-              + ' dropDownButton'}
+            className={
+              cx(idleHoverStyle === 'BACKGROUND' ? linkStyle : iconButton, buttonClassName || '') +
+              ' dropDownButton'
+            }
           >
-            {current.label && 
-              <> 
+            {current.label && (
+              <>
                 {menuIcon === 'BURGER' ? (
                   <span className={open ? openButtonStyle : buttonStyle}></span>
                 ) : null}
                 {current.label}
               </>
-            }
-            
-            {icon ? <FontAwesomeIcon icon={icon} className={css({fontSize: '16px'})}/> : null}
+            )}
+
+            {icon ? <FontAwesomeIcon icon={icon} className={css({ fontSize: '16px' })} /> : null}
             {current.label}
-            {menuIcon === 'CARET' ? <FontAwesomeIcon icon={faCaretDown} className={css({marginLeft: space_S })} /> : null}
+            {menuIcon === 'CARET' ? (
+              <FontAwesomeIcon icon={faCaretDown} className={css({ marginLeft: space_S })} />
+            ) : null}
           </Flex>
-          {open &&
-            <div 
+          {open && (
+            <div
               className={commonStyle + (dropClassName || '')}
               ref={n => {
-                justifyDropMenu(
-                  n,
-                  n?.parentElement?.querySelector('.dropDownButton'),
-                  direction,
-                );
+                justifyDropMenu(n, n?.parentElement?.querySelector('.dropDownButton'), direction);
               }}
             >
               {entries.map(entry => (
@@ -418,7 +405,7 @@ export default function DropDownMenu<T extends string | number | symbol>({
                 </div>
               ))}
             </div>
-          }
+          )}
         </Flex>
       </div>
     );
