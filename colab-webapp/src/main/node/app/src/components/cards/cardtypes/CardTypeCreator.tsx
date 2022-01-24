@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { cx } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
@@ -56,7 +56,6 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
           }
         }
       });
-      //setState('CLOSED');
     },
     [dispatch, afterCreation, global, project],
   );
@@ -69,6 +68,8 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
       label: 'title',
       placeholder: 'title',
       isMandatory: true,
+      errorMessage: 'Must have a title',
+      isErroneous: e => e.title === null || e.title === '',
     },
     {
       key: 'purpose',
@@ -76,6 +77,8 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
       label: 'purpose',
       placeholder: 'purpose',
       isMandatory: true,
+      errorMessage: 'Must have a purpose',
+      isErroneous: e => e.purpose === null || e.purpose === '',
     },
     createSelectField({
       key: 'tags',
@@ -86,6 +89,8 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
       canCreateOption: true,
       placeholder: 'category',
       isMandatory: true,
+      errorMessage: 'Must have at least one tag',
+      isErroneous: e => e.tags.length === 0 || e.tags === null,
     }),
   ];
 
@@ -101,18 +106,20 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
           <FontAwesomeIcon icon={faPlus} /> Create new type
         </>
       }
-      className={buttonStyle}
-      footer={<></>}
+      className={cx(buttonStyle, css({ marginBottom: space_M }))}
       showCloseButton
     >
-      {() => {
+      {close => {
         return (
           <div>
             <Form
               fields={fields}
               value={{ title: '', purpose: '', tags: [] }}
               autoSubmit={false}
-              onSubmit={createTypeCb}
+              onSubmit={function (type) {
+                createTypeCb(type);
+                close();
+              }}
               className={marginAroundStyle([3], space_M)}
               buttonClassName={cx(buttonStyle, marginAroundStyle([1], space_M))}
             />
