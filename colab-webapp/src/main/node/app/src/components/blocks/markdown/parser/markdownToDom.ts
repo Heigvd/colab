@@ -27,7 +27,6 @@ const lineRegexBuilder = () => {
   let lineRegex: RegExp;
   return () => {
     if (!lineRegex) {
-      throw 'SafariBug';
       lineRegex = new RegExp(
         [
           '(?<CODE>(?<codeIndent>^```(?<codeLang>.*)\n)(?<codeData>.*)\n```)',
