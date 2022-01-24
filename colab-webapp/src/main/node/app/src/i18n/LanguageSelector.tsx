@@ -31,7 +31,7 @@ export default function LanguageSelector(): JSX.Element {
       value={lang}
       valueComp={valueComp}
       entries={entries}
-      onSelect={() => setLang}
+      onSelect={function(){setLang}}
       idleHoverStyle="BACKGROUND"
     />
   );

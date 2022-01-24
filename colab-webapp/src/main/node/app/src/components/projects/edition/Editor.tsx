@@ -319,7 +319,7 @@ export default function Editor(): JSX.Element {
               <Route path="flow" element={<ActivityFlowChart />} />
               <Route path="defs" element={<CardTypeList />} />
               <Route path="card/:id" element={<DefaultVariantDetector />} />
-              {/* Zooom sur une carte */}
+              {/* Zooom on a card */}
               <Route
                 path="card/:id/v/:vId/*"
                 element={
@@ -328,9 +328,9 @@ export default function Editor(): JSX.Element {
                   </CardWrapper>
                 }
               />
-              {/* Edition d'une carte qui renvoie sur la variante par default */}
+              {/* Edit cart, send to default variant */}
               <Route path="edit/:id" element={<DefaultVariantDetector />} />
-              {/* Edition d'une carte */}
+              {/* Edit card */}
               <Route
                 path="edit/:id/v/:vId/*"
                 element={
@@ -339,7 +339,7 @@ export default function Editor(): JSX.Element {
                   </CardWrapper>
                 }
               />
-              {/* Toutes les cards. Route root */}
+              {/* All cards. Root route */}
               <Route
                 path="*"
                 element={

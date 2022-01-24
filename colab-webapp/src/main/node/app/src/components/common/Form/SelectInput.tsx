@@ -8,7 +8,7 @@
 import * as React from 'react';
 import Select, { MultiValue, OnChangeValue, SingleValue } from 'react-select';
 import Creatable from 'react-select/creatable';
-import { errorStyle, inputStyle, labelStyle, warningStyle } from '../../styling/style';
+import { errorStyle, labelStyle, warningStyle } from '../../styling/style';
 import Flex from '../Flex';
 
 interface Opt<T> {
@@ -82,7 +82,6 @@ export default function SelectInput<T, IsMulti extends boolean>({
       </Flex>
       {canCreateOption ? (
         <Creatable
-          className={inputStyle}
           isMulti={isMulti}
           placeholder={placeholder}
           value={currentValue}
@@ -92,7 +91,6 @@ export default function SelectInput<T, IsMulti extends boolean>({
         />
       ) : (
         <Select
-          //className={inputStyle}
           isMulti={isMulti}
           placeholder={placeholder}
           value={currentValue}
