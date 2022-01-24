@@ -86,7 +86,8 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
             icon={faCaretLeft}
             iconSize="2x"
             title={variantPager.previous.title || ''}
-            onClick={() => {
+            onClick={e => {
+              e.stopPropagation();
               if (variantPager.previous.id) {
                 setDisplayedVariantId(variantPager.previous.id);
               }
@@ -101,7 +102,8 @@ export default function VariantSelector({ card, children }: Props): JSX.Element 
             icon={faCaretRight}
             iconSize="2x"
             title={variantPager.next.title || ''}
-            onClick={() => {
+            onClick={e => {
+              e.stopPropagation();
               if (variantPager.next.id) {
                 setDisplayedVariantId(variantPager.next.id);
               }
@@ -142,9 +144,6 @@ export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.
 
     return (
       <Flex justify="space-between" className={css({ marginTop: space_S })}>
-        <Flex basis="1px" grow={1}>
-          {/*space*/}
-        </Flex>
         <Flex basis="1px" grow={1} justify="center" className={css({ fontSize: '0.9em' })}>
           {variantPager != null && variantPager.previous != variantPager.current ? (
             <IconButton
@@ -154,8 +153,6 @@ export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.
               onClick={() => {
                 if (variantPager.previous.id) {
                   goto(card, variantPager.previous);
-                  //setDisplayedVariant(variantPager.previous);
-                  //                onSelect(variantPager.previous);
                 }
               }}
             />
@@ -173,8 +170,6 @@ export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.
               onClick={() => {
                 if (variantPager.next.id) {
                   goto(card, variantPager.next);
-                  //setDisplayedVariant(variantPager.next);
-                  //                onSelect(variantPager.next);
                 }
               }}
             />
