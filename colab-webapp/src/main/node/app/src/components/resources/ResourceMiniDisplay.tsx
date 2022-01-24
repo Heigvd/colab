@@ -9,10 +9,11 @@ import { css } from '@emotion/css';
 import { AbstractResource, entityIs, Resource, ResourceRef } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useDocument } from '../../selectors/documentSelector';
+import { useDocumentsOfResource } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import CheckBox from '../common/CheckBox';
+import InlineLoading from '../common/InlineLoading';
 import OnBlurInput from '../common/OnBlurInput';
 import DocumentMiniDisplay from '../documents/DocumentMiniDisplay';
 import { defaultColumnContainerStyle, defaultRowContainerStyle } from '../styling/style';
@@ -127,8 +128,11 @@ export default function ResourceMiniDisplay({
 }: ResourceMiniDisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const docId = targetResource.documentId;
-  const document = useDocument(docId);
+  // note : quick and dirty changed to be compatible with an array of docs... 
+  // but only the case of exactly 1 doc is handled !!!
+  
+  const targetResourceId = targetResource.id;
+  const docs = useDocumentsOfResource(targetResourceId);
 
   // TODO see how the category is resolved
   let effectiveCategory = targetResource.category;
@@ -141,35 +145,39 @@ export default function ResourceMiniDisplay({
   }
 
   React.useEffect(() => {
-    if (docId != null && document == null) {
-      dispatch(API.getDocument(docId));
+    if (targetResourceId != null && (!docs || docs.length < 1)) {
+      dispatch(API.getDocumentsOfResource(targetResourceId));
     }
-  }, [docId, document, dispatch]);
+  }, [targetResourceId, docs, dispatch]);
 
-  return (
-    <div className={defaultRowContainerStyle}>
-      <div className={defaultColumnContainerStyle}>
-        {isDirectResource ? (
-          <span className={css({ color: 'blue' })}>direct resource</span>
-        ) : (
-          'transitive resource'
-        )}
-        <span>Title : {targetResource.title}</span>
-        {targetResource.teaserId && <BlockEditorWrapper blockId={targetResource.teaserId} />}
-        <span> Category : {effectiveCategory}</span>
-        {entityIs(document, 'Document') && (
-          <>
-            <span>*** Document #{document.id} ***</span>
-            <DocumentMiniDisplay document={document} />
-          </>
-        )}
+  if (docs == null || docs[0] == null) {
+    return <InlineLoading />;
+  } else {
+    return (
+      <div className={defaultRowContainerStyle}>
+        <div className={defaultColumnContainerStyle}>
+          {isDirectResource ? (
+            <span className={css({ color: 'blue' })}>direct resource</span>
+          ) : (
+            'transitive resource'
+          )}
+          <span>Title : {targetResource.title}</span>
+          {targetResource.teaserId && <BlockEditorWrapper blockId={targetResource.teaserId} />}
+          <span> Category : {effectiveCategory}</span>
+          {entityIs(docs[0], 'Document') && (
+            <>
+              <span>*** Document #{docs[0].id} ***</span>
+              <DocumentMiniDisplay document={docs[0]} />
+            </>
+          )}
+        </div>
+        <TargetResourceMiniDisplay resource={targetResource} />
+        {cardTypeResourceRef && <ResourceRefMiniDisplay resourceRef={cardTypeResourceRef} />}
+        {cardResourceRef && <ResourceRefMiniDisplay resourceRef={cardResourceRef} />}
+        {cardContentResourceRef && <ResourceRefMiniDisplay resourceRef={cardContentResourceRef} />}
       </div>
-      <TargetResourceMiniDisplay resource={targetResource} />
-      {cardTypeResourceRef && <ResourceRefMiniDisplay resourceRef={cardTypeResourceRef} />}
-      {cardResourceRef && <ResourceRefMiniDisplay resourceRef={cardResourceRef} />}
-      {cardContentResourceRef && <ResourceRefMiniDisplay resourceRef={cardContentResourceRef} />}
-    </div>
-  );
+    );
+  }
 }
 
 export function ResourceSettings({

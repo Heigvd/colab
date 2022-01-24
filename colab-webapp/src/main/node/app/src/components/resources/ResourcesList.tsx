@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useDocument } from '../../selectors/documentSelector';
+import { useDocumentsOfResource } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { Destroyer } from '../common/Destroyer';
 import Flex from '../common/Flex';
@@ -137,14 +137,14 @@ function TocEntry({ resourceAndRef, selectResource }: TocEntryProps) {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
-  const docId = resourceAndRef.targetResource.documentId;
-  const document = useDocument(docId);
+  const targetResourceId = resourceAndRef.targetResource.id;
+  const docs = useDocumentsOfResource(targetResourceId);
 
   React.useEffect(() => {
-    if (docId != null && document == null) {
-      dispatch(API.getDocument(docId));
+    if (targetResourceId != null && (!docs || docs.length < 1)) {
+      dispatch(API.getDocumentsOfResource(targetResourceId));
     }
-  }, [docId, document, dispatch]);
+  }, [targetResourceId, docs, dispatch]);
 
   const teaser = useBlock(resourceAndRef.targetResource.teaserId);
 

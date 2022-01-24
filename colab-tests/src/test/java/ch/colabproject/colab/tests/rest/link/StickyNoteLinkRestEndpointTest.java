@@ -8,7 +8,7 @@ package ch.colabproject.colab.tests.rest.link;
 
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Block;
-import ch.colabproject.colab.api.model.document.Resource;
+import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.project.Project;
@@ -239,8 +239,9 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long resourceId = ColabFactory.createCardResource(client, cardId, "soft cakes").getId();
 
-        Resource resource = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
-        Block block = client.blockRestEndpoint.createNewTextDataBlock(resource.getDocumentId());
+        List<Document> docs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
+        Long documentId = docs.get(0).getId();
+        Block block = client.blockRestEndpoint.createNewTextDataBlock(documentId);
         Long blockId = block.getId();
 
         TextDataBlock explanationBlock = new TextDataBlock();
@@ -467,8 +468,9 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long resourceId = ColabFactory.createCardResource(client, cardId, "soft cakes").getId();
 
-        Resource resource = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
-        Block block = client.blockRestEndpoint.createNewTextDataBlock(resource.getDocumentId());
+        List<Document> docs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
+        Long documentId = docs.get(0).getId();
+        Block block = client.blockRestEndpoint.createNewTextDataBlock(documentId);
         Long blockId = block.getId();
 
         StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
@@ -523,8 +525,9 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         Long resourceId = ColabFactory.createCardResource(client, cardId, "soft cakes").getId();
 
-        Resource resource = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
-        Block block = client.blockRestEndpoint.createNewTextDataBlock(resource.getDocumentId());
+        List<Document> docs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
+        Long documentId = docs.get(0).getId();
+        Block block = client.blockRestEndpoint.createNewTextDataBlock(documentId);
         Long blockId = block.getId();
 
         StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();

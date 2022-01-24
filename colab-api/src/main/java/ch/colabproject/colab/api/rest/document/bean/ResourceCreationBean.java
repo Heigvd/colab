@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.rest.document.bean;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Document;
 import java.io.Serializable;
+import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -38,7 +39,7 @@ public class ResourceCreationBean implements Serializable {
     /**
      * The document
      */
-    private Document document;
+    private List<Document> documents;
 
     /**
      * The category of the resource
@@ -93,17 +94,17 @@ public class ResourceCreationBean implements Serializable {
     }
 
     /**
-     * @return the document
+     * @return the documents
      */
-    public Document getDocument() {
-        return document;
+    public List<Document> getDocuments() {
+        return documents;
     }
 
     /**
-     * @param document the document
+     * @param documents the documents
      */
-    public void setDocument(Document document) {
-        this.document = document;
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
     }
 
     /**

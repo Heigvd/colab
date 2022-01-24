@@ -7,8 +7,8 @@
 
 import { Document, entityIs } from 'colab-rest-client';
 import { useAppSelector } from '../store/hooks';
-import { LoadingStatus } from '../store/store';
 
+/*
 export const useDocument = (
   id: number | null | undefined,
 ): Document | LoadingStatus | undefined => {
@@ -25,6 +25,7 @@ export const useDocument = (
     return undefined;
   }); // refEqual is fine
 };
+*/
 
 export const useDeliverables = (cardContentId: number | null | undefined): Document[] | undefined => {
   return useAppSelector(state => {
@@ -45,3 +46,23 @@ export const useDeliverables = (cardContentId: number | null | undefined): Docum
     return result;
   });
 };
+
+export const useDocumentsOfResource = (resourceId: number | null | undefined): Document[] | undefined => {
+  return useAppSelector(state => {
+    const result: Document[] = [];
+
+    if (resourceId != null) {
+      Object.values(state.document.documents).forEach(doc => {
+        if (doc && entityIs(doc, 'Document')) {
+          if (doc.owningResourceId === resourceId) {
+            result.push(doc);
+          }
+        }
+      });
+    }
+
+    // kaï aïe how to know if they are already loaded ?
+
+    return result;
+  });
+}

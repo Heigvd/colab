@@ -16,6 +16,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -83,15 +84,25 @@ public class Resource extends AbstractResource {
     /**
      * The content of the resource
      */
+    @OneToMany(mappedBy = "owningResource", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<Document> documents;
+
+    /**
+     * The content of the resource
+     */
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
     @JsonbTransient
+    @Deprecated
     private Document document;
 
     /**
      * The document id (serialization sugar)
      */
     @Transient
+    @JsonbTransient
+    @Deprecated
     private Long documentId;
 
     // ---------------------------------------------------------------------------------------------
@@ -191,8 +202,23 @@ public class Resource extends AbstractResource {
     }
 
     /**
+     * @return the content of the resource
+     */
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    /**
+     * @param documents the content of the resource
+     */
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
+    }
+
+    /**
      * @return the document
      */
+    @Deprecated
     public Document getDocument() {
         return document;
     }
@@ -209,6 +235,7 @@ public class Resource extends AbstractResource {
      *
      * @return the id of the document
      */
+    @Deprecated
     public Long getDocumentId() {
         if (document != null) {
             return document.getId();
@@ -269,7 +296,7 @@ public class Resource extends AbstractResource {
     public String toString() {
         return "Resource{" + toPartialString() + ", title=" + title
             + ", published=" + published + ", requestingForGlory=" + requestingForGlory
-            + ", deprecated=" + deprecated + ", documentId=" + documentId + "}";
+            + ", deprecated=" + deprecated + "}";
     }
 
 }

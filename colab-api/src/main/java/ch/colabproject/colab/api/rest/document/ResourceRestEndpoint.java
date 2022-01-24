@@ -10,12 +10,14 @@ import ch.colabproject.colab.api.controller.document.ResourceCategoryHelper;
 import ch.colabproject.colab.api.controller.document.ResourceManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.AbstractResource;
+import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.document.ResourceDao;
 import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -27,6 +29,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -184,13 +187,19 @@ public class ResourceRestEndpoint {
         Resource resource = new Resource();
         resource.setTitle(resourceCreationBean.getTitle());
         resource.setTeaser(resourceCreationBean.getTeaser());
-        resource.setDocument(resourceCreationBean.getDocument());
+        if (CollectionUtils.isNotEmpty(resourceCreationBean.getDocuments())) {
+            resource.setDocument(resourceCreationBean.getDocuments().get(0));
+        }
+        resource.setDocuments(new ArrayList<Document>(resourceCreationBean.getDocuments()));
         resource.setCategory(resourceCreationBean.getCategory());
         resource.setAbstractCardTypeId(resourceCreationBean.getAbstractCardTypeId());
         resource.setCardId(resourceCreationBean.getCardId());
         resource.setCardContentId(resourceCreationBean.getCardContentId());
 
-        resourceCreationBean.getDocument().setResource(resource);
+        resourceCreationBean.getDocuments().forEach(doc -> {
+            doc.setResource(resource);// kept for backward compatibility
+            doc.setOwningResource(resource);
+        });
 
         return resourceManager.createResource(resource).getId();
     }
@@ -322,6 +331,20 @@ public class ResourceRestEndpoint {
     // *********************************************************************************************
     // links
     // *********************************************************************************************
+
+    /**
+     * Get the documents of the resource
+     *
+     * @param resourceId the id of the resource
+     *
+     * @return the documents linked to the resource
+     */
+    @GET
+    @Path("{id}/Documents")
+    public List<Document> getDocumentsOfResource(@PathParam("id") Long resourceId) {
+        logger.debug("Get the documents of the resource #{}", resourceId);
+        return resourceManager.getDocumentsOfResource(resourceId);
+    }
 
     /**
      * Get all sticky note links where the resource / resource reference is the source

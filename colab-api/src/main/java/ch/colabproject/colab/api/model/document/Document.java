@@ -37,11 +37,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
- * Any document
+ * Any document.
  * <p>
- * The subclass handles the content
+ * The subclass handles the content.
  * <p>
- * A document is owned by either a card content or a resource
+ * A document is owned by either a card content or a resource.
  *
  * @author sandra
  */
@@ -50,6 +50,7 @@ import javax.persistence.Transient;
 @Table(
     indexes = {
         @Index(columnList = "owningCardContent_id"),
+        @Index(columnList = "owningResource_id"),
     }
 )
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -107,17 +108,33 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     private Long owningCardContentId;
 
     /**
+     * The resource this document is part of
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonbTransient
+    private Resource owningResource;
+
+    /**
+     * The id of the resource this document is part of
+     */
+    @Transient
+    private Long owningResourceId;
+
+    /**
      * The resource representing this document
      */
     // TODO see where to prevent that a document is represented by several resources
     @OneToOne(mappedBy = "document", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonbTransient
+    @Deprecated
     private Resource resource;
 
     /**
      * The id of the resource representing this document
      */
     @Transient
+    @JsonbTransient
+    @Deprecated
     private Long resourceId;
 
     // ---------------------------------------------------------------------------------------------
@@ -227,8 +244,48 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
+     * @return the resource this document is part of
+     */
+    public Resource getOwningResource() {
+        return owningResource;
+    }
+
+    /**
+     * @param resource the resource this document is part of
+     */
+    public void setOwningResource(Resource resource) {
+        this.owningResource = resource;
+    }
+
+    /**
+     * @return the id of the resource this document is part of
+     */
+    public Long getOwningResourceId() {
+        if (this.owningResource != null) {
+            return this.owningResource.getId();
+        } else {
+            return owningResourceId;
+        }
+    }
+
+    /**
+     * @param resourceId the id of the resource this document is part of
+     */
+    public void setOwningResourceId(Long resourceId) {
+        this.owningResourceId = resourceId;
+    }
+
+    /**
+     * @return True if there is an owning resource
+     */
+    public boolean hasOwningResource() {
+        return this.owningResource != null || this.owningResourceId != null;
+    }
+
+    /**
      * @return the resource representing this document
      */
+    @Deprecated
     public Resource getResource() {
         return resource;
     }
@@ -245,6 +302,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      *
      * @return the id of the resource representing this document
      */
+    @Deprecated
     public Long getResourceId() {
         if (this.resource != null) {
             return resource.getId();
@@ -265,27 +323,9 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     /**
      * @return True if there is a linked resource
      */
+    @Deprecated
     public boolean hasResource() {
         return resource != null || resourceId != null;
-    }
-
-    /**
-     * Get the project this block belongs to
-     *
-     * @return block owner
-     */
-    @JsonbTransient
-    public Project getProject() {
-        if (this.owningCardContent != null) {
-            // The document is a deliverable of a card content
-            return this.owningCardContent.getProject();
-        } else if (this.resource != null) {
-            // The document is a resource
-            return this.resource.getProject();
-        } else {
-            // such an orphan shouldn't exist...
-            return null;
-        }
     }
 
     /**
@@ -311,10 +351,30 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         if (!(other instanceof Document)) {
             throw new ColabMergeException(this, other);
+        }
+    }
+
+    /**
+     * Get the project this block belongs to
+     *
+     * @return block owner
+     */
+    @JsonbTransient
+    public Project getProject() {
+        if (this.owningCardContent != null) {
+            // The document is a deliverable of a card content
+            return this.owningCardContent.getProject();
+        } else if (this.owningResource != null) {
+            // The document is part of a resource
+            return this.owningResource.getProject();
+        } else {
+            // such an orphan shouldn't exist...
+            return null;
         }
     }
 
@@ -324,9 +384,9 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
         if (this.owningCardContent != null) {
             // The document is a deliverable of a card content
             return new Conditions.HasCardReadRight(this.owningCardContent);
-        } else if (this.resource != null) {
-            // The document is a resource
-            return this.resource.getReadCondition();
+        } else if (this.owningResource != null) {
+            // The document is part of a resource
+            return this.owningResource.getReadCondition();
         } else {
             // such an orphan shouldn't exist...
             return Conditions.defaultForOrphan;
@@ -338,9 +398,9 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
         if (this.owningCardContent != null) {
             // The document is a deliverable of a card content
             return this.owningCardContent.getUpdateCondition();
-        } else if (this.resource != null) {
-            // The document is a resource
-            return this.resource.getUpdateCondition();
+        } else if (this.owningResource != null) {
+            // The document is part of a resource
+            return this.owningResource.getUpdateCondition();
         } else {
             // such an orphan shouldn't exist...
             return Conditions.defaultForOrphan;
@@ -352,9 +412,9 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
         if (this.owningCardContent != null) {
             // The document is a deliverable of a card content
             return this.owningCardContent.getChannels();
-        } else if (this.resource != null) {
-            // The document is a resource
-            return this.resource.getChannels();
+        } else if (this.owningResource != null) {
+            // The document is part of a resource
+            return this.owningResource.getChannels();
         } else {
             // such an orphan shouldn't exist...
             return Set.of();

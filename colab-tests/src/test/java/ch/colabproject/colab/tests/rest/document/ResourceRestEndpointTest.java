@@ -54,7 +54,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         resourceCreationBean.setTitle(title);
         resourceCreationBean.setTeaser(teaserBlock);
-        resourceCreationBean.setDocument(doc);
+        resourceCreationBean.setDocuments(List.of(doc));
         resourceCreationBean.setCategory(category);
         resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
 
@@ -70,16 +70,16 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertFalse(persistedResource.isRequestingForGlory());
         Assertions.assertFalse(persistedResource.isDeprecated());
 
-        Assertions.assertNotNull(persistedResource.getDocumentId());
-        Document persistedDocument = client.documentRestEndpoint
-            .getDocument(persistedResource.getDocumentId());
+        List<Document> persistedDocs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
+        Assertions.assertNotNull(persistedDocs);
+        Assertions.assertEquals(1, persistedDocs.size());
+        Document persistedDocument = persistedDocs.get(0);
         Assertions.assertNotNull(persistedDocument);
-        Assertions.assertEquals(persistedResource.getDocumentId(), persistedDocument.getId());
+        Assertions.assertEquals(resourceId, persistedDocument.getOwningResourceId());
+        Assertions.assertNull(persistedDocument.getOwningCardContentId());
         Assertions.assertTrue(persistedDocument instanceof ExternalLink);
         ExternalLink persistedExtDoc = (ExternalLink) persistedDocument;
         Assertions.assertEquals(url, persistedExtDoc.getUrl());
-        Assertions.assertNull(persistedExtDoc.getDeliverableCardContentId());
-        Assertions.assertEquals(resourceId, persistedExtDoc.getResourceId());
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
         Block persistedTeaserBlock = client.blockRestEndpoint
@@ -106,7 +106,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
         resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
-        resourceCreationBean.setDocument(doc);
+        resourceCreationBean.setDocuments(List.of(doc));
 
         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
 
@@ -120,15 +120,16 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertFalse(persistedResource.isRequestingForGlory());
         Assertions.assertFalse(persistedResource.isDeprecated());
 
-        Assertions.assertNotNull(persistedResource.getDocumentId());
-        Document persistedDocument = client.documentRestEndpoint
-            .getDocument(persistedResource.getDocumentId());
+        List<Document> persistedDocs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
+        Assertions.assertNotNull(persistedDocs);
+        Assertions.assertEquals(1, persistedDocs.size());
+        Document persistedDocument = persistedDocs.get(0);
         Assertions.assertNotNull(persistedDocument);
+        Assertions.assertEquals(resourceId, persistedDocument.getOwningResourceId());
+        Assertions.assertNull(persistedDocument.getOwningCardContentId());
         Assertions.assertTrue(persistedDocument instanceof ExternalLink);
         ExternalLink persistedExtDoc = (ExternalLink) persistedDocument;
         Assertions.assertEquals(url, persistedExtDoc.getUrl());
-        Assertions.assertNull(persistedExtDoc.getDeliverableCardContentId());
-        Assertions.assertEquals(resourceId, persistedExtDoc.getResourceId());
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
         Block persistedTeaserBlock = client.blockRestEndpoint
@@ -162,15 +163,16 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(persistedResource.isDeprecated());
         Assertions.assertEquals(category, persistedResource.getCategory());
 
-        Assertions.assertNotNull(persistedResource.getDocumentId());
-        persistedDocument = client.documentRestEndpoint
-            .getDocument(persistedResource.getDocumentId());
+        persistedDocs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
+        Assertions.assertNotNull(persistedDocs);
+        Assertions.assertEquals(1, persistedDocs.size());
+        persistedDocument = persistedDocs.get(0);
         Assertions.assertNotNull(persistedDocument);
+        Assertions.assertEquals(resourceId, persistedDocument.getOwningResourceId());
+        Assertions.assertNull(persistedDocument.getOwningCardContentId());
         Assertions.assertTrue(persistedDocument instanceof ExternalLink);
         persistedExtDoc = (ExternalLink) persistedDocument;
         Assertions.assertEquals(url, persistedExtDoc.getUrl());
-        Assertions.assertNull(persistedExtDoc.getDeliverableCardContentId());
-        Assertions.assertEquals(resourceId, persistedExtDoc.getResourceId());
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
         persistedTeaserBlock = client.blockRestEndpoint.getBlock(persistedResource.getTeaserId());
@@ -195,7 +197,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
         resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
-        resourceCreationBean.setDocument(doc);
+        resourceCreationBean.setDocuments(List.of(doc));
 
         Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
 
@@ -203,10 +205,12 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
             .getAbstractResource(resourceId);
         Assertions.assertNotNull(persistedResource);
 
-        Assertions.assertNotNull(persistedResource.getDocumentId());
-        Long docId = persistedResource.getDocumentId();
-        Document persistedDocument = client.documentRestEndpoint.getDocument(docId);
+        List<Document> persistedDocs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
+        Assertions.assertNotNull(persistedDocs);
+        Assertions.assertEquals(1, persistedDocs.size());
+        Document persistedDocument = persistedDocs.get(0);
         Assertions.assertNotNull(persistedDocument);
+        Long documentId = persistedDocument.getId();
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
         Long teaserId = persistedResource.getTeaserId();
@@ -218,7 +222,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         persistedResource = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
         Assertions.assertNull(persistedResource);
 
-        persistedDocument = client.documentRestEndpoint.getDocument(docId);
+        persistedDocument = client.documentRestEndpoint.getDocument(documentId);
         Assertions.assertNull(persistedDocument);
 
         persistedTeaserBlock = client.blockRestEndpoint.getBlock(teaserId);
@@ -248,7 +252,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
         resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
-        resourceCreationBean.setDocument(doc);
+        resourceCreationBean.setDocuments(List.of(doc));
 
         client.resourceRestEndpoint.createResource(resourceCreationBean);
 

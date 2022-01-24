@@ -674,6 +674,7 @@ export const getDeliverablesOfCardContent = createAsyncThunk(
   },
 );
 
+// TODO : implement
 export const addDeliverable = createAsyncThunk(
   'cardcontent/addDeliverable',
   async ({cardContentId, deliverable } : {cardContentId: number, deliverable: Document}) => {
@@ -742,6 +743,13 @@ export const removeAccessToResource = createAsyncThunk(
         refused: true,
       });
     }
+  },
+);
+
+export const getDocumentsOfResource = createAsyncThunk(
+  'resource/getDocuments',
+  async (resourceId: number) => {
+    return await restClient.ResourceRestEndpoint.getDocumentsOfResource(resourceId);
   },
 );
 

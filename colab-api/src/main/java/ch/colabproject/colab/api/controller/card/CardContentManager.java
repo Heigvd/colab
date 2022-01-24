@@ -195,7 +195,7 @@ public class CardContentManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        if (document.hasResource() || document.hasOwningCardContent()) {
+        if (document.hasOwningResource() || document.hasOwningCardContent()) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 

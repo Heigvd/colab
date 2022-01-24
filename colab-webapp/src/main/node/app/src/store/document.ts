@@ -56,6 +56,13 @@ const documentsSlice = createSlice({
           }
         })
       })
+      .addCase(API.getDocumentsOfResource.fulfilled, (state, action) => {
+        action.payload.forEach(doc => {
+          if (doc && doc.id) {
+            state.documents[doc.id] = doc;
+          }
+        })
+      })
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;
       })

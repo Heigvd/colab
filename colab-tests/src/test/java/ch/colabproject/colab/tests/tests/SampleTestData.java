@@ -130,13 +130,13 @@ public class SampleTestData {
         Resource resourceOnGlobalType = ColabFactory.createCardTypeResourceBlockDoc(client,
             publishedGlobalCardTypeId, "Mastering ACL");
         resourceOnGlobalTypeId = resourceOnGlobalType.getId();
-        documentIdGlobal = resourceOnGlobalType.getDocumentId();
+        documentIdGlobal = ColabFactory.getOneDocumentOfResource(client, resourceOnGlobalType).getId();
         blockIdGlobal = ColabFactory.addBlockToDocument(client, documentIdGlobal).getId();
 
         Resource resourceOnLocalType = ColabFactory.createCardTypeResourceBlockDoc(client,
             localCardTypeId, "locally handling");
         resourceOnLocalTypeId = resourceOnLocalType.getId();
-        documentIdLocal = resourceOnLocalType.getDocumentId();
+        documentIdLocal = ColabFactory.getOneDocumentOfResource(client, resourceOnLocalType).getId();
         blockIdLocal = ColabFactory.addBlockToDocument(client, documentIdLocal).getId();
 
         thirdCardId = ColabFactory.createNewCard(client, theProject).getId();

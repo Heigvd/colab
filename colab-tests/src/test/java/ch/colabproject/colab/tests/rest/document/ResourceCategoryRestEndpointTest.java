@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import com.google.common.collect.Lists;
@@ -356,7 +357,7 @@ public class ResourceCategoryRestEndpointTest extends AbstractArquillianTest {
         ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
         resourceCreationBean.setTitle(title);
         resourceCreationBean.setTeaser(teaserBlock);
-        resourceCreationBean.setDocument(document);
+        resourceCreationBean.setDocuments(List.of(document));
         resourceCreationBean.setAbstractCardTypeId(cardTypeId);
 
         Long persistedResourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);

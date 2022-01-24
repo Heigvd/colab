@@ -8,9 +8,11 @@ package ch.colabproject.colab.api.controller.document;
 
 import ch.colabproject.colab.api.controller.card.CardContentManager;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
@@ -47,6 +49,12 @@ public class DocumentManager {
      */
     @Inject
     private CardContentManager cardContentManager;
+
+    /**
+     * Resource specific logic management
+     */
+    @Inject
+    private ResourceManager resourceManager;
 
     // *********************************************************************************************
     // find document
@@ -132,6 +140,10 @@ public class DocumentManager {
     public Document createDocument(Document document) {
         logger.debug("create document : {}", document);
 
+        if (document.getOwningCardContentId() != null && document.getOwningResourceId() != null) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
         if (document.getOwningCardContentId() != null) {
             CardContent cardContent = cardContentManager
                 .assertAndGetCardContent(document.getOwningCardContentId());
@@ -139,12 +151,27 @@ public class DocumentManager {
             cardContent.getDeliverables().add(document);
             document.setOwningCardContent(cardContent);
 
-            cardContent.setDeliverable(document); // kept temporarily for backward compatibility
-            document.setDeliverableCardContent(cardContent); // kept temporarily for backward compatibility
+            // kept temporarily for backward compatibility
+            cardContent.setDeliverable(document);
+            document.setDeliverableCardContent(cardContent);
+            // kept temporarily for backward compatibility
         }
 
-        if (document.getResourceId() != null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
+        if (document.getOwningResourceId() != null) {
+            AbstractResource abstractResource = resourceManager
+                .assertAndGetResourceOrRef(document.getOwningResourceId());
+            if (!(abstractResource instanceof Resource)) {
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+            Resource resource = (Resource) abstractResource;
+
+            resource.getDocuments().add(document);
+            document.setOwningResource(resource);
+
+            // kept temporarily for backward compatibility
+            resource.setDocument(document);
+            document.setResource(resource);
+            // kept temporarily for backward compatibility
         }
 
         return documentDao.persistDocument(document);
@@ -169,7 +196,11 @@ public class DocumentManager {
             cardContent.setDeliverable(null); // kept temporarily for backward compatibility
         }
 
-        // to check : resource handling
+        Resource resource = document.getOwningResource();
+        if (resource != null) {
+            resource.getDocuments().remove(document);
+            resource.setDocument(null); // kept temporarily for backward compatibility
+        }
 
         return documentDao.deleteDocument(documentId);
     }
@@ -210,11 +241,11 @@ public class DocumentManager {
             return false;
         }
 
-        if (!(document.hasOwningCardContent() || document.hasResource())) {
+        if (!(document.hasOwningCardContent() || document.hasOwningResource())) {
             return false;
         }
 
-        if (document.hasOwningCardContent() && document.hasResource()) {
+        if (document.hasOwningCardContent() && document.hasOwningResource()) {
             return false;
         }
 

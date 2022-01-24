@@ -135,16 +135,16 @@ export default function ResourceCreator({
                     abstractCardTypeId: cardTypeId,
                     cardId: cardId,
                     cardContentId: cardContentId,
-                    document:
+                    documents:
                       state.docType === 'DocumentFile'
-                        ? {
+                        ? [{
                             '@class': state.docType,
                             fileSize: 0,
                             mimeType: 'application/octet-stream',
-                          }
-                        : {
+                          }]
+                        : [{
                             '@class': state.docType,
-                          },
+                          }],
                     title: state.title,
                     teaser: {
                       '@class': 'TextDataBlock',

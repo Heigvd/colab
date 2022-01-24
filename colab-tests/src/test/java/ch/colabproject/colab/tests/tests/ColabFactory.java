@@ -27,6 +27,7 @@ import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.tests.mailhog.MailhogClient;
 import ch.colabproject.colab.tests.mailhog.model.Message;
 import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Matcher;
 import org.junit.jupiter.api.Assertions;
 
@@ -256,7 +257,7 @@ public class ColabFactory {
         Matcher matcher = TestHelper.extractToken(invitation);
 
         if (matcher.matches()) {
-            Long tokenId = Long.parseLong(matcher.group(1));
+            Long tokenId = Long.valueOf(Long.parseLong(matcher.group(1)));
             String plainToken = matcher.group(2);
 
             mailClient.deleteMessage(invitation.getId());
@@ -294,7 +295,7 @@ public class ColabFactory {
         String title) {
         ResourceCreationBean resourceToCreate = new ResourceCreationBean();
         resourceToCreate.setTitle(title);
-        resourceToCreate.setDocument(new BlockDocument());
+        resourceToCreate.setDocuments(List.of(new BlockDocument()));
         resourceToCreate.setAbstractCardTypeId(cardTypeId);
 
         Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
@@ -314,12 +315,17 @@ public class ColabFactory {
     public static Resource createCardResource(ColabClient client, Long cardId, String title) {
         ResourceCreationBean resourceToCreate = new ResourceCreationBean();
         resourceToCreate.setTitle(title);
-        resourceToCreate.setDocument(new BlockDocument());
+        resourceToCreate.setDocuments(List.of(new BlockDocument()));
         resourceToCreate.setCardId(cardId);
 
         Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
 
         return (Resource) client.resourceRestEndpoint.getAbstractResource(id);
+    }
+
+    public static Document getOneDocumentOfResource(ColabClient client, Resource resource) {
+        List<Document> docs = client.resourceRestEndpoint.getDocumentsOfResource(resource.getId());
+        return docs.get(0);
     }
 
     /**

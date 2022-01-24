@@ -8,7 +8,7 @@
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useDeliverables, useDocument } from '../../selectors/documentSelector';
+import { useDeliverables } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import { DocumentEditorDisplay } from './DocumentEditorDisplay';
@@ -18,6 +18,7 @@ export interface DocByIdWrapperProps {
   allowEdition?: boolean;
 }
 
+/*
 export function DocumentEditorWrapper({
   docId,
   allowEdition = true,
@@ -40,6 +41,7 @@ export function DocumentEditorWrapper({
     return <InlineLoading />;
   }
 }
+*/
 
 export interface DocAsDeliverableProps {
   cardContentId: number;

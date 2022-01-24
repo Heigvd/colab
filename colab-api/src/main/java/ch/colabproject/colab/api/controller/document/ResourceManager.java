@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.document.Resourceable;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,6 +94,25 @@ public class ResourceManager {
         }
 
         return resourceOrRef;
+    }
+
+    /**
+     * Retrieve the resource. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param resourceId the id of the resource
+     *
+     * @return the resource if found
+     *
+     * @throws HttpErrorMessage if the resource was not found
+     */
+    public Resource assertAndGetResource(Long resourceId) {
+        AbstractResource abstractResource = assertAndGetResourceOrRef(resourceId);
+
+        if (!(abstractResource instanceof Resource)) {
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return (Resource) abstractResource;
     }
 
     // *********************************************************************************************
@@ -184,7 +205,7 @@ public class ResourceManager {
     public Resource createResource(Resource resource) {
         logger.debug("create resource {}", resource);
 
-        if (resource.getDocument() == null) {
+        if (CollectionUtils.isEmpty(resource.getDocuments())) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
@@ -287,6 +308,21 @@ public class ResourceManager {
     // *********************************************************************************************
 
     /**
+     * Get the documents of the resource
+     *
+     * @param resourceId the id of the resource
+     *
+     * @return the documents linked to the resource
+     */
+    public List<Document> getDocumentsOfResource(Long resourceId) {
+        logger.debug("get documents of resource #{}", resourceId);
+
+        Resource resource = assertAndGetResource(resourceId);
+
+        return resource.getDocuments();
+    }
+
+    /**
      * Get all sticky note links whose source is the given resource / resource reference
      *
      * @param resourceOrRefId the id of the resource / resource reference
@@ -324,7 +360,7 @@ public class ResourceManager {
 
         if (resourceOrRef instanceof Resource) {
             Resource resource = (Resource) resourceOrRef;
-            if (resource.getDocument() == null) {
+            if (CollectionUtils.isEmpty(resource.getDocuments())) {
                 return false;
             }
         }

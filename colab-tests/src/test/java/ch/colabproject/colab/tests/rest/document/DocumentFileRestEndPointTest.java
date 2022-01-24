@@ -25,7 +25,6 @@ package ch.colabproject.colab.tests.rest.document;
 
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.DocumentFile;
-import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
 import ch.colabproject.colab.api.setup.ColabConfiguration;
@@ -103,7 +102,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
     @Test
     public void testUpdateDocumentFileData() {
         var resource = createHostedDocResource();
-        var docId = resource.left.getDocumentId();
+        var docId = resource.left.getId();
 
         MediaType mime = MediaType.TEXT_PLAIN_TYPE;
         var fileName = this.updateFileDoc(docId, mime, TEST_CONTENT);
@@ -129,9 +128,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
      */
     @Test
     public void testEmptyDoc() {
-
-        var resource = createHostedDocResource().left;
-        var docId = resource.getDocumentId();
+        var docId = createHostedDocResource().left.getId();
 
         var document = client.documentRestEndpoint.getDocument(docId);
         DocumentFileRestEndPointTest.this.testEmptyDoc(document);
@@ -143,7 +140,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
     @Test
     public void testDeletion() {
         var resource = createHostedDocResource();
-        var docId = resource.left.getDocumentId();
+        var docId = resource.left.getId();
 
         this.updateFileDoc(docId, MediaType.TEXT_PLAIN_TYPE, TEST_CONTENT);
 
@@ -161,9 +158,9 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
     public void testQuotaUsage() {
 
         var resourceAndProjId = createHostedDocResource();
-        var resource = resourceAndProjId.left;
+        var document = resourceAndProjId.left;
         Long projId = resourceAndProjId.right;
-        var docId = resource.getDocumentId();
+        var docId = document.getId();
 
         // empty project
         List<Long> usageQuota = client.documentFileRestEndPoint.getQuotaUsage(projId);
@@ -225,13 +222,13 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
      *
      * @return the created resource
      */
-    private ImmutablePair<Resource, Long> createHostedDocResource() {
+    private ImmutablePair<Document, Long> createHostedDocResource() {
 
         ResourceCreationBean toCreate = new ResourceCreationBean();
         String title = "The game encyclopedia #" + ((int) (Math.random() * 1000));
         toCreate.setTitle(title);
         var doc = new DocumentFile();// rename to DocumentFile
-        toCreate.setDocument(doc);
+        toCreate.setDocuments(List.of(doc));
 
         // create project and bind to resource
         Project project = ColabFactory.createProject(client, "testResource");
@@ -241,8 +238,9 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
         toCreate.setCardId(cardId);
 
         var resourceId = client.resourceRestEndpoint.createResource(toCreate);
-        var r = (Resource) client.resourceRestEndpoint.getAbstractResource(resourceId);
-        return new ImmutablePair<>(r, project.getId());
+        var docs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
+        var d = docs.get(0);
+        return new ImmutablePair<>(d, project.getId());
 
     }
 
