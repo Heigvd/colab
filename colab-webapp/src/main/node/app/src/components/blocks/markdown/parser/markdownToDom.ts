@@ -18,16 +18,32 @@ logger.setLevel(4);
 //  -> a todo item: "* []
 
 // const newMajorBlockDetector = /(?:^(?! ))/; // New line which starts with non-space character
-const linesRegex = new RegExp(
-  [
-    '(?<CODE>(?<codeIndent>^```(?<codeLang>.*)\n)(?<codeData>.*)\n```)',
-    '(?<UL>^(?<ulIndent>(?<ulLevel> *[*-])(?: \\[(?<ulChecked>[ x])\\])? )(?<ulData>.*)$)',
-    '(?<OL>^(?<olIndent>(?<olLevel> *)(?<olNumber>\\d+)\\.)(?<olData>.*)$)',
-    '(?<H>^(?<hIndent>(?<hLevel>#{1,5}) ?)(?<hData>.*)$)',
-    '(?<P>^(?<pIndent> *)(?<pData>.*)$)',
-  ].join('|'),
-  'gm',
-);
+
+const lineRegexBuilder = () => {
+  // seems some odd browsers do not support negative lookbehind group...
+  // current mitigation: delay regexp instantiation so the whole app won't crash...
+  // TODO: fix safari
+  // TODO: do not use lookbehind groups
+  let lineRegex: RegExp;
+  return () => {
+    if (!lineRegex) {
+      throw 'SafariBug';
+      lineRegex = new RegExp(
+        [
+          '(?<CODE>(?<codeIndent>^```(?<codeLang>.*)\n)(?<codeData>.*)\n```)',
+          '(?<UL>^(?<ulIndent>(?<ulLevel> *[*-])(?: \\[(?<ulChecked>[ x])\\])? )(?<ulData>.*)$)',
+          '(?<OL>^(?<olIndent>(?<olLevel> *)(?<olNumber>\\d+)\\.)(?<olData>.*)$)',
+          '(?<H>^(?<hIndent>(?<hLevel>#{1,5}) ?)(?<hData>.*)$)',
+          '(?<P>^(?<pIndent> *)(?<pData>.*)$)',
+        ].join('|'),
+        'gm',
+      );
+    }
+    return lineRegex;
+  };
+};
+
+const getLinesRegex = lineRegexBuilder();
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5;
 
@@ -145,6 +161,7 @@ function getTagFromMajor(major: MajorTag): string {
 
 function extractMajorTags(markdown: string): MajorTag[] {
   let m: RegExpExecArray | null;
+  const linesRegex = getLinesRegex();
   linesRegex.lastIndex = 0;
   const majorTags: MajorTag[] = [];
 

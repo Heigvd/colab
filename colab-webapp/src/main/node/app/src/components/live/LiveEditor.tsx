@@ -12,6 +12,7 @@ import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import WysiwygEditor from '../blocks/markdown/WysiwygEditor';
 import CleverTextarea from '../common/CleverTextarea';
+import ErrorBoundary from '../common/ErrorBoundary';
 import Flex from '../common/Flex';
 import Toggler from '../common/Form/Toggler';
 import IconButton from '../common/IconButton';
@@ -42,6 +43,20 @@ interface Props {
   value: string;
   revision: string;
   allowEdition?: boolean;
+}
+
+function Unsupported({ md }: { md: string }) {
+  return (
+    <div>
+      <div className={css({ margin: '5px', padding: '5px', border: '1px solid red' })}>
+        <em>
+          Your browser does not support to display this text in its pretty form. Our technicians are
+          on the case.
+        </em>
+      </div>
+      <pre>{md}</pre>
+    </div>
+  );
 }
 
 export default function LiveEditor({
@@ -77,13 +92,19 @@ export default function LiveEditor({
         <div>
           <i>disconnected...</i>
         </div>
-        <MarkdownViewer md={currentValue} />
+        <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
+          <MarkdownViewer md={currentValue} />
+        </ErrorBoundary>
       </div>
     );
   }
 
   if (!allowEdition) {
-    return <MarkdownViewer md={currentValue} />;
+    return (
+      <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
+        <MarkdownViewer md={currentValue} />;
+      </ErrorBoundary>
+    );
   } else {
     if (state.status === 'VIEW') {
       return (
@@ -99,24 +120,30 @@ export default function LiveEditor({
             />
           }
         >
-          <MarkdownViewer md={currentValue} />
+          <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
+            <MarkdownViewer md={currentValue} />
+          </ErrorBoundary>
         </WithToolbar>
       );
     } else if (state.status === 'EDIT') {
       return (
         <Flex direction="column">
           <Flex>
-            <Tips tipsType="TODO">Lot of work... custom WYSIWYG editor with live capabilities</Tips>
+            <Tips tipsType="TODO">TODO: add more styling options (headings level, lists, ...</Tips>
             <Toggler label="Show Tree" value={showTree} onChange={setShowTree} />
             <Toggler label="WYSIWYG" value={wysiwyg} onChange={setWysiwyg} />
           </Flex>
           <Flex>
             {wysiwyg ? (
-              <WysiwygEditor className={grow} value={currentValue} onChange={onChange} />
+              <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
+                <WysiwygEditor className={grow} value={currentValue} onChange={onChange} />
+              </ErrorBoundary>
             ) : (
               <>
                 <CleverTextarea className={grow} value={currentValue} onChange={onChange} />
-                <MarkdownViewer className={grow} md={currentValue} />
+                <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
+                  <MarkdownViewer className={grow} md={currentValue} />
+                </ErrorBoundary>
               </>
             )}
             {showTree ? (
