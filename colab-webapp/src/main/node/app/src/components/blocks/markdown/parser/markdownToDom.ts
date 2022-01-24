@@ -40,19 +40,19 @@ const regexBuilder = () => {
 
   return () => {
     if (!boldRegex) {
-      boldRegex = /(?<!\\)(\*\*)/;
+      boldRegex = new RegExp('(?<!\\\\)(\\*\\*)');
     }
 
     if (!italicRegex) {
-      italicRegex = /(?<!\\)(\/)/;
+      italicRegex = new RegExp('(?<!\\\\)(\\/)');
     }
 
     if (!strikethroughRegex) {
-      strikethroughRegex = /(?<!\\)(~)/;
+      strikethroughRegex = new RegExp('(?<!\\\\)(~)');
     }
 
     if (!underlineRegex) {
-      underlineRegex = /(?<!\\)(_)/;
+      underlineRegex = new RegExp('(?<!\\\\)(_)');
     }
 
     if (!linesRegex) {
