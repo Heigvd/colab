@@ -70,7 +70,10 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(cardId, variants.get(0).getCardId());
         Assertions.assertNotEquals(parentId, variants.get(0).getId());
 
-        Document doc = client.cardContentRestEndpoint.getDeliverableOfCardContent(variants.get(0).getId());
+        List<Document> documents = client.cardContentRestEndpoint.getDeliverablesOfCardContent(variants.get(0).getId());
+        Assertions.assertNotNull(documents);
+        Assertions.assertEquals(1, documents.size());
+        Document doc = documents.get(0);
         Assertions.assertNotNull(doc);
         Assertions.assertNotNull(doc.getId());
         Assertions.assertTrue(doc instanceof BlockDocument);

@@ -27,21 +27,31 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
  * Any document
  * <p>
  * The subclass handles the content
+ * <p>
+ * A document is owned by either a card content or a resource
  *
  * @author sandra
  */
 //TODO adjust the constraints / indexes / cascade / fetch
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "owningCardContent_id"),
+    }
+)
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 //FIXME see if is needed or not. It was implemented for test purpose at first
@@ -72,13 +82,29 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     // TODO see where to prevent that a document is used by several card contents
     @OneToOne(mappedBy = "deliverable", fetch = FetchType.LAZY)
     @JsonbTransient
+    @Deprecated
     private CardContent deliverableCardContent;
 
     /**
      * The id of the card content for which this document is the deliverable
      */
     @Transient
+    @JsonbTransient
+    @Deprecated
     private Long deliverableCardContentId;
+
+    /**
+     * The card content for which this document is a deliverable
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonbTransient
+    private CardContent owningCardContent;
+
+    /**
+     * The id of the card content for which this document is a deliverable
+     */
+    @Transient
+    private Long owningCardContentId;
 
     /**
      * The resource representing this document
@@ -115,6 +141,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     /**
      * @return the card content for which this document is the deliverable
      */
+    @Deprecated
     public CardContent getDeliverableCardContent() {
         return deliverableCardContent;
     }
@@ -133,6 +160,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      *
      * @return the id of the card content
      */
+    @Deprecated
     public Long getDeliverableCardContentId() {
         if (this.deliverableCardContent != null) {
             return deliverableCardContent.getId();
@@ -145,7 +173,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      * set the id of the card content for which this document is the deliverable. For serialization
      * only
      *
-     * @param deliverableCardContentId the id of the card contentto set
+     * @param deliverableCardContentId the id of the card content to set
      */
     public void setDeliverableCardContentId(Long deliverableCardContentId) {
         this.deliverableCardContentId = deliverableCardContentId;
@@ -154,8 +182,48 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     /**
      * @return True if there is a linked deliverable card content
      */
+    @Deprecated
     public boolean hasDeliverableCardContent() {
         return deliverableCardContent != null || deliverableCardContentId != null;
+    }
+
+    /**
+     * @return the card content for which this document is a deliverable
+     */
+    public CardContent getOwningCardContent() {
+        return owningCardContent;
+    }
+
+    /**
+     * @param cardContent the card content for which this document is a deliverable
+     */
+    public void setOwningCardContent(CardContent cardContent) {
+        this.owningCardContent = cardContent;
+    }
+
+    /**
+     * @return the id of the card content for which this document is a deliverable
+     */
+    public Long getOwningCardContentId() {
+        if (this.owningCardContent != null) {
+            return this.owningCardContent.getId();
+        } else {
+            return owningCardContentId;
+        }
+    }
+
+    /**
+     * @param cardContentId the id of the card content for which this document is a deliverable
+     */
+    public void setOwningCardContentId(Long cardContentId) {
+        this.owningCardContentId = cardContentId;
+    }
+
+    /**
+     * @return True if there is an owning card content
+     */
+    public boolean hasOwningCardContent() {
+        return this.owningCardContent != null || this.owningCardContentId != null;
     }
 
     /**
@@ -206,10 +274,11 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      *
      * @return block owner
      */
+    @JsonbTransient
     public Project getProject() {
-        if (this.deliverableCardContent != null) {
-            // The document is the deliverable of a card content
-            return this.deliverableCardContent.getProject();
+        if (this.owningCardContent != null) {
+            // The document is a deliverable of a card content
+            return this.owningCardContent.getProject();
         } else if (this.resource != null) {
             // The document is a resource
             return this.resource.getProject();
@@ -252,9 +321,9 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-        if (this.deliverableCardContent != null) {
-            // The document is the deliverable of a card content
-            return new Conditions.HasCardReadRight(this.deliverableCardContent);
+        if (this.owningCardContent != null) {
+            // The document is a deliverable of a card content
+            return new Conditions.HasCardReadRight(this.owningCardContent);
         } else if (this.resource != null) {
             // The document is a resource
             return this.resource.getReadCondition();
@@ -266,9 +335,9 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-        if (this.deliverableCardContent != null) {
-            // The document is the deliverable of a card content
-            return this.deliverableCardContent.getUpdateCondition();
+        if (this.owningCardContent != null) {
+            // The document is a deliverable of a card content
+            return this.owningCardContent.getUpdateCondition();
         } else if (this.resource != null) {
             // The document is a resource
             return this.resource.getUpdateCondition();
@@ -280,9 +349,9 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public Set<WebsocketChannel> getChannels() {
-        if (this.deliverableCardContent != null) {
-            // The document is the deliverable of a card content
-            return this.deliverableCardContent.getChannels();
+        if (this.owningCardContent != null) {
+            // The document is a deliverable of a card content
+            return this.owningCardContent.getChannels();
         } else if (this.resource != null) {
             // The document is a resource
             return this.resource.getChannels();

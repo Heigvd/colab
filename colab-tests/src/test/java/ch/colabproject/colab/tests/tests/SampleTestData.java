@@ -121,7 +121,7 @@ public class SampleTestData {
 
         /* Card anotherProjectCardWithFriendType = */ColabFactory.createNewCard(client, anotherRootCardContentId, friendCardTypeId);
 
-        deliverableDocumentId = ColabFactory.assignNewBlockDocumentDeliverable(client, cardContentWithLocalTypeId).getId();
+        deliverableDocumentId = ColabFactory.addNewBlockDocumentDeliverable(client, cardContentWithLocalTypeId).getId();
         deliverableBlockId = ColabFactory.addBlockToDocument(client, deliverableDocumentId).getId();
 
 

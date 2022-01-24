@@ -133,6 +133,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
      */
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonbTransient
+    @Deprecated
     private Document deliverable;
 
     /**
@@ -140,7 +141,15 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
      */
     @Transient
     @JsonbTransient
+    @Deprecated
     private Long deliverableId;
+
+    /**
+     * The deliverables of this card content
+     */
+    @OneToMany(mappedBy = "owningCardContent", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<Document> deliverables;
 
     /**
      * The cards contained in there
@@ -294,6 +303,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     /**
      * @return the deliverable of this card content
      */
+    @Deprecated
     public Document getDeliverable() {
         return deliverable;
     }
@@ -310,6 +320,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
      *
      * @return the id of the deliverable of this card content
      */
+    @Deprecated
     public Long getDeliverableId() {
         if (this.deliverable != null) {
             return this.deliverable.getId();
@@ -325,6 +336,20 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
      */
     public void setDeliverableId(Long deliverableId) {
         this.deliverableId = deliverableId;
+    }
+
+    /**
+     * @return the deliverables of this card content
+     */
+    public List<Document> getDeliverables() {
+        return deliverables;
+    }
+
+    /**
+     * @param deliverables the deliverables of this card content
+     */
+    public void setDeliverables(List<Document> deliverables) {
+        this.deliverables = deliverables;
     }
 
     /**
@@ -404,10 +429,9 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
             CardContent o = (CardContent) other;
             this.setTitle(o.getTitle());
             this.setStatus(o.getStatus());
+            this.setFrozen(o.isFrozen());
             this.setCompletionLevel(o.getCompletionLevel());
             this.setCompletionMode(o.getCompletionMode());
-            this.setFrozen(o.isFrozen());
-            // the deliverable cannot be changed with a merge
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -431,7 +455,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     public Conditions.Condition getReadCondition() {
         // genuine hack inside
         // any member can read any card and card content of the project
-        // if a member lacks the read right on a card, it will not be able to read the deliverable,
+        // if a member lacks the read right on a card, it will not be able to read the deliverables,
         // resources and so on, but it will still be able to view the card "from the outside"
         return new Conditions.IsCurrentUserMemberOfProject(getProject());
     }
@@ -470,7 +494,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     public String toString() {
         return "CardContent{" + "id=" + id + ", title=" + title + ", status=" + status
             + ", completion=" + completionLevel + ", completionMode=" + completionMode
-            + ", cardId=" + cardId + "}";
+            + ", frozen=" + frozen + ", cardId=" + cardId + "}";
     }
 
 }

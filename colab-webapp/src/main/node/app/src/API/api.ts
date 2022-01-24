@@ -667,10 +667,17 @@ export const getSubCards = createAsyncThunk(
   },
 );
 
-export const getDeliverableOfCardContent = createAsyncThunk<Document, number>(
-  'cardcontent/getDeliverable',
+export const getDeliverablesOfCardContent = createAsyncThunk(
+  'cardcontent/getDeliverables',
   async (cardContentId: number) => {
-    return await restClient.CardContentRestEndpoint.getDeliverableOfCardContent(cardContentId);
+    return await restClient.CardContentRestEndpoint.getDeliverablesOfCardContent(cardContentId);
+  },
+);
+
+export const addDeliverable = createAsyncThunk(
+  'cardcontent/addDeliverable',
+  async ({cardContentId, deliverable } : {cardContentId: number, deliverable: Document}) => {
+    return await restClient.CardContentRestEndpoint.addDeliverable(cardContentId, deliverable);
   },
 );
 

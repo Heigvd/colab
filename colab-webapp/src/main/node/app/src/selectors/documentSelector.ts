@@ -26,20 +26,22 @@ export const useDocument = (
   }); // refEqual is fine
 };
 
-export const useDeliverable = (cardContentId: number | null | undefined): Document | undefined => {
+export const useDeliverables = (cardContentId: number | null | undefined): Document[] | undefined => {
   return useAppSelector(state => {
-    let document = undefined;
+    const result: Document[] = [];
 
     if (cardContentId != null) {
       Object.values(state.document.documents).forEach(doc => {
         if (doc && entityIs(doc, 'Document')) {
-          if (doc.deliverableCardContentId === cardContentId) {
-            document = doc;
+          if (doc.owningCardContentId === cardContentId) {
+            result.push(doc);
           }
         }
       });
     }
 
-    return document;
+// kaï aïe how to know if they are already loaded ?
+
+    return result;
   });
 };

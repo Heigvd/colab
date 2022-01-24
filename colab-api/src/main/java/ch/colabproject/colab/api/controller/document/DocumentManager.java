@@ -132,12 +132,15 @@ public class DocumentManager {
     public Document createDocument(Document document) {
         logger.debug("create document : {}", document);
 
-        if (document.getDeliverableCardContentId() != null) {
+        if (document.getOwningCardContentId() != null) {
             CardContent cardContent = cardContentManager
-                .assertAndGetCardContent(document.getDeliverableCardContentId());
+                .assertAndGetCardContent(document.getOwningCardContentId());
 
-            cardContent.setDeliverable(document);
-            document.setDeliverableCardContent(cardContent);
+            cardContent.getDeliverables().add(document);
+            document.setOwningCardContent(cardContent);
+
+            cardContent.setDeliverable(document); // kept temporarily for backward compatibility
+            document.setDeliverableCardContent(cardContent); // kept temporarily for backward compatibility
         }
 
         if (document.getResourceId() != null) {
@@ -160,9 +163,10 @@ public class DocumentManager {
 
         Document document = assertAndGetDocument(documentId);
 
-        CardContent cardContent = document.getDeliverableCardContent();
+        CardContent cardContent = document.getOwningCardContent();
         if (cardContent != null) {
-            cardContent.setDeliverable(null);
+            cardContent.getDeliverables().remove(document);
+            cardContent.setDeliverable(null); // kept temporarily for backward compatibility
         }
 
         // to check : resource handling
@@ -206,18 +210,16 @@ public class DocumentManager {
             return false;
         }
 
-        if (!(document.hasDeliverableCardContent() || document.hasResource())) {
+        if (!(document.hasOwningCardContent() || document.hasResource())) {
             return false;
         }
 
-        if (document.hasDeliverableCardContent() && document.hasResource()) {
+        if (document.hasOwningCardContent() && document.hasResource()) {
             return false;
         }
-
-        // TODO if is a deliverable card content, there must be only one card content that use it
 
         if (document instanceof BlockDocument) {
-            return checkBlockDocumentSpecificIntegrity((BlockDocument)document);
+            return checkBlockDocumentSpecificIntegrity((BlockDocument) document);
         } else {
             return true;
         }
@@ -227,7 +229,7 @@ public class DocumentManager {
         // not twice the same index
 //        List<Block> blocks = document.getBlocks();
 //        if (!CollectionUtils.isEmpty(blocks)) {
-            // TODO
+        // TODO
 //        }
         // TODO delete that. It is just to satisfy PMD
         if (document == null) {

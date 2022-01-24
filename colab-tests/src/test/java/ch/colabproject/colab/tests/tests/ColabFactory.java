@@ -216,12 +216,12 @@ public class ColabFactory {
      *
      * @return the new document
      */
-    public static Document assignNewBlockDocumentDeliverable(ColabClient client,
+    public static Document addNewBlockDocumentDeliverable(ColabClient client,
         Long cardContentId) {
 
         Document newDoc = new BlockDocument();
 
-        return client.cardContentRestEndpoint.assignDeliverable(cardContentId, newDoc);
+        return client.cardContentRestEndpoint.addDeliverable(cardContentId, newDoc);
     }
 
     /**

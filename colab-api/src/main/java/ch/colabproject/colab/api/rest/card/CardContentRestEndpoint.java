@@ -126,10 +126,11 @@ public class CardContentRestEndpoint {
     @Path("createWithDeliverable/{cardId}")
     public CardContent createNewCardContentWithDeliverable(@PathParam("cardId") Long cardId,
         Document document) {
-        logger.debug("create a new card content for the card #{} and document {}", cardId, document);
+        logger.debug("create a new card content for the card #{} and document {}", cardId,
+            document);
         CardContent cardContent = cardContentManager.createNewCardContent(cardId);
 
-        cardContentManager.assignDeliverable(cardContent.getId(), document);
+        cardContentManager.addDeliverable(cardContent.getId(), document);
 
         return cardContent;
     }
@@ -188,21 +189,21 @@ public class CardContentRestEndpoint {
     }
 
     /**
-     * Get the deliverable of the card content
+     * Get the deliverables of the card content
      *
      * @param cardContentId the id of the card content
      *
-     * @return the deliverable linked to the card content
+     * @return the deliverables linked to the card content
      */
     @GET
-    @Path("{id}/Deliverable")
-    public Document getDeliverableOfCardContent(@PathParam("id") Long cardContentId) {
-        logger.debug("Get deliverable of card content #{}", cardContentId);
-        return cardContentManager.getDeliverableOfCardContent(cardContentId);
+    @Path("{id}/Deliverables")
+    public List<Document> getDeliverablesOfCardContent(@PathParam("id") Long cardContentId) {
+        logger.debug("Get deliverables of card content #{}", cardContentId);
+        return cardContentManager.getDeliverablesOfCardContent(cardContentId);
     }
 
     /**
-     * Set the deliverable to the card content.
+     * Add the deliverable to the card content.
      *
      * @param cardContentId the id of the card content
      * @param document      the document to use as deliverable. It must be a new document
@@ -210,10 +211,10 @@ public class CardContentRestEndpoint {
      * @return the document newly created
      */
     @POST
-    @Path("{id}/setDeliverable")
-    public Document assignDeliverable(@PathParam("id") Long cardContentId, Document document) {
+    @Path("{id}/addDeliverable")
+    public Document addDeliverable(@PathParam("id") Long cardContentId, Document document) {
         logger.debug("add the deliverable {} for the card content #{}", document, cardContentId);
-        return cardContentManager.assignDeliverable(cardContentId, document);
+        return cardContentManager.addDeliverable(cardContentId, document);
     }
 
 }

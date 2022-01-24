@@ -49,10 +49,12 @@ const documentsSlice = createSlice({
           state.documents[action.payload.id] = action.payload;
         }
       })
-      .addCase(API.getDeliverableOfCardContent.fulfilled, (state, action) => {
-        if (action.payload.id) {
-          state.documents[action.payload.id] = action.payload;
-        }
+      .addCase(API.getDeliverablesOfCardContent.fulfilled, (state, action) => {
+        action.payload.forEach(doc => {
+          if (doc && doc.id) {
+            state.documents[doc.id] = doc;
+          }
+        })
       })
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;

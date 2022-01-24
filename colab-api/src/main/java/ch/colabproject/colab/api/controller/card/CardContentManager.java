@@ -16,7 +16,6 @@ import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
-import java.util.Objects;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -176,19 +175,19 @@ public class CardContentManager {
     }
 
     // *********************************************************************************************
-    // assign a deliverable to a card content
+    // add a deliverable to a card content
     // *********************************************************************************************
 
     /**
-     * Set the deliverable to the card content
+     * Add the deliverable to the card content
      *
      * @param cardContentId the id of the card content
      * @param document      the document to use as deliverable. It must be a new document
      *
      * @return the newly created document
      */
-    public Document assignDeliverable(Long cardContentId, Document document) {
-        logger.debug("set deliverable {} to card content #{}", document, cardContentId);
+    public Document addDeliverable(Long cardContentId, Document document) {
+        logger.debug("add deliverable {} to card content #{}", document, cardContentId);
 
         CardContent cardContent = assertAndGetCardContent(cardContentId);
 
@@ -196,18 +195,20 @@ public class CardContentManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        // A document can be related at max to one card content
-        if (document.hasDeliverableCardContent()
-            && Objects.equals(document.getDeliverableCardContentId(), cardContentId)) {
+        if (document.hasResource() || document.hasOwningCardContent()) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        cardContent.setDeliverable(document);
-        document.setDeliverableCardContent(cardContent);
+        if (cardContent.getDeliverables().contains(document)) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
 
-        Document persistedDocument = documentManager.persistDocument(document);
+        cardContent.setDeliverable(document);// kept temporarily for backward compatibility
+        document.setDeliverableCardContent(cardContent);// kept temporarily for backward compatibility
+        cardContent.getDeliverables().add(document);
+        document.setOwningCardContent(cardContent);
 
-        return persistedDocument;
+        return documentManager.persistDocument(document);
     }
 
     // *********************************************************************************************
@@ -230,18 +231,18 @@ public class CardContentManager {
     }
 
     /**
-     * Get the deliverable of the card content
+     * Get the deliverables of the card content
      *
      * @param cardContentId the id of the card content
      *
-     * @return the deliverable linked to the card content
+     * @return the deliverables linked to the card content
      */
-    public Document getDeliverableOfCardContent(Long cardContentId) {
-        logger.debug("get deliverable of card content #{}", cardContentId);
+    public List<Document> getDeliverablesOfCardContent(Long cardContentId) {
+        logger.debug("get deliverables of card content #{}", cardContentId);
 
         CardContent cardContent = assertAndGetCardContent(cardContentId);
 
-        return cardContent.getDeliverable();
+        return cardContent.getDeliverables();
     }
 
     /**
