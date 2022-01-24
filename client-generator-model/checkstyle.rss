@@ -74,7 +74,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.exceptions.HttpException.java">ch/colabproject/colab/generator/model/exceptions/HttpException.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer.java">ch/colabproject/colab/generator/model/tools/PolymorphicDeserializer.java</a>
                 </td>
                 <td>
                   0
@@ -88,7 +88,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer.java">ch/colabproject/colab/generator/model/tools/PolymorphicDeserializer.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.exceptions.HttpException.java">ch/colabproject/colab/generator/model/exceptions/HttpException.java</a>
                 </td>
                 <td>
                   0
@@ -186,7 +186,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.JsonbProvider.java">ch/colabproject/colab/generator/model/tools/JsonbProvider.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.ClassDoc.java">ch/colabproject/colab/generator/model/tools/ClassDoc.java</a>
                 </td>
                 <td>
                   0
@@ -200,7 +200,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.ClassDoc.java">ch/colabproject/colab/generator/model/tools/ClassDoc.java</a>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.model.tools.JsonbProvider.java">ch/colabproject/colab/generator/model/tools/JsonbProvider.java</a>
                 </td>
                 <td>
                   0

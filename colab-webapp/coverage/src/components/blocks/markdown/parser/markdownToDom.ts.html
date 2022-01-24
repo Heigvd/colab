@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.3% </span>
+                <span class="strong">86.63% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>208/241</span>
+                <span class='fraction'>214/247</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.1% </span>
+                <span class="strong">77.38% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>64/83</span>
+                <span class='fraction'>65/84</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.66% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>26/30</span>
+                <span class='fraction'>28/32</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.61% </span>
+                <span class="strong">86.93% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>207/239</span>
+                <span class='fraction'>213/245</span>
             </div>
         
             
@@ -738,7 +738,23 @@
 <a name='L673'></a><a href='#L673'>673</a>
 <a name='L674'></a><a href='#L674'>674</a>
 <a name='L675'></a><a href='#L675'>675</a>
-<a name='L676'></a><a href='#L676'>676</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L676'></a><a href='#L676'>676</a>
+<a name='L677'></a><a href='#L677'>677</a>
+<a name='L678'></a><a href='#L678'>678</a>
+<a name='L679'></a><a href='#L679'>679</a>
+<a name='L680'></a><a href='#L680'>680</a>
+<a name='L681'></a><a href='#L681'>681</a>
+<a name='L682'></a><a href='#L682'>682</a>
+<a name='L683'></a><a href='#L683'>683</a>
+<a name='L684'></a><a href='#L684'>684</a>
+<a name='L685'></a><a href='#L685'>685</a>
+<a name='L686'></a><a href='#L686'>686</a>
+<a name='L687'></a><a href='#L687'>687</a>
+<a name='L688'></a><a href='#L688'>688</a>
+<a name='L689'></a><a href='#L689'>689</a>
+<a name='L690'></a><a href='#L690'>690</a>
+<a name='L691'></a><a href='#L691'>691</a>
+<a name='L692'></a><a href='#L692'>692</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -758,6 +774,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -768,6 +793,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -885,6 +916,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1433,16 +1465,31 @@ logger.setLevel(4);
 //  -&gt; a todo item: "* []
 &nbsp;
 // const newMajorBlockDetector = /(?:^(?! ))/; // New line which starts with non-space character
-const linesRegex = new RegExp(
-  [
-    '(?&lt;CODE&gt;(?&lt;codeIndent&gt;^```(?&lt;codeLang&gt;.*)\n)(?&lt;codeData&gt;.*)\n```)',
-    '(?&lt;UL&gt;^(?&lt;ulIndent&gt;(?&lt;ulLevel&gt; *[*-])(?: \\[(?&lt;ulChecked&gt;[ x])\\])? )(?&lt;ulData&gt;.*)$)',
-    '(?&lt;OL&gt;^(?&lt;olIndent&gt;(?&lt;olLevel&gt; *)(?&lt;olNumber&gt;\\d+)\\.)(?&lt;olData&gt;.*)$)',
-    '(?&lt;H&gt;^(?&lt;hIndent&gt;(?&lt;hLevel&gt;#{1,5}) ?)(?&lt;hData&gt;.*)$)',
-    '(?&lt;P&gt;^(?&lt;pIndent&gt; *)(?&lt;pData&gt;.*)$)',
-  ].join('|'),
-  'gm',
-);
+&nbsp;
+const lineRegexBuilder = () =&gt; {
+  // seems some odd browsers do not support negative lookbehind group...
+  // current mitigation: delay regexp instantiation so the whole app won't crash...
+  // TODO: fix safari
+  // TODO: do not use lookbehind groups
+  let lineRegex: RegExp;
+  return () =&gt; {
+    if (!lineRegex) {
+      lineRegex = new RegExp(
+        [
+          '(?&lt;CODE&gt;(?&lt;codeIndent&gt;^```(?&lt;codeLang&gt;.*)\n)(?&lt;codeData&gt;.*)\n```)',
+          '(?&lt;UL&gt;^(?&lt;ulIndent&gt;(?&lt;ulLevel&gt; *[*-])(?: \\[(?&lt;ulChecked&gt;[ x])\\])? )(?&lt;ulData&gt;.*)$)',
+          '(?&lt;OL&gt;^(?&lt;olIndent&gt;(?&lt;olLevel&gt; *)(?&lt;olNumber&gt;\\d+)\\.)(?&lt;olData&gt;.*)$)',
+          '(?&lt;H&gt;^(?&lt;hIndent&gt;(?&lt;hLevel&gt;#{1,5}) ?)(?&lt;hData&gt;.*)$)',
+          '(?&lt;P&gt;^(?&lt;pIndent&gt; *)(?&lt;pData&gt;.*)$)',
+        ].join('|'),
+        'gm',
+      );
+    }
+    return lineRegex;
+  };
+};
+&nbsp;
+const getLinesRegex = lineRegexBuilder();
 &nbsp;
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5;
 &nbsp;
@@ -1560,6 +1607,7 @@ function getTagFromMajor(major: MajorTag): string {
 &nbsp;
 function extractMajorTags(markdown: string): MajorTag[] {
   let m: RegExpExecArray | null;
+  const linesRegex = getLinesRegex();
   linesRegex.lastIndex = 0;
   const majorTags: MajorTag[] = [];
 &nbsp;
@@ -2095,7 +2143,7 @@ export default function markdownToDom(markdown: string): NodesAndOffsets {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Mon Jan 24 2022 06:46:05 GMT+0000 (Coordinated Universal Time)
+                at Mon Jan 24 2022 07:58:07 GMT+0000 (Coordinated Universal Time)
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>
