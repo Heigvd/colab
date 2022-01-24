@@ -107,7 +107,7 @@ export default function ResourceCreator({
     <OpenCloseModal
       title="Create a resource"
       collapsedChildren={
-        <IconButton title="add a sticky note" icon={addIcon} className={className} />
+        <IconButton title="Add a resource" icon={addIcon} className={className} />
       }
     >
       {collapse => (

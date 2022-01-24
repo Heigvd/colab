@@ -18,18 +18,13 @@ import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 import Tips from '../common/Tips';
 import WithToolbar from '../common/WithToolbar';
+import { space_S } from '../styling/style';
 import ChangeTree from './ChangeTree';
 import { useLiveBlock } from './LiveTextEditor';
 
 const shrink = css({
   flexGrow: 0,
   flexShrink: 1,
-});
-
-const grow = css({
-  flexGrow: 1,
-  flexShrink: 1,
-  flexBasis: '1px',
 });
 
 type State = {
@@ -87,36 +82,52 @@ export default function LiveEditor({
   } else {
     if (state.status === 'VIEW') {
       return (
-        <WithToolbar
-          toolbarPosition="TOP_RIGHT"
-          toolbarClassName=""
-          offsetY={-1}
-          toolbar={
-            <IconButton
-              title="Click to edit"
-              onClick={() => setState({ ...state, status: 'EDIT' })}
-              icon={faPen}
-            />
-          }
+        <Flex
+          className={css({
+            border: '1px solid rgb(240, 240, 240)',
+            margin: '3px 0',
+            padding: space_S,
+            '&:hover': {
+              backgroundColor: 'var(--hoverBgColor)',
+              border: '1px solid transparent',
+              cursor: 'pointer',
+            },
+          })}
+          onClick={() => setState({ ...state, status: 'EDIT' })}
         >
-          <MarkdownViewer md={currentValue} />
-        </WithToolbar>
+          <WithToolbar
+            toolbarPosition="TOP_RIGHT"
+            toolbarClassName=""
+            offsetY={-1}
+            toolbar={
+              <IconButton title="Click to edit" icon={faPen} iconColor="var(--disabledGrey)" />
+            }
+          >
+            <MarkdownViewer md={currentValue} />
+          </WithToolbar>
+        </Flex>
       );
     } else if (state.status === 'EDIT') {
       return (
-        <Flex direction="column">
-          <Flex>
-            <Tips tipsType="TODO">Lot of work... custom WYSIWYG editor with live capabilities</Tips>
-            <Toggler label="Show Tree" value={showTree} onChange={setShowTree} />
-            <Toggler label="WYSIWYG" value={wysiwyg} onChange={setWysiwyg} />
+        <Flex direction="column" align='stretch' className={css({backgroundColor: 'var(--hoverBgColor)', padding: space_S})}>
+          <Flex justify='space-between'>
+            <Flex align='center'>
+              <Tips tipsType="TODO">Lot of work... custom WYSIWYG editor with live capabilities</Tips>
+              <Toggler label="Show Tree" value={showTree} onChange={setShowTree} />
+              <Toggler label="WYSIWYG" value={wysiwyg} onChange={setWysiwyg} />
+            </Flex>
+            <IconButton
+              title="close editor"
+              onClick={() => setState({ ...state, status: 'VIEW' })}
+              icon={faTimes}
+            />
           </Flex>
           <Flex>
             {wysiwyg ? (
-              <WysiwygEditor className={grow} value={currentValue} onChange={onChange} />
+              <WysiwygEditor className={css({alignItems: 'stretch'})} value={currentValue} onChange={onChange} />
             ) : (
               <>
-                <CleverTextarea className={grow} value={currentValue} onChange={onChange} />
-                <MarkdownViewer className={grow} md={currentValue} />
+                <CleverTextarea className={css({minHeight: '100px', flexGrow: 1})} value={currentValue} onChange={onChange} />
               </>
             )}
             {showTree ? (
@@ -125,12 +136,6 @@ export default function LiveEditor({
               </div>
             ) : null}
           </Flex>
-          <IconButton
-            title="close editor"
-            className={shrink}
-            onClick={() => setState({ ...state, status: 'VIEW' })}
-            icon={faTimes}
-          />
         </Flex>
       );
     }

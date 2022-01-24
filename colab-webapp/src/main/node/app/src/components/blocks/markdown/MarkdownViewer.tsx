@@ -4,8 +4,10 @@
  *
  * Licensed under the MIT License
  */
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import logger from '../../../logger';
+import { space_S } from '../../styling/style';
 import markdownToDom from './parser/markdownToDom';
 
 export interface MarkdownViewerProps {
@@ -32,8 +34,8 @@ export default function MarkdownViewer({ md, className }: MarkdownViewerProps): 
   }, [md]);
 
   return (
-    <div className={className}>
-      {md === '' ? <i>empty</i> : null}
+    <div className={cx(css({'p': {margin: space_S + ' 0'}}),className)}>
+      {md === '' ? <p className={css({color: 'var(--disabledGrey)'})}><i>empty</i></p> : null}
       <div ref={divRef} />
     </div>
   );

@@ -93,8 +93,7 @@ export default function CardEditor({
   card,
   variant,
   showSubcards = true,
-}: //variant,
-//variants,
+}:
 Props): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
@@ -205,7 +204,7 @@ Props): JSX.Element {
                       />
                       {hasVariants ? (
                         <>
-                          {'/'}
+                          <span className={cardTitle}>{'/'}</span>
                           <AutoSaveInput
                             className={cardTitle}
                             value={variant.title || ''}
@@ -299,8 +298,7 @@ Props): JSX.Element {
                   </div>
                 </Flex>
 
-                <Flex direction="column" grow={1}>
-                  <div>
+                <Flex direction="column" grow={1} align='stretch'>
                     {userAcl.read ? (
                       variant.id ? (
                         <DocumentEditorAsDeliverableWrapper
@@ -313,7 +311,6 @@ Props): JSX.Element {
                     ) : (
                       <span>Access Denied</span>
                     )}
-                  </div>
                 </Flex>
               </Flex>
               <Flex align="center">
