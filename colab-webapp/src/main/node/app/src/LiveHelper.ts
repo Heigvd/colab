@@ -368,7 +368,7 @@ function propagateOffsets(
       propagateOffsets(changes, child, shiftedOffets, forward, offsetFromRev);
     } else {
       // merge has been done
-      logger.error('Do not go deeper than ', child);
+      logger.info('Do not go deeper than ', child);
       const index = child.basedOn.indexOf(offsetFromRev);
       if (index >= 0) {
         child.basedOn.splice(index, 1);
