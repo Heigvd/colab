@@ -16,7 +16,7 @@ import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.TeamRole;
-import ch.colabproject.colab.api.persistence.project.ProjectDao;
+import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -237,5 +237,6 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L237">        logger.debug(&quot;Get project #{} activityflowlinks&quot;, id);</span>
 <span class="nc" id="L238">        return projectManager.getActivityFlowLinks(id);</span>
     }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

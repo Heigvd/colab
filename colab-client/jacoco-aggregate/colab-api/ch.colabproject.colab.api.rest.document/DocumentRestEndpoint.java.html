@@ -9,7 +9,7 @@ package ch.colabproject.colab.api.rest.document;
 import ch.colabproject.colab.api.controller.document.DocumentManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.Document;
-import ch.colabproject.colab.api.persistence.document.DocumentDao;
+import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -125,10 +125,6 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L125">        documentManager.deleteDocument(id);</span>
 <span class="nc" id="L126">    }</span>
 
-    // *********************************************************************************************
-    //
-    // *********************************************************************************************
-
     /**
      * Get all ids of blocks that make up the document
      *
@@ -139,10 +135,10 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/BlocksIds&quot;)
     public List&lt;Long&gt; getBlocksDocumentIds(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L142">        logger.debug(&quot;get document #{} blocks ids&quot;, id);</span>
-<span class="nc" id="L143">        return documentManager.getBlocksOfDocument(id).stream()</span>
-<span class="nc" id="L144">            .map(b -&gt;  b.getId())</span>
-<span class="nc" id="L145">            .collect(Collectors.toList());</span>
+<span class="nc" id="L138">        logger.debug(&quot;get document #{} blocks ids&quot;, id);</span>
+<span class="nc" id="L139">        return documentManager.getBlocksOfDocument(id).stream()</span>
+<span class="nc" id="L140">            .map(b -&gt;  b.getId())</span>
+<span class="nc" id="L141">            .collect(Collectors.toList());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

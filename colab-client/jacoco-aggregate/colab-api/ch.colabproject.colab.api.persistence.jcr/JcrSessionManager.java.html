@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JcrSessionManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.persistence.jcr</a> &gt; <span class="el_source">JcrSessionManager.java</span></div><h1>JcrSessionManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.persistence.jcr;
+
+import ch.colabproject.colab.api.model.project.Project;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.transaction.TransactionScoped;
+import javax.transaction.TransactionSynchronizationRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ *
+ * @author maxence
+ */
+@TransactionScoped
+<span class="nc" id="L27">public class JcrSessionManager implements Serializable {</span>
+
+    /** Logger */
+<span class="nc" id="L30">    private static final Logger logger = LoggerFactory.getLogger(JcrSessionManager.class);</span>
+
+    /**
+     * Opened session mapped by project id
+     */
+<span class="nc" id="L35">    private final Map&lt;Long, JcrSession&gt; sessions = new HashMap&lt;&gt;();</span>
+
+    /** Access to the repository */
+    @Inject
+    private JcrRepository jcrRepository;
+
+    /**
+     * Tx sync registry
+     */
+    @Resource
+    private transient TransactionSynchronizationRegistry jtaSyncRegistry;
+
+    /**
+     * Get a session to the project workspace. If the current transaction has already opened a
+     * session to this project, existing session is returned.
+     *
+     * @param project the project
+     *
+     * @return the session
+     *
+     * @throws javax.jcr.RepositoryException if something went wring
+     */
+    public JcrSession getSession(Project project) throws RepositoryException {
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (sessions.containsKey(project.getId())) {</span>
+<span class="nc" id="L59">            logger.trace(&quot;GetExisting session: Gm{}&quot;, project.getId());</span>
+<span class="nc" id="L60">            return sessions.get(project.getId());</span>
+        } else {
+<span class="nc" id="L62">            logger.trace(&quot;Create new session: Gm{}&quot;, project.getId());</span>
+<span class="nc" id="L63">            Repository repo = jcrRepository.getRepository();</span>
+<span class="nc" id="L64">            JcrSession session = new JcrSession(repo, project);</span>
+<span class="nc" id="L65">            sessions.put(project.getId(), session);</span>
+
+<span class="nc" id="L67">            JcrSynchronizer jcrSynchronizer = new JcrSynchronizer(session);</span>
+<span class="nc" id="L68">            jtaSyncRegistry.registerInterposedSynchronization(jcrSynchronizer);</span>
+
+<span class="nc" id="L70">            return session;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

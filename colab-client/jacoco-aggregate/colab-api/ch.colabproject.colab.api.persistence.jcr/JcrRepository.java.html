@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JcrRepository.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.persistence.jcr</a> &gt; <span class="el_source">JcrRepository.java</span></div><h1>JcrRepository.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.persistence.jcr;
+
+import ch.colabproject.colab.api.setup.ColabConfiguration;
+import java.net.URI;
+import java.net.URISyntaxException;
+import javax.annotation.PreDestroy;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.jcr.Repository;
+import org.apache.jackrabbit.oak.Oak;
+import org.apache.jackrabbit.oak.jcr.Jcr;
+//import org.apache.jackrabbit.oak.segment.file.FileStore;
+import org.apache.jackrabbit.oak.plugins.document.LeaseCheckMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.jackrabbit.oak.plugins.document.DocumentNodeStore;
+import static org.apache.jackrabbit.oak.plugins.document.mongo.MongoDocumentNodeStoreBuilder.newMongoDocumentNodeStoreBuilder;
+
+/**
+ * Access to the JCR repository
+ *
+ * @author maxence
+ */
+@Singleton
+@Startup
+<span class="nc" id="L34">public class JcrRepository {</span>
+
+    /** Logger */
+<span class="nc" id="L37">    private static final Logger logger = LoggerFactory.getLogger(JcrRepository.class);</span>
+
+    /** The JCR repository */
+    private Repository repository;
+
+    /** File store */
+//    private static FileStore fileStore;
+    
+    private static DocumentNodeStore nodeStore;
+
+    /**
+     * Initialize the repository
+     */
+    @Lock(LockType.WRITE)
+    public void init() {
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if (repository == null) {</span>
+<span class="nc" id="L53">            logger.trace(&quot;Init JCR Repository&quot;);</span>
+
+<span class="nc" id="L55">            var mongoUri = ColabConfiguration.getJcrMongoDbUri();</span>
+<span class="nc bnc" id="L56" title="All 4 branches missed.">            if(mongoUri == null || mongoUri.isBlank()){</span>
+<span class="nc" id="L57">                repository = new Jcr(new Oak()).createRepository();</span>
+<span class="nc" id="L58">                logger.debug(&quot;Using in memory JCR repository&quot;);</span>
+            }else{
+                try {
+<span class="nc" id="L61">                    final URI uri = new URI(mongoUri);</span>
+
+<span class="nc bnc" id="L63" title="All 2 branches missed.">                    if (uri.getScheme().equals(&quot;mongodb&quot;)) {</span>
+<span class="nc" id="L64">                        logger.info(&quot;Setting up JCR Oak MongoDB based repository&quot;);</span>
+<span class="nc" id="L65">                        String hostPort = uri.getHost();</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">                        if (uri.getPort() &gt; -1) {</span>
+<span class="nc" id="L67">                            hostPort += &quot;:&quot; + uri.getPort();</span>
+                        }
+<span class="nc" id="L69">                        String dbName = uri.getPath().replaceFirst(&quot;/&quot;, &quot;&quot;);</span>
+
+<span class="nc" id="L71">                        nodeStore = newMongoDocumentNodeStoreBuilder()</span>
+<span class="nc" id="L72">                            .setLeaseCheckMode(LeaseCheckMode.DISABLED)</span>
+<span class="nc" id="L73">                            .setMongoDB(&quot;mongodb://&quot; + hostPort + &quot;/?readConcernLevel=majority&quot;, dbName, 0)</span>
+<span class="nc" id="L74">                            .build();</span>
+
+<span class="nc" id="L76">                        repository = new Jcr(new Oak(nodeStore)).createRepository();</span>
+<span class="nc" id="L77">                        logger.info(&quot;JCR repository initialized&quot;);</span>
+
+                    }
+<span class="nc" id="L80">                } catch (URISyntaxException e) {</span>
+<span class="nc" id="L81">                    logger.error(&quot;Could not init JCR : {}&quot;, e.getMessage());</span>
+<span class="nc" id="L82">                }</span>
+            }
+//            if (inMemoryStorage) {
+                // in-memory is a very stupid backend
+//            } else {
+//                // TODO: use a real backend...
+//                // stupid filesystem backend
+//                String path = &quot;/tmp/oak&quot;;
+//                try {
+//                    fileStore = FileStoreBuilder.fileStoreBuilder(new File(path)).build();
+//
+//                    final SegmentNodeStore segmentNodeStore = SegmentNodeStoreBuilders.builder(fileStore).build();
+//                    this.repository = new Jcr(new Oak(segmentNodeStore)).createRepository();
+//                } catch (InvalidFileStoreVersionException | IOException ex) {
+//                    logger.error(&quot;Failed to read repository {}&quot;, path, ex);
+//               }
+//          }
+        }
+<span class="nc" id="L100">    }</span>
+
+    /**
+     * Get the JCR repository
+     *
+     * @return The repository
+     */
+    @Lock(LockType.READ)
+    public Repository getRepository() {
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (repository == null) {</span>
+<span class="nc" id="L110">            init();</span>
+        }
+<span class="nc" id="L112">        return repository;</span>
+    }
+
+    /**
+     * Gracefully close repository on shutdown
+     */
+    @PreDestroy
+    public void preDestroy() {
+<span class="nc" id="L120">        logger.trace(&quot;Close JCR Repository&quot;);</span>
+        
+<span class="nc bnc" id="L122" title="All 2 branches missed.">        if (nodeStore != null) {</span>
+<span class="nc" id="L123">            nodeStore.dispose();</span>
+<span class="nc" id="L124">            nodeStore = null;</span>
+        }
+//        if (fileStore != null) {
+//            fileStore.close();
+//            fileStore = null;
+//        }
+
+<span class="nc" id="L131">        repository = null;</span>
+<span class="nc" id="L132">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

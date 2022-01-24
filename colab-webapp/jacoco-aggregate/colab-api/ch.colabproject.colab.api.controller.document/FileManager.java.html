@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>FileManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.document</a> &gt; <span class="el_source">FileManager.java</span></div><h1>FileManager.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.document;
+
+import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.DocumentFile;
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.api.persistence.jcr.JcrManager;
+import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
+import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
+import ch.colabproject.colab.api.setup.ColabConfiguration;
+import java.io.InputStream;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.jcr.RepositoryException;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.io.BufferedInputStream;
+import java.nio.charset.StandardCharsets;
+import javax.ws.rs.core.MediaType;
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+
+/**
+ * Handles DocumentFiles instances both DB and Jcr persistence
+ *
+ * @author xaviergood
+ *
+ */
+@LocalBean
+@Stateless
+<span class="nc" id="L41">public class FileManager {</span>
+
+    /**
+     * Logger
+     */
+<span class="nc" id="L46">    private static final Logger logger = LoggerFactory.getLogger(FileManager.class);</span>
+
+    /**
+     * File persistence management
+     */
+    @Inject
+    private JcrManager jcrManager;
+
+    /**
+     * Document persistence
+     */
+    @Inject
+    private DocumentDao documentDao;
+
+    /**
+     * Project persistence
+     */
+    @Inject
+    private ProjectDao projectDao;
+
+    /**
+     * Update an existing document's file content
+     *
+     * @param docId    document id
+     * @param fileSize size of the file in bytes
+     * @param file     file contents
+     * @param body     body of the request, containing all meta
+     *
+     * @throws RepositoryException in case of a JCR issue
+     */
+    public void updateFile(
+        Long docId,
+        Long fileSize,
+        InputStream file,
+        FormDataBodyPart body)
+        throws RepositoryException {
+<span class="nc" id="L82">        FormDataContentDisposition details = body.getFormDataContentDisposition();</span>
+
+        //charset black magic
+<span class="nc" id="L85">        var fileNameBytes = details.getFileName().getBytes(StandardCharsets.ISO_8859_1);</span>
+<span class="nc" id="L86">        var fileName = new String(fileNameBytes, StandardCharsets.UTF_8);</span>
+
+<span class="nc" id="L88">        FileManager.logger.debug(&quot;Updating file {} with id {}&quot;, fileName, docId);</span>
+
+<span class="nc" id="L90">        Document doc = documentDao.findDocument(docId);</span>
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
+<span class="nc" id="L92">            throw HttpErrorMessage.notFound();</span>
+        }
+        // Check file size limit
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (fileSize &gt; ColabConfiguration.getJcrRepositoryFileSizeLimit()) {</span>
+<span class="nc" id="L96">            FileManager.logger.debug(&quot;File exceeds authorized size ({} bytes)&quot;</span>
+                + &quot;, size limit is {} bytes&quot;,
+<span class="nc" id="L98">                fileSize, ColabConfiguration.getJcrRepositoryFileSizeLimit());</span>
+
+<span class="nc" id="L100">            throw HttpErrorMessage.fileSizeLimitExceededError();</span>
+        }
+
+        // Check quota limit
+<span class="nc" id="L104">        Project project = doc.getProject();</span>
+<span class="nc" id="L105">        var usedQuota = getUsage(project.getId());</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (usedQuota + fileSize &gt; getQuota()) {</span>
+<span class="nc" id="L107">            FileManager.logger.debug(&quot;Quota exceeded. Used : {}, Authorized : {}&quot;,</span>
+<span class="nc" id="L108">                usedQuota + fileSize, ColabConfiguration.getJcrRepositoryProjectQuota());</span>
+
+<span class="nc" id="L110">            throw HttpErrorMessage.projectQuotaExceededError();</span>
+        }
+
+<span class="nc" id="L113">        DocumentFile hostedDoc = (DocumentFile) doc;</span>
+<span class="nc" id="L114">        hostedDoc.setFileName(fileName);</span>
+<span class="nc" id="L115">        hostedDoc.setFileSize(fileSize);</span>
+<span class="nc" id="L116">        hostedDoc.setMimeType(body.getMediaType().toString());</span>
+
+<span class="nc" id="L118">        this.jcrManager.updateOrCreateFile(project, docId, file);</span>
+<span class="nc" id="L119">    }</span>
+
+    /**
+     * Delete the file contents, and resets size and mime type
+     *
+     * @param docId id of document
+     *
+     * @throws RepositoryException in case of a JCR issue
+     */
+    public void deleteFile(Long docId) throws RepositoryException {
+
+<span class="nc" id="L130">        Document doc = documentDao.findDocument(docId);</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
+<span class="nc" id="L132">            throw HttpErrorMessage.notFound();</span>
+        }
+
+<span class="nc" id="L135">        Project project = doc.getProject();</span>
+<span class="nc" id="L136">        DocumentFile hostedDoc = (DocumentFile) doc;</span>
+<span class="nc" id="L137">        FileManager.logger.debug(&quot;Deleting file '{}' with id {}&quot;, hostedDoc.getFileName(), doc.getId());</span>
+
+<span class="nc" id="L139">        hostedDoc.setFileName(null);</span>
+<span class="nc" id="L140">        hostedDoc.setFileSize(0L);</span>
+<span class="nc" id="L141">        hostedDoc.setMimeType(MediaType.APPLICATION_OCTET_STREAM);</span>
+
+<span class="nc" id="L143">        this.jcrManager.deleteFile(project, docId);</span>
+
+<span class="nc" id="L145">    }</span>
+
+    /**
+     * Retrieves the file content. Not used yet
+     *
+     * @param documentId id of the requested document
+     *
+     * @return a stream to the file contents
+     *
+     * @throws RepositoryException in case of a JCR issue
+     */
+    public InputStream getFileStream(Long documentId) throws RepositoryException {
+<span class="nc" id="L157">        var doc = this.documentDao.findDocument(documentId);</span>
+
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
+<span class="nc" id="L160">            throw HttpErrorMessage.notFound();</span>
+        }
+
+<span class="nc" id="L163">        Project project = doc.getProject();</span>
+
+<span class="nc" id="L165">        return new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));</span>
+    }
+
+    /**
+     * Builds a well formatted response with a stream to the content and correct content headers
+     *
+     * @param documentId document id
+     *
+     * @return a triplet containing in order : a stream to the file (empty stream if no file), the
+     *         file name in UTF-8 or an empty string if no file has been uploaded, the media type of
+     *         the file or MediaType.APPLICATION_OCTET_STREAM if no file present
+     *
+     * @throws RepositoryException in case of a JCR issue
+     */
+    public ImmutableTriple&lt;BufferedInputStream, String, MediaType&gt; getDownloadFileInfo(Long documentId) throws RepositoryException {
+<span class="nc" id="L180">        var doc = this.documentDao.findDocument(documentId);</span>
+
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        if (!(doc instanceof DocumentFile)) {</span>
+<span class="nc" id="L183">            throw HttpErrorMessage.notFound();</span>
+        }
+
+<span class="nc" id="L186">        Project project = doc.getProject();</span>
+<span class="nc" id="L187">        var hostedDoc = (DocumentFile) doc;</span>
+
+<span class="nc" id="L189">        var stream = new BufferedInputStream(this.jcrManager.getFileStream(project, documentId));</span>
+
+<span class="nc" id="L191">        var fileName = hostedDoc.getFileName();</span>
+<span class="nc" id="L192">        String safeFileName = &quot;&quot;;</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">        if (fileName != null) {</span>
+            try {
+<span class="nc" id="L195">                safeFileName = URIUtil.encodePath(fileName);</span>
+<span class="nc" id="L196">            } catch (URIException ex) {</span>
+<span class="nc" id="L197">                logger.warn(&quot;Issue with filename '{}' with id {}&quot;, hostedDoc.getFileName(), doc.getId());</span>
+<span class="nc" id="L198">                safeFileName = fileName;// best effort</span>
+<span class="nc" id="L199">            }</span>
+        }
+
+<span class="nc" id="L202">        MediaType mediaType = MediaType.valueOf(hostedDoc.getMimeType());</span>
+
+<span class="nc" id="L204">        return new ImmutableTriple&lt;&gt;(stream, safeFileName, mediaType);</span>
+    }
+
+    /**
+     * Gets projects quota
+     *
+     * @return the quota of disk space usage for files per project in bytes
+     */
+    public static Long getQuota() {
+<span class="nc" id="L213">        return ColabConfiguration.getJcrRepositoryProjectQuota();</span>
+    }
+
+    /**
+     * Computes the current disk space usage of a given project
+     *
+     * @param projectId project id
+     *
+     * @return used space in bytes
+     *
+     * @throws RepositoryException in case of a JCR issue
+     */
+    public Long getUsage(Long projectId) throws RepositoryException {
+<span class="nc" id="L226">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L227">        return jcrManager.computeMemoryUsage(project);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

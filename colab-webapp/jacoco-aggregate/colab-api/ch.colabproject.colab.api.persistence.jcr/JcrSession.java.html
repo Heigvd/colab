@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JcrSession.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.persistence.jcr</a> &gt; <span class="el_source">JcrSession.java</span></div><h1>JcrSession.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.persistence.jcr;
+
+import ch.colabproject.colab.api.model.project.Project;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.io.InputStream;
+import java.io.Serializable;
+import javax.jcr.Binary;
+import javax.jcr.Credentials;
+import javax.jcr.Node;
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ *
+ * @author maxence
+ */
+public class JcrSession implements Serializable {
+
+    /**
+     * logger
+     */
+<span class="nc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(JcrSession.class);</span>
+
+    /**
+     * Default credentials
+     */
+<span class="nc" id="L37">    private static final Credentials credentials = new SimpleCredentials(</span>
+        &quot;admin&quot;,
+<span class="nc" id="L39">        &quot;admin&quot;.toCharArray());</span>
+
+    /**
+     * The session itself
+     */
+    private Session session;
+
+    /**
+     * Session workspace
+     */
+    private final String workspace;
+
+    /**
+     * Session workspace path
+     */
+    private final String workspacePath;
+
+    /**
+     * Open a JCR session to the repository
+     *
+     * @param repository the repository to log in
+     * @param project    project
+     *
+     * @throws javax.jcr.RepositoryException in case of JCR issue
+     */
+<span class="nc" id="L64">    public JcrSession(Repository repository, Project project) throws RepositoryException {</span>
+<span class="nc" id="L65">        logger.trace(&quot;Create JCR Session for {}&quot;, project);</span>
+        //TODO create user if not present in
+        //TODO long term :
+<span class="nc" id="L68">        this.session = repository.login(credentials);</span>
+<span class="nc" id="L69">        this.workspace = &quot;project_&quot; + project.getId();</span>
+<span class="nc" id="L70">        this.workspacePath = &quot;/&quot; + this.workspace;</span>
+
+        // make sure root node exists
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (!session.nodeExists(workspacePath)) {</span>
+<span class="nc" id="L74">            session.getNode(&quot;/&quot;).addNode(workspace);</span>
+        }
+<span class="nc" id="L76">    }</span>
+
+    /**
+     * Get the workspace root node
+     *
+     * @return workspace root
+     */
+    public Node getWorkspaceRoot() {
+        try {
+<span class="nc" id="L85">            return session.getNode(workspacePath);</span>
+<span class="nc" id="L86">        } catch (RepositoryException ex) {</span>
+            // silient
+<span class="nc" id="L88">            logger.warn(&quot;getWorkspaceRoot failed with &quot;, ex);</span>
+<span class="nc" id="L89">            return null;</span>
+        }
+    }
+
+    /**
+     * Get full relativePath of given relativePath.
+     *
+     * @param relativePath relativePath path relative to the workspace root. May starts with a / or
+     *                     not
+     *
+     * @return absolute relativePath (i.e. &lt;code&gt;workspacePath&lt;/code&gt;/&lt;code&gt;relativePath&lt;/code&gt;)
+     */
+    public String getFullPath(String relativePath) {
+<span class="nc bnc" id="L102" title="All 2 branches missed.">        if (relativePath.charAt(0) == '/') {</span>
+<span class="nc" id="L103">            return this.workspacePath + relativePath;</span>
+        } else {
+<span class="nc" id="L105">            return this.workspacePath + '/' + relativePath;</span>
+        }
+    }
+
+    /**
+     * Does a node exist ?
+     *
+     * @param relativePath relativePath path relative to the workspace root. May starts with a / or
+     *                     not
+     *
+     * @return the node or null if it does not exist
+     */
+    public boolean nodeExists(String relativePath) {
+        try {
+<span class="nc" id="L119">            return session.nodeExists(getFullPath(relativePath));</span>
+<span class="nc" id="L120">        } catch (RepositoryException ex) {</span>
+            // TODO: silent or not ?
+<span class="nc" id="L122">            logger.warn(&quot;nodeExists({}) failed with &quot;, relativePath, ex);</span>
+<span class="nc" id="L123">            return false;</span>
+        }
+    }
+
+    /**
+     * Get a node
+     *
+     * @param relativePath relativePath relative to the workspace root. May starts with a / or not
+     *
+     * @return the node or null if it does not exist
+     */
+    public Node getNode(String relativePath) {
+        try {
+<span class="nc" id="L136">            return session.getNode(getFullPath(relativePath));</span>
+<span class="nc" id="L137">        } catch (RepositoryException ex) {</span>
+            // silent
+<span class="nc" id="L139">            logger.warn(&quot;getNode: node does not exist &quot;, ex);</span>
+<span class="nc" id="L140">            return null;</span>
+        }
+    }
+
+    /**
+     * @param relativePath relative path from workspace root
+     */
+    public void removeNode(String relativePath) {
+        try {
+<span class="nc" id="L149">            session.removeItem(getFullPath(relativePath));</span>
+<span class="nc" id="L150">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L151">            logger.warn(&quot;removeNode: node could not be removed&quot;, ex);</span>
+<span class="nc" id="L152">        }</span>
+
+<span class="nc" id="L154">    }</span>
+
+    /**
+     * Get JCR session
+     *
+     * @return the session
+     */
+    public Session getSession() {
+<span class="nc" id="L162">        return session;</span>
+    }
+
+    /**
+     * make sure to flush all pending operations
+     *
+     * @throws javax.jcr.RepositoryException something went wrong
+     */
+    public void prepareForCommit() throws RepositoryException {
+<span class="nc bnc" id="L171" title="All 4 branches missed.">        if (this.session != null &amp;&amp; this.session.isLive()) {</span>
+<span class="nc" id="L172">            session.getRootNode();</span>
+        } else {
+<span class="nc" id="L174">            logger.warn(&quot;PrepareForCommit failed: session does not exists or has already been closed &quot;);</span>
+            // TODO throw something else, but what ?
+<span class="nc" id="L176">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+        }
+<span class="nc" id="L178">    }</span>
+
+    /**
+     * creates a new binary object to be stored
+     *
+     * @param content content to be stored in the binary
+     *
+     * @return The created binary
+     *
+     * @throws RepositoryException JCR issue
+     */
+    public Binary createBinary(InputStream content) throws RepositoryException {
+<span class="nc" id="L190">        return this.session.getValueFactory().createBinary(content);</span>
+    }
+
+    /**
+     * Save and close
+     */
+    public void saveAndClose() {
+        try {
+<span class="nc" id="L198">            session.save();</span>
+<span class="nc" id="L199">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L200">            logger.error(&quot;Error occured while saving changes despite prepareForCommit did not throw anything !&quot;, ex);</span>
+            /* no-op */
+<span class="nc" id="L202">        }</span>
+<span class="nc" id="L203">        session.logout();</span>
+<span class="nc" id="L204">        this.session = null;</span>
+<span class="nc" id="L205">    }</span>
+
+    /**
+     * Close the session without saving any changes
+     */
+    public void rollback() {
+<span class="nc" id="L211">        logger.trace(&quot;Rollback session&quot;);</span>
+<span class="nc bnc" id="L212" title="All 4 branches missed.">        if (session != null &amp;&amp; session.isLive()) {</span>
+<span class="nc" id="L213">            session.logout();</span>
+        }
+<span class="nc" id="L215">        this.session = null;</span>
+<span class="nc" id="L216">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

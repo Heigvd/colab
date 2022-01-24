@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>BlockDao.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.persistence.jpa.document</a> &gt; <span class="el_source">BlockDao.java</span></div><h1>BlockDao.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.persistence.jpa.document;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.document.Block;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Block persistence
+ *
+ * @author sandra
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L25">public class BlockDao {</span>
+
+    /** logger */
+<span class="nc" id="L28">    private static final Logger logger = LoggerFactory.getLogger(BlockDao.class);</span>
+
+    /**
+     * Access to the persistence unit
+     */
+    @PersistenceContext(unitName = &quot;COLAB_PU&quot;)
+    private EntityManager em;
+
+    /**
+     * @param id the id of the block to fetch
+     *
+     * @return the block with the given id or null if such a block does not exists
+     */
+    public Block findBlock(Long id) {
+        try {
+<span class="nc" id="L43">            logger.debug(&quot;find block #{}&quot;, id);</span>
+<span class="nc" id="L44">            return em.find(Block.class, id);</span>
+<span class="nc" id="L45">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L46">            return null;</span>
+        }
+    }
+
+    /**
+     * Update block
+     *
+     * @param block the block as supply by clients (ie not managed)
+     *
+     * @return the updated managed block
+     *
+     * @throws ColabMergeException if updating the block failed
+     */
+    public Block updateBlock(Block block) throws ColabMergeException {
+<span class="nc" id="L60">        logger.debug(&quot;update block {}&quot;, block);</span>
+<span class="nc" id="L61">        Block mBlock = this.findBlock(block.getId());</span>
+<span class="nc" id="L62">        mBlock.merge(block);</span>
+<span class="nc" id="L63">        return mBlock;</span>
+    }
+
+    /**
+     * Persist a brand new block to database
+     *
+     * @param block the new block to persist
+     *
+     * @return the new persisted block
+     */
+    public Block persistBlock(Block block) {
+<span class="nc" id="L74">        logger.debug(&quot;persist block {}&quot;, block);</span>
+<span class="nc" id="L75">        em.persist(block);</span>
+<span class="nc" id="L76">        return block;</span>
+    }
+
+    /**
+     * Delete block from database. This can't be undone
+     *
+     * @param id the id of the block to delete
+     *
+     * @return just deleted block
+     */
+    public Block deleteBlock(Long id) {
+<span class="nc" id="L87">        logger.debug(&quot;delete block #{}&quot;, id);</span>
+        // TODO: move to recycle bin first
+<span class="nc" id="L89">        Block block = this.findBlock(id);</span>
+<span class="nc" id="L90">        em.remove(block);</span>
+<span class="nc" id="L91">        return block;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

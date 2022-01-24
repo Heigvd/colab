@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JcrSynchronizer.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.persistence.jcr</a> &gt; <span class="el_source">JcrSynchronizer.java</span></div><h1>JcrSynchronizer.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.persistence.jcr;
+
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import javax.jcr.RepositoryException;
+import javax.transaction.Status;
+import javax.transaction.Synchronization;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * To synchronize JCR session with JTA transaction
+ *
+ * @author maxence
+ */
+public class JcrSynchronizer implements Synchronization {
+
+    /** Logger */
+<span class="nc" id="L24">    private static final Logger logger = LoggerFactory.getLogger(JcrSessionManager.class);</span>
+
+    /** The synchronized session */
+    private final JcrSession session;
+
+    /**
+     * Create JCR session synchronizer
+     *
+     * @param session the session to synchronize
+     */
+<span class="nc" id="L34">    public JcrSynchronizer(JcrSession session) {</span>
+<span class="nc" id="L35">        logger.trace(&quot;Create synchronizer for {}&quot;, session);</span>
+<span class="nc" id="L36">        this.session = session;</span>
+<span class="nc" id="L37">    }</span>
+
+    @Override
+    public void beforeCompletion() {
+        try {
+<span class="nc" id="L42">            logger.trace(&quot;Prepare commit for {}&quot;, session);</span>
+<span class="nc" id="L43">            session.prepareForCommit();</span>
+<span class="nc" id="L44">        } catch (RepositoryException ex) {</span>
+            // please rollback
+<span class="nc" id="L46">            logger.trace(&quot;Prepare commit failed: rollback&quot;);</span>
+<span class="nc" id="L47">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L48">        }</span>
+<span class="nc" id="L49">    }</span>
+
+    @Override
+    public void afterCompletion(int status) {
+<span class="nc bnc" id="L53" title="All 3 branches missed.">        switch (status) {</span>
+            case Status.STATUS_COMMITTED:
+<span class="nc" id="L55">                logger.trace(&quot;JCR Sync afterCompletion: {} =&gt; COMMITED&quot;, status);</span>
+<span class="nc" id="L56">                session.saveAndClose();</span>
+<span class="nc" id="L57">                break;</span>
+            case Status.STATUS_ROLLEDBACK:
+<span class="nc" id="L59">                logger.trace(&quot;JCR Sync afterCompletion: {} =&gt; ROLLED_BACK&quot;, status);</span>
+<span class="nc" id="L60">                session.rollback();</span>
+<span class="nc" id="L61">                break;</span>
+            default:
+<span class="nc" id="L63">                logger.trace(&quot;JCR Sync afterCompletion: {} =&gt; UNKNOWN&quot;, status);</span>
+                break;
+        }
+
+
+<span class="nc" id="L68">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

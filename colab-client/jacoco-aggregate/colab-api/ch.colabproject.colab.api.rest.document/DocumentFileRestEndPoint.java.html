@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>DocumentFileRestEndPoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.document</a> &gt; <span class="el_source">DocumentFileRestEndPoint.java</span></div><h1>DocumentFileRestEndPoint.java</h1><pre class="source lang-java linenums">/*
+ * The MIT License
+ *
+ * Copyright 2021 AlbaSim, MEI, HEIG-VD, HES-SO.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+package ch.colabproject.colab.api.rest.document;
+
+import ch.colabproject.colab.api.controller.document.FileManager;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * EndPoint to managed hosted files
+ *
+ * @author xaviergood
+ */
+@Path(&quot;files&quot;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@AuthenticationRequired
+<span class="nc" id="L60">public class DocumentFileRestEndPoint {</span>
+
+    /**
+     * Logger
+     */
+<span class="nc" id="L65">    private static final Logger logger = LoggerFactory.getLogger(DocumentFileRestEndPoint.class);</span>
+
+    /**
+     * File manager
+     */
+    @Inject
+    private FileManager fileManager;
+
+    /**
+     * Overwrites existing file if any
+     *
+     * @param docId    document id
+     * @param fileSize the file size in bytes
+     * @param file     the file bytes
+     * @param bodypart file meta data
+     */
+    @PUT
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public void updateFile(
+        @FormDataParam(&quot;documentId&quot;) Long docId,
+        @FormDataParam(&quot;fileSize&quot;) Long fileSize,
+        @FormDataParam(&quot;file&quot;) InputStream file,
+        @FormDataParam(&quot;file&quot;) FormDataBodyPart bodypart
+    ) {
+        try {
+<span class="nc" id="L90">            fileManager.updateFile(docId, fileSize, file, bodypart);</span>
+<span class="nc" id="L91">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L92">            logger.debug(&quot;Could not update file with id {} : {}&quot;, docId, ex);</span>
+<span class="nc" id="L93">            throw HttpErrorMessage.internalServerError();</span>
+<span class="nc" id="L94">        }</span>
+<span class="nc" id="L95">    }</span>
+
+    /**
+     * Deletes the file associated with the document Does nothing if no file was present
+     *
+     * @param documentId document id
+     */
+    @DELETE
+    @Path(&quot;DeleteFile/{documentId}&quot;)
+    public void deleteFile(
+        @PathParam(&quot;documentId&quot;) Long documentId) {
+        try {
+<span class="nc" id="L107">            fileManager.deleteFile(documentId);</span>
+<span class="nc" id="L108">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L109">            logger.debug(&quot;Could not delete file with id {} : {}&quot;, documentId, ex);</span>
+<span class="nc" id="L110">            throw HttpErrorMessage.internalServerError();</span>
+<span class="nc" id="L111">        }</span>
+<span class="nc" id="L112">    }</span>
+
+    /**
+     * Get the file's content and meta data
+     *
+     * @param documentId document id
+     *
+     * @return file content, if no file has been set, return an empty stream (0 bytes)
+     */
+    @GET
+    @Path(&quot;GetFile/{documentId}&quot;)
+    public Response getFileContent(@PathParam(&quot;documentId&quot;) Long documentId) {
+
+        try {
+            ImmutableTriple&lt;BufferedInputStream, String, MediaType&gt; filedata;
+<span class="nc" id="L127">            filedata = fileManager.getDownloadFileInfo(documentId);</span>
+
+<span class="nc" id="L129">            var stream = filedata.left;</span>
+<span class="nc" id="L130">            var filename = filedata.middle;</span>
+<span class="nc" id="L131">            var mime = filedata.right;</span>
+
+<span class="nc" id="L133">            Response.ResponseBuilder response = Response.ok(stream, mime);</span>
+
+            // set file name for browser download prompt
+<span class="nc" id="L136">            var attachment = &quot;attachment; filename=&quot; + filename;</span>
+<span class="nc" id="L137">            response.header(&quot;Content-Disposition&quot;, attachment);</span>
+
+<span class="nc" id="L139">            logger.debug(&quot;Generated response for file : {}, mime {}&quot;, filename, mime);</span>
+
+<span class="nc" id="L141">            return response.build();</span>
+
+<span class="nc" id="L143">        } catch (PathNotFoundException pnfe) {</span>
+<span class="nc" id="L144">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L145">        } catch (RepositoryException ex) {</span>
+<span class="nc" id="L146">            logger.debug(&quot;Could not get file content {}&quot;, ex);</span>
+<span class="nc" id="L147">            throw HttpErrorMessage.internalServerError();</span>
+        }
+    }
+
+    /**
+     * Retrieves a project's disk space file usage and the maximum authorized quota
+     *
+     * @param projectId project id
+     *
+     * @return a list of 2 elements, first is usage second is maximum quota expressed in bytes
+     */
+    @GET
+    @Path(&quot;GetProjectQuotaUsage/{projectId}&quot;)
+    public List&lt;Long&gt; getQuotaUsage(@PathParam(&quot;projectId&quot;) Long projectId) {
+
+        try {
+<span class="nc" id="L163">            var result = new ArrayList&lt;Long&gt;();</span>
+<span class="nc" id="L164">            result.add(fileManager.getUsage(projectId));</span>
+<span class="nc" id="L165">            result.add(FileManager.getQuota());</span>
+<span class="nc" id="L166">            return result;</span>
+<span class="nc" id="L167">        } catch (RepositoryException re) {</span>
+<span class="nc" id="L168">            logger.debug(&quot;Could not get project quota usage {}&quot;, re);</span>
+<span class="nc" id="L169">            throw HttpErrorMessage.internalServerError();</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

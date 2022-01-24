@@ -24,7 +24,7 @@
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.project.Project;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.team.TeamMember;
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.team.TeamRole;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.project.ProjectDao;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.annotations.AdminResource;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> java.util.List;
@@ -70,7 +70,7 @@
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">     * The Project DAO</em>
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      @Inject
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">private</strong> <a name="ProjectDao" href="../../../../../../ch/colabproject/colab/api/persistence/project/ProjectDao.html#ProjectDao">ProjectDao</a> projectDao;
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">private</strong> <a name="ProjectDao" href="../../../../../../ch/colabproject/colab/api/persistence/jpa/project/ProjectDao.html#ProjectDao">ProjectDao</a> projectDao;
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>  
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">     * Retrieve the list of all projects. This is available to admin only</em>
@@ -245,7 +245,8 @@
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>         logger.debug(<span class="jxr_string">"Get project #{} activityflowlinks"</span>, id);
 <a class="jxr_linenumber" name="L238" href="#L238">238</a>         <strong class="jxr_keyword">return</strong> projectManager.getActivityFlowLinks(id);
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>     }
-<a class="jxr_linenumber" name="L240" href="#L240">240</a> }
+<a class="jxr_linenumber" name="L240" href="#L240">240</a> 
+<a class="jxr_linenumber" name="L241" href="#L241">241</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

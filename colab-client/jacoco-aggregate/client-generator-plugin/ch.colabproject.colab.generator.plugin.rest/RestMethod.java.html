@@ -6,21 +6,22 @@
  */
 package ch.colabproject.colab.generator.plugin.rest;
 
-import ch.colabproject.colab.generator.plugin.Logger;
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.glassfish.jersey.media.multipart.ContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 /**
  * Represent a rest method
  *
  * @author maxence
  */
-<span class="nc" id="L23">public class RestMethod {</span>
+<span class="nc" id="L24">public class RestMethod {</span>
 
     /**
      * HTTP method. One of GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS.
@@ -40,17 +41,17 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
     /**
      * List of path parameters
      */
-<span class="nc" id="L43">    private List&lt;Param&gt; pathParameters = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L44">    private List&lt;Param&gt; pathParameters = new ArrayList&lt;&gt;();</span>
 
     /**
      * List of querystring parameters
      */
-<span class="nc" id="L48">    private List&lt;Param&gt; queryParameters = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L49">    private List&lt;Param&gt; queryParameters = new ArrayList&lt;&gt;();</span>
 
     /**
      * List of form parameters
      */
-<span class="nc" id="L53">    private List&lt;Param&gt; formParameters = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L54">    private List&lt;Param&gt; formParameters = new ArrayList&lt;&gt;();</span>
 
     /**
      * body param
@@ -93,7 +94,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return the value of authenticationRequired
      */
     public boolean isAuthenticationRequired() {
-<span class="nc" id="L96">        return authenticationRequired;</span>
+<span class="nc" id="L97">        return authenticationRequired;</span>
     }
 
     /**
@@ -102,8 +103,8 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param authenticationRequired new value of authenticationRequired
      */
     public void setAuthenticationRequired(boolean authenticationRequired) {
-<span class="nc" id="L105">        this.authenticationRequired = authenticationRequired;</span>
-<span class="nc" id="L106">    }</span>
+<span class="nc" id="L106">        this.authenticationRequired = authenticationRequired;</span>
+<span class="nc" id="L107">    }</span>
 
     /**
      * Get the value of adminResource
@@ -111,7 +112,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return the value of adminResource
      */
     public boolean isAdminResource() {
-<span class="nc" id="L114">        return adminResource;</span>
+<span class="nc" id="L115">        return adminResource;</span>
     }
 
     /**
@@ -120,8 +121,8 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param adminResource new value of adminResource
      */
     public void setAdminResource(boolean adminResource) {
-<span class="nc" id="L123">        this.adminResource = adminResource;</span>
-<span class="nc" id="L124">    }</span>
+<span class="nc" id="L124">        this.adminResource = adminResource;</span>
+<span class="nc" id="L125">    }</span>
 
     /**
      * Get the value of returnTypeGeneric
@@ -129,7 +130,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return the value of returnTypeGeneric
      */
     public boolean isReturnTypeGeneric() {
-<span class="nc" id="L132">        return returnTypeGeneric;</span>
+<span class="nc" id="L133">        return returnTypeGeneric;</span>
     }
 
     /**
@@ -138,8 +139,8 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param returnTypeGeneric new value of returnTypeGeneric
      */
     public void setReturnTypeGeneric(boolean returnTypeGeneric) {
-<span class="nc" id="L141">        this.returnTypeGeneric = returnTypeGeneric;</span>
-<span class="nc" id="L142">    }</span>
+<span class="nc" id="L142">        this.returnTypeGeneric = returnTypeGeneric;</span>
+<span class="nc" id="L143">    }</span>
 
     /**
      * Get the value of returnType
@@ -147,7 +148,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return the value of returnType
      */
     public Type getReturnType() {
-<span class="nc" id="L150">        return returnType;</span>
+<span class="nc" id="L151">        return returnType;</span>
     }
 
     /**
@@ -156,8 +157,8 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param returnType new value of returnType
      */
     public void setReturnType(Type returnType) {
-<span class="nc" id="L159">        this.returnType = returnType;</span>
-<span class="nc" id="L160">    }</span>
+<span class="nc" id="L160">        this.returnType = returnType;</span>
+<span class="nc" id="L161">    }</span>
 
     /**
      * Get the value of bodyParam
@@ -165,7 +166,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return the value of bodyParam
      */
     public Param getBodyParam() {
-<span class="nc" id="L168">        return bodyParam;</span>
+<span class="nc" id="L169">        return bodyParam;</span>
     }
 
     /**
@@ -174,8 +175,8 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param bodyParam new value of bodyParam
      */
     public void setBodyParam(Param bodyParam) {
-<span class="nc" id="L177">        this.bodyParam = bodyParam;</span>
-<span class="nc" id="L178">    }</span>
+<span class="nc" id="L178">        this.bodyParam = bodyParam;</span>
+<span class="nc" id="L179">    }</span>
 
     /**
      * Get the value of queryParameters
@@ -183,7 +184,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return the value of queryParameters
      */
     public List&lt;Param&gt; getQueryParameters() {
-<span class="nc" id="L186">        return queryParameters;</span>
+<span class="nc" id="L187">        return queryParameters;</span>
     }
 
     /**
@@ -192,8 +193,8 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param queryParameters new value of queryParameters
      */
     public void setQueryParameters(List&lt;Param&gt; queryParameters) {
-<span class="nc" id="L195">        this.queryParameters = queryParameters;</span>
-<span class="nc" id="L196">    }</span>
+<span class="nc" id="L196">        this.queryParameters = queryParameters;</span>
+<span class="nc" id="L197">    }</span>
 
     /**
      * Get the value of formParameters
@@ -201,7 +202,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return the value of formParameters
      */
     public List&lt;Param&gt; getFormParameters() {
-<span class="nc" id="L204">        return formParameters;</span>
+<span class="nc" id="L205">        return formParameters;</span>
     }
 
     /**
@@ -210,8 +211,8 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param formParameters new value of formParameters
      */
     public void setFormParameters(List&lt;Param&gt; formParameters) {
-<span class="nc" id="L213">        this.formParameters = formParameters;</span>
-<span class="nc" id="L214">    }</span>
+<span class="nc" id="L214">        this.formParameters = formParameters;</span>
+<span class="nc" id="L215">    }</span>
 
     /**
      * Get the value of pathParameters
@@ -219,7 +220,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return the value of pathParameters
      */
     public List&lt;Param&gt; getPathParameters() {
-<span class="nc" id="L222">        return pathParameters;</span>
+<span class="nc" id="L223">        return pathParameters;</span>
     }
 
     /**
@@ -228,8 +229,8 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param pathParameters new value of pathParameters
      */
     public void setPathParameters(List&lt;Param&gt; pathParameters) {
-<span class="nc" id="L231">        this.pathParameters = pathParameters;</span>
-<span class="nc" id="L232">    }</span>
+<span class="nc" id="L232">        this.pathParameters = pathParameters;</span>
+<span class="nc" id="L233">    }</span>
 
     /**
      * Get the value of name
@@ -237,7 +238,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return the value of name
      */
     public String getName() {
-<span class="nc" id="L240">        return name;</span>
+<span class="nc" id="L241">        return name;</span>
     }
 
     /**
@@ -246,8 +247,8 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param name new value of name
      */
     public void setName(String name) {
-<span class="nc" id="L249">        this.name = name;</span>
-<span class="nc" id="L250">    }</span>
+<span class="nc" id="L250">        this.name = name;</span>
+<span class="nc" id="L251">    }</span>
 
     /**
      * Get the value of fullPath
@@ -255,7 +256,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return the value of fullPath
      */
     public String getFullPath() {
-<span class="nc" id="L258">        return fullPath;</span>
+<span class="nc" id="L259">        return fullPath;</span>
     }
 
     /**
@@ -264,8 +265,8 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param fullPath new value of fullPath
      */
     public void setFullPath(String fullPath) {
-<span class="nc" id="L267">        this.fullPath = fullPath;</span>
-<span class="nc" id="L268">    }</span>
+<span class="nc" id="L268">        this.fullPath = fullPath;</span>
+<span class="nc" id="L269">    }</span>
 
     /**
      * Get the value of httpMethod
@@ -273,7 +274,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return the value of httpMethod
      */
     public String getHttpMethod() {
-<span class="nc" id="L276">        return httpMethod;</span>
+<span class="nc" id="L277">        return httpMethod;</span>
     }
 
     /**
@@ -282,8 +283,8 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param httpMethod new value of httpMethod
      */
     public void setHttpMethod(String httpMethod) {
-<span class="nc" id="L285">        this.httpMethod = httpMethod;</span>
-<span class="nc" id="L286">    }</span>
+<span class="nc" id="L286">        this.httpMethod = httpMethod;</span>
+<span class="nc" id="L287">    }</span>
 
     /**
      * Get the value of produces
@@ -291,7 +292,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return the value of produces
      */
     public List&lt;String&gt; getProduces() {
-<span class="nc" id="L294">        return produces;</span>
+<span class="nc" id="L295">        return produces;</span>
     }
 
     /**
@@ -300,8 +301,8 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param produces new value of produces
      */
     public void setProduces(List&lt;String&gt; produces) {
-<span class="nc" id="L303">        this.produces = produces;</span>
-<span class="nc" id="L304">    }</span>
+<span class="nc" id="L304">        this.produces = produces;</span>
+<span class="nc" id="L305">    }</span>
 
     /**
      * Get the value of consumes
@@ -309,7 +310,7 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return the value of consumes
      */
     public List&lt;String&gt; getConsumes() {
-<span class="nc" id="L312">        return consumes;</span>
+<span class="nc" id="L313">        return consumes;</span>
     }
 
     /**
@@ -318,8 +319,8 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param consumes new value of consumes
      */
     public void setConsumes(List&lt;String&gt; consumes) {
-<span class="nc" id="L321">        this.consumes = consumes;</span>
-<span class="nc" id="L322">    }</span>
+<span class="nc" id="L322">        this.consumes = consumes;</span>
+<span class="nc" id="L323">    }</span>
 
     /**
      * Register a path parameter
@@ -330,14 +331,14 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param type           type of the parameter
      */
     public void addPathParameter(String name, String annotationName, String javadoc, Type type) {
-<span class="nc" id="L333">        Param param = new Param();</span>
-<span class="nc" id="L334">        param.setName(name);</span>
-<span class="nc" id="L335">        param.setInAnnotationName(annotationName);</span>
-<span class="nc" id="L336">        param.setJavadoc(javadoc);</span>
-<span class="nc" id="L337">        param.setType(type);</span>
+<span class="nc" id="L334">        Param param = new Param();</span>
+<span class="nc" id="L335">        param.setName(name);</span>
+<span class="nc" id="L336">        param.setInAnnotationName(annotationName);</span>
+<span class="nc" id="L337">        param.setJavadoc(javadoc);</span>
+<span class="nc" id="L338">        param.setType(type);</span>
 
-<span class="nc" id="L339">        this.pathParameters.add(param);</span>
-<span class="nc" id="L340">    }</span>
+<span class="nc" id="L340">        this.pathParameters.add(param);</span>
+<span class="nc" id="L341">    }</span>
 
     /**
      * Register a query parameter
@@ -348,14 +349,14 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param type           type of the parameter
      */
     public void addQueryParameter(String name, String annotationName, String javadoc, Type type) {
-<span class="nc" id="L351">        Param param = new Param();</span>
-<span class="nc" id="L352">        param.setName(name);</span>
-<span class="nc" id="L353">        param.setInAnnotationName(annotationName);</span>
-<span class="nc" id="L354">        param.setJavadoc(javadoc);</span>
-<span class="nc" id="L355">        param.setType(type);</span>
+<span class="nc" id="L352">        Param param = new Param();</span>
+<span class="nc" id="L353">        param.setName(name);</span>
+<span class="nc" id="L354">        param.setInAnnotationName(annotationName);</span>
+<span class="nc" id="L355">        param.setJavadoc(javadoc);</span>
+<span class="nc" id="L356">        param.setType(type);</span>
 
-<span class="nc" id="L357">        this.queryParameters.add(param);</span>
-<span class="nc" id="L358">    }</span>
+<span class="nc" id="L358">        this.queryParameters.add(param);</span>
+<span class="nc" id="L359">    }</span>
 
     /**
      * Register a query parameter
@@ -366,34 +367,41 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @param type           type of the parameter
      */
     public void addFormParameter(String name, String annotationName, String javadoc, Type type) {
-<span class="nc" id="L369">        Optional&lt;Param&gt; findFirst</span>
-<span class="nc" id="L370">            = this.formParameters.stream().filter(p -&gt; p.getInAnnotationName().equals(annotationName)).findFirst();</span>
-<span class="nc bnc" id="L371" title="All 2 branches missed.">        if (findFirst.isPresent()) {</span>
-<span class="nc" id="L372">            Param param = findFirst.get();</span>
-            // hack: Files are injected with two disctinct parameter: one InputStream for bytes, one
-            // FormDataBodyPart for metadata
-<span class="nc bnc" id="L375" title="All 4 branches missed.">            if (param.getType() instanceof Class</span>
-                &amp;&amp; type instanceof Class
-<span class="nc bnc" id="L377" title="All 2 branches missed.">                &amp;&amp; ((InputStream.class.isAssignableFrom((Class) type)</span>
-<span class="nc bnc" id="L378" title="All 2 branches missed.">                &amp;&amp; ContentDisposition.class.isAssignableFrom((Class) param.getType()))</span>
-<span class="nc bnc" id="L379" title="All 2 branches missed.">                || (InputStream.class.isAssignableFrom((Class) type)</span>
-<span class="nc bnc" id="L380" title="All 2 branches missed.">                &amp;&amp; ContentDisposition.class.isAssignableFrom((Class) param.getType())))) {</span>
-                // Both ContentDisposition and InputStream exists: only keep InputStream
-<span class="nc" id="L382">                param.setType(InputStream.class);</span>
-            } else {
-<span class="nc" id="L384">                Logger.warn(&quot;Duplicate Form Data&quot;);</span>
+<span class="nc" id="L370">        Optional&lt;Param&gt; findFirst</span>
+<span class="nc" id="L371">            = this.formParameters.stream().filter(p -&gt; p.getInAnnotationName().equals(annotationName)).findFirst();</span>
+<span class="nc bnc" id="L372" title="All 2 branches missed.">        if (findFirst.isEmpty()) {</span>
+//            Param param = findFirst.get();
+//            // hack: Files are injected with two disctinct parameter: one InputStream for bytes, one
+//            // FormDataBodyPart for metadata
+//            if (param.getType() instanceof Class
+//                &amp;&amp; type instanceof Class
+//                &amp;&amp; ((InputStream.class.isAssignableFrom((Class) type)
+//                &amp;&amp; ContentDisposition.class.isAssignableFrom((Class) param.getType()))
+//                || (InputStream.class.isAssignableFrom((Class) type)
+//                &amp;&amp; ContentDisposition.class.isAssignableFrom((Class) param.getType())))) {
+//                // Both ContentDisposition and InputStream exists: only keep InputStream
+//                param.setType(File.class);
+//            } else {
+//                Logger.warn(&quot;Duplicate Form Data&quot;);
+//            }
+//
+//        } else {
+<span class="nc" id="L389">            Param param = new Param();</span>
+<span class="nc" id="L390">            param.setName(name);</span>
+<span class="nc" id="L391">            param.setInAnnotationName(annotationName);</span>
+<span class="nc" id="L392">            param.setJavadoc(javadoc);</span>
+<span class="nc" id="L393">            param.setType(type);</span>
+
+            // hack: MultiPartFile
+<span class="nc bnc" id="L396" title="All 2 branches missed.">            if (FormDataBodyPart.class.isAssignableFrom((Class) type)</span>
+<span class="nc bnc" id="L397" title="All 2 branches missed.">                || FormDataContentDisposition.class.isAssignableFrom((Class) type)</span>
+<span class="nc bnc" id="L398" title="All 2 branches missed.">                || InputStream.class.isAssignableFrom((Class) type)) {</span>
+<span class="nc" id="L399">                param.setType(File.class);</span>
             }
 
-<span class="nc" id="L387">        } else {</span>
-<span class="nc" id="L388">            Param param = new Param();</span>
-<span class="nc" id="L389">            param.setName(name);</span>
-<span class="nc" id="L390">            param.setInAnnotationName(annotationName);</span>
-<span class="nc" id="L391">            param.setJavadoc(javadoc);</span>
-<span class="nc" id="L392">            param.setType(type);</span>
-<span class="nc" id="L393">            this.formParameters.add(param);</span>
+<span class="nc" id="L402">            this.formParameters.add(param);</span>
         }
-
-<span class="nc" id="L396">    }</span>
+<span class="nc" id="L404">    }</span>
 
     /**
      * Get all parameters. PathParams + queryParams + fromParam + body
@@ -401,15 +409,15 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return list of all non-null parameters
      */
     public List&lt;Param&gt; getAllParameters() {
-<span class="nc" id="L404">        List&lt;Param&gt; list = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L405">        list.addAll(this.pathParameters);</span>
-<span class="nc" id="L406">        list.addAll(this.queryParameters);</span>
-<span class="nc" id="L407">        list.addAll(this.formParameters);</span>
+<span class="nc" id="L412">        List&lt;Param&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L413">        list.addAll(this.pathParameters);</span>
+<span class="nc" id="L414">        list.addAll(this.queryParameters);</span>
+<span class="nc" id="L415">        list.addAll(this.formParameters);</span>
 
-<span class="nc bnc" id="L409" title="All 2 branches missed.">        if (bodyParam != null) {</span>
-<span class="nc" id="L410">            list.add(bodyParam);</span>
+<span class="nc bnc" id="L417" title="All 2 branches missed.">        if (bodyParam != null) {</span>
+<span class="nc" id="L418">            list.add(bodyParam);</span>
         }
-<span class="nc" id="L412">        return list;</span>
+<span class="nc" id="L420">        return list;</span>
     }
 
     /**
@@ -418,16 +426,16 @@ import org.glassfish.jersey.media.multipart.ContentDisposition;
      * @return list of all non-null parameters
      */
     public List&lt;Param&gt; getUrlParameters() {
-<span class="nc" id="L421">        List&lt;Param&gt; list = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L422">        list.addAll(this.pathParameters);</span>
-<span class="nc" id="L423">        list.addAll(this.queryParameters);</span>
+<span class="nc" id="L429">        List&lt;Param&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L430">        list.addAll(this.pathParameters);</span>
+<span class="nc" id="L431">        list.addAll(this.queryParameters);</span>
 
-<span class="nc" id="L425">        return list;</span>
+<span class="nc" id="L433">        return list;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L430">        return MessageFormat.format(&quot;{0} {1}&quot;, this.getHttpMethod(), this.getFullPath());</span>
+<span class="nc" id="L438">        return MessageFormat.format(&quot;{0} {1}&quot;, this.getHttpMethod(), this.getFullPath());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

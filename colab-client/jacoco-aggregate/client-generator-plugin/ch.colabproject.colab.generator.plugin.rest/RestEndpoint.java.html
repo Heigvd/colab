@@ -577,17 +577,26 @@ import org.reflections.Reflections;
             } else {
 <span class="nc" id="L578">                sb.append(&quot;new GenericType&lt;&gt;(&quot;).append(resolvedReturnType).append(&quot;.class)&quot;);</span>
             }
-<span class="nc" id="L580">            sb.append(&quot;);&quot;);</span>
-<span class="nc" id="L581">            indent--;</span>
-<span class="nc" id="L582">            newLine(sb);</span>
-<span class="nc" id="L583">            sb.append(&quot;}&quot;);</span>
 
-<span class="nc" id="L585">        }</span>
-<span class="nc" id="L586">        indent--;</span>
-<span class="nc" id="L587">        newLine(sb);</span>
-<span class="nc" id="L588">        sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L581">            List&lt;String&gt; produces = method.getProduces();</span>
+<span class="nc bnc" id="L582" title="All 4 branches missed.">            if (produces != null &amp;&amp; !produces.isEmpty()) {</span>
+<span class="nc" id="L583">                String accept = produces.stream()</span>
+<span class="nc" id="L584">                    .map(type -&gt; &quot;\&quot;&quot; + type + &quot;\&quot;&quot;)</span>
+<span class="nc" id="L585">                    .collect(Collectors.joining(&quot;, &quot;));</span>
+<span class="nc" id="L586">                sb.append(&quot;, &quot;).append(accept);</span>
+            }
 
-<span class="nc" id="L590">        return sb.toString();</span>
+<span class="nc" id="L589">            sb.append(&quot;);&quot;);</span>
+<span class="nc" id="L590">            indent--;</span>
+<span class="nc" id="L591">            newLine(sb);</span>
+<span class="nc" id="L592">            sb.append(&quot;}&quot;);</span>
+
+<span class="nc" id="L594">        }</span>
+<span class="nc" id="L595">        indent--;</span>
+<span class="nc" id="L596">        newLine(sb);</span>
+<span class="nc" id="L597">        sb.append(&quot;}&quot;);</span>
+
+<span class="nc" id="L599">        return sb.toString();</span>
     }
 
     /**
@@ -608,49 +617,49 @@ import org.reflections.Reflections;
         Runnable bodyGenerator
     ) {
 
-<span class="nc" id="L611">        Logger.debug(&quot; * generate &quot; + functionName);</span>
+<span class="nc" id="L620">        Logger.debug(&quot; * generate &quot; + functionName);</span>
 
         // JSDOC
         ////////////////////////
-<span class="nc" id="L615">        newLine(sb);</span>
-<span class="nc" id="L616">        sb.append(&quot;/**&quot;);</span>
-<span class="nc" id="L617">        newLine(sb);</span>
-<span class="nc" id="L618">        sb.append(&quot; * &quot;).append(method.getHttpMethod()).append(&quot; &quot;)</span>
-<span class="nc" id="L619">            .append(method.getFullPath());</span>
-<span class="nc" id="L620">        newLine(sb);</span>
-<span class="nc" id="L621">        sb.append(&quot; * &lt;p&gt; &quot;);</span>
-<span class="nc bnc" id="L622" title="All 2 branches missed.">        String methodDoc = classDoc != null</span>
-<span class="nc" id="L623">            ? classDoc.getMethods().getOrDefault(method.getName(), &quot;&quot;)</span>
-<span class="nc" id="L624">            : &quot;&quot;;</span>
+<span class="nc" id="L624">        newLine(sb);</span>
+<span class="nc" id="L625">        sb.append(&quot;/**&quot;);</span>
+<span class="nc" id="L626">        newLine(sb);</span>
+<span class="nc" id="L627">        sb.append(&quot; * &quot;).append(method.getHttpMethod()).append(&quot; &quot;)</span>
+<span class="nc" id="L628">            .append(method.getFullPath());</span>
+<span class="nc" id="L629">        newLine(sb);</span>
+<span class="nc" id="L630">        sb.append(&quot; * &lt;p&gt; &quot;);</span>
+<span class="nc bnc" id="L631" title="All 2 branches missed.">        String methodDoc = classDoc != null</span>
+<span class="nc" id="L632">            ? classDoc.getMethods().getOrDefault(method.getName(), &quot;&quot;)</span>
+<span class="nc" id="L633">            : &quot;&quot;;</span>
 
-<span class="nc" id="L626">        List&lt;String&gt; paramNames = params.stream()</span>
-<span class="nc" id="L627">            .map(param -&gt; param.getName())</span>
-<span class="nc" id="L628">            .collect(Collectors.toList());</span>
+<span class="nc" id="L635">        List&lt;String&gt; paramNames = params.stream()</span>
+<span class="nc" id="L636">            .map(param -&gt; param.getName())</span>
+<span class="nc" id="L637">            .collect(Collectors.toList());</span>
 
-<span class="nc" id="L630">        appendJavadocBlock(sb, &quot; *&quot;, methodDoc, false, reflections, paramNames);</span>
-<span class="nc" id="L631">        newLine(sb);</span>
-<span class="nc" id="L632">        sb.append(&quot; */&quot;);</span>
-<span class="nc" id="L633">        newLine(sb);</span>
+<span class="nc" id="L639">        appendJavadocBlock(sb, &quot; *&quot;, methodDoc, false, reflections, paramNames);</span>
+<span class="nc" id="L640">        newLine(sb);</span>
+<span class="nc" id="L641">        sb.append(&quot; */&quot;);</span>
+<span class="nc" id="L642">        newLine(sb);</span>
         // Signature
         /////////////////////////////
-<span class="nc" id="L636">        sb.append(functionName)</span>
-<span class="nc" id="L637">            .append(&quot;: function(&quot;)</span>
-<span class="nc" id="L638">            .append(params.stream()</span>
-<span class="nc" id="L639">                .map(param -&gt; param.getName()</span>
-<span class="nc bnc" id="L640" title="All 2 branches missed.">                + (param.isOptional() ? &quot;?&quot; : &quot;&quot;)</span>
+<span class="nc" id="L645">        sb.append(functionName)</span>
+<span class="nc" id="L646">            .append(&quot;: function(&quot;)</span>
+<span class="nc" id="L647">            .append(params.stream()</span>
+<span class="nc" id="L648">                .map(param -&gt; param.getName()</span>
+<span class="nc bnc" id="L649" title="All 2 branches missed.">                + (param.isOptional() ? &quot;?&quot; : &quot;&quot;)</span>
                 + &quot;: &quot;
-<span class="nc" id="L642">                + TypeScriptHelper.convertType(param.getType(), types))</span>
-<span class="nc" id="L643">                .collect(Collectors.joining(&quot;, &quot;)))</span>
-<span class="nc" id="L644">            .append(&quot;) {&quot;);</span>
-<span class="nc" id="L645">        indent++;</span>
-<span class="nc" id="L646">        newLine(sb);</span>
+<span class="nc" id="L651">                + TypeScriptHelper.convertType(param.getType(), types))</span>
+<span class="nc" id="L652">                .collect(Collectors.joining(&quot;, &quot;)))</span>
+<span class="nc" id="L653">            .append(&quot;) {&quot;);</span>
+<span class="nc" id="L654">        indent++;</span>
+<span class="nc" id="L655">        newLine(sb);</span>
 
-<span class="nc" id="L648">        bodyGenerator.run();</span>
+<span class="nc" id="L657">        bodyGenerator.run();</span>
 
-<span class="nc" id="L650">        indent--;</span>
-<span class="nc" id="L651">        newLine(sb);</span>
-<span class="nc" id="L652">        sb.append(&quot;},&quot;);</span>
-<span class="nc" id="L653">    }</span>
+<span class="nc" id="L659">        indent--;</span>
+<span class="nc" id="L660">        newLine(sb);</span>
+<span class="nc" id="L661">        sb.append(&quot;},&quot;);</span>
+<span class="nc" id="L662">    }</span>
 
     /**
      * Write ts client for this controller.This method will populate types map with type which
@@ -666,133 +675,156 @@ import org.reflections.Reflections;
         Map&lt;String, ClassDoc&gt; javadoc,
         Reflections reflections
     ) {
-<span class="nc" id="L669">        tabSize = 2;</span>
-<span class="nc" id="L670">        Logger.debug(&quot;Generate typescript class &quot; + this);</span>
+<span class="nc" id="L678">        tabSize = 2;</span>
+<span class="nc" id="L679">        Logger.debug(&quot;Generate typescript class &quot; + this);</span>
 
-<span class="nc" id="L672">        indent++;</span>
-<span class="nc" id="L673">        StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L674">        newLine(sb);</span>
-<span class="nc" id="L675">        sb.append(&quot;/**&quot;);</span>
-<span class="nc" id="L676">        ClassDoc classDoc = javadoc.get(this.className);</span>
-<span class="nc bnc" id="L677" title="All 2 branches missed.">        if (classDoc != null) {</span>
-<span class="nc" id="L678">            appendJavadocBlock(sb, &quot; *&quot;, classDoc.getDoc(), false, reflections, List.of());</span>
+<span class="nc" id="L681">        indent++;</span>
+<span class="nc" id="L682">        StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L683">        newLine(sb);</span>
+<span class="nc" id="L684">        sb.append(&quot;/**&quot;);</span>
+<span class="nc" id="L685">        ClassDoc classDoc = javadoc.get(this.className);</span>
+<span class="nc bnc" id="L686" title="All 2 branches missed.">        if (classDoc != null) {</span>
+<span class="nc" id="L687">            appendJavadocBlock(sb, &quot; *&quot;, classDoc.getDoc(), false, reflections, List.of());</span>
         }
-<span class="nc" id="L680">        newLine(sb);</span>
-<span class="nc" id="L681">        sb.append(&quot; */&quot;);</span>
-<span class="nc" id="L682">        newLine(sb);</span>
-<span class="nc" id="L683">        sb.append(this.simpleClassName).append(&quot; : {&quot;);</span>
-<span class="nc" id="L684">        indent++;</span>
-<span class="nc" id="L685">        newLine(sb);</span>
+<span class="nc" id="L689">        newLine(sb);</span>
+<span class="nc" id="L690">        sb.append(&quot; */&quot;);</span>
+<span class="nc" id="L691">        newLine(sb);</span>
+<span class="nc" id="L692">        sb.append(this.simpleClassName).append(&quot; : {&quot;);</span>
+<span class="nc" id="L693">        indent++;</span>
+<span class="nc" id="L694">        newLine(sb);</span>
 
-<span class="nc" id="L687">        restMethods.forEach(method -&gt; {</span>
+<span class="nc" id="L696">        restMethods.forEach(method -&gt; {</span>
 
             // 1 Generate getPath function
-<span class="nc" id="L690">            List&lt;Param&gt; urlParams = new ArrayList&lt;&gt;(this.getPathParameters());</span>
-<span class="nc" id="L691">            urlParams.addAll(method.getUrlParameters());</span>
-<span class="nc" id="L692">            String getPathFunctionName = method.getName() + &quot;Path&quot;;</span>
+<span class="nc" id="L699">            List&lt;Param&gt; urlParams = new ArrayList&lt;&gt;(this.getPathParameters());</span>
+<span class="nc" id="L700">            urlParams.addAll(method.getUrlParameters());</span>
+<span class="nc" id="L701">            String getPathFunctionName = method.getName() + &quot;Path&quot;;</span>
 
-<span class="nc" id="L694">            Runnable buildPath = () -&gt; {</span>
-<span class="nc" id="L695">                sb.append(&quot;const queryString : string[] = [];&quot;);</span>
-<span class="nc" id="L696">                newLine(sb);</span>
+<span class="nc" id="L703">            Runnable buildPath = () -&gt; {</span>
+<span class="nc" id="L704">                sb.append(&quot;const queryString : string[] = [];&quot;);</span>
+<span class="nc" id="L705">                newLine(sb);</span>
 
-<span class="nc" id="L698">                method.getQueryParameters().forEach(queryParam -&gt; {</span>
-<span class="nc" id="L699">                    sb.append(&quot;if (&quot;).append(queryParam.getName()).append(&quot; != null){&quot;);</span>
-<span class="nc" id="L700">                    indent++;</span>
-<span class="nc" id="L701">                    newLine(sb);</span>
-<span class="nc" id="L702">                    sb.append(&quot;queryString.push('&quot;)</span>
-<span class="nc" id="L703">                        .append(queryParam.getInAnnotationName())</span>
-<span class="nc" id="L704">                        .append(&quot;=' + encodeURIComponent(&quot;).append(queryParam.getName())</span>
-<span class="nc" id="L705">                        .append(&quot;+')'));&quot;);</span>
-<span class="nc" id="L706">                    indent--;</span>
-<span class="nc" id="L707">                    newLine(sb);</span>
-<span class="nc" id="L708">                    sb.append(&quot;}&quot;);</span>
-<span class="nc" id="L709">                });</span>
-<span class="nc" id="L710">                newLine(sb);</span>
+<span class="nc" id="L707">                method.getQueryParameters().forEach(queryParam -&gt; {</span>
+<span class="nc" id="L708">                    sb.append(&quot;if (&quot;).append(queryParam.getName()).append(&quot; != null){&quot;);</span>
+<span class="nc" id="L709">                    indent++;</span>
+<span class="nc" id="L710">                    newLine(sb);</span>
 
-<span class="nc" id="L712">                Map&lt;String, String&gt; pathParams = method.getPathParameters().stream()</span>
-<span class="nc" id="L713">                    .collect(Collectors.toMap(</span>
-<span class="nc" id="L714">                        p -&gt; p.getInAnnotationName(),</span>
-<span class="nc" id="L715">                        p -&gt; &quot;${&quot; + p.getName() + &quot;}&quot;)</span>
+<span class="nc" id="L712">                    sb.append(&quot;queryString.push('&quot;)</span>
+<span class="nc" id="L713">                        .append(queryParam.getInAnnotationName())</span>
+<span class="nc" id="L714">                        .append(&quot;=' + encodeURIComponent(&quot;).append(queryParam.getName())</span>
+<span class="nc" id="L715">                        .append(&quot;+')'));&quot;);</span>
+<span class="nc" id="L716">                    indent--;</span>
+<span class="nc" id="L717">                    newLine(sb);</span>
+<span class="nc" id="L718">                    sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L719">                });</span>
+<span class="nc" id="L720">                newLine(sb);</span>
+
+<span class="nc" id="L722">                Map&lt;String, String&gt; pathParams = method.getPathParameters().stream()</span>
+<span class="nc" id="L723">                    .collect(Collectors.toMap(</span>
+<span class="nc" id="L724">                        p -&gt; p.getInAnnotationName(),</span>
+<span class="nc" id="L725">                        p -&gt; &quot;${&quot; + p.getName() + &quot;}&quot;)</span>
                     );
 
-<span class="nc" id="L718">                UriTemplate pathTemplate = new PathPattern(method.getFullPath()).getTemplate();</span>
-<span class="nc" id="L719">                String tsPath = pathTemplate.createURI(pathParams);</span>
-<span class="nc" id="L720">                sb.append(&quot;const path = `${baseUrl}&quot;).append(tsPath)</span>
-<span class="nc" id="L721">                    .append(&quot;${queryString.length &gt; 0 ? '?' + queryString.join('&amp;') : ''}`;&quot;);</span>
-<span class="nc" id="L722">            };</span>
+<span class="nc" id="L728">                UriTemplate pathTemplate = new PathPattern(method.getFullPath()).getTemplate();</span>
+<span class="nc" id="L729">                String tsPath = pathTemplate.createURI(pathParams);</span>
+<span class="nc" id="L730">                sb.append(&quot;const path = `${baseUrl}&quot;).append(tsPath)</span>
+<span class="nc" id="L731">                    .append(&quot;${queryString.length &gt; 0 ? '?' + queryString.join('&amp;') : ''}`;&quot;);</span>
+<span class="nc" id="L732">            };</span>
 
-<span class="nc" id="L724">            this.generateTypescriptFunction(sb, method, getPathFunctionName, urlParams,</span>
+<span class="nc" id="L734">            this.generateTypescriptFunction(sb, method, getPathFunctionName, urlParams,</span>
                 classDoc, types, reflections,
                 () -&gt; {
-<span class="nc" id="L727">                    buildPath.run();</span>
-<span class="nc" id="L728">                    newLine(sb);</span>
-<span class="nc" id="L729">                    sb.append(&quot;return path;&quot;);</span>
-<span class="nc" id="L730">                }</span>
+<span class="nc" id="L737">                    buildPath.run();</span>
+<span class="nc" id="L738">                    newLine(sb);</span>
+<span class="nc" id="L739">                    sb.append(&quot;return path;&quot;);</span>
+<span class="nc" id="L740">                }</span>
             );
 
-<span class="nc" id="L733">            List&lt;Param&gt; allParams = new ArrayList&lt;&gt;(this.getPathParameters());</span>
-<span class="nc" id="L734">            allParams.addAll(method.getAllParameters());</span>
+<span class="nc" id="L743">            List&lt;Param&gt; allParams = new ArrayList&lt;&gt;(this.getPathParameters());</span>
+<span class="nc" id="L744">            allParams.addAll(method.getAllParameters());</span>
 
-<span class="nc" id="L736">            allParams.add(optionalErrorHandler);</span>
+<span class="nc" id="L746">            allParams.add(optionalErrorHandler);</span>
 
             // 2 generate API call function
-<span class="nc" id="L739">            this.generateTypescriptFunction(sb, method, method.getName(), allParams,</span>
+<span class="nc" id="L749">            this.generateTypescriptFunction(sb, method, method.getName(), allParams,</span>
                 classDoc, types, reflections,
                 () -&gt; {
-<span class="nc" id="L742">                    buildPath.run();</span>
-<span class="nc" id="L743">                    newLine(sb);</span>
+<span class="nc" id="L752">                    buildPath.run();</span>
+<span class="nc" id="L753">                    newLine(sb);</span>
 
                     // JSDOC
                     ////////////////////////
-<span class="nc bnc" id="L747" title="All 2 branches missed.">                    if (!method.getFormParameters().isEmpty()) {</span>
-<span class="nc" id="L748">                        sb.append(&quot;const formData = new FormData();&quot;);</span>
-<span class="nc" id="L749">                        method.getFormParameters().forEach(formParam -&gt; {</span>
+<span class="nc bnc" id="L757" title="All 2 branches missed.">                    if (!method.getFormParameters().isEmpty()) {</span>
+<span class="nc" id="L758">                        sb.append(&quot;const formData = new FormData();&quot;);</span>
+<span class="nc" id="L759">                        method.getFormParameters().forEach(formParam -&gt; {</span>
                             //indent++;
-<span class="nc" id="L751">                            newLine(sb);</span>
-<span class="nc" id="L752">                            sb.append(&quot;formData.append('&quot;)</span>
-<span class="nc" id="L753">                                .append(formParam.getInAnnotationName())</span>
-<span class="nc" id="L754">                                .append(&quot;', &quot;)</span>
-<span class="nc" id="L755">                                .append(formParam.getName())</span>
-<span class="nc" id="L756">                                .append(&quot;);&quot;);</span>
+<span class="nc" id="L761">                            newLine(sb);</span>
+<span class="nc" id="L762">                            sb.append(&quot;if(&quot;)</span>
+<span class="nc" id="L763">                                .append(formParam.getName())</span>
+<span class="nc" id="L764">                                .append(&quot; as unknown instanceof Blob) {&quot;);</span>
+
+<span class="nc" id="L766">                            indent++;</span>
+<span class="nc" id="L767">                            newLine(sb);</span>
+
+<span class="nc" id="L769">                            sb.append(&quot;formData.append('&quot;)</span>
+<span class="nc" id="L770">                                .append(formParam.getInAnnotationName())</span>
+<span class="nc" id="L771">                                .append(&quot;', &quot;)</span>
+<span class="nc" id="L772">                                .append(formParam.getName())</span>
+<span class="nc" id="L773">                                .append(&quot; as unknown as Blob);&quot;);</span>
                             //indent--;
-<span class="nc" id="L758">                            newLine(sb);</span>
-<span class="nc" id="L759">                        });</span>
-<span class="nc" id="L760">                        newLine(sb);</span>
+<span class="nc" id="L775">                            indent--;</span>
+<span class="nc" id="L776">                            newLine(sb);</span>
+<span class="nc" id="L777">                            sb.append(&quot;} else {&quot;);</span>
+<span class="nc" id="L778">                            indent++;</span>
+<span class="nc" id="L779">                            newLine(sb);</span>
+<span class="nc" id="L780">                            sb.append(&quot;formData.append('&quot;)</span>
+<span class="nc" id="L781">                                .append(formParam.getInAnnotationName())</span>
+<span class="nc" id="L782">                                .append(&quot;', &quot;)</span>
+<span class="nc" id="L783">                                .append(formParam.getName())</span>
+<span class="nc" id="L784">                                .append(&quot; ? '' + &quot;)</span>
+<span class="nc" id="L785">                                .append(formParam.getName())</span>
+<span class="nc" id="L786">                                .append(&quot; : '')&quot;);</span>
+<span class="nc" id="L787">                            indent--;</span>
+<span class="nc" id="L788">                            newLine(sb);</span>
+<span class="nc" id="L789">                            sb.append(&quot;}&quot;);</span>
+<span class="nc" id="L790">                            newLine(sb);</span>
+<span class="nc" id="L791">                        });</span>
+<span class="nc" id="L792">                        newLine(sb);</span>
                     }
 
-<span class="nc" id="L763">                    boolean forDataRequest = method.getConsumes().contains(MediaType.MULTIPART_FORM_DATA);</span>
+<span class="nc" id="L795">                    boolean forDataRequest = method.getConsumes().contains(MediaType.MULTIPART_FORM_DATA);</span>
 
-<span class="nc bnc" id="L765" title="All 2 branches missed.">                    String fn = method.getReturnType() == Response.class ? &quot;sendHttpRequest&quot; : &quot;sendJsonRequest&quot;;</span>
-<span class="nc bnc" id="L766" title="All 2 branches missed.">                    String fnTemplate = method.getReturnType() == Response.class ? &quot;&quot; : &quot;&lt;&quot; +</span>
-<span class="nc" id="L767">                            TypeScriptHelper.convertType(method.getReturnType(), types)</span>
-<span class="nc" id="L768">                        +&quot;&gt;&quot;;</span>
+<span class="nc bnc" id="L797" title="All 2 branches missed.">                    String fn = method.getReturnType() == Response.class ? &quot;sendHttpRequest&quot; : &quot;sendJsonRequest&quot;;</span>
+<span class="nc bnc" id="L798" title="All 2 branches missed.">                    String fnTemplate = method.getReturnType() == Response.class ? &quot;&quot; : &quot;&lt;&quot; +</span>
+<span class="nc" id="L799">                            TypeScriptHelper.convertType(method.getReturnType(), types)</span>
+<span class="nc" id="L800">                        +&quot;&gt;&quot;;</span>
 
-<span class="nc bnc" id="L770" title="All 2 branches missed.">                    if (forDataRequest) {</span>
-<span class="nc" id="L771">                        sb.append(&quot;return &quot;).append(fn).append(fnTemplate)</span>
-<span class="nc" id="L772">                            .append(&quot;('&quot;).append(method.getHttpMethod())</span>
-<span class="nc" id="L773">                            .append(&quot;', path&quot;)</span>
-<span class="nc" id="L774">                            .append(&quot;, formData&quot;)</span>
-<span class="nc" id="L775">                            .append(&quot;, errorHandler || defaultErrorHandler&quot;)</span>
-<span class="nc" id="L776">                            .append(&quot;, '&quot;).append(MediaType.MULTIPART_FORM_DATA).append(&quot;'&quot;)</span>
-<span class="nc" id="L777">                            .append(&quot;);&quot;);</span>
+<span class="nc bnc" id="L802" title="All 2 branches missed.">                    if (forDataRequest) {</span>
+<span class="nc" id="L803">                        sb.append(&quot;return &quot;).append(fn).append(fnTemplate)</span>
+<span class="nc" id="L804">                            .append(&quot;('&quot;).append(method.getHttpMethod())</span>
+<span class="nc" id="L805">                            .append(&quot;', path&quot;)</span>
+<span class="nc" id="L806">                            .append(&quot;, formData&quot;)</span>
+<span class="nc" id="L807">                            .append(&quot;, errorHandler || defaultErrorHandler&quot;)</span>
+<span class="nc" id="L808">                            .append(&quot;, '&quot;).append(MediaType.MULTIPART_FORM_DATA).append(&quot;'&quot;)</span>
+<span class="nc" id="L809">                            .append(&quot;);&quot;);</span>
                     } else {
-<span class="nc" id="L779">                        sb.append(&quot;return &quot;).append(fn).append(fnTemplate)</span>
-<span class="nc" id="L780">                            .append(&quot;('&quot;).append(method.getHttpMethod())</span>
-<span class="nc" id="L781">                            .append(&quot;', path&quot;)</span>
-<span class="nc" id="L782">                            .append(&quot;, &quot;)</span>
-<span class="nc bnc" id="L783" title="All 2 branches missed.">                            .append(method.getBodyParam() != null</span>
-<span class="nc" id="L784">                                ? method.getBodyParam().getName()</span>
-<span class="nc" id="L785">                                : &quot;undefined&quot;)</span>
-<span class="nc" id="L786">                            .append(&quot;, errorHandler || defaultErrorHandler&quot;)</span>
-<span class="nc" id="L787">                            .append(&quot;, '&quot;).append(MediaType.APPLICATION_JSON).append(&quot;'&quot;)</span>
-<span class="nc" id="L788">                            .append(&quot;);&quot;);</span>
+<span class="nc" id="L811">                        sb.append(&quot;return &quot;).append(fn).append(fnTemplate)</span>
+<span class="nc" id="L812">                            .append(&quot;('&quot;).append(method.getHttpMethod())</span>
+<span class="nc" id="L813">                            .append(&quot;', path&quot;)</span>
+<span class="nc" id="L814">                            .append(&quot;, &quot;)</span>
+<span class="nc bnc" id="L815" title="All 2 branches missed.">                            .append(method.getBodyParam() != null</span>
+<span class="nc" id="L816">                                ? method.getBodyParam().getName()</span>
+<span class="nc" id="L817">                                : &quot;undefined&quot;)</span>
+<span class="nc" id="L818">                            .append(&quot;, errorHandler || defaultErrorHandler&quot;)</span>
+<span class="nc" id="L819">                            .append(&quot;, '&quot;).append(MediaType.APPLICATION_JSON).append(&quot;'&quot;)</span>
+<span class="nc" id="L820">                            .append(&quot;);&quot;);</span>
                     }
-<span class="nc" id="L790">                });</span>
-<span class="nc" id="L791">        });</span>
+<span class="nc" id="L822">                });</span>
+<span class="nc" id="L823">        });</span>
 
-<span class="nc" id="L793">        indent--;</span>
-<span class="nc" id="L794">        sb.append(&quot;},&quot;);</span>
-<span class="nc" id="L795">        return sb.toString();</span>
+<span class="nc" id="L825">        indent--;</span>
+<span class="nc" id="L826">        sb.append(&quot;},&quot;);</span>
+<span class="nc" id="L827">        return sb.toString();</span>
     }
 
     /**
@@ -801,8 +833,8 @@ import org.reflections.Reflections;
      * @param restMethod method to register
      */
     private void registerMethod(RestMethod restMethod) {
-<span class="nc" id="L804">        this.restMethods.add(restMethod);</span>
-<span class="nc" id="L805">    }</span>
+<span class="nc" id="L836">        this.restMethods.add(restMethod);</span>
+<span class="nc" id="L837">    }</span>
 
     /**
      * Register class-level path param
@@ -812,14 +844,14 @@ import org.reflections.Reflections;
      * @param type    type of the parameter
      */
     private void addPathParameter(String name, String pathParamName, String javadoc, Type type) {
-<span class="nc" id="L815">        Param param = new Param();</span>
-<span class="nc" id="L816">        param.setName(name);</span>
-<span class="nc" id="L817">        param.setInAnnotationName(pathParamName);</span>
-<span class="nc" id="L818">        param.setJavadoc(javadoc);</span>
-<span class="nc" id="L819">        param.setType(type);</span>
+<span class="nc" id="L847">        Param param = new Param();</span>
+<span class="nc" id="L848">        param.setName(name);</span>
+<span class="nc" id="L849">        param.setInAnnotationName(pathParamName);</span>
+<span class="nc" id="L850">        param.setJavadoc(javadoc);</span>
+<span class="nc" id="L851">        param.setType(type);</span>
 
-<span class="nc" id="L821">        this.pathParameters.add(param);</span>
-<span class="nc" id="L822">    }</span>
+<span class="nc" id="L853">        this.pathParameters.add(param);</span>
+<span class="nc" id="L854">    }</span>
 
     /**
      * Get all rest methods
@@ -827,12 +859,12 @@ import org.reflections.Reflections;
      * @return list of rest methods
      */
     public List&lt;RestMethod&gt; getRestMethods() {
-<span class="nc" id="L830">        return restMethods;</span>
+<span class="nc" id="L862">        return restMethods;</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L835">        return this.className;</span>
+<span class="nc" id="L867">        return this.className;</span>
     }
 
     /**
@@ -841,7 +873,7 @@ import org.reflections.Reflections;
      * @return simple class name
      */
     public String getSimpleClassName() {
-<span class="nc" id="L844">        return simpleClassName;</span>
+<span class="nc" id="L876">        return simpleClassName;</span>
     }
 
     /**
@@ -853,18 +885,18 @@ import org.reflections.Reflections;
      *         parsing various methods
      */
     private static Map&lt;String, Class&lt;?&gt;&gt; splitPath(Path path) {
-<span class="nc" id="L856">        HashMap&lt;String, Class&lt;?&gt;&gt; parameters = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L888">        HashMap&lt;String, Class&lt;?&gt;&gt; parameters = new HashMap&lt;&gt;();</span>
 
-<span class="nc bnc" id="L858" title="All 2 branches missed.">        if (path != null) {</span>
-<span class="nc" id="L859">            PathPattern pathPattern = new PathPattern(path.value());</span>
-<span class="nc" id="L860">            UriTemplate template = pathPattern.getTemplate();</span>
-<span class="nc bnc" id="L861" title="All 2 branches missed.">            for (String param : template.getTemplateVariables()) {</span>
+<span class="nc bnc" id="L890" title="All 2 branches missed.">        if (path != null) {</span>
+<span class="nc" id="L891">            PathPattern pathPattern = new PathPattern(path.value());</span>
+<span class="nc" id="L892">            UriTemplate template = pathPattern.getTemplate();</span>
+<span class="nc bnc" id="L893" title="All 2 branches missed.">            for (String param : template.getTemplateVariables()) {</span>
                 // no way to detect param type at the moment
-<span class="nc" id="L863">                parameters.put(param, null);</span>
-<span class="nc" id="L864">            }</span>
+<span class="nc" id="L895">                parameters.put(param, null);</span>
+<span class="nc" id="L896">            }</span>
         }
 
-<span class="nc" id="L867">        return parameters;</span>
+<span class="nc" id="L899">        return parameters;</span>
     }
 
     /**
@@ -876,148 +908,148 @@ import org.reflections.Reflections;
      * @return RestEndpoint instance, ready for code generation
      */
     public static RestEndpoint build(Class&lt;?&gt; klass, String applicationPath) {
-<span class="nc" id="L879">        RestEndpoint restEndpoint = new RestEndpoint();</span>
+<span class="nc" id="L911">        RestEndpoint restEndpoint = new RestEndpoint();</span>
 
-<span class="nc" id="L881">        Consumes defaultConsumes = klass.getAnnotation(Consumes.class);</span>
+<span class="nc" id="L913">        Consumes defaultConsumes = klass.getAnnotation(Consumes.class);</span>
 
-<span class="nc" id="L883">        Produces defautProduces = klass.getAnnotation(Produces.class);</span>
+<span class="nc" id="L915">        Produces defautProduces = klass.getAnnotation(Produces.class);</span>
 
-<span class="nc bnc" id="L885" title="All 2 branches missed.">        restEndpoint.setAdminResource(klass.getAnnotation(AdminResource.class) != null);</span>
-<span class="nc" id="L886">        restEndpoint.setAuthenticationRequired(</span>
-<span class="nc bnc" id="L887" title="All 2 branches missed.">            klass.getAnnotation(AuthenticationRequired.class) != null);</span>
+<span class="nc bnc" id="L917" title="All 2 branches missed.">        restEndpoint.setAdminResource(klass.getAnnotation(AdminResource.class) != null);</span>
+<span class="nc" id="L918">        restEndpoint.setAuthenticationRequired(</span>
+<span class="nc bnc" id="L919" title="All 2 branches missed.">            klass.getAnnotation(AuthenticationRequired.class) != null);</span>
 
-<span class="nc" id="L889">        restEndpoint.simpleClassName = klass.getSimpleName();</span>
-<span class="nc" id="L890">        restEndpoint.className = klass.getName();</span>
+<span class="nc" id="L921">        restEndpoint.simpleClassName = klass.getSimpleName();</span>
+<span class="nc" id="L922">        restEndpoint.className = klass.getName();</span>
 
-<span class="nc" id="L892">        Path classPath = klass.getAnnotation(Path.class);</span>
+<span class="nc" id="L924">        Path classPath = klass.getAnnotation(Path.class);</span>
         // eg @Path(&quot;project/{pId: [regex]}/card/{}&quot;)   or &quot;project&quot;
-<span class="nc" id="L894">        Map&lt;String, Class&lt;?&gt;&gt; mainPathParam = splitPath(classPath);</span>
+<span class="nc" id="L926">        Map&lt;String, Class&lt;?&gt;&gt; mainPathParam = splitPath(classPath);</span>
 
-<span class="nc" id="L896">        Logger.debug(&quot;Build RestEndpoint for &quot; + klass);</span>
+<span class="nc" id="L928">        Logger.debug(&quot;Build RestEndpoint for &quot; + klass);</span>
         // Go through each class methods but only cares about ones annotated with
         // a HttpMethod-like annotation
-<span class="nc bnc" id="L899" title="All 2 branches missed.">        for (Method method : klass.getMethods()) {</span>
-<span class="nc bnc" id="L900" title="All 2 branches missed.">            for (Annotation annotation : method.getAnnotations()) {</span>
+<span class="nc bnc" id="L931" title="All 2 branches missed.">        for (Method method : klass.getMethods()) {</span>
+<span class="nc bnc" id="L932" title="All 2 branches missed.">            for (Annotation annotation : method.getAnnotations()) {</span>
                 // @GET @POST, etc ?
-<span class="nc" id="L902">                HttpMethod httpMethodAnno = annotation.annotationType()</span>
-<span class="nc" id="L903">                    .getAnnotation(HttpMethod.class);</span>
-<span class="nc bnc" id="L904" title="All 2 branches missed.">                if (httpMethodAnno != null) {</span>
-<span class="nc" id="L905">                    RestMethod restMethod = new RestMethod();</span>
-<span class="nc" id="L906">                    restMethod.setName(method.getName());</span>
-<span class="nc" id="L907">                    restEndpoint.registerMethod(restMethod);</span>
+<span class="nc" id="L934">                HttpMethod httpMethodAnno = annotation.annotationType()</span>
+<span class="nc" id="L935">                    .getAnnotation(HttpMethod.class);</span>
+<span class="nc bnc" id="L936" title="All 2 branches missed.">                if (httpMethodAnno != null) {</span>
+<span class="nc" id="L937">                    RestMethod restMethod = new RestMethod();</span>
+<span class="nc" id="L938">                    restMethod.setName(method.getName());</span>
+<span class="nc" id="L939">                    restEndpoint.registerMethod(restMethod);</span>
 
-<span class="nc" id="L909">                    String httpMethod = httpMethodAnno.value();</span>
-<span class="nc" id="L910">                    restMethod.setHttpMethod(httpMethod);</span>
+<span class="nc" id="L941">                    String httpMethod = httpMethodAnno.value();</span>
+<span class="nc" id="L942">                    restMethod.setHttpMethod(httpMethod);</span>
 
-<span class="nc" id="L912">                    Path methodPath = method.getAnnotation(Path.class);</span>
+<span class="nc" id="L944">                    Path methodPath = method.getAnnotation(Path.class);</span>
 
-<span class="nc" id="L914">                    Consumes methodConsumes = method.getAnnotation(Consumes.class);</span>
-<span class="nc bnc" id="L915" title="All 2 branches missed.">                    Consumes consumes = methodConsumes != null ? methodConsumes : defaultConsumes;</span>
-<span class="nc bnc" id="L916" title="All 2 branches missed.">                    if (consumes != null) {</span>
-<span class="nc" id="L917">                        restMethod.setConsumes(List.of(consumes.value()));</span>
+<span class="nc" id="L946">                    Consumes methodConsumes = method.getAnnotation(Consumes.class);</span>
+<span class="nc bnc" id="L947" title="All 2 branches missed.">                    Consumes consumes = methodConsumes != null ? methodConsumes : defaultConsumes;</span>
+<span class="nc bnc" id="L948" title="All 2 branches missed.">                    if (consumes != null) {</span>
+<span class="nc" id="L949">                        restMethod.setConsumes(List.of(consumes.value()));</span>
                     }
 
-<span class="nc" id="L920">                    Produces methodProduces = method.getAnnotation(Produces.class);</span>
-<span class="nc bnc" id="L921" title="All 2 branches missed.">                    Produces produces = methodProduces != null ? methodProduces : defautProduces;</span>
+<span class="nc" id="L952">                    Produces methodProduces = method.getAnnotation(Produces.class);</span>
+<span class="nc bnc" id="L953" title="All 2 branches missed.">                    Produces produces = methodProduces != null ? methodProduces : defautProduces;</span>
 
-<span class="nc bnc" id="L923" title="All 2 branches missed.">                    if (produces != null) {</span>
-<span class="nc" id="L924">                        restMethod.setProduces(List.of(produces.value()));</span>
+<span class="nc bnc" id="L955" title="All 2 branches missed.">                    if (produces != null) {</span>
+<span class="nc" id="L956">                        restMethod.setProduces(List.of(produces.value()));</span>
                     }
 
-<span class="nc" id="L927">                    restMethod</span>
-<span class="nc bnc" id="L928" title="All 2 branches missed.">                        .setAdminResource(method.getAnnotation(AdminResource.class) != null);</span>
-<span class="nc" id="L929">                    restMethod.setAuthenticationRequired(</span>
-<span class="nc bnc" id="L930" title="All 2 branches missed.">                        method.getAnnotation(AuthenticationRequired.class) != null);</span>
+<span class="nc" id="L959">                    restMethod</span>
+<span class="nc bnc" id="L960" title="All 2 branches missed.">                        .setAdminResource(method.getAnnotation(AdminResource.class) != null);</span>
+<span class="nc" id="L961">                    restMethod.setAuthenticationRequired(</span>
+<span class="nc bnc" id="L962" title="All 2 branches missed.">                        method.getAnnotation(AuthenticationRequired.class) != null);</span>
 
                     // full path
-<span class="nc" id="L933">                    StringBuilder pathBuilder = new StringBuilder(applicationPath).append('/')</span>
-<span class="nc" id="L934">                        .append(classPath.value());</span>
-<span class="nc bnc" id="L935" title="All 4 branches missed.">                    if (methodPath != null &amp;&amp; !methodPath.value().isEmpty() &amp;&amp; !&quot;/&quot;</span>
-<span class="nc bnc" id="L936" title="All 2 branches missed.">                        .equals(methodPath.value())) {</span>
-<span class="nc bnc" id="L937" title="All 2 branches missed.">                        if (methodPath.value().charAt(0) != '/') {</span>
-<span class="nc" id="L938">                            pathBuilder.append('/');</span>
+<span class="nc" id="L965">                    StringBuilder pathBuilder = new StringBuilder(applicationPath).append('/')</span>
+<span class="nc" id="L966">                        .append(classPath.value());</span>
+<span class="nc bnc" id="L967" title="All 4 branches missed.">                    if (methodPath != null &amp;&amp; !methodPath.value().isEmpty() &amp;&amp; !&quot;/&quot;</span>
+<span class="nc bnc" id="L968" title="All 2 branches missed.">                        .equals(methodPath.value())) {</span>
+<span class="nc bnc" id="L969" title="All 2 branches missed.">                        if (methodPath.value().charAt(0) != '/') {</span>
+<span class="nc" id="L970">                            pathBuilder.append('/');</span>
                         }
-<span class="nc" id="L940">                        pathBuilder.append(methodPath.value());</span>
+<span class="nc" id="L972">                        pathBuilder.append(methodPath.value());</span>
                     }
-<span class="nc" id="L942">                    String fullPath = pathBuilder.toString();</span>
+<span class="nc" id="L974">                    String fullPath = pathBuilder.toString();</span>
 
-<span class="nc" id="L944">                    restMethod.setFullPath(fullPath);</span>
+<span class="nc" id="L976">                    restMethod.setFullPath(fullPath);</span>
 
-<span class="nc" id="L946">                    Map&lt;String, Class&lt;?&gt;&gt; methodPathParam = splitPath(methodPath);</span>
+<span class="nc" id="L978">                    Map&lt;String, Class&lt;?&gt;&gt; methodPathParam = splitPath(methodPath);</span>
 
                     // Process parameters
-<span class="nc bnc" id="L949" title="All 2 branches missed.">                    for (Parameter p : method.getParameters()) {</span>
-<span class="nc" id="L950">                        PathParam pathParam = p.getAnnotation(PathParam.class);</span>
-<span class="nc" id="L951">                        QueryParam queryParam = p.getAnnotation(QueryParam.class);</span>
-<span class="nc" id="L952">                        FormDataParam formDataParam = p.getAnnotation(FormDataParam.class);</span>
+<span class="nc bnc" id="L981" title="All 2 branches missed.">                    for (Parameter p : method.getParameters()) {</span>
+<span class="nc" id="L982">                        PathParam pathParam = p.getAnnotation(PathParam.class);</span>
+<span class="nc" id="L983">                        QueryParam queryParam = p.getAnnotation(QueryParam.class);</span>
+<span class="nc" id="L984">                        FormDataParam formDataParam = p.getAnnotation(FormDataParam.class);</span>
 
-<span class="nc bnc" id="L954" title="All 2 branches missed.">                        if (pathParam != null) {</span>
+<span class="nc bnc" id="L986" title="All 2 branches missed.">                        if (pathParam != null) {</span>
                             // Path param may be a method specific param or a class one
                             // at this point, resolving effective pathParam type is possible
-<span class="nc bnc" id="L957" title="All 2 branches missed.">                            if (methodPathParam.containsKey(pathParam.value())) {</span>
-<span class="nc" id="L958">                                methodPathParam.put(pathParam.value(), p.getType());</span>
-<span class="nc" id="L959">                                restMethod.addPathParameter(</span>
-<span class="nc" id="L960">                                    p.getName(),</span>
-<span class="nc" id="L961">                                    pathParam.value(),</span>
+<span class="nc bnc" id="L989" title="All 2 branches missed.">                            if (methodPathParam.containsKey(pathParam.value())) {</span>
+<span class="nc" id="L990">                                methodPathParam.put(pathParam.value(), p.getType());</span>
+<span class="nc" id="L991">                                restMethod.addPathParameter(</span>
+<span class="nc" id="L992">                                    p.getName(),</span>
+<span class="nc" id="L993">                                    pathParam.value(),</span>
                                     &quot;path param&quot;,
-<span class="nc" id="L963">                                    p.getType());</span>
-<span class="nc bnc" id="L964" title="All 2 branches missed.">                            } else if (mainPathParam.containsKey(pathParam.value())) {</span>
-<span class="nc" id="L965">                                mainPathParam.put(pathParam.value(), p.getType());</span>
+<span class="nc" id="L995">                                    p.getType());</span>
+<span class="nc bnc" id="L996" title="All 2 branches missed.">                            } else if (mainPathParam.containsKey(pathParam.value())) {</span>
+<span class="nc" id="L997">                                mainPathParam.put(pathParam.value(), p.getType());</span>
 
-<span class="nc" id="L967">                                restEndpoint.addPathParameter(</span>
-<span class="nc" id="L968">                                    p.getName(),</span>
-<span class="nc" id="L969">                                    pathParam.value(),</span>
+<span class="nc" id="L999">                                restEndpoint.addPathParameter(</span>
+<span class="nc" id="L1000">                                    p.getName(),</span>
+<span class="nc" id="L1001">                                    pathParam.value(),</span>
                                     &quot;path param&quot;,
-<span class="nc" id="L971">                                    p.getType());</span>
+<span class="nc" id="L1003">                                    p.getType());</span>
                             } else {
-<span class="nc" id="L973">                                Logger.error(&quot;@PathParam &quot;</span>
-<span class="nc" id="L974">                                    + pathParam.value() + &quot; not found in @Path&quot;);</span>
+<span class="nc" id="L1005">                                Logger.error(&quot;@PathParam &quot;</span>
+<span class="nc" id="L1006">                                    + pathParam.value() + &quot; not found in @Path&quot;);</span>
                                 // error !
                             }
-<span class="nc bnc" id="L977" title="All 2 branches missed.">                        } else if (queryParam != null) {</span>
-<span class="nc" id="L978">                            restMethod.addQueryParameter(</span>
-<span class="nc" id="L979">                                p.getName(),</span>
-<span class="nc" id="L980">                                queryParam.value(),</span>
+<span class="nc bnc" id="L1009" title="All 2 branches missed.">                        } else if (queryParam != null) {</span>
+<span class="nc" id="L1010">                            restMethod.addQueryParameter(</span>
+<span class="nc" id="L1011">                                p.getName(),</span>
+<span class="nc" id="L1012">                                queryParam.value(),</span>
                                 &quot;query param&quot;,
-<span class="nc" id="L982">                                p.getType());</span>
-<span class="nc bnc" id="L983" title="All 2 branches missed.">                        } else if (formDataParam != null) {</span>
-<span class="nc" id="L984">                            restMethod.addFormParameter(</span>
-<span class="nc" id="L985">                                p.getName(),</span>
-<span class="nc" id="L986">                                formDataParam.value(),</span>
+<span class="nc" id="L1014">                                p.getType());</span>
+<span class="nc bnc" id="L1015" title="All 2 branches missed.">                        } else if (formDataParam != null) {</span>
+<span class="nc" id="L1016">                            restMethod.addFormParameter(</span>
+<span class="nc" id="L1017">                                p.getName(),</span>
+<span class="nc" id="L1018">                                formDataParam.value(),</span>
                                 &quot;query param&quot;,
-<span class="nc" id="L988">                                p.getType());</span>
-<span class="nc bnc" id="L989" title="All 2 branches missed.">                        } else if (p.getAnnotations().length == 0) {</span>
+<span class="nc" id="L1020">                                p.getType());</span>
+<span class="nc bnc" id="L1021" title="All 2 branches missed.">                        } else if (p.getAnnotations().length == 0) {</span>
                             // request body
-<span class="nc bnc" id="L991" title="All 2 branches missed.">                            if (restMethod.getBodyParam() != null) {</span>
+<span class="nc bnc" id="L1023" title="All 2 branches missed.">                            if (restMethod.getBodyParam() != null) {</span>
                                 // several body param ????
-<span class="nc" id="L993">                                Logger.warn(&quot;Several body parameters ???&quot;);</span>
+<span class="nc" id="L1025">                                Logger.warn(&quot;Several body parameters ???&quot;);</span>
                             }
-<span class="nc" id="L995">                            Param bodyParam = new Param();</span>
-<span class="nc" id="L996">                            bodyParam.setName(p.getName());</span>
-<span class="nc" id="L997">                            bodyParam.setType(p.getParameterizedType());</span>
-<span class="nc" id="L998">                            bodyParam.setJavadoc(&quot;body payload&quot;);</span>
-<span class="nc" id="L999">                            restMethod.setBodyParam(bodyParam);</span>
+<span class="nc" id="L1027">                            Param bodyParam = new Param();</span>
+<span class="nc" id="L1028">                            bodyParam.setName(p.getName());</span>
+<span class="nc" id="L1029">                            bodyParam.setType(p.getParameterizedType());</span>
+<span class="nc" id="L1030">                            bodyParam.setJavadoc(&quot;body payload&quot;);</span>
+<span class="nc" id="L1031">                            restMethod.setBodyParam(bodyParam);</span>
                         }
                     }
 
-<span class="nc" id="L1003">                    Class&lt;?&gt; returnType = method.getReturnType();</span>
-<span class="nc" id="L1004">                    Type genericType = method.getGenericReturnType();</span>
+<span class="nc" id="L1035">                    Class&lt;?&gt; returnType = method.getReturnType();</span>
+<span class="nc" id="L1036">                    Type genericType = method.getGenericReturnType();</span>
 
-<span class="nc" id="L1006">                    String typeName = returnType.getTypeName();</span>
-<span class="nc" id="L1007">                    String genericTypeName = genericType.getTypeName();</span>
+<span class="nc" id="L1038">                    String typeName = returnType.getTypeName();</span>
+<span class="nc" id="L1039">                    String genericTypeName = genericType.getTypeName();</span>
 
-<span class="nc bnc" id="L1009" title="All 2 branches missed.">                    boolean isReturnTypeGeneric = !typeName.equals(genericTypeName);</span>
-<span class="nc bnc" id="L1010" title="All 2 branches missed.">                    if (isReturnTypeGeneric) {</span>
-<span class="nc" id="L1011">                        restMethod.setReturnTypeGeneric(isReturnTypeGeneric);</span>
+<span class="nc bnc" id="L1041" title="All 2 branches missed.">                    boolean isReturnTypeGeneric = !typeName.equals(genericTypeName);</span>
+<span class="nc bnc" id="L1042" title="All 2 branches missed.">                    if (isReturnTypeGeneric) {</span>
+<span class="nc" id="L1043">                        restMethod.setReturnTypeGeneric(isReturnTypeGeneric);</span>
                     }
 
-<span class="nc bnc" id="L1014" title="All 2 branches missed.">                    restMethod.setReturnType(isReturnTypeGeneric ? genericType : returnType);</span>
+<span class="nc bnc" id="L1046" title="All 2 branches missed.">                    restMethod.setReturnType(isReturnTypeGeneric ? genericType : returnType);</span>
 
-<span class="nc" id="L1016">                    break;</span>
+<span class="nc" id="L1048">                    break;</span>
                 }
             }
         }
-<span class="nc" id="L1020">        return restEndpoint;</span>
+<span class="nc" id="L1052">        return restEndpoint;</span>
     }
 
 }

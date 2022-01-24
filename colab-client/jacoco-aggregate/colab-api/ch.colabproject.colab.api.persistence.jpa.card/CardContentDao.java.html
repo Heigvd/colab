@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>CardContentDao.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.persistence.jpa.card</a> &gt; <span class="el_source">CardContentDao.java</span></div><h1>CardContentDao.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.persistence.jpa.card;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.card.CardContent;
+import java.util.List;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Card persistence
+ *
+ * @author sandra
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L27">public class CardContentDao {</span>
+
+    /** logger */
+<span class="nc" id="L30">    private static final Logger logger = LoggerFactory.getLogger(CardContentDao.class);</span>
+
+    /**
+     * Access to the persistence unit
+     */
+    @PersistenceContext(unitName = &quot;COLAB_PU&quot;)
+    private EntityManager em;
+
+    /**
+     * Get the list of all card contents
+     *
+     * @return list of all card contents
+     */
+    // FIXME sandra - Replace by something useful
+    public List&lt;CardContent&gt; getAllCardContent() {
+<span class="nc" id="L45">        logger.debug(&quot;get all card contents&quot;);</span>
+<span class="nc" id="L46">        TypedQuery&lt;CardContent&gt; query = em.createNamedQuery(&quot;CardContent.findAll&quot;,</span>
+            CardContent.class);
+<span class="nc" id="L48">        return query.getResultList();</span>
+    }
+
+    /**
+     * @param id id of the card content to fetch
+     *
+     * @return the card content with the given id or null if such a card content does not exists
+     */
+    public CardContent getCardContent(Long id) {
+<span class="nc" id="L57">        logger.debug(&quot;get card content #{}&quot;, id);</span>
+<span class="nc" id="L58">        return em.find(CardContent.class, id);</span>
+    }
+
+    /**
+     * Persist a brand new card content to database
+     *
+     * @param cardContent new card content to persist
+     *
+     * @return the new persisted card content
+     */
+    public CardContent createCardContent(CardContent cardContent) {
+<span class="nc" id="L69">        logger.debug(&quot;create card content {}&quot;, cardContent);</span>
+<span class="nc" id="L70">        em.persist(cardContent);</span>
+<span class="nc" id="L71">        return cardContent;</span>
+    }
+
+    /**
+     * Update card content
+     *
+     * @param cardContent card content as supply by clients (ie not managed)
+     *
+     * @return updated managed card content
+     *
+     * @throws ColabMergeException if updating the card content failed
+     */
+    public CardContent updateCardContent(CardContent cardContent) throws ColabMergeException {
+<span class="nc" id="L84">        logger.debug(&quot;update card content {}&quot;, cardContent);</span>
+<span class="nc" id="L85">        CardContent mCardContent = this.getCardContent(cardContent.getId());</span>
+
+<span class="nc" id="L87">        mCardContent.merge(cardContent);</span>
+
+<span class="nc" id="L89">        return mCardContent;</span>
+    }
+
+    /**
+     * Delete card content from database. This can't be undone
+     *
+     * @param id id of the card content to delete
+     *
+     * @return just deleted card content
+     */
+    public CardContent deleteCardContent(Long id) {
+<span class="nc" id="L100">        logger.debug(&quot;delete card content #{}&quot;, id);</span>
+        // TODO: move to recycle bin first
+<span class="nc" id="L102">        CardContent cardContent = this.getCardContent(id);</span>
+<span class="nc" id="L103">        em.remove(cardContent);</span>
+<span class="nc" id="L104">        return cardContent;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -9,7 +9,7 @@ package ch.colabproject.colab.api.controller;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.security.HttpSession;
 import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
 import java.util.HashMap;

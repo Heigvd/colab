@@ -8,8 +8,8 @@ package ch.colabproject.colab.api.controller.link;
 
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
-import ch.colabproject.colab.api.persistence.card.CardDao;
-import ch.colabproject.colab.api.persistence.link.ActivityFlowLinkDao;
+import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
+import ch.colabproject.colab.api.persistence.jpa.link.ActivityFlowLinkDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.Objects;
 import java.util.Optional;

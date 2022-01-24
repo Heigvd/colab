@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ActivityFlowLinkDao.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.persistence.jpa.link</a> &gt; <span class="el_source">ActivityFlowLinkDao.java</span></div><h1>ActivityFlowLinkDao.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.persistence.jpa.link;
+
+import ch.colabproject.colab.api.model.link.ActivityFlowLink;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Activity flow link persistence
+ *
+ * @author sandra
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L24">public class ActivityFlowLinkDao {</span>
+
+    /** logger */
+<span class="nc" id="L27">    private static final Logger logger = LoggerFactory.getLogger(ActivityFlowLinkDao.class);</span>
+
+    /**
+     * Access to the persistence unit
+     */
+    @PersistenceContext(unitName = &quot;COLAB_PU&quot;)
+    private EntityManager em;
+
+    /**
+     * @param id the id of the link to fetch
+     *
+     * @return the link with the given id or null if such a link does not exists
+     */
+    public ActivityFlowLink findActivityFlowLink(Long id) {
+        try {
+<span class="nc" id="L42">            logger.debug(&quot;find activity flow link #{}&quot;, id);</span>
+<span class="nc" id="L43">            return em.find(ActivityFlowLink.class, id);</span>
+<span class="nc" id="L44">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L45">            return null;</span>
+        }
+    }
+
+//    /**
+//     * Update link
+//     *
+//     * @param link the link as supply by clients (ie not managed)
+//     *
+//     * @return the updated managed link
+//     *
+//     * @throws ColabMergeException if updating the link failed
+//     */
+//    public ActivityFlowLink updateActivityFlowLink(ActivityFlowLink link)
+//        throws ColabMergeException {
+//        logger.debug(&quot;update activity flow link {}&quot;, link);
+//        ActivityFlowLink mLink = this.findActivityFlowLink(link.getId());
+//        mLink.merge(link);
+//        return mLink;
+//    }
+
+    /**
+     * Persist a brand new link to database
+     *
+     * @param link the new link to persist
+     *
+     * @return the new persisted link
+     */
+    public ActivityFlowLink persistActivityFlowLink(ActivityFlowLink link) {
+<span class="nc" id="L74">        logger.debug(&quot;persist activity flow link {}&quot;, link);</span>
+<span class="nc" id="L75">        em.persist(link);</span>
+<span class="nc" id="L76">        return link;</span>
+    }
+
+    /**
+     * Delete link from database. This can't be undone
+     *
+     * @param id the id of the link to delete
+     *
+     * @return just deleted link
+     */
+    public ActivityFlowLink deleteActivityFlowLink(Long id) {
+<span class="nc" id="L87">        logger.debug(&quot;delete activity flow link #{}&quot;, id);</span>
+        // TODO: move to recycle bin first
+<span class="nc" id="L89">        ActivityFlowLink link = this.findActivityFlowLink(id);</span>
+<span class="nc" id="L90">        em.remove(link);</span>
+<span class="nc" id="L91">        return link;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

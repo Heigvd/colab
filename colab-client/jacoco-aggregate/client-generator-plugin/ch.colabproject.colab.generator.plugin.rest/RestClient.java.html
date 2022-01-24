@@ -7,8 +7,10 @@
 package ch.colabproject.colab.generator.plugin.rest;
 
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,8 @@ import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
 /**
  * JakartaEE-based rest client.
@@ -61,33 +65,35 @@ public class RestClient {
      * @param jsonb          jsonb mapper to use, if null a default mapper will be used
      * @param clientFeatures REST client feature
      */
-<span class="nc" id="L64">    public RestClient(String baseUri, String cookieName, Jsonb jsonb, Object... clientFeatures) {</span>
-<span class="nc" id="L65">        ClientBuilder builder = ClientBuilder.newBuilder();</span>
+<span class="nc" id="L68">    public RestClient(String baseUri, String cookieName, Jsonb jsonb, Object... clientFeatures) {</span>
+<span class="nc" id="L69">        ClientBuilder builder = ClientBuilder.newBuilder();</span>
 
-<span class="nc bnc" id="L67" title="All 2 branches missed.">        for (Object feature : clientFeatures) {</span>
-<span class="nc" id="L68">            builder.register(feature);</span>
+<span class="nc" id="L71">        builder.register(MultiPartFeature.class);</span>
+
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        for (Object feature : clientFeatures) {</span>
+<span class="nc" id="L74">            builder.register(feature);</span>
         }
 
-<span class="nc bnc" id="L71" title="All 4 branches missed.">        if (cookieName != null &amp;&amp; !cookieName.isBlank()) {</span>
-<span class="nc" id="L72">            builder.register(new CookieFilter(cookieName));</span>
+<span class="nc bnc" id="L77" title="All 4 branches missed.">        if (cookieName != null &amp;&amp; !cookieName.isBlank()) {</span>
+<span class="nc" id="L78">            builder.register(new CookieFilter(cookieName));</span>
         }
 
-<span class="nc" id="L75">        this.client = builder.build();</span>
-<span class="nc" id="L76">        this.webTarget = client.target(baseUri);</span>
+<span class="nc" id="L81">        this.client = builder.build();</span>
+<span class="nc" id="L82">        this.webTarget = client.target(baseUri);</span>
 
-<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (jsonb != null) {</span>
-<span class="nc" id="L79">            this.jsonb = jsonb;</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (jsonb != null) {</span>
+<span class="nc" id="L85">            this.jsonb = jsonb;</span>
         } else {
-<span class="nc" id="L81">            this.jsonb = JsonbBuilder.create();</span>
+<span class="nc" id="L87">            this.jsonb = JsonbBuilder.create();</span>
         }
-<span class="nc" id="L83">    }</span>
+<span class="nc" id="L89">    }</span>
 
     /**
      * Close the client.
      */
     public void close() {
-<span class="nc" id="L89">        client.close();</span>
-<span class="nc" id="L90">    }</span>
+<span class="nc" id="L95">        client.close();</span>
+<span class="nc" id="L96">    }</span>
 
     /**
      * Try to read entity
@@ -100,89 +106,156 @@ public class RestClient {
      */
     private &lt;T&gt; T readEntity(InputStream stream, GenericType&lt;T&gt; type) {
         try {
-<span class="nc bnc" id="L103" title="All 4 branches missed.">            if (stream != null &amp;&amp; stream.available() &gt; 0) {</span>
-<span class="nc" id="L104">                return jsonb.fromJson(stream, type.getType());</span>
+<span class="nc bnc" id="L109" title="All 4 branches missed.">            if (stream != null &amp;&amp; stream.available() &gt; 0) {</span>
+<span class="nc" id="L110">                return jsonb.fromJson(stream, type.getType());</span>
             } else {
-<span class="nc" id="L106">                return null;</span>
+<span class="nc" id="L112">                return null;</span>
             }
-<span class="nc" id="L108">        } catch (JsonbException | IOException ex) {</span>
+<span class="nc" id="L114">        } catch (JsonbException | IOException ex) {</span>
             // silent ex
-<span class="nc" id="L110">            return null;</span>
+<span class="nc" id="L116">            return null;</span>
+        }
+    }
+
+    /**
+     * Convert InputStream to string
+     *
+     * @param stream the stream to convert
+     *
+     * @return the content of the stream as string
+     */
+    private String readTextualEntity(InputStream stream) {
+        try {
+<span class="nc" id="L129">            return new String(stream.readAllBytes(), StandardCharsets.UTF_8);</span>
+<span class="nc" id="L130">        } catch (IOException ex) {</span>
+            // silent ex
+<span class="nc" id="L132">            return null;</span>
         }
     }
 
     private &lt;T&gt; T processResponse(Response response, GenericType&lt;T&gt; type) {
-<span class="nc" id="L115">        Status.Family family = Status.Family.familyOf(response.getStatus());</span>
-<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (family == Status.Family.SUCCESSFUL) {</span>
-<span class="nc bnc" id="L117" title="All 2 branches missed.">            if (response.getStatus() == 204) {</span>
-<span class="nc" id="L118">                return null;</span>
+<span class="nc" id="L137">        Status.Family family = Status.Family.familyOf(response.getStatus());</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (family == Status.Family.SUCCESSFUL) {</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">            if (response.getStatus() == 204) {</span>
+<span class="nc" id="L140">                return null;</span>
             } else {
-<span class="nc" id="L120">                Object entity = response.getEntity();</span>
-<span class="nc bnc" id="L121" title="All 2 branches missed.">                if (entity instanceof InputStream) {</span>
-<span class="nc" id="L122">                    return readEntity((InputStream) entity, type);</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">                if(Response.class.isAssignableFrom(type.getRawType())){</span>
+<span class="nc" id="L143">                    return (T)response;</span>
+                }
+<span class="nc" id="L145">                Object entity = response.getEntity();</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">                if (entity instanceof InputStream) {</span>
+<span class="nc" id="L147">                    InputStream stream = (InputStream) entity;</span>
+<span class="nc" id="L148">                    String contentType = response.getHeaderString(&quot;Content-Type&quot;);</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">                    if (contentType.equals(&quot;application/json&quot;)</span>
+<span class="nc bnc" id="L150" title="All 2 branches missed.">                        || contentType.equals(&quot;text/json&quot;)) {</span>
+<span class="nc" id="L151">                        return readEntity(stream, type);</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">                    } else if (contentType.equals(&quot;text/plain&quot;)</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">                        || contentType.equals(&quot;text/html&quot;)) {</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">                        if (type.getRawType() == String.class) {</span>
+<span class="nc" id="L155">                            return (T) readTextualEntity(stream);</span>
+                        } else {
+<span class="nc" id="L157">                            return null;</span>
+                        }
+                    } else {
+<span class="nc" id="L160">                        return null;</span>
+                    }
                 } else {
-<span class="nc" id="L124">                    return null;</span>
+<span class="nc" id="L163">                    return null;</span>
                 }
             }
-<span class="nc bnc" id="L127" title="All 2 branches missed.">        } else if (family == Status.Family.CLIENT_ERROR) {</span>
-<span class="nc" id="L128">            HttpException error = readEntity((InputStream) response.getEntity(),</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">        } else if (family == Status.Family.CLIENT_ERROR) {</span>
+<span class="nc" id="L167">            HttpException error = readEntity((InputStream) response.getEntity(),</span>
                 new GenericType&lt;&gt;(HttpException.class));
-<span class="nc bnc" id="L130" title="All 2 branches missed.">            if (error != null) {</span>
-<span class="nc" id="L131">                throw error;</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">            if (error != null) {</span>
+<span class="nc" id="L170">                throw error;</span>
             } else {
-<span class="nc" id="L133">                throw new ClientException(Status.fromStatusCode(response.getStatus()));</span>
+<span class="nc" id="L172">                throw new ClientException(Status.fromStatusCode(response.getStatus()));</span>
             }
-<span class="nc bnc" id="L135" title="All 2 branches missed.">        } else if (family == Status.Family.SERVER_ERROR) {</span>
-<span class="nc" id="L136">            throw new ServerException(Status.fromStatusCode(response.getStatus()));</span>
+<span class="nc bnc" id="L174" title="All 2 branches missed.">        } else if (family == Status.Family.SERVER_ERROR) {</span>
+<span class="nc" id="L175">            throw new ServerException(Status.fromStatusCode(response.getStatus()));</span>
         } else {
-<span class="nc" id="L138">            throw new ServerException(Status.fromStatusCode(response.getStatus()));</span>
+<span class="nc" id="L177">            throw new ServerException(Status.fromStatusCode(response.getStatus()));</span>
         }
+    }
+
+    /**
+     * Create FormData to send
+     *
+     * @param fields form content
+     *
+     * @return the formdata to send
+     */
+    private FormDataMultiPart getFormData(Map&lt;String, FormField&gt; fields) {
+<span class="nc" id="L189">        FormDataMultiPart multipart = new FormDataMultiPart();</span>
+
+<span class="nc" id="L191">        fields.forEach((fieldName, data) -&gt; {</span>
+<span class="nc" id="L192">            MediaType mimeType = data.getMimeType();</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">            if (data.getData() instanceof File) {</span>
+                FileDataBodyPart filePart;
+<span class="nc bnc" id="L195" title="All 2 branches missed.">                if (mimeType != null) {</span>
+<span class="nc" id="L196">                    filePart = new FileDataBodyPart(fieldName, (File) data.getData(), mimeType);</span>
+                } else {
+<span class="nc" id="L198">                    filePart = new FileDataBodyPart(fieldName, (File) data.getData());</span>
+                }
+<span class="nc" id="L200">                multipart.bodyPart(filePart);</span>
+<span class="nc" id="L201">            } else {</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">                if (mimeType != null) {</span>
+<span class="nc" id="L203">                    multipart.field(fieldName, data.getData(), mimeType);</span>
+                } else {
+<span class="nc" id="L205">                    multipart.field(fieldName, data.getData().toString());</span>
+                }
+            }
+<span class="nc" id="L208">        });</span>
+<span class="nc" id="L209">        return multipart;</span>
     }
 
     /**
      * send GET request.
      *
-     * @param &lt;T&gt;  expected return type
-     * @param path rest path
-     * @param type expected return generic type
+     * @param &lt;T&gt;    expected return type
+     * @param path   rest path
+     * @param type   expected return generic type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public &lt;T&gt; T get(String path, GenericType&lt;T&gt; type) {
-<span class="nc" id="L152">        return processResponse(webTarget.path(path).request()</span>
-<span class="nc" id="L153">            .accept(MediaType.APPLICATION_JSON).get(),</span>
+    public &lt;T&gt; T get(String path, GenericType&lt;T&gt; type, String... accept) {
+<span class="nc" id="L223">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L224">            .accept(accept).get(),</span>
             type);
     }
 
     /**
      * send DELETE request.
      *
-     * @param &lt;T&gt;  expected return type
-     * @param path rest path
-     * @param type expected return type
+     * @param &lt;T&gt;    expected return type
+     * @param path   rest path
+     * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public &lt;T&gt; T delete(String path, GenericType&lt;T&gt; type) {
-<span class="nc" id="L167">        return processResponse(webTarget.path(path).request()</span>
-<span class="nc" id="L168">            .accept(MediaType.APPLICATION_JSON).delete(),</span>
+    public &lt;T&gt; T delete(String path, GenericType&lt;T&gt; type, String... accept) {
+<span class="nc" id="L239">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L240">            .accept(accept).delete(),</span>
             type);
     }
 
     /**
      * send JSON POST request.
      *
-     * @param &lt;T&gt;  expected return type
-     * @param path rest path
-     * @param body POST body
-     * @param type expected return type
+     * @param &lt;T&gt;    expected return type
+     * @param path   rest path
+     * @param body   POST body
+     * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public &lt;T&gt; T post(String path, Object body, GenericType&lt;T&gt; type) {
-<span class="nc" id="L183">        return processResponse(webTarget.path(path).request()</span>
-<span class="nc" id="L184">            .accept(MediaType.APPLICATION_JSON)</span>
-<span class="nc" id="L185">            .post(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),</span>
+    public &lt;T&gt; T post(String path, Object body, GenericType&lt;T&gt; type, String... accept) {
+<span class="nc" id="L256">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L257">            .accept(accept)</span>
+<span class="nc" id="L258">            .post(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),</span>
             type);
     }
 
@@ -193,49 +266,53 @@ public class RestClient {
      * @param path   rest path
      * @param fields form data
      * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public &lt;T&gt; T post(String path, Map&lt;String, FormField&gt; fields, GenericType&lt;T&gt; type) {
-<span class="nc" id="L200">        FormDataMultiPart multipart = new FormDataMultiPart();</span>
+    public &lt;T&gt; T post(
+        String path,
+        Map&lt;String, FormField&gt; fields,
+        GenericType&lt;T&gt; type,
+        String... accept
+    ) {
+<span class="nc" id="L279">        FormDataMultiPart multipart = getFormData(fields);</span>
 
-<span class="nc" id="L202">        fields.forEach((fieldName, data) -&gt; {</span>
-<span class="nc" id="L203">            multipart.field(fieldName, data.getData(), data.getMimeType());</span>
-<span class="nc" id="L204">        });</span>
-
-<span class="nc" id="L206">        return processResponse(webTarget.path(path).request()</span>
-<span class="nc" id="L207">            .accept(MediaType.APPLICATION_JSON)</span>
-<span class="nc" id="L208">            .post(Entity.entity(multipart, multipart.getMediaType())),</span>
+<span class="nc" id="L281">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L282">            .accept(accept)</span>
+<span class="nc" id="L283">            .post(Entity.entity(multipart, multipart.getMediaType())),</span>
             type);
     }
 
     /**
      * send POST request with an empty body.
      *
-     * @param &lt;T&gt;  expected return type
-     * @param path rest path
-     * @param type expected return type
+     * @param &lt;T&gt;    expected return type
+     * @param path   rest path
+     * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public &lt;T&gt; T post(String path, GenericType&lt;T&gt; type) {
-<span class="nc" id="L222">        return this.post(path, &quot;&quot;, type);</span>
+    public &lt;T&gt; T post(String path, GenericType&lt;T&gt; type, String... accept) {
+<span class="nc" id="L298">        return this.post(path, &quot;&quot;, type, accept);</span>
     }
 
     /**
      * send PUT request with JSON body.
      *
-     * @param &lt;T&gt;  expected return type
-     * @param path rest path
-     * @param body POST body
-     * @param type expected return type
+     * @param &lt;T&gt;    expected return type
+     * @param path   rest path
+     * @param body   POST body
+     * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public &lt;T&gt; T put(String path, Object body, GenericType&lt;T&gt; type) {
-<span class="nc" id="L236">        return processResponse(webTarget.path(path).request()</span>
-<span class="nc" id="L237">            .accept(MediaType.APPLICATION_JSON)</span>
-<span class="nc" id="L238">            .put(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),</span>
+    public &lt;T&gt; T put(String path, Object body, GenericType&lt;T&gt; type, String... accept) {
+<span class="nc" id="L313">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L314">            .accept(accept)</span>
+<span class="nc" id="L315">            .put(Entity.entity(body, MediaType.APPLICATION_JSON_TYPE)),</span>
             type);
     }
 
@@ -246,33 +323,32 @@ public class RestClient {
      * @param path   rest path
      * @param fields form data
      * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public &lt;T&gt; T put(String path, Map&lt;String, FormField&gt; fields, GenericType&lt;T&gt; type) {
-<span class="nc" id="L253">        FormDataMultiPart multipart = new FormDataMultiPart();</span>
+    public &lt;T&gt; T put(String path, Map&lt;String, FormField&gt; fields, GenericType&lt;T&gt; type, String... accept) {
+<span class="nc" id="L331">        FormDataMultiPart multipart = getFormData(fields);</span>
 
-<span class="nc" id="L255">        fields.forEach((fieldName, data) -&gt; {</span>
-<span class="nc" id="L256">            multipart.field(fieldName, data.getData(), data.getMimeType());</span>
-<span class="nc" id="L257">        });</span>
-
-<span class="nc" id="L259">        return processResponse(webTarget.path(path).request()</span>
-<span class="nc" id="L260">            .accept(MediaType.APPLICATION_JSON)</span>
-<span class="nc" id="L261">            .put(Entity.entity(multipart, multipart.getMediaType())),</span>
+<span class="nc" id="L333">        return processResponse(webTarget.path(path).request()</span>
+<span class="nc" id="L334">            .accept(accept)</span>
+<span class="nc" id="L335">            .put(Entity.entity(multipart, multipart.getMediaType())),</span>
             type);
     }
 
     /**
      * send PUT request with an empty body.
      *
-     * @param &lt;T&gt;  expected return type
-     * @param path rest path
-     * @param type expected return type
+     * @param &lt;T&gt;    expected return type
+     * @param path   rest path
+     * @param type   expected return type
+     * @param accept list of accepted MIME types
      *
      * @return instance of T
      */
-    public &lt;T&gt; T put(String path, GenericType&lt;T&gt; type) {
-<span class="nc" id="L275">        return this.put(path, &quot;&quot;, type);</span>
+    public &lt;T&gt; T put(String path, GenericType&lt;T&gt; type, String... accept) {
+<span class="nc" id="L350">        return this.put(path, &quot;&quot;, type, accept);</span>
+
     }
 
     /**
@@ -296,10 +372,10 @@ public class RestClient {
          *
          * @param cookieName name of the cookie to manage
          */
-<span class="nc" id="L299">        public CookieFilter(String cookieName) {</span>
-<span class="nc" id="L300">            this.cookieName = cookieName;</span>
-<span class="nc" id="L301">            this.sessionId = null;</span>
-<span class="nc" id="L302">        }</span>
+<span class="nc" id="L375">        public CookieFilter(String cookieName) {</span>
+<span class="nc" id="L376">            this.cookieName = cookieName;</span>
+<span class="nc" id="L377">            this.sessionId = null;</span>
+<span class="nc" id="L378">        }</span>
 
         /**
          * If set, add Cookie header to the request.
@@ -308,13 +384,13 @@ public class RestClient {
          */
         @Override
         public void filter(ClientRequestContext requestContext) throws IOException {
-<span class="nc bnc" id="L311" title="All 2 branches missed.">            if (this.sessionId != null) {</span>
-<span class="nc" id="L312">                List&lt;Object&gt; cookies = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L313">                Cookie cookie = new Cookie(cookieName, sessionId);</span>
-<span class="nc" id="L314">                cookies.add(cookie);</span>
-<span class="nc" id="L315">                requestContext.getHeaders().put(&quot;Cookie&quot;, cookies);</span>
+<span class="nc bnc" id="L387" title="All 2 branches missed.">            if (this.sessionId != null) {</span>
+<span class="nc" id="L388">                List&lt;Object&gt; cookies = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L389">                Cookie cookie = new Cookie(cookieName, sessionId);</span>
+<span class="nc" id="L390">                cookies.add(cookie);</span>
+<span class="nc" id="L391">                requestContext.getHeaders().put(&quot;Cookie&quot;, cookies);</span>
             }
-<span class="nc" id="L317">        }</span>
+<span class="nc" id="L393">        }</span>
 
         /**
          * On request response, fetch set-cookie value
@@ -324,11 +400,11 @@ public class RestClient {
         @Override
         public void filter(ClientRequestContext requestContext,
             ClientResponseContext responseContext) throws IOException {
-<span class="nc" id="L327">            NewCookie get = responseContext.getCookies().get(cookieName);</span>
-<span class="nc bnc" id="L328" title="All 2 branches missed.">            if (get != null) {</span>
-<span class="nc" id="L329">                this.sessionId = get.getValue();</span>
+<span class="nc" id="L403">            NewCookie get = responseContext.getCookies().get(cookieName);</span>
+<span class="nc bnc" id="L404" title="All 2 branches missed.">            if (get != null) {</span>
+<span class="nc" id="L405">                this.sessionId = get.getValue();</span>
             }
-<span class="nc" id="L331">        }</span>
+<span class="nc" id="L407">        }</span>
 
     }
 }

@@ -17,7 +17,7 @@ import ch.colabproject.colab.api.model.user.HashMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.user.UserDao;
+import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.security.AuthenticationFailure;
 import ch.colabproject.colab.api.security.SessionManager;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;

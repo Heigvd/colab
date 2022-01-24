@@ -16,7 +16,7 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.controller.RequestManager;
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.WithWebsocketChannels;
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.user.UserDao;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.channel.WebsocketEffectiveChannel;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.ws.channel.WebsocketMetaChannel;
@@ -139,7 +139,7 @@
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> <em class="jxr_javadoccomment">     * @return stream of unique WebsocketEffectiveChannel</em>
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> forEachDistinctEffectiveChannel(Set&lt;WebsocketChannel&gt; channels,
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>         <a name="UserDao" href="../../../../../ch/colabproject/colab/api/persistence/user/UserDao.html#UserDao">UserDao</a> userDao,
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>         <a name="UserDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/user/UserDao.html#UserDao">UserDao</a> userDao,
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>         <a name="RequestManager" href="../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>         Consumer&lt;WebsocketEffectiveChannel&gt; action
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>     ) {
@@ -179,7 +179,7 @@
 <a class="jxr_linenumber" name="L171" href="#L171">171</a> <em class="jxr_javadoccomment">     * @throws EncodeException if creating JSON messagesByChannels failed</em>
 <a class="jxr_linenumber" name="L172" href="#L172">172</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L173" href="#L173">173</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="PrecomputedWsMessages" href="../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a> prepareWsMessage(
-<a class="jxr_linenumber" name="L174" href="#L174">174</a>         <a name="UserDao" href="../../../../../ch/colabproject/colab/api/persistence/user/UserDao.html#UserDao">UserDao</a> userDao,
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>         <a name="UserDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/user/UserDao.html#UserDao">UserDao</a> userDao,
 <a class="jxr_linenumber" name="L175" href="#L175">175</a>         <a name="RequestManager" href="../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
 <a class="jxr_linenumber" name="L176" href="#L176">176</a>         Set&lt;WithWebsocketChannels&gt; updated,
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>         Set&lt;IndexEntry&gt; deleted
@@ -217,7 +217,7 @@
 <a class="jxr_linenumber" name="L209" href="#L209">209</a> <em class="jxr_javadoccomment">     * @throws EncodeException if json-encoding failed</em>
 <a class="jxr_linenumber" name="L210" href="#L210">210</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L211" href="#L211">211</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="PrecomputedWsMessages" href="../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a> prepareWsMessage(
-<a class="jxr_linenumber" name="L212" href="#L212">212</a>         <a name="UserDao" href="../../../../../ch/colabproject/colab/api/persistence/user/UserDao.html#UserDao">UserDao</a> userDao, <a name="RequestManager" href="../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>         <a name="UserDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/user/UserDao.html#UserDao">UserDao</a> userDao, <a name="RequestManager" href="../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>         <a name="WebsocketChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/WebsocketChannel.html#WebsocketChannel">WebsocketChannel</a> channel, <a name="WsMessage" href="../../../../../ch/colabproject/colab/api/ws/message/WsMessage.html#WsMessage">WsMessage</a> message
 <a class="jxr_linenumber" name="L214" href="#L214">214</a>     ) <strong class="jxr_keyword">throws</strong> EncodeException {
 <a class="jxr_linenumber" name="L215" href="#L215">215</a> 
@@ -243,7 +243,7 @@
 <a class="jxr_linenumber" name="L235" href="#L235">235</a> <em class="jxr_javadoccomment">     * @throws EncodeException if json-encoding failed</em>
 <a class="jxr_linenumber" name="L236" href="#L236">236</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <a name="PrecomputedWsMessages" href="../../../../../ch/colabproject/colab/api/ws/message/PrecomputedWsMessages.html#PrecomputedWsMessages">PrecomputedWsMessages</a> prepareWsMessage(
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>         <a name="UserDao" href="../../../../../ch/colabproject/colab/api/persistence/user/UserDao.html#UserDao">UserDao</a> userDao, <a name="RequestManager" href="../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>         <a name="UserDao" href="../../../../../ch/colabproject/colab/api/persistence/jpa/user/UserDao.html#UserDao">UserDao</a> userDao, <a name="RequestManager" href="../../../../../ch/colabproject/colab/api/controller/RequestManager.html#RequestManager">RequestManager</a> requestManager,
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>         Collection&lt;WebsocketChannel&gt; channels, <a name="WsMessage" href="../../../../../ch/colabproject/colab/api/ws/message/WsMessage.html#WsMessage">WsMessage</a> message
 <a class="jxr_linenumber" name="L240" href="#L240">240</a>     ) <strong class="jxr_keyword">throws</strong> EncodeException {
 <a class="jxr_linenumber" name="L241" href="#L241">241</a> 

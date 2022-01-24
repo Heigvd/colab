@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>JcrManager.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.persistence.jcr</a> &gt; <span class="el_source">JcrManager.java</span></div><h1>JcrManager.java</h1><pre class="source lang-java linenums">/*
+ * The MIT License
+ *
+ * Copyright 2021 AlbaSim, MEI, HEIG-VD, HES-SO.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+package ch.colabproject.colab.api.persistence.jcr;
+
+import ch.colabproject.colab.api.model.project.Project;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.jcr.Binary;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Manages the persistence of files with JackRabbit Oak
+ *
+ * @author xaviergood
+ */
+@Stateless
+<span class="nc" id="L43">public class JcrManager {</span>
+
+    /**
+     * Session manager
+     */
+    @Inject
+    private JcrSessionManager jcrSessionManager;
+
+    /**
+     * Key of node property containing file contents
+     */
+    private static final String CONTENT = &quot;COLAB_CONTENT&quot;;
+
+    /**
+     * Logger
+     */
+<span class="nc" id="L59">    private static final Logger logger = LoggerFactory.getLogger(JcrManager.class);</span>
+
+    /**
+     * @param project    related project
+     * @param identifier document id
+     *
+     * @return stream to the file
+     *
+     * @throws javax.jcr.RepositoryException in case of JCR problem
+     */
+    public InputStream getFileStream(Project project, Long identifier) throws RepositoryException {
+<span class="nc" id="L70">        var session = this.jcrSessionManager.getSession(project);</span>
+
+<span class="nc" id="L72">        var node = session.getNode(identifier.toString());</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (node == null) {</span>
+<span class="nc" id="L74">            return new ByteArrayInputStream(new byte[0]);</span>
+        }
+
+<span class="nc" id="L77">        var prop = node.getProperty(CONTENT);</span>
+
+        //TODO figure out when to call dispose
+<span class="nc" id="L80">        return prop.getBinary().getStream();</span>
+    }
+
+    /**
+     * @param project     project related to file
+     * @param identifier  document id
+     * @param fileContent file content
+     *
+     * @throws RepositoryException in case of JCR problem
+     */
+    public void updateOrCreateFile(Project project, Long identifier, InputStream fileContent) throws RepositoryException {
+<span class="nc" id="L91">        var session = this.jcrSessionManager.getSession(project);</span>
+
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (!session.nodeExists(identifier.toString())) {</span>
+<span class="nc" id="L94">            createFile(project, identifier, fileContent);</span>
+        } else {
+<span class="nc" id="L96">            var node = session.getNode(identifier.toString());</span>
+<span class="nc" id="L97">            Binary binary = session.createBinary(fileContent);</span>
+<span class="nc" id="L98">            node.setProperty(CONTENT, binary);</span>
+        }
+<span class="nc" id="L100">    }</span>
+
+    /**
+     * Creates a node for the given file id, and store its content
+     *
+     * @param project    related project
+     * @param identifier document id
+     * @param content    file content
+     *
+     * @throws RepositoryException in case of JCR problem
+     */
+    private void createFile(Project project, Long identifier, InputStream content) throws RepositoryException {
+<span class="nc" id="L112">        var session = this.jcrSessionManager.getSession(project);</span>
+
+<span class="nc" id="L114">        Node root = session.getWorkspaceRoot();</span>
+<span class="nc" id="L115">        Node newNode = root.addNode(identifier.toString());</span>
+
+<span class="nc" id="L117">        Binary binary = session.createBinary(content);</span>
+<span class="nc" id="L118">        newNode.setProperty(CONTENT, binary);</span>
+<span class="nc" id="L119">    }</span>
+
+    /**
+     * Deletes any existing node. Call is ignored if the file doesn't exist
+     *
+     * @param project    related project
+     * @param identifier doc id
+     *
+     * @throws RepositoryException in case of JCR problem
+     */
+    public void deleteFile(Project project, Long identifier) throws RepositoryException {
+<span class="nc" id="L130">        var session = this.jcrSessionManager.getSession(project);</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        if (session.nodeExists(identifier.toString())) {</span>
+<span class="nc" id="L132">            session.removeNode(identifier.toString());</span>
+        }
+
+<span class="nc" id="L135">    }</span>
+
+    /**
+     * Computes the disk space used by a project
+     *
+     * @param project related project
+     *
+     * @return used memory in bytes
+     *
+     * @throws RepositoryException in case of JCR problem
+     */
+    public Long computeMemoryUsage(Project project) throws RepositoryException {
+
+<span class="nc" id="L148">        var session = this.jcrSessionManager.getSession(project);</span>
+
+<span class="nc" id="L150">        var node = session.getWorkspaceRoot();</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (node == null) {</span>
+<span class="nc" id="L152">            return 0L;</span>
+        }
+
+<span class="nc" id="L155">        Long total = 0L;</span>
+
+        try {
+<span class="nc" id="L158">            var iterator = node.getNodes();</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">            while (iterator.hasNext()) {</span>
+<span class="nc" id="L160">                Node next = iterator.nextNode();</span>
+<span class="nc" id="L161">                total += next.getProperty(CONTENT).getLength();//getSize()?</span>
+<span class="nc" id="L162">            }</span>
+
+<span class="nc" id="L164">        } catch (RepositoryException re) {</span>
+<span class="nc" id="L165">            logger.warn(&quot;Could not compute memory usage of project {} id {}. &quot;</span>
+                + &quot;Exception : {}&quot;,
+<span class="nc" id="L167">                project.getName(), project.getId(), re.getMessage());</span>
+<span class="nc" id="L168">        }</span>
+<span class="nc" id="L169">        return total;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

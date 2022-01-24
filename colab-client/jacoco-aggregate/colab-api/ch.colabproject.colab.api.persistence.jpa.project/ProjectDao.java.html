@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ProjectDao.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.persistence.jpa.project</a> &gt; <span class="el_source">ProjectDao.java</span></div><h1>ProjectDao.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.persistence.jpa.project;
+
+import ch.colabproject.colab.api.exceptions.ColabMergeException;
+import ch.colabproject.colab.api.model.project.Project;
+import java.util.List;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+/**
+ * Project persistence
+ *
+ * @author maxence
+ */
+@Stateless
+@LocalBean
+<span class="nc" id="L25">public class ProjectDao {</span>
+
+    /**
+     * Access to the persistence unit
+     */
+    @PersistenceContext(unitName = &quot;COLAB_PU&quot;)
+    private EntityManager em;
+
+    /**
+     * Get the list of all project
+     *
+     * @return list of all projects
+     */
+    public List&lt;Project&gt; getAllProject() {
+<span class="nc" id="L39">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findAll&quot;, Project.class);</span>
+<span class="nc" id="L40">        return query.getResultList();</span>
+    }
+
+    /**
+     * Get all projects the user is member of
+     *
+     * @param userId the id of the user
+     *
+     * @return list of project
+     */
+    public List&lt;Project&gt; getUserProject(Long userId) {
+<span class="nc" id="L51">        TypedQuery&lt;Project&gt; query = em.createNamedQuery(&quot;Project.findProjectsByTeamMemberUser&quot;, Project.class);</span>
+<span class="nc" id="L52">        query.setParameter(&quot;userId&quot;, userId);</span>
+<span class="nc" id="L53">        return query.getResultList();</span>
+    }
+
+    /**
+     * Get the ids of the projects the user is member of
+     *
+     * @param userId the id of the user
+     *
+     * @return list of ids of projects
+     */
+    public List&lt;Long&gt; getIdsOfProjectUserIsMemberOf(Long userId) {
+<span class="nc" id="L64">        TypedQuery&lt;Long&gt; query = em.createNamedQuery(&quot;Project.findIdsOfProjectByTeamMemberUser&quot;,</span>
+            Long.class);
+<span class="nc" id="L66">        query.setParameter(&quot;userId&quot;, userId);</span>
+<span class="nc" id="L67">        return query.getResultList();</span>
+    }
+
+    /**
+     *
+     * @param id id of the project to fetch
+     *
+     * @return the project with the given id or null is such a project does not exists
+     */
+    public Project getProject(Long id) {
+<span class="nc" id="L77">        return em.find(Project.class, id);</span>
+    }
+
+    /**
+     * Update project
+     *
+     * @param project project as supply by clients (ie not managed)
+     *
+     * @return return updated managed project
+     *
+     * @throws ColabMergeException if updating the project failed
+     */
+    public Project updateProject(Project project) throws ColabMergeException {
+<span class="nc" id="L90">        Project managedProject = this.getProject(project.getId());</span>
+
+<span class="nc" id="L92">        managedProject.merge(project);</span>
+
+<span class="nc" id="L94">        return managedProject;</span>
+    }
+
+    /**
+     * Persist a brand new project to database
+     *
+     * @param project new project to persist
+     *
+     * @return the new persisted project
+     */
+    public Project createProject(Project project) {
+<span class="nc" id="L105">        em.persist(project);</span>
+<span class="nc" id="L106">        return project;</span>
+    }
+
+    /**
+     * Delete project from database. This can't be undone
+     *
+     * @param id id of the project to delete
+     *
+     * @return just deleted project
+     */
+    public Project deleteProject(Long id) {
+        // TODO: move to recycle bin first
+<span class="nc" id="L118">        Project project = this.getProject(id);</span>
+<span class="nc" id="L119">        em.remove(project);</span>
+<span class="nc" id="L120">        return project;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

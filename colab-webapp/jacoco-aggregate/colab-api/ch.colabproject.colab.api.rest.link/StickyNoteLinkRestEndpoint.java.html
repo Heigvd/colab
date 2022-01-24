@@ -10,7 +10,7 @@ import ch.colabproject.colab.api.controller.link.StickyNoteLinkManager;
 import ch.colabproject.colab.api.controller.link.StickyNoteLinkManager.SrcType;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
-import ch.colabproject.colab.api.persistence.link.StickyNoteLinkDao;
+import ch.colabproject.colab.api.persistence.jpa.link.StickyNoteLinkDao;
 import ch.colabproject.colab.api.rest.link.bean.StickyNoteLinkCreationBean;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import javax.inject.Inject;
