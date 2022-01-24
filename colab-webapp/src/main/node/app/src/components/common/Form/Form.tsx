@@ -284,17 +284,19 @@ export default function Form<T>({
         css({
           display: 'flex',
           flexDirection: 'column',
-          '& > *': {
-            padding: space_S + ' 0',
-          },
         }),
-        className || '',
+        className,
       )}
       onKeyDown={onEnterCb}
     >
       {fieldComps}
       {autoSubmit ? null : (
-        <Button key="submit" title="Submit" className={buttonClassName || ''} onClick={submitCb}>
+        <Button
+          key="submit"
+          title="Submit"
+          className={cx(css({ margin: space_S + ' 0' }), buttonClassName)}
+          onClick={submitCb}
+        >
           {submitLabel || i18n.submit}
         </Button>
       )}

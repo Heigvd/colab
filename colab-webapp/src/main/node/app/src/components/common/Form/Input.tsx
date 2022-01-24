@@ -5,11 +5,13 @@
  * Licensed under the MIT License
  */
 
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import {
   errorStyle,
   inputStyle,
   labelStyle,
+  space_S,
   textareaStyle,
   warningStyle,
 } from '../../styling/style';
@@ -58,7 +60,7 @@ export default function Input({
   );
 
   return (
-    <Flex className={className} direction="column">
+    <Flex className={cx(css({ padding: space_S + ' 0' }), className)} direction="column">
       <Flex justify="space-between">
         <div className={labelStyle}>
           {label}

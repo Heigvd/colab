@@ -5,18 +5,20 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
 import * as React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import GlobalCardTypeList from '../cards/cardtypes/GlobalCardTypeList';
 import { SecondLevelLink } from '../common/Link';
 import { AllProjects } from '../projects/ProjectList';
+import { space_L } from '../styling/style';
 import AllUsers from './AllUsers';
 import LoggersConfig from './LoggersConfig';
 import Who from './Who';
 
 export default function Admin(): JSX.Element {
   return (
-    <div>
+    <div className={css({ padding: space_L })}>
       <h2>Admin Page</h2>
       <div>
         <nav>
