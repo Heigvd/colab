@@ -6,14 +6,16 @@
  */
 
 import { css } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as API from '../../../API/api';
 import { useProjectCardTypes } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
+import { space_M } from '../../styling/style';
 import CardTypeDisplay from './CardTypeDisplay';
 import CardTypeEditor from './CardTypeEditor';
 
@@ -25,6 +27,7 @@ const flexWrap = css({
 
 export default function CardTypeList(): JSX.Element {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { project } = useProjectBeingEdited();
   const cardTypes = useProjectCardTypes();
 
@@ -57,6 +60,13 @@ export default function CardTypeList(): JSX.Element {
     } else {
       return (
         <div>
+          <IconButton
+            icon={faArrowLeft}
+            title={'Back to project'}
+            iconColor="var(--disabledGrey)"
+            onClick={() => navigate('./editor/' + project.id)}
+            className={css({ display: 'block', marginBottom: space_M })}
+          />
           <h3>Card Types</h3>
           <h4>Project own types</h4>
           <IconButton onClick={createNewCb} icon={faPlus} title="Create new" />
