@@ -45,7 +45,7 @@ export const lightTheme = cx(
     '--secondaryColorContrast': '#FFF',
     '--secondaryColorContrastShade': '#FFF',
 
-    '--lightDisabledGrey': '#ccc',
+    '--lightDisabledGrey': '#aaa',
     '--darkDisabledGrey': '#444',
     '--themeSuccessColor': successColor,
     '--themeWarningColor': warningColor,
@@ -72,7 +72,7 @@ export const normalThemeMode = css({
 
   backgroundColor: 'var(--bgColor)',
   color: 'var(--fgColor)',
-  'h1, h2, h3': {
+  'h1, h2, h3, h4': {
     margin: '0 0 5px 0',
   },
   h1: {
@@ -81,7 +81,7 @@ export const normalThemeMode = css({
   h2: {
     fontSize: '1.2rem',
   },
-  h3: {
+  'h3, h4': {
     fontSize: '1rem',
   },
 });

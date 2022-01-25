@@ -89,12 +89,7 @@ function ProgressBar({
   );
 }
 
-export default function CardEditor({
-  card,
-  variant,
-  showSubcards = true,
-}:
-Props): JSX.Element {
+export default function CardEditor({ card, variant, showSubcards = true }: Props): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -168,7 +163,7 @@ Props): JSX.Element {
             className={cx(
               cardStyle,
               css({
-                backgroundColor: card.color || 'white',
+                backgroundColor: 'white',
               }),
             )}
           >
@@ -190,7 +185,15 @@ Props): JSX.Element {
                 align="stretch"
               >
                 <Flex direction="column" align="stretch">
-                  <Flex justify="space-between">
+                  <Flex
+                    justify="space-between"
+                    className={css({
+                      paddingBottom: space_S,
+                      borderBottom: (card.color && card.color != '#ffffff')
+                        ?  '5px solid ' + card.color
+                        : '1px solid var(--disabledGrey)',
+                    })}
+                  >
                     <Flex>
                       <AutoSaveInput
                         placeholder={i18n.card.untitled}
@@ -292,25 +295,36 @@ Props): JSX.Element {
                       />
                     </Flex>
                   </Flex>
-                  <h4>Purpose</h4>
-                  <div>
-                    <b>{cardType?.title}</b>: {purpose?.textData || ''}
+                  <div
+                    className={css({
+                      fontSize: '0.9rem',
+                      color: 'var(--disabledGrey)',
+                      padding: space_S,
+                      p: { margin: space_S + ' 0' },
+                    })}
+                  >
+                    <p>
+                      <b>Card type</b>: {cardType?.title || ''}
+                    </p>
+                    <p>
+                      <b>Purpose</b>: {purpose?.textData || ''}
+                    </p>
                   </div>
                 </Flex>
 
-                <Flex direction="column" grow={1} align='stretch'>
-                    {userAcl.read ? (
-                      variant.id ? (
-                        <DocumentEditorAsDeliverableWrapper
-                          cardContentId={variant.id}
-                          allowEdition={!readOnly}
-                        />
-                      ) : (
-                        <span>no deliverable available</span>
-                      )
+                <Flex direction="column" grow={1} align="stretch">
+                  {userAcl.read ? (
+                    variant.id ? (
+                      <DocumentEditorAsDeliverableWrapper
+                        cardContentId={variant.id}
+                        allowEdition={!readOnly}
+                      />
                     ) : (
-                      <span>Access Denied</span>
-                    )}
+                      <span>no deliverable available</span>
+                    )
+                  ) : (
+                    <span>Access Denied</span>
+                  )}
                 </Flex>
               </Flex>
               <Flex align="center">

@@ -77,7 +77,9 @@ export default function CardThumb({
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-around',
-              borderBottom: '1px solid lightgray',
+              borderBottom: card.color
+                ? '3px solid ' + card.color
+                : '1px solid var(--disabledGrey)',
               width: '100%',
             })}
           >

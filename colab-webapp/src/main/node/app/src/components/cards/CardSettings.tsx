@@ -5,6 +5,7 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
 import { faCheck, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent, InvolvementLevel } from 'colab-rest-client';
@@ -17,7 +18,7 @@ import Flex from '../common/Flex';
 import Checkbox from '../common/Form/Checkbox';
 import OpenClose from '../common/OpenClose';
 import Tabs, { Tab } from '../common/Tabs';
-import { paddedContainerStyle } from '../styling/style';
+import { paddedContainerStyle, space_M } from '../styling/style';
 import CardACL from './CardACL';
 import ContentStatusSelector from './ContentStatusSelector';
 import InvolvementSelector from './InvolvementSelector';
@@ -42,16 +43,20 @@ export default function CardSettings({ card, variant }: Props): JSX.Element {
   return (
     <Tabs>
       <Tab name="settings" label={i18n.card.settings.title}>
-        <Flex className={paddedContainerStyle} direction="column" shrink={1}>
-          <TwitterPicker
-            colors={['#EDD3EC', '#EAC2C2', '#CCEFD4', '#E1F2F9', '#F9F5D6', '#F6F1F1']}
-            color={card.color || 'white'}
-            triangle="hide"
-            onChangeComplete={newColor => {
-              dispatch(API.updateCard({ ...card, color: newColor.hex }));
-            }}
-          />
-
+        <Flex className={css({ gap: space_M })} direction="column" shrink={1}>
+          <div className={css({ backgroundColor: 'var(--hoverBgColor)' })}>
+            <TwitterPicker
+              colors={['#B54BB2', '#B63E3E', '#3DC15C', '#37A8D8', '#DFCA2A', '#9C9C9C', '#FFFFFF']}
+              color={card.color || 'white'}
+              triangle="hide"
+              onChangeComplete={newColor => {
+                dispatch(API.updateCard({ ...card, color: newColor.hex }));
+              }}
+              styles={{
+                default: { swatch: { boxShadow: 'inset 0px 0px 3px 1px rgba(0, 0, 0, 0.1)' } },
+              }}
+            />
+          </div>
           <ContentStatusSelector
             self={variant.status}
             onChange={status => dispatch(API.updateCardContent({ ...variant, status: status }))}
