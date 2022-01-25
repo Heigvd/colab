@@ -294,7 +294,7 @@ export default function Form<T>({
         <Button
           key="submit"
           title="Submit"
-          className={cx(css({ margin: space_S + ' 0' }), buttonClassName)}
+          className={cx(css({ margin: space_S + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
           onClick={submitCb}
         >
           {submitLabel || i18n.submit}

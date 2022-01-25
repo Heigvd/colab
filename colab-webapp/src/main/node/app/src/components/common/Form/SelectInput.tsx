@@ -71,7 +71,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
   );
 
   return (
-    <Flex className={className} direction="column">
+    <Flex className={className} direction="column" align="stretch">
       <Flex justify="space-between">
         <div className={labelStyle}>
           {label}
@@ -88,6 +88,11 @@ export default function SelectInput<T, IsMulti extends boolean>({
           options={options}
           onChange={onInternalChangeCb}
           isDisabled={readonly}
+          menuPortalTarget={document.body}
+          styles={{
+            menuPortal: base => ({ ...base, zIndex: 9999 }),
+            menu: base => ({ ...base, marginTop: '0px' }),
+          }}
         />
       ) : (
         <Select
@@ -97,6 +102,11 @@ export default function SelectInput<T, IsMulti extends boolean>({
           options={options}
           onChange={onInternalChangeCb}
           isDisabled={readonly}
+          menuPortalTarget={document.body}
+          styles={{
+            menuPortal: base => ({ ...base, zIndex: 9999 }),
+            menu: base => ({ ...base, marginTop: '0px' }),
+          }}
         />
       )}
     </Flex>
