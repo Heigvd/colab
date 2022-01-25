@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+import { css, cx } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
@@ -26,49 +27,57 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
-  // note : quick and dirty changed to be compatible with an array of docs... 
-  // but only the case of exactly 1 doc is handled !!!
-
   const targetResourceId = resourceAndRef.targetResource.id;
-  const docs = useDocumentsOfResource(targetResourceId);
+  const { documents, status } = useDocumentsOfResource(targetResourceId);
 
   React.useEffect(() => {
-    if (targetResourceId != null && (!docs || docs.length < 1)) {
+    if (status == 'NOT_INITIALIZED' && targetResourceId != null) {
       dispatch(API.getDocumentsOfResource(targetResourceId));
     }
-  }, [targetResourceId, docs, dispatch]);
+  }, [status, targetResourceId, dispatch]);
 
-  if (docs == null || docs[0] == null) {
+  if (status === 'NOT_INITIALIZED') {
     return <InlineLoading />;
-  } else {
-    return (
-      <div>
-        <Flex>
-          <IconButton icon={faArrowLeft} title="Back" onClick={onClose} />
+  } else if (status === 'LOADING') {
+    return <InlineLoading />;
+  } else if (documents == null || documents.length < 1) {
+    return <div>no document at disposal</div>;
+  }
+
+  // TODO improve the iteration UX :-)
+
+  return (
+    <div>
+      {documents.map(doc =>
+        <div key={doc.id}>
+          <Flex>
+            <IconButton icon={faArrowLeft} title="Back" onClick={onClose} />
+            <div>
+              {entityIs(doc, 'Document') ? (
+                resourceAndRef.targetResource.title || i18n.resource.untitled
+              ) : (
+                <InlineLoading />
+              )}
+            </div>
+          </Flex>
+
           <div>
-            {entityIs(docs[0], 'Document') ? (
-              resourceAndRef.targetResource.title || i18n.resource.untitled
+            {entityIs(doc, 'Document') ? (
+              resourceAndRef.isDirectResource ? (
+                <DocumentEditorDisplay document={doc} />
+              ) : (
+                <>
+                  <div>!!! Not a direct resource : readonly </div>
+                  <DocumentEditorDisplay document={doc} allowEdition={false} />
+                </>
+              )
             ) : (
               <InlineLoading />
             )}
           </div>
-        </Flex>
+        </div>)
+      }
+    </div>
+  );
 
-        <div>
-          {entityIs(docs[0], 'Document') ? (
-            resourceAndRef.isDirectResource ? (
-              <DocumentEditorDisplay document={docs[0]} />
-            ) : (
-              <>
-                <div>!!! Not a direct resource : readonly </div>
-                <DocumentEditorDisplay document={docs[0]} allowEdition={false} />
-              </>
-            )
-          ) : (
-            <InlineLoading />
-          )}
-        </div>
-      </div>
-    );
-  }
 }

@@ -7,6 +7,7 @@
 
 import { Document, entityIs } from 'colab-rest-client';
 import { useAppSelector } from '../store/hooks';
+import { LoadingStatus } from '../store/store';
 
 /*
 export const useDocument = (
@@ -27,42 +28,68 @@ export const useDocument = (
 };
 */
 
-export const useDeliverables = (cardContentId: number | null | undefined): Document[] | undefined => {
+export const useDeliverables = (
+  cardContentId: number | null | undefined
+): {
+  documents: Document[];
+  status: LoadingStatus
+} => {
   return useAppSelector(state => {
-    const result: Document[] = [];
-
     if (cardContentId != null) {
-      Object.values(state.document.documents).forEach(doc => {
-        if (doc && entityIs(doc, 'Document')) {
-          if (doc.owningCardContentId === cardContentId) {
-            result.push(doc);
-          }
+      const dataInStore = state.document.byCardContent[cardContentId];
+
+      if (dataInStore === undefined) {
+        return { documents: [], status: 'NOT_INITIALIZED' };
+      } else {
+        const { documentIds, status } = dataInStore;
+
+        if (status == 'LOADING') {
+          return { documents: [], status: 'LOADING' };
+        } else {
+          return {
+            documents: documentIds.flatMap(docId => {
+              const doc = state.document.documents[docId];
+              return (doc && entityIs(doc, 'Document')) ? [doc] : [];
+            }),
+            status: 'READY',
+          };
         }
-      });
+      }
     }
 
-// kaï aïe how to know if they are already loaded ?
-
-    return result;
+    return { documents: [], status: 'NOT_INITIALIZED' };
   });
 };
 
-export const useDocumentsOfResource = (resourceId: number | null | undefined): Document[] | undefined => {
+export const useDocumentsOfResource = (
+  resourceId: number | null | undefined
+): {
+  documents: Document[];
+  status: LoadingStatus;
+} => {
   return useAppSelector(state => {
-    const result: Document[] = [];
-
     if (resourceId != null) {
-      Object.values(state.document.documents).forEach(doc => {
-        if (doc && entityIs(doc, 'Document')) {
-          if (doc.owningResourceId === resourceId) {
-            result.push(doc);
-          }
+      const dataInStore = state.document.byResource[resourceId];
+
+      if (dataInStore === undefined) {
+        return { documents: [], status: 'NOT_INITIALIZED' };
+      } else {
+        const { documentIds, status } = dataInStore;
+
+        if (status == 'LOADING') {
+          return { documents: [], status: 'LOADING' };
+        } else {
+          return {
+            documents: documentIds.flatMap(docId => {
+              const doc = state.document.documents[docId];
+              return (doc && entityIs(doc, 'Document')) ? [doc] : [];
+            }),
+            status: 'READY',
+          };
         }
-      });
+      }
     }
 
-    // kaï aïe how to know if they are already loaded ?
-
-    return result;
+    return { documents: [], status: 'NOT_INITIALIZED' };
   });
 }

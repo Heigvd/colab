@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { entityIs } from 'colab-rest-client';
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useDeliverables } from '../../selectors/documentSelector';
@@ -54,23 +54,32 @@ export function DocumentEditorAsDeliverableWrapper({
 }: DocAsDeliverableProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const docs = useDeliverables(cardContentId);
+  const { documents, status } = useDeliverables(cardContentId);
 
   // note : quick and dirty changed to be compatible with an array of docs... 
   // but only the case of exactly 1 doc is handled !!!
 
   React.useEffect(() => {
-    // TODO find a way to handle if no document
-    if ((!docs || docs.length < 1) && cardContentId != null) {
+    if (status == 'NOT_INITIALIZED' && cardContentId != null) {
       dispatch(API.getDeliverablesOfCardContent(cardContentId));
     }
-  }, [docs, cardContentId, dispatch]);
+  }, [status, cardContentId, dispatch]);
 
-  if (docs == null || docs[0] == null) {
+
+  if (status === 'NOT_INITIALIZED') {
     return <InlineLoading />;
-  } else if (entityIs(docs[0], 'Document')) {
-    return <DocumentEditorDisplay document={docs[0]} allowEdition={allowEdition} />;
-  } else {
+  } else if (status === 'LOADING') {
     return <InlineLoading />;
+  } else if (documents == null || documents.length < 1) {
+    return <div>no document at disposal</div>;
   }
+
+  return (
+    <div>
+      {
+        documents.map(doc => <DocumentEditorDisplay key={doc.id} document={doc} allowEdition={allowEdition} />)
+      }
+    </div>
+  );
+
 }
