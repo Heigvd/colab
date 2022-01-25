@@ -91,7 +91,7 @@ export default function CardLayout({
             backgroundColor: 'white',
             boxShadow:
               variants.length > 1
-                ? `${cardShadow}, 4px 4px 0px 0px white, 4px 4px 4px 1px var(--disabledGrey)`
+                ? `${cardShadow}, 4px 4px 0px 0px white, 4px 4px 4px 1px var(--darkGray)`
                 : undefined,
             flexDirection: 'column',
             justifyContent: 'space-between',

@@ -38,8 +38,8 @@ export default function SideCollapsiblePanel({
       align="stretch"
       className={cx(
         direction === 'LEFT'
-          ? open && css({ borderRight: '1px solid var(--disabledGrey)' })
-          : open && css({ borderLeft: '1px solid var(--disabledGrey)' }),
+          ? open && css({ borderRight: '1px solid var(--lightGray)' })
+          : open && css({ borderLeft: '1px solid var(--lightGray)' }),
         className,
       )}
     >
@@ -55,8 +55,8 @@ export default function SideCollapsiblePanel({
         grow={1}
         className={cx(
           direction === 'LEFT'
-            ? css({ borderRight: '1px solid var(--disabledGrey)' })
-            : css({ borderLeft: '1px solid var(--disabledGrey)' }),
+            ? css({ borderRight: '1px solid var(--lightGray)' })
+            : css({ borderLeft: '1px solid var(--lightGray)' }),
           css({ padding: space_M + ' ' + space_S }),
         )}
       >

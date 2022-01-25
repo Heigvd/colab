@@ -54,7 +54,7 @@ const toggledStyle = cx(
 const editorStyle = css({
   backgroundColor: 'var(--bgColor)',
   padding: '5px',
-  border: '1px solid var(--disabledGrey)',
+  border: '1px solid var(--lightGray)',
   borderRadius: borderRadius,
   whiteSpace: 'pre-line',
   '& .some-cursor': {

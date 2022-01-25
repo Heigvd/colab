@@ -88,7 +88,7 @@ export default function ResourcesList({
   return (
     <Flex direction="column" align="stretch">
       <Flex
-        className={css({ borderBottom: '1px solid var(--disabledGrey)', padding: '0 ' + space_M })}
+        className={css({ borderBottom: '1px solid var(--lightGray)', padding: '0 ' + space_M })}
       >
         <h2>Resources</h2>
       </Flex>
@@ -114,7 +114,7 @@ export default function ResourcesList({
       </Flex>
       <Flex
         justify="center"
-        className={css({ borderTop: '1px solid var(--disabledGrey)', padding: space_S })}
+        className={css({ borderTop: '1px solid var(--LightGray)', padding: space_S })}
       >
         {contextInfo.accessLevel === 'WRITE' ? (
           <ResourceCreator

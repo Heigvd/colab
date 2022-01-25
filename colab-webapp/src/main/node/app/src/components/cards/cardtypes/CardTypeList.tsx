@@ -63,7 +63,7 @@ export default function CardTypeList(): JSX.Element {
           <IconButton
             icon={faArrowLeft}
             title={'Back to project'}
-            iconColor="var(--disabledGrey)"
+            iconColor="var(--darkGray)"
             onClick={() => navigate('./editor/' + project.id)}
             className={css({ display: 'block', marginBottom: space_M })}
           />

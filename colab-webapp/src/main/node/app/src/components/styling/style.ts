@@ -45,8 +45,8 @@ export const lightTheme = cx(
     '--secondaryColorContrast': '#FFF',
     '--secondaryColorContrastShade': '#FFF',
 
-    '--lightDisabledGrey': '#aaa',
-    '--darkDisabledGrey': '#444',
+    '--lightDisabledGray': '#ddd',
+    '--darkDisabledGray': '#999',
     '--themeSuccessColor': successColor,
     '--themeWarningColor': warningColor,
     '--themeErrorColor': errorColor,
@@ -64,7 +64,8 @@ export const normalThemeMode = css({
   '--linkBgColor': 'var(--secondaryColorContrast)',
   '--linkHoverBgColor': 'var(--secondaryColorContrastShade)',
 
-  '--disabledGrey': 'var(--lightDisabledGrey)',
+  '--darkGray': 'var(--darkDisabledGray)',
+  '--lightGray': 'var(--lightDisabledGray)',
   '--focusColor': 'var(--secondaryColor)',
   '--successColor': 'var(--themeSuccessColor)',
   '--warningColor': 'var(--themeWarningColor)',
@@ -99,7 +100,8 @@ export const invertedThemeMode = cx(
     '--linkColor': 'var(--primaryColorContrast)',
     '--linkHoverColor': 'var(--primaryColorContrastShade)',
 
-    '--disabledGrey': 'var(--darkDisabledGrey)',
+    '--darkGray': 'var(--lightDisabledGray)',
+    '--lightGray': 'var(--darkDisabledGray)',
   }),
 );
 
@@ -295,7 +297,7 @@ export const fixedButtonStyle = css({
 });
 
 export const lightIconButtonStyle = css({
-  color: 'var(--disabledGrey)',
+  color: 'var(--darkGray)',
   '&:hover': {
     color: 'var(--hoverFgColor)',
   },
@@ -310,7 +312,7 @@ export const greyIconButtonChipStyle = cx(
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: '50%',
-    border: '1px solid var(--disabledGrey)',
+    border: '1px solid var(--darkGray)',
     '&:hover': {
       border: '1px solid var(--hoverFgColor)',
     },

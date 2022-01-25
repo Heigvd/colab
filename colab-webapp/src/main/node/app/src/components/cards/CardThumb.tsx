@@ -77,9 +77,9 @@ export default function CardThumb({
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-around',
-              borderBottom: card.color
+              borderBottom: (card.color && card.color != '#ffffff')
                 ? '3px solid ' + card.color
-                : '1px solid var(--disabledGrey)',
+                : '1px solid var(--lightGray)',
               width: '100%',
             })}
           >
@@ -203,7 +203,7 @@ export default function CardThumb({
               </div>
               <Flex
                 className={css({
-                  color: 'var(--disabledGrey)',
+                  color: 'var(--lightGray)',
                   gap: space_M,
                   fontSize: '0.85em',
                   paddingRight: space_S,
@@ -225,6 +225,7 @@ export default function CardThumb({
             className={css({
               padding: space_M,
             })}
+            justify='center'
           >
             {showSubcards ? (
               variant != null ? (

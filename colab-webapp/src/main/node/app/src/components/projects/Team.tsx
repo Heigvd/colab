@@ -293,7 +293,7 @@ export default function Team({ project }: Props): JSX.Element {
         <IconButton
           icon={faArrowLeft}
           title={'Back to project'}
-          iconColor="var(--disabledGrey)"
+          iconColor="var(--darkGray)"
           onClick={() => navigate('./editor/' + projectId)}
           className={css({ display: 'block', marginBottom: space_M })}
         />

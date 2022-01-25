@@ -145,7 +145,7 @@ export default function CardCreator({
                 className={css({
                   paddingBottom: space_S,
                   marginBottom: space_S,
-                  borderBottom: '1px solid var(--disabledGrey)',
+                  borderBottom: '1px solid var(--lightGray)',
                 })}
                 wrap="wrap"
               >
@@ -219,7 +219,7 @@ export default function CardCreator({
                   </div>
                 ) : (
                   <Flex>
-                    <p className={css({ color: 'var(--disabledGrey)' })}>
+                    <p className={css({ color: 'var(--darkGray)' })}>
                       <i>You have no custom type in selected categories.</i>
                     </p>
                     <Tips>
@@ -237,7 +237,7 @@ export default function CardCreator({
                 <summary>Browse global types</summary>
                 <div
                   className={css({
-                    border: '1px solid var(--disabledGrey)',
+                    border: '1px solid var(--lightGray)',
                     padding: space_M,
                     marginBottom: space_S,
                   })}

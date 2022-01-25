@@ -191,7 +191,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                       paddingBottom: space_S,
                       borderBottom: (card.color && card.color != '#ffffff')
                         ?  '5px solid ' + card.color
-                        : '1px solid var(--disabledGrey)',
+                        : '1px solid var(--lightGray)',
                     })}
                   >
                     <Flex>
@@ -298,7 +298,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                   <div
                     className={css({
                       fontSize: '0.9rem',
-                      color: 'var(--disabledGrey)',
+                      color: 'var(--darkGray)',
                       padding: space_S,
                       p: { margin: space_S + ' 0' },
                     })}
@@ -404,7 +404,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
         <p>
           <strong>Subcards</strong>
         </p>
-        {showSubcards ? <ContentSubs depth={1} cardContent={variant} /> : null}
+        {showSubcards ? <ContentSubs depth={1} cardContent={variant} className={css({alignItems: 'flex-start'})}/> : null}
       </Flex>
     );
   }

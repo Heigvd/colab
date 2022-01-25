@@ -121,7 +121,7 @@ export default function LiveEditor({
             toolbarClassName=""
             offsetY={-1}
             toolbar={
-              <IconButton title="Click to edit" icon={faPen} iconColor="var(--disabledGrey)" />
+              <IconButton title="Click to edit" icon={faPen} iconColor="var(--darkGray)" />
             }
           >
             <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
