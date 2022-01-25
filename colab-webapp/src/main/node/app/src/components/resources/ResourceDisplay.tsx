@@ -4,7 +4,6 @@
  *
  * Licensed under the MIT License
  */
-import { css, cx } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';

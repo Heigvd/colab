@@ -5,7 +5,6 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useDeliverables } from '../../selectors/documentSelector';
