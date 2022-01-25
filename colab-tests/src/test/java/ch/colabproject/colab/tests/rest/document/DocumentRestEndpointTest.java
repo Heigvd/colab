@@ -24,7 +24,10 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
 
     @Test
     public void testCreateBlockDocument() {
+        int index = 3;
+
         BlockDocument doc = new BlockDocument();
+        doc.setIndex(index);
 
         Long docId = client.documentRestEndpoint.createDocument(doc);
 
@@ -35,14 +38,17 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(persistedDoc instanceof BlockDocument);
         BlockDocument persistedBlockDoc = (BlockDocument) persistedDoc;
         Assertions.assertNotNull(persistedBlockDoc);
+        Assertions.assertEquals(index, persistedBlockDoc.getIndex());
     }
 
     @Test
     public void testCreateExternalLink() {
+        int index = 7;
         String url = "https://www.colab-project.ch/sites/default/files/2021-03/WP1%20-%20Co-Design%20Guidelines.pdf";
 
         ExternalLink doc = new ExternalLink();
         doc.setUrl(url);
+        doc.setIndex(index);
 
         Long docId = client.documentRestEndpoint.createDocument(doc);
 
@@ -53,6 +59,7 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(persistedDoc instanceof ExternalLink);
         ExternalLink persistedExtDocLink = (ExternalLink) persistedDoc;
         Assertions.assertEquals(url, persistedExtDocLink.getUrl());
+        Assertions.assertEquals(index, persistedExtDocLink.getIndex());
     }
 
     @Test
@@ -64,9 +71,10 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(doc instanceof BlockDocument);
         BlockDocument blockDoc = (BlockDocument) doc;
         Assertions.assertEquals(docId, blockDoc.getId());
+        Assertions.assertEquals(0, blockDoc.getIndex());
 
-        // find any field to update when there will be one (if it happens once)
-
+        int index = 4;
+        blockDoc.setIndex(index);
         client.documentRestEndpoint.updateDocument(blockDoc);
 
         Document persistedDoc = client.documentRestEndpoint.getDocument(docId);
@@ -74,6 +82,7 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(persistedDoc instanceof BlockDocument);
         BlockDocument persistedBlockDoc = (BlockDocument) persistedDoc;
         Assertions.assertEquals(docId, persistedBlockDoc.getId());
+        Assertions.assertEquals(index, persistedBlockDoc.getIndex());
     }
 
     @Test
@@ -86,9 +95,12 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
         ExternalLink extDocLink = (ExternalLink) doc;
         Assertions.assertEquals(docId, extDocLink.getId());
         Assertions.assertNull(extDocLink.getUrl());
+        Assertions.assertEquals(0, extDocLink.getIndex());
 
+        int index = 8;
         String url = "https://www.colab-project.ch/sites/default/files/2021-03/WP1%20-%20Project%20Description%20Model_0.pdf";
 
+        extDocLink.setIndex(index);
         extDocLink.setUrl(url);
         client.documentRestEndpoint.updateDocument(extDocLink);
 
@@ -98,6 +110,7 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedExtDocLink);
         Assertions.assertEquals(docId, persistedExtDocLink.getId());
         Assertions.assertEquals(url, persistedExtDocLink.getUrl());
+        Assertions.assertEquals(index, persistedExtDocLink.getIndex());
     }
 
     @Test

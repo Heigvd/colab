@@ -53,9 +53,11 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
      */
     @Test
     public void testCreateDocumentFile() {
+        int index = 1;
         String fileName = "random file #" + ((int) (Math.random() * 1000));
 
         DocumentFile doc = new DocumentFile();
+        doc.setIndex(index);
         doc.setFileName(fileName);
 
         Long docId = client.documentRestEndpoint.createDocument(doc);
@@ -67,6 +69,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertTrue(persistedDoc instanceof DocumentFile);
         DocumentFile persistedDocumentFile = (DocumentFile) persistedDoc;
         Assertions.assertEquals(fileName, persistedDocumentFile.getFileName());
+        Assertions.assertEquals(index, persistedDocumentFile.getIndex());
     }
 
     /**
@@ -82,9 +85,12 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
         DocumentFile documentFile = (DocumentFile) doc;
         Assertions.assertEquals(docId, documentFile.getId());
         Assertions.assertNull(documentFile.getFileName());
+        Assertions.assertEquals(0, documentFile.getIndex());
 
+        int index = 6;
         String fileName = "random file #" + ((int) (Math.random() * 1000));
 
+        documentFile.setIndex(index);
         documentFile.setFileName(fileName);
         client.documentRestEndpoint.updateDocument(documentFile);
 
@@ -94,6 +100,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedDocumentFile);
         Assertions.assertEquals(docId, persistedDocumentFile.getId());
         Assertions.assertEquals(fileName, persistedDocumentFile.getFileName());
+        Assertions.assertEquals(index, persistedDocumentFile.getIndex());
     }
 
     /**

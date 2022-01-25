@@ -95,6 +95,11 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     private Long deliverableCardContentId;
 
     /**
+     * The index to define the place of the document
+     */
+    private int index;
+
+    /**
      * The card content for which this document is a deliverable
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -202,6 +207,20 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     @Deprecated
     public boolean hasDeliverableCardContent() {
         return deliverableCardContent != null || deliverableCardContentId != null;
+    }
+
+    /**
+     * @return the index to define the place of the document
+     */
+    public int getIndex() {
+        return index;
+    }
+
+    /**
+     * @param index the index to define the place of the document to set
+     */
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     /**
@@ -354,7 +373,10 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (!(other instanceof Document)) {
+        if (other instanceof Document) {
+            Document o = (Document) other;
+            this.setIndex(o.getIndex());
+        } else {
             throw new ColabMergeException(this, other);
         }
     }
@@ -439,7 +461,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-        return "id=" + id;
+        return "id=" + id + ", index=" + index;
     }
 
 }
