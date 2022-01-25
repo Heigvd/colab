@@ -18,16 +18,60 @@ logger.setLevel(4);
 //  -> a todo item: "* []
 
 // const newMajorBlockDetector = /(?:^(?! ))/; // New line which starts with non-space character
-const linesRegex = new RegExp(
-  [
-    '(?<CODE>(?<codeIndent>^```(?<codeLang>.*)\n)(?<codeData>.*)\n```)',
-    '(?<UL>^(?<ulIndent>(?<ulLevel> *[*-])(?: \\[(?<ulChecked>[ x])\\])? )(?<ulData>.*)$)',
-    '(?<OL>^(?<olIndent>(?<olLevel> *)(?<olNumber>\\d+)\\.)(?<olData>.*)$)',
-    '(?<H>^(?<hIndent>(?<hLevel>#{1,5}) ?)(?<hData>.*)$)',
-    '(?<P>^(?<pIndent> *)(?<pData>.*)$)',
-  ].join('|'),
-  'gm',
-);
+
+const regexBuilder = () => {
+  // seems some odd browsers do not support negative lookbehind group...
+  // current mitigation: delay regexp instantiation so the whole app won't crash...
+  // TODO: fix safari
+  // TODO: do not use lookbehind groups
+  let linesRegex: RegExp;
+
+  /** two consecutive unescaped '*' */
+  let boldRegex: RegExp;
+
+  /** one unescaped '/' */
+  let italicRegex: RegExp;
+
+  /** one unescaped unescaped '~'  */
+  let strikethroughRegex: RegExp;
+
+  /** one unescaped unescaped '_' */
+  let underlineRegex: RegExp;
+
+  return () => {
+    if (!boldRegex) {
+      boldRegex = new RegExp('(?<!\\\\)(\\*\\*)');
+    }
+
+    if (!italicRegex) {
+      italicRegex = new RegExp('(?<!\\\\)(\\/)');
+    }
+
+    if (!strikethroughRegex) {
+      strikethroughRegex = new RegExp('(?<!\\\\)(~)');
+    }
+
+    if (!underlineRegex) {
+      underlineRegex = new RegExp('(?<!\\\\)(_)');
+    }
+
+    if (!linesRegex) {
+      linesRegex = new RegExp(
+        [
+          '(?<CODE>(?<codeIndent>^```(?<codeLang>.*)\n)(?<codeData>.*)\n```)',
+          '(?<UL>^(?<ulIndent>(?<ulLevel> *[*-])(?: \\[(?<ulChecked>[ x])\\])? )(?<ulData>.*)$)',
+          '(?<OL>^(?<olIndent>(?<olLevel> *)(?<olNumber>\\d+)\\.)(?<olData>.*)$)',
+          '(?<H>^(?<hIndent>(?<hLevel>#{1,5}) ?)(?<hData>.*)$)',
+          '(?<P>^(?<pIndent> *)(?<pData>.*)$)',
+        ].join('|'),
+        'gm',
+      );
+    }
+    return { linesRegex, boldRegex, italicRegex, strikethroughRegex, underlineRegex };
+  };
+};
+
+const getRegexes = regexBuilder();
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5;
 
@@ -145,6 +189,7 @@ function getTagFromMajor(major: MajorTag): string {
 
 function extractMajorTags(markdown: string): MajorTag[] {
   let m: RegExpExecArray | null;
+  const { linesRegex } = getRegexes();
   linesRegex.lastIndex = 0;
   const majorTags: MajorTag[] = [];
 
@@ -381,21 +426,11 @@ function processTag(
   return false;
 }
 
-/** two consecutive unescaped '*' */
-const boldRegex = /(?<!\\)(\*\*)/;
-
-/** one unescaped '/' */
-const italicRegex = /(?<!\\)(\/)/;
-
-/** one unescaped unescaped '~'  */
-const strikethroughRegex = /(?<!\\)(~)/;
-
-/** one unescaped unescaped '_' */
-const underlineRegex = /(?<!\\)(_)/;
-
 function parseMinor(minor: Combined): DomTree {
   const children: NodeWithPosition[] = [];
   const all: NodeWithPosition[] = [];
+
+  const { boldRegex, italicRegex, strikethroughRegex, underlineRegex } = getRegexes();
 
   logger.trace(`ParseMinor(${minor.tag}): >${minor.data}<`);
   if (minor.tag === 'PRE') {

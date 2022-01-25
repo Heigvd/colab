@@ -9,6 +9,7 @@ import { Component, ErrorInfo, ReactNode } from 'react';
 import logger from '../../logger';
 
 interface Props {
+  fallback?: ReactNode;
   children: ReactNode;
 }
 
@@ -32,10 +33,14 @@ class ErrorBoundary extends Component<Props, State> {
 
   public render(): ReactNode {
     if (this.state.hasError) {
-      return <h1>Sorry.. there was an error</h1>;
+      if (this.props.fallback) {
+        return this.props.fallback;
+      } else {
+        return <h1>Sorry.. there was an error</h1>;
+      }
+    } else {
+      return this.props.children;
     }
-
-    return this.props.children;
   }
 }
 
