@@ -92,7 +92,7 @@ export default function ResourcesList({
       >
         <h2>Resources</h2>
       </Flex>
-      <Flex grow={1} direction="column" align="stretch" className={css({ padding: space_M })}>
+      <Flex grow={1} direction="column" align="stretch" className={css({ padding: space_M, overflow: 'auto' })}>
         {contextInfo.accessLevel === 'DENIED' ? (
           <div>ACCESS DENIED</div>
         ) : (
@@ -112,10 +112,6 @@ export default function ResourcesList({
           ))
         )}
       </Flex>
-      <Flex
-        justify="center"
-        className={css({ borderTop: '1px solid var(--LightGray)', padding: space_S })}
-      >
         {contextInfo.accessLevel === 'WRITE' ? (
           <ResourceCreator
             contextInfo={contextInfo}
@@ -124,7 +120,6 @@ export default function ResourcesList({
           />
         ) : null}
       </Flex>
-    </Flex>
   );
 }
 

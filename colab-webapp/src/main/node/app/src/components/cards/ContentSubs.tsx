@@ -25,6 +25,7 @@ interface Props {
   depth?: number;
   showEmptiness?: boolean;
   className?: string;
+  subcardsContainerStyle?: string;
 }
 const tinyCard = css({
   width: '30px',
@@ -55,6 +56,7 @@ export default function ContentSubs({
   depth = 1,
   showEmptiness = false,
   className,
+  subcardsContainerStyle,
 }: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const location = useLocation();
@@ -107,7 +109,7 @@ export default function ContentSubs({
     } else {
       return depth > 0 ? (
         <div className={cx(flexWrap, css({ flexDirection: 'column', alignItems:'stretch'}), className)}>
-          <Flex wrap="wrap" align="flex-start">
+          <Flex wrap="wrap" align="flex-start" className={subcardsContainerStyle}>
             {subCards.map(sub => (
               <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
             ))}

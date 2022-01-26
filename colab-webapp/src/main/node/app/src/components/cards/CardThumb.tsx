@@ -6,7 +6,6 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faFile, faStickyNote } from '@fortawesome/free-regular-svg-icons';
 import { faCog, faEllipsisV, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Card, CardContent } from 'colab-rest-client';
@@ -14,15 +13,12 @@ import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useResources } from '../../selectors/resourceSelector';
-import { useStickyNoteLinksForDest } from '../../selectors/stickyNoteLinkSelector';
 import { useAppDispatch } from '../../store/hooks';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
 import Modal from '../common/Modal';
-import { ResourceContextScope } from '../resources/ResourceCommonType';
 import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
@@ -49,13 +45,15 @@ export default function CardThumb({
   const location = useLocation();
   const hasVariants = variants.length > 1 && variant != null;
 
-  const nbStickyNotes = useStickyNoteLinksForDest(card.id).stickyNotesForDest.length;
-  const nbResources = useResources({
+  // Get nb of sticky notes and resources to display on card (cf below). 
+  //Commented temporarily for first online version. Full data is not complete on first load. To discuss.
+  //const nbStickyNotes = useStickyNoteLinksForDest(card.id).stickyNotesForDest.length;
+  /* const nbResources = useResources({
     kind: ResourceContextScope.CardOrCardContent,
     cardContentId: variant?.id || undefined,
     cardId: card?.id || undefined,
     accessLevel: 'READ',
-  }).resourcesAndRefs.length;
+  }).resourcesAndRefs.length; */
 
   const closeRouteCb = React.useCallback(
     route => {
@@ -201,6 +199,10 @@ export default function CardThumb({
                   }}
                 />
               </div>
+              {/* 
+              // Show nb of sticky notes and resources under card title. 
+              // Commented temporarily for first online version. Full data is not complete on first load. Erroneous data displayed yet. 
+              // To discuss.
               <Flex
                 className={css({
                   color: 'var(--lightGray)',
@@ -212,11 +214,10 @@ export default function CardThumb({
                 <div>
                   <FontAwesomeIcon icon={faStickyNote} /> {nbStickyNotes}
                 </div>
-                {/* TODO get nb of resources (not in store)*/}
                 <div>
                   <FontAwesomeIcon icon={faFile} /> {nbResources}
                 </div>
-              </Flex>
+              </Flex> */}
             </div>
           </div>
           <Flex

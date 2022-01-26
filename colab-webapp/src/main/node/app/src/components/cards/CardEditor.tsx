@@ -24,6 +24,7 @@ import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/car
 import { useCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AutoSaveInput from '../common/AutoSaveInput';
+import Collapsible from '../common/Collapsible';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
@@ -154,7 +155,12 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   } else {
     return (
       <Flex direction="column" grow={1} align="stretch">
-        <Flex grow={1} direction="row" align="stretch" className={css({ paddingBottom: space_S })}>
+        <Flex
+          grow={1}
+          direction="row"
+          align="stretch"
+          className={css({ paddingBottom: space_S, height: '50vh' })}
+        >
           <Flex
             grow={1}
             direction="row"
@@ -181,6 +187,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                 grow={1}
                 className={css({
                   padding: '10px',
+                  overflow: 'auto',
                 })}
                 align="stretch"
               >
@@ -189,9 +196,10 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     justify="space-between"
                     className={css({
                       paddingBottom: space_S,
-                      borderBottom: (card.color && card.color != '#ffffff')
-                        ?  '5px solid ' + card.color
-                        : '1px solid var(--lightGray)',
+                      borderBottom:
+                        card.color && card.color != '#ffffff'
+                          ? '5px solid ' + card.color
+                          : '1px solid var(--lightGray)',
                     })}
                   >
                     <Flex>
@@ -312,7 +320,12 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                   </div>
                 </Flex>
 
-                <Flex direction="column" grow={1} align="stretch">
+                <Flex
+                  direction="column"
+                  grow={1}
+                  align="stretch"
+                  className={css({ overflow: 'auto', minHeight: '0px' })}
+                >
                   {userAcl.read ? (
                     variant.id ? (
                       <DocumentEditorAsDeliverableWrapper
@@ -401,10 +414,16 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
           </Flex>
         </Flex>
         <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
-        <p>
-          <strong>Subcards</strong>
-        </p>
-        {showSubcards ? <ContentSubs depth={1} cardContent={variant} className={css({alignItems: 'flex-start'})}/> : null}
+        {showSubcards ? (
+          <Collapsible title="Subcards">
+            <ContentSubs
+              depth={1}
+              cardContent={variant}
+              className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
+              subcardsContainerStyle={css({ overflow: 'auto', width: '100%', flexWrap: 'nowrap' })}
+            />
+          </Collapsible>
+        ) : null}
       </Flex>
     );
   }

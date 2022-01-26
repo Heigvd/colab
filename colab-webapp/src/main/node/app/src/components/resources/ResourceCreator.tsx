@@ -5,14 +5,17 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
+import Flex from '../common/Flex';
 import Form, { createSelectField, Field } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
 import OpenCloseModal, { modalPadding } from '../common/OpenCloseModal';
 import { addIcon, cancelIcon, createIcon, reinitIcon } from '../styling/defaultIcons';
+import { space_S } from '../styling/style';
 import { ResourceCallContext, ResourceContextScope } from './ResourceCommonType';
 
 /**
@@ -88,7 +91,7 @@ export default function ResourceCreator({
       options: [
         { label: 'Document', value: 'BlockDocument' },
         { label: 'Link', value: 'ExternalLink' },
-        { label: 'File', value: 'DocumentFile'}
+        { label: 'File', value: 'DocumentFile' },
       ],
       isMandatory: true,
     }),
@@ -107,8 +110,21 @@ export default function ResourceCreator({
     <OpenCloseModal
       title="Create a resource"
       collapsedChildren={
-        <IconButton title="Add a resource" icon={addIcon} className={className} />
+        <Flex
+          justify="center"
+          className={cx(
+            css({
+              borderTop: '1px solid var(--lightGray)',
+              padding: space_S,
+              '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
+            }),
+            className,
+          )}
+        >
+          <FontAwesomeIcon title="Add a resource" icon={addIcon} />
+        </Flex>
       }
+      className={css({ display: 'block', width: '100%', textAlign: 'center' })}
     >
       {collapse => (
         <div className={css({ padding: modalPadding })}>

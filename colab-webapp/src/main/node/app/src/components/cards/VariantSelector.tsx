@@ -144,6 +144,7 @@ export function VariantPager({ card, current, allowCreation }: PagerProps): JSX.
 
     return (
       <Flex justify="space-between" className={css({ marginTop: space_S })}>
+        <Flex basis="1px" grow={1}> </Flex>
         <Flex basis="1px" grow={1} justify="center" className={css({ fontSize: '0.9em' })}>
           {variantPager != null && variantPager.previous != variantPager.current ? (
             <IconButton
