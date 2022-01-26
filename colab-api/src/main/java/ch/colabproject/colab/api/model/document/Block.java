@@ -249,7 +249,6 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
         if (this.id != null) {
             return Set.of(BlockChannel.build(id));
         } else {
-            // may be a block used as teaser, purpose, or any other
             return Set.of();
         }
     }

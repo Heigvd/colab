@@ -149,7 +149,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
      */
     @OneToMany(mappedBy = "owningCardContent", cascade = CascadeType.ALL)
     @JsonbTransient
-    private List<Document> deliverables;
+    private List<Document> deliverables = new ArrayList<>();
 
     /**
      * The cards contained in there

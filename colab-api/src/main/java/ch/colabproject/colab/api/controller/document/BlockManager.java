@@ -87,20 +87,6 @@ public class BlockManager {
         return block;
     }
 
-    /**
-     * Assert that the block is not null. If not throw a {@link HttpErrorMessage}.
-     *
-     * @param block the block to check
-     *
-     * @throws HttpErrorMessage if the block is null
-     */
-    public void assertBlock(Block block) {
-        if (block == null) {
-            logger.error("block {} not found", block);
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
-    }
-
     // *********************************************************************************************
     // life cycle
     // *********************************************************************************************

@@ -703,6 +703,15 @@ public final class Conditions {
             this.card = card;
         }
 
+        /**
+         * Create a has write access statement
+         *
+         * @param cardContent a card content
+         */
+        public HasCardWriteRight(CardContent cardContent) {
+            this.card = cardContent.getCard();
+        }
+
         @Override
         protected boolean internalEval(RequestManager requestManager,
             SecurityManager securityManager) {

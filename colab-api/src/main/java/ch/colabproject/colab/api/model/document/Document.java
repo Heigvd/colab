@@ -382,9 +382,9 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * Get the project this block belongs to
+     * Get the project this document belongs to
      *
-     * @return block owner
+     * @return document owner
      */
     @JsonbTransient
     public Project getProject() {

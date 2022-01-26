@@ -124,6 +124,7 @@ public class TextDataBlock extends Block {
             super.merge(other);
             this.setMimeType(o.getMimeType());
             this.setTextData(o.getTextData());
+            // Note : the revision is handled by the LiveManager
         } else {
             throw new ColabMergeException(this, other);
         }

@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
 import ch.colabproject.colab.api.model.document.Block;
 import static ch.colabproject.colab.api.model.link.ActivityFlowLink.LINK_SEQUENCE_NAME;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -552,11 +553,26 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
         return this.getSrc().getUpdateCondition();
     }
 
+    /**
+     * Get the project it belongs to
+     *
+     * @return project owner
+     */
+    public Project getProject() {
+        if (this.destinationCard != null) {
+            return this.destinationCard.getProject();
+        } else {
+            // such an orphan shouldn't exist...
+            return null;
+        }
+    }
+
     @Override
     public Set<WebsocketChannel> getChannels() {
         if (this.destinationCard != null) {
             return this.destinationCard.getChannels();
         } else {
+            // such an orphan shouldn't exist...
             return Set.of();
         }
     }
