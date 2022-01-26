@@ -82,7 +82,9 @@ export default function SideCollapsiblePanel({
         )}
       </Flex>
       {open && direction === 'LEFT' && (
-        <Flex className={css({ padding: space_M })}>{children}</Flex>
+        <Flex align="stretch" className={css({ padding: space_M + ' 0 0 0' })}>
+        {children}
+      </Flex>
       )}
     </Flex>
   );

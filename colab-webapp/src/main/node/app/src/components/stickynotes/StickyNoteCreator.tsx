@@ -5,7 +5,8 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
@@ -17,9 +18,11 @@ import Form, { Field } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
 import OpenCloseModal, { modalPadding } from '../common/OpenCloseModal';
 import { addIcon, cancelIcon, createIcon, reinitIcon } from '../styling/defaultIcons';
+import { space_S } from '../styling/style';
 
 interface StickyNoteCreatorProps {
   destCardId: number;
+  className?: string;
 }
 
 interface StickyNoteLinkType {
@@ -42,7 +45,7 @@ const defaultStickyNode: StickyNoteLinkType = {
   explanation: '',
 };
 
-export default function StickyNoteCreator({ destCardId }: StickyNoteCreatorProps): JSX.Element {
+export default function StickyNoteCreator({ destCardId, className }: StickyNoteCreatorProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
@@ -105,7 +108,19 @@ export default function StickyNoteCreator({ destCardId }: StickyNoteCreatorProps
   return (
     <OpenCloseModal
       title="Create a new sticky note"
-      collapsedChildren={<IconButton title="add a sticky note" icon={addIcon} />}
+      collapsedChildren={<Flex
+        justify="center"
+        className={cx(
+          css({
+            borderTop: '1px solid var(--lightGray)',
+            padding: space_S,
+            '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
+          }),
+          className,
+        )}
+      >
+        <FontAwesomeIcon title="Add sticky note" icon={addIcon} />
+      </Flex>}
     >
       {collapse => (
         <div className={css({ padding: modalPadding })}>

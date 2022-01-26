@@ -18,12 +18,7 @@ import IconButton from '../common/IconButton';
 import OpenCloseModal from '../common/OpenCloseModal';
 import WithToolbar from '../common/WithToolbar';
 import { useBlock } from '../live/LiveTextEditor';
-import {
-  lightIconButtonStyle,
-  marginAroundStyle,
-  space_M,
-  space_S,
-} from '../styling/style';
+import { lightIconButtonStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
 import { getKey, ResourceAndRef, ResourceCallContext } from './ResourceCommonType';
 import ResourceCreator from './ResourceCreator';
 import { ResourceSettings } from './ResourceMiniDisplay';
@@ -98,14 +93,30 @@ export default function ResourcesList({
       >
         <h2>Resources</h2>
       </Flex>
-      <Flex grow={1} direction="column" align="stretch" className={css({ overflow: 'auto', paddingRight: '2px' })}>
+      <Flex
+        grow={1}
+        direction="column"
+        align="stretch"
+        className={css({ overflow: 'auto', paddingRight: '2px', width: '170px' })}
+      >
         {contextInfo.accessLevel === 'DENIED' ? (
           <div>ACCESS DENIED</div>
         ) : (
           toDisplay.map(category => (
             <div key={category} className={marginAroundStyle([3], space_S)}>
               <div className={marginAroundStyle([1, 2, 4], space_M)}>
-                <h3>{category}</h3>
+                <h3
+                  className={css({
+                    maxWidth: '150px',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    flexGrow: 1,
+                  })}
+                  title={category}
+                >
+                  {category}
+                </h3>
               </div>
               <Flex direction="column" align="stretch">
                 {categorized.categorized[category]!.sort(sortResources).map(resourceAndRef => (

@@ -73,6 +73,9 @@ export const normalThemeMode = css({
 
   backgroundColor: 'var(--bgColor)',
   color: 'var(--fgColor)',
+  'p': {
+    margin: '5px 0',
+  },
   'h1, h2, h3, h4': {
     margin: '0 0 5px 0',
   },
@@ -85,6 +88,7 @@ export const normalThemeMode = css({
   'h3, h4': {
     fontSize: '1rem',
   },
+
 });
 
 export const invertedThemeMode = cx(

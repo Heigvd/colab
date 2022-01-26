@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+import { css, cx } from '@emotion/css';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
@@ -15,6 +16,7 @@ import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 import { DocumentEditorDisplay } from '../documents/DocumentEditorDisplay';
+import { lightIconButtonStyle, paddingAroundStyle, space_M, space_S } from '../styling/style';
 import { ResourceAndRef } from './ResourceCommonType';
 
 export interface ResourceDisplayProps {
@@ -36,12 +38,12 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
   }, [docId, document, dispatch]);
 
   return (
-    <div>
-      <Flex>
-        <IconButton icon={faArrowLeft} title="Back" onClick={onClose} />
+    <Flex align="stretch" direction="column" grow={1} className={paddingAroundStyle([2, 3, 4], space_M)}>
+      <Flex direction='column'>
+        <IconButton icon={faArrowLeft} title="Back" onClick={onClose} className={cx(lightIconButtonStyle, css({paddingBottom: space_S}))}/>
         <div>
           {entityIs(document, 'Document') ? (
-            resourceAndRef.targetResource.title || i18n.resource.untitled
+            <h2>{resourceAndRef.targetResource.title || i18n.resource.untitled}</h2>
           ) : (
             <InlineLoading />
           )}
@@ -62,6 +64,6 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
           <InlineLoading />
         )}
       </div>
-    </div>
+    </Flex>
   );
 }
