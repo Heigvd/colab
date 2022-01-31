@@ -8,8 +8,9 @@
 import { css, cx } from '@emotion/css';
 import {
   faCog,
+  faDog,
+  faDragon,
   faEllipsisV,
-  faFile,
   faStickyNote,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -174,13 +175,37 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
             )}
           >
             <SideCollapsiblePanel
-              open={showStickyNote}
-              toggleOpen={toggleShowStickyNotes}
-              icon={faStickyNote}
-              title="sticky notes"
-            >
-              <StickyNoteWrapper destCardId={card.id} showSrc />
-            </SideCollapsiblePanel>
+            open={null}
+              items={[
+                {
+                  icon: faStickyNote,
+                  title: 'Stciky notes',
+                  children: (
+                    <>
+                      <StickyNoteWrapper destCardId={card.id} showSrc />
+                    </>
+                  ),
+                },
+                {
+                  icon: faDog,
+                  title: 'Good boy',
+                  children: (
+                    <>
+                      <div className={css({padding: space_M})}>I AM A GOOD BOY.</div>
+                    </>
+                  ),
+                },
+                {
+                  icon: faDragon,
+                  title: 'Dragon fury',
+                  children: (
+                    <>
+                      <div className={css({padding: space_M})}>ROOOAAAAR</div>
+                    </>
+                  ),
+                },
+              ]}
+            />
             <Flex direction="column" grow={1} align="stretch">
               <Flex
                 direction="column"
@@ -349,9 +374,9 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     <ProgressBar
                       variant={variant}
                       className={css({
-                        '&:hover, &:hover div': {
+                        '&:hover': {
                           cursor: 'pointer',
-                          backgroundColor: 'var(--fgColor)',
+                          opacity: .6,
                         },
                       })}
                     />
@@ -391,13 +416,30 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
               </Flex>
             </Flex>
             <SideCollapsiblePanel
-              open={rightPanel === 'RESOURCES'}
-              toggleOpen={toggleResourcePanel}
-              icon={faFile}
+              //toggleOpen={toggleResourcePanel}
+              //icon={faFile}
+              open={null}
               direction="RIGHT"
-              title="Resources"
-            >
-              {rightPanel === 'RESOURCES'
+              items={[
+                {
+                  children: (
+                    <ResourcesWrapper
+                      kind={ResourceContextScope.CardOrCardContent}
+                      accessLevel={
+                        !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
+                      }
+                      cardId={card.id}
+                      cardContentId={variant.id}
+                    />
+                  ),
+                  icon: faCog,
+                  title: 'title',
+                },
+              ]}
+
+              //title="Resources"
+            />
+            {/*  {rightPanel === 'RESOURCES'
                 ? card.id &&
                   variant?.id && (
                     <ResourcesWrapper
@@ -410,7 +452,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     />
                   )
                 : null}
-            </SideCollapsiblePanel>
+            </SideCollapsiblePanel> */}
           </Flex>
         </Flex>
         <VariantPager allowCreation={userAcl.write} card={card} current={variant} />

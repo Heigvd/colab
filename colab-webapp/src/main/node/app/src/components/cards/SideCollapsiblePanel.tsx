@@ -6,46 +6,52 @@
  */
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import logger from '../../logger';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
-import { paddingAroundStyle, space_M, space_S } from '../styling/style';
+import { lightIconButtonStyle, marginAroundStyle, paddingAroundStyle, space_M, space_S } from '../styling/style';
+
+interface Item {
+  icon: IconProp;
+  children: React.ReactNode;
+  className?: string;
+  title: string;
+}
 
 export interface SideCollapsiblePanelProps {
-  icon?: IconProp;
-  open: boolean;
-  toggleOpen: () => void;
-  children?: React.ReactNode;
+  items: Item[];
+  open: Item | null;
   className?: string;
   direction?: 'LEFT' | 'RIGHT';
-  title?: string;
 }
 
 export default function SideCollapsiblePanel({
-  icon,
   open,
-  toggleOpen,
-  children,
+  items,
   className,
   direction = 'LEFT',
-  title,
 }: SideCollapsiblePanelProps): JSX.Element {
+  const [itemOpen, setItemOpen] = React.useState<Item | null>(open);
   return (
     <Flex
       direction="row"
       align="stretch"
       className={cx(
         direction === 'LEFT'
-          ? open && css({ borderRight: '1px solid var(--lightGray)' })
-          : open && css({ borderLeft: '1px solid var(--lightGray)' }),
+          ? css({ borderRight: '1px solid var(--lightGray)' })
+          : css({ borderLeft: '1px solid var(--lightGray)' }),
         className,
       )}
     >
-      {open && direction === 'RIGHT' && (
-        <Flex align="stretch" className={css({ padding: space_M + ' 0 0 0' })}>
-          {children}
+      {logger.info(itemOpen)}
+      {direction === 'RIGHT' && itemOpen && (
+        <Flex
+          align="stretch"
+          className={cx(paddingAroundStyle([1], space_M), itemOpen.className)}
+          title={itemOpen.title}
+        >
+          {itemOpen.children}
         </Flex>
       )}
       <Flex
@@ -60,31 +66,28 @@ export default function SideCollapsiblePanel({
           css({ padding: space_M + ' ' + space_S }),
         )}
       >
-        <IconButton
-          icon={
-            open
-              ? direction === 'LEFT'
-                ? faChevronLeft
-                : faChevronRight
-              : direction === 'LEFT'
-              ? faChevronRight
-              : faChevronLeft
-          }
-          title={title ? (open ? 'Close ' + title : 'Open ' + title) : open ? 'Close' : 'Open'}
-          onClick={toggleOpen}
-        />
-        {icon && (
-          <FontAwesomeIcon
-            icon={icon}
-            className={paddingAroundStyle([1, 3], space_S)}
-            title={title}
-          />
-        )}
+        
+        {items.map(item => (
+          <>
+            <IconButton
+              icon={item.icon}
+              title={item.title}
+              onClick={() => setItemOpen(itemOpen === item ? null : item)}
+              iconColor={itemOpen === item ? 'var(--fgColor)' : undefined}
+              iconSize='lg'
+              className={cx(marginAroundStyle([1, 3], space_M), lightIconButtonStyle, css({color: 'var(--lightGray)'}))}
+            />
+          </>
+        ))}
       </Flex>
-      {open && direction === 'LEFT' && (
-        <Flex align="stretch" className={css({ padding: space_M + ' 0 0 0' })}>
-        {children}
-      </Flex>
+      {direction === 'LEFT' && itemOpen && (
+        <Flex
+          align="stretch"
+          className={cx(paddingAroundStyle([1], space_M), itemOpen.className)}
+          title={itemOpen.title}
+        >
+          {itemOpen.children}
+        </Flex>
       )}
     </Flex>
   );

@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import {
   faClone,
-  faCog,
+  faEllipsisV,
   faEye,
   faNetworkWired,
   faProjectDiagram,
@@ -291,7 +291,7 @@ export default function Editor(): JSX.Element {
             />
           </div>
           <DropDownMenu
-            icon={faCog}
+            icon={faEllipsisV}
             valueComp={{ value: '', label: '' }}
             entries={[
               { value: './defs', label: 'Card Types' },
@@ -301,7 +301,6 @@ export default function Editor(): JSX.Element {
               val.action != null ? val.action() : navigate(val.value);
             }}
             buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
-            menuIcon="CARET"
           />
         </div>
         <div
