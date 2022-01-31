@@ -7,7 +7,7 @@
 package ch.colabproject.colab.api.persistence.jpa.document;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -22,10 +22,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-public class BlockDao {
+public class TextDataBlockDao {
 
     /** logger */
-    private static final Logger logger = LoggerFactory.getLogger(BlockDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(TextDataBlockDao.class);
 
     /**
      * Access to the persistence unit
@@ -38,10 +38,10 @@ public class BlockDao {
      *
      * @return the block with the given id or null if such a block does not exists
      */
-    public Block findBlock(Long id) {
+    public TextDataBlock findBlock(Long id) {
         try {
-            logger.debug("find block #{}", id);
-            return em.find(Block.class, id);
+            logger.debug("find text data block #{}", id);
+            return em.find(TextDataBlock.class, id);
         } catch (IllegalArgumentException ex) {
             return null;
         }
@@ -56,9 +56,9 @@ public class BlockDao {
      *
      * @throws ColabMergeException if updating the block failed
      */
-    public Block updateBlock(Block block) throws ColabMergeException {
+    public TextDataBlock updateBlock(TextDataBlock block) throws ColabMergeException {
         logger.debug("update block {}", block);
-        Block mBlock = this.findBlock(block.getId());
+        TextDataBlock mBlock = this.findBlock(block.getId());
         mBlock.merge(block);
         return mBlock;
     }
@@ -70,7 +70,7 @@ public class BlockDao {
      *
      * @return the new persisted block
      */
-    public Block persistBlock(Block block) {
+    public TextDataBlock persistBlock(TextDataBlock block) {
         logger.debug("persist block {}", block);
         em.persist(block);
         return block;
@@ -83,10 +83,10 @@ public class BlockDao {
      *
      * @return just deleted block
      */
-    public Block deleteBlock(Long id) {
+    public TextDataBlock deleteBlock(Long id) {
         logger.debug("delete block #{}", id);
         // TODO: move to recycle bin first
-        Block block = this.findBlock(id);
+        TextDataBlock block = this.findBlock(id);
         em.remove(block);
         return block;
     }

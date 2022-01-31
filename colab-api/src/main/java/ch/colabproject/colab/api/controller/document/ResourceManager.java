@@ -13,13 +13,14 @@ import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
-import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.document.Resourceable;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.document.ResourceDao;
+import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,6 +56,18 @@ public class ResourceManager {
     private ResourceDao resourceAndRefDao;
 
     /**
+     * Document persistence handling
+     */
+    @Inject
+    private DocumentDao documentDao;
+
+    /**
+     * Document specific logic
+     */
+    @Inject
+    private DocumentManager documentManager;
+
+    /**
      * Card type specific logic management
      */
     @Inject
@@ -71,6 +84,12 @@ public class ResourceManager {
      */
     @Inject
     private CardContentManager cardContentManager;
+
+    /**
+     * Block logic manager
+     */
+    @Inject
+    private BlockManager blockManager;
 
     // *********************************************************************************************
     // find resource
@@ -205,12 +224,11 @@ public class ResourceManager {
     public Resource createResource(Resource resource) {
         logger.debug("create resource {}", resource);
 
-        if (CollectionUtils.isEmpty(resource.getDocuments())) {
-            throw HttpErrorMessage.dataIntegrityFailure();
-        }
-
         if (resource.getTeaser() == null) {
-            initTeaser(resource);
+            TextDataBlock teaserTextDataBlock = blockManager.makeNewTextDataBlock();
+
+            resource.setTeaser(teaserTextDataBlock);
+            teaserTextDataBlock.setTeasingResource(resource);
         }
 
         // implicitly resource.setPublished(false);
@@ -237,15 +255,6 @@ public class ResourceManager {
         ResourceReferenceSpreadingHelper.spreadNewResourceDown(resource);
 
         return resourceAndRefDao.persistResource(resource);
-    }
-
-    /**
-     * Initialize the teaser of the given resource.
-     *
-     * @param resource the resource
-     */
-    private void initTeaser(Resource resource) {
-        resource.setTeaser(Block.initNewDefaultBlock());
     }
 
     /**
@@ -301,6 +310,66 @@ public class ResourceManager {
         resourceAndRefDao.deleteResourceOrRef(resourceOrRef.getId());
 
         // Note : the document is deleted by cascade
+    }
+
+    // *********************************************************************************************
+    // add a document to a resource
+    // *********************************************************************************************
+
+    /**
+     * Add the document to the resource
+     *
+     * @param resourceId the id of the resource
+     * @param document   the document to use in the resource. It must be a new document
+     *
+     * @return the newly created document
+     */
+    public Document addDocument(Long resourceId, Document document) {
+        logger.debug("add document {} to resource #{}", document, resourceId);
+
+        Resource resource = assertAndGetResource(resourceId);
+
+        if (document == null) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        if (document.hasOwningResource() || document.hasOwningCardContent()) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        if (resource.getDocuments().contains(document)) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        resource.setDocument(document);// kept temporarily for backward compatibility
+        document.setResource(resource);// kept temporarily for backward compatibility
+        resource.getDocuments().add(document);
+        document.setOwningResource(resource);
+
+        return documentDao.persistDocument(document);
+    }
+
+    /**
+     * Remove the document of the resource
+     *
+     * @param resourceId the id of the resource
+     * @param documentId the id of the document to remove
+     */
+    public void removeDocument(Long resourceId, Long documentId) {
+        logger.debug("remove document #{} of resource #{}", documentId, resourceId);
+
+        Resource resource = assertAndGetResource(resourceId);
+
+        Document document = documentManager.assertAndGetDocument(documentId);
+
+        if (!(resource.getDocuments().contains(document))) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        resource.setDocument(null);// kept temporarily for backward compatibility
+        resource.getDocuments().remove(document);
+
+        documentDao.deleteDocument(document.getId());
     }
 
     // *********************************************************************************************

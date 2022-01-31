@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel;
 
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import java.util.Objects;
 
 /**
@@ -83,10 +83,9 @@ public class BlockChannel implements WebsocketEffectiveChannel {
      *
      * @return the block very own channel
      */
-    public static BlockChannel build(Block block) {
+    public static BlockChannel build(TextDataBlock block) {
         return build(block.getId());
     }
-
 
     /**
      * get the channel dedicated to the block having the given id.

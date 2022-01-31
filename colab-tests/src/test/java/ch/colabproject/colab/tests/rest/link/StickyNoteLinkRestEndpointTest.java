@@ -7,7 +7,6 @@
 package ch.colabproject.colab.tests.rest.link;
 
 import ch.colabproject.colab.api.model.document.AbstractResource;
-import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
@@ -26,6 +25,8 @@ import org.junit.jupiter.api.Test;
  */
 public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
+    private static final String DEFAULT_MIME_TYPE = "text/markdown";
+
     @Test
     public void testCreateStickyNoteLinkSrcCard() {
         String teaser = "remember me #" + ((int) (Math.random() * 1000));
@@ -39,7 +40,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         Long cardId = ColabFactory.createNewCard(client, project).getId();
 
         TextDataBlock explanationBlock = new TextDataBlock();
-        explanationBlock.setMimeType(TextDataBlock.DEFAULT_MIME_TYPE);
+        explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
         explanationBlock.setTextData(explanation);
 
         StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
@@ -57,11 +58,13 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(teaser, persistedLink.getTeaser());
 
         Assertions.assertNotNull(persistedLink.getExplanationId());
-        Block persistedExplanationBlock = client.blockRestEndpoint.getBlock(persistedLink.getExplanationId());
+        TextDataBlock persistedExplanationBlock = client.blockRestEndpoint
+            .getBlock(persistedLink.getExplanationId());
         Assertions.assertNotNull(persistedExplanationBlock);
-        Assertions.assertTrue(persistedExplanationBlock instanceof TextDataBlock);
-        TextDataBlock persistedExplanationTextDataBlock = (TextDataBlock) persistedExplanationBlock;
-        Assertions.assertEquals(explanation, persistedExplanationTextDataBlock.getTextData());
+        Assertions.assertEquals(DEFAULT_MIME_TYPE, persistedExplanationBlock.getMimeType());
+        Assertions.assertEquals(explanation, persistedExplanationBlock.getTextData());
+        Assertions.assertNull(persistedExplanationBlock.getOwningCardContentId());
+        Assertions.assertNull(persistedExplanationBlock.getOwningResourceId());
 
         List<StickyNoteLink> workCardLinks = client.cardRestEndpoint
             .getStickyNoteLinksAsDest(workCardId);
@@ -91,7 +94,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         Long cardContentId = ColabFactory.getCardContent(client, cardId).getId();
 
         TextDataBlock explanationBlock = new TextDataBlock();
-        explanationBlock.setMimeType(TextDataBlock.DEFAULT_MIME_TYPE);
+        explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
         explanationBlock.setTextData(explanation);
 
         StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
@@ -109,12 +112,13 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(teaser, persistedLink.getTeaser());
 
         Assertions.assertNotNull(persistedLink.getExplanationId());
-        Block persistedExplanationBlock = client.blockRestEndpoint.getBlock(persistedLink.getExplanationId());
+        TextDataBlock persistedExplanationBlock = client.blockRestEndpoint
+            .getBlock(persistedLink.getExplanationId());
         Assertions.assertNotNull(persistedExplanationBlock);
-        Assertions.assertTrue(persistedExplanationBlock instanceof TextDataBlock);
-        TextDataBlock persistedExplanationTextDataBlock = (TextDataBlock) persistedExplanationBlock;
-        Assertions.assertEquals(explanation, persistedExplanationTextDataBlock.getTextData());
-
+        Assertions.assertEquals(DEFAULT_MIME_TYPE, persistedExplanationBlock.getMimeType());
+        Assertions.assertEquals(explanation, persistedExplanationBlock.getTextData());
+        Assertions.assertNull(persistedExplanationBlock.getOwningCardContentId());
+        Assertions.assertNull(persistedExplanationBlock.getOwningResourceId());
 
         List<StickyNoteLink> cardContentLinks = client.cardContentRestEndpoint
             .getStickyNoteLinksAsSrc(cardContentId);
@@ -139,7 +143,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         Long resourceId = ColabFactory.createCardResource(client, cardId, "soft cakes").getId();
 
         TextDataBlock explanationBlock = new TextDataBlock();
-        explanationBlock.setMimeType(TextDataBlock.DEFAULT_MIME_TYPE);
+        explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
         explanationBlock.setTextData(explanation);
 
         StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
@@ -157,12 +161,13 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(teaser, persistedLink.getTeaser());
 
         Assertions.assertNotNull(persistedLink.getExplanationId());
-        Block persistedExplanationBlock = client.blockRestEndpoint.getBlock(persistedLink.getExplanationId());
+        TextDataBlock persistedExplanationBlock = client.blockRestEndpoint
+            .getBlock(persistedLink.getExplanationId());
         Assertions.assertNotNull(persistedExplanationBlock);
-        Assertions.assertTrue(persistedExplanationBlock instanceof TextDataBlock);
-        TextDataBlock persistedExplanationTextDataBlock = (TextDataBlock) persistedExplanationBlock;
-        Assertions.assertEquals(explanation, persistedExplanationTextDataBlock.getTextData());
-
+        Assertions.assertEquals(DEFAULT_MIME_TYPE, persistedExplanationBlock.getMimeType());
+        Assertions.assertEquals(explanation, persistedExplanationBlock.getTextData());
+        Assertions.assertNull(persistedExplanationBlock.getOwningCardContentId());
+        Assertions.assertNull(persistedExplanationBlock.getOwningResourceId());
 
         List<StickyNoteLink> resourceLinks = client.resourceRestEndpoint
             .getStickyNoteLinksAsSrc(resourceId);
@@ -193,7 +198,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         Long resourceRefId = resourceRefs.get(0).getId();
 
         TextDataBlock explanationBlock = new TextDataBlock();
-        explanationBlock.setMimeType(TextDataBlock.DEFAULT_MIME_TYPE);
+        explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
         explanationBlock.setTextData(explanation);
 
         StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
@@ -211,12 +216,13 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(teaser, persistedLink.getTeaser());
 
         Assertions.assertNotNull(persistedLink.getExplanationId());
-        Block persistedExplanationBlock = client.blockRestEndpoint.getBlock(persistedLink.getExplanationId());
+        TextDataBlock persistedExplanationBlock = client.blockRestEndpoint
+            .getBlock(persistedLink.getExplanationId());
         Assertions.assertNotNull(persistedExplanationBlock);
-        Assertions.assertTrue(persistedExplanationBlock instanceof TextDataBlock);
-        TextDataBlock persistedExplanationTextDataBlock = (TextDataBlock) persistedExplanationBlock;
-        Assertions.assertEquals(explanation, persistedExplanationTextDataBlock.getTextData());
-
+        Assertions.assertEquals(DEFAULT_MIME_TYPE, persistedExplanationBlock.getMimeType());
+        Assertions.assertEquals(explanation, persistedExplanationBlock.getTextData());
+        Assertions.assertNull(persistedExplanationBlock.getOwningCardContentId());
+        Assertions.assertNull(persistedExplanationBlock.getOwningResourceId());
 
         List<StickyNoteLink> resourceLinks = client.resourceRestEndpoint
             .getStickyNoteLinksAsSrc(resourceRefId);
@@ -225,55 +231,57 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(linkId, resourceLinks.get(0).getId());
     }
 
-    @Test
-    public void testCreateStickyNoteLinkSrcBlock() {
-        String teaser = "remember me #" + ((int) (Math.random() * 1000));
-        String explanation = "This resource explains exactly how to do a nice report #"
-            + ((int) (Math.random() * 1000));
-
-        Project project = ColabFactory.createProject(client, "testCreateStickyNoteLinkSrcBlock");
-
-        Long workCardId = ColabFactory.createNewCard(client, project).getId();
-
-        Long cardId = ColabFactory.createNewCard(client, project).getId();
-
-        Long resourceId = ColabFactory.createCardResource(client, cardId, "soft cakes").getId();
-
-        List<Document> docs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
-        Long documentId = docs.get(0).getId();
-        Block block = client.blockRestEndpoint.createNewTextDataBlock(documentId);
-        Long blockId = block.getId();
-
-        TextDataBlock explanationBlock = new TextDataBlock();
-        explanationBlock.setMimeType(TextDataBlock.DEFAULT_MIME_TYPE);
-        explanationBlock.setTextData(explanation);
-
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
-        linkToCreate.setSrcBlockId(blockId);
-        linkToCreate.setDestinationCardId(workCardId);
-        linkToCreate.setTeaser(teaser);
-        linkToCreate.setExplanation(explanationBlock);
-
-        Long linkId = client.stickyNoteLinkRestEndpoint.createLink(linkToCreate);
-
-        StickyNoteLink persistedLink = client.stickyNoteLinkRestEndpoint.getLink(linkId);
-        Assertions.assertNotNull(persistedLink);
-        Assertions.assertEquals(blockId, persistedLink.getSrcBlockId());
-        Assertions.assertEquals(workCardId, persistedLink.getDestinationCardId());
-        Assertions.assertEquals(teaser, persistedLink.getTeaser());
-
-        Assertions.assertNotNull(persistedLink.getExplanationId());
-        Block persistedExplanationBlock = client.blockRestEndpoint.getBlock(persistedLink.getExplanationId());
-        Assertions.assertNotNull(persistedExplanationBlock);
-        Assertions.assertTrue(persistedExplanationBlock instanceof TextDataBlock);
-        TextDataBlock persistedExplanationTextDataBlock = (TextDataBlock) persistedExplanationBlock;
-        Assertions.assertEquals(explanation, persistedExplanationTextDataBlock.getTextData());
-
-        List<StickyNoteLink> blockLinks = client.blockRestEndpoint.getStickyNoteLinksAsSrc(blockId);
-        Assertions.assertNotNull(blockLinks);
-        Assertions.assertEquals(1, blockLinks.size());
-        Assertions.assertEquals(linkId, blockLinks.get(0).getId());
-    }
+//    @Test
+//    public void testCreateStickyNoteLinkSrcTextDataBlock() {
+//        String teaser = "remember me #" + ((int) (Math.random() * 1000));
+//        String explanation = "This resource explains exactly how to do a nice report #"
+//            + ((int) (Math.random() * 1000));
+//
+//        Project project = ColabFactory.createProject(client, "testCreateStickyNoteLinkSrcBlock");
+//
+//        Long workCardId = ColabFactory.createNewCard(client, project).getId();
+//
+//        Long cardId = ColabFactory.createNewCard(client, project).getId();
+//
+//        Long resourceId = ColabFactory.createCardResource(client, cardId, "soft cakes").getId();
+//
+//        List<Document> docs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
+//        Long documentId = docs.get(0).getId();
+//        TextDataBlock block = client.blockRestEndpoint.createNewTextDataBlock(documentId);
+//        Long blockId = block.getId();
+//
+//        TextDataBlock explanationBlock = new TextDataBlock();
+//        explanationBlock.setMimeType(DEFAULT_MIME_TYPE);
+//        explanationBlock.setTextData(explanation);
+//
+//        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+//        linkToCreate.setSrcBlockId(blockId);
+//        linkToCreate.setDestinationCardId(workCardId);
+//        linkToCreate.setTeaser(teaser);
+//        linkToCreate.setExplanation(explanationBlock);
+//
+//        Long linkId = client.stickyNoteLinkRestEndpoint.createLink(linkToCreate);
+//
+//        StickyNoteLink persistedLink = client.stickyNoteLinkRestEndpoint.getLink(linkId);
+//        Assertions.assertNotNull(persistedLink);
+//        Assertions.assertEquals(blockId, persistedLink.getSrcBlockId());
+//        Assertions.assertEquals(workCardId, persistedLink.getDestinationCardId());
+//        Assertions.assertEquals(teaser, persistedLink.getTeaser());
+//
+//        Assertions.assertNotNull(persistedLink.getExplanationId());
+//        TextDataBlock persistedExplanationBlock = client.blockRestEndpoint
+//            .getBlock(persistedLink.getExplanationId());
+//        Assertions.assertNotNull(persistedExplanationBlock);
+//        Assertions.assertEquals(DEFAULT_MIME_TYPE, persistedExplanationBlock.getMimeType());
+//        Assertions.assertEquals(explanation, persistedExplanationBlock.getTextData());
+//        Assertions.assertNull(persistedExplanationBlock.getOwningCardContentId());
+//        Assertions.assertNull(persistedExplanationBlock.getOwningResourceId());
+//
+//        List<StickyNoteLink> blockLinks = client.blockRestEndpoint.getStickyNoteLinksAsSrc(blockId);
+//        Assertions.assertNotNull(blockLinks);
+//        Assertions.assertEquals(1, blockLinks.size());
+//        Assertions.assertEquals(linkId, blockLinks.get(0).getId());
+//    }
 
     @Test
     public void testUpdateStickyNoteLink() {
@@ -322,6 +330,16 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(cardId, persistedLink.getSrcCardId());
         Assertions.assertEquals(workCardId, persistedLink.getDestinationCardId());
 
+        Assertions.assertNotNull(persistedLink.getExplanationId());
+        Long explanationId = persistedLink.getExplanationId();
+        TextDataBlock persistedExplanationBlock = client.blockRestEndpoint
+            .getBlock(persistedLink.getExplanationId());
+        Assertions.assertNotNull(persistedExplanationBlock);
+        Assertions.assertEquals(DEFAULT_MIME_TYPE, persistedExplanationBlock.getMimeType());
+        Assertions.assertNull(persistedExplanationBlock.getTextData());
+        Assertions.assertNull(persistedExplanationBlock.getOwningCardContentId());
+        Assertions.assertNull(persistedExplanationBlock.getOwningResourceId());
+
         List<StickyNoteLink> workCardLinks = client.cardRestEndpoint
             .getStickyNoteLinksAsDest(workCardId);
         Assertions.assertNotNull(workCardLinks);
@@ -337,6 +355,9 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         persistedLink = client.stickyNoteLinkRestEndpoint.getLink(linkId);
         Assertions.assertNull(persistedLink);
+
+        persistedExplanationBlock = client.blockRestEndpoint.getBlock(explanationId);
+        Assertions.assertNull(persistedExplanationBlock);
 
         workCardLinks = client.cardRestEndpoint.getStickyNoteLinksAsDest(workCardId);
         Assertions.assertNotNull(workCardLinks);
@@ -470,7 +491,7 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
 
         List<Document> docs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
         Long documentId = docs.get(0).getId();
-        Block block = client.blockRestEndpoint.createNewTextDataBlock(documentId);
+        TextDataBlock block = client.blockRestEndpoint.createNewTextDataBlock(documentId);
         Long blockId = block.getId();
 
         StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
@@ -515,63 +536,63 @@ public class StickyNoteLinkRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(linkId, blockLinks.get(0).getId());
     }
 
-    @Test
-    public void testChangeStickyNoteLinkSrcBlock() {
-        Project project = ColabFactory.createProject(client, "testChangeStickyNoteLinkSrcBlock");
-
-        Long workCardId = ColabFactory.createNewCard(client, project).getId();
-
-        Long cardId = ColabFactory.createNewCard(client, project).getId();
-
-        Long resourceId = ColabFactory.createCardResource(client, cardId, "soft cakes").getId();
-
-        List<Document> docs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
-        Long documentId = docs.get(0).getId();
-        Block block = client.blockRestEndpoint.createNewTextDataBlock(documentId);
-        Long blockId = block.getId();
-
-        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
-        linkToCreate.setSrcBlockId(blockId);
-        linkToCreate.setDestinationCardId(workCardId);
-
-        Long linkId = client.stickyNoteLinkRestEndpoint.createLink(linkToCreate);
-
-        StickyNoteLink persistedLink = client.stickyNoteLinkRestEndpoint.getLink(linkId);
-        Assertions.assertNotNull(persistedLink);
-        Assertions.assertNull(persistedLink.getSrcCardId());
-        Assertions.assertNull(persistedLink.getSrcCardContentId());
-        Assertions.assertNull(persistedLink.getSrcResourceOrRefId());
-        Assertions.assertEquals(blockId, persistedLink.getSrcBlockId());
-
-        List<StickyNoteLink> blockLinks = client.blockRestEndpoint.getStickyNoteLinksAsSrc(blockId);
-        Assertions.assertNotNull(blockLinks);
-        Assertions.assertEquals(1, blockLinks.size());
-        Assertions.assertEquals(linkId, blockLinks.get(0).getId());
-
-        List<StickyNoteLink> resourceLinks = client.resourceRestEndpoint
-            .getStickyNoteLinksAsSrc(resourceId);
-        Assertions.assertNotNull(resourceLinks);
-        Assertions.assertEquals(0, resourceLinks.size());
-
-        client.stickyNoteLinkRestEndpoint.changeSrcWithResourceOrRef(persistedLink.getId(),
-            resourceId);
-
-        persistedLink = client.stickyNoteLinkRestEndpoint.getLink(linkId);
-        Assertions.assertNotNull(persistedLink);
-        Assertions.assertNull(persistedLink.getSrcCardId());
-        Assertions.assertNull(persistedLink.getSrcCardContentId());
-        Assertions.assertEquals(resourceId, persistedLink.getSrcResourceOrRefId());
-        Assertions.assertNull(persistedLink.getSrcBlockId());
-
-        blockLinks = client.blockRestEndpoint.getStickyNoteLinksAsSrc(blockId);
-        Assertions.assertNotNull(blockLinks);
-        Assertions.assertEquals(0, blockLinks.size());
-
-        resourceLinks = client.resourceRestEndpoint.getStickyNoteLinksAsSrc(resourceId);
-        Assertions.assertNotNull(resourceLinks);
-        Assertions.assertEquals(1, resourceLinks.size());
-        Assertions.assertEquals(linkId, resourceLinks.get(0).getId());
-    }
+//    @Test
+//    public void testChangeStickyNoteLinkSrcBlock() {
+//        Project project = ColabFactory.createProject(client, "testChangeStickyNoteLinkSrcBlock");
+//
+//        Long workCardId = ColabFactory.createNewCard(client, project).getId();
+//
+//        Long cardId = ColabFactory.createNewCard(client, project).getId();
+//
+//        Long resourceId = ColabFactory.createCardResource(client, cardId, "soft cakes").getId();
+//
+//        List<Document> docs = client.resourceRestEndpoint.getDocumentsOfResource(resourceId);
+//        Long documentId = docs.get(0).getId();
+//        TextDataBlock block = client.blockRestEndpoint.createNewTextDataBlock(documentId);
+//        Long blockId = block.getId();
+//
+//        StickyNoteLinkCreationBean linkToCreate = new StickyNoteLinkCreationBean();
+//        linkToCreate.setSrcBlockId(blockId);
+//        linkToCreate.setDestinationCardId(workCardId);
+//
+//        Long linkId = client.stickyNoteLinkRestEndpoint.createLink(linkToCreate);
+//
+//        StickyNoteLink persistedLink = client.stickyNoteLinkRestEndpoint.getLink(linkId);
+//        Assertions.assertNotNull(persistedLink);
+//        Assertions.assertNull(persistedLink.getSrcCardId());
+//        Assertions.assertNull(persistedLink.getSrcCardContentId());
+//        Assertions.assertNull(persistedLink.getSrcResourceOrRefId());
+//        Assertions.assertEquals(blockId, persistedLink.getSrcBlockId());
+//
+//        List<StickyNoteLink> blockLinks = client.blockRestEndpoint.getStickyNoteLinksAsSrc(blockId);
+//        Assertions.assertNotNull(blockLinks);
+//        Assertions.assertEquals(1, blockLinks.size());
+//        Assertions.assertEquals(linkId, blockLinks.get(0).getId());
+//
+//        List<StickyNoteLink> resourceLinks = client.resourceRestEndpoint
+//            .getStickyNoteLinksAsSrc(resourceId);
+//        Assertions.assertNotNull(resourceLinks);
+//        Assertions.assertEquals(0, resourceLinks.size());
+//
+//        client.stickyNoteLinkRestEndpoint.changeSrcWithResourceOrRef(persistedLink.getId(),
+//            resourceId);
+//
+//        persistedLink = client.stickyNoteLinkRestEndpoint.getLink(linkId);
+//        Assertions.assertNotNull(persistedLink);
+//        Assertions.assertNull(persistedLink.getSrcCardId());
+//        Assertions.assertNull(persistedLink.getSrcCardContentId());
+//        Assertions.assertEquals(resourceId, persistedLink.getSrcResourceOrRefId());
+//        Assertions.assertNull(persistedLink.getSrcBlockId());
+//
+//        blockLinks = client.blockRestEndpoint.getStickyNoteLinksAsSrc(blockId);
+//        Assertions.assertNotNull(blockLinks);
+//        Assertions.assertEquals(0, blockLinks.size());
+//
+//        resourceLinks = client.resourceRestEndpoint.getStickyNoteLinksAsSrc(resourceId);
+//        Assertions.assertNotNull(resourceLinks);
+//        Assertions.assertEquals(1, resourceLinks.size());
+//        Assertions.assertEquals(linkId, resourceLinks.get(0).getId());
+//    }
 
     @Test
     public void testChangeStickyNoteLinkDestination() {

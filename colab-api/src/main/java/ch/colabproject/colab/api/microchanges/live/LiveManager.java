@@ -12,13 +12,8 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.microchanges.tools.CancelDebounce;
 import ch.colabproject.colab.api.microchanges.tools.Debouncer;
-import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
-import ch.colabproject.colab.api.persistence.jpa.document.BlockDao;
-import com.hazelcast.cluster.Member;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IExecutorService;
-import com.hazelcast.cp.lock.FencedLock;
+import ch.colabproject.colab.api.persistence.jpa.document.TextDataBlockDao;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +31,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.hazelcast.cluster.Member;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IExecutorService;
+import com.hazelcast.cp.lock.FencedLock;
 
 /**
  * Micro Changes Management.
@@ -60,7 +59,7 @@ public class LiveManager implements Serializable {
 
     /** Block DAO */
     @Inject
-    private BlockDao blockDao;
+    private TextDataBlockDao blockDao;
 
     /** Hazelcast instance. */
     @Inject
@@ -125,16 +124,13 @@ public class LiveManager implements Serializable {
             } else {
                 LiveUpdates l = new LiveUpdates();
 
-                Block block = blockDao.findBlock(id);
-                if (block instanceof TextDataBlock) {
-                    TextDataBlock txtBlock = (TextDataBlock) block;
-                    l.setRevision(txtBlock.getRevision());
-                    l.setContent(txtBlock.getTextData());
+                TextDataBlock block = blockDao.findBlock(id);
+                l.setRevision(block.getRevision());
+                l.setContent(block.getTextData());
 
-                    //l.setRevision(txtBlock.getRevision());
-                    l.setTargetClass(block.getJsonDiscriminator());
-                    l.setTargetId(block.getId());
-                }
+                // l.setRevision(txtBlock.getRevision());
+                l.setTargetClass(block.getJsonDiscriminator());
+                l.setTargetId(block.getId());
 
                 logger.trace("new empty LiveUpdates  {}", l);
                 return l;
@@ -153,51 +149,48 @@ public class LiveManager implements Serializable {
      */
     public void patchBlock(Long id, Change patch) {
         logger.debug("Patch block #{} with {}", id, patch);
-        Block aBlock = blockDao.findBlock(id);
-        if (aBlock instanceof TextDataBlock) {
-            TextDataBlock block = (TextDataBlock) aBlock;
-            try {
-                this.lock(id);
-                LiveUpdates get = get(id);
-                List<Change> changes = get.getPendingChanges();
+        TextDataBlock block = blockDao.findBlock(id);
+        try {
+            this.lock(id);
+            LiveUpdates get = get(id);
+            List<Change> changes = get.getPendingChanges();
 
-                Set<String> basedOn = patch.getBasedOn();
+            Set<String> basedOn = patch.getBasedOn();
 
-                boolean parentExists = basedOn.contains(block.getRevision())
-                    || changes.stream()
-                        .filter(change
-                            -> basedOn.stream()
-                            .filter(rev -> change.getRevision().equals(rev))
-                            .findFirst().isPresent()
-                        )
-                        .findFirst().isPresent();
+            boolean parentExists = basedOn.contains(block.getRevision())
+                || changes.stream()
+                    .filter(change -> basedOn.stream()
+                        .filter(rev -> change.getRevision().equals(rev))
+                        .findFirst().isPresent()
+                    )
+                    .findFirst().isPresent();
 
-                if (!parentExists) {
-                    logger.trace("Change is based on non-existing parent");
-                    logger.trace("TODO: keep it in a temp bag the time his parent is known");
-                    //patch.setBasedOn("0");
-                }
-                //Project project = block.getProject();
-
-                patch.setBlockId(block.getId());
-
-                changes.add(patch);
-                cache.put(id, get);
-                this.scheduleSaveMicroChanges(id);
-
-                logger.trace("Registered change is {}", patch);
-                transactionManager.registerUpdate(patch);
-//                WsUpdateChangeMessage message = WsUpdateChangeMessage.build(List.of(patch));
-
-//                try {
-//                    PrecomputedWsMessages msg = WebsocketHelper.prepareWsMessage(userDao, block.getChannels(), message);
-//                    websocketManager.propagate(msg);
-//                } catch (EncodeException ex) {
-//                    logger.error("Live update error: precompute failed");
-//                }
-            } finally {
-                this.unlock(id);
+            if (!parentExists) {
+                logger.trace("Change is based on non-existing parent");
+                logger.trace("TODO: keep it in a temp bag the time his parent is known");
+                // patch.setBasedOn("0");
             }
+            // Project project = block.getProject();
+
+            patch.setBlockId(block.getId());
+
+            changes.add(patch);
+            cache.put(id, get);
+            this.scheduleSaveMicroChanges(id);
+
+            logger.trace("Registered change is {}", patch);
+            transactionManager.registerUpdate(patch);
+//            WsUpdateChangeMessage message = WsUpdateChangeMessage.build(List.of(patch));
+
+//            try {
+//                PrecomputedWsMessages msg = WebsocketHelper.prepareWsMessage(userDao,
+//                    block.getChannels(), message);
+//                websocketManager.propagate(msg);
+//            } catch (EncodeException ex) {
+//                logger.error("Live update error: precompute failed");
+//            }
+        } finally {
+            this.unlock(id);
         }
     }
 
@@ -228,24 +221,21 @@ public class LiveManager implements Serializable {
             logger.debug("Process changes for #{}", blockId);
             try {
                 this.lock(blockId);
-                Block block = blockDao.findBlock(blockId);
-                if (block instanceof TextDataBlock) {
-                    TextDataBlock txtBlock = (TextDataBlock) block;
-                    LiveUpdates get = this.cache.get(blockId);
-                    if (get != null) {
-                        try {
-                            LiveResult result = get.process(false);
-                            txtBlock.setTextData(result.getContent());
-                            txtBlock.setRevision(result.getRevision());
+                TextDataBlock block = blockDao.findBlock(blockId);
+                LiveUpdates get = this.cache.get(blockId);
+                if (get != null) {
+                    try {
+                        LiveResult result = get.process(false);
+                        block.setTextData(result.getContent());
+                        block.setRevision(result.getRevision());
 
-                            blockDao.updateBlock(block);
-                            this.deletePendingChangesAndPropagate(blockId);
-                        } catch (RuntimeException ex) {
-                            logger.error("Process failed", ex);
-                            throw ex;
-                        } catch (ColabMergeException ex) {
-                            logger.error("Fails to save block", ex);
-                        }
+                        blockDao.updateBlock(block);
+                        this.deletePendingChangesAndPropagate(blockId);
+                    } catch (RuntimeException ex) {
+                        logger.error("Process failed", ex);
+                        throw ex;
+                    } catch (ColabMergeException ex) {
+                        logger.error("Fails to save block", ex);
                     }
                 }
             } finally {
@@ -261,7 +251,7 @@ public class LiveManager implements Serializable {
      */
     public void deletePendingChangesAndPropagate(Long id) {
         logger.debug("Delete pending changes");
-        Block block = blockDao.findBlock(id);
+        TextDataBlock block = blockDao.findBlock(id);
         if (block != null) {
             List<Change> changes = getPendingChanges(id);
             cache.remove(id);
@@ -303,7 +293,8 @@ public class LiveManager implements Serializable {
      */
     public void scheduleSaveMicroChanges(Long blockId) {
         IExecutorService executorService = hzInstance.getExecutorService("COLAB_LIVE");
-        Map<Member, Future<Boolean>> cancelCalls = executorService.submitToAllMembers(new CancelDebounce(blockId));
+        Map<Member, Future<Boolean>> cancelCalls = executorService
+            .submitToAllMembers(new CancelDebounce(blockId));
 
         logger.debug("Schedule processing #{}", blockId);
 

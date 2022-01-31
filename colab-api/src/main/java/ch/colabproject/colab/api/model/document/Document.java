@@ -6,10 +6,10 @@
  */
 package ch.colabproject.colab.api.model.document;
 
+import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
@@ -20,7 +20,6 @@ import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -129,7 +128,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      * The resource representing this document
      */
     // TODO see where to prevent that a document is represented by several resources
-    @OneToOne(mappedBy = "document", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "document", fetch = FetchType.LAZY)
     @JsonbTransient
     @Deprecated
     private Resource resource;

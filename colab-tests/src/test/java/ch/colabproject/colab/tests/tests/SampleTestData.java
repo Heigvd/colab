@@ -121,23 +121,23 @@ public class SampleTestData {
 
         /* Card anotherProjectCardWithFriendType = */ColabFactory.createNewCard(client, anotherRootCardContentId, friendCardTypeId);
 
-        deliverableDocumentId = ColabFactory.addNewBlockDocumentDeliverable(client, cardContentWithLocalTypeId).getId();
-        deliverableBlockId = ColabFactory.addBlockToDocument(client, deliverableDocumentId).getId();
+//        deliverableDocumentId = ColabFactory.addNewBlockDocumentDeliverable(client, cardContentWithLocalTypeId).getId();
+//        deliverableBlockId = ColabFactory.addBlockToDocument(client, deliverableDocumentId).getId();
 
 
 
 
-        Resource resourceOnGlobalType = ColabFactory.createCardTypeResourceBlockDoc(client,
-            publishedGlobalCardTypeId, "Mastering ACL");
-        resourceOnGlobalTypeId = resourceOnGlobalType.getId();
-        documentIdGlobal = ColabFactory.getOneDocumentOfResource(client, resourceOnGlobalType).getId();
-        blockIdGlobal = ColabFactory.addBlockToDocument(client, documentIdGlobal).getId();
-
-        Resource resourceOnLocalType = ColabFactory.createCardTypeResourceBlockDoc(client,
-            localCardTypeId, "locally handling");
-        resourceOnLocalTypeId = resourceOnLocalType.getId();
-        documentIdLocal = ColabFactory.getOneDocumentOfResource(client, resourceOnLocalType).getId();
-        blockIdLocal = ColabFactory.addBlockToDocument(client, documentIdLocal).getId();
+//        Resource resourceOnGlobalType = ColabFactory.createCardTypeResourceBlockDoc(client,
+//            publishedGlobalCardTypeId, "Mastering ACL");
+//        resourceOnGlobalTypeId = resourceOnGlobalType.getId();
+//        documentIdGlobal = ColabFactory.getOneDocumentOfResource(client, resourceOnGlobalType).getId();
+//        blockIdGlobal = ColabFactory.addBlockToDocument(client, documentIdGlobal).getId();
+//
+//        Resource resourceOnLocalType = ColabFactory.createCardTypeResourceBlockDoc(client,
+//            localCardTypeId, "locally handling");
+//        resourceOnLocalTypeId = resourceOnLocalType.getId();
+//        documentIdLocal = ColabFactory.getOneDocumentOfResource(client, resourceOnLocalType).getId();
+//        blockIdLocal = ColabFactory.addBlockToDocument(client, documentIdLocal).getId();
 
         thirdCardId = ColabFactory.createNewCard(client, theProject).getId();
 

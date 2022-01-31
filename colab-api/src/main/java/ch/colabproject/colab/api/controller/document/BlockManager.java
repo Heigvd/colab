@@ -6,11 +6,9 @@
  */
 package ch.colabproject.colab.api.controller.document;
 
-import ch.colabproject.colab.api.model.document.Block;
-import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
-import ch.colabproject.colab.api.persistence.jpa.document.BlockDao;
+import ch.colabproject.colab.api.persistence.jpa.document.TextDataBlockDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import javax.ejb.LocalBean;
@@ -31,6 +29,11 @@ public class BlockManager {
 
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(BlockManager.class);
+
+    /**
+     * The mime type by default
+     */
+    public static final String DEFAULT_MIME_TYPE = "text/markdown";
 
     /**
      * The value of the first index
@@ -55,7 +58,7 @@ public class BlockManager {
      * Block persistence handler
      */
     @Inject
-    private BlockDao blockDao;
+    private TextDataBlockDao blockDao;
 
     /**
      * Document specific logic management
@@ -76,8 +79,8 @@ public class BlockManager {
      *
      * @throws HttpErrorMessage if the block was not found
      */
-    public Block assertAndGetBlock(Long blockId) {
-        Block block = blockDao.findBlock(blockId);
+    public TextDataBlock assertAndGetTextDataBlock(Long blockId) {
+        TextDataBlock block = blockDao.findBlock(blockId);
 
         if (block == null) {
             logger.error("block #{} not found", blockId);
@@ -92,58 +95,67 @@ public class BlockManager {
     // *********************************************************************************************
 
     /**
+     * @return a new initialized text data block
+     */
+    public TextDataBlock makeNewTextDataBlock() {
+        TextDataBlock newBlock = new TextDataBlock();
+        newBlock.setMimeType(DEFAULT_MIME_TYPE);
+        return newBlock;
+    }
+
+    /**
      * Complete and persist the given new block
      *
      * @param block the block to persist
      *
      * @return the new persisted block
      */
-    public Block createBlock(Block block) {
+    public TextDataBlock createBlock(TextDataBlock block) {
         logger.debug("create the block : {}", block);
-
-        BlockDocument blockDocument = documentManager.assertAndGetBlockDocument(block.getDocumentId());
-
-        block.setDocument(blockDocument);
-
-        List<Block> blocks = blockDocument.getBlocks();
-        if (blocks.isEmpty()) {
-            block.setIndex(MIN_INDEX);
-        } else {
-            blocks.sort((a, b) -> {
-                if (a != null) {
-                    if (b != null) {
-                        return Math.max(a.getIndex(), b.getIndex());
-                    } else {
-                        // a is not null, b is null
-                        return -1;
-                    }
-                } else if (b != null) {
-                    // a is null, not b
-                    return 1;
-                }
-                //both are null
-                return 0;
-            });
-            Block endBlock = blocks.get(blocks.size() - 1);
-            if (endBlock.getIndex() < MAX_INDEX - DEFAULT_INDEX_INC) {
-                block.setIndex(endBlock.getIndex() + DEFAULT_INDEX_INC);
-            } else if (blocks.size() > (MAX_INDEX - MIN_INDEX) / DEFAULT_INDEX_INC) {
-                // current behaviour is not that robust...
-                // it will crash when there is more than (MAX_INTEGER / 1000) blocks
-                // anyway, such a document must be quite unreadable...
-                throw HttpErrorMessage.dataIntegrityFailure();
-            } else {
-                logger.warn("needed to reindex the blocks of the document {}", blockDocument);
-                // MAX INDEX reached -> reset all indexes
-                int index = MIN_INDEX;
-                for (Block b : blocks) {
-                    b.setIndex(index);
-                    index += DEFAULT_INDEX_INC;
-                }
-                block.setIndex(index);
-            }
-        }
-        blocks.add(block);
+//
+//        BlockDocument blockDocument = documentManager.assertAndGetBlockDocument(block.getDocumentId());
+//
+//        block.setDocument(blockDocument);
+//
+//        List<Block> blocks = blockDocument.getBlocks();
+//        if (blocks.isEmpty()) {
+//            block.setIndex(MIN_INDEX);
+//        } else {
+//            blocks.sort((a, b) -> {
+//                if (a != null) {
+//                    if (b != null) {
+//                        return Math.max(a.getIndex(), b.getIndex());
+//                    } else {
+//                        // a is not null, b is null
+//                        return -1;
+//                    }
+//                } else if (b != null) {
+//                    // a is null, not b
+//                    return 1;
+//                }
+//                //both are null
+//                return 0;
+//            });
+//            Block endBlock = blocks.get(blocks.size() - 1);
+//            if (endBlock.getIndex() < MAX_INDEX - DEFAULT_INDEX_INC) {
+//                block.setIndex(endBlock.getIndex() + DEFAULT_INDEX_INC);
+//            } else if (blocks.size() > (MAX_INDEX - MIN_INDEX) / DEFAULT_INDEX_INC) {
+//                // current behaviour is not that robust...
+//                // it will crash when there is more than (MAX_INTEGER / 1000) blocks
+//                // anyway, such a document must be quite unreadable...
+//                throw HttpErrorMessage.dataIntegrityFailure();
+//            } else {
+//                logger.warn("needed to reindex the blocks of the document {}", blockDocument);
+//                // MAX INDEX reached -> reset all indexes
+//                int index = MIN_INDEX;
+//                for (Block b : blocks) {
+//                    b.setIndex(index);
+//                    index += DEFAULT_INDEX_INC;
+//                }
+//                block.setIndex(index);
+//            }
+//        }
+//        blocks.add(block);
 
         return blockDao.persistBlock(block);
     }
@@ -156,14 +168,34 @@ public class BlockManager {
     public void deleteBlock(Long blockId) {
         logger.debug("delete the block #{}", blockId);
 
-        Block block = assertAndGetBlock(blockId);
+        TextDataBlock block = assertAndGetTextDataBlock(blockId);
 
-        BlockDocument blockDocument = block.getDocument();
-        documentManager.assertBlockDocument(blockDocument);
+        if (!checkDeletionAcceptability(block)) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
 
-        blockDocument.getBlocks().remove(block);
+//        BlockDocument blockDocument = block.getDocument();
+//        documentManager.assertBlockDocument(blockDocument);
+//
+//        blockDocument.getBlocks().remove(block);
 
         blockDao.deleteBlock(blockId);
+    }
+
+    private boolean checkDeletionAcceptability(TextDataBlock block) {
+        if (block.getPurposingCardType() != null) {
+            return false;
+        }
+
+        if (block.getTeasingResource() != null) {
+            return false;
+        }
+
+        if (block.getExplainingStickyNoteLink() != null) {
+            return false;
+        }
+
+        return true;
     }
 
     // *********************************************************************************************
@@ -178,12 +210,12 @@ public class BlockManager {
      * @return a new, initialized and persisted text data block
      */
     // TODO no effective use. To destroy during RestEndpoint cleaning
-    public Block createTextDataBlock(Long documentId) {
+    public TextDataBlock createTextDataBlock(Long documentId) {
         logger.debug("create a new block for the document #{}", documentId);
 
         TextDataBlock block = new TextDataBlock();
         block.setRevision("0");
-        block.setDocumentId(documentId);
+//        block.setDocumentId(documentId);
 
         return createBlock(block);
     }
@@ -202,7 +234,7 @@ public class BlockManager {
     public List<StickyNoteLink> getStickyNoteLinkAsSrc(Long blockId) {
         logger.debug("get sticky note links where the block #{} is the source", blockId);
 
-        Block block = assertAndGetBlock(blockId);
+        TextDataBlock block = assertAndGetTextDataBlock(blockId);
 
         return block.getStickyNoteLinksAsSrc();
     }
@@ -218,14 +250,14 @@ public class BlockManager {
      *
      * @return true iff the block is complete and safe
      */
-    public boolean checkIntegrity(Block block) {
+    public boolean checkIntegrity(TextDataBlock block) {
         if (block == null) {
             return false;
         }
 
-        if (block.getDocument() == null && block.getDocumentId() == null) {
-            return false;
-        }
+//        if (block.getDocument() == null && block.getDocumentId() == null) {
+//            return false;
+//        }
 
         return true;
     }

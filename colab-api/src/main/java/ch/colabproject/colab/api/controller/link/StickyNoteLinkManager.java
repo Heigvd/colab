@@ -6,14 +6,15 @@
  */
 package ch.colabproject.colab.api.controller.link;
 
+import ch.colabproject.colab.api.controller.document.BlockManager;
 import ch.colabproject.colab.api.controller.document.ResourceManager;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
-import ch.colabproject.colab.api.persistence.jpa.document.BlockDao;
+import ch.colabproject.colab.api.persistence.jpa.document.TextDataBlockDao;
 import ch.colabproject.colab.api.persistence.jpa.link.StickyNoteLinkDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.ejb.LocalBean;
@@ -60,13 +61,19 @@ public class StickyNoteLinkManager {
      * Block persistence handling
      */
     @Inject
-    private BlockDao blockDao;
+    private TextDataBlockDao blockDao;
 
     /**
      * Resource / resource reference logic manager
      */
     @Inject
     private ResourceManager resourceManager;
+
+    /**
+     * Block logic manager
+     */
+    @Inject
+    private BlockManager blockManager;
 
     // *********************************************************************************************
     //
@@ -113,7 +120,10 @@ public class StickyNoteLinkManager {
         }
 
         if (link.getExplanation() == null) {
-            link.setExplanation(Block.initNewDefaultBlock());
+            TextDataBlock explanationTextDataBlock = blockManager.makeNewTextDataBlock();
+
+            link.setExplanation(explanationTextDataBlock);
+            explanationTextDataBlock.setExplainingStickyNoteLink(link);
         }
 
         link.setSrc(sourceObject);

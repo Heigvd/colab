@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.link.bean;
 
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import java.io.Serializable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -57,7 +57,7 @@ public class StickyNoteLinkCreationBean implements Serializable {
     /**
      * The id of the long description
      */
-    private Block explanation;
+    private TextDataBlock explanation;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -150,14 +150,14 @@ public class StickyNoteLinkCreationBean implements Serializable {
     /**
      * @return the explanation
      */
-    public Block getExplanation() {
+    public TextDataBlock getExplanation() {
         return explanation;
     }
 
     /**
      * @param explanation the explanation
      */
-    public void setExplanation(Block explanation) {
+    public void setExplanation(TextDataBlock explanation) {
         this.explanation = explanation;
     }
 

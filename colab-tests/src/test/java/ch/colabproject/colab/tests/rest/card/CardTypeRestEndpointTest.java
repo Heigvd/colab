@@ -10,7 +10,6 @@ import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
-import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.rest.card.bean.CardTypeCreationBean;
@@ -39,6 +38,8 @@ import org.junit.jupiter.api.Test;
  */
 public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
+    private static final String DEFAULT_MIME_TYPE = "text/markdown";
+
     @Test
     public void testCreateCardType() {
         Long projectId = ColabFactory.createProject(client, "testCreateCardType").getId();
@@ -50,7 +51,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Set<String> tags = Set.of(aTag, otherTag);
 
         TextDataBlock purposeBlock = new TextDataBlock();
-        purposeBlock.setMimeType(TextDataBlock.DEFAULT_MIME_TYPE);
+        purposeBlock.setMimeType(DEFAULT_MIME_TYPE);
         purposeBlock.setTextData(purpose);
 
         CardTypeCreationBean cardTypeToCreate = new CardTypeCreationBean();
@@ -70,11 +71,12 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(cardType.getPurposeId());
         Assertions.assertNotNull(cardType.getTags());
 
-        Block persistedPurpose = client.blockRestEndpoint.getBlock(cardType.getPurposeId());
+        TextDataBlock persistedPurpose = client.blockRestEndpoint.getBlock(cardType.getPurposeId());
         Assertions.assertNotNull(persistedPurpose);
-        Assertions.assertTrue(persistedPurpose instanceof TextDataBlock);
-        TextDataBlock persistedPurposeTextDataBlock = (TextDataBlock) persistedPurpose;
-        Assertions.assertEquals(purpose, persistedPurposeTextDataBlock.getTextData());
+        Assertions.assertEquals(DEFAULT_MIME_TYPE, persistedPurpose.getMimeType());
+        Assertions.assertEquals(purpose, persistedPurpose.getTextData());
+        Assertions.assertNull(persistedPurpose.getOwningCardContentId());
+        Assertions.assertNull(persistedPurpose.getOwningResourceId());
 
         Assertions.assertEquals(cardType.getTags().size(), tags.size());
         Assertions.assertTrue(cardType.getTags().contains(aTag));
@@ -318,7 +320,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         client.cardTypeRestEndpoint.updateCardType(projectOneType);
 
         // both goulash and pizzaiolo should receive the update through websocket
-        // goulahs consume thrww websocket messages: (overview update; project 1 update; project 2
+        // goulash consume throw websocket messages: (overview update; project 1 update; project 2
         // update)
         WsUpdateMessage goulashMessage = TestHelper
             .waitForMessagesAndAssert(wsClient, 3, 5, WsUpdateMessage.class).get(0);
@@ -353,9 +355,12 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         CardType cardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
         Assertions.assertNull(cardType.getTitle());
         Assertions.assertNotNull(cardType.getPurposeId());
-        Block persistedPurpose = client.blockRestEndpoint.getBlock(cardType.getPurposeId());
+        TextDataBlock persistedPurpose = client.blockRestEndpoint.getBlock(cardType.getPurposeId());
         Assertions.assertNotNull(persistedPurpose);
-        Assertions.assertTrue(persistedPurpose instanceof TextDataBlock);
+        Assertions.assertEquals(DEFAULT_MIME_TYPE, persistedPurpose.getMimeType());
+        Assertions.assertNull(persistedPurpose.getTextData());
+        Assertions.assertNull(persistedPurpose.getOwningCardContentId());
+        Assertions.assertNull(persistedPurpose.getOwningResourceId());
 
         Assertions.assertNotNull(cardType.getTags());
         Assertions.assertTrue(cardType.getTags().isEmpty());
@@ -414,10 +419,18 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         CardType persistedCardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
         Assertions.assertNotNull(persistedCardType);
 
+        Assertions.assertNotNull(persistedCardType.getPurposeId());
+        Long purposeId = persistedCardType.getPurposeId();
+        TextDataBlock persistedPurposeBlock = client.blockRestEndpoint.getBlock(purposeId);
+        Assertions.assertNotNull(persistedPurposeBlock);
+
         client.cardTypeRestEndpoint.deleteCardType(cardTypeId);
 
         persistedCardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
         Assertions.assertNull(persistedCardType);
+
+        persistedPurposeBlock = client.blockRestEndpoint.getBlock(purposeId);
+        Assertions.assertNull(persistedPurposeBlock);
     }
 
     @Test

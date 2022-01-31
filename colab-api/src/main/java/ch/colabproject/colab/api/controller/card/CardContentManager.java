@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.card.CardContentStatus;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
+import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import javax.ejb.LocalBean;
@@ -60,16 +61,22 @@ public class CardContentManager {
     private CardContentDao cardContentDao;
 
     /**
+     * Document persistence handling
+     */
+    @Inject
+    private DocumentDao documentDao;
+
+    /**
+     * Document specific logic
+     */
+    @Inject
+    private DocumentManager documentManager;
+
+    /**
      * Card specific logic management
      */
     @Inject
     private CardManager cardManager;
-
-    /**
-     * Document specific logic management
-     */
-    @Inject
-    private DocumentManager documentManager;
 
     // *********************************************************************************************
     // find card contents
@@ -205,10 +212,34 @@ public class CardContentManager {
 
         cardContent.setDeliverable(document);// kept temporarily for backward compatibility
         document.setDeliverableCardContent(cardContent);// kept temporarily for backward compatibility
+
         cardContent.getDeliverables().add(document);
         document.setOwningCardContent(cardContent);
 
-        return documentManager.persistDocument(document);
+        return documentDao.persistDocument(document);
+    }
+
+    /**
+     * Remove the deliverable of the card content.
+     *
+     * @param cardContentId the id of the card content
+     * @param documentId the id of the document to remove from the card content
+     */
+    public void removeDeliverable(Long cardContentId, Long documentId) {
+        logger.debug("remove deliverable #{} of card content #{}", documentId, cardContentId);
+
+        CardContent cardContent = assertAndGetCardContent(cardContentId);
+
+        Document document = documentManager.assertAndGetDocument(documentId);
+
+        if (!(cardContent.getDeliverables().contains(document))) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        cardContent.setDeliverable(null); // kept temporarily for backward compatibility
+        cardContent.getDeliverables().remove(document);
+
+        documentDao.deleteDocument(document.getId());
     }
 
     // *********************************************************************************************

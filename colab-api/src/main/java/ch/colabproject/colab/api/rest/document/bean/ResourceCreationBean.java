@@ -6,8 +6,8 @@
  */
 package ch.colabproject.colab.api.rest.document.bean;
 
-import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import java.io.Serializable;
 import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -34,12 +34,7 @@ public class ResourceCreationBean implements Serializable {
     /**
      * The teaser of the resource
      */
-    private Block teaser;
-
-    /**
-     * The document
-     */
-    private List<Document> documents;
+    private TextDataBlock teaser;
 
     /**
      * The category of the resource
@@ -60,6 +55,11 @@ public class ResourceCreationBean implements Serializable {
      * The card content id
      */
     private Long cardContentId;
+
+    /**
+     * The document
+     */
+    private List<Document> documents;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -82,29 +82,15 @@ public class ResourceCreationBean implements Serializable {
     /**
      * @return the teaser
      */
-    public Block getTeaser() {
+    public TextDataBlock getTeaser() {
         return teaser;
     }
 
     /**
      * @param teaser the teaser
      */
-    public void setTeaser(Block teaser) {
+    public void setTeaser(TextDataBlock teaser) {
         this.teaser = teaser;
-    }
-
-    /**
-     * @return the documents
-     */
-    public List<Document> getDocuments() {
-        return documents;
-    }
-
-    /**
-     * @param documents the documents
-     */
-    public void setDocuments(List<Document> documents) {
-        this.documents = documents;
     }
 
     /**
@@ -161,6 +147,20 @@ public class ResourceCreationBean implements Serializable {
      */
     public void setCardContentId(Long cardContentId) {
         this.cardContentId = cardContentId;
+    }
+
+    /**
+     * @return the documents
+     */
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    /**
+     * @param documents the documents
+     */
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
     }
 
     // ---------------------------------------------------------------------------------------------

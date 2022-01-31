@@ -6,14 +6,14 @@
  */
 package ch.colabproject.colab.api.model.link;
 
+import static ch.colabproject.colab.api.model.link.ActivityFlowLink.LINK_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
-import ch.colabproject.colab.api.model.document.Block;
-import static ch.colabproject.colab.api.model.link.ActivityFlowLink.LINK_SEQUENCE_NAME;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
@@ -127,7 +127,7 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
-    private Block srcBlock;
+    private TextDataBlock srcBlock;
 
     /**
      * The ID of the source block (serialization sugar)
@@ -159,7 +159,7 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
     @JsonbTransient
-    private Block explanation;
+    private TextDataBlock explanation;
 
     /**
      * The id of the long description (serialization sugar)
@@ -317,14 +317,14 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     /**
      * @return the block, source of the sticky note
      */
-    public Block getSrcBlock() {
+    public TextDataBlock getSrcBlock() {
         return srcBlock;
     }
 
     /**
      * @param srcBlock the block, source of the sticky note
      */
-    public void setSrcBlock(Block srcBlock) {
+    public void setSrcBlock(TextDataBlock srcBlock) {
         this.srcBlock = srcBlock;
     }
 
@@ -410,14 +410,14 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     /**
      * @return the long description
      */
-    public Block getExplanation() {
+    public TextDataBlock getExplanation() {
         return explanation;
     }
 
     /**
      * @param explanation the long description
      */
-    public void setExplanation(Block explanation) {
+    public void setExplanation(TextDataBlock explanation) {
         this.explanation = explanation;
     }
 
@@ -501,9 +501,9 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
         } else if (src instanceof AbstractResource) {
             resetSrc();
             setSrcResourceOrRef((AbstractResource) src);
-        } else if (src instanceof Block) {
+        } else if (src instanceof TextDataBlock) {
             resetSrc();
-            setSrcBlock((Block) src);
+            setSrcBlock((TextDataBlock) src);
         } else {
             throw HttpErrorMessage.dataIntegrityFailure();
         }

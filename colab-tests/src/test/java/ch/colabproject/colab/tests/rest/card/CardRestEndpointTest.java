@@ -9,8 +9,8 @@ package ch.colabproject.colab.tests.rest.card;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
-import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
@@ -52,7 +52,7 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(cardId, variants.get(0).getCardId());
         Assertions.assertNotEquals(parentId, variants.get(0).getId());
 
-        Document newDoc = new BlockDocument();
+        Document newDoc = new ExternalLink();
 
         card = client.cardRestEndpoint.createNewCardWithDeliverable(parentId, cardTypeId, newDoc);
         cardId = card.getId();
@@ -76,7 +76,7 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Document doc = documents.get(0);
         Assertions.assertNotNull(doc);
         Assertions.assertNotNull(doc.getId());
-        Assertions.assertTrue(doc instanceof BlockDocument);
+        Assertions.assertTrue(doc instanceof ExternalLink);
     }
 
     @Test

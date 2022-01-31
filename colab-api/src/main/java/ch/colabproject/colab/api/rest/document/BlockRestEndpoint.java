@@ -10,9 +10,9 @@ import ch.colabproject.colab.api.controller.document.BlockManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.microchanges.live.LiveManager;
 import ch.colabproject.colab.api.microchanges.model.Change;
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
-import ch.colabproject.colab.api.persistence.jpa.document.BlockDao;
+import ch.colabproject.colab.api.persistence.jpa.document.TextDataBlockDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
@@ -47,7 +47,7 @@ public class BlockRestEndpoint {
      * The block persistence manager
      */
     @Inject
-    private BlockDao blockDao;
+    private TextDataBlockDao blockDao;
 
     /**
      * The block-related logic
@@ -55,7 +55,9 @@ public class BlockRestEndpoint {
     @Inject
     private BlockManager blockManager;
 
-    /** Live changes manager */
+    /**
+     * Live changes manager
+     */
     @Inject
     private LiveManager liveManager;
 
@@ -68,7 +70,7 @@ public class BlockRestEndpoint {
      */
     @GET
     @Path("{id}")
-    public Block getBlock(@PathParam("id") Long id) {
+    public TextDataBlock getBlock(@PathParam("id") Long id) {
         logger.debug("get block #{}", id);
         return blockDao.findBlock(id);
     }
@@ -81,7 +83,7 @@ public class BlockRestEndpoint {
      * @throws ColabMergeException if the merge is impossible
      */
     @PUT
-    public void updateBlock(Block block) throws ColabMergeException {
+    public void updateBlock(TextDataBlock block) throws ColabMergeException {
         logger.debug("update block {}", block);
         blockDao.updateBlock(block);
     }
@@ -131,7 +133,7 @@ public class BlockRestEndpoint {
      * @return id of the persisted new block
      */
     @POST
-    public Long createBlock(Block block) {
+    public Long createBlock(TextDataBlock block) {
         logger.debug("create block {}", block);
         return blockManager.createBlock(block).getId();
     }
@@ -145,7 +147,7 @@ public class BlockRestEndpoint {
      */
     @POST
     @Path("newTextData/{documentId}")
-    public Block createNewTextDataBlock(@PathParam("documentId") Long documentId) {
+    public TextDataBlock createNewTextDataBlock(@PathParam("documentId") Long documentId) {
         logger.debug("create new text data block for document #{}", documentId);
         return blockManager.createTextDataBlock(documentId);
     }

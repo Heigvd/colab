@@ -6,17 +6,19 @@
  */
 package ch.colabproject.colab.api.controller.card;
 
+import ch.colabproject.colab.api.controller.document.BlockManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,7 +31,6 @@ import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
-import java.util.HashSet;
 
 /**
  * Card type and reference specific logic
@@ -65,6 +66,12 @@ public class CardTypeManager {
      */
     @Inject
     private ProjectManager projectManager;
+
+    /**
+     * Block logic manager
+     */
+    @Inject
+    private BlockManager blockManager;
 
     // *********************************************************************************************
     // find card types and references
@@ -155,7 +162,10 @@ public class CardTypeManager {
         }
 
         if (cardType.getPurpose() == null) {
-            cardType.setPurpose(Block.initNewDefaultBlock());
+            TextDataBlock purposeTextDataBlock = blockManager.makeNewTextDataBlock();
+
+            cardType.setPurpose(purposeTextDataBlock);
+            purposeTextDataBlock.setPurposingCardType(cardType);
         }
 
         return cardTypeDao.createCardType(cardType);

@@ -107,6 +107,10 @@ public class StickyNoteLinkRestEndpoint {
         link.setTeaser(linkCreationBean.getTeaser());
         link.setExplanation(linkCreationBean.getExplanation());
 
+        if (linkCreationBean.getExplanation() != null) {
+            linkCreationBean.getExplanation().setExplainingStickyNoteLink(link);
+        }
+
         return linkManager.createStickyNoteLink(link).getId();
     }
 

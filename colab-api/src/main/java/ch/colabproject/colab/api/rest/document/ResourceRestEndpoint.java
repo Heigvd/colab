@@ -17,7 +17,6 @@ import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.document.ResourceDao;
 import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -169,7 +168,7 @@ public class ResourceRestEndpoint {
     }
 
     // *********************************************************************************************
-    // create a resource for a document
+    // create a resource / document
     // *********************************************************************************************
 
     /**
@@ -187,21 +186,52 @@ public class ResourceRestEndpoint {
         Resource resource = new Resource();
         resource.setTitle(resourceCreationBean.getTitle());
         resource.setTeaser(resourceCreationBean.getTeaser());
-        if (CollectionUtils.isNotEmpty(resourceCreationBean.getDocuments())) {
-            resource.setDocument(resourceCreationBean.getDocuments().get(0));
+        if (resource.getTeaser() != null) {
+            resource.getTeaser().setTeasingResource(resource);
         }
-        resource.setDocuments(new ArrayList<Document>(resourceCreationBean.getDocuments()));
         resource.setCategory(resourceCreationBean.getCategory());
         resource.setAbstractCardTypeId(resourceCreationBean.getAbstractCardTypeId());
         resource.setCardId(resourceCreationBean.getCardId());
         resource.setCardContentId(resourceCreationBean.getCardContentId());
 
-        resourceCreationBean.getDocuments().forEach(doc -> {
-            doc.setResource(resource);// kept for backward compatibility
-            doc.setOwningResource(resource);
-        });
+        Resource newResource = resourceManager.createResource(resource);
 
-        return resourceManager.createResource(resource).getId();
+        if (CollectionUtils.isNotEmpty(resourceCreationBean.getDocuments())) {
+            for (Document document : resourceCreationBean.getDocuments()) {
+                resourceManager.addDocument(newResource.getId(), document);
+            }
+        }
+
+        return newResource.getId();
+    }
+
+    /**
+     * Add the document to the resource.
+     *
+     * @param resourceId the id of the resource
+     * @param document   the document to use in the resource. It must be a new document
+     *
+     * @return the document newly created
+     */
+    @POST
+    @Path("{id}/addDocument")
+    public Document addDocument(@PathParam("id") Long resourceId, Document document) {
+        logger.debug("add the document {} for the resource #{}", document, resourceId);
+        return resourceManager.addDocument(resourceId, document);
+    }
+
+    /**
+     * Remove the document of the resource.
+     *
+     * @param resourceId the id of the resource
+     * @param documentId the id of the document to remove from the resource
+     */
+    @POST
+    @Path("{id}/removeDocument")
+    public void removeDocument(@PathParam("id") Long resourceId, Long documentId) {
+        logger.debug("add the document {} for the resource #{}", documentId, resourceId);
+
+        resourceManager.removeDocument(resourceId, documentId);
     }
 
     // *********************************************************************************************

@@ -73,7 +73,7 @@ public class Resource extends AbstractResource {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
     @JsonbTransient
-    private Block teaser;
+    private TextDataBlock teaser;
 
     /**
      * The id of the abstract / teaser
@@ -92,7 +92,7 @@ public class Resource extends AbstractResource {
      * The content of the resource
      */
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @NotNull
+    // @NotNull
     @JsonbTransient
     @Deprecated
     private Document document;
@@ -168,14 +168,14 @@ public class Resource extends AbstractResource {
     /**
      * @return the teaser / abstract
      */
-    public Block getTeaser() {
+    public TextDataBlock getTeaser() {
         return teaser;
     }
 
     /**
      * @param teaser the teaser / abstract
      */
-    public void setTeaser(Block teaser) {
+    public void setTeaser(TextDataBlock teaser) {
         this.teaser = teaser;
     }
 

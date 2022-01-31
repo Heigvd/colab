@@ -60,7 +60,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
         doc.setIndex(index);
         doc.setFileName(fileName);
 
-        Long docId = client.documentRestEndpoint.createDocument(doc);
+        Long docId = ColabFactory.createADocument(client, doc).getId();
 
         Document persistedDoc = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNotNull(persistedDoc);
@@ -77,7 +77,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
      */
     @Test
     public void testUpdateDocumentFile() {
-        Long docId = client.documentRestEndpoint.createDocument(new DocumentFile());
+        Long docId = ColabFactory.createADocument(client, new DocumentFile()).getId();
 
         Document doc = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNotNull(doc);

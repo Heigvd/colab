@@ -10,10 +10,10 @@ import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
-import ch.colabproject.colab.api.model.document.Block;
-import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.document.Resource;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.team.TeamMember;
@@ -46,7 +46,7 @@ public class ColabFactory {
     /**
      * Create a brand new global card type.
      *
-     * @param client  rest client to execute HTTP requests
+     * @param client rest client to execute HTTP requests
      *
      * @return the CardType
      */
@@ -90,7 +90,7 @@ public class ColabFactory {
      * <p>
      * The card type is published
      *
-     * @param client    rest client to execute HTTP requests
+     * @param client rest client to execute HTTP requests
      *
      * @return the CardType
      */
@@ -209,33 +209,33 @@ public class ColabFactory {
         return client.cardRestEndpoint.getContentVariantsOfCard(cardId).get(0);
     }
 
-    /**
-     * Create a block document deliverable for the given card content
-     *
-     * @param client        rest client to execute HTTP requests
-     * @param cardContentId the id of the card content
-     *
-     * @return the new document
-     */
-    public static Document addNewBlockDocumentDeliverable(ColabClient client,
-        Long cardContentId) {
-
-        Document newDoc = new BlockDocument();
-
-        return client.cardContentRestEndpoint.addDeliverable(cardContentId, newDoc);
-    }
-
-    /**
-     * Add a new block to a document
-     *
-     * @param client     rest client to execute HTTP requests
-     * @param documentId the id of a block document
-     *
-     * @return the new block
-     */
-    public static Block addBlockToDocument(ColabClient client, Long documentId) {
-        return client.blockRestEndpoint.createNewTextDataBlock(documentId);
-    }
+//    /**
+//     * Create a block document deliverable for the given card content
+//     *
+//     * @param client        rest client to execute HTTP requests
+//     * @param cardContentId the id of the card content
+//     *
+//     * @return the new document
+//     */
+//    public static Document addNewBlockDocumentDeliverable(ColabClient client,
+//        Long cardContentId) {
+//
+//        Document newDoc = new BlockDocument();
+//
+//        return client.cardContentRestEndpoint.addDeliverable(cardContentId, newDoc);
+//    }
+//
+//    /**
+//     * Add a new block to a document
+//     *
+//     * @param client     rest client to execute HTTP requests
+//     * @param documentId the id of a block document
+//     *
+//     * @return the new block
+//     */
+//    public static Block addBlockToDocument(ColabClient client, Long documentId) {
+//        return client.blockRestEndpoint.createNewTextDataBlock(documentId);
+//    }
 
     /**
      * <code>host</code> invites <code>guest</code> in the project.
@@ -282,26 +282,26 @@ public class ColabFactory {
         return client.teamRestEndpoint.getRole(roleId);
     }
 
-    /**
-     * Create a resource block document for a card type for test purpose
-     *
-     * @param client     rest client to execute HTTP requests
-     * @param cardTypeId the id of the card type the resource belongs to
-     * @param title      title of the document
-     *
-     * @return the freshly created document
-     */
-    public static Resource createCardTypeResourceBlockDoc(ColabClient client, Long cardTypeId,
-        String title) {
-        ResourceCreationBean resourceToCreate = new ResourceCreationBean();
-        resourceToCreate.setTitle(title);
-        resourceToCreate.setDocuments(List.of(new BlockDocument()));
-        resourceToCreate.setAbstractCardTypeId(cardTypeId);
-
-        Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
-
-        return (Resource) client.resourceRestEndpoint.getAbstractResource(id);
-    }
+//    /**
+//     * Create a resource block document for a card type for test purpose
+//     *
+//     * @param client     rest client to execute HTTP requests
+//     * @param cardTypeId the id of the card type the resource belongs to
+//     * @param title      title of the document
+//     *
+//     * @return the freshly created document
+//     */
+//    public static Resource createCardTypeResourceBlockDoc(ColabClient client, Long cardTypeId,
+//        String title) {
+//        ResourceCreationBean resourceToCreate = new ResourceCreationBean();
+//        resourceToCreate.setTitle(title);
+//        resourceToCreate.setDocuments(List.of(new BlockDocument()));
+//        resourceToCreate.setAbstractCardTypeId(cardTypeId);
+//
+//        Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
+//
+//        return (Resource) client.resourceRestEndpoint.getAbstractResource(id);
+//    }
 
     /**
      * Create a resource block document for test purpose
@@ -315,7 +315,7 @@ public class ColabFactory {
     public static Resource createCardResource(ColabClient client, Long cardId, String title) {
         ResourceCreationBean resourceToCreate = new ResourceCreationBean();
         resourceToCreate.setTitle(title);
-        resourceToCreate.setDocuments(List.of(new BlockDocument()));
+        resourceToCreate.setDocuments(List.of(new ExternalLink()));
         resourceToCreate.setCardId(cardId);
 
         Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
@@ -326,6 +326,21 @@ public class ColabFactory {
     public static Document getOneDocumentOfResource(ColabClient client, Resource resource) {
         List<Document> docs = client.resourceRestEndpoint.getDocumentsOfResource(resource.getId());
         return docs.get(0);
+    }
+
+    public static Document createADocument(ColabClient client, Document doc) {
+        Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
+
+        ResourceCreationBean resourceCreationBean = new ResourceCreationBean();
+
+        resourceCreationBean.setDocuments(List.of(doc));
+        resourceCreationBean.setAbstractCardTypeId(globalCardTypeId);
+
+        Long resourceId = client.resourceRestEndpoint.createResource(resourceCreationBean);
+
+        List<Document> persistedDocs = client.resourceRestEndpoint
+            .getDocumentsOfResource(resourceId);
+        return persistedDocs.get(0);
     }
 
     /**

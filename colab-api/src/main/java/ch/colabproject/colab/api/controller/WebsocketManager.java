@@ -7,10 +7,10 @@
 package ch.colabproject.colab.api.controller;
 
 import ch.colabproject.colab.api.controller.security.SecurityManager;
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.jpa.document.BlockDao;
+import ch.colabproject.colab.api.persistence.jpa.document.TextDataBlockDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -126,7 +126,7 @@ public class WebsocketManager {
      * Block DAO
      */
     @Inject
-    private BlockDao blockDao;
+    private TextDataBlockDao blockDao;
 
     /**
      * User DAO
@@ -342,7 +342,7 @@ public class WebsocketManager {
      */
     public void subscribeToBlockChannel(WsSessionIdentifier sessionId, Long blockId) {
         logger.debug("Session {} want to subscribe to Block#{}", sessionId, blockId);
-        Block block = blockDao.findBlock(blockId);
+        TextDataBlock block = blockDao.findBlock(blockId);
         if (block != null) {
             // no explicit security check : if one can load the block, one can subscribe to its channel
 //            securityManager.assertConditionTx(new Conditions.IsCurrentUserMemberOfBlock(block),
@@ -369,7 +369,7 @@ public class WebsocketManager {
      */
     public void unsubscribeFromBlockChannel(WsSessionIdentifier sessionId, Long blockId) {
         logger.debug("Session {} want to unsubscribe from Block#{}", sessionId, blockId);
-        Block block = blockDao.findBlock(blockId);
+        TextDataBlock block = blockDao.findBlock(blockId);
         if (block != null) {
             // no explicit security check : if one can load the block, one can subscribe to its channel
 //            securityManager.assertConditionTx(new Conditions.IsCurrentUserMemberOfBlock(block),
@@ -521,7 +521,7 @@ public class WebsocketManager {
                 return ProjectContentChannel.build(project);
             }
         } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BLOCK) {
-            Block block = blockDao.findBlock(request.getChannelId());
+            TextDataBlock block = blockDao.findBlock(request.getChannelId());
             if (block != null) {
                 return BlockChannel.build(block);
             }

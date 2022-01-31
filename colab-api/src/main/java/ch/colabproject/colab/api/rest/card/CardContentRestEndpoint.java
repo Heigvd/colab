@@ -128,6 +128,7 @@ public class CardContentRestEndpoint {
         Document document) {
         logger.debug("create a new card content for the card #{} and document {}", cardId,
             document);
+
         CardContent cardContent = cardContentManager.createNewCardContent(cardId);
 
         cardContentManager.addDeliverable(cardContent.getId(), document);
@@ -158,6 +159,36 @@ public class CardContentRestEndpoint {
     public void deleteCardContent(@PathParam("id") Long id) {
         logger.debug("Delete card #{}", id);
         cardContentManager.deleteCardContent(id);
+    }
+
+    /**
+     * Add the deliverable to the card content.
+     *
+     * @param cardContentId the id of the card content
+     * @param document      the document to use as deliverable. It must be a new document
+     *
+     * @return the document newly created
+     */
+    @POST
+    @Path("{id}/addDeliverable")
+    public Document addDeliverable(@PathParam("id") Long cardContentId, Document document) {
+        logger.debug("add the deliverable {} for the card content #{}", document, cardContentId);
+        return cardContentManager.addDeliverable(cardContentId, document);
+    }
+
+    /**
+     * Remove the deliverable of the card content.
+     *
+     * @param cardContentId the id of the card content
+     * @param documentId the id of the document to remove from the card content
+     */
+    @POST
+    @Path("{id}/removeDeliverable")
+    public void removeDeliverable(@PathParam("id") Long cardContentId, Long documentId) {
+        logger.debug("remove the deliverable #{} from the card content #{}", documentId,
+            cardContentId);
+
+        cardContentManager.removeDeliverable(cardContentId, documentId);
     }
 
     /**
@@ -200,21 +231,6 @@ public class CardContentRestEndpoint {
     public List<Document> getDeliverablesOfCardContent(@PathParam("id") Long cardContentId) {
         logger.debug("Get deliverables of card content #{}", cardContentId);
         return cardContentManager.getDeliverablesOfCardContent(cardContentId);
-    }
-
-    /**
-     * Add the deliverable to the card content.
-     *
-     * @param cardContentId the id of the card content
-     * @param document      the document to use as deliverable. It must be a new document
-     *
-     * @return the document newly created
-     */
-    @POST
-    @Path("{id}/addDeliverable")
-    public Document addDeliverable(@PathParam("id") Long cardContentId, Document document) {
-        logger.debug("add the deliverable {} for the card content #{}", document, cardContentId);
-        return cardContentManager.addDeliverable(cardContentId, document);
     }
 
 }

@@ -6,12 +6,11 @@
  */
 package ch.colabproject.colab.tests.rest.document;
 
-import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.ExternalLink;
-import ch.colabproject.colab.api.model.document.DocumentFile;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
-import java.util.List;
+import ch.colabproject.colab.tests.tests.ColabFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -23,22 +22,30 @@ import org.junit.jupiter.api.Test;
 public class DocumentRestEndpointTest extends AbstractArquillianTest {
 
     @Test
-    public void testCreateBlockDocument() {
+    public void testCreateTextDataBlock() {
         int index = 3;
+        String mimeType = "text/plain";
+        String textData = "a valuable plain text";
+        String revision = "0.23.5";
 
-        BlockDocument doc = new BlockDocument();
+        TextDataBlock doc = new TextDataBlock();
         doc.setIndex(index);
+        doc.setMimeType(mimeType);
+        doc.setTextData(textData);
+        doc.setRevision(revision);
 
-        Long docId = client.documentRestEndpoint.createDocument(doc);
+        Long docId = ColabFactory.createADocument(client, doc).getId();
 
         Document persistedDoc = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNotNull(persistedDoc);
         Assertions.assertEquals(docId, persistedDoc.getId());
+        Assertions.assertEquals(index, persistedDoc.getIndex());
 
-        Assertions.assertTrue(persistedDoc instanceof BlockDocument);
-        BlockDocument persistedBlockDoc = (BlockDocument) persistedDoc;
-        Assertions.assertNotNull(persistedBlockDoc);
-        Assertions.assertEquals(index, persistedBlockDoc.getIndex());
+        Assertions.assertTrue(persistedDoc instanceof TextDataBlock);
+        TextDataBlock persistedTextDataBlock = (TextDataBlock) persistedDoc;
+        Assertions.assertEquals(mimeType, persistedTextDataBlock.getMimeType());
+        Assertions.assertEquals(textData, persistedTextDataBlock.getTextData());
+        Assertions.assertEquals(revision, persistedTextDataBlock.getRevision());
     }
 
     @Test
@@ -50,44 +57,53 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
         doc.setUrl(url);
         doc.setIndex(index);
 
-        Long docId = client.documentRestEndpoint.createDocument(doc);
+        Long docId = ColabFactory.createADocument(client, doc).getId();
 
         Document persistedDoc = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNotNull(persistedDoc);
         Assertions.assertEquals(docId, persistedDoc.getId());
+        Assertions.assertEquals(index, persistedDoc.getIndex());
 
         Assertions.assertTrue(persistedDoc instanceof ExternalLink);
         ExternalLink persistedExtDocLink = (ExternalLink) persistedDoc;
         Assertions.assertEquals(url, persistedExtDocLink.getUrl());
-        Assertions.assertEquals(index, persistedExtDocLink.getIndex());
     }
 
     @Test
-    public void testUpdateBlockDocument() {
-        Long docId = client.documentRestEndpoint.createDocument(new BlockDocument());
+    public void testUpdateTextDataBlock() {
+        Long docId = ColabFactory.createADocument(client, new TextDataBlock()).getId();
 
         Document doc = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNotNull(doc);
-        Assertions.assertTrue(doc instanceof BlockDocument);
-        BlockDocument blockDoc = (BlockDocument) doc;
-        Assertions.assertEquals(docId, blockDoc.getId());
-        Assertions.assertEquals(0, blockDoc.getIndex());
+        Assertions.assertTrue(doc instanceof TextDataBlock);
+        TextDataBlock textDataBlock = (TextDataBlock) doc;
+        Assertions.assertEquals(docId, textDataBlock.getId());
+        Assertions.assertEquals(0, textDataBlock.getIndex());
 
         int index = 4;
-        blockDoc.setIndex(index);
-        client.documentRestEndpoint.updateDocument(blockDoc);
+        String mimeType = "text/plain";
+        String textData = "a plain text";
+
+        textDataBlock.setIndex(index);
+        textDataBlock.setMimeType(mimeType);
+        textDataBlock.setTextData(textData);
+        client.documentRestEndpoint.updateDocument(textDataBlock);
 
         Document persistedDoc = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNotNull(persistedDoc);
-        Assertions.assertTrue(persistedDoc instanceof BlockDocument);
-        BlockDocument persistedBlockDoc = (BlockDocument) persistedDoc;
-        Assertions.assertEquals(docId, persistedBlockDoc.getId());
-        Assertions.assertEquals(index, persistedBlockDoc.getIndex());
+        Assertions.assertEquals(docId, persistedDoc.getId());
+        Assertions.assertEquals(index, persistedDoc.getIndex());
+        Assertions.assertTrue(persistedDoc instanceof TextDataBlock);
+        TextDataBlock persistedTextDataBlock = (TextDataBlock) persistedDoc;
+        Assertions.assertEquals(docId, persistedTextDataBlock.getId());
+        Assertions.assertEquals(index, persistedTextDataBlock.getIndex());
+        Assertions.assertEquals(mimeType, persistedTextDataBlock.getMimeType());
+        Assertions.assertEquals(textData, persistedTextDataBlock.getTextData());
     }
 
     @Test
     public void testUpdateExternalLink() {
-        Long docId = client.documentRestEndpoint.createDocument(new ExternalLink());
+        Long docId = ColabFactory.createADocument(client, new ExternalLink()).getId();
 
         Document doc = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNotNull(doc);
@@ -111,62 +127,6 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(docId, persistedExtDocLink.getId());
         Assertions.assertEquals(url, persistedExtDocLink.getUrl());
         Assertions.assertEquals(index, persistedExtDocLink.getIndex());
-    }
-
-    @Test
-    public void testGetAllDocuments() {
-        int initialSize = client.documentRestEndpoint.getAllDocuments().size();
-
-        BlockDocument bdoc = new BlockDocument();
-        client.documentRestEndpoint.createDocument(bdoc);
-
-        ExternalLink edoc = new ExternalLink();
-        client.documentRestEndpoint.createDocument(edoc);
-
-        DocumentFile hdoc = new DocumentFile();
-        client.documentRestEndpoint.createDocument(hdoc);
-
-        List<Document> documents = client.documentRestEndpoint.getAllDocuments();
-        Assertions.assertEquals(initialSize + 3, documents.size());
-    }
-
-    @Test
-    public void testDeleteBlockDocument() {
-        Long docId = client.documentRestEndpoint.createDocument(new BlockDocument());
-
-        Document persistedDoc = client.documentRestEndpoint.getDocument(docId);
-        Assertions.assertNotNull(persistedDoc);
-
-        client.documentRestEndpoint.deleteDocument(docId);
-
-        persistedDoc = client.documentRestEndpoint.getDocument(docId);
-        Assertions.assertNull(persistedDoc);
-    }
-
-    @Test
-    public void testDeleteExternalLink() {
-        Long docId = client.documentRestEndpoint.createDocument(new ExternalLink());
-
-        Document persistedDoc = client.documentRestEndpoint.getDocument(docId);
-        Assertions.assertNotNull(persistedDoc);
-
-        client.documentRestEndpoint.deleteDocument(docId);
-
-        persistedDoc = client.documentRestEndpoint.getDocument(docId);
-        Assertions.assertNull(persistedDoc);
-    }
-
-    @Test
-    public void testDeleteDocumentFile() {
-        Long docId = client.documentRestEndpoint.createDocument(new DocumentFile());
-
-        Document persistedDoc = client.documentRestEndpoint.getDocument(docId);
-        Assertions.assertNotNull(persistedDoc);
-
-        client.documentRestEndpoint.deleteDocument(docId);
-
-        persistedDoc = client.documentRestEndpoint.getDocument(docId);
-        Assertions.assertNull(persistedDoc);
     }
 
 }

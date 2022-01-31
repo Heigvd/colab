@@ -8,10 +8,24 @@ package ch.colabproject.colab.api.model.document;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.card.CardType;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
+import ch.colabproject.colab.api.ws.channel.BlockChannel;
+import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import javax.json.bind.annotation.JsonbTransient;
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -21,15 +35,10 @@ import javax.validation.constraints.NotBlank;
  */
 // TODO adjust the constraints / indexes
 @Entity
-@DiscriminatorValue("TEXT_DATA")
-public class TextDataBlock extends Block {
+@DiscriminatorValue("TEXT_DATA_BLOCK")
+public class TextDataBlock extends Document implements StickyNoteSourceable {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * The mime type by default
-     */
-    public static final String DEFAULT_MIME_TYPE = "text/markdown";
 
     // ---------------------------------------------------------------------------------------------
     // fields
@@ -52,18 +61,39 @@ public class TextDataBlock extends Block {
     @NotBlank
     private String revision = "0";
 
-    // ---------------------------------------------------------------------------------------------
-    // initialize
-    // ---------------------------------------------------------------------------------------------
+    /**
+     * The card type it is the purpose of
+     */
+    @OneToOne(mappedBy = "purpose", fetch = FetchType.LAZY)
+    @JsonbTransient
+    private CardType purposingCardType;
+
+    // no need of purposingCardTypeId
 
     /**
-     * @return an initialized a default block
+     * The resource it is the teaser of
      */
-    public static TextDataBlock initNewDefaultTextDataBlock() {
-        TextDataBlock newBlock = new TextDataBlock();
-        newBlock.setMimeType(DEFAULT_MIME_TYPE);
-        return newBlock;
-    }
+    @OneToOne(mappedBy = "teaser", fetch = FetchType.LAZY)
+    @JsonbTransient
+    private Resource teasingResource;
+
+    // no need of teasingResourceId
+
+    /**
+     * The sticky note link it is the explanation of
+     */
+    @OneToOne(mappedBy = "explanation", fetch = FetchType.LAZY)
+    @JsonbTransient
+    private StickyNoteLink explainingStickyNoteLink;
+
+    // no need of explainingStickyNoteLink
+
+    /**
+     * The list of sticky note links of which the block is the source
+     */
+    @OneToMany(mappedBy = "srcBlock", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -114,6 +144,63 @@ public class TextDataBlock extends Block {
         this.revision = revision;
     }
 
+    /**
+     * @return the card type it is the purpose of
+     */
+    public CardType getPurposingCardType() {
+        return purposingCardType;
+    }
+
+    /**
+     * @param cardType the card type it is the purpose of
+     */
+    public void setPurposingCardType(CardType cardType) {
+        this.purposingCardType = cardType;
+    }
+
+    /**
+     * @return the resource it is the teaser of
+     */
+    public Resource getTeasingResource() {
+        return teasingResource;
+    }
+
+    /**
+     * @param resource the resource it is the teaser of
+     */
+    public void setTeasingResource(Resource resource) {
+        this.teasingResource = resource;
+    }
+
+    /**
+     * @return the sticky note link it is the explanation of
+     */
+    public StickyNoteLink getExplainingStickyNoteLink() {
+        return explainingStickyNoteLink;
+    }
+
+    /**
+     * @param stickyNoteLink the sticky note link it is the explanation of
+     */
+    public void setExplainingStickyNoteLink(StickyNoteLink stickyNoteLink) {
+        this.explainingStickyNoteLink = stickyNoteLink;
+    }
+
+    /**
+     * @return the list of sticky note links of which the block is the source
+     */
+    @Override
+    public List<StickyNoteLink> getStickyNoteLinksAsSrc() {
+        return stickyNoteLinksAsSrc;
+    }
+
+    /**
+     * @param stickyNoteLinksAsSrc the list of sticky note links of which the block is the source
+     */
+    public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
+        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
+    }
+
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -129,6 +216,92 @@ public class TextDataBlock extends Block {
             throw new ColabMergeException(this, other);
         }
     }
+
+    // TODO check if ok
+    @Override
+    public Set<WebsocketChannel> getChannels() {
+        if (this.id != null) {
+            return Set.of(BlockChannel.build(id));
+        } else {
+            return Set.of();
+        }
+    }
+
+    /**
+     * Get the project it belongs to
+     *
+     * @return block owner
+     */
+    @Override
+    @JsonbTransient
+    public Project getProject() {
+        if (this.getOwningCardContent() != null) {
+            // The document is a deliverable of a card content
+            return this.getOwningCardContent().getProject();
+        } else if (this.getOwningResource() != null) {
+            // The document is part of a resource
+            return this.getOwningResource().getProject();
+        } else if (this.purposingCardType != null) {
+            // It is the purpose of a card type
+            return this.purposingCardType.getProject();
+        } else if (this.teasingResource != null) {
+            // It is the teaser of a resource
+            return this.teasingResource.getProject();
+        } else if (this.explainingStickyNoteLink != null) {
+            // It is the explanation of a sticky note link
+            return this.explainingStickyNoteLink.getProject();
+        } else {
+            // such an orphan shouldn't exist...
+            return null;
+        }
+    }
+
+//    @Override
+//    @JsonbTransient
+//    public Conditions.Condition getReadCondition() {
+//        if (getOwningCardContent() != null) {
+//            // The document is a deliverable of a card content
+//            return new Conditions.HasCardReadRight(getOwningCardContent());
+//        } else if (getOwningResource() != null) {
+//            // The document is part of a resource
+//            return getOwningResource().getReadCondition();
+//        } else if (this.purposingCardType != null) {
+//            // It is the purpose of a card type
+//            return this.purposingCardType.getReadCondition();
+//        } else if (this.teasingResource != null) {
+//            // It is the teaser of a resource
+//            return this.teasingResource.getReadCondition();
+//        } else if (this.explainingStickyNoteLink != null) {
+//            // It is the explanation of a sticky note link
+//            return this.explainingStickyNoteLink.getReadCondition();
+//        } else {
+//            // such an orphan shouldn't exist...
+//            return Conditions.defaultForOrphan;
+//        }
+//    }
+//
+//    @Override
+//    public Conditions.Condition getUpdateCondition() {
+//        if (getOwningCardContent() != null) {
+//            // The document is a deliverable of a card content
+//            return getOwningCardContent().getUpdateCondition();
+//        } else if (getOwningResource() != null) {
+//            // The document is part of a resource
+//            return getOwningResource().getUpdateCondition();
+//        } else if (this.purposingCardType != null) {
+//            // It is the purpose of a card type
+//            return this.purposingCardType.getUpdateCondition();
+//        } else if (this.teasingResource != null) {
+//            // It is the teaser of a resource
+//            return this.teasingResource.getUpdateCondition();
+//        } else if (this.explainingStickyNoteLink != null) {
+//            // It is the explanation of a sticky note link
+//            return this.explainingStickyNoteLink.getUpdateCondition();
+//        } else {
+//            // such an orphan shouldn't exist...
+//            return Conditions.defaultForOrphan;
+//        }
+//    }
 
     @Override
     public int hashCode() {
