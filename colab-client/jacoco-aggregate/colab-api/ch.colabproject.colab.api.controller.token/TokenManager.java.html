@@ -245,7 +245,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L245">            ResetLocalAccountPasswordToken token = this.getOrCreateResetToken(account);</span>
 <span class="nc" id="L246">            sendTokenByEmail(token, account.getEmail());</span>
 <span class="nc" id="L247">        } catch (MessagingException ex) {</span>
-<span class="nc" id="L248">            logger.error(&quot;Failed to send pssword reset email&quot;, ex);</span>
+<span class="nc" id="L248">            logger.error(&quot;Failed to send password reset email&quot;, ex);</span>
 <span class="nc bnc" id="L249" title="All 2 branches missed.">            if (failsOnError) {</span>
 <span class="nc" id="L250">                throw HttpErrorMessage.smtpError();</span>
             }

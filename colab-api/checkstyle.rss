@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2022 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 163,
+      <title>File: 164,
              Errors: 0,
-             Warnings: 154,
+             Warnings: 156,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -858,6 +858,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.monitoring.VersionDetails.java">ch/colabproject/colab/api/controller/monitoring/VersionDetails.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.token.ResetLocalAccountPasswordToken.java">ch/colabproject/colab/api/model/token/ResetLocalAccountPasswordToken.java</a>
                 </td>
                 <td>
@@ -1102,7 +1116,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  13
+                  15
                 </td>
                 <td>
                   0

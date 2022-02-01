@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.monitoring;
 
+import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -26,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L29">public class MonitoringManager {</span>
+<span class="nc" id="L30">public class MonitoringManager {</span>
 
     /**
      * Cluster event name
@@ -48,10 +49,10 @@ import org.slf4j.LoggerFactory;
      * @param loggerLevel new level of the logger
      */
     public void changeLogerLevelClusterWide(String loggerName, String loggerLevel) {
-<span class="nc" id="L51">        LoggerLevelPayload ll = LoggerLevelPayload.build(loggerName, loggerLevel);</span>
+<span class="nc" id="L52">        LoggerLevelPayload ll = LoggerLevelPayload.build(loggerName, loggerLevel);</span>
         // send event to each instances of the cluster
-<span class="nc" id="L53">        this.events.fire(ll);</span>
-<span class="nc" id="L54">    }</span>
+<span class="nc" id="L54">        this.events.fire(ll);</span>
+<span class="nc" id="L55">    }</span>
 
     /**
      * Change level of a logger within this very payara instance.
@@ -62,14 +63,14 @@ import org.slf4j.LoggerFactory;
     public void changeLoggerLevelInternal(
         @Observes @Inbound(eventName = SET_LOGGER_LEVEL_EVENT) LoggerLevelPayload payload
     ) {
-<span class="nc" id="L65">        Logger logger = (Logger) LoggerFactory.getLogger(payload.getLoggerName());</span>
-<span class="nc" id="L66">        Level newLevel = Level.valueOf(payload.getLoggerLevel());</span>
-<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (newLevel != logger.getLevel()) {</span>
-<span class="nc" id="L68">            logger.setLevel(Level.valueOf(payload.getLoggerLevel()));</span>
+<span class="nc" id="L66">        Logger logger = (Logger) LoggerFactory.getLogger(payload.getLoggerName());</span>
+<span class="nc" id="L67">        Level newLevel = Level.valueOf(payload.getLoggerLevel());</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (newLevel != logger.getLevel()) {</span>
+<span class="nc" id="L69">            logger.setLevel(Level.valueOf(payload.getLoggerLevel()));</span>
         } else {
-<span class="nc" id="L70">            logger.setLevel(null);</span>
+<span class="nc" id="L71">            logger.setLevel(null);</span>
         }
-<span class="nc" id="L72">    }</span>
+<span class="nc" id="L73">    }</span>
 
     /**
      * Descriptor all known co.LAB logger by providing their current level.
@@ -77,17 +78,30 @@ import org.slf4j.LoggerFactory;
      * @return all known levelDescriptor mapped by the name of the logger
      */
     public Map&lt;String, LevelDescriptor&gt; getLoggerLevels() {
-<span class="nc" id="L80">        Map&lt;String, LevelDescriptor&gt; loggers = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L81">        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();</span>
+<span class="nc" id="L81">        Map&lt;String, LevelDescriptor&gt; loggers = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L82">        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();</span>
 
-<span class="nc" id="L83">        loggerContext.getLoggerList().stream()</span>
-<span class="nc" id="L84">            .filter(logger -&gt; logger.getName().startsWith(&quot;ch.colabproject&quot;))</span>
-<span class="nc" id="L85">            .forEach(logger -&gt; {</span>
-<span class="nc" id="L86">                loggers.put(logger.getName(),</span>
-<span class="nc" id="L87">                    LevelDescriptor.build(logger));</span>
-<span class="nc" id="L88">            });</span>
+<span class="nc" id="L84">        loggerContext.getLoggerList().stream()</span>
+<span class="nc" id="L85">            .filter(logger -&gt; logger.getName().startsWith(&quot;ch.colabproject&quot;))</span>
+<span class="nc" id="L86">            .forEach(logger -&gt; {</span>
+<span class="nc" id="L87">                loggers.put(logger.getName(),</span>
+<span class="nc" id="L88">                    LevelDescriptor.build(logger));</span>
+<span class="nc" id="L89">            });</span>
 
-<span class="nc" id="L90">        return loggers;</span>
+<span class="nc" id="L91">        return loggers;</span>
+    }
+
+    /**
+     * Get information about current coLAB version
+     *
+     * @return details about current version
+     */
+    public VersionDetails getVersionDetails() {
+<span class="nc" id="L100">        VersionDetails v = new VersionDetails();</span>
+<span class="nc" id="L101">        v.setBuildNumber(ColabConfiguration.getBuildNumber());</span>
+<span class="nc" id="L102">        v.setDockerImages(ColabConfiguration.getBuildImages());</span>
+
+<span class="nc" id="L104">        return v;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

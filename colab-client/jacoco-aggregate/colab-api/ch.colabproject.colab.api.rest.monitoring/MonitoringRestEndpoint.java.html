@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.rest.monitoring;
 
 import ch.colabproject.colab.api.controller.monitoring.LevelDescriptor;
 import ch.colabproject.colab.api.controller.monitoring.MonitoringManager;
+import ch.colabproject.colab.api.controller.monitoring.VersionDetails;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import java.util.Map;
 import javax.inject.Inject;
@@ -26,7 +27,7 @@ import javax.ws.rs.core.MediaType;
 @Path(&quot;monitoring&quot;)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-<span class="nc" id="L29">public class MonitoringRestEndpoint {</span>
+<span class="nc" id="L30">public class MonitoringRestEndpoint {</span>
 
     /**
      * Monitoring business logic
@@ -42,7 +43,18 @@ import javax.ws.rs.core.MediaType;
     @GET
     @Path(&quot;status&quot;)
     public String getStatus() {
-<span class="nc" id="L45">        return &quot;Running&quot;;</span>
+<span class="nc" id="L46">        return &quot;Running&quot;;</span>
+    }
+
+    /**
+     * Get current version
+     *
+     * @return details about current deployed version
+     */
+    @GET
+    @Path(&quot;version&quot;)
+    public VersionDetails getVersion() {
+<span class="nc" id="L57">        return monitoringManager.getVersionDetails();</span>
     }
 
     /**
@@ -59,8 +71,8 @@ import javax.ws.rs.core.MediaType;
         @PathParam(&quot;loggerName&quot;) String loggerName,
         @PathParam(&quot;level&quot;) String level
     ) {
-<span class="nc" id="L62">        monitoringManager.changeLogerLevelClusterWide(loggerName, level);</span>
-<span class="nc" id="L63">    }</span>
+<span class="nc" id="L74">        monitoringManager.changeLogerLevelClusterWide(loggerName, level);</span>
+<span class="nc" id="L75">    }</span>
 
     /**
      * Get the description of all known co.LAB logger by providing their current level.
@@ -71,7 +83,7 @@ import javax.ws.rs.core.MediaType;
     @Path(&quot;GetLoggerLevels&quot;)
     @AdminResource
     public Map&lt;String, LevelDescriptor&gt; getLoggerLevels() {
-<span class="nc" id="L74">        return monitoringManager.getLoggerLevels();</span>
+<span class="nc" id="L86">        return monitoringManager.getLoggerLevels();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
