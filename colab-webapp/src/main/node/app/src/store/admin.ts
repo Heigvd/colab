@@ -9,20 +9,26 @@ import {
   ChannelOverview,
   entityIs,
   LevelDescriptor,
+  VersionDetails,
   WebsocketEffectiveChannel,
 } from 'colab-rest-client';
 import * as API from '../API/api';
+import { LoadingStatus } from './store';
 
 export interface AdminState {
   loggers: { [key: string]: LevelDescriptor } | undefined | null;
-  userStatus: 'NOT_INITIALIZED' | 'LOADING' | 'INITIALIZED';
+  userStatus: LoadingStatus;
   occupiedChannels: ChannelOverview[] | 'NOT_INITIALIZED' | 'LOADING';
+  versionStatus: LoadingStatus;
+  version: VersionDetails;
 }
 
 const initialState: AdminState = {
   loggers: undefined,
   userStatus: 'NOT_INITIALIZED',
   occupiedChannels: 'NOT_INITIALIZED',
+  versionStatus: 'NOT_INITIALIZED',
+  version: { buildNumber: '', dockerImages: '' },
 };
 
 const adminSlice = createSlice({
@@ -75,11 +81,18 @@ const adminSlice = createSlice({
   },
   extraReducers: builder =>
     builder
+      .addCase(API.getVersionDetails.pending, state => {
+        state.versionStatus = 'LOADING';
+      })
+      .addCase(API.getVersionDetails.fulfilled, (state, action) => {
+        state.versionStatus = 'READY';
+        state.version = action.payload;
+      })
       .addCase(API.getAllUsers.pending, state => {
         state.userStatus = 'LOADING';
       })
       .addCase(API.getAllUsers.fulfilled, state => {
-        state.userStatus = 'INITIALIZED';
+        state.userStatus = 'READY';
       })
       .addCase(API.getLoggerLevels.pending, state => {
         // undefined means not-loaded

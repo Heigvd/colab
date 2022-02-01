@@ -14,6 +14,26 @@ package ch.colabproject.colab.api.setup;
 public class ColabConfiguration {
 
     /**
+     * Build number property name
+     */
+    public static final String BUILD_NUMBER_PROPERTY = "colab.build.number";
+
+    /**
+     * Default build number
+     */
+    public static final String DEFAULT_BUILD_NUMBER_VALUE = "";
+
+    /**
+     * Build number property name
+     */
+    public static final String BUILD_IMAGES_PROPERTY = "colab.build.images";
+
+    /**
+     * Default build number
+     */
+    public static final String DEFAULT_BUILD_IMAGES_VALUE = "";
+
+    /**
      * System property name which contains default admin username
      */
     public static final String DEFAULT_ADMIN_USERNAME_PROPERTY = "colab.default.admin.username";
@@ -157,6 +177,24 @@ public class ColabConfiguration {
     private ColabConfiguration() {
         throw new UnsupportedOperationException(
             "This is a utility class and cannot be instantiated");
+    }
+
+    /**
+     * Get build number
+     *
+     * @return build number
+     */
+    public static String getBuildNumber(){
+        return System.getProperty(BUILD_NUMBER_PROPERTY, DEFAULT_BUILD_NUMBER_VALUE);
+    }
+
+    /**
+     * Get name of the running docker image
+     *
+     * @return the running docker images or empty if running app is not a docker container
+     */
+    public static String getBuildImages(){
+        return System.getProperty(BUILD_IMAGES_PROPERTY, DEFAULT_BUILD_IMAGES_VALUE);
     }
 
     /**

@@ -137,6 +137,10 @@ export const changeLoggerLevel = createAsyncThunk(
   },
 );
 
+export const getVersionDetails = createAsyncThunk('monitoring/getVersionDetails', async () => {
+  return await restClient.MonitoringRestEndpoint.getVersion();
+});
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Authentication
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -956,21 +960,15 @@ export const deleteActivityFlowLink = createAsyncThunk(
 
 export const uploadFile = createAsyncThunk(
   'files',
-  async ({docId, file, fileSize} : {docId: number, file: File, fileSize: number}) => {
+  async ({ docId, file, fileSize }: { docId: number; file: File; fileSize: number }) => {
     return await restClient.DocumentFileRestEndPoint.updateFile(docId, fileSize, file);
-  }
+  },
 );
 
-export const getFile = createAsyncThunk(
-  'files/GetFile',
-  async (id: number ) => {
-    return await restClient.DocumentFileRestEndPoint.getFileContent(id);
-  }
-);
+export const getFile = createAsyncThunk('files/GetFile', async (id: number) => {
+  return await restClient.DocumentFileRestEndPoint.getFileContent(id);
+});
 
-export const deleteFile = createAsyncThunk(
-  'files/DeleteFile',
-  async (id: number) => {
-    return await restClient.DocumentFileRestEndPoint.deleteFile(id);
-  }
-);
+export const deleteFile = createAsyncThunk('files/DeleteFile', async (id: number) => {
+  return await restClient.DocumentFileRestEndPoint.deleteFile(id);
+});

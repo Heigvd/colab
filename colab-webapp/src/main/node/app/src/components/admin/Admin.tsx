@@ -12,6 +12,7 @@ import { SecondLevelLink } from '../common/Link';
 import { AllProjects } from '../projects/ProjectList';
 import AllUsers from './AllUsers';
 import LoggersConfig from './LoggersConfig';
+import MainPanel from './MainPanel';
 import Who from './Who';
 
 export default function Admin(): JSX.Element {
@@ -20,20 +21,16 @@ export default function Admin(): JSX.Element {
       <h2>Admin Page</h2>
       <div>
         <nav>
+          <SecondLevelLink to="">Admin</SecondLevelLink>
           <SecondLevelLink to="users">Users</SecondLevelLink>
           <SecondLevelLink to="projects">Projects</SecondLevelLink>
           <SecondLevelLink to="loggers">Loggers</SecondLevelLink>
           <SecondLevelLink to="onlineusers">Online Users</SecondLevelLink>
           <SecondLevelLink to="types">Card Types</SecondLevelLink>
         </nav>
-        <ul>
-          <li>Models</li>
-          <li>co.LAB Version</li>
-          <li>...</li>
-        </ul>
         <div>
           <Routes>
-            <Route path="" element={<span>select something...</span>} />
+            <Route path="" element={<MainPanel />} />
             <Route path="loggers" element={<LoggersConfig />} />
             <Route path="projects" element={<AllProjects />} />
             <Route path="users" element={<AllUsers />} />
