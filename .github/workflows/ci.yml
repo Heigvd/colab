@@ -111,6 +111,9 @@ jobs:
         push: true
         tags: ${{ steps.docker-meta.outputs.tags }}
         labels: ${{ steps.docker-meta.outputs.labels }}
+        build-args: |
+          GITHUB_RUN_NUMBER=${{ github.run_number }}
+          DOCKER_IMAGE_TAGS=${{ steps.docker-meta.outputs.tags }}
 
   update-dev-fleet:
     runs-on: ubuntu-latest
