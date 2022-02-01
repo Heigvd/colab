@@ -182,7 +182,7 @@ public class ColabConfiguration {
     /**
      * Get build number
      *
-     * @return
+     * @return build number
      */
     public static String getBuildNumber(){
         return System.getProperty(BUILD_NUMBER_PROPERTY, DEFAULT_BUILD_NUMBER_VALUE);

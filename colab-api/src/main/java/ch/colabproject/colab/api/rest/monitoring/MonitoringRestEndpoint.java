@@ -47,8 +47,9 @@ public class MonitoringRestEndpoint {
     }
 
     /**
+     * Get current version
      *
-     * @return
+     * @return details about current deployed version
      */
     @GET
     @Path("version")
