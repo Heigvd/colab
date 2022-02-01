@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:ubuntu-jre
+FROM eclipse-temurin:11-jre-focal
 
 RUN  update-ca-certificates
 
@@ -10,6 +10,9 @@ WORKDIR $COLAB_PATH
 
 RUN useradd --home-dir $COLAB_PATH colab && chown -R colab:colab $COLAB_PATH
 
+ARG GITHUB_RUN_NUMBER
+ARG DOCKER_IMAGE_TAGS
+
 ENV CLUSTER_MODE=DEFAULT \
     DEBUG=false \
     GC=G1GC \
@@ -17,7 +20,9 @@ ENV CLUSTER_MODE=DEFAULT \
     PAYARA=/var/lib/colab/payara.jar \
     THE_WAR=/var/lib/colab/coLAB.war \
     CLUSTER_NAME=ColabCluster \
-    HEAP_SIZE=512M
+    HEAP_SIZE=512M \
+    COLAB_BUILD_NUMBER=${GITHUB_RUN_NUMBER} \
+    COLAB_BUILD_IMAGES=${DOCKER_IMAGE_TAGS}
 
 # VOLUME /var/lib/colab/payara.jar
 # VOLUME /var/lib/colab/colab.war

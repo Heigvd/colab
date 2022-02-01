@@ -88,7 +88,7 @@ export default function ResourceCreator({
       options: [
         { label: 'Document', value: 'BlockDocument' },
         { label: 'Link', value: 'ExternalLink' },
-        { label: 'File', value: 'DocumentFile'}
+        { label: 'File', value: 'DocumentFile' },
       ],
       isMandatory: true,
     }),

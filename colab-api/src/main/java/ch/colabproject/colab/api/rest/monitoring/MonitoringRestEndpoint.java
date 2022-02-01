@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.rest.monitoring;
 
 import ch.colabproject.colab.api.controller.monitoring.LevelDescriptor;
 import ch.colabproject.colab.api.controller.monitoring.MonitoringManager;
+import ch.colabproject.colab.api.controller.monitoring.VersionDetails;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import java.util.Map;
 import javax.inject.Inject;
@@ -43,6 +44,16 @@ public class MonitoringRestEndpoint {
     @Path("status")
     public String getStatus() {
         return "Running";
+    }
+
+    /**
+     *
+     * @return
+     */
+    @GET
+    @Path("version")
+    public VersionDetails getVersion() {
+        return monitoringManager.getVersionDetails();
     }
 
     /**

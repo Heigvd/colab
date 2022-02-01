@@ -8,12 +8,12 @@
 import { faCheck, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DocumentFile } from 'colab-rest-client';
+import * as React from 'react';
+import * as API from '../../API/api';
 //import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
-import InlineLoading from '../common/InlineLoading';
-import * as API from '../../API/api';
-import * as React from 'react';
 import Button from '../common/Button';
+import InlineLoading from '../common/InlineLoading';
 
 export interface DocumentFileProps {
   document: DocumentFile;
@@ -27,25 +27,28 @@ export function DocumentFileEditor({ document }: DocumentFileProps): JSX.Element
 
   const [state, setState] = React.useState<'IDLE' | 'LOADING' | 'DONE'>('IDLE');
 
-    const onChangeCb = React.useCallback(
+  const onChangeCb = React.useCallback(
     (v: React.ChangeEvent<HTMLInputElement>) => {
       if (v.target.files != null && v.target.files.length > 0) {
         setState('LOADING');
         const file = v.target.files[0];
 
-        if(file){
-          dispatch(API.uploadFile({docId: document.id!, file: file, fileSize: file.size })).then(() => setState('DONE'));
+        if (file) {
+          dispatch(API.uploadFile({ docId: document.id!, file: file, fileSize: file.size })).then(
+            () => setState('DONE'),
+          );
         }
       }
-    }, [dispatch, document.id],
+    },
+    [dispatch, document.id],
   );
 
-  const downloadCb = React.useCallback(
-    () => {
-      const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(document.id!);
-      window.open(downloadUrl);
-    }, [document.id]
-  )
+  const downloadCb = React.useCallback(() => {
+    const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(
+      document.id!,
+    );
+    window.open(downloadUrl);
+  }, [document.id]);
 
   React.useEffect(() => {
     let tId: number | undefined;
@@ -69,7 +72,7 @@ export function DocumentFileEditor({ document }: DocumentFileProps): JSX.Element
       {document.fileName}
       <div>
         {state === 'IDLE' ? (
-            <input type="file" onChange={onChangeCb}/>
+          <input type="file" onChange={onChangeCb} />
         ) : state === 'LOADING' ? (
           <InlineLoading />
         ) : (

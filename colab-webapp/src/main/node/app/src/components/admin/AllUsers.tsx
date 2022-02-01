@@ -33,7 +33,7 @@ export default function AllUsers(): JSX.Element {
   return (
     <div>
       {title}
-      <div>{status !== 'INITIALIZED' ? <InlineLoading /> : <UserList users={users} />}</div>
+      <div>{status !== 'READY' ? <InlineLoading /> : <UserList users={users} />}</div>
     </div>
   );
 }

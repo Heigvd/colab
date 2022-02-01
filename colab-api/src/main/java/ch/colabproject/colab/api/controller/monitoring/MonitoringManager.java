@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.controller.monitoring;
 
+import ch.colabproject.colab.api.setup.ColabConfiguration;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -88,5 +89,18 @@ public class MonitoringManager {
             });
 
         return loggers;
+    }
+
+    /**
+     * Get information about current coLAB version
+     *
+     * @return details about current version
+     */
+    public VersionDetails getVersionDetails() {
+        VersionDetails v = new VersionDetails();
+        v.setBuildNumber(ColabConfiguration.getBuildNumber());
+        v.setDockerImages(ColabConfiguration.getBuildImages());
+
+        return v;
     }
 }
