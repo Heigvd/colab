@@ -6,6 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -13,11 +14,11 @@ import useTranslations from '../../i18n/I18nContext';
 import { useAllProjectCards } from '../../selectors/cardSelector';
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import Button from '../common/Button';
 import Flex from '../common/Flex';
 import Form, { Field } from '../common/Form/Form';
-import IconButton from '../common/IconButton';
-import OpenCloseModal, { modalPadding } from '../common/OpenCloseModal';
-import { addIcon, cancelIcon, createIcon, reinitIcon } from '../styling/defaultIcons';
+import OpenCloseModal from '../common/OpenCloseModal';
+import { addIcon } from '../styling/defaultIcons';
 import { space_S } from '../styling/style';
 
 interface StickyNoteCreatorProps {
@@ -45,7 +46,10 @@ const defaultStickyNode: StickyNoteLinkType = {
   explanation: '',
 };
 
-export default function StickyNoteCreator({ destCardId, className }: StickyNoteCreatorProps): JSX.Element {
+export default function StickyNoteCreator({
+  destCardId,
+  className,
+}: StickyNoteCreatorProps): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
 
@@ -85,20 +89,18 @@ export default function StickyNoteCreator({ destCardId, className }: StickyNoteC
       key: 'teaser',
       type: 'text',
       label: 'teaser',
-      placeholder: 'teaser',
       isMandatory: true,
     },
     {
       key: 'explanation',
       type: 'text',
       label: 'explanation',
-      placeholder: 'explanation',
       isMandatory: true,
     },
     {
       key: 'srcCardId',
       label: 'Source',
-      placeholder: 'Source',
+      placeholder: 'Select source',
       type: 'selectnumber',
       options: cardOptions,
       isMandatory: true,
@@ -108,56 +110,66 @@ export default function StickyNoteCreator({ destCardId, className }: StickyNoteC
   return (
     <OpenCloseModal
       title="Create a new sticky note"
-      collapsedChildren={<Flex
-        justify="center"
-        className={cx(
-          css({
-            borderTop: '1px solid var(--lightGray)',
-            padding: space_S,
-            '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
-          }),
-          className,
-        )}
-      >
-        <FontAwesomeIcon title="Add sticky note" icon={addIcon} />
-      </Flex>}
+      collapsedChildren={
+        <Flex
+          justify="center"
+          className={cx(
+            css({
+              borderTop: '1px solid var(--lightGray)',
+              padding: space_S,
+              '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
+            }),
+            className,
+          )}
+        >
+          <FontAwesomeIcon title="Add sticky note" icon={addIcon} />
+        </Flex>
+      }
     >
       {collapse => (
-        <div className={css({ padding: modalPadding })}>
-          <Form fields={fields} value={state} autoSubmit={true} onSubmit={setState} />
-          <Flex>
-            <IconButton
-              icon={createIcon}
-              title="create"
-              onClick={() => {
-                dispatch(
-                  API.createStickyNote({
-                    ...state,
-                    explanation: {
-                      '@class': 'TextDataBlock',
-                      mimeType: 'text/markdown',
-                      textData: state.explanation,
-                      revision: '0',
-                    },
-                    destinationCardId: destCardId,
-                  }),
-                ).then(() => {
-                  resetInputs();
-                  collapse();
-                });
-              }}
-            />
-            <IconButton icon={reinitIcon} title="reinit" onClick={() => resetInputs()} />
-            <IconButton
-              icon={cancelIcon}
+        <>
+          <Form
+            fields={fields}
+            value={state}
+            onSubmit={function (e) {
+              setState(e);
+              dispatch(
+                API.createStickyNote({
+                  ...e,
+                  explanation: {
+                    '@class': 'TextDataBlock',
+                    mimeType: 'text/markdown',
+                    textData: e.explanation,
+                    revision: '0',
+                  },
+                  destinationCardId: destCardId,
+                }),
+              ).then(() => {
+                resetInputs();
+                collapse();
+              });
+            }}
+          >
+            <Button
+              icon={faUndo}
+              title="reinit fields"
+              onClick={() => resetInputs()}
+              invertedButton
+            >
+              Reinit
+            </Button>
+            <Button
               title="cancel"
               onClick={() => {
                 // see if it is better to reset the values or not
                 collapse();
               }}
-            />
-          </Flex>
-        </div>
+              invertedButton
+            >
+              Cancel
+            </Button>
+          </Form>
+        </>
       )}
     </OpenCloseModal>
   );

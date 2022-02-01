@@ -125,6 +125,7 @@ export const space_S = '5px';
 export const space_M = '15px';
 export const space_L = '1.5rem';
 export const flex = css({ display: 'flex' });
+export const textSmall = css({ fontSize: '0.85rem'});
 
 type blockSide = 1 | 2 | 3 | 4;
 const blockMargin = {
@@ -346,7 +347,7 @@ export const cardStyle = cx(
 );
 
 export const paddedContainerStyle = css({
-  padding: '10px',
+  padding: space_M,
 });
 
 const defaultContainerStyle = cx(
@@ -416,7 +417,7 @@ export const inputStyle = css({
   borderRadius: '6px',
   boxSizing: 'border-box',
   transition: '.8s',
-  padding: '0 24px',
+  padding: '0 '+ space_M,
   lineHeight: '2.5em',
   fontFamily: 'inherit',
 });

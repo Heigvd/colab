@@ -18,8 +18,6 @@ import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import logger from '../../logger';
-//import { useLocalStorage } from '../../preferences';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
@@ -128,7 +126,6 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
     },
     [location.pathname, navigate],
   );
-logger.info('HOLA ' + card.id)
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {

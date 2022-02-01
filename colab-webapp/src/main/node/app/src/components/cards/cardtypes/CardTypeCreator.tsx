@@ -66,7 +66,6 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
       key: 'title',
       type: 'text',
       label: 'title',
-      placeholder: 'title',
       isMandatory: true,
       errorMessage: 'Must have a title',
       isErroneous: e => e.title === null || e.title === '',
@@ -75,7 +74,6 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
       key: 'purpose',
       type: 'text',
       label: 'purpose',
-      placeholder: 'purpose',
       isMandatory: true,
       errorMessage: 'Must have a purpose',
       isErroneous: e => e.purpose === null || e.purpose === '',
@@ -87,9 +85,9 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
       isMulti: true,
       options: allTags.map(c => ({ label: c, value: c })),
       canCreateOption: true,
-      placeholder: 'category',
+      placeholder: 'Select or create a category',
       isMandatory: true,
-      errorMessage: 'Must have at least one tag',
+      errorMessage: 'Must have at least one category',
       isErroneous: e => e.tags.length === 0 || e.tags === null,
     }),
   ];
@@ -111,7 +109,6 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
     >
       {close => {
         return (
-          <div>
             <Form
               fields={fields}
               value={{ title: '', purpose: '', tags: [] }}
@@ -123,7 +120,6 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
               className={marginAroundStyle([3], space_M)}
               buttonClassName={cx(buttonStyle, marginAroundStyle([1], space_M))}
             />
-          </div>
         );
       }}
     </OpenCloseModal>

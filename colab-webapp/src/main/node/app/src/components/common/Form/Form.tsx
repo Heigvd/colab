@@ -9,10 +9,12 @@ import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { PasswordFeedback } from 'react-password-strength-bar';
 import useTranslations from '../../../i18n/I18nContext';
+import logger from '../../../logger';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/notification';
 import { space_S } from '../../styling/style';
 import Button from '../Button';
+import Flex from '../Flex';
 import InlineLoading from '../InlineLoading';
 import Checkbox from './Checkbox';
 import Input from './Input';
@@ -157,16 +159,18 @@ export default function Form<T>({
 
   const fieldComps = fields.map(field => {
     const isErroneous = field.isErroneous != null ? field.isErroneous(state) : false;
-    globalErroneous = globalErroneous || isErroneous;
+    const isEmptyError = field.isMandatory ? (String(state[field.key]).length === 0 || state[field.key] === null): false;
+    globalErroneous = globalErroneous || isErroneous || isEmptyError;
     const fieldKey = `field-${field.key}`;
 
     const errorMessage =
+    erroneous && isEmptyError ? 'This input is mandatory' :
       erroneous && isErroneous && field.errorMessage != null
         ? typeof field.errorMessage === 'function'
           ? field.errorMessage(state)
           : field.errorMessage
         : undefined;
-
+    logger.info(state[field.key] === null);
     if (field.type == 'text' || field.type === 'textarea') {
       return (
         <div key={fieldKey}>
@@ -290,6 +294,7 @@ export default function Form<T>({
       onKeyDown={onEnterCb}
     >
       {fieldComps}
+      <Flex direction='column' justify='center' align='center'>
       {autoSubmit ? null : (
         <Button
           key="submit"
@@ -301,6 +306,7 @@ export default function Form<T>({
         </Button>
       )}
       {children}
+      </Flex>
     </div>
   );
 }

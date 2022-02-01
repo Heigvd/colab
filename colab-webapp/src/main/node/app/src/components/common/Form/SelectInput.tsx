@@ -5,10 +5,11 @@
  * Licensed under the MIT License
  */
 
+import { cx } from '@emotion/css';
 import * as React from 'react';
 import Select, { MultiValue, OnChangeValue, SingleValue } from 'react-select';
 import Creatable from 'react-select/creatable';
-import { errorStyle, labelStyle, warningStyle } from '../../styling/style';
+import { errorStyle, labelStyle, textSmall, warningStyle } from '../../styling/style';
 import Flex from '../Flex';
 
 interface Opt<T> {
@@ -77,8 +78,6 @@ export default function SelectInput<T, IsMulti extends boolean>({
           {label}
           {mandatory ? ' * ' : null}{' '}
         </div>
-        {warning ? <div className={warningStyle}>{warning}</div> : null}
-        {error ? <div className={errorStyle}>{error}</div> : null}
       </Flex>
       {canCreateOption ? (
         <Creatable
@@ -109,6 +108,8 @@ export default function SelectInput<T, IsMulti extends boolean>({
           }}
         />
       )}
+      {warning ? <div className={cx(textSmall, warningStyle)}>{warning}</div> : null}
+      {error ? <div className={cx(textSmall, errorStyle)}>{error}</div> : null}
     </Flex>
   );
 }
