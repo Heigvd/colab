@@ -8,8 +8,6 @@
 import { css, cx } from '@emotion/css';
 import {
   faCog,
-  faDog,
-  faDragon,
   faEllipsisV,
   faStickyNote,
   faTrash,
@@ -20,7 +18,8 @@ import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useLocalStorage } from '../../preferences';
+import logger from '../../logger';
+//import { useLocalStorage } from '../../preferences';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
@@ -106,27 +105,6 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const purpose = useBlock(cardType?.purposeId);
   const contents = useVariantsOrLoad(card);
   const variantPager = computeNav(contents, variant.id);
-
-  const [showStickyNote, setShowStickyNote] = useLocalStorage('showStickNotes', false);
-
-  const toggleShowStickyNotes = React.useCallback(() => {
-    setShowStickyNote(current => !current);
-  }, [setShowStickyNote]);
-
-  const [rightPanel, setRightPanel] = useLocalStorage<'NONE' | 'RESOURCES'>(
-    'cardRightPanel',
-    'NONE',
-  );
-
-  const toggleResourcePanel = React.useCallback(() => {
-    setRightPanel(current => {
-      if (current !== 'RESOURCES') {
-        return 'RESOURCES';
-      }
-      return 'NONE';
-    });
-  }, [setRightPanel]);
-
   const userAcl = useCardACLForCurrentUser(card.id);
   const readOnly = !userAcl.write || variant.frozen;
 
@@ -150,7 +128,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
     },
     [location.pathname, navigate],
   );
-
+logger.info('HOLA ' + card.id)
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
@@ -175,36 +153,14 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
             )}
           >
             <SideCollapsiblePanel
-            open={null}
-              items={[
-                {
+              items={{
+                'Sticky Notes': {
                   icon: faStickyNote,
-                  title: 'Stciky notes',
+                  title: 'Sticky notes',
                   children: (
-                    <>
                       <StickyNoteWrapper destCardId={card.id} showSrc />
-                    </>
                   ),
-                },
-                {
-                  icon: faDog,
-                  title: 'Good boy',
-                  children: (
-                    <>
-                      <div className={css({padding: space_M})}>I AM A GOOD BOY.</div>
-                    </>
-                  ),
-                },
-                {
-                  icon: faDragon,
-                  title: 'Dragon fury',
-                  children: (
-                    <>
-                      <div className={css({padding: space_M})}>ROOOAAAAR</div>
-                    </>
-                  ),
-                },
-              ]}
+                }}}
             />
             <Flex direction="column" grow={1} align="stretch">
               <Flex
@@ -416,12 +372,10 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
               </Flex>
             </Flex>
             <SideCollapsiblePanel
-              //toggleOpen={toggleResourcePanel}
-              //icon={faFile}
-              open={null}
+              openKey={'Dragon'}
               direction="RIGHT"
-              items={[
-                {
+              items={{
+                'Dragon':{
                   children: (
                     <ResourcesWrapper
                       kind={ResourceContextScope.CardOrCardContent}
@@ -435,24 +389,8 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                   icon: faCog,
                   title: 'title',
                 },
-              ]}
-
-              //title="Resources"
+              }}
             />
-            {/*  {rightPanel === 'RESOURCES'
-                ? card.id &&
-                  variant?.id && (
-                    <ResourcesWrapper
-                      kind={ResourceContextScope.CardOrCardContent}
-                      accessLevel={
-                        !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
-                      }
-                      cardId={card.id}
-                      cardContentId={variant.id}
-                    />
-                  )
-                : null}
-            </SideCollapsiblePanel> */}
           </Flex>
         </Flex>
         <VariantPager allowCreation={userAcl.write} card={card} current={variant} />

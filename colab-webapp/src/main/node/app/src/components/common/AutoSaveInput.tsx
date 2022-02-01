@@ -135,7 +135,7 @@ export default function AutoSaveInput({
         <>
           <label>{label}</label>
           <div className={cx(css({ '&:hover': { opacity: 0.7 } }), className || '')}>
-            {state.currentValue ? state.currentValue : <i>{placeholder}</i>}
+            {state.currentValue ? state.currentValue : <i className={css({color: 'var(--darkGray)'})}>{placeholder}</i>}
           </div>
         </>
       </WithToolbar>

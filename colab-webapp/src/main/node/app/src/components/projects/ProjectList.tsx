@@ -62,7 +62,7 @@ const ProjectDisplay = ({ project }: Props) => {
         })}
       >
         <AutoSaveInput
-          placeholder="unnamed"
+          placeholder="Untitled"
           value={project.name || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
           className={css({ fontWeight: 'bold' })}
@@ -107,7 +107,7 @@ const ProjectDisplay = ({ project }: Props) => {
       >
         <AutoSaveInput
           inputType="TEXTAREA"
-          placeholder="no description"
+          placeholder="Write a description here."
           value={project.description || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
         />

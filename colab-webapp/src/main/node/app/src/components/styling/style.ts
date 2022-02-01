@@ -223,6 +223,14 @@ export const noOutlineStyle = css({
   },
 });
 
+export const lightLinkStyle = cx(
+  linkStyle,
+  css({
+    color: 'var(--darkGray)',
+    textDecoration: 'none',
+  })
+)
+
 export const iconStyle = css({
   paddingLeft: '5px',
   paddingRight: '5px',

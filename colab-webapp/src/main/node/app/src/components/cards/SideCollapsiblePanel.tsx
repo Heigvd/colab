@@ -7,10 +7,9 @@
 import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import * as React from 'react';
-import logger from '../../logger';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
-import { lightIconButtonStyle, marginAroundStyle, paddingAroundStyle, space_M, space_S } from '../styling/style';
+import { lightIconButtonStyle, marginAroundStyle, paddingAroundStyle, space_L, space_M, space_S } from '../styling/style';
 
 interface Item {
   icon: IconProp;
@@ -19,20 +18,21 @@ interface Item {
   title: string;
 }
 
-export interface SideCollapsiblePanelProps {
-  items: Item[];
-  open: Item | null;
+export interface SideCollapsiblePanelProps<T extends {[key: string]: Item}> {
+  items: T;
+  openKey?: keyof T;
   className?: string;
   direction?: 'LEFT' | 'RIGHT';
 }
 
-export default function SideCollapsiblePanel({
-  open,
+export default function SideCollapsiblePanel<T extends {[key: string]: Item}>({
+  openKey,
   items,
   className,
   direction = 'LEFT',
-}: SideCollapsiblePanelProps): JSX.Element {
-  const [itemOpen, setItemOpen] = React.useState<Item | null>(open);
+}: SideCollapsiblePanelProps<T>): JSX.Element {
+  const [itemKeyOpen, setItemKeyOpen] = React.useState<keyof T | undefined>(openKey);
+  const itemOpen = itemKeyOpen == null ? null : items[itemKeyOpen];
   return (
     <Flex
       direction="row"
@@ -44,7 +44,7 @@ export default function SideCollapsiblePanel({
         className,
       )}
     >
-      {logger.info(itemOpen)}
+      
       {direction === 'RIGHT' && itemOpen && (
         <Flex
           align="stretch"
@@ -67,15 +67,15 @@ export default function SideCollapsiblePanel({
         )}
       >
         
-        {items.map(item => (
+        {Object.entries(items).map(([key, item]) => (
           <>
             <IconButton
               icon={item.icon}
               title={item.title}
-              onClick={() => setItemOpen(itemOpen === item ? null : item)}
-              iconColor={itemOpen === item ? 'var(--fgColor)' : undefined}
+              onClick={() => setItemKeyOpen((itemKey)=> itemKey === key ? undefined : key)}
+              iconColor={itemKeyOpen === key ? 'var(--fgColor)' : undefined}
               iconSize='lg'
-              className={cx(marginAroundStyle([1, 3], space_M), lightIconButtonStyle, css({color: 'var(--lightGray)'}))}
+              className={cx(marginAroundStyle([3], space_L), lightIconButtonStyle, css({color: 'var(--lightGray)'}))}
             />
           </>
         ))}
