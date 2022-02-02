@@ -139,8 +139,8 @@ public class RestClient {
 <span class="nc bnc" id="L139" title="All 2 branches missed.">            if (response.getStatus() == 204) {</span>
 <span class="nc" id="L140">                return null;</span>
             } else {
-<span class="nc bnc" id="L142" title="All 2 branches missed.">                if(Response.class.isAssignableFrom(type.getRawType())){</span>
-<span class="nc" id="L143">                    return (T)response;</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">                if (Response.class.isAssignableFrom(type.getRawType())) {</span>
+<span class="nc" id="L143">                    return (T) response;</span>
                 }
 <span class="nc" id="L145">                Object entity = response.getEntity();</span>
 <span class="nc bnc" id="L146" title="All 2 branches missed.">                if (entity instanceof InputStream) {</span>
@@ -402,9 +402,13 @@ public class RestClient {
             ClientResponseContext responseContext) throws IOException {
 <span class="nc" id="L403">            NewCookie get = responseContext.getCookies().get(cookieName);</span>
 <span class="nc bnc" id="L404" title="All 2 branches missed.">            if (get != null) {</span>
-<span class="nc" id="L405">                this.sessionId = get.getValue();</span>
+<span class="nc bnc" id="L405" title="All 2 branches missed.">                if (get.getMaxAge() == 0) {</span>
+<span class="nc" id="L406">                    this.sessionId = null;</span>
+                } else {
+<span class="nc" id="L408">                    this.sessionId = get.getValue();</span>
+                }
             }
-<span class="nc" id="L407">        }</span>
+<span class="nc" id="L411">        }</span>
 
     }
 }

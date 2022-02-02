@@ -7,8 +7,10 @@
 package ch.colabproject.colab.api.model.tracking;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import java.time.OffsetDateTime;
-import javax.json.bind.annotation.JsonbDateFormat;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.json.bind.annotation.JsonbTypeSerializer;
 import javax.persistence.Embeddable;
 
 /**
@@ -17,14 +19,15 @@ import javax.persistence.Embeddable;
  * @author maxence
  */
 @Embeddable
-<span class="nc" id="L20">public class Tracking implements WithJsonDiscriminator {</span>
+<span class="nc" id="L22">public class Tracking implements WithJsonDiscriminator {</span>
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Creation date
      */
-    @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
+    @JsonbTypeDeserializer(DateSerDe.class)
+    @JsonbTypeSerializer(DateSerDe.class)
     private OffsetDateTime creationDate;
 
     /**
@@ -35,7 +38,8 @@ import javax.persistence.Embeddable;
     /**
      * Modification date
      */
-    @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
+    @JsonbTypeDeserializer(DateSerDe.class)
+    @JsonbTypeSerializer(DateSerDe.class)
     private OffsetDateTime modificationDate;
 
     /**
@@ -49,7 +53,7 @@ import javax.persistence.Embeddable;
      * @return creation date
      */
     public OffsetDateTime getCreationDate() {
-<span class="nc" id="L52">        return creationDate;</span>
+<span class="nc" id="L56">        return creationDate;</span>
     }
 
     /**
@@ -58,8 +62,8 @@ import javax.persistence.Embeddable;
      * @param creationDate creation date
      */
     public void setCreationDate(OffsetDateTime creationDate) {
-<span class="nc" id="L61">        this.creationDate = creationDate;</span>
-<span class="nc" id="L62">    }</span>
+<span class="nc" id="L65">        this.creationDate = creationDate;</span>
+<span class="nc" id="L66">    }</span>
 
     /**
      * get created by
@@ -67,7 +71,7 @@ import javax.persistence.Embeddable;
      * @return created by
      */
     public String getCreatedBy() {
-<span class="nc" id="L70">        return createdBy;</span>
+<span class="nc" id="L74">        return createdBy;</span>
     }
 
     /**
@@ -76,8 +80,8 @@ import javax.persistence.Embeddable;
      * @param createdBy created by value
      */
     public void setCreatedBy(String createdBy) {
-<span class="nc" id="L79">        this.createdBy = createdBy;</span>
-<span class="nc" id="L80">    }</span>
+<span class="nc" id="L83">        this.createdBy = createdBy;</span>
+<span class="nc" id="L84">    }</span>
 
     /**
      * get modification date
@@ -85,7 +89,7 @@ import javax.persistence.Embeddable;
      * @return date of most recent modification
      */
     public OffsetDateTime getModificationDate() {
-<span class="nc" id="L88">        return modificationDate;</span>
+<span class="nc" id="L92">        return modificationDate;</span>
     }
 
     /**
@@ -94,8 +98,8 @@ import javax.persistence.Embeddable;
      * @param modificationDate the date
      */
     public void setModificationDate(OffsetDateTime modificationDate) {
-<span class="nc" id="L97">        this.modificationDate = modificationDate;</span>
-<span class="nc" id="L98">    }</span>
+<span class="nc" id="L101">        this.modificationDate = modificationDate;</span>
+<span class="nc" id="L102">    }</span>
 
     /**
      * Get name of last user who touch the entity
@@ -103,7 +107,7 @@ import javax.persistence.Embeddable;
      * @return username
      */
     public String getModifiedBy() {
-<span class="nc" id="L106">        return modifiedBy;</span>
+<span class="nc" id="L110">        return modifiedBy;</span>
     }
 
     /**
@@ -112,7 +116,7 @@ import javax.persistence.Embeddable;
      * @param modifiedBy username
      */
     public void setModifiedBy(String modifiedBy) {
-<span class="nc" id="L115">        this.modifiedBy = modifiedBy;</span>
-<span class="nc" id="L116">    }</span>
+<span class="nc" id="L119">        this.modifiedBy = modifiedBy;</span>
+<span class="nc" id="L120">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

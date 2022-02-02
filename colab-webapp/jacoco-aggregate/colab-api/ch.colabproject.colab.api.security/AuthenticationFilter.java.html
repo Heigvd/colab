@@ -123,7 +123,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L123">                abortWith = HttpErrorMessage.authenticationRequired();</span>
             }
 <span class="nc" id="L125">        } else {</span>
-<span class="nc" id="L126">            sessionManager.touchUserActivityDate(currentUser);</span>
+<span class="nc" id="L126">            sessionManager.touchUserActivityDate();</span>
         }
 
 <span class="nc" id="L129">        List&lt;AdminResource&gt; annotations = getAnnotations(</span>

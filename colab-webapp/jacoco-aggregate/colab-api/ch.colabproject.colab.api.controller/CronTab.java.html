@@ -31,12 +31,22 @@ import org.slf4j.LoggerFactory;
     private SessionManager sessionManager;
 
     /**
-     * Each five minutes
+     * Each minutes
      */
     @Schedule(hour = &quot;*&quot;, minute = &quot;*&quot;)
     public void saveActivityDates() {
 <span class="nc" id="L38">        logger.info(&quot;CRON: Persist activity dates to database&quot;);</span>
 <span class="nc" id="L39">        sessionManager.writeActivityDatesToDatabase();</span>
 <span class="nc" id="L40">    }</span>
+
+
+    /**
+     * each midnight
+     */
+    @Schedule(hour = &quot;0&quot;, minute = &quot;0&quot;)
+    public void dropOldHttpSession() {
+<span class="nc" id="L48">        logger.info(&quot;CRON: drop expired http session&quot;);</span>
+<span class="nc" id="L49">        sessionManager.clearExpiredSessions();</span>
+<span class="nc" id="L50">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -12,9 +12,6 @@ import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithTrackingData;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.security.SessionManager;
-import java.time.OffsetDateTime;
 import javax.inject.Inject;
 import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
@@ -37,10 +34,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author maxence
  */
-<span class="nc" id="L40">public class EntityListener {</span>
+<span class="nc" id="L37">public class EntityListener {</span>
 
     /** logger */
-<span class="nc" id="L43">    private static final Logger logger = LoggerFactory.getLogger(EntityListener.class);</span>
+<span class="nc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(EntityListener.class);</span>
 
     /** To collect entities for later propagation */
     @Inject
@@ -54,10 +51,6 @@ import org.slf4j.LoggerFactory;
     @Inject
     private RequestManager requestManager;
 
-    /** activity date cache */
-    @Inject
-    private SessionManager sessionManager;
-
     /**
      * Track all reads from database
      *
@@ -65,16 +58,12 @@ import org.slf4j.LoggerFactory;
      */
     @PostLoad
     public void onLoad(Object o) {
-<span class="nc" id="L68">        logger.trace(&quot;Load {}&quot;, o);</span>
+<span class="nc" id="L61">        logger.trace(&quot;Load {}&quot;, o);</span>
         // Skip permission check if a condition assertion is already in progress
-<span class="nc bnc" id="L70" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L71">            securityManager.assertReadPermissionTx((WithPermission) o);</span>
+<span class="nc bnc" id="L63" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
+<span class="nc" id="L64">            securityManager.assertReadPermissionTx((WithPermission) o);</span>
         }
-<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (o instanceof User){</span>
-<span class="nc" id="L74">            OffsetDateTime activityDate = sessionManager.getActivityDate((User) o);</span>
-<span class="nc" id="L75">            ((User) o).setActivityDate(activityDate);</span>
-        }
-<span class="nc" id="L77">    }</span>
+<span class="nc" id="L66">    }</span>
 
     /**
      * Track all insertions
@@ -83,17 +72,17 @@ import org.slf4j.LoggerFactory;
      */
     @PostPersist
     public void onPersist(Object o) {
-<span class="nc" id="L86">        logger.trace(&quot;Persist {}&quot;, o);</span>
+<span class="nc" id="L75">        logger.trace(&quot;Persist {}&quot;, o);</span>
 
         // Skip permission check if a condition assertion is already in progress
-<span class="nc bnc" id="L89" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L90">            securityManager.assertCreatePermissionTx((WithPermission) o);</span>
+<span class="nc bnc" id="L78" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
+<span class="nc" id="L79">            securityManager.assertCreatePermissionTx((WithPermission) o);</span>
         }
 
-<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
-<span class="nc" id="L94">            wsEntityBag.registerUpdate((WithWebsocketChannels) o);</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
+<span class="nc" id="L83">            wsEntityBag.registerUpdate((WithWebsocketChannels) o);</span>
         }
-<span class="nc" id="L96">    }</span>
+<span class="nc" id="L85">    }</span>
 
     /**
      * Track all updates
@@ -102,16 +91,16 @@ import org.slf4j.LoggerFactory;
      */
     @PostUpdate
     public void onUpdate(Object o) {
-<span class="nc" id="L105">        logger.trace(&quot;Update {}&quot;, o);</span>
+<span class="nc" id="L94">        logger.trace(&quot;Update {}&quot;, o);</span>
         // Skip permission check if a condition assertion is already in progress
-<span class="nc bnc" id="L107" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L108">            securityManager.assertUpdatePermissionTx((WithPermission) o);</span>
+<span class="nc bnc" id="L96" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
+<span class="nc" id="L97">            securityManager.assertUpdatePermissionTx((WithPermission) o);</span>
         }
 
-<span class="nc bnc" id="L111" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
-<span class="nc" id="L112">            wsEntityBag.registerUpdate((WithWebsocketChannels) o);</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
+<span class="nc" id="L101">            wsEntityBag.registerUpdate((WithWebsocketChannels) o);</span>
         }
-<span class="nc" id="L114">    }</span>
+<span class="nc" id="L103">    }</span>
 
     /**
      * Before persist and before update, update tracking data
@@ -121,10 +110,10 @@ import org.slf4j.LoggerFactory;
     @PrePersist
     @PreUpdate
     public void touch(Object o) {
-<span class="nc bnc" id="L124" title="All 4 branches missed.">        if (!requestManager.isDoNotTrackChange() &amp;&amp; o instanceof WithTrackingData) {</span>
-<span class="nc" id="L125">            ((WithTrackingData) o).touch(requestManager.getCurrentUser());</span>
+<span class="nc bnc" id="L113" title="All 4 branches missed.">        if (!requestManager.isDoNotTrackChange() &amp;&amp; o instanceof WithTrackingData) {</span>
+<span class="nc" id="L114">            ((WithTrackingData) o).touch(requestManager.getCurrentUser());</span>
         }
-<span class="nc" id="L127">    }</span>
+<span class="nc" id="L116">    }</span>
 
     /**
      * Intercept object just before their deletion
@@ -133,15 +122,15 @@ import org.slf4j.LoggerFactory;
      */
     @PreRemove
     public void onDestroy(Object o) {
-<span class="nc" id="L136">        logger.trace(&quot;Destroy {}&quot;, o);</span>
+<span class="nc" id="L125">        logger.trace(&quot;Destroy {}&quot;, o);</span>
         // Skip permission check if a condition assertion is already in progress
-<span class="nc bnc" id="L138" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
-<span class="nc" id="L139">            securityManager.assertDeletePermissionTx((WithPermission) o);</span>
+<span class="nc bnc" id="L127" title="All 4 branches missed.">        if (o instanceof WithPermission &amp;&amp; !requestManager.isInSecurityTx()) {</span>
+<span class="nc" id="L128">            securityManager.assertDeletePermissionTx((WithPermission) o);</span>
         }
 
-<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
-<span class="nc" id="L143">            wsEntityBag.registerDeletion((WithWebsocketChannels) o);</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        if (o instanceof WithWebsocketChannels) {</span>
+<span class="nc" id="L132">            wsEntityBag.registerDeletion((WithWebsocketChannels) o);</span>
         }
-<span class="nc" id="L145">    }</span>
+<span class="nc" id="L134">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

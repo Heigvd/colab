@@ -76,7 +76,7 @@
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>  <em class="jxr_javadoccomment">     * HTTP session id which want to (un)subscribe</em>
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L71" href="#L71">71</a>      <strong class="jxr_keyword">private</strong> String colabSessionId;
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      <strong class="jxr_keyword">private</strong> Long colabSessionId;
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">     * Type of channel : User | Project</em>
@@ -129,7 +129,7 @@
 <a class="jxr_linenumber" name="L121" href="#L121">121</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L122" href="#L122">122</a> <em class="jxr_javadoccomment">     * @return http session id</em>
 <a class="jxr_linenumber" name="L123" href="#L123">123</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L124" href="#L124">124</a>     <strong class="jxr_keyword">public</strong> String getColabSessionId() {
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>     <strong class="jxr_keyword">public</strong> Long getColabSessionId() {
 <a class="jxr_linenumber" name="L125" href="#L125">125</a>         <strong class="jxr_keyword">return</strong> colabSessionId;
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>     }
 <a class="jxr_linenumber" name="L127" href="#L127">127</a> 
@@ -138,7 +138,7 @@
 <a class="jxr_linenumber" name="L130" href="#L130">130</a> <em class="jxr_javadoccomment">     *</em>
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> <em class="jxr_javadoccomment">     * @param colabSessionId id of the HTTP session</em>
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setColabSessionId(String colabSessionId) {
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setColabSessionId(Long colabSessionId) {
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         <strong class="jxr_keyword">this</strong>.colabSessionId = colabSessionId;
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>     }
 <a class="jxr_linenumber" name="L136" href="#L136">136</a> 
@@ -204,7 +204,7 @@
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>         ChannelType channelType,
 <a class="jxr_linenumber" name="L197" href="#L197">197</a>         Long channelId,
 <a class="jxr_linenumber" name="L198" href="#L198">198</a>         String wsSessionId,
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>         String httpSessionId
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>         Long httpSessionId
 <a class="jxr_linenumber" name="L200" href="#L200">200</a>     ) {
 <a class="jxr_linenumber" name="L201" href="#L201">201</a>         <a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/controller/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> sr = <strong class="jxr_keyword">new</strong> <a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/controller/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a>();
 <a class="jxr_linenumber" name="L202" href="#L202">202</a> 

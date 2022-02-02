@@ -142,19 +142,19 @@ import com.hazelcast.core.IExecutorService;
     /**
      * HTTP sessions to websocket sessions registry.
      * &lt;p /&gt;
-     * Since one can open several tabs in its browser, all tabs sharing the same httpSessionId
+     * Since one can open several tabs in its browser, all tabs share the same httpSessionId
      * (cookie) but each has its own websocket session, we have to maintain such a map.
      * &lt;p /&gt;
      * This is required cancel all subscription on logout.
      */
-<span class="nc" id="L150">    private Map&lt;String, Set&lt;Session&gt;&gt; httpSessionToWsSessions = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L150">    private Map&lt;Long, Set&lt;Session&gt;&gt; httpSessionToWsSessions = new HashMap&lt;&gt;();</span>
 
     /**
      * Each websocket session is linked to one http session.
      * &lt;p&gt;
      * This is the {@link httpSessionToWsSessions} reverse registry.
      */
-<span class="nc" id="L157">    private Map&lt;Session, String&gt; wsSessionToHttpSession = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L157">    private Map&lt;Session, Long&gt; wsSessionToHttpSession = new HashMap&lt;&gt;();</span>
 
     /**
      * List the channels each websocket session subscribe to.
@@ -224,7 +224,7 @@ import com.hazelcast.core.IExecutorService;
             SubscriptionRequest.ChannelType.BROADCAST,
 <span class="nc" id="L225">            0L,</span>
 <span class="nc" id="L226">            sessionId.getSessionId(),</span>
-<span class="nc" id="L227">            requestManager.getHttpSession().getSessionId());</span>
+<span class="nc" id="L227">            requestManager.getAndAssertHttpSession().getId());</span>
 <span class="nc" id="L228">        subscriptionEvents.fire(request);</span>
 <span class="nc" id="L229">    }</span>
 
@@ -242,7 +242,7 @@ import com.hazelcast.core.IExecutorService;
             SubscriptionRequest.ChannelType.BROADCAST,
 <span class="nc" id="L243">            0L,</span>
 <span class="nc" id="L244">            sessionId.getSessionId(),</span>
-<span class="nc" id="L245">            requestManager.getHttpSession().getSessionId());</span>
+<span class="nc" id="L245">            requestManager.getAndAssertHttpSession().getId());</span>
 <span class="nc" id="L246">        subscriptionEvents.fire(request);</span>
 <span class="nc" id="L247">    }</span>
 
@@ -259,7 +259,7 @@ import com.hazelcast.core.IExecutorService;
             SubscriptionRequest.ChannelType.USER,
 <span class="nc" id="L260">            user.getId(),</span>
 <span class="nc" id="L261">            sessionId.getSessionId(),</span>
-<span class="nc" id="L262">            requestManager.getHttpSession().getSessionId());</span>
+<span class="nc" id="L262">            requestManager.getAndAssertHttpSession().getId());</span>
 <span class="nc" id="L263">        subscriptionEvents.fire(request);</span>
 <span class="nc" id="L264">    }</span>
 
@@ -276,7 +276,7 @@ import com.hazelcast.core.IExecutorService;
             SubscriptionRequest.ChannelType.USER,
 <span class="nc" id="L277">            user.getId(),</span>
 <span class="nc" id="L278">            sessionId.getSessionId(),</span>
-<span class="nc" id="L279">            requestManager.getHttpSession().getSessionId());</span>
+<span class="nc" id="L279">            requestManager.getAndAssertHttpSession().getId());</span>
 <span class="nc" id="L280">        subscriptionEvents.fire(request);</span>
 <span class="nc" id="L281">    }</span>
 
@@ -299,7 +299,7 @@ import com.hazelcast.core.IExecutorService;
                 SubscriptionRequest.ChannelType.PROJECT,
 <span class="nc" id="L300">                project.getId(),</span>
 <span class="nc" id="L301">                sessionId.getSessionId(),</span>
-<span class="nc" id="L302">                requestManager.getHttpSession().getSessionId());</span>
+<span class="nc" id="L302">                requestManager.getAndAssertHttpSession().getId());</span>
 <span class="nc" id="L303">            subscriptionEvents.fire(request);</span>
 <span class="nc" id="L304">        } else {</span>
 <span class="nc" id="L305">            throw HttpErrorMessage.notFound();</span>
@@ -325,7 +325,7 @@ import com.hazelcast.core.IExecutorService;
                 SubscriptionRequest.ChannelType.PROJECT,
 <span class="nc" id="L326">                project.getId(),</span>
 <span class="nc" id="L327">                sessionId.getSessionId(),</span>
-<span class="nc" id="L328">                requestManager.getHttpSession().getSessionId());</span>
+<span class="nc" id="L328">                requestManager.getAndAssertHttpSession().getId());</span>
 <span class="nc" id="L329">            subscriptionEvents.fire(request);</span>
 <span class="nc" id="L330">        } else {</span>
 <span class="nc" id="L331">            throw HttpErrorMessage.notFound();</span>
@@ -352,7 +352,7 @@ import com.hazelcast.core.IExecutorService;
                 SubscriptionRequest.ChannelType.BLOCK,
 <span class="nc" id="L353">                block.getId(),</span>
 <span class="nc" id="L354">                sessionId.getSessionId(),</span>
-<span class="nc" id="L355">                requestManager.getHttpSession().getSessionId());</span>
+<span class="nc" id="L355">                requestManager.getAndAssertHttpSession().getId());</span>
 <span class="nc" id="L356">            subscriptionEvents.fire(request);</span>
 <span class="nc" id="L357">        } else {</span>
 <span class="nc" id="L358">            throw HttpErrorMessage.notFound();</span>
@@ -379,7 +379,7 @@ import com.hazelcast.core.IExecutorService;
                 SubscriptionRequest.ChannelType.BLOCK,
 <span class="nc" id="L380">                block.getId(),</span>
 <span class="nc" id="L381">                sessionId.getSessionId(),</span>
-<span class="nc" id="L382">                requestManager.getHttpSession().getSessionId());</span>
+<span class="nc" id="L382">                requestManager.getAndAssertHttpSession().getId());</span>
 <span class="nc" id="L383">            subscriptionEvents.fire(request);</span>
 <span class="nc" id="L384">        } else {</span>
 <span class="nc" id="L385">            throw HttpErrorMessage.notFound();</span>
@@ -393,7 +393,7 @@ import com.hazelcast.core.IExecutorService;
      */
     public void processSubscription(
         @Observes @Inbound(eventName = WS_SUBSCRIPTION_EVENT_CHANNEL) SubscriptionRequest request) {
-        // all security check have be done before fire the subscription event
+        // all security checks have been done before firing the subscription event
 <span class="nc" id="L397">        requestManager.sudo(() -&gt; {</span>
 <span class="nc" id="L398">            logger.debug(&quot;Channel subscription request: {}&quot;, request);</span>
 <span class="nc" id="L399">            Session session = WebsocketEndpoint.getSession(request.getWsSessionId());</span>
@@ -411,7 +411,7 @@ import com.hazelcast.core.IExecutorService;
 <span class="nc" id="L411">                    httpSessionToWsSessions.get(request.getColabSessionId()).add(session);</span>
 
                     // make sure to link wsSession to its Http session
-<span class="nc" id="L414">                    wsSessionToHttpSession.put(session, request.getColabSessionId());</span>
+<span class="nc" id="L414">                    wsSessionToHttpSession.put(session, request.getColabSessionId()); // TODO: is it even used ?</span>
 
 <span class="nc bnc" id="L416" title="All 2 branches missed.">                    if (request.getType() == SubscriptionRequest.SubscriptionType.SUBSCRIBE) {</span>
                         // make sure the http session has its own list of channels
@@ -587,7 +587,7 @@ import com.hazelcast.core.IExecutorService;
      *
      * @param httpSessionId httpSessionId which just sign out
      */
-    public void signoutAndUnsubscribeFromAll(String httpSessionId) {
+    public void signoutAndUnsubscribeFromAll(Long httpSessionId) {
         // TODO send logout event, so each client (each browser tab) knows it has been disconnected
 <span class="nc" id="L592">        Set&lt;Session&gt; wsSessions = this.httpSessionToWsSessions.get(httpSessionId);</span>
 <span class="nc bnc" id="L593" title="All 2 branches missed.">        if (wsSessions != null) {</span>

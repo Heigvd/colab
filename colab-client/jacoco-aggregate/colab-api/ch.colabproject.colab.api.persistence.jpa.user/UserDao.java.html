@@ -10,6 +10,8 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.model.user.HttpSession;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import javax.ejb.LocalBean;
@@ -18,6 +20,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Users persistence
@@ -26,7 +30,10 @@ import javax.persistence.TypedQuery;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L29">public class UserDao {</span>
+<span class="nc" id="L33">public class UserDao {</span>
+
+    /** logger */
+<span class="nc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(UserDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -42,14 +49,14 @@ import javax.persistence.TypedQuery;
      * @return the account if it exists; null otherwise
      */
     public Account findAccount(Long accountId) {
-<span class="nc bnc" id="L45" title="All 2 branches missed.">        if (accountId != null) {</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if (accountId != null) {</span>
             try {
-<span class="nc" id="L47">                return em.find(Account.class, accountId);</span>
-<span class="nc" id="L48">            } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L49">                return null;</span>
+<span class="nc" id="L54">                return em.find(Account.class, accountId);</span>
+<span class="nc" id="L55">            } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L56">                return null;</span>
             }
         } else {
-<span class="nc" id="L52">            return null;</span>
+<span class="nc" id="L59">            return null;</span>
         }
     }
 
@@ -62,12 +69,12 @@ import javax.persistence.TypedQuery;
      */
     public LocalAccount findLocalAccountByEmail(String email) {
         try {
-<span class="nc" id="L65">            TypedQuery&lt;LocalAccount&gt; query</span>
-<span class="nc" id="L66">                = em.createNamedQuery(&quot;LocalAccount.findByEmail&quot;, LocalAccount.class);</span>
-<span class="nc" id="L67">            query.setParameter(&quot;email&quot;, email);</span>
-<span class="nc" id="L68">            return query.getSingleResult();</span>
-<span class="nc" id="L69">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L70">            return null;</span>
+<span class="nc" id="L72">            TypedQuery&lt;LocalAccount&gt; query</span>
+<span class="nc" id="L73">                = em.createNamedQuery(&quot;LocalAccount.findByEmail&quot;, LocalAccount.class);</span>
+<span class="nc" id="L74">            query.setParameter(&quot;email&quot;, email);</span>
+<span class="nc" id="L75">            return query.getSingleResult();</span>
+<span class="nc" id="L76">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L77">            return null;</span>
         }
     }
 
@@ -77,8 +84,8 @@ import javax.persistence.TypedQuery;
      * @return list of all users
      */
     public List&lt;User&gt; getAllUsers() {
-<span class="nc" id="L80">        TypedQuery&lt;User&gt; query = em.createNamedQuery(&quot;User.findAll&quot;, User.class);</span>
-<span class="nc" id="L81">        return query.getResultList();</span>
+<span class="nc" id="L87">        TypedQuery&lt;User&gt; query = em.createNamedQuery(&quot;User.findAll&quot;, User.class);</span>
+<span class="nc" id="L88">        return query.getResultList();</span>
     }
 
     /**
@@ -90,9 +97,9 @@ import javax.persistence.TypedQuery;
      */
     public User findUser(Long userId) {
         try {
-<span class="nc" id="L93">            return em.find(User.class, userId);</span>
-<span class="nc" id="L94">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L95">            return null;</span>
+<span class="nc" id="L100">            return em.find(User.class, userId);</span>
+<span class="nc" id="L101">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L102">            return null;</span>
         }
     }
 
@@ -105,13 +112,13 @@ import javax.persistence.TypedQuery;
      */
     public User findUserByUsername(String username) {
         try {
-<span class="nc" id="L108">            TypedQuery&lt;User&gt; query</span>
-<span class="nc" id="L109">                = em.createNamedQuery(&quot;User.findByUsername&quot;, User.class);</span>
-<span class="nc" id="L110">            query.setParameter(&quot;username&quot;, username);</span>
+<span class="nc" id="L115">            TypedQuery&lt;User&gt; query</span>
+<span class="nc" id="L116">                = em.createNamedQuery(&quot;User.findByUsername&quot;, User.class);</span>
+<span class="nc" id="L117">            query.setParameter(&quot;username&quot;, username);</span>
 
-<span class="nc" id="L112">            return query.getSingleResult();</span>
-<span class="nc" id="L113">        } catch (NoResultException ex) {</span>
-<span class="nc" id="L114">            return null;</span>
+<span class="nc" id="L119">            return query.getSingleResult();</span>
+<span class="nc" id="L120">        } catch (NoResultException ex) {</span>
+<span class="nc" id="L121">            return null;</span>
         }
     }
 
@@ -121,8 +128,8 @@ import javax.persistence.TypedQuery;
      * @return list of all administrator
      */
     public List&lt;User&gt; findAllAdmin() {
-<span class="nc" id="L124">        TypedQuery&lt;User&gt; query = em.createNamedQuery(&quot;User.findAllAdmin&quot;, User.class);</span>
-<span class="nc" id="L125">        return query.getResultList();</span>
+<span class="nc" id="L131">        TypedQuery&lt;User&gt; query = em.createNamedQuery(&quot;User.findAllAdmin&quot;, User.class);</span>
+<span class="nc" id="L132">        return query.getResultList();</span>
     }
 
     /**
@@ -133,24 +140,24 @@ import javax.persistence.TypedQuery;
      * @return LocalAccount
      */
     public LocalAccount findLocalAccountByIdentifier(String identifier) {
-<span class="nc" id="L136">        LocalAccount account = this.findLocalAccountByEmail(identifier);</span>
+<span class="nc" id="L143">        LocalAccount account = this.findLocalAccountByEmail(identifier);</span>
 
-<span class="nc bnc" id="L138" title="All 2 branches missed.">        if (account == null) {</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (account == null) {</span>
             // no localAccount with such an email addres
             // try to find a user by username
-<span class="nc" id="L141">            User user = this.findUserByUsername(identifier);</span>
-<span class="nc bnc" id="L142" title="All 2 branches missed.">            if (user != null) {</span>
+<span class="nc" id="L148">            User user = this.findUserByUsername(identifier);</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">            if (user != null) {</span>
                 // User found, as authenticationMethod is only available for LocalAccount,
                 // try to find one
-<span class="nc" id="L145">                Optional&lt;Account&gt; optAccount = user.getAccounts().stream()</span>
-<span class="nc" id="L146">                    .filter(a -&gt; a instanceof LocalAccount)</span>
-<span class="nc" id="L147">                    .findFirst();</span>
-<span class="nc bnc" id="L148" title="All 2 branches missed.">                if (optAccount.isPresent()) {</span>
-<span class="nc" id="L149">                    account = (LocalAccount) optAccount.get();</span>
+<span class="nc" id="L152">                Optional&lt;Account&gt; optAccount = user.getAccounts().stream()</span>
+<span class="nc" id="L153">                    .filter(a -&gt; a instanceof LocalAccount)</span>
+<span class="nc" id="L154">                    .findFirst();</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">                if (optAccount.isPresent()) {</span>
+<span class="nc" id="L156">                    account = (LocalAccount) optAccount.get();</span>
                 }
             }
         }
-<span class="nc" id="L153">        return account;</span>
+<span class="nc" id="L160">        return account;</span>
     }
 
     /**
@@ -162,10 +169,64 @@ import javax.persistence.TypedQuery;
      * @throws ColabMergeException if something went wrong
      */
     public void updateUser(User user) throws ColabMergeException {
-<span class="nc" id="L165">        User managedUser = this.findUser(user.getId());</span>
+<span class="nc" id="L172">        User managedUser = this.findUser(user.getId());</span>
 
-<span class="nc" id="L167">        managedUser.merge(user);</span>
-<span class="nc" id="L168">    }</span>
+<span class="nc" id="L174">        managedUser.merge(user);</span>
+<span class="nc" id="L175">    }</span>
 
+    /**
+     * Find a persisted HttpSession by id
+     *
+     * @param id id
+     *
+     * @return the session or null
+     */
+    public HttpSession getHttpSessionById(Long id) {
+        try {
+<span class="nc" id="L186">            return this.em.find(HttpSession.class, id);</span>
+<span class="nc" id="L187">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L188">            return null;</span>
+        }
+    }
+
+    /**
+     * Persist HttpSession to database
+     *
+     * @param session session to persist
+     *
+     * @return persisted and managed session
+     */
+    public HttpSession persistHttpSession(HttpSession session) {
+<span class="nc" id="L200">        em.persist(session);</span>
+<span class="nc" id="L201">        return session;</span>
+    }
+
+    /**
+     * Delete an http session
+     *
+     * @param session session to delete
+     */
+    public void deleteHttpSession(HttpSession session) {
+<span class="nc" id="L210">        Account account = session.getAccount();</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">        if (account != null){</span>
+<span class="nc" id="L212">            account.getHttpSessions().remove(session);</span>
+        }
+<span class="nc" id="L214">        em.remove(session);</span>
+<span class="nc" id="L215">    }</span>
+
+    /**
+     * Get list of http session inactive for at least 2 days
+     *
+     * @return list of old httpSessions
+     */
+    public List&lt;HttpSession&gt; getExpiredHttpSessions() {
+<span class="nc" id="L223">        TypedQuery&lt;HttpSession&gt; query = em.createNamedQuery(&quot;HttpSession.getOlderThan&quot;, HttpSession.class);</span>
+        //var time = OffsetDateTime.now().minusMinutes(10);
+<span class="nc" id="L225">        var time = OffsetDateTime.now().minusWeeks(1);</span>
+<span class="nc" id="L226">        query.setParameter(&quot;time&quot;, time);</span>
+<span class="nc" id="L227">        List&lt;HttpSession&gt; resultList = query.getResultList();</span>
+<span class="nc" id="L228">        logger.trace(&quot;Get expired HttpSession (&lt; {}) =&gt; {}&quot;, time, resultList);</span>
+<span class="nc" id="L229">        return resultList;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

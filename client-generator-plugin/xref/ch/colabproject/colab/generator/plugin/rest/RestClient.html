@@ -147,8 +147,8 @@
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>             <strong class="jxr_keyword">if</strong> (response.getStatus() == 204) {
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>                 <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>                 <strong class="jxr_keyword">if</strong>(Response.<strong class="jxr_keyword">class</strong>.isAssignableFrom(type.getRawType())){
-<a class="jxr_linenumber" name="L143" href="#L143">143</a>                     <strong class="jxr_keyword">return</strong> (T)response;
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>                 <strong class="jxr_keyword">if</strong> (Response.<strong class="jxr_keyword">class</strong>.isAssignableFrom(type.getRawType())) {
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>                     <strong class="jxr_keyword">return</strong> (T) response;
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>                 }
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>                 Object entity = response.getEntity();
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>                 <strong class="jxr_keyword">if</strong> (entity instanceof InputStream) {
@@ -410,12 +410,16 @@
 <a class="jxr_linenumber" name="L402" href="#L402">402</a>             ClientResponseContext responseContext) <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L403" href="#L403">403</a>             NewCookie get = responseContext.getCookies().get(cookieName);
 <a class="jxr_linenumber" name="L404" href="#L404">404</a>             <strong class="jxr_keyword">if</strong> (get != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>                 <strong class="jxr_keyword">this</strong>.sessionId = get.getValue();
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>             }
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>         }
-<a class="jxr_linenumber" name="L408" href="#L408">408</a> 
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>     }
-<a class="jxr_linenumber" name="L410" href="#L410">410</a> }
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>                 <strong class="jxr_keyword">if</strong> (get.getMaxAge() == 0) {
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>                     <strong class="jxr_keyword">this</strong>.sessionId = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>                 } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>                     <strong class="jxr_keyword">this</strong>.sessionId = get.getValue();
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>                 }
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>             }
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>         }
+<a class="jxr_linenumber" name="L412" href="#L412">412</a> 
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>     }
+<a class="jxr_linenumber" name="L414" href="#L414">414</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2022 <a href="https://www.colab-project.ch">AlbaSim, MEI, HEIG-VD, HES-SO</a>. All rights reserved.</div>

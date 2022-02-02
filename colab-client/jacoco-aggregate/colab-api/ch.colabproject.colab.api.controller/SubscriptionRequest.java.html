@@ -68,7 +68,7 @@ import java.io.Serializable;
      *
      * HTTP session id which want to (un)subscribe
      */
-    private String colabSessionId;
+    private Long colabSessionId;
 
     /**
      * Type of channel : User | Project
@@ -121,7 +121,7 @@ import java.io.Serializable;
      *
      * @return http session id
      */
-    public String getColabSessionId() {
+    public Long getColabSessionId() {
 <span class="nc" id="L125">        return colabSessionId;</span>
     }
 
@@ -130,7 +130,7 @@ import java.io.Serializable;
      *
      * @param colabSessionId id of the HTTP session
      */
-    public void setColabSessionId(String colabSessionId) {
+    public void setColabSessionId(Long colabSessionId) {
 <span class="nc" id="L134">        this.colabSessionId = colabSessionId;</span>
 <span class="nc" id="L135">    }</span>
 
@@ -196,7 +196,7 @@ import java.io.Serializable;
         ChannelType channelType,
         Long channelId,
         String wsSessionId,
-        String httpSessionId
+        Long httpSessionId
     ) {
 <span class="nc" id="L201">        SubscriptionRequest sr = new SubscriptionRequest();</span>
 

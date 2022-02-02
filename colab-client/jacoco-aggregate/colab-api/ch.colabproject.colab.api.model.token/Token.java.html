@@ -14,12 +14,13 @@ import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.model.user.HashMethod;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
+import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
-import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.json.bind.annotation.JsonbTypeSerializer;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -42,7 +43,7 @@ import javax.validation.constraints.NotNull;
 // Having one table per subclass allows subclasses to defined their own indexes and constraints
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-<span class="nc" id="L45">public abstract class Token implements ColabEntity {</span>
+<span class="nc" id="L46">public abstract class Token implements ColabEntity {</span>
 
     /**
      * a token does not need a salt but, as some HashMethods require one, let's use an hard-coded
@@ -93,7 +94,8 @@ import javax.validation.constraints.NotNull;
     /**
      * token expiration date. TODO: schedule deletion of outdated tokens
      */
-    @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
+    @JsonbTypeDeserializer(DateSerDe.class)
+    @JsonbTypeSerializer(DateSerDe.class)
     private OffsetDateTime expirationDate;
 
     /**
@@ -102,7 +104,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of authenticationRequired
      */
     public Boolean isAuthenticationRequired() {
-<span class="nc" id="L105">        return authenticationRequired;</span>
+<span class="nc" id="L107">        return authenticationRequired;</span>
     }
 
     /**
@@ -111,8 +113,8 @@ import javax.validation.constraints.NotNull;
      * @param authenticationRequired new value of authenticationRequired
      */
     public void setAuthenticationRequired(Boolean authenticationRequired) {
-<span class="nc" id="L114">        this.authenticationRequired = authenticationRequired;</span>
-<span class="nc" id="L115">    }</span>
+<span class="nc" id="L116">        this.authenticationRequired = authenticationRequired;</span>
+<span class="nc" id="L117">    }</span>
 
     /**
      * Get the value of hashMethod
@@ -120,7 +122,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of hashMethod
      */
     public HashMethod getHashMethod() {
-<span class="nc" id="L123">        return hashMethod;</span>
+<span class="nc" id="L125">        return hashMethod;</span>
     }
 
     /**
@@ -129,8 +131,8 @@ import javax.validation.constraints.NotNull;
      * @param hashMethod new value of hashMethod
      */
     public void setHashMethod(HashMethod hashMethod) {
-<span class="nc" id="L132">        this.hashMethod = hashMethod;</span>
-<span class="nc" id="L133">    }</span>
+<span class="nc" id="L134">        this.hashMethod = hashMethod;</span>
+<span class="nc" id="L135">    }</span>
 
     /**
      * Get the value of hashedToken
@@ -138,7 +140,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of hashedToken
      */
     public byte[] getHashedToken() {
-<span class="nc" id="L141">        return hashedToken;</span>
+<span class="nc" id="L143">        return hashedToken;</span>
     }
 
     /**
@@ -147,15 +149,15 @@ import javax.validation.constraints.NotNull;
      * @param hashedToken new value of hashedToken
      */
     public void setHashedToken(byte[] hashedToken) {
-<span class="nc" id="L150">        this.hashedToken = hashedToken;</span>
-<span class="nc" id="L151">    }</span>
+<span class="nc" id="L152">        this.hashedToken = hashedToken;</span>
+<span class="nc" id="L153">    }</span>
 
     /**
      * @return the project ID
      */
     @Override
     public Long getId() {
-<span class="nc" id="L158">        return id;</span>
+<span class="nc" id="L160">        return id;</span>
     }
 
     /**
@@ -164,8 +166,8 @@ import javax.validation.constraints.NotNull;
      * @param id id
      */
     public void setId(Long id) {
-<span class="nc" id="L167">        this.id = id;</span>
-<span class="nc" id="L168">    }</span>
+<span class="nc" id="L169">        this.id = id;</span>
+<span class="nc" id="L170">    }</span>
 
     /**
      * Get the value of expirationDate
@@ -173,7 +175,7 @@ import javax.validation.constraints.NotNull;
      * @return the value of expirationDate
      */
     public OffsetDateTime getExpirationDate() {
-<span class="nc" id="L176">        return expirationDate;</span>
+<span class="nc" id="L178">        return expirationDate;</span>
     }
 
     /**
@@ -182,13 +184,13 @@ import javax.validation.constraints.NotNull;
      * @param expirationDate new value of expirationDate
      */
     public void setExpirationDate(OffsetDateTime expirationDate) {
-<span class="nc" id="L185">        this.expirationDate = expirationDate;</span>
-<span class="nc" id="L186">    }</span>
+<span class="nc" id="L187">        this.expirationDate = expirationDate;</span>
+<span class="nc" id="L188">    }</span>
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
         // nothing to do
-<span class="nc" id="L191">    }</span>
+<span class="nc" id="L193">    }</span>
 
     /**
      * URL to redirect the user to once the token has been consumed.
@@ -229,7 +231,7 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public Tracking getTrackingData() {
-<span class="nc" id="L232">        return trackingData;</span>
+<span class="nc" id="L234">        return trackingData;</span>
     }
 
     /**
@@ -239,8 +241,8 @@ import javax.validation.constraints.NotNull;
      */
     @Override
     public void setTrackingData(Tracking trackingData) {
-<span class="nc" id="L242">        this.trackingData = trackingData;</span>
-<span class="nc" id="L243">    }</span>
+<span class="nc" id="L244">        this.trackingData = trackingData;</span>
+<span class="nc" id="L245">    }</span>
 
     /**
      * Check plain token against hashed persisted one
@@ -250,8 +252,8 @@ import javax.validation.constraints.NotNull;
      * @return true if there is a match
      */
     public boolean checkHash(String plainToken) {
-<span class="nc" id="L253">        byte[] submited = this.getHashMethod().hash(plainToken, SALT);</span>
-<span class="nc" id="L254">        return Arrays.equals(submited, this.getHashedToken());</span>
+<span class="nc" id="L255">        byte[] submited = this.getHashMethod().hash(plainToken, SALT);</span>
+<span class="nc" id="L256">        return Arrays.equals(submited, this.getHashedToken());</span>
     }
 
     /**
@@ -261,32 +263,32 @@ import javax.validation.constraints.NotNull;
      */
     @JsonbTransient
     public boolean isOutdated() {
-<span class="nc bnc" id="L264" title="All 2 branches missed.">        if (this.expirationDate != null) {</span>
-<span class="nc" id="L265">            return this.expirationDate.isBefore(OffsetDateTime.now());</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">        if (this.expirationDate != null) {</span>
+<span class="nc" id="L267">            return this.expirationDate.isBefore(OffsetDateTime.now());</span>
         }
-<span class="nc" id="L267">        return false;</span>
+<span class="nc" id="L269">        return false;</span>
     }
 
     @Override
     public Conditions.Condition getReadCondition() {
-<span class="nc" id="L272">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L274">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public Conditions.Condition getUpdateCondition() {
         //TODO: decide what to do
-<span class="nc" id="L278">        return Conditions.alwaysTrue;</span>
+<span class="nc" id="L280">        return Conditions.alwaysTrue;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L283">        return EntityHelper.hashCode(this);</span>
+<span class="nc" id="L285">        return EntityHelper.hashCode(this);</span>
     }
 
     @Override
     @SuppressWarnings(&quot;EqualsWhichDoesntCheckParameterClass&quot;)
     public boolean equals(Object obj) {
-<span class="nc" id="L289">        return EntityHelper.equals(this, obj);</span>
+<span class="nc" id="L291">        return EntityHelper.equals(this, obj);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

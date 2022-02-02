@@ -34,12 +34,12 @@ import javax.ws.rs.ext.Provider;
      * @return an Jsonb object
      */
     public static Jsonb getJsonb() {
-<span class="fc" id="L37">        DateSerDe dateSerDe = new DateSerDe();</span>
+        //DateSerDe dateSerDe = new DateSerDe();
 <span class="fc" id="L38">        JsonbConfig config = new JsonbConfig()</span>
-<span class="fc" id="L39">            .withFormatting(false)</span>
-<span class="fc" id="L40">            .withDeserializers(dateSerDe)</span>
-<span class="fc" id="L41">            .withSerializers(dateSerDe);</span>
-        
+<span class="fc" id="L39">            .withFormatting(false);</span>
+            //.withDeserializers(dateSerDe)
+            //.withSerializers(dateSerDe);
+
         // DO NEVER DO THAT EVER (see PolymorphicDeserializer doc):
         //.withDeserializers(new PolymorphicDeserializer());
 
