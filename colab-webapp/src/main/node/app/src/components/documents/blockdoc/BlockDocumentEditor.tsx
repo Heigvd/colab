@@ -55,7 +55,6 @@ export function BlockDocumentEditor({ doc, allowEdition }: BlockDocProps): JSX.E
       ) : (
         blockIds.map(id => <BlockEditorWrapper key={id} blockId={id} allowEdition={allowEdition} />)
       )}
-
       {allowEdition ? <CreateBlockButton doc={doc} /> : null}
     </Flex>
   );

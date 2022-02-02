@@ -19,7 +19,7 @@ import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
 import Modal from '../common/Modal';
-import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { lightIconButtonStyle, space_M, space_S, variantTitle } from '../styling/style';
 import CardLayout from './CardLayout';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
@@ -100,8 +100,8 @@ export default function CardThumb({
                     {card.title || i18n.card.untitled}
                   </span>
                   {hasVariants && (
-                    <span>
-                      {' - '}
+                    <span className={variantTitle}>
+                      &#xFE58;
                       {variant?.title && variant.title.length > 0
                         ? variant.title
                         : `Variant ${variantNumber}`}

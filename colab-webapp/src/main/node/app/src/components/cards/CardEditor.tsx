@@ -6,9 +6,11 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
 import {
   faCog,
   faEllipsisV,
+  faFileAlt,
   faStickyNote,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -36,7 +38,14 @@ import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
-import { cardStyle, cardTitle, lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import {
+  cardStyle,
+  cardTitle,
+  lightIconButtonStyle,
+  space_M,
+  space_S,
+  variantTitle,
+} from '../styling/style';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
 import SideCollapsiblePanel from './SideCollapsiblePanel';
@@ -154,11 +163,10 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
               items={{
                 'Sticky Notes': {
                   icon: faStickyNote,
-                  title: 'Sticky notes',
-                  children: (
-                      <StickyNoteWrapper destCardId={card.id} showSrc />
-                  ),
-                }}}
+                  title: 'Toggle sticky notes panel',
+                  children: <StickyNoteWrapper destCardId={card.id} showSrc />,
+                },
+              }}
             />
             <Flex direction="column" grow={1} align="stretch">
               <Flex
@@ -181,32 +189,47 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                           : '1px solid var(--lightGray)',
                     })}
                   >
-                    <Flex>
-                      <AutoSaveInput
-                        placeholder={i18n.card.untitled}
-                        readOnly={readOnly}
-                        inputType="INPUT"
-                        value={card.title || ''}
-                        onChange={newValue =>
-                          dispatch(API.updateCard({ ...card, title: newValue }))
-                        }
-                        className={cardTitle}
-                      />
-                      {hasVariants ? (
-                        <>
-                          <span className={cardTitle}>{'/'}</span>
-                          <AutoSaveInput
-                            className={cardTitle}
-                            value={variant.title && variant.title.length > 0 ? variant.title : `Variant ${variantNumber}`}
-                            readOnly={readOnly}
-                            placeholder={i18n.content.untitled}
-                            onChange={newValue =>
-                              dispatch(API.updateCardContent({ ...variant, title: newValue }))
-                            }
-                          />
-                        </>
-                      ) : null}
-                    </Flex>
+                    <div>
+                      {variant.frozen && (
+                        <div
+                          className={css({ color: '#71D9FF' })}
+                          title='Card is frozen (locked). To unfreeze go to Card settings and uncheck "frozen".'
+                        >
+                          <FontAwesomeIcon icon={faSnowflake} />
+                          <i> frozen</i>
+                        </div>
+                      )}
+                      <Flex align="center">
+                        <AutoSaveInput
+                          placeholder={i18n.card.untitled}
+                          readOnly={readOnly}
+                          inputType="INPUT"
+                          value={card.title || ''}
+                          onChange={newValue =>
+                            dispatch(API.updateCard({ ...card, title: newValue }))
+                          }
+                          className={cardTitle}
+                        />
+                        {hasVariants ? (
+                          <>
+                            <span className={variantTitle}>&#xFE58;</span>
+                            <AutoSaveInput
+                              className={variantTitle}
+                              value={
+                                variant.title && variant.title.length > 0
+                                  ? variant.title
+                                  : `Variant ${variantNumber}`
+                              }
+                              readOnly={readOnly}
+                              placeholder={i18n.content.untitled}
+                              onChange={newValue =>
+                                dispatch(API.updateCardContent({ ...variant, title: newValue }))
+                              }
+                            />
+                          </>
+                        ) : null}
+                      </Flex>
+                    </div>
                     <Flex>
                       {/* handle modal routes*/}
                       <Routes>
@@ -330,7 +353,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                       className={css({
                         '&:hover': {
                           cursor: 'pointer',
-                          opacity: .6,
+                          opacity: 0.6,
                         },
                       })}
                     />
@@ -370,10 +393,10 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
               </Flex>
             </Flex>
             <SideCollapsiblePanel
-              openKey={'Dragon'}
+              openKey={'resources'}
               direction="RIGHT"
               items={{
-                'Dragon':{
+                resources: {
                   children: (
                     <ResourcesWrapper
                       kind={ResourceContextScope.CardOrCardContent}
@@ -384,8 +407,8 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                       cardContentId={variant.id}
                     />
                   ),
-                  icon: faCog,
-                  title: 'title',
+                  icon: faFileAlt,
+                  title: 'Toggle resources panel',
                 },
               }}
             />

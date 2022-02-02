@@ -97,7 +97,7 @@ export default function LiveEditor({
   if (!allowEdition) {
     return (
       <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
-        <MarkdownViewer md={currentValue} />;
+        <MarkdownViewer md={currentValue} />
       </ErrorBoundary>
     );
   } else {
