@@ -44,8 +44,9 @@ export default function CardThumb({
   const navigate = useNavigate();
   const location = useLocation();
   const hasVariants = variants.length > 1 && variant != null;
+  const variantNumber = hasVariants ? variants.indexOf(variant) + 1 : undefined;
 
-  // Get nb of sticky notes and resources to display on card (cf below). 
+  // Get nb of sticky notes and resources to display on card (cf below).
   //Commented temporarily for first online version. Full data is not complete on first load. To discuss.
   //const nbStickyNotes = useStickyNoteLinksForDest(card.id).stickyNotesForDest.length;
   /* const nbResources = useResources({
@@ -75,9 +76,10 @@ export default function CardThumb({
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-around',
-              borderBottom: (card.color && card.color != '#ffffff')
-                ? '3px solid ' + card.color
-                : '1px solid var(--lightGray)',
+              borderBottom:
+                card.color && card.color != '#ffffff'
+                  ? '3px solid ' + card.color
+                  : '1px solid var(--lightGray)',
               width: '100%',
             })}
           >
@@ -97,13 +99,14 @@ export default function CardThumb({
                   <span className={css({ fontWeight: 'bold' })}>
                     {card.title || i18n.card.untitled}
                   </span>
-                  {variants.length > 1 ? (
-                    variant?.title ? (
-                      <span> - {variant.title}</span>
-                    ) : (
-                      <i> - {i18n.content.untitled}</i>
-                    )
-                  ) : null}
+                  {hasVariants && (
+                    <span>
+                      {' - '}
+                      {variant?.title && variant.title.length > 0
+                        ? variant.title
+                        : `Variant ${variantNumber}`}
+                    </span>
+                  )}
                 </div>
                 {/* handle modal routes*/}
                 <Routes>
@@ -226,7 +229,7 @@ export default function CardThumb({
             className={css({
               padding: space_M,
             })}
-            justify='center'
+            justify="center"
           >
             {showSubcards ? (
               variant != null ? (

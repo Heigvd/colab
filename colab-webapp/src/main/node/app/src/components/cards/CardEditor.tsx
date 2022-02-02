@@ -99,6 +99,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
 
   const variants = useVariantsOrLoad(card) || [];
   const hasVariants = variants.length > 1 && variant != null;
+  const variantNumber = hasVariants ? variants.indexOf(variant) + 1 : undefined;
 
   const purpose = useBlock(cardType?.purposeId);
   const contents = useVariantsOrLoad(card);
@@ -196,7 +197,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                           <span className={cardTitle}>{'/'}</span>
                           <AutoSaveInput
                             className={cardTitle}
-                            value={variant.title || ''}
+                            value={variant.title && variant.title.length > 0 ? variant.title : `Variant ${variantNumber}`}
                             readOnly={readOnly}
                             placeholder={i18n.content.untitled}
                             onChange={newValue =>
