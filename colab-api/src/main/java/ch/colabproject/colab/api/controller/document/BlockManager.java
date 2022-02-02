@@ -35,21 +35,6 @@ public class BlockManager {
      */
     public static final String DEFAULT_MIME_TYPE = "text/markdown";
 
-    /**
-     * The value of the first index
-     */
-    private static final int MIN_INDEX = 0;
-
-    /**
-     * The value of the bigger index that is compatible with the model
-     */
-    private static final int MAX_INDEX = Integer.MAX_VALUE;
-
-    /**
-     * Default room between indexes
-     */
-    private static final int DEFAULT_INDEX_INC = 1000;
-
     // *********************************************************************************************
     // injections
     // *********************************************************************************************
@@ -60,11 +45,11 @@ public class BlockManager {
     @Inject
     private TextDataBlockDao blockDao;
 
-    /**
-     * Document specific logic management
-     */
-    @Inject
-    private DocumentManager documentManager;
+//    /**
+//     * Document specific logic management
+//     */
+//    @Inject
+//    private DocumentManager documentManager;
 
     // *********************************************************************************************
     // find blocks

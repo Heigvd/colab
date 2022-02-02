@@ -341,6 +341,11 @@ public class ResourceManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
+        if (document.getIndex() == 0) {
+            int index = IndexGeneratorHelper.nextIndex(resource.getDocuments());
+            document.setIndex(index);
+        }
+
         resource.setDocument(document);// kept temporarily for backward compatibility
         document.setResource(resource);// kept temporarily for backward compatibility
         resource.getDocuments().add(document);

@@ -117,7 +117,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         // admin should have receive the type by websocket
         WsUpdateMessage adminWsType = TestHelper.waitForMessagesAndAssert(
             adminWsClient, 1, 5, WsUpdateMessage.class).get(0);
-        Assertions.assertEquals(1, adminWsType.getUpdated().size());
+        Assertions.assertEquals(2, adminWsType.getUpdated().size());
         CardType aWsCardType = TestHelper.findFirst(adminWsType.getUpdated(), CardType.class);
 
         // Publish the projectOneType

@@ -9,6 +9,7 @@ package ch.colabproject.colab.api.model.document;
 import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithIndex;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.project.Project;
@@ -56,7 +57,7 @@ import javax.persistence.Transient;
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 //FIXME see if is needed or not. It was implemented for test purpose at first
 @NamedQuery(name = "Document.findAll", query = "SELECT d FROM Document d")
-public abstract class Document implements ColabEntity, WithWebsocketChannels {
+public abstract class Document implements ColabEntity, WithWebsocketChannels, WithIndex {
 
     private static final long serialVersionUID = 1L;
 
@@ -103,7 +104,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
-    private CardContent owningCardContent;
+    protected CardContent owningCardContent;
 
     /**
      * The id of the card content for which this document is a deliverable
@@ -116,7 +117,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
-    private Resource owningResource;
+    protected Resource owningResource;
 
     /**
      * The id of the resource this document is part of
@@ -211,6 +212,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     /**
      * @return the index to define the place of the document
      */
+    @Override
     public int getIndex() {
         return index;
     }
@@ -218,6 +220,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     /**
      * @param index the index to define the place of the document to set
      */
+    @Override
     public void setIndex(int index) {
         this.index = index;
     }
@@ -374,7 +377,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     public void merge(ColabEntity other) throws ColabMergeException {
         if (other instanceof Document) {
             Document o = (Document) other;
-            this.setIndex(o.getIndex());
+            this.setIndex(o.getIndex()); // TODO see if can be changed manually or not
         } else {
             throw new ColabMergeException(this, other);
         }

@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.controller.card;
 
 import ch.colabproject.colab.api.controller.document.DocumentManager;
+import ch.colabproject.colab.api.controller.document.IndexGeneratorHelper;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -208,6 +209,11 @@ public class CardContentManager {
 
         if (cardContent.getDeliverables().contains(document)) {
             throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        if (document.getIndex() == 0) {
+            int index = IndexGeneratorHelper.nextIndex(cardContent.getDeliverables());
+            document.setIndex(index);
         }
 
         cardContent.setDeliverable(document);// kept temporarily for backward compatibility
