@@ -37,7 +37,7 @@ const UserComp = ({ user }: { user: User }) => {
       <div>{user.firstname}</div>
       <div>{user.lastname}</div>
       <div>{user.commonname}</div>
-      <div>{i18n.common.date(user.activityDate)}</div>
+      <div>{i18n.common.datetime(user.activityDate)}</div>
       <div>
         <IconButton
           icon={user.admin ? faCheck : faTimes}

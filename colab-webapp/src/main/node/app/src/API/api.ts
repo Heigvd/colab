@@ -22,6 +22,7 @@ import {
   Document,
   entityIs,
   HierarchicalPosition,
+  HttpSession,
   InvolvementLevel,
   Project,
   Resource,
@@ -175,6 +176,14 @@ export const signInWithLocalAccount = createAsyncThunk(
     thunkApi.dispatch(reloadCurrentUser());
   },
 );
+
+export const getCurrentUserActiveSessions = createAsyncThunk('user/getSessions', async () => {
+  return await restClient.UserRestEndpoint.getActiveSessions();
+});
+
+export const forceLogout = createAsyncThunk('user/forceLogout', async (session: HttpSession) => {
+  return await restClient.UserRestEndpoint.forceLogout(session.id!);
+});
 
 export const updateLocalAccountPassword = createAsyncThunk(
   'user/updatePassword',
@@ -353,7 +362,11 @@ export const closeCurrentProject = createAsyncThunk(
   'project/stopEditing',
   async (_action: void, thunkApi) => {
     const state = thunkApi.getState() as ColabState;
-    if (state.projects.editing != null && state.websockets.sessionId) {
+    if (
+      state.projects.editing != null &&
+      state.websockets.sessionId &&
+      state.auth.status === 'AUTHENTICATED'
+    ) {
       restClient.WebsocketRestEndpoint.unsubscribeFromProjectChannel(state.projects.editing, {
         '@class': 'WsSessionIdentifier',
         sessionId: state.websockets.sessionId,
@@ -805,7 +818,7 @@ export const unsubscribeFromBlockChannel = createAsyncThunk(
     const state = thunkApi.getState() as ColabState;
     const sessionId = state.websockets.sessionId;
 
-    if (sessionId) {
+    if (sessionId && state.auth.status === 'AUTHENTICATED') {
       await restClient.WebsocketRestEndpoint.unsubscribeFromBlockChannel(id, {
         '@class': 'WsSessionIdentifier',
         sessionId: sessionId,

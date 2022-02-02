@@ -31,11 +31,21 @@ public class CronTab {
     private SessionManager sessionManager;
 
     /**
-     * Each five minutes
+     * Each minutes
      */
     @Schedule(hour = "*", minute = "*")
     public void saveActivityDates() {
         logger.info("CRON: Persist activity dates to database");
         sessionManager.writeActivityDatesToDatabase();
+    }
+
+
+    /**
+     * each midnight
+     */
+    @Schedule(hour = "0", minute = "0")
+    public void dropOldHttpSession() {
+        logger.info("CRON: drop expired http session");
+        sessionManager.clearExpiredSessions();
     }
 }

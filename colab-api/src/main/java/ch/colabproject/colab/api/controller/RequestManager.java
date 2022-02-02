@@ -10,8 +10,10 @@ import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
-import ch.colabproject.colab.api.security.HttpSession;
+import ch.colabproject.colab.api.model.user.HttpSession;
+import ch.colabproject.colab.api.security.SessionManager;
 import ch.colabproject.colab.api.security.permissions.Conditions.Condition;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -19,6 +21,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.container.ContainerRequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,10 +54,14 @@ public class RequestManager {
     @Inject
     private WebsocketManager websocketManager;
 
+    /** Session manager */
+    @Inject
+    private SessionManager sessionManager;
+
     /**
-     * HTTP session associated to current request
+     * id HTTP session associated to current request
      */
-    private HttpSession httpSession;
+    private Long httpSessionId;
 
     /**
      * Timestamp as return by {@link System#currentTimeMillis() } the request starts at
@@ -98,6 +105,11 @@ public class RequestManager {
     private boolean doNotTrackChange = false;
 
     /**
+     * The HTTP request bound to this request.
+     */
+    private ContainerRequestContext requestContext;
+
+    /**
      * Get request base url
      *
      * @return url
@@ -116,20 +128,43 @@ public class RequestManager {
     }
 
     /**
+     * Get the current httpSession. If subject is not authenticated, null is returned
      *
      * @return the current http session
      */
     public HttpSession getHttpSession() {
-        return this.httpSession;
+        if (this.httpSessionId != null) {
+            // make sure to return a managed httpSession
+            return userDao.getHttpSessionById(this.httpSessionId);
+        } else {
+            return null;
+        }
     }
 
     /**
-     * Attach httpSession to this request
+     * Get the current HTTPSession or fails with authenticationRequired exception
      *
-     * @param httpSession http session
+     * @return the current http session
+     *
+     * @throws HttpErrorMessage with authenticationRequired if null
      */
-    public void setHttpSession(HttpSession httpSession) {
-        this.httpSession = httpSession;
+    public HttpSession getAndAssertHttpSession() {
+        HttpSession httpSession = getHttpSession();
+        if (httpSession != null && httpSession.getAccountId() != null) {
+            return httpSession;
+        } else {
+            throw HttpErrorMessage.authenticationRequired();
+        }
+    }
+
+    /**
+     * Attach id of httpSession to this request
+     *
+     * @param httpSessionId id of the http session
+     */
+    public void setHttpSessionId(Long httpSessionId) {
+        this.httpSessionId = httpSessionId;
+        conditionCache.clear();
     }
 
     /**
@@ -138,12 +173,15 @@ public class RequestManager {
      * @return the current account or null if none
      */
     public Account getCurrentAccount() {
-        if (this.httpSession != null) {
-            return userDao.findAccount(this.httpSession.getAccountId());
+        HttpSession httpSession = getHttpSession();
+        if (httpSession != null) {
+            return httpSession.getAccount();
+            //return userDao.findAccount(this.httpSession.getAccountId());
         } else if (this.currentAccountId != null) {
             return userDao.findAccount(this.currentAccountId);
+        } else {
+            return null;
         }
-        return null;
     }
 
     /**
@@ -195,11 +233,13 @@ public class RequestManager {
      * @param account new current account
      */
     public void login(Account account) {
-        HttpSession session = this.getHttpSession();
-        if (session != null) {
-            session.setAccountId(account.getId());
-        }
         this.currentAccountId = account.getId();
+        if (this.requestContext != null) {
+            // only create an http session is the request is a HTTP request
+            String userAgent = requestContext.getHeaderString("user-agent");
+            HttpSession httpSession = sessionManager.createHttpSession(account, userAgent);
+            setHttpSessionId(httpSession.getId());
+        }
     }
 
     /**
@@ -207,12 +247,14 @@ public class RequestManager {
      */
     public void logout() {
         HttpSession session = this.getHttpSession();
-        this.currentAccountId = null;
-        if (session != null) {
-            session.setAccountId(null);
-            conditionCache.clear();
-            websocketManager.signoutAndUnsubscribeFromAll(this.getHttpSession().getSessionId());
-        }
+        this.sudo(() -> {
+            this.currentAccountId = null;
+            if (session != null) {
+                websocketManager.signoutAndUnsubscribeFromAll(this.getHttpSession().getId());
+                sessionManager.deleteHttpSession(session);
+            }
+            setHttpSessionId(null);
+        });
     }
 
     /**
@@ -375,5 +417,23 @@ public class RequestManager {
      */
     public boolean isDoNotTrackChange() {
         return doNotTrackChange;
+    }
+
+    /**
+     * Set request context
+     *
+     * @param requestContext the request context
+     */
+    public void setRequestContext(ContainerRequestContext requestContext) {
+        this.requestContext = requestContext;
+    }
+
+    /**
+     * get the requestContext
+     *
+     * @return the request context if request has been intitated by a REST call, null otherwise
+     */
+    public ContainerRequestContext getRequestContext() {
+        return this.requestContext;
     }
 }

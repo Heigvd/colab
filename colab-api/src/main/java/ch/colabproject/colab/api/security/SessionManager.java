@@ -7,14 +7,22 @@
 package ch.colabproject.colab.api.security;
 
 import ch.colabproject.colab.api.Helper;
+import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.model.user.Account;
+import ch.colabproject.colab.api.model.user.InternalHashMethod;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.cp.lock.FencedLock;
+import com.hazelcast.flakeidgen.FlakeIdGenerator;
 import com.hazelcast.map.IMap;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import javax.cache.Cache;
 import javax.cache.processor.MutableEntry;
@@ -42,7 +50,7 @@ public class SessionManager {
     @Inject
     private HazelcastInstance hzInstance;
 
-    /** user DAO */
+    /** account DAO */
     @Inject
     private UserDao userDao;
 
@@ -55,54 +63,98 @@ public class SessionManager {
     private Cache<Long, AuthenticationFailure> authenticationFailureCache;
 
     /**
-     * Get cluster-wide cache for HTTP sessions
-     *
-     * @return the session cache
-     */
-    private IMap<String, HttpSession> getSessionsCache() {
-        return hzInstance.getMap("HTTP_SESSIONS_CACHE");
-        //return hzInstance.getCacheManager().getCache("HTTP_SESSIONS_CACHE");
-    }
-
-    /**
      * get user activity date cache. Map user id with activity date
      */
-    private IMap<Long, OffsetDateTime> getActivityCache() {
+    private IMap<Long, OffsetDateTime> getUserActivityCache() {
         return hzInstance.getMap("USER_ACTIVITY_CACHE");
     }
 
     /**
-     * Put session in cache
-     *
-     * @param session session to cache
+     * get account activity date cache. Map account id with activity date
      */
-    public void save(HttpSession session) {
-        String sessionId = session.getSessionId();
-        getSessionsCache().put(sessionId, session);
+    private IMap<Long, OffsetDateTime> getHttpSessionActivityCache() {
+        return hzInstance.getMap("HTTP_SESSION_ACTIVITY_CACHE");
     }
 
     /**
-     * Get a session from the cache. Try to reuse given sessionId.
+     * Get a persisted session.
      *
      * @param sessionId session id
+     * @param secret    the session secret
      *
-     * @return the session to use from now. The session may have a new sessionId !
+     * @return a session if it exists or null
      */
-    public HttpSession getOrCreate(String sessionId) {
-        IMap<String, HttpSession> sessions = getSessionsCache();
-        // no session id or sessionId not in cache: generate new sessionId
-        if (sessionId == null || !sessions.containsKey(sessionId)) {
-            sessionId = Helper.generateHexSalt(32) + "-" + System.currentTimeMillis();
+    public HttpSession getAndValidate(Long sessionId, String secret) {
+        HttpSession httpSession = userDao.getHttpSessionById(sessionId);
+
+        if (httpSession != null) {
+            try {
+                // hash the secret sent by the client
+                byte[] hash = InternalHashMethod.SHA_512.hash(secret);
+                httpSession.getSessionSecret();
+                if (Helper.constantTimeArrayEquals(hash, httpSession.getSessionSecret())) {
+                    return httpSession;
+                } else {
+                    logger.error("Cookie secret does not match");
+                }
+            } catch (NoSuchAlgorithmException ex) {
+                logger.error("SHA_512 NOT FOUND, THIS IS NOT GOOD; PLEASE INVESTIGATE");
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Create and persiste a new HTTP Session bound.
+     *
+     * @param account   the account the session is bound to
+     * @param userAgent client user-agent
+     *
+     * @return brand new persisted HTTPsession
+     */
+    public HttpSession createHttpSession(Account account, String userAgent) {
+        logger.debug("Creater new HttpSession for {}", account);
+        FlakeIdGenerator idGenerator = hzInstance.getFlakeIdGenerator("HTTP_SESSION_ID_GENERATOR");
+
+        String rawSecret = Helper.generateHexSalt(64) + "-" + idGenerator.newId();
+        byte[] secret;
+
+        try {
+            secret = InternalHashMethod.SHA_512.hash(rawSecret);
+        } catch (NoSuchAlgorithmException ex) {
+            secret = rawSecret.getBytes(StandardCharsets.UTF_8);
+            logger.error("SHA_512 NOT FOUND, THIS IS NOT GOOD; PLEASE INVESTIGATE");
         }
 
-        HttpSession session = sessions.get(sessionId);
-        if (session == null) {
-            // if no cached session, create on
-            session = new HttpSession();
-            session.setSessionId(sessionId);
-            sessions.put(sessionId, session);
+        HttpSession httpSession = new HttpSession();
+
+        httpSession.setRawSessionSecret(rawSecret);
+        httpSession.setSessionSecret(secret);
+
+        httpSession.setAccount(account);
+        account.getHttpSessions().add(httpSession);
+        httpSession.setLastSeen(OffsetDateTime.now());
+
+        if (userAgent != null) {
+            httpSession.setUserAgent(userAgent);
+        } else {
+            httpSession.setUserAgent("");
         }
-        return session;
+
+        return userDao.persistHttpSession(httpSession);
+    }
+
+    /**
+     * Remove httpSession
+     *
+     * @param session the httpSession to delete
+     */
+    public void deleteHttpSession(HttpSession session) {
+        Account account = session.getAccount();
+        if (account != null) {
+            account.getHttpSessions().remove(session);
+        }
+        userDao.deleteHttpSession(session);
     }
 
     /**
@@ -147,27 +199,34 @@ public class SessionManager {
     }
 
     /**
-     * Touch activity date for user
-     *
-     * @param user the user
+     * Touch activity date for currentAccount
      */
-    public void touchUserActivityDate(User user) {
+    public void touchUserActivityDate() {
+        HttpSession httpSession = requestManager.getHttpSession();
+        User user = requestManager.getCurrentUser();
+
+        OffsetDateTime now = OffsetDateTime.now();
+        logger.trace("Touch Activity ({}, {}) => {}", httpSession, user, now);
+        if (httpSession != null) {
+            getHttpSessionActivityCache().set(httpSession.getId(), now);
+        }
         if (user != null && user.getId() != null) {
-            getActivityCache().put(user.getId(), OffsetDateTime.now());
+            user.setActivityDate(now);
+            getUserActivityCache().set(user.getId(), now);
         }
     }
 
     /**
-     * Get effective activity date for user
+     * Get effective activity date for account
      *
-     * @param user the user
+     * @param user the account
      *
      * @return effective activity date
      */
     public OffsetDateTime getActivityDate(User user) {
         if (user != null) {
             if (user.getId() != null) {
-                OffsetDateTime date = getActivityCache().get(user.getId());
+                OffsetDateTime date = getUserActivityCache().get(user.getId());
                 if (date != null) {
                     return date;
                 }
@@ -186,20 +245,72 @@ public class SessionManager {
         requestManager.sudo(() -> {
             // prevent updating tracking data (updated by and at)
             requestManager.setDoNotTrackChange(true);
-            IMap<Long, OffsetDateTime> activityCache = getActivityCache();
-            Iterator<Map.Entry<Long, OffsetDateTime>> iterator = activityCache.iterator();
+            IMap<Long, OffsetDateTime> userActivityCache = getUserActivityCache();
+            Iterator<Map.Entry<Long, OffsetDateTime>> iterator = userActivityCache.iterator();
             while (iterator.hasNext()) {
                 Map.Entry<Long, OffsetDateTime> next = iterator.next();
+                iterator.remove();
                 if (next != null) {
                     Long userId = next.getKey();
                     if (userId != null) {
                         User user = userDao.findUser(userId);
-                        OffsetDateTime date = activityCache.remove(userId);
+                        OffsetDateTime date = next.getValue();
                         if (user != null) {
+                            logger.trace("Update User LastSeenAt: {}", date);
                             user.setLastSeenAt(date);
                         }
                     }
                 }
+            }
+
+            IMap<Long, OffsetDateTime> sessionActivityCache = getHttpSessionActivityCache();
+            iterator = sessionActivityCache.iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<Long, OffsetDateTime> next = iterator.next();
+                iterator.remove();
+                if (next != null) {
+                    Long id = next.getKey();
+                    if (id != null) {
+                        HttpSession session = userDao.getHttpSessionById(id);
+                        if (session != null) {
+                            OffsetDateTime date = next.getValue();
+                            logger.trace("Update HTTP session LastSeen: {}", date);
+                            session.setLastSeen(date);
+                        }
+                    }
+                }
+            }
+
+        });
+    }
+
+    /**
+     * Clean database. Remove expired HttpSession.
+     */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void clearExpiredSessions() {
+        logger.trace("Clear expired HTTP session");
+        requestManager.sudo(() -> {
+            FencedLock lock = hzInstance.getCPSubsystem().getLock("CleanExpiredSession");
+            if (lock.tryLock()) {
+                try {
+                    logger.trace("Got the lock, let's clear");
+                    IMap<Long, OffsetDateTime> cache = getHttpSessionActivityCache();
+                    List<HttpSession> list = userDao.getExpiredHttpSessions();
+                    logger.trace("List of expired session: {}", list);
+                    for (HttpSession session : list) {
+                        if (!cache.containsKey(session.getId())) {
+                            logger.trace("Delete the session {}", session);
+                            userDao.deleteHttpSession(session);
+                        } else {
+                            logger.trace("Seems httpSesion jsut waked up: {}", session);
+                        }
+                    }
+                } finally {
+                    lock.unlock();
+                }
+            } else {
+                logger.trace("Did not got the log");
             }
         });
     }

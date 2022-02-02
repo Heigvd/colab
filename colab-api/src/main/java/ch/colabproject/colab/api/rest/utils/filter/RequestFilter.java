@@ -53,6 +53,8 @@ public class RequestFilter implements ContainerRequestFilter, ContainerResponseF
     public void filter(ContainerRequestContext requestContext) throws IOException {
         requestManager.setStartTime(System.currentTimeMillis());
 
+        requestManager.setRequestContext(requestContext);
+
         // request base url starts with REST @ApplicationPath = "api", remove such suffix
         requestManager.setBaseUrl(
             requestContext.getUriInfo().getBaseUri().toString()

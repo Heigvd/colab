@@ -8,13 +8,13 @@
 import { Account, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { Route, Routes, useParams } from 'react-router-dom';
-import { useCurrentUser } from '../../selectors/userSelector';
-import { shallowEqual, useAppSelector } from '../../store/hooks';
+import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
 import { SecondLevelLink } from '../common/Link';
 import Tips from '../common/Tips';
 import DisplaySettings from './DisplaySettings';
 import LocalAccount from './LocalAccount';
 import UserProfile from './UserProfile';
+import UserSessions from './UserSessions';
 
 function accountTitle(account: Account) {
   if (entityIs(account, 'LocalAccount')) {
@@ -37,13 +37,10 @@ function WrapLocalAccountEditor() {
 }
 
 export default function Settings(): JSX.Element {
-  const accounts = useAppSelector(
-    state => Object.values(state.users.accounts).filter(a => a.userId == state.auth.currentUserId),
-    shallowEqual,
-  );
+  const accounts = useCurrentUserAccounts();
   const { currentUser } = useCurrentUser();
 
-  if (currentUser) {
+  if (currentUser && accounts != 'LOADING') {
     return (
       <div>
         <h2>Settings</h2>
@@ -58,6 +55,7 @@ export default function Settings(): JSX.Element {
               );
             })}
             <SecondLevelLink to="display">Display Settings</SecondLevelLink>
+            <SecondLevelLink to="sessions">Active Sessions</SecondLevelLink>
             <span>
               add account{' '}
               <Tips tipsType="TODO">
@@ -70,6 +68,7 @@ export default function Settings(): JSX.Element {
             <Routes>
               <Route path="/" element={<span>select something...</span>} />
               <Route path="user" element={<UserProfile user={currentUser} />} />
+              <Route path="sessions" element={<UserSessions user={currentUser} />} />
               <Route path="display" element={<DisplaySettings />} />
               <Route path="account/:id" element={<WrapLocalAccountEditor />} />
             </Routes>

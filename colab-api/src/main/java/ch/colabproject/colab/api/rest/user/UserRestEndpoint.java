@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
+import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
@@ -186,6 +187,30 @@ public class UserRestEndpoint {
     }
 
     /**
+     * Get all active session for the current user
+     *
+     * @return list of active session linked to the current user
+     */
+    @GET
+    @Path("Sessions")
+    @AuthenticationRequired
+    public List<HttpSession> getActiveSessions() {
+        return userManager.getCurrentUserActiveSessions();
+    }
+
+    /**
+     * Force session logout
+     *
+     * @param sessionId if of the HTTP session to delete
+     */
+    @DELETE
+    @Path("Session/{id}")
+    @AuthenticationRequired
+    public void forceLogout(@PathParam("id") Long sessionId) {
+        userManager.forceLogout(sessionId);
+    }
+
+    /**
      * Update user names.
      *
      * @param user user to update
@@ -213,7 +238,7 @@ public class UserRestEndpoint {
     }
 
     /**
-     *  remove admin right to user identified by given id.
+     * remove admin right to user identified by given id.
      *
      * @param id id of the user
      */

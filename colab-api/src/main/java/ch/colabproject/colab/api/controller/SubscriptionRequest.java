@@ -68,7 +68,7 @@ public class SubscriptionRequest implements Serializable {
      *
      * HTTP session id which want to (un)subscribe
      */
-    private String colabSessionId;
+    private Long colabSessionId;
 
     /**
      * Type of channel : User | Project
@@ -121,7 +121,7 @@ public class SubscriptionRequest implements Serializable {
      *
      * @return http session id
      */
-    public String getColabSessionId() {
+    public Long getColabSessionId() {
         return colabSessionId;
     }
 
@@ -130,7 +130,7 @@ public class SubscriptionRequest implements Serializable {
      *
      * @param colabSessionId id of the HTTP session
      */
-    public void setColabSessionId(String colabSessionId) {
+    public void setColabSessionId(Long colabSessionId) {
         this.colabSessionId = colabSessionId;
     }
 
@@ -196,7 +196,7 @@ public class SubscriptionRequest implements Serializable {
         ChannelType channelType,
         Long channelId,
         String wsSessionId,
-        String httpSessionId
+        Long httpSessionId
     ) {
         SubscriptionRequest sr = new SubscriptionRequest();
 

@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.security;
 
+import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.controller.RequestManager;
 import java.io.IOException;
 import javax.annotation.Priority;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.ext.Provider;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +60,46 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
     private static final String COOKIE_NAME = "COLAB_SESSION_ID";
 
     /**
+     * To parse cookie values
+     */
+    private static class ParsedCookie {
+
+        /**
+         * Http Session id
+         */
+        private Long id = null;
+
+        /**
+         * Http session secret
+         */
+        private String secret = null;
+
+        /**
+         * Parse the cookie value
+         *
+         * @param value cookie value to parse
+         */
+        public ParsedCookie(String value) {
+            logger.trace("Parse cookie value");
+
+            // The cookie: uid=1234:v=<SECRET>
+            String[] split = value.split(":");
+            if (split.length == 2) {
+                try {
+                    if (split[0].length() >= 5 && split[1].length() >= 3) {
+                        this.id = Long.parseLong(split[0].substring(4), 10);
+                        this.secret = split[1].substring(2);
+                    } else {
+                        logger.error("Invalid cookie: struct not match");
+                    }
+                } catch (NumberFormatException ex) {
+                    logger.error("Invalid cookie: v=<NOT_A_NUBER>;...");
+                }
+            }
+        }
+    }
+
+    /**
      * Intercept request and make sure a httpSession is bound to the request
      *
      * @param requestContext request context
@@ -67,13 +109,22 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         Cookie cookie = requestContext.getCookies().get(COOKIE_NAME);
-        String sessionId = null;
         if (cookie != null) {
-            sessionId = cookie.getValue();
-            logger.trace("Request received with session id {}", sessionId);
+            String cookieValue = cookie.getValue();
+            logger.trace("Request received with session id {}", cookieValue);
+
+            ParsedCookie parsedCookie = new ParsedCookie(cookieValue);
+            if (parsedCookie.id != null && parsedCookie.secret != null) {
+                HttpSession httpSession = sessionManager.getAndValidate(parsedCookie.id, parsedCookie.secret);
+                if (httpSession != null) {
+                    requestManager.setHttpSessionId(httpSession.getId());
+                    return;
+                }
+            } else {
+                logger.debug("Invalid cookie: reject");
+            }
+            requestManager.setHttpSessionId(null);
         }
-        HttpSession httpSession = sessionManager.getOrCreate(sessionId);
-        requestManager.setHttpSession(httpSession);
     }
 
     /**
@@ -88,15 +139,48 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
     public void filter(ContainerRequestContext requestContext,
         ContainerResponseContext responseContext) throws IOException {
         HttpSession session = requestManager.getHttpSession();
+        Cookie cookie = requestContext.getCookies().get(COOKIE_NAME);
+        if (session != null) {
+            String cookieValue = null;
 
-        session.keepAlive();
-        sessionManager.save(session);
+            if (cookie != null && !StringUtils.isEmpty(cookie.getValue())) {
+                cookieValue = cookie.getValue();
+                ParsedCookie parsedCookie = new ParsedCookie(cookieValue);
+                if (!parsedCookie.id.equals(session.getId())) {
+                    logger.trace("New httpSession detected");
+                    // session changed during the request => clear cookieValue to force to generate
+                    // a full new cookie
+                    cookieValue = null;
+                }
+            }
 
-        NewCookie sessionCookie = new NewCookie(COOKIE_NAME, session.getSessionId(),
-            "/", null, null, -1, true, true);
+            if (cookieValue == null) {
+                logger.trace("CookieValue not set: build from rawSecret");
+                // CookieValue not set -> build from
+                if (StringUtils.isBlank(session.getRawSessionSecret())) {
+                    // at login, new httpSession is created (SessionManager.createHttpSession)
+                    // the raw secret must be available here to be sent to client
+                    logger.error("COOKIE VALUE IS NOT SET");
+                }
+                cookieValue = "uid=" + session.getId() + ":v=" + session.getRawSessionSecret();
+            }
 
-        logger.trace("Request completed with session id {}", sessionCookie);
-        responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);
+            NewCookie sessionCookie = new NewCookie(COOKIE_NAME, cookieValue,
+                "/", null, null, -1, true, true);
+
+            logger.trace("Request completed with session id {}", sessionCookie);
+            responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);
+        } else {
+            // not session => clear cookie if exists
+            if (cookie != null) {
+                // Clear cookie by setting no value and max-age=0
+                NewCookie sessionCookie = new NewCookie(COOKIE_NAME, "",
+                    "/", null, null, 0, true, true);
+
+                logger.trace("Request completed with session id {}", sessionCookie);
+                responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);
+            }
+        }
     }
 
 }

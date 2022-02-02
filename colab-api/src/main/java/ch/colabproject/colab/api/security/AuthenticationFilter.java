@@ -123,7 +123,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
                 abortWith = HttpErrorMessage.authenticationRequired();
             }
         } else {
-            sessionManager.touchUserActivityDate(currentUser);
+            sessionManager.touchUserActivityDate();
         }
 
         List<AdminResource> annotations = getAnnotations(
