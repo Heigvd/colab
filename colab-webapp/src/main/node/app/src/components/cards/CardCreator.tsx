@@ -287,6 +287,14 @@ export default function CardCreator({
                 </div>
               </details>
               <Flex justify="flex-end" className={css({ marginTop: 'auto' })}>
+                <Button
+                  title="Cancel"
+                  onClick={close}
+                  invertedButton
+                  className={marginAroundStyle([2], space_S)}
+                >
+                  Cancel
+                </Button>
                 {selectedType != null ? (
                   <Button
                     title="Create card"
@@ -304,14 +312,6 @@ export default function CardCreator({
                     Create card
                   </Button>
                 ) : null}
-                <Button
-                  title="Cancel"
-                  onClick={close}
-                  invertedButton
-                  className={marginAroundStyle([4], space_S)}
-                >
-                  Cancel
-                </Button>
               </Flex>
             </div>
           );

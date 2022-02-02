@@ -17,9 +17,10 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
 import Form, { Field } from '../common/Form/Form';
+import IconButton from '../common/IconButton';
 import OpenCloseModal from '../common/OpenCloseModal';
 import { addIcon } from '../styling/defaultIcons';
-import { space_S } from '../styling/style';
+import { space_M, space_S } from '../styling/style';
 
 interface StickyNoteCreatorProps {
   destCardId: number;
@@ -149,15 +150,9 @@ export default function StickyNoteCreator({
                 collapse();
               });
             }}
+            childrenClassName={css({flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'end'})}
+            className={css({alignSelf: 'center'})}
           >
-            <Button
-              icon={faUndo}
-              title="reinit fields"
-              onClick={() => resetInputs()}
-              invertedButton
-            >
-              Reinit
-            </Button>
             <Button
               title="cancel"
               onClick={() => {
@@ -165,9 +160,15 @@ export default function StickyNoteCreator({
                 collapse();
               }}
               invertedButton
+              className={css({margin: space_M})}
             >
               Cancel
             </Button>
+            <IconButton
+              icon={faUndo}
+              title="reinit fields"
+              onClick={() => resetInputs()}
+            />
           </Form>
         </>
       )}

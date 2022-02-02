@@ -41,7 +41,7 @@ export default function Checkbox({
   className,
 }: Props): JSX.Element {
   return (
-    <Flex className={containerClassName} direction="column">
+    <Flex className={cx(css({ padding: space_S + ' 0' }), containerClassName)} direction="column">
       <Flex justify="space-between">
         {warning ? <div className={warningStyle}>{warning}</div> : null}
         {error ? <div className={errorStyle}>{error}</div> : null}

@@ -5,11 +5,11 @@
  * Licensed under the MIT License
  */
 
-import { cx } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import Select, { MultiValue, OnChangeValue, SingleValue } from 'react-select';
 import Creatable from 'react-select/creatable';
-import { errorStyle, labelStyle, textSmall, warningStyle } from '../../styling/style';
+import { errorStyle, labelStyle, space_S, textSmall, warningStyle } from '../../styling/style';
 import Flex from '../Flex';
 
 interface Opt<T> {
@@ -72,7 +72,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
   );
 
   return (
-    <Flex className={className} direction="column" align="stretch">
+    <Flex className={cx(css({ padding: space_S + ' 0' }), className)} direction="column" align="stretch">
       <Flex justify="space-between">
         <div className={labelStyle}>
           {label}
@@ -91,6 +91,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
           styles={{
             menuPortal: base => ({ ...base, zIndex: 9999 }),
             menu: base => ({ ...base, marginTop: '0px' }),
+            container: base => ({ ...base, textAlign: 'initial' }),
           }}
         />
       ) : (
@@ -105,6 +106,7 @@ export default function SelectInput<T, IsMulti extends boolean>({
           styles={{
             menuPortal: base => ({ ...base, zIndex: 9999 }),
             menu: base => ({ ...base, marginTop: '0px' }),
+            container: base => ({ ...base, textAlign: 'initial' }),
           }}
         />
       )}

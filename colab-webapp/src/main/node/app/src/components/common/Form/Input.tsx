@@ -61,7 +61,7 @@ export default function Input({
   );
 
   return (
-    <Flex className={cx(css({ padding: space_S + ' 0' }), className)} direction="column">
+    <Flex className={cx(css({ padding: space_S + ' 0' }), className)} direction="column" align='normal'>
       <Flex justify="space-between">
         <div className={labelStyle}>
           {label}

@@ -14,6 +14,7 @@ import * as API from '../../../API/api';
 import { useCardTypeTags } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
+import Button from '../../common/Button';
 import Form, { createSelectField, Field } from '../../common/Form/Form';
 import OpenCloseModal from '../../common/OpenCloseModal';
 import { buttonStyle, marginAroundStyle, space_M } from '../../styling/style';
@@ -109,17 +110,29 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
     >
       {close => {
         return (
-            <Form
-              fields={fields}
-              value={{ title: '', purpose: '', tags: [] }}
-              autoSubmit={false}
-              onSubmit={function (type) {
-                createTypeCb(type);
+          <Form
+            fields={fields}
+            value={{ title: '', purpose: '', tags: [] }}
+            autoSubmit={false}
+            onSubmit={function (type) {
+              createTypeCb(type);
+              close();
+            }}
+            className={css({ alignSelf: 'center' })}
+            childrenClassName={css({flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'end'})}
+            buttonClassName={cx(buttonStyle, marginAroundStyle([1], space_M))}
+          >
+            <Button
+              title="cancel"
+              onClick={() => {
                 close();
               }}
-              className={marginAroundStyle([3], space_M)}
-              buttonClassName={cx(buttonStyle, marginAroundStyle([1], space_M))}
-            />
+              invertedButton
+              className={css({ margin: space_M })}
+            >
+              Cancel
+            </Button>
+          </Form>
         );
       }}
     </OpenCloseModal>

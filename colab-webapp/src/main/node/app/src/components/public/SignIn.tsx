@@ -52,7 +52,7 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
   const formFields: Field<Credentials>[] = [
     {
       key: 'identifier',
-      placeholder: i18n.emailOrUsername,
+      label: i18n.emailOrUsername,
       isErroneous: data => data.identifier.length === 0,
       errorMessage: i18n.pleaseEnterId,
       type: 'text',
@@ -61,7 +61,7 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
     },
     {
       key: 'password',
-      placeholder: i18n.model.user.password,
+      label: i18n.model.user.password,
       type: 'password',
       isMandatory: false,
       strengthProp: 'passwordScore',

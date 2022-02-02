@@ -12,7 +12,7 @@ import useTranslations from '../../../i18n/I18nContext';
 import logger from '../../../logger';
 import { useAppDispatch } from '../../../store/hooks';
 import { addNotification } from '../../../store/notification';
-import { space_S } from '../../styling/style';
+import { space_M } from '../../styling/style';
 import Button from '../Button';
 import Flex from '../Flex';
 import InlineLoading from '../InlineLoading';
@@ -104,6 +104,7 @@ export interface FormProps<T> {
   onSubmit: (entity: T) => void;
   children?: React.ReactNode;
   className?: string;
+  childrenClassName?: string;
   buttonClassName?: string;
 }
 
@@ -114,6 +115,7 @@ export default function Form<T>({
   onSubmit,
   children,
   className,
+  childrenClassName,
   buttonClassName,
   autoSubmit = false,
 }: FormProps<T>): JSX.Element {
@@ -294,12 +296,12 @@ export default function Form<T>({
       onKeyDown={onEnterCb}
     >
       {fieldComps}
-      <Flex direction='column' justify='center' align='center'>
+      <Flex direction='column' justify='center' align='center' className={childrenClassName}>
       {autoSubmit ? null : (
         <Button
           key="submit"
           title="Submit"
-          className={cx(css({ margin: space_S + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
+          className={cx(css({ margin: space_M + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
           onClick={submitCb}
         >
           {submitLabel || i18n.submit}

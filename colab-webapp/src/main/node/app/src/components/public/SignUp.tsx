@@ -15,6 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import Form, { Field } from '../common/Form/Form';
 import FormContainer from '../common/FormContainer';
 import { InlineLink } from '../common/Link';
+import { lightLinkStyle, space_M } from '../styling/style';
 import PasswordFeedbackDisplay from './PasswordFeedbackDisplay';
 
 interface Props {
@@ -55,7 +56,6 @@ export default function SignUp(props: Props): JSX.Element {
     {
       key: 'email',
       label: i18n.emailAddress,
-      placeholder: i18n.emailAddress,
       isErroneous: value => value.email.match('.*@.*') == null,
       errorMessage: i18n.emailAddressNotValid,
       type: 'text',
@@ -64,7 +64,7 @@ export default function SignUp(props: Props): JSX.Element {
     {
       key: 'password',
       label: i18n.model.user.password,
-      placeholder: i18n.model.user.password,
+      placeholder: 'Min. 6 characters',
       type: 'password',
       isMandatory: false,
       isErroneous: data => data.passwordScore.score < 2,
@@ -76,7 +76,6 @@ export default function SignUp(props: Props): JSX.Element {
       key: 'confirm',
       type: 'password',
       label: i18n.password_again,
-      placeholder: i18n.password_again,
       isMandatory: true,
       isErroneous: data => data.password !== data.confirm,
       errorMessage: i18n.passwordsMismatch,
@@ -85,7 +84,6 @@ export default function SignUp(props: Props): JSX.Element {
     {
       key: 'username',
       label: i18n.model.user.username,
-      placeholder: i18n.model.user.username,
       type: 'text',
       isMandatory: false,
     },
@@ -105,9 +103,15 @@ export default function SignUp(props: Props): JSX.Element {
 
   return (
     <FormContainer>
-      <Form fields={fields} value={defData} submitLabel={i18n.createAnAccount} onSubmit={signUpCb}>
+      <Form
+        fields={fields}
+        value={defData}
+        submitLabel={i18n.createAnAccount}
+        onSubmit={signUpCb}
+        buttonClassName={css({ margin: space_M + ' auto' })}
+      >
         <InlineLink
-          className={css({ alignSelf: 'flex-end' })}
+          className={lightLinkStyle}
           to={buildLinkWithQueryParam('/SignIn', { redirectTo: props.redirectTo })}
         >
           {i18n.cancel}
