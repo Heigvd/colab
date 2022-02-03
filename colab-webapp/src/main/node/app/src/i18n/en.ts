@@ -9,7 +9,21 @@ export const en = {
   common: {
     date: (timestamp: number | null | undefined) => {
       if (timestamp != null) {
-        return new Date(timestamp).toLocaleTimeString();
+        return new Date(timestamp).toLocaleDateString('EN');
+      } else {
+        return 'never';
+      }
+    },
+    time: (timestamp: number | null | undefined) => {
+      if (timestamp != null) {
+        return new Date(timestamp).toLocaleTimeString('EN');
+      } else {
+        return 'never';
+      }
+    },
+    datetime: (timestamp: number | null | undefined) => {
+      if (timestamp != null) {
+        return new Date(timestamp).toLocaleString('EN');
       } else {
         return 'never';
       }

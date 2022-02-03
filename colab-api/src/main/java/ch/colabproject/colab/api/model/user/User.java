@@ -17,13 +17,15 @@ import ch.colabproject.colab.api.ws.channel.AdminChannel;
 import ch.colabproject.colab.api.ws.channel.ProjectOverviewChannel;
 import ch.colabproject.colab.api.ws.channel.UserChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
+import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbTransient;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.json.bind.annotation.JsonbTypeSerializer;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -105,7 +107,8 @@ public class User implements ColabEntity, WithWebsocketChannels {
      * Last activity date
      */
     @Transient
-    @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
+    @JsonbTypeDeserializer(DateSerDe.class)
+    @JsonbTypeSerializer(DateSerDe.class)
     private OffsetDateTime activityDate = null;
 
     /**
@@ -131,7 +134,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
     /**
      * System-wide unique name. Alphanumeric only
      */
-    @Pattern(regexp = "[a-zA-Z0-9]+")
+    @Pattern(regexp = "[a-zA-Z0-9_]+")
     @NotNull
     private String username;
 

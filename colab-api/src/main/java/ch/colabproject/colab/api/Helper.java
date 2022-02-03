@@ -76,6 +76,29 @@ public class Helper {
     }
 
     /**
+     * Make a full comparison of array. Do not return false as soon as array. Prevent timing-attack.
+     *
+     * @param a first array
+     * @param b second array
+     *
+     * @return array equals or not
+     */
+    public static boolean constantTimeArrayEquals(byte[] a, byte[] b) {
+        boolean result = true;
+        int aSize = a.length;
+        int bSize = b.length;
+        int max = Math.max(aSize, bSize);
+        for (int i = 0; i < max; i++) {
+            if (i >= aSize || i >= bSize) {
+                result = false;
+            } else {
+                result = a[i] == b[i] && result;
+            }
+        }
+        return result;
+    }
+
+    /**
      * Concatenate arguments
      *
      * @param args list of string to concatenate

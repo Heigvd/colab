@@ -17,6 +17,7 @@ import {
   Change,
   Document,
   entityIs,
+  HttpSession,
   IndexEntry,
   Project,
   StickyNoteLink,
@@ -52,6 +53,7 @@ interface EntityBag {
   changes: Updates<Change>;
   contents: Updates<CardContent>;
   documents: Updates<Document>;
+  httpSessions: Updates<HttpSession>;
   members: Updates<TeamMember>;
   projects: Updates<Project>;
   resources: Updates<AbstractResource>;
@@ -71,6 +73,7 @@ function createBag(): EntityBag {
     changes: { updated: [], deleted: [] },
     contents: { updated: [], deleted: [] },
     documents: { updated: [], deleted: [] },
+    httpSessions: { updated: [], deleted: [] },
     members: { updated: [], deleted: [] },
     projects: { updated: [], deleted: [] },
     resources: { updated: [], deleted: [] },
@@ -102,6 +105,8 @@ export const processMessage = createAsyncThunk(
         bag.contents.deleted.push(item);
       } else if (indexEntryIs(item, 'Document')) {
         bag.documents.deleted.push(item);
+      } else if (indexEntryIs(item, 'HttpSession')) {
+        bag.httpSessions.deleted.push(item);
       } else if (indexEntryIs(item, 'TeamMember')) {
         bag.members.deleted.push(item);
       } else if (indexEntryIs(item, 'TeamRole')) {
@@ -141,6 +146,8 @@ export const processMessage = createAsyncThunk(
         bag.contents.updated.push(item);
       } else if (entityIs(item, 'Document')) {
         bag.documents.updated.push(item);
+      } else if (entityIs(item, 'HttpSession')) {
+        bag.httpSessions.updated.push(item);
       } else if (entityIs(item, 'TeamMember')) {
         bag.members.updated.push(item);
       } else if (entityIs(item, 'Project')) {

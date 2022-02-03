@@ -278,6 +278,14 @@
                     <name>reporting</name>
                 </property>
             </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>de.empulse.eclipselink</groupId>
+                        <artifactId>staticweave-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 

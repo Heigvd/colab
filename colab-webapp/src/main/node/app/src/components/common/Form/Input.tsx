@@ -5,12 +5,15 @@
  * Licensed under the MIT License
  */
 
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import {
   errorStyle,
   inputStyle,
   labelStyle,
+  space_S,
   textareaStyle,
+  textSmall,
   warningStyle,
 } from '../../styling/style';
 import Flex from '../Flex';
@@ -39,7 +42,7 @@ export default function Input({
   onChange,
   mandatory,
   className,
-  placeholder = 'no value',
+  placeholder,
   readonly = false,
 }: Props): JSX.Element {
   const [state, setState] = React.useState<string>(value || '');
@@ -58,14 +61,12 @@ export default function Input({
   );
 
   return (
-    <Flex className={className} direction="column">
+    <Flex className={cx(css({ padding: space_S + ' 0' }), className)} direction="column" align='normal'>
       <Flex justify="space-between">
         <div className={labelStyle}>
           {label}
-          {mandatory ? ' * ' : null}{' '}
+          {mandatory ? ' * ' : null}
         </div>
-        {warning ? <div className={warningStyle}>{warning}</div> : null}
-        {error ? <div className={errorStyle}>{error}</div> : null}
       </Flex>
       {inputType === 'input' ? (
         <input
@@ -85,6 +86,8 @@ export default function Input({
           readOnly={readonly}
         />
       )}
+      {warning ? <div className={cx(textSmall, warningStyle)}>{warning}</div> : null}
+      {error ? <div className={cx(textSmall, errorStyle)}>{error}</div> : null}
     </Flex>
   );
 }

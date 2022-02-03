@@ -12,9 +12,6 @@ import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.WithPermission;
 import ch.colabproject.colab.api.model.WithTrackingData;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.security.SessionManager;
-import java.time.OffsetDateTime;
 import javax.inject.Inject;
 import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
@@ -54,10 +51,6 @@ public class EntityListener {
     @Inject
     private RequestManager requestManager;
 
-    /** activity date cache */
-    @Inject
-    private SessionManager sessionManager;
-
     /**
      * Track all reads from database
      *
@@ -69,10 +62,6 @@ public class EntityListener {
         // Skip permission check if a condition assertion is already in progress
         if (o instanceof WithPermission && !requestManager.isInSecurityTx()) {
             securityManager.assertReadPermissionTx((WithPermission) o);
-        }
-        if (o instanceof User){
-            OffsetDateTime activityDate = sessionManager.getActivityDate((User) o);
-            ((User) o).setActivityDate(activityDate);
         }
     }
 

@@ -15,9 +15,12 @@ import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.AdminChannel;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,6 +31,7 @@ import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -39,8 +43,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(
     indexes = {
-        @Index(columnList = "user_id"),
-    }
+        @Index(columnList = "user_id"),}
 )
 // JOINED inheritance will generate one "abstract" account table and one table for each subclass.
 // Having one table per subclass allows subclasses to defined their own indexes and constraints
@@ -72,6 +75,13 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonbTransient
     private User user;
+
+    /**
+     * List of httpSession this account is using
+     */
+    @OneToMany(mappedBy = "account", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JsonbTransient
+    private List<HttpSession> httpSessions = new ArrayList<>();
 
     /**
      * serialization sugar
@@ -135,6 +145,24 @@ public abstract class Account implements ColabEntity, WithWebsocketChannels {
      */
     public void setUserId(Long id) {
         this.userId = id;
+    }
+
+    /**
+     * Get the list of httpSession this account is using
+     *
+     * @return httpSession list
+     */
+    public List<HttpSession> getHttpSessions() {
+        return httpSessions;
+    }
+
+    /**
+     * Set the list of httpSession
+     *
+     * @param httpSessions new httpSessions
+     */
+    public void setHttpSessions(List<HttpSession> httpSessions) {
+        this.httpSessions = httpSessions;
     }
 
     /**

@@ -4,6 +4,7 @@
  *
  * Licensed under the MIT License
  */
+import { css, cx } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
@@ -16,7 +17,7 @@ import { useAppDispatch } from '../../store/hooks';
 import Form, { Field, PasswordScore } from '../common/Form/Form';
 import FormContainer from '../common/FormContainer';
 import { InlineLink } from '../common/Link';
-import { marginAroundStyle, space_M } from '../styling/style';
+import { lightLinkStyle, space_M, space_S } from '../styling/style';
 
 interface Props {
   redirectTo: string | null;
@@ -51,7 +52,7 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
   const formFields: Field<Credentials>[] = [
     {
       key: 'identifier',
-      placeholder: i18n.emailOrUsername,
+      label: i18n.emailOrUsername,
       isErroneous: data => data.identifier.length === 0,
       errorMessage: i18n.pleaseEnterId,
       type: 'text',
@@ -60,7 +61,7 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
     },
     {
       key: 'password',
-      placeholder: i18n.model.user.password,
+      label: i18n.model.user.password,
       type: 'password',
       isMandatory: false,
       strengthProp: 'passwordScore',
@@ -93,14 +94,15 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
         onSubmit={onSubmitCb}
         fields={formFields}
         submitLabel={i18n.login}
-        buttonClassName={marginAroundStyle([1, 3], space_M)}
+        buttonClassName={css({ margin: space_S + ' auto' })}
+        className={css({ marginBottom: space_M })}
       >
-        <InlineLink to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })}>
+        <InlineLink to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })} className={cx(lightLinkStyle, css({margin: space_M}))}>
           {i18n.forgottenPassword}
         </InlineLink>
         {accountConfig.showCreateAccountButton ? (
-          <InlineLink to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}>
-            <FontAwesomeIcon icon={faPlus} /> {i18n.createAnAccount}{' '}
+          <InlineLink to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })} className={cx(lightLinkStyle)} >
+            <FontAwesomeIcon icon={faPlus} /> {i18n.createAnAccount}
           </InlineLink>
         ) : null}
       </Form>

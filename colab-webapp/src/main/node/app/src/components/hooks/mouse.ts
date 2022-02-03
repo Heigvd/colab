@@ -5,46 +5,45 @@
  * Licensed under the MIT License
  */
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 /**
- * Allows to use both onClick and onDoubleClick on the same component.
+ * This function is a virtual click/doubleclick handler.
+ * It never trigers the simple click if the double is called.
+ * @param onClick - Click callback : Executed after delay time if no other click as been sent
+ * @param onDoubleClick  - Doubleclick callback
+ * @param delay - the time between 2 clicks to determine single or doubleclick
+ * @param stopPropagation - call stopPropagation ASAP
+ * @param preventDefault - call preventDefault ASAP
  */
 export function useSingleAndDoubleClick(
-  actionSimpleClick: (e: React.MouseEvent) => void,
-  actionDoubleClick: (e: React.MouseEvent) => void,
-  stopPropag = true,
-  delay = 250,
+  onClick: React.DOMAttributes<HTMLDivElement>['onClick'],
+  onDoubleClick: React.DOMAttributes<HTMLDivElement>['onClick'],
+  delay: number = 250,
+  stopPropagation = true,
+  preventDefault = false,
 ) {
-  const [event, setEvent] = useState<React.MouseEvent | undefined>(undefined);
-
-  useEffect(() => {
-    if (event) {
-      if (event.detail === 1) {
-        // on first click, delay the simpleClick callback
-        const timer = setTimeout(() => {
-          actionSimpleClick(event);
-          setEvent(undefined);
-        }, delay);
-
-        // clear timer on unmount
-        // i.e. if the duration between two clicks and is less than the value of delay
-        return () => clearTimeout(timer);
-      } else if (event.detail === 2) {
-        actionDoubleClick(event);
+  const timer = React.useRef<NodeJS.Timeout | null>(null);
+  return (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (stopPropagation) {
+      e.stopPropagation();
+    }
+    if (preventDefault) {
+      e.preventDefault();
+    }
+    if (timer.current == null) {
+      timer.current = setTimeout(() => {
+        timer.current = null;
+        if (onClick) {
+          onClick(e);
+        }
+      }, delay);
+    } else {
+      clearTimeout(timer.current);
+      timer.current = null;
+      if (onDoubleClick) {
+        onDoubleClick(e);
       }
     }
-  }, [event, actionSimpleClick, actionDoubleClick, delay]);
-
-  return React.useCallback(
-    (e: React.MouseEvent) => {
-      if (stopPropag) {
-        // make sure to call stoppropagation in the callback, not in the effect
-        e.stopPropagation();
-      }
-      // setting a new event will clear and rebuild the effect
-      setEvent(e);
-    },
-    [stopPropag],
-  );
+  };
 }

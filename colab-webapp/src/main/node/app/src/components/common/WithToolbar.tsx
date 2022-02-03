@@ -7,8 +7,6 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { shadedThemeMode } from '../styling/style';
-//import FitSpace from './FitSpace';
 
 interface Props {
   children: JSX.Element;
@@ -27,6 +25,7 @@ interface Props {
     | 'RIGHT_MIDDLE'
     | 'RIGHT_BOTTOM';
   toolbarClassName?: string;
+  containerClassName?:string;
   // 1 means width of the toolbar
   offsetX?: number;
   // 1 means height of the toolbar
@@ -154,7 +153,8 @@ export default function WithToolbar({
   children,
   toolbar,
   toolbarPosition = 'BOTTOM_RIGHT',
-  toolbarClassName = shadedThemeMode,
+  toolbarClassName,
+  containerClassName,
   offsetX = 0,
   offsetY = 0,
   grow = 1,
@@ -181,7 +181,7 @@ export default function WithToolbar({
     <div
       onClick={onClick}
       onMouseEnter={posCb}
-      className={css({
+      className={cx(css({
         flexGrow: grow,
         display: 'flex',
         flexDirection: 'column',
@@ -190,14 +190,13 @@ export default function WithToolbar({
         ':hover > .toolbar': {
           display: 'flex',
         },
-      })}
+      }), containerClassName)}
     >
       {toolbar && (
         <div
           ref={toolbarRef}
           className={cx(
             'toolbar',
-            toolbarClassName,
             css({
               zIndex: 99,
               display: 'none',
@@ -207,6 +206,7 @@ export default function WithToolbar({
               borderRadius: '5px',
               ...cssPosition.pos,
             }),
+            toolbarClassName,
           )}
         >
           {toolbar}

@@ -9,12 +9,14 @@ package ch.colabproject.colab.tests.rest;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
+import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.ws.channel.UserChannel;
 import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
+import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.TestHelper;
@@ -23,6 +25,8 @@ import ch.colabproject.colab.tests.ws.WebsocketClient;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.websocket.DeploymentException;
 import org.junit.jupiter.api.Assertions;
@@ -147,7 +151,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
     @Test
     public void testGrantAdminRight() {
         TestUser myUser = this.signup(
-            "GoulashSensei",
+            "Goulash_Sensei",
             "goulashsensei@test.local",
             "SoSecuredPassword"
         );
@@ -392,7 +396,6 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketClient.class), Level.DEBUG);
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketManager.class), Level.DEBUG);
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(TransactionManager.class), Level.DEBUG);
-
         WebsocketClient wsClient = this.createWsClient();
         // subscribe to currentUser channel
         client.websocketRestEndpoint.subscribeToUserChannel(wsClient.getSessionId());
@@ -421,5 +424,82 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
 
         Assertions.assertTrue(entity instanceof User);
         Assertions.assertEquals(NEW_NAME, ((User) entity).getCommonname());
+    }
+
+    @Test
+    public void testGetActiveSessions() {
+        TestUser otherUser = this.signup(
+            "GoulashSensei",
+            "goulashsensei@test.local",
+            "SoSecuredPassword");
+
+        this.signIn(otherUser);
+        LocalAccount account = (LocalAccount) this.client.userRestEndpoint.getCurrentAccount();
+        Assertions.assertEquals(account.getEmail(), otherUser.getEmail());
+
+        List<HttpSession> oneSession = this.client.userRestEndpoint.getActiveSessions();
+        // first session
+        Assertions.assertEquals(1, oneSession.size());
+        Long firstSessionId = oneSession.get(0).getId();
+
+        // connect with som other client to create a distinct session
+        ColabClient otherClient = this.createRestClient();
+        this.signIn(otherClient, otherUser);
+
+        // first client sees the two session
+        List<HttpSession> twoSessions = this.client.userRestEndpoint.getActiveSessions();
+        Assertions.assertEquals(2, twoSessions.size());
+
+        // fetch id of the second one
+        Optional<HttpSession> findSecond = twoSessions.stream().filter(s -> !s.getId().equals(firstSessionId)).findFirst();
+        Assertions.assertTrue(findSecond.isPresent());
+        Long secondSessionId = findSecond.get().getId();
+
+        // second client sees two session too
+        Assertions.assertEquals(2,
+            otherClient.userRestEndpoint.getActiveSessions()
+                .size());
+
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.BAD_REQUEST, () -> {
+            // force logout your very session is not possible
+            this.client.userRestEndpoint.forceLogout(firstSessionId);
+        });
+
+        // client 1 force client2 to logOut (since it's the same user, it's fine)
+        this.client.userRestEndpoint.forceLogout(secondSessionId);
+
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -> {
+            // second client can not fetch list of session any longer
+            otherClient.userRestEndpoint.getActiveSessions();
+        });
+
+        // first client: only one session left
+        Assertions.assertEquals(1,
+            this.client.userRestEndpoint.getActiveSessions()
+                .size());
+
+        // new user sign in
+        TestUser hacker = this.signup(
+            "hacker",
+            "hacker@test.local",
+            "Hacker4lw4ysUse5tron6Pa55wo¶d");
+
+        this.signIn(otherClient, hacker);
+
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
+            // force logout a session you do not own is not possible
+            otherClient.userRestEndpoint.forceLogout(firstSessionId);
+        });
+
+        // but admin can
+        otherClient.userRestEndpoint.signOut();
+        this.signIn(otherClient, admin);
+        otherClient.userRestEndpoint.forceLogout(firstSessionId);
+
+
+        // initial client has been kicked out
+        TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -> {
+            this.client.userRestEndpoint.getActiveSessions();
+        });
     }
 }

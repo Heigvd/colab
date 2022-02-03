@@ -45,8 +45,8 @@ export const lightTheme = cx(
     '--secondaryColorContrast': '#FFF',
     '--secondaryColorContrastShade': '#FFF',
 
-    '--lightDisabledGrey': '#ccc',
-    '--darkDisabledGrey': '#444',
+    '--lightDisabledGray': '#ddd',
+    '--darkDisabledGray': '#999',
     '--themeSuccessColor': successColor,
     '--themeWarningColor': warningColor,
     '--themeErrorColor': errorColor,
@@ -64,7 +64,8 @@ export const normalThemeMode = css({
   '--linkBgColor': 'var(--secondaryColorContrast)',
   '--linkHoverBgColor': 'var(--secondaryColorContrastShade)',
 
-  '--disabledGrey': 'var(--lightDisabledGrey)',
+  '--darkGray': 'var(--darkDisabledGray)',
+  '--lightGray': 'var(--lightDisabledGray)',
   '--focusColor': 'var(--secondaryColor)',
   '--successColor': 'var(--themeSuccessColor)',
   '--warningColor': 'var(--themeWarningColor)',
@@ -72,7 +73,10 @@ export const normalThemeMode = css({
 
   backgroundColor: 'var(--bgColor)',
   color: 'var(--fgColor)',
-  'h1, h2, h3': {
+  'p': {
+    margin: '5px 0',
+  },
+  'h1, h2, h3, h4': {
     margin: '0 0 5px 0',
   },
   h1: {
@@ -81,9 +85,10 @@ export const normalThemeMode = css({
   h2: {
     fontSize: '1.2rem',
   },
-  h3: {
+  'h3, h4': {
     fontSize: '1rem',
   },
+
 });
 
 export const invertedThemeMode = cx(
@@ -99,7 +104,8 @@ export const invertedThemeMode = cx(
     '--linkColor': 'var(--primaryColorContrast)',
     '--linkHoverColor': 'var(--primaryColorContrastShade)',
 
-    '--disabledGrey': 'var(--darkDisabledGrey)',
+    '--darkGray': 'var(--lightDisabledGray)',
+    '--lightGray': 'var(--darkDisabledGray)',
   }),
 );
 
@@ -119,6 +125,7 @@ export const space_S = '5px';
 export const space_M = '15px';
 export const space_L = '1.5rem';
 export const flex = css({ display: 'flex' });
+export const textSmall = css({ fontSize: '0.85rem'});
 
 type blockSide = 1 | 2 | 3 | 4;
 const blockMargin = {
@@ -217,6 +224,14 @@ export const noOutlineStyle = css({
   },
 });
 
+export const lightLinkStyle = cx(
+  linkStyle,
+  css({
+    color: 'var(--darkGray)',
+    textDecoration: 'none',
+  })
+)
+
 export const iconStyle = css({
   paddingLeft: '5px',
   paddingRight: '5px',
@@ -295,7 +310,7 @@ export const fixedButtonStyle = css({
 });
 
 export const lightIconButtonStyle = css({
-  color: 'var(--disabledGrey)',
+  color: 'var(--darkGray)',
   '&:hover': {
     color: 'var(--hoverFgColor)',
   },
@@ -310,7 +325,7 @@ export const greyIconButtonChipStyle = cx(
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: '50%',
-    border: '1px solid var(--disabledGrey)',
+    border: '1px solid var(--darkGray)',
     '&:hover': {
       border: '1px solid var(--hoverFgColor)',
     },
@@ -332,7 +347,7 @@ export const cardStyle = cx(
 );
 
 export const paddedContainerStyle = css({
-  padding: '10px',
+  padding: space_M,
 });
 
 const defaultContainerStyle = cx(
@@ -402,7 +417,7 @@ export const inputStyle = css({
   borderRadius: '6px',
   boxSizing: 'border-box',
   transition: '.8s',
-  padding: '0 24px',
+  padding: '0 '+ space_M,
   lineHeight: '2.5em',
   fontFamily: 'inherit',
 });
@@ -432,6 +447,11 @@ export const cardTitle = css({
   fontWeight: 'bold',
 });
 
+export const variantTitle = css({
+  fontSize: 'inherit',
+  color: 'var(--darkGray)',
+});
+
 export const workInProgressStyle = cx(
   css({
     border: '2px solid hotpink',
@@ -439,3 +459,4 @@ export const workInProgressStyle = cx(
     boxShadow: '0px 0px 25px 7px greenyellow',
   }),
 );
+

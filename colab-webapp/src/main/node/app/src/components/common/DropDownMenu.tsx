@@ -11,7 +11,12 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
-import { iconButton, linkStyle, normalThemeMode, space_S } from '../styling/style';
+import {
+  iconButton,
+  linkStyle,
+  normalThemeMode,
+  space_S,
+} from '../styling/style';
 import Flex from './Flex';
 
 export const itemStyle = css({
@@ -353,6 +358,22 @@ export default function DropDownMenu<T extends string | number | symbol>({
     },
   });
 
+  /* const selectedEntryStyle = cx(
+    invertedThemeMode,
+    css({
+      textDecoration: 'none',
+      color: 'var(--fgColor)',
+      padding: space_S,
+      ':focus': {
+        outlineStyle: 'inset',
+      },
+      ':hover': {
+        backgroundColor: '#e6e6e6',
+        color: 'var(--fgColor)',
+      },
+    }),
+  ); */
+
   if (entries.length > 0) {
     const current =
       valueComp != null ? valueComp : entries.find(entry => entry.value === value) || entries[0]!;
@@ -376,7 +397,6 @@ export default function DropDownMenu<T extends string | number | symbol>({
                 {current.label}
               </>
             )}
-
             {icon ? <FontAwesomeIcon icon={icon} className={css({ fontSize: '16px' })} /> : null}
             {current.label}
             {menuIcon === 'CARET' ? (

@@ -29,7 +29,7 @@ export function DocumentEditorDisplay({
   } else {
     return (
       <div>
-        <i>Unknown document</i>{' '}
+        <i>Unknown document</i>
       </div>
     );
   }

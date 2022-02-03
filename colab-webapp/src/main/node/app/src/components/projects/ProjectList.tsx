@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AsyncThunk } from '@reduxjs/toolkit';
 import { Project } from 'colab-rest-client';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import { StateStatus } from '../../store/project';
@@ -19,8 +20,7 @@ import Button from '../common/Button';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import InlineLoading from '../common/InlineLoading';
-import { InlineLink } from '../common/Link';
-import { cardStyle, fixedButtonStyle, space_M, space_S } from '../styling/style';
+import { cardStyle, fixedButtonStyle, invertedButtonStyle, space_M } from '../styling/style';
 
 /* const cardInfoStyle = css({
   margin: space_S + ' 0',
@@ -28,11 +28,11 @@ import { cardStyle, fixedButtonStyle, space_M, space_S } from '../styling/style'
 
 const projectListStyle = css({
   margin: 'auto',
-  width: '80%',
+  width: '100%',
   display: 'grid',
   gridTemplateColumns: 'repeat(3, 1fr)',
-  gridColumnGap: space_M,
-  gridRowGap: space_S,
+  gridColumnGap: '40px',
+  gridRowGap: '40px',
 });
 interface Props {
   project: Project;
@@ -41,14 +41,13 @@ interface Props {
 // Display one project and allow to edit it
 const ProjectDisplay = ({ project }: Props) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   return (
     <div
       className={cx(
         cardStyle,
         css({
-          margin: '20px 0',
-          width: '100%',
           display: 'flex',
           flexDirection: 'column',
         }),
@@ -63,7 +62,7 @@ const ProjectDisplay = ({ project }: Props) => {
         })}
       >
         <AutoSaveInput
-          placeholder="unnamed"
+          placeholder="Unnamed project"
           value={project.name || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
           className={css({ fontWeight: 'bold' })}
@@ -108,7 +107,7 @@ const ProjectDisplay = ({ project }: Props) => {
       >
         <AutoSaveInput
           inputType="TEXTAREA"
-          placeholder="no description"
+          placeholder="Write a description here."
           value={project.description || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
         />
@@ -137,14 +136,9 @@ const ProjectDisplay = ({ project }: Props) => {
           padding: space_M,
         })}
       >
-        <InlineLink
-          to={`/editor/${project.id}`}
-          className={css({ margin: 'auto', textDecoration: 'none' })}
-        >
-          <Button title="Edit project" icon={faEdit}>
-            Edit
+          <Button title="Edit project" icon={faEdit} onClick={()=>navigate(`/editor/${project.id}`)} className={cx(css({margin: 'auto'}), invertedButtonStyle)}>
+            Edit project
           </Button>
-        </InlineLink>
       </div>
     </div>
   );
@@ -172,7 +166,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
     return <InlineLoading />;
   } else {
     return (
-      <div>
+      <div className={css({padding: '4vw'})}>
         <div className={projectListStyle}>
           {projects
             .sort((a, b) => (a.id || 0) - (b.id || 0))

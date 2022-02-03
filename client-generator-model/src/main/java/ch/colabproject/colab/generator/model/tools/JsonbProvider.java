@@ -34,12 +34,12 @@ public class JsonbProvider implements ContextResolver<Jsonb> {
      * @return an Jsonb object
      */
     public static Jsonb getJsonb() {
-        DateSerDe dateSerDe = new DateSerDe();
+        //DateSerDe dateSerDe = new DateSerDe();
         JsonbConfig config = new JsonbConfig()
-            .withFormatting(false)
-            .withDeserializers(dateSerDe)
-            .withSerializers(dateSerDe);
-        
+            .withFormatting(false);
+            //.withDeserializers(dateSerDe)
+            //.withSerializers(dateSerDe);
+
         // DO NEVER DO THAT EVER (see PolymorphicDeserializer doc):
         //.withDeserializers(new PolymorphicDeserializer());
 

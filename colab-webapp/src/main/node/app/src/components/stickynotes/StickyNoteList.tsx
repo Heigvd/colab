@@ -5,14 +5,12 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
 import { StickyNoteLink } from 'colab-rest-client';
 import * as React from 'react';
-import * as API from '../../API/api';
-import { dispatch } from '../../store/store';
-import { Destroyer } from '../common/Destroyer';
 import Flex from '../common/Flex';
 import Tips from '../common/Tips';
-import WithToolbar from '../common/WithToolbar';
+import { lightIconButtonStyle, space_M } from '../styling/style';
 import StickyNoteCreator from './StickyNoteCreator';
 import StickyNoteDisplay from './StickyNoteDisplay';
 
@@ -35,40 +33,35 @@ export default function StickyNoteList({
   showDest = false,
 }: StickyNoteListProps): JSX.Element {
   return (
-    <Flex direction="column">
-      <h3>Sticky notes</h3>
-      <Tips>
-        <h5>List of sticky notes stuck on the card</h5>
-        <div>Sticky notes come from a source (card, card specific version, resource, block)</div>
-      </Tips>
-      <div>
+    <Flex direction="column" align="stretch">
+      <Flex
+        align="flex-end"
+        className={css({ borderBottom: '1px solid var(--lightGray)', padding: '0 ' + space_M })}
+      >
+        <h2>sticky notes</h2>
+        <Tips>
+          <h5>List of sticky notes stuck on the card</h5>
+          <div>Sticky notes come from a source (card, card specific version, resource, block)</div>
+        </Tips>
+      </Flex>
+      <Flex
+        grow={1}
+        direction="column"
+        align="stretch"
+        className={css({ overflow: 'auto', padding: space_M })}
+      >
         {stickyNotes.sort(sortStickyNotes).map(stickyNote => (
           <div key={stickyNote.id}>
-            <WithToolbar
-              toolbarPosition="RIGHT_BOTTOM"
-              offsetY={-0.5}
-              toolbar={
-                <Destroyer
-                  title="Delete this sticky note"
-                  onDelete={() => {
-                    dispatch(API.deleteStickyNote(stickyNote));
-                  }}
-                />
-              }
-            >
               <StickyNoteDisplay
                 key={stickyNote.id}
                 stickyNote={stickyNote}
                 showSrc={showSrc}
                 showDest={showDest}
               />
-            </WithToolbar>
           </div>
         ))}
-      </div>
-      <div>
-        <StickyNoteCreator destCardId={destCardId} />
-      </div>
+      </Flex>
+      <StickyNoteCreator destCardId={destCardId} className={lightIconButtonStyle} />
     </Flex>
   );
 }

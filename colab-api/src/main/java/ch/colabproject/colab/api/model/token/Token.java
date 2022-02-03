@@ -14,12 +14,13 @@ import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.model.user.HashMethod;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.generator.model.exceptions.HttpException;
+import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
-import javax.json.bind.annotation.JsonbDateFormat;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.json.bind.annotation.JsonbTypeSerializer;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -93,7 +94,8 @@ public abstract class Token implements ColabEntity {
     /**
      * token expiration date. TODO: schedule deletion of outdated tokens
      */
-    @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
+    @JsonbTypeDeserializer(DateSerDe.class)
+    @JsonbTypeSerializer(DateSerDe.class)
     private OffsetDateTime expirationDate;
 
     /**

@@ -6,15 +6,16 @@
  */
 
 import { css } from '@emotion/css';
-import { faEllipsisH, faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCog, faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
 import { useAppDispatch } from '../../store/hooks';
 import { Destroyer } from '../common/Destroyer';
 import Flex from '../common/Flex';
+import IconButton from '../common/IconButton';
 import OpenCloseModal from '../common/OpenCloseModal';
+import WithToolbar from '../common/WithToolbar';
 import { useBlock } from '../live/LiveTextEditor';
 import { lightIconButtonStyle, marginAroundStyle, space_M, space_S } from '../styling/style';
 import { getKey, ResourceAndRef, ResourceCallContext } from './ResourceCommonType';
@@ -31,7 +32,7 @@ function sortResources(a: ResourceAndRef, b: ResourceAndRef): number {
 
 const tocEntryStyle = css({
   cursor: 'pointer',
-  padding: space_S,
+  padding: space_S + ' ' + space_M,
   color: 'var(--pictoGrey)',
   '&:hover': {
     backgroundColor: 'var(--hoverBgColor)',
@@ -87,17 +88,35 @@ export default function ResourcesList({
   return (
     <Flex direction="column" align="stretch">
       <Flex
-        className={css({ borderBottom: '1px solid var(--disabledGrey)', padding: '0 ' + space_M })}
+        className={css({ borderBottom: '1px solid var(--lightGray)', padding: '0 ' + space_M })}
       >
         <h2>Resources</h2>
       </Flex>
-      <Flex grow={1} direction="column" align="stretch" className={css({ padding: space_M })}>
+      <Flex
+        grow={1}
+        direction="column"
+        align="stretch"
+        className={css({ overflow: 'auto', paddingRight: '2px', width: '170px' })}
+      >
         {contextInfo.accessLevel === 'DENIED' ? (
           <div>ACCESS DENIED</div>
         ) : (
           toDisplay.map(category => (
             <div key={category} className={marginAroundStyle([3], space_S)}>
-              <h3 className={marginAroundStyle([1], space_M)}>{category}</h3>
+              <div className={marginAroundStyle([1, 2, 4], space_M)}>
+                <h3
+                  className={css({
+                    maxWidth: '150px',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    flexGrow: 1,
+                  })}
+                  title={category}
+                >
+                  {category}
+                </h3>
+              </div>
               <Flex direction="column" align="stretch">
                 {categorized.categorized[category]!.sort(sortResources).map(resourceAndRef => (
                   <TocEntry
@@ -110,19 +129,15 @@ export default function ResourcesList({
             </div>
           ))
         )}
+        <div className={css({ marginRight: '10px' })}> </div>
       </Flex>
-      <Flex
-        justify="center"
-        className={css({ borderTop: '1px solid var(--disabledGrey)', padding: space_S })}
-      >
-        {contextInfo.accessLevel === 'WRITE' ? (
-          <ResourceCreator
-            contextInfo={contextInfo}
-            categories={categories}
-            className={lightIconButtonStyle}
-          />
-        ) : null}
-      </Flex>
+      {contextInfo.accessLevel === 'WRITE' ? (
+        <ResourceCreator
+          contextInfo={contextInfo}
+          categories={categories}
+          className={lightIconButtonStyle}
+        />
+      ) : null}
     </Flex>
   );
 }
@@ -144,73 +159,76 @@ function TocEntry({ resourceAndRef, selectResource }: TocEntryProps) {
       className={tocEntryStyle}
       onClick={() => selectResource(resourceAndRef)}
     >
-      <div
-        className={css({
-          width: '120px',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          marginRight: space_S,
-          flexGrow: 1,
-        })}
-      >
-        {resourceAndRef.targetResource.title || i18n.resource.untitled}
-      </div>
-
-      <OpenCloseModal
-        title="Resource Settings"
-        showCloseButton={true}
-        collapsedChildren={
-          <FontAwesomeIcon
-            icon={faEllipsisH}
-            className={lightIconButtonStyle}
-            title="Resource settings"
-          />
+      <WithToolbar
+        containerClassName={css({ width: '100%' })}
+        toolbarPosition="RIGHT_MIDDLE"
+        offsetX={-0.5}
+        offsetY={0.5}
+        toolbar={
+          <OpenCloseModal
+            title="Resource Settings"
+            showCloseButton={true}
+            collapsedChildren={
+              <IconButton icon={faCog} className={lightIconButtonStyle} title="Resource settings" />
+            }
+            className={css({ alignSelf: 'flex-end' })}
+          >
+            {() => (
+              <>
+                <ResourceSettings {...resourceAndRef} />
+                {resourceAndRef.isDirectResource && (
+                  <Destroyer
+                    title="Delete this resource"
+                    icon={faTrashAlt}
+                    onDelete={() => {
+                      dispatch(API.deleteResource(resourceAndRef.targetResource));
+                    }}
+                  />
+                )}
+                {!resourceAndRef.isDirectResource && resourceAndRef.cardTypeResourceRef && (
+                  <Destroyer
+                    title="Refuse at card type level"
+                    icon={faTrash}
+                    onDelete={() => {
+                      dispatch(API.removeAccessToResource(resourceAndRef.cardTypeResourceRef!));
+                    }}
+                  />
+                )}
+                {!resourceAndRef.isDirectResource && resourceAndRef.cardResourceRef && (
+                  <Destroyer
+                    title="Refuse at card level"
+                    icon={faTrash}
+                    onDelete={() => {
+                      dispatch(API.removeAccessToResource(resourceAndRef.cardResourceRef!));
+                    }}
+                  />
+                )}
+                {!resourceAndRef.isDirectResource && resourceAndRef.cardContentResourceRef && (
+                  <Destroyer
+                    title="Refuse at variant level"
+                    icon={faTrash}
+                    onDelete={() => {
+                      dispatch(API.removeAccessToResource(resourceAndRef.cardContentResourceRef!));
+                    }}
+                  />
+                )}
+              </>
+            )}
+          </OpenCloseModal>
         }
-        className={css({ alignSelf: 'flex-end' })}
       >
-        {() => (
-          <>
-            <ResourceSettings {...resourceAndRef} />
-            {resourceAndRef.isDirectResource && (
-              <Destroyer
-                title="Delete this resource"
-                icon={faTrashAlt}
-                onDelete={() => {
-                  dispatch(API.deleteResource(resourceAndRef.targetResource));
-                }}
-              />
-            )}
-            {!resourceAndRef.isDirectResource && resourceAndRef.cardTypeResourceRef && (
-              <Destroyer
-                title="Refuse at card type level"
-                icon={faTrash}
-                onDelete={() => {
-                  dispatch(API.removeAccessToResource(resourceAndRef.cardTypeResourceRef!));
-                }}
-              />
-            )}
-            {!resourceAndRef.isDirectResource && resourceAndRef.cardResourceRef && (
-              <Destroyer
-                title="Refuse at card level"
-                icon={faTrash}
-                onDelete={() => {
-                  dispatch(API.removeAccessToResource(resourceAndRef.cardResourceRef!));
-                }}
-              />
-            )}
-            {!resourceAndRef.isDirectResource && resourceAndRef.cardContentResourceRef && (
-              <Destroyer
-                title="Refuse at variant level"
-                icon={faTrash}
-                onDelete={() => {
-                  dispatch(API.removeAccessToResource(resourceAndRef.cardContentResourceRef!));
-                }}
-              />
-            )}
-          </>
-        )}
-      </OpenCloseModal>
+        <div
+          className={css({
+            maxWidth: '150px',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            flexGrow: 1,
+          })}
+        >
+          {resourceAndRef.targetResource.title || i18n.resource.untitled}
+        </div>
+      </WithToolbar>
     </Flex>
   );
 }

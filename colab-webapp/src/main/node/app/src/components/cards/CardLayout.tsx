@@ -83,17 +83,15 @@ export default function CardLayout({
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
-    const color = card.color || 'white';
-
     return (
       <div
         className={cx(
           cardStyle,
           css({
-            backgroundColor: color,
+            backgroundColor: 'white',
             boxShadow:
               variants.length > 1
-                ? `${cardShadow}, 3px 3px 0px -1px white, 4px 4px 0px 0px ${color}`
+                ? `${cardShadow}, 4px 4px 0px 0px white, 4px 4px 4px 1px var(--darkGray)`
                 : undefined,
             flexDirection: 'column',
             justifyContent: 'space-between',

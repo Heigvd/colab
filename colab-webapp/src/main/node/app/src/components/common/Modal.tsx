@@ -33,9 +33,10 @@ const modalStyle = cx(
     justifyContent: 'space-between',
     maxWidth: '800px',
     maxHeight: '580px',
+    minWidth: '400px',
+    minHeight: '200px',
     boxShadow: '0 3px 6px rgba(0,0,0,.16)',
     borderRadius: '8px',
-    overflow: 'auto',
   }),
 );
 

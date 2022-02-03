@@ -142,19 +142,19 @@ public class WebsocketManager {
     /**
      * HTTP sessions to websocket sessions registry.
      * <p />
-     * Since one can open several tabs in its browser, all tabs sharing the same httpSessionId
+     * Since one can open several tabs in its browser, all tabs share the same httpSessionId
      * (cookie) but each has its own websocket session, we have to maintain such a map.
      * <p />
      * This is required cancel all subscription on logout.
      */
-    private Map<String, Set<Session>> httpSessionToWsSessions = new HashMap<>();
+    private Map<Long, Set<Session>> httpSessionToWsSessions = new HashMap<>();
 
     /**
      * Each websocket session is linked to one http session.
      * <p>
      * This is the {@link httpSessionToWsSessions} reverse registry.
      */
-    private Map<Session, String> wsSessionToHttpSession = new HashMap<>();
+    private Map<Session, Long> wsSessionToHttpSession = new HashMap<>();
 
     /**
      * List the channels each websocket session subscribe to.
@@ -224,7 +224,7 @@ public class WebsocketManager {
             SubscriptionRequest.ChannelType.BROADCAST,
             0L,
             sessionId.getSessionId(),
-            requestManager.getHttpSession().getSessionId());
+            requestManager.getAndAssertHttpSession().getId());
         subscriptionEvents.fire(request);
     }
 
@@ -242,7 +242,7 @@ public class WebsocketManager {
             SubscriptionRequest.ChannelType.BROADCAST,
             0L,
             sessionId.getSessionId(),
-            requestManager.getHttpSession().getSessionId());
+            requestManager.getAndAssertHttpSession().getId());
         subscriptionEvents.fire(request);
     }
 
@@ -259,7 +259,7 @@ public class WebsocketManager {
             SubscriptionRequest.ChannelType.USER,
             user.getId(),
             sessionId.getSessionId(),
-            requestManager.getHttpSession().getSessionId());
+            requestManager.getAndAssertHttpSession().getId());
         subscriptionEvents.fire(request);
     }
 
@@ -276,7 +276,7 @@ public class WebsocketManager {
             SubscriptionRequest.ChannelType.USER,
             user.getId(),
             sessionId.getSessionId(),
-            requestManager.getHttpSession().getSessionId());
+            requestManager.getAndAssertHttpSession().getId());
         subscriptionEvents.fire(request);
     }
 
@@ -299,7 +299,7 @@ public class WebsocketManager {
                 SubscriptionRequest.ChannelType.PROJECT,
                 project.getId(),
                 sessionId.getSessionId(),
-                requestManager.getHttpSession().getSessionId());
+                requestManager.getAndAssertHttpSession().getId());
             subscriptionEvents.fire(request);
         } else {
             throw HttpErrorMessage.notFound();
@@ -325,7 +325,7 @@ public class WebsocketManager {
                 SubscriptionRequest.ChannelType.PROJECT,
                 project.getId(),
                 sessionId.getSessionId(),
-                requestManager.getHttpSession().getSessionId());
+                requestManager.getAndAssertHttpSession().getId());
             subscriptionEvents.fire(request);
         } else {
             throw HttpErrorMessage.notFound();
@@ -352,7 +352,7 @@ public class WebsocketManager {
                 SubscriptionRequest.ChannelType.BLOCK,
                 block.getId(),
                 sessionId.getSessionId(),
-                requestManager.getHttpSession().getSessionId());
+                requestManager.getAndAssertHttpSession().getId());
             subscriptionEvents.fire(request);
         } else {
             throw HttpErrorMessage.notFound();
@@ -379,7 +379,7 @@ public class WebsocketManager {
                 SubscriptionRequest.ChannelType.BLOCK,
                 block.getId(),
                 sessionId.getSessionId(),
-                requestManager.getHttpSession().getSessionId());
+                requestManager.getAndAssertHttpSession().getId());
             subscriptionEvents.fire(request);
         } else {
             throw HttpErrorMessage.notFound();
@@ -393,7 +393,7 @@ public class WebsocketManager {
      */
     public void processSubscription(
         @Observes @Inbound(eventName = WS_SUBSCRIPTION_EVENT_CHANNEL) SubscriptionRequest request) {
-        // all security check have be done before fire the subscription event
+        // all security checks have been done before firing the subscription event
         requestManager.sudo(() -> {
             logger.debug("Channel subscription request: {}", request);
             Session session = WebsocketEndpoint.getSession(request.getWsSessionId());
@@ -411,7 +411,7 @@ public class WebsocketManager {
                     httpSessionToWsSessions.get(request.getColabSessionId()).add(session);
 
                     // make sure to link wsSession to its Http session
-                    wsSessionToHttpSession.put(session, request.getColabSessionId());
+                    wsSessionToHttpSession.put(session, request.getColabSessionId()); // TODO: is it even used ?
 
                     if (request.getType() == SubscriptionRequest.SubscriptionType.SUBSCRIBE) {
                         // make sure the http session has its own list of channels
@@ -587,7 +587,7 @@ public class WebsocketManager {
      *
      * @param httpSessionId httpSessionId which just sign out
      */
-    public void signoutAndUnsubscribeFromAll(String httpSessionId) {
+    public void signoutAndUnsubscribeFromAll(Long httpSessionId) {
         // TODO send logout event, so each client (each browser tab) knows it has been disconnected
         Set<Session> wsSessions = this.httpSessionToWsSessions.get(httpSessionId);
         if (wsSessions != null) {

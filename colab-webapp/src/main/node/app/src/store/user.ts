@@ -5,24 +5,25 @@
  * Licensed under the MIT License
  */
 import { createSlice } from '@reduxjs/toolkit';
-import { Account, User } from 'colab-rest-client';
+import { Account, HttpSession, User } from 'colab-rest-client';
 import * as API from '../API/api';
 import { mapById } from '../helper';
 import { processMessage } from '../ws/wsThunkActions';
+import { LoadingStatus } from './store';
 
 export interface UserState {
-  users: {
-    // null user means loading
-    [id: number]: User | null;
-  };
-  accounts: {
-    [id: number]: Account;
-  };
+  // null user means loading
+  users: Record<number, User | null>;
+  accounts: Record<number, Account>;
+  currentUserSessionState: LoadingStatus;
+  sessions: Record<number, HttpSession>;
 }
 
 const initialState: UserState = {
   users: {},
   accounts: {},
+  currentUserSessionState: 'NOT_INITIALIZED',
+  sessions: {},
 };
 
 const updateUser = (state: UserState, user: User) => {
@@ -42,6 +43,15 @@ const removeAccount = (state: UserState, accountId: number) => {
   delete state.accounts[accountId];
 };
 
+const updateSession = (state: UserState, session: HttpSession) => {
+  if (session.id != null) {
+    state.sessions[session.id] = session;
+  }
+};
+const removeSession = (state: UserState, sessionId: number) => {
+  delete state.sessions[sessionId];
+};
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -53,6 +63,8 @@ const userSlice = createSlice({
         action.payload.users.deleted.forEach(entry => removeUser(state, entry.id));
         action.payload.accounts.updated.forEach(account => updateAccount(state, account));
         action.payload.accounts.deleted.forEach(entry => removeAccount(state, entry.id));
+        action.payload.httpSessions.updated.forEach(session => updateSession(state, session));
+        action.payload.httpSessions.deleted.forEach(entry => removeSession(state, entry.id));
       })
       .addCase(API.reloadCurrentUser.fulfilled, (state, action) => {
         const user = action.payload.currentUser;
@@ -89,6 +101,13 @@ const userSlice = createSlice({
       })
       .addCase(API.getAllUsers.fulfilled, (state, action) => {
         state.users = mapById(action.payload);
+      })
+      .addCase(API.getCurrentUserActiveSessions.pending, state => {
+        state.currentUserSessionState = 'LOADING';
+      })
+      .addCase(API.getCurrentUserActiveSessions.fulfilled, (state, action) => {
+        action.payload.forEach(s => updateSession(state, s));
+        state.currentUserSessionState = 'READY';
       })
       .addCase(API.signOut.fulfilled, () => {
         return initialState;

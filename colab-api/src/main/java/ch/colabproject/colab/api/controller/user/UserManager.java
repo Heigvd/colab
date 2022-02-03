@@ -14,6 +14,7 @@ import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.AuthInfo;
 import ch.colabproject.colab.api.model.user.AuthMethod;
 import ch.colabproject.colab.api.model.user.HashMethod;
+import ch.colabproject.colab.api.model.user.HttpSession;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.SignUpInfo;
 import ch.colabproject.colab.api.model.user.User;
@@ -22,6 +23,8 @@ import ch.colabproject.colab.api.security.AuthenticationFailure;
 import ch.colabproject.colab.api.security.SessionManager;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -55,7 +58,7 @@ public class UserManager {
     /**
      * Number of second to wait to accept new authentication attempt if max number has been reached
      */
-    private static final Long AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC = 60*15l; // 15min
+    private static final Long AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC = 60 * 15l; // 15min
 
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(UserManager.class);
@@ -276,29 +279,6 @@ public class UserManager {
     }
 
     /**
-     * Make a full comparison of array. Do not return false as soon as array. Prevent timing-attack.
-     *
-     * @param a first array
-     * @param b second array
-     *
-     * @return array equals or not
-     */
-    private boolean constantTimeArrayEquals(byte[] a, byte[] b) {
-        boolean result = true;
-        int aSize = a.length;
-        int bSize = b.length;
-        int max = Math.max(aSize, bSize);
-        for (int i = 0; i < max; i++) {
-            if (i >= aSize || i >= bSize) {
-                result = false;
-            } else {
-                result = a[i] == b[i] && result;
-            }
-        }
-        return result;
-    }
-
-    /**
      * Try to authenticate user with given token
      *
      * @param authInfo authentication information
@@ -338,7 +318,7 @@ public class UserManager {
                 // Spotbugs reports a timing attack vulnerability using:
                 //  if (Arrays.equals(hash, account.getHashedPassword())) {
                 // doing a fullcomparison of arrays makes it happy:
-                if (this.constantTimeArrayEquals(hash, account.getHashedPassword())) {
+                if (Helper.constantTimeArrayEquals(hash, account.getHashedPassword())) {
                     // authentication succeed
                     /////////////////////////////////
                     sessionManager.resetAuthenticationAttemptHistory(account);
@@ -439,6 +419,23 @@ public class UserManager {
     public void logout() {
         // clear account from http session
         this.requestManager.logout();
+    }
+
+    /**
+     * Force session logout
+     *
+     * @param sessionId id of session to logout
+     */
+    public void forceLogout(Long sessionId) {
+        HttpSession httpSession = userDao.getHttpSessionById(sessionId);
+        HttpSession currentSession = requestManager.getHttpSession();
+        if (httpSession != null) {
+            if (!httpSession.equals(currentSession)) {
+                userDao.deleteHttpSession(httpSession);
+            } else {
+                throw HttpErrorMessage.badRequest();
+            }
+        }
     }
 
     /**
@@ -561,5 +558,17 @@ public class UserManager {
         }
 
         return managedAccount;
+    }
+
+    /**
+     * Get all session linked to the current user
+     *
+     * @return list of all active sessions
+     */
+    public List<HttpSession> getCurrentUserActiveSessions() {
+        return requestManager.getCurrentUser().getAccounts().stream()
+            .flatMap(account -> {
+                return account.getHttpSessions().stream();
+            }).collect(Collectors.toList());
     }
 }

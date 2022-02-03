@@ -42,7 +42,6 @@ export default function AutoSaveInput({
     status: 'DISPLAY',
     currentValue: value || '',
   });
-
   const dropRef = React.useRef<HTMLDivElement>(null);
 
   const handleClickOutside = (event: Event) => {
@@ -108,6 +107,7 @@ export default function AutoSaveInput({
               autoFocus
               className={cx(invisibleInputStyle, className || '')}
               onKeyPress={onEnter}
+              readOnly={readOnly}
             />
           ) : (
             <textarea
@@ -117,6 +117,7 @@ export default function AutoSaveInput({
               autoFocus
               className={cx(invisibleTextareaStyle, className || '')}
               onKeyPress={onEnter}
+              readOnly={readOnly}
             />
           )}
         </label>
@@ -130,12 +131,20 @@ export default function AutoSaveInput({
         offsetY={0.5}
         grow={0}
         toolbar={!readOnly ? <IconButton icon={faPen} title="edit" /> : null}
-        onClick={editCb}
+        onClick={function () {
+          if (!readOnly) {
+            editCb();
+          }
+        }}
       >
         <>
           <label>{label}</label>
-          <div className={cx(css({ '&:hover': { opacity: 0.7 } }), className || '')}>
-            {state.currentValue ? state.currentValue : <i>{placeholder}</i>}
+          <div className={cx(!readOnly && css({ '&:hover': { opacity: 0.7 } }), className)}>
+            {state.currentValue ? (
+              state.currentValue
+            ) : (
+              <i className={css({ color: 'var(--darkGray)' })}>{placeholder}</i>
+            )}
           </div>
         </>
       </WithToolbar>

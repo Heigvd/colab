@@ -5,14 +5,19 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
+import { faUndo } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 //import * as API from '../../API/api';
 //import { useAppDispatch } from '../../store/hooks';
+import Button from '../common/Button';
+import Flex from '../common/Flex';
 import Form, { createSelectField, Field } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
-import OpenCloseModal, { modalPadding } from '../common/OpenCloseModal';
-import { addIcon, cancelIcon, createIcon, reinitIcon } from '../styling/defaultIcons';
+import OpenCloseModal from '../common/OpenCloseModal';
+import { addIcon } from '../styling/defaultIcons';
+import { space_M, space_S } from '../styling/style';
 import { ResourceCallContext, ResourceContextScope } from './ResourceCommonType';
 
 /**
@@ -61,29 +66,28 @@ export default function ResourceCreator({
       key: 'title',
       type: 'text',
       label: 'title',
-      placeholder: 'title',
       isMandatory: true,
     },
     {
       key: 'teaser',
       type: 'text',
       label: 'teaser',
-      placeholder: 'teaser',
       isMandatory: true,
     },
     createSelectField({
       key: 'category',
       type: 'select',
-      label: 'category',
+      label: 'Category',
       isMulti: false,
       options: categories.map(c => ({ label: c, value: c })),
       canCreateOption: true,
-      placeholder: 'category',
+      placeholder: 'Select or create a category',
       isMandatory: true,
     }),
     createSelectField({
       key: 'docType',
       type: 'select',
+      label: 'Resource type',
       isMulti: false,
       options: [
         { label: 'Document', value: 'BlockDocument' },
@@ -107,70 +111,89 @@ export default function ResourceCreator({
     <OpenCloseModal
       title="Create a resource"
       collapsedChildren={
-        <IconButton title="add a sticky note" icon={addIcon} className={className} />
+        <Flex
+          justify="center"
+          className={cx(
+            css({
+              borderTop: '1px solid var(--lightGray)',
+              padding: space_S,
+              '&:hover': { backgroundColor: 'var(--lightGray)', cursor: 'pointer' },
+            }),
+            className,
+          )}
+        >
+          <FontAwesomeIcon title="Add a resource" icon={addIcon} />
+        </Flex>
       }
+      className={css({ display: 'block', width: '100%', textAlign: 'center' })}
     >
       {collapse => (
-        <div className={css({ padding: modalPadding })}>
-          <Form fields={fields} value={state} autoSubmit={true} onSubmit={setState} />
-          <div>
-            <IconButton
-              icon={createIcon}
-              title="create"
-              onClick={() => {
-                // let cardTypeId: number | null = null;
-                // let cardId: number | null = null;
-                // let cardContentId: number | null = null;
-                // if (contextInfo.kind == ResourceContextScope.CardType) {
-                //   cardTypeId = contextInfo.cardTypeId;
-                // } else {
-                //   if (state.atCardContentLevel) {
-                //     cardContentId = contextInfo.cardContentId || null;
-                //   } else {
-                //     cardId = contextInfo.cardId || null;
-                //   }
-                // }
-                // dispatch(
-                //   API.createResource({
-                //     abstractCardTypeId: cardTypeId,
-                //     cardId: cardId,
-                //     cardContentId: cardContentId,
-                //     documents:
-                //       state.docType === 'DocumentFile'
-                //         ? [{
-                //             '@class': state.docType,
-                //             fileSize: 0,
-                //             mimeType: 'application/octet-stream',
-                //           }]
-                //         : [{
-                //             '@class': state.docType,
-                //           }],
-                //     title: state.title,
-                //     teaser: {
-                //       '@class': 'TextDataBlock',
-                //       mimeType: 'text/markdown',
-                //       textData: state.teaser,
-                //       revision: '0',
-                //     },
-                //     category: state.category,
-                //   }),
-                // ).then(() => {
-                //   resetInputs();
-                //   collapse();
-                // });
-              }}
-            />
-            <IconButton icon={reinitIcon} title="reinit" onClick={() => resetInputs()} />
-            <IconButton
-              icon={cancelIcon}
+          <Form
+            fields={fields}
+            value={state}
+            onSubmit={function (e) {
+              setState(e);
+              let cardTypeId: number | null = null;
+              let cardId: number | null = null;
+              let cardContentId: number | null = null;
+              if (contextInfo.kind == ResourceContextScope.CardType) {
+                cardTypeId = contextInfo.cardTypeId;
+              } else {
+                if (e.atCardContentLevel) {
+                  cardContentId = contextInfo.cardContentId || null;
+                } else {
+                  cardId = contextInfo.cardId || null;
+                }
+              }
+              // dispatch(
+              //   API.createResource({
+              //     abstractCardTypeId: cardTypeId,
+              //     cardId: cardId,
+              //     cardContentId: cardContentId,
+              //     document:
+              //       e.docType === 'DocumentFile'
+              //         ? {
+              //             '@class': e.docType,
+              //             fileSize: 0,
+              //             mimeType: 'application/octet-stream',
+              //           }
+              //         : {
+              //             '@class': e.docType,
+              //           },
+              //     title: e.title,
+              //     teaser: {
+              //       '@class': 'TextDataBlock',
+              //       mimeType: 'text/markdown',
+              //       textData: e.teaser,
+              //       revision: '0',
+              //     },
+              //     category: e.category,
+              //   }),
+              // ).then(() => {
+              //   resetInputs();
+              //   collapse();
+              // });
+            }}
+            childrenClassName={css({
+              flexDirection: 'row-reverse',
+              alignItems: 'center',
+              justifyContent: 'end',
+            })}
+            className={css({alignSelf: 'center'})}
+          >
+            <Button
               title="cancel"
               onClick={() => {
                 // see if it is better to reset the values or not
                 collapse();
               }}
-            />
-          </div>
-        </div>
+              invertedButton
+              className={css({ margin: space_M })}
+            >
+              Cancel
+            </Button>
+            <IconButton icon={faUndo} title="reinit fields" onClick={() => resetInputs()} />
+          </Form>
       )}
     </OpenCloseModal>
   );
