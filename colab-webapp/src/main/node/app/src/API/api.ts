@@ -812,10 +812,6 @@ export const updateDocument = createAsyncThunk('document/update', async (documen
 // Blocks
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const getBlock = createAsyncThunk('block/get', async (id: number) => {
-  return await restClient.BlockRestEndpoint.getBlock(id);
-});
-
 export const subscribeToBlockChannel = createAsyncThunk(
   'block/subscribe',
   async (id: number, thunkApi) => {

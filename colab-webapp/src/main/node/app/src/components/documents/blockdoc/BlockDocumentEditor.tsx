@@ -5,31 +5,32 @@
  * Licensed under the MIT License
  */
 
-import { BlockDocument } from 'colab-rest-client';
+//import { BlockDocument } from 'colab-rest-client';
 import * as React from 'react';
 //import * as API from '../../../API/api';
 //import useTranslations from '../../../i18n/I18nContext';
-import { shallowEqual/*, useAppDispatch*/, useAppSelector } from '../../../store/hooks';
-import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
+// import { shallowEqual/*, useAppDispatch*/, useAppSelector } from '../../../store/hooks';
+//import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
 import Flex from '../../common/Flex';
-import InlineLoading from '../../common/InlineLoading';
+//import InlineLoading from '../../common/InlineLoading';
 import { CreateBlockButton } from './CreateBlockButton';
 
 export interface BlockDocProps {
-  doc: BlockDocument;
+  //doc: BlockDocument;
   allowEdition?: boolean;
 }
 
-export function BlockDocumentEditor({ doc, allowEdition }: BlockDocProps): JSX.Element {
+export function BlockDocumentEditor({ /*doc, */allowEdition }: BlockDocProps): JSX.Element {
+  const kajt = 'selrktb';
   // const dispatch = useAppDispatch();
   //const i18n = useTranslations();
 
-  const blockIds = useAppSelector(state => {
-    if (doc.id) {
-      return state.block.documents[doc.id];
-    }
-    return null;
-  }, shallowEqual);
+  // const blockIds = useAppSelector(state => {
+  //   if (doc.id) {
+  //     return state.block.documents[doc.id];
+  //   }
+  //   return null;
+  // }, shallowEqual);
 
   // React.useEffect(() => {
   //   if (blockIds === undefined) {
@@ -39,6 +40,7 @@ export function BlockDocumentEditor({ doc, allowEdition }: BlockDocProps): JSX.E
 
   return (
     <Flex direction="column" align='stretch'>
+      <div>{kajt}</div>
       {/*<AutoSaveInput
         placeholder={i18n.document.untitled}
         value={doc.title || ''}
@@ -50,11 +52,11 @@ export function BlockDocumentEditor({ doc, allowEdition }: BlockDocProps): JSX.E
         value={doc.teaser || ''}
         onChange={newValue => dispatch(API.updateDocument({ ...doc, teaser: newValue }))}
       />*/}
-      {blockIds == null ? (
+      {/* {blockIds == null ? (
         <InlineLoading />
       ) : (
         blockIds.map(id => <BlockEditorWrapper key={id} blockId={id} allowEdition={allowEdition} />)
-      )}
+      )} */}
       {allowEdition ? <CreateBlockButton /*doc={doc}*/ /> : null}
     </Flex>
   );

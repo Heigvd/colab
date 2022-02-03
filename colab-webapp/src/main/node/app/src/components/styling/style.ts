@@ -455,7 +455,6 @@ export const variantTitle = css({
 export const workInProgressStyle = cx(
   css({
     border: '2px solid hotpink',
-    borderRadius: '20px',
     boxShadow: '0px 0px 25px 7px greenyellow',
   }),
 );

@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { TextDataBlock, Change } from 'colab-rest-client';
+import { TextDataBlock, Change, entityIs } from 'colab-rest-client';
 import { throttle } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -61,12 +61,12 @@ export function useBlock(blockId: number | null | undefined): TextDataBlock | nu
         refSubs[blockId] = 1;
         dispatch(API.subscribeToBlockChannel(blockId)).then(() => {
           if (alive) {
-            dispatch(API.getBlock(blockId)); // TODO
+            dispatch(API.getDocument(blockId));
           }
         });
       } else {
         refSubs[blockId] = count + 1;
-        dispatch(API.getBlock(blockId)); // TODO
+        dispatch(API.getDocument(blockId));
       }
 
       return () => {
@@ -88,7 +88,12 @@ export function useBlock(blockId: number | null | undefined): TextDataBlock | nu
 
   return useAppSelector(state => {
     if (blockId) {
-      return state.block.blocks[blockId];
+      const doc = state.document.documents[blockId];
+      if (entityIs(doc, 'TextDataBlock')) {
+        return doc;
+      } else {
+        return undefined;
+      }
     } else {
       return undefined;
     }
