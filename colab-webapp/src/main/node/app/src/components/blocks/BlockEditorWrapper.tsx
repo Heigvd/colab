@@ -7,9 +7,11 @@
 
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
+import * as API from '../../API/api';
+import { useTextDataBlock } from '../../selectors/documentSelector';
+import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import LiveEditor from '../live/LiveEditor';
-import { useBlock } from '../live/LiveTextEditor';
 
 export interface BlockEditorProps {
   blockId: number;
@@ -17,9 +19,21 @@ export interface BlockEditorProps {
 }
 
 export function BlockEditorWrapper({ blockId, allowEdition }: BlockEditorProps): JSX.Element {
-  const block = useBlock(blockId);
+  const dispatch = useAppDispatch();
 
-  if (block == null) {
+  const {block, status} = useTextDataBlock(blockId);
+
+  React.useEffect(() => {
+    if (status == 'NOT_INITIALIZED' && blockId != null) {
+      dispatch(API.getDocument(blockId));
+    }
+  }, [status, blockId, dispatch]);
+
+  if (status == 'NOT_INITIALIZED') {
+    return <InlineLoading />;
+  } else if (status == 'LOADING') {
+    return <InlineLoading  />;
+  } else if (block == null) {
     return <InlineLoading />;
   } else {
     if (entityIs(block, 'TextDataBlock')) {

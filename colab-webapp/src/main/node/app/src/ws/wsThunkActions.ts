@@ -12,7 +12,6 @@ import {
   AccessControl,
   Account,
   ActivityFlowLink,
-  Block,
   Card,
   CardContent,
   Change,
@@ -49,7 +48,6 @@ interface EntityBag {
   accounts: Updates<Account>;
   acl: Updates<AccessControl>;
   activityFlowLinks: Updates<ActivityFlowLink>;
-  blocks: Updates<Block>;
   cards: Updates<Card>;
   changes: Updates<Change>;
   contents: Updates<CardContent>;
@@ -69,7 +67,6 @@ function createBag(): EntityBag {
     accounts: { updated: [], deleted: [] },
     acl: { updated: [], deleted: [] },
     activityFlowLinks: { updated: [], deleted: [] },
-    blocks: { updated: [], deleted: [] },
     cards: { updated: [], deleted: [] },
     changes: { updated: [], deleted: [] },
     contents: { updated: [], deleted: [] },
@@ -97,8 +94,6 @@ export const processMessage = createAsyncThunk(
         bag.acl.deleted.push(item);
       } else if (indexEntryIs(item, 'ActivityFlowLink')) {
         bag.activityFlowLinks.deleted.push(item);
-      } else if (indexEntryIs(item, 'Block')) {
-        bag.blocks.deleted.push(item);
       } else if (indexEntryIs(item, 'Card')) {
         bag.cards.deleted.push(item);
       } else if (indexEntryIs(item, 'Change')) {
@@ -138,8 +133,6 @@ export const processMessage = createAsyncThunk(
         bag.acl.updated.push(item);
       } else if (entityIs(item, 'ActivityFlowLink')) {
         bag.activityFlowLinks.updated.push(item);
-      } else if (entityIs(item, 'Block')) {
-        bag.blocks.updated.push(item);
       } else if (entityIs(item, 'Card')) {
         bag.cards.updated.push(item);
       } else if (entityIs(item, 'Change')) {

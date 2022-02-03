@@ -32,7 +32,7 @@ import SelectInput from '../common/Form/SelectInput';
 import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
-import { DocumentEditorAsDeliverableWrapper } from '../documents/DocumentEditorWrapper';
+import { DocumentEditorWrapper } from '../documents/DocumentEditorWrapper';
 import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
@@ -303,7 +303,7 @@ Props): JSX.Element {
                   <div>
                     {userAcl.read ? (
                       variant.id ? (
-                        <DocumentEditorAsDeliverableWrapper
+                        <DocumentEditorWrapper
                           cardContentId={variant.id}
                           allowEdition={!readOnly}
                         />

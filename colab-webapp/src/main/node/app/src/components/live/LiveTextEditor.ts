@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { Block, Change } from 'colab-rest-client';
+import { TextDataBlock, Change } from 'colab-rest-client';
 import { throttle } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -46,7 +46,7 @@ function findCounterValue(liveSession: string, changes: Change[]): number {
     .reduce((max, current) => (current > max ? current : max), 0);
 }
 
-export function useBlock(blockId: number | null | undefined): Block | null | undefined {
+export function useBlock(blockId: number | null | undefined): TextDataBlock | null | undefined {
   // blockId =>  number of subscriptions
   const subscriptionCounters = React.useRef<Record<number, number>>({});
   const dispatch = useAppDispatch();
@@ -61,12 +61,12 @@ export function useBlock(blockId: number | null | undefined): Block | null | und
         refSubs[blockId] = 1;
         dispatch(API.subscribeToBlockChannel(blockId)).then(() => {
           if (alive) {
-            dispatch(API.getBlock(blockId));
+            dispatch(API.getBlock(blockId)); // TODO
           }
         });
       } else {
         refSubs[blockId] = count + 1;
-        dispatch(API.getBlock(blockId));
+        dispatch(API.getBlock(blockId)); // TODO
       }
 
       return () => {

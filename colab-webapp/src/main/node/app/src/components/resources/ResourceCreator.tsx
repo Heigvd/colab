@@ -7,8 +7,8 @@
 
 import { css } from '@emotion/css';
 import * as React from 'react';
-import * as API from '../../API/api';
-import { useAppDispatch } from '../../store/hooks';
+//import * as API from '../../API/api';
+//import { useAppDispatch } from '../../store/hooks';
 import Form, { createSelectField, Field } from '../common/Form/Form';
 import IconButton from '../common/IconButton';
 import OpenCloseModal, { modalPadding } from '../common/OpenCloseModal';
@@ -48,7 +48,7 @@ export default function ResourceCreator({
   categories,
   className,
 }: ResourceCreatorProps): JSX.Element {
-  const dispatch = useAppDispatch();
+  //const dispatch = useAppDispatch();
 
   const [state, setState] = React.useState<ResourceType>(defaultResource);
 
@@ -118,46 +118,46 @@ export default function ResourceCreator({
               icon={createIcon}
               title="create"
               onClick={() => {
-                let cardTypeId: number | null = null;
-                let cardId: number | null = null;
-                let cardContentId: number | null = null;
-                if (contextInfo.kind == ResourceContextScope.CardType) {
-                  cardTypeId = contextInfo.cardTypeId;
-                } else {
-                  if (state.atCardContentLevel) {
-                    cardContentId = contextInfo.cardContentId || null;
-                  } else {
-                    cardId = contextInfo.cardId || null;
-                  }
-                }
-                dispatch(
-                  API.createResource({
-                    abstractCardTypeId: cardTypeId,
-                    cardId: cardId,
-                    cardContentId: cardContentId,
-                    documents:
-                      state.docType === 'DocumentFile'
-                        ? [{
-                            '@class': state.docType,
-                            fileSize: 0,
-                            mimeType: 'application/octet-stream',
-                          }]
-                        : [{
-                            '@class': state.docType,
-                          }],
-                    title: state.title,
-                    teaser: {
-                      '@class': 'TextDataBlock',
-                      mimeType: 'text/markdown',
-                      textData: state.teaser,
-                      revision: '0',
-                    },
-                    category: state.category,
-                  }),
-                ).then(() => {
-                  resetInputs();
-                  collapse();
-                });
+                // let cardTypeId: number | null = null;
+                // let cardId: number | null = null;
+                // let cardContentId: number | null = null;
+                // if (contextInfo.kind == ResourceContextScope.CardType) {
+                //   cardTypeId = contextInfo.cardTypeId;
+                // } else {
+                //   if (state.atCardContentLevel) {
+                //     cardContentId = contextInfo.cardContentId || null;
+                //   } else {
+                //     cardId = contextInfo.cardId || null;
+                //   }
+                // }
+                // dispatch(
+                //   API.createResource({
+                //     abstractCardTypeId: cardTypeId,
+                //     cardId: cardId,
+                //     cardContentId: cardContentId,
+                //     documents:
+                //       state.docType === 'DocumentFile'
+                //         ? [{
+                //             '@class': state.docType,
+                //             fileSize: 0,
+                //             mimeType: 'application/octet-stream',
+                //           }]
+                //         : [{
+                //             '@class': state.docType,
+                //           }],
+                //     title: state.title,
+                //     teaser: {
+                //       '@class': 'TextDataBlock',
+                //       mimeType: 'text/markdown',
+                //       textData: state.teaser,
+                //       revision: '0',
+                //     },
+                //     category: state.category,
+                //   }),
+                // ).then(() => {
+                //   resetInputs();
+                //   collapse();
+                // });
               }}
             />
             <IconButton icon={reinitIcon} title="reinit" onClick={() => resetInputs()} />

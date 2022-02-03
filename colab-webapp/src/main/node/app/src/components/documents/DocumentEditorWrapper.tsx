@@ -10,44 +10,16 @@ import * as API from '../../API/api';
 import { useDeliverables } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
+import { workInProgressStyle } from '../styling/style';
+import DocumentCreator, { CreationContextKind } from './DocumentCreator';
 import { DocumentEditorDisplay } from './DocumentEditorDisplay';
-
-export interface DocByIdWrapperProps {
-  docId: number;
-  allowEdition?: boolean;
-}
-
-/*
-export function DocumentEditorWrapper({
-  docId,
-  allowEdition = true,
-}: DocByIdWrapperProps): JSX.Element {
-  const dispatch = useAppDispatch();
-
-  const doc = useDocument(docId);
-
-  React.useEffect(() => {
-    if (doc == undefined && docId != null) {
-      dispatch(API.getDocument(docId));
-    }
-  }, [doc, docId, dispatch]);
-
-  if (doc == null || doc == 'LOADING') {
-    return <InlineLoading />;
-  } else if (entityIs(doc, 'Document')) {
-    return <DocumentEditorDisplay document={doc} allowEdition={allowEdition} />;
-  } else {
-    return <InlineLoading />;
-  }
-}
-*/
 
 export interface DocAsDeliverableProps {
   cardContentId: number;
   allowEdition?: boolean;
 }
 
-export function DocumentEditorAsDeliverableWrapper({
+export function DocumentEditorWrapper({
   cardContentId,
   allowEdition,
 }: DocAsDeliverableProps): JSX.Element {
@@ -55,15 +27,11 @@ export function DocumentEditorAsDeliverableWrapper({
 
   const { documents, status } = useDeliverables(cardContentId);
 
-  // note : quick and dirty changed to be compatible with an array of docs... 
-  // but only the case of exactly 1 doc is handled !!!
-
   React.useEffect(() => {
     if (status == 'NOT_INITIALIZED' && cardContentId != null) {
       dispatch(API.getDeliverablesOfCardContent(cardContentId));
     }
   }, [status, cardContentId, dispatch]);
-
 
   if (status === 'NOT_INITIALIZED') {
     return <InlineLoading />;
@@ -74,10 +42,24 @@ export function DocumentEditorAsDeliverableWrapper({
   }
 
   return (
-    <div>
+    <div className={workInProgressStyle}>
       {
-        documents.map(doc => <DocumentEditorDisplay key={doc.id} document={doc} allowEdition={allowEdition} />)
+        documents
+          .sort((a, b) => (a.index || 0) - (b.index || 0))
+          .map(doc => <DocumentEditorDisplay key={doc.id} document={doc} allowEdition={allowEdition} />)
       }
+      {allowEdition &&
+        <DocumentCreator
+          creationContext={{ kind: CreationContextKind.CardContent, cardContentId: cardContentId }}
+          docType='TextDataBlock' title='add a block' />}
+      {allowEdition &&
+        <DocumentCreator
+          creationContext={{ kind: CreationContextKind.CardContent, cardContentId: cardContentId }}
+          docType='DocumentFile' title='add a file' />}
+      {allowEdition &&
+        <DocumentCreator
+          creationContext={{ kind: CreationContextKind.CardContent, cardContentId: cardContentId }}
+          docType='ExternalLink' title='add a link' />}
     </div>
   );
 
