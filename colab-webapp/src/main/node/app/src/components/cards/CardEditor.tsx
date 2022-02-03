@@ -255,7 +255,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         entries={[
                           {
                             value: 'Delete card or variant',
-                            action: () => {},
+                            action: () => { },
                             label: (
                               <ConfirmDeleteModal
                                 buttonLabel={
@@ -323,16 +323,12 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                 </Flex>
 
                 <Flex direction="column" grow={1}>
-                  <div>
-                    {userAcl.read ? (
-                      variant.id ? (
-                        <DocumentEditorAsDeliverableWrapper
-                          cardContentId={variant.id}
-                          allowEdition={!readOnly}
-                        />
-                      ) : (
-                        <span>no deliverable available</span>
-                      )
+                  {userAcl.read ? (
+                    variant.id ? (
+                      <DocumentEditorWrapper
+                        cardContentId={variant.id}
+                        allowEdition={!readOnly}
+                      />
                     ) : (
                       <span>no deliverable available</span>
                     )
@@ -376,7 +372,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                           label="Completion mode"
                           placeholder={String(variant.completionMode)}
                           options={[]}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           isMulti={false}
                         />
                         <Tips tipsType="TODO">

@@ -133,18 +133,18 @@ export default function ResourceCreator({
             value={state}
             onSubmit={function (e) {
               setState(e);
-              let cardTypeId: number | null = null;
-              let cardId: number | null = null;
-              let cardContentId: number | null = null;
-              if (contextInfo.kind == ResourceContextScope.CardType) {
-                cardTypeId = contextInfo.cardTypeId;
-              } else {
-                if (e.atCardContentLevel) {
-                  cardContentId = contextInfo.cardContentId || null;
-                } else {
-                  cardId = contextInfo.cardId || null;
-                }
-              }
+              // let cardTypeId: number | null = null;
+              // let cardId: number | null = null;
+              // let cardContentId: number | null = null;
+              // if (contextInfo.kind == ResourceContextScope.CardType) {
+              //   cardTypeId = contextInfo.cardTypeId;
+              // } else {
+              //   if (e.atCardContentLevel) {
+              //     cardContentId = contextInfo.cardContentId || null;
+              //   } else {
+              //     cardId = contextInfo.cardId || null;
+              //   }
+              // }
               // dispatch(
               //   API.createResource({
               //     abstractCardTypeId: cardTypeId,
