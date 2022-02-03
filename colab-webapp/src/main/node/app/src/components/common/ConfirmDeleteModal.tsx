@@ -8,8 +8,9 @@ import { css, cx } from '@emotion/css';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { errorColor, flex, space_M } from '../styling/style';
+import { errorColor, space_M } from '../styling/style';
 import Button from './Button';
+import Flex from './Flex';
 import OpenCloseModal from './OpenCloseModal';
 
 interface ConfirmDeleteModalProps {
@@ -38,20 +39,26 @@ export default function ConfirmDeleteModal({
       className={cx(css({ '&:hover': { textDecoration: 'none' } }), className)}
     >
       {collapse => (
-        <div>
-          <FontAwesomeIcon icon={faExclamationTriangle} />
-          <FontAwesomeIcon icon={faExclamationTriangle} />
-          <FontAwesomeIcon icon={faExclamationTriangle} />
-          {message}
-          <div className={flex}>
+        <Flex direction="column" align="stretch" grow={1}>
+          <Flex grow={1} direction="column">
+            <div>
+              <FontAwesomeIcon icon={faExclamationTriangle} />
+              <FontAwesomeIcon icon={faExclamationTriangle} />
+              <FontAwesomeIcon icon={faExclamationTriangle} />
+            </div>
+            {message}
+          </Flex>
+          <Flex justify="flex-end">
             <Button
               title={confirmButtonLabel ? confirmButtonLabel : 'Delete'}
               onClick={() => {
                 onConfirm();
                 collapse();
               }}
+              invertedButton
               className={css({
-                backgroundColor: errorColor,
+                borderColor: errorColor,
+                color: errorColor,
                 marginRight: space_M,
               })}
             >
@@ -63,8 +70,8 @@ export default function ConfirmDeleteModal({
             >
               {cancelButtonLabel ? cancelButtonLabel : 'Cancel'}
             </Button>
-          </div>
-        </div>
+          </Flex>
+        </Flex>
       )}
     </OpenCloseModal>
   );

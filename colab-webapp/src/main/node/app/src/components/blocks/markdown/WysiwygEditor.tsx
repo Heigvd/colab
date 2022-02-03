@@ -13,6 +13,7 @@ import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
 import Flex from '../../common/Flex';
+import { borderRadius } from '../../styling/style';
 import {
   areAllLeafsWrappedByTag,
   boundedClosest,
@@ -51,10 +52,11 @@ const toggledStyle = cx(
 );
 
 const editorStyle = css({
+  backgroundColor: 'var(--bgColor)',
   padding: '5px',
-  border: '1px solid black',
+  border: '1px solid var(--lightGray)',
+  borderRadius: borderRadius,
   whiteSpace: 'pre-line',
-  width: '200px',
   '& .some-cursor': {
     position: 'absolute',
     pointerEvents: 'none',
@@ -396,10 +398,10 @@ export default function WysiwygEditor({
   );
 
   return (
-    <Flex className={className} direction="column">
+    <Flex className={className} direction="column" grow={1}>
       <Flex>
         {/* Listening to onMouseDownCapture is very important !*/}
-        <ToolbarButton icon={faBold} toggled={toolbarState.bold} onClick={toggleBold} />
+        <ToolbarButton icon={faBold} toggled={toolbarState.bold} onClick={toggleBold}/>
         <ToolbarButton icon={faItalic} toggled={toolbarState.italic} onClick={toggleItalic} />
         <ToolbarButton
           icon={faUnderline}
@@ -412,7 +414,7 @@ export default function WysiwygEditor({
           onClick={toggleStrike}
         />
       </Flex>
-      <Flex>
+      <Flex direction='column' align='stretch'>
         <div
           className={editorStyle}
           ref={divRef}

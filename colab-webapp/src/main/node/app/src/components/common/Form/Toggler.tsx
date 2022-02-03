@@ -7,7 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
-import { errorStyle, successColor, warningStyle } from '../../styling/style';
+import { errorStyle, space_S, successColor, warningStyle } from '../../styling/style';
 import Flex from '../Flex';
 
 export interface Props {
@@ -66,7 +66,7 @@ export default function Toggler({
   disabled = false,
 }: Props): JSX.Element {
   return (
-    <Flex className={className} direction="column">
+    <Flex className={cx(css({ padding: space_S + ' 0' }), className)} direction="column">
       <Flex justify="space-between">
         {warning ? <div className={warningStyle}>{warning}</div> : null}
         {error ? <div className={errorStyle}>{error}</div> : null}

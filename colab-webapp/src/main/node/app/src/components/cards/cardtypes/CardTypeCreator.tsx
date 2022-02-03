@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { cx } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { entityIs } from 'colab-rest-client';
@@ -14,6 +14,7 @@ import * as API from '../../../API/api';
 import { useCardTypeTags } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
+import Button from '../../common/Button';
 import Form, { createSelectField, Field } from '../../common/Form/Form';
 import OpenCloseModal from '../../common/OpenCloseModal';
 import { buttonStyle, marginAroundStyle, space_M } from '../../styling/style';
@@ -56,7 +57,6 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
           }
         }
       });
-      //setState('CLOSED');
     },
     [dispatch, afterCreation, global, project],
   );
@@ -67,15 +67,17 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
       key: 'title',
       type: 'text',
       label: 'title',
-      placeholder: 'title',
       isMandatory: true,
+      errorMessage: 'Must have a title',
+      isErroneous: e => e.title === null || e.title === '',
     },
     {
       key: 'purpose',
       type: 'text',
       label: 'purpose',
-      placeholder: 'purpose',
       isMandatory: true,
+      errorMessage: 'Must have a purpose',
+      isErroneous: e => e.purpose === null || e.purpose === '',
     },
     createSelectField({
       key: 'tags',
@@ -84,8 +86,10 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
       isMulti: true,
       options: allTags.map(c => ({ label: c, value: c })),
       canCreateOption: true,
-      placeholder: 'category',
+      placeholder: 'Select or create a category',
       isMandatory: true,
+      errorMessage: 'Must have at least one category',
+      isErroneous: e => e.tags.length === 0 || e.tags === null,
     }),
   ];
 
@@ -101,22 +105,34 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
           <FontAwesomeIcon icon={faPlus} /> Create new type
         </>
       }
-      className={buttonStyle}
-      footer={<></>}
+      className={cx(buttonStyle, css({ marginBottom: space_M }))}
       showCloseButton
     >
-      {() => {
+      {close => {
         return (
-          <div>
-            <Form
-              fields={fields}
-              value={{ title: '', purpose: '', tags: [] }}
-              autoSubmit={false}
-              onSubmit={createTypeCb}
-              className={marginAroundStyle([3], space_M)}
-              buttonClassName={cx(buttonStyle, marginAroundStyle([1], space_M))}
-            />
-          </div>
+          <Form
+            fields={fields}
+            value={{ title: '', purpose: '', tags: [] }}
+            autoSubmit={false}
+            onSubmit={function (type) {
+              createTypeCb(type);
+              close();
+            }}
+            className={css({ alignSelf: 'center' })}
+            childrenClassName={css({flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'end'})}
+            buttonClassName={cx(buttonStyle, marginAroundStyle([1], space_M))}
+          >
+            <Button
+              title="cancel"
+              onClick={() => {
+                close();
+              }}
+              invertedButton
+              className={css({ margin: space_M })}
+            >
+              Cancel
+            </Button>
+          </Form>
         );
       }}
     </OpenCloseModal>

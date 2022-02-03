@@ -39,7 +39,7 @@ const categoryTabStyle = cx(
     padding: space_S,
     backgroundColor: 'var(--primaryColorContrastShade)',
     color: 'var(--primaryColor)',
-    margin: '0 ' + space_S,
+    margin: space_S,
     borderRadius: borderRadius,
   }),
 );
@@ -58,7 +58,7 @@ export interface CardCreatorProps {
 
 const listOfTypeStyle = css({
   display: 'grid',
-  gridTemplateColumns: '1fr 1fr 1fr',
+  gridTemplateColumns: '1fr 1fr 1fr 1fr',
   gap: space_M,
   margin: space_M + ' 0',
 });
@@ -141,7 +141,14 @@ export default function CardCreator({
         } else {
           return (
             <div className={css({ width: '100%', textAlign: 'left' })}>
-              <Flex>
+              <Flex
+                className={css({
+                  paddingBottom: space_S,
+                  marginBottom: space_S,
+                  borderBottom: '1px solid var(--lightGray)',
+                })}
+                wrap="wrap"
+              >
                 {allTags.map(tag => {
                   return (
                     <div
@@ -172,70 +179,15 @@ export default function CardCreator({
                   should be solved.
                 </Tips>
               </Flex>
-              <div className={marginAroundStyle([1], space_M)}>
-                {/* <div className={inlineTipsStyle}>
-                  <h3>Common types</h3>
-                  <Tips>
-                    Common types are types defined outside the current project and which are not yet
-                    used in the project
-                  </Tips>
-                </div> */}
-                <details>
-                  <summary className={noOutlineStyle}>
-                    Global
-                    <Tips>
-                      Global types are defined by adminstrators in "admin/card types" tab. Such type
-                      are available in any project
-                    </Tips>
-                  </summary>
-                  {filtered.global != null && (
-                    <div className={listOfTypeStyle}>
-                      {filtered.global.map(cardType => (
-                        <CardTypeThumbnail
-                          key={cardType.id}
-                          onClick={onSelect}
-                          highlighted={cardType.id === selectedType}
-                          cardType={cardType}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </details>
-                <details>
-                  <summary className={noOutlineStyle}>
-                    From other projects
-                    <Tips>
-                      Types published from others projects you, as specific colab user, have acces
-                      to.
-                    </Tips>
-                  </summary>
-                  {filtered.published != null && (
-                    <div className={listOfTypeStyle}>
-                      {filtered.published.map(cardType => (
-                        <CardTypeThumbnail
-                          key={cardType.id}
-                          onClick={onSelect}
-                          highlighted={cardType.id === selectedType}
-                          cardType={cardType}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </details>
-              </div>
-              <div>
-                {/* <div className={inlineTipsStyle}>
-                  <h3>Project Types</h3>
-                  <Tips>All types already used/defined in the project</Tips>
-                </div> */}
-                <details>
-                  <summary className={noOutlineStyle}>
-                    Inherited
-                    <Tips>
-                      Inherited types references either global types or types from others projects
-                    </Tips>
-                  </summary>
-                  {filtered.inherited != null && (
+              <Flex direction="column">
+                {filtered.inherited != null && filtered.inherited.length > 0 && (
+                  <>
+                    <Flex align="flex-end">
+                      <h3>Inherited</h3>
+                      <Tips>
+                        Inherited types references either global types or types from others projects
+                      </Tips>
+                    </Flex>
                     <div className={listOfTypeStyle}>
                       {filtered.inherited.map(cardType => (
                         <CardTypeThumbnail
@@ -246,36 +198,103 @@ export default function CardCreator({
                         />
                       ))}
                     </div>
-                  )}
-                </details>
-                <details>
-                  <summary className={noOutlineStyle}>
-                    Custom
+                  </>
+                )}
+                <Flex align="flex-end">
+                  <h3>Custom</h3>
+                  <Tips>
+                    Custom project types belong to this very project (ie you have full write right)
+                  </Tips>
+                </Flex>
+                {filtered.own != null && filtered.own.length > 0 ? (
+                  <div className={listOfTypeStyle}>
+                    {filtered.own.map(cardType => (
+                      <CardTypeThumbnail
+                        key={cardType.id}
+                        onClick={onSelect}
+                        highlighted={cardType.id === selectedType}
+                        cardType={cardType}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <Flex>
+                    <p className={css({ color: 'var(--darkGray)' })}>
+                      <i>You have no custom type in selected categories.</i>
+                    </p>
                     <Tips>
-                      Custom project types belong to this very project (ie you have full write
-                      right)
+                      If needed you can create a new custom type by clicking "Create new type"
                     </Tips>
-                  </summary>
-                  {filtered.own != null && (
-                    <div className={listOfTypeStyle}>
-                      {filtered.own.map(cardType => (
-                        <CardTypeThumbnail
-                          key={cardType.id}
-                          onClick={onSelect}
-                          highlighted={cardType.id === selectedType}
-                          cardType={cardType}
-                        />
-                      ))}
-                    </div>
-                  )}
-                  <CardTypeCreator
-                    afterCreation={(id: number) => {
-                      setSelectedType(id);
-                    }}
-                  />
-                </details>
-              </div>
+                  </Flex>
+                )}
+                <CardTypeCreator
+                  afterCreation={(id: number) => {
+                    setSelectedType(id);
+                  }}
+                />
+              </Flex>
+              <details>
+                <summary>Browse global types</summary>
+                <div
+                  className={css({
+                    border: '1px solid var(--lightGray)',
+                    padding: space_M,
+                    marginBottom: space_S,
+                  })}
+                >
+                  <details>
+                    <summary className={noOutlineStyle}>
+                      Global
+                      <Tips>
+                        Global types are defined by adminstrators in "admin/card types" tab. Such
+                        type are available in any project
+                      </Tips>
+                    </summary>
+                    {filtered.global != null && (
+                      <div className={listOfTypeStyle}>
+                        {filtered.global.map(cardType => (
+                          <CardTypeThumbnail
+                            key={cardType.id}
+                            onClick={onSelect}
+                            highlighted={cardType.id === selectedType}
+                            cardType={cardType}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </details>
+                  <details>
+                    <summary className={noOutlineStyle}>
+                      From other projects
+                      <Tips>
+                        Types published from others projects you, as specific colab user, have acces
+                        to.
+                      </Tips>
+                    </summary>
+                    {filtered.published != null && (
+                      <div className={listOfTypeStyle}>
+                        {filtered.published.map(cardType => (
+                          <CardTypeThumbnail
+                            key={cardType.id}
+                            onClick={onSelect}
+                            highlighted={cardType.id === selectedType}
+                            cardType={cardType}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </details>
+                </div>
+              </details>
               <Flex justify="flex-end" className={css({ marginTop: 'auto' })}>
+                <Button
+                  title="Cancel"
+                  onClick={close}
+                  invertedButton
+                  className={marginAroundStyle([2], space_S)}
+                >
+                  Cancel
+                </Button>
                 {selectedType != null ? (
                   <Button
                     title="Create card"
@@ -293,14 +312,6 @@ export default function CardCreator({
                     Create card
                   </Button>
                 ) : null}
-                <Button
-                  title="Cancel"
-                  onClick={close}
-                  invertedButton
-                  className={marginAroundStyle([4], space_S)}
-                >
-                  Cancel
-                </Button>
               </Flex>
             </div>
           );

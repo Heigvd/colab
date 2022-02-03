@@ -11,6 +11,7 @@ import * as API from '../../../API/api';
 //import useTranslations from '../../../i18n/I18nContext';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
+import Flex from '../../common/Flex';
 import InlineLoading from '../../common/InlineLoading';
 import { CreateBlockButton } from './CreateBlockButton';
 
@@ -37,7 +38,7 @@ export function BlockDocumentEditor({ doc, allowEdition }: BlockDocProps): JSX.E
   }, [doc, blockIds, dispatch]);
 
   return (
-    <div>
+    <Flex direction="column" align='stretch'>
       {/*<AutoSaveInput
         placeholder={i18n.document.untitled}
         value={doc.title || ''}
@@ -54,8 +55,7 @@ export function BlockDocumentEditor({ doc, allowEdition }: BlockDocProps): JSX.E
       ) : (
         blockIds.map(id => <BlockEditorWrapper key={id} blockId={id} allowEdition={allowEdition} />)
       )}
-
       {allowEdition ? <CreateBlockButton doc={doc} /> : null}
-    </div>
+    </Flex>
   );
 }

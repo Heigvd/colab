@@ -9,13 +9,14 @@ import { css, cx } from '@emotion/css';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CardContent } from 'colab-rest-client';
 import * as React from 'react';
+import { useLocation } from 'react-router-dom';
 import { getSubCards } from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
 import { depthMax } from '../projects/edition/Editor';
-import { fixedButtonStyle, flex } from '../styling/style';
+import { fixedButtonStyle } from '../styling/style';
 import CardCreator from './CardCreator';
 import CardThumbWithSelector from './CardThumbWithSelector';
 
@@ -23,6 +24,8 @@ interface Props {
   cardContent: CardContent;
   depth?: number;
   showEmptiness?: boolean;
+  className?: string;
+  subcardsContainerStyle?: string;
 }
 const tinyCard = css({
   width: '30px',
@@ -52,8 +55,11 @@ export default function ContentSubs({
   cardContent,
   depth = 1,
   showEmptiness = false,
+  className,
+  subcardsContainerStyle,
 }: Props): JSX.Element {
   const dispatch = useAppDispatch();
+  const location = useLocation();
 
   const subCards = useAppSelector(state => {
     if (cardContent.id) {
@@ -102,24 +108,24 @@ export default function ContentSubs({
       );
     } else {
       return depth > 0 ? (
-        <div className={cx(flexWrap, css({ flexDirection: 'column' }))}>
-          <Flex wrap="wrap" align="flex-start">
+        <div className={cx(flexWrap, css({ flexDirection: 'column', alignItems:'stretch'}), className)}>
+          <Flex wrap="wrap" align="flex-start" className={subcardsContainerStyle}>
             {subCards.map(sub => (
               <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
             ))}
           </Flex>
-          <div className={cx(flex, css({ justifyContent: 'center' }))}>
+          <Flex justify='center'>
             <CardCreator
               parent={cardContent}
               customButton={
-                depth === depthMax ? (
+                depth === depthMax ? (location.pathname.match(/card\/\d+\/v\/\d+/) ? undefined : (
                   <Button icon={faPlus} title="Add Card" className={fixedButtonStyle} clickable>
                     Add Card
                   </Button>
-                ) : undefined
+                )) : undefined
               }
             />
-          </div>
+          </Flex>
         </div>
       ) : (
         <div className={flexWrap}>

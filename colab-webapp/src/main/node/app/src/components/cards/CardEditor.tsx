@@ -6,10 +6,11 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
 import {
   faCog,
   faEllipsisV,
-  faFile,
+  faFileAlt,
   faStickyNote,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -19,11 +20,11 @@ import * as React from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useLocalStorage } from '../../preferences';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
 import AutoSaveInput from '../common/AutoSaveInput';
+import Collapsible from '../common/Collapsible';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
@@ -37,7 +38,14 @@ import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
 import StickyNoteWrapper from '../stickynotes/StickyNoteWrapper';
-import { cardStyle, cardTitle, lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import {
+  cardStyle,
+  cardTitle,
+  lightIconButtonStyle,
+  space_M,
+  space_S,
+  variantTitle,
+} from '../styling/style';
 import CardSettings from './CardSettings';
 import ContentSubs from './ContentSubs';
 import SideCollapsiblePanel from './SideCollapsiblePanel';
@@ -89,13 +97,7 @@ function ProgressBar({
   );
 }
 
-export default function CardEditor({
-  card,
-  variant,
-  showSubcards = true,
-}: //variant,
-//variants,
-Props): JSX.Element {
+export default function CardEditor({ card, variant, showSubcards = true }: Props): JSX.Element {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -106,31 +108,11 @@ Props): JSX.Element {
 
   const variants = useVariantsOrLoad(card) || [];
   const hasVariants = variants.length > 1 && variant != null;
+  const variantNumber = hasVariants ? variants.indexOf(variant) + 1 : undefined;
 
   const purpose = useBlock(cardType?.purposeId);
   const contents = useVariantsOrLoad(card);
   const variantPager = computeNav(contents, variant.id);
-
-  const [showStickyNote, setShowStickyNote] = useLocalStorage('showStickNotes', false);
-
-  const toggleShowStickyNotes = React.useCallback(() => {
-    setShowStickyNote(current => !current);
-  }, [setShowStickyNote]);
-
-  const [rightPanel, setRightPanel] = useLocalStorage<'NONE' | 'RESOURCES'>(
-    'cardRightPanel',
-    'NONE',
-  );
-
-  const toggleResourcePanel = React.useCallback(() => {
-    setRightPanel(current => {
-      if (current !== 'RESOURCES') {
-        return 'RESOURCES';
-      }
-      return 'NONE';
-    });
-  }, [setRightPanel]);
-
   const userAcl = useCardACLForCurrentUser(card.id);
   const readOnly = !userAcl.write || variant.frozen;
 
@@ -154,13 +136,17 @@ Props): JSX.Element {
     },
     [location.pathname, navigate],
   );
-
   if (card.id == null) {
     return <i>Card without id is invalid...</i>;
   } else {
     return (
       <Flex direction="column" grow={1} align="stretch">
-        <Flex grow={1} direction="row" align="stretch" className={css({ paddingBottom: space_S })}>
+        <Flex
+          grow={1}
+          direction="row"
+          align="stretch"
+          className={css({ paddingBottom: space_S, height: '50vh' })}
+        >
           <Flex
             grow={1}
             direction="row"
@@ -169,55 +155,81 @@ Props): JSX.Element {
             className={cx(
               cardStyle,
               css({
-                backgroundColor: card.color || 'white',
+                backgroundColor: 'white',
               }),
             )}
           >
             <SideCollapsiblePanel
-              open={showStickyNote}
-              toggleOpen={toggleShowStickyNotes}
-              icon={faStickyNote}
-              title="sticky notes"
-            >
-              <StickyNoteWrapper destCardId={card.id} showSrc />
-            </SideCollapsiblePanel>
+              items={{
+                'Sticky Notes': {
+                  icon: faStickyNote,
+                  title: 'Toggle sticky notes panel',
+                  children: <StickyNoteWrapper destCardId={card.id} showSrc />,
+                },
+              }}
+            />
             <Flex direction="column" grow={1} align="stretch">
               <Flex
                 direction="column"
                 grow={1}
                 className={css({
                   padding: '10px',
+                  overflow: 'auto',
                 })}
                 align="stretch"
               >
                 <Flex direction="column" align="stretch">
-                  <Flex justify="space-between">
-                    <Flex>
-                      <AutoSaveInput
-                        placeholder={i18n.card.untitled}
-                        readOnly={readOnly}
-                        inputType="INPUT"
-                        value={card.title || ''}
-                        onChange={newValue =>
-                          dispatch(API.updateCard({ ...card, title: newValue }))
-                        }
-                        className={cardTitle}
-                      />
-                      {hasVariants ? (
-                        <>
-                          {'/'}
-                          <AutoSaveInput
-                            className={cardTitle}
-                            value={variant.title || ''}
-                            readOnly={readOnly}
-                            placeholder={i18n.content.untitled}
-                            onChange={newValue =>
-                              dispatch(API.updateCardContent({ ...variant, title: newValue }))
-                            }
-                          />
-                        </>
-                      ) : null}
-                    </Flex>
+                  <Flex
+                    justify="space-between"
+                    className={css({
+                      paddingBottom: space_S,
+                      borderBottom:
+                        card.color && card.color != '#ffffff'
+                          ? '5px solid ' + card.color
+                          : '1px solid var(--lightGray)',
+                    })}
+                  >
+                    <div>
+                      {variant.frozen && (
+                        <div
+                          className={css({ color: '#71D9FF' })}
+                          title='Card is frozen (locked). To unfreeze go to Card settings and uncheck "frozen".'
+                        >
+                          <FontAwesomeIcon icon={faSnowflake} />
+                          <i> frozen</i>
+                        </div>
+                      )}
+                      <Flex align="center">
+                        <AutoSaveInput
+                          placeholder={i18n.card.untitled}
+                          readOnly={readOnly}
+                          inputType="INPUT"
+                          value={card.title || ''}
+                          onChange={newValue =>
+                            dispatch(API.updateCard({ ...card, title: newValue }))
+                          }
+                          className={cardTitle}
+                        />
+                        {hasVariants ? (
+                          <>
+                            <span className={variantTitle}>&#xFE58;</span>
+                            <AutoSaveInput
+                              className={variantTitle}
+                              value={
+                                variant.title && variant.title.length > 0
+                                  ? variant.title
+                                  : `Variant ${variantNumber}`
+                              }
+                              readOnly={readOnly}
+                              placeholder={i18n.content.untitled}
+                              onChange={newValue =>
+                                dispatch(API.updateCardContent({ ...variant, title: newValue }))
+                              }
+                            />
+                          </>
+                        ) : null}
+                      </Flex>
+                    </div>
                     <Flex>
                       {/* handle modal routes*/}
                       <Routes>
@@ -293,27 +305,41 @@ Props): JSX.Element {
                       />
                     </Flex>
                   </Flex>
-                  <h4>Purpose</h4>
-                  <div>
-                    <b>{cardType?.title}</b>: {purpose?.textData || ''}
+                  <div
+                    className={css({
+                      fontSize: '0.9rem',
+                      color: 'var(--darkGray)',
+                      padding: space_S,
+                      p: { margin: space_S + ' 0' },
+                    })}
+                  >
+                    <p>
+                      <b>Card type</b>: {cardType?.title || ''}
+                    </p>
+                    <p>
+                      <b>Purpose</b>: {purpose?.textData || ''}
+                    </p>
                   </div>
                 </Flex>
 
-                <Flex direction="column" grow={1}>
-                  <div>
-                    {userAcl.read ? (
-                      variant.id ? (
-                        <DocumentEditorAsDeliverableWrapper
-                          cardContentId={variant.id}
-                          allowEdition={!readOnly}
-                        />
-                      ) : (
-                        <span>no deliverable available</span>
-                      )
+                <Flex
+                  direction="column"
+                  grow={1}
+                  align="stretch"
+                  className={css({ overflow: 'auto', minHeight: '0px' })}
+                >
+                  {userAcl.read ? (
+                    variant.id ? (
+                      <DocumentEditorAsDeliverableWrapper
+                        cardContentId={variant.id}
+                        allowEdition={!readOnly}
+                      />
                     ) : (
-                      <span>Access Denied</span>
-                    )}
-                  </div>
+                      <span>no deliverable available</span>
+                    )
+                  ) : (
+                    <span>Access Denied</span>
+                  )}
                 </Flex>
               </Flex>
               <Flex align="center">
@@ -325,9 +351,9 @@ Props): JSX.Element {
                     <ProgressBar
                       variant={variant}
                       className={css({
-                        '&:hover, &:hover div': {
+                        '&:hover': {
                           cursor: 'pointer',
-                          backgroundColor: 'var(--fgColor)',
+                          opacity: 0.6,
                         },
                       })}
                     />
@@ -367,15 +393,11 @@ Props): JSX.Element {
               </Flex>
             </Flex>
             <SideCollapsiblePanel
-              open={rightPanel === 'RESOURCES'}
-              toggleOpen={toggleResourcePanel}
-              icon={faFile}
+              openKey={'resources'}
               direction="RIGHT"
-              title="Resources"
-            >
-              {rightPanel === 'RESOURCES'
-                ? card.id &&
-                  variant?.id && (
+              items={{
+                resources: {
+                  children: (
                     <ResourcesWrapper
                       kind={ResourceContextScope.CardOrCardContent}
                       accessLevel={
@@ -384,16 +406,25 @@ Props): JSX.Element {
                       cardId={card.id}
                       cardContentId={variant.id}
                     />
-                  )
-                : null}
-            </SideCollapsiblePanel>
+                  ),
+                  icon: faFileAlt,
+                  title: 'Toggle resources panel',
+                },
+              }}
+            />
           </Flex>
         </Flex>
         <VariantPager allowCreation={userAcl.write} card={card} current={variant} />
-        <p>
-          <strong>Subcards</strong>
-        </p>
-        {showSubcards ? <ContentSubs depth={1} cardContent={variant} /> : null}
+        {showSubcards ? (
+          <Collapsible title="Subcards">
+            <ContentSubs
+              depth={1}
+              cardContent={variant}
+              className={css({ alignItems: 'flex-start', overflow: 'auto', width: '100%' })}
+              subcardsContainerStyle={css({ overflow: 'auto', width: '100%', flexWrap: 'nowrap' })}
+            />
+          </Collapsible>
+        ) : null}
       </Flex>
     );
   }

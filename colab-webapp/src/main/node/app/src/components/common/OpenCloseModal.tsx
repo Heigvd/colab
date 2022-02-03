@@ -8,7 +8,7 @@
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { linkStyle } from '../styling/style';
+import { linkStyle, space_M } from '../styling/style';
 import Modal from './Modal';
 import OpenClose from './OpenClose';
 
@@ -30,7 +30,7 @@ export const defaultIconClassName = css({
   textAlign: 'center',
 });
 
-export const modalPadding = '25px';
+export const modalPadding = space_M;
 
 export default function OpenCloseModal({
   className,

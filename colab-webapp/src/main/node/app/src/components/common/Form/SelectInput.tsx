@@ -5,10 +5,11 @@
  * Licensed under the MIT License
  */
 
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import Select, { MultiValue, OnChangeValue, SingleValue } from 'react-select';
 import Creatable from 'react-select/creatable';
-import { errorStyle, inputStyle, labelStyle, warningStyle } from '../../styling/style';
+import { errorStyle, labelStyle, space_S, textSmall, warningStyle } from '../../styling/style';
 import Flex from '../Flex';
 
 interface Opt<T> {
@@ -71,36 +72,46 @@ export default function SelectInput<T, IsMulti extends boolean>({
   );
 
   return (
-    <Flex className={className} direction="column">
+    <Flex className={cx(css({ padding: space_S + ' 0' }), className)} direction="column" align="stretch">
       <Flex justify="space-between">
         <div className={labelStyle}>
           {label}
           {mandatory ? ' * ' : null}{' '}
         </div>
-        {warning ? <div className={warningStyle}>{warning}</div> : null}
-        {error ? <div className={errorStyle}>{error}</div> : null}
       </Flex>
       {canCreateOption ? (
         <Creatable
-          className={inputStyle}
           isMulti={isMulti}
           placeholder={placeholder}
           value={currentValue}
           options={options}
           onChange={onInternalChangeCb}
           isDisabled={readonly}
+          menuPortalTarget={document.body}
+          styles={{
+            menuPortal: base => ({ ...base, zIndex: 9999 }),
+            menu: base => ({ ...base, marginTop: '0px' }),
+            container: base => ({ ...base, textAlign: 'initial' }),
+          }}
         />
       ) : (
         <Select
-          //className={inputStyle}
           isMulti={isMulti}
           placeholder={placeholder}
           value={currentValue}
           options={options}
           onChange={onInternalChangeCb}
           isDisabled={readonly}
+          menuPortalTarget={document.body}
+          styles={{
+            menuPortal: base => ({ ...base, zIndex: 9999 }),
+            menu: base => ({ ...base, marginTop: '0px' }),
+            container: base => ({ ...base, textAlign: 'initial' }),
+          }}
         />
       )}
+      {warning ? <div className={cx(textSmall, warningStyle)}>{warning}</div> : null}
+      {error ? <div className={cx(textSmall, errorStyle)}>{error}</div> : null}
     </Flex>
   );
 }

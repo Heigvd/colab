@@ -5,12 +5,16 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
 import { Account, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { Route, Routes, useParams } from 'react-router-dom';
 import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
+import { shallowEqual, useAppSelector } from '../../store/hooks';
+import Flex from '../common/Flex';
 import { SecondLevelLink } from '../common/Link';
 import Tips from '../common/Tips';
+import { space_L } from '../styling/style';
 import DisplaySettings from './DisplaySettings';
 import LocalAccount from './LocalAccount';
 import UserProfile from './UserProfile';
@@ -42,7 +46,7 @@ export default function Settings(): JSX.Element {
 
   if (currentUser && accounts != 'LOADING') {
     return (
-      <div>
+      <div className={css({ padding: space_L })}>
         <h2>Settings</h2>
         <div>
           <nav>
@@ -64,7 +68,7 @@ export default function Settings(): JSX.Element {
             </span>
             <span>...</span>
           </nav>
-          <div>
+          <Flex>
             <Routes>
               <Route path="/" element={<span>select something...</span>} />
               <Route path="user" element={<UserProfile user={currentUser} />} />
@@ -72,13 +76,13 @@ export default function Settings(): JSX.Element {
               <Route path="display" element={<DisplaySettings />} />
               <Route path="account/:id" element={<WrapLocalAccountEditor />} />
             </Routes>
-          </div>
+          </Flex>
         </div>
       </div>
     );
   } else {
     return (
-      <div>
+      <div className={css({ padding: space_L })}>
         <i>You must be authenticated</i>
       </div>
     );
