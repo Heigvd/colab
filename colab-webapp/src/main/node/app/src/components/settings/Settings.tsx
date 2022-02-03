@@ -10,7 +10,6 @@ import { Account, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { Route, Routes, useParams } from 'react-router-dom';
 import { useCurrentUser, useCurrentUserAccounts } from '../../selectors/userSelector';
-import { shallowEqual, useAppSelector } from '../../store/hooks';
 import Flex from '../common/Flex';
 import { SecondLevelLink } from '../common/Link';
 import Tips from '../common/Tips';
