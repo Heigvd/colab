@@ -31,7 +31,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(
     indexes = {
-        @Index(columnList = "document_id"),
         @Index(columnList = "teaser_id"),
     }
 )
@@ -87,23 +86,6 @@ public class Resource extends AbstractResource {
     @OneToMany(mappedBy = "owningResource", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<Document> documents;
-
-    /**
-     * The content of the resource
-     */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    // @NotNull
-    @JsonbTransient
-    @Deprecated
-    private Document document;
-
-    /**
-     * The document id (serialization sugar)
-     */
-    @Transient
-    @JsonbTransient
-    @Deprecated
-    private Long documentId;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -213,44 +195,6 @@ public class Resource extends AbstractResource {
      */
     public void setDocuments(List<Document> documents) {
         this.documents = documents;
-    }
-
-    /**
-     * @return the document
-     */
-    @Deprecated
-    public Document getDocument() {
-        return document;
-    }
-
-    /**
-     * @param document the document
-     */
-    public void setDocument(Document document) {
-        this.document = document;
-    }
-
-    /**
-     * get the id of the document. To be sent to client.
-     *
-     * @return the id of the document
-     */
-    @Deprecated
-    public Long getDocumentId() {
-        if (document != null) {
-            return document.getId();
-        } else {
-            return documentId;
-        }
-    }
-
-    /**
-     * set the id of the document. For serialization only.
-     *
-     * @param documentId the id of the document
-     */
-    public void setDocumentId(Long documentId) {
-        this.documentId = documentId;
     }
 
     // ---------------------------------------------------------------------------------------------

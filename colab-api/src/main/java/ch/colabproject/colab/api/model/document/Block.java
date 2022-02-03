@@ -9,8 +9,8 @@ package ch.colabproject.colab.api.model.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
@@ -23,21 +23,6 @@ import java.util.List;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
-import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  * One piece of a block document
@@ -45,13 +30,13 @@ import javax.persistence.Transient;
  * @author sandra
  */
 //TODO adjust the constraints / indexes
-@Entity
-@Table(
-    indexes = {
-        @Index(columnList = "document_id"),
-    }
-)
-@Inheritance(strategy = InheritanceType.JOINED)
+//@Entity
+//@Table(
+//    indexes = {
+//        @Index(columnList = "document_id"),
+//    }
+//)
+//@Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 public abstract class Block implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {
 
@@ -66,15 +51,15 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
     /**
      * The block ID
      */
-    @Id
-    @SequenceGenerator(name = BLOCK_SEQUENCE_NAME, allocationSize = 20)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = BLOCK_SEQUENCE_NAME)
+//    @Id
+//    @SequenceGenerator(name = BLOCK_SEQUENCE_NAME, allocationSize = 20)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = BLOCK_SEQUENCE_NAME)
     private Long id;
 
     /**
      * creation &amp; modification tracking data
      */
-    @Embedded
+//    @Embedded
     private Tracking trackingData;
 
     /**
@@ -85,20 +70,20 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
     /**
      * The document it is part of
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
     private BlockDocument document;
 
     /**
      * The id of the document it is part of
      */
-    @Transient
+//    @Transient
     private Long documentId;
 
     /**
      * The list of sticky note links of which the block is the source
      */
-    @OneToMany(mappedBy = "srcBlock", cascade = CascadeType.ALL)
+//    @OneToMany(mappedBy = "srcBlock", cascade = CascadeType.ALL)
     @JsonbTransient
     private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
 

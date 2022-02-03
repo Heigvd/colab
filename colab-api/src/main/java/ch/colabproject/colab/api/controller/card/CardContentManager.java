@@ -216,9 +216,6 @@ public class CardContentManager {
             document.setIndex(index);
         }
 
-        cardContent.setDeliverable(document);// kept temporarily for backward compatibility
-        document.setDeliverableCardContent(cardContent);// kept temporarily for backward compatibility
-
         cardContent.getDeliverables().add(document);
         document.setOwningCardContent(cardContent);
 
@@ -229,7 +226,7 @@ public class CardContentManager {
      * Remove the deliverable of the card content.
      *
      * @param cardContentId the id of the card content
-     * @param documentId the id of the document to remove from the card content
+     * @param documentId    the id of the document to remove from the card content
      */
     public void removeDeliverable(Long cardContentId, Long documentId) {
         logger.debug("remove deliverable #{} of card content #{}", documentId, cardContentId);
@@ -242,7 +239,6 @@ public class CardContentManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        cardContent.setDeliverable(null); // kept temporarily for backward compatibility
         cardContent.getDeliverables().remove(document);
 
         documentDao.deleteDocument(document.getId());

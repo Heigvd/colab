@@ -12,10 +12,8 @@ import ch.colabproject.colab.api.model.tools.EntityHelper;
 import java.util.ArrayList;
 import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 
 /**
  * Homemade document made up of blocks
@@ -36,7 +34,7 @@ public class BlockDocument extends Document {
     /**
      * The content of the document : a list of blocks of content
      */
-    @OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
+    //@OneToMany(mappedBy = "document", cascade = CascadeType.ALL)
     @JsonbTransient
     // Note : do not sort with JPA. It does not work well with our production environment
     // The client is in charge of the sort

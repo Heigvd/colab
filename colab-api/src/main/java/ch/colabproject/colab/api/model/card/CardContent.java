@@ -37,7 +37,6 @@ import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Max;
@@ -54,7 +53,6 @@ import javax.validation.constraints.NotNull;
 @Table(
     indexes = {
         @Index(columnList = "card_id"),
-        @Index(columnList = "deliverable_id"),
     }
 )
 @NamedQuery(name = "CardContent.findAll", query = "SELECT c FROM CardContent c")
@@ -127,22 +125,6 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
      */
     @Transient
     private Long cardId;
-
-    /**
-     * The deliverable of this card content
-     */
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonbTransient
-    @Deprecated
-    private Document deliverable;
-
-    /**
-     * The deliverable ID (serialization sugar)
-     */
-    @Transient
-    @JsonbTransient
-    @Deprecated
-    private Long deliverableId;
 
     /**
      * The deliverables of this card content
@@ -298,44 +280,6 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
      */
     public void setCardId(Long cardId) {
         this.cardId = cardId;
-    }
-
-    /**
-     * @return the deliverable of this card content
-     */
-    @Deprecated
-    public Document getDeliverable() {
-        return deliverable;
-    }
-
-    /**
-     * @param deliverable the deliverable of this card content to set
-     */
-    public void setDeliverable(Document deliverable) {
-        this.deliverable = deliverable;
-    }
-
-    /**
-     * get the id of the deliverable. To be sent to client.
-     *
-     * @return the id of the deliverable of this card content
-     */
-    @Deprecated
-    public Long getDeliverableId() {
-        if (this.deliverable != null) {
-            return this.deliverable.getId();
-        } else {
-            return deliverableId;
-        }
-    }
-
-    /**
-     * set the id of the deliverable. For serialization only.
-     *
-     * @param deliverableId the id of the deliverable of this card content to set
-     */
-    public void setDeliverableId(Long deliverableId) {
-        this.deliverableId = deliverableId;
     }
 
     /**

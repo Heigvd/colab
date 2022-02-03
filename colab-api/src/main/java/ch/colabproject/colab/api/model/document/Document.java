@@ -32,7 +32,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -78,23 +77,6 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels, Wi
     private Tracking trackingData;
 
     /**
-     * The card content for which this document is the deliverable
-     */
-    // TODO see where to prevent that a document is used by several card contents
-    @OneToOne(mappedBy = "deliverable", fetch = FetchType.LAZY)
-    @JsonbTransient
-    @Deprecated
-    private CardContent deliverableCardContent;
-
-    /**
-     * The id of the card content for which this document is the deliverable
-     */
-    @Transient
-    @JsonbTransient
-    @Deprecated
-    private Long deliverableCardContentId;
-
-    /**
      * The index to define the place of the document
      */
     private int index;
@@ -125,23 +107,6 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels, Wi
     @Transient
     private Long owningResourceId;
 
-    /**
-     * The resource representing this document
-     */
-    // TODO see where to prevent that a document is represented by several resources
-    @OneToOne(mappedBy = "document", fetch = FetchType.LAZY)
-    @JsonbTransient
-    @Deprecated
-    private Resource resource;
-
-    /**
-     * The id of the resource representing this document
-     */
-    @Transient
-    @JsonbTransient
-    @Deprecated
-    private Long resourceId;
-
     // ---------------------------------------------------------------------------------------------
     // getters and setters
     // ---------------------------------------------------------------------------------------------
@@ -158,55 +123,6 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels, Wi
      */
     public void setId(Long id) {
         this.id = id;
-    }
-
-    /**
-     * @return the card content for which this document is the deliverable
-     */
-    @Deprecated
-    public CardContent getDeliverableCardContent() {
-        return deliverableCardContent;
-    }
-
-    /**
-     * @param deliverableCardContent the card content for which this document is the deliverable to
-     *                               set
-     */
-    public void setDeliverableCardContent(CardContent deliverableCardContent) {
-        this.deliverableCardContent = deliverableCardContent;
-    }
-
-    /**
-     * get the id of the card content for which this document is the deliverable. To be sent to
-     * client
-     *
-     * @return the id of the card content
-     */
-    @Deprecated
-    public Long getDeliverableCardContentId() {
-        if (this.deliverableCardContent != null) {
-            return deliverableCardContent.getId();
-        } else {
-            return deliverableCardContentId;
-        }
-    }
-
-    /**
-     * set the id of the card content for which this document is the deliverable. For serialization
-     * only
-     *
-     * @param deliverableCardContentId the id of the card content to set
-     */
-    public void setDeliverableCardContentId(Long deliverableCardContentId) {
-        this.deliverableCardContentId = deliverableCardContentId;
-    }
-
-    /**
-     * @return True if there is a linked deliverable card content
-     */
-    @Deprecated
-    public boolean hasDeliverableCardContent() {
-        return deliverableCardContent != null || deliverableCardContentId != null;
     }
 
     /**
@@ -301,52 +217,6 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels, Wi
      */
     public boolean hasOwningResource() {
         return this.owningResource != null || this.owningResourceId != null;
-    }
-
-    /**
-     * @return the resource representing this document
-     */
-    @Deprecated
-    public Resource getResource() {
-        return resource;
-    }
-
-    /**
-     * @param resource the resource representing this document
-     */
-    public void setResource(Resource resource) {
-        this.resource = resource;
-    }
-
-    /**
-     * get the id of resource representing this document. To be sent to client
-     *
-     * @return the id of the resource representing this document
-     */
-    @Deprecated
-    public Long getResourceId() {
-        if (this.resource != null) {
-            return resource.getId();
-        } else {
-            return resourceId;
-        }
-    }
-
-    /**
-     * set the id of the resource representing this document. For serialization only
-     *
-     * @param resourceId the id of the resource representing this document
-     */
-    public void setResourceId(Long resourceId) {
-        this.resourceId = resourceId;
-    }
-
-    /**
-     * @return True if there is a linked resource
-     */
-    @Deprecated
-    public boolean hasResource() {
-        return resource != null || resourceId != null;
     }
 
     /**

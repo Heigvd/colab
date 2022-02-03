@@ -346,8 +346,6 @@ public class ResourceManager {
             document.setIndex(index);
         }
 
-        resource.setDocument(document);// kept temporarily for backward compatibility
-        document.setResource(resource);// kept temporarily for backward compatibility
         resource.getDocuments().add(document);
         document.setOwningResource(resource);
 
@@ -371,7 +369,6 @@ public class ResourceManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        resource.setDocument(null);// kept temporarily for backward compatibility
         resource.getDocuments().remove(document);
 
         documentDao.deleteDocument(document.getId());
