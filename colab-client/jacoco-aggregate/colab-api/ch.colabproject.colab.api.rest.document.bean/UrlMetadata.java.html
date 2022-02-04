@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>UrlMetadata.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.document.bean</a> &gt; <span class="el_source">UrlMetadata.java</span></div><h1>UrlMetadata.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.document.bean;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import javax.validation.constraints.NotNull;
+
+/**
+ *
+ * @author maxence
+ */
+<span class="nc" id="L18">public class UrlMetadata implements Serializable {</span>
+
+    /**
+     * Is the url broken
+     */
+    @NotNull
+    private Boolean broken;
+
+    /**
+     * Effective MIME type fetched from http header
+     */
+    private String contentType;
+
+    /**
+     * Metadata
+     */
+<span class="nc" id="L34">    @NotNull</span>
+    private Map&lt;String, String&gt; metadata = new HashMap&lt;&gt;();
+
+    /**
+     * Get the MIME type
+     *
+     * @return the mime-type or null if unknown
+     */
+    public String getContentType() {
+<span class="nc" id="L43">        return contentType;</span>
+    }
+
+    /**
+     * Set the MIME type.
+     *
+     * @param contentType the mime type. Null means unknown
+     */
+    public void setContentType(String contentType) {
+<span class="nc" id="L52">        this.contentType = contentType;</span>
+<span class="nc" id="L53">    }</span>
+
+    /**
+     * Get the metadata
+     *
+     * @return metadata
+     */
+    public Map&lt;String, String&gt; getMetadata() {
+<span class="nc" id="L61">        return metadata;</span>
+    }
+
+    /**
+     * Set metadata
+     *
+     * @param metadata new metadata
+     */
+    public void setMetadata(Map&lt;String, String&gt; metadata) {
+<span class="nc" id="L70">        this.metadata = metadata;</span>
+<span class="nc" id="L71">    }</span>
+
+    /**
+     * Is the url broken ? It means 404
+     *
+     * @return if the link is broken
+     */
+    public Boolean isBroken() {
+<span class="nc" id="L79">        return broken;</span>
+    }
+
+    /**
+     * Set if the link is broken or not
+     *
+     * @param broken new broken balue
+     */
+    public void setBroken(Boolean broken) {
+<span class="nc" id="L88">        this.broken = broken;</span>
+<span class="nc" id="L89">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

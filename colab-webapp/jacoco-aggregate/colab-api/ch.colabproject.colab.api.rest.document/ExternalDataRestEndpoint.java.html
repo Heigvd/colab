@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ExternalDataRestEndpoint.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-webapp</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.rest.document</a> &gt; <span class="el_source">ExternalDataRestEndpoint.java</span></div><h1>ExternalDataRestEndpoint.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2022 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.rest.document;
+
+import ch.colabproject.colab.api.controller.document.ExternalDataManager;
+import ch.colabproject.colab.api.rest.document.bean.UrlMetadata;
+import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
+import ch.colabproject.colab.generator.model.tools.JsonbProvider;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+/**
+ *
+ * @author maxence
+ */
+@Path(&quot;externaldata&quot;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@AuthenticationRequired
+<span class="nc" id="L28">public class ExternalDataRestEndpoint {</span>
+
+    /** ext data manager */
+    @Inject
+    private ExternalDataManager externalDataManager;
+
+    /**
+     * Fetch metadata for the given url. If metadata are already known, the cached version is
+     * returned.
+     *
+     * @param url url to fetch metadata for
+     *
+     * @return metadata
+     */
+    @PUT
+    @Path(&quot;urlMetadata&quot;)
+    public UrlMetadata getUrlMetadata(String url) {
+        // seems string body parameter tells jersey to send raw json
+<span class="nc" id="L46">        String parsed = JsonbProvider.getJsonb().fromJson(url, String.class);</span>
+<span class="nc" id="L47">        return externalDataManager.getUrlMetadata(parsed);</span>
+    }
+
+    /**
+     * Get refreshed cached metadata
+     *
+     * @param url url to fetch metadata for
+     *
+     * @return metadata
+     */
+    @PUT
+    @Path(&quot;urlMetadata/refresh&quot;)
+    public UrlMetadata getRefreshedUrlMetadata(String url) {
+        // seems string body parameter tells jersey to send raw json
+<span class="nc" id="L61">        String parsed = JsonbProvider.getJsonb().fromJson(url, String.class);</span>
+<span class="nc" id="L62">        return externalDataManager.refreshAndGetUrlMetadata(parsed);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
