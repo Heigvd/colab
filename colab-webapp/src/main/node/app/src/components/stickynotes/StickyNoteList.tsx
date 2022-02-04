@@ -52,12 +52,12 @@ export default function StickyNoteList({
       >
         {stickyNotes.sort(sortStickyNotes).map(stickyNote => (
           <div key={stickyNote.id}>
-              <StickyNoteDisplay
-                key={stickyNote.id}
-                stickyNote={stickyNote}
-                showSrc={showSrc}
-                showDest={showDest}
-              />
+            <StickyNoteDisplay
+              key={stickyNote.id}
+              stickyNote={stickyNote}
+              showSrc={showSrc}
+              showDest={showDest}
+            />
           </div>
         ))}
       </Flex>

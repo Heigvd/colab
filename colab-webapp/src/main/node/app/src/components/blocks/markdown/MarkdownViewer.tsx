@@ -34,8 +34,12 @@ export default function MarkdownViewer({ md, className }: MarkdownViewerProps): 
   }, [md]);
 
   return (
-    <div className={cx(css({'p': {margin: space_S + ' 0'}}),className)}>
-      {md === '' ? <p className={css({color: 'var(--lightGray)'})}><i>empty</i></p> : null}
+    <div className={cx(css({ p: { margin: space_S + ' 0' } }), className)}>
+      {md === '' ? (
+        <p className={css({ color: 'var(--lightGray)' })}>
+          <i>empty</i>
+        </p>
+      ) : null}
       <div ref={divRef} />
     </div>
   );

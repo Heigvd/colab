@@ -108,21 +108,29 @@ export default function ContentSubs({
       );
     } else {
       return depth > 0 ? (
-        <div className={cx(flexWrap, css({ flexDirection: 'column', alignItems:'stretch'}), className)}>
+        <div
+          className={cx(
+            flexWrap,
+            css({ flexDirection: 'column', alignItems: 'stretch' }),
+            className,
+          )}
+        >
           <Flex wrap="wrap" align="flex-start" className={subcardsContainerStyle}>
             {subCards.map(sub => (
               <CardThumbWithSelector depth={depth - 1} key={sub.id} card={sub} />
             ))}
           </Flex>
-          <Flex justify='center'>
+          <Flex justify="center">
             <CardCreator
               parent={cardContent}
               customButton={
-                depth === depthMax ? (location.pathname.match(/card\/\d+\/v\/\d+/) ? undefined : (
-                  <Button icon={faPlus} title="Add Card" className={fixedButtonStyle} clickable>
-                    Add Card
-                  </Button>
-                )) : undefined
+                depth === depthMax ? (
+                  location.pathname.match(/card\/\d+\/v\/\d+/) ? undefined : (
+                    <Button icon={faPlus} title="Add Card" className={fixedButtonStyle} clickable>
+                      Add Card
+                    </Button>
+                  )
+                ) : undefined
               }
             />
           </Flex>

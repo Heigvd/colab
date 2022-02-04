@@ -119,7 +119,11 @@ export default function ({ afterCreation, global = false }: Props): JSX.Element 
               close();
             }}
             className={css({ alignSelf: 'center' })}
-            childrenClassName={css({flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'end'})}
+            childrenClassName={css({
+              flexDirection: 'row-reverse',
+              alignItems: 'center',
+              justifyContent: 'end',
+            })}
             buttonClassName={cx(buttonStyle, marginAroundStyle([1], space_M))}
           >
             <Button

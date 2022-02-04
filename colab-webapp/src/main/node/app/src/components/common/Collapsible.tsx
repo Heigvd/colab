@@ -31,10 +31,10 @@ const collapseTitleStyle = cx(
     borderBottom: '1px solid var(--darkGray)',
     color: 'var(--fgColor)',
     '&:hover': {
-        color: 'var(--hoverfgColor)',
-        backgroundColor: 'var(--lightGray)',
-        cursor: 'pointer',
-    }
+      color: 'var(--hoverfgColor)',
+      backgroundColor: 'var(--lightGray)',
+      cursor: 'pointer',
+    },
   }),
 );
 

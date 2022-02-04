@@ -25,7 +25,7 @@ interface Props {
     | 'RIGHT_MIDDLE'
     | 'RIGHT_BOTTOM';
   toolbarClassName?: string;
-  containerClassName?:string;
+  containerClassName?: string;
   // 1 means width of the toolbar
   offsetX?: number;
   // 1 means height of the toolbar
@@ -181,16 +181,19 @@ export default function WithToolbar({
     <div
       onClick={onClick}
       onMouseEnter={posCb}
-      className={cx(css({
-        flexGrow: grow,
-        display: 'flex',
-        flexDirection: 'column',
-        width: 'fit-content',
-        position: 'relative',
-        ':hover > .toolbar': {
+      className={cx(
+        css({
+          flexGrow: grow,
           display: 'flex',
-        },
-      }), containerClassName)}
+          flexDirection: 'column',
+          width: 'fit-content',
+          position: 'relative',
+          ':hover > .toolbar': {
+            display: 'flex',
+          },
+        }),
+        containerClassName,
+      )}
     >
       {toolbar && (
         <div

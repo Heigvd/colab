@@ -150,8 +150,12 @@ export default function StickyNoteCreator({
                 collapse();
               });
             }}
-            childrenClassName={css({flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'end'})}
-            className={css({alignSelf: 'center'})}
+            childrenClassName={css({
+              flexDirection: 'row-reverse',
+              alignItems: 'center',
+              justifyContent: 'end',
+            })}
+            className={css({ alignSelf: 'center' })}
           >
             <Button
               title="cancel"
@@ -160,15 +164,11 @@ export default function StickyNoteCreator({
                 collapse();
               }}
               invertedButton
-              className={css({margin: space_M})}
+              className={css({ margin: space_M })}
             >
               Cancel
             </Button>
-            <IconButton
-              icon={faUndo}
-              title="reinit fields"
-              onClick={() => resetInputs()}
-            />
+            <IconButton icon={faUndo} title="reinit fields" onClick={() => resetInputs()} />
           </Form>
         </>
       )}
