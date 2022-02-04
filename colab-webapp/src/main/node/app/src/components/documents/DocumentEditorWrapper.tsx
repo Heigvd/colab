@@ -11,7 +11,7 @@ import { useDeliverables } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import { workInProgressStyle } from '../styling/style';
-import DocumentCreator, { CreationContextKind } from './DocumentCreator';
+import DocumentCreatorButton, { CreationContextKind } from './DocumentCreatorButton';
 import { DocumentEditorDisplay } from './DocumentEditorDisplay';
 
 export interface DocAsDeliverableProps {
@@ -49,15 +49,15 @@ export function DocumentEditorWrapper({
           .map(doc => <DocumentEditorDisplay key={doc.id} document={doc} allowEdition={allowEdition} />)
       }
       {allowEdition &&
-        <DocumentCreator
+        <DocumentCreatorButton
           creationContext={{ kind: CreationContextKind.CardContent, cardContentId: cardContentId }}
           docType='TextDataBlock' title='add a block' />}
       {allowEdition &&
-        <DocumentCreator
+        <DocumentCreatorButton
           creationContext={{ kind: CreationContextKind.CardContent, cardContentId: cardContentId }}
           docType='DocumentFile' title='add a file' />}
       {allowEdition &&
-        <DocumentCreator
+        <DocumentCreatorButton
           creationContext={{ kind: CreationContextKind.CardContent, cardContentId: cardContentId }}
           docType='ExternalLink' title='add a link' />}
     </div>

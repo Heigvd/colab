@@ -9,51 +9,6 @@ import { Document, entityIs, TextDataBlock } from 'colab-rest-client';
 import { useAppSelector } from '../store/hooks';
 import { LoadingStatus } from '../store/store';
 
-
-// export const useDocument = (
-//   id: number | null | undefined,
-// ): Document | LoadingStatus | undefined => {
-//   return useAppSelector(state => {
-//     if (id != null) {
-//       const docDetail = state.document.documents[id];
-
-//       if (docDetail === null) {
-//         return 'LOADING';
-//       } else {
-//         return docDetail;
-//       }
-//     }
-//     return undefined;
-//   }); // refEqual is fine
-// };
-
-export const useTextDataBlock = (
-  docId: number | null | undefined
-): {
-  block: TextDataBlock | null | undefined;
-  status: LoadingStatus;
-} => {
-  return useAppSelector(state => {
-    if (docId != null) {
-      const doc = state.document.documents[docId];
-
-      if (doc === undefined) {
-        return { block: doc, status: 'NOT_INITIALIZED' };
-      }
-
-      if (doc === null) {
-        return { block: doc, status: 'LOADING' };
-      }
-
-      if (entityIs(doc, 'TextDataBlock')) {
-        return { block: doc, status: 'READY' }
-      }
-    }
-    
-    return { block: undefined, status: 'NOT_INITIALIZED' };
-  });
-};
-
 export const useDeliverables = (
   cardContentId: number | null | undefined
 ): {

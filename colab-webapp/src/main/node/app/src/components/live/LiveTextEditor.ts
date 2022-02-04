@@ -61,11 +61,21 @@ export function useBlock(blockId: number | null | undefined): TextDataBlock | nu
         refSubs[blockId] = 1;
         dispatch(API.subscribeToBlockChannel(blockId)).then(() => {
           if (alive) {
+            // TODO sandra work in progress
+            // 1. do we need to get the doc ?!? 
+            // maybe for teaser or purpose, certainly not for deliverables or resources' documents
+            // 2. for the moment, the only block we have is a document
+            // make it more wisely when there will be something else
             dispatch(API.getDocument(blockId));
           }
         });
       } else {
         refSubs[blockId] = count + 1;
+        // TODO sandra work in progress
+        // 1. do we need to get the doc ?!? 
+        // maybe for teaser or purpose, certainly not for deliverables or resources' documents
+        // 2. for the moment, the only block we have is a document
+        // make it more wisely when there will be something else
         dispatch(API.getDocument(blockId));
       }
 
@@ -88,6 +98,8 @@ export function useBlock(blockId: number | null | undefined): TextDataBlock | nu
 
   return useAppSelector(state => {
     if (blockId) {
+      // for the moment, the only block we have is a document
+      // make it more wisely when there will be something else
       const doc = state.document.documents[blockId];
       if (entityIs(doc, 'TextDataBlock')) {
         return doc;

@@ -89,9 +89,12 @@ const documentsSlice = createSlice({
         action.payload.documents.updated.forEach(document => updateDocument(state, document));
         action.payload.documents.deleted.forEach(entry => removeDocument(state, entry.id));
       })
-      .addCase(API.getDocument.pending, (state, action) => {
-        state.documents[action.meta.arg] = 'LOADING';
-      })
+      // TODO sandra work in progress
+      // for the moment, as the document is loaded once for the cardcontent / resource and once again from livetexteditor
+      // remove the loading state
+      // .addCase(API.getDocument.pending, (state, action) => {
+      //   state.documents[action.meta.arg] = 'LOADING';
+      // })
       .addCase(API.getDocument.fulfilled, (state, action) => {
         updateDocument(state, action.payload);
       })

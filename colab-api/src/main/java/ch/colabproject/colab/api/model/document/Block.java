@@ -8,19 +8,15 @@ package ch.colabproject.colab.api.model.document;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
-import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
-import ch.colabproject.colab.api.ws.channel.BlockChannel;
-import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 
@@ -38,7 +34,7 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
 //)
 //@Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public abstract class Block implements ColabEntity, WithWebsocketChannels, StickyNoteSourceable {
+public abstract class Block implements ColabEntity, StickyNoteSourceable {
 
     private static final long serialVersionUID = 1L;
 
@@ -216,15 +212,6 @@ public abstract class Block implements ColabEntity, WithWebsocketChannels, Stick
             this.setIndex(o.getIndex());
         } else {
             throw new ColabMergeException(this, other);
-        }
-    }
-
-    @Override
-    public Set<WebsocketChannel> getChannels() {
-        if (this.id != null) {
-            return Set.of(BlockChannel.build(id));
-        } else {
-            return Set.of();
         }
     }
 

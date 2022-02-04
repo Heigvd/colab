@@ -33,17 +33,17 @@ export type CreationContext = CreationCardContentContext | CreationResourceConte
 
 type documentType = 'TextDataBlock' | 'ExternalLink' | 'DocumentFile';
 
-export type DocumentCreatorProps = {
+export type DocumentCreatorButtonProps = {
   creationContext: CreationContext;
   docType: documentType;
   title: string;
 };
 
-export default function DocumentCreator({
+export default function DocumentCreatorButton({
   creationContext,
   docType,
   title,
-}: DocumentCreatorProps): JSX.Element {
+}: DocumentCreatorButtonProps): JSX.Element {
   const dispatch = useAppDispatch();
 
   const createDoc = React.useCallback(() => {
@@ -90,6 +90,7 @@ export default function DocumentCreator({
       icon={faPlus}
       title={title}
       onClick={createDoc}
+      invertedButton
     >
       {title}
     </Button>
