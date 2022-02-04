@@ -37,6 +37,8 @@ import org.slf4j.LoggerFactory;
 @PreMatching
 public class CookieFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
+    private static final int COOKIE_MAX_AGE = 3600 * 24 * 7;// one week
+
     /**
      * Logger
      */
@@ -166,7 +168,7 @@ public class CookieFilter implements ContainerRequestFilter, ContainerResponseFi
             }
 
             NewCookie sessionCookie = new NewCookie(COOKIE_NAME, cookieValue,
-                "/", null, null, -1, true, true);
+                "/", null, null, COOKIE_MAX_AGE, true, true);
 
             logger.trace("Request completed with session id {}", sessionCookie);
             responseContext.getHeaders().add(HttpHeaders.SET_COOKIE, sessionCookie);
