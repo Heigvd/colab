@@ -5,10 +5,10 @@
  * Licensed under the MIT License
  */
 
-import {css} from '@emotion/css';
-import {faPen, faTimes} from '@fortawesome/free-solid-svg-icons';
+import { css } from '@emotion/css';
+import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import {useAppSelector} from '../../store/hooks';
+import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
 import WysiwygEditor from '../blocks/markdown/WysiwygEditor';
 import CleverTextarea from '../common/CleverTextarea';
@@ -19,9 +19,9 @@ import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 import Tips from '../common/Tips';
 import WithToolbar from '../common/WithToolbar';
-import {space_S} from '../styling/style';
+import { space_S } from '../styling/style';
 import ChangeTree from './ChangeTree';
-import {useLiveBlock} from './LiveTextEditor';
+import { useLiveBlock } from './LiveTextEditor';
 
 const shrink = css({
   flexGrow: 0,
@@ -40,10 +40,10 @@ interface Props {
   allowEdition?: boolean;
 }
 
-function Unsupported({md}: {md: string}) {
+function Unsupported({ md }: { md: string }) {
   return (
     <div>
-      <div className={css({margin: '5px', padding: '5px', border: '1px solid red'})}>
+      <div className={css({ margin: '5px', padding: '5px', border: '1px solid red' })}>
         <em>
           Your browser does not support to display this text in its pretty form. Our technicians are
           on the case.
@@ -63,7 +63,7 @@ export default function LiveEditor({
 }: Props): JSX.Element {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
 
-  const {currentValue, onChange, status} = useLiveBlock({
+  const { currentValue, onChange, status } = useLiveBlock({
     atClass: atClass,
     atId: atId,
     value: value,
@@ -114,15 +114,13 @@ export default function LiveEditor({
               cursor: 'pointer',
             },
           })}
-          onClick={() => setState({...state, status: 'EDIT'})}
+          onClick={() => setState({ ...state, status: 'EDIT' })}
         >
           <WithToolbar
             toolbarPosition="TOP_RIGHT"
             toolbarClassName=""
             offsetY={-1}
-            toolbar={
-              <IconButton title="Click to edit" icon={faPen} iconColor="var(--darkGray)" />
-            }
+            toolbar={<IconButton title="Click to edit" icon={faPen} iconColor="var(--darkGray)" />}
           >
             <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
               <MarkdownViewer md={currentValue} />
@@ -132,29 +130,46 @@ export default function LiveEditor({
       );
     } else if (state.status === 'EDIT') {
       return (
-        <Flex direction="column" align='stretch' className={css({backgroundColor: 'var(--hoverBgColor)', padding: space_S})}>
-          <Flex justify='space-between'>
-            <Flex align='center'>
-              <Tips tipsType="TODO">TODO: add more styling options (headings level, lists, ...</Tips>
+        <Flex
+          direction="column"
+          align="stretch"
+          className={css({ backgroundColor: 'var(--hoverBgColor)', padding: space_S })}
+        >
+          <Flex justify="space-between">
+            <Flex align="center">
+              <Tips tipsType="TODO">
+                TODO: add more styling options (headings level, lists, ...
+              </Tips>
               <Toggler label="Show Tree" value={showTree} onChange={setShowTree} />
               <Toggler label="WYSIWYG" value={wysiwyg} onChange={setWysiwyg} />
             </Flex>
             <IconButton
               title="close editor"
-              onClick={() => setState({...state, status: 'VIEW'})}
+              onClick={() => setState({ ...state, status: 'VIEW' })}
               icon={faTimes}
             />
           </Flex>
           <Flex>
             {wysiwyg ? (
               <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
-                <WysiwygEditor className={css({alignItems: 'stretch'})} value={currentValue} onChange={onChange} />
+                <WysiwygEditor
+                  className={css({ alignItems: 'stretch' })}
+                  value={currentValue}
+                  onChange={onChange}
+                />
               </ErrorBoundary>
             ) : (
               <Flex grow={1} align="stretch">
-                <CleverTextarea className={css({minHeight: '100px', flexGrow: 1, flexBasis: "1px"})} value={currentValue} onChange={onChange} />
+                <CleverTextarea
+                  className={css({ minHeight: '100px', flexGrow: 1, flexBasis: '1px' })}
+                  value={currentValue}
+                  onChange={onChange}
+                />
                 <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
-                  <MarkdownViewer className={css({padding: "3px", flexGrow: 1, flexBasis: "1px"})} md={currentValue} />
+                  <MarkdownViewer
+                    className={css({ padding: '3px', flexGrow: 1, flexBasis: '1px' })}
+                    md={currentValue}
+                  />
                 </ErrorBoundary>
               </Flex>
             )}

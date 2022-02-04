@@ -72,7 +72,11 @@ export default function SelectInput<T, IsMulti extends boolean>({
   );
 
   return (
-    <Flex className={cx(css({ padding: space_S + ' 0' }), className)} direction="column" align="stretch">
+    <Flex
+      className={cx(css({ padding: space_S + ' 0' }), className)}
+      direction="column"
+      align="stretch"
+    >
       <Flex justify="space-between">
         <div className={labelStyle}>
           {label}

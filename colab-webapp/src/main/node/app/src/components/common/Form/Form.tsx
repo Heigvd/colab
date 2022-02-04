@@ -161,13 +161,16 @@ export default function Form<T>({
 
   const fieldComps = fields.map(field => {
     const isErroneous = field.isErroneous != null ? field.isErroneous(state) : false;
-    const isEmptyError = field.isMandatory ? (String(state[field.key]).length === 0 || state[field.key] === null): false;
+    const isEmptyError = field.isMandatory
+      ? String(state[field.key]).length === 0 || state[field.key] === null
+      : false;
     globalErroneous = globalErroneous || isErroneous || isEmptyError;
     const fieldKey = `field-${field.key}`;
 
     const errorMessage =
-    erroneous && isEmptyError ? 'This input is mandatory' :
-      erroneous && isErroneous && field.errorMessage != null
+      erroneous && isEmptyError
+        ? 'This input is mandatory'
+        : erroneous && isErroneous && field.errorMessage != null
         ? typeof field.errorMessage === 'function'
           ? field.errorMessage(state)
           : field.errorMessage
@@ -296,18 +299,21 @@ export default function Form<T>({
       onKeyDown={onEnterCb}
     >
       {fieldComps}
-      <Flex direction='column' justify='center' align='center' className={childrenClassName}>
-      {autoSubmit ? null : (
-        <Button
-          key="submit"
-          title="Submit"
-          className={cx(css({ margin: space_M + ' 0', alignSelf: 'flex-start' }), buttonClassName)}
-          onClick={submitCb}
-        >
-          {submitLabel || i18n.submit}
-        </Button>
-      )}
-      {children}
+      <Flex direction="column" justify="center" align="center" className={childrenClassName}>
+        {autoSubmit ? null : (
+          <Button
+            key="submit"
+            title="Submit"
+            className={cx(
+              css({ margin: space_M + ' 0', alignSelf: 'flex-start' }),
+              buttonClassName,
+            )}
+            onClick={submitCb}
+          >
+            {submitLabel || i18n.submit}
+          </Button>
+        )}
+        {children}
       </Flex>
     </div>
   );

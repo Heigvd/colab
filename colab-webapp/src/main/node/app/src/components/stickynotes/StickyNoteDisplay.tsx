@@ -55,7 +55,11 @@ export default function StickyNoteDisplay({
   }, [showDest, stickyNote.destinationCardId, destCard, dispatch]);
 
   return (
-    <Flex align="stretch" direction="column" className={cx(cardStyle, css({ margin: space_S, maxWidth: '300px' }))}>
+    <Flex
+      align="stretch"
+      direction="column"
+      className={cx(cardStyle, css({ margin: space_S, maxWidth: '300px' }))}
+    >
       <Flex
         justify="space-between"
         className={css({ borderBottom: '1px solid var(--lightGray)', padding: space_S })}
@@ -100,44 +104,44 @@ export default function StickyNoteDisplay({
           }}
         />
       </Flex>
-      <Flex direction="column" align='stretch'>
-        <div className={css({margin: space_M, minWidth: '0'})}>
-        {stickyNote.explanationId && (
-          <div>
-            <p>
-              <b>Explanation:</b>
-            </p>
-            <BlockEditorWrapper blockId={stickyNote.explanationId} allowEdition={true} />
-          </div>
-        )}
-        {showSrc && (
-          <div>
-            {srcCard && typeof srcCard === 'object' && (
-              <div>
-                <p>
-                  <b>Source:</b>
-                </p>
-                <p>{srcCard.title}</p>
-                <p>Card #{srcCard.id}</p>
-                <Button
-                  onClick={function () {
-                    navigate(`../card/${srcCard.id}`);
-                  }}
-                  className={css({display: 'inline-block',})}
-                >
-                  Show source
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
-        {showDest && (
-          <div>
-            {destCard && typeof destCard === 'object' && (
-              <CardThumbWithSelector card={destCard} depth={0} />
-            )}
-          </div>
-        )}
+      <Flex direction="column" align="stretch">
+        <div className={css({ margin: space_M, minWidth: '0' })}>
+          {stickyNote.explanationId && (
+            <div>
+              <p>
+                <b>Explanation:</b>
+              </p>
+              <BlockEditorWrapper blockId={stickyNote.explanationId} allowEdition={true} />
+            </div>
+          )}
+          {showSrc && (
+            <div>
+              {srcCard && typeof srcCard === 'object' && (
+                <div>
+                  <p>
+                    <b>Source:</b>
+                  </p>
+                  <p>{srcCard.title}</p>
+                  <p>Card #{srcCard.id}</p>
+                  <Button
+                    onClick={function () {
+                      navigate(`../card/${srcCard.id}`);
+                    }}
+                    className={css({ display: 'inline-block' })}
+                  >
+                    Show source
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+          {showDest && (
+            <div>
+              {destCard && typeof destCard === 'object' && (
+                <CardThumbWithSelector card={destCard} depth={0} />
+              )}
+            </div>
+          )}
         </div>
       </Flex>
     </Flex>

@@ -34,7 +34,14 @@ import SignInForm from './public/SignIn';
 import SignUpForm from './public/SignUp';
 import Settings from './settings/Settings';
 import Picto from './styling/Picto';
-import { flex, fullPageStyle, invertedThemeMode, paddingAroundStyle, space_M, space_S } from './styling/style';
+import {
+  flex,
+  fullPageStyle,
+  invertedThemeMode,
+  paddingAroundStyle,
+  space_M,
+  space_S,
+} from './styling/style';
 
 /**
  * To read parameters from hash
@@ -160,11 +167,14 @@ export default function MainApp(): JSX.Element {
             )}
           >
             <Picto
-              className={cx(css({
-                height: '30px',
-                width: 'auto',
-                paddingRight: space_M,
-              }), paddingAroundStyle([1, 3, 4], space_S))}
+              className={cx(
+                css({
+                  height: '30px',
+                  width: 'auto',
+                  paddingRight: space_M,
+                }),
+                paddingAroundStyle([1, 3, 4], space_S),
+              )}
             />
             <nav className={flex}>
               <MainMenuLink to="/">Projects</MainMenuLink>

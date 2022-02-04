@@ -401,7 +401,7 @@ export default function WysiwygEditor({
     <Flex className={className} direction="column" grow={1}>
       <Flex>
         {/* Listening to onMouseDownCapture is very important !*/}
-        <ToolbarButton icon={faBold} toggled={toolbarState.bold} onClick={toggleBold}/>
+        <ToolbarButton icon={faBold} toggled={toolbarState.bold} onClick={toggleBold} />
         <ToolbarButton icon={faItalic} toggled={toolbarState.italic} onClick={toggleItalic} />
         <ToolbarButton
           icon={faUnderline}
@@ -414,7 +414,7 @@ export default function WysiwygEditor({
           onClick={toggleStrike}
         />
       </Flex>
-      <Flex direction='column' align='stretch'>
+      <Flex direction="column" align="stretch">
         <div
           className={editorStyle}
           ref={divRef}
