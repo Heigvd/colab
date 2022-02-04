@@ -9,6 +9,8 @@ import { css, cx } from '@emotion/css';
 import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import * as API from '../../API/api';
+import { dispatch } from '../../store/store';
 //import * as API from '../../API/api';
 //import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
@@ -30,10 +32,10 @@ export type ResourceCreatorProps = {
   className?: string;
 };
 
-const defaultDocType = 'BlockDocument';
+const defaultDocType = 'TextDataBlock';
 
 interface ResourceType {
-  docType: 'BlockDocument' | 'ExternalLink' | 'DocumentFile';
+  docType: 'TextDataBlock' | 'ExternalLink' | 'DocumentFile';
   title: string;
   teaser: string;
   category: string;
@@ -90,7 +92,7 @@ export default function ResourceCreator({
       label: 'Resource type',
       isMulti: false,
       options: [
-        { label: 'Document', value: 'BlockDocument' },
+        { label: 'Document', value: 'TextDataBlock' },
         { label: 'Link', value: 'ExternalLink' },
         { label: 'File', value: 'DocumentFile' },
       ],
@@ -128,72 +130,78 @@ export default function ResourceCreator({
       className={css({ display: 'block', width: '100%', textAlign: 'center' })}
     >
       {collapse => (
-          <Form
-            fields={fields}
-            value={state}
-            onSubmit={function (e) {
-              setState(e);
-              // let cardTypeId: number | null = null;
-              // let cardId: number | null = null;
-              // let cardContentId: number | null = null;
-              // if (contextInfo.kind == ResourceContextScope.CardType) {
-              //   cardTypeId = contextInfo.cardTypeId;
-              // } else {
-              //   if (e.atCardContentLevel) {
-              //     cardContentId = contextInfo.cardContentId || null;
-              //   } else {
-              //     cardId = contextInfo.cardId || null;
-              //   }
-              // }
-              // dispatch(
-              //   API.createResource({
-              //     abstractCardTypeId: cardTypeId,
-              //     cardId: cardId,
-              //     cardContentId: cardContentId,
-              //     document:
-              //       e.docType === 'DocumentFile'
-              //         ? {
-              //             '@class': e.docType,
-              //             fileSize: 0,
-              //             mimeType: 'application/octet-stream',
-              //           }
-              //         : {
-              //             '@class': e.docType,
-              //           },
-              //     title: e.title,
-              //     teaser: {
-              //       '@class': 'TextDataBlock',
-              //       mimeType: 'text/markdown',
-              //       textData: e.teaser,
-              //       revision: '0',
-              //     },
-              //     category: e.category,
-              //   }),
-              // ).then(() => {
-              //   resetInputs();
-              //   collapse();
-              // });
+        <Form
+          fields={fields}
+          value={state}
+          onSubmit={function (e) {
+            setState(e);
+            let cardTypeId: number | null = null;
+            let cardId: number | null = null;
+            let cardContentId: number | null = null;
+            if (contextInfo.kind == ResourceContextScope.CardType) {
+              cardTypeId = contextInfo.cardTypeId;
+            } else {
+              if (e.atCardContentLevel) {
+                cardContentId = contextInfo.cardContentId || null;
+              } else {
+                cardId = contextInfo.cardId || null;
+              }
+            }
+            dispatch(
+              API.createResource({
+                abstractCardTypeId: cardTypeId,
+                cardId: cardId,
+                cardContentId: cardContentId,
+                documents:
+                  e.docType === 'DocumentFile'
+                    ? [{
+                      '@class': e.docType,
+                      fileSize: 0,
+                      mimeType: 'application/octet-stream',
+                    }]
+                    : e.docType === 'TextDataBlock'
+                      ? [{
+                        '@class': 'TextDataBlock',
+                        mimeType: 'text/markdown',
+                        revision: '0',
+                      }]
+                      : [{
+                        '@class': e.docType,
+                      }],
+                title: e.title,
+                teaser: {
+                  '@class': 'TextDataBlock',
+                  mimeType: 'text/markdown',
+                  textData: e.teaser,
+                  revision: '0',
+                },
+                category: e.category,
+              }),
+            ).then(() => {
+              resetInputs();
+              collapse();
+            });
+          }}
+          childrenClassName={css({
+            flexDirection: 'row-reverse',
+            alignItems: 'center',
+            justifyContent: 'end',
+          })}
+          className={css({ alignSelf: 'center' })}
+        >
+          <Button
+            title="cancel"
+            onClick={() => {
+              // see if it is better to reset the values or not
+              collapse();
             }}
-            childrenClassName={css({
-              flexDirection: 'row-reverse',
-              alignItems: 'center',
-              justifyContent: 'end',
-            })}
-            className={css({alignSelf: 'center'})}
+            invertedButton
+            className={css({ margin: space_M })}
           >
-            <Button
-              title="cancel"
-              onClick={() => {
-                // see if it is better to reset the values or not
-                collapse();
-              }}
-              invertedButton
-              className={css({ margin: space_M })}
-            >
-              Cancel
-            </Button>
-            <IconButton icon={faUndo} title="reinit fields" onClick={() => resetInputs()} />
-          </Form>
+            Cancel
+          </Button>
+          <IconButton icon={faUndo} title="reinit fields" onClick={() => resetInputs()} />
+        </Form>
       )}
     </OpenCloseModal>
   );

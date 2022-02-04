@@ -16,7 +16,7 @@ import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 import { DocumentEditorDisplay } from '../documents/DocumentEditorDisplay';
-import { lightIconButtonStyle, paddingAroundStyle, space_M, space_S } from '../styling/style';
+import { lightIconButtonStyle, paddingAroundStyle, space_M, space_S, workInProgressStyle } from '../styling/style';
 import { ResourceAndRef } from './ResourceCommonType';
 
 export interface ResourceDisplayProps {
@@ -45,36 +45,43 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
     return <div>no document at disposal</div>;
   }
 
-  // TODO improve the iteration UX :-)
-
   return (
     <Flex align="stretch" direction="column" grow={1} className={paddingAroundStyle([2, 3, 4], space_M)}>
       <Flex direction='column'>
         <IconButton icon={faArrowLeft} title="Back" onClick={onClose} className={cx(lightIconButtonStyle, css({ paddingBottom: space_S }))} />
         <div>
-          {entityIs(document, 'Document') ? (
-            <h2>{resourceAndRef.targetResource.title || i18n.resource.untitled}</h2>
-          ) : (
-            <InlineLoading />
-          )}
+          <h2>{resourceAndRef.targetResource.title || i18n.resource.untitled}</h2>
         </div>
       </Flex>
-
-      <div>
-        {entityIs(document, 'Document') ? (
-          resourceAndRef.isDirectResource ? (
-            <DocumentEditorDisplay document={document} />
-          ) : (
-            <>
-              <div>!!! Not a direct resource : readonly </div>
-              <DocumentEditorDisplay document={document} allowEdition={false} />
-            </>
-          )
-        ) : (
-          <InlineLoading />
-        )}
-      </div>
+      {
+        documents
+          .sort((a, b) => (a.index || 0) - (b.index || 0))
+          .map(document =>
+            <div className={workInProgressStyle}>
+              {entityIs(document, 'Document') ? (
+                resourceAndRef.isDirectResource ? (
+                  <DocumentEditorDisplay document={document} />
+                ) : (
+                  <>
+                    <div>!!! Not a direct resource : readonly </div>
+                    <DocumentEditorDisplay document={document} allowEdition={false} />
+                  </>
+                )
+              ) : (
+                <InlineLoading />
+              )}
+            </div>
+          )}
+      {/* TODO sandra work in progress */}
+      {/* <DocumentCreatorButton
+        creationContext={{ kind: CreationContextKind.Resource, resourceId: resourceAndRef.cardResourceRef.id }}
+        docType='TextDataBlock' title='add a block' />
+      <DocumentCreatorButton
+        creationContext={{ kind: CreationContextKind.Resource, resourceId: resourceAndRef.cardResourceRef.id }}
+        docType='DocumentFile' title='add a file' />
+      <DocumentCreatorButton
+        creationContext={{ kind: CreationContextKind.Resource, resourceId: resourceAndRef.cardResourceRef.id }}
+        docType='ExternalLink' title='add a link' /> */}
     </Flex>
   );
-
 }
