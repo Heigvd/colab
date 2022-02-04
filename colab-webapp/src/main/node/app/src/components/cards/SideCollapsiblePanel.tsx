@@ -73,20 +73,19 @@ export default function SideCollapsiblePanel<T extends { [key: string]: Item }>(
         )}
       >
         {Object.entries(items).map(([key, item]) => (
-          <>
-            <IconButton
-              icon={item.icon}
-              title={item.title}
-              onClick={() => setItemKeyOpen(itemKey => (itemKey === key ? undefined : key))}
-              iconColor={itemKeyOpen === key ? 'var(--fgColor)' : undefined}
-              iconSize="lg"
-              className={cx(
-                marginAroundStyle([3], space_L),
-                lightIconButtonStyle,
-                css({ color: 'var(--lightGray)' }),
-              )}
-            />
-          </>
+          <IconButton
+            key={key}
+            icon={item.icon}
+            title={item.title}
+            onClick={() => setItemKeyOpen(itemKey => (itemKey === key ? undefined : key))}
+            iconColor={itemKeyOpen === key ? 'var(--fgColor)' : undefined}
+            iconSize="lg"
+            className={cx(
+              marginAroundStyle([3], space_L),
+              lightIconButtonStyle,
+              css({ color: 'var(--lightGray)' }),
+            )}
+          />
         ))}
       </Flex>
       {direction === 'LEFT' && itemOpen && (

@@ -37,7 +37,8 @@ import org.slf4j.LoggerFactory;
 @PreMatching
 public class CookieFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
-    private static final int COOKIE_MAX_AGE = 3600 * 24 * 7;// one week
+    /** Default max-age to one week [s] */
+    private static final int COOKIE_MAX_AGE = 3600 * 24 * 7;
 
     /**
      * Logger
