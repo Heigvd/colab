@@ -22,12 +22,12 @@ export enum CreationContextKind {
 export type CreationCardContentContext = {
   kind: CreationContextKind.CardContent;
   cardContentId: number;
-}
+};
 
 export type CreationResourceContext = {
   kind: CreationContextKind.Resource;
   resourceId: number;
-}
+};
 
 export type CreationContext = CreationCardContentContext | CreationResourceContext;
 
@@ -54,17 +54,16 @@ export default function DocumentCreatorButton({
         fileSize: 0,
         mimeType: 'application/octet-stream',
       };
-    }
-    else if (docType == 'TextDataBlock') {
+    } else if (docType == 'TextDataBlock') {
       document = {
         '@class': docType,
         mimeType: 'text/markdown',
         revision: '0',
-      }
+      };
     } else {
       document = {
         '@class': docType,
-      }
+      };
     }
 
     if (creationContext.kind == CreationContextKind.CardContent) {
@@ -96,4 +95,3 @@ export default function DocumentCreatorButton({
     </Button>
   );
 }
-

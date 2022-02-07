@@ -5,12 +5,12 @@
  * Licensed under the MIT License
  */
 
-import {faCheck} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {DocumentFile} from 'colab-rest-client';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { DocumentFile } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import {useAppDispatch} from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
 import FilePicker from '../common/FilePicker';
 import InlineLoading from '../common/InlineLoading';
 
@@ -19,7 +19,7 @@ export interface DocumentFileProps {
   allowEdition?: boolean;
 }
 
-export function DocumentFileEditor({document, allowEdition}: DocumentFileProps): JSX.Element {
+export function DocumentFileEditor({ document, allowEdition }: DocumentFileProps): JSX.Element {
   //const i18n = useTranslations();
 
   const dispatch = useAppDispatch();
@@ -30,17 +30,15 @@ export function DocumentFileEditor({document, allowEdition}: DocumentFileProps):
     () =>
       allowEdition
         ? (file: File) => {
-          dispatch(API.uploadFile({docId: document.id!, file: file, fileSize: file.size})).then(
-            () => setState('DONE'),
-          );
-        }
+            dispatch(API.uploadFile({ docId: document.id!, file: file, fileSize: file.size })).then(
+              () => setState('DONE'),
+            );
+          }
         : undefined,
     [dispatch, document.id, allowEdition],
   );
 
-  const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(
-    document.id!,
-  );
+  const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(document.id!);
 
   const downloadCb = React.useCallback(() => {
     window.open(downloadUrl);
@@ -65,7 +63,7 @@ export function DocumentFileEditor({document, allowEdition}: DocumentFileProps):
       accept="*"
       onChange={onChangeCb}
       onDownload={downloadCb}
-      currentPreviewImgUrl={document.mimeType.startsWith("image/") ? downloadUrl : undefined}
+      currentPreviewImgUrl={document.mimeType.startsWith('image/') ? downloadUrl : undefined}
       currentFilename={
         state === 'LOADING' ? (
           <InlineLoading />

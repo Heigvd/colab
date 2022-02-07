@@ -457,4 +457,3 @@ export const workInProgressStyle = cx(
     boxShadow: '0px 0px 25px 7px greenyellow',
   }),
 );
-

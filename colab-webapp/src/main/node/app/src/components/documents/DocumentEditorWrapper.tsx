@@ -43,24 +43,32 @@ export function DocumentEditorWrapper({
 
   return (
     <div className={workInProgressStyle}>
-      {
-        documents
-          .sort((a, b) => (a.index || 0) - (b.index || 0))
-          .map(doc => <DocumentEditorDisplay key={doc.id} document={doc} allowEdition={allowEdition} />)
-      }
-      {allowEdition &&
+      {documents
+        .sort((a, b) => (a.index || 0) - (b.index || 0))
+        .map(doc => (
+          <DocumentEditorDisplay key={doc.id} document={doc} allowEdition={allowEdition} />
+        ))}
+      {allowEdition && (
         <DocumentCreatorButton
           creationContext={{ kind: CreationContextKind.CardContent, cardContentId: cardContentId }}
-          docType='TextDataBlock' title='add a block' />}
-      {allowEdition &&
+          docType="TextDataBlock"
+          title="add a block"
+        />
+      )}
+      {allowEdition && (
         <DocumentCreatorButton
           creationContext={{ kind: CreationContextKind.CardContent, cardContentId: cardContentId }}
-          docType='DocumentFile' title='add a file' />}
-      {allowEdition &&
+          docType="DocumentFile"
+          title="add a file"
+        />
+      )}
+      {allowEdition && (
         <DocumentCreatorButton
           creationContext={{ kind: CreationContextKind.CardContent, cardContentId: cardContentId }}
-          docType='ExternalLink' title='add a link' />}
+          docType="ExternalLink"
+          title="add a link"
+        />
+      )}
     </div>
   );
-
 }

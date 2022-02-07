@@ -696,14 +696,14 @@ export const getDeliverablesOfCardContent = createAsyncThunk(
 
 export const addDeliverable = createAsyncThunk(
   'cardcontent/addDeliverable',
-  async ({ cardContentId, deliverable }: { cardContentId: number, deliverable: Document }) => {
+  async ({ cardContentId, deliverable }: { cardContentId: number; deliverable: Document }) => {
     return await restClient.CardContentRestEndpoint.addDeliverable(cardContentId, deliverable);
   },
 );
 
 export const removeDeliverable = createAsyncThunk(
   'cardcontent/removeDeliverable',
-  async ({ cardContentId, documentId }: { cardContentId: number, documentId: number }) => {
+  async ({ cardContentId, documentId }: { cardContentId: number; documentId: number }) => {
     return await restClient.CardContentRestEndpoint.removeDeliverable(cardContentId, documentId);
   },
 );
@@ -781,14 +781,14 @@ export const getDocumentsOfResource = createAsyncThunk(
 
 export const addDocumentToResource = createAsyncThunk(
   'resource/addDocument',
-  async ({ resourceId, document }: { resourceId: number, document: Document }) => {
+  async ({ resourceId, document }: { resourceId: number; document: Document }) => {
     return await restClient.ResourceRestEndpoint.addDocument(resourceId, document);
   },
 );
 
 export const removeDocumentOfResource = createAsyncThunk(
   'resource/removeDocument',
-  async ({ resourceId, documentId }: { resourceId: number, documentId: number }) => {
+  async ({ resourceId, documentId }: { resourceId: number; documentId: number }) => {
     return await restClient.ResourceRestEndpoint.removeDocument(resourceId, documentId);
   },
 );

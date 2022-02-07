@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { TextDataBlock, Change, entityIs } from 'colab-rest-client';
+import { Change, entityIs, TextDataBlock } from 'colab-rest-client';
 import { throttle } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -62,7 +62,7 @@ export function useBlock(blockId: number | null | undefined): TextDataBlock | nu
         dispatch(API.subscribeToBlockChannel(blockId)).then(() => {
           if (alive) {
             // TODO sandra work in progress
-            // 1. do we need to get the doc ?!? 
+            // 1. do we need to get the doc ?!?
             // maybe for teaser or purpose, certainly not for deliverables or resources' documents
             // 2. for the moment, the only block we have is a document
             // make it more wisely when there will be something else
@@ -72,7 +72,7 @@ export function useBlock(blockId: number | null | undefined): TextDataBlock | nu
       } else {
         refSubs[blockId] = count + 1;
         // TODO sandra work in progress
-        // 1. do we need to get the doc ?!? 
+        // 1. do we need to get the doc ?!?
         // maybe for teaser or purpose, certainly not for deliverables or resources' documents
         // 2. for the moment, the only block we have is a document
         // make it more wisely when there will be something else

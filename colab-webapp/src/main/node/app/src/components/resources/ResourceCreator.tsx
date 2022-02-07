@@ -154,20 +154,26 @@ export default function ResourceCreator({
                 cardContentId: cardContentId,
                 documents:
                   e.docType === 'DocumentFile'
-                    ? [{
-                      '@class': e.docType,
-                      fileSize: 0,
-                      mimeType: 'application/octet-stream',
-                    }]
+                    ? [
+                        {
+                          '@class': e.docType,
+                          fileSize: 0,
+                          mimeType: 'application/octet-stream',
+                        },
+                      ]
                     : e.docType === 'TextDataBlock'
-                      ? [{
-                        '@class': 'TextDataBlock',
-                        mimeType: 'text/markdown',
-                        revision: '0',
-                      }]
-                      : [{
-                        '@class': e.docType,
-                      }],
+                    ? [
+                        {
+                          '@class': 'TextDataBlock',
+                          mimeType: 'text/markdown',
+                          revision: '0',
+                        },
+                      ]
+                    : [
+                        {
+                          '@class': e.docType,
+                        },
+                      ],
                 title: e.title,
                 teaser: {
                   '@class': 'TextDataBlock',

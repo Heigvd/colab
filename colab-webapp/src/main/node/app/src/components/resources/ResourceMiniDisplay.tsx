@@ -159,7 +159,7 @@ export default function ResourceMiniDisplay({
 
   return (
     <div>
-      {documents.map(doc =>
+      {documents.map(doc => (
         <div key={doc.id}>
           <div className={defaultRowContainerStyle}>
             <div className={defaultColumnContainerStyle}>
@@ -181,9 +181,12 @@ export default function ResourceMiniDisplay({
             <TargetResourceMiniDisplay resource={targetResource} />
             {cardTypeResourceRef && <ResourceRefMiniDisplay resourceRef={cardTypeResourceRef} />}
             {cardResourceRef && <ResourceRefMiniDisplay resourceRef={cardResourceRef} />}
-            {cardContentResourceRef && <ResourceRefMiniDisplay resourceRef={cardContentResourceRef} />}
+            {cardContentResourceRef && (
+              <ResourceRefMiniDisplay resourceRef={cardContentResourceRef} />
+            )}
           </div>
-        </div>)}
+        </div>
+      ))}
     </div>
   );
 }

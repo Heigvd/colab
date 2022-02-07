@@ -16,7 +16,13 @@ import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 import { DocumentEditorDisplay } from '../documents/DocumentEditorDisplay';
-import { lightIconButtonStyle, paddingAroundStyle, space_M, space_S, workInProgressStyle } from '../styling/style';
+import {
+  lightIconButtonStyle,
+  paddingAroundStyle,
+  space_M,
+  space_S,
+  workInProgressStyle,
+} from '../styling/style';
 import { ResourceAndRef } from './ResourceCommonType';
 
 export interface ResourceDisplayProps {
@@ -63,25 +69,24 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
           <h2>{resourceAndRef.targetResource.title || i18n.resource.untitled}</h2>
         </div>
       </Flex>
-      {
-        documents
-          .sort((a, b) => (a.index || 0) - (b.index || 0))
-          .map(document =>
-            <div className={workInProgressStyle}>
-              {entityIs(document, 'Document') ? (
-                resourceAndRef.isDirectResource ? (
-                  <DocumentEditorDisplay document={document} />
-                ) : (
-                  <>
-                    <div>!!! Not a direct resource : readonly </div>
-                    <DocumentEditorDisplay document={document} allowEdition={false} />
-                  </>
-                )
+      {documents
+        .sort((a, b) => (a.index || 0) - (b.index || 0))
+        .map(document => (
+          <div className={workInProgressStyle}>
+            {entityIs(document, 'Document') ? (
+              resourceAndRef.isDirectResource ? (
+                <DocumentEditorDisplay document={document} />
               ) : (
-                <InlineLoading />
-              )}
-            </div>
-          )}
+                <>
+                  <div>!!! Not a direct resource : readonly </div>
+                  <DocumentEditorDisplay document={document} allowEdition={false} />
+                </>
+              )
+            ) : (
+              <InlineLoading />
+            )}
+          </div>
+        ))}
       {/* TODO sandra work in progress */}
       {/* <DocumentCreatorButton
         creationContext={{ kind: CreationContextKind.Resource, resourceId: resourceAndRef.cardResourceRef.id }}

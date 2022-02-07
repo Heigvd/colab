@@ -5,15 +5,15 @@
  * Licensed under the MIT License
  */
 
-import { Document, entityIs, TextDataBlock } from 'colab-rest-client';
+import { Document, entityIs } from 'colab-rest-client';
 import { useAppSelector } from '../store/hooks';
 import { LoadingStatus } from '../store/store';
 
 export const useDeliverables = (
-  cardContentId: number | null | undefined
+  cardContentId: number | null | undefined,
 ): {
   documents: Document[];
-  status: LoadingStatus
+  status: LoadingStatus;
 } => {
   return useAppSelector(state => {
     if (cardContentId != null) {
@@ -30,7 +30,7 @@ export const useDeliverables = (
           return {
             documents: documentIds.flatMap(docId => {
               const doc = state.document.documents[docId];
-              return (doc && entityIs(doc, 'Document')) ? [doc] : [];
+              return doc && entityIs(doc, 'Document') ? [doc] : [];
             }),
             status: 'READY',
           };
@@ -43,7 +43,7 @@ export const useDeliverables = (
 };
 
 export const useDocumentsOfResource = (
-  resourceId: number | null | undefined
+  resourceId: number | null | undefined,
 ): {
   documents: Document[];
   status: LoadingStatus;
@@ -63,7 +63,7 @@ export const useDocumentsOfResource = (
           return {
             documents: documentIds.flatMap(docId => {
               const doc = state.document.documents[docId];
-              return (doc && entityIs(doc, 'Document')) ? [doc] : [];
+              return doc && entityIs(doc, 'Document') ? [doc] : [];
             }),
             status: 'READY',
           };
@@ -73,4 +73,4 @@ export const useDocumentsOfResource = (
 
     return { documents: [], status: 'NOT_INITIALIZED' };
   });
-}
+};

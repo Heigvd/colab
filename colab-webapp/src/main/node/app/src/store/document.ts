@@ -41,7 +41,7 @@ const updateDocument = (state: DocumentState, document: Document) => {
       const resourceId = document.owningResourceId;
       const stateForResource = state.byResource[resourceId];
       if (stateForResource) {
-        if (!(stateForResource.documentIds.includes(document.id))) {
+        if (!stateForResource.documentIds.includes(document.id)) {
           stateForResource.documentIds.push(document.id);
         }
       }
@@ -106,14 +106,14 @@ const documentsSlice = createSlice({
         const cardContentId = action.meta.arg;
         state.byCardContent[cardContentId] = {
           documentIds: action.payload.flatMap(doc => (doc.id ? [doc.id] : [])),
-          status: 'READY'
+          status: 'READY',
         };
 
         action.payload.forEach(doc => {
           if (doc && doc.id) {
             state.documents[doc.id] = doc;
           }
-        })
+        });
       })
       .addCase(API.getDocumentsOfResource.pending, (state, action) => {
         const resourceId = action.meta.arg;
@@ -123,14 +123,14 @@ const documentsSlice = createSlice({
         const resourceId = action.meta.arg;
         state.byResource[resourceId] = {
           documentIds: action.payload.flatMap(doc => (doc.id ? [doc.id] : [])),
-          status: 'READY'
-        }
+          status: 'READY',
+        };
 
         action.payload.forEach(doc => {
           if (doc && doc.id) {
             state.documents[doc.id] = doc;
           }
-        })
+        });
       })
       .addCase(API.closeCurrentProject.fulfilled, () => {
         return initialState;
