@@ -8,12 +8,11 @@
 import { css, CSSObject, cx } from '@emotion/css';
 import * as React from 'react';
 
-export interface FlexProps {
+type DivProps = React.HTMLAttributes<HTMLDivElement>;
+
+export type FlexProps = DivProps & {
   theRef?: React.Ref<HTMLDivElement>;
   direction?: 'row' | 'column';
-  className?: string;
-  title?: string;
-  onClick?: () => void;
   shrink?: CSSObject['flexShrink'];
   grow?: CSSObject['flexGrow'];
   basis?: CSSObject['flexBasis'];
@@ -41,25 +40,28 @@ export interface FlexProps {
     | 'first baseline'
     | 'last baseline';
   children: React.ReactNode;
-}
+};
 
-export default function Flex({
-  theRef,
-  children,
-  onClick,
-  overflow,
-  className,
-  title,
-  wrap,
-  shrink,
-  grow,
-  basis,
-  direction = 'row',
-  justify = 'normal',
-  align = 'flex-start',
-}: FlexProps): JSX.Element {
+export default function Flex(props: FlexProps): JSX.Element {
+  const {
+    theRef,
+    children,
+    onClick,
+    overflow,
+    className,
+    title,
+    wrap,
+    shrink,
+    grow,
+    basis,
+    direction = 'row',
+    justify = 'normal',
+    align = 'flex-start',
+    ...restProps
+  } = props;
   return (
     <div
+      {...restProps}
       ref={theRef}
       onClick={onClick}
       className={cx(

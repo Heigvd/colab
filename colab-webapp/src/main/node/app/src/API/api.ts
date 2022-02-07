@@ -975,3 +975,21 @@ export const getFile = createAsyncThunk('files/GetFile', async (id: number) => {
 export const deleteFile = createAsyncThunk('files/DeleteFile', async (id: number) => {
   return await restClient.DocumentFileRestEndPoint.deleteFile(id);
 });
+
+/////////////////////////////////////////////////////////////////////////////
+// External Data API
+/////////////////////////////////////////////////////////////////////////////
+
+export const getUrlMetadata = createAsyncThunk(
+  'exernalData/getUrlMetadata',
+  async (url: string) => {
+    return await restClient.ExternalDataRestEndpoint.getUrlMetadata(url);
+  },
+);
+
+export const refreshUrlMetadata = createAsyncThunk(
+  'exernalData/refreshUrlMetadata',
+  async (url: string) => {
+    return await restClient.ExternalDataRestEndpoint.getRefreshedUrlMetadata(url);
+  },
+);

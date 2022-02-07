@@ -25,9 +25,8 @@ import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.io.BufferedInputStream;
 import java.nio.charset.StandardCharsets;
 import javax.ws.rs.core.MediaType;
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.hc.core5.net.URIBuilder;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 
 /**
@@ -166,6 +165,21 @@ public class FileManager {
     }
 
     /**
+     * Encore path as URI component
+     *
+     * @param path path to encode
+     *
+     * @return URI encoded path
+     */
+    public String encodePath(final String path) {
+        if (path == null || path.length() == 0) {
+            return "";
+        } else {
+            return new URIBuilder().setPath(path).toString();
+        }
+    }
+
+    /**
      * Builds a well formatted response with a stream to the content and correct content headers
      *
      * @param documentId document id
@@ -191,12 +205,7 @@ public class FileManager {
         var fileName = hostedDoc.getFileName();
         String safeFileName = "";
         if (fileName != null) {
-            try {
-                safeFileName = URIUtil.encodePath(fileName);
-            } catch (URIException ex) {
-                logger.warn("Issue with filename '{}' with id {}", hostedDoc.getFileName(), doc.getId());
-                safeFileName = fileName;// best effort
-            }
+            safeFileName = this.encodePath(fileName);
         }
 
         MediaType mediaType = MediaType.valueOf(hostedDoc.getMimeType());

@@ -16,6 +16,7 @@ import cardTypeReducer from './cardtype';
 import changeReducer from './change';
 import configReducer from './configuration';
 import documentReducer from './document';
+import externalDataReducer from './externalData';
 import notifReducer from './notification';
 import projectReducer from './project';
 import resourceReducer from './resource';
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
   config: configReducer,
   change: changeReducer,
   document: documentReducer,
+  externalData: externalDataReducer,
   notifications: notifReducer,
   projects: projectReducer,
   resources: resourceReducer,

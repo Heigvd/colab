@@ -184,6 +184,19 @@
             <artifactId>metrics-core</artifactId>
         </dependency>
 
+        <!-- Apache HTTP client -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+        </dependency>
+
+        <!-- To parse html document (see ExternalDataManager) -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+        </dependency>
+
+
         <!--*****************************************************************-->
         <!-- TEST DEPENDENCIES -->
         <!-- note : on April 8th, there is no test, so no need for test dependencies -->
@@ -246,10 +259,6 @@
             <artifactId>arquillian-persistence-dbunit</artifactId>
             <scope>test</scope>
         </dependency>-->
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-        </dependency>
     </dependencies>
 
 
