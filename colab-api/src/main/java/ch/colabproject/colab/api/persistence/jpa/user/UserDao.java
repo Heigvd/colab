@@ -10,6 +10,8 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
 import ch.colabproject.colab.api.model.user.LocalAccount;
 import ch.colabproject.colab.api.model.user.User;
+import ch.colabproject.colab.api.model.user.HttpSession;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import javax.ejb.LocalBean;
@@ -18,6 +20,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Users persistence
@@ -27,6 +31,9 @@ import javax.persistence.TypedQuery;
 @Stateless
 @LocalBean
 public class UserDao {
+
+    /** logger */
+    private static final Logger logger = LoggerFactory.getLogger(UserDao.class);
 
     /**
      * Access to the persistence unit
@@ -167,4 +174,58 @@ public class UserDao {
         managedUser.merge(user);
     }
 
+    /**
+     * Find a persisted HttpSession by id
+     *
+     * @param id id
+     *
+     * @return the session or null
+     */
+    public HttpSession getHttpSessionById(Long id) {
+        try {
+            return this.em.find(HttpSession.class, id);
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
+    }
+
+    /**
+     * Persist HttpSession to database
+     *
+     * @param session session to persist
+     *
+     * @return persisted and managed session
+     */
+    public HttpSession persistHttpSession(HttpSession session) {
+        em.persist(session);
+        return session;
+    }
+
+    /**
+     * Delete an http session
+     *
+     * @param session session to delete
+     */
+    public void deleteHttpSession(HttpSession session) {
+        Account account = session.getAccount();
+        if (account != null){
+            account.getHttpSessions().remove(session);
+        }
+        em.remove(session);
+    }
+
+    /**
+     * Get list of http session inactive for at least 2 days
+     *
+     * @return list of old httpSessions
+     */
+    public List<HttpSession> getExpiredHttpSessions() {
+        TypedQuery<HttpSession> query = em.createNamedQuery("HttpSession.getOlderThan", HttpSession.class);
+        //var time = OffsetDateTime.now().minusMinutes(10);
+        var time = OffsetDateTime.now().minusWeeks(1);
+        query.setParameter("time", time);
+        List<HttpSession> resultList = query.getResultList();
+        logger.trace("Get expired HttpSession (< {}) => {}", time, resultList);
+        return resultList;
+    }
 }

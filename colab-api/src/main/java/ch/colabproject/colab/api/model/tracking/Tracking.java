@@ -7,8 +7,10 @@
 package ch.colabproject.colab.api.model.tracking;
 
 import ch.colabproject.colab.generator.model.interfaces.WithJsonDiscriminator;
+import ch.colabproject.colab.generator.model.tools.DateSerDe;
 import java.time.OffsetDateTime;
-import javax.json.bind.annotation.JsonbDateFormat;
+import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.json.bind.annotation.JsonbTypeSerializer;
 import javax.persistence.Embeddable;
 
 /**
@@ -24,7 +26,8 @@ public class Tracking implements WithJsonDiscriminator {
     /**
      * Creation date
      */
-    @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
+    @JsonbTypeDeserializer(DateSerDe.class)
+    @JsonbTypeSerializer(DateSerDe.class)
     private OffsetDateTime creationDate;
 
     /**
@@ -35,7 +38,8 @@ public class Tracking implements WithJsonDiscriminator {
     /**
      * Modification date
      */
-    @JsonbDateFormat(value = JsonbDateFormat.TIME_IN_MILLIS)
+    @JsonbTypeDeserializer(DateSerDe.class)
+    @JsonbTypeSerializer(DateSerDe.class)
     private OffsetDateTime modificationDate;
 
     /**

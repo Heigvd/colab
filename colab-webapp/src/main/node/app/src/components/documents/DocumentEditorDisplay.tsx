@@ -8,8 +8,8 @@
 import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import { BlockDocumentEditor } from './blockdoc/BlockDocumentEditor';
-import { ExternalLinkEditor } from './ExternalLinkEditor';
 import { DocumentFileEditor } from './DocumentFileEditor';
+import { ExternalLinkEditor } from './ExternalLinkEditor';
 
 export interface DocumentEditorDisplayProps {
   document: Document;

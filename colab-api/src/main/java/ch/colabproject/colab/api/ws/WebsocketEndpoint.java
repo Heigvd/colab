@@ -6,6 +6,7 @@
  */
 package ch.colabproject.colab.api.ws;
 
+import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.WebsocketManager;
 import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
@@ -102,7 +103,7 @@ public class WebsocketEndpoint {
         logger.info("WebSocket opened: {}", session.getId());
         sessions.add(session);
         FlakeIdGenerator idGenerator = hzInstance.getFlakeIdGenerator("WS_SESSION_ID_GENERATOR");
-        String sessionId = "ws-" + idGenerator.newId();
+        String sessionId = "ws-" + Helper.generateHexSalt(32) + idGenerator.newId();
         sessionToIds.put(session, sessionId);
         idsToSessions.put(sessionId, session);
         session.getBasicRemote().sendObject(new WsSessionIdentifier(sessionId));

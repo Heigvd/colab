@@ -5,7 +5,8 @@
  * Licensed under the MIT License
  */
 
-import { getAccountConfig } from '../API/api';
+import { VersionDetails } from 'colab-rest-client';
+import { getAccountConfig, getVersionDetails } from '../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../store/hooks';
 import { LoadingStatus } from '../store/store';
 
@@ -29,5 +30,17 @@ export const useAccountConfig = (): AConfig => {
       status: state.config.accountConfigState,
       showCreateAccountButton: state.config.accountConfig.displayCreateLocalAccountButton,
     };
+  }, shallowEqual);
+};
+
+export const useVersionDetails = (): VersionDetails | 'LOADING' => {
+  const dispatch = useAppDispatch();
+  return useAppSelector(state => {
+    if (state.admin.versionStatus === 'NOT_INITIALIZED') {
+      dispatch(getVersionDetails());
+      return 'LOADING';
+    } else {
+      return state.admin.version;
+    }
   }, shallowEqual);
 };

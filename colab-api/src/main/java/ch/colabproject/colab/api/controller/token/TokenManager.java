@@ -245,7 +245,7 @@ public class TokenManager {
             ResetLocalAccountPasswordToken token = this.getOrCreateResetToken(account);
             sendTokenByEmail(token, account.getEmail());
         } catch (MessagingException ex) {
-            logger.error("Failed to send pssword reset email", ex);
+            logger.error("Failed to send password reset email", ex);
             if (failsOnError) {
                 throw HttpErrorMessage.smtpError();
             }
