@@ -38,7 +38,7 @@ export function BlockDocumentEditor({ doc, allowEdition }: BlockDocProps): JSX.E
   }, [doc, blockIds, dispatch]);
 
   return (
-    <Flex direction="column" align='stretch'>
+    <Flex direction="column" align="stretch">
       {/*<AutoSaveInput
         placeholder={i18n.document.untitled}
         value={doc.title || ''}

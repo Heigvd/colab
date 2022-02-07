@@ -11,12 +11,7 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
-import {
-  iconButton,
-  linkStyle,
-  normalThemeMode,
-  space_S,
-} from '../styling/style';
+import { iconButton, linkStyle, normalThemeMode, space_S } from '../styling/style';
 import Flex from './Flex';
 
 export const itemStyle = css({

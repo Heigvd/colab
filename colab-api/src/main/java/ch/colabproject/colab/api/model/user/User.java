@@ -134,7 +134,7 @@ public class User implements ColabEntity, WithWebsocketChannels {
     /**
      * System-wide unique name. Alphanumeric only
      */
-    @Pattern(regexp = "[a-zA-Z0-9]+")
+    @Pattern(regexp = "[a-zA-Z0-9_]+")
     @NotNull
     private String username;
 

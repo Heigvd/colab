@@ -35,7 +35,7 @@ export function BlockEditorWrapper({ blockId, allowEdition }: BlockEditorProps):
             />
           );
         default:
-          return (<span>unkwnon MIME type: {block.mimeType}</span>);
+          return <span>unkwnon MIME type: {block.mimeType}</span>;
       }
     } else {
       return (

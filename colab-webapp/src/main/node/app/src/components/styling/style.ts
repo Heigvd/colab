@@ -73,7 +73,7 @@ export const normalThemeMode = css({
 
   backgroundColor: 'var(--bgColor)',
   color: 'var(--fgColor)',
-  'p': {
+  p: {
     margin: '5px 0',
   },
   'h1, h2, h3, h4': {
@@ -88,7 +88,6 @@ export const normalThemeMode = css({
   'h3, h4': {
     fontSize: '1rem',
   },
-
 });
 
 export const invertedThemeMode = cx(
@@ -125,7 +124,7 @@ export const space_S = '5px';
 export const space_M = '15px';
 export const space_L = '1.5rem';
 export const flex = css({ display: 'flex' });
-export const textSmall = css({ fontSize: '0.85rem'});
+export const textSmall = css({ fontSize: '0.85rem' });
 
 type blockSide = 1 | 2 | 3 | 4;
 const blockMargin = {
@@ -229,8 +228,8 @@ export const lightLinkStyle = cx(
   css({
     color: 'var(--darkGray)',
     textDecoration: 'none',
-  })
-)
+  }),
+);
 
 export const iconStyle = css({
   paddingLeft: '5px',
@@ -417,7 +416,7 @@ export const inputStyle = css({
   borderRadius: '6px',
   boxSizing: 'border-box',
   transition: '.8s',
-  padding: '0 '+ space_M,
+  padding: '0 ' + space_M,
   lineHeight: '2.5em',
   fontFamily: 'inherit',
 });

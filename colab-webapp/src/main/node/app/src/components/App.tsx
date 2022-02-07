@@ -67,8 +67,21 @@ function App(): JSX.Element {
     [setTipsConfig],
   );
 
+  /**
+   * prevent application quit on file drop
+   */
+  const cancelDroppingFiles = React.useCallback((e: React.DragEvent) => {
+    if (e.dataTransfer.items.length > 0) {
+      e.preventDefault();
+    }
+  }, []);
+
   return (
-    <div className={cx(lightTheme, normalThemeMode)}>
+    <div
+      className={cx(lightTheme, normalThemeMode)}
+      onDrop={cancelDroppingFiles}
+      onDragOver={cancelDroppingFiles}
+    >
       <React.StrictMode>
         <ErrorBoundary>
           <Suspense fallback={<Loading />}>

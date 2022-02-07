@@ -97,11 +97,17 @@ export default function SignInForm({ redirectTo }: Props): JSX.Element {
         buttonClassName={css({ margin: space_S + ' auto' })}
         className={css({ marginBottom: space_M })}
       >
-        <InlineLink to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })} className={cx(lightLinkStyle, css({margin: space_M}))}>
+        <InlineLink
+          to={buildLinkWithQueryParam('/ForgotPassword', { redirectTo: redirectTo })}
+          className={cx(lightLinkStyle, css({ margin: space_M }))}
+        >
           {i18n.forgottenPassword}
         </InlineLink>
         {accountConfig.showCreateAccountButton ? (
-          <InlineLink to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })} className={cx(lightLinkStyle)} >
+          <InlineLink
+            to={buildLinkWithQueryParam('/SignUp', { redirectTo: redirectTo })}
+            className={cx(lightLinkStyle)}
+          >
             <FontAwesomeIcon icon={faPlus} /> {i18n.createAnAccount}
           </InlineLink>
         ) : null}

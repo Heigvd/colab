@@ -17,7 +17,12 @@ export interface BlockDocProps {
   doc: BlockDocument;
 }
 
-const addButtonStyle = css({ marginTop: '20px', display: 'block', fontSize: '.9em', alignSelf: 'flex-start' });
+const addButtonStyle = css({
+  marginTop: '20px',
+  display: 'block',
+  fontSize: '.9em',
+  alignSelf: 'flex-start',
+});
 
 export function CreateBlockButton({ doc }: BlockDocProps): JSX.Element {
   const dispatch = useAppDispatch();
@@ -32,7 +37,7 @@ export function CreateBlockButton({ doc }: BlockDocProps): JSX.Element {
   }, [doc, dispatch]);
 
   return (
-    <Button className={addButtonStyle} icon={faPlus}  onClick={createBlock} invertedButton>
+    <Button className={addButtonStyle} icon={faPlus} onClick={createBlock} invertedButton>
       Add new block
     </Button>
   );

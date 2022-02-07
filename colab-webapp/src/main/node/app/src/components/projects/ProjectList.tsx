@@ -136,9 +136,14 @@ const ProjectDisplay = ({ project }: Props) => {
           padding: space_M,
         })}
       >
-          <Button title="Edit project" icon={faEdit} onClick={()=>navigate(`/editor/${project.id}`)} className={cx(css({margin: 'auto'}), invertedButtonStyle)}>
-            Edit project
-          </Button>
+        <Button
+          title="Edit project"
+          icon={faEdit}
+          onClick={() => navigate(`/editor/${project.id}`)}
+          className={cx(css({ margin: 'auto' }), invertedButtonStyle)}
+        >
+          Edit project
+        </Button>
       </div>
     </div>
   );
@@ -166,7 +171,7 @@ function ProjectList({ projects, status, reload }: ProjectListProps) {
     return <InlineLoading />;
   } else {
     return (
-      <div className={css({padding: '4vw'})}>
+      <div className={css({ padding: '4vw' })}>
         <div className={projectListStyle}>
           {projects
             .sort((a, b) => (a.id || 0) - (b.id || 0))

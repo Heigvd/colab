@@ -151,7 +151,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
     @Test
     public void testGrantAdminRight() {
         TestUser myUser = this.signup(
-            "GoulashSensei",
+            "Goulash_Sensei",
             "goulashsensei@test.local",
             "SoSecuredPassword"
         );

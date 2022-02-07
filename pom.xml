@@ -149,17 +149,17 @@
             </dependency>
 
             <dependency>
-                 <groupId>org.apache.jackrabbit</groupId>
-                 <artifactId>oak-store-document</artifactId>
-                 <version>1.40.0</version>
-                 <type>jar</type>
-                 <exclusions>
-                     <exclusion>
-                         <groupId>com.google.guava</groupId>
-                         <artifactId>guava</artifactId>
-                     </exclusion>
-                 </exclusions>
-             </dependency>
+                <groupId>org.apache.jackrabbit</groupId>
+                <artifactId>oak-store-document</artifactId>
+                <version>1.40.0</version>
+                <type>jar</type>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
             <dependency>
                 <groupId>org.apache.jackrabbit</groupId>
@@ -190,12 +190,26 @@
                 <artifactId>mongodb-driver-legacy</artifactId>
                 <version>3.12.10</version>
             </dependency>
+
+
+            <!-- Apache HTTP client -->
             <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>3.1</version>
+                <groupId>org.apache.httpcomponents.client5</groupId>
+                <artifactId>httpclient5</artifactId>
+                <version>5.1.2</version>
                 <type>jar</type>
             </dependency>
+
+
+            <!-- To parse html document (see ExternalDataManager) -->
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>1.14.2</version>
+                <type>jar</type>
+            </dependency>
+
+
             <dependency>
                 <groupId>io.dropwizard.metrics</groupId>
                 <artifactId>metrics-core</artifactId>
