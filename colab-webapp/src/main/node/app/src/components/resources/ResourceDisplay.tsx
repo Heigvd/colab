@@ -15,6 +15,7 @@ import { useAppDispatch } from '../../store/hooks';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
+import DocumentCreatorButton, { CreationContextKind } from '../documents/DocumentCreatorButton';
 import { DocumentEditorDisplay } from '../documents/DocumentEditorDisplay';
 import {
   lightIconButtonStyle,
@@ -37,6 +38,8 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
   const targetResourceId = resourceAndRef.targetResource.id;
   const { documents, status } = useDocumentsOfResource(targetResourceId);
 
+  const allowEdition = resourceAndRef.isDirectResource;
+
   React.useEffect(() => {
     if (status == 'NOT_INITIALIZED' && targetResourceId != null) {
       dispatch(API.getDocumentsOfResource(targetResourceId));
@@ -47,8 +50,6 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
     return <InlineLoading />;
   } else if (status === 'LOADING') {
     return <InlineLoading />;
-  } else if (documents == null || documents.length < 1) {
-    return <div>no document at disposal</div>;
   }
 
   return (
@@ -72,9 +73,9 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
       {documents
         .sort((a, b) => (a.index || 0) - (b.index || 0))
         .map(document => (
-          <div className={workInProgressStyle}>
+          <div key={document.id} className={workInProgressStyle}>
             {entityIs(document, 'Document') ? (
-              resourceAndRef.isDirectResource ? (
+              allowEdition ? (
                 <DocumentEditorDisplay document={document} />
               ) : (
                 <>
@@ -87,16 +88,34 @@ export function ResourceDisplay({ resourceAndRef, onClose }: ResourceDisplayProp
             )}
           </div>
         ))}
-      {/* TODO sandra work in progress */}
-      {/* <DocumentCreatorButton
-        creationContext={{ kind: CreationContextKind.Resource, resourceId: resourceAndRef.cardResourceRef.id }}
-        docType='TextDataBlock' title='add a block' />
-      <DocumentCreatorButton
-        creationContext={{ kind: CreationContextKind.Resource, resourceId: resourceAndRef.cardResourceRef.id }}
-        docType='DocumentFile' title='add a file' />
-      <DocumentCreatorButton
-        creationContext={{ kind: CreationContextKind.Resource, resourceId: resourceAndRef.cardResourceRef.id }}
-        docType='ExternalLink' title='add a link' /> */}
+      {allowEdition && (
+        <>
+          <DocumentCreatorButton
+            creationContext={{
+              kind: CreationContextKind.Resource,
+              resourceId: targetResourceId!,
+            }}
+            docType="TextDataBlock"
+            title="add a block"
+          />
+          <DocumentCreatorButton
+            creationContext={{
+              kind: CreationContextKind.Resource,
+              resourceId: targetResourceId!,
+            }}
+            docType="DocumentFile"
+            title="add a file"
+          />
+          <DocumentCreatorButton
+            creationContext={{
+              kind: CreationContextKind.Resource,
+              resourceId: targetResourceId!,
+            }}
+            docType="ExternalLink"
+            title="add a link"
+          />
+        </>
+      )}
     </Flex>
   );
 }

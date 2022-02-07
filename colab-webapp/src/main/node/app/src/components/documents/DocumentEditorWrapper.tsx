@@ -37,8 +37,6 @@ export function DocumentEditorWrapper({
     return <InlineLoading />;
   } else if (status === 'LOADING') {
     return <InlineLoading />;
-  } else if (documents == null || documents.length < 1) {
-    return <div>no document at disposal</div>;
   }
 
   return (

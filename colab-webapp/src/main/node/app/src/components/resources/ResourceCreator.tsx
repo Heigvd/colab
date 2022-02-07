@@ -32,10 +32,7 @@ export type ResourceCreatorProps = {
   className?: string;
 };
 
-const defaultDocType = 'TextDataBlock';
-
 interface ResourceType {
-  docType: 'TextDataBlock' | 'ExternalLink' | 'DocumentFile';
   title: string;
   teaser: string;
   category: string;
@@ -43,7 +40,6 @@ interface ResourceType {
 }
 
 const defaultResource: ResourceType = {
-  docType: defaultDocType,
   title: '',
   teaser: '',
   category: '',
@@ -84,18 +80,6 @@ export default function ResourceCreator({
       options: categories.map(c => ({ label: c, value: c })),
       canCreateOption: true,
       placeholder: 'Select or create a category',
-      isMandatory: true,
-    }),
-    createSelectField({
-      key: 'docType',
-      type: 'select',
-      label: 'Resource type',
-      isMulti: false,
-      options: [
-        { label: 'Document', value: 'TextDataBlock' },
-        { label: 'Link', value: 'ExternalLink' },
-        { label: 'File', value: 'DocumentFile' },
-      ],
       isMandatory: true,
     }),
   ];
@@ -152,28 +136,7 @@ export default function ResourceCreator({
                 abstractCardTypeId: cardTypeId,
                 cardId: cardId,
                 cardContentId: cardContentId,
-                documents:
-                  e.docType === 'DocumentFile'
-                    ? [
-                        {
-                          '@class': e.docType,
-                          fileSize: 0,
-                          mimeType: 'application/octet-stream',
-                        },
-                      ]
-                    : e.docType === 'TextDataBlock'
-                    ? [
-                        {
-                          '@class': 'TextDataBlock',
-                          mimeType: 'text/markdown',
-                          revision: '0',
-                        },
-                      ]
-                    : [
-                        {
-                          '@class': e.docType,
-                        },
-                      ],
+                documents: [],
                 title: e.title,
                 teaser: {
                   '@class': 'TextDataBlock',
