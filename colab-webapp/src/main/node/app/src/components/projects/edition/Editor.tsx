@@ -10,6 +10,7 @@ import {
   faClone,
   faEllipsisV,
   faEye,
+  faGhost,
   faNetworkWired,
   faProjectDiagram,
 } from '@fortawesome/free-solid-svg-icons';
@@ -38,6 +39,7 @@ import AutoSaveInput from '../../common/AutoSaveInput';
 import Clickable from '../../common/Clickable';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
+import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
 import { invertedThemeMode, space_L, space_M } from '../../styling/style';
 import Team from '../Team';
@@ -45,6 +47,24 @@ import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
 
 export const depthMax = 2;
+const descriptionStyle = {
+  backgroundColor: 'var(--fgColor)',
+  color: 'var(--bgColor)',
+  gap: space_L,
+  transition: 'all 1s ease',
+  overflow: 'hidden',
+  fontSize: '0.9em',
+}
+const openDetails = css({
+  ...descriptionStyle,
+  maxHeight: '200px',
+  padding: space_L,
+});
+const closeDetails = css({
+  ...descriptionStyle,
+  maxHeight: '0px',
+  padding: '0 ' + space_L,
+});
 const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -194,6 +214,7 @@ export default function Editor(): JSX.Element {
   const navigate = useNavigate();
 
   const root = useProjectRootCard(project);
+  const [showProjectDetails, setShowProjectDetails] = React.useState(false);
 
   const rootContent = useAppSelector(state => {
     if (entityIs(root, 'Card') && root.id != null) {
@@ -246,6 +267,7 @@ export default function Editor(): JSX.Element {
             }),
           )}
         >
+          <IconButton icon={faGhost} title="Show project details" onClick={()=>setShowProjectDetails(showProjectDetails => !showProjectDetails)}/>
           <div className={css({ gridColumn: '2/3', placeSelf: 'center', display: 'flex' })}>
             <div className={css({ marginRight: '30px' })}>
               <AutoSaveInput
@@ -303,6 +325,17 @@ export default function Editor(): JSX.Element {
             buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
           />
         </div>
+        <Flex className={showProjectDetails ? openDetails : closeDetails}>
+            <div>
+              <h3>{project.name}</h3>
+              {project.description}
+            </div>
+            <div>
+              <p>Created by: {project.trackingData?.createdBy}</p>
+              <p>Created date: {project.trackingData?.creationDate}</p>
+              {/* more infos? Add project team names */}
+            </div>
+          </Flex>
         <div
           className={css({
             display: 'flex',

@@ -242,7 +242,7 @@ export const iconButton = cx(
   css({
     cursor: 'pointer',
     ':hover': {
-      color: 'var(--hoverFgColor)',
+      color: 'var(--darkGray)',
     },
   }),
 );
