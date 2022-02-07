@@ -29,6 +29,7 @@ import {
   noOutlineStyle,
   space_M,
   space_S,
+  textSmall,
 } from '../styling/style';
 import CardTypeCreator from './cardtypes/CardTypeCreator';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
@@ -70,6 +71,7 @@ export default function CardCreator({
 }: CardCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
   const [selectedType, setSelectedType] = React.useState<number | undefined>();
+  const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
   const { project } = useProjectBeingEdited();
   const cardTypes = useProjectCardTypes();
 
@@ -111,6 +113,16 @@ export default function CardCreator({
     return types.filter(ty => ty.tags.find(tag => eTags.includes(tag)));
   };
 
+  const toggleAllTags = (val: boolean) => {
+    setSelectAllTags(val);
+    setTagState(
+      projectTags.reduce<Record<string, boolean>>((acc, cur) => {
+        acc[cur] = val;
+        return acc;
+      }, {}),
+    );
+  };
+
   const filtered = {
     own: filter(cardTypes.own),
     inherited: filter(cardTypes.inherited),
@@ -147,37 +159,50 @@ export default function CardCreator({
                   marginBottom: space_S,
                   borderBottom: '1px solid var(--lightGray)',
                 })}
-                wrap="wrap"
+                direction="column"
+                align="stretch"
               >
-                {allTags.map(tag => {
-                  return (
-                    <div
-                      className={cx(categoryTabStyle, {
-                        [checkedCategoryTabStyle]: tagState && tagState[tag],
-                      })}
-                      key={tag}
-                    >
-                      <Checkbox
-                        key={tag}
-                        label={tag}
-                        value={tagState && tagState[tag]}
-                        onChange={t =>
-                          setTagState(state => {
-                            return { ...state, [tag]: t };
-                          })
-                        }
-                        className={cx(noOutlineStyle, {
+                <Flex grow={1} align="flex-start" justify="space-between">
+                  <Tips tipsType="TODO">
+                    To create a card, one should select a type among all available ones in a
+                    convinient way. Project "Card Types" tab display all types too: such duplication
+                    should be solved.
+                  </Tips>
+                  <Checkbox
+                    key={'toggle all'}
+                    label={selectAllTags ? 'Deselect all' : 'Select all'}
+                    value={selectAllTags}
+                    onChange={t => toggleAllTags(t)}
+                    className={noOutlineStyle}
+                    containerClassName={css({color: 'var(--darkGray)'})}
+                  />
+                </Flex>
+                <Flex wrap="wrap">
+                  {allTags.map(tag => {
+                    return (
+                      <div
+                        className={cx(categoryTabStyle, {
                           [checkedCategoryTabStyle]: tagState && tagState[tag],
                         })}
-                      />
-                    </div>
-                  );
-                })}
-                <Tips tipsType="TODO">
-                  To create a card, one should select a type among all available ones in a
-                  convinient way. Project "Card Types" tab display all types too: such duplication
-                  should be solved.
-                </Tips>
+                        key={tag}
+                      >
+                        <Checkbox
+                          key={tag}
+                          label={tag}
+                          value={tagState && tagState[tag]}
+                          onChange={t =>
+                            setTagState(state => {
+                              return { ...state, [tag]: t };
+                            })
+                          }
+                          className={cx(noOutlineStyle, {
+                            [checkedCategoryTabStyle]: tagState && tagState[tag],
+                          })}
+                        />
+                      </div>
+                    );
+                  })}
+                </Flex>
               </Flex>
               <Flex direction="column">
                 {filtered.inherited != null && filtered.inherited.length > 0 && (
