@@ -242,77 +242,83 @@ import org.slf4j.LoggerFactory;
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void writeActivityDatesToDatabase() {
 <span class="nc" id="L244">        logger.trace(&quot;Write Activity Date to DB&quot;);</span>
-<span class="nc" id="L245">        requestManager.sudo(() -&gt; {</span>
-            // prevent updating tracking data (updated by and at)
-<span class="nc" id="L247">            requestManager.setDoNotTrackChange(true);</span>
-<span class="nc" id="L248">            IMap&lt;Long, OffsetDateTime&gt; userActivityCache = getUserActivityCache();</span>
-<span class="nc" id="L249">            Iterator&lt;Map.Entry&lt;Long, OffsetDateTime&gt;&gt; iterator = userActivityCache.iterator();</span>
-<span class="nc bnc" id="L250" title="All 2 branches missed.">            while (iterator.hasNext()) {</span>
-<span class="nc" id="L251">                Map.Entry&lt;Long, OffsetDateTime&gt; next = iterator.next();</span>
-<span class="nc" id="L252">                iterator.remove();</span>
-<span class="nc bnc" id="L253" title="All 2 branches missed.">                if (next != null) {</span>
-<span class="nc" id="L254">                    Long userId = next.getKey();</span>
-<span class="nc bnc" id="L255" title="All 2 branches missed.">                    if (userId != null) {</span>
-<span class="nc" id="L256">                        User user = userDao.findUser(userId);</span>
-<span class="nc" id="L257">                        OffsetDateTime date = next.getValue();</span>
-<span class="nc bnc" id="L258" title="All 2 branches missed.">                        if (user != null) {</span>
-<span class="nc" id="L259">                            logger.trace(&quot;Update User LastSeenAt: {}&quot;, date);</span>
-<span class="nc" id="L260">                            user.setLastSeenAt(date);</span>
+<span class="nc" id="L245">        FencedLock lock = hzInstance.getCPSubsystem().getLock(&quot;CleanExpiredSession&quot;);</span>
+<span class="nc bnc" id="L246" title="All 2 branches missed.">        if (lock.tryLock()) {</span>
+            try {
+<span class="nc" id="L248">                requestManager.sudo(() -&gt; {</span>
+                    // prevent updating tracking data (updated by and at)
+<span class="nc" id="L250">                    requestManager.setDoNotTrackChange(true);</span>
+<span class="nc" id="L251">                    IMap&lt;Long, OffsetDateTime&gt; userActivityCache = getUserActivityCache();</span>
+<span class="nc" id="L252">                    Iterator&lt;Map.Entry&lt;Long, OffsetDateTime&gt;&gt; iterator = userActivityCache.iterator();</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">                    while (iterator.hasNext()) {</span>
+<span class="nc" id="L254">                        Map.Entry&lt;Long, OffsetDateTime&gt; next = iterator.next();</span>
+<span class="nc" id="L255">                        iterator.remove();</span>
+<span class="nc bnc" id="L256" title="All 2 branches missed.">                        if (next != null) {</span>
+<span class="nc" id="L257">                            Long userId = next.getKey();</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">                            if (userId != null) {</span>
+<span class="nc" id="L259">                                User user = userDao.findUser(userId);</span>
+<span class="nc" id="L260">                                OffsetDateTime date = next.getValue();</span>
+<span class="nc bnc" id="L261" title="All 2 branches missed.">                                if (user != null) {</span>
+<span class="nc" id="L262">                                    logger.trace(&quot;Update User LastSeenAt: {}&quot;, date);</span>
+<span class="nc" id="L263">                                    user.setLastSeenAt(date);</span>
+                                }
+                            }
                         }
-                    }
-                }
-<span class="nc" id="L264">            }</span>
+<span class="nc" id="L267">                    }</span>
 
-<span class="nc" id="L266">            IMap&lt;Long, OffsetDateTime&gt; sessionActivityCache = getHttpSessionActivityCache();</span>
-<span class="nc" id="L267">            iterator = sessionActivityCache.iterator();</span>
-<span class="nc bnc" id="L268" title="All 2 branches missed.">            while (iterator.hasNext()) {</span>
-<span class="nc" id="L269">                Map.Entry&lt;Long, OffsetDateTime&gt; next = iterator.next();</span>
-<span class="nc" id="L270">                iterator.remove();</span>
-<span class="nc bnc" id="L271" title="All 2 branches missed.">                if (next != null) {</span>
-<span class="nc" id="L272">                    Long id = next.getKey();</span>
-<span class="nc bnc" id="L273" title="All 2 branches missed.">                    if (id != null) {</span>
-<span class="nc" id="L274">                        HttpSession session = userDao.getHttpSessionById(id);</span>
-<span class="nc bnc" id="L275" title="All 2 branches missed.">                        if (session != null) {</span>
-<span class="nc" id="L276">                            OffsetDateTime date = next.getValue();</span>
-<span class="nc" id="L277">                            logger.trace(&quot;Update HTTP session LastSeen: {}&quot;, date);</span>
-<span class="nc" id="L278">                            session.setLastSeen(date);</span>
+<span class="nc" id="L269">                    IMap&lt;Long, OffsetDateTime&gt; sessionActivityCache = getHttpSessionActivityCache();</span>
+<span class="nc" id="L270">                    iterator = sessionActivityCache.iterator();</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">                    while (iterator.hasNext()) {</span>
+<span class="nc" id="L272">                        Map.Entry&lt;Long, OffsetDateTime&gt; next = iterator.next();</span>
+<span class="nc" id="L273">                        iterator.remove();</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">                        if (next != null) {</span>
+<span class="nc" id="L275">                            Long id = next.getKey();</span>
+<span class="nc bnc" id="L276" title="All 2 branches missed.">                            if (id != null) {</span>
+<span class="nc" id="L277">                                HttpSession session = userDao.getHttpSessionById(id);</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">                                if (session != null) {</span>
+<span class="nc" id="L279">                                    OffsetDateTime date = next.getValue();</span>
+<span class="nc" id="L280">                                    logger.trace(&quot;Update HTTP session LastSeen: {}&quot;, date);</span>
+<span class="nc" id="L281">                                    session.setLastSeen(date);</span>
+                                }
+                            }
                         }
-                    }
-                }
-<span class="nc" id="L282">            }</span>
-
-<span class="nc" id="L284">        });</span>
-<span class="nc" id="L285">    }</span>
+<span class="nc" id="L285">                    }</span>
+<span class="nc" id="L286">                });</span>
+            } finally {
+<span class="nc" id="L288">                lock.unlock();</span>
+            }
+        }
+<span class="nc" id="L291">    }</span>
 
     /**
      * Clean database. Remove expired HttpSession.
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void clearExpiredSessions() {
-<span class="nc" id="L292">        logger.trace(&quot;Clear expired HTTP session&quot;);</span>
-<span class="nc" id="L293">        requestManager.sudo(() -&gt; {</span>
-<span class="nc" id="L294">            FencedLock lock = hzInstance.getCPSubsystem().getLock(&quot;CleanExpiredSession&quot;);</span>
-<span class="nc bnc" id="L295" title="All 2 branches missed.">            if (lock.tryLock()) {</span>
+<span class="nc" id="L298">        logger.trace(&quot;Clear expired HTTP session&quot;);</span>
+<span class="nc" id="L299">        requestManager.sudo(() -&gt; {</span>
+<span class="nc" id="L300">            FencedLock lock = hzInstance.getCPSubsystem().getLock(&quot;CleanExpiredSession&quot;);</span>
+<span class="nc bnc" id="L301" title="All 2 branches missed.">            if (lock.tryLock()) {</span>
                 try {
-<span class="nc" id="L297">                    logger.trace(&quot;Got the lock, let's clear&quot;);</span>
-<span class="nc" id="L298">                    IMap&lt;Long, OffsetDateTime&gt; cache = getHttpSessionActivityCache();</span>
-<span class="nc" id="L299">                    List&lt;HttpSession&gt; list = userDao.getExpiredHttpSessions();</span>
-<span class="nc" id="L300">                    logger.trace(&quot;List of expired session: {}&quot;, list);</span>
-<span class="nc bnc" id="L301" title="All 2 branches missed.">                    for (HttpSession session : list) {</span>
-<span class="nc bnc" id="L302" title="All 2 branches missed.">                        if (!cache.containsKey(session.getId())) {</span>
-<span class="nc" id="L303">                            logger.trace(&quot;Delete the session {}&quot;, session);</span>
-<span class="nc" id="L304">                            userDao.deleteHttpSession(session);</span>
+<span class="nc" id="L303">                    logger.trace(&quot;Got the lock, let's clear&quot;);</span>
+<span class="nc" id="L304">                    IMap&lt;Long, OffsetDateTime&gt; cache = getHttpSessionActivityCache();</span>
+<span class="nc" id="L305">                    List&lt;HttpSession&gt; list = userDao.getExpiredHttpSessions();</span>
+<span class="nc" id="L306">                    logger.trace(&quot;List of expired session: {}&quot;, list);</span>
+<span class="nc bnc" id="L307" title="All 2 branches missed.">                    for (HttpSession session : list) {</span>
+<span class="nc bnc" id="L308" title="All 2 branches missed.">                        if (!cache.containsKey(session.getId())) {</span>
+<span class="nc" id="L309">                            logger.trace(&quot;Delete the session {}&quot;, session);</span>
+<span class="nc" id="L310">                            userDao.deleteHttpSession(session);</span>
                         } else {
-<span class="nc" id="L306">                            logger.trace(&quot;Seems httpSesion jsut waked up: {}&quot;, session);</span>
+<span class="nc" id="L312">                            logger.trace(&quot;Seems httpSesion jsut waked up: {}&quot;, session);</span>
                         }
-<span class="nc" id="L308">                    }</span>
+<span class="nc" id="L314">                    }</span>
                 } finally {
-<span class="nc" id="L310">                    lock.unlock();</span>
-<span class="nc" id="L311">                }</span>
+<span class="nc" id="L316">                    lock.unlock();</span>
+<span class="nc" id="L317">                }</span>
             } else {
-<span class="nc" id="L313">                logger.trace(&quot;Did not got the log&quot;);</span>
+<span class="nc" id="L319">                logger.trace(&quot;Did not got the log&quot;);</span>
             }
-<span class="nc" id="L315">        });</span>
-<span class="nc" id="L316">    }</span>
+<span class="nc" id="L321">        });</span>
+<span class="nc" id="L322">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

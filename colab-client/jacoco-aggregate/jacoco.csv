@@ -126,7 +126,7 @@ colab-client/colab-api,ch.colabproject.colab.api.controller,RequestManager,308,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,WebsocketTxSync,45,0,4,0,16,0,6,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,SubscriptionRequest.ChannelType,44,0,0,0,5,0,1,0,1,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,SubscriptionRequest,71,0,0,0,24,0,13,0,13,0
-colab-client/colab-api,ch.colabproject.colab.api.controller,WebsocketManager,804,0,60,0,212,0,64,0,34,0
+colab-client/colab-api,ch.colabproject.colab.api.controller,WebsocketManager,789,0,54,0,216,0,64,0,37,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,CdiBridgeSingleton,26,0,0,0,8,0,6,0,6,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,CronTab,21,0,0,0,8,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.controller,EntityGatheringBagForPropagation,223,0,11,0,63,0,22,0,16,0
@@ -174,7 +174,7 @@ colab-client/colab-api,ch.colabproject.colab.api.model,WithPermission,6,0,0,0,2,
 colab-client/colab-api,ch.colabproject.colab.api.controller.security,SecurityManager,428,0,80,0,98,0,69,0,29,0
 colab-client/colab-api,ch.colabproject.colab.api.security,AuthenticationFilter,101,0,16,0,32,0,12,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.security,CookieFilter.ParsedCookie,58,0,6,0,14,0,4,0,1,0
-colab-client/colab-api,ch.colabproject.colab.api.security,SessionManager,412,0,44,0,118,0,39,0,17,0
+colab-client/colab-api,ch.colabproject.colab.api.security,SessionManager,423,0,46,0,121,0,40,0,17,0
 colab-client/colab-api,ch.colabproject.colab.api.security,AuthenticationFailure,35,0,0,0,9,0,4,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.security,CookieFilter,161,0,22,0,40,0,15,0,4,0
 colab-client/colab-api,ch.colabproject.colab.api.rest.project,ProjectRestEndpoint,123,0,0,0,30,0,15,0,15,0
