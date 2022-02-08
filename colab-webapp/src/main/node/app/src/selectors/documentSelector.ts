@@ -6,71 +6,42 @@
  */
 
 import { Document, entityIs } from 'colab-rest-client';
+import { DocumentContext } from '../components/documents/documentCommonType';
 import { useAppSelector } from '../store/hooks';
 import { LoadingStatus } from '../store/store';
 
-export const useDeliverables = (
-  cardContentId: number | null | undefined,
+export const useDocuments = (
+  context: DocumentContext,
 ): {
   documents: Document[];
   status: LoadingStatus;
 } => {
   return useAppSelector(state => {
-    if (cardContentId != null) {
-      const dataInStore = state.document.byCardContent[cardContentId];
-
-      if (dataInStore === undefined) {
-        return { documents: [], status: 'NOT_INITIALIZED' };
-      } else {
-        const { documentIds, status } = dataInStore;
-
-        if (status == 'LOADING') {
-          return { documents: [], status: 'LOADING' };
-        } else {
-          return {
-            documents: documentIds.flatMap(docId => {
-              const doc = state.document.documents[docId];
-              return doc && entityIs(doc, 'Document') ? [doc] : [];
-            }),
-            status: 'READY',
-          };
-        }
-      }
+    let dataInStore; // = { number[]; status: 'NOT_INITIALIZED' };
+    if (context.kind == 'DeliverableOfCardContent' && context.cardContentId != null) {
+      dataInStore = state.document.byCardContent[context.cardContentId];
+    } else if (context.kind == 'PartOfResource' && context.resourceId != null) {
+      dataInStore = state.document.byResource[context.resourceId];
+    } else {
+      return { documents: [], status: 'NOT_INITIALIZED' };
     }
 
-    return { documents: [], status: 'NOT_INITIALIZED' };
-  });
-};
+    if (dataInStore === undefined) {
+      return { documents: [], status: 'NOT_INITIALIZED' };
+    } else {
+      const { documentIds, status } = dataInStore;
 
-export const useDocumentsOfResource = (
-  resourceId: number | null | undefined,
-): {
-  documents: Document[];
-  status: LoadingStatus;
-} => {
-  return useAppSelector(state => {
-    if (resourceId != null) {
-      const dataInStore = state.document.byResource[resourceId];
-
-      if (dataInStore === undefined) {
-        return { documents: [], status: 'NOT_INITIALIZED' };
+      if (status == 'LOADING') {
+        return { documents: [], status: 'LOADING' };
       } else {
-        const { documentIds, status } = dataInStore;
-
-        if (status == 'LOADING') {
-          return { documents: [], status: 'LOADING' };
-        } else {
-          return {
-            documents: documentIds.flatMap(docId => {
-              const doc = state.document.documents[docId];
-              return doc && entityIs(doc, 'Document') ? [doc] : [];
-            }),
-            status: 'READY',
-          };
-        }
+        return {
+          documents: documentIds.flatMap(docId => {
+            const doc = state.document.documents[docId];
+            return doc && entityIs(doc, 'Document') ? [doc] : [];
+          }),
+          status: 'READY',
+        };
       }
     }
-
-    return { documents: [], status: 'NOT_INITIALIZED' };
   });
 };

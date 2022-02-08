@@ -11,31 +11,13 @@ import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
+import { DocumentContext, DocumentType } from './documentCommonType';
 
 const addButtonStyle = css({ marginTop: '20px', display: 'block' });
 
-export enum CreationContextKind {
-  CardContent,
-  Resource,
-}
-
-export type CreationCardContentContext = {
-  kind: CreationContextKind.CardContent;
-  cardContentId: number;
-};
-
-export type CreationResourceContext = {
-  kind: CreationContextKind.Resource;
-  resourceId: number;
-};
-
-export type CreationContext = CreationCardContentContext | CreationResourceContext;
-
-type documentType = 'TextDataBlock' | 'ExternalLink' | 'DocumentFile';
-
 export type DocumentCreatorButtonProps = {
-  creationContext: CreationContext;
-  docType: documentType;
+  creationContext: DocumentContext;
+  docType: DocumentType;
   title: string;
 };
 
@@ -66,7 +48,7 @@ export default function DocumentCreatorButton({
       };
     }
 
-    if (creationContext.kind == CreationContextKind.CardContent) {
+    if (creationContext.kind == 'DeliverableOfCardContent') {
       dispatch(
         API.addDeliverable({
           cardContentId: creationContext.cardContentId,

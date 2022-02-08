@@ -325,7 +325,10 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                 <Flex direction="column" grow={1}>
                   {userAcl.read ? (
                     variant.id ? (
-                      <DocumentEditorWrapper cardContentId={variant.id} allowEdition={!readOnly} />
+                      <DocumentEditorWrapper
+                        context={{ kind: 'DeliverableOfCardContent', cardContentId: variant.id }}
+                        allowEdition={!readOnly}
+                      />
                     ) : (
                       <span>no deliverable available</span>
                     )

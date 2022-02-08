@@ -7,31 +7,37 @@
 
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useDeliverables } from '../../selectors/documentSelector';
+import { useDocuments } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
 import { workInProgressStyle } from '../styling/style';
-import DocumentCreatorButton, { CreationContextKind } from './DocumentCreatorButton';
+import { DocumentContext } from './documentCommonType';
+import DocumentCreatorButton from './DocumentCreatorButton';
 import { DocumentEditorDisplay } from './DocumentEditorDisplay';
 
-export interface DocAsDeliverableProps {
-  cardContentId: number;
+export interface DocumentEditorWrapperProps {
+  context: DocumentContext;
   allowEdition?: boolean;
 }
 
 export function DocumentEditorWrapper({
-  cardContentId,
+  context,
   allowEdition,
-}: DocAsDeliverableProps): JSX.Element {
+}: DocumentEditorWrapperProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const { documents, status } = useDeliverables(cardContentId);
+  const { documents, status } = useDocuments(context);
 
   React.useEffect(() => {
-    if (status == 'NOT_INITIALIZED' && cardContentId != null) {
-      dispatch(API.getDeliverablesOfCardContent(cardContentId));
+    if (status == 'NOT_INITIALIZED') {
+      if (context.kind == 'DeliverableOfCardContent' && context.cardContentId != null) {
+        dispatch(API.getDeliverablesOfCardContent(context.cardContentId));
+      }
+      if (context.kind == 'PartOfResource' && context.resourceId != null) {
+        dispatch(API.getDocumentsOfResource(context.resourceId));
+      }
     }
-  }, [status, cardContentId, dispatch]);
+  }, [context, status, dispatch]);
 
   if (status === 'NOT_INITIALIZED') {
     return <InlineLoading />;
@@ -48,21 +54,21 @@ export function DocumentEditorWrapper({
         ))}
       {allowEdition && (
         <DocumentCreatorButton
-          creationContext={{ kind: CreationContextKind.CardContent, cardContentId: cardContentId }}
+          creationContext={context}
           docType="TextDataBlock"
           title="add a block"
         />
       )}
       {allowEdition && (
         <DocumentCreatorButton
-          creationContext={{ kind: CreationContextKind.CardContent, cardContentId: cardContentId }}
+          creationContext={context}
           docType="DocumentFile"
           title="add a file"
         />
       )}
       {allowEdition && (
         <DocumentCreatorButton
-          creationContext={{ kind: CreationContextKind.CardContent, cardContentId: cardContentId }}
+          creationContext={context}
           docType="ExternalLink"
           title="add a link"
         />

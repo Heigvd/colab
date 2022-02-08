@@ -240,9 +240,13 @@ public class BlockManager {
             return false;
         }
 
-//        if (block.getDocument() == null && block.getDocumentId() == null) {
-//            return false;
-//        }
+        if (block.getOwningResourceId() == null
+            && block.getOwningCardContentId() == null
+            && block.getPurposingCardType() == null
+            && block.getTeasingResource() == null
+            && block.getExplainingStickyNoteLink() == null) {
+            return false;
+        }
 
         return true;
     }
