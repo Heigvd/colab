@@ -24,7 +24,6 @@ import java.time.OffsetDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import javax.cache.Cache;
 import javax.cache.processor.MutableEntry;
 import javax.ejb.LocalBean;
