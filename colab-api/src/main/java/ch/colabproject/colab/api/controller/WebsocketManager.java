@@ -56,6 +56,8 @@ import org.slf4j.LoggerFactory;
 import com.hazelcast.cluster.Member;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IExecutorService;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Some methods to handle websocket connections. In the future, we may consider using external
@@ -64,8 +66,12 @@ import com.hazelcast.core.IExecutorService;
  *
  * @author maxence
  */
-@Singleton // use ejb @Singleton, as it provide concurrrency control
-@Startup // make sure the singleton is available as soon as possible
+@Singleton
+// make sure the singleton is available as soon as possible with @Startup annotation
+@Startup
+// Since few methods actually need mutual exclusion, make sure to set default locktype to READ
+// mutual exclusion is managed by hand in methods with synchronized blocks
+@Lock(LockType.READ)
 public class WebsocketManager {
 
     /** logger */
@@ -137,7 +143,7 @@ public class WebsocketManager {
     /**
      * channel subscriptions.
      */
-    private Map<WebsocketEffectiveChannel, Set<Session>> subscriptions = new HashMap<>();
+    private ConcurrentMap<WebsocketEffectiveChannel, Set<Session>> subscriptions = new ConcurrentHashMap<>();
 
     /**
      * HTTP sessions to websocket sessions registry.
@@ -147,19 +153,18 @@ public class WebsocketManager {
      * <p />
      * This is required cancel all subscription on logout.
      */
-    private Map<Long, Set<Session>> httpSessionToWsSessions = new HashMap<>();
+    private ConcurrentMap<Long, Set<Session>> httpSessionToWsSessions = new ConcurrentHashMap<>();
 
-    /**
-     * Each websocket session is linked to one http session.
-     * <p>
-     * This is the {@link httpSessionToWsSessions} reverse registry.
-     */
-    private Map<Session, Long> wsSessionToHttpSession = new HashMap<>();
-
+//    /**
+//     * Each websocket session is linked to one http session.
+//     * <p>
+//     * This is the {@link httpSessionToWsSessions} reverse registry.
+//     */
+//    private Map<Session, Long> wsSessionToHttpSession = new HashMap<>();
     /**
      * List the channels each websocket session subscribe to.
      */
-    private Map<Session, Set<WebsocketEffectiveChannel>> wsSessionMap = new HashMap<>();
+    private ConcurrentMap<Session, Set<WebsocketEffectiveChannel>> wsSessionMap = new ConcurrentHashMap<>();
 
     /**
      * Get list of all occupied channels.
@@ -169,7 +174,6 @@ public class WebsocketManager {
      *
      * @return list of all occupied channels mapped to the number of subscribers
      */
-    @Lock(LockType.READ)
     public Set<ChannelOverview> getExistingChannels() {
         IExecutorService executorService = hzInstance.getExecutorService("COLAB_WS");
         Map<Member, Future<Map<WebsocketEffectiveChannel, Integer>>> results
@@ -206,7 +210,6 @@ public class WebsocketManager {
      *
      * @return the list of channels and the number of sessions subscribed to each of them
      */
-    @Lock(LockType.READ)
     public Map<WebsocketEffectiveChannel, Integer> getSubscrciptionsCount() {
         return this.subscriptions.entrySet().stream()
             .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue().size()));
@@ -398,41 +401,44 @@ public class WebsocketManager {
             logger.debug("Channel subscription request: {}", request);
             Session session = WebsocketEndpoint.getSession(request.getWsSessionId());
             if (session != null) {
+
                 logger.debug("Process channel subscription request: {}", request);
 
                 // first determine the effective channel
                 WebsocketEffectiveChannel channel = getChannel(request);
                 if (channel != null) {
-                    // make sure the http session has its own set of wsSessions
-                    if (!httpSessionToWsSessions.containsKey(request.getColabSessionId())) {
-                        httpSessionToWsSessions.put(request.getColabSessionId(), new HashSet<>());
-                    }
-                    // and  make sure the websocket session is linked to the http session
-                    httpSessionToWsSessions.get(request.getColabSessionId()).add(session);
+                    synchronized (this) {
+                        // make sure the http session has its own set of wsSessions
+                        // and  make sure the websocket session is linked to the http session
+                        httpSessionToWsSessions.computeIfAbsent(request.getColabSessionId(), (key) -> {
+                            return new HashSet<>();
+                        })
+                            // and  make sure the websocket session is linked to the http session
+                            .add(session);
 
-                    // make sure to link wsSession to its Http session
-                    wsSessionToHttpSession.put(session, request.getColabSessionId()); // TODO: is it even used ?
+                        // make sure to link wsSession to its Http session
+                        // wsSessionToHttpSession.put(session, request.getColabSessionId()); // TODO: is it even used ?
+                        if (request.getType() == SubscriptionRequest.SubscriptionType.SUBSCRIBE) {
+                            // make sure the http session has its own list of channels
+                            wsSessionMap.computeIfAbsent(session, (key) -> {
+                                return new HashSet<>();
+                            })
+                                // keep wsSession to channel registry up-to date
+                                .add(channel);
 
-                    if (request.getType() == SubscriptionRequest.SubscriptionType.SUBSCRIBE) {
-                        // make sure the http session has its own list of channels
-                        if (!wsSessionMap.containsKey(session)) {
-                            wsSessionMap.put(session, new HashSet<>());
-                        }
-                        // keep wsSession to channel registry up-to date
-                        wsSessionMap.get(session).add(channel);
-
-                        // subscribe to channel
-                        subscribe(channel, session);
-                    } else {
-                        // Remove the channel from the set of channel linked to the wsSession
-                        if (wsSessionMap.containsKey(session)) {
-                            Set<WebsocketEffectiveChannel> channels = wsSessionMap.get(session);
-                            channels.remove(channel);
-                            if (channels.isEmpty()) {
-                                wsSessionMap.remove(session);
+                            // subscribe to channel
+                            subscribe(channel, session);
+                        } else {
+                            // Remove the channel from the set of channel linked to the wsSession
+                            if (wsSessionMap.containsKey(session)) {
+                                Set<WebsocketEffectiveChannel> channels = wsSessionMap.get(session);
+                                channels.remove(channel);
+                                if (channels.isEmpty()) {
+                                    wsSessionMap.remove(session);
+                                }
                             }
+                            unsubscribe(channel, Set.of(session));
                         }
-                        unsubscribe(channel, Set.of(session));
                     }
                 } else {
                     logger.debug("Failed to resolve {} to an effective channel", request);
@@ -455,11 +461,10 @@ public class WebsocketManager {
             String sessionId = WebsocketEndpoint.getSessionId(session);
             logger.debug("Session {} subscribes to {}", sessionId, channel);
         }
-        if (!subscriptions.containsKey(channel)) {
-            subscriptions.put(channel, new HashSet<>());
+        subscriptions.computeIfAbsent(channel, (key -> {
             this.propagateChannelChange(channel, 1);
-        }
-        subscriptions.get(channel).add(session);
+            return new HashSet();
+        })).add(session);
     }
 
     /**
@@ -588,27 +593,29 @@ public class WebsocketManager {
      * @param httpSessionId httpSessionId which just sign out
      */
     public void signoutAndUnsubscribeFromAll(Long httpSessionId) {
-        // TODO send logout event, so each client (each browser tab) knows it has been disconnected
-        Set<Session> wsSessions = this.httpSessionToWsSessions.get(httpSessionId);
-        if (wsSessions != null) {
-            // the http session is linked to one or more websocket session, let's cancel all their
-            // subscriptions
-            wsSessions.stream()
-                // get channels from each wsSession
-                .map(wsSession -> this.wsSessionMap.get(wsSession))
-                // filter out null channels set
-                .filter(channels -> channels != null)
-                // convert "stream of set of channels" to "stream of channels"
-                .flatMap(Collection::stream)
-                // no need to list same channel twice
-                .distinct()
-                // clean subscriptions
-                .forEach(channel -> {
-                    this.unsubscribe(channel, wsSessions);
-                });
-        }
+        synchronized (this) {
+            // TODO send logout event, so each client (each browser tab) knows it has been disconnected
+            Set<Session> wsSessions = this.httpSessionToWsSessions.get(httpSessionId);
+            if (wsSessions != null) {
+                // the http session is linked to one or more websocket session, let's cancel all their
+                // subscriptions
+                wsSessions.stream()
+                    // get channels from each wsSession
+                    .map(wsSession -> this.wsSessionMap.get(wsSession))
+                    // filter out null channels set
+                    .filter(channels -> channels != null)
+                    // convert "stream of set of channels" to "stream of channels"
+                    .flatMap(Collection::stream)
+                    // no need to list same channel twice
+                    .distinct()
+                    // clean subscriptions
+                    .forEach(channel -> {
+                        this.unsubscribe(channel, wsSessions);
+                    });
+            }
 
-        this.httpSessionToWsSessions.remove(httpSessionId);
+            this.httpSessionToWsSessions.remove(httpSessionId);
+        }
     }
 
     /**
@@ -617,13 +624,15 @@ public class WebsocketManager {
      * @param session websocket session to clean subscription for
      */
     public void unsubscribeFromAll(Session session) {
-        Set<WebsocketEffectiveChannel> set = this.wsSessionMap.get(session);
-        if (set != null) {
-            Set<Session> setOfSession = Set.of(session);
-            set.forEach(channel -> {
-                unsubscribe(channel, setOfSession);
-            });
-            this.wsSessionMap.remove(session);
+        synchronized (this) {
+            Set<WebsocketEffectiveChannel> set = this.wsSessionMap.get(session);
+            if (set != null) {
+                Set<Session> setOfSession = Set.of(session);
+                set.forEach(channel -> {
+                    unsubscribe(channel, setOfSession);
+                });
+                this.wsSessionMap.remove(session);
+            }
         }
     }
 }
