@@ -462,10 +462,14 @@ import java.util.concurrent.ConcurrentMap;
 <span class="nc" id="L462">            logger.debug(&quot;Session {} subscribes to {}&quot;, sessionId, channel);</span>
         }
 <span class="nc" id="L464">        subscriptions.computeIfAbsent(channel, (key -&gt; {</span>
-<span class="nc" id="L465">            this.propagateChannelChange(channel, 1);</span>
-<span class="nc" id="L466">            return new HashSet();</span>
-<span class="nc" id="L467">        })).add(session);</span>
-<span class="nc" id="L468">    }</span>
+<span class="nc" id="L465">            return new HashSet();</span>
+<span class="nc" id="L466">        })).add(session);</span>
+
+        //  make sure to propgate channelCHange after subscription
+        //  (the ChannelChange event may be send through this very subscription, eg if an admin
+        //   is subscribing to its own userChannel)
+<span class="nc" id="L471">        this.propagateChannelChange(channel, 1);</span>
+<span class="nc" id="L472">    }</span>
 
     /**
      * Unsubscribe all sessions from given channel. If the channel is empty after the operation, it
@@ -475,22 +479,24 @@ import java.util.concurrent.ConcurrentMap;
      * @param sessions session to remove from channel
      */
     private void unsubscribe(WebsocketEffectiveChannel channel, Set&lt;Session&gt; sessions) {
-<span class="nc" id="L478">        Set&lt;Session&gt; chSessions = subscriptions.get(channel);</span>
-<span class="nc bnc" id="L479" title="All 2 branches missed.">        if (logger.isDebugEnabled()) {</span>
-<span class="nc" id="L480">            logger.debug(&quot;Sessions {} unsubscribes from {}&quot;, sessions.stream().map(session</span>
-<span class="nc" id="L481">                -&gt; WebsocketEndpoint.getSessionId(session)</span>
+<span class="nc" id="L482">        Set&lt;Session&gt; chSessions = subscriptions.get(channel);</span>
+<span class="nc bnc" id="L483" title="All 2 branches missed.">        if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L484">            logger.debug(&quot;Sessions {} unsubscribes from {}&quot;, sessions.stream().map(session</span>
+<span class="nc" id="L485">                -&gt; WebsocketEndpoint.getSessionId(session)</span>
             ), channel);
         }
-<span class="nc bnc" id="L484" title="All 2 branches missed.">        if (chSessions != null) {</span>
-<span class="nc" id="L485">            int size = chSessions.size();</span>
-<span class="nc" id="L486">            chSessions.removeAll(sessions);</span>
-<span class="nc" id="L487">            this.propagateChannelChange(channel, chSessions.size() - size);</span>
+<span class="nc bnc" id="L488" title="All 2 branches missed.">        if (chSessions != null) {</span>
+<span class="nc" id="L489">            int size = chSessions.size();</span>
+<span class="nc" id="L490">            chSessions.removeAll(sessions);</span>
 
-<span class="nc bnc" id="L489" title="All 2 branches missed.">            if (chSessions.isEmpty()) {</span>
-<span class="nc" id="L490">                subscriptions.remove(channel);</span>
+            // make sure to propate change before the unsubscription is effective
+<span class="nc" id="L493">            this.propagateChannelChange(channel, chSessions.size() - size);</span>
+
+<span class="nc bnc" id="L495" title="All 2 branches missed.">            if (chSessions.isEmpty()) {</span>
+<span class="nc" id="L496">                subscriptions.remove(channel);</span>
             }
         }
-<span class="nc" id="L493">    }</span>
+<span class="nc" id="L499">    }</span>
 
     /**
      * Propagate a channel change
@@ -500,17 +506,17 @@ import java.util.concurrent.ConcurrentMap;
      */
     private void propagateChannelChange(WebsocketEffectiveChannel channel, int diff) {
         try {
-<span class="nc" id="L503">            PrecomputedWsMessages prepareWsMessage = WebsocketHelper.prepareWsMessage(</span>
+<span class="nc" id="L509">            PrecomputedWsMessages prepareWsMessage = WebsocketHelper.prepareWsMessage(</span>
                 userDao,
                 requestManager,
                 new AdminChannel(),
-<span class="nc" id="L507">                WsChannelUpdate.build(channel, diff)</span>
+<span class="nc" id="L513">                WsChannelUpdate.build(channel, diff)</span>
             );
-<span class="nc" id="L509">            this.propagate(prepareWsMessage);</span>
-<span class="nc" id="L510">        } catch (EncodeException ex) {</span>
-<span class="nc" id="L511">            logger.error(&quot;Faild to propagate channel change :{}&quot;, channel);</span>
-<span class="nc" id="L512">        }</span>
-<span class="nc" id="L513">    }</span>
+<span class="nc" id="L515">            this.propagate(prepareWsMessage);</span>
+<span class="nc" id="L516">        } catch (EncodeException ex) {</span>
+<span class="nc" id="L517">            logger.error(&quot;Faild to propagate channel change :{}&quot;, channel);</span>
+<span class="nc" id="L518">        }</span>
+<span class="nc" id="L519">    }</span>
 
     /**
      * Determine the EffectiveChannel
@@ -520,27 +526,27 @@ import java.util.concurrent.ConcurrentMap;
      * @return the channel which match the request
      */
     private WebsocketEffectiveChannel getChannel(SubscriptionRequest request) {
-<span class="nc bnc" id="L523" title="All 2 branches missed.">        if (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {</span>
-<span class="nc" id="L524">            Project project = projectDao.getProject(request.getChannelId());</span>
-<span class="nc bnc" id="L525" title="All 2 branches missed.">            if (project != null) {</span>
-<span class="nc" id="L526">                return ProjectContentChannel.build(project);</span>
+<span class="nc bnc" id="L529" title="All 2 branches missed.">        if (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {</span>
+<span class="nc" id="L530">            Project project = projectDao.getProject(request.getChannelId());</span>
+<span class="nc bnc" id="L531" title="All 2 branches missed.">            if (project != null) {</span>
+<span class="nc" id="L532">                return ProjectContentChannel.build(project);</span>
             }
-<span class="nc bnc" id="L528" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BLOCK) {</span>
-<span class="nc" id="L529">            Block block = blockDao.findBlock(request.getChannelId());</span>
-<span class="nc bnc" id="L530" title="All 2 branches missed.">            if (block != null) {</span>
-<span class="nc" id="L531">                return BlockChannel.build(block);</span>
+<span class="nc bnc" id="L534" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BLOCK) {</span>
+<span class="nc" id="L535">            Block block = blockDao.findBlock(request.getChannelId());</span>
+<span class="nc bnc" id="L536" title="All 2 branches missed.">            if (block != null) {</span>
+<span class="nc" id="L537">                return BlockChannel.build(block);</span>
             }
-<span class="nc bnc" id="L533" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {</span>
-<span class="nc" id="L534">            User user = userDao.findUser(request.getChannelId());</span>
-<span class="nc bnc" id="L535" title="All 2 branches missed.">            if (user != null) {</span>
-<span class="nc" id="L536">                return user.getEffectiveChannel();</span>
+<span class="nc bnc" id="L539" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.USER) {</span>
+<span class="nc" id="L540">            User user = userDao.findUser(request.getChannelId());</span>
+<span class="nc bnc" id="L541" title="All 2 branches missed.">            if (user != null) {</span>
+<span class="nc" id="L542">                return user.getEffectiveChannel();</span>
             }
-<span class="nc bnc" id="L538" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BROADCAST) {</span>
-<span class="nc" id="L539">            return BroadcastChannel.build();</span>
+<span class="nc bnc" id="L544" title="All 2 branches missed.">        } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BROADCAST) {</span>
+<span class="nc" id="L545">            return BroadcastChannel.build();</span>
         }
 
         // not found...
-<span class="nc" id="L543">        return null;</span>
+<span class="nc" id="L549">        return null;</span>
     }
 
     /**
@@ -551,8 +557,8 @@ import java.util.concurrent.ConcurrentMap;
      * @param message precomputed message to propagate.
      */
     public void propagate(PrecomputedWsMessages message) {
-<span class="nc" id="L554">        this.messagePropagation.fire(message);</span>
-<span class="nc" id="L555">    }</span>
+<span class="nc" id="L560">        this.messagePropagation.fire(message);</span>
+<span class="nc" id="L561">    }</span>
 
     /**
      * On Hazelcast event. Each instance receive precomputed message.
@@ -563,28 +569,28 @@ import java.util.concurrent.ConcurrentMap;
     public void onMessagePropagation(
         @Observes @Inbound(eventName = WS_PROPAGATION_CHANNEL) PrecomputedWsMessages payload) {
 
-<span class="nc" id="L566">        Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; messagesByChannels = payload.getMessages();</span>
-<span class="nc bnc" id="L567" title="All 2 branches missed.">        if (messagesByChannels != null) {</span>
-<span class="nc" id="L568">            messagesByChannels.forEach((channel, messages) -&gt; {</span>
-<span class="nc" id="L569">                Set&lt;Session&gt; subscribers = this.subscriptions.get(channel);</span>
-<span class="nc bnc" id="L570" title="All 2 branches missed.">                if (subscribers != null) {</span>
-<span class="nc" id="L571">                    subscribers.forEach(session -&gt; {</span>
-<span class="nc" id="L572">                        messages.forEach(message -&gt; {</span>
+<span class="nc" id="L572">        Map&lt;WebsocketEffectiveChannel, List&lt;String&gt;&gt; messagesByChannels = payload.getMessages();</span>
+<span class="nc bnc" id="L573" title="All 2 branches missed.">        if (messagesByChannels != null) {</span>
+<span class="nc" id="L574">            messagesByChannels.forEach((channel, messages) -&gt; {</span>
+<span class="nc" id="L575">                Set&lt;Session&gt; subscribers = this.subscriptions.get(channel);</span>
+<span class="nc bnc" id="L576" title="All 2 branches missed.">                if (subscribers != null) {</span>
+<span class="nc" id="L577">                    subscribers.forEach(session -&gt; {</span>
+<span class="nc" id="L578">                        messages.forEach(message -&gt; {</span>
                             try {
-<span class="nc" id="L574">                                logger.debug(&quot;Send {} to {} ({})&quot;, message, session.getId(), channel);</span>
-<span class="nc bnc" id="L575" title="All 2 branches missed.">                                if (session.isOpen()) {</span>
-<span class="nc" id="L576">                                    session.getBasicRemote().sendText(message);</span>
+<span class="nc" id="L580">                                logger.debug(&quot;Send {} to {} ({})&quot;, message, session.getId(), channel);</span>
+<span class="nc bnc" id="L581" title="All 2 branches missed.">                                if (session.isOpen()) {</span>
+<span class="nc" id="L582">                                    session.getBasicRemote().sendText(message);</span>
                                 }
-<span class="nc" id="L578">                            } catch (IOException ex) {</span>
-<span class="nc" id="L579">                                logger.error(&quot;Failed to send websocket message {} to {}&quot;,</span>
+<span class="nc" id="L584">                            } catch (IOException ex) {</span>
+<span class="nc" id="L585">                                logger.error(&quot;Failed to send websocket message {} to {}&quot;,</span>
                                     message, session);
-<span class="nc" id="L581">                            }</span>
-<span class="nc" id="L582">                        });</span>
-<span class="nc" id="L583">                    });</span>
+<span class="nc" id="L587">                            }</span>
+<span class="nc" id="L588">                        });</span>
+<span class="nc" id="L589">                    });</span>
                 }
-<span class="nc" id="L585">            });</span>
+<span class="nc" id="L591">            });</span>
         }
-<span class="nc" id="L587">    }</span>
+<span class="nc" id="L593">    }</span>
 
     /**
      * Unsubscribe all channel linked to the given httpSessionId. This is required after the user
@@ -593,30 +599,30 @@ import java.util.concurrent.ConcurrentMap;
      * @param httpSessionId httpSessionId which just sign out
      */
     public void signoutAndUnsubscribeFromAll(Long httpSessionId) {
-<span class="nc" id="L596">        synchronized (this) {</span>
+<span class="nc" id="L602">        synchronized (this) {</span>
             // TODO send logout event, so each client (each browser tab) knows it has been disconnected
-<span class="nc" id="L598">            Set&lt;Session&gt; wsSessions = this.httpSessionToWsSessions.get(httpSessionId);</span>
-<span class="nc bnc" id="L599" title="All 2 branches missed.">            if (wsSessions != null) {</span>
+<span class="nc" id="L604">            Set&lt;Session&gt; wsSessions = this.httpSessionToWsSessions.get(httpSessionId);</span>
+<span class="nc bnc" id="L605" title="All 2 branches missed.">            if (wsSessions != null) {</span>
                 // the http session is linked to one or more websocket session, let's cancel all their
                 // subscriptions
-<span class="nc" id="L602">                wsSessions.stream()</span>
+<span class="nc" id="L608">                wsSessions.stream()</span>
                     // get channels from each wsSession
-<span class="nc" id="L604">                    .map(wsSession -&gt; this.wsSessionMap.get(wsSession))</span>
+<span class="nc" id="L610">                    .map(wsSession -&gt; this.wsSessionMap.get(wsSession))</span>
                     // filter out null channels set
-<span class="nc bnc" id="L606" title="All 2 branches missed.">                    .filter(channels -&gt; channels != null)</span>
+<span class="nc bnc" id="L612" title="All 2 branches missed.">                    .filter(channels -&gt; channels != null)</span>
                     // convert &quot;stream of set of channels&quot; to &quot;stream of channels&quot;
-<span class="nc" id="L608">                    .flatMap(Collection::stream)</span>
+<span class="nc" id="L614">                    .flatMap(Collection::stream)</span>
                     // no need to list same channel twice
-<span class="nc" id="L610">                    .distinct()</span>
+<span class="nc" id="L616">                    .distinct()</span>
                     // clean subscriptions
-<span class="nc" id="L612">                    .forEach(channel -&gt; {</span>
-<span class="nc" id="L613">                        this.unsubscribe(channel, wsSessions);</span>
-<span class="nc" id="L614">                    });</span>
+<span class="nc" id="L618">                    .forEach(channel -&gt; {</span>
+<span class="nc" id="L619">                        this.unsubscribe(channel, wsSessions);</span>
+<span class="nc" id="L620">                    });</span>
             }
 
-<span class="nc" id="L617">            this.httpSessionToWsSessions.remove(httpSessionId);</span>
-<span class="nc" id="L618">        }</span>
-<span class="nc" id="L619">    }</span>
+<span class="nc" id="L623">            this.httpSessionToWsSessions.remove(httpSessionId);</span>
+<span class="nc" id="L624">        }</span>
+<span class="nc" id="L625">    }</span>
 
     /**
      * Clean subscription on session close
@@ -624,16 +630,16 @@ import java.util.concurrent.ConcurrentMap;
      * @param session websocket session to clean subscription for
      */
     public void unsubscribeFromAll(Session session) {
-<span class="nc" id="L627">        synchronized (this) {</span>
-<span class="nc" id="L628">            Set&lt;WebsocketEffectiveChannel&gt; set = this.wsSessionMap.get(session);</span>
-<span class="nc bnc" id="L629" title="All 2 branches missed.">            if (set != null) {</span>
-<span class="nc" id="L630">                Set&lt;Session&gt; setOfSession = Set.of(session);</span>
-<span class="nc" id="L631">                set.forEach(channel -&gt; {</span>
-<span class="nc" id="L632">                    unsubscribe(channel, setOfSession);</span>
-<span class="nc" id="L633">                });</span>
-<span class="nc" id="L634">                this.wsSessionMap.remove(session);</span>
+<span class="nc" id="L633">        synchronized (this) {</span>
+<span class="nc" id="L634">            Set&lt;WebsocketEffectiveChannel&gt; set = this.wsSessionMap.get(session);</span>
+<span class="nc bnc" id="L635" title="All 2 branches missed.">            if (set != null) {</span>
+<span class="nc" id="L636">                Set&lt;Session&gt; setOfSession = Set.of(session);</span>
+<span class="nc" id="L637">                set.forEach(channel -&gt; {</span>
+<span class="nc" id="L638">                    unsubscribe(channel, setOfSession);</span>
+<span class="nc" id="L639">                });</span>
+<span class="nc" id="L640">                this.wsSessionMap.remove(session);</span>
             }
-<span class="nc" id="L636">        }</span>
-<span class="nc" id="L637">    }</span>
+<span class="nc" id="L642">        }</span>
+<span class="nc" id="L643">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
