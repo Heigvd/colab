@@ -462,9 +462,13 @@ public class WebsocketManager {
             logger.debug("Session {} subscribes to {}", sessionId, channel);
         }
         subscriptions.computeIfAbsent(channel, (key -> {
-            this.propagateChannelChange(channel, 1);
             return new HashSet();
         })).add(session);
+
+        //  make sure to propgate channelCHange after subscription
+        //  (the ChannelChange event may be send through this very subscription, eg if an admin
+        //   is subscribing to its own userChannel)
+        this.propagateChannelChange(channel, 1);
     }
 
     /**
@@ -484,6 +488,8 @@ public class WebsocketManager {
         if (chSessions != null) {
             int size = chSessions.size();
             chSessions.removeAll(sessions);
+
+            // make sure to propate change before the unsubscription is effective
             this.propagateChannelChange(channel, chSessions.size() - size);
 
             if (chSessions.isEmpty()) {

@@ -89,7 +89,7 @@ export const processMessage = createAsyncThunk(
   'websocket/processUpdate',
   async (event: WsUpdateMessage) => {
     const bag = createBag();
-    logger.info('Delete: ', event.deleted);
+    logger.trace('Delete: ', event.deleted);
     for (const item of event.deleted) {
       if (indexEntryIs(item, 'Account')) {
         bag.accounts.deleted.push(item);
@@ -130,7 +130,7 @@ export const processMessage = createAsyncThunk(
       }
     }
 
-    logger.info('Update: ', event.updated);
+    logger.trace('Update: ', event.updated);
     for (const item of event.updated) {
       if (entityIs(item, 'Account')) {
         bag.accounts.updated.push(item);
