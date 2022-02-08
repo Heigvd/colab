@@ -24,6 +24,7 @@ import java.time.OffsetDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.cache.Cache;
 import javax.cache.processor.MutableEntry;
 import javax.ejb.LocalBean;
@@ -242,46 +243,52 @@ public class SessionManager {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void writeActivityDatesToDatabase() {
         logger.trace("Write Activity Date to DB");
-        requestManager.sudo(() -> {
-            // prevent updating tracking data (updated by and at)
-            requestManager.setDoNotTrackChange(true);
-            IMap<Long, OffsetDateTime> userActivityCache = getUserActivityCache();
-            Iterator<Map.Entry<Long, OffsetDateTime>> iterator = userActivityCache.iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<Long, OffsetDateTime> next = iterator.next();
-                iterator.remove();
-                if (next != null) {
-                    Long userId = next.getKey();
-                    if (userId != null) {
-                        User user = userDao.findUser(userId);
-                        OffsetDateTime date = next.getValue();
-                        if (user != null) {
-                            logger.trace("Update User LastSeenAt: {}", date);
-                            user.setLastSeenAt(date);
+        FencedLock lock = hzInstance.getCPSubsystem().getLock("CleanExpiredSession");
+        if (lock.tryLock()) {
+            try {
+                requestManager.sudo(() -> {
+                    // prevent updating tracking data (updated by and at)
+                    requestManager.setDoNotTrackChange(true);
+                    IMap<Long, OffsetDateTime> userActivityCache = getUserActivityCache();
+                    Iterator<Map.Entry<Long, OffsetDateTime>> iterator = userActivityCache.iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<Long, OffsetDateTime> next = iterator.next();
+                        iterator.remove();
+                        if (next != null) {
+                            Long userId = next.getKey();
+                            if (userId != null) {
+                                User user = userDao.findUser(userId);
+                                OffsetDateTime date = next.getValue();
+                                if (user != null) {
+                                    logger.trace("Update User LastSeenAt: {}", date);
+                                    user.setLastSeenAt(date);
+                                }
+                            }
                         }
                     }
-                }
-            }
 
-            IMap<Long, OffsetDateTime> sessionActivityCache = getHttpSessionActivityCache();
-            iterator = sessionActivityCache.iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<Long, OffsetDateTime> next = iterator.next();
-                iterator.remove();
-                if (next != null) {
-                    Long id = next.getKey();
-                    if (id != null) {
-                        HttpSession session = userDao.getHttpSessionById(id);
-                        if (session != null) {
-                            OffsetDateTime date = next.getValue();
-                            logger.trace("Update HTTP session LastSeen: {}", date);
-                            session.setLastSeen(date);
+                    IMap<Long, OffsetDateTime> sessionActivityCache = getHttpSessionActivityCache();
+                    iterator = sessionActivityCache.iterator();
+                    while (iterator.hasNext()) {
+                        Map.Entry<Long, OffsetDateTime> next = iterator.next();
+                        iterator.remove();
+                        if (next != null) {
+                            Long id = next.getKey();
+                            if (id != null) {
+                                HttpSession session = userDao.getHttpSessionById(id);
+                                if (session != null) {
+                                    OffsetDateTime date = next.getValue();
+                                    logger.trace("Update HTTP session LastSeen: {}", date);
+                                    session.setLastSeen(date);
+                                }
+                            }
                         }
                     }
-                }
+                });
+            } finally {
+                lock.unlock();
             }
-
-        });
+        }
     }
 
     /**
