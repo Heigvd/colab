@@ -86,8 +86,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(url, persistedExtDoc.getUrl());
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
-        TextDataBlock persistedTeaserBlock = client.blockRestEndpoint
-            .getBlock(persistedResource.getTeaserId());
+        TextDataBlock persistedTeaserBlock = (TextDataBlock) client.documentRestEndpoint
+            .getDocument(persistedResource.getTeaserId());
         Assertions.assertNotNull(persistedTeaserBlock);
         Assertions.assertEquals(persistedResource.getTeaserId(), persistedTeaserBlock.getId());
         Assertions.assertEquals(DEFAULT_MIME_TYPE, persistedTeaserBlock.getMimeType());
@@ -135,8 +135,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(url, persistedExtDoc.getUrl());
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
-        TextDataBlock persistedTeaserBlock = client.blockRestEndpoint
-            .getBlock(persistedResource.getTeaserId());
+        TextDataBlock persistedTeaserBlock = (TextDataBlock) client.documentRestEndpoint
+            .getDocument(persistedResource.getTeaserId());
         Assertions.assertNotNull(persistedTeaserBlock);
         Assertions.assertEquals(DEFAULT_MIME_TYPE, persistedTeaserBlock.getMimeType());
         Assertions.assertNull(persistedTeaserBlock.getTextData());
@@ -176,7 +176,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(url, persistedExtDoc.getUrl());
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
-        persistedTeaserBlock = client.blockRestEndpoint.getBlock(persistedResource.getTeaserId());
+        persistedTeaserBlock = (TextDataBlock) client.documentRestEndpoint
+            .getDocument(persistedResource.getTeaserId());
         Assertions.assertNotNull(persistedTeaserBlock);
         Assertions.assertEquals(DEFAULT_MIME_TYPE, persistedTeaserBlock.getMimeType());
         Assertions.assertNull(persistedTeaserBlock.getTextData());
@@ -214,7 +215,8 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
 
         Assertions.assertNotNull(persistedResource.getTeaserId());
         Long teaserId = persistedResource.getTeaserId();
-        TextDataBlock persistedTeaserBlock = client.blockRestEndpoint.getBlock(teaserId);
+        TextDataBlock persistedTeaserBlock = (TextDataBlock) client.documentRestEndpoint
+            .getDocument(teaserId);
         Assertions.assertNotNull(persistedTeaserBlock);
 
         client.resourceRestEndpoint.deleteResource(resourceId);
@@ -225,7 +227,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         persistedDocument = client.documentRestEndpoint.getDocument(documentId);
         Assertions.assertNull(persistedDocument);
 
-        persistedTeaserBlock = client.blockRestEndpoint.getBlock(teaserId);
+        persistedTeaserBlock = (TextDataBlock) client.documentRestEndpoint.getDocument(teaserId);
         Assertions.assertNull(persistedTeaserBlock);
     }
 

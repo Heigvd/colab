@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="sandra" id="1644598700853-1">
+        <dropForeignKeyConstraint baseTableName="stickynotelink" constraintName="fk_stickynotelink_srcblock_id"/>
+    </changeSet>
+    <changeSet author="sandra" id="1644598700853-2">
+        <dropColumn columnName="srcblock_id" tableName="stickynotelink"/>
+    </changeSet>
+    <changeSet author="sandra" id="1644598700853-3">
+        <addColumn tableName="stickynotelink">
+            <column name="srcdocument_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="sandra" id="1644598700853-4">
+        <addForeignKeyConstraint baseColumnNames="srcdocument_id" baseTableName="stickynotelink" constraintName="fk_stickynotelink_srcdocument_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="document" validate="true"/>
+    </changeSet>
+    <changeSet author="sandra" id="1644598700853-5">
+        <createIndex indexName="index_stickynotelink_srcdocument_id" tableName="stickynotelink">
+            <column name="srcdocument_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

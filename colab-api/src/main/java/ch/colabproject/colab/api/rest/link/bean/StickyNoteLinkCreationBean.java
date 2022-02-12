@@ -30,22 +30,22 @@ public class StickyNoteLinkCreationBean implements Serializable {
     private Long srcCardId;
 
     /**
-     * The ID of the source card content (serialization sugar)
+     * The ID of the source card content
      */
     private Long srcCardContentId;
 
     /**
-     * The ID of the source resource / resource reference (serialization sugar)
+     * The ID of the source resource / resource reference
      */
     private Long srcResourceOrRefId;
 
     /**
-     * The ID of the source block (serialization sugar)
+     * The ID of the source document
      */
-    private Long srcBlockId;
+    private Long srcDocumentId;
 
     /**
-     * The ID of the destination card (serialization sugar)
+     * The ID of the destination card
      */
     private Long destinationCardId;
 
@@ -106,17 +106,17 @@ public class StickyNoteLinkCreationBean implements Serializable {
     }
 
     /**
-     * @return the srcBlockId
+     * @return the srcDocumentId
      */
-    public Long getSrcBlockId() {
-        return srcBlockId;
+    public Long getSrcDocumentId() {
+        return srcDocumentId;
     }
 
     /**
-     * @param srcBlockId the srcBlockId
+     * @param srcDocumentId the srcDocumentId
      */
-    public void setSrcBlockId(Long srcBlockId) {
-        this.srcBlockId = srcBlockId;
+    public void setSrcDocumentId(Long srcDocumentId) {
+        this.srcDocumentId = srcDocumentId;
     }
 
     /**
@@ -171,7 +171,7 @@ public class StickyNoteLinkCreationBean implements Serializable {
             .append(this.srcCardId)
             .append(this.srcCardContentId)
             .append(this.srcResourceOrRefId)
-            .append(this.srcBlockId)
+            .append(this.srcDocumentId)
             .append(this.destinationCardId)
             .append(this.teaser)
             .toHashCode();
@@ -193,7 +193,7 @@ public class StickyNoteLinkCreationBean implements Serializable {
             .append(this.srcCardId, other.srcCardId)
             .append(this.srcCardContentId, other.srcCardContentId)
             .append(this.srcResourceOrRefId, other.srcResourceOrRefId)
-            .append(this.srcBlockId, other.srcBlockId)
+            .append(this.srcDocumentId, other.srcDocumentId)
             .append(this.destinationCardId, other.destinationCardId)
             .append(this.teaser, other.teaser)
             .isEquals();
@@ -203,7 +203,7 @@ public class StickyNoteLinkCreationBean implements Serializable {
     public String toString() {
         return "StickyNoteLinkCreationBean{" + "srcCardId=" + srcCardId
             + ", srcCardContentId=" + srcCardContentId
-            + ", srcResourceOrRefId=" + srcResourceOrRefId + ", srcBlockId=" + srcBlockId
+            + ", srcResourceOrRefId=" + srcResourceOrRefId + ", srcDocumentId=" + srcDocumentId
             + ", destinationCardId=" + destinationCardId + ", teaser=" + teaser + "}";
     }
 }

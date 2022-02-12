@@ -12,15 +12,20 @@ import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithIndex;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,6 +37,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -56,7 +62,8 @@ import javax.persistence.Transient;
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 //FIXME see if is needed or not. It was implemented for test purpose at first
 @NamedQuery(name = "Document.findAll", query = "SELECT d FROM Document d")
-public abstract class Document implements ColabEntity, WithWebsocketChannels, WithIndex {
+public abstract class Document
+    implements ColabEntity, WithWebsocketChannels, WithIndex, StickyNoteSourceable {
 
     private static final long serialVersionUID = 1L;
 
@@ -106,6 +113,13 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels, Wi
      */
     @Transient
     private Long owningResourceId;
+
+    /**
+     * The list of sticky note links of which the document is the source
+     */
+    @OneToMany(mappedBy = "srcDocument", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -217,6 +231,21 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels, Wi
      */
     public boolean hasOwningResource() {
         return this.owningResource != null || this.owningResourceId != null;
+    }
+
+    /**
+     * @return the list of sticky note links of which the document is the source
+     */
+    @Override
+    public List<StickyNoteLink> getStickyNoteLinksAsSrc() {
+        return stickyNoteLinksAsSrc;
+    }
+
+    /**
+     * @param stickyNoteLinksAsSrc the list of sticky note links of which the document is the source
+     */
+    public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
+        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
     }
 
     /**

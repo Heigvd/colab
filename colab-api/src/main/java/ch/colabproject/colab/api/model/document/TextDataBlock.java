@@ -10,32 +10,27 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
-import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
-import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
 
 /**
- * Piece of a block document containing text data
+ * Container of text data
  *
  * @author sandra
  */
 // TODO adjust the constraints / indexes
 @Entity
 @DiscriminatorValue("TEXT_DATA_BLOCK")
-public class TextDataBlock extends Document implements StickyNoteSourceable {
+public class TextDataBlock extends Document {
 
     private static final long serialVersionUID = 1L;
 
@@ -86,13 +81,6 @@ public class TextDataBlock extends Document implements StickyNoteSourceable {
     private StickyNoteLink explainingStickyNoteLink;
 
     // no need of explainingStickyNoteLink
-
-    /**
-     * The list of sticky note links of which the block is the source
-     */
-    @OneToMany(mappedBy = "srcBlock", cascade = CascadeType.ALL)
-    @JsonbTransient
-    private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -185,21 +173,6 @@ public class TextDataBlock extends Document implements StickyNoteSourceable {
         this.explainingStickyNoteLink = stickyNoteLink;
     }
 
-    /**
-     * @return the list of sticky note links of which the block is the source
-     */
-    @Override
-    public List<StickyNoteLink> getStickyNoteLinksAsSrc() {
-        return stickyNoteLinksAsSrc;
-    }
-
-    /**
-     * @param stickyNoteLinksAsSrc the list of sticky note links of which the block is the source
-     */
-    public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
-        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
-    }
-
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
@@ -216,7 +189,6 @@ public class TextDataBlock extends Document implements StickyNoteSourceable {
         }
     }
 
-    // TODO check if ok
     @Override
     public Set<WebsocketChannel> getChannels() {
         if (this.owningCardContent != null) {
@@ -268,6 +240,8 @@ public class TextDataBlock extends Document implements StickyNoteSourceable {
             return null;
         }
     }
+
+// TODO sandra work in progress - ACL on text data blocks
 
 //    @Override
 //    @JsonbTransient

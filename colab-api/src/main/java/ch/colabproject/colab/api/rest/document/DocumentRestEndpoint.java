@@ -6,8 +6,10 @@
  */
 package ch.colabproject.colab.api.rest.document;
 
+import ch.colabproject.colab.api.controller.document.DocumentManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
@@ -46,6 +48,12 @@ public class DocumentRestEndpoint {
      */
     @Inject
     private DocumentDao documentDao;
+
+    /**
+     * The document specific logic
+     */
+    @Inject
+    private DocumentManager documentManager;
 
     // *********************************************************************************************
     // CRUD
@@ -88,6 +96,24 @@ public class DocumentRestEndpoint {
     public void updateDocument(Document document) throws ColabMergeException {
         logger.debug("update document {}", document);
         documentDao.updateDocument(document);
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    /**
+     * Get all sticky note links where the document is the source
+     *
+     * @param documentId the id of the document
+     *
+     * @return list of links
+     */
+    @GET
+    @Path("{id}/StickyNoteLinks")
+    public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long documentId) {
+        logger.debug("Get sticky note links where document #{} is the source", documentId);
+        return documentManager.getStickyNoteLinkAsSrc(documentId);
     }
 
 }

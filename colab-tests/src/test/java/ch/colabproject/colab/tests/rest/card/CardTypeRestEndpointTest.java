@@ -71,7 +71,8 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(cardType.getPurposeId());
         Assertions.assertNotNull(cardType.getTags());
 
-        TextDataBlock persistedPurpose = client.blockRestEndpoint.getBlock(cardType.getPurposeId());
+        TextDataBlock persistedPurpose = (TextDataBlock) client.documentRestEndpoint
+            .getDocument(cardType.getPurposeId());
         Assertions.assertNotNull(persistedPurpose);
         Assertions.assertEquals(DEFAULT_MIME_TYPE, persistedPurpose.getMimeType());
         Assertions.assertEquals(purpose, persistedPurpose.getTextData());
@@ -355,7 +356,8 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         CardType cardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
         Assertions.assertNull(cardType.getTitle());
         Assertions.assertNotNull(cardType.getPurposeId());
-        TextDataBlock persistedPurpose = client.blockRestEndpoint.getBlock(cardType.getPurposeId());
+        TextDataBlock persistedPurpose = (TextDataBlock) client.documentRestEndpoint
+            .getDocument(cardType.getPurposeId());
         Assertions.assertNotNull(persistedPurpose);
         Assertions.assertEquals(DEFAULT_MIME_TYPE, persistedPurpose.getMimeType());
         Assertions.assertNull(persistedPurpose.getTextData());
@@ -421,7 +423,8 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
 
         Assertions.assertNotNull(persistedCardType.getPurposeId());
         Long purposeId = persistedCardType.getPurposeId();
-        TextDataBlock persistedPurposeBlock = client.blockRestEndpoint.getBlock(purposeId);
+        TextDataBlock persistedPurposeBlock = (TextDataBlock) client.documentRestEndpoint
+            .getDocument(purposeId);
         Assertions.assertNotNull(persistedPurposeBlock);
 
         client.cardTypeRestEndpoint.deleteCardType(cardTypeId);
@@ -429,7 +432,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         persistedCardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
         Assertions.assertNull(persistedCardType);
 
-        persistedPurposeBlock = client.blockRestEndpoint.getBlock(purposeId);
+        persistedPurposeBlock = (TextDataBlock) client.documentRestEndpoint.getDocument(purposeId);
         Assertions.assertNull(persistedPurposeBlock);
     }
 

@@ -7,8 +7,11 @@
 package ch.colabproject.colab.api.controller.document;
 
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -77,15 +80,67 @@ public class DocumentManager {
             return false;
         }
 
-        if (!(document.hasOwningCardContent() || document.hasOwningResource())) {
-            return false;
-        }
-
-        if (document.hasOwningCardContent() && document.hasOwningResource()) {
+        if (countOwners(document) != 1) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * Count the number of entities owning the document. It should be only one.
+     *
+     * @param document the document to check
+     *
+     * @return the number of owning entities
+     */
+    protected int countOwners(Document document) {
+        int result = 0;
+
+        if (document.hasOwningCardContent()) {
+            result++;
+        }
+
+        if (document.hasOwningResource()) {
+            result++;
+        }
+
+        if (document instanceof TextDataBlock) {
+            TextDataBlock block = (TextDataBlock) document;
+
+            if (block.getPurposingCardType() != null) {
+                result++;
+            }
+
+            if (block.getTeasingResource() != null) {
+                result++;
+            }
+
+            if (block.getExplainingStickyNoteLink() != null) {
+                result++;
+            }
+        }
+
+        return result;
+    }
+
+    // *********************************************************************************************
+    // retrieve the elements linked to documents
+    // *********************************************************************************************
+
+    /**
+     * Get all sticky note links of which the given document is the source
+     *
+     * @param docId the id of the document
+     *
+     * @return all sticky note links which has the given document as source
+     */
+    public List<StickyNoteLink> getStickyNoteLinkAsSrc(Long docId) {
+        logger.debug("get sticky note links where the document #{} is the source", docId);
+
+        Document document = assertAndGetDocument(docId);
+
+        return document.getStickyNoteLinksAsSrc();
     }
 
     // *********************************************************************************************

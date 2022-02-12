@@ -845,19 +845,19 @@ export const unsubscribeFromBlockChannel = createAsyncThunk(
 export const getBlockPendingChanges = createAsyncThunk(
   'block/getPendingChanges',
   async (id: number) => {
-    return await restClient.BlockRestEndpoint.getChanges(id);
+    return await restClient.ChangeRestEndpoint.getChanges(id);
   },
 );
 
 export const patchBlock = createAsyncThunk(
   'block/patch',
   async (payload: { id: number; change: Change }) => {
-    return await restClient.BlockRestEndpoint.patchBlock(payload.id, payload.change);
+    return await restClient.ChangeRestEndpoint.patchBlock(payload.id, payload.change);
   },
 );
 
 export const deletePendingChanges = createAsyncThunk('block/deleteChanges', async (id: number) => {
-  return await restClient.BlockRestEndpoint.deletePendingChanges(id);
+  return await restClient.ChangeRestEndpoint.deletePendingChanges(id);
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

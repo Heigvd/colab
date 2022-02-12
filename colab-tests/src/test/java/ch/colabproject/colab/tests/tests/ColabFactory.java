@@ -304,7 +304,7 @@ public class ColabFactory {
 //    }
 
     /**
-     * Create a resource block document for test purpose
+     * Create a resource document for test purpose
      *
      * @param client rest client to execute HTTP requests
      * @param cardId the id of the card the resource belongs to
@@ -321,6 +321,27 @@ public class ColabFactory {
         Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
 
         return (Resource) client.resourceRestEndpoint.getAbstractResource(id);
+    }
+
+    /**
+     * Create a resource with a text data block document for test purpose
+     *
+     * @param client rest client to execute HTTP requests
+     * @param cardId the id of the card the resource belongs to
+     * @param title  title of the document
+     *
+     * @return the freshly created document
+     */
+    public static Resource createTextDataBlockCardResource(ColabClient client, Long cardId, String title) {
+        ResourceCreationBean resourceToCreate = new ResourceCreationBean();
+        resourceToCreate.setTitle(title);
+        resourceToCreate.setDocuments(List.of(new TextDataBlock()));
+        resourceToCreate.setCardId(cardId);
+
+        Long id = client.resourceRestEndpoint.createResource(resourceToCreate);
+
+        return (Resource) client.resourceRestEndpoint.getAbstractResource(id);
+
     }
 
     public static Document getOneDocumentOfResource(ColabClient client, Resource resource) {

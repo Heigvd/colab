@@ -1133,16 +1133,16 @@ public class AccessControlTest extends AbstractArquillianTest {
 //      return false;
     }
 
-    private boolean hasBlockReadAccess() {
-        try {
-            aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
-            return true;
-        } catch (@SuppressWarnings("unused") Exception e) {
-            return false;
-        }
-//      Assertions.fail("Problem checking  read access");
-//      return false;
-    }
+//    private boolean hasBlockReadAccess() {
+//        try {
+//            aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
+//            return true;
+//        } catch (@SuppressWarnings("unused") Exception e) {
+//            return false;
+//        }
+////      Assertions.fail("Problem checking  read access");
+////      return false;
+//    }
 
 //    private boolean hasBlockReadWriteAccess() {
 //        try {

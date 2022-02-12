@@ -8,15 +8,11 @@ package ch.colabproject.colab.api.model.document;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
-import ch.colabproject.colab.api.model.link.StickyNoteLink;
-import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
-import java.util.ArrayList;
-import java.util.List;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 
@@ -34,7 +30,7 @@ import javax.json.bind.annotation.JsonbTypeDeserializer;
 //)
 //@Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-public abstract class Block implements ColabEntity, StickyNoteSourceable {
+public abstract class Block implements ColabEntity/* , StickyNoteSourceable */ {
 
     private static final long serialVersionUID = 1L;
 
@@ -76,12 +72,12 @@ public abstract class Block implements ColabEntity, StickyNoteSourceable {
 //    @Transient
     private Long documentId;
 
-    /**
-     * The list of sticky note links of which the block is the source
-     */
-//    @OneToMany(mappedBy = "srcBlock", cascade = CascadeType.ALL)
-    @JsonbTransient
-    private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
+//    /**
+//     * The list of sticky note links of which the block is the source
+//     */
+////    @OneToMany(mappedBy = "srcBlock", cascade = CascadeType.ALL)
+//    @JsonbTransient
+//    private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -166,20 +162,20 @@ public abstract class Block implements ColabEntity, StickyNoteSourceable {
         }
     }
 
-    /**
-     * @return the list of sticky note links of which the block is the source
-     */
-    @Override
-    public List<StickyNoteLink> getStickyNoteLinksAsSrc() {
-        return stickyNoteLinksAsSrc;
-    }
-
-    /**
-     * @param stickyNoteLinksAsSrc the list of sticky note links of which the block is the source
-     */
-    public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
-        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
-    }
+//    /**
+//     * @return the list of sticky note links of which the block is the source
+//     */
+//    @Override
+//    public List<StickyNoteLink> getStickyNoteLinksAsSrc() {
+//        return stickyNoteLinksAsSrc;
+//    }
+//
+//    /**
+//     * @param stickyNoteLinksAsSrc the list of sticky note links of which the block is the source
+//     */
+//    public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
+//        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
+//    }
 
     /**
      * Get the tracking data

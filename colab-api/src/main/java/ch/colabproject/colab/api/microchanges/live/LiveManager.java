@@ -8,12 +8,12 @@ package ch.colabproject.colab.api.microchanges.live;
 
 import ch.colabproject.colab.api.controller.EntityGatheringBagForPropagation;
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.document.BlockManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.microchanges.model.Change;
 import ch.colabproject.colab.api.microchanges.tools.CancelDebounce;
 import ch.colabproject.colab.api.microchanges.tools.Debouncer;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
-import ch.colabproject.colab.api.persistence.jpa.document.TextDataBlockDao;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,9 +57,9 @@ public class LiveManager implements Serializable {
     @Inject
     private Cache<Long, LiveUpdates> cache;
 
-    /** Block DAO */
+    /** Block specific logic management */
     @Inject
-    private TextDataBlockDao blockDao;
+    private BlockManager blockManager;
 
     /** Hazelcast instance. */
     @Inject
@@ -107,7 +107,7 @@ public class LiveManager implements Serializable {
     }
 
     /**
-     * Get pendings updates for the given block
+     * Get pending updates for the given block
      *
      * @param id of the block
      *
@@ -124,11 +124,10 @@ public class LiveManager implements Serializable {
             } else {
                 LiveUpdates l = new LiveUpdates();
 
-                TextDataBlock block = blockDao.findBlock(id);
+                TextDataBlock block = blockManager.findBlock(id);
                 l.setRevision(block.getRevision());
                 l.setContent(block.getTextData());
 
-                // l.setRevision(txtBlock.getRevision());
                 l.setTargetClass(block.getJsonDiscriminator());
                 l.setTargetId(block.getId());
 
@@ -149,7 +148,7 @@ public class LiveManager implements Serializable {
      */
     public void patchBlock(Long id, Change patch) {
         logger.debug("Patch block #{} with {}", id, patch);
-        TextDataBlock block = blockDao.findBlock(id);
+        TextDataBlock block = blockManager.findBlock(id);
         try {
             this.lock(id);
             LiveUpdates get = get(id);
@@ -221,7 +220,7 @@ public class LiveManager implements Serializable {
             logger.debug("Process changes for #{}", blockId);
             try {
                 this.lock(blockId);
-                TextDataBlock block = blockDao.findBlock(blockId);
+                TextDataBlock block = blockManager.findBlock(blockId);
                 LiveUpdates get = this.cache.get(blockId);
                 if (get != null) {
                     try {
@@ -229,7 +228,7 @@ public class LiveManager implements Serializable {
                         block.setTextData(result.getContent());
                         block.setRevision(result.getRevision());
 
-                        blockDao.updateBlock(block);
+                        blockManager.updateBlock(block);
                         this.deletePendingChangesAndPropagate(blockId);
                     } catch (RuntimeException ex) {
                         logger.error("Process failed", ex);
@@ -251,7 +250,7 @@ public class LiveManager implements Serializable {
      */
     public void deletePendingChangesAndPropagate(Long id) {
         logger.debug("Delete pending changes");
-        TextDataBlock block = blockDao.findBlock(id);
+        TextDataBlock block = blockManager.findBlock(id);
         if (block != null) {
             List<Change> changes = getPendingChanges(id);
             cache.remove(id);

@@ -6,11 +6,11 @@
  */
 package ch.colabproject.colab.api.controller;
 
+import ch.colabproject.colab.api.controller.document.BlockManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
-import ch.colabproject.colab.api.persistence.jpa.document.TextDataBlockDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
 import ch.colabproject.colab.api.persistence.jpa.user.UserDao;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -56,8 +58,6 @@ import org.slf4j.LoggerFactory;
 import com.hazelcast.cluster.Member;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IExecutorService;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Some methods to handle websocket connections. In the future, we may consider using external
@@ -129,10 +129,10 @@ public class WebsocketManager {
     private ProjectDao projectDao;
 
     /**
-     * Block DAO
+     * Block specific logic management
      */
     @Inject
-    private TextDataBlockDao blockDao;
+    private BlockManager blockManager;
 
     /**
      * User DAO
@@ -176,8 +176,8 @@ public class WebsocketManager {
      */
     public Set<ChannelOverview> getExistingChannels() {
         IExecutorService executorService = hzInstance.getExecutorService("COLAB_WS");
-        Map<Member, Future<Map<WebsocketEffectiveChannel, Integer>>> results
-            = executorService.submitToAllMembers(new CallableGetChannel());
+        Map<Member, Future<Map<WebsocketEffectiveChannel, Integer>>> results = executorService
+            .submitToAllMembers(new CallableGetChannel());
 
         Map<WebsocketEffectiveChannel, Integer> aggregate = new HashMap<>();
 
@@ -345,9 +345,10 @@ public class WebsocketManager {
      */
     public void subscribeToBlockChannel(WsSessionIdentifier sessionId, Long blockId) {
         logger.debug("Session {} want to subscribe to Block#{}", sessionId, blockId);
-        TextDataBlock block = blockDao.findBlock(blockId);
+        TextDataBlock block = blockManager.findBlock(blockId);
         if (block != null) {
-            // no explicit security check : if one can load the block, one can subscribe to its channel
+            // no explicit security check : if one can load the block, one can subscribe to its
+            // channel
 //            securityManager.assertConditionTx(new Conditions.IsCurrentUserMemberOfBlock(block),
 //                "Subscribe to block channel: Permission denied");
             SubscriptionRequest request = SubscriptionRequest.build(
@@ -372,9 +373,10 @@ public class WebsocketManager {
      */
     public void unsubscribeFromBlockChannel(WsSessionIdentifier sessionId, Long blockId) {
         logger.debug("Session {} want to unsubscribe from Block#{}", sessionId, blockId);
-        TextDataBlock block = blockDao.findBlock(blockId);
+        TextDataBlock block = blockManager.findBlock(blockId);
         if (block != null) {
-            // no explicit security check : if one can load the block, one can subscribe to its channel
+            // no explicit security check : if one can load the block, one can subscribe to its
+            // channel
 //            securityManager.assertConditionTx(new Conditions.IsCurrentUserMemberOfBlock(block),
 //                "Subscribe to block channel: Permission denied");
             SubscriptionRequest request = SubscriptionRequest.build(
@@ -409,15 +411,17 @@ public class WebsocketManager {
                 if (channel != null) {
                     synchronized (this) {
                         // make sure the http session has its own set of wsSessions
-                        // and  make sure the websocket session is linked to the http session
-                        httpSessionToWsSessions.computeIfAbsent(request.getColabSessionId(), (key) -> {
-                            return new HashSet<>();
-                        })
-                            // and  make sure the websocket session is linked to the http session
+                        // and make sure the websocket session is linked to the http session
+                        httpSessionToWsSessions
+                            .computeIfAbsent(request.getColabSessionId(), (key) -> {
+                                return new HashSet<>();
+                            })
+                            // and make sure the websocket session is linked to the http session
                             .add(session);
 
                         // make sure to link wsSession to its Http session
-                        // wsSessionToHttpSession.put(session, request.getColabSessionId()); // TODO: is it even used ?
+                        // wsSessionToHttpSession.put(session, request.getColabSessionId()); //
+                        // TODO: is it even used ?
                         if (request.getType() == SubscriptionRequest.SubscriptionType.SUBSCRIBE) {
                             // make sure the http session has its own list of channels
                             wsSessionMap.computeIfAbsent(session, (key) -> {
@@ -462,12 +466,12 @@ public class WebsocketManager {
             logger.debug("Session {} subscribes to {}", sessionId, channel);
         }
         subscriptions.computeIfAbsent(channel, (key -> {
-            return new HashSet();
+            return new HashSet<>();
         })).add(session);
 
-        //  make sure to propgate channelCHange after subscription
-        //  (the ChannelChange event may be send through this very subscription, eg if an admin
-        //   is subscribing to its own userChannel)
+        // make sure to propagate channelCHange after subscription
+        // (the ChannelChange event may be send through this very subscription, eg if an admin
+        // is subscribing to its own userChannel)
         this.propagateChannelChange(channel, 1);
     }
 
@@ -481,15 +485,15 @@ public class WebsocketManager {
     private void unsubscribe(WebsocketEffectiveChannel channel, Set<Session> sessions) {
         Set<Session> chSessions = subscriptions.get(channel);
         if (logger.isDebugEnabled()) {
-            logger.debug("Sessions {} unsubscribes from {}", sessions.stream().map(session
-                -> WebsocketEndpoint.getSessionId(session)
-            ), channel);
+            logger.debug("Sessions {} unsubscribes from {}",
+                sessions.stream().map(session -> WebsocketEndpoint.getSessionId(session)
+                ), channel);
         }
         if (chSessions != null) {
             int size = chSessions.size();
             chSessions.removeAll(sessions);
 
-            // make sure to propate change before the unsubscription is effective
+            // make sure to propagate change before the unsubscription is effective
             this.propagateChannelChange(channel, chSessions.size() - size);
 
             if (chSessions.isEmpty()) {
@@ -532,7 +536,7 @@ public class WebsocketManager {
                 return ProjectContentChannel.build(project);
             }
         } else if (request.getChannelType() == SubscriptionRequest.ChannelType.BLOCK) {
-            TextDataBlock block = blockDao.findBlock(request.getChannelId());
+            TextDataBlock block = blockManager.findBlock(request.getChannelId());
             if (block != null) {
                 return BlockChannel.build(block);
             }
@@ -563,7 +567,6 @@ public class WebsocketManager {
     /**
      * On Hazelcast event. Each instance receive precomputed message.
      *
-     *
      * @param payload the messagesByChannels to send to clients though relevant websocket channels
      */
     public void onMessagePropagation(
@@ -577,7 +580,8 @@ public class WebsocketManager {
                     subscribers.forEach(session -> {
                         messages.forEach(message -> {
                             try {
-                                logger.debug("Send {} to {} ({})", message, session.getId(), channel);
+                                logger.debug("Send {} to {} ({})", message, session.getId(),
+                                    channel);
                                 if (session.isOpen()) {
                                     session.getBasicRemote().sendText(message);
                                 }
@@ -600,10 +604,12 @@ public class WebsocketManager {
      */
     public void signoutAndUnsubscribeFromAll(Long httpSessionId) {
         synchronized (this) {
-            // TODO send logout event, so each client (each browser tab) knows it has been disconnected
+            // TODO send logout event, so each client (each browser tab) knows it has been
+            // disconnected
             Set<Session> wsSessions = this.httpSessionToWsSessions.get(httpSessionId);
             if (wsSessions != null) {
-                // the http session is linked to one or more websocket session, let's cancel all their
+                // the http session is linked to one or more websocket session, let's cancel all
+                // their
                 // subscriptions
                 wsSessions.stream()
                     // get channels from each wsSession

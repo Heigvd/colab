@@ -196,6 +196,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(deliverable.getId());
         Assertions.assertEquals(0, deliverable.getIndex());
         Assertions.assertEquals(cardContentId, deliverable.getOwningCardContentId());
+        Assertions.assertNull(deliverable.getOwningResourceId());
         Assertions.assertTrue(deliverable instanceof ExternalLink);
         Assertions.assertEquals(doc1Url, ((ExternalLink) deliverable).getUrl());
         Long doc1Id = deliverable.getId();
@@ -225,6 +226,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(deliverable2.getId());
         Assertions.assertEquals(0, deliverable2.getIndex());
         Assertions.assertEquals(cardContentId, deliverable2.getOwningCardContentId());
+        Assertions.assertNull(deliverable2.getOwningResourceId());
         Assertions.assertTrue(deliverable2 instanceof DocumentFile);
         Assertions.assertEquals(doc2FileName, ((DocumentFile) deliverable2).getFileName());
         Long doc2Id = deliverable2.getId();
@@ -238,6 +240,7 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(deliverable3.getId());
         Assertions.assertEquals(1000, deliverable3.getIndex());
         Assertions.assertEquals(cardContentId, deliverable3.getOwningCardContentId());
+        Assertions.assertNull(deliverable3.getOwningResourceId());
         Assertions.assertTrue(deliverable3 instanceof TextDataBlock);
         Assertions.assertEquals(doc3TextData, ((TextDataBlock) deliverable3).getTextData());
         Long doc3Id = deliverable3.getId();
