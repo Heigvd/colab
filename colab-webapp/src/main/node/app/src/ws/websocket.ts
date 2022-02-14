@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { entityIs, WsChannelUpdate } from 'colab-rest-client';
+import { entityIs, WsChannelUpdate, WsSessionIdentifier, WsUpdateMessage } from 'colab-rest-client';
 import { getApplicationPath, initSocketId } from '../API/api';
 import { checkUnreachable } from '../helper';
 import { getLogger } from '../logger';
@@ -17,10 +17,6 @@ import { processMessage } from './wsThunkActions';
 const logger = getLogger('WebSockets');
 logger.setLevel(3);
 
-const onChannelUpdate = (message: WsChannelUpdate) => {
-  dispatch(AdminActions.channelUpdate(message));
-};
-
 //export function send(channel: string, payload: {}) {
 //  connection.send(JSON.stringify({
 //    channel,
@@ -29,6 +25,12 @@ const onChannelUpdate = (message: WsChannelUpdate) => {
 //}
 
 const path = getApplicationPath();
+
+interface MappedMessages {
+  WsChannelUpdate: WsChannelUpdate[];
+  WsSessionIdentifier: WsSessionIdentifier[];
+  WsUpdateMessage: WsUpdateMessage[];
+}
 
 function createConnection(onCloseCb: () => void) {
   logger.info('Init Websocket Connection');
@@ -44,26 +46,62 @@ function createConnection(onCloseCb: () => void) {
   };
 
   connection.onmessage = messageEvent => {
-    const message = JSON.parse(messageEvent.data);
-    if (entityIs(message, 'WsMessage')) {
-      if (entityIs(message, 'WsSessionIdentifier')) {
-        dispatch(initSocketId(message));
-      } else if (entityIs(message, 'WsUpdateMessage')) {
-        dispatch(processMessage(message));
-      } else if (entityIs(message, 'WsChannelUpdate')) {
-        onChannelUpdate(message);
+    const parsed = JSON.parse(messageEvent.data);
+
+    const messages = Array.isArray(parsed) ? parsed : [parsed];
+
+    const sorted = messages.reduce<MappedMessages>(
+      (acc, message) => {
+        if (entityIs(message, 'WsMessage')) {
+          if (entityIs(message, 'WsSessionIdentifier')) {
+            acc.WsSessionIdentifier.push(message);
+          } else if (entityIs(message, 'WsUpdateMessage')) {
+            acc.WsUpdateMessage.push(message);
+          } else if (entityIs(message, 'WsChannelUpdate')) {
+            acc.WsChannelUpdate.push(message);
+          } else {
+            //If next line is erroneous, it means a type of WsMessage is not handled
+            checkUnreachable(message);
+          }
+        } else {
+          dispatch(
+            addNotification({
+              status: 'OPEN',
+              type: 'ERROR',
+              message: `Unhandled message type: ${message['@class']}`,
+            }),
+          );
+        }
+
+        return acc;
+      },
+      {
+        WsChannelUpdate: [],
+        WsSessionIdentifier: [],
+        WsUpdateMessage: [],
+      },
+    );
+
+    if (sorted.WsChannelUpdate.length > 0) {
+      dispatch(AdminActions.channelUpdate(sorted.WsChannelUpdate));
+    }
+
+    if (sorted.WsUpdateMessage.length > 0) {
+      dispatch(processMessage(sorted.WsUpdateMessage));
+    }
+
+    if (sorted.WsSessionIdentifier.length > 0) {
+      if (sorted.WsSessionIdentifier.length === 1) {
+        dispatch(initSocketId(sorted.WsSessionIdentifier[0]!));
       } else {
-        //If next line is erroneous, it means a type of WsMessage is not handled
-        checkUnreachable(message);
+        dispatch(
+          addNotification({
+            status: 'OPEN',
+            type: 'ERROR',
+            message: 'Multiple Session Identifier',
+          }),
+        );
       }
-    } else {
-      dispatch(
-        addNotification({
-          status: 'OPEN',
-          type: 'ERROR',
-          message: `Unhandled message type: ${message['@class']}`,
-        }),
-      );
     }
   };
 }

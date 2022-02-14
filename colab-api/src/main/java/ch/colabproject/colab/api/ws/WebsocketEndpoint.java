@@ -12,6 +12,7 @@ import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
 import ch.colabproject.colab.api.ws.utils.JsonDecoder;
 import ch.colabproject.colab.api.ws.utils.JsonEncoder;
+import ch.colabproject.colab.api.ws.utils.JsonWsMessageListDecoder;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.flakeidgen.FlakeIdGenerator;
 import java.io.IOException;
@@ -39,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author maxence
  */
 @ApplicationScoped
-@ServerEndpoint(value = "/ws", encoders = JsonEncoder.class, decoders = JsonDecoder.class)
+@ServerEndpoint(value = "/ws", encoders = JsonEncoder.class, decoders = {JsonDecoder.class, JsonWsMessageListDecoder.class})
 public class WebsocketEndpoint {
 
     /**

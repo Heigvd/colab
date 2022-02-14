@@ -8,15 +8,18 @@ package ch.colabproject.colab.tests.ws;
 
 import ch.colabproject.colab.api.ws.message.WsMessage;
 import ch.colabproject.colab.api.ws.message.WsSessionIdentifier;
-import ch.colabproject.colab.api.ws.utils.JsonDecoder;
 import ch.colabproject.colab.api.ws.utils.JsonEncoder;
+import ch.colabproject.colab.generator.model.tools.JsonbProvider;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbException;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.CloseReason;
 import javax.websocket.ContainerProvider;
@@ -27,6 +30,7 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
+import javax.ws.rs.core.GenericType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +38,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author maxence
  */
-@ClientEndpoint(encoders = JsonEncoder.class, decoders = JsonDecoder.class)
+@ClientEndpoint(encoders = JsonEncoder.class)
 public class WebsocketClient {
 
     private static final Logger logger = LoggerFactory.getLogger(WebsocketClient.class);
@@ -83,7 +87,51 @@ public class WebsocketClient {
      * @param message the message
      */
     @OnMessage
-    public void onMessage(WsMessage message) {
+    public void onRawMessage(String message) {
+        try {
+            if (message.charAt(0) == '[') {
+                Jsonb jsonb = JsonbProvider.getJsonb();
+
+                Type type = new GenericType<ArrayList<WsMessage>>() {
+                }.getType();
+                onMessage((List) jsonb.fromJson(message, type));
+            } else {
+                Jsonb jsonb = JsonbProvider.getJsonb();
+                onMessage(jsonb.fromJson(message, WsMessage.class));
+            }
+        } catch (JsonbException ex) {
+            logger.trace("");
+        }
+    }
+
+    /**
+     * Process list of messages
+     *
+     * @param messages messages
+     */
+    private void onMessage(List<WsMessage> messages) {
+        logger.debug("Receive message: {}", messages);
+        synchronized (this) {
+            logger.trace("Receive message synchronized: {}", messages);
+            this.received.addAll(messages);
+            logger.trace("{} message are available", received.size());
+
+            if (this.latch != null) {
+                long count = latch.getCount();
+                this.latch.countDown();
+                logger.trace("Count down : {} to {}", count, latch.getCount());
+            } else {
+                logger.trace("Nobody is waiting");
+            }
+        }
+    }
+
+    /**
+     * Process one single message
+     *
+     * @param message the message
+     */
+    private void onMessage(WsMessage message) {
         logger.debug("Receive message: {}", message);
         synchronized (this) {
             logger.trace("Receive message synchronized: {}", message);
