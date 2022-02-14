@@ -54,7 +54,7 @@ public class IndexGeneratorHelper {
         List<WithIndex> workData = new ArrayList<WithIndex>(collection);
 
         if (workData.isEmpty()) {
-            return MIN_INDEX;
+            return MIN_INDEX + DEFAULT_INDEX_INC;
         } else {
             workData.sort(Comparator.comparingInt(obj -> obj.getIndex()));
 
@@ -87,7 +87,7 @@ public class IndexGeneratorHelper {
      * @param sortedCollection The sorted collection to reindex
      */
     private static void reorderIndexes(List<WithIndex> sortedCollection) {
-        int index = MIN_INDEX;
+        int index = MIN_INDEX + DEFAULT_INDEX_INC;
 
         for (WithIndex obj : sortedCollection) {
             obj.setIndex(index);
