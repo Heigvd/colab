@@ -34,6 +34,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -574,23 +575,32 @@ public class WebsocketManager {
 
         Map<WebsocketEffectiveChannel, List<String>> messagesByChannels = payload.getMessages();
         if (messagesByChannels != null) {
+
+            Map<Session, List<String>> mappedMessages = new HashMap<>();
+
+            // Group messages by effective websocket session
             messagesByChannels.forEach((channel, messages) -> {
                 Set<Session> subscribers = this.subscriptions.get(channel);
                 if (subscribers != null) {
                     subscribers.forEach(session -> {
-                        messages.forEach(message -> {
-                            try {
-                                logger.debug("Send {} to {} ({})", message, session.getId(),
-                                    channel);
-                                if (session.isOpen()) {
-                                    session.getBasicRemote().sendText(message);
-                                }
-                            } catch (IOException ex) {
-                                logger.error("Failed to send websocket message {} to {}",
-                                    message, session);
-                            }
-                        });
+                        List<String> list = mappedMessages.computeIfAbsent(session, (k) -> new LinkedList<>());
+                        list.addAll(messages);
                     });
+                }
+            });
+
+            // send one big message to each session
+            mappedMessages.entrySet().forEach(entry -> {
+                Session session = entry.getKey();
+                String jsonArray = entry.getValue().stream().collect(Collectors.joining(", ", "[", "]"));
+                try {
+                    logger.debug("Send {} to {} ({})", jsonArray, session.getId());
+                    if (session.isOpen()) {
+                        session.getBasicRemote().sendText(jsonArray);
+                    }
+                } catch (IOException ex) {
+                    logger.error("Failed to send websocket message {} to {}",
+                        jsonArray, session);
                 }
             });
         }

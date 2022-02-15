@@ -37,45 +37,48 @@ const adminSlice = createSlice({
   reducers: {
     channelUpdate: (
       state,
-      action: PayloadAction<{ channel: WebsocketEffectiveChannel; diff: number }>,
+      action: PayloadAction<{ channel: WebsocketEffectiveChannel; diff: number }[]>,
     ) => {
-      if (typeof state.occupiedChannels != 'string') {
-        const channel = action.payload.channel;
-        const count = action.payload.diff;
+      const channels = state.occupiedChannels;
+      if (typeof channels != 'string') {
+        action.payload.forEach(message => {
+          const channel = message.channel;
+          const count = message.diff;
 
-        const index = state.occupiedChannels.findIndex(item => {
-          if (entityIs(channel, 'UserChannel') && entityIs(item.channel, 'UserChannel')) {
-            return channel.userId === item.channel.userId;
-          } else if (
-            entityIs(channel, 'ProjectContentChannel') &&
-            entityIs(item.channel, 'ProjectContentChannel')
-          ) {
-            return channel.projectId === item.channel.projectId;
-          } else {
-            return false;
+          const index = channels.findIndex(item => {
+            if (entityIs(channel, 'UserChannel') && entityIs(item.channel, 'UserChannel')) {
+              return channel.userId === item.channel.userId;
+            } else if (
+              entityIs(channel, 'ProjectContentChannel') &&
+              entityIs(item.channel, 'ProjectContentChannel')
+            ) {
+              return channel.projectId === item.channel.projectId;
+            } else {
+              return false;
+            }
+          });
+
+          if (index >= 0) {
+            const found = channels[index];
+            if (found != null) {
+              // channel exists
+              const newCount = found.count + count;
+              if (newCount > 0) {
+                // update channel
+                found.count = newCount;
+              } else {
+                // remove channel
+                channels.splice(index, 1);
+              }
+            }
+          } else if (count > 0) {
+            channels.push({
+              '@class': 'ChannelOverview',
+              channel: channel,
+              count: count,
+            });
           }
         });
-
-        if (index >= 0) {
-          const found = state.occupiedChannels[index];
-          if (found != null) {
-            // channel exists
-            const newCount = found.count + count;
-            if (newCount > 0) {
-              // update channel
-              found.count = newCount;
-            } else {
-              // remove channel
-              state.occupiedChannels.splice(index, 1);
-            }
-          }
-        } else if (count > 0) {
-          state.occupiedChannels.push({
-            '@class': 'ChannelOverview',
-            channel: channel,
-            count: count,
-          });
-        }
       }
     },
   },
