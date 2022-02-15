@@ -6,7 +6,6 @@
  */
 package ch.colabproject.colab.api.model.document;
 
-import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithIndex;
@@ -65,6 +64,9 @@ import javax.persistence.Transient;
 public abstract class Document
     implements ColabEntity, WithWebsocketChannels, WithIndex, StickyNoteSourceable {
 
+    /** Name of the document/resource sequence */
+    public static final String DOCUMENT_SEQUENCE_NAME = "document_seq";
+
     private static final long serialVersionUID = 1L;
 
     // ---------------------------------------------------------------------------------------------
@@ -74,7 +76,7 @@ public abstract class Document
      * Document ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = STRUCTURE_SEQUENCE_NAME)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = DOCUMENT_SEQUENCE_NAME)
     protected Long id;
 
     /**
