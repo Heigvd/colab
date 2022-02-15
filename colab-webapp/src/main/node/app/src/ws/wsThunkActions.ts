@@ -130,42 +130,42 @@ export const processMessage = createAsyncThunk(
             message: `Unhandled deleted entity: ${item.type}#${item.id}`,
           });
         }
+      }
 
-        for (const item of event.updated) {
-          if (entityIs(item, 'Account')) {
-            bag.accounts.updated.push(item);
-          } else if (entityIs(item, 'AccessControl')) {
-            bag.acl.updated.push(item);
-          } else if (entityIs(item, 'ActivityFlowLink')) {
-            bag.activityFlowLinks.updated.push(item);
-          } else if (entityIs(item, 'Card')) {
-            bag.cards.updated.push(item);
-          } else if (entityIs(item, 'Change')) {
-            bag.changes.updated.push(item);
-          } else if (entityIs(item, 'CardContent')) {
-            bag.contents.updated.push(item);
-          } else if (entityIs(item, 'Document')) {
-            bag.documents.updated.push(item);
-          } else if (entityIs(item, 'HttpSession')) {
-            bag.httpSessions.updated.push(item);
-          } else if (entityIs(item, 'TeamMember')) {
-            bag.members.updated.push(item);
-          } else if (entityIs(item, 'Project')) {
-            bag.projects.updated.push(item);
-          } else if (entityIs(item, 'AbstractResource')) {
-            bag.resources.updated.push(item);
-          } else if (entityIs(item, 'TeamRole')) {
-            bag.roles.updated.push(item);
-          } else if (entityIs(item, 'StickyNoteLink')) {
-            bag.stickynotelinks.updated.push(item);
-          } else if (entityIs(item, 'AbstractCardType')) {
-            bag.types.updated.push(item);
-          } else if (entityIs(item, 'User')) {
-            bag.users.updated.push(item);
-          } else {
-            //If next line is erroneous, it means a type of WsMessage is not handled
-            checkUnreachable(item);
-          }
+      for (const item of event.updated) {
+        if (entityIs(item, 'Account')) {
+          bag.accounts.updated.push(item);
+        } else if (entityIs(item, 'AccessControl')) {
+          bag.acl.updated.push(item);
+        } else if (entityIs(item, 'ActivityFlowLink')) {
+          bag.activityFlowLinks.updated.push(item);
+        } else if (entityIs(item, 'Card')) {
+          bag.cards.updated.push(item);
+        } else if (entityIs(item, 'Change')) {
+          bag.changes.updated.push(item);
+        } else if (entityIs(item, 'CardContent')) {
+          bag.contents.updated.push(item);
+        } else if (entityIs(item, 'Document')) {
+          bag.documents.updated.push(item);
+        } else if (entityIs(item, 'HttpSession')) {
+          bag.httpSessions.updated.push(item);
+        } else if (entityIs(item, 'TeamMember')) {
+          bag.members.updated.push(item);
+        } else if (entityIs(item, 'Project')) {
+          bag.projects.updated.push(item);
+        } else if (entityIs(item, 'AbstractResource')) {
+          bag.resources.updated.push(item);
+        } else if (entityIs(item, 'TeamRole')) {
+          bag.roles.updated.push(item);
+        } else if (entityIs(item, 'StickyNoteLink')) {
+          bag.stickynotelinks.updated.push(item);
+        } else if (entityIs(item, 'AbstractCardType')) {
+          bag.types.updated.push(item);
+        } else if (entityIs(item, 'User')) {
+          bag.users.updated.push(item);
+        } else {
+          //If next line is erroneous, it means a type of WsMessage is not handled
+          checkUnreachable(item);
         }
       }
     });
