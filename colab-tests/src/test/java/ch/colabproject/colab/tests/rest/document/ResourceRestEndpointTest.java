@@ -276,14 +276,14 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Long doc1Id = persistedDoc1.getId();
         Assertions.assertNotNull(persistedDoc1);
         Assertions.assertNotNull(persistedDoc1.getId());
-        Assertions.assertEquals(0, persistedDoc1.getIndex());
+        Assertions.assertEquals(1000, persistedDoc1.getIndex());
         Assertions.assertEquals(resourceId, persistedDoc1.getOwningResourceId());
         Assertions.assertTrue(persistedDoc1 instanceof ExternalLink);
         Assertions.assertEquals(doc1Url, ((ExternalLink) persistedDoc1).getUrl());
         Long doc2Id = persistedDoc2.getId();
         Assertions.assertNotNull(persistedDoc2);
         Assertions.assertNotNull(persistedDoc2.getId());
-        Assertions.assertEquals(1000, persistedDoc2.getIndex());
+        Assertions.assertEquals(2000, persistedDoc2.getIndex());
         Assertions.assertEquals(resourceId, persistedDoc2.getOwningResourceId());
         Assertions.assertTrue(persistedDoc2 instanceof TextDataBlock);
         Assertions.assertEquals(doc2TextData, ((TextDataBlock) persistedDoc2).getTextData());
@@ -304,7 +304,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         persistedDoc2 = persistedDocs.get(0);
         Assertions.assertNotNull(persistedDoc2);
         Assertions.assertNotNull(persistedDoc2.getId());
-        Assertions.assertEquals(1000, persistedDoc2.getIndex());
+        Assertions.assertEquals(2000, persistedDoc2.getIndex());
         Assertions.assertEquals(resourceId, persistedDoc2.getOwningResourceId());
         Assertions.assertTrue(persistedDoc2 instanceof TextDataBlock);
         Assertions.assertEquals(doc2TextData, ((TextDataBlock) persistedDoc2).getTextData());
@@ -334,7 +334,7 @@ public class ResourceRestEndpointTest extends AbstractArquillianTest {
         Long doc3Id = persistedDoc2.getId();
         Assertions.assertNotNull(createdDoc3);
         Assertions.assertNotNull(createdDoc3.getId());
-        Assertions.assertEquals(0, createdDoc3.getIndex());
+        Assertions.assertEquals(1000, createdDoc3.getIndex());
         Assertions.assertEquals(resourceId, createdDoc3.getOwningResourceId());
         Assertions.assertTrue(createdDoc3 instanceof DocumentFile);
         Assertions.assertEquals(doc3FileName, ((DocumentFile) createdDoc3).getFileName());

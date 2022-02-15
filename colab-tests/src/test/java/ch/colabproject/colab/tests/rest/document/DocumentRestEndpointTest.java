@@ -78,7 +78,7 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(doc instanceof TextDataBlock);
         TextDataBlock textDataBlock = (TextDataBlock) doc;
         Assertions.assertEquals(docId, textDataBlock.getId());
-        Assertions.assertEquals(0, textDataBlock.getIndex());
+        Assertions.assertEquals(1000, textDataBlock.getIndex());
 
         int index = 4;
         String mimeType = "text/plain";
@@ -95,8 +95,6 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(index, persistedDoc.getIndex());
         Assertions.assertTrue(persistedDoc instanceof TextDataBlock);
         TextDataBlock persistedTextDataBlock = (TextDataBlock) persistedDoc;
-        Assertions.assertEquals(docId, persistedTextDataBlock.getId());
-        Assertions.assertEquals(index, persistedTextDataBlock.getIndex());
         Assertions.assertEquals(mimeType, persistedTextDataBlock.getMimeType());
         Assertions.assertEquals(textData, persistedTextDataBlock.getTextData());
     }
@@ -111,7 +109,7 @@ public class DocumentRestEndpointTest extends AbstractArquillianTest {
         ExternalLink extDocLink = (ExternalLink) doc;
         Assertions.assertEquals(docId, extDocLink.getId());
         Assertions.assertNull(extDocLink.getUrl());
-        Assertions.assertEquals(0, extDocLink.getIndex());
+        Assertions.assertEquals(1000, extDocLink.getIndex());
 
         int index = 8;
         String url = "https://www.colab-project.ch/sites/default/files/2021-03/WP1%20-%20Project%20Description%20Model_0.pdf";

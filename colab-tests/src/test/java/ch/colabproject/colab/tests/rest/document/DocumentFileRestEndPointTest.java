@@ -85,7 +85,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
         DocumentFile documentFile = (DocumentFile) doc;
         Assertions.assertEquals(docId, documentFile.getId());
         Assertions.assertNull(documentFile.getFileName());
-        Assertions.assertEquals(0, documentFile.getIndex());
+        Assertions.assertEquals(1000, documentFile.getIndex());
 
         int index = 6;
         String fileName = "random file #" + ((int) (Math.random() * 1000));
