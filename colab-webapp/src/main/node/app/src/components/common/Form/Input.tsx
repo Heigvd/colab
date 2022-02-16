@@ -6,6 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
+import { debounce } from 'lodash';
 import * as React from 'react';
 import {
   errorStyle,
@@ -30,6 +31,7 @@ export interface Props {
   placeholder?: string;
   className?: string;
   readonly?: boolean;
+  delay?: number;
 }
 
 export default function Input({
@@ -44,6 +46,7 @@ export default function Input({
   className,
   placeholder,
   readonly = false,
+  delay = 500,
 }: Props): JSX.Element {
   const [state, setState] = React.useState<string>(value || '');
 
@@ -51,13 +54,23 @@ export default function Input({
     setState(value);
   }, [value]);
 
+  const onChangeRef = React.useRef(onChange);
+  onChangeRef.current = onChange;
+
+  const debouncedOnChange = React.useMemo(
+    () =>
+      debounce((value: string) => {
+        onChangeRef.current(value);
+      }, delay),
+    [delay],
+  );
   const onInternalChangeCb = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const newValue = e.target.value;
-      onChange(newValue);
+      debouncedOnChange(newValue);
       setState(newValue);
     },
-    [onChange],
+    [debouncedOnChange],
   );
 
   return (

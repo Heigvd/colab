@@ -6,6 +6,7 @@
  */
 import { css, cx } from '@emotion/css';
 import * as React from 'react';
+import { space_L, space_M, space_S } from '../styling/style';
 import Clickable from './Clickable';
 import Flex from './Flex';
 
@@ -21,30 +22,37 @@ export function Tab({ children }: TabProps): JSX.Element {
 
 export interface TabsProps {
   className?: string;
+  bodyClassName?: string;
+  selectedLabelClassName?: string;
+  notselectedLabelClassName?: string;
   children: React.ReactElement<TabProps>[] | React.ReactElement<TabProps>;
   onSelect?: (name: string) => void;
 }
 
 const headerStyle = css({
-  borderBottom: `1px solid var(--primaryColorContrastShade)`,
   flexShrink: 0,
   height: '48px',
 });
 
 const buttonStyle = css({
-  borderBottom: `0px solid var(--secondaryColor)`,
   flexGrow: 1,
   textAlign: 'center',
   transition: '.2s',
-  paddingTop: '14px',
+  padding: space_M,
+  backgroundColor: 'var(--bgColor)',
   cursor: 'pointer',
+  borderRadius: '5px 5px 0 0',
+  border: '1px solid var(--lightGray)',
+  marginRight: space_S,
+  fontSize: '0.9em',
+  zIndex: 9999,
 });
 
 const notSelectedStyle = cx(
   buttonStyle,
   css({
     ':hover': {
-      borderBottomWidth: '2px',
+      backgroundColor: 'var(--lightGray)',
     },
   }),
 );
@@ -52,11 +60,20 @@ const notSelectedStyle = cx(
 const selectedStyle = cx(
   buttonStyle,
   css({
-    borderBottomWidth: '4px',
+    fontWeight: 'bold',
+    borderBottom: '1px solid white',
   }),
 );
 
-export default function Tabs({ className, children, onSelect }: TabsProps): JSX.Element {
+const bodyStyle = css({
+padding: space_L,
+borderRadius: '0 5px 5px 5px',
+backgroundColor: 'var(--bgColor)',
+border: '1px solid var(--lightGray)',
+alignSelf: 'stretch',
+});
+
+export default function Tabs({ className, bodyClassName, selectedLabelClassName, notselectedLabelClassName, children, onSelect }: TabsProps): JSX.Element {
   const mappedChildren: Record<string, { label: string; child: React.ReactElement<TabProps> }> = {};
   const names: string[] = [];
 
@@ -80,12 +97,12 @@ export default function Tabs({ className, children, onSelect }: TabsProps): JSX.
   const child = mappedChildren[selectedTab]?.child;
 
   return (
-    <Flex grow={1} direction="column" className={className} overflow="auto">
+    <Flex grow={1} direction="column" className={cx(css({alignSelf: 'stretch'}), className)} overflow="auto">
       <Flex justify="space-evenly" className={headerStyle}>
         {names.map(name => (
           <Clickable
             key={name}
-            clickableClassName={name === selectedTab ? selectedStyle : notSelectedStyle}
+            clickableClassName={name === selectedTab ? cx(selectedStyle, selectedLabelClassName) : cx(notSelectedStyle, notselectedLabelClassName)}
             onClick={() => onSelectTab(name)}
           >
             {mappedChildren[name]!.label}
@@ -93,7 +110,7 @@ export default function Tabs({ className, children, onSelect }: TabsProps): JSX.
         ))}
       </Flex>
 
-      <Flex grow={1} direction="column" overflow="auto">
+      <Flex grow={1} direction="column" overflow="auto" className={cx(bodyStyle, bodyClassName)}>
         {child != null ? child : <i>whoops</i>}
       </Flex>
     </Flex>

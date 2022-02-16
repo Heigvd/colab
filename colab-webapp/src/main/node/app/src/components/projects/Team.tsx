@@ -6,7 +6,6 @@
  */
 import { css } from '@emotion/css';
 import {
-  faArrowLeft,
   faCheck,
   faEraser,
   faHourglassStart,
@@ -19,7 +18,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HierarchicalPosition, Project, TeamMember, TeamRole } from 'colab-rest-client';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import * as API from '../../API/api';
 import { getDisplayName } from '../../helper';
@@ -33,7 +31,7 @@ import InlineLoading from '../common/InlineLoading';
 import OnBlurInput from '../common/OnBlurInput';
 import OpenClose from '../common/OpenClose';
 import WithToolbar from '../common/WithToolbar';
-import { linkStyle, space_M } from '../styling/style';
+import { linkStyle } from '../styling/style';
 
 const gridNewLine = css({
   gridColumnStart: 1,
@@ -278,7 +276,6 @@ export interface Props {
 
 export default function Team({ project }: Props): JSX.Element {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const projectId = project.id;
 
   const { members, roles, status } = useAndLoadProjectTeam(projectId);
@@ -290,13 +287,6 @@ export default function Team({ project }: Props): JSX.Element {
   if (status === 'INITIALIZED') {
     return (
       <div>
-        <IconButton
-          icon={faArrowLeft}
-          title={'Back to project'}
-          iconColor="var(--darkGray)"
-          onClick={() => navigate('./editor/' + projectId)}
-          className={css({ display: 'block', marginBottom: space_M })}
-        />
         {title}
         <div
           className={css({

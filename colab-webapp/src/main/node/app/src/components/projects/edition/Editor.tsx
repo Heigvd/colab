@@ -42,7 +42,7 @@ import Flex from '../../common/Flex';
 import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
 import { invertedThemeMode, space_L, space_M } from '../../styling/style';
-import Team from '../Team';
+import { ProjectSettings } from '../ProjectSettings';
 import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
 
@@ -54,10 +54,11 @@ const descriptionStyle = {
   transition: 'all 1s ease',
   overflow: 'hidden',
   fontSize: '0.9em',
+  flexGrow: 0,
 }
 const openDetails = css({
   ...descriptionStyle,
-  maxHeight: '200px',
+  maxHeight: '300px',
   padding: space_L,
 });
 const closeDetails = css({
@@ -317,7 +318,7 @@ export default function Editor(): JSX.Element {
             valueComp={{ value: '', label: '' }}
             entries={[
               { value: './defs', label: 'Card Types' },
-              { value: './team', label: 'Team' },
+              { value: './settings', label: 'Project Settings' },
             ]}
             onSelect={val => {
               val.action != null ? val.action() : navigate(val.value);
@@ -346,7 +347,7 @@ export default function Editor(): JSX.Element {
         >
           <Flex direction="column" grow={1}>
             <Routes>
-              <Route path="team" element={<Team project={project} />} />
+              <Route path="settings" element={<ProjectSettings project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
               <Route path="defs" element={<CardTypeList />} />

@@ -29,7 +29,6 @@ import {
   noOutlineStyle,
   space_M,
   space_S,
-  textSmall,
 } from '../styling/style';
 import CardTypeCreator from './cardtypes/CardTypeCreator';
 import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
