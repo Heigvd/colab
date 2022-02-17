@@ -22,7 +22,7 @@ public class JsonEncoder implements Encoder.Text<Object> {
 
     /**
      *
-     * Serialize object using {@link #toJson(ch.colabproject.colab.api.ws.message.WsMessage) toJson}
+     * Serialize object using {@link #toJson(Object) toJson}
      *
      * @param object object to serialize
      *

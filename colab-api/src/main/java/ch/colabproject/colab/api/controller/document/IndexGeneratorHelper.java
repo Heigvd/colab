@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author sandra
  */
-public class IndexGeneratorHelper {
+public final class IndexGeneratorHelper {
 
     /** logger */
     private static final Logger logger = LoggerFactory.getLogger(IndexGeneratorHelper.class);
@@ -38,6 +38,14 @@ public class IndexGeneratorHelper {
      */
     public static final int DEFAULT_INDEX_INC = 1000;
 
+    /**
+     * never-called private constructor
+     */
+    private IndexGeneratorHelper() {
+        throw new UnsupportedOperationException(
+            "This is a utility class and cannot be instantiated");
+    }
+
     // TODO unit test
 
     /**
@@ -51,7 +59,7 @@ public class IndexGeneratorHelper {
      * @return the next index to use for the collection
      */
     public static int nextIndex(Collection<? extends WithIndex> collection) {
-        List<WithIndex> workData = new ArrayList<WithIndex>(collection);
+        List<WithIndex> workData = new ArrayList<>(collection);
 
         if (workData.isEmpty()) {
             return MIN_INDEX + DEFAULT_INDEX_INC;
