@@ -77,7 +77,7 @@ public class CardManager {
      * @throws HttpErrorMessage if the card was not found
      */
     public Card assertAndGetCard(Long cardId) {
-        Card card = cardDao.getCard(cardId);
+        Card card = cardDao.findCard(cardId);
 
         if (card == null) {
             logger.error("card #{} not found", cardId);
@@ -166,7 +166,7 @@ public class CardManager {
 
         ResourceReferenceSpreadingHelper.extractReferencesFromUp(card);
 
-        return cardDao.createCard(card);
+        return cardDao.persistCard(card);
     }
 
     /**

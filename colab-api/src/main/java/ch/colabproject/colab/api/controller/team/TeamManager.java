@@ -18,7 +18,7 @@ import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 import ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
-import ch.colabproject.colab.api.persistence.team.TeamDao;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
 import java.util.Objects;
@@ -93,7 +93,7 @@ public class TeamManager {
      * @return all members of the project team
      */
     public List<TeamMember> getTeamMembers(Long id) {
-        Project project = projectDao.getProject(id);
+        Project project = projectDao.findProject(id);
         logger.debug("Get team members: {}", project);
 
         if (project == null) {
@@ -112,7 +112,7 @@ public class TeamManager {
      * @return the pending new teamMember
      */
     public TeamMember invite(Long projectId, String email) {
-        Project project = projectDao.getProject(projectId);
+        Project project = projectDao.findProject(projectId);
         logger.debug("Invite {} to join {}", email, project);
         return tokenManager.sendMembershipInvitation(project, email);
     }
@@ -128,7 +128,7 @@ public class TeamManager {
      * @return list of roles
      */
     public List<TeamRole> getProjectRoles(Long id) {
-        Project project = projectDao.getProject(id);
+        Project project = projectDao.findProject(id);
         if (project != null) {
             return project.getRoles();
         } else {
@@ -145,7 +145,7 @@ public class TeamManager {
      */
     public TeamRole createRole(TeamRole role) {
         if (role.getProjectId() != null) {
-            Project project = projectDao.getProject(role.getProjectId());
+            Project project = projectDao.findProject(role.getProjectId());
             if (project != null
                 && project.getRoleByName(role.getName()) == null) {
                 project.getRoles().add(role);
@@ -274,7 +274,7 @@ public class TeamManager {
      * @param level    the level
      */
     public void setInvolvementLevelForMember(Long cardId, Long memberId, InvolvementLevel level) {
-        Card card = cardDao.getCard(cardId);
+        Card card = cardDao.findCard(cardId);
         TeamMember member = teamDao.findTeamMember(memberId);
         if (card != null && member != null) {
             AccessControl ac = card.getAcByMember(member);
@@ -308,7 +308,7 @@ public class TeamManager {
      * @param level  the level
      */
     public void setInvolvementLevelForRole(Long cardId, Long roleId, InvolvementLevel level) {
-        Card card = cardDao.getCard(cardId);
+        Card card = cardDao.findCard(cardId);
         TeamRole role = teamDao.findRole(roleId);
         if (card != null && role != null) {
             AccessControl ac = card.getAcByRole(role);
@@ -416,7 +416,7 @@ public class TeamManager {
      * @throws HttpErrorMessage 404 if the card does not exist
      */
     public List<AccessControl> getAccessControlList(Long cardId) {
-        Card card = cardDao.getCard(cardId);
+        Card card = cardDao.findCard(cardId);
         if (card != null) {
             return card.getAccessControlList();
         } else {

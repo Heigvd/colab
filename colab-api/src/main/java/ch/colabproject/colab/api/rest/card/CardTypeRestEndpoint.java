@@ -57,18 +57,6 @@ public class CardTypeRestEndpoint {
     private CardTypeManager cardTypeManager;
 
     /**
-     * Retrieve the list of all card types. This is available to admin only
-     *
-     * @return all known card types
-     */
-    @GET
-    @AdminResource
-    public List<CardType> getAllCardTypes() {
-        logger.debug("get all card types");
-        return cardTypeDao.getAllCardType();
-    }
-
-    /**
      * Retrieve the list of all global card types. This is available to admin only
      *
      * @return all known global card types
@@ -78,7 +66,7 @@ public class CardTypeRestEndpoint {
     @AdminResource
     public List<CardType> getAllGlobalCardTypes() {
         logger.debug("get all global card types");
-        return cardTypeDao.getGlobalCardType();
+        return cardTypeDao.findGlobalCardTypes();
     }
 
     /**
@@ -90,7 +78,7 @@ public class CardTypeRestEndpoint {
     @Path("publishedGlobals")
     public List<CardType> getPublishedGlobalsCardTypes() {
         logger.debug("get published global card types");
-        return cardTypeDao.getPublishedGlobalCardType();
+        return cardTypeDao.findPublishedGlobalCardTypes();
     }
 
     /**
@@ -103,7 +91,7 @@ public class CardTypeRestEndpoint {
     @Path("allProjectsPublished")
     public Set<AbstractCardType> getPublishedCardTypes() {
         logger.debug("get published projects card types");
-        return cardTypeManager.getExpandedPublishedProjectTypes();
+        return cardTypeManager.getCurrentUserExpandedPublishedProjectTypes();
     }
 
     /**
@@ -117,7 +105,7 @@ public class CardTypeRestEndpoint {
     @Path("{id}")
     public AbstractCardType getCardType(@PathParam("id") Long id) {
         logger.debug("get card type #{}", id);
-        return cardTypeDao.getAbstractCardType(id);
+        return cardTypeDao.findAbstractCardType(id);
     }
 
     /**
@@ -168,7 +156,7 @@ public class CardTypeRestEndpoint {
     @PUT
     public void updateCardType(AbstractCardType cardType) throws ColabMergeException {
         logger.debug("update abstract card type {}", cardType);
-        cardTypeDao.updateCardType(cardType);
+        cardTypeDao.updateAbstractCardType(cardType);
     }
 
     /**

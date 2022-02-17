@@ -35,7 +35,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -55,7 +54,6 @@ import javax.validation.constraints.NotNull;
         @Index(columnList = "card_id"),
     }
 )
-@NamedQuery(name = "CardContent.findAll", query = "SELECT c FROM CardContent c")
 public class CardContent implements ColabEntity, WithWebsocketChannels,
     Resourceable, StickyNoteSourceable {
 

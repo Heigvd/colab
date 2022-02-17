@@ -35,7 +35,7 @@ public class ProjectDao {
      *
      * @return list of all projects
      */
-    public List<Project> getAllProject() {
+    public List<Project> findAllProject() {
         TypedQuery<Project> query = em.createNamedQuery("Project.findAll", Project.class);
         return query.getResultList();
     }
@@ -47,8 +47,9 @@ public class ProjectDao {
      *
      * @return list of project
      */
-    public List<Project> getUserProject(Long userId) {
-        TypedQuery<Project> query = em.createNamedQuery("Project.findProjectsByTeamMemberUser", Project.class);
+    public List<Project> findProjectsUserIsMemberOf(Long userId) {
+        TypedQuery<Project> query = em.createNamedQuery("Project.findByTeamMemberUser",
+            Project.class);
         query.setParameter("userId", userId);
         return query.getResultList();
     }
@@ -60,20 +61,19 @@ public class ProjectDao {
      *
      * @return list of ids of projects
      */
-    public List<Long> getIdsOfProjectUserIsMemberOf(Long userId) {
-        TypedQuery<Long> query = em.createNamedQuery("Project.findIdsOfProjectByTeamMemberUser",
+    public List<Long> findIdsOfProjectUserIsMemberOf(Long userId) {
+        TypedQuery<Long> query = em.createNamedQuery("Project.findIdsByTeamMemberUser",
             Long.class);
         query.setParameter("userId", userId);
         return query.getResultList();
     }
 
     /**
-     *
      * @param id id of the project to fetch
      *
      * @return the project with the given id or null is such a project does not exists
      */
-    public Project getProject(Long id) {
+    public Project findProject(Long id) {
         return em.find(Project.class, id);
     }
 
@@ -87,7 +87,7 @@ public class ProjectDao {
      * @throws ColabMergeException if updating the project failed
      */
     public Project updateProject(Project project) throws ColabMergeException {
-        Project managedProject = this.getProject(project.getId());
+        Project managedProject = this.findProject(project.getId());
 
         managedProject.merge(project);
 
@@ -101,7 +101,7 @@ public class ProjectDao {
      *
      * @return the new persisted project
      */
-    public Project createProject(Project project) {
+    public Project persistProject(Project project) {
         em.persist(project);
         return project;
     }
@@ -115,7 +115,7 @@ public class ProjectDao {
      */
     public Project deleteProject(Long id) {
         // TODO: move to recycle bin first
-        Project project = this.getProject(id);
+        Project project = this.findProject(id);
         em.remove(project);
         return project;
     }

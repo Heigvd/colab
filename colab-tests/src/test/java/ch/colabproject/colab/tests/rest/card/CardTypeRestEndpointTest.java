@@ -392,26 +392,6 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testGetAllCardTypes() {
-        Long projectId = ColabFactory.createProject(client, "testGetAllCardTypes").getId();
-        int initialSize = client.cardTypeRestEndpoint.getAllCardTypes().size();
-
-        CardType cardType1 = ColabFactory.createCardType(client, projectId);
-        cardType1.setTitle("Game design " + ((int) (Math.random() * 1000)));
-        client.cardTypeRestEndpoint.updateCardType(cardType1);
-
-        List<CardType> cardTypes = client.cardTypeRestEndpoint.getAllCardTypes();
-        Assertions.assertEquals(initialSize + 1, cardTypes.size());
-
-        CardType cardType2 = ColabFactory.createCardType(client, projectId);
-        cardType2.setTitle("Game rules " + ((int) (Math.random() * 1000)));
-        client.cardTypeRestEndpoint.updateCardType(cardType2);
-
-        cardTypes = client.cardTypeRestEndpoint.getAllCardTypes();
-        Assertions.assertEquals(initialSize + 2, cardTypes.size());
-    }
-
-    @Test
     public void testDeleteCardType() {
         Long projectId = ColabFactory.createProject(client, "testDeleteCardType").getId();
 

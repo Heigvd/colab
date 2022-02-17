@@ -35,7 +35,6 @@ import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -59,8 +58,6 @@ import javax.persistence.Transient;
 )
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
-//FIXME see if is needed or not. It was implemented for test purpose at first
-@NamedQuery(name = "Document.findAll", query = "SELECT d FROM Document d")
 public abstract class Document
     implements ColabEntity, WithWebsocketChannels, WithIndex, StickyNoteSourceable {
 

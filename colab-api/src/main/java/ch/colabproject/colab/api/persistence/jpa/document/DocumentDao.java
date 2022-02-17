@@ -9,12 +9,10 @@ package ch.colabproject.colab.api.persistence.jpa.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
-import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,17 +33,6 @@ public class DocumentDao {
      */
     @PersistenceContext(unitName = "COLAB_PU")
     private EntityManager em;
-
-    /**
-     * Get the list of all documents
-     *
-     * @return the list of all documents
-     */
-    public List<Document> findAllDocuments() {
-        logger.debug("find all documents");
-        TypedQuery<Document> query = em.createNamedQuery("Document.findAll", Document.class);
-        return query.getResultList();
-    }
 
     /**
      * @param id the id of the document to fetch

@@ -11,7 +11,6 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
-import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
@@ -58,18 +57,6 @@ public class DocumentRestEndpoint {
     // *********************************************************************************************
     // CRUD
     // *********************************************************************************************
-
-    /**
-     * Retrieve the list of all documents. This is available to admin only
-     *
-     * @return all known documents
-     */
-    @GET
-    @AdminResource
-    public List<Document> getAllDocuments() {
-        logger.debug("get all documents");
-        return documentDao.findAllDocuments();
-    }
 
     /**
      * Get the document identified by the given id

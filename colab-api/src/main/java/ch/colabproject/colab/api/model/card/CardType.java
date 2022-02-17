@@ -38,13 +38,12 @@ import javax.validation.constraints.NotNull;
         @Index(columnList = "purpose_id")
     }
 )
-@NamedQuery(name = "CardType.findAll", query = "SELECT c FROM CardType c")
 @NamedQuery(name = "CardType.findGlobals",
-    query = "SELECT c FROM CardType c WHERE c.project is NULL")
+    query = "SELECT ct FROM CardType ct WHERE ct.project is NULL")
 @NamedQuery(name = "CardType.findPublishedGlobals",
-    query = "SELECT c FROM CardType c WHERE c.project is NULL AND c.published = TRUE")
-@NamedQuery(name = "CardType.findIdOfPublishedGlobals",
-    query = "SELECT c.id FROM CardType c WHERE c.project is NULL AND c.published = TRUE")
+    query = "SELECT ct FROM CardType ct WHERE ct.project is NULL AND ct.published = TRUE")
+@NamedQuery(name = "CardType.findIdsOfPublishedGlobal",
+    query = "SELECT ct.id FROM CardType ct WHERE ct.project is NULL AND ct.published = TRUE")
 public class CardType extends AbstractCardType {
 
     /**
@@ -73,7 +72,7 @@ public class CardType extends AbstractCardType {
         @Index(columnList = "cardtype_id")
     })
     @NotNull
-    private Set<String> tags =new HashSet<>();
+    private Set<String> tags = new HashSet<>();
 
     /**
      * The id of the purpose
