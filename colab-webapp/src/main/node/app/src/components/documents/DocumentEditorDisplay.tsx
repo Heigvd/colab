@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { dispatch } from '../../store/store';
+import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
@@ -28,6 +28,8 @@ export function DocumentEditorDisplay({
   document,
   allowEdition = true,
 }: DocumentEditorDisplayProps): JSX.Element {
+  const dispatch = useAppDispatch();
+
   return (
     <div
       className={css({

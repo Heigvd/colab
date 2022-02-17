@@ -10,9 +10,8 @@ import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { dispatch } from '../../store/store';
 //import * as API from '../../API/api';
-//import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
 import Form, { createSelectField, Field } from '../common/Form/Form';
@@ -51,7 +50,7 @@ export default function ResourceCreator({
   categories,
   className,
 }: ResourceCreatorProps): JSX.Element {
-  //const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const [state, setState] = React.useState<ResourceType>(defaultResource);
 
