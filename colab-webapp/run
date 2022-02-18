@@ -123,7 +123,8 @@ echo WAR ${THE_WAR}
 trap 'echo "TERM";kill -TERM $PID;' TERM INT
 
 # to enable http2 support
-HTTP2_OPTS=-Xbootclasspath/a:grizzly-npn-bootstrap.jar
+#HTTP2_OPTS=-Xbootclasspath/a:grizzly-npn-bootstrap.jar
+HTTP2_OPTS=
 
 #if java home is empty, use java, if not, use JAVA_HOME/bin/java
 if [ "${JAVA_HOME}xxx" = "xxx" ]; then JAVA_EXECUTABLE=java; else JAVA_EXECUTABLE="${JAVA_HOME}/bin/java"; fi
@@ -214,6 +215,7 @@ SYSTEMPROPS_OPT="--systemproperties ${CUSTOM_PROPERTIES}";
     -Declipselink.cache.coordination.protocol=fish.payara.persistence.eclipselink.cache.coordination.HazelcastPublishingTransportManager \
     -Declipselink.cache.coordination.channel=${CLUSTER_NAME} \
     -jar ${PAYARA} --deploy ${THE_WAR} --clusterName ${CLUSTER_NAME} \
+    --prebootcommandfile asadmin_cmd \
     --interfaces "${INTERFACES}" \
     ${CLUSTERMODE_OPT} \
     ${MIN_HTTP_THREADS_OPT} \

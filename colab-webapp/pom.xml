@@ -233,6 +233,7 @@
                   <directory>${basedir}</directory>
                   <includes>
                     <include>run</include>
+                    <include>asadmin_cmd</include>
                   </includes>
                 </resource>
                 <resource>
