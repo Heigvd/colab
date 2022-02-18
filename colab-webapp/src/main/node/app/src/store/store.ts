@@ -11,7 +11,6 @@ import aclReducer from './acl';
 import activityFlowLinkReducer from './activityflowlink';
 import adminReducer from './admin';
 import authReducer from './auth';
-import blockReducer from './block';
 import cardReducer from './card';
 import cardTypeReducer from './cardtype';
 import changeReducer from './change';
@@ -30,7 +29,6 @@ const rootReducer = combineReducers({
   activityFlowLinks: activityFlowLinkReducer,
   auth: authReducer,
   admin: adminReducer,
-  block: blockReducer,
   cards: cardReducer,
   cardtype: cardTypeReducer,
   config: configReducer,

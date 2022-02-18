@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.persistence.jpa.document;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -61,6 +62,20 @@ public class DocumentDao {
     }
 
     /**
+     * @param id the id of the text data block to fetch
+     *
+     * @return the text data block with the given id or null if such a document does not exists
+     */
+    public TextDataBlock findTextDataBlock(Long id) {
+        try {
+            logger.debug("find text data block #{}", id);
+            return em.find(TextDataBlock.class, id);
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
+    }
+
+    /**
      * Update document
      *
      * @param document the document as supply by clients (ie not managed)
@@ -72,6 +87,22 @@ public class DocumentDao {
     public Document updateDocument(Document document) throws ColabMergeException {
         logger.debug("update document {}", document);
         Document mDocument = this.findDocument(document.getId());
+        mDocument.merge(document);
+        return mDocument;
+    }
+
+    /**
+     * Update text data block
+     *
+     * @param document the text data block as supply by clients (ie not managed)
+     *
+     * @return the updated managed text data block
+     *
+     * @throws ColabMergeException if updating the document failed
+     */
+    public TextDataBlock updateTextDataBlock(TextDataBlock document) throws ColabMergeException {
+        logger.debug("update text data block {}", document);
+        TextDataBlock mDocument = this.findTextDataBlock(document.getId());
         mDocument.merge(document);
         return mDocument;
     }

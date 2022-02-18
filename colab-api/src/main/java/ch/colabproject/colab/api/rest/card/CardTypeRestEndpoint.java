@@ -137,6 +137,10 @@ public class CardTypeRestEndpoint {
         cardType.setPurpose(cardTypeCreationBean.getPurpose());
         cardType.setTags(cardTypeCreationBean.getTags());
 
+        if (cardTypeCreationBean.getPurpose() != null) {
+            cardTypeCreationBean.getPurpose().setPurposingCardType(cardType);
+        }
+
         return cardTypeManager.createCardType(cardType).getId();
     }
 

@@ -6,14 +6,15 @@
  */
 package ch.colabproject.colab.api.controller.link;
 
+import ch.colabproject.colab.api.controller.card.CardContentManager;
+import ch.colabproject.colab.api.controller.card.CardManager;
+import ch.colabproject.colab.api.controller.document.BlockManager;
+import ch.colabproject.colab.api.controller.document.DocumentManager;
 import ch.colabproject.colab.api.controller.document.ResourceManager;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
-import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
-import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
-import ch.colabproject.colab.api.persistence.jpa.document.BlockDao;
 import ch.colabproject.colab.api.persistence.jpa.link.StickyNoteLinkDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.ejb.LocalBean;
@@ -45,28 +46,34 @@ public class StickyNoteLinkManager {
     private StickyNoteLinkDao linkDao;
 
     /**
-     * Card persistence handling
+     * Card specific logic management
      */
     @Inject
-    private CardDao cardDao;
+    private CardManager cardManager;
 
     /**
-     * Card content persistence handling
+     * Card content specific logic management
      */
     @Inject
-    private CardContentDao cardContentDao;
+    private CardContentManager cardContentManager;
 
     /**
-     * Block persistence handling
-     */
-    @Inject
-    private BlockDao blockDao;
-
-    /**
-     * Resource / resource reference logic manager
+     * Resource / resource reference logic management
      */
     @Inject
     private ResourceManager resourceManager;
+
+    /**
+     * Document specific logic management
+     */
+    @Inject
+    private DocumentManager documentManager;
+
+    /**
+     * Block specific logic management
+     */
+    @Inject
+    private BlockManager blockManager;
 
     // *********************************************************************************************
     //
@@ -84,8 +91,32 @@ public class StickyNoteLinkManager {
         CARD_CONTENT,
         /** from a resource or ref */
         RESOURCE_OR_REF,
-        /** from a block */
-        BLOCK;
+        /** from a document */
+        DOCUMENT;
+    }
+
+    // *********************************************************************************************
+    // find sticky note links
+    // *********************************************************************************************
+
+    /**
+     * Retrieve the sticky note link. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param linkId the id of the sticky note link
+     *
+     * @return the sticky note link if found
+     *
+     * @throws HttpErrorMessage if the sticky note link was not found
+     */
+    public StickyNoteLink assertAndGetStickyNoteLink(Long linkId) {
+        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);
+
+        if (link == null) {
+            logger.error("sticky note link #{} not found", linkId);
+            throw HttpErrorMessage.relatedObjectNotFoundError();
+        }
+
+        return link;
     }
 
     // *********************************************************************************************
@@ -102,28 +133,24 @@ public class StickyNoteLinkManager {
     public StickyNoteLink createStickyNoteLink(StickyNoteLink link) {
         logger.debug("create link {}", link);
 
-        StickyNoteSourceable sourceObject = findSourceObject(link);
-        if (sourceObject == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        StickyNoteSourceable sourceObject = assertAndGetSourceObject(link);
 
-        Card toCard = cardDao.getCard(link.getDestinationCardId());
-        if (toCard == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        Card toCard = cardManager.assertAndGetCard(link.getDestinationCardId());
 
         if (link.getExplanation() == null) {
-            link.setExplanation(Block.initNewDefaultBlock());
+            TextDataBlock explanationTextDataBlock = blockManager.makeNewTextDataBlock();
+
+            link.setExplanation(explanationTextDataBlock);
+            explanationTextDataBlock.setExplainingStickyNoteLink(link);
         }
 
         link.setSrc(sourceObject);
         link.setDestinationCard(toCard);
-        StickyNoteLink persistedLink = linkDao.persistStickyNoteLink(link);
 
-        sourceObject.getStickyNoteLinksAsSrc().add(persistedLink);
-        toCard.getStickyNoteLinksAsDest().add(persistedLink);
+        sourceObject.getStickyNoteLinksAsSrc().add(link);
+        toCard.getStickyNoteLinksAsDest().add(link);
 
-        return persistedLink;
+        return linkDao.persistStickyNoteLink(link);
     }
 
     /**
@@ -135,11 +162,7 @@ public class StickyNoteLinkManager {
         logger.debug("delete link #{}", linkId);
 
         // firstly fetch all objects and so ensure that they exist
-        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);
-        if (link == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-            // or just return. see what is best
-        }
+        StickyNoteLink link = assertAndGetStickyNoteLink(linkId);
 
         StickyNoteSourceable sourceObject = link.getSrc();
         if (sourceObject == null) {
@@ -169,20 +192,11 @@ public class StickyNoteLinkManager {
         logger.debug("change source of link #{} with {} #{}", linkId, newSrcType, newSrcId);
 
         // firstly fetch all objects and so ensure that they exist
-        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);
-        if (link == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        StickyNoteLink link = assertAndGetStickyNoteLink(linkId);
 
-        StickyNoteSourceable oldSourceObject = findSourceObject(link);
-        if (oldSourceObject == null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
-        }
+        StickyNoteSourceable oldSourceObject = assertAndGetSourceObject(link);
 
-        StickyNoteSourceable newSourceObject = findSourceObject(newSrcType, newSrcId);
-        if (newSourceObject == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        StickyNoteSourceable newSourceObject = assertAndGetSourceObject(newSrcType, newSrcId);
 
         // secondly make the modifications
         oldSourceObject.getStickyNoteLinksAsSrc().remove(link);
@@ -201,20 +215,11 @@ public class StickyNoteLinkManager {
         logger.debug("change destination of link #{} with #{}", linkId, newDestId);
 
         // firstly fetch all objects and so ensure that they exist
-        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);
-        if (link == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        StickyNoteLink link = assertAndGetStickyNoteLink(linkId);
 
-        Card oldDest = cardDao.getCard(link.getDestinationCardId());
-        if (oldDest == null) {
-            throw HttpErrorMessage.dataIntegrityFailure();
-        }
+        Card oldDest = cardManager.assertAndGetCard(link.getDestinationCardId());
 
-        Card newDestination = cardDao.getCard(newDestId);
-        if (newDestination == null) {
-            throw HttpErrorMessage.relatedObjectNotFoundError();
-        }
+        Card newDestination = cardManager.assertAndGetCard(newDestId);
 
         // secondly make the modifications
         oldDest.getStickyNoteLinksAsDest().remove(link);
@@ -231,30 +236,21 @@ public class StickyNoteLinkManager {
      *
      * @return the source of the sticky note
      */
-    private StickyNoteSourceable findSourceObject(SrcType srcType, Long srcId) {
+    private StickyNoteSourceable assertAndGetSourceObject(SrcType srcType, Long srcId) {
         StickyNoteSourceable sourceObject;
 
         switch (srcType) {
             case CARD:
-                sourceObject = cardDao.getCard(srcId);
-                if (sourceObject == null) {
-                    throw HttpErrorMessage.dataIntegrityFailure();
-                }
+                sourceObject = cardManager.assertAndGetCard(srcId);
                 break;
             case CARD_CONTENT:
-                sourceObject = cardContentDao.getCardContent(srcId);
-                if (sourceObject == null) {
-                    throw HttpErrorMessage.dataIntegrityFailure();
-                }
+                sourceObject = cardContentManager.assertAndGetCardContent(srcId);
                 break;
             case RESOURCE_OR_REF:
                 sourceObject = resourceManager.assertAndGetResourceOrRef(srcId);
                 break;
-            case BLOCK:
-                sourceObject = blockDao.findBlock(srcId);
-                if (sourceObject == null) {
-                    throw HttpErrorMessage.dataIntegrityFailure();
-                }
+            case DOCUMENT:
+                sourceObject = documentManager.assertAndGetDocument(srcId);
                 break;
             default:
                 throw HttpErrorMessage.dataIntegrityFailure();
@@ -270,32 +266,25 @@ public class StickyNoteLinkManager {
      *
      * @return the source object
      */
-    private StickyNoteSourceable findSourceObject(StickyNoteLink link) {
+    private StickyNoteSourceable assertAndGetSourceObject(StickyNoteLink link) {
         StickyNoteSourceable sourceObject;
 
         SrcType srcType = inferSrcType(link);
 
         switch (srcType) {
             case CARD:
-                sourceObject = cardDao.getCard(link.getSrcCardId());
-                if (sourceObject == null) {
-                    throw HttpErrorMessage.dataIntegrityFailure();
-                }
+                sourceObject = cardManager.assertAndGetCard(link.getSrcCardId());
                 break;
             case CARD_CONTENT:
-                sourceObject = cardContentDao.getCardContent(link.getSrcCardContentId());
-                if (sourceObject == null) {
-                    throw HttpErrorMessage.dataIntegrityFailure();
-                }
+                sourceObject = cardContentManager
+                    .assertAndGetCardContent(link.getSrcCardContentId());
                 break;
             case RESOURCE_OR_REF:
-                sourceObject = resourceManager.assertAndGetResourceOrRef(link.getSrcResourceOrRefId());
+                sourceObject = resourceManager
+                    .assertAndGetResourceOrRef(link.getSrcResourceOrRefId());
                 break;
-            case BLOCK:
-                sourceObject = blockDao.findBlock(link.getSrcBlockId());
-                if (sourceObject == null) {
-                    throw HttpErrorMessage.dataIntegrityFailure();
-                }
+            case DOCUMENT:
+                sourceObject = documentManager.assertAndGetDocument(link.getSrcDocumentId());
                 break;
             default:
                 throw HttpErrorMessage.dataIntegrityFailure();
@@ -331,11 +320,11 @@ public class StickyNoteLinkManager {
             }
             effectiveSrcType = SrcType.RESOURCE_OR_REF;
         }
-        if (link.isSrcBlock()) {
+        if (link.isSrcDocument()) {
             if (effectiveSrcType != null) { // it must match only one type
                 throw HttpErrorMessage.dataIntegrityFailure();
             }
-            effectiveSrcType = SrcType.BLOCK;
+            effectiveSrcType = SrcType.DOCUMENT;
         }
         if (effectiveSrcType == null) { // it must match one type
             throw HttpErrorMessage.dataIntegrityFailure();

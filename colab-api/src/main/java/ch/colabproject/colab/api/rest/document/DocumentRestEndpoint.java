@@ -9,16 +9,14 @@ package ch.colabproject.colab.api.rest.document;
 import ch.colabproject.colab.api.controller.document.DocumentManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -52,7 +50,7 @@ public class DocumentRestEndpoint {
     private DocumentDao documentDao;
 
     /**
-     * The document business logic
+     * The document specific logic
      */
     @Inject
     private DocumentManager documentManager;
@@ -100,44 +98,22 @@ public class DocumentRestEndpoint {
         documentDao.updateDocument(document);
     }
 
-    /**
-     * Persist the document
-     *
-     * @param document the document to persist
-     *
-     * @return id of the persisted new document
-     */
-    @POST
-    public Long createDocument(Document document) {
-        logger.debug("create document {}", document);
-        return documentManager.createDocument(document).getId();
-    }
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 
     /**
-     * Permanently delete a document
+     * Get all sticky note links where the document is the source
      *
-     * @param id id of the document to delete
-     */
-    @DELETE
-    @Path("{id}")
-    public void deleteDocument(@PathParam("id") Long id) {
-        logger.debug("delete document #{}", id);
-        documentManager.deleteDocument(id);
-    }
-
-    /**
-     * Get all ids of blocks that make up the document
+     * @param documentId the id of the document
      *
-     * @param id id of the document
-     *
-     * @return ids of the blocks linked to the document
+     * @return list of links
      */
     @GET
-    @Path("{id}/BlocksIds")
-    public List<Long> getBlocksDocumentIds(@PathParam("id") Long id) {
-        logger.debug("get document #{} blocks ids", id);
-        return documentManager.getBlocksOfDocument(id).stream()
-            .map(b ->  b.getId())
-            .collect(Collectors.toList());
+    @Path("{id}/StickyNoteLinks")
+    public List<StickyNoteLink> getStickyNoteLinksAsSrc(@PathParam("id") Long documentId) {
+        logger.debug("Get sticky note links where document #{} is the source", documentId);
+        return documentManager.getStickyNoteLinkAsSrc(documentId);
     }
+
 }

@@ -37,7 +37,6 @@ import javax.persistence.Index;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Max;
@@ -54,7 +53,6 @@ import javax.validation.constraints.NotNull;
 @Table(
     indexes = {
         @Index(columnList = "card_id"),
-        @Index(columnList = "deliverable_id"),
     }
 )
 @NamedQuery(name = "CardContent.findAll", query = "SELECT c FROM CardContent c")
@@ -129,18 +127,11 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     private Long cardId;
 
     /**
-     * The deliverable of this card content
+     * The deliverables of this card content
      */
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "owningCardContent", cascade = CascadeType.ALL)
     @JsonbTransient
-    private Document deliverable;
-
-    /**
-     * The deliverable ID (serialization sugar)
-     */
-    @Transient
-    @JsonbTransient
-    private Long deliverableId;
+    private List<Document> deliverables = new ArrayList<>();
 
     /**
      * The cards contained in there
@@ -292,39 +283,17 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     }
 
     /**
-     * @return the deliverable of this card content
+     * @return the deliverables of this card content
      */
-    public Document getDeliverable() {
-        return deliverable;
+    public List<Document> getDeliverables() {
+        return deliverables;
     }
 
     /**
-     * @param deliverable the deliverable of this card content to set
+     * @param deliverables the deliverables of this card content
      */
-    public void setDeliverable(Document deliverable) {
-        this.deliverable = deliverable;
-    }
-
-    /**
-     * get the id of the deliverable. To be sent to client.
-     *
-     * @return the id of the deliverable of this card content
-     */
-    public Long getDeliverableId() {
-        if (this.deliverable != null) {
-            return this.deliverable.getId();
-        } else {
-            return deliverableId;
-        }
-    }
-
-    /**
-     * set the id of the deliverable. For serialization only.
-     *
-     * @param deliverableId the id of the deliverable of this card content to set
-     */
-    public void setDeliverableId(Long deliverableId) {
-        this.deliverableId = deliverableId;
+    public void setDeliverables(List<Document> deliverables) {
+        this.deliverables = deliverables;
     }
 
     /**
@@ -404,10 +373,9 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
             CardContent o = (CardContent) other;
             this.setTitle(o.getTitle());
             this.setStatus(o.getStatus());
+            this.setFrozen(o.isFrozen());
             this.setCompletionLevel(o.getCompletionLevel());
             this.setCompletionMode(o.getCompletionMode());
-            this.setFrozen(o.isFrozen());
-            // the deliverable cannot be changed with a merge
         } else {
             throw new ColabMergeException(this, other);
         }
@@ -431,7 +399,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     public Conditions.Condition getReadCondition() {
         // genuine hack inside
         // any member can read any card and card content of the project
-        // if a member lacks the read right on a card, it will not be able to read the deliverable,
+        // if a member lacks the read right on a card, it will not be able to read the deliverables,
         // resources and so on, but it will still be able to view the card "from the outside"
         return new Conditions.IsCurrentUserMemberOfProject(getProject());
     }
@@ -470,7 +438,7 @@ public class CardContent implements ColabEntity, WithWebsocketChannels,
     public String toString() {
         return "CardContent{" + "id=" + id + ", title=" + title + ", status=" + status
             + ", completion=" + completionLevel + ", completionMode=" + completionMode
-            + ", cardId=" + cardId + "}";
+            + ", frozen=" + frozen + ", cardId=" + cardId + "}";
     }
 
 }

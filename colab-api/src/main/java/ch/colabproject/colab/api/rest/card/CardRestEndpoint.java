@@ -146,7 +146,7 @@ public class CardRestEndpoint {
 
         List<CardContent> variants = card.getContentVariants();
         if (variants != null && variants.size() == 1 && variants.get(0) != null) {
-            cardContentManager.assignDeliverable(variants.get(0).getId(), document);
+            cardContentManager.addDeliverable(variants.get(0).getId(), document);
         } else {
             throw HttpErrorMessage.dataIntegrityFailure();
         }

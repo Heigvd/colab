@@ -5,66 +5,74 @@
  * Licensed under the MIT License
  */
 
-import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
-import { useDeliverable, useDocument } from '../../selectors/documentSelector';
+import { useDocuments } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
+import { workInProgressStyle } from '../styling/style';
+import { DocumentContext } from './documentCommonType';
+import DocumentCreatorButton from './DocumentCreatorButton';
 import { DocumentEditorDisplay } from './DocumentEditorDisplay';
 
-export interface DocByIdWrapperProps {
-  docId: number;
+export interface DocumentEditorWrapperProps {
+  context: DocumentContext;
   allowEdition?: boolean;
 }
 
 export function DocumentEditorWrapper({
-  docId,
-  allowEdition = true,
-}: DocByIdWrapperProps): JSX.Element {
-  const dispatch = useAppDispatch();
-
-  const doc = useDocument(docId);
-
-  React.useEffect(() => {
-    if (doc == undefined && docId != null) {
-      dispatch(API.getDocument(docId));
-    }
-  }, [doc, docId, dispatch]);
-
-  if (doc == null || doc == 'LOADING') {
-    return <InlineLoading />;
-  } else if (entityIs(doc, 'Document')) {
-    return <DocumentEditorDisplay document={doc} allowEdition={allowEdition} />;
-  } else {
-    return <InlineLoading />;
-  }
-}
-
-export interface DocAsDeliverableProps {
-  cardContentId: number;
-  allowEdition?: boolean;
-}
-
-export function DocumentEditorAsDeliverableWrapper({
-  cardContentId,
+  context,
   allowEdition,
-}: DocAsDeliverableProps): JSX.Element {
+}: DocumentEditorWrapperProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const doc = useDeliverable(cardContentId);
+  const { documents, status } = useDocuments(context);
 
   React.useEffect(() => {
-    if (doc == undefined && cardContentId != null) {
-      dispatch(API.getDeliverableOfCardContent(cardContentId));
+    if (status == 'NOT_INITIALIZED') {
+      if (context.kind == 'DeliverableOfCardContent' && context.cardContentId != null) {
+        dispatch(API.getDeliverablesOfCardContent(context.cardContentId));
+      }
+      if (context.kind == 'PartOfResource' && context.resourceId != null) {
+        dispatch(API.getDocumentsOfResource(context.resourceId));
+      }
     }
-  }, [doc, cardContentId, dispatch]);
+  }, [context, status, dispatch]);
 
-  if (doc == null) {
+  if (status === 'NOT_INITIALIZED') {
     return <InlineLoading />;
-  } else if (entityIs(doc, 'Document')) {
-    return <DocumentEditorDisplay document={doc} allowEdition={allowEdition} />;
-  } else {
+  } else if (status === 'LOADING') {
     return <InlineLoading />;
   }
+
+  return (
+    <div className={workInProgressStyle}>
+      {documents
+        .sort((a, b) => (a.index || 0) - (b.index || 0))
+        .map(doc => (
+          <DocumentEditorDisplay key={doc.id} document={doc} allowEdition={allowEdition} />
+        ))}
+      {allowEdition && (
+        <DocumentCreatorButton
+          creationContext={context}
+          docType="TextDataBlock"
+          title="add a block"
+        />
+      )}
+      {allowEdition && (
+        <DocumentCreatorButton
+          creationContext={context}
+          docType="DocumentFile"
+          title="add a file"
+        />
+      )}
+      {allowEdition && (
+        <DocumentCreatorButton
+          creationContext={context}
+          docType="ExternalLink"
+          title="add a link"
+        />
+      )}
+    </div>
+  );
 }

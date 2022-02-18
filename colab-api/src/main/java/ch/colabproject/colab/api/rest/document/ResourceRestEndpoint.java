@@ -10,6 +10,7 @@ import ch.colabproject.colab.api.controller.document.ResourceCategoryHelper;
 import ch.colabproject.colab.api.controller.document.ResourceManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.AbstractResource;
+import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
@@ -27,6 +28,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -166,7 +168,7 @@ public class ResourceRestEndpoint {
     }
 
     // *********************************************************************************************
-    // create a resource for a document
+    // create a resource / document
     // *********************************************************************************************
 
     /**
@@ -184,15 +186,52 @@ public class ResourceRestEndpoint {
         Resource resource = new Resource();
         resource.setTitle(resourceCreationBean.getTitle());
         resource.setTeaser(resourceCreationBean.getTeaser());
-        resource.setDocument(resourceCreationBean.getDocument());
+        if (resource.getTeaser() != null) {
+            resource.getTeaser().setTeasingResource(resource);
+        }
         resource.setCategory(resourceCreationBean.getCategory());
         resource.setAbstractCardTypeId(resourceCreationBean.getAbstractCardTypeId());
         resource.setCardId(resourceCreationBean.getCardId());
         resource.setCardContentId(resourceCreationBean.getCardContentId());
 
-        resourceCreationBean.getDocument().setResource(resource);
+        Resource newResource = resourceManager.createResource(resource);
 
-        return resourceManager.createResource(resource).getId();
+        if (CollectionUtils.isNotEmpty(resourceCreationBean.getDocuments())) {
+            for (Document document : resourceCreationBean.getDocuments()) {
+                resourceManager.addDocument(newResource.getId(), document);
+            }
+        }
+
+        return newResource.getId();
+    }
+
+    /**
+     * Add the document to the resource.
+     *
+     * @param resourceId the id of the resource
+     * @param document   the document to use in the resource. It must be a new document
+     *
+     * @return the document newly created
+     */
+    @POST
+    @Path("{id}/addDocument")
+    public Document addDocument(@PathParam("id") Long resourceId, Document document) {
+        logger.debug("add the document {} for the resource #{}", document, resourceId);
+        return resourceManager.addDocument(resourceId, document);
+    }
+
+    /**
+     * Remove the document of the resource.
+     *
+     * @param resourceId the id of the resource
+     * @param documentId the id of the document to remove from the resource
+     */
+    @POST
+    @Path("{id}/removeDocument")
+    public void removeDocument(@PathParam("id") Long resourceId, Long documentId) {
+        logger.debug("add the document {} for the resource #{}", documentId, resourceId);
+
+        resourceManager.removeDocument(resourceId, documentId);
     }
 
     // *********************************************************************************************
@@ -322,6 +361,20 @@ public class ResourceRestEndpoint {
     // *********************************************************************************************
     // links
     // *********************************************************************************************
+
+    /**
+     * Get the documents of the resource
+     *
+     * @param resourceId the id of the resource
+     *
+     * @return the documents linked to the resource
+     */
+    @GET
+    @Path("{id}/Documents")
+    public List<Document> getDocumentsOfResource(@PathParam("id") Long resourceId) {
+        logger.debug("Get the documents of the resource #{}", resourceId);
+        return resourceManager.getDocumentsOfResource(resourceId);
+    }
 
     /**
      * Get all sticky note links where the resource / resource reference is the source

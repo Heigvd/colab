@@ -4,8 +4,8 @@
  *
  * Licensed under the MIT License
  */
-import {css, cx} from '@emotion/css';
-import {IconProp} from '@fortawesome/fontawesome-svg-core';
+import { css, cx } from '@emotion/css';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import {
   faFile,
   faFileArchive,
@@ -18,10 +18,10 @@ import {
   faFileVideo,
   faFileWord,
 } from '@fortawesome/free-regular-svg-icons';
-import {faFileCsv, faSkullCrossbones, faUpload} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { faFileCsv, faSkullCrossbones, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import {iconButton, linkStyle} from '../styling/style';
+import { iconButton, linkStyle } from '../styling/style';
 import Flex from './Flex';
 
 const contains = (value: string, ...values: string[]): boolean => {
@@ -134,13 +134,13 @@ function overlayStyle(coord: [number, number]) {
     boxShadow: '0 0 1px 0 black',
     backgroundColor: 'var(--bgColor)',
     zIndex: 1,
-    display: "flex",
+    display: 'flex',
   });
 }
 const previewImageStyle = css({
-  maxWidth: "200px",
-  maxHeight: "200px",
-})
+  maxWidth: '200px',
+  maxHeight: '200px',
+});
 
 export interface FilePickerProps {
   accept?: string;
@@ -165,13 +165,13 @@ export default function FilePicker({
     () =>
       onChange != null
         ? (e: React.ChangeEvent<HTMLInputElement>) => {
-          if (e.target.files != null && e.target.files.length > 0) {
-            const file = e.target.files[0];
-            if (file != null) {
-              onChange(file);
+            if (e.target.files != null && e.target.files.length > 0) {
+              const file = e.target.files[0];
+              if (file != null) {
+                onChange(file);
+              }
             }
           }
-        }
         : undefined,
     [onChange],
   );
@@ -180,9 +180,9 @@ export default function FilePicker({
     () =>
       onChange != null
         ? (e: React.DragEvent) => {
-          e.dataTransfer.dropEffect = 'copy';
-          setDragging(true);
-        }
+            e.dataTransfer.dropEffect = 'copy';
+            setDragging(true);
+          }
         : undefined,
     [onChange],
   );
@@ -191,9 +191,9 @@ export default function FilePicker({
     () =>
       onChange != null
         ? (e: React.DragEvent) => {
-          e.dataTransfer.dropEffect = 'none';
-          setDragging(false);
-        }
+            e.dataTransfer.dropEffect = 'none';
+            setDragging(false);
+          }
         : undefined,
     [onChange],
   );
@@ -202,18 +202,17 @@ export default function FilePicker({
     () =>
       onChange != null
         ? (e: React.DragEvent) => {
-          if (e.dataTransfer.files.length === 1) {
-            const file = e.dataTransfer.files[0];
-            if (file != null) {
-              onChange(file);
+            if (e.dataTransfer.files.length === 1) {
+              const file = e.dataTransfer.files[0];
+              if (file != null) {
+                onChange(file);
+              }
             }
+            setDragging(false);
           }
-          setDragging(false);
-        }
         : undefined,
     [onChange],
   );
-
 
   // PREVIEW HOVER TOOLTIP
   const hasPreview = !!currentPreviewImgUrl;
@@ -276,20 +275,20 @@ export default function FilePicker({
       onClick={onDownload}
     >
       <div className={iconStyle}>{getMimeTypeIcon(currentMimetype)}</div>
-      <div className={labelStyle} >
-        {currentFilename}
-      </div>
+      <div className={labelStyle}>{currentFilename}</div>
       {onChange && (
-        <div onClick={(e) => e.stopPropagation()}>
+        <div onClick={e => e.stopPropagation()}>
           <label>
-            <FontAwesomeIcon
-              className={cx(linkStyle, iconButton)}
-              icon={faUpload} />
+            <FontAwesomeIcon className={cx(linkStyle, iconButton)} icon={faUpload} />
             <input className={inputStyle} type="file" accept={accept} onChange={onInputCb} />
           </label>
         </div>
       )}
-      {coord && displayed ? <div className={overlayStyle(coord)}><img className={previewImageStyle} src={currentPreviewImgUrl} /> </div> : null}
+      {coord && displayed ? (
+        <div className={overlayStyle(coord)}>
+          <img className={previewImageStyle} src={currentPreviewImgUrl} />{' '}
+        </div>
+      ) : null}
     </Flex>
   );
   return <input type="file" accept={accept} />;

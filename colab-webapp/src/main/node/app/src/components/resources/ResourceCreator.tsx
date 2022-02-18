@@ -10,6 +10,7 @@ import { faUndo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
+//import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
 import Flex from '../common/Flex';
@@ -30,10 +31,7 @@ export type ResourceCreatorProps = {
   className?: string;
 };
 
-const defaultDocType = 'BlockDocument';
-
 interface ResourceType {
-  docType: 'BlockDocument' | 'ExternalLink' | 'DocumentFile';
   title: string;
   teaser: string;
   category: string;
@@ -41,7 +39,6 @@ interface ResourceType {
 }
 
 const defaultResource: ResourceType = {
-  docType: defaultDocType,
   title: '',
   teaser: '',
   category: '',
@@ -82,18 +79,6 @@ export default function ResourceCreator({
       options: categories.map(c => ({ label: c, value: c })),
       canCreateOption: true,
       placeholder: 'Select or create a category',
-      isMandatory: true,
-    }),
-    createSelectField({
-      key: 'docType',
-      type: 'select',
-      label: 'Resource type',
-      isMulti: false,
-      options: [
-        { label: 'Document', value: 'BlockDocument' },
-        { label: 'Link', value: 'ExternalLink' },
-        { label: 'File', value: 'DocumentFile' },
-      ],
       isMandatory: true,
     }),
   ];
@@ -150,16 +135,7 @@ export default function ResourceCreator({
                 abstractCardTypeId: cardTypeId,
                 cardId: cardId,
                 cardContentId: cardContentId,
-                document:
-                  e.docType === 'DocumentFile'
-                    ? {
-                        '@class': e.docType,
-                        fileSize: 0,
-                        mimeType: 'application/octet-stream',
-                      }
-                    : {
-                        '@class': e.docType,
-                      },
+                documents: [],
                 title: e.title,
                 teaser: {
                   '@class': 'TextDataBlock',

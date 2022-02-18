@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.model.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import java.util.HashSet;
 import java.util.List;
@@ -63,7 +63,7 @@ public class CardType extends AbstractCardType {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
     @JsonbTransient
-    private Block purpose;
+    private TextDataBlock purpose;
 
     /**
      * Tags
@@ -102,14 +102,14 @@ public class CardType extends AbstractCardType {
     /**
      * @return the purpose
      */
-    public Block getPurpose() {
+    public TextDataBlock getPurpose() {
         return purpose;
     }
 
     /**
      * @param purpose the purpose
      */
-    public void setPurpose(Block purpose) {
+    public void setPurpose(TextDataBlock purpose) {
         this.purpose = purpose;
     }
 

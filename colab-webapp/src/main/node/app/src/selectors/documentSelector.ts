@@ -6,40 +6,42 @@
  */
 
 import { Document, entityIs } from 'colab-rest-client';
+import { DocumentContext } from '../components/documents/documentCommonType';
 import { useAppSelector } from '../store/hooks';
 import { LoadingStatus } from '../store/store';
 
-export const useDocument = (
-  id: number | null | undefined,
-): Document | LoadingStatus | undefined => {
+export const useDocuments = (
+  context: DocumentContext,
+): {
+  documents: Document[];
+  status: LoadingStatus;
+} => {
   return useAppSelector(state => {
-    if (id != null) {
-      const docDetail = state.document.documents[id];
+    let dataInStore; // = { number[]; status: 'NOT_INITIALIZED' };
+    if (context.kind == 'DeliverableOfCardContent' && context.cardContentId != null) {
+      dataInStore = state.document.byCardContent[context.cardContentId];
+    } else if (context.kind == 'PartOfResource' && context.resourceId != null) {
+      dataInStore = state.document.byResource[context.resourceId];
+    } else {
+      return { documents: [], status: 'NOT_INITIALIZED' };
+    }
 
-      if (docDetail === null) {
-        return 'LOADING';
+    if (dataInStore === undefined) {
+      return { documents: [], status: 'NOT_INITIALIZED' };
+    } else {
+      const { documentIds, status } = dataInStore;
+
+      if (status == 'LOADING') {
+        return { documents: [], status: 'LOADING' };
       } else {
-        return docDetail;
+        return {
+          documents: documentIds.flatMap(docId => {
+            const doc = state.document.documents[docId];
+            return doc && entityIs(doc, 'Document') ? [doc] : [];
+          }),
+          status: 'READY',
+        };
       }
     }
-    return undefined;
-  }); // refEqual is fine
-};
-
-export const useDeliverable = (cardContentId: number | null | undefined): Document | undefined => {
-  return useAppSelector(state => {
-    let document = undefined;
-
-    if (cardContentId != null) {
-      Object.values(state.document.documents).forEach(doc => {
-        if (doc && entityIs(doc, 'Document')) {
-          if (doc.deliverableCardContentId === cardContentId) {
-            document = doc;
-          }
-        }
-      });
-    }
-
-    return document;
   });
 };

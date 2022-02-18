@@ -11,7 +11,6 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
-import ch.colabproject.colab.api.model.document.Block;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.link.ActivityFlowLink;
@@ -92,10 +91,10 @@ public class AccessControlTest extends AbstractArquillianTest {
         Assertions.assertFalse(hasAnotherProjectReadAccess());
         Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
 
-        Assertions.assertFalse(hasDeliverableDocumentReadAccess());
-        Assertions.assertFalse(hasDeliverableDocumentReadWriteAccess());
-        Assertions.assertFalse(hasDeliverableBlockReadAccess());
-        Assertions.assertFalse(hasDeliverableBlockReadWriteAccess());
+//        Assertions.assertFalse(hasDeliverableDocumentReadAccess());
+//        Assertions.assertFalse(hasDeliverableDocumentReadWriteAccess());
+//        Assertions.assertFalse(hasDeliverableBlockReadAccess());
+//        Assertions.assertFalse(hasDeliverableBlockReadWriteAccess());
 
 //        Assertions.assertTrue(hasGlobalResourceReadAccess());
 //        Assertions.assertFalse(hasGlobalResourceReadWriteAccess());
@@ -146,10 +145,10 @@ public class AccessControlTest extends AbstractArquillianTest {
         Assertions.assertTrue(hasAnotherProjectReadAccess());
         Assertions.assertTrue(hasAnotherProjectReadWriteAccess());
 
-        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
-        Assertions.assertTrue(hasDeliverableDocumentReadWriteAccess());
-        Assertions.assertTrue(hasDeliverableBlockReadAccess());
-        Assertions.assertTrue(hasDeliverableBlockReadWriteAccess());
+//        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
+//        Assertions.assertTrue(hasDeliverableDocumentReadWriteAccess());
+//        Assertions.assertTrue(hasDeliverableBlockReadAccess());
+//        Assertions.assertTrue(hasDeliverableBlockReadWriteAccess());
 
 //        Assertions.assertTrue(hasLocalResourceReadAccess());
 //        Assertions.assertTrue(hasLocalResourceReadWriteAccess());
@@ -199,10 +198,10 @@ public class AccessControlTest extends AbstractArquillianTest {
         Assertions.assertFalse(hasAnotherProjectReadAccess());
         Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
 
-        Assertions.assertFalse(hasDeliverableDocumentReadAccess());
-        Assertions.assertFalse(hasDeliverableDocumentReadWriteAccess());
-        Assertions.assertFalse(hasDeliverableBlockReadAccess());
-        Assertions.assertFalse(hasDeliverableBlockReadWriteAccess());
+//        Assertions.assertFalse(hasDeliverableDocumentReadAccess());
+//        Assertions.assertFalse(hasDeliverableDocumentReadWriteAccess());
+//        Assertions.assertFalse(hasDeliverableBlockReadAccess());
+//        Assertions.assertFalse(hasDeliverableBlockReadWriteAccess());
 
 //        Assertions.assertFalse(hasLocalResourceReadAccess());
 //        Assertions.assertFalse(hasLocalResourceReadWriteAccess());
@@ -258,10 +257,10 @@ public class AccessControlTest extends AbstractArquillianTest {
 //        Assertions.assertFalse(hasAnotherProjectReadAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
 
-        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
-        Assertions.assertTrue(hasDeliverableDocumentReadWriteAccess());
-        Assertions.assertTrue(hasDeliverableBlockReadAccess());
-        Assertions.assertTrue(hasDeliverableBlockReadWriteAccess());
+//        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
+//        Assertions.assertTrue(hasDeliverableDocumentReadWriteAccess());
+//        Assertions.assertTrue(hasDeliverableBlockReadAccess());
+//        Assertions.assertTrue(hasDeliverableBlockReadWriteAccess());
 
 //        Assertions.assertTrue(hasLocalResourceReadAccess());
 //        Assertions.assertTrue(hasLocalResourceReadWriteAccess());
@@ -312,10 +311,10 @@ public class AccessControlTest extends AbstractArquillianTest {
 //        Assertions.assertFalse(hasAnotherProjectReadAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
 
-        Assertions.assertFalse(hasDeliverableDocumentReadAccess());
-        Assertions.assertFalse(hasDeliverableDocumentReadWriteAccess());
-        Assertions.assertFalse(hasDeliverableBlockReadAccess());
-        Assertions.assertFalse(hasDeliverableBlockReadWriteAccess());
+//        Assertions.assertFalse(hasDeliverableDocumentReadAccess());
+//        Assertions.assertFalse(hasDeliverableDocumentReadWriteAccess());
+//        Assertions.assertFalse(hasDeliverableBlockReadAccess());
+//        Assertions.assertFalse(hasDeliverableBlockReadWriteAccess());
 
 //        Assertions.assertFalse(hasLocalResourceReadAccess());
 //        Assertions.assertFalse(hasLocalResourceReadWriteAccess());
@@ -367,10 +366,10 @@ public class AccessControlTest extends AbstractArquillianTest {
 //        Assertions.assertFalse(hasAnotherProjectReadAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
 
-        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
-        //Assertions.assertFalse(hasDeliverableDocumentReadWriteAccess());
-        Assertions.assertTrue(hasDeliverableBlockReadAccess());
-        Assertions.assertFalse(hasDeliverableBlockReadWriteAccess());
+//        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
+//        //Assertions.assertFalse(hasDeliverableDocumentReadWriteAccess());
+//        Assertions.assertTrue(hasDeliverableBlockReadAccess());
+//        Assertions.assertFalse(hasDeliverableBlockReadWriteAccess());
 
 //        Assertions.assertTrue(hasLocalResourceReadAccess());
 //        Assertions.assertFalse(hasLocalResourceReadWriteAccess());
@@ -422,10 +421,10 @@ public class AccessControlTest extends AbstractArquillianTest {
 //        Assertions.assertFalse(hasAnotherProjectReadAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
 
-        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
-        Assertions.assertTrue(hasDeliverableDocumentReadWriteAccess());
-        Assertions.assertTrue(hasDeliverableBlockReadAccess());
-        Assertions.assertTrue(hasDeliverableBlockReadWriteAccess());
+//        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
+//        Assertions.assertTrue(hasDeliverableDocumentReadWriteAccess());
+//        Assertions.assertTrue(hasDeliverableBlockReadAccess());
+//        Assertions.assertTrue(hasDeliverableBlockReadWriteAccess());
 
 //        Assertions.assertFalse(hasLocalResourceReadAccess());
 //        Assertions.assertFalse(hasLocalResourceReadWriteAccess());
@@ -477,10 +476,10 @@ public class AccessControlTest extends AbstractArquillianTest {
 //        Assertions.assertFalse(hasAnotherProjectReadAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
 
-        Assertions.assertFalse(hasDeliverableDocumentReadAccess());
-        Assertions.assertFalse(hasDeliverableDocumentReadWriteAccess());
-        Assertions.assertFalse(hasDeliverableBlockReadAccess());
-        Assertions.assertFalse(hasDeliverableBlockReadWriteAccess());
+//        Assertions.assertFalse(hasDeliverableDocumentReadAccess());
+//        Assertions.assertFalse(hasDeliverableDocumentReadWriteAccess());
+//        Assertions.assertFalse(hasDeliverableBlockReadAccess());
+//        Assertions.assertFalse(hasDeliverableBlockReadWriteAccess());
 
 //      Assertions.assertFalse(hasLocalResourceReadAccess());
 //      Assertions.assertFalse(hasLocalResourceReadWriteAccess());
@@ -531,10 +530,10 @@ public class AccessControlTest extends AbstractArquillianTest {
 //        Assertions.assertFalse(hasAnotherProjectReadAccess());
 //        Assertions.assertFalse(hasAnotherProjectReadWriteAccess());
 
-        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
-        Assertions.assertTrue(hasDeliverableDocumentReadWriteAccess());
-        Assertions.assertTrue(hasDeliverableBlockReadAccess());
-        Assertions.assertTrue(hasDeliverableBlockReadWriteAccess());
+//        Assertions.assertTrue(hasDeliverableDocumentReadAccess());
+//        Assertions.assertTrue(hasDeliverableDocumentReadWriteAccess());
+//        Assertions.assertTrue(hasDeliverableBlockReadAccess());
+//        Assertions.assertTrue(hasDeliverableBlockReadWriteAccess());
 
 //    Assertions.assertTrue(hasLocalResourceReadAccess());
 //    Assertions.assertTrue(hasLocalResourceReadWriteAccess());
@@ -1005,38 +1004,38 @@ public class AccessControlTest extends AbstractArquillianTest {
         return false;
     }
 
-    private boolean hasDeliverableBlockReadAccess() {
-        try {
-            aclTestClient.blockRestEndpoint.getBlock(data.getDeliverableBlockId());
-            return true;
-        } catch (HttpErrorMessage hem) {
-            if (MessageCode.ACCESS_DENIED == hem.getMessageCode()) {
-                return false;
-            }
-        }
-        Assertions.fail("Problem checking deliverable block read/write access");
-        return false;
-    }
+//    private boolean hasDeliverableBlockReadAccess() {
+//        try {
+//            aclTestClient.blockRestEndpoint.getBlock(data.getDeliverableBlockId());
+//            return true;
+//        } catch (HttpErrorMessage hem) {
+//            if (MessageCode.ACCESS_DENIED == hem.getMessageCode()) {
+//                return false;
+//            }
+//        }
+//        Assertions.fail("Problem checking deliverable block read/write access");
+//        return false;
+//    }
 
-    private boolean hasDeliverableBlockReadWriteAccess() {
-        try {
-            Block block = aclTestClient.blockRestEndpoint.getBlock(data.getDeliverableBlockId());
-            block.setIndex(5);
-            aclTestClient.blockRestEndpoint.updateBlock(block);
-
-            block = aclTestClient.blockRestEndpoint.getBlock(data.getDeliverableBlockId());
-            block.setIndex(7);
-            aclTestClient.blockRestEndpoint.updateBlock(block);
-
-            return true;
-        } catch (HttpErrorMessage hem) {
-            if (MessageCode.ACCESS_DENIED == hem.getMessageCode()) {
-                return false;
-            }
-        }
-        Assertions.fail("Problem checking deliverable block read/write access");
-        return false;
-    }
+//    private boolean hasDeliverableBlockReadWriteAccess() {
+//        try {
+//            Block block = aclTestClient.blockRestEndpoint.getBlock(data.getDeliverableBlockId());
+//            block.setIndex(5);
+//            aclTestClient.blockRestEndpoint.updateBlock(block);
+//
+//            block = aclTestClient.blockRestEndpoint.getBlock(data.getDeliverableBlockId());
+//            block.setIndex(7);
+//            aclTestClient.blockRestEndpoint.updateBlock(block);
+//
+//            return true;
+//        } catch (HttpErrorMessage hem) {
+//            if (MessageCode.ACCESS_DENIED == hem.getMessageCode()) {
+//                return false;
+//            }
+//        }
+//        Assertions.fail("Problem checking deliverable block read/write access");
+//        return false;
+//    }
 
 
 
@@ -1134,34 +1133,34 @@ public class AccessControlTest extends AbstractArquillianTest {
 //      return false;
     }
 
-    private boolean hasBlockReadAccess() {
-        try {
-            aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
-            return true;
-        } catch (@SuppressWarnings("unused") Exception e) {
-            return false;
-        }
-//      Assertions.fail("Problem checking  read access");
-//      return false;
-    }
+//    private boolean hasBlockReadAccess() {
+//        try {
+//            aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
+//            return true;
+//        } catch (@SuppressWarnings("unused") Exception e) {
+//            return false;
+//        }
+////      Assertions.fail("Problem checking  read access");
+////      return false;
+//    }
 
-    private boolean hasBlockReadWriteAccess() {
-        try {
-            Block block = aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
-            block.setIndex(5);
-            aclTestClient.blockRestEndpoint.updateBlock(block);
-
-            block = aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
-            block.setIndex(7);
-            aclTestClient.blockRestEndpoint.updateBlock(block);
-
-            return true;
-        } catch (@SuppressWarnings("unused") Exception e) { // ServerException
-            return false;
-        }
-//      Assertions.fail("Problem checking  read/write access");
-//      return false;
-    }
+//    private boolean hasBlockReadWriteAccess() {
+//        try {
+//            Block block = aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
+//            block.setIndex(5);
+//            aclTestClient.blockRestEndpoint.updateBlock(block);
+//
+//            block = aclTestClient.blockRestEndpoint.getBlock(data.getBlockId());
+//            block.setIndex(7);
+//            aclTestClient.blockRestEndpoint.updateBlock(block);
+//
+//            return true;
+//        } catch (@SuppressWarnings("unused") Exception e) { // ServerException
+//            return false;
+//        }
+////      Assertions.fail("Problem checking  read/write access");
+////      return false;
+//    }
 
     private boolean hasActivityFlowLinkReadAccess() {
         try {

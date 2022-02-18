@@ -7,7 +7,7 @@
 package ch.colabproject.colab.tests.rest.document;
 
 import ch.colabproject.colab.api.model.document.AbstractResource;
-import ch.colabproject.colab.api.model.document.BlockDocument;
+import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
@@ -36,27 +36,27 @@ public class ResourceAndReference2Test extends AbstractArquillianTest {
 
         Long rootCardId = ColabFactory.getRootCard(client, project).getId();
         ResourceCreationBean rootCardResource = new ResourceCreationBean();
-        rootCardResource.setDocument(new BlockDocument());
+        rootCardResource.setDocuments(List.of(new ExternalLink()));
         rootCardResource.setCardId(rootCardId);
         Long rootCardResourceId = client.resourceRestEndpoint.createResource(rootCardResource);
 
         Long rootCardContentId = ColabFactory.getRootContent(client, project).getId();
         ResourceCreationBean rootCardContentResource = new ResourceCreationBean();
-        rootCardContentResource.setDocument(new BlockDocument());
+        rootCardContentResource.setDocuments(List.of(new ExternalLink()));
         rootCardContentResource.setCardContentId(rootCardContentId);
         Long rootCardContentResourceId = client.resourceRestEndpoint
             .createResource(rootCardContentResource);
 
         Long rootCardVariantId = ColabFactory.createNewCardContent(client, rootCardId).getId();
         ResourceCreationBean rootCardVariantResource = new ResourceCreationBean();
-        rootCardVariantResource.setDocument(new BlockDocument());
+        rootCardVariantResource.setDocuments(List.of(new ExternalLink()));
         rootCardVariantResource.setCardContentId(rootCardVariantId);
         client.resourceRestEndpoint.createResource(rootCardVariantResource);
         // referenced by nothing
 
         Long globalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
         ResourceCreationBean globalCardTypeResource = new ResourceCreationBean();
-        globalCardTypeResource.setDocument(new BlockDocument());
+        globalCardTypeResource.setDocuments(List.of(new ExternalLink()));
         globalCardTypeResource.setAbstractCardTypeId(globalCardTypeId);
         Long globalCardTypeResourceId = client.resourceRestEndpoint
             .createResource(globalCardTypeResource);
@@ -64,27 +64,27 @@ public class ResourceAndReference2Test extends AbstractArquillianTest {
         Long card1Id = ColabFactory.createNewCard(client, rootCardContentId, globalCardTypeId)
             .getId();
         ResourceCreationBean card1Resource = new ResourceCreationBean();
-        card1Resource.setDocument(new BlockDocument());
+        card1Resource.setDocuments(List.of(new ExternalLink()));
         card1Resource.setCardId(card1Id);
         Long card1ResourceId = client.resourceRestEndpoint.createResource(card1Resource);
 
         Long card1GlobalTypeRefId = client.cardRestEndpoint.getCard(card1Id).getCardTypeId();
         ResourceCreationBean card1GlobalTypeRefResource = new ResourceCreationBean();
-        card1GlobalTypeRefResource.setDocument(new BlockDocument());
+        card1GlobalTypeRefResource.setDocuments(List.of(new ExternalLink()));
         card1GlobalTypeRefResource.setAbstractCardTypeId(card1GlobalTypeRefId);
         Long card1GlobalTypeRefResourceId = client.resourceRestEndpoint
             .createResource(card1GlobalTypeRefResource);
 
         Long card1ContentId = ColabFactory.getCardContent(client, card1Id).getId();
         ResourceCreationBean card1ContentResource = new ResourceCreationBean();
-        card1ContentResource.setDocument(new BlockDocument());
+        card1ContentResource.setDocuments(List.of(new ExternalLink()));
         card1ContentResource.setCardContentId(card1ContentId);
         Long card1ContentResourceId = client.resourceRestEndpoint
             .createResource(card1ContentResource);
 
         Long card2LocalTypeId = ColabFactory.createCardType(client, projectId).getId();
         ResourceCreationBean card2LocalTypeResource = new ResourceCreationBean();
-        card2LocalTypeResource.setDocument(new BlockDocument());
+        card2LocalTypeResource.setDocuments(List.of(new ExternalLink()));
         card2LocalTypeResource.setAbstractCardTypeId(card2LocalTypeId);
         Long card2LocalTypeResourceId = client.resourceRestEndpoint
             .createResource(card2LocalTypeResource);
@@ -92,13 +92,13 @@ public class ResourceAndReference2Test extends AbstractArquillianTest {
         Long card2Id = ColabFactory.createNewCard(client, rootCardContentId, card2LocalTypeId)
             .getId();
         ResourceCreationBean card2Resource = new ResourceCreationBean();
-        card2Resource.setDocument(new BlockDocument());
+        card2Resource.setDocuments(List.of(new ExternalLink()));
         card2Resource.setCardId(card2Id);
         Long card2ResourceId = client.resourceRestEndpoint.createResource(card2Resource);
 
         Long card2ContentId = ColabFactory.getCardContent(client, card2Id).getId();
         ResourceCreationBean card2ContentResource = new ResourceCreationBean();
-        card2ContentResource.setDocument(new BlockDocument());
+        card2ContentResource.setDocuments(List.of(new ExternalLink()));
         card2ContentResource.setCardContentId(card2ContentId);
         Long card2ContentResourceId = client.resourceRestEndpoint
             .createResource(card2ContentResource);
@@ -107,14 +107,14 @@ public class ResourceAndReference2Test extends AbstractArquillianTest {
 
         Long anotherGlobalCardTypeId = ColabFactory.createGlobalCardType(client).getId();
         ResourceCreationBean anotherGlobalCardTypeResource = new ResourceCreationBean();
-        anotherGlobalCardTypeResource.setDocument(new BlockDocument());
+        anotherGlobalCardTypeResource.setDocuments(List.of(new ExternalLink()));
         anotherGlobalCardTypeResource.setAbstractCardTypeId(anotherGlobalCardTypeId);
         Long anotherGlobalCardTypeResourceId = client.resourceRestEndpoint
             .createResource(anotherGlobalCardTypeResource);
 
         Long anotherLocalCardTypeId = ColabFactory.createCardType(client, projectId).getId();
         ResourceCreationBean anotherLocalCardTypeResource = new ResourceCreationBean();
-        anotherLocalCardTypeResource.setDocument(new BlockDocument());
+        anotherLocalCardTypeResource.setDocuments(List.of(new ExternalLink()));
         anotherLocalCardTypeResource.setAbstractCardTypeId(anotherLocalCardTypeId);
         Long anotherLocalCardTypeResourceId = client.resourceRestEndpoint
             .createResource(anotherLocalCardTypeResource);
@@ -260,69 +260,69 @@ public class ResourceAndReference2Test extends AbstractArquillianTest {
 
         // now add resources
         ResourceCreationBean rootCardResource = new ResourceCreationBean();
-        rootCardResource.setDocument(new BlockDocument());
+        rootCardResource.setDocuments(List.of(new ExternalLink()));
         rootCardResource.setCardId(rootCardId);
         Long rootCardResourceId = client.resourceRestEndpoint.createResource(rootCardResource);
 
         ResourceCreationBean rootCardContentResource = new ResourceCreationBean();
-        rootCardContentResource.setDocument(new BlockDocument());
+        rootCardContentResource.setDocuments(List.of(new ExternalLink()));
         rootCardContentResource.setCardContentId(rootCardContentId);
         Long rootCardContentResourceId = client.resourceRestEndpoint
             .createResource(rootCardContentResource);
 
         ResourceCreationBean rootCardVariantResource = new ResourceCreationBean();
-        rootCardVariantResource.setDocument(new BlockDocument());
+        rootCardVariantResource.setDocuments(List.of(new ExternalLink()));
         rootCardVariantResource.setCardContentId(rootCardVariantId);
         client.resourceRestEndpoint.createResource(rootCardVariantResource);
 
         ResourceCreationBean globalCardTypeResource = new ResourceCreationBean();
-        globalCardTypeResource.setDocument(new BlockDocument());
+        globalCardTypeResource.setDocuments(List.of(new ExternalLink()));
         globalCardTypeResource.setAbstractCardTypeId(globalCardTypeId);
         Long globalCardTypeResourceId = client.resourceRestEndpoint
             .createResource(globalCardTypeResource);
 
         ResourceCreationBean card1Resource = new ResourceCreationBean();
-        card1Resource.setDocument(new BlockDocument());
+        card1Resource.setDocuments(List.of(new ExternalLink()));
         card1Resource.setCardId(card1Id);
         Long card1ResourceId = client.resourceRestEndpoint.createResource(card1Resource);
 
         ResourceCreationBean card1GlobalTypeRefResource = new ResourceCreationBean();
-        card1GlobalTypeRefResource.setDocument(new BlockDocument());
+        card1GlobalTypeRefResource.setDocuments(List.of(new ExternalLink()));
         card1GlobalTypeRefResource.setAbstractCardTypeId(card1GlobalTypeRefId);
         Long card1GlobalTypeRefResourceId = client.resourceRestEndpoint
             .createResource(card1GlobalTypeRefResource);
 
         ResourceCreationBean card1ContentResource = new ResourceCreationBean();
-        card1ContentResource.setDocument(new BlockDocument());
+        card1ContentResource.setDocuments(List.of(new ExternalLink()));
         card1ContentResource.setCardContentId(card1ContentId);
         Long card1ContentResourceId = client.resourceRestEndpoint
             .createResource(card1ContentResource);
 
         ResourceCreationBean card2LocalTypeResource = new ResourceCreationBean();
-        card2LocalTypeResource.setDocument(new BlockDocument());
+        card2LocalTypeResource.setDocuments(List.of(new ExternalLink()));
         card2LocalTypeResource.setAbstractCardTypeId(card2LocalTypeId);
         Long card2LocalTypeResourceId = client.resourceRestEndpoint
             .createResource(card2LocalTypeResource);
 
         ResourceCreationBean card2Resource = new ResourceCreationBean();
-        card2Resource.setDocument(new BlockDocument());
+        card2Resource.setDocuments(List.of(new ExternalLink()));
         card2Resource.setCardId(card2Id);
         Long card2ResourceId = client.resourceRestEndpoint.createResource(card2Resource);
 
         ResourceCreationBean card2ContentResource = new ResourceCreationBean();
-        card2ContentResource.setDocument(new BlockDocument());
+        card2ContentResource.setDocuments(List.of(new ExternalLink()));
         card2ContentResource.setCardContentId(card2ContentId);
         Long card2ContentResourceId = client.resourceRestEndpoint
             .createResource(card2ContentResource);
 
         ResourceCreationBean anotherGlobalCardTypeResource = new ResourceCreationBean();
-        anotherGlobalCardTypeResource.setDocument(new BlockDocument());
+        anotherGlobalCardTypeResource.setDocuments(List.of(new ExternalLink()));
         anotherGlobalCardTypeResource.setAbstractCardTypeId(anotherGlobalCardTypeId);
         Long anotherGlobalCardTypeResourceId = client.resourceRestEndpoint
             .createResource(anotherGlobalCardTypeResource);
 
         ResourceCreationBean anotherLocalCardTypeResource = new ResourceCreationBean();
-        anotherLocalCardTypeResource.setDocument(new BlockDocument());
+        anotherLocalCardTypeResource.setDocuments(List.of(new ExternalLink()));
         anotherLocalCardTypeResource.setAbstractCardTypeId(anotherLocalCardTypeId);
         Long anotherLocalCardTypeResourceId = client.resourceRestEndpoint
             .createResource(anotherLocalCardTypeResource);

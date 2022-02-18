@@ -10,7 +10,6 @@ import { faCog, faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import * as API from '../../API/api';
 import useTranslations from '../../i18n/I18nContext';
-import { useDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { Destroyer } from '../common/Destroyer';
 import Flex from '../common/Flex';
@@ -151,15 +150,6 @@ interface TocEntryProps {
 function TocEntry({ resourceAndRef, selectResource }: TocEntryProps) {
   const i18n = useTranslations();
   const dispatch = useAppDispatch();
-
-  const docId = resourceAndRef.targetResource.documentId;
-  const document = useDocument(docId);
-
-  React.useEffect(() => {
-    if (docId != null && document == null) {
-      dispatch(API.getDocument(docId));
-    }
-  }, [docId, document, dispatch]);
 
   const teaser = useBlock(resourceAndRef.targetResource.teaserId);
 

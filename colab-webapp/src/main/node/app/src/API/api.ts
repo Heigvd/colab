@@ -11,8 +11,6 @@ import {
   AbstractResource,
   ActivityFlowLink,
   AuthInfo,
-  Block,
-  BlockDocument,
   Card,
   CardContent,
   CardType,
@@ -33,6 +31,7 @@ import {
   StickyNoteLinkCreationBean,
   TeamMember,
   TeamRole,
+  TextDataBlock,
   User,
   WsSessionIdentifier,
 } from 'colab-rest-client';
@@ -599,8 +598,10 @@ export const createSubCardWithBlockDoc = createAsyncThunk(
   'card/createSubCard',
   async ({ parent, cardTypeId }: { parent: CardContent; cardTypeId: number }) => {
     if (parent.id != null) {
-      const doc: BlockDocument = {
-        '@class': 'BlockDocument',
+      const doc: TextDataBlock = {
+        '@class': 'TextDataBlock',
+        mimeType: 'text/markdown',
+        revision: '0',
       };
       return await restClient.CardRestEndpoint.createNewCardWithDeliverable(
         parent.id,
@@ -651,8 +652,10 @@ export const getCardContents = createAsyncThunk('cardcontent/getByCard', async (
 export const createCardContentVariantWithBlockDoc = createAsyncThunk(
   'cardcontent/create',
   async (cardId: number) => {
-    const doc: BlockDocument = {
-      '@class': 'BlockDocument',
+    const doc: TextDataBlock = {
+      '@class': 'TextDataBlock',
+      mimeType: 'text/markdown',
+      revision: '0',
     };
     return await restClient.CardContentRestEndpoint.createNewCardContentWithDeliverable(
       cardId,
@@ -684,10 +687,24 @@ export const getSubCards = createAsyncThunk(
   },
 );
 
-export const getDeliverableOfCardContent = createAsyncThunk<Document, number>(
-  'cardcontent/getDeliverable',
+export const getDeliverablesOfCardContent = createAsyncThunk(
+  'cardcontent/getDeliverables',
   async (cardContentId: number) => {
-    return await restClient.CardContentRestEndpoint.getDeliverableOfCardContent(cardContentId);
+    return await restClient.CardContentRestEndpoint.getDeliverablesOfCardContent(cardContentId);
+  },
+);
+
+export const addDeliverable = createAsyncThunk(
+  'cardcontent/addDeliverable',
+  async ({ cardContentId, deliverable }: { cardContentId: number; deliverable: Document }) => {
+    return await restClient.CardContentRestEndpoint.addDeliverable(cardContentId, deliverable);
+  },
+);
+
+export const removeDeliverable = createAsyncThunk(
+  'cardcontent/removeDeliverable',
+  async ({ cardContentId, documentId }: { cardContentId: number; documentId: number }) => {
+    return await restClient.CardContentRestEndpoint.removeDeliverable(cardContentId, documentId);
   },
 );
 
@@ -755,6 +772,27 @@ export const removeAccessToResource = createAsyncThunk(
   },
 );
 
+export const getDocumentsOfResource = createAsyncThunk(
+  'resource/getDocuments',
+  async (resourceId: number) => {
+    return await restClient.ResourceRestEndpoint.getDocumentsOfResource(resourceId);
+  },
+);
+
+export const addDocumentToResource = createAsyncThunk(
+  'resource/addDocument',
+  async ({ resourceId, document }: { resourceId: number; document: Document }) => {
+    return await restClient.ResourceRestEndpoint.addDocument(resourceId, document);
+  },
+);
+
+export const removeDocumentOfResource = createAsyncThunk(
+  'resource/removeDocument',
+  async ({ resourceId, documentId }: { resourceId: number; documentId: number }) => {
+    return await restClient.ResourceRestEndpoint.removeDocument(resourceId, documentId);
+  },
+);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Documents
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -773,29 +811,6 @@ export const updateDocument = createAsyncThunk('document/update', async (documen
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Blocks
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export const getDocumentBlocksIds = createAsyncThunk(
-  'block/getIdsFromDoc',
-  async (document: BlockDocument) => {
-    if (document.id) {
-      return await restClient.DocumentRestEndpoint.getBlocksDocumentIds(document.id);
-    }
-  },
-);
-
-export const createBlock = createAsyncThunk(
-  'block/create',
-  async (payload: { document: BlockDocument; block: Block }) => {
-    return await restClient.BlockRestEndpoint.createBlock({
-      ...payload.block,
-      documentId: payload.document.id,
-    });
-  },
-);
-
-export const getBlock = createAsyncThunk('block/get', async (id: number) => {
-  return await restClient.BlockRestEndpoint.getBlock(id);
-});
 
 export const subscribeToBlockChannel = createAsyncThunk(
   'block/subscribe',
@@ -830,29 +845,19 @@ export const unsubscribeFromBlockChannel = createAsyncThunk(
 export const getBlockPendingChanges = createAsyncThunk(
   'block/getPendingChanges',
   async (id: number) => {
-    return await restClient.BlockRestEndpoint.getChanges(id);
+    return await restClient.ChangeRestEndpoint.getChanges(id);
   },
 );
-
-export const updateBlock = createAsyncThunk('block/update', async (block: Block) => {
-  return await restClient.BlockRestEndpoint.updateBlock(block);
-});
 
 export const patchBlock = createAsyncThunk(
   'block/patch',
   async (payload: { id: number; change: Change }) => {
-    return await restClient.BlockRestEndpoint.patchBlock(payload.id, payload.change);
+    return await restClient.ChangeRestEndpoint.patchBlock(payload.id, payload.change);
   },
 );
 
 export const deletePendingChanges = createAsyncThunk('block/deleteChanges', async (id: number) => {
-  return await restClient.BlockRestEndpoint.deletePendingChanges(id);
-});
-
-export const deleteBlock = createAsyncThunk('block/delete', async (block: Block) => {
-  if (block.id != null) {
-    return await restClient.BlockRestEndpoint.deleteBlock(block.id);
-  }
+  return await restClient.ChangeRestEndpoint.deletePendingChanges(id);
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

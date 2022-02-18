@@ -6,14 +6,16 @@
  */
 package ch.colabproject.colab.api.model.link;
 
+import static ch.colabproject.colab.api.model.link.ActivityFlowLink.LINK_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.AbstractResource;
-import ch.colabproject.colab.api.model.document.Block;
-import static ch.colabproject.colab.api.model.link.ActivityFlowLink.LINK_SEQUENCE_NAME;
+import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
+import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
@@ -43,7 +45,7 @@ import javax.validation.constraints.NotNull;
  * <li>a card</li>
  * <li>a card content</li>
  * <li>a resource</li>
- * <li>a block</li>
+ * <li>a document</li>
  * </ul>
  *
  * @author sandra
@@ -53,9 +55,9 @@ import javax.validation.constraints.NotNull;
     indexes = {
         @Index(columnList = "destinationcard_id"),
         @Index(columnList = "explanation_id"),
-        @Index(columnList = "srcblock_id"),
         @Index(columnList = "srccard_id"),
         @Index(columnList = "srccardcontent_id"),
+        @Index(columnList = "srcdocument_id"),
         @Index(columnList = "srcresourceorref_id")
     }
 )
@@ -122,17 +124,17 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     private Long srcResourceOrRefId;
 
     /**
-     * The block, source of the sticky note
+     * The document, source of the sticky note
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
-    private Block srcBlock;
+    private Document srcDocument;
 
     /**
-     * The ID of the source block (serialization sugar)
+     * The ID of the source document (serialization sugar)
      */
     @Transient
-    private Long srcBlockId;
+    private Long srcDocumentId;
 
     /**
      * The card where the information is useful
@@ -158,7 +160,7 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
     @JsonbTransient
-    private Block explanation;
+    private TextDataBlock explanation;
 
     /**
      * The id of the long description (serialization sugar)
@@ -314,46 +316,46 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * @return the block, source of the sticky note
+     * @return the document, source of the sticky note
      */
-    public Block getSrcBlock() {
-        return srcBlock;
+    public Document getSrcDocument() {
+        return srcDocument;
     }
 
     /**
-     * @param srcBlock the block, source of the sticky note
+     * @param srcDocument the Document, source of the sticky note
      */
-    public void setSrcBlock(Block srcBlock) {
-        this.srcBlock = srcBlock;
+    public void setSrcDocument(Document srcDocument) {
+        this.srcDocument = srcDocument;
     }
 
     /**
-     * get the id of the source block. To be sent to client
+     * get the id of the source document. To be sent to client
      *
-     * @return the id of source block
+     * @return the id of source document
      */
-    public Long getSrcBlockId() {
-        if (this.srcBlock != null) {
-            return this.srcBlock.getId();
+    public Long getSrcDocumentId() {
+        if (this.srcDocument != null) {
+            return this.srcDocument.getId();
         } else {
-            return srcBlockId;
+            return srcDocumentId;
         }
     }
 
     /**
-     * set the id of the source block. For serialization only
+     * set the id of the source document. For serialization only
      *
-     * @param srcBlockId the id of the source block
+     * @param srcDocumentId the id of the source document
      */
-    public void setSrcBlockId(Long srcBlockId) {
-        this.srcBlockId = srcBlockId;
+    public void setSrcDocumentId(Long srcDocumentId) {
+        this.srcDocumentId = srcDocumentId;
     }
 
     /**
-     * @return True if the source is a block
+     * @return True if the source is a document
      */
-    public boolean isSrcBlock() {
-        return this.srcBlock != null || this.srcBlockId != null;
+    public boolean isSrcDocument() {
+        return this.srcDocument != null || this.srcDocumentId != null;
     }
 
     /**
@@ -409,14 +411,14 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     /**
      * @return the long description
      */
-    public Block getExplanation() {
+    public TextDataBlock getExplanation() {
         return explanation;
     }
 
     /**
      * @param explanation the long description
      */
-    public void setExplanation(Block explanation) {
+    public void setExplanation(TextDataBlock explanation) {
         this.explanation = explanation;
     }
 
@@ -479,8 +481,8 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
         if (this.srcResourceOrRef != null) {
             return this.srcResourceOrRef;
         }
-        if (this.srcBlock != null) {
-            return this.srcBlock;
+        if (this.srcDocument != null) {
+            return this.srcDocument;
         }
         throw HttpErrorMessage.dataIntegrityFailure();
     }
@@ -500,9 +502,9 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
         } else if (src instanceof AbstractResource) {
             resetSrc();
             setSrcResourceOrRef((AbstractResource) src);
-        } else if (src instanceof Block) {
+        } else if (src instanceof Document) {
             resetSrc();
-            setSrcBlock((Block) src);
+            setSrcDocument((Document) src);
         } else {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
@@ -518,8 +520,8 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
         setSrcCardContentId(null);
         setSrcResourceOrRef(null);
         setSrcResourceOrRefId(null);
-        setSrcBlock(null);
-        setSrcBlockId(null);
+        setSrcDocument(null);
+        setSrcDocumentId(null);
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -552,11 +554,26 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
         return this.getSrc().getUpdateCondition();
     }
 
+    /**
+     * Get the project it belongs to
+     *
+     * @return project owner
+     */
+    public Project getProject() {
+        if (this.destinationCard != null) {
+            return this.destinationCard.getProject();
+        } else {
+            // such an orphan shouldn't exist...
+            return null;
+        }
+    }
+
     @Override
     public Set<WebsocketChannel> getChannels() {
         if (this.destinationCard != null) {
             return this.destinationCard.getChannels();
         } else {
+            // such an orphan shouldn't exist...
             return Set.of();
         }
     }
@@ -576,7 +593,7 @@ public class StickyNoteLink implements ColabEntity, WithWebsocketChannels {
     public String toString() {
         return "StickyNoteLink{" + "id=" + id + ", srcCardId=" + srcCardId
             + ", srcCardContentId=" + srcCardContentId + ", srcResourceOrRefId="
-            + srcResourceOrRefId + ", srcBlockId=" + srcBlockId + ", destinationCardId="
+            + srcResourceOrRefId + ", srcDocId=" + srcDocumentId + ", destinationCardId="
             + destinationCardId + ", teaser=" + teaser + "}";
     }
 

@@ -16,6 +16,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -30,7 +31,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(
     indexes = {
-        @Index(columnList = "document_id"),
         @Index(columnList = "teaser_id"),
     }
 )
@@ -72,7 +72,7 @@ public class Resource extends AbstractResource {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
     @JsonbTransient
-    private Block teaser;
+    private TextDataBlock teaser;
 
     /**
      * The id of the abstract / teaser
@@ -83,16 +83,9 @@ public class Resource extends AbstractResource {
     /**
      * The content of the resource
      */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @NotNull
+    @OneToMany(mappedBy = "owningResource", cascade = CascadeType.ALL)
     @JsonbTransient
-    private Document document;
-
-    /**
-     * The document id (serialization sugar)
-     */
-    @Transient
-    private Long documentId;
+    private List<Document> documents;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -157,14 +150,14 @@ public class Resource extends AbstractResource {
     /**
      * @return the teaser / abstract
      */
-    public Block getTeaser() {
+    public TextDataBlock getTeaser() {
         return teaser;
     }
 
     /**
      * @param teaser the teaser / abstract
      */
-    public void setTeaser(Block teaser) {
+    public void setTeaser(TextDataBlock teaser) {
         this.teaser = teaser;
     }
 
@@ -191,39 +184,17 @@ public class Resource extends AbstractResource {
     }
 
     /**
-     * @return the document
+     * @return the content of the resource
      */
-    public Document getDocument() {
-        return document;
+    public List<Document> getDocuments() {
+        return documents;
     }
 
     /**
-     * @param document the document
+     * @param documents the content of the resource
      */
-    public void setDocument(Document document) {
-        this.document = document;
-    }
-
-    /**
-     * get the id of the document. To be sent to client.
-     *
-     * @return the id of the document
-     */
-    public Long getDocumentId() {
-        if (document != null) {
-            return document.getId();
-        } else {
-            return documentId;
-        }
-    }
-
-    /**
-     * set the id of the document. For serialization only.
-     *
-     * @param documentId the id of the document
-     */
-    public void setDocumentId(Long documentId) {
-        this.documentId = documentId;
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -269,7 +240,7 @@ public class Resource extends AbstractResource {
     public String toString() {
         return "Resource{" + toPartialString() + ", title=" + title
             + ", published=" + published + ", requestingForGlory=" + requestingForGlory
-            + ", deprecated=" + deprecated + ", documentId=" + documentId + "}";
+            + ", deprecated=" + deprecated + "}";
     }
 
 }

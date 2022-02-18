@@ -102,10 +102,14 @@ public class StickyNoteLinkRestEndpoint {
         link.setSrcCardId(linkCreationBean.getSrcCardId());
         link.setSrcCardContentId(linkCreationBean.getSrcCardContentId());
         link.setSrcResourceOrRefId(linkCreationBean.getSrcResourceOrRefId());
-        link.setSrcBlockId(linkCreationBean.getSrcBlockId());
+        link.setSrcDocumentId(linkCreationBean.getSrcDocumentId());
         link.setDestinationCardId(linkCreationBean.getDestinationCardId());
         link.setTeaser(linkCreationBean.getTeaser());
         link.setExplanation(linkCreationBean.getExplanation());
+
+        if (linkCreationBean.getExplanation() != null) {
+            linkCreationBean.getExplanation().setExplainingStickyNoteLink(link);
+        }
 
         return linkManager.createStickyNoteLink(link).getId();
     }
@@ -163,16 +167,16 @@ public class StickyNoteLinkRestEndpoint {
     }
 
     /**
-     * Change the source for a block
+     * Change the source for a document
      *
-     * @param linkId  the id of the link to update
-     * @param blockId the id of the new source object
+     * @param linkId     the id of the link to update
+     * @param documentId the id of the new source object
      */
     @PUT
-    @Path("changeSrc/{linkId}/Block")
-    public void changeSrcWithBlock(@PathParam("linkId") Long linkId, Long blockId) {
-        logger.debug("change link #{} with new block source #{}", linkId, blockId);
-        linkManager.changeStickyNoteLinkSource(linkId, SrcType.BLOCK, blockId);
+    @Path("changeSrc/{linkId}/Document")
+    public void changeSrcWithDocument(@PathParam("linkId") Long linkId, Long documentId) {
+        logger.debug("change link #{} with new document source #{}", linkId, documentId);
+        linkManager.changeStickyNoteLinkSource(linkId, SrcType.DOCUMENT, documentId);
     }
 
     /**

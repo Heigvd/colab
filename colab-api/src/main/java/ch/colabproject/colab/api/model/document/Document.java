@@ -8,15 +8,19 @@ package ch.colabproject.colab.api.model.document;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
+import ch.colabproject.colab.api.model.WithIndex;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
-import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
 import ch.colabproject.colab.api.model.card.CardContent;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
+import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.tools.EntityHelper;
 import ch.colabproject.colab.api.model.tracking.Tracking;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import ch.colabproject.colab.api.ws.channel.WebsocketChannel;
 import ch.colabproject.colab.generator.model.tools.PolymorphicDeserializer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
@@ -27,26 +31,41 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 /**
- * Any document
+ * Any document.
  * <p>
- * The subclass handles the content
+ * The subclass handles the content.
+ * <p>
+ * A document is owned by either a card content or a resource.
  *
  * @author sandra
  */
 //TODO adjust the constraints / indexes / cascade / fetch
 @Entity
+@Table(
+    indexes = {
+        @Index(columnList = "owningCardContent_id"),
+        @Index(columnList = "owningResource_id"),
+    }
+)
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)
 //FIXME see if is needed or not. It was implemented for test purpose at first
 @NamedQuery(name = "Document.findAll", query = "SELECT d FROM Document d")
-public abstract class Document implements ColabEntity, WithWebsocketChannels {
+public abstract class Document
+    implements ColabEntity, WithWebsocketChannels, WithIndex, StickyNoteSourceable {
+
+    /** Name of the document/resource sequence */
+    public static final String DOCUMENT_SEQUENCE_NAME = "document_seq";
 
     private static final long serialVersionUID = 1L;
 
@@ -57,7 +76,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      * Document ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = STRUCTURE_SEQUENCE_NAME)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = DOCUMENT_SEQUENCE_NAME)
     protected Long id;
 
     /**
@@ -67,32 +86,42 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     private Tracking trackingData;
 
     /**
-     * The card content for which this document is the deliverable
+     * The index to define the place of the document
      */
-    // TODO see where to prevent that a document is used by several card contents
-    @OneToOne(mappedBy = "deliverable", fetch = FetchType.LAZY)
-    @JsonbTransient
-    private CardContent deliverableCardContent;
+    private int index;
 
     /**
-     * The id of the card content for which this document is the deliverable
+     * The card content for which this document is a deliverable
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonbTransient
+    protected CardContent owningCardContent;
+
+    /**
+     * The id of the card content for which this document is a deliverable
      */
     @Transient
-    private Long deliverableCardContentId;
+    private Long owningCardContentId;
 
     /**
-     * The resource representing this document
+     * The resource this document is part of
      */
-    // TODO see where to prevent that a document is represented by several resources
-    @OneToOne(mappedBy = "document", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonbTransient
-    private Resource resource;
+    protected Resource owningResource;
 
     /**
-     * The id of the resource representing this document
+     * The id of the resource this document is part of
      */
     @Transient
-    private Long resourceId;
+    private Long owningResourceId;
+
+    /**
+     * The list of sticky note links of which the document is the source
+     */
+    @OneToMany(mappedBy = "srcDocument", cascade = CascadeType.ALL)
+    @JsonbTransient
+    private List<StickyNoteLink> stickyNoteLinksAsSrc = new ArrayList<>();
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -113,110 +142,112 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     }
 
     /**
-     * @return the card content for which this document is the deliverable
+     * @return the index to define the place of the document
      */
-    public CardContent getDeliverableCardContent() {
-        return deliverableCardContent;
+    @Override
+    public int getIndex() {
+        return index;
     }
 
     /**
-     * @param deliverableCardContent the card content for which this document is the deliverable to
-     *                               set
+     * @param index the index to define the place of the document to set
      */
-    public void setDeliverableCardContent(CardContent deliverableCardContent) {
-        this.deliverableCardContent = deliverableCardContent;
+    @Override
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     /**
-     * get the id of the card content for which this document is the deliverable. To be sent to
-     * client
-     *
-     * @return the id of the card content
+     * @return the card content for which this document is a deliverable
      */
-    public Long getDeliverableCardContentId() {
-        if (this.deliverableCardContent != null) {
-            return deliverableCardContent.getId();
+    public CardContent getOwningCardContent() {
+        return owningCardContent;
+    }
+
+    /**
+     * @param cardContent the card content for which this document is a deliverable
+     */
+    public void setOwningCardContent(CardContent cardContent) {
+        this.owningCardContent = cardContent;
+    }
+
+    /**
+     * @return the id of the card content for which this document is a deliverable
+     */
+    public Long getOwningCardContentId() {
+        if (this.owningCardContent != null) {
+            return this.owningCardContent.getId();
         } else {
-            return deliverableCardContentId;
+            return owningCardContentId;
         }
     }
 
     /**
-     * set the id of the card content for which this document is the deliverable. For serialization
-     * only
-     *
-     * @param deliverableCardContentId the id of the card contentto set
+     * @param cardContentId the id of the card content for which this document is a deliverable
      */
-    public void setDeliverableCardContentId(Long deliverableCardContentId) {
-        this.deliverableCardContentId = deliverableCardContentId;
+    public void setOwningCardContentId(Long cardContentId) {
+        this.owningCardContentId = cardContentId;
     }
 
     /**
-     * @return True if there is a linked deliverable card content
+     * @return True if there is an owning card content
      */
-    public boolean hasDeliverableCardContent() {
-        return deliverableCardContent != null || deliverableCardContentId != null;
+    public boolean hasOwningCardContent() {
+        return this.owningCardContent != null || this.owningCardContentId != null;
     }
 
     /**
-     * @return the resource representing this document
+     * @return the resource this document is part of
      */
-    public Resource getResource() {
-        return resource;
+    public Resource getOwningResource() {
+        return owningResource;
     }
 
     /**
-     * @param resource the resource representing this document
+     * @param resource the resource this document is part of
      */
-    public void setResource(Resource resource) {
-        this.resource = resource;
+    public void setOwningResource(Resource resource) {
+        this.owningResource = resource;
     }
 
     /**
-     * get the id of resource representing this document. To be sent to client
-     *
-     * @return the id of the resource representing this document
+     * @return the id of the resource this document is part of
      */
-    public Long getResourceId() {
-        if (this.resource != null) {
-            return resource.getId();
+    public Long getOwningResourceId() {
+        if (this.owningResource != null) {
+            return this.owningResource.getId();
         } else {
-            return resourceId;
+            return owningResourceId;
         }
     }
 
     /**
-     * set the id of the resource representing this document. For serialization only
-     *
-     * @param resourceId the id of the resource representing this document
+     * @param resourceId the id of the resource this document is part of
      */
-    public void setResourceId(Long resourceId) {
-        this.resourceId = resourceId;
+    public void setOwningResourceId(Long resourceId) {
+        this.owningResourceId = resourceId;
     }
 
     /**
-     * @return True if there is a linked resource
+     * @return True if there is an owning resource
      */
-    public boolean hasResource() {
-        return resource != null || resourceId != null;
+    public boolean hasOwningResource() {
+        return this.owningResource != null || this.owningResourceId != null;
     }
 
     /**
-     * Get the project this block belongs to
-     *
-     * @return block owner
+     * @return the list of sticky note links of which the document is the source
      */
-    public Project getProject() {
-        if (this.deliverableCardContent != null) {
-            // The document is the deliverable of a card content
-            return this.deliverableCardContent.getProject();
-        } else if (this.resource != null) {
-            // The document is a resource
-            return this.resource.getProject();
-        } else {
-            // such an orphan shouldn't exist...
-            return null;
-        }
+    @Override
+    public List<StickyNoteLink> getStickyNoteLinksAsSrc() {
+        return stickyNoteLinksAsSrc;
+    }
+
+    /**
+     * @param stickyNoteLinksAsSrc the list of sticky note links of which the document is the source
+     */
+    public void setStickyNoteLinksAsSrc(List<StickyNoteLink> stickyNoteLinksAsSrc) {
+        this.stickyNoteLinksAsSrc = stickyNoteLinksAsSrc;
     }
 
     /**
@@ -242,22 +273,45 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
     // ---------------------------------------------------------------------------------------------
     // concerning the whole class
     // ---------------------------------------------------------------------------------------------
+
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (!(other instanceof Document)) {
+        if (other instanceof Document) {
+            Document o = (Document) other;
+            this.setIndex(o.getIndex()); // TODO see if can be changed manually or not
+        } else {
             throw new ColabMergeException(this, other);
+        }
+    }
+
+    /**
+     * Get the project this document belongs to
+     *
+     * @return document owner
+     */
+    @JsonbTransient
+    public Project getProject() {
+        if (this.owningCardContent != null) {
+            // The document is a deliverable of a card content
+            return this.owningCardContent.getProject();
+        } else if (this.owningResource != null) {
+            // The document is part of a resource
+            return this.owningResource.getProject();
+        } else {
+            // such an orphan shouldn't exist...
+            return null;
         }
     }
 
     @Override
     @JsonbTransient
     public Conditions.Condition getReadCondition() {
-        if (this.deliverableCardContent != null) {
-            // The document is the deliverable of a card content
-            return new Conditions.HasCardReadRight(this.deliverableCardContent);
-        } else if (this.resource != null) {
-            // The document is a resource
-            return this.resource.getReadCondition();
+        if (this.owningCardContent != null) {
+            // The document is a deliverable of a card content
+            return new Conditions.HasCardReadRight(this.owningCardContent);
+        } else if (this.owningResource != null) {
+            // The document is part of a resource
+            return this.owningResource.getReadCondition();
         } else {
             // such an orphan shouldn't exist...
             return Conditions.defaultForOrphan;
@@ -266,12 +320,12 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public Conditions.Condition getUpdateCondition() {
-        if (this.deliverableCardContent != null) {
-            // The document is the deliverable of a card content
-            return this.deliverableCardContent.getUpdateCondition();
-        } else if (this.resource != null) {
-            // The document is a resource
-            return this.resource.getUpdateCondition();
+        if (this.owningCardContent != null) {
+            // The document is a deliverable of a card content
+            return this.owningCardContent.getUpdateCondition();
+        } else if (this.owningResource != null) {
+            // The document is part of a resource
+            return this.owningResource.getUpdateCondition();
         } else {
             // such an orphan shouldn't exist...
             return Conditions.defaultForOrphan;
@@ -280,12 +334,12 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
 
     @Override
     public Set<WebsocketChannel> getChannels() {
-        if (this.deliverableCardContent != null) {
-            // The document is the deliverable of a card content
-            return this.deliverableCardContent.getChannels();
-        } else if (this.resource != null) {
-            // The document is a resource
-            return this.resource.getChannels();
+        if (this.owningCardContent != null) {
+            // The document is a deliverable of a card content
+            return this.owningCardContent.getChannels();
+        } else if (this.owningResource != null) {
+            // The document is part of a resource
+            return this.owningResource.getChannels();
         } else {
             // such an orphan shouldn't exist...
             return Set.of();
@@ -310,7 +364,7 @@ public abstract class Document implements ColabEntity, WithWebsocketChannels {
      * @return This abstract class fields to mention in the toString implementations
      */
     protected String toPartialString() {
-        return "id=" + id;
+        return "id=" + id + ", index=" + index;
     }
 
 }
