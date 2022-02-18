@@ -6,14 +6,15 @@
  */
 package ch.colabproject.colab.api.controller.link;
 
+import ch.colabproject.colab.api.controller.card.CardContentManager;
+import ch.colabproject.colab.api.controller.card.CardManager;
+import ch.colabproject.colab.api.controller.document.BlockManager;
+import ch.colabproject.colab.api.controller.document.DocumentManager;
 import ch.colabproject.colab.api.controller.document.ResourceManager;
 import ch.colabproject.colab.api.model.card.Card;
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.link.StickyNoteSourceable;
-import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
-import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
-import ch.colabproject.colab.api.persistence.jpa.document.BlockDao;
 import ch.colabproject.colab.api.persistence.jpa.link.StickyNoteLinkDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import javax.ejb.LocalBean;
@@ -29,10 +30,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L32">public class StickyNoteLinkManager {</span>
+<span class="nc" id="L33">public class StickyNoteLinkManager {</span>
 
     /** logger */
-<span class="nc" id="L35">    private static final Logger logger = LoggerFactory.getLogger(StickyNoteLinkManager.class);</span>
+<span class="nc" id="L36">    private static final Logger logger = LoggerFactory.getLogger(StickyNoteLinkManager.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -45,28 +46,34 @@ import org.slf4j.LoggerFactory;
     private StickyNoteLinkDao linkDao;
 
     /**
-     * Card persistence handling
+     * Card specific logic management
      */
     @Inject
-    private CardDao cardDao;
+    private CardManager cardManager;
 
     /**
-     * Card content persistence handling
+     * Card content specific logic management
      */
     @Inject
-    private CardContentDao cardContentDao;
+    private CardContentManager cardContentManager;
 
     /**
-     * Block persistence handling
-     */
-    @Inject
-    private BlockDao blockDao;
-
-    /**
-     * Resource / resource reference logic manager
+     * Resource / resource reference logic management
      */
     @Inject
     private ResourceManager resourceManager;
+
+    /**
+     * Document specific logic management
+     */
+    @Inject
+    private DocumentManager documentManager;
+
+    /**
+     * Block specific logic management
+     */
+    @Inject
+    private BlockManager blockManager;
 
     // *********************************************************************************************
     //
@@ -77,15 +84,39 @@ import org.slf4j.LoggerFactory;
      *
      * @author sandra
      */
-<span class="nc" id="L80">    public enum SrcType {</span>
+<span class="nc" id="L87">    public enum SrcType {</span>
         /** from a card. */
-<span class="nc" id="L82">        CARD,</span>
+<span class="nc" id="L89">        CARD,</span>
         /** from a card content. */
-<span class="nc" id="L84">        CARD_CONTENT,</span>
+<span class="nc" id="L91">        CARD_CONTENT,</span>
         /** from a resource or ref */
-<span class="nc" id="L86">        RESOURCE_OR_REF,</span>
-        /** from a block */
-<span class="nc" id="L88">        BLOCK;</span>
+<span class="nc" id="L93">        RESOURCE_OR_REF,</span>
+        /** from a document */
+<span class="nc" id="L95">        DOCUMENT;</span>
+    }
+
+    // *********************************************************************************************
+    // find sticky note links
+    // *********************************************************************************************
+
+    /**
+     * Retrieve the sticky note link. If not found, throw a {@link HttpErrorMessage}.
+     *
+     * @param linkId the id of the sticky note link
+     *
+     * @return the sticky note link if found
+     *
+     * @throws HttpErrorMessage if the sticky note link was not found
+     */
+    public StickyNoteLink assertAndGetStickyNoteLink(Long linkId) {
+<span class="nc" id="L112">        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);</span>
+
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (link == null) {</span>
+<span class="nc" id="L115">            logger.error(&quot;sticky note link #{} not found&quot;, linkId);</span>
+<span class="nc" id="L116">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+        }
+
+<span class="nc" id="L119">        return link;</span>
     }
 
     // *********************************************************************************************
@@ -100,30 +131,26 @@ import org.slf4j.LoggerFactory;
      * @return the brand new link
      */
     public StickyNoteLink createStickyNoteLink(StickyNoteLink link) {
-<span class="nc" id="L103">        logger.debug(&quot;create link {}&quot;, link);</span>
+<span class="nc" id="L134">        logger.debug(&quot;create link {}&quot;, link);</span>
 
-<span class="nc" id="L105">        StickyNoteSourceable sourceObject = findSourceObject(link);</span>
-<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (sourceObject == null) {</span>
-<span class="nc" id="L107">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc" id="L136">        StickyNoteSourceable sourceObject = assertAndGetSourceObject(link);</span>
+
+<span class="nc" id="L138">        Card toCard = cardManager.assertAndGetCard(link.getDestinationCardId());</span>
+
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (link.getExplanation() == null) {</span>
+<span class="nc" id="L141">            TextDataBlock explanationTextDataBlock = blockManager.makeNewTextDataBlock();</span>
+
+<span class="nc" id="L143">            link.setExplanation(explanationTextDataBlock);</span>
+<span class="nc" id="L144">            explanationTextDataBlock.setExplainingStickyNoteLink(link);</span>
         }
 
-<span class="nc" id="L110">        Card toCard = cardDao.getCard(link.getDestinationCardId());</span>
-<span class="nc bnc" id="L111" title="All 2 branches missed.">        if (toCard == null) {</span>
-<span class="nc" id="L112">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
-        }
+<span class="nc" id="L147">        link.setSrc(sourceObject);</span>
+<span class="nc" id="L148">        link.setDestinationCard(toCard);</span>
 
-<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (link.getExplanation() == null) {</span>
-<span class="nc" id="L116">            link.setExplanation(Block.initNewDefaultBlock());</span>
-        }
+<span class="nc" id="L150">        sourceObject.getStickyNoteLinksAsSrc().add(link);</span>
+<span class="nc" id="L151">        toCard.getStickyNoteLinksAsDest().add(link);</span>
 
-<span class="nc" id="L119">        link.setSrc(sourceObject);</span>
-<span class="nc" id="L120">        link.setDestinationCard(toCard);</span>
-<span class="nc" id="L121">        StickyNoteLink persistedLink = linkDao.persistStickyNoteLink(link);</span>
-
-<span class="nc" id="L123">        sourceObject.getStickyNoteLinksAsSrc().add(persistedLink);</span>
-<span class="nc" id="L124">        toCard.getStickyNoteLinksAsDest().add(persistedLink);</span>
-
-<span class="nc" id="L126">        return persistedLink;</span>
+<span class="nc" id="L153">        return linkDao.persistStickyNoteLink(link);</span>
     }
 
     /**
@@ -132,31 +159,27 @@ import org.slf4j.LoggerFactory;
      * @param linkId the id of the link to delete
      */
     public void deleteStickyNoteLink(Long linkId) {
-<span class="nc" id="L135">        logger.debug(&quot;delete link #{}&quot;, linkId);</span>
+<span class="nc" id="L162">        logger.debug(&quot;delete link #{}&quot;, linkId);</span>
 
         // firstly fetch all objects and so ensure that they exist
-<span class="nc" id="L138">        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);</span>
-<span class="nc bnc" id="L139" title="All 2 branches missed.">        if (link == null) {</span>
-<span class="nc" id="L140">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
-            // or just return. see what is best
+<span class="nc" id="L165">        StickyNoteLink link = assertAndGetStickyNoteLink(linkId);</span>
+
+<span class="nc" id="L167">        StickyNoteSourceable sourceObject = link.getSrc();</span>
+<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (sourceObject == null) {</span>
+<span class="nc" id="L169">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L144">        StickyNoteSourceable sourceObject = link.getSrc();</span>
-<span class="nc bnc" id="L145" title="All 2 branches missed.">        if (sourceObject == null) {</span>
-<span class="nc" id="L146">            throw HttpErrorMessage.dataIntegrityFailure();</span>
-        }
-
-<span class="nc" id="L149">        Card toCard = link.getDestinationCard();</span>
-<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (toCard == null) {</span>
-<span class="nc" id="L151">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L172">        Card toCard = link.getDestinationCard();</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        if (toCard == null) {</span>
+<span class="nc" id="L174">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
         // secondly make the modifications
-<span class="nc" id="L155">        sourceObject.getStickyNoteLinksAsSrc().remove(link);</span>
-<span class="nc" id="L156">        toCard.getStickyNoteLinksAsDest().remove(link);</span>
+<span class="nc" id="L178">        sourceObject.getStickyNoteLinksAsSrc().remove(link);</span>
+<span class="nc" id="L179">        toCard.getStickyNoteLinksAsDest().remove(link);</span>
 
-<span class="nc" id="L158">        linkDao.deleteStickyNoteLink(linkId);</span>
-<span class="nc" id="L159">    }</span>
+<span class="nc" id="L181">        linkDao.deleteStickyNoteLink(linkId);</span>
+<span class="nc" id="L182">    }</span>
 
     /**
      * Change the source
@@ -166,30 +189,21 @@ import org.slf4j.LoggerFactory;
      * @param newSrcId   the id of the new source
      */
     public void changeStickyNoteLinkSource(Long linkId, SrcType newSrcType, Long newSrcId) {
-<span class="nc" id="L169">        logger.debug(&quot;change source of link #{} with {} #{}&quot;, linkId, newSrcType, newSrcId);</span>
+<span class="nc" id="L192">        logger.debug(&quot;change source of link #{} with {} #{}&quot;, linkId, newSrcType, newSrcId);</span>
 
         // firstly fetch all objects and so ensure that they exist
-<span class="nc" id="L172">        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);</span>
-<span class="nc bnc" id="L173" title="All 2 branches missed.">        if (link == null) {</span>
-<span class="nc" id="L174">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
-        }
+<span class="nc" id="L195">        StickyNoteLink link = assertAndGetStickyNoteLink(linkId);</span>
 
-<span class="nc" id="L177">        StickyNoteSourceable oldSourceObject = findSourceObject(link);</span>
-<span class="nc bnc" id="L178" title="All 2 branches missed.">        if (oldSourceObject == null) {</span>
-<span class="nc" id="L179">            throw HttpErrorMessage.dataIntegrityFailure();</span>
-        }
+<span class="nc" id="L197">        StickyNoteSourceable oldSourceObject = assertAndGetSourceObject(link);</span>
 
-<span class="nc" id="L182">        StickyNoteSourceable newSourceObject = findSourceObject(newSrcType, newSrcId);</span>
-<span class="nc bnc" id="L183" title="All 2 branches missed.">        if (newSourceObject == null) {</span>
-<span class="nc" id="L184">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
-        }
+<span class="nc" id="L199">        StickyNoteSourceable newSourceObject = assertAndGetSourceObject(newSrcType, newSrcId);</span>
 
         // secondly make the modifications
-<span class="nc" id="L188">        oldSourceObject.getStickyNoteLinksAsSrc().remove(link);</span>
+<span class="nc" id="L202">        oldSourceObject.getStickyNoteLinksAsSrc().remove(link);</span>
 
-<span class="nc" id="L190">        link.setSrc(newSourceObject);</span>
-<span class="nc" id="L191">        newSourceObject.getStickyNoteLinksAsSrc().add(link);</span>
-<span class="nc" id="L192">    }</span>
+<span class="nc" id="L204">        link.setSrc(newSourceObject);</span>
+<span class="nc" id="L205">        newSourceObject.getStickyNoteLinksAsSrc().add(link);</span>
+<span class="nc" id="L206">    }</span>
 
     /**
      * Change the destination
@@ -198,30 +212,21 @@ import org.slf4j.LoggerFactory;
      * @param newDestId the id of the new destination card
      */
     public void changeStickyNoteLinkDestination(Long linkId, Long newDestId) {
-<span class="nc" id="L201">        logger.debug(&quot;change destination of link #{} with #{}&quot;, linkId, newDestId);</span>
+<span class="nc" id="L215">        logger.debug(&quot;change destination of link #{} with #{}&quot;, linkId, newDestId);</span>
 
         // firstly fetch all objects and so ensure that they exist
-<span class="nc" id="L204">        StickyNoteLink link = linkDao.findStickyNoteLink(linkId);</span>
-<span class="nc bnc" id="L205" title="All 2 branches missed.">        if (link == null) {</span>
-<span class="nc" id="L206">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
-        }
+<span class="nc" id="L218">        StickyNoteLink link = assertAndGetStickyNoteLink(linkId);</span>
 
-<span class="nc" id="L209">        Card oldDest = cardDao.getCard(link.getDestinationCardId());</span>
-<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (oldDest == null) {</span>
-<span class="nc" id="L211">            throw HttpErrorMessage.dataIntegrityFailure();</span>
-        }
+<span class="nc" id="L220">        Card oldDest = cardManager.assertAndGetCard(link.getDestinationCardId());</span>
 
-<span class="nc" id="L214">        Card newDestination = cardDao.getCard(newDestId);</span>
-<span class="nc bnc" id="L215" title="All 2 branches missed.">        if (newDestination == null) {</span>
-<span class="nc" id="L216">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
-        }
+<span class="nc" id="L222">        Card newDestination = cardManager.assertAndGetCard(newDestId);</span>
 
         // secondly make the modifications
-<span class="nc" id="L220">        oldDest.getStickyNoteLinksAsDest().remove(link);</span>
+<span class="nc" id="L225">        oldDest.getStickyNoteLinksAsDest().remove(link);</span>
 
-<span class="nc" id="L222">        link.setDestinationCard(newDestination);</span>
-<span class="nc" id="L223">        newDestination.getStickyNoteLinksAsDest().add(link);</span>
-<span class="nc" id="L224">    }</span>
+<span class="nc" id="L227">        link.setDestinationCard(newDestination);</span>
+<span class="nc" id="L228">        newDestination.getStickyNoteLinksAsDest().add(link);</span>
+<span class="nc" id="L229">    }</span>
 
     /**
      * Get the source object corresponding to the given type and id.
@@ -231,36 +236,27 @@ import org.slf4j.LoggerFactory;
      *
      * @return the source of the sticky note
      */
-    private StickyNoteSourceable findSourceObject(SrcType srcType, Long srcId) {
+    private StickyNoteSourceable assertAndGetSourceObject(SrcType srcType, Long srcId) {
         StickyNoteSourceable sourceObject;
 
-<span class="nc bnc" id="L237" title="All 5 branches missed.">        switch (srcType) {</span>
+<span class="nc bnc" id="L242" title="All 5 branches missed.">        switch (srcType) {</span>
             case CARD:
-<span class="nc" id="L239">                sourceObject = cardDao.getCard(srcId);</span>
-<span class="nc bnc" id="L240" title="All 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L241">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
-                }
-                break;
+<span class="nc" id="L244">                sourceObject = cardManager.assertAndGetCard(srcId);</span>
+<span class="nc" id="L245">                break;</span>
             case CARD_CONTENT:
-<span class="nc" id="L245">                sourceObject = cardContentDao.getCardContent(srcId);</span>
-<span class="nc bnc" id="L246" title="All 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L247">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
-                }
-                break;
+<span class="nc" id="L247">                sourceObject = cardContentManager.assertAndGetCardContent(srcId);</span>
+<span class="nc" id="L248">                break;</span>
             case RESOURCE_OR_REF:
-<span class="nc" id="L251">                sourceObject = resourceManager.assertAndGetResourceOrRef(srcId);</span>
-<span class="nc" id="L252">                break;</span>
-            case BLOCK:
-<span class="nc" id="L254">                sourceObject = blockDao.findBlock(srcId);</span>
-<span class="nc bnc" id="L255" title="All 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L256">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
-                }
-                break;
+<span class="nc" id="L250">                sourceObject = resourceManager.assertAndGetResourceOrRef(srcId);</span>
+<span class="nc" id="L251">                break;</span>
+            case DOCUMENT:
+<span class="nc" id="L253">                sourceObject = documentManager.assertAndGetDocument(srcId);</span>
+<span class="nc" id="L254">                break;</span>
             default:
-<span class="nc" id="L260">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L256">                throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L263">        return sourceObject;</span>
+<span class="nc" id="L259">        return sourceObject;</span>
     }
 
     /**
@@ -270,38 +266,31 @@ import org.slf4j.LoggerFactory;
      *
      * @return the source object
      */
-    private StickyNoteSourceable findSourceObject(StickyNoteLink link) {
+    private StickyNoteSourceable assertAndGetSourceObject(StickyNoteLink link) {
         StickyNoteSourceable sourceObject;
 
-<span class="nc" id="L276">        SrcType srcType = inferSrcType(link);</span>
+<span class="nc" id="L272">        SrcType srcType = inferSrcType(link);</span>
 
-<span class="nc bnc" id="L278" title="All 5 branches missed.">        switch (srcType) {</span>
+<span class="nc bnc" id="L274" title="All 5 branches missed.">        switch (srcType) {</span>
             case CARD:
-<span class="nc" id="L280">                sourceObject = cardDao.getCard(link.getSrcCardId());</span>
-<span class="nc bnc" id="L281" title="All 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L282">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
-                }
-                break;
+<span class="nc" id="L276">                sourceObject = cardManager.assertAndGetCard(link.getSrcCardId());</span>
+<span class="nc" id="L277">                break;</span>
             case CARD_CONTENT:
-<span class="nc" id="L286">                sourceObject = cardContentDao.getCardContent(link.getSrcCardContentId());</span>
-<span class="nc bnc" id="L287" title="All 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L288">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
-                }
-                break;
+<span class="nc" id="L279">                sourceObject = cardContentManager</span>
+<span class="nc" id="L280">                    .assertAndGetCardContent(link.getSrcCardContentId());</span>
+<span class="nc" id="L281">                break;</span>
             case RESOURCE_OR_REF:
-<span class="nc" id="L292">                sourceObject = resourceManager.assertAndGetResourceOrRef(link.getSrcResourceOrRefId());</span>
-<span class="nc" id="L293">                break;</span>
-            case BLOCK:
-<span class="nc" id="L295">                sourceObject = blockDao.findBlock(link.getSrcBlockId());</span>
-<span class="nc bnc" id="L296" title="All 2 branches missed.">                if (sourceObject == null) {</span>
-<span class="nc" id="L297">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
-                }
-                break;
+<span class="nc" id="L283">                sourceObject = resourceManager</span>
+<span class="nc" id="L284">                    .assertAndGetResourceOrRef(link.getSrcResourceOrRefId());</span>
+<span class="nc" id="L285">                break;</span>
+            case DOCUMENT:
+<span class="nc" id="L287">                sourceObject = documentManager.assertAndGetDocument(link.getSrcDocumentId());</span>
+<span class="nc" id="L288">                break;</span>
             default:
-<span class="nc" id="L301">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc" id="L290">                throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L304">        return sourceObject;</span>
+<span class="nc" id="L293">        return sourceObject;</span>
     }
 
     /**
@@ -314,34 +303,34 @@ import org.slf4j.LoggerFactory;
      * @return the source type used
      */
     private SrcType inferSrcType(StickyNoteLink link) {
-<span class="nc" id="L317">        SrcType effectiveSrcType = null;</span>
+<span class="nc" id="L306">        SrcType effectiveSrcType = null;</span>
 
-<span class="nc bnc" id="L319" title="All 2 branches missed.">        if (link.isSrcCard()) {</span>
-<span class="nc" id="L320">            effectiveSrcType = SrcType.CARD;</span>
+<span class="nc bnc" id="L308" title="All 2 branches missed.">        if (link.isSrcCard()) {</span>
+<span class="nc" id="L309">            effectiveSrcType = SrcType.CARD;</span>
         }
-<span class="nc bnc" id="L322" title="All 2 branches missed.">        if (link.isSrcCardContent()) {</span>
-<span class="nc bnc" id="L323" title="All 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
-<span class="nc" id="L324">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">        if (link.isSrcCardContent()) {</span>
+<span class="nc bnc" id="L312" title="All 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
+<span class="nc" id="L313">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
-<span class="nc" id="L326">            effectiveSrcType = SrcType.CARD_CONTENT;</span>
+<span class="nc" id="L315">            effectiveSrcType = SrcType.CARD_CONTENT;</span>
         }
-<span class="nc bnc" id="L328" title="All 2 branches missed.">        if (link.isSrcResourceOrRef()) {</span>
-<span class="nc bnc" id="L329" title="All 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
-<span class="nc" id="L330">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">        if (link.isSrcResourceOrRef()) {</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
+<span class="nc" id="L319">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
-<span class="nc" id="L332">            effectiveSrcType = SrcType.RESOURCE_OR_REF;</span>
+<span class="nc" id="L321">            effectiveSrcType = SrcType.RESOURCE_OR_REF;</span>
         }
-<span class="nc bnc" id="L334" title="All 2 branches missed.">        if (link.isSrcBlock()) {</span>
-<span class="nc bnc" id="L335" title="All 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
-<span class="nc" id="L336">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L323" title="All 2 branches missed.">        if (link.isSrcDocument()) {</span>
+<span class="nc bnc" id="L324" title="All 2 branches missed.">            if (effectiveSrcType != null) { // it must match only one type</span>
+<span class="nc" id="L325">                throw HttpErrorMessage.dataIntegrityFailure();</span>
             }
-<span class="nc" id="L338">            effectiveSrcType = SrcType.BLOCK;</span>
+<span class="nc" id="L327">            effectiveSrcType = SrcType.DOCUMENT;</span>
         }
-<span class="nc bnc" id="L340" title="All 2 branches missed.">        if (effectiveSrcType == null) { // it must match one type</span>
-<span class="nc" id="L341">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">        if (effectiveSrcType == null) { // it must match one type</span>
+<span class="nc" id="L330">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L344">        return effectiveSrcType;</span>
+<span class="nc" id="L333">        return effectiveSrcType;</span>
     }
 
     // *********************************************************************************************

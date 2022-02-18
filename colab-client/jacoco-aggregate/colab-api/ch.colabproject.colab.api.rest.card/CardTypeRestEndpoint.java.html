@@ -137,7 +137,11 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L137">        cardType.setPurpose(cardTypeCreationBean.getPurpose());</span>
 <span class="nc" id="L138">        cardType.setTags(cardTypeCreationBean.getTags());</span>
 
-<span class="nc" id="L140">        return cardTypeManager.createCardType(cardType).getId();</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (cardTypeCreationBean.getPurpose() != null) {</span>
+<span class="nc" id="L141">            cardTypeCreationBean.getPurpose().setPurposingCardType(cardType);</span>
+        }
+
+<span class="nc" id="L144">        return cardTypeManager.createCardType(cardType).getId();</span>
     }
 
 //    /**
@@ -163,9 +167,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCardType(AbstractCardType cardType) throws ColabMergeException {
-<span class="nc" id="L166">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
-<span class="nc" id="L167">        cardTypeDao.updateCardType(cardType);</span>
-<span class="nc" id="L168">    }</span>
+<span class="nc" id="L170">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
+<span class="nc" id="L171">        cardTypeDao.updateCardType(cardType);</span>
+<span class="nc" id="L172">    }</span>
 
     /**
      * Permanently delete a card type
@@ -175,9 +179,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteCardType(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L178">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
-<span class="nc" id="L179">        cardTypeManager.deleteCardType(id);</span>
-<span class="nc" id="L180">    }</span>
+<span class="nc" id="L182">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
+<span class="nc" id="L183">        cardTypeManager.deleteCardType(id);</span>
+<span class="nc" id="L184">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

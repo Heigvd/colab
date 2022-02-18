@@ -147,14 +147,14 @@
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>     @POST
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>     @Path(<span class="jxr_string">"createWithDeliverable/{parentId}/{cardTypeId}"</span>)
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>     <strong class="jxr_keyword">public</strong> Card createNewCardWithDeliverable(@PathParam(<span class="jxr_string">"parentId"</span>) Long parentId,
-<a class="jxr_linenumber" name="L142" href="#L142">142</a>         @PathParam(<span class="jxr_string">"cardTypeId"</span>) Long cardTypeId, <a name="Document" href="../../../../../../ch/colabproject/colab/api/model/document/Document.html#Document">Document</a> document) {
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>         @PathParam(<span class="jxr_string">"cardTypeId"</span>) Long cardTypeId, Document document) {
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>         logger.debug(<span class="jxr_string">"create a new card in the parent #{} for the type #{} with the deliverable {}"</span>,
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>             parentId, cardTypeId, document);
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>         Card card = cardManager.createNewCard(parentId, cardTypeId);
 <a class="jxr_linenumber" name="L146" href="#L146">146</a> 
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>         List&lt;CardContent&gt; variants = card.getContentVariants();
 <a class="jxr_linenumber" name="L148" href="#L148">148</a>         <strong class="jxr_keyword">if</strong> (variants != <strong class="jxr_keyword">null</strong> &amp;&amp; variants.size() == 1 &amp;&amp; variants.get(0) != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L149" href="#L149">149</a>             cardContentManager.assignDeliverable(variants.get(0).getId(), document);
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>             cardContentManager.addDeliverable(variants.get(0).getId(), document);
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>         } <strong class="jxr_keyword">else</strong> {
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>             <strong class="jxr_keyword">throw</strong> HttpErrorMessage.dataIntegrityFailure();
 <a class="jxr_linenumber" name="L152" href="#L152">152</a>         }

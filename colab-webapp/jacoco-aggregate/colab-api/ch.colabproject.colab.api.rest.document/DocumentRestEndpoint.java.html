@@ -9,16 +9,14 @@ package ch.colabproject.colab.api.rest.document;
 import ch.colabproject.colab.api.controller.document.DocumentManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -36,10 +34,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L39">public class DocumentRestEndpoint {</span>
+<span class="nc" id="L37">public class DocumentRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L42">    private static final Logger logger = LoggerFactory.getLogger(DocumentRestEndpoint.class);</span>
+<span class="nc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(DocumentRestEndpoint.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -52,7 +50,7 @@ import org.slf4j.LoggerFactory;
     private DocumentDao documentDao;
 
     /**
-     * The document business logic
+     * The document specific logic
      */
     @Inject
     private DocumentManager documentManager;
@@ -69,8 +67,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @AdminResource
     public List&lt;Document&gt; getAllDocuments() {
-<span class="nc" id="L72">        logger.debug(&quot;get all documents&quot;);</span>
-<span class="nc" id="L73">        return documentDao.findAllDocuments();</span>
+<span class="nc" id="L70">        logger.debug(&quot;get all documents&quot;);</span>
+<span class="nc" id="L71">        return documentDao.findAllDocuments();</span>
     }
 
     /**
@@ -83,8 +81,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public Document getDocument(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L86">        logger.debug(&quot;get document #{}&quot;, id);</span>
-<span class="nc" id="L87">        return documentDao.findDocument(id);</span>
+<span class="nc" id="L84">        logger.debug(&quot;get document #{}&quot;, id);</span>
+<span class="nc" id="L85">        return documentDao.findDocument(id);</span>
     }
 
     /**
@@ -96,49 +94,27 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateDocument(Document document) throws ColabMergeException {
-<span class="nc" id="L99">        logger.debug(&quot;update document {}&quot;, document);</span>
-<span class="nc" id="L100">        documentDao.updateDocument(document);</span>
-<span class="nc" id="L101">    }</span>
+<span class="nc" id="L97">        logger.debug(&quot;update document {}&quot;, document);</span>
+<span class="nc" id="L98">        documentDao.updateDocument(document);</span>
+<span class="nc" id="L99">    }</span>
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 
     /**
-     * Persist the document
+     * Get all sticky note links where the document is the source
      *
-     * @param document the document to persist
+     * @param documentId the id of the document
      *
-     * @return id of the persisted new document
-     */
-    @POST
-    public Long createDocument(Document document) {
-<span class="nc" id="L112">        logger.debug(&quot;create document {}&quot;, document);</span>
-<span class="nc" id="L113">        return documentManager.createDocument(document).getId();</span>
-    }
-
-    /**
-     * Permanently delete a document
-     *
-     * @param id id of the document to delete
-     */
-    @DELETE
-    @Path(&quot;{id}&quot;)
-    public void deleteDocument(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L124">        logger.debug(&quot;delete document #{}&quot;, id);</span>
-<span class="nc" id="L125">        documentManager.deleteDocument(id);</span>
-<span class="nc" id="L126">    }</span>
-
-    /**
-     * Get all ids of blocks that make up the document
-     *
-     * @param id id of the document
-     *
-     * @return ids of the blocks linked to the document
+     * @return list of links
      */
     @GET
-    @Path(&quot;{id}/BlocksIds&quot;)
-    public List&lt;Long&gt; getBlocksDocumentIds(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L138">        logger.debug(&quot;get document #{} blocks ids&quot;, id);</span>
-<span class="nc" id="L139">        return documentManager.getBlocksOfDocument(id).stream()</span>
-<span class="nc" id="L140">            .map(b -&gt;  b.getId())</span>
-<span class="nc" id="L141">            .collect(Collectors.toList());</span>
+    @Path(&quot;{id}/StickyNoteLinks&quot;)
+    public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long documentId) {
+<span class="nc" id="L115">        logger.debug(&quot;Get sticky note links where document #{} is the source&quot;, documentId);</span>
+<span class="nc" id="L116">        return documentManager.getStickyNoteLinkAsSrc(documentId);</span>
     }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -6,11 +6,9 @@
  */
 package ch.colabproject.colab.api.controller.document;
 
-import ch.colabproject.colab.api.controller.card.CardContentManager;
-import ch.colabproject.colab.api.model.card.CardContent;
-import ch.colabproject.colab.api.model.document.Block;
-import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
+import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
@@ -27,10 +25,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L30">public class DocumentManager {</span>
+<span class="nc" id="L28">public class DocumentManager {</span>
 
     /** logger */
-<span class="nc" id="L33">    private static final Logger logger = LoggerFactory.getLogger(DocumentManager.class);</span>
+<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(DocumentManager.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -41,12 +39,6 @@ import org.slf4j.LoggerFactory;
      */
     @Inject
     private DocumentDao documentDao;
-
-    /**
-     * Card content specific logic management
-     */
-    @Inject
-    private CardContentManager cardContentManager;
 
     // *********************************************************************************************
     // find document
@@ -62,132 +54,14 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the document was not found
      */
     public Document assertAndGetDocument(Long documentId) {
-<span class="nc" id="L65">        Document document = documentDao.findDocument(documentId);</span>
+<span class="nc" id="L57">        Document document = documentDao.findDocument(documentId);</span>
 
-<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L68">            logger.error(&quot;document #{} not found&quot;, documentId);</span>
-<span class="nc" id="L69">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L60">            logger.error(&quot;document #{} not found&quot;, documentId);</span>
+<span class="nc" id="L61">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L72">        return document;</span>
-    }
-
-    /**
-     * Retrieve the block document. If not found, throw a {@link HttpErrorMessage}.
-     *
-     * @param documentId the id of the block document
-     *
-     * @return the block document if found
-     *
-     * @throws HttpErrorMessage if the block document was not found
-     */
-    public BlockDocument assertAndGetBlockDocument(Long documentId) {
-<span class="nc" id="L85">        Document document = documentDao.findDocument(documentId);</span>
-
-<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (!(document instanceof BlockDocument)) {</span>
-<span class="nc" id="L88">            logger.error(&quot;block document #{} not found&quot;, documentId);</span>
-<span class="nc" id="L89">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
-        }
-
-<span class="nc" id="L92">        return (BlockDocument) document;</span>
-    }
-
-    /**
-     * Assert that the block document is not null. If not throw a {@link HttpErrorMessage}.
-     *
-     * @param blockDocument the block document to check
-     *
-     * @throws HttpErrorMessage if the block document is null
-     */
-    public void assertBlockDocument(BlockDocument blockDocument) {
-<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (blockDocument == null) {</span>
-<span class="nc" id="L104">            logger.error(&quot;block document {} not found&quot;, blockDocument);</span>
-<span class="nc" id="L105">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
-        }
-<span class="nc" id="L107">    }</span>
-
-    // *********************************************************************************************
-    // life cycle
-    // *********************************************************************************************
-
-    /**
-     * Persist the given new document
-     *
-     * @param document the document to persist
-     *
-     * @return the new persisted document
-     */
-    public Document persistDocument(Document document) {
-<span class="nc" id="L121">        return documentDao.persistDocument(document);</span>
-    }
-
-    /**
-     * Complete and persist the given new document
-     *
-     * @param document the document to persist
-     *
-     * @return the new persisted document
-     */
-    // TODO no effective use. To destroy during RestEndpoint cleaning
-    public Document createDocument(Document document) {
-<span class="nc" id="L133">        logger.debug(&quot;create document : {}&quot;, document);</span>
-
-<span class="nc bnc" id="L135" title="All 2 branches missed.">        if (document.getDeliverableCardContentId() != null) {</span>
-<span class="nc" id="L136">            CardContent cardContent = cardContentManager</span>
-<span class="nc" id="L137">                .assertAndGetCardContent(document.getDeliverableCardContentId());</span>
-
-<span class="nc" id="L139">            cardContent.setDeliverable(document);</span>
-<span class="nc" id="L140">            document.setDeliverableCardContent(cardContent);</span>
-        }
-
-<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (document.getResourceId() != null) {</span>
-<span class="nc" id="L144">            throw HttpErrorMessage.dataIntegrityFailure();</span>
-        }
-
-<span class="nc" id="L147">        return documentDao.persistDocument(document);</span>
-    }
-
-    /**
-     * Delete the given document
-     *
-     * @param documentId the id of the document to delete
-     *
-     * @return the freshly deleted document
-     */
-    // TODO no effective use. To destroy during RestEndpoint cleaning
-    public Document deleteDocument(Long documentId) {
-<span class="nc" id="L159">        logger.debug(&quot;delete document #{}&quot;, documentId);</span>
-
-<span class="nc" id="L161">        Document document = assertAndGetDocument(documentId);</span>
-
-<span class="nc" id="L163">        CardContent cardContent = document.getDeliverableCardContent();</span>
-<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (cardContent != null) {</span>
-<span class="nc" id="L165">            cardContent.setDeliverable(null);</span>
-        }
-
-        // to check : resource handling
-
-<span class="nc" id="L170">        return documentDao.deleteDocument(documentId);</span>
-    }
-
-    // *********************************************************************************************
-    // block documents
-    // *********************************************************************************************
-
-    /**
-     * Get all blocks that make up the document
-     *
-     * @param documentId the id of the document
-     *
-     * @return all blocks of the document
-     */
-    // TODO To move into BlockManager during RestEndpoint cleaning
-    public List&lt;Block&gt; getBlocksOfDocument(Long documentId) {
-<span class="nc" id="L186">        logger.debug(&quot;get blocks composing the document #{}&quot;, documentId);</span>
-
-<span class="nc" id="L188">        BlockDocument document = assertAndGetBlockDocument(documentId);</span>
-
-<span class="nc" id="L190">        return document.getBlocks();</span>
+<span class="nc" id="L64">        return document;</span>
     }
 
     // *********************************************************************************************
@@ -202,39 +76,71 @@ import org.slf4j.LoggerFactory;
      * @return true iff the document is complete and safe
      */
     public boolean checkIntegrity(Document document) {
-<span class="nc bnc" id="L205" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L206">            return false;</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (document == null) {</span>
+<span class="nc" id="L80">            return false;</span>
         }
 
-<span class="nc bnc" id="L209" title="All 4 branches missed.">        if (!(document.hasDeliverableCardContent() || document.hasResource())) {</span>
-<span class="nc" id="L210">            return false;</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (countOwners(document) != 1) {</span>
+<span class="nc" id="L84">            return false;</span>
         }
 
-<span class="nc bnc" id="L213" title="All 4 branches missed.">        if (document.hasDeliverableCardContent() &amp;&amp; document.hasResource()) {</span>
-<span class="nc" id="L214">            return false;</span>
-        }
-
-        // TODO if is a deliverable card content, there must be only one card content that use it
-
-<span class="nc bnc" id="L219" title="All 2 branches missed.">        if (document instanceof BlockDocument) {</span>
-<span class="nc" id="L220">            return checkBlockDocumentSpecificIntegrity((BlockDocument)document);</span>
-        } else {
-<span class="nc" id="L222">            return true;</span>
-        }
+<span class="nc" id="L87">        return true;</span>
     }
 
-    private boolean checkBlockDocumentSpecificIntegrity(BlockDocument document) {
-        // not twice the same index
-//        List&lt;Block&gt; blocks = document.getBlocks();
-//        if (!CollectionUtils.isEmpty(blocks)) {
-            // TODO
-//        }
-        // TODO delete that. It is just to satisfy PMD
-<span class="nc bnc" id="L233" title="All 2 branches missed.">        if (document == null) {</span>
-<span class="nc" id="L234">            return false;</span>
+    /**
+     * Count the number of entities owning the document. It should be only one.
+     *
+     * @param document the document to check
+     *
+     * @return the number of owning entities
+     */
+    protected int countOwners(Document document) {
+<span class="nc" id="L98">        int result = 0;</span>
+
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (document.hasOwningCardContent()) {</span>
+<span class="nc" id="L101">            result++;</span>
         }
 
-<span class="nc" id="L237">        return true;</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if (document.hasOwningResource()) {</span>
+<span class="nc" id="L105">            result++;</span>
+        }
+
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (document instanceof TextDataBlock) {</span>
+<span class="nc" id="L109">            TextDataBlock block = (TextDataBlock) document;</span>
+
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            if (block.getPurposingCardType() != null) {</span>
+<span class="nc" id="L112">                result++;</span>
+            }
+
+<span class="nc bnc" id="L115" title="All 2 branches missed.">            if (block.getTeasingResource() != null) {</span>
+<span class="nc" id="L116">                result++;</span>
+            }
+
+<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (block.getExplainingStickyNoteLink() != null) {</span>
+<span class="nc" id="L120">                result++;</span>
+            }
+        }
+
+<span class="nc" id="L124">        return result;</span>
+    }
+
+    // *********************************************************************************************
+    // retrieve the elements linked to documents
+    // *********************************************************************************************
+
+    /**
+     * Get all sticky note links of which the given document is the source
+     *
+     * @param docId the id of the document
+     *
+     * @return all sticky note links which has the given document as source
+     */
+    public List&lt;StickyNoteLink&gt; getStickyNoteLinkAsSrc(Long docId) {
+<span class="nc" id="L139">        logger.debug(&quot;get sticky note links where the document #{} is the source&quot;, docId);</span>
+
+<span class="nc" id="L141">        Document document = assertAndGetDocument(docId);</span>
+
+<span class="nc" id="L143">        return document.getStickyNoteLinksAsSrc();</span>
     }
 
     // *********************************************************************************************

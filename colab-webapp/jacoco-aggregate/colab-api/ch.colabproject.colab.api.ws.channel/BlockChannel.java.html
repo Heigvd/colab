@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.ws.channel;
 
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import java.util.Objects;
 
 /**
@@ -83,10 +83,9 @@ import java.util.Objects;
      *
      * @return the block very own channel
      */
-    public static BlockChannel build(Block block) {
+    public static BlockChannel build(TextDataBlock block) {
 <span class="nc" id="L87">        return build(block.getId());</span>
     }
-
 
     /**
      * get the channel dedicated to the block having the given id.
@@ -96,9 +95,9 @@ import java.util.Objects;
      * @return the block very own channel
      */
     public static BlockChannel build(Long blockId) {
-<span class="nc" id="L99">        BlockChannel channel = new BlockChannel();</span>
-<span class="nc" id="L100">        channel.setBlockId(blockId);</span>
-<span class="nc" id="L101">        return channel;</span>
+<span class="nc" id="L98">        BlockChannel channel = new BlockChannel();</span>
+<span class="nc" id="L99">        channel.setBlockId(blockId);</span>
+<span class="nc" id="L100">        return channel;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.link.bean;
 
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import java.io.Serializable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -30,22 +30,22 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
     private Long srcCardId;
 
     /**
-     * The ID of the source card content (serialization sugar)
+     * The ID of the source card content
      */
     private Long srcCardContentId;
 
     /**
-     * The ID of the source resource / resource reference (serialization sugar)
+     * The ID of the source resource / resource reference
      */
     private Long srcResourceOrRefId;
 
     /**
-     * The ID of the source block (serialization sugar)
+     * The ID of the source document
      */
-    private Long srcBlockId;
+    private Long srcDocumentId;
 
     /**
-     * The ID of the destination card (serialization sugar)
+     * The ID of the destination card
      */
     private Long destinationCardId;
 
@@ -57,7 +57,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
     /**
      * The id of the long description
      */
-    private Block explanation;
+    private TextDataBlock explanation;
 
     // ---------------------------------------------------------------------------------------------
     // getters and setters
@@ -106,17 +106,17 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 <span class="nc" id="L106">    }</span>
 
     /**
-     * @return the srcBlockId
+     * @return the srcDocumentId
      */
-    public Long getSrcBlockId() {
-<span class="nc" id="L112">        return srcBlockId;</span>
+    public Long getSrcDocumentId() {
+<span class="nc" id="L112">        return srcDocumentId;</span>
     }
 
     /**
-     * @param srcBlockId the srcBlockId
+     * @param srcDocumentId the srcDocumentId
      */
-    public void setSrcBlockId(Long srcBlockId) {
-<span class="nc" id="L119">        this.srcBlockId = srcBlockId;</span>
+    public void setSrcDocumentId(Long srcDocumentId) {
+<span class="nc" id="L119">        this.srcDocumentId = srcDocumentId;</span>
 <span class="nc" id="L120">    }</span>
 
     /**
@@ -150,14 +150,14 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
     /**
      * @return the explanation
      */
-    public Block getExplanation() {
+    public TextDataBlock getExplanation() {
 <span class="nc" id="L154">        return explanation;</span>
     }
 
     /**
      * @param explanation the explanation
      */
-    public void setExplanation(Block explanation) {
+    public void setExplanation(TextDataBlock explanation) {
 <span class="nc" id="L161">        this.explanation = explanation;</span>
 <span class="nc" id="L162">    }</span>
 
@@ -171,7 +171,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 <span class="nc" id="L171">            .append(this.srcCardId)</span>
 <span class="nc" id="L172">            .append(this.srcCardContentId)</span>
 <span class="nc" id="L173">            .append(this.srcResourceOrRefId)</span>
-<span class="nc" id="L174">            .append(this.srcBlockId)</span>
+<span class="nc" id="L174">            .append(this.srcDocumentId)</span>
 <span class="nc" id="L175">            .append(this.destinationCardId)</span>
 <span class="nc" id="L176">            .append(this.teaser)</span>
 <span class="nc" id="L177">            .toHashCode();</span>
@@ -193,7 +193,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 <span class="nc" id="L193">            .append(this.srcCardId, other.srcCardId)</span>
 <span class="nc" id="L194">            .append(this.srcCardContentId, other.srcCardContentId)</span>
 <span class="nc" id="L195">            .append(this.srcResourceOrRefId, other.srcResourceOrRefId)</span>
-<span class="nc" id="L196">            .append(this.srcBlockId, other.srcBlockId)</span>
+<span class="nc" id="L196">            .append(this.srcDocumentId, other.srcDocumentId)</span>
 <span class="nc" id="L197">            .append(this.destinationCardId, other.destinationCardId)</span>
 <span class="nc" id="L198">            .append(this.teaser, other.teaser)</span>
 <span class="nc" id="L199">            .isEquals();</span>
@@ -203,7 +203,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
     public String toString() {
 <span class="nc" id="L204">        return &quot;StickyNoteLinkCreationBean{&quot; + &quot;srcCardId=&quot; + srcCardId</span>
             + &quot;, srcCardContentId=&quot; + srcCardContentId
-            + &quot;, srcResourceOrRefId=&quot; + srcResourceOrRefId + &quot;, srcBlockId=&quot; + srcBlockId
+            + &quot;, srcResourceOrRefId=&quot; + srcResourceOrRefId + &quot;, srcDocumentId=&quot; + srcDocumentId
             + &quot;, destinationCardId=&quot; + destinationCardId + &quot;, teaser=&quot; + teaser + &quot;}&quot;;
     }
 }

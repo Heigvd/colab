@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>IndexGeneratorHelper.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">colab-client</a> &gt; <a href="../index.html" class="el_bundle">colab-api</a> &gt; <a href="index.source.html" class="el_package">ch.colabproject.colab.api.controller.document</a> &gt; <span class="el_source">IndexGeneratorHelper.java</span></div><h1>IndexGeneratorHelper.java</h1><pre class="source lang-java linenums">/*
+ * The coLAB project
+ * Copyright (C) 2021 AlbaSim, MEI, HEIG-VD, HES-SO
+ *
+ * Licensed under the MIT License
+ */
+package ch.colabproject.colab.api.controller.document;
+
+import ch.colabproject.colab.api.model.WithIndex;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * @author sandra
+ */
+public final class IndexGeneratorHelper {
+
+    /** logger */
+<span class="nc" id="L24">    private static final Logger logger = LoggerFactory.getLogger(IndexGeneratorHelper.class);</span>
+
+    /**
+     * The value of the first index
+     */
+    public static final int MIN_INDEX = 0;
+
+    /**
+     * The value of the bigger index that is compatible with the model
+     */
+    public static final int MAX_INDEX = Integer.MAX_VALUE;
+
+    /**
+     * Default room between indexes
+     */
+    public static final int DEFAULT_INDEX_INC = 1000;
+
+    /**
+     * never-called private constructor
+     */
+<span class="nc" id="L44">    private IndexGeneratorHelper() {</span>
+<span class="nc" id="L45">        throw new UnsupportedOperationException(</span>
+            &quot;This is a utility class and cannot be instantiated&quot;);
+    }
+
+    // TODO unit test
+
+    /**
+     * Compute the next index to use for this collection.
+     * &lt;p&gt;
+     * The index will be between {@link #MIN_INDEX} and {@link #MAX_INDEX} and two indexes are
+     * separated between {@link #DEFAULT_INDEX_INC}.
+     *
+     * @param collection A collection of indexed objects
+     *
+     * @return the next index to use for the collection
+     */
+    public static int nextIndex(Collection&lt;? extends WithIndex&gt; collection) {
+<span class="nc" id="L62">        List&lt;WithIndex&gt; workData = new ArrayList&lt;&gt;(collection);</span>
+
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (workData.isEmpty()) {</span>
+<span class="nc" id="L65">            return MIN_INDEX + DEFAULT_INDEX_INC;</span>
+        } else {
+<span class="nc" id="L67">            workData.sort(Comparator.comparingInt(obj -&gt; obj.getIndex()));</span>
+
+<span class="nc" id="L69">            WithIndex lastOne = workData.get(workData.size() - 1);</span>
+
+<span class="nc bnc" id="L71" title="All 2 branches missed.">            if (lastOne.getIndex() &lt; MAX_INDEX - DEFAULT_INDEX_INC) {</span>
+<span class="nc" id="L72">                return lastOne.getIndex() + DEFAULT_INDEX_INC;</span>
+
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            } else if ((workData.size() + 1) &gt; (MAX_INDEX - MIN_INDEX) / DEFAULT_INDEX_INC) {</span>
+                // current behaviour is not that robust...
+                // it will crash when there is more than (MAX_INTEGER / 1000) objects
+                // it is big enough for our needs
+<span class="nc" id="L78">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+
+            } else {
+<span class="nc" id="L81">                logger.warn(&quot;needed to reindex (last: {})&quot;, lastOne);</span>
+
+                // MAX INDEX reached -&gt; reset all indexes
+<span class="nc" id="L84">                reorderIndexes(workData);</span>
+
+<span class="nc" id="L86">                return lastOne.getIndex() + DEFAULT_INDEX_INC;</span>
+            }
+        }
+    }
+
+    /**
+     * Reorder the list beginning with {@link #MIN_INDEX} incrementing of {@link #DEFAULT_INDEX_INC}
+     * for each one.
+     *
+     * @param sortedCollection The sorted collection to reindex
+     */
+    private static void reorderIndexes(List&lt;WithIndex&gt; sortedCollection) {
+<span class="nc" id="L98">        int index = MIN_INDEX + DEFAULT_INDEX_INC;</span>
+
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        for (WithIndex obj : sortedCollection) {</span>
+<span class="nc" id="L101">            obj.setIndex(index);</span>
+<span class="nc" id="L102">            index += DEFAULT_INDEX_INC;</span>
+<span class="nc" id="L103">        }</span>
+<span class="nc" id="L104">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

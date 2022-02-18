@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.model.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import java.util.HashSet;
 import java.util.List;
@@ -63,7 +63,7 @@ import javax.validation.constraints.NotNull;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
     @JsonbTransient
-    private Block purpose;
+    private TextDataBlock purpose;
 
     /**
      * Tags
@@ -102,14 +102,14 @@ import javax.validation.constraints.NotNull;
     /**
      * @return the purpose
      */
-    public Block getPurpose() {
+    public TextDataBlock getPurpose() {
 <span class="nc" id="L106">        return purpose;</span>
     }
 
     /**
      * @param purpose the purpose
      */
-    public void setPurpose(Block purpose) {
+    public void setPurpose(TextDataBlock purpose) {
 <span class="nc" id="L113">        this.purpose = purpose;</span>
 <span class="nc" id="L114">    }</span>
 

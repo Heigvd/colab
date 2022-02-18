@@ -146,7 +146,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L147">        List&lt;CardContent&gt; variants = card.getContentVariants();</span>
 <span class="nc bnc" id="L148" title="All 6 branches missed.">        if (variants != null &amp;&amp; variants.size() == 1 &amp;&amp; variants.get(0) != null) {</span>
-<span class="nc" id="L149">            cardContentManager.assignDeliverable(variants.get(0).getId(), document);</span>
+<span class="nc" id="L149">            cardContentManager.addDeliverable(variants.get(0).getId(), document);</span>
         } else {
 <span class="nc" id="L151">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
