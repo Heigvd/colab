@@ -217,7 +217,7 @@ public class WebsocketManager {
     }
 
     /**
-     * Current user want to subscribe the broadcast channel
+     * Current user wants to subscribe the broadcast channel
      *
      * @param sessionId websocket session identifier
      */
@@ -233,7 +233,7 @@ public class WebsocketManager {
     }
 
     /**
-     * Current user want to unsubscribe from the broadcast channel
+     * Current user wants to unsubscribe from the broadcast channel
      *
      * @param sessionId websocket session identifier
      */
@@ -251,7 +251,7 @@ public class WebsocketManager {
     }
 
     /**
-     * Current user want to subscribe to its own channel.
+     * Current user wants to subscribe to its own channel.
      *
      * @param sessionId websocket session identifier
      */
@@ -268,7 +268,7 @@ public class WebsocketManager {
     }
 
     /**
-     * Current user want to unsubscribe from its own channel.
+     * Current user wants to unsubscribe from its own channel.
      *
      * @param sessionId websocket session identifier
      */
@@ -285,10 +285,10 @@ public class WebsocketManager {
     }
 
     /**
-     * Current user want to subscribe to a project channel.
+     * Current user wants to subscribe to a project channel.
      *
      * @param sessionId websocket session identifier
-     * @param projectId if of the project
+     * @param projectId id of the project
      *
      * @throws HttpErrorMessage notFound if the project does not exists
      */
@@ -311,10 +311,10 @@ public class WebsocketManager {
     }
 
     /**
-     * Current user want to unsubscribe from a project channel.
+     * Current user wants to unsubscribe from a project channel.
      *
      * @param sessionId websocket session identifier
-     * @param projectId if of the project
+     * @param projectId id of the project
      *
      * @throws HttpErrorMessage notFound if the project does not exists
      */
@@ -337,10 +337,10 @@ public class WebsocketManager {
     }
 
     /**
-     * Current user want to subscribe to a block channel.
+     * Current user wants to subscribe to a block channel.
      *
      * @param sessionId websocket session identifier
-     * @param blockId   if of the block
+     * @param blockId   id of the block
      *
      * @throws HttpErrorMessage notFound if the block does not exists
      */
@@ -365,31 +365,20 @@ public class WebsocketManager {
     }
 
     /**
-     * Current user want to unsubscribe from a block channel.
+     * Current user wants to unsubscribe from a block channel.
      *
      * @param sessionId websocket session identifier
-     * @param blockId   if of the block
-     *
-     * @throws HttpErrorMessage notFound if the block does not exists
+     * @param blockId   id of the block
      */
     public void unsubscribeFromBlockChannel(WsSessionIdentifier sessionId, Long blockId) {
         logger.debug("Session {} want to unsubscribe from Block#{}", sessionId, blockId);
-        TextDataBlock block = blockManager.findBlock(blockId);
-        if (block != null) {
-            // no explicit security check : if one can load the block, one can subscribe to its
-            // channel
-//            securityManager.assertConditionTx(new Conditions.IsCurrentUserMemberOfBlock(block),
-//                "Subscribe to block channel: Permission denied");
-            SubscriptionRequest request = SubscriptionRequest.build(
-                SubscriptionRequest.SubscriptionType.UNSUBSCRIBE,
-                SubscriptionRequest.ChannelType.BLOCK,
-                block.getId(),
-                sessionId.getSessionId(),
-                requestManager.getAndAssertHttpSession().getId());
-            subscriptionEvents.fire(request);
-        } else {
-            throw HttpErrorMessage.notFound();
-        }
+        SubscriptionRequest request = SubscriptionRequest.build(
+            SubscriptionRequest.SubscriptionType.UNSUBSCRIBE,
+            SubscriptionRequest.ChannelType.BLOCK,
+            blockId,
+            sessionId.getSessionId(),
+            requestManager.getAndAssertHttpSession().getId());
+        subscriptionEvents.fire(request);
     }
 
     /**
