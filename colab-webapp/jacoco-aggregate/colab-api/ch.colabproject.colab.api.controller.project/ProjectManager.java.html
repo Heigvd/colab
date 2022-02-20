@@ -99,7 +99,7 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the project was not found
      */
     public Project assertAndGetProject(Long projectId) {
-<span class="nc" id="L102">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L102">        Project project = projectDao.findProject(projectId);</span>
 
 <span class="nc bnc" id="L104" title="All 2 branches missed.">        if (project == null) {</span>
 <span class="nc" id="L105">            logger.error(&quot;project #{} not found&quot;, projectId);</span>
@@ -117,7 +117,7 @@ import org.slf4j.LoggerFactory;
     public List&lt;Project&gt; findProjectsOfCurrentUser() {
 <span class="nc" id="L118">        User user = securityManager.assertAndGetCurrentUser();</span>
 
-<span class="nc" id="L120">        List&lt;Project&gt; projects = projectDao.getUserProject(user.getId());</span>
+<span class="nc" id="L120">        List&lt;Project&gt; projects = projectDao.findProjectsUserIsMemberOf(user.getId());</span>
 
 <span class="nc" id="L122">        logger.debug(&quot;found projects where the user {} is a team member : {}&quot;, user, projects);</span>
 
@@ -148,7 +148,7 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L148">                User user = securityManager.assertAndGetCurrentUser();</span>
 <span class="nc" id="L149">                teamManager.addMember(project, user, HierarchicalPosition.OWNER);</span>
 
-<span class="nc" id="L151">                return projectDao.createProject(project);</span>
+<span class="nc" id="L151">                return projectDao.persistProject(project);</span>
             });
 <span class="nc" id="L153">        } catch (RuntimeException ex) {</span>
 <span class="nc" id="L154">            throw ex;</span>
@@ -255,7 +255,7 @@ import org.slf4j.LoggerFactory;
     public List&lt;Long&gt; findIdsOfProjectsOfCurrentUser() {
 <span class="nc" id="L256">        User user = securityManager.assertAndGetCurrentUser();</span>
 
-<span class="nc" id="L258">        List&lt;Long&gt; projectsIds = projectDao.getIdsOfProjectUserIsMemberOf(user.getId());</span>
+<span class="nc" id="L258">        List&lt;Long&gt; projectsIds = projectDao.findIdsOfProjectUserIsMemberOf(user.getId());</span>
 
 <span class="nc" id="L260">        logger.debug(&quot;found projects' id where the user {} is a team member : {}&quot;, user,</span>
             projectsIds);

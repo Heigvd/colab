@@ -14,7 +14,7 @@ import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.Resource;
 import ch.colabproject.colab.api.model.document.ResourceRef;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
-import ch.colabproject.colab.api.persistence.document.ResourceDao;
+import ch.colabproject.colab.api.persistence.jpa.document.ResourceDao;
 import ch.colabproject.colab.api.rest.document.bean.ResourceCreationBean;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;

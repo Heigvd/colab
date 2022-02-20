@@ -57,18 +57,6 @@ import org.slf4j.LoggerFactory;
     private CardTypeManager cardTypeManager;
 
     /**
-     * Retrieve the list of all card types. This is available to admin only
-     *
-     * @return all known card types
-     */
-    @GET
-    @AdminResource
-    public List&lt;CardType&gt; getAllCardTypes() {
-<span class="nc" id="L67">        logger.debug(&quot;get all card types&quot;);</span>
-<span class="nc" id="L68">        return cardTypeDao.getAllCardType();</span>
-    }
-
-    /**
      * Retrieve the list of all global card types. This is available to admin only
      *
      * @return all known global card types
@@ -77,8 +65,8 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;allGlobals&quot;)
     @AdminResource
     public List&lt;CardType&gt; getAllGlobalCardTypes() {
-<span class="nc" id="L80">        logger.debug(&quot;get all global card types&quot;);</span>
-<span class="nc" id="L81">        return cardTypeDao.getGlobalCardType();</span>
+<span class="nc" id="L68">        logger.debug(&quot;get all global card types&quot;);</span>
+<span class="nc" id="L69">        return cardTypeDao.findGlobalCardTypes();</span>
     }
 
     /**
@@ -89,8 +77,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;publishedGlobals&quot;)
     public List&lt;CardType&gt; getPublishedGlobalsCardTypes() {
-<span class="nc" id="L92">        logger.debug(&quot;get published global card types&quot;);</span>
-<span class="nc" id="L93">        return cardTypeDao.getPublishedGlobalCardType();</span>
+<span class="nc" id="L80">        logger.debug(&quot;get published global card types&quot;);</span>
+<span class="nc" id="L81">        return cardTypeDao.findPublishedGlobalCardTypes();</span>
     }
 
     /**
@@ -102,8 +90,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;allProjectsPublished&quot;)
     public Set&lt;AbstractCardType&gt; getPublishedCardTypes() {
-<span class="nc" id="L105">        logger.debug(&quot;get published projects card types&quot;);</span>
-<span class="nc" id="L106">        return cardTypeManager.getExpandedPublishedProjectTypes();</span>
+<span class="nc" id="L93">        logger.debug(&quot;get published projects card types&quot;);</span>
+<span class="nc" id="L94">        return cardTypeManager.getCurrentUserExpandedPublishedProjectTypes();</span>
     }
 
     /**
@@ -116,8 +104,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public AbstractCardType getCardType(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L119">        logger.debug(&quot;get card type #{}&quot;, id);</span>
-<span class="nc" id="L120">        return cardTypeDao.getAbstractCardType(id);</span>
+<span class="nc" id="L107">        logger.debug(&quot;get card type #{}&quot;, id);</span>
+<span class="nc" id="L108">        return cardTypeDao.findAbstractCardType(id);</span>
     }
 
     /**
@@ -129,19 +117,19 @@ import org.slf4j.LoggerFactory;
      */
     @POST
     public Long createCardType(CardTypeCreationBean cardTypeCreationBean) {
-<span class="nc" id="L132">        logger.debug(&quot;create card type {}&quot;, cardTypeCreationBean);</span>
+<span class="nc" id="L120">        logger.debug(&quot;create card type {}&quot;, cardTypeCreationBean);</span>
 
-<span class="nc" id="L134">        CardType cardType = new CardType();</span>
-<span class="nc" id="L135">        cardType.setProjectId(cardTypeCreationBean.getProjectId());</span>
-<span class="nc" id="L136">        cardType.setTitle(cardTypeCreationBean.getTitle());</span>
-<span class="nc" id="L137">        cardType.setPurpose(cardTypeCreationBean.getPurpose());</span>
-<span class="nc" id="L138">        cardType.setTags(cardTypeCreationBean.getTags());</span>
+<span class="nc" id="L122">        CardType cardType = new CardType();</span>
+<span class="nc" id="L123">        cardType.setProjectId(cardTypeCreationBean.getProjectId());</span>
+<span class="nc" id="L124">        cardType.setTitle(cardTypeCreationBean.getTitle());</span>
+<span class="nc" id="L125">        cardType.setPurpose(cardTypeCreationBean.getPurpose());</span>
+<span class="nc" id="L126">        cardType.setTags(cardTypeCreationBean.getTags());</span>
 
-<span class="nc bnc" id="L140" title="All 2 branches missed.">        if (cardTypeCreationBean.getPurpose() != null) {</span>
-<span class="nc" id="L141">            cardTypeCreationBean.getPurpose().setPurposingCardType(cardType);</span>
+<span class="nc bnc" id="L128" title="All 2 branches missed.">        if (cardTypeCreationBean.getPurpose() != null) {</span>
+<span class="nc" id="L129">            cardTypeCreationBean.getPurpose().setPurposingCardType(cardType);</span>
         }
 
-<span class="nc" id="L144">        return cardTypeManager.createCardType(cardType).getId();</span>
+<span class="nc" id="L132">        return cardTypeManager.createCardType(cardType).getId();</span>
     }
 
 //    /**
@@ -167,9 +155,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateCardType(AbstractCardType cardType) throws ColabMergeException {
-<span class="nc" id="L170">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
-<span class="nc" id="L171">        cardTypeDao.updateCardType(cardType);</span>
-<span class="nc" id="L172">    }</span>
+<span class="nc" id="L158">        logger.debug(&quot;update abstract card type {}&quot;, cardType);</span>
+<span class="nc" id="L159">        cardTypeDao.updateAbstractCardType(cardType);</span>
+<span class="nc" id="L160">    }</span>
 
     /**
      * Permanently delete a card type
@@ -179,9 +167,9 @@ import org.slf4j.LoggerFactory;
     @DELETE
     @Path(&quot;{id}&quot;)
     public void deleteCardType(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L182">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
-<span class="nc" id="L183">        cardTypeManager.deleteCardType(id);</span>
-<span class="nc" id="L184">    }</span>
+<span class="nc" id="L170">        logger.debug(&quot;delete card type #{}&quot;, id);</span>
+<span class="nc" id="L171">        cardTypeManager.deleteCardType(id);</span>
+<span class="nc" id="L172">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

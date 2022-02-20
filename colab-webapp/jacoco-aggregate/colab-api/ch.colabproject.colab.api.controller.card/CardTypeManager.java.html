@@ -87,7 +87,7 @@ import com.google.common.collect.Lists;
      * @throws HttpErrorMessage if the card type (or reference) was not found
      */
     public AbstractCardType assertAndGetCardTypeOrRef(Long cardTypeOrRefId) {
-<span class="nc" id="L90">        AbstractCardType cardTypeOrRef = cardTypeDao.getAbstractCardType(cardTypeOrRefId);</span>
+<span class="nc" id="L90">        AbstractCardType cardTypeOrRef = cardTypeDao.findAbstractCardType(cardTypeOrRefId);</span>
 
 <span class="nc bnc" id="L92" title="All 2 branches missed.">        if (cardTypeOrRef == null) {</span>
 <span class="nc" id="L93">            logger.error(&quot;card type or reference #{} not found&quot;, cardTypeOrRefId);</span>
@@ -113,8 +113,9 @@ import com.google.common.collect.Lists;
      *
      * @return set of concrete types and all transitive ref to reach them
      */
-    public Set&lt;AbstractCardType&gt; getExpandedPublishedProjectTypes() {
-<span class="nc" id="L117">        return this.expand(cardTypeDao.getPublishedProjectsCardType());</span>
+    public Set&lt;AbstractCardType&gt; getCurrentUserExpandedPublishedProjectTypes() {
+<span class="nc" id="L117">        User user = securityManager.assertAndGetCurrentUser();</span>
+<span class="nc" id="L118">        return this.expand(cardTypeDao.findPublishedProjectCardTypes(user.getId()));</span>
     }
 
     /**
@@ -125,12 +126,12 @@ import com.google.common.collect.Lists;
      * @return all types and all transitive ref to reach them
      */
     private Set&lt;AbstractCardType&gt; expand(List&lt;AbstractCardType&gt; types) {
-<span class="nc" id="L128">        Set&lt;AbstractCardType&gt; allTypes = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L129">        types.forEach(type -&gt; {</span>
-<span class="nc" id="L130">            allTypes.addAll(type.expand());</span>
-<span class="nc" id="L131">        });</span>
+<span class="nc" id="L129">        Set&lt;AbstractCardType&gt; allTypes = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L130">        types.forEach(type -&gt; {</span>
+<span class="nc" id="L131">            allTypes.addAll(type.expand());</span>
+<span class="nc" id="L132">        });</span>
 
-<span class="nc" id="L133">        return allTypes;</span>
+<span class="nc" id="L134">        return allTypes;</span>
     }
 
     // *********************************************************************************************
@@ -147,28 +148,28 @@ import com.google.common.collect.Lists;
      * @return the new persisted card type
      */
     public CardType createCardType(CardType cardType) {
-<span class="nc" id="L150">        Long projectId = cardType.getProjectId();</span>
+<span class="nc" id="L151">        Long projectId = cardType.getProjectId();</span>
 
-<span class="nc bnc" id="L152" title="All 2 branches missed.">        if (projectId != null) {</span>
-<span class="nc" id="L153">            logger.debug(&quot;create a card type in the project #{}&quot;, projectId);</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        if (projectId != null) {</span>
+<span class="nc" id="L154">            logger.debug(&quot;create a card type in the project #{}&quot;, projectId);</span>
 
-<span class="nc" id="L155">            Project project = projectManager.assertAndGetProject(projectId);</span>
+<span class="nc" id="L156">            Project project = projectManager.assertAndGetProject(projectId);</span>
 
-<span class="nc" id="L157">            project.getElementsToBeDefined().add(cardType);</span>
-<span class="nc" id="L158">            cardType.setProject(project);</span>
-<span class="nc" id="L159">        } else {</span>
-<span class="nc" id="L160">            logger.debug(&quot;create a global card type&quot;);</span>
-<span class="nc" id="L161">            cardType.setProject(null);</span>
+<span class="nc" id="L158">            project.getElementsToBeDefined().add(cardType);</span>
+<span class="nc" id="L159">            cardType.setProject(project);</span>
+<span class="nc" id="L160">        } else {</span>
+<span class="nc" id="L161">            logger.debug(&quot;create a global card type&quot;);</span>
+<span class="nc" id="L162">            cardType.setProject(null);</span>
         }
 
-<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (cardType.getPurpose() == null) {</span>
-<span class="nc" id="L165">            TextDataBlock purposeTextDataBlock = blockManager.makeNewTextDataBlock();</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        if (cardType.getPurpose() == null) {</span>
+<span class="nc" id="L166">            TextDataBlock purposeTextDataBlock = blockManager.makeNewTextDataBlock();</span>
 
-<span class="nc" id="L167">            cardType.setPurpose(purposeTextDataBlock);</span>
-<span class="nc" id="L168">            purposeTextDataBlock.setPurposingCardType(cardType);</span>
+<span class="nc" id="L168">            cardType.setPurpose(purposeTextDataBlock);</span>
+<span class="nc" id="L169">            purposeTextDataBlock.setPurposingCardType(cardType);</span>
         }
 
-<span class="nc" id="L171">        return cardTypeDao.createCardType(cardType);</span>
+<span class="nc" id="L172">        return cardTypeDao.persistAbstractCardType(cardType);</span>
     }
 
     /**
@@ -179,19 +180,19 @@ import com.google.common.collect.Lists;
      * @return the freshly deleted card
      */
     public CardType deleteCardType(Long cardTypeId) {
-<span class="nc" id="L182">        logger.debug(&quot;delete card type {}&quot;, cardTypeId);</span>
+<span class="nc" id="L183">        logger.debug(&quot;delete card type {}&quot;, cardTypeId);</span>
 
-<span class="nc" id="L184">        AbstractCardType cardTypeOrRef = assertAndGetCardTypeOrRef(cardTypeId);</span>
+<span class="nc" id="L185">        AbstractCardType cardTypeOrRef = assertAndGetCardTypeOrRef(cardTypeId);</span>
 
-<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (!checkDeletionAcceptability(cardTypeOrRef)) {</span>
-<span class="nc" id="L187">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        if (!checkDeletionAcceptability(cardTypeOrRef)) {</span>
+<span class="nc" id="L188">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc bnc" id="L190" title="All 2 branches missed.">        if (cardTypeOrRef.getProject() != null) {</span>
-<span class="nc" id="L191">            cardTypeOrRef.getProject().getElementsToBeDefined().remove(cardTypeOrRef);</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">        if (cardTypeOrRef.getProject() != null) {</span>
+<span class="nc" id="L192">            cardTypeOrRef.getProject().getElementsToBeDefined().remove(cardTypeOrRef);</span>
         }
 
-<span class="nc" id="L194">        return cardTypeDao.deleteCardType(cardTypeId);</span>
+<span class="nc" id="L195">        return cardTypeDao.deleteCardType(cardTypeId);</span>
     }
 
     /**
@@ -202,15 +203,15 @@ import com.google.common.collect.Lists;
      * @return True iff it can be safely deleted
      */
     private boolean checkDeletionAcceptability(AbstractCardType cardTypeOrRef) {
-<span class="nc bnc" id="L205" title="All 2 branches missed.">        if (CollectionUtils.isNotEmpty(cardTypeOrRef.getImplementingCards())) {</span>
-<span class="nc" id="L206">            return false;</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">        if (CollectionUtils.isNotEmpty(cardTypeOrRef.getImplementingCards())) {</span>
+<span class="nc" id="L207">            return false;</span>
         }
 
-<span class="nc bnc" id="L209" title="All 2 branches missed.">        if (CollectionUtils.isNotEmpty(cardTypeOrRef.getDirectReferences())) {</span>
-<span class="nc" id="L210">            return false;</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">        if (CollectionUtils.isNotEmpty(cardTypeOrRef.getDirectReferences())) {</span>
+<span class="nc" id="L211">            return false;</span>
         }
 
-<span class="nc" id="L213">        return true;</span>
+<span class="nc" id="L214">        return true;</span>
     }
 
     // *********************************************************************************************
@@ -229,8 +230,8 @@ import com.google.common.collect.Lists;
         Project project) {
         // The given type belongs to the project
         // it can be used as-is
-<span class="nc bnc" id="L232" title="All 2 branches missed.">        if (project.equals(cardType.getProject())) {</span>
-<span class="nc" id="L233">            return cardType;</span>
+<span class="nc bnc" id="L233" title="All 2 branches missed.">        if (project.equals(cardType.getProject())) {</span>
+<span class="nc" id="L234">            return cardType;</span>
         }
 
         // So, cardType belongs to another project or is global
@@ -238,20 +239,20 @@ import com.google.common.collect.Lists;
 
         // Check if the project already got a direct reference the super-type
         // shall we check something to prevent extending same type several times?
-<span class="nc" id="L241">        Optional&lt;AbstractCardType&gt; directRefToCardTypeInProject = project.getElementsToBeDefined()</span>
-<span class="nc" id="L242">            .stream()</span>
-<span class="nc" id="L243">            .filter(type -&gt; {</span>
-<span class="nc" id="L244">                return isDirectRef(type, cardType);</span>
+<span class="nc" id="L242">        Optional&lt;AbstractCardType&gt; directRefToCardTypeInProject = project.getElementsToBeDefined()</span>
+<span class="nc" id="L243">            .stream()</span>
+<span class="nc" id="L244">            .filter(type -&gt; {</span>
+<span class="nc" id="L245">                return isDirectRef(type, cardType);</span>
             })
-<span class="nc" id="L246">            .findFirst();</span>
+<span class="nc" id="L247">            .findFirst();</span>
 
         // direct reference found, reuse it
-<span class="nc bnc" id="L249" title="All 2 branches missed.">        if (directRefToCardTypeInProject.isPresent()) {</span>
-<span class="nc" id="L250">            return directRefToCardTypeInProject.get();</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">        if (directRefToCardTypeInProject.isPresent()) {</span>
+<span class="nc" id="L251">            return directRefToCardTypeInProject.get();</span>
         }
 
         // no direct reference. Create one.
-<span class="nc" id="L254">        return createNewCardReference(cardType, project);</span>
+<span class="nc" id="L255">        return createNewCardReference(cardType, project);</span>
     }
 
     /**
@@ -263,13 +264,13 @@ import com.google.common.collect.Lists;
      * @return true if child is a direct reference to the parent
      */
     private boolean isDirectRef(AbstractCardType child, AbstractCardType parent) {
-<span class="nc bnc" id="L266" title="All 2 branches missed.">        if (child instanceof CardTypeRef) {</span>
-<span class="nc" id="L267">            CardTypeRef ref = (CardTypeRef) child;</span>
-<span class="nc" id="L268">            AbstractCardType refTarget = ref.getTarget();</span>
-<span class="nc" id="L269">            return Objects.equals(refTarget, parent);</span>
+<span class="nc bnc" id="L267" title="All 2 branches missed.">        if (child instanceof CardTypeRef) {</span>
+<span class="nc" id="L268">            CardTypeRef ref = (CardTypeRef) child;</span>
+<span class="nc" id="L269">            AbstractCardType refTarget = ref.getTarget();</span>
+<span class="nc" id="L270">            return Objects.equals(refTarget, parent);</span>
         }
 
-<span class="nc" id="L272">        return false;</span>
+<span class="nc" id="L273">        return false;</span>
     }
 
     /**
@@ -282,17 +283,17 @@ import com.google.common.collect.Lists;
      * @return a new, initialized card type reference (just the object, no persistence)
      */
     private CardTypeRef createNewCardReference(AbstractCardType cardType, Project project) {
-<span class="nc" id="L285">        CardTypeRef ref = initNewCardTypeRef();</span>
+<span class="nc" id="L286">        CardTypeRef ref = initNewCardTypeRef();</span>
 
-<span class="nc" id="L287">        ref.setProject(project);</span>
-<span class="nc" id="L288">        project.getElementsToBeDefined().add(ref);</span>
+<span class="nc" id="L288">        ref.setProject(project);</span>
+<span class="nc" id="L289">        project.getElementsToBeDefined().add(ref);</span>
 
-<span class="nc" id="L290">        ref.setTarget(cardType);</span>
-<span class="nc" id="L291">        cardType.getDirectReferences().add(ref);</span>
+<span class="nc" id="L291">        ref.setTarget(cardType);</span>
+<span class="nc" id="L292">        cardType.getDirectReferences().add(ref);</span>
 
-<span class="nc" id="L293">        ResourceReferenceSpreadingHelper.extractReferencesFromUp(ref);</span>
+<span class="nc" id="L294">        ResourceReferenceSpreadingHelper.extractReferencesFromUp(ref);</span>
 
-<span class="nc" id="L295">        return cardTypeDao.createCardType(ref);</span>
+<span class="nc" id="L296">        return cardTypeDao.persistAbstractCardType(ref);</span>
     }
 
     /**
@@ -301,12 +302,12 @@ import com.google.common.collect.Lists;
      * @return a new, initialized card type reference (just the object, no persistence)
      */
     private CardTypeRef initNewCardTypeRef() {
-<span class="nc" id="L304">        CardTypeRef ref = new CardTypeRef();</span>
+<span class="nc" id="L305">        CardTypeRef ref = new CardTypeRef();</span>
 
-<span class="nc" id="L306">        ref.setDeprecated(false);</span>
-<span class="nc" id="L307">        ref.setPublished(false);</span>
+<span class="nc" id="L307">        ref.setDeprecated(false);</span>
+<span class="nc" id="L308">        ref.setPublished(false);</span>
 
-<span class="nc" id="L309">        return ref;</span>
+<span class="nc" id="L310">        return ref;</span>
     }
 
     /**
@@ -318,14 +319,14 @@ import com.google.common.collect.Lists;
      * @return true if child is a ref and if ancestor is an ancestor of the ref
      */
     public boolean isTransitiveRef(AbstractCardType child, AbstractCardType ancestor) {
-<span class="nc bnc" id="L321" title="All 2 branches missed.">        if (isDirectRef(child, ancestor)) {</span>
-<span class="nc" id="L322">            return true;</span>
-<span class="nc bnc" id="L323" title="All 2 branches missed.">        } else if (child instanceof CardTypeRef) {</span>
-<span class="nc" id="L324">            AbstractCardType parent = ((CardTypeRef) child).getTarget();</span>
-<span class="nc" id="L325">            return this.isTransitiveRef(parent, ancestor);</span>
+<span class="nc bnc" id="L322" title="All 2 branches missed.">        if (isDirectRef(child, ancestor)) {</span>
+<span class="nc" id="L323">            return true;</span>
+<span class="nc bnc" id="L324" title="All 2 branches missed.">        } else if (child instanceof CardTypeRef) {</span>
+<span class="nc" id="L325">            AbstractCardType parent = ((CardTypeRef) child).getTarget();</span>
+<span class="nc" id="L326">            return this.isTransitiveRef(parent, ancestor);</span>
         }
 
-<span class="nc" id="L328">        return false;</span>
+<span class="nc" id="L329">        return false;</span>
     }
 
     // *********************************************************************************************
@@ -338,7 +339,7 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching card types
      */
     public List&lt;Long&gt; findGlobalPublishedCardTypeIds() {
-<span class="nc" id="L341">        return cardTypeDao.getPublishedGlobalCardTypeIds();</span>
+<span class="nc" id="L342">        return cardTypeDao.findIdsOfPublishedGlobalCardTypes();</span>
     }
 
     /**
@@ -350,8 +351,8 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching card types or references
      */
     public List&lt;Long&gt; findCurrentUserReadableProjectsCardTypesIds() {
-<span class="nc" id="L353">        List&lt;Long&gt; directInOwnProjects = findCurrentUserDirectProjectsCardTypesIds();</span>
-<span class="nc" id="L354">        return retrieveDirectAndTransitiveCardTypesOrRefs(directInOwnProjects);</span>
+<span class="nc" id="L354">        List&lt;Long&gt; directInOwnProjects = findCurrentUserDirectProjectsCardTypesIds();</span>
+<span class="nc" id="L355">        return retrieveDirectAndTransitiveCardTypesOrRefs(directInOwnProjects);</span>
     }
 
     /**
@@ -361,13 +362,13 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching card types or references
      */
     private List&lt;Long&gt; findCurrentUserDirectProjectsCardTypesIds() {
-<span class="nc" id="L364">        User user = securityManager.assertAndGetCurrentUser();</span>
+<span class="nc" id="L365">        User user = securityManager.assertAndGetCurrentUser();</span>
 
-<span class="nc" id="L366">        List&lt;Long&gt; cardTypeOrRefIds = cardTypeDao.getUserProjectCardTypeIds(user.getId());</span>
+<span class="nc" id="L367">        List&lt;Long&gt; cardTypeOrRefIds = cardTypeDao.findIdsOfProjectCardType(user.getId());</span>
 
-<span class="nc" id="L368">        logger.debug(&quot;found direct project's card types' id : {} &quot;, cardTypeOrRefIds);</span>
+<span class="nc" id="L369">        logger.debug(&quot;found direct project's card types' id : {} &quot;, cardTypeOrRefIds);</span>
 
-<span class="nc" id="L370">        return cardTypeOrRefIds;</span>
+<span class="nc" id="L371">        return cardTypeOrRefIds;</span>
     }
 
     /**
@@ -378,7 +379,7 @@ import com.google.common.collect.Lists;
      * @return
      */
     private List&lt;Long&gt; retrieveDirectAndTransitiveCardTypesOrRefs(List&lt;Long&gt; cardTypeOrRefIds) {
-<span class="nc" id="L381">        return retrieveDirectAndTransitiveCardTypesOrRefs(cardTypeOrRefIds, Lists.newArrayList());</span>
+<span class="nc" id="L382">        return retrieveDirectAndTransitiveCardTypesOrRefs(cardTypeOrRefIds, Lists.newArrayList());</span>
     }
 
     /**
@@ -391,18 +392,18 @@ import com.google.common.collect.Lists;
      */
     private List&lt;Long&gt; retrieveDirectAndTransitiveCardTypesOrRefs(List&lt;Long&gt; toProcess,
         List&lt;Long&gt; alreadyDone) {
-<span class="nc" id="L394">        List&lt;Long&gt; remainsToProcess = ListUtils.removeAll(toProcess, alreadyDone);</span>
-<span class="nc bnc" id="L395" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(remainsToProcess)) {</span>
-<span class="nc" id="L396">            return alreadyDone;</span>
+<span class="nc" id="L395">        List&lt;Long&gt; remainsToProcess = ListUtils.removeAll(toProcess, alreadyDone);</span>
+<span class="nc bnc" id="L396" title="All 2 branches missed.">        if (CollectionUtils.isEmpty(remainsToProcess)) {</span>
+<span class="nc" id="L397">            return alreadyDone;</span>
         }
 
-<span class="nc" id="L399">        alreadyDone.addAll(remainsToProcess);</span>
+<span class="nc" id="L400">        alreadyDone.addAll(remainsToProcess);</span>
 
-<span class="nc" id="L401">        List&lt;Long&gt; directTargets = findDirectTargets(remainsToProcess);</span>
-<span class="nc" id="L402">        alreadyDone.addAll(directTargets);</span>
-<span class="nc" id="L403">        retrieveDirectAndTransitiveCardTypesOrRefs(directTargets, alreadyDone);</span>
+<span class="nc" id="L402">        List&lt;Long&gt; directTargets = findDirectTargets(remainsToProcess);</span>
+<span class="nc" id="L403">        alreadyDone.addAll(directTargets);</span>
+<span class="nc" id="L404">        retrieveDirectAndTransitiveCardTypesOrRefs(directTargets, alreadyDone);</span>
 
-<span class="nc" id="L405">        return alreadyDone;</span>
+<span class="nc" id="L406">        return alreadyDone;</span>
     }
 
     /**
@@ -413,9 +414,9 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching card types or references
      */
     private List&lt;Long&gt; findDirectTargets(List&lt;Long&gt; cardTypeOrRefIds) {
-<span class="nc" id="L416">        List&lt;Long&gt; result = cardTypeDao.getTargetIdsOf(cardTypeOrRefIds);</span>
-<span class="nc" id="L417">        logger.debug(&quot;found targets : {} &quot;, result);</span>
-<span class="nc" id="L418">        return result;</span>
+<span class="nc" id="L417">        List&lt;Long&gt; result = cardTypeDao.findTargetIdsOf(cardTypeOrRefIds);</span>
+<span class="nc" id="L418">        logger.debug(&quot;found targets : {} &quot;, result);</span>
+<span class="nc" id="L419">        return result;</span>
     }
 
     /**
@@ -426,7 +427,7 @@ import com.google.common.collect.Lists;
      * @return the ids of the matching projects
      */
     public List&lt;Long&gt; findProjectIdsFromCardTypeIds(List&lt;Long&gt; cardTypeOrRefIds) {
-<span class="nc" id="L429">        return cardTypeDao.getProjectIdsOf(cardTypeOrRefIds);</span>
+<span class="nc" id="L430">        return cardTypeDao.findProjectIdsOf(cardTypeOrRefIds);</span>
     }
 
     // *********************************************************************************************
@@ -441,21 +442,21 @@ import com.google.common.collect.Lists;
      * @return true iff the project is complete and safe
      */
     public boolean checkIntegrity(AbstractCardType cardTypeOrRef) {
-<span class="nc bnc" id="L444" title="All 2 branches missed.">        if (cardTypeOrRef == null) {</span>
-<span class="nc" id="L445">            return false;</span>
+<span class="nc bnc" id="L445" title="All 2 branches missed.">        if (cardTypeOrRef == null) {</span>
+<span class="nc" id="L446">            return false;</span>
         }
 
-<span class="nc bnc" id="L448" title="All 2 branches missed.">        if (cardTypeOrRef instanceof CardTypeRef) {</span>
-<span class="nc" id="L449">            CardTypeRef reference = (CardTypeRef) cardTypeOrRef;</span>
-<span class="nc" id="L450">            CardType finalTarget = reference.resolve();</span>
-<span class="nc bnc" id="L451" title="All 2 branches missed.">            if (finalTarget == null) {</span>
-<span class="nc" id="L452">                return false;</span>
+<span class="nc bnc" id="L449" title="All 2 branches missed.">        if (cardTypeOrRef instanceof CardTypeRef) {</span>
+<span class="nc" id="L450">            CardTypeRef reference = (CardTypeRef) cardTypeOrRef;</span>
+<span class="nc" id="L451">            CardType finalTarget = reference.resolve();</span>
+<span class="nc bnc" id="L452" title="All 2 branches missed.">            if (finalTarget == null) {</span>
+<span class="nc" id="L453">                return false;</span>
             }
         }
 
         // just one ref by target/project
 
-<span class="nc" id="L458">        return true;</span>
+<span class="nc" id="L459">        return true;</span>
     }
 
     // *********************************************************************************************

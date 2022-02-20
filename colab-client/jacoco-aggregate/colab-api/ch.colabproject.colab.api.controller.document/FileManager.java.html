@@ -232,7 +232,7 @@ import org.glassfish.jersey.media.multipart.FormDataBodyPart;
      * @throws RepositoryException in case of a JCR issue
      */
     public Long getUsage(Long projectId) throws RepositoryException {
-<span class="nc" id="L235">        Project project = projectDao.getProject(projectId);</span>
+<span class="nc" id="L235">        Project project = projectDao.findProject(projectId);</span>
 <span class="nc" id="L236">        return jcrManager.computeMemoryUsage(project);</span>
     }
 }

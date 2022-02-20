@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
     @AdminResource
     public List&lt;Project&gt; getAllProjects() {
 <span class="nc" id="L75">        logger.debug(&quot;Get all projects&quot;);</span>
-<span class="nc" id="L76">        return projectDao.getAllProject();</span>
+<span class="nc" id="L76">        return projectDao.findAllProject();</span>
     }
 
     /**
@@ -99,7 +99,7 @@ import org.slf4j.LoggerFactory;
     @Path(&quot;/{id}&quot;)
     public Project getProject(@PathParam(&quot;id&quot;) Long id) {
 <span class="nc" id="L101">        logger.debug(&quot;Get project #{}&quot;, id);</span>
-<span class="nc" id="L102">        return projectDao.getProject(id);</span>
+<span class="nc" id="L102">        return projectDao.findProject(id);</span>
     }
 
     /**

@@ -65,17 +65,17 @@
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>          @Index(columnList = <span class="jxr_string">"project_id"</span>),
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      }
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>  )
-<a class="jxr_linenumber" name="L60" href="#L60">60</a>  @NamedQuery(name = <span class="jxr_string">"AbstractCardType.findPublishedFromProjects"</span>,
-<a class="jxr_linenumber" name="L61" href="#L61">61</a>      query = <span class="jxr_string">"SELECT ct FROM AbstractCardType ct "</span>
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>          + <span class="jxr_string">"JOIN ct.project proj "</span>
-<a class="jxr_linenumber" name="L63" href="#L63">63</a>          + <span class="jxr_string">"JOIN proj.teamMembers memb "</span>
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          + <span class="jxr_string">"WHERE ct.published = TRUE AND memb.user.id = :userId"</span>)
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>  @NamedQuery(name = <span class="jxr_string">"AbstractCardType.findIdOfUserProjectDirectCardType"</span>,
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>  @NamedQuery(name = <span class="jxr_string">"AbstractCardType.findPublishedByProjectTeamMemberUser"</span>,
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>      query = <span class="jxr_string">"SELECT act FROM AbstractCardType act"</span>
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>          + <span class="jxr_string">" JOIN act.project proj"</span>
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>          + <span class="jxr_string">" JOIN proj.teamMembers memb"</span>
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          + <span class="jxr_string">" WHERE act.published = TRUE AND memb.user.id = :userId"</span>)
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>  @NamedQuery(name = <span class="jxr_string">"AbstractCardType.findIdsByProjectTeamMemberUser"</span>,
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      query = <span class="jxr_string">"SELECT act.id FROM AbstractCardType act"</span>
-<a class="jxr_linenumber" name="L67" href="#L67">67</a>          + <span class="jxr_string">" JOIN act.project p"</span>
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>          + <span class="jxr_string">" JOIN p.teamMembers m"</span>
-<a class="jxr_linenumber" name="L69" href="#L69">69</a>          + <span class="jxr_string">" WHERE m.user.id = :userId"</span>)
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>  @NamedQuery(name = <span class="jxr_string">"AbstractCardType.getProjectId"</span>,
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          + <span class="jxr_string">" JOIN act.project proj"</span>
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>          + <span class="jxr_string">" JOIN proj.teamMembers memb"</span>
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>          + <span class="jxr_string">" WHERE memb.user.id = :userId"</span>)
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>  @NamedQuery(name = <span class="jxr_string">"AbstractCardType.findProjectId"</span>,
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      query = <span class="jxr_string">"SELECT act.project.id FROM AbstractCardType act WHERE act.id in :listId"</span>)
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  @Inheritance(strategy = InheritanceType.JOINED)
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  @JsonbTypeDeserializer(PolymorphicDeserializer.<strong class="jxr_keyword">class</strong>)

@@ -26,7 +26,7 @@
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.model.user.User;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.card.CardDao;
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.project.ProjectDao;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.team.TeamDao;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.util.List;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.util.Objects;
@@ -60,7 +60,7 @@
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>  
 <a class="jxr_linenumber" name="L53" href="#L53">53</a>      <em class="jxr_javadoccomment">/** Team persistence */</em>
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      @Inject
-<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">private</strong> <a name="TeamDao" href="../../../../../../ch/colabproject/colab/api/persistence/team/TeamDao.html#TeamDao">TeamDao</a> teamDao;
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>      <strong class="jxr_keyword">private</strong> <a name="TeamDao" href="../../../../../../ch/colabproject/colab/api/persistence/jpa/team/TeamDao.html#TeamDao">TeamDao</a> teamDao;
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  
 <a class="jxr_linenumber" name="L57" href="#L57">57</a>      <em class="jxr_javadoccomment">/** * Token Facade */</em>
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>      @Inject
@@ -101,7 +101,7 @@
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">     * @return all members of the project team</em>
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">public</strong> List&lt;TeamMember&gt; getTeamMembers(Long id) {
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>          Project project = projectDao.getProject(id);
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>          Project project = projectDao.findProject(id);
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>          logger.debug(<span class="jxr_string">"Get team members: {}"</span>, project);
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>  
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>          <strong class="jxr_keyword">if</strong> (project == <strong class="jxr_keyword">null</strong>) {
@@ -120,7 +120,7 @@
 <a class="jxr_linenumber" name="L112" href="#L112">112</a> <em class="jxr_javadoccomment">     * @return the pending new teamMember</em>
 <a class="jxr_linenumber" name="L113" href="#L113">113</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L114" href="#L114">114</a>     <strong class="jxr_keyword">public</strong> TeamMember invite(Long projectId, String email) {
-<a class="jxr_linenumber" name="L115" href="#L115">115</a>         Project project = projectDao.getProject(projectId);
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>         Project project = projectDao.findProject(projectId);
 <a class="jxr_linenumber" name="L116" href="#L116">116</a>         logger.debug(<span class="jxr_string">"Invite {} to join {}"</span>, email, project);
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         <strong class="jxr_keyword">return</strong> tokenManager.sendMembershipInvitation(project, email);
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>     }
@@ -136,7 +136,7 @@
 <a class="jxr_linenumber" name="L128" href="#L128">128</a> <em class="jxr_javadoccomment">     * @return list of roles</em>
 <a class="jxr_linenumber" name="L129" href="#L129">129</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>     <strong class="jxr_keyword">public</strong> List&lt;TeamRole&gt; getProjectRoles(Long id) {
-<a class="jxr_linenumber" name="L131" href="#L131">131</a>         Project project = projectDao.getProject(id);
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>         Project project = projectDao.findProject(id);
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>         <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>             <strong class="jxr_keyword">return</strong> project.getRoles();
 <a class="jxr_linenumber" name="L134" href="#L134">134</a>         } <strong class="jxr_keyword">else</strong> {
@@ -153,7 +153,7 @@
 <a class="jxr_linenumber" name="L145" href="#L145">145</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L146" href="#L146">146</a>     <strong class="jxr_keyword">public</strong> TeamRole createRole(TeamRole role) {
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>         <strong class="jxr_keyword">if</strong> (role.getProjectId() != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L148" href="#L148">148</a>             Project project = projectDao.getProject(role.getProjectId());
+<a class="jxr_linenumber" name="L148" href="#L148">148</a>             Project project = projectDao.findProject(role.getProjectId());
 <a class="jxr_linenumber" name="L149" href="#L149">149</a>             <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>
 <a class="jxr_linenumber" name="L150" href="#L150">150</a>                 &amp;&amp; project.getRoleByName(role.getName()) == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L151" href="#L151">151</a>                 project.getRoles().add(role);
@@ -282,7 +282,7 @@
 <a class="jxr_linenumber" name="L274" href="#L274">274</a> <em class="jxr_javadoccomment">     * @param level    the level</em>
 <a class="jxr_linenumber" name="L275" href="#L275">275</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setInvolvementLevelForMember(Long cardId, Long memberId, <a name="InvolvementLevel" href="../../../../../../ch/colabproject/colab/api/model/team/acl/InvolvementLevel.html#InvolvementLevel">InvolvementLevel</a> level) {
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>         Card card = cardDao.getCard(cardId);
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>         Card card = cardDao.findCard(cardId);
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>         TeamMember member = teamDao.findTeamMember(memberId);
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>         <strong class="jxr_keyword">if</strong> (card != <strong class="jxr_keyword">null</strong> &amp;&amp; member != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>             AccessControl ac = card.getAcByMember(member);
@@ -316,7 +316,7 @@
 <a class="jxr_linenumber" name="L308" href="#L308">308</a> <em class="jxr_javadoccomment">     * @param level  the level</em>
 <a class="jxr_linenumber" name="L309" href="#L309">309</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L310" href="#L310">310</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> setInvolvementLevelForRole(Long cardId, Long roleId, <a name="InvolvementLevel" href="../../../../../../ch/colabproject/colab/api/model/team/acl/InvolvementLevel.html#InvolvementLevel">InvolvementLevel</a> level) {
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>         Card card = cardDao.getCard(cardId);
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>         Card card = cardDao.findCard(cardId);
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>         TeamRole role = teamDao.findRole(roleId);
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>         <strong class="jxr_keyword">if</strong> (card != <strong class="jxr_keyword">null</strong> &amp;&amp; role != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>             AccessControl ac = card.getAcByRole(role);
@@ -424,7 +424,7 @@
 <a class="jxr_linenumber" name="L416" href="#L416">416</a> <em class="jxr_javadoccomment">     * @throws HttpErrorMessage 404 if the card does not exist</em>
 <a class="jxr_linenumber" name="L417" href="#L417">417</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L418" href="#L418">418</a>     <strong class="jxr_keyword">public</strong> List&lt;AccessControl&gt; getAccessControlList(Long cardId) {
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>         Card card = cardDao.getCard(cardId);
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>         Card card = cardDao.findCard(cardId);
 <a class="jxr_linenumber" name="L420" href="#L420">420</a>         <strong class="jxr_keyword">if</strong> (card != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L421" href="#L421">421</a>             <strong class="jxr_keyword">return</strong> card.getAccessControlList();
 <a class="jxr_linenumber" name="L422" href="#L422">422</a>         } <strong class="jxr_keyword">else</strong> {

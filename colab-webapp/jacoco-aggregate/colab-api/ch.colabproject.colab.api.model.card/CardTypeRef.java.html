@@ -29,10 +29,9 @@ import javax.persistence.Transient;
         @Index(columnList = &quot;target_id&quot;),
     }
 )
-@NamedQuery(name = &quot;CardTypeRef.getTargetIds&quot;,
-    query = &quot;SELECT ctr.target.id FROM CardTypeRef ctr&quot;
-        + &quot; WHERE ctr.id IN :initIds&quot;)
-<span class="nc" id="L35">public class CardTypeRef extends AbstractCardType {</span>
+@NamedQuery(name = &quot;CardTypeRef.findTargetIds&quot;,
+    query = &quot;SELECT ctr.target.id FROM CardTypeRef ctr WHERE ctr.id IN :initIds&quot;)
+<span class="nc" id="L34">public class CardTypeRef extends AbstractCardType {</span>
 
     /**
      * Serial version UID
@@ -66,18 +65,19 @@ import javax.persistence.Transient;
      * @return the referenced type
      */
     public AbstractCardType getTarget() {
-<span class="nc" id="L69">        return this.target;</span>
+<span class="nc" id="L68">        return this.target;</span>
     }
 
     /**
      * @param target the card type (or card type reference) this reference aims at
      */
     public void setTarget(AbstractCardType target) {
-<span class="nc" id="L76">        this.target = target;</span>
-<span class="nc" id="L77">    }</span>
+<span class="nc" id="L75">        this.target = target;</span>
+<span class="nc" id="L76">    }</span>
 
     /**
-     * get the id of the card type (or card type reference) this reference aims at. To be sent to client
+     * get the id of the card type (or card type reference) this reference aims at. To be sent to
+     * client
      *
      * @return id of the abstractCardType or null
      */

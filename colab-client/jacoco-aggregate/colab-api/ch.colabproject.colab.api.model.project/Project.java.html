@@ -40,7 +40,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * C
  * A project as persisted in database
  *
  * @author maxence
@@ -50,12 +49,13 @@ import javax.persistence.Table;
 @Table(
     indexes = {
         @Index(columnList = &quot;rootcard_id&quot;),
-    })
+    }
+)
 @NamedQuery(name = &quot;Project.findAll&quot;,
     query = &quot;SELECT p FROM Project p&quot;)
-@NamedQuery(name = &quot;Project.findProjectsByTeamMemberUser&quot;,
+@NamedQuery(name = &quot;Project.findByTeamMemberUser&quot;,
     query = &quot;SELECT p FROM Project p JOIN p.teamMembers members WHERE members.user.id = :userId&quot;)
-@NamedQuery(name = &quot;Project.findIdsOfProjectByTeamMemberUser&quot;,
+@NamedQuery(name = &quot;Project.findIdsByTeamMemberUser&quot;,
     query = &quot;SELECT p.id FROM Project p JOIN p.teamMembers m WHERE m.user.id = :userId&quot;)
 <span class="nc" id="L60">public class Project implements ColabEntity, WithWebsocketChannels {</span>
 

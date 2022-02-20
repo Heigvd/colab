@@ -65,12 +65,12 @@ import org.slf4j.LoggerFactory;
         }
 
         // fetch all objects and so ensure that they exist
-<span class="nc" id="L68">        Card previousCard = cardDao.getCard(link.getPreviousCardId());</span>
+<span class="nc" id="L68">        Card previousCard = cardDao.findCard(link.getPreviousCardId());</span>
 <span class="nc bnc" id="L69" title="All 2 branches missed.">        if (previousCard == null) {</span>
 <span class="nc" id="L70">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
 
-<span class="nc" id="L73">        Card nextCard = cardDao.getCard(link.getNextCardId());</span>
+<span class="nc" id="L73">        Card nextCard = cardDao.findCard(link.getNextCardId());</span>
 <span class="nc bnc" id="L74" title="All 2 branches missed.">        if (nextCard == null) {</span>
 <span class="nc" id="L75">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
@@ -173,12 +173,12 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L173">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L176">        Card oldPreviousCard = cardDao.getCard(link.getPreviousCardId());</span>
+<span class="nc" id="L176">        Card oldPreviousCard = cardDao.findCard(link.getPreviousCardId());</span>
 <span class="nc bnc" id="L177" title="All 2 branches missed.">        if (oldPreviousCard == null) {</span>
 <span class="nc" id="L178">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L181">        Card newPreviousCard = cardDao.getCard(newPreviousCardId);</span>
+<span class="nc" id="L181">        Card newPreviousCard = cardDao.findCard(newPreviousCardId);</span>
 <span class="nc bnc" id="L182" title="All 2 branches missed.">        if (newPreviousCard == null) {</span>
 <span class="nc" id="L183">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }
@@ -218,12 +218,12 @@ import org.slf4j.LoggerFactory;
 <span class="nc" id="L218">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L221">        Card oldNext = cardDao.getCard(link.getNextCardId());</span>
+<span class="nc" id="L221">        Card oldNext = cardDao.findCard(link.getNextCardId());</span>
 <span class="nc bnc" id="L222" title="All 2 branches missed.">        if (oldNext == null) {</span>
 <span class="nc" id="L223">            throw HttpErrorMessage.dataIntegrityFailure();</span>
         }
 
-<span class="nc" id="L226">        Card newNext = cardDao.getCard(newNextCardId);</span>
+<span class="nc" id="L226">        Card newNext = cardDao.findCard(newNextCardId);</span>
 <span class="nc bnc" id="L227" title="All 2 branches missed.">        if (newNext == null) {</span>
 <span class="nc" id="L228">            throw HttpErrorMessage.relatedObjectNotFoundError();</span>
         }

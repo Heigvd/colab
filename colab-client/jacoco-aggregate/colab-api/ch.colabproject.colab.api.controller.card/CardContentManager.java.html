@@ -93,7 +93,7 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if the card content was not found
      */
     public CardContent assertAndGetCardContent(Long cardContentId) {
-<span class="nc" id="L96">        CardContent cardContent = cardContentDao.getCardContent(cardContentId);</span>
+<span class="nc" id="L96">        CardContent cardContent = cardContentDao.findCardContent(cardContentId);</span>
 
 <span class="nc bnc" id="L98" title="All 2 branches missed.">        if (cardContent == null) {</span>
 <span class="nc" id="L99">            logger.error(&quot;card content #{} not found&quot;, cardContentId);</span>
@@ -125,7 +125,7 @@ import org.slf4j.LoggerFactory;
 
 <span class="nc" id="L126">        ResourceReferenceSpreadingHelper.extractReferencesFromUp(cardContent);</span>
 
-<span class="nc" id="L128">        return cardContentDao.createCardContent(cardContent);</span>
+<span class="nc" id="L128">        return cardContentDao.persistCardContent(cardContent);</span>
     }
 
     /**

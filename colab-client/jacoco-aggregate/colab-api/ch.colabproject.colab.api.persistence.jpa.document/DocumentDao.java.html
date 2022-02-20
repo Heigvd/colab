@@ -9,12 +9,10 @@ package ch.colabproject.colab.api.persistence.jpa.document;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.document.TextDataBlock;
-import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +23,10 @@ import org.slf4j.LoggerFactory;
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L28">public class DocumentDao {</span>
+<span class="nc" id="L26">public class DocumentDao {</span>
 
     /** logger */
-<span class="nc" id="L31">    private static final Logger logger = LoggerFactory.getLogger(DocumentDao.class);</span>
+<span class="nc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(DocumentDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -37,27 +35,16 @@ import org.slf4j.LoggerFactory;
     private EntityManager em;
 
     /**
-     * Get the list of all documents
-     *
-     * @return the list of all documents
-     */
-    public List&lt;Document&gt; findAllDocuments() {
-<span class="nc" id="L45">        logger.debug(&quot;find all documents&quot;);</span>
-<span class="nc" id="L46">        TypedQuery&lt;Document&gt; query = em.createNamedQuery(&quot;Document.findAll&quot;, Document.class);</span>
-<span class="nc" id="L47">        return query.getResultList();</span>
-    }
-
-    /**
      * @param id the id of the document to fetch
      *
      * @return the document with the given id or null if such a document does not exists
      */
     public Document findDocument(Long id) {
         try {
-<span class="nc" id="L57">            logger.debug(&quot;find document #{}&quot;, id);</span>
-<span class="nc" id="L58">            return em.find(Document.class, id);</span>
-<span class="nc" id="L59">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L60">            return null;</span>
+<span class="nc" id="L44">            logger.debug(&quot;find document #{}&quot;, id);</span>
+<span class="nc" id="L45">            return em.find(Document.class, id);</span>
+<span class="nc" id="L46">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L47">            return null;</span>
         }
     }
 
@@ -68,10 +55,10 @@ import org.slf4j.LoggerFactory;
      */
     public TextDataBlock findTextDataBlock(Long id) {
         try {
-<span class="nc" id="L71">            logger.debug(&quot;find text data block #{}&quot;, id);</span>
-<span class="nc" id="L72">            return em.find(TextDataBlock.class, id);</span>
-<span class="nc" id="L73">        } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L74">            return null;</span>
+<span class="nc" id="L58">            logger.debug(&quot;find text data block #{}&quot;, id);</span>
+<span class="nc" id="L59">            return em.find(TextDataBlock.class, id);</span>
+<span class="nc" id="L60">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L61">            return null;</span>
         }
     }
 
@@ -85,10 +72,10 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the document failed
      */
     public Document updateDocument(Document document) throws ColabMergeException {
-<span class="nc" id="L88">        logger.debug(&quot;update document {}&quot;, document);</span>
-<span class="nc" id="L89">        Document mDocument = this.findDocument(document.getId());</span>
-<span class="nc" id="L90">        mDocument.merge(document);</span>
-<span class="nc" id="L91">        return mDocument;</span>
+<span class="nc" id="L75">        logger.debug(&quot;update document {}&quot;, document);</span>
+<span class="nc" id="L76">        Document mDocument = this.findDocument(document.getId());</span>
+<span class="nc" id="L77">        mDocument.merge(document);</span>
+<span class="nc" id="L78">        return mDocument;</span>
     }
 
     /**
@@ -101,10 +88,10 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the document failed
      */
     public TextDataBlock updateTextDataBlock(TextDataBlock document) throws ColabMergeException {
-<span class="nc" id="L104">        logger.debug(&quot;update text data block {}&quot;, document);</span>
-<span class="nc" id="L105">        TextDataBlock mDocument = this.findTextDataBlock(document.getId());</span>
-<span class="nc" id="L106">        mDocument.merge(document);</span>
-<span class="nc" id="L107">        return mDocument;</span>
+<span class="nc" id="L91">        logger.debug(&quot;update text data block {}&quot;, document);</span>
+<span class="nc" id="L92">        TextDataBlock mDocument = this.findTextDataBlock(document.getId());</span>
+<span class="nc" id="L93">        mDocument.merge(document);</span>
+<span class="nc" id="L94">        return mDocument;</span>
     }
 
     /**
@@ -115,9 +102,9 @@ import org.slf4j.LoggerFactory;
      * @return the new persisted document
      */
     public Document persistDocument(Document document) {
-<span class="nc" id="L118">        logger.debug(&quot;persist document {}&quot;, document);</span>
-<span class="nc" id="L119">        em.persist(document);</span>
-<span class="nc" id="L120">        return document;</span>
+<span class="nc" id="L105">        logger.debug(&quot;persist document {}&quot;, document);</span>
+<span class="nc" id="L106">        em.persist(document);</span>
+<span class="nc" id="L107">        return document;</span>
     }
 
     /**
@@ -128,11 +115,11 @@ import org.slf4j.LoggerFactory;
      * @return just deleted document
      */
     public Document deleteDocument(Long id) {
-<span class="nc" id="L131">        logger.debug(&quot;delete document #{}&quot;, id);</span>
+<span class="nc" id="L118">        logger.debug(&quot;delete document #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="nc" id="L133">        Document document = this.findDocument(id);</span>
-<span class="nc" id="L134">        em.remove(document);</span>
-<span class="nc" id="L135">        return document;</span>
+<span class="nc" id="L120">        Document document = this.findDocument(id);</span>
+<span class="nc" id="L121">        em.remove(document);</span>
+<span class="nc" id="L122">        return document;</span>
     }
 
 }

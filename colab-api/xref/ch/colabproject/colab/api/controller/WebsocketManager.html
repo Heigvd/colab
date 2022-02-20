@@ -302,7 +302,7 @@
 <a class="jxr_linenumber" name="L294" href="#L294">294</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L295" href="#L295">295</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> subscribeToProjectChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId, Long projectId) {
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>         logger.debug(<span class="jxr_string">"Session {} want to subscribe to Project#{}"</span>, sessionId, projectId);
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>         Project project = projectDao.getProject(projectId);
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>         Project project = projectDao.findProject(projectId);
 <a class="jxr_linenumber" name="L298" href="#L298">298</a>         <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L299" href="#L299">299</a>             securityManager.assertConditionTx(<strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserMemberOfProject(project),
 <a class="jxr_linenumber" name="L300" href="#L300">300</a>                 <span class="jxr_string">"Subscribe to project channel: Permision denied"</span>);
@@ -328,7 +328,7 @@
 <a class="jxr_linenumber" name="L320" href="#L320">320</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> unsubscribeFromProjectChannel(<a name="WsSessionIdentifier" href="../../../../../ch/colabproject/colab/api/ws/message/WsSessionIdentifier.html#WsSessionIdentifier">WsSessionIdentifier</a> sessionId, Long projectId) {
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>         logger.debug(<span class="jxr_string">"Session {} want to unsubscribe from Project#{}"</span>, sessionId, projectId);
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>         Project project = projectDao.getProject(projectId);
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>         Project project = projectDao.findProject(projectId);
 <a class="jxr_linenumber" name="L324" href="#L324">324</a>         <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L325" href="#L325">325</a>             securityManager.assertConditionTx(<strong class="jxr_keyword">new</strong> Conditions.IsCurrentUserMemberOfProject(project),
 <a class="jxr_linenumber" name="L326" href="#L326">326</a>                 <span class="jxr_string">"Subscribe to project channel: Permision denied"</span>);
@@ -540,7 +540,7 @@
 <a class="jxr_linenumber" name="L532" href="#L532">532</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L533" href="#L533">533</a>     <strong class="jxr_keyword">private</strong> <a name="WebsocketEffectiveChannel" href="../../../../../ch/colabproject/colab/api/ws/channel/WebsocketEffectiveChannel.html#WebsocketEffectiveChannel">WebsocketEffectiveChannel</a> getChannel(<a name="SubscriptionRequest" href="../../../../../ch/colabproject/colab/api/controller/SubscriptionRequest.html#SubscriptionRequest">SubscriptionRequest</a> request) {
 <a class="jxr_linenumber" name="L534" href="#L534">534</a>         <strong class="jxr_keyword">if</strong> (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {
-<a class="jxr_linenumber" name="L535" href="#L535">535</a>             Project project = projectDao.getProject(request.getChannelId());
+<a class="jxr_linenumber" name="L535" href="#L535">535</a>             Project project = projectDao.findProject(request.getChannelId());
 <a class="jxr_linenumber" name="L536" href="#L536">536</a>             <strong class="jxr_keyword">if</strong> (project != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L537" href="#L537">537</a>                 <strong class="jxr_keyword">return</strong> ProjectContentChannel.build(project);
 <a class="jxr_linenumber" name="L538" href="#L538">538</a>             }

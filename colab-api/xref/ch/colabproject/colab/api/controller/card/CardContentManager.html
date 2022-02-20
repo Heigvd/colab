@@ -101,7 +101,7 @@
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>  <em class="jxr_javadoccomment">     * @throws HttpErrorMessage if the card content was not found</em>
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      <strong class="jxr_keyword">public</strong> CardContent assertAndGetCardContent(Long cardContentId) {
-<a class="jxr_linenumber" name="L96" href="#L96">96</a>          CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>          CardContent cardContent = cardContentDao.findCardContent(cardContentId);
 <a class="jxr_linenumber" name="L97" href="#L97">97</a>  
 <a class="jxr_linenumber" name="L98" href="#L98">98</a>          <strong class="jxr_keyword">if</strong> (cardContent == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L99" href="#L99">99</a>              logger.error(<span class="jxr_string">"card content #{} not found"</span>, cardContentId);
@@ -133,7 +133,7 @@
 <a class="jxr_linenumber" name="L125" href="#L125">125</a> 
 <a class="jxr_linenumber" name="L126" href="#L126">126</a>         ResourceReferenceSpreadingHelper.extractReferencesFromUp(cardContent);
 <a class="jxr_linenumber" name="L127" href="#L127">127</a> 
-<a class="jxr_linenumber" name="L128" href="#L128">128</a>         <strong class="jxr_keyword">return</strong> cardContentDao.createCardContent(cardContent);
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>         <strong class="jxr_keyword">return</strong> cardContentDao.persistCardContent(cardContent);
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>     }
 <a class="jxr_linenumber" name="L130" href="#L130">130</a> 
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>     <em class="jxr_javadoccomment">/**</em>

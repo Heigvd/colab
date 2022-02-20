@@ -240,7 +240,7 @@
 <a class="jxr_linenumber" name="L232" href="#L232">232</a> <em class="jxr_javadoccomment">     * @throws RepositoryException in case of a JCR issue</em>
 <a class="jxr_linenumber" name="L233" href="#L233">233</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L234" href="#L234">234</a>     <strong class="jxr_keyword">public</strong> Long getUsage(Long projectId) <strong class="jxr_keyword">throws</strong> RepositoryException {
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>         Project project = projectDao.getProject(projectId);
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>         Project project = projectDao.findProject(projectId);
 <a class="jxr_linenumber" name="L236" href="#L236">236</a>         <strong class="jxr_keyword">return</strong> jcrManager.computeMemoryUsage(project);
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>     }
 <a class="jxr_linenumber" name="L238" href="#L238">238</a> }

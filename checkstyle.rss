@@ -27,7 +27,7 @@ under the License.
     <item>
       <title>File: 194,
              Errors: 0,
-             Warnings: 199,
+             Warnings: 196,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -44,6 +44,20 @@ under the License.
             </tr>
           </thead>
           <tbody>
+                          <tr>
+                <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.jpa.team.TeamDao.java">ch/colabproject/colab/api/persistence/jpa/team/TeamDao.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
                           <tr>
                 <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.model.user.AuthInfo.java">ch/colabproject/colab/api/model/user/AuthInfo.java</a>
@@ -934,7 +948,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   0
@@ -1018,7 +1032,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   0
@@ -1522,7 +1536,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
                   0
@@ -1537,20 +1551,6 @@ under the License.
                 </td>
                 <td>
                   1
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.team.TeamDao.java">ch/colabproject/colab/api/persistence/team/TeamDao.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  4
                 </td>
                 <td>
                   0
@@ -2076,6 +2076,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.jpa.document.ResourceDao.java">ch/colabproject/colab/api/persistence/jpa/document/ResourceDao.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.ws.channel.BlockChannel.java">ch/colabproject/colab/api/ws/channel/BlockChannel.java</a>
                 </td>
                 <td>
@@ -2559,20 +2573,6 @@ under the License.
                 </td>
                 <td>
                   0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.persistence.document.ResourceDao.java">ch/colabproject/colab/api/persistence/document/ResourceDao.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  2
                 </td>
                 <td>
                   0

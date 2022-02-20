@@ -8,26 +8,24 @@ package ch.colabproject.colab.api.persistence.jpa.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.CardContent;
-import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Card persistence
+ * Card content persistence
  *
  * @author sandra
  */
 @Stateless
 @LocalBean
-<span class="nc" id="L27">public class CardContentDao {</span>
+<span class="nc" id="L25">public class CardContentDao {</span>
 
     /** logger */
-<span class="nc" id="L30">    private static final Logger logger = LoggerFactory.getLogger(CardContentDao.class);</span>
+<span class="nc" id="L28">    private static final Logger logger = LoggerFactory.getLogger(CardContentDao.class);</span>
 
     /**
      * Access to the persistence unit
@@ -36,39 +34,13 @@ import org.slf4j.LoggerFactory;
     private EntityManager em;
 
     /**
-     * Get the list of all card contents
-     *
-     * @return list of all card contents
-     */
-    // FIXME sandra - Replace by something useful
-    public List&lt;CardContent&gt; getAllCardContent() {
-<span class="nc" id="L45">        logger.debug(&quot;get all card contents&quot;);</span>
-<span class="nc" id="L46">        TypedQuery&lt;CardContent&gt; query = em.createNamedQuery(&quot;CardContent.findAll&quot;,</span>
-            CardContent.class);
-<span class="nc" id="L48">        return query.getResultList();</span>
-    }
-
-    /**
      * @param id id of the card content to fetch
      *
      * @return the card content with the given id or null if such a card content does not exists
      */
-    public CardContent getCardContent(Long id) {
-<span class="nc" id="L57">        logger.debug(&quot;get card content #{}&quot;, id);</span>
-<span class="nc" id="L58">        return em.find(CardContent.class, id);</span>
-    }
-
-    /**
-     * Persist a brand new card content to database
-     *
-     * @param cardContent new card content to persist
-     *
-     * @return the new persisted card content
-     */
-    public CardContent createCardContent(CardContent cardContent) {
-<span class="nc" id="L69">        logger.debug(&quot;create card content {}&quot;, cardContent);</span>
-<span class="nc" id="L70">        em.persist(cardContent);</span>
-<span class="nc" id="L71">        return cardContent;</span>
+    public CardContent findCardContent(Long id) {
+<span class="nc" id="L42">        logger.debug(&quot;get card content #{}&quot;, id);</span>
+<span class="nc" id="L43">        return em.find(CardContent.class, id);</span>
     }
 
     /**
@@ -81,12 +53,23 @@ import org.slf4j.LoggerFactory;
      * @throws ColabMergeException if updating the card content failed
      */
     public CardContent updateCardContent(CardContent cardContent) throws ColabMergeException {
-<span class="nc" id="L84">        logger.debug(&quot;update card content {}&quot;, cardContent);</span>
-<span class="nc" id="L85">        CardContent mCardContent = this.getCardContent(cardContent.getId());</span>
+<span class="nc" id="L56">        logger.debug(&quot;update card content {}&quot;, cardContent);</span>
+<span class="nc" id="L57">        CardContent mCardContent = this.findCardContent(cardContent.getId());</span>
+<span class="nc" id="L58">        mCardContent.merge(cardContent);</span>
+<span class="nc" id="L59">        return mCardContent;</span>
+    }
 
-<span class="nc" id="L87">        mCardContent.merge(cardContent);</span>
-
-<span class="nc" id="L89">        return mCardContent;</span>
+    /**
+     * Persist a brand new card content to database
+     *
+     * @param cardContent new card content to persist
+     *
+     * @return the new persisted card content
+     */
+    public CardContent persistCardContent(CardContent cardContent) {
+<span class="nc" id="L70">        logger.debug(&quot;persist card content {}&quot;, cardContent);</span>
+<span class="nc" id="L71">        em.persist(cardContent);</span>
+<span class="nc" id="L72">        return cardContent;</span>
     }
 
     /**
@@ -97,11 +80,11 @@ import org.slf4j.LoggerFactory;
      * @return just deleted card content
      */
     public CardContent deleteCardContent(Long id) {
-<span class="nc" id="L100">        logger.debug(&quot;delete card content #{}&quot;, id);</span>
+<span class="nc" id="L83">        logger.debug(&quot;delete card content #{}&quot;, id);</span>
         // TODO: move to recycle bin first
-<span class="nc" id="L102">        CardContent cardContent = this.getCardContent(id);</span>
-<span class="nc" id="L103">        em.remove(cardContent);</span>
-<span class="nc" id="L104">        return cardContent;</span>
+<span class="nc" id="L85">        CardContent cardContent = this.findCardContent(id);</span>
+<span class="nc" id="L86">        em.remove(cardContent);</span>
+<span class="nc" id="L87">        return cardContent;</span>
     }
 
 }

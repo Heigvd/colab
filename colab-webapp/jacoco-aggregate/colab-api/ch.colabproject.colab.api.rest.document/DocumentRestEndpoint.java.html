@@ -11,7 +11,6 @@ import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
-import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
@@ -34,10 +33,10 @@ import org.slf4j.LoggerFactory;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @AuthenticationRequired
-<span class="nc" id="L37">public class DocumentRestEndpoint {</span>
+<span class="nc" id="L36">public class DocumentRestEndpoint {</span>
 
     /** logger */
-<span class="nc" id="L40">    private static final Logger logger = LoggerFactory.getLogger(DocumentRestEndpoint.class);</span>
+<span class="nc" id="L39">    private static final Logger logger = LoggerFactory.getLogger(DocumentRestEndpoint.class);</span>
 
     // *********************************************************************************************
     // injections
@@ -60,18 +59,6 @@ import org.slf4j.LoggerFactory;
     // *********************************************************************************************
 
     /**
-     * Retrieve the list of all documents. This is available to admin only
-     *
-     * @return all known documents
-     */
-    @GET
-    @AdminResource
-    public List&lt;Document&gt; getAllDocuments() {
-<span class="nc" id="L70">        logger.debug(&quot;get all documents&quot;);</span>
-<span class="nc" id="L71">        return documentDao.findAllDocuments();</span>
-    }
-
-    /**
      * Get the document identified by the given id
      *
      * @param id id of the document to fetch
@@ -81,8 +68,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}&quot;)
     public Document getDocument(@PathParam(&quot;id&quot;) Long id) {
-<span class="nc" id="L84">        logger.debug(&quot;get document #{}&quot;, id);</span>
-<span class="nc" id="L85">        return documentDao.findDocument(id);</span>
+<span class="nc" id="L71">        logger.debug(&quot;get document #{}&quot;, id);</span>
+<span class="nc" id="L72">        return documentDao.findDocument(id);</span>
     }
 
     /**
@@ -94,9 +81,9 @@ import org.slf4j.LoggerFactory;
      */
     @PUT
     public void updateDocument(Document document) throws ColabMergeException {
-<span class="nc" id="L97">        logger.debug(&quot;update document {}&quot;, document);</span>
-<span class="nc" id="L98">        documentDao.updateDocument(document);</span>
-<span class="nc" id="L99">    }</span>
+<span class="nc" id="L84">        logger.debug(&quot;update document {}&quot;, document);</span>
+<span class="nc" id="L85">        documentDao.updateDocument(document);</span>
+<span class="nc" id="L86">    }</span>
 
     // *********************************************************************************************
     //
@@ -112,8 +99,8 @@ import org.slf4j.LoggerFactory;
     @GET
     @Path(&quot;{id}/StickyNoteLinks&quot;)
     public List&lt;StickyNoteLink&gt; getStickyNoteLinksAsSrc(@PathParam(&quot;id&quot;) Long documentId) {
-<span class="nc" id="L115">        logger.debug(&quot;Get sticky note links where document #{} is the source&quot;, documentId);</span>
-<span class="nc" id="L116">        return documentManager.getStickyNoteLinkAsSrc(documentId);</span>
+<span class="nc" id="L102">        logger.debug(&quot;Get sticky note links where document #{} is the source&quot;, documentId);</span>
+<span class="nc" id="L103">        return documentManager.getStickyNoteLinkAsSrc(documentId);</span>
     }
 
 }

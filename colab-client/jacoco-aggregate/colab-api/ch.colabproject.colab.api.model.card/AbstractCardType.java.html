@@ -57,17 +57,17 @@ import javax.persistence.Transient;
         @Index(columnList = &quot;project_id&quot;),
     }
 )
-@NamedQuery(name = &quot;AbstractCardType.findPublishedFromProjects&quot;,
-    query = &quot;SELECT ct FROM AbstractCardType ct &quot;
-        + &quot;JOIN ct.project proj &quot;
-        + &quot;JOIN proj.teamMembers memb &quot;
-        + &quot;WHERE ct.published = TRUE AND memb.user.id = :userId&quot;)
-@NamedQuery(name = &quot;AbstractCardType.findIdOfUserProjectDirectCardType&quot;,
+@NamedQuery(name = &quot;AbstractCardType.findPublishedByProjectTeamMemberUser&quot;,
+    query = &quot;SELECT act FROM AbstractCardType act&quot;
+        + &quot; JOIN act.project proj&quot;
+        + &quot; JOIN proj.teamMembers memb&quot;
+        + &quot; WHERE act.published = TRUE AND memb.user.id = :userId&quot;)
+@NamedQuery(name = &quot;AbstractCardType.findIdsByProjectTeamMemberUser&quot;,
     query = &quot;SELECT act.id FROM AbstractCardType act&quot;
-        + &quot; JOIN act.project p&quot;
-        + &quot; JOIN p.teamMembers m&quot;
-        + &quot; WHERE m.user.id = :userId&quot;)
-@NamedQuery(name = &quot;AbstractCardType.getProjectId&quot;,
+        + &quot; JOIN act.project proj&quot;
+        + &quot; JOIN proj.teamMembers memb&quot;
+        + &quot; WHERE memb.user.id = :userId&quot;)
+@NamedQuery(name = &quot;AbstractCardType.findProjectId&quot;,
     query = &quot;SELECT act.project.id FROM AbstractCardType act WHERE act.id in :listId&quot;)
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)

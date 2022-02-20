@@ -10,7 +10,7 @@ import ch.colabproject.colab.api.controller.team.TeamManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.model.team.acl.InvolvementLevel;
-import ch.colabproject.colab.api.persistence.team.TeamDao;
+import ch.colabproject.colab.api.persistence.jpa.team.TeamDao;
 import ch.colabproject.colab.api.model.team.TeamRole;
 import ch.colabproject.colab.api.model.team.TeamMember;
 import ch.colabproject.colab.api.model.team.acl.HierarchicalPosition;
