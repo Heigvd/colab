@@ -5,15 +5,15 @@
  * Licensed under the MIT License
  */
 
-import {css, cx} from '@emotion/css';
-import {IconProp} from '@fortawesome/fontawesome-svg-core';
-import {faBold, faItalic, faStrikethrough, faUnderline} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { css, cx } from '@emotion/css';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { faBold, faItalic, faStrikethrough, faUnderline } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
-import {getLogger} from '../../../logger';
+import { getLogger } from '../../../logger';
 import Flex from '../../common/Flex';
-import {borderRadius} from '../../styling/style';
+import { borderRadius } from '../../styling/style';
 import {
   areAllLeafsWrappedByTag,
   boundedClosest,
@@ -22,9 +22,9 @@ import {
   sortNodes,
   toggleTag,
 } from './DomHelper';
-import {colabFlavouredMarkdown} from './MarkdownViewer';
-import domToMarkdown, {MarkdownWithSelection} from './parser/domToMarkdown';
-import markdownToDom, {convertRange, HeadingLevel} from './parser/markdownToDom';
+import { colabFlavouredMarkdown } from './MarkdownViewer';
+import domToMarkdown, { MarkdownWithSelection } from './parser/domToMarkdown';
+import markdownToDom, { convertRange, HeadingLevel } from './parser/markdownToDom';
 
 const logger = getLogger('WysiwygEditor');
 
@@ -52,21 +52,24 @@ const toggledStyle = cx(
   }),
 );
 
-const editorStyle = cx(colabFlavouredMarkdown, css({
-  backgroundColor: 'var(--bgColor)',
-  padding: '5px',
-  border: '1px solid var(--lightGray)',
-  borderRadius: borderRadius,
-  whiteSpace: 'pre-line',
-  '& .some-cursor': {
-    position: 'absolute',
-    pointerEvents: 'none',
-    userSelect: 'none',
-  },
-  ':focus': {
-    border: '1px solid blue',
-  },
-}));
+const editorStyle = cx(
+  colabFlavouredMarkdown,
+  css({
+    backgroundColor: 'var(--bgColor)',
+    padding: '5px',
+    border: '1px solid var(--lightGray)',
+    borderRadius: borderRadius,
+    whiteSpace: 'pre-line',
+    '& .some-cursor': {
+      position: 'absolute',
+      pointerEvents: 'none',
+      userSelect: 'none',
+    },
+    ':focus': {
+      border: '1px solid blue',
+    },
+  }),
+);
 
 /*************************************************
  *    TYPES
@@ -106,7 +109,7 @@ type SelectionWithModify = Selection & {
  *    COMPONENTS
  *************************************************/
 
-function ToolbarButton({toggled, onClick, icon}: ToolbarButtonProps) {
+function ToolbarButton({ toggled, onClick, icon }: ToolbarButtonProps) {
   return (
     <span
       className={cx('fa-layers', toggled ? toggledStyle : idleStyle)}
@@ -128,7 +131,7 @@ function computeSelectionOffsets(
   const anchorIndex = range.anchor || 0;
   const focusIndex = range.focus || 0;
 
-  const newRange = {...range};
+  const newRange = { ...range };
   logger.trace('Move selection ', anchorIndex, ':', focusIndex, ' according to offsets: ', offsets);
 
   for (const sKey in offsets) {
@@ -223,8 +226,8 @@ export default function WysiwygEditor({
           });
         } else if (selection.type === 'Range') {
           const nodes = sortNodes(
-            {node: selection.anchorNode!, offset: selection.anchorOffset},
-            {node: selection.focusNode!, offset: selection.focusOffset},
+            { node: selection.anchorNode!, offset: selection.anchorOffset },
+            { node: selection.focusNode!, offset: selection.focusOffset },
           );
           // Make sure carets stands in leaves
           const start = moveToLeaf(nodes.left, 'LEFT');
@@ -292,7 +295,7 @@ export default function WysiwygEditor({
   const onInputCb = React.useCallback(
     (e: React.FormEvent) => {
       if ('isComposing' in e.nativeEvent) {
-        const tE = e.nativeEvent as unknown as {isComposing: boolean};
+        const tE = e.nativeEvent as unknown as { isComposing: boolean };
         if (tE.isComposing === false) {
           onInternalChangeCb();
         }
@@ -320,18 +323,18 @@ export default function WysiwygEditor({
       const selection = window.getSelection();
       if (selection?.anchorNode != null && divRef.current) {
         if (divRef.current.contains(selection.anchorNode)) {
-          let originalCaret: {node: Node; offset: number} | null = null;
+          let originalCaret: { node: Node; offset: number } | null = null;
 
           if (selection.type === 'Caret') {
-            originalCaret = {node: selection.anchorNode, offset: selection.anchorOffset};
+            originalCaret = { node: selection.anchorNode, offset: selection.anchorOffset };
             (selection as SelectionWithModify).modify('move', 'backward', 'word');
             (selection as SelectionWithModify).modify('extend', 'forward', 'word');
           }
           if (selection.type === 'Range') {
             logger.info('Selection: ', selection);
             const nodes = sortNodes(
-              {node: selection.anchorNode, offset: selection.anchorOffset},
-              {node: selection.focusNode!, offset: selection.focusOffset},
+              { node: selection.anchorNode, offset: selection.anchorOffset },
+              { node: selection.focusNode!, offset: selection.focusOffset },
             );
             if (originalCaret) {
               selection.setPosition(originalCaret.node, originalCaret.offset);
@@ -398,20 +401,23 @@ export default function WysiwygEditor({
     [toggleBold, toggleItalic, toggleUnderline],
   );
 
-  const interceptClick = React.useCallback((e: React.UIEvent) => {
-    // click on todo-list item toggled the state
-    if (e.target instanceof Element){
-      if (e.target.tagName === 'LI'){
-        const checked = e.target.getAttribute("data-checked");
-        if (checked != null){
-          const newChecked = checked === 'TODO' ? 'DONE' : 'TODO';
-          e.target.setAttribute("data-checked", newChecked);
-          onInternalChangeCb();
+  const interceptClick = React.useCallback(
+    (e: React.UIEvent) => {
+      // click on todo-list item toggled the state
+      if (e.target instanceof Element) {
+        if (e.target.tagName === 'LI') {
+          const checked = e.target.getAttribute('data-checked');
+          if (checked != null) {
+            const newChecked = checked === 'TODO' ? 'DONE' : 'TODO';
+            e.target.setAttribute('data-checked', newChecked);
+            onInternalChangeCb();
+          }
         }
       }
-    }
-    e.target;
-  }, [onInternalChangeCb]);
+      e.target;
+    },
+    [onInternalChangeCb],
+  );
 
   return (
     <Flex className={className} direction="column" grow={1}>
