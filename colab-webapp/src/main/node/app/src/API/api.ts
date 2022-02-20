@@ -491,14 +491,6 @@ export const clearRoleInvolvement = createAsyncThunk(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * For Admins: get all cardTypes
- * DEPRECATED!!!
- */
-export const initCardTypes = createAsyncThunk('cardType/init', async () => {
-  return await restClient.CardTypeRestEndpoint.getAllCardTypes();
-});
-
-/**
  * Get project own cardTypes:
  *  - defined by the project
  *    - list of CardType
@@ -561,13 +553,6 @@ export const deleteCardType = createAsyncThunk('cardType/delete', async (cardTyp
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cards
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * @deprecated
- */
-export const initCards = createAsyncThunk('card/init', async () => {
-  return await restClient.CardRestEndpoint.getAllCards();
-});
 
 export const getCard = createAsyncThunk('card/get', async (id: number) => {
   return await restClient.CardRestEndpoint.getCard(id);

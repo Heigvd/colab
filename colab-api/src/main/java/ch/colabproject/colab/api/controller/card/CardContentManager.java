@@ -93,7 +93,7 @@ public class CardContentManager {
      * @throws HttpErrorMessage if the card content was not found
      */
     public CardContent assertAndGetCardContent(Long cardContentId) {
-        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+        CardContent cardContent = cardContentDao.findCardContent(cardContentId);
 
         if (cardContent == null) {
             logger.error("card content #{} not found", cardContentId);
@@ -125,7 +125,7 @@ public class CardContentManager {
 
         ResourceReferenceSpreadingHelper.extractReferencesFromUp(cardContent);
 
-        return cardContentDao.createCardContent(cardContent);
+        return cardContentDao.persistCardContent(cardContent);
     }
 
     /**

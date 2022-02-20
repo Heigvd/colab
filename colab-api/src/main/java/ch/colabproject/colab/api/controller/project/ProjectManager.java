@@ -99,7 +99,7 @@ public class ProjectManager {
      * @throws HttpErrorMessage if the project was not found
      */
     public Project assertAndGetProject(Long projectId) {
-        Project project = projectDao.getProject(projectId);
+        Project project = projectDao.findProject(projectId);
 
         if (project == null) {
             logger.error("project #{} not found", projectId);
@@ -117,7 +117,7 @@ public class ProjectManager {
     public List<Project> findProjectsOfCurrentUser() {
         User user = securityManager.assertAndGetCurrentUser();
 
-        List<Project> projects = projectDao.getUserProject(user.getId());
+        List<Project> projects = projectDao.findProjectsUserIsMemberOf(user.getId());
 
         logger.debug("found projects where the user {} is a team member : {}", user, projects);
 
@@ -148,7 +148,7 @@ public class ProjectManager {
                 User user = securityManager.assertAndGetCurrentUser();
                 teamManager.addMember(project, user, HierarchicalPosition.OWNER);
 
-                return projectDao.createProject(project);
+                return projectDao.persistProject(project);
             });
         } catch (RuntimeException ex) {
             throw ex;
@@ -255,7 +255,7 @@ public class ProjectManager {
     public List<Long> findIdsOfProjectsOfCurrentUser() {
         User user = securityManager.assertAndGetCurrentUser();
 
-        List<Long> projectsIds = projectDao.getIdsOfProjectUserIsMemberOf(user.getId());
+        List<Long> projectsIds = projectDao.findIdsOfProjectUserIsMemberOf(user.getId());
 
         logger.debug("found projects' id where the user {} is a team member : {}", user,
             projectsIds);

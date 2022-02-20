@@ -57,17 +57,17 @@ import javax.persistence.Transient;
         @Index(columnList = "project_id"),
     }
 )
-@NamedQuery(name = "AbstractCardType.findPublishedFromProjects",
-    query = "SELECT ct FROM AbstractCardType ct "
-        + "JOIN ct.project proj "
-        + "JOIN proj.teamMembers memb "
-        + "WHERE ct.published = TRUE AND memb.user.id = :userId")
-@NamedQuery(name = "AbstractCardType.findIdOfUserProjectDirectCardType",
+@NamedQuery(name = "AbstractCardType.findPublishedByProjectTeamMemberUser",
+    query = "SELECT act FROM AbstractCardType act"
+        + " JOIN act.project proj"
+        + " JOIN proj.teamMembers memb"
+        + " WHERE act.published = TRUE AND memb.user.id = :userId")
+@NamedQuery(name = "AbstractCardType.findIdsByProjectTeamMemberUser",
     query = "SELECT act.id FROM AbstractCardType act"
-        + " JOIN act.project p"
-        + " JOIN p.teamMembers m"
-        + " WHERE m.user.id = :userId")
-@NamedQuery(name = "AbstractCardType.getProjectId",
+        + " JOIN act.project proj"
+        + " JOIN proj.teamMembers memb"
+        + " WHERE memb.user.id = :userId")
+@NamedQuery(name = "AbstractCardType.findProjectId",
     query = "SELECT act.project.id FROM AbstractCardType act WHERE act.id in :listId")
 @Inheritance(strategy = InheritanceType.JOINED)
 @JsonbTypeDeserializer(PolymorphicDeserializer.class)

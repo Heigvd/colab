@@ -73,7 +73,7 @@ public class ProjectRestEndpoint {
     @AdminResource
     public List<Project> getAllProjects() {
         logger.debug("Get all projects");
-        return projectDao.getAllProject();
+        return projectDao.findAllProject();
     }
 
     /**
@@ -99,7 +99,7 @@ public class ProjectRestEndpoint {
     @Path("/{id}")
     public Project getProject(@PathParam("id") Long id) {
         logger.debug("Get project #{}", id);
-        return projectDao.getProject(id);
+        return projectDao.findProject(id);
     }
 
     /**

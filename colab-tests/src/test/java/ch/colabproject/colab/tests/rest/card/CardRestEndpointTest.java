@@ -102,29 +102,6 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testGetAllCards() {
-        Project project = ColabFactory.createProject(client, "testGetAllCards");
-
-        int initialSize = client.cardRestEndpoint.getAllCards().size();
-
-        Card card1 = ColabFactory.createNewCard(client, project);
-        card1.setIndex(1337);
-        card1.setColor("red");
-        client.cardRestEndpoint.updateCard(card1);
-
-        List<Card> cards = client.cardRestEndpoint.getAllCards();
-        Assertions.assertEquals(initialSize + 1, cards.size());
-
-        Card card2 = ColabFactory.createNewCard(client, project);
-        card2.setIndex(42);
-        card2.setColor("yellow");
-        client.cardRestEndpoint.updateCard(card2);
-
-        cards = client.cardRestEndpoint.getAllCards();
-        Assertions.assertEquals(initialSize + 2, cards.size());
-    }
-
-    @Test
     public void testDeleteCard() {
         Project project = ColabFactory.createProject(client, "testDeleteCard");
 

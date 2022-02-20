@@ -87,7 +87,7 @@ public class CardTypeManager {
      * @throws HttpErrorMessage if the card type (or reference) was not found
      */
     public AbstractCardType assertAndGetCardTypeOrRef(Long cardTypeOrRefId) {
-        AbstractCardType cardTypeOrRef = cardTypeDao.getAbstractCardType(cardTypeOrRefId);
+        AbstractCardType cardTypeOrRef = cardTypeDao.findAbstractCardType(cardTypeOrRefId);
 
         if (cardTypeOrRef == null) {
             logger.error("card type or reference #{} not found", cardTypeOrRefId);
@@ -113,8 +113,9 @@ public class CardTypeManager {
      *
      * @return set of concrete types and all transitive ref to reach them
      */
-    public Set<AbstractCardType> getExpandedPublishedProjectTypes() {
-        return this.expand(cardTypeDao.getPublishedProjectsCardType());
+    public Set<AbstractCardType> getCurrentUserExpandedPublishedProjectTypes() {
+        User user = securityManager.assertAndGetCurrentUser();
+        return this.expand(cardTypeDao.findPublishedProjectCardTypes(user.getId()));
     }
 
     /**
@@ -168,7 +169,7 @@ public class CardTypeManager {
             purposeTextDataBlock.setPurposingCardType(cardType);
         }
 
-        return cardTypeDao.createCardType(cardType);
+        return cardTypeDao.persistAbstractCardType(cardType);
     }
 
     /**
@@ -292,7 +293,7 @@ public class CardTypeManager {
 
         ResourceReferenceSpreadingHelper.extractReferencesFromUp(ref);
 
-        return cardTypeDao.createCardType(ref);
+        return cardTypeDao.persistAbstractCardType(ref);
     }
 
     /**
@@ -338,7 +339,7 @@ public class CardTypeManager {
      * @return the ids of the matching card types
      */
     public List<Long> findGlobalPublishedCardTypeIds() {
-        return cardTypeDao.getPublishedGlobalCardTypeIds();
+        return cardTypeDao.findIdsOfPublishedGlobalCardTypes();
     }
 
     /**
@@ -363,7 +364,7 @@ public class CardTypeManager {
     private List<Long> findCurrentUserDirectProjectsCardTypesIds() {
         User user = securityManager.assertAndGetCurrentUser();
 
-        List<Long> cardTypeOrRefIds = cardTypeDao.getUserProjectCardTypeIds(user.getId());
+        List<Long> cardTypeOrRefIds = cardTypeDao.findIdsOfProjectCardType(user.getId());
 
         logger.debug("found direct project's card types' id : {} ", cardTypeOrRefIds);
 
@@ -413,7 +414,7 @@ public class CardTypeManager {
      * @return the ids of the matching card types or references
      */
     private List<Long> findDirectTargets(List<Long> cardTypeOrRefIds) {
-        List<Long> result = cardTypeDao.getTargetIdsOf(cardTypeOrRefIds);
+        List<Long> result = cardTypeDao.findTargetIdsOf(cardTypeOrRefIds);
         logger.debug("found targets : {} ", result);
         return result;
     }
@@ -426,7 +427,7 @@ public class CardTypeManager {
      * @return the ids of the matching projects
      */
     public List<Long> findProjectIdsFromCardTypeIds(List<Long> cardTypeOrRefIds) {
-        return cardTypeDao.getProjectIdsOf(cardTypeOrRefIds);
+        return cardTypeDao.findProjectIdsOf(cardTypeOrRefIds);
     }
 
     // *********************************************************************************************

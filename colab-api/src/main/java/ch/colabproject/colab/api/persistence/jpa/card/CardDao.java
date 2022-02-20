@@ -8,12 +8,10 @@ package ch.colabproject.colab.api.persistence.jpa.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.card.Card;
-import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,38 +34,13 @@ public class CardDao {
     private EntityManager em;
 
     /**
-     * Get the list of all cards
-     *
-     * @return list of all cards
-     */
-    // FIXME sandra - See if really needed
-    public List<Card> getAllCard() {
-        logger.debug("get all cards");
-        TypedQuery<Card> query = em.createNamedQuery("Card.findAll", Card.class);
-        return query.getResultList();
-    }
-
-    /**
      * @param id id of the card to fetch
      *
      * @return the card with the given id or null if such a card does not exists
      */
-    public Card getCard(Long id) {
+    public Card findCard(Long id) {
         logger.debug("get card #{}", id);
         return em.find(Card.class, id);
-    }
-
-    /**
-     * Persist a brand new card to database
-     *
-     * @param card new card to persist
-     *
-     * @return the new persisted card
-     */
-    public Card createCard(Card card) {
-        logger.debug("create card {}", card);
-        em.persist(card);
-        return card;
     }
 
     /**
@@ -81,11 +54,22 @@ public class CardDao {
      */
     public Card updateCard(Card card) throws ColabMergeException {
         logger.debug("update card {}", card);
-        Card mCard = this.getCard(card.getId());
-
+        Card mCard = this.findCard(card.getId());
         mCard.merge(card);
-
         return mCard;
+    }
+
+    /**
+     * Persist a brand new card to database
+     *
+     * @param card new card to persist
+     *
+     * @return the new persisted card
+     */
+    public Card persistCard(Card card) {
+        logger.debug("persist card {}", card);
+        em.persist(card);
+        return card;
     }
 
     /**
@@ -98,7 +82,7 @@ public class CardDao {
     public Card deleteCard(Long id) {
         logger.debug("delete card #{}", id);
         // TODO: move to recycle bin first
-        Card card = this.getCard(id);
+        Card card = this.findCard(id);
         em.remove(card);
         return card;
     }

@@ -29,9 +29,8 @@ import javax.persistence.Transient;
         @Index(columnList = "target_id"),
     }
 )
-@NamedQuery(name = "CardTypeRef.getTargetIds",
-    query = "SELECT ctr.target.id FROM CardTypeRef ctr"
-        + " WHERE ctr.id IN :initIds")
+@NamedQuery(name = "CardTypeRef.findTargetIds",
+    query = "SELECT ctr.target.id FROM CardTypeRef ctr WHERE ctr.id IN :initIds")
 public class CardTypeRef extends AbstractCardType {
 
     /**
@@ -77,7 +76,8 @@ public class CardTypeRef extends AbstractCardType {
     }
 
     /**
-     * get the id of the card type (or card type reference) this reference aims at. To be sent to client
+     * get the id of the card type (or card type reference) this reference aims at. To be sent to
+     * client
      *
      * @return id of the abstractCardType or null
      */

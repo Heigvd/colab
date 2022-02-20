@@ -13,7 +13,6 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
-import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
@@ -56,21 +55,6 @@ public class CardContentRestEndpoint {
     private CardContentManager cardContentManager;
 
     /**
-     * Retrieve the list of all card contents. This is available to admin only
-     *
-     * @return all known card contents
-     */
-    // FIXME sandra - It certainly has no reason to be called so (except for
-    // preliminary tests)
-    // To remove or change at the right moment
-    @GET
-    @AdminResource
-    public List<CardContent> getAllCardContents() {
-        logger.debug("Get all card contents");
-        return cardContentDao.getAllCardContent();
-    }
-
-    /**
      * Get card content identified by the given id
      *
      * @param id id of the card content to fetch
@@ -81,7 +65,7 @@ public class CardContentRestEndpoint {
     @Path("{id}")
     public CardContent getCardContent(@PathParam("id") Long id) {
         logger.debug("Get card #{}", id);
-        return cardContentDao.getCardContent(id);
+        return cardContentDao.findCardContent(id);
     }
 
     /**
@@ -97,7 +81,7 @@ public class CardContentRestEndpoint {
     @POST
     public Long createCardContent(CardContent cardContent) {
         logger.debug("Create card content {}", cardContent);
-        return cardContentDao.createCardContent(cardContent).getId();
+        return cardContentDao.persistCardContent(cardContent).getId();
     }
 
     /**

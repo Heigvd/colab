@@ -232,7 +232,7 @@ public class FileManager {
      * @throws RepositoryException in case of a JCR issue
      */
     public Long getUsage(Long projectId) throws RepositoryException {
-        Project project = projectDao.getProject(projectId);
+        Project project = projectDao.findProject(projectId);
         return jcrManager.computeMemoryUsage(project);
     }
 }

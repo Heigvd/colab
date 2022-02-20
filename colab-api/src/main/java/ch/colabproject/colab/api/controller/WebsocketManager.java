@@ -294,7 +294,7 @@ public class WebsocketManager {
      */
     public void subscribeToProjectChannel(WsSessionIdentifier sessionId, Long projectId) {
         logger.debug("Session {} want to subscribe to Project#{}", sessionId, projectId);
-        Project project = projectDao.getProject(projectId);
+        Project project = projectDao.findProject(projectId);
         if (project != null) {
             securityManager.assertConditionTx(new Conditions.IsCurrentUserMemberOfProject(project),
                 "Subscribe to project channel: Permision denied");
@@ -320,7 +320,7 @@ public class WebsocketManager {
      */
     public void unsubscribeFromProjectChannel(WsSessionIdentifier sessionId, Long projectId) {
         logger.debug("Session {} want to unsubscribe from Project#{}", sessionId, projectId);
-        Project project = projectDao.getProject(projectId);
+        Project project = projectDao.findProject(projectId);
         if (project != null) {
             securityManager.assertConditionTx(new Conditions.IsCurrentUserMemberOfProject(project),
                 "Subscribe to project channel: Permision denied");
@@ -532,7 +532,7 @@ public class WebsocketManager {
      */
     private WebsocketEffectiveChannel getChannel(SubscriptionRequest request) {
         if (request.getChannelType() == SubscriptionRequest.ChannelType.PROJECT) {
-            Project project = projectDao.getProject(request.getChannelId());
+            Project project = projectDao.findProject(request.getChannelId());
             if (project != null) {
                 return ProjectContentChannel.build(project);
             }
