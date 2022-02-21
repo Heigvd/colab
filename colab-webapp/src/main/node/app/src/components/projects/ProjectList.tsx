@@ -15,10 +15,10 @@ import { useNavigate } from 'react-router-dom';
 import * as API from '../../API/api';
 import { shallowEqual, useAppDispatch, useAppSelector } from '../../store/hooks';
 import { StateStatus } from '../../store/project';
-import AutoSaveInput from '../common/AutoSaveInput';
 import Button from '../common/Button';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
+import InlineInput from '../common/InlineInput';
 import InlineLoading from '../common/InlineLoading';
 import { cardStyle, fixedButtonStyle, invertedButtonStyle, space_M } from '../styling/style';
 
@@ -61,7 +61,13 @@ const ProjectDisplay = ({ project }: Props) => {
           padding: space_M,
         })}
       >
-        <AutoSaveInput
+        {/* <AutoSaveInput
+          placeholder="Unnamed project"
+          value={project.name || ''}
+          onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
+          className={css({ fontWeight: 'bold' })}
+        /> */}
+        <InlineInput
           placeholder="Unnamed project"
           value={project.name || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
@@ -105,11 +111,12 @@ const ProjectDisplay = ({ project }: Props) => {
           flexGrow: 1,
         })}
       >
-        <AutoSaveInput
-          inputType="TEXTAREA"
+        <InlineInput
           placeholder="Write a description here."
           value={project.description || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
+          inputType='textarea'
+          autosave={false}
         />
         {/* 
         //FUTURE block of infos on the project
