@@ -23,13 +23,13 @@ import useTranslations from '../../i18n/I18nContext';
 import { useCardACLForCurrentUser, useVariantsOrLoad } from '../../selectors/cardSelector';
 import { useCardType } from '../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../store/hooks';
-import AutoSaveInput from '../common/AutoSaveInput';
 import Collapsible from '../common/Collapsible';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import Input from '../common/Form/Input';
 import SelectInput from '../common/Form/SelectInput';
+import InlineInput from '../common/InlineInput';
 import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
@@ -200,20 +200,20 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                         </div>
                       )}
                       <Flex align="center">
-                        <AutoSaveInput
+                        <InlineInput
                           placeholder={i18n.card.untitled}
                           readOnly={readOnly}
-                          inputType="INPUT"
                           value={card.title || ''}
                           onChange={newValue =>
                             dispatch(API.updateCard({ ...card, title: newValue }))
                           }
                           className={cardTitle}
+                          autosave={false}
                         />
                         {hasVariants ? (
                           <>
                             <span className={variantTitle}>&#xFE58;</span>
-                            <AutoSaveInput
+                            <InlineInput
                               className={variantTitle}
                               value={
                                 variant.title && variant.title.length > 0

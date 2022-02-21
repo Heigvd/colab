@@ -35,13 +35,12 @@ import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import CardTypeList from '../../cards/cardtypes/CardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
-import AutoSaveInput from '../../common/AutoSaveInput';
 import Clickable from '../../common/Clickable';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
 import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
-import { invertedThemeMode, space_L, space_M } from '../../styling/style';
+import { invertedThemeMode, space_L, space_M, space_S } from '../../styling/style';
 import { ProjectSettings } from '../ProjectSettings';
 import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
@@ -263,20 +262,14 @@ export default function Editor(): JSX.Element {
               display: 'inline-grid',
               gridTemplateColumns: '1fr 3fr 1fr',
               flexGrow: 0,
-              padding: `${space_M} ${space_M}`,
+              padding: `${space_S} ${space_M}`,
               backgroundColor: 'var(--hoverBgColor)',
             }),
           )}
         >
           <IconButton icon={faGhost} title="Show project details" onClick={()=>setShowProjectDetails(showProjectDetails => !showProjectDetails)}/>
           <div className={css({ gridColumn: '2/3', placeSelf: 'center', display: 'flex' })}>
-            <div className={css({ marginRight: '30px' })}>
-              <AutoSaveInput
-                placeholder="unnamed"
-                value={project.name || ''}
-                onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
-              />
-            </div>
+            <div className={css({marginRight: space_M})}>{project.name || 'untitled project'}</div>
             <DropDownMenu
               icon={faEye}
               valueComp={{ value: '', label: '' }}

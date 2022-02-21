@@ -7,6 +7,7 @@
 
 import { css, cx } from '@emotion/css';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { debounce } from 'lodash';
 import * as React from 'react';
 import logger from '../../logger';
 import { lightIconButtonStyle, space_S } from '../styling/style';
@@ -51,6 +52,7 @@ export interface Props {
   className?: string;
   textClassName?: string;
   autosave?: boolean;
+  delay?: number;
 }
 
 function getEffectiveValue(...values: string[]): string {
@@ -69,10 +71,11 @@ export default function InlineInput({
   onChange,
   className,
   textClassName,
-  readOnly,
+  readOnly= false,
   placeholder,
   inputType = 'input',
   autosave = true,
+  delay = 300,
 }: Props): JSX.Element {
   const spanRef = React.useRef<HTMLSpanElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -122,14 +125,28 @@ export default function InlineInput({
     if(!readOnly) {
       setMode('EDIT');
     }
-    
   }, []);
 
-  const onInputCb = React.useCallback((e: React.ChangeEvent<HTMLSpanElement>) => {
-    if(autosave){
-      onChange(e.target.innerText);
-    }
-  }, []);
+  const onChangeRef = React.useRef(onChange);
+  onChangeRef.current = onChange;
+
+  const debouncedOnChange = React.useMemo(
+    () =>
+      debounce((value: string) => {
+        onChangeRef.current(value);
+      }, delay),
+    [delay],
+  );
+
+  const onInternalChangeCb = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      if(autosave){
+        const newValue = e.target.innerText;
+        debouncedOnChange(newValue);
+      }
+    },
+    [debouncedOnChange],
+  );
 
   return (
     <div ref={containerRef} className={cx(className, css({display: 'flex'}), {[textareaButtonStyle]: inputType === 'textarea'})}>
@@ -137,8 +154,8 @@ export default function InlineInput({
       <span
         ref={spanRef}
         onClick={editCb}
-        onInput={onInputCb}
-        contentEditable={!readOnly}
+        onInput={onInternalChangeCb}
+        contentEditable={!readOnly && mode === 'EDIT'}
         spellCheck={false}
         className={cx(
           mode === 'EDIT'
@@ -148,7 +165,7 @@ export default function InlineInput({
             : cx(inlineInputStyle, textClassName),
         )}
       />
-      {mode === 'EDIT' && !autosave && !readOnly && (
+      {mode === 'EDIT' && !autosave && (
         <Flex justify='flex-end'>
           <IconButton icon={faTimes} title="Cancel" onClick={cancelCb} className={lightIconButtonStyle}/>
           <IconButton icon={faCheck} title="Save" onClick={saveCb} className={lightIconButtonStyle}/>
