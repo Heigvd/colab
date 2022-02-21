@@ -22,10 +22,6 @@ import InlineInput from '../common/InlineInput';
 import InlineLoading from '../common/InlineLoading';
 import { cardStyle, fixedButtonStyle, invertedButtonStyle, space_M } from '../styling/style';
 
-/* const cardInfoStyle = css({
-  margin: space_S + ' 0',
-}); */
-
 const projectListStyle = css({
   margin: 'auto',
   width: '100%',

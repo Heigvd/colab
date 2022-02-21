@@ -13,7 +13,7 @@ import { useDocument } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import CheckBox from '../common/CheckBox';
-import OnBlurInput from '../common/OnBlurInput';
+import OnConfirmInput from '../common/OnConfirmInput';
 import DocumentMiniDisplay from '../documents/DocumentMiniDisplay';
 import { defaultColumnContainerStyle, defaultRowContainerStyle } from '../styling/style';
 import { ResourceAndRef } from './ResourceCommonType';
@@ -37,7 +37,7 @@ function TargetResourceMiniDisplay({ resource }: { resource: Resource }): JSX.El
     <div className={defaultColumnContainerStyle}>
       <span>*** target resource #{resource.id} ***</span>
       <DisplayOwner resourceOrRef={resource} />
-      <OnBlurInput
+      <OnConfirmInput
         label="Category : "
         placeholder=""
         size="SMALL"
@@ -91,7 +91,7 @@ function ResourceRefMiniDisplay({ resourceRef }: { resourceRef: ResourceRef }): 
     <div className={defaultColumnContainerStyle}>
       <span>*** reference #{resourceRef.id} ***</span>
       <DisplayOwner resourceOrRef={resourceRef} />
-      <OnBlurInput
+      <OnConfirmInput
         label="Category : "
         placeholder=""
         size="SMALL"
@@ -192,7 +192,7 @@ export function ResourceSettings({
         {isDirectResource ? (
           <>
             <div className={css({ color: 'blue' })}>direct resource</div>
-            <OnBlurInput
+            <OnConfirmInput
               label="Title : "
               placeholder=""
               size="SMALL"

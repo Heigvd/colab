@@ -28,7 +28,7 @@ import { Destroyer } from '../common/Destroyer';
 import IconButton from '../common/IconButton';
 import InlineInput from '../common/InlineInput';
 import InlineLoading from '../common/InlineLoading';
-import OnBlurInput from '../common/OnBlurInput';
+import OnConfirmInput from '../common/OnConfirmInput';
 import OpenClose from '../common/OpenClose';
 import WithToolbar from '../common/WithToolbar';
 import { linkStyle } from '../styling/style';
@@ -135,7 +135,7 @@ const Member = ({ member, roles }: MemberProps) => {
     // DN can be edited or cleared
     username = (
       <>
-        <OnBlurInput value={member.displayName || ''} onChange={updateDisplayName} />
+        <OnConfirmInput value={member.displayName || ''} onChange={updateDisplayName} />
         <IconButton icon={faEraser} title="Clear" onClick={clearDisplayName} />
       </>
     );
@@ -265,7 +265,7 @@ const RoleDisplay = ({ role }: RoleProps) => {
         </>
       }
     >
-      <InlineInput value={role.name || ''} onChange={saveCb} />
+      <InlineInput value={role.name || ''} onChange={saveCb} placeholder="role"/>
     </WithToolbar>
   );
 };

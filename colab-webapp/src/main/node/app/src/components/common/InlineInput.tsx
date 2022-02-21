@@ -104,10 +104,6 @@ export default function InlineInput({
 
   const [mode, setMode] = React.useState<'DISPLAY' | 'EDIT'>('DISPLAY');
 
-  //  const onChangeCb = React.useCallback((value: string) => {
-  //    setCurrentValue(value);
-  //  }, []);
-
   const saveCb = React.useCallback(() => {
     if (spanRef.current) {
       onChange(spanRef.current.innerText);
@@ -123,7 +119,10 @@ export default function InlineInput({
   }, [value, defaultValue]);
 
   const editCb = React.useCallback(() => {
-    setMode('EDIT');
+    if(!readOnly) {
+      setMode('EDIT');
+    }
+    
   }, []);
 
   const onInputCb = React.useCallback((e: React.ChangeEvent<HTMLSpanElement>) => {
@@ -134,7 +133,6 @@ export default function InlineInput({
 
   return (
     <div ref={containerRef} className={cx(className, css({display: 'flex'}), {[textareaButtonStyle]: inputType === 'textarea'})}>
-      {/* Add readOnly condition? */}
       {label && label}
       <span
         ref={spanRef}
@@ -150,10 +148,10 @@ export default function InlineInput({
             : cx(inlineInputStyle, textClassName),
         )}
       />
-      {mode === 'EDIT' && !autosave && (
+      {mode === 'EDIT' && !autosave && !readOnly && (
         <Flex justify='flex-end'>
-          <IconButton icon={faCheck} title="Save" onClick={saveCb} className={lightIconButtonStyle}/>
           <IconButton icon={faTimes} title="Cancel" onClick={cancelCb} className={lightIconButtonStyle}/>
+          <IconButton icon={faCheck} title="Save" onClick={saveCb} className={lightIconButtonStyle}/>
         </Flex>
       )}
     </div>
