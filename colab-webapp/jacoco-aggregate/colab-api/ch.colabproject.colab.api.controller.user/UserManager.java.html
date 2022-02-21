@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.user;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.ValidationManager;
 import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
@@ -32,7 +33,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import liquibase.pro.packaged.ch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +80,12 @@ import org.slf4j.LoggerFactory;
     private TokenManager tokenManager;
 
     /**
+     * Entity validation management
+     */
+    @Inject
+    private ValidationManager validationManager;
+
+    /**
      * User persistence
      */
     @Inject
@@ -99,8 +105,8 @@ import org.slf4j.LoggerFactory;
      * @return the user or null if user not exist or current user has not right to read the user
      */
     public User getUserById(Long id) {
-<span class="nc" id="L102">        User user = userDao.findUser(id);</span>
-<span class="nc" id="L103">        return user;</span>
+<span class="nc" id="L108">        User user = userDao.findUser(id);</span>
+<span class="nc" id="L109">        return user;</span>
     }
 
     /**
@@ -122,24 +128,25 @@ import org.slf4j.LoggerFactory;
      */
     public AuthMethod getAuthenticationMethod(String identifier) {
         try {
-<span class="nc" id="L125">            return requestManager.sudo(() -&gt; {</span>
-<span class="nc bnc" id="L126" title="All 4 branches missed.">                if (identifier == null || identifier.isBlank()) {</span>
-<span class="nc" id="L127">                    throw HttpErrorMessage.badRequest();</span>
+<span class="nc" id="L131">            return requestManager.sudo(() -&gt; {</span>
+<span class="nc bnc" id="L132" title="All 4 branches missed.">                if (identifier == null || identifier.isBlank()) {</span>
+<span class="nc" id="L133">                    throw HttpErrorMessage.badRequest();</span>
                 } else {
-<span class="nc" id="L129">                    LocalAccount account = userDao.findLocalAccountByIdentifier(identifier);</span>
+<span class="nc" id="L135">                    LocalAccount account = userDao.findLocalAccountByIdentifier(identifier);</span>
 
-<span class="nc bnc" id="L131" title="All 2 branches missed.">                    if (account != null) {</span>
-<span class="nc" id="L132">                        return new AuthMethod(account.getCurrentClientHashMethod(), account.getClientSalt(),</span>
-<span class="nc" id="L133">                            account.getNextClientHashMethod(), account.getNewClientSalt());</span>
+<span class="nc bnc" id="L137" title="All 2 branches missed.">                    if (account != null) {</span>
+<span class="nc" id="L138">                        return new AuthMethod(account.getCurrentClientHashMethod(),</span>
+<span class="nc" id="L139">                            account.getClientSalt(),</span>
+<span class="nc" id="L140">                            account.getNextClientHashMethod(), account.getNewClientSalt());</span>
                     } else {
-                        // no account found, reeturn random method
+                        // no account found, return random method
                         // TODO: store it in a tmp cache
-<span class="nc" id="L137">                        return this.getDefaultRandomAuthenticationMethod();</span>
+<span class="nc" id="L144">                        return this.getDefaultRandomAuthenticationMethod();</span>
                     }
                 }
             });
-<span class="nc" id="L141">        } catch (Exception e) {</span>
-<span class="nc" id="L142">            return this.getDefaultRandomAuthenticationMethod();</span>
+<span class="nc" id="L148">        } catch (Exception e) {</span>
+<span class="nc" id="L149">            return this.getDefaultRandomAuthenticationMethod();</span>
         }
     }
 
@@ -149,14 +156,14 @@ import org.slf4j.LoggerFactory;
      * @return a hash method and its parameters
      */
     public AuthMethod getDefaultRandomAuthenticationMethod() {
-<span class="nc" id="L152">        return new AuthMethod(Helper.getDefaultHashMethod(), Helper</span>
-<span class="nc" id="L153">            .generateHexSalt(SALT_LENGTH), null, null);</span>
+<span class="nc" id="L159">        return new AuthMethod(Helper.getDefaultHashMethod(), Helper</span>
+<span class="nc" id="L160">            .generateHexSalt(SALT_LENGTH), null, null);</span>
     }
 
     /**
      * Create a brand new user, which can authenticate with a {@link LocalAccount}.First,
      * plainPassword will be hashed as any client should do. Then the
-     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo)  signup} method is called.
+     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo) signup} method is called.
      *
      * @param username      username
      * @param email         email address
@@ -167,20 +174,20 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if username is already taken
      */
     public User createUser(String username, String email, String plainPassword) {
-<span class="nc" id="L170">        AuthMethod method = getDefaultRandomAuthenticationMethod();</span>
-<span class="nc" id="L171">        SignUpInfo signUpinfo = new SignUpInfo();</span>
+<span class="nc" id="L177">        AuthMethod method = getDefaultRandomAuthenticationMethod();</span>
+<span class="nc" id="L178">        SignUpInfo signUpinfo = new SignUpInfo();</span>
 
-<span class="nc" id="L173">        signUpinfo.setUsername(username);</span>
-<span class="nc" id="L174">        signUpinfo.setEmail(email);</span>
-<span class="nc" id="L175">        signUpinfo.setHashMethod(method.getMandatoryMethod());</span>
+<span class="nc" id="L180">        signUpinfo.setUsername(username);</span>
+<span class="nc" id="L181">        signUpinfo.setEmail(email);</span>
+<span class="nc" id="L182">        signUpinfo.setHashMethod(method.getMandatoryMethod());</span>
 
-<span class="nc" id="L177">        signUpinfo.setSalt(method.getSalt());</span>
+<span class="nc" id="L184">        signUpinfo.setSalt(method.getSalt());</span>
 
-<span class="nc" id="L179">        byte[] hash = method.getMandatoryMethod().hash(plainPassword, method.getSalt());</span>
+<span class="nc" id="L186">        byte[] hash = method.getMandatoryMethod().hash(plainPassword, method.getSalt());</span>
 
-<span class="nc" id="L181">        signUpinfo.setHash(Helper.bytesToHex(hash));</span>
+<span class="nc" id="L188">        signUpinfo.setHash(Helper.bytesToHex(hash));</span>
 
-<span class="nc" id="L183">        return this.signup(signUpinfo);</span>
+<span class="nc" id="L190">        return this.signup(signUpinfo);</span>
     }
 
     /**
@@ -192,17 +199,16 @@ import org.slf4j.LoggerFactory;
      * @param plainPassword plain text password
      *
      * @return a brand new user
-     *
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public User createAdminUserTx(String username, String email, String plainPassword) {
-<span class="nc" id="L199">        return this.createAdminUser(username, email, plainPassword);</span>
+<span class="nc" id="L205">        return this.createAdminUser(username, email, plainPassword);</span>
     }
 
     /**
      * Create a brand new admin user, which can authenticate with a {@link LocalAccount}. First,
      * plainPassword will be hashed as any client should do. Then the
-     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo)  signup} method is called.
+     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo) signup} method is called.
      *
      * @param username      username
      * @param email         email address
@@ -213,20 +219,20 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if username is already taken
      */
     public User createAdminUser(String username, String email, String plainPassword) {
-<span class="nc" id="L216">        User admin = this.createUser(username, email, plainPassword);</span>
-<span class="nc" id="L217">        LocalAccount account = (LocalAccount) admin.getAccounts().get(0);</span>
+<span class="nc" id="L222">        User admin = this.createUser(username, email, plainPassword);</span>
+<span class="nc" id="L223">        LocalAccount account = (LocalAccount) admin.getAccounts().get(0);</span>
 
-<span class="nc" id="L219">        AuthInfo authInfo = new AuthInfo();</span>
-<span class="nc" id="L220">        authInfo.setIdentifier(username);</span>
-<span class="nc" id="L221">        authInfo.setMandatoryHash(</span>
-<span class="nc" id="L222">            Helper.bytesToHex(</span>
-<span class="nc" id="L223">                account.getCurrentClientHashMethod().hash(</span>
+<span class="nc" id="L225">        AuthInfo authInfo = new AuthInfo();</span>
+<span class="nc" id="L226">        authInfo.setIdentifier(username);</span>
+<span class="nc" id="L227">        authInfo.setMandatoryHash(</span>
+<span class="nc" id="L228">            Helper.bytesToHex(</span>
+<span class="nc" id="L229">                account.getCurrentClientHashMethod().hash(</span>
                     plainPassword,
-<span class="nc" id="L225">                    account.getClientSalt())));</span>
-<span class="nc" id="L226">        this.authenticate(authInfo);</span>
+<span class="nc" id="L231">                    account.getClientSalt())));</span>
+<span class="nc" id="L232">        this.authenticate(authInfo);</span>
 
-<span class="nc" id="L228">        this.grantAdminRight(admin.getId());</span>
-<span class="nc" id="L229">        return admin;</span>
+<span class="nc" id="L234">        this.grantAdminRight(admin.getId());</span>
+<span class="nc" id="L235">        return admin;</span>
     }
 
     /**
@@ -240,41 +246,49 @@ import org.slf4j.LoggerFactory;
      */
     public User signup(SignUpInfo signup) {
         // username already taken ?
-<span class="nc" id="L243">        User user = userDao.findUserByUsername(signup.getUsername());</span>
-<span class="nc bnc" id="L244" title="All 2 branches missed.">        if (user == null) {</span>
+<span class="nc" id="L249">        User user = userDao.findUserByUsername(signup.getUsername());</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">        if (user == null) {</span>
             // username not yet taken
-<span class="nc" id="L246">            LocalAccount account = userDao.findLocalAccountByEmail(signup.getEmail());</span>
+<span class="nc" id="L252">            LocalAccount account = userDao.findLocalAccountByEmail(signup.getEmail());</span>
             // no local account with the given email address
 
-<span class="nc bnc" id="L249" title="All 2 branches missed.">            if (account == null) {</span>
-<span class="nc" id="L250">                account = new LocalAccount();</span>
-<span class="nc" id="L251">                account.setClientSalt(signup.getSalt());</span>
-<span class="nc" id="L252">                account.setCurrentClientHashMethod(signup.getHashMethod());</span>
-<span class="nc" id="L253">                account.setEmail(signup.getEmail());</span>
-<span class="nc" id="L254">                account.setVerified(false);</span>
+<span class="nc bnc" id="L255" title="All 2 branches missed.">            if (account == null) {</span>
+<span class="nc bnc" id="L256" title="All 2 branches missed.">                if (!Helper.isEmailAddress(signup.getEmail())) {</span>
+<span class="nc" id="L257">                    throw HttpErrorMessage.dataIntegrityFailure();</span>
+                }
 
-<span class="nc" id="L256">                account.setCurrentDbHashMethod(Helper.getDefaultHashMethod());</span>
-<span class="nc" id="L257">                this.shadowHash(account, signup.getHash());</span>
+<span class="nc" id="L260">                account = new LocalAccount();</span>
+<span class="nc" id="L261">                account.setClientSalt(signup.getSalt());</span>
+<span class="nc" id="L262">                account.setCurrentClientHashMethod(signup.getHashMethod());</span>
+<span class="nc" id="L263">                account.setEmail(signup.getEmail());</span>
+<span class="nc" id="L264">                account.setVerified(false);</span>
 
-<span class="nc" id="L259">                user = new User();</span>
-<span class="nc" id="L260">                user.getAccounts().add((account));</span>
-<span class="nc" id="L261">                account.setUser(user);</span>
+<span class="nc" id="L266">                account.setCurrentDbHashMethod(Helper.getDefaultHashMethod());</span>
+<span class="nc" id="L267">                this.shadowHash(account, signup.getHash());</span>
 
-<span class="nc" id="L263">                user.setUsername(signup.getUsername());</span>
-<span class="nc" id="L264">                em.persist(user);</span>
+<span class="nc" id="L269">                user = new User();</span>
+<span class="nc" id="L270">                user.getAccounts().add((account));</span>
+<span class="nc" id="L271">                account.setUser(user);</span>
+
+<span class="nc" id="L273">                user.setUsername(signup.getUsername());</span>
+
+<span class="nc" id="L275">                validationManager.assertValid(user);</span>
+<span class="nc" id="L276">                validationManager.assertValid(account);</span>
+
+<span class="nc" id="L278">                em.persist(user);</span>
                 // flush changes to DB to check DB constraint
                 // TODO: build some AfterTXCommit executor
-<span class="nc" id="L267">                em.flush();</span>
-                // new user with a localaccount should verify their e-mail address
-<span class="nc" id="L269">                tokenManager.requestEmailAddressVerification(account, false);</span>
-<span class="nc" id="L270">                return user;</span>
+<span class="nc" id="L281">                em.flush();</span>
+                // new user with a local account should verify their e-mail address
+<span class="nc" id="L283">                tokenManager.requestEmailAddressVerification(account, false);</span>
+<span class="nc" id="L284">                return user;</span>
             } else {
                 // wait.... throwing something else here leaks account existence...
-<span class="nc" id="L273">                throw HttpErrorMessage.userNameAlreadyTaken();</span>
+<span class="nc" id="L287">                throw HttpErrorMessage.userNameAlreadyTaken();</span>
             }
 
         } else {
-<span class="nc" id="L277">            throw HttpErrorMessage.userNameAlreadyTaken();</span>
+<span class="nc" id="L291">            throw HttpErrorMessage.userNameAlreadyTaken();</span>
         }
     }
 
@@ -288,76 +302,79 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if authentication failed
      */
     public User authenticate(AuthInfo authInfo) {
-<span class="nc" id="L291">        LocalAccount account = userDao.findLocalAccountByIdentifier(authInfo.getIdentifier());</span>
+<span class="nc" id="L305">        LocalAccount account = userDao.findLocalAccountByIdentifier(authInfo.getIdentifier());</span>
 
-<span class="nc bnc" id="L293" title="All 2 branches missed.">        if (account != null) {</span>
-<span class="nc" id="L294">            HashMethod m = account.getCurrentDbHashMethod();</span>
-<span class="nc" id="L295">            String mandatoryHash = authInfo.getMandatoryHash();</span>
+<span class="nc bnc" id="L307" title="All 2 branches missed.">        if (account != null) {</span>
+<span class="nc" id="L308">            HashMethod m = account.getCurrentDbHashMethod();</span>
+<span class="nc" id="L309">            String mandatoryHash = authInfo.getMandatoryHash();</span>
 
-<span class="nc bnc" id="L297" title="All 2 branches missed.">            if (mandatoryHash != null) {</span>
-<span class="nc" id="L298">                byte[] hash = m.hash(mandatoryHash, account.getDbSalt());</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">            if (mandatoryHash != null) {</span>
+<span class="nc" id="L312">                byte[] hash = m.hash(mandatoryHash, account.getDbSalt());</span>
 
-<span class="nc" id="L300">                AuthenticationFailure aa = sessionManager.getAuthenticationAttempt(account);</span>
-<span class="nc bnc" id="L301" title="All 2 branches missed.">                if (aa != null) {</span>
-<span class="nc" id="L302">                    logger.warn(&quot;Attmpt: {}&quot;, aa.getCounter());</span>
-<span class="nc bnc" id="L303" title="All 2 branches missed.">                    if (aa.getCounter() &gt;= AUTHENTICATION_ATTEMPT_MAX) {</span>
+<span class="nc" id="L314">                AuthenticationFailure aa = sessionManager.getAuthenticationAttempt(account);</span>
+<span class="nc bnc" id="L315" title="All 2 branches missed.">                if (aa != null) {</span>
+<span class="nc" id="L316">                    logger.warn(&quot;Attmpt: {}&quot;, aa.getCounter());</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">                    if (aa.getCounter() &gt;= AUTHENTICATION_ATTEMPT_MAX) {</span>
                         // max number of failed attempts reached
-<span class="nc" id="L305">                        OffsetDateTime lastAttempt = aa.getTimestamp();</span>
-<span class="nc" id="L306">                        OffsetDateTime delay = lastAttempt.plusSeconds(AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC);</span>
-<span class="nc bnc" id="L307" title="All 2 branches missed.">                        if (OffsetDateTime.now().isAfter(delay)) {</span>
+<span class="nc" id="L319">                        OffsetDateTime lastAttempt = aa.getTimestamp();</span>
+<span class="nc" id="L320">                        OffsetDateTime delay = lastAttempt</span>
+<span class="nc" id="L321">                            .plusSeconds(AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC);</span>
+<span class="nc bnc" id="L322" title="All 2 branches missed.">                        if (OffsetDateTime.now().isAfter(delay)) {</span>
                             // delay has been reached, user may try again
-<span class="nc" id="L309">                            sessionManager.resetAuthenticationAttemptHistory(account);</span>
+<span class="nc" id="L324">                            sessionManager.resetAuthenticationAttemptHistory(account);</span>
                         } else {
                             // user have to wait some time before any new attempt
-<span class="nc" id="L312">                            logger.warn(&quot;Account {} reached the max number of failed authentication&quot;, account);</span>
-<span class="nc" id="L313">                            throw HttpErrorMessage.tooManyRequest();</span>
+<span class="nc" id="L327">                            logger.warn(</span>
+                                &quot;Account {} reached the max number of failed authentication&quot;,
+                                account);
+<span class="nc" id="L330">                            throw HttpErrorMessage.tooManyRequest();</span>
                         }
                     }
                 }
 
                 // Spotbugs reports a timing attack vulnerability using:
-                //  if (Arrays.equals(hash, account.getHashedPassword())) {
-                // doing a fullcomparison of arrays makes it happy:
-<span class="nc bnc" id="L321" title="All 2 branches missed.">                if (Helper.constantTimeArrayEquals(hash, account.getHashedPassword())) {</span>
+                // if (Arrays.equals(hash, account.getHashedPassword())) {
+                // doing a full comparison of arrays makes it happy:
+<span class="nc bnc" id="L338" title="All 2 branches missed.">                if (Helper.constantTimeArrayEquals(hash, account.getHashedPassword())) {</span>
                     // authentication succeed
                     /////////////////////////////////
-<span class="nc" id="L324">                    sessionManager.resetAuthenticationAttemptHistory(account);</span>
+<span class="nc" id="L341">                    sessionManager.resetAuthenticationAttemptHistory(account);</span>
 
-<span class="nc" id="L326">                    boolean forceShadow = false;</span>
+<span class="nc" id="L343">                    boolean forceShadow = false;</span>
 
                     // should rotate client method ?
-<span class="nc bnc" id="L329" title="All 2 branches missed.">                    if (account.getNextClientHashMethod() != null</span>
-<span class="nc bnc" id="L330" title="All 2 branches missed.">                        &amp;&amp; authInfo.getOptionalHash() != null) {</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">                    if (account.getNextClientHashMethod() != null</span>
+<span class="nc bnc" id="L347" title="All 2 branches missed.">                        &amp;&amp; authInfo.getOptionalHash() != null) {</span>
                         // rotate method
-<span class="nc" id="L332">                        account.setClientSalt(account.getNewClientSalt());</span>
-<span class="nc" id="L333">                        account.setNewClientSalt(null);</span>
-<span class="nc" id="L334">                        account.setCurrentClientHashMethod(account.getNextClientHashMethod());</span>
-<span class="nc" id="L335">                        account.setNextClientHashMethod(null);</span>
+<span class="nc" id="L349">                        account.setClientSalt(account.getNewClientSalt());</span>
+<span class="nc" id="L350">                        account.setNewClientSalt(null);</span>
+<span class="nc" id="L351">                        account.setCurrentClientHashMethod(account.getNextClientHashMethod());</span>
+<span class="nc" id="L352">                        account.setNextClientHashMethod(null);</span>
 
                         // rotate provided hash and force to compute and save db hash
-<span class="nc" id="L338">                        mandatoryHash = authInfo.getOptionalHash();</span>
-<span class="nc" id="L339">                        forceShadow = true;</span>
+<span class="nc" id="L355">                        mandatoryHash = authInfo.getOptionalHash();</span>
+<span class="nc" id="L356">                        forceShadow = true;</span>
                     }
 
                     // should rotate server method ?
-<span class="nc bnc" id="L343" title="All 2 branches missed.">                    if (account.getNextDbHashMethod() != null) {</span>
+<span class="nc bnc" id="L360" title="All 2 branches missed.">                    if (account.getNextDbHashMethod() != null) {</span>
                         // rotate method
-<span class="nc" id="L345">                        account.setCurrentDbHashMethod(account.getNextDbHashMethod());</span>
-<span class="nc" id="L346">                        account.setNextDbHashMethod(null);</span>
+<span class="nc" id="L362">                        account.setCurrentDbHashMethod(account.getNextDbHashMethod());</span>
+<span class="nc" id="L363">                        account.setNextDbHashMethod(null);</span>
                         // force to compute and save db hash
-<span class="nc" id="L348">                        forceShadow = true;</span>
+<span class="nc" id="L365">                        forceShadow = true;</span>
                     }
 
-<span class="nc bnc" id="L351" title="All 2 branches missed.">                    if (forceShadow) {</span>
-<span class="nc" id="L352">                        this.shadowHash(account, mandatoryHash);</span>
+<span class="nc bnc" id="L368" title="All 2 branches missed.">                    if (forceShadow) {</span>
+<span class="nc" id="L369">                        this.shadowHash(account, mandatoryHash);</span>
                     }
 
-<span class="nc" id="L355">                    requestManager.login(account);</span>
+<span class="nc" id="L372">                    requestManager.login(account);</span>
 
-<span class="nc" id="L357">                    return account.getUser();</span>
+<span class="nc" id="L374">                    return account.getUser();</span>
                 } else {
                     // update cache of failed authentication attempt
-<span class="nc" id="L360">                    sessionManager.authenticationFailure(account);</span>
+<span class="nc" id="L377">                    sessionManager.authenticationFailure(account);</span>
                 }
             }
         }
@@ -365,7 +382,7 @@ import org.slf4j.LoggerFactory;
         // authentication fails
         // OR client did not provide required hash
         // OR account not found
-<span class="nc" id="L368">        throw HttpErrorMessage.authenticationFailed();</span>
+<span class="nc" id="L385">        throw HttpErrorMessage.authenticationFailed();</span>
     }
 
     /**
@@ -376,27 +393,27 @@ import org.slf4j.LoggerFactory;
      * @throws HttpErrorMessage if currentUser is not allowed to update the given account
      */
     public void updatePassword(AuthInfo authInfo) {
-<span class="nc" id="L379">        LocalAccount account = userDao.findLocalAccountByIdentifier(authInfo.getIdentifier());</span>
+<span class="nc" id="L396">        LocalAccount account = userDao.findLocalAccountByIdentifier(authInfo.getIdentifier());</span>
 
-<span class="nc bnc" id="L381" title="All 2 branches missed.">        if (account != null) {</span>
-<span class="nc" id="L382">            String mandatoryHash = authInfo.getMandatoryHash();</span>
+<span class="nc bnc" id="L398" title="All 2 branches missed.">        if (account != null) {</span>
+<span class="nc" id="L399">            String mandatoryHash = authInfo.getMandatoryHash();</span>
 
-<span class="nc bnc" id="L384" title="All 2 branches missed.">            if (mandatoryHash != null) {</span>
+<span class="nc bnc" id="L401" title="All 2 branches missed.">            if (mandatoryHash != null) {</span>
 
                 // should rotate server method ?
-<span class="nc bnc" id="L387" title="All 2 branches missed.">                if (account.getNextDbHashMethod() != null) {</span>
+<span class="nc bnc" id="L404" title="All 2 branches missed.">                if (account.getNextDbHashMethod() != null) {</span>
                     // rotate method
-<span class="nc" id="L389">                    account.setCurrentDbHashMethod(account.getNextDbHashMethod());</span>
-<span class="nc" id="L390">                    account.setNextDbHashMethod(null);</span>
+<span class="nc" id="L406">                    account.setCurrentDbHashMethod(account.getNextDbHashMethod());</span>
+<span class="nc" id="L407">                    account.setNextDbHashMethod(null);</span>
                     // force to compute and save db hash
                 }
 
-<span class="nc" id="L394">                this.shadowHash(account, mandatoryHash);</span>
-<span class="nc" id="L395">                return;</span>
+<span class="nc" id="L411">                this.shadowHash(account, mandatoryHash);</span>
+<span class="nc" id="L412">                return;</span>
             }
         }
 
-<span class="nc" id="L399">        throw HttpErrorMessage.forbidden();</span>
+<span class="nc" id="L416">        throw HttpErrorMessage.forbidden();</span>
     }
 
     /**
@@ -407,19 +424,19 @@ import org.slf4j.LoggerFactory;
      */
     private void shadowHash(LocalAccount account, String hash) {
         // use a new salt
-<span class="nc" id="L410">        account.setDbSalt(Helper.generateSalt(SALT_LENGTH));</span>
+<span class="nc" id="L427">        account.setDbSalt(Helper.generateSalt(SALT_LENGTH));</span>
         // compute new hash and save it
-<span class="nc" id="L412">        byte[] newHash = account.getCurrentDbHashMethod().hash(hash, account.getDbSalt());</span>
-<span class="nc" id="L413">        account.setHashedPassword(newHash);</span>
-<span class="nc" id="L414">    }</span>
+<span class="nc" id="L429">        byte[] newHash = account.getCurrentDbHashMethod().hash(hash, account.getDbSalt());</span>
+<span class="nc" id="L430">        account.setHashedPassword(newHash);</span>
+<span class="nc" id="L431">    }</span>
 
     /**
      * Log current user out
      */
     public void logout() {
         // clear account from http session
-<span class="nc" id="L421">        this.requestManager.logout();</span>
-<span class="nc" id="L422">    }</span>
+<span class="nc" id="L438">        this.requestManager.logout();</span>
+<span class="nc" id="L439">    }</span>
 
     /**
      * Force session logout
@@ -427,16 +444,16 @@ import org.slf4j.LoggerFactory;
      * @param sessionId id of session to logout
      */
     public void forceLogout(Long sessionId) {
-<span class="nc" id="L430">        HttpSession httpSession = userDao.getHttpSessionById(sessionId);</span>
-<span class="nc" id="L431">        HttpSession currentSession = requestManager.getHttpSession();</span>
-<span class="nc bnc" id="L432" title="All 2 branches missed.">        if (httpSession != null) {</span>
-<span class="nc bnc" id="L433" title="All 2 branches missed.">            if (!httpSession.equals(currentSession)) {</span>
-<span class="nc" id="L434">                userDao.deleteHttpSession(httpSession);</span>
+<span class="nc" id="L447">        HttpSession httpSession = userDao.getHttpSessionById(sessionId);</span>
+<span class="nc" id="L448">        HttpSession currentSession = requestManager.getHttpSession();</span>
+<span class="nc bnc" id="L449" title="All 2 branches missed.">        if (httpSession != null) {</span>
+<span class="nc bnc" id="L450" title="All 2 branches missed.">            if (!httpSession.equals(currentSession)) {</span>
+<span class="nc" id="L451">                userDao.deleteHttpSession(httpSession);</span>
             } else {
-<span class="nc" id="L436">                throw HttpErrorMessage.badRequest();</span>
+<span class="nc" id="L453">                throw HttpErrorMessage.badRequest();</span>
             }
         }
-<span class="nc" id="L439">    }</span>
+<span class="nc" id="L456">    }</span>
 
     /**
      * Grant admin right to a user.
@@ -444,8 +461,8 @@ import org.slf4j.LoggerFactory;
      * @param user user who will became an admin
      */
     public void grantAdminRight(User user) {
-<span class="nc" id="L447">        user.setAdmin(true);</span>
-<span class="nc" id="L448">    }</span>
+<span class="nc" id="L464">        user.setAdmin(true);</span>
+<span class="nc" id="L465">    }</span>
 
     /**
      * Grant admin right to a user.
@@ -453,8 +470,8 @@ import org.slf4j.LoggerFactory;
      * @param id id of user who will became an admin
      */
     public void grantAdminRight(Long id) {
-<span class="nc" id="L456">        this.grantAdminRight(userDao.findUser(id));</span>
-<span class="nc" id="L457">    }</span>
+<span class="nc" id="L473">        this.grantAdminRight(userDao.findUser(id));</span>
+<span class="nc" id="L474">    }</span>
 
     /**
      * Revoke admin right to a user.
@@ -462,8 +479,8 @@ import org.slf4j.LoggerFactory;
      * @param id id of user who will not be an admin any longer
      */
     public void revokeAdminRight(Long id) {
-<span class="nc" id="L465">        this.revokeAdminRight(userDao.findUser(id));</span>
-<span class="nc" id="L466">    }</span>
+<span class="nc" id="L482">        this.revokeAdminRight(userDao.findUser(id));</span>
+<span class="nc" id="L483">    }</span>
 
     /**
      * revoke admin right to a user.
@@ -471,16 +488,16 @@ import org.slf4j.LoggerFactory;
      * @param user user who will not be an admin any longer
      */
     public void revokeAdminRight(User user) {
-<span class="nc bnc" id="L474" title="All 2 branches missed.">        if (user != null) {</span>
-<span class="nc" id="L475">            User currentUser = requestManager.getCurrentUser();</span>
-<span class="nc bnc" id="L476" title="All 2 branches missed.">            if (user.equals(currentUser)) {</span>
+<span class="nc bnc" id="L491" title="All 2 branches missed.">        if (user != null) {</span>
+<span class="nc" id="L492">            User currentUser = requestManager.getCurrentUser();</span>
+<span class="nc bnc" id="L493" title="All 2 branches missed.">            if (user.equals(currentUser)) {</span>
                 // user shall not remove admin right to itself
-<span class="nc" id="L478">                throw HttpErrorMessage.badRequest();</span>
+<span class="nc" id="L495">                throw HttpErrorMessage.badRequest();</span>
             } else {
-<span class="nc" id="L480">                user.setAdmin(false);</span>
+<span class="nc" id="L497">                user.setAdmin(false);</span>
             }
         }
-<span class="nc" id="L483">    }</span>
+<span class="nc" id="L500">    }</span>
 
     /**
      * Setup new client hash method to use for the given local account
@@ -488,14 +505,14 @@ import org.slf4j.LoggerFactory;
      * @param id id of the LocalAccount
      */
     public void switchClientHashMethod(Long id) {
-<span class="nc" id="L491">        Account account = userDao.findAccount(id);</span>
-<span class="nc bnc" id="L492" title="All 2 branches missed.">        if (account instanceof LocalAccount) {</span>
-<span class="nc" id="L493">            LocalAccount localAccount = (LocalAccount) account;</span>
-<span class="nc" id="L494">            AuthMethod authMethod = getDefaultRandomAuthenticationMethod();</span>
-<span class="nc" id="L495">            localAccount.setNextClientHashMethod(authMethod.getMandatoryMethod());</span>
-<span class="nc" id="L496">            localAccount.setNewClientSalt(authMethod.getSalt());</span>
+<span class="nc" id="L508">        Account account = userDao.findAccount(id);</span>
+<span class="nc bnc" id="L509" title="All 2 branches missed.">        if (account instanceof LocalAccount) {</span>
+<span class="nc" id="L510">            LocalAccount localAccount = (LocalAccount) account;</span>
+<span class="nc" id="L511">            AuthMethod authMethod = getDefaultRandomAuthenticationMethod();</span>
+<span class="nc" id="L512">            localAccount.setNextClientHashMethod(authMethod.getMandatoryMethod());</span>
+<span class="nc" id="L513">            localAccount.setNewClientSalt(authMethod.getSalt());</span>
         }
-<span class="nc" id="L498">    }</span>
+<span class="nc" id="L515">    }</span>
 
     /**
      * Setup new server hash method to use for the given local account
@@ -503,28 +520,28 @@ import org.slf4j.LoggerFactory;
      * @param id id of the LocalAccount
      */
     public void switchServerHashMethod(Long id) {
-<span class="nc" id="L506">        Account account = userDao.findAccount(id);</span>
-<span class="nc bnc" id="L507" title="All 2 branches missed.">        if (account instanceof LocalAccount) {</span>
-<span class="nc" id="L508">            LocalAccount localAccount = (LocalAccount) account;</span>
-<span class="nc" id="L509">            AuthMethod authMethod = getDefaultRandomAuthenticationMethod();</span>
-<span class="nc" id="L510">            localAccount.setNextDbHashMethod(authMethod.getMandatoryMethod());</span>
+<span class="nc" id="L523">        Account account = userDao.findAccount(id);</span>
+<span class="nc bnc" id="L524" title="All 2 branches missed.">        if (account instanceof LocalAccount) {</span>
+<span class="nc" id="L525">            LocalAccount localAccount = (LocalAccount) account;</span>
+<span class="nc" id="L526">            AuthMethod authMethod = getDefaultRandomAuthenticationMethod();</span>
+<span class="nc" id="L527">            localAccount.setNextDbHashMethod(authMethod.getMandatoryMethod());</span>
         }
-<span class="nc" id="L512">    }</span>
+<span class="nc" id="L529">    }</span>
 
     /**
-     * If the given email address is linked to a localaccount, sent a link to this mailbox to reset
+     * If the given email address is linked to a local account, sent a link to this mailbox to reset
      * the account password.
      *
      * @param email email address used as account identifier
      */
     public void requestPasswordReset(String email) {
-<span class="nc" id="L521">        logger.debug(&quot;Request reset password: {}&quot;, email);</span>
-<span class="nc" id="L522">        LocalAccount account = userDao.findLocalAccountByEmail(email);</span>
-<span class="nc bnc" id="L523" title="All 2 branches missed.">        if (account != null) {</span>
+<span class="nc" id="L538">        logger.debug(&quot;Request reset password: {}&quot;, email);</span>
+<span class="nc" id="L539">        LocalAccount account = userDao.findLocalAccountByEmail(email);</span>
+<span class="nc bnc" id="L540" title="All 2 branches missed.">        if (account != null) {</span>
             // account exists, send the message
-<span class="nc" id="L525">            tokenManager.sendResetPasswordToken(account, true);</span>
+<span class="nc" id="L542">            tokenManager.sendResetPasswordToken(account, true);</span>
         }
-<span class="nc" id="L527">    }</span>
+<span class="nc" id="L544">    }</span>
 
     /**
      * Update the account with values provided in given account.Only field which are editable by
@@ -534,30 +551,35 @@ import org.slf4j.LoggerFactory;
      *
      * @return updated account
      *
+     * @throws HttpErrorMessage if the provided email is not a valid email
      * @throws ColabMergeException if something went wrong
      */
     public LocalAccount updateLocalAccountEmailAddress(LocalAccount account)
         throws ColabMergeException {
-<span class="nc" id="L541">        logger.debug(&quot;Update LocalAccount email address: {}&quot;, account);</span>
-<span class="nc" id="L542">        LocalAccount managedAccount = (LocalAccount) userDao.findAccount(account.getId());</span>
+<span class="nc" id="L559">        logger.debug(&quot;Update LocalAccount email address: {}&quot;, account);</span>
+<span class="nc" id="L560">        LocalAccount managedAccount = (LocalAccount) userDao.findAccount(account.getId());</span>
 
-<span class="nc" id="L544">        String currentEmail = managedAccount.getEmail();</span>
-<span class="nc" id="L545">        String newEmail = account.getEmail();</span>
+<span class="nc" id="L562">        String currentEmail = managedAccount.getEmail();</span>
+<span class="nc" id="L563">        String newEmail = account.getEmail();</span>
 
-<span class="nc bnc" id="L547" title="All 4 branches missed.">        if (newEmail != null &amp;&amp; !newEmail.equals(currentEmail)) {</span>
+<span class="nc bnc" id="L565" title="All 4 branches missed.">        if (newEmail != null &amp;&amp; !newEmail.equals(currentEmail)) {</span>
+<span class="nc bnc" id="L566" title="All 2 branches missed.">            if (!Helper.isEmailAddress(newEmail)) {</span>
+<span class="nc" id="L567">                throw HttpErrorMessage.dataIntegrityFailure();</span>
+            }
+
             try {
-<span class="nc" id="L549">                managedAccount.setVerified(false);</span>
-<span class="nc" id="L550">                managedAccount.setEmail(newEmail);</span>
+<span class="nc" id="L571">                managedAccount.setVerified(false);</span>
+<span class="nc" id="L572">                managedAccount.setEmail(newEmail);</span>
                 // make sure to flush changes to database. It will check index uniqueness
-<span class="nc" id="L552">                em.flush();</span>
-<span class="nc" id="L553">                tokenManager.requestEmailAddressVerification(account, false);</span>
-<span class="nc" id="L554">            } catch (Exception e) {</span>
+<span class="nc" id="L574">                em.flush();</span>
+<span class="nc" id="L575">                tokenManager.requestEmailAddressVerification(account, false);</span>
+<span class="nc" id="L576">            } catch (Exception e) {</span>
                 // address already used, do not send any email to this address
-<span class="nc" id="L556">                logger.error(&quot;Execption&quot;, e);</span>
-<span class="nc" id="L557">            }</span>
+<span class="nc" id="L578">                logger.error(&quot;Execption&quot;, e);</span>
+<span class="nc" id="L579">            }</span>
         }
 
-<span class="nc" id="L560">        return managedAccount;</span>
+<span class="nc" id="L582">        return managedAccount;</span>
     }
 
     /**
@@ -566,10 +588,10 @@ import org.slf4j.LoggerFactory;
      * @return list of all active sessions
      */
     public List&lt;HttpSession&gt; getCurrentUserActiveSessions() {
-<span class="nc" id="L569">        return requestManager.getCurrentUser().getAccounts().stream()</span>
-<span class="nc" id="L570">            .flatMap(account -&gt; {</span>
-<span class="nc" id="L571">                return account.getHttpSessions().stream();</span>
-<span class="nc" id="L572">            }).collect(Collectors.toList());</span>
+<span class="nc" id="L591">        return requestManager.getCurrentUser().getAccounts().stream()</span>
+<span class="nc" id="L592">            .flatMap(account -&gt; {</span>
+<span class="nc" id="L593">                return account.getHttpSessions().stream();</span>
+<span class="nc" id="L594">            }).collect(Collectors.toList());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

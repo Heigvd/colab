@@ -133,7 +133,7 @@ import javax.validation.constraints.NotNull;
      * @param email new email to use.
      */
     public void setEmail(String email) {
-<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (Helper.isEmailAddress(email)) {</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (Helper.isEmailAddress(email)) { // FIXME sandra see with Maxence if it is useful to do it here</span>
 
 <span class="nc bnc" id="L138" title="All 2 branches missed.">            if (!email.equals(this.email)) {</span>
 <span class="nc" id="L139">                this.verified = false;</span>

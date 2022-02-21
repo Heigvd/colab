@@ -79,7 +79,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,EntityListener,113,
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,JpaCustomizer,44,0,2,0,13,0,7,0,6,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tools,EntityHelper,54,0,12,0,15,0,9,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.model.tracking,Tracking,281,0,28,0,13,0,55,0,41,0
-colab-webapp/colab-api,ch.colabproject.colab.api.controller.user,UserManager,586,0,54,0,167,0,52,0,25,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller.user,UserManager,605,0,58,0,175,0,54,0,25,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsMessage,3,0,0,0,1,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsSessionIdentifier,20,0,0,0,9,0,5,0,5,0
 colab-webapp/colab-api,ch.colabproject.colab.api.ws.message,WsUpdateMessage,33,0,0,0,11,0,6,0,6,0
@@ -121,6 +121,7 @@ colab-webapp/colab-api,ch.colabproject.colab.api.controller.link,StickyNoteLinkM
 colab-webapp/colab-api,ch.colabproject.colab.api.controller.team,TeamManager,497,0,82,0,143,0,65,0,24,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller,SubscriptionRequest.SubscriptionType,24,0,0,0,3,0,1,0,1,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller,WebsocketTxManager,45,0,4,0,15,0,6,0,4,0
+colab-webapp/colab-api,ch.colabproject.colab.api.controller,ValidationManager,31,0,2,0,9,0,4,0,3,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller,RequestManager,308,0,36,0,92,0,48,0,30,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller,WebsocketTxSync,45,0,4,0,16,0,6,0,4,0
 colab-webapp/colab-api,ch.colabproject.colab.api.controller,SubscriptionRequest.ChannelType,44,0,0,0,5,0,1,0,1,0

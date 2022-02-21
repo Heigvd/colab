@@ -25,9 +25,9 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2022 AlbaSim, MEI, HEIG-VD, HES-SO</copyright>
     <item>
-      <title>File: 194,
+      <title>File: 195,
              Errors: 0,
-             Warnings: 195,
+             Warnings: 193,
              Infos: 0
       </title>
             <link>${project.url}/checkstyle.html</link>
@@ -528,7 +528,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  1
                 </td>
                 <td>
                   0
@@ -1894,6 +1894,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="${project.url}/checkstyle.html#ch.colabproject.colab.api.controller.ValidationManager.java">ch/colabproject/colab/api/controller/ValidationManager.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="${project.url}/checkstyle.html#ch.colabproject.colab.generator.plugin.FileHelper.java">ch/colabproject/colab/generator/plugin/FileHelper.java</a>
                 </td>
                 <td>
@@ -2180,7 +2194,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  5
+                  2
                 </td>
                 <td>
                   0
