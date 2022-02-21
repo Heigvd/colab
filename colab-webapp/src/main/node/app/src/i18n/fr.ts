@@ -27,6 +27,8 @@ export const fr /*: ColabTranslations */ = {
   createAnAccount: 'créer un compte',
   sendMePassword: 'Envoyez-moi un nouveau mot de passe',
   unverifiedEmail: 'e-mail non vérifié',
+  usernameNotValid:
+    "le nom d'utilisateur ne peut contenir que des lettres sans accent, des nombres, des points, des traits de soulignement et des traits d'union",
   verifyEmail: 'Cliquez ici pour vérifier votre mot de passe',
   firstname: 'prénom',
   missingFirstname: 'Veuillez entrer votre prénom',

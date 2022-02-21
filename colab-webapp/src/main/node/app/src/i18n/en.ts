@@ -61,6 +61,8 @@ export const en = {
   createAnAccount: 'create an account',
   sendMePassword: 'send me a new password',
   unverifiedEmail: 'unverified e-mail',
+  usernameNotValid:
+    'the user name can contains only letters without accent, numbers, dots, underlines and hyphens',
 
   agreementDisclaimer: 'The use of this service implies that you agree to',
   iAccept: 'I accept',

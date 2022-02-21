@@ -8,6 +8,7 @@ package ch.colabproject.colab.api.controller.user;
 
 import ch.colabproject.colab.api.Helper;
 import ch.colabproject.colab.api.controller.RequestManager;
+import ch.colabproject.colab.api.controller.ValidationManager;
 import ch.colabproject.colab.api.controller.token.TokenManager;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.user.Account;
@@ -32,7 +33,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import liquibase.pro.packaged.ch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +78,12 @@ public class UserManager {
      */
     @Inject
     private TokenManager tokenManager;
+
+    /**
+     * Entity validation management
+     */
+    @Inject
+    private ValidationManager validationManager;
 
     /**
      * User persistence
@@ -129,10 +135,11 @@ public class UserManager {
                     LocalAccount account = userDao.findLocalAccountByIdentifier(identifier);
 
                     if (account != null) {
-                        return new AuthMethod(account.getCurrentClientHashMethod(), account.getClientSalt(),
+                        return new AuthMethod(account.getCurrentClientHashMethod(),
+                            account.getClientSalt(),
                             account.getNextClientHashMethod(), account.getNewClientSalt());
                     } else {
-                        // no account found, reeturn random method
+                        // no account found, return random method
                         // TODO: store it in a tmp cache
                         return this.getDefaultRandomAuthenticationMethod();
                     }
@@ -156,7 +163,7 @@ public class UserManager {
     /**
      * Create a brand new user, which can authenticate with a {@link LocalAccount}.First,
      * plainPassword will be hashed as any client should do. Then the
-     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo)  signup} method is called.
+     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo) signup} method is called.
      *
      * @param username      username
      * @param email         email address
@@ -192,7 +199,6 @@ public class UserManager {
      * @param plainPassword plain text password
      *
      * @return a brand new user
-     *
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public User createAdminUserTx(String username, String email, String plainPassword) {
@@ -202,7 +208,7 @@ public class UserManager {
     /**
      * Create a brand new admin user, which can authenticate with a {@link LocalAccount}. First,
      * plainPassword will be hashed as any client should do. Then the
-     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo)  signup} method is called.
+     * {@link #signup(ch.colabproject.colab.api.model.user.SignUpInfo) signup} method is called.
      *
      * @param username      username
      * @param email         email address
@@ -247,6 +253,10 @@ public class UserManager {
             // no local account with the given email address
 
             if (account == null) {
+                if (!Helper.isEmailAddress(signup.getEmail())) {
+                    throw HttpErrorMessage.dataIntegrityFailure();
+                }
+
                 account = new LocalAccount();
                 account.setClientSalt(signup.getSalt());
                 account.setCurrentClientHashMethod(signup.getHashMethod());
@@ -261,11 +271,15 @@ public class UserManager {
                 account.setUser(user);
 
                 user.setUsername(signup.getUsername());
+
+                validationManager.assertValid(user);
+                validationManager.assertValid(account);
+
                 em.persist(user);
                 // flush changes to DB to check DB constraint
                 // TODO: build some AfterTXCommit executor
                 em.flush();
-                // new user with a localaccount should verify their e-mail address
+                // new user with a local account should verify their e-mail address
                 tokenManager.requestEmailAddressVerification(account, false);
                 return user;
             } else {
@@ -303,21 +317,24 @@ public class UserManager {
                     if (aa.getCounter() >= AUTHENTICATION_ATTEMPT_MAX) {
                         // max number of failed attempts reached
                         OffsetDateTime lastAttempt = aa.getTimestamp();
-                        OffsetDateTime delay = lastAttempt.plusSeconds(AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC);
+                        OffsetDateTime delay = lastAttempt
+                            .plusSeconds(AUTHENTICATION_ATTEMPT_RESET_DELAY_SEC);
                         if (OffsetDateTime.now().isAfter(delay)) {
                             // delay has been reached, user may try again
                             sessionManager.resetAuthenticationAttemptHistory(account);
                         } else {
                             // user have to wait some time before any new attempt
-                            logger.warn("Account {} reached the max number of failed authentication", account);
+                            logger.warn(
+                                "Account {} reached the max number of failed authentication",
+                                account);
                             throw HttpErrorMessage.tooManyRequest();
                         }
                     }
                 }
 
                 // Spotbugs reports a timing attack vulnerability using:
-                //  if (Arrays.equals(hash, account.getHashedPassword())) {
-                // doing a fullcomparison of arrays makes it happy:
+                // if (Arrays.equals(hash, account.getHashedPassword())) {
+                // doing a full comparison of arrays makes it happy:
                 if (Helper.constantTimeArrayEquals(hash, account.getHashedPassword())) {
                     // authentication succeed
                     /////////////////////////////////
@@ -512,7 +529,7 @@ public class UserManager {
     }
 
     /**
-     * If the given email address is linked to a localaccount, sent a link to this mailbox to reset
+     * If the given email address is linked to a local account, sent a link to this mailbox to reset
      * the account password.
      *
      * @param email email address used as account identifier
@@ -534,6 +551,7 @@ public class UserManager {
      *
      * @return updated account
      *
+     * @throws HttpErrorMessage if the provided email is not a valid email
      * @throws ColabMergeException if something went wrong
      */
     public LocalAccount updateLocalAccountEmailAddress(LocalAccount account)
@@ -545,6 +563,10 @@ public class UserManager {
         String newEmail = account.getEmail();
 
         if (newEmail != null && !newEmail.equals(currentEmail)) {
+            if (!Helper.isEmailAddress(newEmail)) {
+                throw HttpErrorMessage.dataIntegrityFailure();
+            }
+
             try {
                 managedAccount.setVerified(false);
                 managedAccount.setEmail(newEmail);

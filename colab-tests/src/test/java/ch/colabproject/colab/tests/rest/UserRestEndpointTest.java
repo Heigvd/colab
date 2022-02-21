@@ -18,6 +18,7 @@ import ch.colabproject.colab.api.ws.message.WsChannelUpdate;
 import ch.colabproject.colab.api.ws.message.WsUpdateMessage;
 import ch.colabproject.colab.client.ColabClient;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage.MessageCode;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.TestHelper;
 import ch.colabproject.colab.tests.tests.TestUser;
@@ -33,7 +34,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- *
  * @author maxence
  */
 public class UserRestEndpointTest extends AbstractArquillianTest {
@@ -143,6 +143,64 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         User user = client.userRestEndpoint.getCurrentUser();
 
         Assertions.assertNull(user);
+    }
+
+    @Test
+    public void testUnsuitableEmail() {
+        String username = "lea";
+        String password = "SoSecuredPassword";
+
+        // empty
+        TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -> {
+            this.signup(username, "", password);
+        });
+
+        // accent
+        TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -> {
+            this.signup(username, "léa@test.local", password);
+        });
+
+        // weird character
+        TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -> {
+            this.signup(username, "le;a@test.local", password);
+        });
+
+        // upper case
+        TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -> {
+            this.signup(username, "Lea@test.local", password);
+        });
+
+        this.signup(username, "lea@test.local", password);
+
+        this.signOut();
+    }
+
+    /**
+     * Assert that a username with not an accepted character is rejected
+     */
+    @Test
+    public void testUnsuitableUsername() {
+        String email = "anyuser@test.local";
+        String password = "SoSecuredPassword";
+
+        // empty
+        TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -> {
+            this.signup("", email, password);
+        });
+
+        // accent
+        TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -> {
+            this.signup("Marie-Gaëlle.Marchand_test", email, password);
+        });
+
+        // weird character
+        TestHelper.assertThrows(MessageCode.DATA_INTEGRITY_FAILURE, () -> {
+            this.signup("Marie-Gaelle.Marchand_test$", email, password);
+        });
+
+        this.signup("Marie-Gaelle.Marchand_test", email, password);
+
+        this.signOut();
     }
 
     /**
@@ -294,6 +352,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
     /**
      * Test verify account process.
      */
+    @SuppressWarnings("boxing")
     @Test
     public void testVerify() {
         TestUser myUser = this.signup(
@@ -389,7 +448,8 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
-    public void testWebsocket() throws URISyntaxException, DeploymentException, IOException, InterruptedException {
+    public void testWebsocket()
+        throws URISyntaxException, DeploymentException, IOException, InterruptedException {
         this.signIn(admin);
 
 //        TestHelper.setLoggerLevel(LoggerFactory.getLogger(WebsocketHelper.class), Level.DEBUG);
@@ -400,7 +460,8 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         // subscribe to currentUser channel
         client.websocketRestEndpoint.subscribeToUserChannel(wsClient.getSessionId());
 
-        WsChannelUpdate channelUpdate = TestHelper.waitForMessagesAndAssert(wsClient, 1, 10, WsChannelUpdate.class).get(0);
+        WsChannelUpdate channelUpdate = TestHelper
+            .waitForMessagesAndAssert(wsClient, 1, 10, WsChannelUpdate.class).get(0);
         Assertions.assertTrue(channelUpdate.getChannel() instanceof UserChannel);
         UserChannel userChannel = (UserChannel) channelUpdate.getChannel();
         Assertions.assertEquals(this.adminUserId, userChannel.getUserId());
@@ -414,7 +475,8 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         wsClient.clearMessages();
         client.userRestEndpoint.updateUser(me);
 
-        WsUpdateMessage updateMessage = TestHelper.waitForMessagesAndAssert(wsClient, 1, 10, WsUpdateMessage.class).get(0);
+        WsUpdateMessage updateMessage = TestHelper
+            .waitForMessagesAndAssert(wsClient, 1, 10, WsUpdateMessage.class).get(0);
         // nothing has been deleted
         Assertions.assertEquals(0, updateMessage.getDeleted().size());
         // one entity has been updated
@@ -442,7 +504,7 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(1, oneSession.size());
         Long firstSessionId = oneSession.get(0).getId();
 
-        // connect with som other client to create a distinct session
+        // connect with some other client to create a distinct session
         ColabClient otherClient = this.createRestClient();
         this.signIn(otherClient, otherUser);
 
@@ -451,7 +513,8 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(2, twoSessions.size());
 
         // fetch id of the second one
-        Optional<HttpSession> findSecond = twoSessions.stream().filter(s -> !s.getId().equals(firstSessionId)).findFirst();
+        Optional<HttpSession> findSecond = twoSessions.stream()
+            .filter(s -> !s.getId().equals(firstSessionId)).findFirst();
         Assertions.assertTrue(findSecond.isPresent());
         Long secondSessionId = findSecond.get().getId();
 
@@ -495,7 +558,6 @@ public class UserRestEndpointTest extends AbstractArquillianTest {
         otherClient.userRestEndpoint.signOut();
         this.signIn(otherClient, admin);
         otherClient.userRestEndpoint.forceLogout(firstSessionId);
-
 
         // initial client has been kicked out
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.AUTHENTICATION_REQUIRED, () -> {

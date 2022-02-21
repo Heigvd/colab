@@ -133,7 +133,7 @@ public class LocalAccount extends Account {
      * @param email new email to use.
      */
     public void setEmail(String email) {
-        if (Helper.isEmailAddress(email)) {
+        if (Helper.isEmailAddress(email)) { // FIXME sandra see with Maxence if it is useful to do it here
 
             if (!email.equals(this.email)) {
                 this.verified = false;
