@@ -5,8 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
@@ -15,7 +14,6 @@ import CleverTextarea from '../common/CleverTextarea';
 import ErrorBoundary from '../common/ErrorBoundary';
 import Flex from '../common/Flex';
 import Toggler from '../common/Form/Toggler';
-import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 import Tips from '../common/Tips';
 import { space_S } from '../styling/style';
@@ -38,7 +36,7 @@ interface Props {
   revision: string;
   allowEdition?: boolean;
   editingStatus: EditState;
-  closeEditing?: () => void;
+  className?: string;
 }
 
 function Unsupported({ md }: { md: string }) {
@@ -62,7 +60,7 @@ export default function LiveEditor({
   revision,
   allowEdition,
   editingStatus,
-  closeEditing,
+  className,
 }: Props): JSX.Element {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
 
@@ -103,10 +101,7 @@ export default function LiveEditor({
   } else {
     if (editingStatus.status === 'VIEW') {
       return (
-        <Flex 
-        //onClick={()=>logger.info(editingStatus)}
-          //() => setState({ ...state, status: 'EDIT' })}
-        >
+        <Flex className={className}>
           <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
             <MarkdownViewer md={currentValue} />
           </ErrorBoundary>
@@ -117,7 +112,7 @@ export default function LiveEditor({
         <Flex
           direction="column"
           align="stretch"
-          className={css({ backgroundColor: 'var(--hoverBgColor)', padding: space_S })}
+          className={cx(css({ backgroundColor: 'var(--hoverBgColor)', padding: space_S }), className)}
         >
           <Flex justify="space-between">
             <Flex align="center">
@@ -126,13 +121,7 @@ export default function LiveEditor({
               </Tips>
               <Toggler label="Show Tree" value={showTree} onChange={setShowTree} />
               <Toggler label="WYSIWYG" value={wysiwyg} onChange={setWysiwyg} />
-            </Flex>
-            <IconButton
-              title="close editor"
-              onClick={closeEditing}
-              icon={faTimes}
-            />
-            
+            </Flex>            
           </Flex>
           <Flex>
             {wysiwyg ? (

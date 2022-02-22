@@ -15,10 +15,15 @@ export interface BlockEditorProps {
   blockId: number;
   allowEdition?: boolean;
   editingStatus?: EditState;
-  closeEditing?: () => void;
+  className?: string;
 }
 
-export function BlockEditorWrapper({ blockId, allowEdition, editingStatus, closeEditing }: BlockEditorProps): JSX.Element {
+export function BlockEditorWrapper({
+  blockId,
+  allowEdition,
+  editingStatus,
+  className,
+}: BlockEditorProps): JSX.Element {
   const block = useBlock(blockId);
   if (block == null) {
     return <InlineLoading />;
@@ -33,8 +38,8 @@ export function BlockEditorWrapper({ blockId, allowEdition, editingStatus, close
               atId={blockId}
               value={block.textData || ''}
               revision={block.revision}
-              editingStatus={editingStatus || {status: 'VIEW'}}
-              closeEditing={closeEditing}
+              editingStatus={editingStatus || { status: 'VIEW' }}
+              className={className}
             />
           );
         default:

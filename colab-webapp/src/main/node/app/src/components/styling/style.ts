@@ -466,5 +466,5 @@ export const editableBlockStyle = css({
     backgroundColor: 'var(--hoverBgColor)',
     border: '1px solid transparent',
     cursor: 'pointer',
-  }
+  },
   });
