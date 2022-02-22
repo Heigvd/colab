@@ -16,7 +16,6 @@ import ch.colabproject.colab.api.model.link.ActivityFlowLink;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.model.team.acl.AccessControl;
 import ch.colabproject.colab.api.persistence.jpa.card.CardDao;
-import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
@@ -66,21 +65,6 @@ public class CardRestEndpoint {
     private CardContentManager cardContentManager;
 
     /**
-     * Retrieve the list of all cards. This is available to admin only
-     *
-     * @return all known cards
-     */
-    // FIXME sandra - It certainly has no reason to be called so (except for
-    // preliminary tests)
-    // To remove or change at the right moment
-    @GET
-    @AdminResource
-    public List<Card> getAllCards() {
-        logger.debug("get all cards");
-        return cardDao.getAllCard();
-    }
-
-    /**
      * Get card identified by the given id
      *
      * @param id id of the card to fetch
@@ -91,7 +75,7 @@ public class CardRestEndpoint {
     @Path("{id}")
     public Card getCard(@PathParam("id") Long id) {
         logger.debug("get card #{}", id);
-        return cardDao.getCard(id);
+        return cardDao.findCard(id);
     }
 
     /**
@@ -107,7 +91,7 @@ public class CardRestEndpoint {
     @POST
     public Long createCard(Card card) {
         logger.debug("create card {}", card);
-        return cardDao.createCard(card).getId();
+        return cardDao.persistCard(card).getId();
     }
 
     /**
@@ -146,7 +130,7 @@ public class CardRestEndpoint {
 
         List<CardContent> variants = card.getContentVariants();
         if (variants != null && variants.size() == 1 && variants.get(0) != null) {
-            cardContentManager.assignDeliverable(variants.get(0).getId(), document);
+            cardContentManager.addDeliverable(variants.get(0).getId(), document);
         } else {
             throw HttpErrorMessage.dataIntegrityFailure();
         }

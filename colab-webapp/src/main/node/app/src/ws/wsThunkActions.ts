@@ -12,7 +12,6 @@ import {
   AccessControl,
   Account,
   ActivityFlowLink,
-  Block,
   Card,
   CardContent,
   Change,
@@ -50,7 +49,6 @@ interface EntityBag {
   accounts: Updates<Account>;
   acl: Updates<AccessControl>;
   activityFlowLinks: Updates<ActivityFlowLink>;
-  blocks: Updates<Block>;
   cards: Updates<Card>;
   changes: Updates<Change>;
   contents: Updates<CardContent>;
@@ -71,7 +69,6 @@ function createBag(): EntityBag {
     accounts: { updated: [], deleted: [] },
     acl: { updated: [], deleted: [] },
     activityFlowLinks: { updated: [], deleted: [] },
-    blocks: { updated: [], deleted: [] },
     cards: { updated: [], deleted: [] },
     changes: { updated: [], deleted: [] },
     contents: { updated: [], deleted: [] },
@@ -90,90 +87,88 @@ function createBag(): EntityBag {
 
 export const processMessage = createAsyncThunk(
   'websocket/processUpdate',
-  async (event: WsUpdateMessage) => {
+  async (events: WsUpdateMessage[]) => {
     const bag = createBag();
-    logger.info('Delete: ', event.deleted);
-    for (const item of event.deleted) {
-      if (indexEntryIs(item, 'Account')) {
-        bag.accounts.deleted.push(item);
-      } else if (indexEntryIs(item, 'AccessControl')) {
-        bag.acl.deleted.push(item);
-      } else if (indexEntryIs(item, 'ActivityFlowLink')) {
-        bag.activityFlowLinks.deleted.push(item);
-      } else if (indexEntryIs(item, 'Block')) {
-        bag.blocks.deleted.push(item);
-      } else if (indexEntryIs(item, 'Card')) {
-        bag.cards.deleted.push(item);
-      } else if (indexEntryIs(item, 'Change')) {
-        bag.changes.deleted.push(item);
-      } else if (indexEntryIs(item, 'CardContent')) {
-        bag.contents.deleted.push(item);
-      } else if (indexEntryIs(item, 'Document')) {
-        bag.documents.deleted.push(item);
-      } else if (indexEntryIs(item, 'HttpSession')) {
-        bag.httpSessions.deleted.push(item);
-      } else if (indexEntryIs(item, 'TeamMember')) {
-        bag.members.deleted.push(item);
-      } else if (indexEntryIs(item, 'TeamRole')) {
-        bag.roles.deleted.push(item);
-      } else if (indexEntryIs(item, 'Project')) {
-        bag.projects.deleted.push(item);
-      } else if (indexEntryIs(item, 'AbstractResource')) {
-        bag.resources.deleted.push(item);
-      } else if (indexEntryIs(item, 'StickyNoteLink')) {
-        bag.stickynotelinks.deleted.push(item);
-      } else if (indexEntryIs(item, 'AbstractCardType')) {
-        bag.types.deleted.push(item);
-      } else if (indexEntryIs(item, 'User')) {
-        bag.users.deleted.push(item);
-      } else {
-        bag.notifications.push({
-          status: 'OPEN',
-          type: 'WARN',
-          message: `Unhandled deleted entity: ${item.type}#${item.id}`,
-        });
+    logger.info('Process ', events.length, ' messages');
+    events.forEach((event, i) => {
+      logger.info(` Message #${i}`, event);
+      for (const item of event.deleted) {
+        if (indexEntryIs(item, 'Account')) {
+          bag.accounts.deleted.push(item);
+        } else if (indexEntryIs(item, 'AccessControl')) {
+          bag.acl.deleted.push(item);
+        } else if (indexEntryIs(item, 'ActivityFlowLink')) {
+          bag.activityFlowLinks.deleted.push(item);
+        } else if (indexEntryIs(item, 'Card')) {
+          bag.cards.deleted.push(item);
+        } else if (indexEntryIs(item, 'Change')) {
+          bag.changes.deleted.push(item);
+        } else if (indexEntryIs(item, 'CardContent')) {
+          bag.contents.deleted.push(item);
+        } else if (indexEntryIs(item, 'Document')) {
+          bag.documents.deleted.push(item);
+        } else if (indexEntryIs(item, 'HttpSession')) {
+          bag.httpSessions.deleted.push(item);
+        } else if (indexEntryIs(item, 'TeamMember')) {
+          bag.members.deleted.push(item);
+        } else if (indexEntryIs(item, 'TeamRole')) {
+          bag.roles.deleted.push(item);
+        } else if (indexEntryIs(item, 'Project')) {
+          bag.projects.deleted.push(item);
+        } else if (indexEntryIs(item, 'AbstractResource')) {
+          bag.resources.deleted.push(item);
+        } else if (indexEntryIs(item, 'StickyNoteLink')) {
+          bag.stickynotelinks.deleted.push(item);
+        } else if (indexEntryIs(item, 'AbstractCardType')) {
+          bag.types.deleted.push(item);
+        } else if (indexEntryIs(item, 'User')) {
+          bag.users.deleted.push(item);
+        } else {
+          bag.notifications.push({
+            status: 'OPEN',
+            type: 'WARN',
+            message: `Unhandled deleted entity: ${item.type}#${item.id}`,
+          });
+        }
       }
-    }
 
-    logger.info('Update: ', event.updated);
-    for (const item of event.updated) {
-      if (entityIs(item, 'Account')) {
-        bag.accounts.updated.push(item);
-      } else if (entityIs(item, 'AccessControl')) {
-        bag.acl.updated.push(item);
-      } else if (entityIs(item, 'ActivityFlowLink')) {
-        bag.activityFlowLinks.updated.push(item);
-      } else if (entityIs(item, 'Block')) {
-        bag.blocks.updated.push(item);
-      } else if (entityIs(item, 'Card')) {
-        bag.cards.updated.push(item);
-      } else if (entityIs(item, 'Change')) {
-        bag.changes.updated.push(item);
-      } else if (entityIs(item, 'CardContent')) {
-        bag.contents.updated.push(item);
-      } else if (entityIs(item, 'Document')) {
-        bag.documents.updated.push(item);
-      } else if (entityIs(item, 'HttpSession')) {
-        bag.httpSessions.updated.push(item);
-      } else if (entityIs(item, 'TeamMember')) {
-        bag.members.updated.push(item);
-      } else if (entityIs(item, 'Project')) {
-        bag.projects.updated.push(item);
-      } else if (entityIs(item, 'AbstractResource')) {
-        bag.resources.updated.push(item);
-      } else if (entityIs(item, 'TeamRole')) {
-        bag.roles.updated.push(item);
-      } else if (entityIs(item, 'StickyNoteLink')) {
-        bag.stickynotelinks.updated.push(item);
-      } else if (entityIs(item, 'AbstractCardType')) {
-        bag.types.updated.push(item);
-      } else if (entityIs(item, 'User')) {
-        bag.users.updated.push(item);
-      } else {
-        //If next line is erroneous, it means a type of WsMessage is not handled
-        checkUnreachable(item);
+      for (const item of event.updated) {
+        if (entityIs(item, 'Account')) {
+          bag.accounts.updated.push(item);
+        } else if (entityIs(item, 'AccessControl')) {
+          bag.acl.updated.push(item);
+        } else if (entityIs(item, 'ActivityFlowLink')) {
+          bag.activityFlowLinks.updated.push(item);
+        } else if (entityIs(item, 'Card')) {
+          bag.cards.updated.push(item);
+        } else if (entityIs(item, 'Change')) {
+          bag.changes.updated.push(item);
+        } else if (entityIs(item, 'CardContent')) {
+          bag.contents.updated.push(item);
+        } else if (entityIs(item, 'Document')) {
+          bag.documents.updated.push(item);
+        } else if (entityIs(item, 'HttpSession')) {
+          bag.httpSessions.updated.push(item);
+        } else if (entityIs(item, 'TeamMember')) {
+          bag.members.updated.push(item);
+        } else if (entityIs(item, 'Project')) {
+          bag.projects.updated.push(item);
+        } else if (entityIs(item, 'AbstractResource')) {
+          bag.resources.updated.push(item);
+        } else if (entityIs(item, 'TeamRole')) {
+          bag.roles.updated.push(item);
+        } else if (entityIs(item, 'StickyNoteLink')) {
+          bag.stickynotelinks.updated.push(item);
+        } else if (entityIs(item, 'AbstractCardType')) {
+          bag.types.updated.push(item);
+        } else if (entityIs(item, 'User')) {
+          bag.users.updated.push(item);
+        } else {
+          //If next line is erroneous, it means a type of WsMessage is not handled
+          checkUnreachable(item);
+        }
       }
-    }
+    });
 
     return bag;
   },

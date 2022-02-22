@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.rest.card.bean;
 
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import java.io.Serializable;
 import java.util.Set;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -37,7 +37,7 @@ public class CardTypeCreationBean implements Serializable {
     /**
      * The purpose
      */
-    private Block purpose;
+    private TextDataBlock purpose;
 
     /**
      * The tags
@@ -78,14 +78,14 @@ public class CardTypeCreationBean implements Serializable {
     /**
      * @return the purpose
      */
-    public Block getPurpose() {
+    public TextDataBlock getPurpose() {
         return purpose;
     }
 
     /**
      * @param purpose the purpose
      */
-    public void setPurpose(Block purpose) {
+    public void setPurpose(TextDataBlock purpose) {
         this.purpose = purpose;
     }
 

@@ -6,7 +6,7 @@
  */
 package ch.colabproject.colab.api.model.document;
 
-import static ch.colabproject.colab.api.model.card.Card.STRUCTURE_SEQUENCE_NAME;
+import static ch.colabproject.colab.api.model.document.Document.DOCUMENT_SEQUENCE_NAME;
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
 import ch.colabproject.colab.api.model.WithWebsocketChannels;
@@ -75,7 +75,7 @@ public abstract class AbstractResource
      * Abstract resource ID
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = STRUCTURE_SEQUENCE_NAME)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = DOCUMENT_SEQUENCE_NAME)
     protected Long id;
 
     /**

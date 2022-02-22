@@ -173,7 +173,7 @@ public class ProjectRestEndpointTest extends AbstractArquillianTest {
 
         Long projectId = client.projectRestEndpoint.createProject(p);
 
-        // Goulash receives the project, the user (ie himself) and the teamMmeber linking the
+        // Goulash receives the project, the user (ie himself) and the teamMember which link the
         // project to the user
         WsUpdateMessage wsProjectUpdate = TestHelper
             .waitForMessagesAndAssert(wsGoulashClient, 1, 5, WsUpdateMessage.class).get(0);

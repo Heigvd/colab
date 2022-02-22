@@ -7,6 +7,7 @@
 package ch.colabproject.colab.api.controller.card;
 
 import ch.colabproject.colab.api.controller.document.DocumentManager;
+import ch.colabproject.colab.api.controller.document.IndexGeneratorHelper;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
@@ -14,9 +15,9 @@ import ch.colabproject.colab.api.model.card.CardContentStatus;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
+import ch.colabproject.colab.api.persistence.jpa.document.DocumentDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import java.util.List;
-import java.util.Objects;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -61,16 +62,22 @@ public class CardContentManager {
     private CardContentDao cardContentDao;
 
     /**
+     * Document persistence handling
+     */
+    @Inject
+    private DocumentDao documentDao;
+
+    /**
+     * Document specific logic
+     */
+    @Inject
+    private DocumentManager documentManager;
+
+    /**
      * Card specific logic management
      */
     @Inject
     private CardManager cardManager;
-
-    /**
-     * Document specific logic management
-     */
-    @Inject
-    private DocumentManager documentManager;
 
     // *********************************************************************************************
     // find card contents
@@ -86,7 +93,7 @@ public class CardContentManager {
      * @throws HttpErrorMessage if the card content was not found
      */
     public CardContent assertAndGetCardContent(Long cardContentId) {
-        CardContent cardContent = cardContentDao.getCardContent(cardContentId);
+        CardContent cardContent = cardContentDao.findCardContent(cardContentId);
 
         if (cardContent == null) {
             logger.error("card content #{} not found", cardContentId);
@@ -118,7 +125,7 @@ public class CardContentManager {
 
         ResourceReferenceSpreadingHelper.extractReferencesFromUp(cardContent);
 
-        return cardContentDao.createCardContent(cardContent);
+        return cardContentDao.persistCardContent(cardContent);
     }
 
     /**
@@ -176,19 +183,19 @@ public class CardContentManager {
     }
 
     // *********************************************************************************************
-    // assign a deliverable to a card content
+    // add a deliverable to a card content
     // *********************************************************************************************
 
     /**
-     * Set the deliverable to the card content
+     * Add the deliverable to the card content
      *
      * @param cardContentId the id of the card content
      * @param document      the document to use as deliverable. It must be a new document
      *
      * @return the newly created document
      */
-    public Document assignDeliverable(Long cardContentId, Document document) {
-        logger.debug("set deliverable {} to card content #{}", document, cardContentId);
+    public Document addDeliverable(Long cardContentId, Document document) {
+        logger.debug("add deliverable {} to card content #{}", document, cardContentId);
 
         CardContent cardContent = assertAndGetCardContent(cardContentId);
 
@@ -196,18 +203,45 @@ public class CardContentManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        // A document can be related at max to one card content
-        if (document.hasDeliverableCardContent()
-            && Objects.equals(document.getDeliverableCardContentId(), cardContentId)) {
+        if (document.hasOwningResource() || document.hasOwningCardContent()) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        cardContent.setDeliverable(document);
-        document.setDeliverableCardContent(cardContent);
+        if (cardContent.getDeliverables().contains(document)) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
 
-        Document persistedDocument = documentManager.persistDocument(document);
+        if (document.getIndex() == 0) {
+            int index = IndexGeneratorHelper.nextIndex(cardContent.getDeliverables());
+            document.setIndex(index);
+        }
 
-        return persistedDocument;
+        cardContent.getDeliverables().add(document);
+        document.setOwningCardContent(cardContent);
+
+        return documentDao.persistDocument(document);
+    }
+
+    /**
+     * Remove the deliverable of the card content.
+     *
+     * @param cardContentId the id of the card content
+     * @param documentId    the id of the document to remove from the card content
+     */
+    public void removeDeliverable(Long cardContentId, Long documentId) {
+        logger.debug("remove deliverable #{} of card content #{}", documentId, cardContentId);
+
+        CardContent cardContent = assertAndGetCardContent(cardContentId);
+
+        Document document = documentManager.assertAndGetDocument(documentId);
+
+        if (!(cardContent.getDeliverables().contains(document))) {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        cardContent.getDeliverables().remove(document);
+
+        documentDao.deleteDocument(document.getId());
     }
 
     // *********************************************************************************************
@@ -230,18 +264,18 @@ public class CardContentManager {
     }
 
     /**
-     * Get the deliverable of the card content
+     * Get the deliverables of the card content
      *
      * @param cardContentId the id of the card content
      *
-     * @return the deliverable linked to the card content
+     * @return the deliverables linked to the card content
      */
-    public Document getDeliverableOfCardContent(Long cardContentId) {
-        logger.debug("get deliverable of card content #{}", cardContentId);
+    public List<Document> getDeliverablesOfCardContent(Long cardContentId) {
+        logger.debug("get deliverables of card content #{}", cardContentId);
 
         CardContent cardContent = assertAndGetCardContent(cardContentId);
 
-        return cardContent.getDeliverable();
+        return cardContent.getDeliverables();
     }
 
     /**

@@ -9,8 +9,8 @@ package ch.colabproject.colab.tests.rest.card;
 import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardType;
-import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.ExternalLink;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
@@ -52,7 +52,7 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(cardId, variants.get(0).getCardId());
         Assertions.assertNotEquals(parentId, variants.get(0).getId());
 
-        Document newDoc = new BlockDocument();
+        Document newDoc = new ExternalLink();
 
         card = client.cardRestEndpoint.createNewCardWithDeliverable(parentId, cardTypeId, newDoc);
         cardId = card.getId();
@@ -70,10 +70,13 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(cardId, variants.get(0).getCardId());
         Assertions.assertNotEquals(parentId, variants.get(0).getId());
 
-        Document doc = client.cardContentRestEndpoint.getDeliverableOfCardContent(variants.get(0).getId());
+        List<Document> documents = client.cardContentRestEndpoint.getDeliverablesOfCardContent(variants.get(0).getId());
+        Assertions.assertNotNull(documents);
+        Assertions.assertEquals(1, documents.size());
+        Document doc = documents.get(0);
         Assertions.assertNotNull(doc);
         Assertions.assertNotNull(doc.getId());
-        Assertions.assertTrue(doc instanceof BlockDocument);
+        Assertions.assertTrue(doc instanceof ExternalLink);
     }
 
     @Test
@@ -96,29 +99,6 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
         Card persistedCard = client.cardRestEndpoint.getCard(cardId);
         Assertions.assertEquals(color, persistedCard.getColor());
         Assertions.assertEquals(index, persistedCard.getIndex());
-    }
-
-    @Test
-    public void testGetAllCards() {
-        Project project = ColabFactory.createProject(client, "testGetAllCards");
-
-        int initialSize = client.cardRestEndpoint.getAllCards().size();
-
-        Card card1 = ColabFactory.createNewCard(client, project);
-        card1.setIndex(1337);
-        card1.setColor("red");
-        client.cardRestEndpoint.updateCard(card1);
-
-        List<Card> cards = client.cardRestEndpoint.getAllCards();
-        Assertions.assertEquals(initialSize + 1, cards.size());
-
-        Card card2 = ColabFactory.createNewCard(client, project);
-        card2.setIndex(42);
-        card2.setColor("yellow");
-        client.cardRestEndpoint.updateCard(card2);
-
-        cards = client.cardRestEndpoint.getAllCards();
-        Assertions.assertEquals(initialSize + 2, cards.size());
     }
 
     @Test

@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { Block, Change } from 'colab-rest-client';
+import { Change, entityIs, TextDataBlock } from 'colab-rest-client';
 import { throttle } from 'lodash';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -46,7 +46,7 @@ function findCounterValue(liveSession: string, changes: Change[]): number {
     .reduce((max, current) => (current > max ? current : max), 0);
 }
 
-export function useBlock(blockId: number | null | undefined): Block | null | undefined {
+export function useBlock(blockId: number | null | undefined): TextDataBlock | null | undefined {
   // blockId =>  number of subscriptions
   const subscriptionCounters = React.useRef<Record<number, number>>({});
   const dispatch = useAppDispatch();
@@ -61,12 +61,22 @@ export function useBlock(blockId: number | null | undefined): Block | null | und
         refSubs[blockId] = 1;
         dispatch(API.subscribeToBlockChannel(blockId)).then(() => {
           if (alive) {
-            dispatch(API.getBlock(blockId));
+            // TODO sandra work in progress
+            // 1. do we need to get the doc ?!?
+            // maybe for teaser or purpose, certainly not for deliverables or resources' documents
+            // 2. for the moment, the only block we have is a document
+            // make it more wisely when there will be something else
+            dispatch(API.getDocument(blockId));
           }
         });
       } else {
         refSubs[blockId] = count + 1;
-        dispatch(API.getBlock(blockId));
+        // TODO sandra work in progress
+        // 1. do we need to get the doc ?!?
+        // maybe for teaser or purpose, certainly not for deliverables or resources' documents
+        // 2. for the moment, the only block we have is a document
+        // make it more wisely when there will be something else
+        dispatch(API.getDocument(blockId));
       }
 
       return () => {
@@ -88,7 +98,14 @@ export function useBlock(blockId: number | null | undefined): Block | null | und
 
   return useAppSelector(state => {
     if (blockId) {
-      return state.block.blocks[blockId];
+      // for the moment, the only block we have is a document
+      // make it more wisely when there will be something else
+      const doc = state.document.documents[blockId];
+      if (entityIs(doc, 'TextDataBlock')) {
+        return doc;
+      } else {
+        return undefined;
+      }
     } else {
       return undefined;
     }

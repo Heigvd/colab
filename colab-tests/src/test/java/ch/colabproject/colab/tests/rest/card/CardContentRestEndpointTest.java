@@ -10,13 +10,16 @@ import ch.colabproject.colab.api.model.card.Card;
 import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.card.CardContentCompletionMode;
 import ch.colabproject.colab.api.model.card.CardContentStatus;
-import ch.colabproject.colab.api.model.document.BlockDocument;
 import ch.colabproject.colab.api.model.document.Document;
+import ch.colabproject.colab.api.model.document.DocumentFile;
+import ch.colabproject.colab.api.model.document.ExternalLink;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
 import ch.colabproject.colab.tests.tests.AbstractArquillianTest;
 import ch.colabproject.colab.tests.tests.ColabFactory;
 import java.util.List;
+import java.util.Objects;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -78,25 +81,6 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(CardContentCompletionMode.NO_OP,
             persistedCardContent.getCompletionMode());
         Assertions.assertEquals(CardContentStatus.ACTIVE, persistedCardContent.getStatus());
-    }
-
-    @Test
-    public void testGetAllCardContents() {
-        Project project = ColabFactory.createProject(client, "testGetAllCardContents");
-        Long cardId = ColabFactory.createNewCard(client, project).getId();
-
-        int initialSize = client.cardContentRestEndpoint.getAllCardContents().size();
-
-        CardContent cardContent = client.cardContentRestEndpoint.createNewCardContent(cardId);
-        cardContent.setTitle("Sketch");
-        client.cardContentRestEndpoint.updateCardContent(cardContent);
-
-        cardContent = client.cardContentRestEndpoint.createNewCardContent(cardId);
-        cardContent.setTitle("Artistic best practices");
-        client.cardContentRestEndpoint.updateCardContent(cardContent);
-
-        List<CardContent> cardContents = client.cardContentRestEndpoint.getAllCardContents();
-        Assertions.assertEquals(initialSize + 2, cardContents.size());
     }
 
     @Test
@@ -174,48 +158,95 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Project project = ColabFactory.createProject(client, "testDeliverableAccess");
         Long cardId = ColabFactory.createNewCard(client, project).getId();
 
-        Document newDoc = new BlockDocument();
+        // create a card content with a deliverable
 
-        CardContent cardContent = client.cardContentRestEndpoint.createNewCardContentWithDeliverable(cardId, newDoc);
+        String doc1Url = "troispetitschats";
+        ExternalLink doc1 = new ExternalLink();
+        doc1.setUrl(doc1Url);
+
+        CardContent cardContent = client.cardContentRestEndpoint
+            .createNewCardContentWithDeliverable(cardId, doc1);
         Long cardContentId = cardContent.getId();
 
-        Document persistedDoc = client.cardContentRestEndpoint.getDeliverableOfCardContent(cardContentId);
-        Assertions.assertNotNull(persistedDoc);
-        Assertions.assertNotNull(persistedDoc.getId());
-        Long docId = persistedDoc.getId();
-        Assertions.assertEquals(cardContentId, persistedDoc.getDeliverableCardContentId());
-
-        Document deliverable = client.cardContentRestEndpoint.getDeliverableOfCardContent(cardContentId);
+        List<Document> persistedDeliverables = client.cardContentRestEndpoint
+            .getDeliverablesOfCardContent(cardContentId);
+        Assertions.assertNotNull(persistedDeliverables);
+        Assertions.assertEquals(1, persistedDeliverables.size());
+        Document deliverable = persistedDeliverables.get(0);
         Assertions.assertNotNull(deliverable);
-        Assertions.assertEquals(docId, deliverable.getId());
+        Assertions.assertNotNull(deliverable.getId());
+        Assertions.assertEquals(1000, deliverable.getIndex());
+        Assertions.assertEquals(cardContentId, deliverable.getOwningCardContentId());
+        Assertions.assertNull(deliverable.getOwningResourceId());
+        Assertions.assertTrue(deliverable instanceof ExternalLink);
+        Assertions.assertEquals(doc1Url, ((ExternalLink) deliverable).getUrl());
+        Long doc1Id = deliverable.getId();
 
-        Document persistedDocument = client.documentRestEndpoint.getDocument(docId);
-        Assertions.assertEquals(persistedDoc, persistedDocument);
+        Document persistedDocument1 = client.documentRestEndpoint.getDocument(doc1Id);
+        Assertions.assertEquals(deliverable, persistedDocument1);
 
-        // delete document
+        // remove document
 
-        client.documentRestEndpoint.deleteDocument(persistedDocument.getId());
+        client.cardContentRestEndpoint.removeDeliverable(cardContentId, doc1Id);
 
-        deliverable = client.cardContentRestEndpoint.getDeliverableOfCardContent(cardContentId);
-        Assertions.assertNull(deliverable);
+        persistedDeliverables = client.cardContentRestEndpoint
+            .getDeliverablesOfCardContent(cardContentId);
+        Assertions.assertNotNull(persistedDeliverables);
+        Assertions.assertEquals(0, persistedDeliverables.size());
+
+        persistedDocument1 = client.documentRestEndpoint.getDocument(doc1Id);
+        Assertions.assertNull(persistedDocument1);
+
+        // set new deliverables
+        String doc2FileName = "shabidoo";
+        DocumentFile doc2 = new DocumentFile();
+        doc2.setFileName(doc2FileName);
+
+        Document deliverable2 = client.cardContentRestEndpoint.addDeliverable(cardContentId, doc2);
+        Assertions.assertNotNull(deliverable2);
+        Assertions.assertNotNull(deliverable2.getId());
+        Assertions.assertEquals(1000, deliverable2.getIndex());
+        Assertions.assertEquals(cardContentId, deliverable2.getOwningCardContentId());
+        Assertions.assertNull(deliverable2.getOwningResourceId());
+        Assertions.assertTrue(deliverable2 instanceof DocumentFile);
+        Assertions.assertEquals(doc2FileName, ((DocumentFile) deliverable2).getFileName());
+        Long doc2Id = deliverable2.getId();
+
+        String doc3TextData = "mush";
+        TextDataBlock doc3 = new TextDataBlock();
+        doc3.setTextData(doc3TextData);
+
+        Document deliverable3 = client.cardContentRestEndpoint.addDeliverable(cardContentId, doc3);
+        Assertions.assertNotNull(deliverable3);
+        Assertions.assertNotNull(deliverable3.getId());
+        Assertions.assertEquals(2000, deliverable3.getIndex());
+        Assertions.assertEquals(cardContentId, deliverable3.getOwningCardContentId());
+        Assertions.assertNull(deliverable3.getOwningResourceId());
+        Assertions.assertTrue(deliverable3 instanceof TextDataBlock);
+        Assertions.assertEquals(doc3TextData, ((TextDataBlock) deliverable3).getTextData());
+        Long doc3Id = deliverable3.getId();
+
+        persistedDeliverables = client.cardContentRestEndpoint
+            .getDeliverablesOfCardContent(cardContentId);
+        Assertions.assertNotNull(persistedDeliverables);
+        Assertions.assertEquals(2, persistedDeliverables.size());
+        Assertions.assertTrue(Objects.equals(persistedDeliverables.get(0).getId(), doc2Id)
+            || Objects.equals(persistedDeliverables.get(0).getId(), doc3Id));
+        Assertions.assertTrue(Objects.equals(persistedDeliverables.get(1).getId(), doc2Id)
+            || Objects.equals(persistedDeliverables.get(1).getId(), doc3Id));
 
         // delete card content
 
-        newDoc = new BlockDocument();
-
-        persistedDoc = client.cardContentRestEndpoint.assignDeliverable(cardContentId, newDoc);
-        Assertions.assertNotNull(persistedDoc);
-        Assertions.assertNotNull(persistedDoc.getId());
-        Long doc2Id = persistedDoc.getId();
-
-        deliverable = client.cardContentRestEndpoint.getDeliverableOfCardContent(cardContentId);
-        Assertions.assertNotNull(deliverable);
-        Assertions.assertEquals(doc2Id, deliverable.getId());
-
         client.cardContentRestEndpoint.deleteCardContent(cardContentId);
 
-        persistedDocument = client.documentRestEndpoint.getDocument(persistedDoc.getId());
-        Assertions.assertNull(persistedDocument);
+        persistedDocument1 = client.documentRestEndpoint.getDocument(doc2Id);
+        Assertions.assertNull(persistedDocument1);
+
+        Document persistedDocument2 = client.documentRestEndpoint.getDocument(doc2Id);
+        Assertions.assertNull(persistedDocument2);
+
+        Document persistedDocument3 = client.documentRestEndpoint.getDocument(doc3Id);
+        Assertions.assertNull(persistedDocument3);
     }
 
 }

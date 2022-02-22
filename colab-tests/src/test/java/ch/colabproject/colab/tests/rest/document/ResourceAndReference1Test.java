@@ -124,7 +124,7 @@ public class ResourceAndReference1Test extends AbstractArquillianTest {
         ResourceCreationBean toCreate = new ResourceCreationBean();
         toCreate.setTitle(title);
         toCreate.setTeaser(tea);
-        toCreate.setDocument(doc);
+        toCreate.setDocuments(List.of(doc));
         toCreate.setCategory(category);
 
         Long persistedResourceId;

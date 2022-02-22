@@ -1,0 +1,9 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="sandra" id="1644839028729-1">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="10" maxValue="9223372036854775807" minValue="1" sequenceName="document_seq" startValue="10" />
+    </changeSet>
+    <changeSet author="sandra" id="1644839028729-2">
+        <sql>select setval('document_seq', (select nextval('structure_seq')), false)</sql>
+    </changeSet>
+</databaseChangeLog>

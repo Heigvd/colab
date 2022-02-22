@@ -40,7 +40,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
@@ -62,7 +61,6 @@ import javax.persistence.Transient;
         @Index(columnList = "parent_id"),
     }
 )
-@NamedQuery(name = "Card.findAll", query = "SELECT c FROM Card c")
 public class Card
     implements ColabEntity, WithWebsocketChannels, Resourceable, StickyNoteSourceable {
 

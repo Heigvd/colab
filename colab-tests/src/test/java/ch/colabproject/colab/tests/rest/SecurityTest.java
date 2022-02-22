@@ -46,19 +46,7 @@ public class SecurityTest extends AbstractArquillianTest {
             client.projectRestEndpoint.getAllProjects();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.cardTypeRestEndpoint.getAllCardTypes();
-        });
-        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.cardTypeRestEndpoint.getAllGlobalCardTypes();
-        });
-        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.cardRestEndpoint.getAllCards();
-        });
-        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.documentRestEndpoint.getAllDocuments();
-        });
-        TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.cardContentRestEndpoint.getAllCardContents();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
             client.userRestEndpoint.grantAdminRight(1l);
@@ -85,7 +73,7 @@ public class SecurityTest extends AbstractArquillianTest {
             client.websocketRestEndpoint.getExistingChannels();
         });
         TestHelper.assertThrows(HttpErrorMessage.MessageCode.ACCESS_DENIED, () -> {
-            client.blockRestEndpoint.deletePendingChanges(0L);
+            client.changeRestEndpoint.deletePendingChanges(0L);
         });
     }
 

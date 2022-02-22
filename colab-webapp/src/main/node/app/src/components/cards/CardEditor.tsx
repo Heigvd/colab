@@ -33,7 +33,7 @@ import InlineInput from '../common/InlineInput';
 import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
-import { DocumentEditorAsDeliverableWrapper } from '../documents/DocumentEditorWrapper';
+import { DocumentEditorWrapper } from '../documents/DocumentEditorWrapper';
 import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
 import ResourcesWrapper from '../resources/ResourcesWrapper';
@@ -322,16 +322,11 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                   </div>
                 </Flex>
 
-                <Flex
-                  direction="column"
-                  grow={1}
-                  align="stretch"
-                  className={css({ overflow: 'auto', minHeight: '0px' })}
-                >
+                <Flex direction="column" grow={1}>
                   {userAcl.read ? (
                     variant.id ? (
-                      <DocumentEditorAsDeliverableWrapper
-                        cardContentId={variant.id}
+                      <DocumentEditorWrapper
+                        context={{ kind: 'DeliverableOfCardContent', cardContentId: variant.id }}
                         allowEdition={!readOnly}
                       />
                     ) : (

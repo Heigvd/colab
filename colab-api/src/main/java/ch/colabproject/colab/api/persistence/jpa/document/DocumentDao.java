@@ -8,12 +8,11 @@ package ch.colabproject.colab.api.persistence.jpa.document;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.document.Document;
-import java.util.List;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,17 +35,6 @@ public class DocumentDao {
     private EntityManager em;
 
     /**
-     * Get the list of all documents
-     *
-     * @return the list of all documents
-     */
-    public List<Document> findAllDocuments() {
-        logger.debug("find all documents");
-        TypedQuery<Document> query = em.createNamedQuery("Document.findAll", Document.class);
-        return query.getResultList();
-    }
-
-    /**
      * @param id the id of the document to fetch
      *
      * @return the document with the given id or null if such a document does not exists
@@ -55,6 +43,20 @@ public class DocumentDao {
         try {
             logger.debug("find document #{}", id);
             return em.find(Document.class, id);
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
+    }
+
+    /**
+     * @param id the id of the text data block to fetch
+     *
+     * @return the text data block with the given id or null if such a document does not exists
+     */
+    public TextDataBlock findTextDataBlock(Long id) {
+        try {
+            logger.debug("find text data block #{}", id);
+            return em.find(TextDataBlock.class, id);
         } catch (IllegalArgumentException ex) {
             return null;
         }
@@ -72,6 +74,22 @@ public class DocumentDao {
     public Document updateDocument(Document document) throws ColabMergeException {
         logger.debug("update document {}", document);
         Document mDocument = this.findDocument(document.getId());
+        mDocument.merge(document);
+        return mDocument;
+    }
+
+    /**
+     * Update text data block
+     *
+     * @param document the text data block as supply by clients (ie not managed)
+     *
+     * @return the updated managed text data block
+     *
+     * @throws ColabMergeException if updating the document failed
+     */
+    public TextDataBlock updateTextDataBlock(TextDataBlock document) throws ColabMergeException {
+        logger.debug("update text data block {}", document);
+        TextDataBlock mDocument = this.findTextDataBlock(document.getId());
         mDocument.merge(document);
         return mDocument;
     }

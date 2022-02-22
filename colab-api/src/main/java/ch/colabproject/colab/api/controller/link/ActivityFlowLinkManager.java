@@ -65,12 +65,12 @@ public class ActivityFlowLinkManager {
         }
 
         // fetch all objects and so ensure that they exist
-        Card previousCard = cardDao.getCard(link.getPreviousCardId());
+        Card previousCard = cardDao.findCard(link.getPreviousCardId());
         if (previousCard == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
 
-        Card nextCard = cardDao.getCard(link.getNextCardId());
+        Card nextCard = cardDao.findCard(link.getNextCardId());
         if (nextCard == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
@@ -173,12 +173,12 @@ public class ActivityFlowLinkManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        Card oldPreviousCard = cardDao.getCard(link.getPreviousCardId());
+        Card oldPreviousCard = cardDao.findCard(link.getPreviousCardId());
         if (oldPreviousCard == null) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        Card newPreviousCard = cardDao.getCard(newPreviousCardId);
+        Card newPreviousCard = cardDao.findCard(newPreviousCardId);
         if (newPreviousCard == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }
@@ -218,12 +218,12 @@ public class ActivityFlowLinkManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        Card oldNext = cardDao.getCard(link.getNextCardId());
+        Card oldNext = cardDao.findCard(link.getNextCardId());
         if (oldNext == null) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        Card newNext = cardDao.getCard(newNextCardId);
+        Card newNext = cardDao.findCard(newNextCardId);
         if (newNext == null) {
             throw HttpErrorMessage.relatedObjectNotFoundError();
         }

@@ -85,7 +85,9 @@ export default function SignUp(props: Props): JSX.Element {
       key: 'username',
       label: i18n.model.user.username,
       type: 'text',
-      isMandatory: false,
+      isMandatory: true,
+      isErroneous: value => value.username.match(/^[a-zA-Z0-9_\\.\\-]+$/) == null,
+      errorMessage: i18n.usernameNotValid,
     },
   ];
 

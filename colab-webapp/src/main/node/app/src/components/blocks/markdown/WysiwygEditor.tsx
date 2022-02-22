@@ -22,6 +22,7 @@ import {
   sortNodes,
   toggleTag,
 } from './DomHelper';
+import { colabFlavouredMarkdown } from './MarkdownViewer';
 import domToMarkdown, { MarkdownWithSelection } from './parser/domToMarkdown';
 import markdownToDom, { convertRange, HeadingLevel } from './parser/markdownToDom';
 
@@ -51,21 +52,24 @@ const toggledStyle = cx(
   }),
 );
 
-const editorStyle = css({
-  backgroundColor: 'var(--bgColor)',
-  padding: '5px',
-  border: '1px solid var(--lightGray)',
-  borderRadius: borderRadius,
-  whiteSpace: 'pre-line',
-  '& .some-cursor': {
-    position: 'absolute',
-    pointerEvents: 'none',
-    userSelect: 'none',
-  },
-  ':focus': {
-    border: '1px solid blue',
-  },
-});
+const editorStyle = cx(
+  colabFlavouredMarkdown,
+  css({
+    backgroundColor: 'var(--bgColor)',
+    padding: '5px',
+    border: '1px solid var(--lightGray)',
+    borderRadius: borderRadius,
+    whiteSpace: 'pre-line',
+    '& .some-cursor': {
+      position: 'absolute',
+      pointerEvents: 'none',
+      userSelect: 'none',
+    },
+    ':focus': {
+      border: '1px solid blue',
+    },
+  }),
+);
 
 /*************************************************
  *    TYPES
@@ -397,6 +401,24 @@ export default function WysiwygEditor({
     [toggleBold, toggleItalic, toggleUnderline],
   );
 
+  const interceptClick = React.useCallback(
+    (e: React.UIEvent) => {
+      // click on todo-list item toggled the state
+      if (e.target instanceof Element) {
+        if (e.target.tagName === 'LI') {
+          const checked = e.target.getAttribute('data-checked');
+          if (checked != null) {
+            const newChecked = checked === 'TODO' ? 'DONE' : 'TODO';
+            e.target.setAttribute('data-checked', newChecked);
+            onInternalChangeCb();
+          }
+        }
+      }
+      e.target;
+    },
+    [onInternalChangeCb],
+  );
+
   return (
     <Flex className={className} direction="column" grow={1}>
       <Flex>
@@ -416,6 +438,7 @@ export default function WysiwygEditor({
       </Flex>
       <Flex direction="column" align="stretch">
         <div
+          onClick={interceptClick}
           className={editorStyle}
           ref={divRef}
           tabIndex={0}

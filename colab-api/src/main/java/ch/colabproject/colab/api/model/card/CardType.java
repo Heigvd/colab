@@ -8,7 +8,7 @@ package ch.colabproject.colab.api.model.card;
 
 import ch.colabproject.colab.api.exceptions.ColabMergeException;
 import ch.colabproject.colab.api.model.ColabEntity;
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.security.permissions.Conditions;
 import java.util.HashSet;
 import java.util.List;
@@ -38,13 +38,12 @@ import javax.validation.constraints.NotNull;
         @Index(columnList = "purpose_id")
     }
 )
-@NamedQuery(name = "CardType.findAll", query = "SELECT c FROM CardType c")
 @NamedQuery(name = "CardType.findGlobals",
-    query = "SELECT c FROM CardType c WHERE c.project is NULL")
+    query = "SELECT ct FROM CardType ct WHERE ct.project is NULL")
 @NamedQuery(name = "CardType.findPublishedGlobals",
-    query = "SELECT c FROM CardType c WHERE c.project is NULL AND c.published = TRUE")
-@NamedQuery(name = "CardType.findIdOfPublishedGlobals",
-    query = "SELECT c.id FROM CardType c WHERE c.project is NULL AND c.published = TRUE")
+    query = "SELECT ct FROM CardType ct WHERE ct.project is NULL AND ct.published = TRUE")
+@NamedQuery(name = "CardType.findIdsOfPublishedGlobal",
+    query = "SELECT ct.id FROM CardType ct WHERE ct.project is NULL AND ct.published = TRUE")
 public class CardType extends AbstractCardType {
 
     /**
@@ -63,7 +62,7 @@ public class CardType extends AbstractCardType {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @NotNull
     @JsonbTransient
-    private Block purpose;
+    private TextDataBlock purpose;
 
     /**
      * Tags
@@ -73,7 +72,7 @@ public class CardType extends AbstractCardType {
         @Index(columnList = "cardtype_id")
     })
     @NotNull
-    private Set<String> tags =new HashSet<>();
+    private Set<String> tags = new HashSet<>();
 
     /**
      * The id of the purpose
@@ -102,14 +101,14 @@ public class CardType extends AbstractCardType {
     /**
      * @return the purpose
      */
-    public Block getPurpose() {
+    public TextDataBlock getPurpose() {
         return purpose;
     }
 
     /**
      * @param purpose the purpose
      */
-    public void setPurpose(Block purpose) {
+    public void setPurpose(TextDataBlock purpose) {
         this.purpose = purpose;
     }
 

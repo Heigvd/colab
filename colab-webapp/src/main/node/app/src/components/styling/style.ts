@@ -445,7 +445,15 @@ export const cardTitle = css({
   fontSize: '1.2em',
   fontWeight: 'bold',
 });
+
 export const variantTitle = css({
   fontSize: 'inherit',
   color: 'var(--darkGray)',
 });
+
+export const workInProgressStyle = cx(
+  css({
+    border: '2px solid hotpink',
+    boxShadow: '0px 0px 25px 7px greenyellow',
+  }),
+);

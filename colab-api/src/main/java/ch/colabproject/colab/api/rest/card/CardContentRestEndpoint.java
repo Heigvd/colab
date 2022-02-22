@@ -13,7 +13,6 @@ import ch.colabproject.colab.api.model.card.CardContent;
 import ch.colabproject.colab.api.model.document.Document;
 import ch.colabproject.colab.api.model.link.StickyNoteLink;
 import ch.colabproject.colab.api.persistence.jpa.card.CardContentDao;
-import ch.colabproject.colab.generator.model.annotations.AdminResource;
 import ch.colabproject.colab.generator.model.annotations.AuthenticationRequired;
 import java.util.List;
 import javax.inject.Inject;
@@ -56,21 +55,6 @@ public class CardContentRestEndpoint {
     private CardContentManager cardContentManager;
 
     /**
-     * Retrieve the list of all card contents. This is available to admin only
-     *
-     * @return all known card contents
-     */
-    // FIXME sandra - It certainly has no reason to be called so (except for
-    // preliminary tests)
-    // To remove or change at the right moment
-    @GET
-    @AdminResource
-    public List<CardContent> getAllCardContents() {
-        logger.debug("Get all card contents");
-        return cardContentDao.getAllCardContent();
-    }
-
-    /**
      * Get card content identified by the given id
      *
      * @param id id of the card content to fetch
@@ -81,7 +65,7 @@ public class CardContentRestEndpoint {
     @Path("{id}")
     public CardContent getCardContent(@PathParam("id") Long id) {
         logger.debug("Get card #{}", id);
-        return cardContentDao.getCardContent(id);
+        return cardContentDao.findCardContent(id);
     }
 
     /**
@@ -97,7 +81,7 @@ public class CardContentRestEndpoint {
     @POST
     public Long createCardContent(CardContent cardContent) {
         logger.debug("Create card content {}", cardContent);
-        return cardContentDao.createCardContent(cardContent).getId();
+        return cardContentDao.persistCardContent(cardContent).getId();
     }
 
     /**
@@ -126,10 +110,12 @@ public class CardContentRestEndpoint {
     @Path("createWithDeliverable/{cardId}")
     public CardContent createNewCardContentWithDeliverable(@PathParam("cardId") Long cardId,
         Document document) {
-        logger.debug("create a new card content for the card #{} and document {}", cardId, document);
+        logger.debug("create a new card content for the card #{} and document {}", cardId,
+            document);
+
         CardContent cardContent = cardContentManager.createNewCardContent(cardId);
 
-        cardContentManager.assignDeliverable(cardContent.getId(), document);
+        cardContentManager.addDeliverable(cardContent.getId(), document);
 
         return cardContent;
     }
@@ -157,6 +143,36 @@ public class CardContentRestEndpoint {
     public void deleteCardContent(@PathParam("id") Long id) {
         logger.debug("Delete card #{}", id);
         cardContentManager.deleteCardContent(id);
+    }
+
+    /**
+     * Add the deliverable to the card content.
+     *
+     * @param cardContentId the id of the card content
+     * @param document      the document to use as deliverable. It must be a new document
+     *
+     * @return the document newly created
+     */
+    @POST
+    @Path("{id}/addDeliverable")
+    public Document addDeliverable(@PathParam("id") Long cardContentId, Document document) {
+        logger.debug("add the deliverable {} for the card content #{}", document, cardContentId);
+        return cardContentManager.addDeliverable(cardContentId, document);
+    }
+
+    /**
+     * Remove the deliverable of the card content.
+     *
+     * @param cardContentId the id of the card content
+     * @param documentId the id of the document to remove from the card content
+     */
+    @POST
+    @Path("{id}/removeDeliverable")
+    public void removeDeliverable(@PathParam("id") Long cardContentId, Long documentId) {
+        logger.debug("remove the deliverable #{} from the card content #{}", documentId,
+            cardContentId);
+
+        cardContentManager.removeDeliverable(cardContentId, documentId);
     }
 
     /**
@@ -188,32 +204,17 @@ public class CardContentRestEndpoint {
     }
 
     /**
-     * Get the deliverable of the card content
+     * Get the deliverables of the card content
      *
      * @param cardContentId the id of the card content
      *
-     * @return the deliverable linked to the card content
+     * @return the deliverables linked to the card content
      */
     @GET
-    @Path("{id}/Deliverable")
-    public Document getDeliverableOfCardContent(@PathParam("id") Long cardContentId) {
-        logger.debug("Get deliverable of card content #{}", cardContentId);
-        return cardContentManager.getDeliverableOfCardContent(cardContentId);
-    }
-
-    /**
-     * Set the deliverable to the card content.
-     *
-     * @param cardContentId the id of the card content
-     * @param document      the document to use as deliverable. It must be a new document
-     *
-     * @return the document newly created
-     */
-    @POST
-    @Path("{id}/setDeliverable")
-    public Document assignDeliverable(@PathParam("id") Long cardContentId, Document document) {
-        logger.debug("add the deliverable {} for the card content #{}", document, cardContentId);
-        return cardContentManager.assignDeliverable(cardContentId, document);
+    @Path("{id}/Deliverables")
+    public List<Document> getDeliverablesOfCardContent(@PathParam("id") Long cardContentId) {
+        logger.debug("Get deliverables of card content #{}", cardContentId);
+        return cardContentManager.getDeliverablesOfCardContent(cardContentId);
     }
 
 }

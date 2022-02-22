@@ -6,17 +6,19 @@
  */
 package ch.colabproject.colab.api.controller.card;
 
+import ch.colabproject.colab.api.controller.document.BlockManager;
 import ch.colabproject.colab.api.controller.document.ResourceReferenceSpreadingHelper;
 import ch.colabproject.colab.api.controller.project.ProjectManager;
 import ch.colabproject.colab.api.controller.security.SecurityManager;
 import ch.colabproject.colab.api.model.card.AbstractCardType;
 import ch.colabproject.colab.api.model.card.CardType;
 import ch.colabproject.colab.api.model.card.CardTypeRef;
-import ch.colabproject.colab.api.model.document.Block;
+import ch.colabproject.colab.api.model.document.TextDataBlock;
 import ch.colabproject.colab.api.model.project.Project;
 import ch.colabproject.colab.api.model.user.User;
 import ch.colabproject.colab.api.persistence.jpa.card.CardTypeDao;
 import ch.colabproject.colab.generator.model.exceptions.HttpErrorMessage;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,7 +31,6 @@ import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
-import java.util.HashSet;
 
 /**
  * Card type and reference specific logic
@@ -66,6 +67,12 @@ public class CardTypeManager {
     @Inject
     private ProjectManager projectManager;
 
+    /**
+     * Block logic manager
+     */
+    @Inject
+    private BlockManager blockManager;
+
     // *********************************************************************************************
     // find card types and references
     // *********************************************************************************************
@@ -80,7 +87,7 @@ public class CardTypeManager {
      * @throws HttpErrorMessage if the card type (or reference) was not found
      */
     public AbstractCardType assertAndGetCardTypeOrRef(Long cardTypeOrRefId) {
-        AbstractCardType cardTypeOrRef = cardTypeDao.getAbstractCardType(cardTypeOrRefId);
+        AbstractCardType cardTypeOrRef = cardTypeDao.findAbstractCardType(cardTypeOrRefId);
 
         if (cardTypeOrRef == null) {
             logger.error("card type or reference #{} not found", cardTypeOrRefId);
@@ -106,8 +113,9 @@ public class CardTypeManager {
      *
      * @return set of concrete types and all transitive ref to reach them
      */
-    public Set<AbstractCardType> getExpandedPublishedProjectTypes() {
-        return this.expand(cardTypeDao.getPublishedProjectsCardType());
+    public Set<AbstractCardType> getCurrentUserExpandedPublishedProjectTypes() {
+        User user = securityManager.assertAndGetCurrentUser();
+        return this.expand(cardTypeDao.findPublishedProjectCardTypes(user.getId()));
     }
 
     /**
@@ -155,10 +163,13 @@ public class CardTypeManager {
         }
 
         if (cardType.getPurpose() == null) {
-            cardType.setPurpose(Block.initNewDefaultBlock());
+            TextDataBlock purposeTextDataBlock = blockManager.makeNewTextDataBlock();
+
+            cardType.setPurpose(purposeTextDataBlock);
+            purposeTextDataBlock.setPurposingCardType(cardType);
         }
 
-        return cardTypeDao.createCardType(cardType);
+        return cardTypeDao.persistAbstractCardType(cardType);
     }
 
     /**
@@ -282,7 +293,7 @@ public class CardTypeManager {
 
         ResourceReferenceSpreadingHelper.extractReferencesFromUp(ref);
 
-        return cardTypeDao.createCardType(ref);
+        return cardTypeDao.persistAbstractCardType(ref);
     }
 
     /**
@@ -328,7 +339,7 @@ public class CardTypeManager {
      * @return the ids of the matching card types
      */
     public List<Long> findGlobalPublishedCardTypeIds() {
-        return cardTypeDao.getPublishedGlobalCardTypeIds();
+        return cardTypeDao.findIdsOfPublishedGlobalCardTypes();
     }
 
     /**
@@ -353,7 +364,7 @@ public class CardTypeManager {
     private List<Long> findCurrentUserDirectProjectsCardTypesIds() {
         User user = securityManager.assertAndGetCurrentUser();
 
-        List<Long> cardTypeOrRefIds = cardTypeDao.getUserProjectCardTypeIds(user.getId());
+        List<Long> cardTypeOrRefIds = cardTypeDao.findIdsOfProjectCardType(user.getId());
 
         logger.debug("found direct project's card types' id : {} ", cardTypeOrRefIds);
 
@@ -403,7 +414,7 @@ public class CardTypeManager {
      * @return the ids of the matching card types or references
      */
     private List<Long> findDirectTargets(List<Long> cardTypeOrRefIds) {
-        List<Long> result = cardTypeDao.getTargetIdsOf(cardTypeOrRefIds);
+        List<Long> result = cardTypeDao.findTargetIdsOf(cardTypeOrRefIds);
         logger.debug("found targets : {} ", result);
         return result;
     }
@@ -416,7 +427,7 @@ public class CardTypeManager {
      * @return the ids of the matching projects
      */
     public List<Long> findProjectIdsFromCardTypeIds(List<Long> cardTypeOrRefIds) {
-        return cardTypeDao.getProjectIdsOf(cardTypeOrRefIds);
+        return cardTypeDao.findProjectIdsOf(cardTypeOrRefIds);
     }
 
     // *********************************************************************************************

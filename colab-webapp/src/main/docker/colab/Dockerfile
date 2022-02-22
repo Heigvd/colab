@@ -30,6 +30,7 @@ ENV CLUSTER_MODE=DEFAULT \
 COPY coLAB.war ./coLAB.war
 COPY payara-micro.current.jar ./payara.jar
 COPY run ./
+COPY asadmin_cmd ./
 
 # VOLUME /var/lib/colab/colab.properties
 
