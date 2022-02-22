@@ -11,11 +11,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Document, entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import * as API from '../../API/api';
+import logger from '../../logger';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
-import { lightIconButtonStyle, space_S } from '../styling/style';
+import { EditState } from '../live/LiveEditor';
+import { editableBlockStyle, lightIconButtonStyle, space_S } from '../styling/style';
 import { DocumentFileEditor } from './DocumentFileEditor';
 import { ExternalLinkEditor } from './ExternalLinkEditor';
 
@@ -29,17 +31,36 @@ export function DocumentEditorDisplay({
   allowEdition = true,
 }: DocumentEditorDisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const [state, setState] = React.useState<EditState>({
+    status: 'VIEW',
+  });
 
   return (
     <div
-      className={css({
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-      })}
+      className={cx(
+        css({
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }),
+        editableBlockStyle,
+      )}
+      onClick={() => {
+        if (state.status === 'VIEW') {
+          setState({ ...state, status: 'EDIT' });
+        }
+      }}
     >
       {entityIs(document, 'TextDataBlock') ? (
-        <BlockEditorWrapper blockId={document.id!} allowEdition={allowEdition} />
+        <BlockEditorWrapper
+          blockId={document.id!}
+          allowEdition={allowEdition}
+          editingStatus={state}
+          closeEditing={() => {
+            setState({ ...state, status: 'VIEW' });
+            logger.info(state.status);
+          }}
+        />
       ) : entityIs(document, 'DocumentFile') ? (
         <DocumentFileEditor document={document} allowEdition={allowEdition} />
       ) : entityIs(document, 'ExternalLink') ? (

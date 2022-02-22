@@ -457,3 +457,14 @@ export const workInProgressStyle = cx(
     boxShadow: '0px 0px 25px 7px greenyellow',
   }),
 );
+
+export const editableBlockStyle = css({
+  border: '1px solid rgb(240, 240, 240)',
+  margin: '3px 0',
+  padding: space_S,
+  '&:hover': {
+    backgroundColor: 'var(--hoverBgColor)',
+    border: '1px solid transparent',
+    cursor: 'pointer',
+  }
+  });

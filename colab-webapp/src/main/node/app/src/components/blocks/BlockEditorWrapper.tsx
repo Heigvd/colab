@@ -8,17 +8,18 @@
 import { entityIs } from 'colab-rest-client';
 import * as React from 'react';
 import InlineLoading from '../common/InlineLoading';
-import LiveEditor from '../live/LiveEditor';
+import LiveEditor, { EditState } from '../live/LiveEditor';
 import { useBlock } from '../live/LiveTextEditor';
 
 export interface BlockEditorProps {
   blockId: number;
   allowEdition?: boolean;
+  editingStatus?: EditState;
+  closeEditing?: () => void;
 }
 
-export function BlockEditorWrapper({ blockId, allowEdition }: BlockEditorProps): JSX.Element {
+export function BlockEditorWrapper({ blockId, allowEdition, editingStatus, closeEditing }: BlockEditorProps): JSX.Element {
   const block = useBlock(blockId);
-
   if (block == null) {
     return <InlineLoading />;
   } else {
@@ -32,6 +33,8 @@ export function BlockEditorWrapper({ blockId, allowEdition }: BlockEditorProps):
               atId={blockId}
               value={block.textData || ''}
               revision={block.revision}
+              editingStatus={editingStatus || {status: 'VIEW'}}
+              closeEditing={closeEditing}
             />
           );
         default:

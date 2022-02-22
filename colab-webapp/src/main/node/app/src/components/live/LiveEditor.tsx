@@ -6,7 +6,7 @@
  */
 
 import { css } from '@emotion/css';
-import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
 import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
@@ -18,7 +18,6 @@ import Toggler from '../common/Form/Toggler';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 import Tips from '../common/Tips';
-import WithToolbar from '../common/WithToolbar';
 import { space_S } from '../styling/style';
 import ChangeTree from './ChangeTree';
 import { useLiveBlock } from './LiveTextEditor';
@@ -28,7 +27,7 @@ const shrink = css({
   flexShrink: 1,
 });
 
-type State = {
+export type EditState = {
   status: 'VIEW' | 'EDIT';
 };
 
@@ -38,6 +37,8 @@ interface Props {
   value: string;
   revision: string;
   allowEdition?: boolean;
+  editingStatus: EditState;
+  closeEditing?: () => void;
 }
 
 function Unsupported({ md }: { md: string }) {
@@ -60,6 +61,8 @@ export default function LiveEditor({
   value,
   revision,
   allowEdition,
+  editingStatus,
+  closeEditing,
 }: Props): JSX.Element {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
 
@@ -73,9 +76,6 @@ export default function LiveEditor({
   const [wysiwyg, setWysiwyg] = React.useState(false);
   const [showTree, setShowTree] = React.useState(false);
 
-  const [state, setState] = React.useState<State>({
-    status: 'VIEW',
-  });
 
   if (status != 'READY') {
     return <InlineLoading />;
@@ -101,34 +101,18 @@ export default function LiveEditor({
       </ErrorBoundary>
     );
   } else {
-    if (state.status === 'VIEW') {
+    if (editingStatus.status === 'VIEW') {
       return (
-        <Flex
-          className={css({
-            border: '1px solid rgb(240, 240, 240)',
-            margin: '3px 0',
-            padding: space_S,
-            '&:hover': {
-              backgroundColor: 'var(--hoverBgColor)',
-              border: '1px solid transparent',
-              cursor: 'pointer',
-            },
-          })}
-          onClick={() => setState({ ...state, status: 'EDIT' })}
+        <Flex 
+        //onClick={()=>logger.info(editingStatus)}
+          //() => setState({ ...state, status: 'EDIT' })}
         >
-          <WithToolbar
-            toolbarPosition="TOP_RIGHT"
-            toolbarClassName=""
-            offsetY={-1}
-            toolbar={<IconButton title="Click to edit" icon={faPen} iconColor="var(--darkGray)" />}
-          >
-            <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
-              <MarkdownViewer md={currentValue} />
-            </ErrorBoundary>
-          </WithToolbar>
+          <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
+            <MarkdownViewer md={currentValue} />
+          </ErrorBoundary>
         </Flex>
       );
-    } else if (state.status === 'EDIT') {
+    } else if (editingStatus.status === 'EDIT') {
       return (
         <Flex
           direction="column"
@@ -145,9 +129,10 @@ export default function LiveEditor({
             </Flex>
             <IconButton
               title="close editor"
-              onClick={() => setState({ ...state, status: 'VIEW' })}
+              onClick={closeEditing}
               icon={faTimes}
             />
+            
           </Flex>
           <Flex>
             {wysiwyg ? (

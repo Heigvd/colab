@@ -10,7 +10,6 @@ import * as API from '../../API/api';
 import { useDocuments } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
 import InlineLoading from '../common/InlineLoading';
-import { workInProgressStyle } from '../styling/style';
 import { DocumentContext } from './documentCommonType';
 import DocumentCreatorButton from './DocumentCreatorButton';
 import { DocumentEditorDisplay } from './DocumentEditorDisplay';
@@ -46,7 +45,7 @@ export function DocumentEditorWrapper({
   }
 
   return (
-    <div className={workInProgressStyle}>
+    <>
       {documents
         .sort((a, b) => (a.index || 0) - (b.index || 0))
         .map(doc => (
@@ -73,6 +72,6 @@ export function DocumentEditorWrapper({
           title="add a link"
         />
       )}
-    </div>
+    </>
   );
 }
