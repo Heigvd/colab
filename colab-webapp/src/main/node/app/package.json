@@ -13,6 +13,7 @@
         "lint": "eslint -c .eslintrc.js --ext .ts,.tsx ./src",
         "build": "webpack --mode=production",
         "start": "webpack serve --hot --mode development",
+        "preprod": "webpack serve --hot --mode production",
         "format": "prettier --write src"
     },
     "jest": {
@@ -102,7 +103,7 @@
         "webpack": "^5.55.1",
         "webpack-cli": "^4.8.0",
         "webpack-dev-server": "^4.3.0",
-        "webpack-react-component-name": "^5.0.1"
+        "webpack-react-component-name": "^4.0.3"
     },
     "dependencies": {
         "@fortawesome/fontawesome-svg-core": "^1.2.36",

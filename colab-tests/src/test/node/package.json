@@ -4,7 +4,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "format": "prettier --write cypress"
+    "format": "prettier --write cypress",
+    "start:dev":"yarn cypress open --env WEGAS_URL=http://localhost:3004,CYPRESS_ADMIN_USERNAME=admin,CYPRESS_ADMIN_PASSWORD=admin"
   },
   "devDependencies": {
     "cypress": "^9.2.0",
