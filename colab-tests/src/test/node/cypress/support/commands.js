@@ -29,7 +29,7 @@ Cypress.Commands.add("visitWegas", () => {
   if (url) {
     cy.visit(url);
   } else {
-    throw "please set env WEGAS_UR to the test url";
+    throw "please set env WEGAS_URL to the test url";
   }
 });
 
