@@ -5,15 +5,16 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
+import { css, cx } from '@emotion/css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faCircle, faLightbulb, faNewspaper } from '@fortawesome/free-regular-svg-icons';
-import { faTools } from '@fortawesome/free-solid-svg-icons';
+import { faGhost, faTools } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
+import { lightIconButtonStyle, textSmall } from '../styling/style';
 import Checkbox from './Form/Checkbox';
 
-export type TipsType = 'TODO' | 'NEWS' | 'TIPS';
+export type TipsType = 'TODO' | 'NEWS' | 'TIPS' | 'WIP';
 
 export type TipsConfig = Record<TipsType, boolean>;
 export type TipsContextType = Record<
@@ -34,6 +35,10 @@ export const TipsCtx = React.createContext<TipsContextType>({
     value: false,
     set: () => {},
   },
+  WIP: {
+    value: false,
+    set: () => {},
+  }
 });
 
 interface TipsProps {
@@ -48,6 +53,8 @@ function getIconProp(tipsType: TipsProps['tipsType']): IconProp {
       return faTools;
     case 'NEWS':
       return faNewspaper;
+      case 'WIP':
+      return faGhost;
     case 'TIPS':
     default:
       return faLightbulb;
@@ -97,6 +104,10 @@ export function TipsSettings(): JSX.Element {
       <Checkbox label="Display News" value={config.NEWS.value} onChange={config.NEWS.set} />
       <Tips tipsType="NEWS">
         <h4>News Example</h4>Some new feature to emphasis.
+      </Tips>
+      <Checkbox label="Display Work in progress elements" value={config.WIP.value} onChange={config.WIP.set} />
+      <Tips tipsType="WIP">
+        <h4>WIP Example</h4>Some features not completely finished yet.
       </Tips>
     </div>
   );
@@ -185,6 +196,23 @@ export default function Tips({
         </span>
         {coord && displayed ? <div className={overlayStyle(coord)}>{children} </div> : null}
       </span>
+    );
+  } else {
+    return <></>;
+  }
+}
+
+
+export function WIPContainer({
+  children,
+}: TipsProps): JSX.Element {
+  const config = React.useContext(TipsCtx);
+  if (config['WIP'].value) {
+    return (
+      <>
+      <p className={cx(textSmall, lightIconButtonStyle)}>--- Work in progress feature below ---</p>
+      {children}
+    </>
     );
   } else {
     return <></>;

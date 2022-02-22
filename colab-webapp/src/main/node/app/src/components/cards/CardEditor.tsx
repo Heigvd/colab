@@ -32,7 +32,7 @@ import SelectInput from '../common/Form/SelectInput';
 import InlineInput from '../common/InlineInput';
 import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
-import Tips from '../common/Tips';
+import Tips, { WIPContainer } from '../common/Tips';
 import { DocumentEditorWrapper } from '../documents/DocumentEditorWrapper';
 import { useBlock } from '../live/LiveTextEditor';
 import { ResourceContextScope } from '../resources/ResourceCommonType';
