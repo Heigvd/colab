@@ -73,6 +73,17 @@ export default function Input({
     [debouncedOnChange],
   );
 
+  /**
+   * Send change immediatly.
+   * No need to wait debounced delay
+   */
+  const onBlurCb = React.useCallback(
+    () => {
+      debouncedOnChange.flush();
+    },
+    [debouncedOnChange],
+  );
+
   return (
     <Flex
       className={cx(css({ padding: space_S + ' 0' }), className)}
@@ -92,6 +103,7 @@ export default function Input({
           placeholder={placeholder}
           value={state || ''}
           onChange={onInternalChangeCb}
+          onBlur={onBlurCb}
           readOnly={readonly}
         />
       ) : (
@@ -100,6 +112,7 @@ export default function Input({
           placeholder={placeholder}
           value={state || ''}
           onChange={onInternalChangeCb}
+          onBlur={onBlurCb}
           readOnly={readonly}
         />
       )}
