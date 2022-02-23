@@ -40,7 +40,7 @@ export function BlockEditorWrapper({
               atId={blockId}
               value={block.textData || ''}
               revision={block.revision}
-              editingStatus={editingStatus || { status: 'VIEW' }}
+              editingStatus={editingStatus || 'VIEW'}
               showTree={showTree}
               className={className}
             />

@@ -5,26 +5,28 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
+import { invertedButtonStyle, space_S } from '../styling/style';
 import { DocumentContext, DocumentType } from './documentCommonType';
 
-const addButtonStyle = css({ marginTop: '20px', display: 'block' });
+const addButtonStyle = css({ marginRight: space_S});
 
 export type DocumentCreatorButtonProps = {
   creationContext: DocumentContext;
   docType: DocumentType;
   title: string;
+  label: string | React.ReactNode;
 };
 
 export default function DocumentCreatorButton({
   creationContext,
   docType,
   title,
+  label,
 }: DocumentCreatorButtonProps): JSX.Element {
   const dispatch = useAppDispatch();
 
@@ -67,13 +69,11 @@ export default function DocumentCreatorButton({
 
   return (
     <Button
-      className={addButtonStyle}
-      icon={faPlus}
+      className={cx(invertedButtonStyle, addButtonStyle)}
       title={title}
       onClick={createDoc}
-      invertedButton
     >
-      {title}
+      {label}
     </Button>
   );
 }

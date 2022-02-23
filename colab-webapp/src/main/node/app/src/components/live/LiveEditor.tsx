@@ -24,9 +24,7 @@ const shrink = css({
   flexShrink: 1,
 });
 
-export type EditState = {
-  status: 'VIEW' | 'EDIT';
-};
+export type EditState = 'VIEW' | 'EDIT';
 
 interface Props {
   atClass: string;
@@ -96,7 +94,7 @@ export default function LiveEditor({
       </ErrorBoundary>
     );
   } else {
-    if (editingStatus.status === 'VIEW') {
+    if (editingStatus === 'VIEW') {
       return (
         <Flex className={className}>
           <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
@@ -104,7 +102,7 @@ export default function LiveEditor({
           </ErrorBoundary>
         </Flex>
       );
-    } else if (editingStatus.status === 'EDIT') {
+    } else if (editingStatus === 'EDIT') {
       return (
         <Flex
           direction="column"

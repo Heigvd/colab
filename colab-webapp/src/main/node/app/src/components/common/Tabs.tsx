@@ -62,7 +62,7 @@ const selectedStyle = cx(
   buttonStyle,
   css({
     fontWeight: 'bold',
-    borderBottom: '1px solid white',
+    borderBottom: '2px solid white',
   }),
 );
 

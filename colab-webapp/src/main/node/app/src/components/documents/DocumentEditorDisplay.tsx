@@ -59,9 +59,7 @@ export function DocumentEditorDisplay({
   const isTextDataBlock = entityIs(document, 'TextDataBlock');
   const isDocumentFile = entityIs(document, 'DocumentFile');
   const isExternalLink = entityIs(document, 'ExternalLink');
-  const [state, setState] = React.useState<EditState>({
-    status: 'VIEW',
-  });
+  const [state, setState] = React.useState<EditState>('VIEW');
   const [showTree, setShowTree] = React.useState(false);
 
   return (
@@ -75,12 +73,12 @@ export function DocumentEditorDisplay({
             flexGrow: 1,
           }),
           editableBlockStyle,
-          { [editingStyle]: state.status === 'EDIT' },
+          { [editingStyle]: state === 'EDIT' },
         )}
         title="Double click to edit"
         onDoubleClick={() => {
-          if (state.status === 'VIEW') {
-            setState({ ...state, status: 'EDIT' });
+          if (state === 'VIEW') {
+            setState('EDIT');
           }
         }}
       >
@@ -146,7 +144,7 @@ export function DocumentEditorDisplay({
                   />
                 ),
               },
-              ...(isTextDataBlock && state.status === 'EDIT'
+              ...(isTextDataBlock && state === 'EDIT'
                 ? [
                     {
                       value: 'showTree',
@@ -167,11 +165,11 @@ export function DocumentEditorDisplay({
               val.action && val.action();
             }}
           />
-          {state.status === 'EDIT' && (
+          {state === 'EDIT' && (
             <Button
-              className={invertedButtonStyle}
+              className={cx(invertedButtonStyle, css({marginBottom: space_S}))}
               onClick={() => {
-                setState({ ...state, status: 'VIEW' });
+                setState('VIEW');
               }}
             >
               Ok
