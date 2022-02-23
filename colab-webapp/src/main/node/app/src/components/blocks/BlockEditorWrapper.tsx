@@ -15,6 +15,7 @@ export interface BlockEditorProps {
   blockId: number;
   allowEdition?: boolean;
   editingStatus?: EditState;
+  showTree?: boolean;
   className?: string;
 }
 
@@ -22,6 +23,7 @@ export function BlockEditorWrapper({
   blockId,
   allowEdition,
   editingStatus,
+  showTree,
   className,
 }: BlockEditorProps): JSX.Element {
   const block = useBlock(blockId);
@@ -39,6 +41,7 @@ export function BlockEditorWrapper({
               value={block.textData || ''}
               revision={block.revision}
               editingStatus={editingStatus || { status: 'VIEW' }}
+              showTree={showTree}
               className={className}
             />
           );

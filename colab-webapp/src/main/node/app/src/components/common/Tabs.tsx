@@ -23,6 +23,7 @@ export function Tab({ children }: TabProps): JSX.Element {
 export interface TabsProps {
   className?: string;
   bodyClassName?: string;
+  tabsClassName?: string;
   selectedLabelClassName?: string;
   notselectedLabelClassName?: string;
   children: React.ReactElement<TabProps>[] | React.ReactElement<TabProps>;
@@ -31,7 +32,6 @@ export interface TabsProps {
 
 const headerStyle = css({
   flexShrink: 0,
-  height: '48px',
 });
 
 const buttonStyle = css({
@@ -45,7 +45,8 @@ const buttonStyle = css({
   border: '1px solid var(--lightGray)',
   marginRight: space_S,
   fontSize: '0.9em',
-  zIndex: 9999,
+  zIndex: 1,
+  marginBottom: '-1px',
 });
 
 const notSelectedStyle = cx(
@@ -73,7 +74,7 @@ border: '1px solid var(--lightGray)',
 alignSelf: 'stretch',
 });
 
-export default function Tabs({ className, bodyClassName, selectedLabelClassName, notselectedLabelClassName, children, onSelect }: TabsProps): JSX.Element {
+export default function Tabs({ className, bodyClassName, tabsClassName, selectedLabelClassName, notselectedLabelClassName, children, onSelect }: TabsProps): JSX.Element {
   const mappedChildren: Record<string, { label: string; child: React.ReactElement<TabProps> }> = {};
   const names: string[] = [];
 
@@ -102,7 +103,7 @@ export default function Tabs({ className, bodyClassName, selectedLabelClassName,
         {names.map(name => (
           <Clickable
             key={name}
-            clickableClassName={name === selectedTab ? cx(selectedStyle, selectedLabelClassName) : cx(notSelectedStyle, notselectedLabelClassName)}
+            clickableClassName={name === selectedTab ? cx(selectedStyle, tabsClassName, selectedLabelClassName) : cx(notSelectedStyle, tabsClassName, notselectedLabelClassName)}
             onClick={() => onSelectTab(name)}
           >
             {mappedChildren[name]!.label}
