@@ -18,19 +18,23 @@ import {
   faFileVideo,
   faFileWord,
 } from '@fortawesome/free-regular-svg-icons';
-import { faFileCsv, faSkullCrossbones, faUpload } from '@fortawesome/free-solid-svg-icons';
+import {
+  faDownload,
+  faFileCsv,
+  faSkullCrossbones,
+  faUpload,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
-import { iconButton, linkStyle } from '../styling/style';
+import { EditState } from '../live/LiveEditor';
+import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import Button from './Button';
 import Flex from './Flex';
+import IconButton from './IconButton';
 
 const contains = (value: string, ...values: string[]): boolean => {
   return !!values.find(needle => value.includes(needle));
 };
-
-const containerStyle = css({
-  boxShadow: '0px 0px 0px 1px var(--lightGray)',
-});
 
 const clickableStyle = css({
   cursor: 'pointer',
@@ -40,22 +44,20 @@ const draggingStyle = css({
   backgroundColor: 'var(--lightGray)',
 });
 
-const iconStyle = css({
-  height: '32px',
-  padding: '5px',
-});
-
 const layerPadding = css({
   paddingTop: '15px',
 });
-
-const labelStyle = css({});
 
 const inputStyle = css({
   display: 'none',
 });
 
-const getMimeTypeIcon = (mimeType: string | undefined | null): JSX.Element => {
+const emptyLightTextStyle = css({
+  color: 'var(--lightGray)',
+  fontStyle: 'italice',
+});
+
+const getMimeTypeIcon = (mimeType: string | undefined | null, hasNoFile: boolean): JSX.Element => {
   let icon: IconProp | undefined = undefined;
 
   if (mimeType) {
@@ -112,11 +114,13 @@ const getMimeTypeIcon = (mimeType: string | undefined | null): JSX.Element => {
     } else {
       icon = faFile;
     }
-    return <FontAwesomeIcon icon={icon} size="2x" />;
+    return (
+      <FontAwesomeIcon icon={icon} size="lg" color={hasNoFile ? 'var(--lightGray)' : undefined} />
+    );
   } else {
     return (
       <span className={'fa-layers fa-fw ' + layerPadding}>
-        <FontAwesomeIcon icon={faFile} size="2x" />
+        <FontAwesomeIcon icon={faFile} size="lg" />
         <FontAwesomeIcon icon={faSkullCrossbones} transform="right-2 down-4" />
       </span>
     );
@@ -131,7 +135,7 @@ function overlayStyle(coord: [number, number]) {
     padding: 0,
     margin: 0,
     border: '1px solid  white',
-    boxShadow: '0 0 1px 0 black',
+    boxShadow: '0 0 5px 0 rgba(0, 0, 0, 0.5)',
     backgroundColor: 'var(--bgColor)',
     zIndex: 1,
     display: 'flex',
@@ -142,6 +146,11 @@ const previewImageStyle = css({
   maxHeight: '200px',
 });
 
+const displayImageStyle = css({
+  maxWidth: '100%',
+  maxHeight: '300px',
+});
+
 export interface FilePickerProps {
   accept?: string;
   onChange?: (file: File) => void;
@@ -149,6 +158,7 @@ export interface FilePickerProps {
   currentFilename?: React.ReactNode;
   currentMimetype?: string;
   currentPreviewImgUrl?: string;
+  editingStatus: EditState;
 }
 
 export default function FilePicker({
@@ -158,6 +168,7 @@ export default function FilePicker({
   currentPreviewImgUrl,
   onChange,
   onDownload,
+  editingStatus,
 }: FilePickerProps): JSX.Element {
   const [dragging, setDragging] = React.useState(false);
 
@@ -219,6 +230,9 @@ export default function FilePicker({
   const [coord, setCoord] = React.useState<[number, number] | undefined>(undefined);
   const [displayed, setDisplayed] = React.useState(false);
   const timerRef = React.useRef<number>();
+  const hasNoFile = currentFilename === null || currentFilename === undefined;
+  const isImageToDisplay =
+    currentMimetype && (currentMimetype === 'image/png' || currentMimetype === 'image/jpeg');
 
   const onMoveCb = React.useMemo(() => {
     if (hasPreview && !displayed) {
@@ -260,35 +274,62 @@ export default function FilePicker({
   }, [hasPreview]);
 
   return (
-    <Flex
-      className={cx(containerStyle, {
-        [clickableStyle]: !!onDownload,
-        [draggingStyle]: !!dragging,
-      })}
-      align="center"
-      onDragOver={onDragOverCb}
-      onDragLeave={onDragLeaveCb}
-      onDrop={onDropCb}
-      onMouseLeave={onLeaveCb}
-      onMouseEnter={onEnterCb}
-      onMouseMove={onMoveCb}
-      onClick={onDownload}
-    >
-      <div className={iconStyle}>{getMimeTypeIcon(currentMimetype)}</div>
-      <div className={labelStyle}>{currentFilename}</div>
-      {onChange && (
-        <div onClick={e => e.stopPropagation()}>
-          <label>
-            <FontAwesomeIcon className={cx(linkStyle, iconButton)} icon={faUpload} />
-            <input className={inputStyle} type="file" accept={accept} onChange={onInputCb} />
-          </label>
-        </div>
+    <Flex className={css({ padding: space_S })} align="center">
+      <Flex
+        className={cx({
+          [clickableStyle]: !!onDownload,
+          [draggingStyle]: !!dragging,
+        })}
+        align="center"
+        onDragOver={onDragOverCb}
+        onDragLeave={onDragLeaveCb}
+        onDrop={onDropCb}
+        onMouseLeave={onLeaveCb}
+        onMouseEnter={onEnterCb}
+        onMouseMove={onMoveCb}
+      >
+        {isImageToDisplay && editingStatus === 'VIEW' ? (
+          <img className={displayImageStyle} src={currentPreviewImgUrl} />
+        ) : (
+          <>
+            {getMimeTypeIcon(currentMimetype, hasNoFile)}
+            <div
+              className={cx(css({ paddingLeft: space_S, userSelect: 'none' }), {
+                [emptyLightTextStyle]: hasNoFile,
+              })}
+            >
+              {currentFilename || 'No file uploaded'}
+            </div>
+          </>
+        )}
+        {onChange && editingStatus === 'EDIT' && (
+          <div className={css({ paddingLeft: space_M })} onClick={e => e.stopPropagation()}>
+            <label>
+              <Button onClick={() => {}}>
+                <FontAwesomeIcon icon={faUpload} /> Upload file
+              </Button>
+              <input className={inputStyle} type="file" accept={accept} onChange={onInputCb} />
+            </label>
+          </div>
+        )}
+        {coord && displayed && !isImageToDisplay ? (
+          <div className={overlayStyle(coord)}>
+            <img className={previewImageStyle} src={currentPreviewImgUrl} />{' '}
+          </div>
+        ) : null}
+      </Flex>
+      {editingStatus === 'VIEW' && !hasNoFile && !isImageToDisplay && (
+        <IconButton
+          icon={faDownload}
+          iconSize={'sm'}
+          title="Download file"
+          className={cx(
+            lightIconButtonStyle,
+            css({ color: 'var(--lightGray)', marginLeft: space_S }),
+          )}
+          onClick={onDownload}
+        />
       )}
-      {coord && displayed ? (
-        <div className={overlayStyle(coord)}>
-          <img className={previewImageStyle} src={currentPreviewImgUrl} />{' '}
-        </div>
-      ) : null}
     </Flex>
   );
   return <input type="file" accept={accept} />;
