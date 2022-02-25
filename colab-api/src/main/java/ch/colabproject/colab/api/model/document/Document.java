@@ -273,10 +273,7 @@ public abstract class Document
 
     @Override
     public void merge(ColabEntity other) throws ColabMergeException {
-        if (other instanceof Document) {
-            Document o = (Document) other;
-            this.setIndex(o.getIndex()); // TODO see if can be changed manually or not
-        } else {
+        if (!(other instanceof Document)) {
             throw new ColabMergeException(this, other);
         }
     }

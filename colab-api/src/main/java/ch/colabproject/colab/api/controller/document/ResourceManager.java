@@ -91,6 +91,12 @@ public class ResourceManager {
     @Inject
     private BlockManager blockManager;
 
+    /**
+     * Index generation specific logic management
+     */
+    @Inject
+    private IndexGeneratorHelper<Document> indexGenerator;
+
     // *********************************************************************************************
     // find resource
     // *********************************************************************************************
@@ -317,7 +323,7 @@ public class ResourceManager {
     // *********************************************************************************************
 
     /**
-     * Add the document to the resource
+     * Add the document to the end of the resource.
      *
      * @param resourceId the id of the resource
      * @param document   the document to use in the resource. It must be a new document
@@ -341,10 +347,8 @@ public class ResourceManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        if (document.getIndex() == 0) {
-            int index = IndexGeneratorHelper.nextIndex(resource.getDocuments());
-            document.setIndex(index);
-        }
+        // the index is auto generated. It cannot be send from the client side
+        indexGenerator.moveItemToEnd(document, resource.getDocuments());
 
         resource.getDocuments().add(document);
         document.setOwningResource(resource);

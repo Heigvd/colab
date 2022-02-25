@@ -167,7 +167,7 @@ export function DocumentEditorDisplay({
           />
           {state === 'EDIT' && (
             <Button
-              className={cx(invertedButtonStyle, css({marginBottom: space_S}))}
+              className={cx(invertedButtonStyle, css({ marginBottom: space_S }))}
               onClick={() => {
                 setState('VIEW');
               }}
@@ -183,12 +183,18 @@ export function DocumentEditorDisplay({
           title="Move block up"
           iconSize="xs"
           className={lightIconButtonStyle}
+          onClick={() => {
+            dispatch(API.moveDocumentUp(document.id!));
+          }}
         />
         <IconButton
           icon={faArrowDown}
           title="Move block down"
           iconSize="xs"
           className={lightIconButtonStyle}
+          onClick={() => {
+            dispatch(API.moveDocumentDown(document.id!));
+          }}
         />
       </Flex>
     </Flex>

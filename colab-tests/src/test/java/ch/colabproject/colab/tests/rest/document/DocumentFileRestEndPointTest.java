@@ -53,11 +53,9 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
      */
     @Test
     public void testCreateDocumentFile() {
-        int index = 1;
         String fileName = "random file #" + ((int) (Math.random() * 1000));
 
         DocumentFile doc = new DocumentFile();
-        doc.setIndex(index);
         doc.setFileName(fileName);
 
         Long docId = ColabFactory.createADocument(client, doc).getId();
@@ -65,11 +63,11 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
         Document persistedDoc = client.documentRestEndpoint.getDocument(docId);
         Assertions.assertNotNull(persistedDoc);
         Assertions.assertEquals(docId, persistedDoc.getId());
+        Assertions.assertEquals(1000, persistedDoc.getIndex());
 
         Assertions.assertTrue(persistedDoc instanceof DocumentFile);
         DocumentFile persistedDocumentFile = (DocumentFile) persistedDoc;
         Assertions.assertEquals(fileName, persistedDocumentFile.getFileName());
-        Assertions.assertEquals(index, persistedDocumentFile.getIndex());
     }
 
     /**
@@ -87,10 +85,8 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertNull(documentFile.getFileName());
         Assertions.assertEquals(1000, documentFile.getIndex());
 
-        int index = 6;
         String fileName = "random file #" + ((int) (Math.random() * 1000));
 
-        documentFile.setIndex(index);
         documentFile.setFileName(fileName);
         client.documentRestEndpoint.updateDocument(documentFile);
 
@@ -100,7 +96,7 @@ public class DocumentFileRestEndPointTest extends AbstractArquillianTest {
         Assertions.assertNotNull(persistedDocumentFile);
         Assertions.assertEquals(docId, persistedDocumentFile.getId());
         Assertions.assertEquals(fileName, persistedDocumentFile.getFileName());
-        Assertions.assertEquals(index, persistedDocumentFile.getIndex());
+        Assertions.assertEquals(1000, persistedDocumentFile.getIndex());
     }
 
     /**
