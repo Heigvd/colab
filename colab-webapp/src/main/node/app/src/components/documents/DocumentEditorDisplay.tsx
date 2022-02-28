@@ -25,6 +25,7 @@ import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
+import OpenGraphLink from '../common/OpenGraphLink';
 import { EditState } from '../live/LiveEditor';
 import {
   editableBlockStyle,
@@ -33,7 +34,6 @@ import {
   space_S,
 } from '../styling/style';
 import { DocumentFileEditor } from './DocumentFileEditor';
-import { ExternalLinkEditor } from './ExternalLinkEditor';
 
 const editingStyle = css({
   backgroundColor: 'var(--hoverBgColor)',
@@ -102,7 +102,7 @@ export function DocumentEditorDisplay({
             editingStatus={state}
           />
         ) : isExternalLink ? (
-          <ExternalLinkEditor document={document} allowEdition={allowEdition} />
+          <OpenGraphLink url={document.url || ''} editingStatus={state} document={document} />
         ) : (
           <div>
             <i>Unknown document</i>

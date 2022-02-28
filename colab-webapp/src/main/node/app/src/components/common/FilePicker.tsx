@@ -52,9 +52,9 @@ const inputStyle = css({
   display: 'none',
 });
 
-const emptyLightTextStyle = css({
+export const emptyLightTextStyle = css({
   color: 'var(--lightGray)',
-  fontStyle: 'italice',
+  fontStyle: 'italic',
 });
 
 const getMimeTypeIcon = (mimeType: string | undefined | null, hasNoFile: boolean): JSX.Element => {
