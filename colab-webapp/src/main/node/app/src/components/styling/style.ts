@@ -250,6 +250,7 @@ export const buttonStyle = cx(
   linkStyle,
   invertedThemeMode,
   css({
+    display: 'inline-block',
     padding: '8px 14px',
     borderRadius: borderRadius,
     ':hover': {
