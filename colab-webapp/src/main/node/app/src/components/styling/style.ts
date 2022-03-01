@@ -467,4 +467,4 @@ export const editableBlockStyle = css({
     border: '1px solid transparent',
     cursor: 'pointer',
   },
-  });
+});

@@ -54,7 +54,7 @@ const descriptionStyle = {
   overflow: 'hidden',
   fontSize: '0.9em',
   flexGrow: 0,
-}
+};
 const openDetails = css({
   ...descriptionStyle,
   maxHeight: '300px',
@@ -267,9 +267,15 @@ export default function Editor(): JSX.Element {
             }),
           )}
         >
-          <IconButton icon={faGhost} title="Show project details" onClick={()=>setShowProjectDetails(showProjectDetails => !showProjectDetails)}/>
+          <IconButton
+            icon={faGhost}
+            title="Show project details"
+            onClick={() => setShowProjectDetails(showProjectDetails => !showProjectDetails)}
+          />
           <div className={css({ gridColumn: '2/3', placeSelf: 'center', display: 'flex' })}>
-            <div className={css({marginRight: space_M})}>{project.name || 'untitled project'}</div>
+            <div className={css({ marginRight: space_M })}>
+              {project.name || 'untitled project'}
+            </div>
             <DropDownMenu
               icon={faEye}
               valueComp={{ value: '', label: '' }}
@@ -320,16 +326,16 @@ export default function Editor(): JSX.Element {
           />
         </div>
         <Flex className={showProjectDetails ? openDetails : closeDetails}>
-            <div>
-              <h3>{project.name}</h3>
-              {project.description}
-            </div>
-            <div>
-              <p>Created by: {project.trackingData?.createdBy}</p>
-              <p>Created date: {project.trackingData?.creationDate}</p>
-              {/* more infos? Add project team names */}
-            </div>
-          </Flex>
+          <div>
+            <h3>{project.name}</h3>
+            {project.description}
+          </div>
+          <div>
+            <p>Created by: {project.trackingData?.createdBy}</p>
+            <p>Created date: {project.trackingData?.creationDate}</p>
+            {/* more infos? Add project team names */}
+          </div>
+        </Flex>
         <div
           className={css({
             display: 'flex',

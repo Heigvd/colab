@@ -173,7 +173,7 @@ export default function CardCreator({
                     value={selectAllTags}
                     onChange={t => toggleAllTags(t)}
                     className={noOutlineStyle}
-                    containerClassName={css({color: 'var(--darkGray)'})}
+                    containerClassName={css({ color: 'var(--darkGray)' })}
                   />
                 </Flex>
                 <Flex wrap="wrap">

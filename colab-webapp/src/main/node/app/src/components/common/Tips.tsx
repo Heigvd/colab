@@ -38,7 +38,7 @@ export const TipsCtx = React.createContext<TipsContextType>({
   WIP: {
     value: false,
     set: () => {},
-  }
+  },
 });
 
 interface TipsProps {
@@ -53,7 +53,7 @@ function getIconProp(tipsType: TipsProps['tipsType']): IconProp {
       return faTools;
     case 'NEWS':
       return faNewspaper;
-      case 'WIP':
+    case 'WIP':
       return faGhost;
     case 'TIPS':
     default:
@@ -105,7 +105,11 @@ export function TipsSettings(): JSX.Element {
       <Tips tipsType="NEWS">
         <h4>News Example</h4>Some new feature to emphasis.
       </Tips>
-      <Checkbox label="Display Work in progress elements" value={config.WIP.value} onChange={config.WIP.set} />
+      <Checkbox
+        label="Display Work in progress elements"
+        value={config.WIP.value}
+        onChange={config.WIP.set}
+      />
       <Tips tipsType="WIP">
         <h4>WIP Example</h4>Some features not completely finished yet.
       </Tips>
@@ -202,17 +206,16 @@ export default function Tips({
   }
 }
 
-
-export function WIPContainer({
-  children,
-}: TipsProps): JSX.Element {
+export function WIPContainer({ children }: TipsProps): JSX.Element {
   const config = React.useContext(TipsCtx);
   if (config['WIP'].value) {
     return (
       <>
-      <p className={cx(textSmall, lightIconButtonStyle)}>--- Work in progress feature below ---</p>
-      {children}
-    </>
+        <p className={cx(textSmall, lightIconButtonStyle)}>
+          --- Work in progress feature below ---
+        </p>
+        {children}
+      </>
     );
   } else {
     return <></>;

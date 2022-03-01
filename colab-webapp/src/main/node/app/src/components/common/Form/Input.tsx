@@ -77,12 +77,9 @@ export default function Input({
    * Send change immediatly.
    * No need to wait debounced delay
    */
-  const onBlurCb = React.useCallback(
-    () => {
-      debouncedOnChange.flush();
-    },
-    [debouncedOnChange],
-  );
+  const onBlurCb = React.useCallback(() => {
+    debouncedOnChange.flush();
+  }, [debouncedOnChange]);
 
   return (
     <Flex

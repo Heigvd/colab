@@ -38,8 +38,8 @@ const inlineInputStyle = css({
 });
 
 const textareaButtonStyle = css({
- flexDirection : 'column',
- justifyContent: 'flex-end',
+  flexDirection: 'column',
+  justifyContent: 'flex-end',
 });
 
 export interface Props {
@@ -71,7 +71,7 @@ export default function InlineInput({
   onChange,
   className,
   textClassName,
-  readOnly= false,
+  readOnly = false,
   placeholder,
   inputType = 'input',
   autosave = true,
@@ -79,7 +79,7 @@ export default function InlineInput({
 }: Props): JSX.Element {
   const spanRef = React.useRef<HTMLSpanElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
-  
+
   const defaultValue = getEffectiveValue(value, placeholder);
 
   const handleClickOutside = (event: Event) => {
@@ -122,7 +122,7 @@ export default function InlineInput({
   }, [value, defaultValue]);
 
   const editCb = React.useCallback(() => {
-    if(!readOnly) {
+    if (!readOnly) {
       setMode('EDIT');
     }
   }, []);
@@ -140,7 +140,7 @@ export default function InlineInput({
 
   const onInternalChangeCb = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      if(autosave){
+      if (autosave) {
         const newValue = e.target.innerText;
         debouncedOnChange(newValue);
       }
@@ -149,7 +149,12 @@ export default function InlineInput({
   );
 
   return (
-    <div ref={containerRef} className={cx(className, css({display: 'flex'}), {[textareaButtonStyle]: inputType === 'textarea'})}>
+    <div
+      ref={containerRef}
+      className={cx(className, css({ display: 'flex' }), {
+        [textareaButtonStyle]: inputType === 'textarea',
+      })}
+    >
       {label && label}
       <span
         ref={spanRef}
@@ -166,9 +171,19 @@ export default function InlineInput({
         )}
       />
       {mode === 'EDIT' && !autosave && (
-        <Flex justify='flex-end'>
-          <IconButton icon={faTimes} title="Cancel" onClick={cancelCb} className={lightIconButtonStyle}/>
-          <IconButton icon={faCheck} title="Save" onClick={saveCb} className={lightIconButtonStyle}/>
+        <Flex justify="flex-end">
+          <IconButton
+            icon={faTimes}
+            title="Cancel"
+            onClick={cancelCb}
+            className={lightIconButtonStyle}
+          />
+          <IconButton
+            icon={faCheck}
+            title="Save"
+            onClick={saveCb}
+            className={lightIconButtonStyle}
+          />
         </Flex>
       )}
     </div>

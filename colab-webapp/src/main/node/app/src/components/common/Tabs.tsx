@@ -67,14 +67,22 @@ const selectedStyle = cx(
 );
 
 const bodyStyle = css({
-padding: space_L,
-borderRadius: '0 5px 5px 5px',
-backgroundColor: 'var(--bgColor)',
-border: '1px solid var(--lightGray)',
-alignSelf: 'stretch',
+  padding: space_L,
+  borderRadius: '0 5px 5px 5px',
+  backgroundColor: 'var(--bgColor)',
+  border: '1px solid var(--lightGray)',
+  alignSelf: 'stretch',
 });
 
-export default function Tabs({ className, bodyClassName, tabsClassName, selectedLabelClassName, notselectedLabelClassName, children, onSelect }: TabsProps): JSX.Element {
+export default function Tabs({
+  className,
+  bodyClassName,
+  tabsClassName,
+  selectedLabelClassName,
+  notselectedLabelClassName,
+  children,
+  onSelect,
+}: TabsProps): JSX.Element {
   const mappedChildren: Record<string, { label: string; child: React.ReactElement<TabProps> }> = {};
   const names: string[] = [];
 
@@ -98,12 +106,21 @@ export default function Tabs({ className, bodyClassName, tabsClassName, selected
   const child = mappedChildren[selectedTab]?.child;
 
   return (
-    <Flex grow={1} direction="column" className={cx(css({alignSelf: 'stretch'}), className)} overflow="auto">
+    <Flex
+      grow={1}
+      direction="column"
+      className={cx(css({ alignSelf: 'stretch' }), className)}
+      overflow="auto"
+    >
       <Flex justify="space-evenly" className={headerStyle}>
         {names.map(name => (
           <Clickable
             key={name}
-            clickableClassName={name === selectedTab ? cx(selectedStyle, tabsClassName, selectedLabelClassName) : cx(notSelectedStyle, tabsClassName, notselectedLabelClassName)}
+            clickableClassName={
+              name === selectedTab
+                ? cx(selectedStyle, tabsClassName, selectedLabelClassName)
+                : cx(notSelectedStyle, tabsClassName, notselectedLabelClassName)
+            }
             onClick={() => onSelectTab(name)}
           >
             {mappedChildren[name]!.label}

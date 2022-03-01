@@ -322,7 +322,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                   </div>
                 </Flex>
 
-                <Flex direction="column" grow={1} align='stretch'>
+                <Flex direction="column" grow={1} align="stretch">
                   {userAcl.read ? (
                     variant.id ? (
                       <DocumentEditorWrapper

@@ -28,7 +28,7 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
   const navigate = useNavigate();
   const projectId = project.id;
   return (
-    <Flex align='stretch' direction='column' grow={1} className={css({alignSelf: 'stretch'})}>
+    <Flex align="stretch" direction="column" grow={1} className={css({ alignSelf: 'stretch' })}>
       <IconButton
         icon={faArrowLeft}
         title={'Back to project'}
@@ -38,7 +38,7 @@ export function ProjectSettings({ project }: ProjectSettingsProps): JSX.Element 
       />
 
       <h1>Project Settings</h1>
-      <Tabs className={css({flexGrow: 1})} bodyClassName={css({flexGrow: 1})}>
+      <Tabs className={css({ flexGrow: 1 })} bodyClassName={css({ flexGrow: 1 })}>
         <Tab label="General" name="General">
           <Input
             label="Project name"
