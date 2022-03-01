@@ -81,7 +81,7 @@ export default function OpenGraphLink({
     (newValue: string) => {
       dispatch(updateDocument({ ...document, url: newValue }));
     },
-    [dispatch, document, url],
+    [dispatch, document],
   );
 
   if (metadata == 'LOADING') {
@@ -181,7 +181,7 @@ export default function OpenGraphLink({
                   />
                 </Flex>
                 {title && <p>{title}</p>}
-                <a href={url} target="_blank" className={urlStyle}>
+                <a href={url} target="_blank" rel="noreferrer" className={urlStyle}>
                   {url}
                 </a>
               </div>

@@ -119,13 +119,13 @@ export default function InlineInput({
       spanRef.current.innerText = defaultValue;
     }
     setMode('DISPLAY');
-  }, [value, defaultValue]);
+  }, [defaultValue]);
 
   const editCb = React.useCallback(() => {
     if (!readOnly) {
       setMode('EDIT');
     }
-  }, []);
+  }, [readOnly]);
 
   const onChangeRef = React.useRef(onChange);
   onChangeRef.current = onChange;
@@ -145,7 +145,7 @@ export default function InlineInput({
         debouncedOnChange(newValue);
       }
     },
-    [debouncedOnChange],
+    [autosave, debouncedOnChange],
   );
 
   return (
