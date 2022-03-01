@@ -152,6 +152,15 @@ export function DocumentEditorDisplay({
                   />
                 ),
               },
+              ...(state === 'VIEW'
+                ? [
+                    {
+                      value: 'EditBlock',
+                      label: <>Edit</>,
+                      action: () => setState('EDIT'),
+                    },
+                  ]
+                : []),
               ...(isTextDataBlock && state === 'EDIT'
                 ? [
                     {
