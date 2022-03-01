@@ -89,7 +89,7 @@ export default function OnConfirmInput({
   const cancelCb = React.useCallback(() => {
     setState(defaultValue);
     setMode('DISPLAY');
-  }, []);
+  }, [defaultValue]);
 
   React.useEffect(() => {
     setState(value);

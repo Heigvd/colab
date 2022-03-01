@@ -17,7 +17,7 @@ interface Props {
   className?: string;
   collapsedChildren: React.ReactNode;
   children: (collapse: () => void) => React.ReactNode;
-  footer?: React.ReactNode;
+  footer?: (collapse: () => void) => React.ReactNode;
   showCloseButton?: boolean;
   route?: string;
   status?: 'COLLAPSED' | 'EXPANDED';
