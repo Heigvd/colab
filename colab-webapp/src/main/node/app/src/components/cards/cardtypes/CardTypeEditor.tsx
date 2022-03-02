@@ -16,19 +16,27 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
+import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
 //import logger from '../../../logger';
-import { useCardType } from '../../../selectors/cardTypeSelector';
+import { useCardType, useCardTypeTags } from '../../../selectors/cardTypeSelector';
 import { dispatch } from '../../../store/store';
-import Button from '../../common/Button';
 import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
+import Toggler from '../../common/Form/Toggler';
 import IconButton from '../../common/IconButton';
 import InlineInput from '../../common/InlineInput';
 import Modal from '../../common/Modal';
 import Tips from '../../common/Tips';
-import { cardStyle, cardTitle, lightIconButtonStyle, space_M, space_S } from '../../styling/style';
+import { useBlock } from '../../live/LiveTextEditor';
+import {
+  cardStyle,
+  cardTitle,
+  lightIconButtonStyle,
+  space_M,
+  space_S,
+} from '../../styling/style';
 import SideCollapsiblePanel from './../SideCollapsiblePanel';
 
 interface Props {
@@ -40,8 +48,11 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
   const typeId = +id.id!;
   const completeCardType = useCardType(typeId);
   const cardType = completeCardType.cardType;
+  const allTags = useCardTypeTags();
+  const options = allTags.map(tag => ({ label: tag, value: tag }));
   //const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const purpose = useBlock(cardType?.purposeId);
 
   //logger.info(id.id);
   if (!cardType) {
@@ -73,122 +84,158 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
             }),
           )}
         >
-          <Flex direction="column" grow={1} align="stretch">
+          <Flex
+            direction="column"
+            grow={1}
+            className={css({
+              padding: '10px',
+              overflow: 'auto',
+            })}
+            align="stretch"
+          >
             <Flex
-              direction="column"
-              grow={1}
+              justify="space-between"
               className={css({
-                padding: '10px',
-                overflow: 'auto',
+                paddingBottom: space_S,
+                borderBottom: '1px solid var(--lightGray)',
               })}
-              align="stretch"
             >
-              <Flex direction="column" align="stretch">
-                <Flex
-                  justify="space-between"
-                  className={css({
-                    paddingBottom: space_S,
-                  })}
-                >
-                  <InlineInput
-                    placeholder="Untitled type"
-                    value={cardType.title || ''}
-                    onChange={newValue =>
-                      dispatch(API.updateCardType({ ...cardType, title: newValue }))
-                    }
-                    autosave={false}
-                    className={cardTitle}
-                  />
-                  <Flex>
-                    {/* handle modal routes*/}
-                    <Routes>
-                      <Route
-                        path="settings"
-                        element={
-                          <Modal
-                            title="Type Settings"
-                            onClose={() => navigate('./')}
-                            showCloseButton
-                          >
-                            {closeModal => (
-                              <Button onClick={closeModal}>
-                                CLOSE MODAL TODO
-                                {/* <CardSettings onClose={closeModal} card={card} /> */}
-                              </Button>
-                            )}
-                          </Modal>
-                        }
-                      />
-                    </Routes>
-                    <DropDownMenu
-                      icon={faEllipsisV}
-                      valueComp={{ value: '', label: '' }}
-                      buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
-                      entries={[
-                        {
-                          value: 'Delete type',
-                          label: (
-                            <ConfirmDeleteModal
-                              buttonLabel={
-                                <>
-                                  <FontAwesomeIcon icon={faTrash} /> Delete type
-                                </>
+              <InlineInput
+                placeholder="Untitled type"
+                value={cardType.title || ''}
+                onChange={newValue =>
+                  dispatch(API.updateCardType({ ...cardType, title: newValue }))
+                }
+                autosave={false}
+                className={cardTitle}
+              />
+              <Flex>
+                {/* handle modal routes*/}
+                <Routes>
+                  <Route
+                    path="settings"
+                    element={
+                      <Modal title="Type Settings" onClose={() => navigate('./')} showCloseButton>
+                        {() => (
+                          <>
+                            <Toggler
+                              value={cardType.deprecated || undefined}
+                              label="deprecated"
+                              onChange={() =>
+                                dispatch(
+                                  API.updateCardType({
+                                    ...cardType,
+                                    deprecated: !cardType.deprecated,
+                                  }),
+                                )
                               }
-                              message={
-                                <p>
-                                  <Tips tipsType="TODO">
-                                    Make test if type is used in card(s). Disable or hide this
-                                    delete option if used.
-                                  </Tips>
-                                  Are you <strong>sure</strong> you want to delete this card type?
-                                </p>
-                              }
-                              onConfirm={() => {
-                                dispatch(API.deleteCardType(cardType));
-                                navigate('../');
-                              }}
-                              confirmButtonLabel={'Delete card'}
                             />
-                          ),
-                        },
-                        {
-                          value: 'settings',
-                          label: (
+                            <Toggler
+                              value={cardType.published || undefined}
+                              label="published"
+                              onChange={() =>
+                                dispatch(
+                                  API.updateCardType({
+                                    ...cardType,
+                                    published: !cardType.published,
+                                  }),
+                                )
+                              }
+                            />
+                          </>
+                        )}
+                      </Modal>
+                    }
+                  />
+                </Routes>
+                <DropDownMenu
+                  icon={faEllipsisV}
+                  valueComp={{ value: '', label: '' }}
+                  buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                  entries={[
+                    {
+                      value: 'settings',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faCog} title="Type settings" /> Type Settings
+                        </>
+                      ),
+                    },
+                    {
+                      value: 'Delete type',
+                      label: (
+                        <ConfirmDeleteModal
+                          buttonLabel={
                             <>
-                              <FontAwesomeIcon icon={faCog} title="Card settings" /> Card Settings
+                              <FontAwesomeIcon icon={faTrash} /> Delete type
                             </>
-                          ),
-                        },
-                      ]}
-                      onSelect={val => {
-                        navigate(val.value);
-                      }}
-                    />
-                  </Flex>
+                          }
+                          message={
+                            <p>
+                              <Tips tipsType="TODO">
+                                Make test if type is used in card(s). Disable or hide this delete
+                                option if used.
+                              </Tips>
+                              Are you <strong>sure</strong> you want to delete this card type?
+                            </p>
+                          }
+                          onConfirm={() => {
+                            dispatch(API.deleteCardType(cardType));
+                            navigate('../');
+                          }}
+                          confirmButtonLabel={'Delete card type'}
+                        />
+                      ),
+                    },
+                  ]}
+                  onSelect={val => {
+                    navigate(val.value);
+                  }}
+                />
+              </Flex>
+            </Flex>
+            <Flex direction="column" grow={1} align="stretch">
+                <div><b>Purpose:</b> {purpose?.textData}</div>
+                <Flex direction="column" align="stretch" className={css({alignSelf: 'flex-start', minWidth: '40%', margin: space_S + ' 0'})}>
+                  <Creatable
+                    //className={cx(css({display: 'flex'}))}
+                    isMulti={true}
+                    value={cardType.tags.map(tag => ({ label: tag, value: tag }))}
+                    options={options}
+                    onChange={tagsOptions => {
+                      dispatch(
+                        API.updateCardType({
+                          ...cardType,
+                          tags: tagsOptions.map(o => o.value),
+                        }),
+                      );
+                    }}
+                  />
                 </Flex>
-                <div>
-                  <p>
-                    <b>Card type</b>:
-                  </p>
-                  <p>
-                    <b>Purpose</b>:
-                  </p>
-                </div>
-              </Flex>
-              <Flex direction="column" grow={1} align="stretch">
-                {/*                   {userAcl.read ? (
-                    variant.id ? (
-                      <DocumentEditorWrapper
-                        context={{ kind: 'DeliverableOfCardContent', cardContentId: variant.id }}
-                        allowEdition={!readOnly}
-                      />
-                    ) : (
-                      <span>no deliverable available</span>
+                <Toggler
+                  value={cardType.deprecated || undefined}
+                  label="deprecated"
+                  onChange={() =>
+                    dispatch(
+                      API.updateCardType({
+                        ...cardType,
+                        deprecated: !cardType.deprecated,
+                      }),
                     )
-                  ) : (
-                    <span>Access Denied</span>
-                  )} */}
-              </Flex>
+                  }
+                />
+                <Toggler
+                  value={cardType.published || undefined}
+                  label="published"
+                  onChange={() =>
+                    dispatch(
+                      API.updateCardType({
+                        ...cardType,
+                        published: !cardType.published,
+                      }),
+                    )
+                  }
+                />
             </Flex>
           </Flex>
           <SideCollapsiblePanel
