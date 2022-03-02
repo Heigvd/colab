@@ -4,52 +4,66 @@
  *
  * Licensed under the MIT License
  */
-import { css } from '@emotion/css';
-import { faPen, faSkullCrossbones, faSync } from '@fortawesome/free-solid-svg-icons';
+import { css, cx } from '@emotion/css';
+import { faExternalLinkAlt, faLink, faSync } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ExternalLink } from 'colab-rest-client';
 import * as React from 'react';
-import { refreshUrlMetadata } from '../../API/api';
+import { refreshUrlMetadata, updateDocument } from '../../API/api';
 import { useUrlMetadata } from '../../selectors/externalDataSelector';
 import { useAppDispatch } from '../../store/hooks';
+import { EditState } from '../live/LiveEditor';
+import { lightIconButtonStyle, space_M, space_S } from '../styling/style';
+import { emptyLightTextStyle } from './FilePicker';
+import Flex from './Flex';
 import IconButton from './IconButton';
 import InlineLoading from './InlineLoading';
+import OnConfirmInput from './OnConfirmInput';
 
 export interface OpenGraphProps {
   url: string;
   editCb?: () => void;
+  editingStatus: EditState;
+  document: ExternalLink;
 }
 
-const containerStyle = css({
-  maxWidth: '200px',
-  boxShadow: '0px 0px 1px 1px var(--lightGray)',
-  cursor: 'pointer',
+const cardStyle = css({
+  flexWrap: 'nowrap',
+  boxShadow: '0px 0px 5px 2px var(--lightGray)',
+  backgroundColor: 'var(--bgColor)',
+  padding: space_S,
+  margin: space_S,
+  cursor: 'initial',
 });
-
-const siteNameStyle = css({
-  display: 'flex',
-  alignContent: 'space-between',
-  fontWeight: 'bolder',
+const urlStyle = css({
+  fontStyle: 'italic',
+  textDecoration: 'underline',
+  color: 'var(--darkGray)',
+  //whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 });
-const titleStyle = css({});
-const descriptionStyle = css({ fontStyle: 'italic' });
-
-//const imageStyle = (url: string | undefined) => {
-//  return cx(illustrationStyle, css({
-//    backgroundImage: url ? `url(${url})` : undefined,
-//    backgroundSize: 'cover'
-//  }));
-//}
 
 const legendStyle = css({
-  padding: '5px',
+  padding: space_M,
+  fontSize: '0.8em',
+  minWidth: 0,
 });
 
 const imageStyle = css({
-  maxWidth: '100%',
-  maxHeight: '200px',
+  display: 'block',
+  height: '80px',
+  width: '120px',
+  objectFit: 'cover',
+  minWidth: 0,
+  flexShrink: 0,
 });
 
-export default function OpenGraphLink({ url, editCb }: OpenGraphProps): JSX.Element {
+export default function OpenGraphLink({
+  url,
+  editingStatus,
+  document,
+}: OpenGraphProps): JSX.Element {
   const dispatch = useAppDispatch();
   const metadata = useUrlMetadata(url);
 
@@ -60,66 +74,120 @@ export default function OpenGraphLink({ url, editCb }: OpenGraphProps): JSX.Elem
     },
     [url, dispatch],
   );
-
-  const onEditCb = React.useMemo(
-    () =>
-      editCb
-        ? (e: React.UIEvent) => {
-            e.stopPropagation();
-            editCb();
-          }
-        : undefined,
-    [editCb],
-  );
-
   const openUrl = React.useCallback(() => {
     window.open(url);
   }, [url]);
+  const updateDocCb = React.useCallback(
+    (newValue: string) => {
+      dispatch(updateDocument({ ...document, url: newValue }));
+    },
+    [dispatch, document],
+  );
 
-  if (metadata == 'NO_URL') {
+  if (metadata == 'LOADING') {
+    return <InlineLoading />;
+  } else if (metadata == 'NO_URL') {
     return (
       <div>
-        <span>empty link</span>
-        {onEditCb && <IconButton title="edit" onClick={onEditCb} icon={faPen} />}
+        {editingStatus === 'EDIT' ? (
+          <OnConfirmInput
+            value={url}
+            placeholder="Empty link"
+            onChange={newValue => updateDocCb(newValue)}
+          />
+        ) : (
+          <>
+            <FontAwesomeIcon icon={faLink} size="lg" color="var(--lightGray)" />
+            <span className={cx(emptyLightTextStyle, css({ marginLeft: space_S }))}>
+              Empty link
+            </span>
+          </>
+        )}
       </div>
     );
-  } else if (metadata == 'LOADING') {
-    return <InlineLoading />;
   } else {
     // fetch most common open graph property
     const imageUrl = metadata.metadata['og:image'];
     const siteName = metadata.metadata['og:site_name'];
     const title = metadata.metadata['og:title'];
-    const description = metadata.metadata['og:description'];
-    //const mimeType = metadata.contentType;
-
-    const legend = (
-      <div className={legendStyle}>
-        <div className={siteNameStyle}>
-          <span>{siteName}</span>
-          <span>
-            {onEditCb && <IconButton title="edit" onClick={onEditCb} icon={faPen} />}
-            <IconButton title="refresh" onClick={refreshCb} icon={faSync} />
-          </span>
-        </div>
-        <div className={titleStyle}>{title}</div>
-        <div className={descriptionStyle}>{description}</div>
-      </div>
-    );
 
     if (metadata.broken) {
       return (
-        <div className={containerStyle} title={url}>
-          <FontAwesomeIcon icon={faSkullCrossbones} />
-          {legend}
-        </div>
+        <>
+          {editingStatus === 'EDIT' ? (
+            <Flex className={css({ padding: space_S })}>
+              <OnConfirmInput
+                value={url}
+                placeholder="Empty link"
+                onChange={newValue => updateDocCb(newValue)}
+              />
+              <IconButton
+                title="refresh"
+                onClick={refreshCb}
+                icon={faSync}
+                className={lightIconButtonStyle}
+              />
+            </Flex>
+          ) : (
+            <div title={url} className={css({ padding: space_S })}>
+              <FontAwesomeIcon icon={faLink} size="lg" className={css({ marginRight: space_S })} />
+              {url}
+              <FontAwesomeIcon
+                icon={faExternalLinkAlt}
+                className={cx(
+                  lightIconButtonStyle,
+                  css({ marginLeft: space_S, color: 'var(--lightGray)' }),
+                )}
+              />
+            </div>
+          )}
+        </>
       );
     } else {
       return (
-        <div className={containerStyle} title={url} onClick={openUrl}>
-          <img className={imageStyle} src={imageUrl} />
-          {legend}
-        </div>
+        <>
+          {editingStatus === 'EDIT' ? (
+            <Flex className={css({ padding: space_S })}>
+              <OnConfirmInput
+                value={url}
+                placeholder="Empty link"
+                onChange={newValue => updateDocCb(newValue)}
+              />
+              <IconButton
+                title="refresh"
+                onClick={refreshCb}
+                icon={faSync}
+                className={lightIconButtonStyle}
+              />
+            </Flex>
+          ) : (
+            <Flex className={cardStyle} title={url} align="center">
+              {imageUrl && <img className={imageStyle} src={imageUrl} />}
+              <div className={legendStyle}>
+                <Flex
+                  className={css({ fontWeight: 'bold' })}
+                  justify="space-between"
+                  align="flex-start"
+                >
+                  {siteName || 'Untitled site'}
+                  <IconButton
+                    icon={faExternalLinkAlt}
+                    title="Open site in new tab"
+                    className={cx(
+                      lightIconButtonStyle,
+                      css({ marginLeft: space_M, cursor: 'pointer' }),
+                    )}
+                    onClick={openUrl}
+                  />
+                </Flex>
+                {title && <p>{title}</p>}
+                <a href={url} target="_blank" rel="noreferrer" className={urlStyle}>
+                  {url}
+                </a>
+              </div>
+            </Flex>
+          )}
+        </>
       );
     }
   }

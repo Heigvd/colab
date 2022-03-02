@@ -16,7 +16,7 @@ import Overlay from './Overlay';
 interface Props {
   title: string;
   children: (collapse: () => void) => React.ReactNode;
-  footer?: React.ReactNode;
+  footer?: (collapse: () => void) => React.ReactNode;
   showCloseButton?: boolean;
   onClose: () => void;
   className?: string;
@@ -98,7 +98,7 @@ export default function Modal({
         <Flex grow={1} direction="column" overflow="auto" className={modalBody}>
           {children(onClose)}
         </Flex>
-        {footer && <div className={modalFooter}>{footer}</div>}
+        {footer && <div className={modalFooter}>{footer(onClose)}</div>}
       </div>
     </Overlay>
   );

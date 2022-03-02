@@ -13,7 +13,7 @@ import Button from '../common/Button';
 import { invertedButtonStyle, space_S } from '../styling/style';
 import { DocumentContext, DocumentType } from './documentCommonType';
 
-const addButtonStyle = css({ marginRight: space_S});
+const addButtonStyle = css({ marginRight: space_S });
 
 export type DocumentCreatorButtonProps = {
   creationContext: DocumentContext;
@@ -68,11 +68,7 @@ export default function DocumentCreatorButton({
   }, [creationContext, docType, dispatch]);
 
   return (
-    <Button
-      className={cx(invertedButtonStyle, addButtonStyle)}
-      title={title}
-      onClick={createDoc}
-    >
+    <Button className={cx(invertedButtonStyle, addButtonStyle)} title={title} onClick={createDoc}>
       {label}
     </Button>
   );

@@ -113,8 +113,11 @@ export default function LiveEditor({
           )}
         >
           <Flex>
-            <Tabs bodyClassName={css({padding: space_M, alignItems: 'stretch'})} tabsClassName={css({padding: space_S + ' ' + space_M})}>
-              <Tab name="visual" label="Visual" >
+            <Tabs
+              bodyClassName={css({ padding: space_M, alignItems: 'stretch' })}
+              tabsClassName={css({ padding: space_S + ' ' + space_M })}
+            >
+              <Tab name="visual" label="Visual">
                 <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
                   <WysiwygEditor
                     className={css({ alignItems: 'stretch' })}

@@ -59,7 +59,7 @@ export default function CardTypeEditor({ cardType }: DisplayProps): JSX.Element 
                 onChange={newValue =>
                   dispatch(API.updateCardType({ ...cardType, title: newValue }))
                 }
-                autosave = {false}
+                autosave={false}
               />
               <Creatable
                 className={inputStyle}

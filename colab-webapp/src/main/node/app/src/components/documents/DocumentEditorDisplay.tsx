@@ -10,6 +10,7 @@ import {
   faArrowDown,
   faArrowUp,
   faCheck,
+  faDownload,
   faEllipsisV,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -24,6 +25,7 @@ import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import IconButton from '../common/IconButton';
+import OpenGraphLink from '../common/OpenGraphLink';
 import { EditState } from '../live/LiveEditor';
 import {
   editableBlockStyle,
@@ -32,7 +34,6 @@ import {
   space_S,
 } from '../styling/style';
 import { DocumentFileEditor } from './DocumentFileEditor';
-import { ExternalLinkEditor } from './ExternalLinkEditor';
 
 const editingStyle = css({
   backgroundColor: 'var(--hoverBgColor)',
@@ -61,6 +62,11 @@ export function DocumentEditorDisplay({
   const isExternalLink = entityIs(document, 'ExternalLink');
   const [state, setState] = React.useState<EditState>('VIEW');
   const [showTree, setShowTree] = React.useState(false);
+  const downloadUrl = API.getRestClient().DocumentFileRestEndPoint.getFileContentPath(document.id!);
+
+  const downloadCb = React.useCallback(() => {
+    window.open(downloadUrl);
+  }, [downloadUrl]);
 
   return (
     <Flex className={moveBoxStyle}>
@@ -75,7 +81,6 @@ export function DocumentEditorDisplay({
           editableBlockStyle,
           { [editingStyle]: state === 'EDIT' },
         )}
-        title="Double click to edit"
         onDoubleClick={() => {
           if (state === 'VIEW') {
             setState('EDIT');
@@ -91,9 +96,13 @@ export function DocumentEditorDisplay({
             className={css({ flexGrow: 1 })}
           />
         ) : isDocumentFile ? (
-          <DocumentFileEditor document={document} allowEdition={allowEdition} />
+          <DocumentFileEditor
+            document={document}
+            allowEdition={allowEdition}
+            editingStatus={state}
+          />
         ) : isExternalLink ? (
-          <ExternalLinkEditor document={document} allowEdition={allowEdition} />
+          <OpenGraphLink url={document.url || ''} editingStatus={state} document={document} />
         ) : (
           <div>
             <i>Unknown document</i>
@@ -111,8 +120,7 @@ export function DocumentEditorDisplay({
                   <ConfirmDeleteModal
                     buttonLabel={
                       <>
-                        <FontAwesomeIcon icon={faTrash} />
-                        Delete
+                        <FontAwesomeIcon icon={faTrash} size="xs" /> Delete
                       </>
                     }
                     message={
@@ -144,6 +152,15 @@ export function DocumentEditorDisplay({
                   />
                 ),
               },
+              ...(state === 'VIEW'
+                ? [
+                    {
+                      value: 'EditBlock',
+                      label: <>Edit</>,
+                      action: () => setState('EDIT'),
+                    },
+                  ]
+                : []),
               ...(isTextDataBlock && state === 'EDIT'
                 ? [
                     {
@@ -160,6 +177,21 @@ export function DocumentEditorDisplay({
                     },
                   ]
                 : []),
+              ...(isDocumentFile &&
+              (document.mimeType === 'image/png' || document.mimeType === 'image/jpeg') &&
+              state === 'VIEW'
+                ? [
+                    {
+                      value: 'download image',
+                      label: (
+                        <>
+                          <FontAwesomeIcon icon={faDownload} size="xs" /> Download image
+                        </>
+                      ),
+                      action: () => downloadCb(),
+                    },
+                  ]
+                : []),
             ]}
             onSelect={val => {
               val.action && val.action();
@@ -167,7 +199,7 @@ export function DocumentEditorDisplay({
           />
           {state === 'EDIT' && (
             <Button
-              className={cx(invertedButtonStyle, css({ marginBottom: space_S }))}
+              className={cx(invertedButtonStyle, css({ margin: space_S + ' 0' }))}
               onClick={() => {
                 setState('VIEW');
               }}

@@ -8,7 +8,13 @@
 import { css, cx } from '@emotion/css';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import { inputStyle, invertedButtonStyle, lightIconButtonStyle, smallInputStyle, space_S } from '../styling/style';
+import {
+  inputStyle,
+  invertedButtonStyle,
+  lightIconButtonStyle,
+  smallInputStyle,
+  space_S,
+} from '../styling/style';
 import Button from './Button';
 import Flex from './Flex';
 import IconButton from './IconButton';
@@ -83,7 +89,7 @@ export default function OnConfirmInput({
   const cancelCb = React.useCallback(() => {
     setState(defaultValue);
     setMode('DISPLAY');
-  }, []);
+  }, [defaultValue]);
 
   React.useEffect(() => {
     setState(value);
@@ -107,9 +113,13 @@ export default function OnConfirmInput({
             ref={inputRef}
           />
         </Flex>
-        <Flex justify='flex-end' align='center'>
-          <Button className={cx(invertedButtonStyle, buttonsClassName)} onClick={cancelCb}>{cancelButtonLabel}</Button>
-          <Button className={cx(css({margin: space_S}),buttonsClassName)} onClick={saveCb}>{okButtonLabel}</Button>
+        <Flex justify="flex-end" align="center">
+          <Button className={cx(invertedButtonStyle, buttonsClassName)} onClick={cancelCb}>
+            {cancelButtonLabel}
+          </Button>
+          <Button className={cx(css({ margin: space_S }), buttonsClassName)} onClick={saveCb}>
+            {okButtonLabel}
+          </Button>
         </Flex>
       </div>
     );
@@ -128,7 +138,14 @@ export default function OnConfirmInput({
           >
             {state ? state : <i>{placeholder}</i>}
           </span>
-          {!readOnly && <IconButton icon={faPen} title="edit" onClick={editCb} className={lightIconButtonStyle}/>}
+          {!readOnly && (
+            <IconButton
+              icon={faPen}
+              title="edit"
+              onClick={editCb}
+              className={lightIconButtonStyle}
+            />
+          )}
         </Flex>
       </>
     );

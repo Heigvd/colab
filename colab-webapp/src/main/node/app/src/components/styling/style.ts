@@ -250,6 +250,7 @@ export const buttonStyle = cx(
   linkStyle,
   invertedThemeMode,
   css({
+    display: 'inline-block',
     padding: '8px 14px',
     borderRadius: borderRadius,
     ':hover': {
@@ -467,4 +468,4 @@ export const editableBlockStyle = css({
     border: '1px solid transparent',
     cursor: 'pointer',
   },
-  });
+});

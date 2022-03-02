@@ -6,7 +6,7 @@
  */
 
 import { css, cx } from '@emotion/css';
-import { faSnowflake } from '@fortawesome/free-regular-svg-icons';
+import { faQuestionCircle, faSnowflake } from '@fortawesome/free-regular-svg-icons';
 import {
   faCog,
   faEllipsisV,
@@ -29,6 +29,7 @@ import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
 import Input from '../common/Form/Input';
 import SelectInput from '../common/Form/SelectInput';
+import IconButton from '../common/IconButton';
 import InlineInput from '../common/InlineInput';
 import Modal from '../common/Modal';
 import OpenCloseModal from '../common/OpenCloseModal';
@@ -56,7 +57,24 @@ interface Props {
   variant: CardContent;
   showSubcards?: boolean;
 }
-
+const descriptionStyle = {
+  backgroundColor: 'var(--lightGray)',
+  color: 'var(--darkGray)',
+  transition: 'all 1s ease',
+  overflow: 'hidden',
+  fontSize: '0.9em',
+  flexGrow: 0,
+};
+const openDetails = css({
+  ...descriptionStyle,
+  maxHeight: '600px',
+  padding: space_M,
+});
+const closeDetails = css({
+  ...descriptionStyle,
+  maxHeight: '0px',
+  padding: '0 ' + space_M,
+});
 const barHeight = '18px';
 
 const progressBarContainer = css({
@@ -115,6 +133,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const variantPager = computeNav(contents, variant.id);
   const userAcl = useCardACLForCurrentUser(card.id);
   const readOnly = !userAcl.write || variant.frozen;
+  const [showTypeDetails, setShowTypeDetails] = React.useState(false);
 
   React.useEffect(() => {
     if (cardType === undefined) {
@@ -228,6 +247,12 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                             />
                           </>
                         ) : null}
+                        <IconButton
+                          icon={faQuestionCircle}
+                          title="Show card model informations"
+                          className={cx(lightIconButtonStyle, css({color: 'var(--lightGray)'}), showTypeDetails ? css({color: 'var(--linkHoverColor)'}) : '')}
+                          onClick={() => setShowTypeDetails(showTypeDetails => !showTypeDetails)}
+                        />
                       </Flex>
                     </div>
                     <Flex>
@@ -305,14 +330,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                       />
                     </Flex>
                   </Flex>
-                  <div
-                    className={css({
-                      fontSize: '0.9rem',
-                      color: 'var(--darkGray)',
-                      padding: space_S,
-                      p: { margin: space_S + ' 0' },
-                    })}
-                  >
+                  <div className={showTypeDetails ? openDetails : closeDetails}>
                     <p>
                       <b>Card type</b>: {cardType?.title || ''}
                     </p>
@@ -321,8 +339,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                     </p>
                   </div>
                 </Flex>
-
-                <Flex direction="column" grow={1} align='stretch'>
+                <Flex direction="column" grow={1} align="stretch">
                   {userAcl.read ? (
                     variant.id ? (
                       <DocumentEditorWrapper

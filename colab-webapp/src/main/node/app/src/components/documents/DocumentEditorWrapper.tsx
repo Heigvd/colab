@@ -6,7 +6,7 @@
  */
 
 import { css } from '@emotion/css';
-import { faLink, faParagraph, faPlus, faFile } from '@fortawesome/free-solid-svg-icons';
+import { faFile, faLink, faParagraph, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
@@ -64,9 +64,7 @@ export function DocumentEditorWrapper({
             title="add a text block"
             label={
               <>
-                <FontAwesomeIcon icon={faPlus} title="Create a new variant" size='sm' />
-                {' '}
-                <FontAwesomeIcon icon={faParagraph} title="Create a new variant" />
+                <FontAwesomeIcon icon={faPlus} size="sm" /> <FontAwesomeIcon icon={faParagraph} />
               </>
             }
           />
@@ -78,9 +76,7 @@ export function DocumentEditorWrapper({
             title="add a file"
             label={
               <>
-                <FontAwesomeIcon icon={faPlus} title="Create a new variant" size='sm'/>
-                {' '}
-                <FontAwesomeIcon icon={faFile} title="Create a new variant" />
+                <FontAwesomeIcon icon={faPlus} size="sm" /> <FontAwesomeIcon icon={faFile} />
               </>
             }
           />
@@ -92,9 +88,7 @@ export function DocumentEditorWrapper({
             title="add a link"
             label={
               <>
-                <FontAwesomeIcon icon={faPlus} title="Create a new variant" size='sm' />
-                {' '}
-                <FontAwesomeIcon icon={faLink} title="Create a new variant" />
+                <FontAwesomeIcon icon={faPlus} size="sm" /> <FontAwesomeIcon icon={faLink} />
               </>
             }
           />

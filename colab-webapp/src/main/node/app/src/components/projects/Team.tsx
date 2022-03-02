@@ -265,7 +265,7 @@ const RoleDisplay = ({ role }: RoleProps) => {
         </>
       }
     >
-      <InlineInput value={role.name || ''} onChange={saveCb} placeholder="role"/>
+      <InlineInput value={role.name || ''} onChange={saveCb} placeholder="role" />
     </WithToolbar>
   );
 };

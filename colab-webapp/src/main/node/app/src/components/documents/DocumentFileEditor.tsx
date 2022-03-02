@@ -13,13 +13,19 @@ import * as API from '../../API/api';
 import { useAppDispatch } from '../../store/hooks';
 import FilePicker from '../common/FilePicker';
 import InlineLoading from '../common/InlineLoading';
+import { EditState } from '../live/LiveEditor';
 
 export interface DocumentFileProps {
   document: DocumentFile;
   allowEdition?: boolean;
+  editingStatus: EditState;
 }
 
-export function DocumentFileEditor({ document, allowEdition }: DocumentFileProps): JSX.Element {
+export function DocumentFileEditor({
+  document,
+  allowEdition,
+  editingStatus,
+}: DocumentFileProps): JSX.Element {
   //const i18n = useTranslations();
 
   const dispatch = useAppDispatch();
@@ -74,6 +80,7 @@ export function DocumentFileEditor({ document, allowEdition }: DocumentFileProps
         )
       }
       currentMimetype={document.mimeType}
+      editingStatus={editingStatus}
     />
   );
 }

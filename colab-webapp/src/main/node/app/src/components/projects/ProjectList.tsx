@@ -111,7 +111,7 @@ const ProjectDisplay = ({ project }: Props) => {
           placeholder="Write a description here."
           value={project.description || ''}
           onChange={newValue => dispatch(API.updateProject({ ...project, description: newValue }))}
-          inputType='textarea'
+          inputType="textarea"
           autosave={false}
         />
         {/* 
