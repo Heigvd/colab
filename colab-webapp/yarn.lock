@@ -6927,10 +6927,10 @@ webpack-merge@^5.7.3:
     clone-deep "^4.0.1"
     wildcard "^2.0.0"
 
-webpack-react-component-name@^4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/webpack-react-component-name/-/webpack-react-component-name-4.0.3.tgz#6b41babcd036dc40f1dc2d3a9c05e537164d01a7"
-  integrity sha512-SxS07I1KtoMts4lKyZbF5l9Vls6qcNCBb44ewRbPmCCMtyKTMjFEZmUfHbJ/d1P3SM4jUv8YkhYSxz+oeCTZRw==
+webpack-react-component-name@5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/webpack-react-component-name/-/webpack-react-component-name-5.0.3.tgz#912455b30c38efb6463437f47bc63ad1b7cc44de"
+  integrity sha512-wAzuJVpF3XCB9o7u9SUKZovQzay7DbU7aWt+ID9pug8uLMAA2bH8bFUzj3k4dWvjdA25kT0na6yw8sM3BjR/1g==
   dependencies:
     acorn-walk "7.2.0"
 
