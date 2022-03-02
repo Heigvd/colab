@@ -405,7 +405,6 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
               </Flex>
             </Flex>
             <SideCollapsiblePanel
-              openKey={'resources'}
               direction="RIGHT"
               items={{
                 resources: {

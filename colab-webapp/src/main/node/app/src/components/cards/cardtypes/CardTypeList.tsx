@@ -62,7 +62,7 @@ export default function CardTypeList(): JSX.Element {
       return (
         <>
           <Routes>
-            <Route path="edit/:id" element={<CardTypeEditor />} />
+            <Route path="edit/:id/*" element={<CardTypeEditor />} />
             <Route
               path="*"
               element={
