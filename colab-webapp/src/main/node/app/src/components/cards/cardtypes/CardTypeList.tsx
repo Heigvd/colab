@@ -8,7 +8,7 @@
 import { css } from '@emotion/css';
 import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import * as API from '../../../API/api';
 import { useProjectCardTypes } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
@@ -17,7 +17,8 @@ import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
 import { space_M } from '../../styling/style';
 import CardTypeDisplay from './CardTypeDisplay';
-import CardTypeManager from './CardTypeManager';
+import CardTypeEditor from './CardTypeEditor';
+import CardTypeItem from './CardTypeItem';
 
 const flexWrap = css({
   display: 'flex',
@@ -59,29 +60,39 @@ export default function CardTypeList(): JSX.Element {
       return <InlineLoading />;
     } else {
       return (
-        <div>
-          <IconButton
-            icon={faArrowLeft}
-            title={'Back to project'}
-            iconColor="var(--darkGray)"
-            onClick={() => navigate('./editor/' + project.id)}
-            className={css({ display: 'block', marginBottom: space_M })}
-          />
-          <h3>Card Types</h3>
-          <h4>Project own types</h4>
-          <IconButton onClick={createNewCb} icon={faPlus} title="Create new" />
-          <div className={flexWrap}>
-            {cardTypes.own.map(cardType => (
-              <CardTypeManager key={cardType.id} cardType={cardType} />
-            ))}
-          </div>
-          <h4>Inherited</h4>
-          <div className={flexWrap}>
-            {cardTypes.inherited.map(cardType => (
-              <CardTypeDisplay key={cardType.id} cardType={cardType} />
-            ))}
-          </div>
-        </div>
+        <>
+          <Routes>
+            <Route path="edit/:id" element={<CardTypeEditor />} />
+            <Route
+              path="*"
+              element={
+                <div>
+                  <IconButton
+                    icon={faArrowLeft}
+                    title={'Back'}
+                    iconColor="var(--darkGray)"
+                    onClick={() => navigate('../')}
+                    className={css({ display: 'block', marginBottom: space_M })}
+                  />
+                  <h3>Card Types</h3>
+                  <h4>Project own types</h4>
+                  <IconButton onClick={createNewCb} icon={faPlus} title="Create new" />
+                  <div className={flexWrap}>
+                    {cardTypes.own.map(cardType => (
+                      <CardTypeItem key={cardType.id} cardType={cardType} />
+                    ))}
+                  </div>
+                  <h4>Inherited</h4>
+                  <div className={flexWrap}>
+                    {cardTypes.inherited.map(cardType => (
+                      <CardTypeDisplay key={cardType.id} cardType={cardType} />
+                    ))}
+                  </div>
+                </div>
+              }
+            />
+          </Routes>
+        </>
       );
     }
   }

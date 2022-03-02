@@ -46,7 +46,7 @@ const tagStyle = css({
   alignSelf: 'flex-start',
 });
 
-export default function CardTypeManager({ cardType }: DisplayProps): JSX.Element {
+export default function CardTypeItem({ cardType }: DisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -66,8 +66,7 @@ export default function CardTypeManager({ cardType }: DisplayProps): JSX.Element
               {
                 value: 'Edit type',
                 label: <><FontAwesomeIcon icon={faPen} /> Edit Type</>,
-                action: () =>
-                  dispatch(API.updateCardType({ ...cardType, deprecated: !cardType.deprecated })),
+                action: () => navigate(`./edit/${cardType.id}`),
               },
               {
                 value: 'Delete type',

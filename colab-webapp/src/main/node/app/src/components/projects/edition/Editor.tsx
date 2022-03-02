@@ -316,7 +316,7 @@ export default function Editor(): JSX.Element {
             icon={faEllipsisV}
             valueComp={{ value: '', label: '' }}
             entries={[
-              { value: './defs', label: 'Card Types' },
+              { value: './types', label: 'Card Types' },
               { value: './settings', label: 'Project Settings' },
             ]}
             onSelect={val => {
@@ -349,7 +349,7 @@ export default function Editor(): JSX.Element {
               <Route path="settings" element={<ProjectSettings project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
-              <Route path="defs" element={<CardTypeList />} />
+              <Route path="types/*" element={<CardTypeList />} />
               <Route path="card/:id" element={<DefaultVariantDetector />} />
               {/* Zooom on a card */}
               <Route

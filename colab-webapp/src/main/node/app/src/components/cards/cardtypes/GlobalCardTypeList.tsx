@@ -13,7 +13,7 @@ import { useGlobalTypes } from '../../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
-import CardTypeEditor from './CardTypeEditor';
+import CardTypeItem from './CardTypeItem';
 
 const flexWrap = css({
   display: 'flex',
@@ -49,7 +49,7 @@ export default function GlobalCardTypeList(): JSX.Element {
         <IconButton onClick={createNewCb} icon={faPlus} title="Create new" />
         <div className={flexWrap}>
           {cardTypes.types.map(cardType => (
-            <CardTypeEditor key={cardType.id} cardType={cardType} />
+            <CardTypeItem key={cardType.id} cardType={cardType} />
           ))}
         </div>
       </div>

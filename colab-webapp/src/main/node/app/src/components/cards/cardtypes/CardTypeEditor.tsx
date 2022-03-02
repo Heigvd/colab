@@ -5,112 +5,242 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
-import { faCheckSquare, faSquare } from '@fortawesome/free-regular-svg-icons';
-import { CardType } from 'colab-rest-client';
-import * as React from 'react';
-import Creatable from 'react-select/creatable';
-import * as API from '../../../API/api';
-import { useCardTypeTags } from '../../../selectors/cardTypeSelector';
-import { useAppDispatch } from '../../../store/hooks';
-import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
-import Button from '../../common/Button';
-import InlineInput from '../../common/InlineInput';
-import OpenClose from '../../common/OpenClose';
-import { ResourceContextScope } from '../../resources/ResourceCommonType';
-import ResourcesWrapper from '../../resources/ResourcesWrapper';
+import { css, cx } from '@emotion/css';
 import {
-  cardShadow,
-  defaultColumnContainerStyle,
-  defaultRowContainerStyle,
-  inputStyle,
-  sideTabButton,
+  faArrowLeft,
+  faCog,
+  faEllipsisV,
+  faFileAlt,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import * as React from 'react';
+import { Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
+//import logger from '../../../logger';
+import { useCardType } from '../../../selectors/cardTypeSelector';
+import Button from '../../common/Button';
+import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
+import DropDownMenu from '../../common/DropDownMenu';
+import Flex from '../../common/Flex';
+import IconButton from '../../common/IconButton';
+import Modal from '../../common/Modal';
+import {
+  cardStyle,
+  lightIconButtonStyle,
+  space_M,
+  space_S,
 } from '../../styling/style';
+import SideCollapsiblePanel from './../SideCollapsiblePanel';
 
-interface DisplayProps {
-  cardType: CardType;
+
+interface Props {
+  className?: string;
 }
 
-const style = css({
-  width: 'max-content',
-  border: '1px solid grey',
-  margin: '10px',
-  padding: '10px',
-  background: 'white',
-  boxShadow: cardShadow,
-});
+export default function CardTypeEditor({ className }: Props): JSX.Element {
+  const id = useParams<'id'>();
+  const typeId = +id.id!;
+  const cardType = useCardType(typeId);
+  //const i18n = useTranslations();
+  //const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  //const userAcl = useCardACLForCurrentUser(card.id);
 
-export default function CardTypeEditor({ cardType }: DisplayProps): JSX.Element {
-  const dispatch = useAppDispatch();
 
-  const allTags = useCardTypeTags();
-  const options = allTags.map(tag => ({ label: tag, value: tag }));
-
-  return (
-    <>
-      <div className={defaultRowContainerStyle}>
-        <>
-          <div className={defaultColumnContainerStyle}>
-            <div className={style}>
-              <InlineInput
-                label="Title: "
-                placeholder=""
-                value={cardType.title || ''}
-                onChange={newValue =>
-                  dispatch(API.updateCardType({ ...cardType, title: newValue }))
-                }
-                autosave={false}
-              />
-              <Creatable
-                className={inputStyle}
-                isMulti={true}
-                value={cardType.tags.map(tag => ({ label: tag, value: tag }))}
-                options={options}
-                onChange={tagsOptions => {
-                  dispatch(
-                    API.updateCardType({
-                      ...cardType,
-                      tags: tagsOptions.map(o => o.value),
-                    }),
-                  );
-                }}
-              />
-              {cardType.purposeId && (
-                <BlockEditorWrapper blockId={cardType.purposeId} allowEdition={true} />
-              )}
-              <Button
-                icon={cardType.deprecated ? faCheckSquare : faSquare}
-                onClick={() =>
-                  dispatch(API.updateCardType({ ...cardType, deprecated: !cardType.deprecated }))
-                }
-              >
-                Deprecated
-              </Button>
-              <Button
-                icon={cardType.published ? faCheckSquare : faSquare}
-                onClick={() =>
-                  dispatch(API.updateCardType({ ...cardType, published: !cardType.published }))
-                }
-              >
-                Published
-              </Button>
-            </div>
-          </div>
-          <OpenClose collapsedChildren={<span className={sideTabButton}>Resources</span>}>
-            {() => (
-              <>
-                {cardType.id && (
-                  <ResourcesWrapper
-                    kind={ResourceContextScope.CardType}
-                    accessLevel="WRITE"
-                    cardTypeId={cardType.id}
-                  />
-                )}
-              </>
-            )}
-          </OpenClose>
-        </>
-      </div>
-    </>
+  const closeRouteCb = React.useCallback(
+    route => {
+      navigate(location.pathname.replace(new RegExp(route + '$'), ''));
+    },
+    [location.pathname, navigate],
   );
-}
+  //logger.info(id.id);
+  if (cardType.cardType?.id == null) {
+    return <i>Card type without id is invalid...</i>;
+  } else {
+    return (
+      <Flex direction="column" grow={1} align="stretch" className={cx(css({alignSelf: 'stretch'}), className)}>
+        <IconButton
+                    icon={faArrowLeft}
+                    title={'Back to card types'}
+                    iconColor="var(--darkGray)"
+                    onClick={() => navigate('../')}
+                    className={css({ display: 'block', marginBottom: space_M })}
+                  />
+        <Flex
+          grow={1}
+          direction="row"
+          align="stretch"
+          className={css({ paddingBottom: space_S, height: '50vh' })}
+        >
+          <Flex
+            grow={1}
+            direction="row"
+            justify="space-between"
+            align="stretch"
+            className={cx(
+              cardStyle,
+              css({
+                backgroundColor: 'white',
+              }),
+            )}
+          >
+            <Flex direction="column" grow={1} align="stretch">
+              <Flex
+                direction="column"
+                grow={1}
+                className={css({
+                  padding: '10px',
+                  overflow: 'auto',
+                })}
+                align="stretch"
+              >
+                <Flex direction="column" align="stretch">
+                  <Flex
+                    justify="space-between"
+                    className={css({
+                      paddingBottom: space_S,
+                    })}
+                  >
+                    <div>
+                      <Flex align="center">
+                        {cardType.cardType.title || 'Untitled'}
+                        {/* <InlineInput
+                          placeholder={'Untitled type'}
+                          // TODO readOnly={false}
+                          value={cardType.cardType.title || ''}
+                          onChange={newValue =>
+                            dispatch(API.updateCardType({ ...cardType, cardType.title: newValue }))
+                          }
+                          className={cardTitle}
+                          autosave={false}
+                        /> */}
+{/*                         <IconButton
+                          icon={faQuestionCircle}
+                          title="Show card model informations"
+                          className={cx(lightIconButtonStyle, css({color: 'var(--lightGray)'}), showTypeDetails ? css({color: 'var(--linkHoverColor)'}) : '')}
+                          onClick={() => setShowTypeDetails(showTypeDetails => !showTypeDetails)}
+                        /> */}
+                      </Flex>
+                    </div>
+                    <Flex>
+                      {/* handle modal routes*/}
+                      <Routes>
+                        <Route
+                          path="settings"
+                          element={
+                            <Modal
+                              title="Card Settings"
+                              onClose={() => closeRouteCb('settings')}
+                              showCloseButton
+                            >
+                              {closeModal => (
+                                <Button onClick={closeModal}>CLOSE MODAL TODO
+                                {/* <CardSettings onClose={closeModal} card={card} /> */}
+                                </Button>
+                              )}
+                            </Modal>
+                          }
+                        />
+                      </Routes>
+                      <DropDownMenu
+                        icon={faEllipsisV}
+                        valueComp={{ value: '', label: '' }}
+                        buttonClassName={cx(lightIconButtonStyle, css({ marginLeft: space_S }))}
+                        entries={[
+                          {
+                            value: 'Delete card or variant',
+                            action: () => {},
+                            label: (
+                              <ConfirmDeleteModal
+                                buttonLabel={
+                                  <>
+                                    <FontAwesomeIcon icon={faTrash} />
+
+                                  </>
+                                }
+                                message={
+                                    <p>
+                                      Are you <strong>sure</strong> you want to delete this whole
+                                      card? This will delete all subcards inside.
+                                    </p>
+                                }
+                                onConfirm={() => {
+                                    //dispatch(API.deleteCard(card));
+                                    navigate('../');
+                                }}
+                                confirmButtonLabel={'Delete card'}
+                              />
+                            ),
+                          },
+                          {
+                            value: 'settings',
+                            label: (
+                              <>
+                                <FontAwesomeIcon icon={faCog} title="Card settings" /> Card Settings
+                              </>
+                            ),
+                          },
+                        ]}
+                        onSelect={val => {
+                          val.action != null ? val.action() : navigate(val.value);
+                        }}
+                      />
+                    </Flex>
+                  </Flex>
+                  <div>
+                    <p>
+                      <b>Card type</b>:
+                    </p>
+                    <p>
+                      <b>Purpose</b>:
+                    </p>
+                  </div>
+                </Flex>
+                <Flex direction="column" grow={1} align="stretch">
+{/*                   {userAcl.read ? (
+                    variant.id ? (
+                      <DocumentEditorWrapper
+                        context={{ kind: 'DeliverableOfCardContent', cardContentId: variant.id }}
+                        allowEdition={!readOnly}
+                      />
+                    ) : (
+                      <span>no deliverable available</span>
+                    )
+                  ) : (
+                    <span>Access Denied</span>
+                  )} */}
+                </Flex>
+              </Flex>
+            </Flex>
+            <SideCollapsiblePanel
+              openKey={'resources'}
+              direction="RIGHT"
+              items={{
+                resources: {
+                  children: (
+                    <>
+                    <div>
+                      HERE PUT RESOURCES
+                    </div>
+                   {/*  <ResourcesWrapper
+                      kind={ResourceContextScope.CardOrCardContent}
+                      accessLevel={
+                        !card.readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
+                      }
+                      cardId={card.id}
+                      cardContentId={card.id}
+                    /> */ }
+                    </>
+                  ),
+                  icon: faFileAlt,
+                  title: 'Toggle resources panel',
+                },
+              }}
+            />
+          </Flex>
+        </Flex>
+      </Flex>
+    );
+            }}
