@@ -12,96 +12,440 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 
 /**
+ * Deal with assigning index in a collection. The index is a field of the object and not the
+ * built-in index of a list.
+ * &lt;p&gt;
+ * The indexes are progressive (from small to big) but the size of the room between two neighboring
+ * indexes is not minimal nor has to be regular. In other words two neighboring indexes do not need
+ * to be two just-following numbers.
+ * &lt;p&gt;
+ * The purpose is to be able to easily add an object between others without having to adjust other
+ * indexes. In order to do that, we set a room between two neighboring indexes.
+ *
  * @author sandra
+ * @author maxence
+ *
+ * @param &lt;T&gt; Type of the items
  */
-public final class IndexGeneratorHelper {
-
-    /** logger */
-<span class="nc" id="L24">    private static final Logger logger = LoggerFactory.getLogger(IndexGeneratorHelper.class);</span>
-
-    /**
-     * The value of the first index
-     */
-    public static final int MIN_INDEX = 0;
+@Stateless
+@LocalBean
+public class IndexGeneratorHelper&lt;T extends WithIndex&gt; {
 
     /**
-     * The value of the bigger index that is compatible with the model
+     * The default value of the smallest index that is suitable
      */
-    public static final int MAX_INDEX = Integer.MAX_VALUE;
+<span class="nc" id="L41">    private final int DEFAULT_MIN_INDEX = 0;</span>
 
     /**
-     * Default room between indexes
+     * The default value of the biggest index that is suitable
      */
-    public static final int DEFAULT_INDEX_INC = 1000;
+<span class="nc" id="L46">    private final int DEFAULT_MAX_INDEX = Integer.MAX_VALUE;</span>
 
     /**
-     * never-called private constructor
+     * Default room between two neighboring indexes
      */
-<span class="nc" id="L44">    private IndexGeneratorHelper() {</span>
-<span class="nc" id="L45">        throw new UnsupportedOperationException(</span>
-            &quot;This is a utility class and cannot be instantiated&quot;);
+<span class="nc" id="L51">    private final int DEFAULT_INDEX_INC = 1000;</span>
+
+    /**
+     * Value of the smallest index that is suitable
+     */
+    private final int minIndex;
+
+    /**
+     * Value of the biggest index that is suitable
+     */
+    private final int maxIndex;
+
+    /**
+     * Initial room between two neighboring indexes
+     */
+    private final int indexIncrement;
+
+    /**
+     * Index for the first item in the list
+     */
+    private final int soloIndex;
+
+    /**
+     * Default constructor
+     */
+<span class="nc" id="L76">    public IndexGeneratorHelper() {</span>
+<span class="nc" id="L77">        minIndex = DEFAULT_MIN_INDEX;</span>
+<span class="nc" id="L78">        maxIndex = DEFAULT_MAX_INDEX;</span>
+<span class="nc" id="L79">        indexIncrement = DEFAULT_INDEX_INC;</span>
+
+<span class="nc" id="L81">        soloIndex = minIndex + indexIncrement;</span>
+<span class="nc" id="L82">    }</span>
+
+    /**
+     * Constructor with parameters
+     *
+     * @param minIndex       The value of the smallest index that is suitable
+     * @param maxIndex       The value of the biggest index that is suitable
+     * @param indexIncrement The initial room between two neighboring indexes
+     */
+<span class="nc" id="L91">    public IndexGeneratorHelper(int minIndex, int maxIndex, int indexIncrement) {</span>
+<span class="nc" id="L92">        this.minIndex = minIndex;</span>
+<span class="nc" id="L93">        this.maxIndex = maxIndex;</span>
+<span class="nc" id="L94">        this.indexIncrement = indexIncrement;</span>
+
+<span class="nc" id="L96">        soloIndex = minIndex + indexIncrement;</span>
+<span class="nc" id="L97">    }</span>
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    /**
+     * Move (or set) the given item at the beginning of the collection.
+     * &lt;p&gt;
+     * That means setting an index to the item so that it is the first when sorting by index.
+     *
+     * @param item       the item waiting for an index to be set
+     * @param collection the collection of items
+     *
+     * @throws HttpErrorMessage if the collection is too big
+     */
+    public void moveItemToBeginning(T item, Collection&lt;T&gt; collection) {
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (collection.isEmpty()) {</span>
+<span class="nc" id="L115">            item.setIndex(soloIndex);</span>
+        } else {
+<span class="nc" id="L117">            List&lt;T&gt; sortedList = sortCollection(collection);</span>
+
+<span class="nc" id="L119">            T baseItem = sortedList.get(0);</span>
+
+<span class="nc" id="L121">            int justTooLow = minIndex - 1;</span>
+
+<span class="nc bnc" id="L123" title="All 2 branches missed.">            if (!hasEnoughSpaceBetween(justTooLow, baseItem.getIndex())) {</span>
+<span class="nc" id="L124">                reorderIndexes(sortedList);</span>
+            }
+
+<span class="nc" id="L127">            int wantedIndex = computeInBetweenIndex(justTooLow, baseItem.getIndex());</span>
+
+<span class="nc" id="L129">            item.setIndex(wantedIndex);</span>
+        }
+<span class="nc" id="L131">    }</span>
+
+    /**
+     * Move the given item one step ahead from where it is now.
+     *
+     * @param item       the item waiting for a new index
+     * @param collection the collection of items
+     *
+     * @throws HttpErrorMessage if the item is not in the collection
+     */
+    public void moveOneStepAhead(T item, Collection&lt;T&gt; collection) {
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (!collection.contains(item)) {</span>
+<span class="nc" id="L143">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+        }
+
+<span class="nc" id="L146">        List&lt;T&gt; sortedList = sortCollection(collection);</span>
+
+<span class="nc" id="L148">        T item1 = getItemBefore(item, sortedList);</span>
+
+<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (item1 == null) {</span>
+            // already at the beginning
+<span class="nc" id="L152">            return;</span>
+        }
+
+<span class="nc" id="L155">        int itemIndex = item.getIndex();</span>
+<span class="nc" id="L156">        item.setIndex(item1.getIndex());</span>
+<span class="nc" id="L157">        item1.setIndex(itemIndex);</span>
+<span class="nc" id="L158">    }</span>
+
+    /**
+     * Move (or set) the given item before the baseItem.
+     *
+     * @param item       the item waiting for a new index
+     * @param baseItem   the item of reference
+     * @param collection the collection of items
+     *
+     * @throws HttpErrorMessage if the baseItem is not in the collection or if the collection is too
+     *                          big
+     */
+    public void moveItemBefore(T item, T baseItem, Collection&lt;T&gt; collection) {
+<span class="nc bnc" id="L171" title="All 2 branches missed.">        if (!collection.contains(baseItem)) {</span>
+<span class="nc" id="L172">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+        }
+
+<span class="nc" id="L175">        List&lt;T&gt; sortedList = sortCollection(collection);</span>
+
+<span class="nc" id="L177">        T item1 = baseItem;</span>
+<span class="nc" id="L178">        T item2 = getItemBefore(baseItem, sortedList);</span>
+
+<span class="nc bnc" id="L180" title="All 2 branches missed.">        if (item2 == null) {</span>
+            // set before item1 which is the first item
+<span class="nc" id="L182">            moveItemToBeginning(item, collection);</span>
+
+        } else {
+            // between two items
+<span class="nc bnc" id="L186" title="All 2 branches missed.">            if (!hasEnoughSpaceBetween(item1.getIndex(), item2.getIndex())) {</span>
+<span class="nc" id="L187">                reorderIndexes(sortedList);</span>
+            }
+
+<span class="nc" id="L190">            int wantedIndex = computeInBetweenIndex(item1.getIndex(), item2.getIndex());</span>
+
+<span class="nc" id="L192">            item.setIndex(wantedIndex);</span>
+        }
+<span class="nc" id="L194">    }</span>
+
+    /**
+     * Move an item one step behind from where it is now.
+     *
+     * @param item       the item waiting for a new index
+     * @param collection the collection of items
+     *
+     * @throws HttpErrorMessage if the item is not in the collection
+     */
+    public void moveOneStepBehind(T item, Collection&lt;T&gt; collection) {
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        if (!collection.contains(item)) {</span>
+<span class="nc" id="L206">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+        }
+
+<span class="nc" id="L209">        List&lt;T&gt; sortedList = sortCollection(collection);</span>
+
+<span class="nc" id="L211">        T item1 = getItemAfter(item, sortedList);</span>
+
+<span class="nc bnc" id="L213" title="All 2 branches missed.">        if (item1 == null) {</span>
+            // already at the end
+<span class="nc" id="L215">            return;</span>
+        }
+
+<span class="nc" id="L218">        int itemIndex = item.getIndex();</span>
+<span class="nc" id="L219">        item.setIndex(item1.getIndex());</span>
+<span class="nc" id="L220">        item1.setIndex(itemIndex);</span>
+<span class="nc" id="L221">    }</span>
+
+    /**
+     * Move (or set) the given item after the baseItem.
+     *
+     * @param item       the item waiting for a new index
+     * @param baseItem   the item of reference
+     * @param collection the collection of items
+     *
+     * @throws HttpErrorMessage if the baseItem is not in the collection or if the collection is too
+     *                          big
+     */
+    public void moveItemAfter(T item, T baseItem, Collection&lt;T&gt; collection) {
+<span class="nc bnc" id="L234" title="All 2 branches missed.">        if (!collection.contains(baseItem)) {</span>
+<span class="nc" id="L235">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+        }
+
+<span class="nc" id="L238">        List&lt;T&gt; sortedList = sortCollection(collection);</span>
+
+<span class="nc" id="L240">        T item1 = baseItem;</span>
+<span class="nc" id="L241">        T item2 = getItemAfter(baseItem, sortedList);</span>
+
+<span class="nc bnc" id="L243" title="All 2 branches missed.">        if (item2 == null) {</span>
+            // set after item1 which is the last item
+<span class="nc" id="L245">            moveItemToEnd(item, collection);</span>
+
+        } else {
+<span class="nc bnc" id="L248" title="All 2 branches missed.">            if (!hasEnoughSpaceBetween(item1.getIndex(), item2.getIndex())) {</span>
+<span class="nc" id="L249">                reorderIndexes(sortedList);</span>
+            }
+
+<span class="nc" id="L252">            int wantedIndex = computeInBetweenIndex(item1.getIndex(), item2.getIndex());</span>
+
+<span class="nc" id="L254">            item.setIndex(wantedIndex);</span>
+        }
+<span class="nc" id="L256">    }</span>
+
+    /**
+     * Move (or set) the given item at the end of the collection.
+     * &lt;p&gt;
+     * That means setting an index to the item so that it is the last when sorting by index.
+     *
+     * @param item       the item waiting for an index to be set
+     * @param collection the collection of items
+     *
+     * @throws HttpErrorMessage if the collection is too big
+     */
+    public void moveItemToEnd(T item, Collection&lt;T&gt; collection) {
+<span class="nc bnc" id="L269" title="All 2 branches missed.">        if (collection.isEmpty()) {</span>
+<span class="nc" id="L270">            item.setIndex(soloIndex);</span>
+        } else {
+<span class="nc" id="L272">            List&lt;T&gt; sortedList = sortCollection(collection);</span>
+
+<span class="nc" id="L274">            T baseItem = sortedList.get(sortedList.size() - 1);</span>
+
+<span class="nc" id="L276">            int justTooBigIndex = maxIndex + 1;</span>
+
+<span class="nc bnc" id="L278" title="All 2 branches missed.">            if (!hasEnoughSpaceBetween(baseItem.getIndex(), justTooBigIndex)) {</span>
+<span class="nc" id="L279">                reorderIndexes(sortedList);</span>
+            }
+
+            int wantedIndex;
+<span class="nc bnc" id="L283" title="All 2 branches missed.">            if ((justTooBigIndex - baseItem.getIndex()) &gt; indexIncrement) {</span>
+<span class="nc" id="L284">                wantedIndex = baseItem.getIndex() + indexIncrement;</span>
+            } else {
+<span class="nc" id="L286">                wantedIndex = computeInBetweenIndex(baseItem.getIndex(), justTooBigIndex);</span>
+            }
+
+<span class="nc" id="L289">            item.setIndex(wantedIndex);</span>
+        }
+<span class="nc" id="L291">    }</span>
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    /**
+     * Reorder the list so that each neighboring items have items separated by
+     * {@link #indexIncrement}.
+     * &lt;p&gt;
+     * The first item also has a room of {@link #indexIncrement} before it.
+     *
+     * @param sortedCollection The sorted collection to index again
+     *
+     * @throws HttpErrorMessage if the collection is too big to be reorder
+     */
+    private void reorderIndexes(List&lt;T&gt; sortedCollection) {
+<span class="nc bnc" id="L308" title="All 2 branches missed.">        if (!canBeReordered(sortedCollection)) {</span>
+<span class="nc" id="L309">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+        }
+
+<span class="nc" id="L312">        int index = minIndex + indexIncrement;</span>
+
+<span class="nc bnc" id="L314" title="All 2 branches missed.">        for (WithIndex obj : sortedCollection) {</span>
+<span class="nc" id="L315">            obj.setIndex(index);</span>
+<span class="nc" id="L316">            index += indexIncrement;</span>
+<span class="nc" id="L317">        }</span>
+<span class="nc" id="L318">    }</span>
+
+    /**
+     * Compute if the collection size fits into items indexes separated by {@link #indexIncrement}
+     * between {@link #minIndex} and {@link #maxIndex}
+     *
+     * @param collection
+     *
+     * @return True if the collection size fits into
+     */
+    private boolean canBeReordered(Collection&lt;T&gt; collection) {
+<span class="nc" id="L329">        return Math.floor(((float) (maxIndex - minIndex)) / indexIncrement) - 1 &gt;= collection</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">            .size();</span>
     }
 
-    // TODO unit test
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
 
     /**
-     * Compute the next index to use for this collection.
-     * &lt;p&gt;
-     * The index will be between {@link #MIN_INDEX} and {@link #MAX_INDEX} and two indexes are
-     * separated between {@link #DEFAULT_INDEX_INC}.
+     * Sort the collection by the items index field.
      *
-     * @param collection A collection of indexed objects
+     * @param collection the collection of items to sort
      *
-     * @return the next index to use for the collection
+     * @return a list of sorted items by index
      */
-    public static int nextIndex(Collection&lt;? extends WithIndex&gt; collection) {
-<span class="nc" id="L62">        List&lt;WithIndex&gt; workData = new ArrayList&lt;&gt;(collection);</span>
+    private List&lt;T&gt; sortCollection(Collection&lt;T&gt; collection) {
+<span class="nc" id="L345">        List&lt;T&gt; sortedList = new ArrayList&lt;&gt;(collection);</span>
 
-<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (workData.isEmpty()) {</span>
-<span class="nc" id="L65">            return MIN_INDEX + DEFAULT_INDEX_INC;</span>
+<span class="nc" id="L347">        sortedList.sort(Comparator.comparingInt(obj -&gt; obj.getIndex()));</span>
+
+        // TODO sandra ask Maxence if the old way was more suitable
+//      sortedList.sort((a, b) -&gt; {
+//      if (a != null) {
+//          if (b != null) {
+//              return Math.max(a.getIndex(), b.getIndex());
+//          } else {
+//              // a is not null, b is null
+//              return -1;
+//          }
+//      } else if (b != null) {
+//          // a is null, not b
+//          return 1;
+//      }
+//      //both are null
+//      return 0;
+
+<span class="nc" id="L365">        return sortedList;</span>
+    }
+
+    // *********************************************************************************************
+    //
+    // *********************************************************************************************
+
+    /**
+     * Determine if there is enough space between two indexes so that we can insert something new.
+     *
+     * @param indexA an index
+     * @param indexB another index
+     *
+     * @return True if there is at least 1 room left between the two indexes
+     */
+    private boolean hasEnoughSpaceBetween(int indexA, int indexB) {
+<span class="nc bnc" id="L381" title="All 2 branches missed.">        return Math.abs(indexB - indexA) &gt; 1;</span>
+    }
+
+    /**
+     * Determine the new index which will take place between the two given indexes.
+     *
+     * @param indexA an index
+     * @param indexB another index
+     *
+     * @return An index that fits between the two given indexes
+     */
+    private int computeInBetweenIndex(int indexA, int indexB) {
+<span class="nc" id="L393">        int baseIndex = indexA;</span>
+
+<span class="nc" id="L395">        int delta = indexB - baseIndex;</span>
+<span class="nc" id="L396">        int increment = (int) Math.floor(delta / 2.0);</span>
+
+<span class="nc" id="L398">        return baseIndex + increment;</span>
+    }
+
+    /**
+     * Fetch the item which is just before the given baseItem in the sortedList.
+     *
+     * @param baseItem   the reference item
+     * @param sortedList the sorted list of items
+     *
+     * @return the item just before baseItem
+     *
+     * @throws HttpErrorMessage if the sorted list does not contain the baseItem
+     */
+    private T getItemBefore(T baseItem, List&lt;T&gt; sortedList) {
+<span class="nc bnc" id="L412" title="All 2 branches missed.">        if (!sortedList.contains(baseItem)) {</span>
+<span class="nc" id="L413">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+        }
+
+<span class="nc" id="L416">        int baseIndexInList = sortedList.indexOf(baseItem);</span>
+
+<span class="nc bnc" id="L418" title="All 2 branches missed.">        if (baseIndexInList &gt; 0) {</span>
+<span class="nc" id="L419">            return sortedList.get(baseIndexInList - 1);</span>
         } else {
-<span class="nc" id="L67">            workData.sort(Comparator.comparingInt(obj -&gt; obj.getIndex()));</span>
-
-<span class="nc" id="L69">            WithIndex lastOne = workData.get(workData.size() - 1);</span>
-
-<span class="nc bnc" id="L71" title="All 2 branches missed.">            if (lastOne.getIndex() &lt; MAX_INDEX - DEFAULT_INDEX_INC) {</span>
-<span class="nc" id="L72">                return lastOne.getIndex() + DEFAULT_INDEX_INC;</span>
-
-<span class="nc bnc" id="L74" title="All 2 branches missed.">            } else if ((workData.size() + 1) &gt; (MAX_INDEX - MIN_INDEX) / DEFAULT_INDEX_INC) {</span>
-                // current behaviour is not that robust...
-                // it will crash when there is more than (MAX_INTEGER / 1000) objects
-                // it is big enough for our needs
-<span class="nc" id="L78">                throw HttpErrorMessage.dataIntegrityFailure();</span>
-
-            } else {
-<span class="nc" id="L81">                logger.warn(&quot;needed to reindex (last: {})&quot;, lastOne);</span>
-
-                // MAX INDEX reached -&gt; reset all indexes
-<span class="nc" id="L84">                reorderIndexes(workData);</span>
-
-<span class="nc" id="L86">                return lastOne.getIndex() + DEFAULT_INDEX_INC;</span>
-            }
+            // nothing before baseItem
+<span class="nc" id="L422">            return null;</span>
         }
     }
 
     /**
-     * Reorder the list beginning with {@link #MIN_INDEX} incrementing of {@link #DEFAULT_INDEX_INC}
-     * for each one.
+     * Fetch the item which is just after the given baseItem in the sortedList.
      *
-     * @param sortedCollection The sorted collection to reindex
+     * @param baseItem   the reference item
+     * @param sortedList the sorted list of items
+     *
+     * @return the item just after baseItem
+     *
+     * @throws HttpErrorMessage if the sorted list does not contain the baseItem
      */
-    private static void reorderIndexes(List&lt;WithIndex&gt; sortedCollection) {
-<span class="nc" id="L98">        int index = MIN_INDEX + DEFAULT_INDEX_INC;</span>
+    private T getItemAfter(T baseItem, List&lt;T&gt; sortedList) {
+<span class="nc bnc" id="L437" title="All 2 branches missed.">        if (!sortedList.contains(baseItem)) {</span>
+<span class="nc" id="L438">            throw HttpErrorMessage.dataIntegrityFailure();</span>
+        }
 
-<span class="nc bnc" id="L100" title="All 2 branches missed.">        for (WithIndex obj : sortedCollection) {</span>
-<span class="nc" id="L101">            obj.setIndex(index);</span>
-<span class="nc" id="L102">            index += DEFAULT_INDEX_INC;</span>
-<span class="nc" id="L103">        }</span>
-<span class="nc" id="L104">    }</span>
+<span class="nc" id="L441">        int baseIndexInList = sortedList.indexOf(baseItem);</span>
 
+<span class="nc bnc" id="L443" title="All 2 branches missed.">        if (baseIndexInList &lt; sortedList.size() - 1) {</span>
+<span class="nc" id="L444">            return sortedList.get(baseIndexInList + 1);</span>
+        } else {
+            // nothing after baseItem
+<span class="nc" id="L447">            return null;</span>
+        }
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

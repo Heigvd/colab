@@ -2,7 +2,7 @@ GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ChangeRestEndpointClientImpl,81,22,0,0,9,3,2,2,2,2
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardRestEndpointClientImpl,60,370,0,0,6,37,2,12,2,12
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.ResourceRestEndpointClientImpl,0,625,0,0,0,69,0,20,0,20
-colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.DocumentRestEndpointClientImpl,0,98,0,0,0,11,0,4,0,4
+colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.DocumentRestEndpointClientImpl,170,130,0,0,20,15,5,5,5,5
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardContentRestEndpointClientImpl,28,325,0,0,3,34,1,11,1,11
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.DocumentFileRestEndPointClientImpl,0,149,0,0,0,19,0,5,0,5
 colab-tests/colab-client,ch.colabproject.colab.client,ColabClient.CardTypeRestEndpointClientImpl,43,164,0,0,4,20,1,7,1,7
