@@ -5,8 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css } from '@emotion/css';
-import { faPen, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { css, cx } from '@emotion/css';
 import * as React from 'react';
 import { useAppSelector } from '../../store/hooks';
 import MarkdownViewer from '../blocks/markdown/MarkdownViewer';
@@ -14,12 +13,9 @@ import WysiwygEditor from '../blocks/markdown/WysiwygEditor';
 import CleverTextarea from '../common/CleverTextarea';
 import ErrorBoundary from '../common/ErrorBoundary';
 import Flex from '../common/Flex';
-import Toggler from '../common/Form/Toggler';
-import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
-import Tips from '../common/Tips';
-import WithToolbar from '../common/WithToolbar';
-import { space_S } from '../styling/style';
+import Tabs, { Tab } from '../common/Tabs';
+import { space_M, space_S } from '../styling/style';
 import ChangeTree from './ChangeTree';
 import { useLiveBlock } from './LiveTextEditor';
 
@@ -28,9 +24,7 @@ const shrink = css({
   flexShrink: 1,
 });
 
-type State = {
-  status: 'VIEW' | 'EDIT';
-};
+export type EditState = 'VIEW' | 'EDIT';
 
 interface Props {
   atClass: string;
@@ -38,6 +32,9 @@ interface Props {
   value: string;
   revision: string;
   allowEdition?: boolean;
+  editingStatus: EditState;
+  showTree?: boolean;
+  className?: string;
 }
 
 function Unsupported({ md }: { md: string }) {
@@ -60,6 +57,9 @@ export default function LiveEditor({
   value,
   revision,
   allowEdition,
+  editingStatus,
+  showTree,
+  className,
 }: Props): JSX.Element {
   const liveSession = useAppSelector(state => state.websockets.sessionId);
 
@@ -68,13 +68,6 @@ export default function LiveEditor({
     atId: atId,
     value: value,
     revision: revision,
-  });
-
-  const [wysiwyg, setWysiwyg] = React.useState(false);
-  const [showTree, setShowTree] = React.useState(false);
-
-  const [state, setState] = React.useState<State>({
-    status: 'VIEW',
   });
 
   if (status != 'READY') {
@@ -101,78 +94,54 @@ export default function LiveEditor({
       </ErrorBoundary>
     );
   } else {
-    if (state.status === 'VIEW') {
+    if (editingStatus === 'VIEW') {
       return (
-        <Flex
-          className={css({
-            border: '1px solid rgb(240, 240, 240)',
-            margin: '3px 0',
-            padding: space_S,
-            '&:hover': {
-              backgroundColor: 'var(--hoverBgColor)',
-              border: '1px solid transparent',
-              cursor: 'pointer',
-            },
-          })}
-          onClick={() => setState({ ...state, status: 'EDIT' })}
-        >
-          <WithToolbar
-            toolbarPosition="TOP_RIGHT"
-            toolbarClassName=""
-            offsetY={-1}
-            toolbar={<IconButton title="Click to edit" icon={faPen} iconColor="var(--darkGray)" />}
-          >
-            <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
-              <MarkdownViewer md={currentValue} />
-            </ErrorBoundary>
-          </WithToolbar>
+        <Flex className={className}>
+          <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
+            <MarkdownViewer md={currentValue} />
+          </ErrorBoundary>
         </Flex>
       );
-    } else if (state.status === 'EDIT') {
+    } else if (editingStatus === 'EDIT') {
       return (
         <Flex
           direction="column"
           align="stretch"
-          className={css({ backgroundColor: 'var(--hoverBgColor)', padding: space_S })}
+          className={cx(
+            css({ backgroundColor: 'var(--hoverBgColor)', padding: space_S }),
+            className,
+          )}
         >
-          <Flex justify="space-between">
-            <Flex align="center">
-              <Tips tipsType="TODO">
-                TODO: add more styling options (headings level, lists, ...
-              </Tips>
-              <Toggler label="Show Tree" value={showTree} onChange={setShowTree} />
-              <Toggler label="WYSIWYG" value={wysiwyg} onChange={setWysiwyg} />
-            </Flex>
-            <IconButton
-              title="close editor"
-              onClick={() => setState({ ...state, status: 'VIEW' })}
-              icon={faTimes}
-            />
-          </Flex>
           <Flex>
-            {wysiwyg ? (
-              <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
-                <WysiwygEditor
-                  className={css({ alignItems: 'stretch' })}
-                  value={currentValue}
-                  onChange={onChange}
-                />
-              </ErrorBoundary>
-            ) : (
-              <Flex grow={1} align="stretch">
-                <CleverTextarea
-                  className={css({ minHeight: '100px', flexGrow: 1, flexBasis: '1px' })}
-                  value={currentValue}
-                  onChange={onChange}
-                />
+            <Tabs
+              bodyClassName={css({ padding: space_M, alignItems: 'stretch' })}
+              tabsClassName={css({ padding: space_S + ' ' + space_M })}
+            >
+              <Tab name="visual" label="Visual">
                 <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
-                  <MarkdownViewer
-                    className={css({ padding: '3px', flexGrow: 1, flexBasis: '1px' })}
-                    md={currentValue}
+                  <WysiwygEditor
+                    className={css({ alignItems: 'stretch' })}
+                    value={currentValue}
+                    onChange={onChange}
                   />
                 </ErrorBoundary>
-              </Flex>
-            )}
+              </Tab>
+              <Tab name="makdn" label="Markdown">
+                <Flex grow={1} align="stretch">
+                  <CleverTextarea
+                    className={css({ minHeight: '100px', flexGrow: 1, flexBasis: '1px' })}
+                    value={currentValue}
+                    onChange={onChange}
+                  />
+                  <ErrorBoundary fallback={<Unsupported md={currentValue} />}>
+                    <MarkdownViewer
+                      className={css({ padding: '3px', flexGrow: 1, flexBasis: '1px' })}
+                      md={currentValue}
+                    />
+                  </ErrorBoundary>
+                </Flex>
+              </Tab>
+            </Tabs>
             {showTree ? (
               <div className={shrink}>
                 <ChangeTree atClass={atClass} atId={atId} value={value} revision={revision} />

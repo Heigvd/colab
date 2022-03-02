@@ -1,11 +1,15 @@
 const WebpackReactComponentNamePlugin = require("webpack-react-component-name");
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const path = require('path');
 const config = {
   entry: './src/components/App.tsx',
   devtool: 'inline-source-map',
   plugins: [
-    new WebpackReactComponentNamePlugin()
+      new WebpackReactComponentNamePlugin(),
+      new ESLintPlugin({
+        extensions: ['ts', 'tsx'],
+      }),
   ],
   module: {
     rules: [

@@ -4,15 +4,19 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "format": "prettier --write cypress"
+    "format": "prettier --write cypress",
+    "start:dev": "yarn cypress open --env WEGAS_URL=http://localhost:3004,CYPRESS_ADMIN_USERNAME=admin,CYPRESS_ADMIN_PASSWORD=admin",
+    "dev": "cross-env DEFAULT_URL=http://localhost:3004 node promptAndStart.js"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "cypress": "^9.2.0",
     "cypress-react-selector": "^2.3.13",
     "eslint": "^8.2.0",
     "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.4.1",
     "prettier-plugin-organize-imports": "^2.3.4",
-    "prettier": "^2.4.1"
+    "prompt": "^1.2.2"
   },
   "dependencies": {
     "typescript": "^4.5.4"

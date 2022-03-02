@@ -17,7 +17,7 @@ import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
 import { space_M } from '../../styling/style';
 import CardTypeDisplay from './CardTypeDisplay';
-import CardTypeEditor from './CardTypeEditor';
+import CardTypeManager from './CardTypeManager';
 
 const flexWrap = css({
   display: 'flex',
@@ -72,7 +72,7 @@ export default function CardTypeList(): JSX.Element {
           <IconButton onClick={createNewCb} icon={faPlus} title="Create new" />
           <div className={flexWrap}>
             {cardTypes.own.map(cardType => (
-              <CardTypeEditor key={cardType.id} cardType={cardType} />
+              <CardTypeManager key={cardType.id} cardType={cardType} />
             ))}
           </div>
           <h4>Inherited</h4>
@@ -81,18 +81,6 @@ export default function CardTypeList(): JSX.Element {
               <CardTypeDisplay key={cardType.id} cardType={cardType} />
             ))}
           </div>
-          {/*<h4>From other projects</h4>
-          <div className={flexWrap}>
-            {cardTypes.published.map(cardType => (
-              <CardTypeDisplay key={cardType.id} cardType={cardType} />
-            ))}
-          </div>
-          <h4>Global</h4>
-          <div className={flexWrap}>
-            {cardTypes.global.map(cardType => (
-              <CardTypeDisplay key={cardType.id} cardType={cardType} />
-            ))}
-          </div>*/}
         </div>
       );
     }

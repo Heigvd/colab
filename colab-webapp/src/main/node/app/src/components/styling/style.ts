@@ -241,7 +241,7 @@ export const iconButton = cx(
   css({
     cursor: 'pointer',
     ':hover': {
-      color: 'var(--hoverFgColor)',
+      color: 'var(--darkGray)',
     },
   }),
 );
@@ -250,6 +250,7 @@ export const buttonStyle = cx(
   linkStyle,
   invertedThemeMode,
   css({
+    display: 'inline-block',
     padding: '8px 14px',
     borderRadius: borderRadius,
     ':hover': {
@@ -457,3 +458,14 @@ export const workInProgressStyle = cx(
     boxShadow: '0px 0px 25px 7px greenyellow',
   }),
 );
+
+export const editableBlockStyle = css({
+  border: '1px solid rgb(240, 240, 240)',
+  margin: '3px 0',
+  padding: space_S,
+  '&:hover': {
+    backgroundColor: 'var(--hoverBgColor)',
+    border: '1px solid transparent',
+    cursor: 'pointer',
+  },
+});

@@ -14,8 +14,8 @@ import * as API from '../../../API/api';
 import { useCardTypeTags } from '../../../selectors/cardTypeSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import { BlockEditorWrapper } from '../../blocks/BlockEditorWrapper';
-import AutoSaveInput from '../../common/AutoSaveInput';
 import Button from '../../common/Button';
+import InlineInput from '../../common/InlineInput';
 import OpenClose from '../../common/OpenClose';
 import { ResourceContextScope } from '../../resources/ResourceCommonType';
 import ResourcesWrapper from '../../resources/ResourcesWrapper';
@@ -52,14 +52,14 @@ export default function CardTypeEditor({ cardType }: DisplayProps): JSX.Element 
         <>
           <div className={defaultColumnContainerStyle}>
             <div className={style}>
-              <AutoSaveInput
+              <InlineInput
                 label="Title: "
                 placeholder=""
-                inputType="INPUT"
                 value={cardType.title || ''}
                 onChange={newValue =>
                   dispatch(API.updateCardType({ ...cardType, title: newValue }))
                 }
+                autosave={false}
               />
               <Creatable
                 className={inputStyle}

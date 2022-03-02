@@ -13,6 +13,7 @@ import * as React from 'react';
 import * as LiveHelper from '../../../LiveHelper';
 import { getLogger } from '../../../logger';
 import Flex from '../../common/Flex';
+import Tips from '../../common/Tips';
 import { borderRadius } from '../../styling/style';
 import {
   areAllLeafsWrappedByTag,
@@ -420,7 +421,7 @@ export default function WysiwygEditor({
   );
 
   return (
-    <Flex className={className} direction="column" grow={1}>
+    <Flex className={className} direction="column" grow={1} align="stretch">
       <Flex>
         {/* Listening to onMouseDownCapture is very important !*/}
         <ToolbarButton icon={faBold} toggled={toolbarState.bold} onClick={toggleBold} />
@@ -435,6 +436,7 @@ export default function WysiwygEditor({
           toggled={toolbarState.strike}
           onClick={toggleStrike}
         />
+        <Tips tipsType="TODO">TODO: add more styling options (headings level, lists, ...</Tips>
       </Flex>
       <Flex direction="column" align="stretch">
         <div

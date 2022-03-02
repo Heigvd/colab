@@ -10,6 +10,7 @@ import {
   faClone,
   faEllipsisV,
   faEye,
+  faGhost,
   faNetworkWired,
   faProjectDiagram,
 } from '@fortawesome/free-solid-svg-icons';
@@ -34,17 +35,36 @@ import CardEditor from '../../cards/CardEditor';
 import CardThumbWithSelector from '../../cards/CardThumbWithSelector';
 import CardTypeList from '../../cards/cardtypes/CardTypeList';
 import ContentSubs from '../../cards/ContentSubs';
-import AutoSaveInput from '../../common/AutoSaveInput';
 import Clickable from '../../common/Clickable';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
+import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
-import { invertedThemeMode, space_L, space_M } from '../../styling/style';
-import Team from '../Team';
+import { invertedThemeMode, space_L, space_M, space_S } from '../../styling/style';
+import { ProjectSettings } from '../ProjectSettings';
 import ActivityFlowChart from './ActivityFlowChart';
 import Hierarchy from './Hierarchy';
 
 export const depthMax = 2;
+const descriptionStyle = {
+  backgroundColor: 'var(--fgColor)',
+  color: 'var(--bgColor)',
+  gap: space_L,
+  transition: 'all 1s ease',
+  overflow: 'hidden',
+  fontSize: '0.9em',
+  flexGrow: 0,
+};
+const openDetails = css({
+  ...descriptionStyle,
+  maxHeight: '300px',
+  padding: space_L,
+});
+const closeDetails = css({
+  ...descriptionStyle,
+  maxHeight: '0px',
+  padding: '0 ' + space_L,
+});
 const Ancestor = ({ card, content }: Ancestor): JSX.Element => {
   const i18n = useTranslations();
   const navigate = useNavigate();
@@ -194,6 +214,7 @@ export default function Editor(): JSX.Element {
   const navigate = useNavigate();
 
   const root = useProjectRootCard(project);
+  const [showProjectDetails, setShowProjectDetails] = React.useState(false);
 
   const rootContent = useAppSelector(state => {
     if (entityIs(root, 'Card') && root.id != null) {
@@ -241,18 +262,19 @@ export default function Editor(): JSX.Element {
               display: 'inline-grid',
               gridTemplateColumns: '1fr 3fr 1fr',
               flexGrow: 0,
-              padding: `${space_M} ${space_M}`,
+              padding: `${space_S} ${space_M}`,
               backgroundColor: 'var(--hoverBgColor)',
             }),
           )}
         >
+          <IconButton
+            icon={faGhost}
+            title="Show project details"
+            onClick={() => setShowProjectDetails(showProjectDetails => !showProjectDetails)}
+          />
           <div className={css({ gridColumn: '2/3', placeSelf: 'center', display: 'flex' })}>
-            <div className={css({ marginRight: '30px' })}>
-              <AutoSaveInput
-                placeholder="unnamed"
-                value={project.name || ''}
-                onChange={newValue => dispatch(API.updateProject({ ...project, name: newValue }))}
-              />
+            <div className={css({ marginRight: space_M })}>
+              {project.name || 'untitled project'}
             </div>
             <DropDownMenu
               icon={faEye}
@@ -295,7 +317,7 @@ export default function Editor(): JSX.Element {
             valueComp={{ value: '', label: '' }}
             entries={[
               { value: './defs', label: 'Card Types' },
-              { value: './team', label: 'Team' },
+              { value: './settings', label: 'Project Settings' },
             ]}
             onSelect={val => {
               val.action != null ? val.action() : navigate(val.value);
@@ -303,6 +325,17 @@ export default function Editor(): JSX.Element {
             buttonClassName={css({ textAlign: 'right', alignSelf: 'center', marginLeft: 'auto' })}
           />
         </div>
+        <Flex className={showProjectDetails ? openDetails : closeDetails}>
+          <div>
+            <h3>{project.name}</h3>
+            {project.description}
+          </div>
+          <div>
+            <p>Created by: {project.trackingData?.createdBy}</p>
+            <p>Created date: {project.trackingData?.creationDate}</p>
+            {/* more infos? Add project team names */}
+          </div>
+        </Flex>
         <div
           className={css({
             display: 'flex',
@@ -313,7 +346,7 @@ export default function Editor(): JSX.Element {
         >
           <Flex direction="column" grow={1}>
             <Routes>
-              <Route path="team" element={<Team project={project} />} />
+              <Route path="settings" element={<ProjectSettings project={project} />} />
               <Route path="hierarchy" element={<Hierarchy rootId={root.id} />} />
               <Route path="flow" element={<ActivityFlowChart />} />
               <Route path="defs" element={<CardTypeList />} />

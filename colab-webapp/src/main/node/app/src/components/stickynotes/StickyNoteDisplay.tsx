@@ -16,11 +16,11 @@ import { useCard } from '../../selectors/cardSelector';
 import { useAppDispatch } from '../../store/hooks';
 import { BlockEditorWrapper } from '../blocks/BlockEditorWrapper';
 import CardThumbWithSelector from '../cards/CardThumbWithSelector';
-import AutoSaveInput from '../common/AutoSaveInput';
 import Button from '../common/Button';
 import ConfirmDeleteModal from '../common/ConfirmDeleteModal';
 import DropDownMenu from '../common/DropDownMenu';
 import Flex from '../common/Flex';
+import InlineInput from '../common/InlineInput';
 import { cardStyle, lightIconButtonStyle, space_M, space_S } from '../styling/style';
 
 // TODO replace <CardThumbWithSelector for something easy and without actions
@@ -64,11 +64,12 @@ export default function StickyNoteDisplay({
         justify="space-between"
         className={css({ borderBottom: '1px solid var(--lightGray)', padding: space_S })}
       >
-        <AutoSaveInput
+        <InlineInput
           value={stickyNote.teaser || ''}
-          placeholder="add a teaser"
+          placeholder="Add a teaser"
           onChange={newValue => dispatch(API.updateStickyNote({ ...stickyNote, teaser: newValue }))}
           className={css({ fontWeight: 'bold' })}
+          autosave={false}
         />
         <DropDownMenu
           icon={faEllipsisV}

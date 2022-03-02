@@ -5,12 +5,16 @@
  * Licensed under the MIT License
  */
 
+import { css } from '@emotion/css';
+import { faFile, faLink, faParagraph, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as React from 'react';
 import * as API from '../../API/api';
 import { useDocuments } from '../../selectors/documentSelector';
 import { useAppDispatch } from '../../store/hooks';
+import Flex from '../common/Flex';
 import InlineLoading from '../common/InlineLoading';
-import { workInProgressStyle } from '../styling/style';
+import { space_M } from '../styling/style';
 import { DocumentContext } from './documentCommonType';
 import DocumentCreatorButton from './DocumentCreatorButton';
 import { DocumentEditorDisplay } from './DocumentEditorDisplay';
@@ -46,33 +50,50 @@ export function DocumentEditorWrapper({
   }
 
   return (
-    <div className={workInProgressStyle}>
+    <>
       {documents
         .sort((a, b) => (a.index || 0) - (b.index || 0))
         .map(doc => (
           <DocumentEditorDisplay key={doc.id} document={doc} allowEdition={allowEdition} />
         ))}
-      {allowEdition && (
-        <DocumentCreatorButton
-          creationContext={context}
-          docType="TextDataBlock"
-          title="add a block"
-        />
-      )}
-      {allowEdition && (
-        <DocumentCreatorButton
-          creationContext={context}
-          docType="DocumentFile"
-          title="add a file"
-        />
-      )}
-      {allowEdition && (
-        <DocumentCreatorButton
-          creationContext={context}
-          docType="ExternalLink"
-          title="add a link"
-        />
-      )}
-    </div>
+      <Flex className={css({ paddingTop: space_M })}>
+        {allowEdition && (
+          <DocumentCreatorButton
+            creationContext={context}
+            docType="TextDataBlock"
+            title="add a text block"
+            label={
+              <>
+                <FontAwesomeIcon icon={faPlus} size="sm" /> <FontAwesomeIcon icon={faParagraph} />
+              </>
+            }
+          />
+        )}
+        {allowEdition && (
+          <DocumentCreatorButton
+            creationContext={context}
+            docType="DocumentFile"
+            title="add a file"
+            label={
+              <>
+                <FontAwesomeIcon icon={faPlus} size="sm" /> <FontAwesomeIcon icon={faFile} />
+              </>
+            }
+          />
+        )}
+        {allowEdition && (
+          <DocumentCreatorButton
+            creationContext={context}
+            docType="ExternalLink"
+            title="add a link"
+            label={
+              <>
+                <FontAwesomeIcon icon={faPlus} size="sm" /> <FontAwesomeIcon icon={faLink} />
+              </>
+            }
+          />
+        )}
+      </Flex>
+    </>
   );
 }

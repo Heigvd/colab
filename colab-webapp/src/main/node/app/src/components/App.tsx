@@ -38,6 +38,7 @@ function App(): JSX.Element {
     TODO: false,
     NEWS: true,
     TIPS: true,
+    WIP: false,
   });
 
   const setTodoCb = React.useCallback(
@@ -63,6 +64,15 @@ function App(): JSX.Element {
       setTipsConfig(state => ({
         ...state,
         NEWS: v,
+      })),
+    [setTipsConfig],
+  );
+
+  const setWipCb = React.useCallback(
+    (v: boolean) =>
+      setTipsConfig(state => ({
+        ...state,
+        WIP: v,
       })),
     [setTipsConfig],
   );
@@ -100,6 +110,10 @@ function App(): JSX.Element {
                     NEWS: {
                       value: tipsConfig.NEWS,
                       set: setNewsCb,
+                    },
+                    WIP: {
+                      value: tipsConfig.WIP,
+                      set: setWipCb,
                     },
                   }}
                 >
