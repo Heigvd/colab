@@ -79,6 +79,12 @@ public class CardContentManager {
     @Inject
     private CardManager cardManager;
 
+    /**
+     * Index generation specific logic management
+     */
+    @Inject
+    private IndexGeneratorHelper<Document> indexGenerator;
+
     // *********************************************************************************************
     // find card contents
     // *********************************************************************************************
@@ -187,7 +193,7 @@ public class CardContentManager {
     // *********************************************************************************************
 
     /**
-     * Add the deliverable to the card content
+     * Add the deliverable to the end of the card content.
      *
      * @param cardContentId the id of the card content
      * @param document      the document to use as deliverable. It must be a new document
@@ -211,10 +217,8 @@ public class CardContentManager {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
 
-        if (document.getIndex() == 0) {
-            int index = IndexGeneratorHelper.nextIndex(cardContent.getDeliverables());
-            document.setIndex(index);
-        }
+        // the index is auto generated. It cannot be send from the client side
+        indexGenerator.moveItemToEnd(document, cardContent.getDeliverables());
 
         cardContent.getDeliverables().add(document);
         document.setOwningCardContent(cardContent);

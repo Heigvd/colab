@@ -40,6 +40,12 @@ public class DocumentManager {
     @Inject
     private DocumentDao documentDao;
 
+    /**
+     * Index generation specific logic management
+     */
+    @Inject
+    private IndexGeneratorHelper<Document> indexGenerator;
+
     // *********************************************************************************************
     // find document
     // *********************************************************************************************
@@ -62,6 +68,122 @@ public class DocumentManager {
         }
 
         return document;
+    }
+
+    /**
+     * Retrieve the list of documents the given document is part of
+     *
+     * @param document the document
+     *
+     * @return the list of documents the given document is part of
+     *
+     * @throws HttpErrorMessage If no collection could be found
+     */
+    public List<Document> getDocumentList(Document document) {
+        if (document.hasOwningCardContent()) {
+            return document.getOwningCardContent().getDeliverables();
+
+        } else if (document.hasOwningResource()) {
+            return document.getOwningResource().getDocuments();
+        }
+
+        throw HttpErrorMessage.dataIntegrityFailure();
+    }
+
+    // *********************************************************************************************
+    // move document
+    // *********************************************************************************************
+
+    /**
+     * Move the document to the top
+     *
+     * @param documentId the id of the document to move
+     */
+    public void moveDocumentToTop(Long documentId) {
+        logger.debug("move document #{} at top", documentId);
+
+        Document document = assertAndGetDocument(documentId);
+        List<Document> docList = getDocumentList(document);
+
+        indexGenerator.moveItemToBeginning(document, docList);
+
+    }
+
+    /**
+     * Move the given document one floor up
+     *
+     * @param documentId the id of the document to move
+     */
+    public void moveDocumentUp(Long documentId) {
+        logger.debug("move document #{} up", documentId);
+
+        Document document = assertAndGetDocument(documentId);
+        List<Document> docList = getDocumentList(document);
+
+        indexGenerator.moveOneStepAhead(document, docList);
+    }
+
+    /**
+     * Move the given document above the given reference item
+     *
+     * @param documentId the id of the document to move
+     * @param baseDocId  the id of the reference document
+     */
+    public void moveDocumentAbove(Long documentId, Long baseDocId) {
+        logger.debug("move document #{} above #{}", documentId, baseDocId);
+
+        Document document = assertAndGetDocument(documentId);
+
+        Document baseDocument = assertAndGetDocument(baseDocId);
+        List<Document> docList = getDocumentList(baseDocument);
+
+        indexGenerator.moveItemBefore(document, baseDocument, docList);
+
+    }
+
+    /**
+     * Move the given document one floor down
+     *
+     * @param documentId the id of the document to move
+     */
+    public void moveDocumentDown(Long documentId) {
+        logger.debug("move document #{} down", documentId);
+
+        Document document = assertAndGetDocument(documentId);
+        List<Document> docList = getDocumentList(document);
+
+        indexGenerator.moveOneStepBehind(document, docList);
+    }
+
+    /**
+     * Move the given document below the given reference item.
+     *
+     * @param documentId the id of the document to move
+     * @param baseDocId  the id of the reference document
+     */
+    public void moveDocumentBelow(Long documentId, Long baseDocId) {
+        logger.debug("move document #{} below #{}", documentId, baseDocId);
+
+        Document document = assertAndGetDocument(documentId);
+
+        Document baseDocument = assertAndGetDocument(baseDocId);
+        List<Document> docList = getDocumentList(baseDocument);
+
+        indexGenerator.moveItemAfter(document, baseDocument, docList);
+    }
+
+    /**
+     * Move the document to the bottom
+     *
+     * @param documentId the id of the document to move
+     */
+    public void moveDocumentToBottom(Long documentId) {
+        logger.debug("move document #{} at bottom", documentId);
+
+        Document document = assertAndGetDocument(documentId);
+        List<Document> docList = getDocumentList(document);
+
+        indexGenerator.moveItemToEnd(document, docList);
     }
 
     // *********************************************************************************************

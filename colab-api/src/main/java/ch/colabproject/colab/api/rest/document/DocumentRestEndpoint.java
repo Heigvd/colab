@@ -86,6 +86,92 @@ public class DocumentRestEndpoint {
     }
 
     // *********************************************************************************************
+    // change index of a document
+    // *********************************************************************************************
+
+    /**
+     * Move the given document one floor up
+     *
+     * @param docId the id of the document to move
+     */
+    @PUT
+    @Path("{docId}/MoveUp")
+    public void moveDocumentUp(@PathParam("docId") Long docId) {
+        logger.debug("move document #{} up", docId);
+
+        documentManager.moveDocumentUp(docId);
+    }
+
+    /**
+     * Move the given document one floor down
+     *
+     * @param docId the id of the document to move
+     */
+    @PUT
+    @Path("{docId}/MoveDown")
+    public void moveDocumentDown(@PathParam("docId") Long docId) {
+        logger.debug("move document #{} down", docId);
+
+        documentManager.moveDocumentDown(docId);
+    }
+
+    /**
+     * Move the given document above its futureNextDocId
+     *
+     * @param docId     the id of the document to move
+     * @param baseDocId the id of the document which will be below docId
+     */
+    @PUT
+    @Path("{docId}/MoveAbove/{baseDocId}")
+    public void moveDocumentAbove(@PathParam("docId") Long docId,
+        @PathParam("baseDocId") Long baseDocId) {
+        logger.debug("move document #{} above #{}", docId, baseDocId);
+
+        documentManager.moveDocumentAbove(docId, baseDocId);
+    }
+
+    /**
+     * Move the document one floor up
+     *
+     * @param docId     the id of the document to move
+     * @param baseDocId the id of the document which will be above docId
+     */
+    @PUT
+    @Path("{docId}/MoveBelow/{baseDocId}")
+    public void moveDocumentBelow(@PathParam("docId") Long docId,
+        @PathParam("baseDocId") Long baseDocId) {
+        logger.debug("move document #{} below #{}", docId, baseDocId);
+
+        documentManager.moveDocumentBelow(docId, baseDocId);
+    }
+
+    /**
+     * Move the document at the top
+     *
+     * @param docId the id of the document to move
+     */
+    @PUT
+    @Path("{docId}/MoveToTop")
+    public void moveDocumentToTop(@PathParam("docId") Long docId) {
+        logger.debug("move document #{} to the top", docId);
+
+        documentManager.moveDocumentToTop(docId);
+    }
+
+    /**
+     * Move the document at the bottom
+     *
+     * @param docId the id of the document to move
+     */
+    @PUT
+    @Path("{docId}/MoveToBottom")
+    public void moveDocumentToBottom(@PathParam("docId") Long docId) {
+        logger.debug("move document #{} to the bottom", docId);
+
+        documentManager.moveDocumentToBottom(docId);
+    }
+
+    // *********************************************************************************************
     //
     // *********************************************************************************************
 

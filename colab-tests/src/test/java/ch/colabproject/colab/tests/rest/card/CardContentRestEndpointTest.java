@@ -235,6 +235,12 @@ public class CardContentRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertTrue(Objects.equals(persistedDeliverables.get(1).getId(), doc2Id)
             || Objects.equals(persistedDeliverables.get(1).getId(), doc3Id));
 
+        client.documentRestEndpoint.moveDocumentUp(doc3Id);
+        deliverable3 = client.documentRestEndpoint.getDocument(doc3Id);
+        Assertions.assertEquals(1000, deliverable3.getIndex());
+        deliverable2 = client.documentRestEndpoint.getDocument(doc2Id);
+        Assertions.assertEquals(2000, deliverable2.getIndex());
+
         // delete card content
 
         client.cardContentRestEndpoint.deleteCardContent(cardContentId);
