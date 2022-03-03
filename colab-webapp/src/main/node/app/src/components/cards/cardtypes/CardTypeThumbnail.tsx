@@ -18,6 +18,11 @@ interface Props {
   onClick: (id: number) => void;
 }
 
+interface EmptyCardTypeProps {
+  highlighted: boolean;
+  onClick: (id: number) => void;
+}
+
 const defaultStyle = css({
   cursor: 'pointer',
   boxShadow: cardShadow,
@@ -61,4 +66,19 @@ export default function CardTypeThumbnail({ cardType, highlighted, onClick }: Pr
       </Thumbnail>
     );
   }
+}
+
+export function EmptyCardTypeThumbnail({ highlighted, onClick }: EmptyCardTypeProps): JSX.Element {
+  return (
+    <Thumbnail
+      onClick={() => {
+        onClick(0);
+      }}
+      className={highlighted ? selected : defaultStyle}
+    >
+      <div title={'Blank page'}>
+        <div>{'Blank page'}</div>
+      </div>
+    </Thumbnail>
+  );
 }

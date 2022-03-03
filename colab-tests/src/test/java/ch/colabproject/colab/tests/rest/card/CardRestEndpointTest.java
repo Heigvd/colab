@@ -118,6 +118,25 @@ public class CardRestEndpointTest extends AbstractArquillianTest {
     }
 
     @Test
+    public void testCardWithoutType() {
+        Project project = ColabFactory.createProject(client, "testCardWithoutType");
+
+        Long parentId = ColabFactory.getRootContent(client, project).getId();
+
+        Card card = ColabFactory.createNewCard(client, parentId);
+
+        Assertions.assertNotNull(card);
+        Assertions.assertNull(card.getCardTypeId());
+
+        Long card2Id = ColabFactory.createNewCard(client, project).getId();
+        Long cardContent2Id = ColabFactory.getCardContent(client, card2Id).getId();
+
+        client.cardRestEndpoint.moveCard(card.getId(), cardContent2Id);
+
+        client.cardRestEndpoint.deleteCard(card.getId());
+    }
+
+    @Test
     public void testMoveCard() {
         Project project = ColabFactory.createProject(client, "testMoveCard");
 

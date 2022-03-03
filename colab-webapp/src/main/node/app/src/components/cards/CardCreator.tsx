@@ -30,7 +30,7 @@ import {
   space_M,
   space_S,
 } from '../styling/style';
-import CardTypeThumbnail from './cardtypes/CardTypeThumbnail';
+import CardTypeThumbnail, { EmptyCardTypeThumbnail } from './cardtypes/CardTypeThumbnail';
 
 const categoryTabStyle = cx(
   lightTheme,
@@ -68,7 +68,7 @@ export default function CardCreator({
   className,
 }: CardCreatorProps): JSX.Element {
   const dispatch = useAppDispatch();
-  const [selectedType, setSelectedType] = React.useState<number | undefined>();
+  const [selectedType, setSelectedType] = React.useState<number | undefined>(0);
   const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
   const { project } = useProjectBeingEdited();
   const cardTypes = useProjectCardTypes();
@@ -144,8 +144,7 @@ export default function CardCreator({
       }
       className={className}
       modalClassName={css({ width: '800px' })}
-      footer={
-        close => 
+      footer={close => (
         <Flex
           justify="flex-end"
           grow={1}
@@ -159,25 +158,24 @@ export default function CardCreator({
           >
             Cancel
           </Button>
-          {selectedType != null ? (
-            <Button
-              title="Create card"
-              onClick={() => {
-                dispatch(
-                  API.createSubCardWithBlockDoc({
-                    parent: parent,
-                    cardTypeId: selectedType,
-                  }),
-                ).then(() => {
-                  close();
-                });
-              }}
-            >
-              Create card
-            </Button>
-          ) : null}
+
+          <Button
+            title="Create card"
+            onClick={() => {
+              dispatch(
+                API.createSubCardWithTextDataBlock({
+                  parent: parent,
+                  cardTypeId: selectedType || null,
+                }),
+              ).then(() => {
+                close();
+              });
+            }}
+          >
+            Create card
+          </Button>
         </Flex>
-      }
+      )}
       showCloseButton
     >
       {() => {
@@ -233,6 +231,10 @@ export default function CardCreator({
                 </Flex>
               </Flex>
               <Flex direction="column">
+                <div className={listOfTypeStyle}>
+                  <EmptyCardTypeThumbnail onClick={onSelect} highlighted={0 === selectedType} />
+                </div>
+
                 {filtered.inherited != null && filtered.inherited.length > 0 && (
                   <>
                     <Flex align="flex-end">

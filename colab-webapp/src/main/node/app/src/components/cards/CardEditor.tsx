@@ -122,7 +122,8 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const location = useLocation();
 
   const cardTypeFull = useCardType(card.cardTypeId);
-  const cardType = cardTypeFull.cardType;
+  const cardType = cardTypeFull?.cardType;
+  const hasCardType = cardType != null;
 
   const variants = useVariantsOrLoad(card) || [];
   const hasVariants = variants.length > 1 && variant != null;
@@ -136,7 +137,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const [showTypeDetails, setShowTypeDetails] = React.useState(false);
 
   React.useEffect(() => {
-    if (cardType === undefined) {
+    if (cardType === undefined && card.cardTypeId != null) {
       if (cardTypeFull.chain.length > 0) {
         const link = cardTypeFull.chain[cardTypeFull.chain.length - 1];
 
@@ -229,7 +230,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                           className={cardTitle}
                           autosave={false}
                         />
-                        {hasVariants ? (
+                        {hasVariants && (
                           <>
                             <span className={variantTitle}>&#xFE58;</span>
                             <InlineInput
@@ -246,13 +247,19 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                               }
                             />
                           </>
-                        ) : null}
-                        <IconButton
-                          icon={faQuestionCircle}
-                          title="Show card model informations"
-                          className={cx(lightIconButtonStyle, css({color: 'var(--lightGray)'}), showTypeDetails ? css({color: 'var(--linkHoverColor)'}) : '')}
-                          onClick={() => setShowTypeDetails(showTypeDetails => !showTypeDetails)}
-                        />
+                        )}
+                        {hasCardType && (
+                          <IconButton
+                            icon={faQuestionCircle}
+                            title="Show card model informations"
+                            className={cx(
+                              lightIconButtonStyle,
+                              css({ color: 'var(--lightGray)' }),
+                              showTypeDetails ? css({ color: 'var(--linkHoverColor)' }) : '',
+                            )}
+                            onClick={() => setShowTypeDetails(showTypeDetails => !showTypeDetails)}
+                          />
+                        )}
                       </Flex>
                     </div>
                     <Flex>

@@ -129,6 +129,18 @@ public class ColabFactory {
     }
 
     /**
+     * Create a brand new card in the given parent with the given type
+     *
+     * @param client     rest client to execute HTTP requests
+     * @param parentId   id of the card content the card will belong to
+     *
+     * @return the newly created card
+     */
+    public static Card createNewCard(ColabClient client, Long parentId) {
+        return client.cardRestEndpoint.createNewCardWithoutType(parentId);
+    }
+
+    /**
      * Create a brand new card in the given project just under the root card and with a new card
      * type
      *

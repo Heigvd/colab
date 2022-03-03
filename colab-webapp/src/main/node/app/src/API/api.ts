@@ -572,27 +572,28 @@ export const getAllProjectCardContents = createAsyncThunk(
   },
 );
 
-export const createCard = createAsyncThunk('card/create', async (card: Card) => {
-  return await restClient.CardRestEndpoint.createCard({
-    ...card,
-    id: undefined,
-  });
-});
-
-export const createSubCardWithBlockDoc = createAsyncThunk(
+export const createSubCardWithTextDataBlock = createAsyncThunk(
   'card/createSubCard',
-  async ({ parent, cardTypeId }: { parent: CardContent; cardTypeId: number }) => {
+  async ({ parent, cardTypeId }: { parent: CardContent; cardTypeId: number | null }) => {
     if (parent.id != null) {
-      const doc: TextDataBlock = {
+      const firstDeliverable: TextDataBlock = {
         '@class': 'TextDataBlock',
         mimeType: 'text/markdown',
         revision: '0',
       };
-      return await restClient.CardRestEndpoint.createNewCardWithDeliverable(
-        parent.id,
-        cardTypeId,
-        doc,
-      );
+
+      if (cardTypeId != null) {
+        return await restClient.CardRestEndpoint.createNewCardWithDeliverable(
+          parent.id,
+          cardTypeId,
+          firstDeliverable,
+        );
+      } else {
+        return await restClient.CardRestEndpoint.createNewCardWithDeliverableWithoutType(
+          parent.id,
+          firstDeliverable,
+        );
+      }
     }
   },
 );

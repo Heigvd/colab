@@ -79,19 +79,17 @@ public class CardRestEndpoint {
     }
 
     /**
-     * Persist the card
+     * Create and persist a new card
      *
-     * @param card the card to persist
+     * @param parentId   id of the new card's parent
      *
-     * @return id of the persisted new card
-     *
-     * @deprecated a priori there will be no need to directly create a card
+     * @return the persisted new card
      */
-    @Deprecated
     @POST
-    public Long createCard(Card card) {
-        logger.debug("create card {}", card);
-        return cardDao.persistCard(card).getId();
+    @Path("create/{parentId}")
+    public Card createNewCardWithoutType(@PathParam("parentId") Long parentId) {
+        logger.debug("create a new card for the parent #{} without type", parentId);
+        return cardManager.createNewCard(parentId, null);
     }
 
     /**
@@ -109,6 +107,32 @@ public class CardRestEndpoint {
         logger.debug("create a new card for the parent #{} and the type #{}", parentId,
             cardTypeId);
         return cardManager.createNewCard(parentId, cardTypeId);
+    }
+
+    /**
+     * Create and persist a new card
+     *
+     * @param parentId   id of the new card's parent
+     * @param document   deliverable of the new card content
+     *
+     * @return the persisted new card
+     */
+    @POST
+    @Path("createWithDeliverable/{parentId}")
+    public Card createNewCardWithDeliverableWithoutType(@PathParam("parentId") Long parentId,
+        Document document) {
+        logger.debug("create a new card in the parent #{} without type with the deliverable {}",
+            parentId, document);
+        Card card = cardManager.createNewCard(parentId, null);
+
+        List<CardContent> variants = card.getContentVariants();
+        if (variants != null && variants.size() == 1 && variants.get(0) != null) {
+            cardContentManager.addDeliverable(variants.get(0).getId(), document);
+        } else {
+            throw HttpErrorMessage.dataIntegrityFailure();
+        }
+
+        return card;
     }
 
     /**

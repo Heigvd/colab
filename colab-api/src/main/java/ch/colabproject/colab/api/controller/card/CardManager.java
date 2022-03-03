@@ -150,7 +150,7 @@ public class CardManager {
      * Also create its default resource references.
      *
      * @param parentId   the id of the parent of the new card
-     * @param cardTypeId the id of the card type of the new card
+     * @param cardTypeId the id of the card type of the new card. Can be null
      *
      * @return a new, initialized and persisted card
      */
@@ -160,7 +160,12 @@ public class CardManager {
 
         CardContent parent = cardContentManager.assertAndGetCardContent(parentId);
 
-        AbstractCardType cardType = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeId);
+        AbstractCardType cardType;
+        if (cardTypeId == null) {
+            cardType = null;
+        } else {
+            cardType = cardTypeManager.assertAndGetCardTypeOrRef(cardTypeId);
+        }
 
         Card card = initNewCard(parent, cardType);
 
@@ -175,7 +180,7 @@ public class CardManager {
      * If the type does not belongs to the same project as the card do, a type ref is created.
      *
      * @param parent   the parent of the new card
-     * @param cardType the related card type
+     * @param cardType the related card type. Can be null
      *
      * @return a new card containing a new card content with cardType
      */
@@ -186,7 +191,7 @@ public class CardManager {
         parent.getSubCards().add(card);
 
         Project project = parent.getProject();
-        if (project != null) {
+        if (project != null && cardType != null) {
             AbstractCardType effectiveType = cardTypeManager.computeEffectiveCardTypeOrRef(cardType,
                 project);
 
@@ -254,7 +259,9 @@ public class CardManager {
 
         card.getParent().getSubCards().remove(card);
 
-        card.getCardType().getImplementingCards().remove(card);
+        if (card.hasCardType()) {
+            card.getCardType().getImplementingCards().remove(card);
+        }
 
         return cardDao.deleteCard(cardId);
     }
@@ -475,7 +482,7 @@ public class CardManager {
             return false;
         }
 
-        if (!(isARootCard(card) || card.hasCardType())) {
+        if (!isARootCard(card)) {
             return false;
         }
 

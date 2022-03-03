@@ -623,8 +623,7 @@ public class Card
             // the card type has a direct access to project
             return this.cardType.getProject();
         } else if (this.parent != null) {
-            // should never come here
-            // this card is a sub-card
+            // nothing easier, so get the one of its parent
             return this.parent.getProject();
         }
         return null;

@@ -100,10 +100,12 @@ public final class ResourceReferenceSpreadingHelper {
             makeActiveReference(cardToFill, parentResourceOrRef);
         }
 
-        AbstractCardType type = cardToFill.getCardType();
+        if (cardToFill.hasCardType()) {
+            AbstractCardType type = cardToFill.getCardType();
 
-        for (AbstractResource typeResourceOrRef : type.getDirectAbstractResources()) {
-            makeActiveReference(cardToFill, typeResourceOrRef);
+            for (AbstractResource typeResourceOrRef : type.getDirectAbstractResources()) {
+                makeActiveReference(cardToFill, typeResourceOrRef);
+            }
         }
     }
 
