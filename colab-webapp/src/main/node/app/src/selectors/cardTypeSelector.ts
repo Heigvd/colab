@@ -41,14 +41,22 @@ export interface CardTypesState {
   publishedStatus: 'UNSET' | 'LOADING' | 'READY';
   globalStatus: 'UNSET' | 'LOADING' | 'READY';
   /**
+   * Card types defined specifically for this project.
    * Own cardtypes are editable
    */
   own: CardType[];
   /**
+   * Card types of outside referenced in the project.
    * Inherited card type are readonly
    */
   inherited: CardType[];
+  /**
+   * Published card types defined in another project. Not (yet) used in the project.
+   */
   published: CardType[];
+  /**
+   * Global (without project) published card types. Not (yet) used in the project.
+   */
   global: CardType[];
 }
 

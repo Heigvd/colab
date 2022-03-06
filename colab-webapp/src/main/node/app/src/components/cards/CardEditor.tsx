@@ -122,7 +122,7 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
   const location = useLocation();
 
   const cardTypeFull = useCardType(card.cardTypeId);
-  const cardType = cardTypeFull?.cardType;
+  const cardType = cardTypeFull.cardType;
   const hasCardType = cardType != null;
 
   const variants = useVariantsOrLoad(card) || [];

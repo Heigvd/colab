@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author sandra
  */
-// TODO will need access to a unique id generator
 @Path("cardTypes")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -70,12 +69,12 @@ public class CardTypeRestEndpoint {
     }
 
     /**
-     * Retrieve the list of public global card types.
+     * Retrieve the list of published global card types.
      *
      * @return all published global types
      */
     @GET
-    @Path("publishedGlobals")
+    @Path("allPublishedGlobals")
     public List<CardType> getPublishedGlobalsCardTypes() {
         logger.debug("get published global card types");
         return cardTypeDao.findPublishedGlobalCardTypes();
@@ -85,11 +84,11 @@ public class CardTypeRestEndpoint {
      * Retrieve the list of published card types accessible to current user. It means all the
      * published types of project the current user is member of.
      *
-     * @return all published card types
+     * @return all published card types defined in a project the current user has access to
      */
     @GET
     @Path("allProjectsPublished")
-    public Set<AbstractCardType> getPublishedCardTypes() {
+    public Set<AbstractCardType> getPublishedCardTypesOfReachableProjects() {
         logger.debug("get published projects card types");
         return cardTypeManager.getCurrentUserExpandedPublishedProjectTypes();
     }
@@ -132,30 +131,17 @@ public class CardTypeRestEndpoint {
         return cardTypeManager.createCardType(cardType).getId();
     }
 
-//    /**
-//     * Create and persist a new card type. The card type belongs to the given project.
-//     *
-//     * @param projectId the project the new card type belongs to
-//     *
-//     * @return the persisted new card type
-//     */
-//    @POST
-//    @Path("create/{projectId}")
-//    public CardType createNewCardType(@PathParam("projectId") Long projectId) {
-//        logger.debug("create new card type for the project #{}", projectId);
-//        return cardTypeManager.createNewCardType(projectId);
-//    }
-
     /**
      * Save changes to database
      *
-     * @param cardType card type to update
+     * @param cardType the card type to update
      *
      * @throws ColabMergeException if the merge is not possible
      */
     @PUT
     public void updateCardType(AbstractCardType cardType) throws ColabMergeException {
         logger.debug("update abstract card type {}", cardType);
+
         cardTypeDao.updateAbstractCardType(cardType);
     }
 
@@ -169,6 +155,45 @@ public class CardTypeRestEndpoint {
     public void deleteCardType(@PathParam("id") Long id) {
         logger.debug("delete card type #{}", id);
         cardTypeManager.deleteCardType(id);
+    }
+
+    /**
+     * If the card type is not already in the project, create a reference to it. Else simply return
+     * the card type.
+     *
+     * @param cardTypeId the id of the target card type (or reference)
+     * @param projectId  the id of the project in which we want to use the card type
+     *
+     * @return The card type
+     */
+    @PUT
+    @Path("useCardTypeInProject/{cardTypeId}/{projectId}")
+    public AbstractCardType useCardTypeInProject(@PathParam("cardTypeId") Long cardTypeId,
+        @PathParam("projectId") Long projectId) {
+        logger.debug("use card type #{} in project #{}", cardTypeId, projectId);
+
+        return cardTypeManager.useCardTypeInProject(cardTypeId, projectId);
+    }
+
+    // TODO sandra work in progress, see what it means exactly to remove a card type from a project
+    /**
+     * Remove the card type use of the project. That means :
+     * <ul>
+     * <li>either delete the card type if it belongs to the project and has no use</li>
+     * <li>or delete the reference in the project if it has no use</li>
+     * </ul>
+     * If the abstract card type is used, throws an error.
+     *
+     * @param cardTypeId the id of the abstract card type no more useful for the project
+     * @param projectId  the id of the project in which we don't want to use the card type anymore
+     */
+    @PUT
+    @Path("removeCardTypeFromProject/{cardTypeId}/{projectId}")
+    public void removeCardTypeFromProject(@PathParam("cardTypeId") Long cardTypeId,
+        @PathParam("projectId") Long projectId) {
+        logger.debug("remove card type #{} from project #{}", cardTypeId, projectId);
+
+        cardTypeManager.removeCardTypeFromProject(cardTypeId, projectId);
     }
 
 }

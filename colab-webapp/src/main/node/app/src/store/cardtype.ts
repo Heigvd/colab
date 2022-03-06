@@ -12,6 +12,9 @@ import { processMessage } from '../ws/wsThunkActions';
 
 export interface CardTypeState {
   // are all types used by the current project known or not ?
+  //  -> card types defined by the project
+  //   + defined by other projects and already referenced by the current project
+  //     (CardTypeRef chain + CardType)
   currentProjectStatus: 'UNSET' | 'LOADING' | 'READY';
   // are all types visible by the current user known ?
   //  -> published type from other projects + global published
@@ -48,19 +51,19 @@ const cardsSlice = createSlice({
     builder
       .addCase(processMessage.fulfilled, (state, action) => {
         action.payload.types.updated.forEach(cardType => updateCardType(state, cardType));
-        action.payload.types.deleted.forEach(entry => removeCardType(state, entry.id));
+        action.payload.types.deleted.forEach(cardType => removeCardType(state, cardType.id));
       })
       .addCase(API.getProjectCardTypes.pending, state => {
         state.currentProjectStatus = 'LOADING';
       })
       .addCase(API.getProjectCardTypes.fulfilled, (state, action) => {
-        (state.currentProjectStatus = 'READY'),
-          (state.cardtypes = { ...state.cardtypes, ...mapById(action.payload) });
+        state.currentProjectStatus = 'READY';
+        state.cardtypes = { ...state.cardtypes, ...mapById(action.payload) };
       })
-      .addCase(API.getPublishedCardTypes.pending, state => {
+      .addCase(API.getAvailablePublishedCardTypes.pending, state => {
         state.publishedStatus = 'LOADING';
       })
-      .addCase(API.getPublishedCardTypes.fulfilled, (state, action) => {
+      .addCase(API.getAvailablePublishedCardTypes.fulfilled, (state, action) => {
         state.publishedStatus = 'READY';
         state.cardtypes = { ...state.cardtypes, ...mapById(action.payload) };
       })

@@ -12,6 +12,7 @@ import { CardType } from 'colab-rest-client';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as API from '../../../API/api';
+import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
 import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
 import DropDownMenu from '../../common/DropDownMenu';
@@ -49,6 +50,7 @@ const tagStyle = css({
 export default function CardTypeItem({ cardType }: DisplayProps): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { project } = useProjectBeingEdited();
 
   //const allTags = useCardTypeTags();
   //const options = allTags.map(tag => ({ label: tag, value: tag }));
@@ -65,7 +67,11 @@ export default function CardTypeItem({ cardType }: DisplayProps): JSX.Element {
             entries={[
               {
                 value: 'Edit type',
-                label: <><FontAwesomeIcon icon={faPen} /> Edit Type</>,
+                label: (
+                  <>
+                    <FontAwesomeIcon icon={faPen} /> Edit Type
+                  </>
+                ),
                 action: () => navigate(`./edit/${cardType.id}`),
               },
               {
@@ -79,11 +85,14 @@ export default function CardTypeItem({ cardType }: DisplayProps): JSX.Element {
                     }
                     message={
                       <p>
-                        Are you <strong>sure</strong> you want to delete the whole project? This
-                        will delete all cards inside.
+                        Are you <strong>sure</strong> you want to delete this card type?
                       </p>
                     }
-                    onConfirm={() => dispatch(API.deleteCardType(cardType))}
+                    onConfirm={() => {
+                      if (project) {
+                        dispatch(API.removeCardTypeFromProject({ cardType, project }));
+                      }
+                    }}
                     confirmButtonLabel="Delete type"
                   />
                 ),
@@ -97,7 +106,8 @@ export default function CardTypeItem({ cardType }: DisplayProps): JSX.Element {
               {
                 value: 'Published',
                 label: <>{cardType.published && <FontAwesomeIcon icon={faCheck} />} Published</>,
-                action: () => dispatch(API.updateCardType({ ...cardType, published: !cardType.published })),
+                action: () =>
+                  dispatch(API.updateCardType({ ...cardType, published: !cardType.published })),
               },
             ]}
             onSelect={val => {
@@ -118,7 +128,7 @@ export default function CardTypeItem({ cardType }: DisplayProps): JSX.Element {
             );
           })}
         </Flex>
-{/*         <Button
+        {/*         <Button
           icon={cardType.deprecated ? faCheckSquare : faSquare}
           onClick={() =>
             dispatch(API.updateCardType({ ...cardType, deprecated: !cardType.deprecated }))

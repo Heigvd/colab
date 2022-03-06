@@ -172,6 +172,60 @@ public class CardTypeManager {
         return cardTypeDao.persistAbstractCardType(cardType);
     }
 
+    // TODO sandra work in progress - still need to be sharpened
+    /**
+     * If the card type is not already in the project, create a reference to it. Else simply return
+     * the card type.
+     *
+     * @param cardTypeId the id of the target card type
+     * @param projectId  the id of the project in which we want to use the card type
+     *
+     * @return The reference to the card type
+     */
+    public AbstractCardType useCardTypeInProject(Long cardTypeId, Long projectId) {
+        AbstractCardType cardTypeOrRef = assertAndGetCardTypeOrRef(cardTypeId);
+        Project project = projectManager.assertAndGetProject(projectId);
+
+        return computeEffectiveCardTypeOrRef(cardTypeOrRef, project);
+    }
+
+    // TODO sandra work in progress - still need to be sharpened
+    /**
+     * Remove the card type use of the project. That means :
+     * <ul>
+     * <li>either delete the card type if it belongs to the project and has no use</li>
+     * <li>or delete the reference in the project if it has no usage</li>
+     * </ul>
+     * If the abstract card type is used, throws an error.
+     *
+     * @param cardTypeId the id of the abstract card type no more useful for the project
+     * @param projectId  the id of the project in which we don't want to use the card type anymore
+     */
+    public void removeCardTypeFromProject(Long cardTypeId, Long projectId) {
+        AbstractCardType cardTypeOrRef = assertAndGetCardTypeOrRef(cardTypeId);
+        Project project = projectManager.assertAndGetProject(projectId);
+
+        if (!(project.getElementsToBeDefined().contains(cardTypeOrRef))) {
+            // the job is already done
+            return;
+        }
+
+        deleteCardType(cardTypeOrRef);
+    }
+
+    /**
+     * Delete the given card type
+     *
+     * @param cardTypeOrRefId the id of the card type to delete
+     *
+     * @return the freshly deleted card
+     */
+    public CardType deleteCardType(Long cardTypeOrRefId) {
+        AbstractCardType cardTypeOrRef = assertAndGetCardTypeOrRef(cardTypeOrRefId);
+
+        return deleteCardType(cardTypeOrRef);
+    }
+
     /**
      * Delete the given card type
      *
@@ -179,11 +233,7 @@ public class CardTypeManager {
      *
      * @return the freshly deleted card
      */
-    public CardType deleteCardType(Long cardTypeId) {
-        logger.debug("delete card type {}", cardTypeId);
-
-        AbstractCardType cardTypeOrRef = assertAndGetCardTypeOrRef(cardTypeId);
-
+    private CardType deleteCardType(AbstractCardType cardTypeOrRef) {
         if (!checkDeletionAcceptability(cardTypeOrRef)) {
             throw HttpErrorMessage.dataIntegrityFailure();
         }
@@ -192,7 +242,7 @@ public class CardTypeManager {
             cardTypeOrRef.getProject().getElementsToBeDefined().remove(cardTypeOrRef);
         }
 
-        return cardTypeDao.deleteCardType(cardTypeId);
+        return cardTypeDao.deleteCardType(cardTypeOrRef.getId());
     }
 
     /**

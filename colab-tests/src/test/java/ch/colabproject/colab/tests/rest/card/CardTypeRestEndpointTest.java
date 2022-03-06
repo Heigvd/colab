@@ -260,7 +260,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         TestHelper.waitForMessagesAndAssert(wsClient, 1, 5, WsUpdateMessage.class).get(0);
 
         // As the type is not published, Goulash does not read it from the published list
-        Assertions.assertTrue(client.cardTypeRestEndpoint.getPublishedCardTypes().isEmpty());
+        Assertions.assertTrue(client.cardTypeRestEndpoint.getPublishedCardTypesOfReachableProjects().isEmpty());
 
         // but can read it from the project list
         Assertions.assertEquals(1,
@@ -292,13 +292,13 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         client.cardTypeRestEndpoint.updateCardType(projectOneType);
 
         // it is visible for goulash
-        Assertions.assertEquals(1l, client.cardTypeRestEndpoint.getPublishedCardTypes().size());
+        Assertions.assertEquals(1l, client.cardTypeRestEndpoint.getPublishedCardTypesOfReachableProjects().size());
         // consume websocket messages (one through project channel, other through user channel)
         TestHelper.waitForMessagesAndAssert(wsClient, 2, 5, WsUpdateMessage.class).get(0);
 
         // but not for pizzaiolo
         Assertions.assertEquals(0,
-            pizzaHttpClient.cardTypeRestEndpoint.getPublishedCardTypes().size());
+            pizzaHttpClient.cardTypeRestEndpoint.getPublishedCardTypesOfReachableProjects().size());
 
         // goulash create a card in projectTwo based on the projectOne type
         Long projectTwoRootContentId = ColabFactory.getRootContent(client, projectTwo).getId();
@@ -407,7 +407,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
             .getDocument(purposeId);
         Assertions.assertNotNull(persistedPurposeBlock);
 
-        client.cardTypeRestEndpoint.deleteCardType(cardTypeId);
+        client.cardTypeRestEndpoint.removeCardTypeFromProject(cardTypeId, projectId);
 
         persistedCardType = (CardType) client.cardTypeRestEndpoint.getCardType(cardTypeId);
         Assertions.assertNull(persistedCardType);
@@ -415,6 +415,8 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         persistedPurposeBlock = (TextDataBlock) client.documentRestEndpoint.getDocument(purposeId);
         Assertions.assertNull(persistedPurposeBlock);
     }
+
+    // TODO sandra work in progress test useCardTypeInProject + removeCardTypeFromProject
 
     @Test
     public void testProjectAccess() {
@@ -434,10 +436,11 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(1, cardTypesOfProject.size());
         Assertions.assertEquals(cardTypeId, cardTypesOfProject.iterator().next().getId());
 
-        client.cardTypeRestEndpoint.deleteCardType(cardTypeId);
+        client.cardTypeRestEndpoint.removeCardTypeFromProject(cardTypeId, projectId);
 
         cardTypesOfProject = client.projectRestEndpoint.getCardTypesOfProject(projectId);
         Assertions.assertNotNull(cardTypesOfProject);
         Assertions.assertEquals(0, cardTypesOfProject.size());
     }
+
 }

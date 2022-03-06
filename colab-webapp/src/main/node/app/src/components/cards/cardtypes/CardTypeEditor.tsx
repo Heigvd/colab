@@ -20,6 +20,7 @@ import Creatable from 'react-select/creatable';
 import * as API from '../../../API/api';
 //import logger from '../../../logger';
 import { useCardType, useCardTypeTags } from '../../../selectors/cardTypeSelector';
+import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
 import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
 import DropDownMenu from '../../common/DropDownMenu';
@@ -30,13 +31,7 @@ import InlineInput from '../../common/InlineInput';
 import Modal from '../../common/Modal';
 import Tips from '../../common/Tips';
 import { useBlock } from '../../live/LiveTextEditor';
-import {
-  cardStyle,
-  cardTitle,
-  lightIconButtonStyle,
-  space_M,
-  space_S,
-} from '../../styling/style';
+import { cardStyle, cardTitle, lightIconButtonStyle, space_M, space_S } from '../../styling/style';
 import SideCollapsiblePanel from './../SideCollapsiblePanel';
 
 interface Props {
@@ -44,6 +39,7 @@ interface Props {
 }
 
 export default function CardTypeEditor({ className }: Props): JSX.Element {
+  const { project } = useProjectBeingEdited();
   const id = useParams<'id'>();
   const typeId = +id.id!;
   const completeCardType = useCardType(typeId);
@@ -180,8 +176,10 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
                             </p>
                           }
                           onConfirm={() => {
-                            dispatch(API.deleteCardType(cardType));
-                            navigate('../');
+                            if (project) {
+                              dispatch(API.removeCardTypeFromProject({ cardType, project }));
+                              navigate('../');
+                            }
                           }}
                           confirmButtonLabel={'Delete card type'}
                         />
@@ -195,47 +193,57 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
               </Flex>
             </Flex>
             <Flex direction="column" grow={1} align="stretch">
-                <div><b>Purpose:</b> {purpose?.textData}</div>
-                <Flex direction="column" align="stretch" className={css({alignSelf: 'flex-start', minWidth: '40%', margin: space_S + ' 0'})}>
-                  <Creatable
-                    //className={cx(css({display: 'flex'}))}
-                    isMulti={true}
-                    value={cardType.tags.map(tag => ({ label: tag, value: tag }))}
-                    options={options}
-                    onChange={tagsOptions => {
-                      dispatch(
-                        API.updateCardType({
-                          ...cardType,
-                          tags: tagsOptions.map(o => o.value),
-                        }),
-                      );
-                    }}
-                  />
-                </Flex>
-                <Toggler
-                  value={cardType.deprecated || undefined}
-                  label="deprecated"
-                  onChange={() =>
+              <div>
+                <b>Purpose:</b> {purpose?.textData}
+              </div>
+              <Flex
+                direction="column"
+                align="stretch"
+                className={css({
+                  alignSelf: 'flex-start',
+                  minWidth: '40%',
+                  margin: space_S + ' 0',
+                })}
+              >
+                <Creatable
+                  //className={cx(css({display: 'flex'}))}
+                  isMulti={true}
+                  value={cardType.tags.map(tag => ({ label: tag, value: tag }))}
+                  options={options}
+                  onChange={tagsOptions => {
                     dispatch(
                       API.updateCardType({
                         ...cardType,
-                        deprecated: !cardType.deprecated,
+                        tags: tagsOptions.map(o => o.value),
                       }),
-                    )
-                  }
+                    );
+                  }}
                 />
-                <Toggler
-                  value={cardType.published || undefined}
-                  label="published"
-                  onChange={() =>
-                    dispatch(
-                      API.updateCardType({
-                        ...cardType,
-                        published: !cardType.published,
-                      }),
-                    )
-                  }
-                />
+              </Flex>
+              <Toggler
+                value={cardType.deprecated || undefined}
+                label="deprecated"
+                onChange={() =>
+                  dispatch(
+                    API.updateCardType({
+                      ...cardType,
+                      deprecated: !cardType.deprecated,
+                    }),
+                  )
+                }
+              />
+              <Toggler
+                value={cardType.published || undefined}
+                label="published"
+                onChange={() =>
+                  dispatch(
+                    API.updateCardType({
+                      ...cardType,
+                      published: !cardType.published,
+                    }),
+                  )
+                }
+              />
             </Flex>
           </Flex>
           <SideCollapsiblePanel

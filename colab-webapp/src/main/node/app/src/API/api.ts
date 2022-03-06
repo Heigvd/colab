@@ -491,11 +491,11 @@ export const clearRoleInvolvement = createAsyncThunk(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Get project own cardTypes:
- *  - defined by the project
- *    - list of CardType
- *  - defined by other projects but already referenced by the current project
- *    - CardTypeRef chain + CardType
+ * Get project own abstract card types:
+ *  - defined specifically for the project
+ *    - CardType
+ *  - defined by other projects and referenced by the current project
+ *    - every link in the chain of CardTypeRef + target CardType
  */
 export const getProjectCardTypes = createAsyncThunk(
   'cardType/getProjectOnes',
@@ -509,29 +509,23 @@ export const getProjectCardTypes = createAsyncThunk(
 );
 
 /**
- * Get all published type from all project accessible to the curent user plus global published ones
+ * Get all published card types from all projects accessible to the current user
+ * + all global published card types
  */
-export const getPublishedCardTypes = createAsyncThunk('cardType/getPublished', async () => {
-  const getFromProjects = restClient.CardTypeRestEndpoint.getPublishedCardTypes();
-  const getGlobals = restClient.CardTypeRestEndpoint.getPublishedGlobalsCardTypes();
+export const getAvailablePublishedCardTypes = createAsyncThunk(
+  'cardType/getPublished',
+  async () => {
+    const getFromProjects =
+      restClient.CardTypeRestEndpoint.getPublishedCardTypesOfReachableProjects();
+    const getGlobals = restClient.CardTypeRestEndpoint.getPublishedGlobalsCardTypes();
 
-  return [...(await getFromProjects), ...(await getGlobals)];
-});
-
-/**
- * Get all global cardTypes.
- * Admin only !
- */
-export const getAllGlobalCardTypes = createAsyncThunk('cardType/getAllGlobals', async () => {
-  return await restClient.CardTypeRestEndpoint.getAllGlobalCardTypes();
-});
-
-export const getCardType = createAsyncThunk<AbstractCardType, number>(
-  'cardType/get',
-  async (id: number) => {
-    return await restClient.CardTypeRestEndpoint.getCardType(id);
+    return [...(await getFromProjects), ...(await getGlobals)];
   },
 );
+
+export const getCardType = createAsyncThunk('cardType/get', async (id: number) => {
+  return await restClient.CardTypeRestEndpoint.getCardType(id);
+});
 
 export const createCardType = createAsyncThunk(
   'cardType/create',
@@ -548,6 +542,45 @@ export const deleteCardType = createAsyncThunk('cardType/delete', async (cardTyp
   if (cardType.id) {
     await restClient.CardTypeRestEndpoint.deleteCardType(cardType.id);
   }
+});
+
+/**
+ * Use the card type in the project. Concretely that means make a card type reference.
+ */
+export const addCardTypeToProject = createAsyncThunk(
+  'cardType/addToProject',
+  async ({ cardType, project }: { cardType: AbstractCardType; project: Project }) => {
+    if (cardType.id && project.id) {
+      return await restClient.CardTypeRestEndpoint.useCardTypeInProject(cardType.id, project.id);
+    }
+  },
+);
+
+// TODO sandra in progress : sharpened use of delete vs remove from project
+
+// TODO sandra work in progress : not working for the moment (mostly)
+/**
+ * Remove the card type from the project. Can be done only if not used.
+ */
+// TODO sandra work in progress, can we give cardTypeRef for inherited ?
+export const removeCardTypeFromProject = createAsyncThunk(
+  'cardType/removeFromProject',
+  async ({ cardType, project }: { cardType: AbstractCardType; project: Project }) => {
+    if (cardType.id && project.id) {
+      return await restClient.CardTypeRestEndpoint.removeCardTypeFromProject(
+        cardType.id,
+        project.id,
+      );
+    }
+  },
+);
+
+/**
+ * Get all global cardTypes.
+ * Admin only !
+ */
+export const getAllGlobalCardTypes = createAsyncThunk('cardType/getAllGlobals', async () => {
+  return await restClient.CardTypeRestEndpoint.getAllGlobalCardTypes();
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

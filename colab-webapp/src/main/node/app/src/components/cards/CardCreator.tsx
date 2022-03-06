@@ -81,7 +81,7 @@ export default function CardCreator({
     }
     if (cardTypes.publishedStatus === 'UNSET') {
       // published type from other project or global types not yet knonw
-      dispatch(API.getPublishedCardTypes());
+      dispatch(API.getAvailablePublishedCardTypes());
     }
   }, [cardTypes.projectStatus, cardTypes.publishedStatus, project, dispatch]);
 
