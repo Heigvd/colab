@@ -215,12 +215,18 @@ export function DocumentEditorDisplay({
           title="Move block up"
           iconSize="xs"
           className={lightIconButtonStyle}
+          onClick={() => {
+            dispatch(API.moveDocumentUp(document.id!));
+          }}
         />
         <IconButton
           icon={faArrowDown}
           title="Move block down"
           iconSize="xs"
           className={lightIconButtonStyle}
+          onClick={() => {
+            dispatch(API.moveDocumentDown(document.id!));
+          }}
         />
       </Flex>
     </Flex>

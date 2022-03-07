@@ -827,6 +827,14 @@ export const updateDocument = createAsyncThunk('document/update', async (documen
   return await restClient.DocumentRestEndpoint.updateDocument(document);
 });
 
+export const moveDocumentUp = createAsyncThunk('document/moveUp', async (docId: number) => {
+  return await restClient.DocumentRestEndpoint.moveDocumentUp(docId);
+});
+
+export const moveDocumentDown = createAsyncThunk('document/moveDown', async (docId: number) => {
+  return await restClient.DocumentRestEndpoint.moveDocumentDown(docId);
+});
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Blocks
 ////////////////////////////////////////////////////////////////////////////////////////////////////
