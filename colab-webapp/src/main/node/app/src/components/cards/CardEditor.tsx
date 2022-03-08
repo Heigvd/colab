@@ -179,29 +179,6 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
               }),
             )}
           >
-            <SideCollapsiblePanel
-              items={{
-                resources: {
-                  children: (
-                    <ResourcesWrapper
-                      kind={ResourceContextScope.CardOrCardContent}
-                      accessLevel={
-                        !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
-                      }
-                      cardId={card.id}
-                      cardContentId={variant.id}
-                    />
-                  ),
-                  icon: faFileAlt,
-                  title: 'Toggle resources panel',
-                },
-                'Sticky Notes': {
-                  icon: faStickyNote,
-                  title: 'Toggle sticky notes panel',
-                  children: <StickyNoteWrapper destCardId={card.id} showSrc />,
-                },
-              }}
-            />
             <Flex direction="column" grow={1} align="stretch">
               <Flex
                 direction="column"
@@ -425,6 +402,30 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                 </OpenCloseModal>
               </Flex>
             </Flex>
+            <SideCollapsiblePanel
+              items={{
+                resources: {
+                  children: (
+                    <ResourcesWrapper
+                      kind={ResourceContextScope.CardOrCardContent}
+                      accessLevel={
+                        !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
+                      }
+                      cardId={card.id}
+                      cardContentId={variant.id}
+                    />
+                  ),
+                  icon: faFileAlt,
+                  title: 'Toggle resources panel',
+                },
+                'Sticky Notes': {
+                  icon: faStickyNote,
+                  title: 'Toggle sticky notes panel',
+                  children: <StickyNoteWrapper destCardId={card.id} showSrc />,
+                },
+              }}
+              direction="RIGHT"
+            />
           </Flex>
         </Flex>
         <VariantPager allowCreation={userAcl.write} card={card} current={variant} />

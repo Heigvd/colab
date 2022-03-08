@@ -15,6 +15,7 @@ import { useCardTypeTags, useProjectCardTypes } from '../../selectors/cardTypeSe
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
+//import FilterableList from '../common/FilterableList';
 import Flex from '../common/Flex';
 import Checkbox from '../common/Form/Checkbox';
 import IconButton from '../common/IconButton';
@@ -35,15 +36,15 @@ import CardTypeThumbnail, { EmptyCardTypeThumbnail } from './cardtypes/CardTypeT
 const categoryTabStyle = cx(
   lightTheme,
   css({
-    padding: space_S,
-    backgroundColor: 'var(--primaryColorContrastShade)',
-    color: 'var(--primaryColor)',
+    padding: '0 '+ space_S,
+    color: 'var(--darkGray)',
     margin: space_S,
     borderRadius: borderRadius,
+    border: '1px solid var(--darkGray)',
   }),
 );
 const checkedCategoryTabStyle = css({
-  backgroundColor: 'var(--primaryColor)',
+  backgroundColor: 'var(--darkGray)',
   color: 'var(--primaryColorContrast)',
   '&:hover': {
     color: 'var(--primaryColorContrast)',
@@ -71,6 +72,7 @@ export default function CardCreator({
   const [selectedType, setSelectedType] = React.useState<number | undefined>(0);
   const [selectAllTags, setSelectAllTags] = React.useState<boolean>(true);
   const { project } = useProjectBeingEdited();
+  // TODO get all CardTypes referenced in the project
   const cardTypes = useProjectCardTypes();
 
   React.useEffect(() => {
@@ -184,6 +186,12 @@ export default function CardCreator({
         } else {
           return (
             <div className={css({ width: '100%', textAlign: 'left' })}>
+              <Flex>
+                  <EmptyCardTypeThumbnail onClick={onSelect} highlighted={0 === selectedType} />
+              </Flex>
+              {/* TODO get all CardTypes inside project */}
+              {/* <FilterableList categories={allTags} elementsToFilter={{category: blabla,
+              content: jsx}}/> */}
               <Flex
                 className={css({
                   paddingBottom: space_S,
@@ -193,7 +201,7 @@ export default function CardCreator({
                 direction="column"
                 align="stretch"
               >
-                <Flex grow={1} align="flex-start" justify="space-between">
+                <Flex grow={1} justify="flex-end">
                   <Checkbox
                     key={'toggle all'}
                     label={selectAllTags ? 'Deselect all' : 'Select all'}
@@ -231,10 +239,6 @@ export default function CardCreator({
                 </Flex>
               </Flex>
               <Flex direction="column">
-                <div className={listOfTypeStyle}>
-                  <EmptyCardTypeThumbnail onClick={onSelect} highlighted={0 === selectedType} />
-                </div>
-
                 {filtered.inherited != null && filtered.inherited.length > 0 && (
                   <>
                     <Flex align="flex-end">

@@ -254,21 +254,15 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
               resources: {
                 children: (
                   <>
-                  {cardType.id && (
-                  <ResourcesWrapper
-                    kind={ResourceContextScope.CardType}
-                    accessLevel="WRITE"
-                    cardTypeId={cardType.id}
-                  />
-                  )}
-                    {/*  <ResourcesWrapper
-                      kind={ResourceContextScope.CardOrCardContent}
-                      accessLevel={
-                        !card.readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
-                      }
-                      cardId={card.id}
-                      cardContentId={card.id}
-                    /> */}
+                    {cardType.id && (
+                      <ResourcesWrapper
+                        kind={ResourceContextScope.CardType}
+                        //accessLevel={ userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'}
+                        // TODO manage the user rights for editing resources
+                        accessLevel="WRITE"
+                        cardTypeId={cardType.id}
+                      />
+                    )}
                   </>
                 ),
                 icon: faFileAlt,
