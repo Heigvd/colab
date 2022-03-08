@@ -137,3 +137,18 @@ export const useResources = (
     }
   });
 };
+
+/* export const useNbOfResources = (contextInfo: ResourceCallContext): { nbResources: number } => {
+  let result = 0;
+  let directResourcesOrRefId = undefined;
+  let cardTypeId = 0;
+  return useAppSelector(state => {
+    if (contextInfo.kind === ResourceContextScope.CardType && contextInfo.cardTypeId != null) {
+      directResourcesOrRefId = state.resources.byCardType[contextInfo.cardTypeId];
+      cardTypeId = contextInfo.cardTypeId;
+      result = NaN;
+      logger.info(state.resources.resources);
+    }
+    return { nbResources: result };
+  });
+}; */

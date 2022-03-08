@@ -31,6 +31,8 @@ import InlineInput from '../../common/InlineInput';
 import Modal from '../../common/Modal';
 import Tips from '../../common/Tips';
 import { useBlock } from '../../live/LiveTextEditor';
+import { ResourceContextScope } from '../../resources/ResourceCommonType';
+import ResourcesWrapper from '../../resources/ResourcesWrapper';
 import { cardStyle, cardTitle, lightIconButtonStyle, space_M, space_S } from '../../styling/style';
 import SideCollapsiblePanel from './../SideCollapsiblePanel';
 
@@ -252,7 +254,13 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
               resources: {
                 children: (
                   <>
-                    <div>HERE PUT RESOURCES</div>
+                  {cardType.id && (
+                  <ResourcesWrapper
+                    kind={ResourceContextScope.CardType}
+                    accessLevel="WRITE"
+                    cardTypeId={cardType.id}
+                  />
+                  )}
                     {/*  <ResourcesWrapper
                       kind={ResourceContextScope.CardOrCardContent}
                       accessLevel={
