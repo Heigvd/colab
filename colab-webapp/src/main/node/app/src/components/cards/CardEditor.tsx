@@ -181,6 +181,20 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
           >
             <SideCollapsiblePanel
               items={{
+                resources: {
+                  children: (
+                    <ResourcesWrapper
+                      kind={ResourceContextScope.CardOrCardContent}
+                      accessLevel={
+                        !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
+                      }
+                      cardId={card.id}
+                      cardContentId={variant.id}
+                    />
+                  ),
+                  icon: faFileAlt,
+                  title: 'Toggle resources panel',
+                },
                 'Sticky Notes': {
                   icon: faStickyNote,
                   title: 'Toggle sticky notes panel',
@@ -411,25 +425,6 @@ export default function CardEditor({ card, variant, showSubcards = true }: Props
                 </OpenCloseModal>
               </Flex>
             </Flex>
-            <SideCollapsiblePanel
-              direction="RIGHT"
-              items={{
-                resources: {
-                  children: (
-                    <ResourcesWrapper
-                      kind={ResourceContextScope.CardOrCardContent}
-                      accessLevel={
-                        !readOnly && userAcl.write ? 'WRITE' : userAcl.read ? 'READ' : 'DENIED'
-                      }
-                      cardId={card.id}
-                      cardContentId={variant.id}
-                    />
-                  ),
-                  icon: faFileAlt,
-                  title: 'Toggle resources panel',
-                },
-              }}
-            />
           </Flex>
         </Flex>
         <VariantPager allowCreation={userAcl.write} card={card} current={variant} />

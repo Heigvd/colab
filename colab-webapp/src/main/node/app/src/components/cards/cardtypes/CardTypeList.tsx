@@ -13,11 +13,13 @@ import * as API from '../../../API/api';
 import { useProjectCardTypes } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
+import Button from '../../common/Button';
 import Collapsible from '../../common/Collapsible';
+import Flex from '../../common/Flex';
 import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
-import { space_M, workInProgressStyle } from '../../styling/style';
-import CardTypeDisplay from './CardTypeDisplay';
+import Tips from '../../common/Tips';
+import { lightItalicText, space_L, space_M } from '../../styling/style';
 import CardTypeEditor from './CardTypeEditor';
 import CardTypeItem from './CardTypeItem';
 
@@ -25,6 +27,8 @@ const flexWrap = css({
   display: 'flex',
   flexDirecion: 'row',
   flexWrap: 'wrap',
+  gap: space_L,
+  marginBottom: space_L,
 });
 
 export default function CardTypeList(): JSX.Element {
@@ -75,28 +79,46 @@ export default function CardTypeList(): JSX.Element {
                     title={'Back'}
                     iconColor="var(--darkGray)"
                     onClick={() => navigate('../')}
-                    className={css({ display: 'block', marginBottom: space_M })}
+                    className={css({ display: 'inline', marginBottom: space_M })}
                   />
-                  <h3>Card Types</h3>
-                  <h4>Project own types</h4>
-                  <IconButton onClick={createNewCb} icon={faPlus} title="Create new" />
+                  <Flex justify="space-between">
+                    <h2>Card Types</h2>
+                    <Button onClick={createNewCb} icon={faPlus} title="Create new type">
+                      Create new type
+                    </Button>
+                  </Flex>
+                  <h4>Project types</h4>
+                  <p>Own types</p>
                   <div className={flexWrap}>
                     {cardTypes.own.map(cardType => (
                       <CardTypeItem key={cardType.id} cardType={cardType} />
                     ))}
                   </div>
-                  <h4>Types defined outside of the project and referenced in this project</h4>
+                  <p>
+                    Other types{' '}
+                    <Tips tipsType="TIPS">
+                      Types defined outside of the project and referenced in this project. They are
+                      either global or from you other projects.
+                    </Tips>
+                  </p>
                   <div className={flexWrap}>
-                    {cardTypes.inherited.map(cardType => (
-                      <CardTypeDisplay key={cardType.id} cardType={cardType} />
-                    ))}
+                    {cardTypes.inherited.length > 0 ? (
+                      cardTypes.inherited.map(cardType => (
+                        <CardTypeItem key={cardType.id} cardType={cardType} />
+                      ))
+                    ) : (
+                      <i className={lightItalicText}>No types here</i>
+                    )}
                   </div>
-                  <Collapsible title="others" contentClassName={workInProgressStyle}>
+                  <Collapsible
+                    title="Out of project types"
+                    contentClassName={css({ flexDirection: 'column' })}
+                  >
                     <div>
-                      <h4>from other projects</h4>
+                      <h4>From your other projects</h4>
                       <div>
                         {cardTypes.published.map(cardType => (
-                          <CardTypeDisplay
+                          <CardTypeItem
                             key={cardType.id}
                             cardType={cardType}
                             readOnly
@@ -106,10 +128,10 @@ export default function CardTypeList(): JSX.Element {
                       </div>
                     </div>
                     <div>
-                      <h4>global</h4>
+                      <h4>Global</h4>
                       <div>
                         {cardTypes.global.map(cardType => (
-                          <CardTypeDisplay
+                          <CardTypeItem
                             key={cardType.id}
                             cardType={cardType}
                             readOnly

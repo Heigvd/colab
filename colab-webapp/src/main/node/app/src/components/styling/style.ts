@@ -469,3 +469,8 @@ export const editableBlockStyle = css({
     cursor: 'pointer',
   },
 });
+
+export const lightItalicText = css({
+  color: 'var(--darkGray)',
+  fontStyle: 'italic',
+});
