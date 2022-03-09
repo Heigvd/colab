@@ -6,20 +6,20 @@
  */
 
 import { css } from '@emotion/css';
-import { faArrowLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { CardType } from 'colab-rest-client';
 import * as React from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import * as API from '../../../API/api';
 import { useProjectCardTypes } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { useAppDispatch } from '../../../store/hooks';
-import Button from '../../common/Button';
 import Collapsible from '../../common/Collapsible';
 import Flex from '../../common/Flex';
 import IconButton from '../../common/IconButton';
 import InlineLoading from '../../common/InlineLoading';
-import Tips from '../../common/Tips';
-import { lightItalicText, space_L, space_M } from '../../styling/style';
+import { space_L, space_M } from '../../styling/style';
+import CardTypeCreator from './CardTypeCreator';
 import CardTypeEditor from './CardTypeEditor';
 import CardTypeItem from './CardTypeItem';
 
@@ -36,17 +36,13 @@ export default function CardTypeList(): JSX.Element {
   const navigate = useNavigate();
   const { project } = useProjectBeingEdited();
   const cardTypes = useProjectCardTypes();
-
-  const createNewCb = React.useCallback(() => {
-    if (project && project.id) {
-      dispatch(
-        API.createCardType({
-          projectId: project.id,
-          tags: [],
-        }),
-      );
-    }
-  }, [dispatch, project]);
+  const unfilteredCardTypes = (): CardType[] => {
+    const cts: CardType[] = [];
+    cardTypes.own.map(ct => cts.push(ct));
+    cardTypes.inherited.map(ct => cts.push(ct));
+    cardTypes.global.map(ct => cts.push(ct));
+    return cts;
+  };
 
   React.useEffect(() => {
     if (cardTypes.projectStatus === 'UNSET') {
@@ -83,32 +79,13 @@ export default function CardTypeList(): JSX.Element {
                   />
                   <Flex justify="space-between">
                     <h2>Card Types</h2>
-                    <Button onClick={createNewCb} icon={faPlus} title="Create new type">
-                      Create new type
-                    </Button>
+                    <CardTypeCreator />
                   </Flex>
                   <h4>Project types</h4>
-                  <p>Own types</p>
                   <div className={flexWrap}>
-                    {cardTypes.own.map(cardType => (
+                    {unfilteredCardTypes().map(cardType => (
                       <CardTypeItem key={cardType.id} cardType={cardType} />
                     ))}
-                  </div>
-                  <p>
-                    Other types{' '}
-                    <Tips tipsType="TIPS">
-                      Types defined outside of the project and referenced in this project. They are
-                      either global or from you other projects.
-                    </Tips>
-                  </p>
-                  <div className={flexWrap}>
-                    {cardTypes.inherited.length > 0 ? (
-                      cardTypes.inherited.map(cardType => (
-                        <CardTypeItem key={cardType.id} cardType={cardType} />
-                      ))
-                    ) : (
-                      <i className={lightItalicText}>No types here</i>
-                    )}
                   </div>
                   <Collapsible
                     title="Out of project types"

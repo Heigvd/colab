@@ -203,3 +203,21 @@ export function useCardTypeTags() {
     ).sort();
   });
 }
+/* 
+Besoin d'un hook qui retourne tous les modèles de cartes du projet en cours:
+ProjectCardTypes = cardType[]
+cardType = {
+deprecated: boolean
+id: number
+projectId: number
+published: boolean 
+trackingData?: Trackinig 
+purpose?: string
+tags: string[]
+title: string
+? nbOfResources: number
+? usedBy: Card[] (ou un hook IsUsedBy() qui retournerait un tableau de cartes utilisant ce modèle)
+?(new: tagType: 'global' | 'inherited' | 'own' ?)
+}
+Besoin d'un hook qui retourne tous les modèles de cartes inutilisés dans le projet: (même structure)
+ */

@@ -5,7 +5,7 @@
  * Licensed under the MIT License
  */
 
-import { css, cx } from '@emotion/css';
+import { css } from '@emotion/css';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CardContent, CardType } from 'colab-rest-client';
@@ -15,41 +15,21 @@ import { useCardTypeTags, useProjectCardTypes } from '../../selectors/cardTypeSe
 import { useProjectBeingEdited } from '../../selectors/projectSelector';
 import { useAppDispatch } from '../../store/hooks';
 import Button from '../common/Button';
+import FilterableList from '../common/FilterableList';
 //import FilterableList from '../common/FilterableList';
 import Flex from '../common/Flex';
-import Checkbox from '../common/Form/Checkbox';
 import IconButton from '../common/IconButton';
 import InlineLoading from '../common/InlineLoading';
 import OpenCloseModal from '../common/OpenCloseModal';
 import Tips from '../common/Tips';
 import {
-  borderRadius,
   greyIconButtonChipStyle,
-  lightTheme,
   marginAroundStyle,
-  noOutlineStyle,
   space_M,
   space_S,
 } from '../styling/style';
 import CardTypeThumbnail, { EmptyCardTypeThumbnail } from './cardtypes/CardTypeThumbnail';
 
-const categoryTabStyle = cx(
-  lightTheme,
-  css({
-    padding: '0 '+ space_S,
-    color: 'var(--darkGray)',
-    margin: space_S,
-    borderRadius: borderRadius,
-    border: '1px solid var(--darkGray)',
-  }),
-);
-const checkedCategoryTabStyle = css({
-  backgroundColor: 'var(--darkGray)',
-  color: 'var(--primaryColorContrast)',
-  '&:hover': {
-    color: 'var(--primaryColorContrast)',
-  },
-});
 export interface CardCreatorProps {
   parent: CardContent;
   customButton?: ReactJSXElement;
@@ -187,11 +167,8 @@ export default function CardCreator({
           return (
             <div className={css({ width: '100%', textAlign: 'left' })}>
               <Flex>
-                  <EmptyCardTypeThumbnail onClick={onSelect} highlighted={0 === selectedType} />
+                <EmptyCardTypeThumbnail onClick={onSelect} highlighted={0 === selectedType} />
               </Flex>
-              {/* TODO get all CardTypes inside project */}
-              {/* <FilterableList categories={allTags} elementsToFilter={{category: blabla,
-              content: jsx}}/> */}
               <Flex
                 className={css({
                   paddingBottom: space_S,
@@ -201,42 +178,17 @@ export default function CardCreator({
                 direction="column"
                 align="stretch"
               >
-                <Flex grow={1} justify="flex-end">
-                  <Checkbox
-                    key={'toggle all'}
-                    label={selectAllTags ? 'Deselect all' : 'Select all'}
-                    value={selectAllTags}
-                    onChange={t => toggleAllTags(t)}
-                    className={noOutlineStyle}
-                    containerClassName={css({ color: 'var(--darkGray)' })}
-                  />
-                </Flex>
-                <Flex wrap="wrap">
-                  {allTags.map(tag => {
-                    return (
-                      <div
-                        className={cx(categoryTabStyle, {
-                          [checkedCategoryTabStyle]: tagState && tagState[tag],
-                        })}
-                        key={tag}
-                      >
-                        <Checkbox
-                          key={tag}
-                          label={tag}
-                          value={tagState && tagState[tag]}
-                          onChange={t =>
-                            setTagState(state => {
-                              return { ...state, [tag]: t };
-                            })
-                          }
-                          className={cx(noOutlineStyle, {
-                            [checkedCategoryTabStyle]: tagState && tagState[tag],
-                          })}
-                        />
-                      </div>
-                    );
-                  })}
-                </Flex>
+                <FilterableList
+                  tags={allTags}
+                  onChange={(t, cat) =>
+                    setTagState(state => {
+                      return { ...state, [cat]: t };
+                    })
+                  }
+                  tagState={tagState}
+                  stateSelectAll={selectAllTags}
+                  toggleAllTags={t => toggleAllTags(t)}
+                />
               </Flex>
               <Flex direction="column">
                 {filtered.inherited != null && filtered.inherited.length > 0 && (
@@ -277,9 +229,6 @@ export default function CardCreator({
                     <p className={css({ color: 'var(--darkGray)' })}>
                       <i>You have no custom type in selected categories.</i>
                     </p>
-                    <Tips>
-                      If needed you can create a new custom type by clicking "Create new type"
-                    </Tips>
                   </Flex>
                 )}
               </Flex>

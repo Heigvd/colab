@@ -22,6 +22,7 @@ import * as API from '../../../API/api';
 import { useCardType, useCardTypeTags } from '../../../selectors/cardTypeSelector';
 import { useProjectBeingEdited } from '../../../selectors/projectSelector';
 import { dispatch } from '../../../store/store';
+import Button from '../../common/Button';
 import ConfirmDeleteModal from '../../common/ConfirmDeleteModal';
 import DropDownMenu from '../../common/DropDownMenu';
 import Flex from '../../common/Flex';
@@ -52,7 +53,6 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
   const navigate = useNavigate();
   const purpose = useBlock(cardType?.purposeId);
 
-  //logger.info(id.id);
   if (!cardType) {
     return <i>Card type without id is invalid...</i>;
   } else {
@@ -270,6 +270,10 @@ export default function CardTypeEditor({ className }: Props): JSX.Element {
               },
             }}
           />
+        </Flex>
+        <Flex>
+          <Button>Cancel</Button>
+          <Button>Save</Button>
         </Flex>
       </Flex>
     );
