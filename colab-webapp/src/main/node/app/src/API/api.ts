@@ -523,6 +523,10 @@ export const getAvailablePublishedCardTypes = createAsyncThunk(
   },
 );
 
+export const getExpandedCardType = createAsyncThunk('cardType/getExpanded', async (id: number) => {
+  return await restClient.CardTypeRestEndpoint.getExpandedCardType(id);
+});
+
 export const getCardType = createAsyncThunk('cardType/get', async (id: number) => {
   return await restClient.CardTypeRestEndpoint.getCardType(id);
 });

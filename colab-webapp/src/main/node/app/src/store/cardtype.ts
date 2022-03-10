@@ -74,6 +74,12 @@ const cardsSlice = createSlice({
         state.globalStatus = 'READY';
         state.cardtypes = { ...state.cardtypes, ...mapById(action.payload) };
       })
+      .addCase(API.getExpandedCardType.pending, (state, action) => {
+        state.cardtypes[action.meta.arg] = null;
+      })
+      .addCase(API.getExpandedCardType.fulfilled, (state, action) => {
+        state.cardtypes = { ...state.cardtypes, ...mapById(action.payload) };
+      })
       .addCase(API.getCardType.pending, (state, action) => {
         state.cardtypes[action.meta.arg] = null;
       })

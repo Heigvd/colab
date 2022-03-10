@@ -188,6 +188,14 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertEquals(projectTwo.getId(), projectTwoRef.getProjectId());
         Assertions.assertEquals(projectOneRef.getId(), projectTwoRef.getTargetId());
         Assertions.assertEquals(globalType, theType);
+
+        List<AbstractCardType> chain = client.cardTypeRestEndpoint.getExpandedCardType(projectTwoRef.getId());
+        Assertions.assertNotNull(chain);
+        Assertions.assertEquals(3, chain.size());
+        Assertions.assertTrue(chain.contains(projectTwoRef));
+        Assertions.assertTrue(chain.contains(projectTwoRef));
+        Assertions.assertTrue(chain.contains(globalType));
+
     }
 
     @Test
@@ -416,6 +424,7 @@ public class CardTypeRestEndpointTest extends AbstractArquillianTest {
         Assertions.assertNull(persistedPurposeBlock);
     }
 
+    // TODO real test for getExpandedCardType
     // TODO sandra work in progress test useCardTypeInProject + removeCardTypeFromProject
 
     @Test

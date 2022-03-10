@@ -94,6 +94,21 @@ public class CardTypeRestEndpoint {
     }
 
     /**
+     * Retrieve the abstract card type and its chain of targets until the card type.
+     *
+     * @param id the id of the wanted abstract card type
+     *
+     * @return the corresponding abstract card type and its target if it is a reference (recursively
+     *         until the card type)
+     */
+    @GET
+    @Path("expanded/{id}")
+    public List<AbstractCardType> getExpandedCardType(@PathParam("id") Long id) {
+        logger.debug("get abstract card type #{} and its target chain", id);
+        return cardTypeManager.getExpandedCardType(id);
+    }
+
+    /**
      * Get card type identified by the given id
      *
      * @param id id of the card type to fetch

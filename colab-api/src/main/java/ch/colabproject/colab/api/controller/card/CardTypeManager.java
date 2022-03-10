@@ -119,6 +119,19 @@ public class CardTypeManager {
     }
 
     /**
+     * Get the abstract card type and expand it
+     *
+     * @param id the id of the wanted abstract card type
+     *
+     * @return the corresponding abstract card type and all its targets recursively until the card
+     *         type
+     */
+    public List<AbstractCardType> getExpandedCardType(Long id) {
+        AbstractCardType wanted = cardTypeDao.findAbstractCardType(id);
+        return wanted.expand();
+    }
+
+    /**
      * Expand given types
      *
      * @param types to expand
